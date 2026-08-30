@@ -1,234 +1,68 @@
 # Migration status
 
-Temporary phase state and the retirement ledger. Rules live in `data-architecture.md`; this
-file records only where the work has got to. Delete a row when it stops being temporary.
+The ADR-003 repository-scope migration is **complete** (2026-08-30). This file now records only the
+remaining blocked or deferred follow-on work — each tracked as a GitHub issue — plus the one
+transitional runtime state (release atomicity) that a later phase resolves. The normative contract
+lives in `data-architecture.md` and `adr-003-repository-scope-boundary.md`.
 
-**As of 2026-08-28; deployed-model audit (Phase 0b) 2026-08-22; Phase 1 verified 2026-08-23.**
+## Migration phases (done)
 
-## Phase state
+| Phase | Outcome |
+|---|---|
+| 0 — architecture record and inventory | Merged (#345). |
+| 0b — deployed-model audit | Merged (#347); all deployed model definitions read, receipt at `warehouse/audits/platform_models.json`. |
+| 1 — schedule normalization | Applied (#349), verified 2026-08-23 (every in-scope dataset fired a `SCHEDULED` run on its UTC cron). |
+| 2 / 2A — normalized adoption observations + routing | Merged (#351, #356). `observations.product_adoption_current` deployed 2026-08-24 with the declared-identity guard; the §18 baseline frozen at `warehouse/data/observations/product_adoption_baseline.parquet`. |
+| 3 — reconciliation report | Deployed (#368). `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation` published, keyed on `declaration_version_id` + `observation_snapshot_id`. |
+| 5 — scope reset (catalog split / long-tail) | **Externalized under ADR-003** (#404 → #405 → #406 → #407). The peripheral OSO pipelines were frozen under platform ownership and removed from this repo; receipt at `warehouse/audits/externalization.json`. `population: long_tail` retired; the governed inventory is the Gap Map's own data system. |
+| 6 — repository-owned scoring trace | Deployed 2026-08-27; cutover prerequisites merged (#387, #388, #389). The `evaluator_version` cutover itself is a gated follow-on (below). |
 
-| Phase | State | Note |
+The versioning identities these phases depend on — `declaration_version_id`
+(`build/declaration_version.py`) and `observation_snapshot_id` (`build/observation_snapshot.py`) —
+are implemented and specified in `data-architecture.md` §4.5.
+
+## Remaining follow-on work
+
+None of these blocks normal curation (adding or refreshing products and categories). Each is a
+platform- or release-integrity improvement, tracked as an issue.
+
+| Work | Status | Issue |
 |---|---|---|
-| 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
-| 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
-| 1 — schedule normalization | done | Applied (#349) and **verified 2026-08-23**: all ten in-scope datasets fired a `SCHEDULED` run on their UTC cron (01:00–06:00Z Sunday), the run-history proof §13 requires; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->0 — no governed asset remains without an observed run. Two model runs failed on the scheduled fire — a transient `ConnectTimeout` on `metrics` (cleared on re-run) and a reproducible upstream `429` on `signal_semanticscholar.paper_citations` — but neither is a schedule defect; see the note below. `docs/operations/normalize-schedules.md` carries the per-dataset evidence. |
-| 2 — normalized adoption observations | done | **2A done**: `registry.adoption_routes` + `adoption_route_scopes` / `adoption_route_band_sets` / `adoption_aggregation_rules` compiled from `signal_routing.yaml` and merged (#351), materialized on the platform 2026-08-23 (7 / 1 / 20 / 1 rows). **`source_runs` shipped** (#356). **`artifact_state` source-table rename applied** (Part B runbook): `signal_github.repo_state` and `signal_huggingface.hub_state` twinned to `signal_github.artifact_state` / `signal_huggingface.artifact_state` on the platform, the three consumers repointed and redeployed, and the old tables kept as `compatibility` assets (each naming its replacement) until their step-6 retirement. **`observations.product_adoption_current` deployed** (2026-08-24) — the artifact-level, band-free current-state normalization over the four deployed adoption sources; the deploy created the `observations` namespace, and the first run materialized 654 rows over 392 products (`authority: repo`, deployed from the repo SQL). **The declared-identity guard is deployed and enforced** (2026-08-25, revision 3, `a27b153d-76d8-4661-8fcb-4ee4802cb164`). The live model resolves `product_type` by joining `registry.product_artifacts` on `(product_slug, artifact_kind, artifact_id)`, replacing the pre-guard `registry.products` slug join, and FAILs the materialization on any observation whose artifact is not declared for that product. The materialization SUCCEEDED, which is the coverage proof: 654 rows over 392 products, grain unique on all 654, `product_type` non-null on every row, per-channel counts unchanged (github 305, huggingface 189, pypi 136, arxiv 24). `warehouse/audits/platform_models.json` was regenerated against the deployed state and now records source SHA `33a9f760c2701b6926ea3af1479f2aca7f02c0094393592f41d9c2ccdcf1ef08`, matching the repo SQL byte for byte, and `registry.product_artifacts` among the reads. **`observations.product_adoption_baseline` captured** (2026-08-24T22:27:44Z) — §18 requires one preserved baseline snapshot for the temporary full-refresh period, and because `product_adoption_current` is full-refresh (every run overwrites), the deployed state is preserved only by freezing it. The 654 rows over 392 products are now immutable bytes at `warehouse/data/observations/product_adoption_baseline.parquet` (file sha256 `84e0d5747c5963617fd712688bce14210389104f218f624f66aceddace1fa569`, writer-independent content sha256 `3a942c39c203b4d2aa962d1709fa3ca1b045ff17673ed5b00899b259777f9a9b`), with the receipt at `warehouse/audits/product_adoption_baseline.json`. It records honestly that `source_run_id` is NULL for all 654 rows and that no authoritative row-to-run binding exists (#355); no run id is inferred. The baseline is a frozen data asset, not a query, so it carries no platform table and is inventoried `staged` / `materialized: false`. The per-source banding roll-ups retire later, once the evaluation layer + reconciliation replace them. |
-| 2B — incremental adoption history | blocked (follow-up) | **Blocked on OSO incremental-model support (issue #352).** Per §18 the architecture migration is explicitly **partially complete on observation history** until this lands: the adoption→reconciliation layer ships on the full-refresh `product_adoption_current` plus the frozen baseline, but append-only history is NOT marked complete until an incremental platform run has been observed. 2B builds forward from the already-captured baseline when OSO incremental lands. The stable latest-state contract `observations.product_adoption_current` (full-refresh + `observed_at`) ships in Phase 2; the bare name `observations.product_adoption` is reserved for the incremental append-only history table, created only when OSO supports it. The `observations.product_adoption_baseline` frozen-bytes snapshot was captured in **Phase 2**, not here (2026-08-24, 654 rows) — it is the immutable anchor the append-only history builds **forward** from, and it already exists for 2B to build on. `_current` is not renamed into `product_adoption` — its grain is current-state, and a consumer of the current-state table must not silently inherit a historical grain. |
-| 3 — reconciliation report | done | **Both fully-keyed evaluation tables built as repo-side release builders**, keyed on `declaration_version_id` + `observation_snapshot_id`. **`evaluation.product_adoption_measurements`** (`build/adoption_measurements.py`) aggregates the artifact-level `observations.product_adoption_current` to the product level. Route selection is **by declared artifacts** (`registry.product_artifacts`) and the recorded instrument, first applicable route by `registry.adoption_routes` precedence + `adoption_route_scopes`, then an observation is sought on that route only — **no fallthrough** to a weaker route when the authoritative observation is missing (a PyPI-declared product is never scored on GitHub stars). Applicability now spans **all** routes, not just machine ones: `signal_routing.yaml` gained unbridged `npm`/`crates` authoritative usage routes (ranked after the bridged download channels, before stars) and the hand-authored `active_users`/`reported_traction` routes are selected by the recorded instrument — so an `active_users` product with a GitHub repo, or an npm-only product, is left **unmeasured on its authoritative route** rather than scored on stars. Aggregation by `adoption_aggregation_rules`: both `usage_volume` and `stars_fallback` sum across a family's artifacts (`sum_stars_across_artifacts` added to `signal_routing.yaml`, matching the deployed compatibility model's `SUM(stargazers_count)` and the recorded assessments); banding by `adoption_route_band_sets` → `adoption_bands`, stars capped by the band set. Numbers are preserved, never `int()`-truncated. It reinterprets none of that — the routing compiler is the one owner. **`evaluation.adoption_reconciliation`** (`build/adoption_reconciliation.py`) compares measured vs recorded adoption, **report-first**, over **every recorded adoption assessment** (measured, unmeasured, and the deliberate nulls) — one terminal outcome per applicable route. It **never compares across instrument types**: a `delta` is computed only when the measured and recorded instruments match; a cross-instrument row withholds the delta and is classified `route_mismatch` (an authoritative instrument on either side) or `expected_difference` (both weak signals), not turned into a number. A same-instrument measured row is `source_unavailable` today because observations carry no `source_run_id` (row-to-run binding blocked on #355), exactly as §4.3 requires; the fuller status set activates once #355 binds observations to runs. Both tables carry `routing_policy_version` (now **2**), so the routing policy that produced them travels with the output — `declaration_version.py`'s binding is now split: **bound** to the evaluation tables, **pending** for `release_id` until Phase 8. The two builders read the current table once and derive the snapshot id and both tables from that one atomic row set; `build/serialize_evaluation.py` serializes the publishable static-model CSVs (live via pyoso or the baseline), and both are exercised in-repo against the immutable Phase-2 baseline with pinned goldens (`tests/test_adoption_evaluation.py`). **Deployed 2026-08-25**: the `evaluation` dataset was created (`55a4311d-7659-4811-a4c5-7ff167ef5eef`) and both tables published as static models — 377 measurement rows and 522 reconciliation rows, one identity pair throughout (declaration `8d3e9d8df10d…`, snapshot `9bd4d93a6fc6…`, `routing_policy_version` 2), archived at `build/evaluation/deployments/8d3e9d8df10d-9bd4d93a6fc6/`. Both are now inventoried `active` / `materialized: true`. The deploy was cut over the committed Phase-2 baseline rather than `--live`, which was broken at the time (`load_current_observations` did not coerce the VARCHAR-transported `observed_at`); the baseline was confirmed digest-identical to the deployed current table that day, so the published bytes are what `--live` would have produced. #369 subsequently fixed that coercion, so `--live` now works. The publish also had to fix the publisher itself: `createStaticModelRunRequest` took an invalid `{staticModelId}` input, and a request naming both models fans out into two runs that race to create the dataset's Trino schema — one failed while the returned sibling reported `SUCCESS`. Runs are now requested one model at a time and awaited in turn. **Phase 4's blocking gate stays disabled**: every measured row is `source_unavailable` until row-to-run binding lands (#355), so publishing the report is sound and gating on it is not. |
-| 4 — blocking agreement gate | blocked (follow-up) | **Required by AD-5 and §18, not yet active.** A fresh authoritative adoption disagreement is a release blocker and must not enter a release silently (AD-5; §18 "fresh authoritative adoption disagreement cannot enter a release silently"), so the gate is NOT removed from the architecture — it is blocked. Its input is authoritative row-to-run binding (#355): while every measured reconciliation row is `source_unavailable`, the gate has nothing to act on. That `source_unavailable` is the **accepted interim state** (§18), not a final one; the gate activates once #355's binding lands. #355's platform mechanism may come from OSO's incremental-model work (Kariba OSO-4705), but #355 stays independently open until live row-to-run emission and authoritative binding are demonstrated. |
-| 5 — catalog split and long-tail migration | **done (externalized, ADR-003)** | **COMPLETE under `adr-003-repository-scope-boundary.md` (steps 5-6, 2026-08-29).** The scope reset replaced the old catalog-split/long-tail migration: rather than relocate the peripheral pipelines into repo-owned namespaces, they were found out of scope (they model the OSO org, not the Gap Map's data system) and **externalized** — removed from this repo's inventory and publisher and **frozen under platform ownership** (disposition `frozen-without-producer`, recorded per asset in `warehouse/audits/externalization.json`; not a verified transfer to a named destination repo). The 28 backlog assets (24 long-tail pipelines — `entities.*`, `events.github_events`, `metrics.daily`, the analytical `scores.*`, the `catalog.*` reference tables, `signal_goodailist.repo_catalog`, `registry.foundation_model_repos` — plus the 4 questionable gap_map tables `catalog.stack_map`, `scores.stack_contributors`, `signal_artificialanalysis.model_evaluations`, `signal_lmarena.text_leaderboard`) are gone from `assets.yaml`; `foundation_model_repos` was unwired from `serialize_registry`/`sources`. **No OSO table was deleted** — the deployed tables stay live under platform ownership (Carl), satisfying the no-orphan precondition; `registry.foundation_model_repos` freezes at its last publish and the deployed `entities.models` keeps reading it. This partly unwinds #397/#400 by freezing the deployed table, not by reversing the deployment, as ADR-003 anticipated. `population: long_tail` is retired and the `owner` field dropped from `assets.yaml`. The old Phase-5 namespace-move runbooks (`phase5-namespace-migration.md`, `phase5-execution-runbook.md`) stay **superseded, not re-enabled**. |
-| 6 — repository-owned scoring trace | deployed (2026-08-27); sentinel cutover pending | **The three trace tables are built and tested repo-side**, keyed on `declaration_version_id` alone (no `release_id`, no `observation_snapshot_id`). `build/axis_scoring_trace.py` decomposes the openness ladder walk that `build/check_rubric.py` already runs into `evaluation.axis_facts` (normalized fact per declared dimension + the license resolved to per-part tiers), `evaluation.axis_rule_matches` (the ordered first-match-wins rung walk) and `evaluation.axis_results` (the result, the rung it matched, the governing tier, and `reproduces_recorded` — true on every scored row, the ADR-001 dual-run agreement made queryable). Together they make `result → matched rule → normalized fact → recorded evidence → source document` queryable, the last two hops joining to the existing `registry.product_openness_evidence` / `registry.product_score_sources` rather than republishing them. **No second scoring implementation** (ADR-001): the walk is `check_rubric.walk_formula_trace` (which `walk_formula` now projects) and the license decomposition is `check_rubric.resolve_license_parts` (which `license_tier` now projects), so the trace cannot resolve a fact, a tier or a rung outcome differently from the score. Over the current corpus: 522 results (517 scored, all reproducing; 5 deferred by their recipe), 2284 facts, 2734 rule matches; pinned goldens in `tests/test_axis_scoring_trace.py`. **Deployed 2026-08-27** via the dedicated publisher `build/publish_scoring_trace.py` (mirrors `build/publish_evaluation.py`, adding a canonical-equivalence gate that requires the candidate to be byte-for-byte `axis_scoring_trace.resolve()` at the current commit): all three run groups reached terminal `SUCCESS`, deployed row/schema verified via pyoso (2,284 / 2,734 / 522 rows), one identity throughout (declaration `eb828b57b14d`, `evaluation` dataset `55a4311d…`), archived at `build/evaluation/scoring-trace-deployments/eb828b57b14d-980250bae3f5/`. The three assets are now `status: active` / `materialized: true`; they have no reviewed consumer yet — the Phase-7 retirement of the duplicate openness computation is the reader, tracked in #384. Runbook `docs/operations/deploy-scoring-trace.md`. **The `evaluator_version` cutover is deferred and gated**: `declaration_version.EVALUATOR_VERSION` is still the sentinel `v0-no-repo-evaluator`. Replacing it re-keys every `declaration_version_id` corpus-wide — including the already-deployed Phase-3 `evaluation.product_adoption_measurements` / `adoption_reconciliation` and `registry.axis_assessments`, which key on it — so it is a separate, reviewed step, not part of this landing. **Cutover prerequisites — all three code steps now merged (2026-08-28):** §0.1 the content-addressed deployment archive with explicit deploy/rollback occurrences (#387), §9 durable artifact persistence to GitHub Releases with `--deploy-artifact` binding the OSO publish to the released bytes (#388), and §0.2 the cross-cutover pre-flight invariants — single shared `declaration_version_id`/`source_git_sha` and semantic no-change — in `build/cutover_preflight.py` (#389). **Two execution steps remain, each pending EXPLICIT authorization and neither performed:** (a) persisting the two currently-live generations to real GitHub Releases (`232015a76ecc` eval, `eb828b57b14d` trace — heed the `evaluated_at` byte-fidelity caveat, §9 of the cutover plan), and (b) the `evaluator_version` cutover itself, pending explicit authorization and final D1–D3 confirmation. **As of this writing NO real Release has been created and the evaluator-version cutover has NOT been executed.** The plan is `docs/operations/evaluator-version-cutover.md`. |
-| 7 — retire duplicate openness computation | not started | |
-| 8 — release manifests | not started | |
+| Incremental adoption history (append-only `observations.product_adoption`) | Blocked on OSO incremental-model support | #352 |
+| Authoritative row-to-run binding (`observations.source_runs`) | Blocked on OSO run-manifest emission (mechanism may come from Kariba OSO-4705) | #355 |
+| Phase 4 — blocking adoption-agreement gate | Blocked on #355; every measured reconciliation row is `source_unavailable` (the accepted interim state, §18), so the gate is deliberately disabled | #410 |
+| Phase 6 — `evaluator_version` cutover from the `v0-no-repo-evaluator` sentinel | Planned; prerequisites merged; pending explicit authorization | #411 |
+| Phase 7 — retire the duplicate warehouse openness computation | Waits on multi-release dual-run agreement of the repo-owned trace (ADR-001) | #384 |
+| Phase 8 — release manifests (`releases.*`, atomic materialization) | Not started; resolves the atomicity state below and binds `release_id` into the evaluation tables | #412 |
 
-**The adoption observation → reconciliation thread ships the working report; per §18 the
-architecture migration is explicitly *partially complete* on observation history.** Row-to-run
-binding (#355), the Phase-4 blocking gate it feeds (required by AD-5), and the incremental
-append-only history (Phase 2B) are **blocked follow-up**, bundled with OSO's incremental-model
-support (issue #352; #355's run-id mechanism may come from Kariba OSO-4705, but #355 closes on its
-own row-to-run evidence). The **accepted interim state** (§18) is a preserved baseline, a
-full-refresh `product_adoption_current`, a working `evaluation.adoption_reconciliation` with every
-measured row `source_unavailable`, and the blocked 2B/4 items above — sound to publish, and unsound
-to gate on until the binding lands (§4.3). It is not the final state: append-only history is not
-marked complete until an incremental platform run is observed, and the gate activates when #355
-lands. Phases 5–8 remain separate in-scope tracks, unaffected by this.
-
-## Versioning identities
-
-Prerequisites for the fully-keyed evaluation tables (`evaluation.product_adoption_measurements`,
-`evaluation.adoption_reconciliation`, `registry.axis_assessments`), which key on identities that
-did not yet exist in code. Laid ahead of those tables so each is defined once, on its own, rather
-than improvised inside the first consumer.
-
-- **`declaration_version_id` — implemented** (`build/declaration_version.py`, `data-architecture.md`
-  §4.5). Commit-scoped (it embeds `source_git_sha`), derived at run time rather than stored, and
-  refused over a worktree that disagrees with `HEAD` — a dirty tracked file (declarations or
-  identity/evaluator code) or an untracked file under `sources/` — without an explicit diagnostic
-  opt-in; the digest itself reads only git-tracked files. Its `source_content_digest` covers every authoritative
-  declaration input under `sources/` — the full top-level inventory is classified and gated, so
-  `evidence_policy.yaml` and `verification_queue.yaml` (which `load_sources` does not return) are
-  folded in, while `signal_routing.yaml` (its `routing_policy_version` now **bound to the evaluation
-  tables** — carried as a column on `evaluation.adoption_reconciliation` and
-  `evaluation.product_adoption_measurements` — with the `release_id` binding still **pending** until
-  Phase 8), the frozen long-tail sample, and the derived score projections are excluded from the
-  **digest** — not from the id, which changes with any commit that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
-  the repository-owned evaluator lands (Phase 6).
-- **`observation_snapshot_id` — implemented** (`build/observation_snapshot.py`, `data-architecture.md`
-  §4.5), as the two distinct things §4.5 names. **`observation_content_digest`** is a SHA-256 over
-  the normalized observation content and nothing else — the ten measurement columns of
-  `product_adoption_current` as an order-independent multiset, excluding lineage, capture time, the
-  derived `observation_id`, `is_valid`, and `supersedes_observation_id`, with `observed_at`
-  normalized to UTC (naive interpreted as UTC) at fixed precision. **`observation_snapshot_id`** is
-  the identity reconciliation and `release_id` key on: it binds the `canonicalization_version` into
-  the content digest, so a persisted id names its rule. Derived at run time, not stored; a
-  merge-base ratchet forbids a serializer change without a version bump. Both digests are pinned
-  against the immutable Phase-2 baseline as fixed contracts.
-
-## Atomicity: which state is in force
-
-**Transitional.** Verified 2026-08-20: static models carry no version or revision list, and
-`registry.product_scores` reports `createdAt == updatedAt`, so each publish replaces in
-place. There is no native release-scoped materialization.
-
-Consequently, and per `data-architecture.md` 12.2:
-
-- `releases.*` does not exist yet. When it does, it is release-scoped with a pointer from
-  birth and is atomic.
-- `registry.product_scores`, `build/notebook_data.json` and the published notebooks are
-  replace-in-place and are **NOT atomic**.
-- Definition-of-done clause "joining current public tables cannot mix releases silently" is
-  **met for release-aware consumers** and **UNMET for compatibility consumers**. Do not mark
-  it complete on the strength of the first half.
-
-## Recorded platform changes, not yet applied
-
-Phase 0 performs no platform write. Anything here is handed to a later phase with credentials.
-
-**Mirror header references to the retired `README.md` / `manifest.yaml`.** The mirror-layout
-restructure deleted `warehouse/platform-mirror/README.md` and `manifest.yaml`, but the moved
-mirror files still open with `-- See README.md and manifest.yaml in this folder`, now a dead
-reference. Those bytes are provenance-locked: each mirror's recorded `local_sha256` binds them,
-and the merge-base gate treats any byte change as a refetch that must also advance `revision`,
-`hash` and `synced_at`. A local edit alone would break the hash gate or fabricate provenance,
-and a credentialed refetch alone will not fix it while the deployed source still carries the
-line. The remediation is therefore ordered and platform-side:
-
-1. update the header in each platform-owned model source (in `currentai-org/{tools,udms}/`);
-2. release a new revision of each affected model;
-3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
-4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
-
-The Phase 1 schedule normalization is **complete** — applied 2026-08-22 and verified 2026-08-23,
-recorded in the phase table above and in `docs/operations/normalize-schedules.md`. All ten in-scope
-datasets fired a `SCHEDULED` run on their UTC cron, so `assets.yaml` records `last_observed_trigger:
-SCHEDULED` and `last_run_at: '2026-08-23'` for the fifteen affected assets alongside `timezone: UTC`.
-Nothing there is outstanding.
-
-**Two deployed-model failures surfaced on the first scheduled fire — tracked here, not Phase 1
-blockers.** The schedule is what Phase 1 changed and what it verified; whether a model's own body
-then succeeds is separate. Both failing models fired exactly on their UTC cron.
-
-1. `metrics.daily` failed its 06:00Z run on a transient `ConnectTimeout` while materializing. A
-   manual re-run the same morning succeeded, so this was infrastructure flakiness, not a defect;
-   the model is healthy.
-2. `signal_semanticscholar.paper_citations` failed its 01:00Z run on an upstream Semantic Scholar
-   HTTP `429` (`semantic scholar batch returned 429 for 24 ids`), and a manual re-run failed
-   identically — reproducible, not a blip. Root cause: the deployed UDM has no 429 backoff/retry,
-   unlike the repo's own `warehouse/models/catalog/model_repos.py`. The fix (backoff, or an
-   authenticated Semantic Scholar key) is a **platform-owned model change** under §17, out of Phase
-   1's scope. Its only in-repo consumer is `observations.product_adoption_current`, now deployed
-   but itself terminal — its Phase 3 consumers are not built — so no live scoring pipeline is
-   affected. Recorded for a maintainer; not acted on here.
-
-**No description or schema change is pending.** An earlier draft of this file recorded a
-correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no
-deployed model" claim was false. That was a conflation of two differently-named tables and is
-withdrawn.
-
-The distinction is worth writing down, because the names invite the mistake:
-
-| Table | Dataset | State | Read by |
-|---|---|---|---|
-| `currentai.stack_map.*` | `stack_map` (`3d049fc1`), **ARCHIVED 2026-08-20** | 9 frozen v1 tables | No deployed model. Two notebooks: `stack_map_category_maps` (Deprecated) and `state-of-os-ai` (not deprecated) |
-| `currentai.catalog.stack_map` | `catalog` (`046ee25e`), live | The repo-to-warehouse taxonomy bridge | `warehouse/models/scores/stack_contributors.sql`, plus four notebooks including the Live `long-tail-explorer` |
-
-The archive note sits on the first and is accurate about deployed models.
-`docs/reference/where-scores-live.md` already draws this line correctly: it records
-`stack_map.*` as archived with no deployed reader, and `catalog.stack_map` as "Live and
-stale… Read by `scores.stack_contributors`".
-
-What the note omits, and what this inventory adds, is that `stack_map.*` has two notebook
-readers and one of them is not deprecated. "No deployed model" and "no reader" are different
-claims, and only the first is true.
+The five deployed `evaluation` tables (`product_adoption_measurements`, `adoption_reconciliation`,
+`axis_facts`, `axis_rule_matches`, `axis_results`) are pre-positioned replacements whose reviewed
+consumers are the Phase-4 gate (#410) and the Phase-7 openness retirement (#384) — "nothing uses it
+yet", not deletion candidates. The retirement-candidate list is derived by `build/assets.py`
+(`retirement_candidates()` / `no_reviewed_consumers()`) and reviewed under §17, never acted on
+automatically; the open retirement review is #348.
 
 ## Assets with no reviewed consumer
 
-**Retirement candidates: <!-- count:retirement_candidates -->5.** Phase 0b read all 41 deployed
-model definitions in the org, so `consumer_checks.platform_models` is now `checked` on every
-asset and the derived candidate list is non-empty for the first time. It is **recorded, not
-acted on**: section 17 requires explicit maintainer authorization, a stated rollback path and a
-consumer inventory before any deletion. This phase produces the inventory only — no `DROP`, no
-dataset deletion, no description or model change. Two are tracked in issue #348, the two Phase-3
-`evaluation` tables in #355, and the three Phase-6 scoring-trace tables (`evaluation.axis_facts`,
-`axis_rule_matches`, `axis_results`, deployed 2026-08-27) in #384, which each entry references in
-`retirement_issue`; a `TBD` placeholder no longer satisfies that field. (`signal_github.product_adoption`
-left this derived list on 2026-08-28 when it — with `signal_huggingface.product_adoption` — was
-reclassified `status: compatibility` naming `observations.product_adoption_current` as its
-replacement, per §11.1: a superseded compatibility shim, not a no-consumer candidate.)
+Derived by `build/assets.py` (`no_reviewed_consumers()`) and drift-checked against this table.
+Each is a **deployed** asset whose reviewed consumer belongs to a later phase — "nothing uses it
+yet", not a deletion candidate (§17). `external` stays `unknown`, so this is weaker than "no
+consumer".
 
-The <!-- count:no_reviewed_consumer -->5 assets below are **deployed** and have **no reviewed
-consumer**: no in-repo code reader, no consumer among the twenty notebooks in the organization,
-and no deployed platform model reads them. `external` stays `unknown` — nothing outside this org
-was read — so this is still weaker than "no consumer" and is not itself grounds for deletion.
-
-A not-in-service asset is a different state and is **not** listed here. `signal_packages.product_adoption`
-has no consumer only because it is staged and deployed nowhere (issue #314); a model that has
-not entered service cannot be retired, so `retirement_candidates()` excludes `staged` and
-`dormant` by construction, and the staged `signal_packages` models carry `materialized: false`.
-`observations.product_adoption_baseline` is absent for the same reason and a different one: it is
-staged because it has no platform table at all — the asset is frozen bytes in the repository — and
-it is unread because a baseline is read when there is history to compare against it, which Phase 2B
-(#352) has yet to produce. It is a pre-positioned immutable anchor, and the one thing it must never
-be is deleted: it is the only surviving copy of the first `observations` state.
-
-Four assets left this list when the audit found a platform-model reader with no repository
-source, invisible to the repo-derived graph until the model definitions were read — exactly the
-gap Phase 0b existed to close. `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping` and
-`catalog.taxonomy_crosswalk` are read by the deployed `scores.taxonomy` (the first two also by
-`scores.investment_ranking`), and `signal_lmarena.text_leaderboard` by
-`ai_demand_curve.model_capability_current`. All four now carry `platform_model_consumers`.
-
-The derived condition cannot tell "nobody wants this" from "nothing uses it yet", which is why
-it produces a list for a person and never an action. Several entries are pre-positioned inputs.
-
-`signal_semanticscholar.paper_citations` left this list in Phase 2: the new
-`observations.product_adoption_current` reads it as the citations channel, so it now has an
-in-repo reviewed consumer. It was the clearest "pre-positioned, not yet consumed" case, and the
-observations layer is what consumes it.
-
-`observations.product_adoption_current` joined this list in Phase 2 when it deployed with no
-reader, and **left it in Phase 3**: `build/adoption_measurements.py` now reads it to build
-`evaluation.product_adoption_measurements`, so it has an in-repo reviewed consumer and the derived
-predicate no longer fires. It was the clearest "nothing uses it yet" case, and the evaluation
-rollup is what now uses it.
-
-Both `evaluation` tables joined this list on 2026-08-25, the day they were published, and for the
-same reason `observations.product_adoption_current` was on it a phase earlier: the consumer is the
-next phase's. The Phase-4 blocking gate is the reader, blocked follow-up (see the phase table): it
-stays disabled while every measured reconciliation row is `source_unavailable` for want of
-authoritative row-to-run binding (#355). The gate is still **required** by AD-5/§18; `source_unavailable`
-is the **accepted interim state**, not a final one, and the gate activates once #355 lands (its
-run-id mechanism may come from OSO incremental / OSO-4705, but #355 closes on its own evidence).
-Publishing the
-report before gating on it is deliberate, so these two are the clearest current case of the blind
-spot named above — a table nothing uses **yet** — and neither is a deletion candidate.
-
-The three Phase-6 scoring-trace tables joined this list on 2026-08-27, the day they were deployed,
-for the same reason: the consumer is a later phase's. Their reader is the Phase-7 retirement of the
-duplicate warehouse openness computation (`scores.openness_facts` / `scores.openness_computed`),
-which proceeds only once `evaluation.axis_results.reproduces_recorded` shows agreement across
-multiple releases (ADR-001) — tracked in #384. They are the pre-positioned replacement, not the
-thing retired; a "nothing uses it **yet**" finding, not "nobody wants it".
-
-(`scores.ossd_coverage` and `signal_artificialanalysis.model_evaluations` left this list when they
-were externalized to platform ownership under ADR-003 steps 5-6, removed from this inventory.)
-
-| Asset | Finding |
+| Asset | Reviewed consumer it awaits |
 |---|---|
-| `evaluation.product_adoption_measurements` | Published 2026-08-25. Read in-repo only as candidate rows by the reconciliation builder; the deployed table's reader is the Phase-4 gate, held on #355. |
-| `evaluation.adoption_reconciliation` | Published 2026-08-25. The report is the deliverable; the Phase-4 gate that would consume it is required by AD-5 but blocked follow-up, not enabled while every measured row is `source_unavailable` (#355, the accepted interim state) — the binding's mechanism may come from OSO incremental / OSO-4705, but #355 closes on its own evidence. |
-| `evaluation.axis_facts` | Deployed 2026-08-27. The normalized-fact layer of the repo-owned scoring trace; its reader is the Phase-7 retirement of the duplicate openness computation, gated on multi-release dual-run agreement (#384). |
-| `evaluation.axis_rule_matches` | Deployed 2026-08-27. The rule-walk layer of the trace; same Phase-7 consumer, gated on #384. |
-| `evaluation.axis_results` | Deployed 2026-08-27. The result layer carrying `reproduces_recorded` (the ADR-001 dual-run agreement); same Phase-7 consumer, gated on #384. |
+| `evaluation.product_adoption_measurements` | The Phase-4 blocking gate (#410), held on row-to-run binding (#355). |
+| `evaluation.adoption_reconciliation` | The Phase-4 blocking gate (#410); the report is the deliverable, gating on it awaits #355. |
+| `evaluation.axis_facts` | The Phase-7 openness-computation retirement (#384), gated on multi-release dual-run agreement. |
+| `evaluation.axis_rule_matches` | The Phase-7 openness-computation retirement (#384). |
+| `evaluation.axis_results` | The Phase-7 openness-computation retirement (#384); carries `reproduces_recorded`, the ADR-001 dual-run agreement. |
 
-## Consumers with only a deprecated reader
+## Atomicity: which state is in force
 
-Weaker than a live consumer, stronger than none. Recorded so the next pass does not treat
-them as unread.
-
-| Asset | Read only by |
-|---|---|
-| `scores.investment_ranking` | `ai-potluck-partners` (Deprecated) |
-| `scores.project_summary` | `ai-potluck-partners` (Deprecated) |
-
-`scores.taxonomy` reads similarly but also has `state-of-os-ai`, which is not deprecated.
+**Transitional, until Phase 8 (#412).** Verified 2026-08-20: static models carry no version or
+revision list and `registry.product_scores` reports `createdAt == updatedAt`, so each publish
+replaces in place — there is no native release-scoped materialization. Per `data-architecture.md`
+§12.2, `releases.*` does not exist yet; `registry.product_scores`, `build/notebook_data.json` and
+the published notebooks are replace-in-place and **NOT atomic**. The definition-of-done clause
+"joining current public tables cannot mix releases silently" is met for release-aware consumers and
+**UNMET for compatibility consumers** until Phase 8 lands.
