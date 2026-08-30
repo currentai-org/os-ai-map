@@ -768,7 +768,13 @@ def test_real_sources_serialize_without_errors():
         # undeclared-key row, exactly as `autogen`'s CC-BY-4.0 documentation license
         # already did - which is the evidence that MCP was made to match an existing
         # convention rather than given a new one.
-        "agent_tools_protocols": 124, "dataset_processing_tools": 92, "evaluation_code": 109,
+        # agent_tools_protocols 124 -> 145 on 2026-08-30 with the first promotion out of that
+        # category's tail registry: crawl4ai, mineru, context7, marker and lightpanda. Four rows
+        # each - `source`, `core_gated`, one `license` part and the raw `core-gated` key - except
+        # marker, which carries five because its license is a compound of two parts, Apache-2.0
+        # over the code and a modified AI Pubs Open RAIL-M over the weights. No product that was
+        # already computed gained or lost a row, which is why the other seventeen categories hold.
+        "agent_tools_protocols": 145, "dataset_processing_tools": 92, "evaluation_code": 109,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.

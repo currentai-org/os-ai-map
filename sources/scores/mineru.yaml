@@ -1,0 +1,90 @@
+product: mineru
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MinerU-Open-Source-License
+      detail: Apache-2.0 plus commercial thresholds; not OSI
+    source:
+      value: public
+      detail: the repository builds the extraction pipeline the package installs
+    core-gated:
+      value: ungated
+      detail: nothing is withheld from the published tree; the constraint is in the license, not in the build
+  confidence: high
+  note: Read from the LICENSE.md body rather than from the badge, and the badge is the thing to distrust here. MinerU
+    is Apache-2.0 'subject to the additional terms below', and those terms require a separate commercial license
+    once an organization and its affiliates exceed 100 million monthly active users or USD 20 million in monthly
+    revenue, oblige anyone offering an online service built on it to say so prominently, and terminate the grant
+    automatically on breach. That is a license charging for a class of use above a threshold, which is the competition_restricted
+    tier stated directly, and the ladder scores a public source under that tier at 2/source_available. Nothing is
+    withheld from the published tree - the whole pipeline is there and builds - so core-gated is ungated and the
+    cap comes from the license alone. GitHub reports NOASSERTION because the file is a modified Apache text, which
+    is substantive here rather than the usual custom-copyright-line false alarm.
+  raw: license:MinerU-Open-Source-License(Apache-2.0 plus commercial thresholds; not OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/opendatalab/MinerU/master/LICENSE.md
+    shows: 'LICENSE.md body: ''MinerU is licensed under Apache License 2.0 and is subject to the additional terms
+      below.'' Section 1 requires a separate commercial license where an entity and its affiliates exceed 100 million
+      monthly active users or USD 20 million total monthly revenue; Section 2 imposes a prominent-attribution obligation
+      on online services; Section 3 terminates the license automatically where either is not met.'
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 2d9aeb5d15159329a20dd804f251c64860ba954fbd26ec02f802220e6d71cf5c
+    establishes:
+    - license
+  - url: https://api.github.com/repos/opendatalab/MinerU
+    shows: Repo metadata - license spdx_id NOASSERTION, archived false, 78,805 stars - for opendatalab/MinerU.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 9cca7dcf8f2e6206b23ceb3d0c6438404974a962566c8dabb0cafdcd8ae1feb6
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md
+    shows: README documents the extraction pipeline built from this repository and distributed as a Python package
+      and Docker image, with no enterprise directory, license-key-gated build or withheld component described.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 269,753 downloads of mineru in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption
+    scale.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://pypistats.org/api/packages/mineru/recent
+    shows: last_month = 269,753 downloads for mineru.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: ccc3863295b4fa66f4b9d742f7de5f0419ee79fab8e98397e30886e226aa31ef
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: multi-format document understanding with layout, tables and formulas'
+  value: PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column
+    layout handling, table and formula recognition, and OCR for scanned pages.
+  relative_to: docling
+  relation: one_below
+  confidence: medium
+  note: Banded one below the docling anchor on the category feature matrix. MinerU covers the same layout, table,
+    formula and OCR path over documents, but docling additionally parses audio through ASR, video and application-specific
+    XML schemas, which is the breadth the top band is anchored on. The comparison is dated to when the anchor was
+    last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative
+    to.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md
+    shows: README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order reconstruction,
+      multi-column layout handling, table and formula recognition, and OCR for scanned pages.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358

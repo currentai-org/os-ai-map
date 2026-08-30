@@ -1,0 +1,95 @@
+product: lightpanda
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI, copyleft
+    source:
+      value: public
+      detail: the repository builds the browser binary
+    core-gated:
+      value: ungated
+      detail: the hosted Lightpanda cloud is a separate managed service, not a carve-out of the published engine
+  confidence: high
+  note: The repository states its own terms canonically. LICENSING.md names the default license for the project
+    as AGPL-3.0-only, spelled per the SPDX License List, the LICENSE body is the AGPL-3.0 text, and the GitHub API
+    reports the same spdx_id, so all three agree and nothing is appended after the license text. The repository
+    builds the browser binary, and the hosted Lightpanda service is a managed offering sold beside the engine rather
+    than functionality withheld from it, so the core is ungated. Placing AGPL in the OSI tier beside Apache rather
+    than a rung below it is the ladder's standing rule - a copyleft obligation binds whoever redistributes and caps
+    neither who may use the software nor at what scale - and it is a fact about AGPL rather than evidence about
+    this product.
+  raw: license:AGPL-3.0(OSI, copyleft);source:public;core-gated:ungated
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/lightpanda-io/browser/main/LICENSING.md
+    shows: 'LICENSING.md body: ''The default license for this project is AGPL-3.0-only'', naming licenses per the
+      SPDX License List.'
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 666d657174d141b6a3062b712da59f4408378c94eed6e49b7bb8f07b03d5bca1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/lightpanda-io/browser/main/LICENSE
+    shows: LICENSE body is the GNU Affero General Public License version 3 text.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://api.github.com/repos/lightpanda-io/browser
+    shows: Repo metadata - license spdx_id AGPL-3.0, archived false, 34,318 stars - for lightpanda-io/browser.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 1afbe8cc70e7828207b5a5dff1ef49cf5d02bbac61600fc01cec890b40b294fb
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/lightpanda-io/browser/main/README.md
+    shows: README documents a headless browser built from this repository, driven over the Chrome DevTools Protocol,
+      with no enterprise directory, license key or withheld component described beside it.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: d7b151484e8e40b27faa91d41875a1599b6f3c57944d1341e0492bde271c0b66
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 34,318 GitHub stars, which lands in the >10K stars band, level 3, and the stars scale caps at 3. Lightpanda
+    ships as a binary rather than as a package on PyPI or npm, so no download count exists for it and the stars
+    fallback is the only instrument available. The band should be read as a floor rather than a measurement.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://api.github.com/repos/lightpanda-io/browser
+    shows: Repo metadata - stargazers_count = 34,318 - for lightpanda-io/browser.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 1afbe8cc70e7828207b5a5dff1ef49cf5d02bbac61600fc01cec890b40b294fb
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose engine rather than a managed browsing platform'
+  value: Headless browser implementing the DOM and a JavaScript runtime through V8 without a rendering pipeline,
+    driven over the Chrome DevTools Protocol so Playwright and Puppeteer clients connect to it in place of Chrome.
+  relative_to: browserbase
+  relation: one_below
+  confidence: medium
+  note: Banded one below browserbase, which provides session management, proxying, stealth and observability around
+    a browser as a managed platform. Lightpanda provides the engine and the CDP surface and leaves the platform
+    to the caller, and its Web API coverage is still partial. The comparison is dated to when the anchor was last
+    confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://raw.githubusercontent.com/lightpanda-io/browser/main/README.md
+    shows: README documents a headless browser written in Zig implementing the DOM and a JavaScript runtime through
+      V8 with no rendering, exposing the Chrome DevTools Protocol for Playwright and Puppeteer clients, and notes
+      that Web API coverage is partial and in progress.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: d7b151484e8e40b27faa91d41875a1599b6f3c57944d1341e0492bde271c0b66

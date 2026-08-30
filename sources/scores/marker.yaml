@@ -1,0 +1,97 @@
+product: marker
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, over the code
+    - name: AI-Pubs-Open-RAIL-M-Modified
+      detail: model weights; free below USD 5M funding or revenue, commercial license required above it
+    source:
+      value: public
+      detail: the repository builds the conversion pipeline the package installs
+    core-gated:
+      value: ungated
+      detail: nothing is withheld from the published tree; the constraint is in the weights license
+  confidence: high
+  note: 'Two licenses, and the compound is resolved on the more restrictive of them because both cover the artifact
+    you actually run. The code is Apache-2.0. The model weights the pipeline requires - Marker does not convert
+    a document without them - are under a modified AI Pubs Open RAIL-M that the README states is ''free for research,
+    personal use, and startups under $5M funding/revenue'', with a commercial license required above that threshold.
+    A license charging for a class of use above a revenue threshold is the competition_restricted tier, and a public
+    source under that tier scores 2/source_available. This is deliberately not the model-context-protocol case,
+    where a CC-BY-4.0 documentation license was moved out of the compound because it covered the project''s prose
+    rather than the artifact you run: here the bounded license covers the weights, and the weights are the product.'
+  raw: license:Apache-2.0(OSI, over the code)+AI-Pubs-Open-RAIL-M-Modified(model weights; free below USD 5M funding
+    or revenue, commercial license required above it);source:public;core-gated:ungated
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/datalab-to/marker/master/LICENSE
+    shows: LICENSE body is the Apache License 2.0 text, covering the repository's code.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datalab-to/marker/master/MODEL_LICENSE
+    shows: MODEL_LICENSE body is the AI PUBS OPEN RAIL-M LICENSE (MODIFIED), Version 0.1, applying use restrictions
+      to the model weights and their derivatives.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 636dfb8eb19efc5835ed6efb878f8b694a93f028c715d2547d831e2a55440276
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datalab-to/marker/master/README.md
+    shows: 'README, Commercial usage section: ''Our code is licensed under Apache 2.0 - free to use, including commercially.
+      Our model weights use a modified AI Pubs Open Rail-M license (free for research, personal use, and startups
+      under $5M funding/revenue). For commercial use of the model weights beyond that, visit our pricing page.'''
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/datalab-to/marker
+    shows: Repo metadata - license spdx_id Apache-2.0, archived false, 39,389 stars - for datalab-to/marker.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 2cf501fb97b288dd6016e359054aaafaed543236e28dc8908751670b9b87de3f
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 289,172 downloads of marker-pdf in the trailing 30 days, which bands at 100K-1M, level 3 on the software
+    adoption scale.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://pypistats.org/api/packages/marker-pdf/recent
+    shows: last_month = 289,172 downloads for marker-pdf.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 9d409f427b6997f83409ab183dcae0de675e3d05c634e6537f99afcdd93b9a6a
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: multi-format document understanding with layout, tables and equations'
+  value: PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation
+    recognition, OCR and optional LLM-assisted refinement.
+  relative_to: docling
+  relation: one_below
+  confidence: medium
+  note: 'Banded one below the docling anchor on the same reading as MinerU: the same layout, table, equation and
+    OCR path over documents, without the audio, video and application-specific XML breadth the top band is anchored
+    on. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative
+    band is only as fresh as the record it is relative to.'
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://raw.githubusercontent.com/datalab-to/marker/master/README.md
+    shows: README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML, with
+      layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4

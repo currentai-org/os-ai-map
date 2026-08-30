@@ -1,0 +1,99 @@
+product: crawl4ai
+openness:
+  score: 3
+  class: source_available
+  components:
+    license:
+    - name: Crawl4AI-Attribution-License
+      detail: Apache-2.0 text plus an appended attribution condition covering public use; not OSI
+    source:
+      value: public
+      detail: the published repository builds the crawler, the Docker deployment and the CLI
+    core-gated:
+      value: ungated
+      detail: a Cloud API is announced as a separate closed beta beside the library, not carved out of it
+  confidence: high
+  note: 'Read to the end of the LICENSE rather than to the end of the Apache boilerplate, which is where this record
+    first went wrong. The file carries the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS'' appends
+    an Attribution Requirement: all distributions, publications or PUBLIC USES must carry a set credit line, prominently,
+    in a NOTICE or README for distributions, in the acknowledgments for publications, in an About or Credits section
+    for websites, and in the help output for command-line tools. That is not Apache-2.0''s own NOTICE clause restated.
+    Apache-2.0 section 4(d) binds redistribution of the Work; this clause binds public USE of it, which is a condition
+    the Apache grant does not carry, and section 4 permits added terms only over Your own modifications rather than
+    over the Work. So the composite is not the OSI-approved license the badge and the GitHub API both report. It
+    is an attribution and naming requirement that caps neither who may use the software nor at what scale, which
+    is the permissive_non_osi tier stated word for word, and the ladder scores a public, ungated source under that
+    tier at 3/source_available. crawl4ai is the first product on the map to exercise that rung, which had been pinned
+    as a dead rule. The README calls attribution ''recommended'' and then lists methods you ''must'' include; the
+    LICENSE governs and it says must.'
+  raw: license:Crawl4AI-Attribution-License(Apache-2.0 text plus an appended attribution condition covering public
+    use; not OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/LICENSE
+    shows: 'LICENSE body: the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS'' a separate ''Attribution
+      Requirement'' section - ''All distributions, publications, or public uses of this software, or derivative
+      works based on this software, must include the following attribution'', with placement required in a NOTICE/README,
+      a publication''s acknowledgments, a website''s About or Credits section, or a command-line tool''s help output.'
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 193fe32704bee15cd74f5153e569cdf830e26445e19798a55daee32da40758aa
+    establishes:
+    - license
+  - url: https://api.github.com/repos/unclecode/crawl4ai
+    shows: Repo metadata - license spdx_id Apache-2.0, archived false, 80,161 stars - for unclecode/crawl4ai. The
+      API reports the stock header and does not see the appended attribution section, which is why the LICENSE body
+      rather than this field settles the tier.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: a25dea5a4d7a31d2e4c0bb7a969a27b799d1adba7f82696be5e40eeeada65e0b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md
+    shows: README documents the crawler, Docker deployment and CLI built from this repository, and announces a Crawl4AI
+      Cloud API as a separate closed beta. No enterprise directory, license key or paid build of the library itself
+      is described.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 1,524,522 downloads of crawl4ai in the trailing 30 days, which bands at 1M-10M, level 4 on the software
+    adoption scale.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://pypistats.org/api/packages/crawl4ai/recent
+    shows: last_month = 1,524,522 downloads for crawl4ai.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: b201db69a6e205d92daf8d09a5d883a8396fd927f6c78685c404d5cd0cf7ba6f
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full crawl-to-extraction pipeline over many strategies'
+  value: Asynchronous crawling with a managed headless browser, session reuse, hooks and proxy rotation; Markdown
+    generation with content filtering; CSS, XPath, regex and LLM-driven extraction strategies; deep-crawl strategies;
+    Docker deployment and a CLI.
+  relative_to: firecrawl
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix at the same level as firecrawl, which covers the same crawl, scrape
+    and structured-extraction path as a hosted service. The two differ on openness rather than on what they do.
+    The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative
+    band is only as fresh as the record it is relative to.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md
+    shows: README documents asynchronous crawling, browser session reuse, hooks and proxy rotation, Markdown generation
+      with content filtering, CSS/XPath/regex and LLM-driven extraction strategies, deep-crawl strategies, Docker
+      deployment and a CLI.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718

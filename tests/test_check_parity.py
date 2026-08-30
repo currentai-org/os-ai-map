@@ -231,7 +231,14 @@ def test_local_scores_matches_check_rubrics_split():
     # its license, so the ruling moved no existing score; the measurement is in software.yaml
     # beside the names.
     assert len(deferred) == 5
-    assert len(computed) == 517
+    # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
+    # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
+    # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
+    # MinerU-Open-Source-License and AI-Pubs-Open-RAIL-M-Modified onto `competition_restricted`,
+    # and Crawl4AI-Attribution-License onto `permissive_non_osi`, which no product had ever
+    # reached. Each was the first product on the map to record its license, so no existing score
+    # moved; the measurements are in software.yaml beside the names.
+    assert len(computed) == 522
     assert not set(computed) & set(deferred)
     # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
