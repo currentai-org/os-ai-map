@@ -8,11 +8,15 @@
 # product, are out of scope in both files and stay discoverable through OSO's own UI.
 #
 # The ADR-003 externalization is COMPLETE: the long-tail pipelines and the questionable gap_map
-# tables have been transferred to platform ownership and removed here (steps 5-6). Every entry
-# now carries a `role`; the externalization backlog is empty and the gates keep it that way
-# (`population: long_tail` is retired, and no roleless entry may appear). The deployed OSO tables
-# for the externalized assets stay live under platform ownership -- they were removed from this
-# repo's inventory and publisher, never from OSO.
+# tables were removed here (steps 5-6) and FROZEN under platform ownership -- the deployed OSO
+# tables stay live at their last publish with no repository producer (disposition
+# `frozen-without-producer`), which satisfies the no-orphan rule but is NOT an ownership transfer
+# to a named destination repo. The per-table handoff evidence is the reproducible receipt at
+# warehouse/audits/externalization.json (build/assets.py re-derives it from the base commit).
+# Every entry here now carries a `role`; there is no externalization backlog and no roleless
+# state, and the gates keep it that way (`population: long_tail` is retired, `gap_map` is the only
+# value). The externalized tables were removed from this repo's inventory and publisher, never
+# from OSO.
 #
 # There is no `owner` field: every governed asset is owned by this repository, so a uniform owner
 # carried no signal (a dependency contract instead records `owner: oso` in dependencies.yaml).

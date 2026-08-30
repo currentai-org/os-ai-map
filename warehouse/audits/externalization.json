@@ -1,6 +1,6 @@
 {
- "schema_version": 1,
- "note": "Append-only externalization receipt for ADR-003 steps 5-6. Each entry is a table removed from this repo's inventory/publisher and LEFT LIVE on the OSO platform under platform ownership. disposition 'frozen-without-producer' means: the deployed table is retained (no OSO deletion) and frozen at its last publish with no repository producer; this satisfies the no-orphan rule but is NOT an ownership-transfer to a named destination repo. archived_source_sha256 fingerprints the removed source/data files (git blob content at the removal base) so the source is recoverable. Do not edit or remove entries; append only.",
+ "schema_version": 2,
+ "note": "Append-only externalization receipt for ADR-003 steps 5-6. Each entry is a table removed from this repo's inventory/publisher and LEFT LIVE on the OSO platform under platform ownership (no OSO deletion). disposition 'frozen-without-producer' = the deployed table is retained and frozen at its last publish with no repository producer; this satisfies the no-orphan rule but is NOT an ownership transfer to a named destination repo. The receipt is MECHANICALLY REPRODUCIBLE from externalization_base_commit: build.assets.externalization_receipt_violations() re-derives id, population_was, platform facts, archived_source_sha256 (base git blobs), and the repo/external consumer lists from the base inventory + platform_models.json, and checks membership == the assets removed from the base inventory, per-file archival of every deleted source/data/model file, and append-only immutability. Honest verification: recorded_at is when the entry was written; last_platform_verified_at is the asset's actual prior verification date (no live OSO read occurred when the receipt was recorded); evidence_basis names what is reproduced vs captured. Do not edit or remove entries; append only.",
  "externalization_base_commit": "caebc97ef1c6cbb541d4a98a64f2b6ad30af810e",
  "count": 28,
  "assets": [
@@ -21,7 +21,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -41,7 +43,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-29",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -59,7 +63,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -85,7 +91,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -110,7 +118,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -129,7 +139,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -148,7 +160,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -172,7 +186,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -203,7 +219,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -221,7 +239,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -252,7 +272,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -280,7 +302,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -308,7 +332,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -352,7 +378,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -380,7 +408,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -417,7 +447,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -428,7 +460,9 @@
    "platform": {
     "dataset_id": "6b735d7b-e38e-41e8-a951-d4d7f3fbf331"
    },
-   "archived_source_sha256": {},
+   "archived_source_sha256": {
+    "sources/foundation_model_repos.yaml": "b08e64ac691acc692588d849a322e3231856f3c7ae0432f5a6132938569d4c54"
+   },
    "consumers_at_removal": {
     "repo_read_by": {
      "models": [
@@ -437,7 +471,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-29",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -462,7 +498,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -490,7 +528,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -511,7 +551,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -530,7 +572,9 @@
    },
    "consumers_at_removal": {},
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -553,7 +597,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -589,7 +635,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -613,7 +661,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -635,7 +685,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -654,7 +706,9 @@
    },
    "consumers_at_removal": {},
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -686,7 +740,9 @@
     }
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   },
   {
@@ -709,7 +765,9 @@
     ]
    },
    "consumer_resolution": "deployed OSO table retained under platform ownership (not deleted); consumers resolve against the frozen table. No repo producer remains.",
-   "verified_at": "2026-08-30",
+   "recorded_at": "2026-08-30",
+   "last_platform_verified_at": "2026-08-20",
+   "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
   }
  ]

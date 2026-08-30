@@ -3,7 +3,7 @@
 **Status:** **Accepted; fully implemented (steps 2–6), 2026-08-29.** This document is the plan; it
 has now landed in full. The mechanism (steps 2–4) — the `role` field on governed assets,
 `warehouse/dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction gates — is merged,
-and the externalization (steps 5–6) is complete: the 28 roleless backlog assets (24 long-tail
+and the externalization (steps 5–6) is complete: the 28 externalized assets (24 long-tail
 pipelines + 4 questionable gap_map tables) were removed from this repo's inventory and publisher and
 **frozen under platform ownership** — disposition `frozen-without-producer`, recorded per asset in
 `warehouse/audits/externalization.json` (archived source hashes, platform IDs, consumers at removal).
@@ -135,9 +135,10 @@ Executable invariants over `assets.yaml` **and** `dependencies.yaml` together �
 cannot itself grow into a new organization-wide inventory. Implemented in `build/assets.py`
 (`role_violations`, `dependency_violations`, `notebook_root_violations`) and asserted in
 `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`; see `data-architecture.md` §11.5.
-Gate 6 is enforced against the governed set (assets carrying a `role`): the 28 roleless backlog
-assets are exempt until steps 5–6 remove them, so no `long_tail` can be reintroduced as governed
-while the backlog drains.
+Gate 6 is enforced against the governed set (assets carrying a `role`): `gap_map` is the only
+governed population, so no `long_tail` asset can appear; the 28 externalized tables are recorded in
+the reproducible externalization receipt, and the role/scope gates keep any of them — or any other
+peripheral table — from re-entering the governed inventory.
 
 1. **Governed-output ⇔ release_path.** A `governed-output` asset must be `release_path: true`, and a
    `release_path: true` asset must be a `governed-output`.

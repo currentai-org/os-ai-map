@@ -1736,9 +1736,11 @@ outputs — `retirement_reason` and `retirement_issue` — are recorded.
 > field on governed assets, `warehouse/dependencies.yaml` for external inputs, a **root-scoped** DAG
 > (notebooks are no longer reachability roots), and the six anti-reintroduction gates
 > (`build/assets.py` `role_violations` / `dependency_violations` / `notebook_root_violations`; §11.5).
-> ADR-003 is now COMPLETE: the externalization (steps 5-6) transferred the 28 backlog assets to
-> platform ownership and removed them here, so the closure below is history — the governed inventory
-> is the 38 governed assets + 8 dependency contracts, not the old transitive closure.
+> ADR-003 is now COMPLETE: the externalization (steps 5-6) removed the 28 backlog assets here and
+> FROZE them under platform ownership (disposition `frozen-without-producer`, recorded in the
+> reproducible receipt `warehouse/audits/externalization.json`; not an ownership transfer to a named
+> destination repo), so the closure below is history — the governed inventory is the 38 governed
+> assets + 8 dependency contracts, not the old transitive closure.
 
 The inventory covers the transitive closure of what the repository ships or maintains. The
 roots are:
@@ -2030,7 +2032,8 @@ exist.
    `oso.*` and out-of-scope `currentai.*` reads must be representable rather than errors.
 9. Deprecated assets carry a removal condition; active `compatibility` assets name a
    replacement or state why none exists.
-10. No test asserts that a backlog must remain non-empty.
+10. Every asset is governed and carries a `role`; there is no backlog or roleless state, and no
+    test requires one to exist.
 
 **ADR-003 scope-boundary gates.** Implemented in `build/assets.py` (`role_violations`,
 `dependency_violations`, `notebook_root_violations`, `unreachable_repo_computations`) and asserted
@@ -2045,8 +2048,8 @@ Every asset in `assets.yaml` is governed and carries a role; there is no roleles
 - **G2 needed non-governed tables are contracts.** Every table reachable UPSTREAM from a governed
   root that is not itself governed -- a platform-authored `currentai.*` mirror OR an `oso.*`
   upstream -- appears in `dependencies.yaml` exactly once. Re-derived from the tree, so an
-  uncontracted input (of either kind) fails; a table only the externalization backlog reads is not
-  the repository's contract.
+  uncontracted input (of either kind) fails; a table only out-of-scope code (an externalized or
+  peripheral reader) touches is not the repository's contract.
 - **G3 the two files are disjoint.** A table is a governed asset or a dependency contract, never both.
 - **G4 every dependency is reachable, used and named.** Each `dependencies.yaml` entry is reachable
   from a governed root, has ≥1 `required_by` that equals the mechanically re-derived repo readers
@@ -2057,10 +2060,13 @@ Every asset in `assets.yaml` is governed and carries a role; there is no roleles
   grain and TYPED `expected_columns`) + `verified_at`.
 - **G5 a notebook is never a graph root.** No standalone notebook produces a governed table or is a
   governed root, so a notebook read cannot confer membership or pull a table into the DAG.
-- **G6 `long_tail` is not a governed population; the backlog only shrinks.** No asset carrying a
-  `role` is `population: long_tail`; the roleless set is a subset of the frozen backlog, and no new
-  `long_tail` or roleless asset can be introduced (a ratchet). The tail-candidate registry
-  (`registry.tail_products`) is distinct and is not `long_tail`.
+- **G6 `long_tail` is retired; there is no backlog.** `gap_map` is the only governed population
+  (the vocabulary is single-valued), and every asset carries a `role`, so there is no roleless or
+  backlog state to shrink. The externalized long-tail and questionable tables are frozen platform
+  objects recorded in `warehouse/audits/externalization.json`; the reproducible externalization
+  gate plus the role/scope gates keep any `long_tail` or peripheral table from re-entering the
+  inventory. The tail-candidate registry (`registry.tail_products`) is a distinct governed
+  `gap_map` asset, not `long_tail`.
 - **Reachability.** Every ACTIVE `repo-computation`/`governed-data` table is reachable upstream from
   a governed sink or a named audit root -- no dead nodes in the governed graph (staged/dormant
   pre-service assets are exempt).

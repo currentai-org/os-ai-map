@@ -317,57 +317,277 @@ def dependencies() -> list[dict]:
 
 
 EXTERNALIZATION_DISPOSITIONS = {"frozen-without-producer", "transferred"}
+EXTERNALIZATION_SCHEMA_VERSION = 2
+PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
+# The externalized artifacts live under these path prefixes; every file that existed under them
+# at the base commit and is now gone must be archived in the receipt (completeness check).
+EXTERNALIZED_FILE_PREFIXES = ("warehouse/models/", "warehouse/data/", "sources/")
+
+
+def externalization_receipt() -> dict:
+    """The full externalization receipt document (ADR-003 steps 5-6), or {} if absent."""
+    if not EXTERNALIZATION.exists():
+        return {}
+    return json.loads(EXTERNALIZATION.read_text(encoding="utf-8")) or {}
 
 
 def externalized() -> list[dict]:
-    """The append-only externalization receipt (ADR-003 steps 5-6), or [] if absent."""
-    if not EXTERNALIZATION.exists():
-        return []
-    return (json.loads(EXTERNALIZATION.read_text(encoding="utf-8")) or {}).get("assets") or []
+    """The externalization receipt's asset entries, or [] if absent."""
+    return externalization_receipt().get("assets") or []
+
+
+def _git_commit_exists(sha: str) -> bool:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", f"{sha}^{{commit}}"],
+        capture_output=True,
+    ).returncode == 0
+
+
+def _assets_at_commit(sha: str) -> dict[str, dict] | None:
+    """The inventory as of an explicit commit, keyed by table, or None if unreadable there."""
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{sha}:warehouse/assets.yaml"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return {a["table"]: a for a in (yaml.safe_load(blob) or {}).get("assets") or []}
+
+
+def _tree_files_at_commit(sha: str, prefixes: tuple[str, ...]) -> set[str]:
+    """Every tracked file under any of `prefixes` as of `sha`."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-tree", "-r", "--name-only", sha],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return set()
+    return {p for p in out.splitlines() if p.startswith(prefixes)}
+
+
+def _platform_models() -> dict[str, dict]:
+    """The deployed-model audit receipt keyed by table, or {} if absent."""
+    if not PLATFORM_MODELS.exists():
+        return {}
+    doc = json.loads(PLATFORM_MODELS.read_text(encoding="utf-8")) or {}
+    return {m["table"]: m for m in doc.get("models") or []}
+
+
+def _norm_read_by(rb) -> dict:
+    """A read_by block normalized to sorted lists so two provenance snapshots compare by value."""
+    if not rb:
+        return {}
+    return {k: sorted(v) for k, v in rb.items() if v}
 
 
 def externalization_receipt_violations() -> list[str]:
-    """The externalization receipt is well-formed and honest (ADR-003 no-orphan handoff evidence).
+    """The externalization receipt MECHANICALLY REPRODUCES from its named base commit.
 
-    Each entry documents a table removed from this repo's inventory/publisher. The gate proves the
-    receipt describes reality, not a claim: every entry is genuinely GONE from the governed inventory
-    and the dependency manifest, has NO repository producer left, carries a real disposition and the
-    handoff evidence fields, and a `frozen-without-producer` entry names the deployed table it froze.
-    A `transferred` entry must name a destination (repo/path + commit) -- so a freeze cannot be
-    mislabeled as an ownership transfer.
+    ADR-003's no-orphan handoff evidence is only worth as much as its reproducibility. This gate
+    re-derives every derivable field from `externalization_base_commit` + the platform-model audit
+    and asserts the committed receipt matches, so the receipt cannot drift from the state it claims
+    to record. It proves, with no OSO credentials:
+
+    * the document is well-formed: `schema_version`, a `count` equal to the entry total, unique ids
+      and tables, and a base commit that actually resolves in this repo;
+    * MEMBERSHIP -- the entries are EXACTLY the assets removed from the base inventory (base minus
+      the current governed inventory minus the current dependency manifest), both directions;
+    * per entry, `id` and `population_was` equal the base asset's, `platform.dataset_id` equals the
+      base asset's dataset, and the deployed-model facts (`model_id`, `revision_hash`,
+      `source_sha256`) equal the platform audit -- an entry with no audited model carries only a
+      dataset id, never fabricated model facts;
+    * PROVENANCE -- every `archived_source_sha256` hash equals the file's bytes at the base commit
+      and the file is genuinely gone from the worktree; and every file that existed under the
+      externalized prefixes at the base commit and is now deleted is archived by some entry (this is
+      what catches a deleted source that was left unarchived);
+    * CONSUMERS -- `repo_read_by` equals the base asset's `read_by` and `external_notebooks_or_products`
+      equals its `external_consumers`; the captured `platform_models` list must at least cover every
+      surviving audited model that read the table (a reproducible lower bound -- extra entries come
+      from the externalization-time platform scan named in `evidence_basis`);
+    * HONESTY -- `last_platform_verified_at` equals the base asset's own `verified_at` (its real last
+      verification, not a fresh live claim), and `recorded_at`, `evidence_basis`, and `owner` are
+      present. `consumer_resolution` is optional prose and is NEVER what satisfies the gate; the
+      structured, reproduced consumer fields are;
+    * SHAPE -- a real disposition, `frozen-without-producer` names the frozen deployed table (a
+      dataset id), `transferred` names a destination (repo + commit) so a freeze cannot be mislabeled
+      as a transfer, and each entry is genuinely gone from the governed inventory, the dependency
+      manifest, and every repository producer;
+    * APPEND-ONLY -- every entry recorded in the receipt at the merge base survives unchanged here.
     """
     problems: list[str] = []
+    receipt = externalization_receipt()
+    if not receipt:
+        return problems  # no receipt is not a violation; nothing was externalized
+
+    entries = receipt.get("assets") or []
+
+    # -- document well-formedness --------------------------------------------------
+    if receipt.get("schema_version") != EXTERNALIZATION_SCHEMA_VERSION:
+        problems.append(
+            f"receipt schema_version {receipt.get('schema_version')!r} != {EXTERNALIZATION_SCHEMA_VERSION}")
+    if receipt.get("count") != len(entries):
+        problems.append(f"receipt count {receipt.get('count')!r} != {len(entries)} entries")
+    ids = [e.get("id") for e in entries]
+    tables = [e.get("table") for e in entries]
+    if len(set(ids)) != len(ids):
+        problems.append("receipt has duplicate entry ids")
+    if len(set(tables)) != len(tables):
+        problems.append("receipt has duplicate entry tables")
+
+    base = receipt.get("externalization_base_commit")
+    if not base or not _git_commit_exists(base):
+        problems.append(f"externalization_base_commit {base!r} does not resolve in this repo")
+        return problems  # everything below reproduces against the base; without it, stop here
+
+    base_assets = _assets_at_commit(base)
+    if base_assets is None:
+        problems.append(f"cannot read warehouse/assets.yaml at base commit {base}")
+        return problems
+
+    # -- membership: entries == assets removed from the base inventory --------------
     governed = set(by_table())
     dep_tables = {d.get("table") for d in dependencies()}
+    dep_tables_bare = {t.removeprefix("currentai.") for t in dep_tables if t}
+    removed = {
+        t for t in base_assets
+        if t.removeprefix("currentai.") not in governed
+        and t.removeprefix("currentai.") not in dep_tables_bare
+    }
+    recorded = set(tables)
+    for t in sorted(removed - recorded):
+        problems.append(f"{t}: removed from the base inventory but not in the externalization receipt")
+    for t in sorted(recorded - removed):
+        problems.append(f"{t}: in the receipt but not an asset removed from the base inventory")
+
+    # -- per-entry reproduction ----------------------------------------------------
+    pmodels = _platform_models()
     producers = {(a.get("files") or {}).get("model") for a in assets()}
     producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
     producer_tables = {table_for_path(p) for p in producers if p}
-    seen: set[str] = set()
-    for e in externalized():
+    archived_all: set[str] = set()
+
+    for e in entries:
         t = e.get("table")
-        eid = e.get("id") or t
         if not t:
-            problems.append(f"{eid}: externalization entry has no table")
+            problems.append(f"{e.get('id')!r}: externalization entry has no table")
             continue
-        if t in seen:
-            problems.append(f"{t}: listed more than once in the externalization receipt")
-        seen.add(t)
+        b = base_assets.get(t)
+        if b is None:
+            continue  # membership check above already flagged this
+
+        # still gone from every live surface
         if t.removeprefix("currentai.") in governed:
             problems.append(f"{t}: externalized but still a governed asset in assets.yaml")
         if t in dep_tables:
             problems.append(f"{t}: externalized but also a dependency contract")
         if t in producer_tables:
             problems.append(f"{t}: externalized but a repository model file still produces it")
-        if e.get("disposition") not in EXTERNALIZATION_DISPOSITIONS:
-            problems.append(f"{t}: disposition {e.get('disposition')!r} not in {sorted(EXTERNALIZATION_DISPOSITIONS)}")
-        for field in ("owner", "verified_at", "consumer_resolution", "consumers_at_removal"):
-            if not e.get(field) and e.get(field) != {}:
+
+        # identity + population reproduce from the base asset
+        if e.get("id") != b.get("id"):
+            problems.append(f"{t}: id {e.get('id')!r} != base {b.get('id')!r}")
+        if e.get("population_was") != b.get("population"):
+            problems.append(f"{t}: population_was {e.get('population_was')!r} != base {b.get('population')!r}")
+
+        # platform facts reproduce from the base dataset + the deployed-model audit
+        plat = e.get("platform") or {}
+        if plat.get("dataset_id") != b.get("dataset_id"):
+            problems.append(f"{t}: platform.dataset_id {plat.get('dataset_id')!r} != base {b.get('dataset_id')!r}")
+        m = pmodels.get(t)
+        if m:
+            for f in ("model_id", "revision_hash", "source_sha256"):
+                if plat.get(f) != m.get(f):
+                    problems.append(f"{t}: platform.{f} {plat.get(f)!r} != audit {m.get(f)!r}")
+        else:
+            extra = set(plat) - {"dataset_id"}
+            if extra:
+                problems.append(f"{t}: platform carries {sorted(extra)} but no audited model exists to source it")
+
+        # archived hashes reproduce from base blobs; the files are really gone
+        for path, h in (e.get("archived_source_sha256") or {}).items():
+            archived_all.add(path)
+            want = _git_blob_sha256(base, path)
+            if want is None:
+                problems.append(f"{t}: archived {path} did not exist at the base commit")
+            elif want != h:
+                problems.append(f"{t}: archived {path} hash {h} != base blob {want}")
+            if (ROOT / path).exists():
+                problems.append(f"{t}: archived {path} still exists in the worktree (not deleted)")
+
+        # consumer provenance: repo readers + external consumers reproduce from the base asset
+        car = e.get("consumers_at_removal") or {}
+        if _norm_read_by(car.get("repo_read_by")) != _norm_read_by(b.get("read_by")):
+            problems.append(f"{t}: consumers_at_removal.repo_read_by != base read_by")
+        base_ext = b.get("external_consumers")
+        want_ext = sorted(base_ext) if isinstance(base_ext, list) else []
+        got_ext = sorted(car.get("external_notebooks_or_products") or [])
+        if want_ext != got_ext:
+            problems.append(f"{t}: external_notebooks_or_products {got_ext} != base external_consumers {want_ext}")
+        # the captured platform consumer list must cover every surviving audited reader (lower bound)
+        recorded_pm = {p.removeprefix("currentai.") for p in car.get("platform_models") or []}
+        for cm in pmodels.values():
+            if cm["table"] in recorded or cm["table"] == t:
+                continue  # a removed model is not a surviving consumer; nor is the table itself
+            reads = {r.removeprefix("currentai.") for r in cm.get("internal_reads") or []}
+            if t.removeprefix("currentai.") in reads and cm["table"].removeprefix("currentai.") not in recorded_pm:
+                problems.append(
+                    f"{t}: surviving audited model {cm['table']} reads it but is absent from "
+                    "consumers_at_removal.platform_models")
+
+        # honesty: the verification date is the asset's real prior date, not a fresh live claim
+        if str(e.get("last_platform_verified_at")) != str(b.get("verified_at")):
+            problems.append(
+                f"{t}: last_platform_verified_at {e.get('last_platform_verified_at')!r} != base "
+                f"verified_at {b.get('verified_at')!r}")
+        for field in ("recorded_at", "evidence_basis", "owner"):
+            if not e.get(field):
                 problems.append(f"{t}: externalization entry missing {field}")
-        if e.get("disposition") == "transferred":
+
+        # shape
+        disp = e.get("disposition")
+        if disp not in EXTERNALIZATION_DISPOSITIONS:
+            problems.append(f"{t}: disposition {disp!r} not in {sorted(EXTERNALIZATION_DISPOSITIONS)}")
+        if disp == "frozen-without-producer" and not plat.get("dataset_id"):
+            problems.append(f"{t}: 'frozen-without-producer' must name the frozen deployed table (dataset_id)")
+        if disp == "transferred":
             dest = e.get("destination") or {}
             if not (dest.get("repository") and dest.get("commit")):
                 problems.append(f"{t}: disposition 'transferred' must name destination.repository + commit")
+
+    # -- completeness: every deleted externalized file is archived ------------------
+    base_files = _tree_files_at_commit(base, EXTERNALIZED_FILE_PREFIXES)
+    deleted = {p for p in base_files if not (ROOT / p).exists()}
+    for p in sorted(deleted - archived_all):
+        problems.append(f"{p}: deleted since the base commit but not archived in any receipt entry")
+
+    # -- append-only: prior entries survive unchanged ------------------------------
+    prior = _merge_base_receipt()
+    if prior:
+        cur_by_id = {e.get("id"): e for e in entries}
+        for pid, pe in prior.items():
+            if pid not in cur_by_id:
+                problems.append(f"{pid}: previously recorded externalization entry was removed (append-only)")
+            elif cur_by_id[pid] != pe:
+                problems.append(f"{pid}: previously recorded externalization entry was modified (append-only)")
+
     return problems
+
+
+def _merge_base_receipt(base: str = "origin/main") -> dict[str, dict] | None:
+    """The externalization receipt entries as of the merge base, keyed by id, or None if absent."""
+    mb = _merge_base_sha(base)
+    if not mb:
+        return None
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{mb}:warehouse/audits/externalization.json"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return {e.get("id"): e for e in (json.loads(blob) or {}).get("assets") or []}
 
 
 # --- ADR-003 roles and the anti-reintroduction gates -----------------------------------
