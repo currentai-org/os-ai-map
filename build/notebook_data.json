@@ -38401,6 +38401,516 @@
             "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "A framework and runtime for the agent-tooling layer rather than a model. The terms are declared in Cargo.toml and the README rather than in a license file on the default branch, which is why the GitHub API reports none; one does resolve on the master branch, so the two branches disagree and the openness record should say which governs. Backed by Vivgrid, which operates a separate managed platform. Verified 2026-08-13 via GitHub and Cargo.toml."
+        },
+        {
+          "slug": "crawl4ai",
+          "product": "Crawl4AI",
+          "org_slug": "unclecode",
+          "org": "UncleCode",
+          "type": "software",
+          "description": "Open-source web crawler and scraper built for LLM pipelines, turning pages into clean Markdown or structured JSON for retrieval and agent use. Runs on a managed headless browser with session reuse, hooks and proxy rotation, and ships CSS, XPath, regex and LLM-driven extraction strategies, a Docker deployment and a CLI.",
+          "openness": {
+            "score": 3,
+            "class": "source_available",
+            "components": "license:Crawl4AI-Attribution-License(Apache-2.0 text plus an appended attribution condition covering public use; not OSI);source:public(the published repository builds the crawler, the Docker deployment and the CLI);core-gated:ungated(a Cloud API is announced as a separate closed beta beside the library, not carved out of it)",
+            "confidence": "high",
+            "note": "Read to the end of the LICENSE rather than to the end of the Apache boilerplate, which is where this record first went wrong. The file carries the stock Apache-2.0 text, then after 'END OF TERMS AND CONDITIONS' appends an Attribution Requirement: all distributions, publications or PUBLIC USES must carry a set credit line, prominently, in a NOTICE or README for distributions, in the acknowledgments for publications, in an About or Credits section for websites, and in the help output for command-line tools. That is not Apache-2.0's own NOTICE clause restated. Apache-2.0 section 4(d) binds redistribution of the Work; this clause binds public USE of it, which is a condition the Apache grant does not carry, and section 4 permits added terms only over Your own modifications rather than over the Work. So the composite is not the OSI-approved license the badge and the GitHub API both report. It is an attribution and naming requirement that caps neither who may use the software nor at what scale, which is the permissive_non_osi tier stated word for word, and the ladder scores a public, ungated source under that tier at 3/source_available. crawl4ai is the first product on the map to exercise that rung, which had been pinned as a dead rule. The README calls attribution 'recommended' and then lists methods you 'must' include; the LICENSE governs and it says must.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/unclecode/crawl4ai/main/LICENSE",
+                "shows": "LICENSE body: the stock Apache-2.0 text, then after 'END OF TERMS AND CONDITIONS' a separate 'Attribution Requirement' section - 'All distributions, publications, or public uses of this software, or derivative works based on this software, must include the following attribution', with placement required in a NOTICE/README, a publication's acknowledgments, a website's About or Credits section, or a command-line tool's help output.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "193fe32704bee15cd74f5153e569cdf830e26445e19798a55daee32da40758aa",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/unclecode/crawl4ai",
+                "shows": "Repo metadata - license spdx_id Apache-2.0, archived false, 80,161 stars - for unclecode/crawl4ai. The API reports the stock header and does not see the appended attribution section, which is why the LICENSE body rather than this field settles the tier.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "a25dea5a4d7a31d2e4c0bb7a969a27b799d1adba7f82696be5e40eeeada65e0b",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md",
+                "shows": "README documents the crawler, Docker deployment and CLI built from this repository, and announces a Crawl4AI Cloud API as a separate closed beta. No enterprise directory, license key or paid build of the library itself is described.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "1,524,522 downloads of crawl4ai in the trailing 30 days, which bands at 1M-10M, level 4 on the software adoption scale.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/crawl4ai/recent",
+                "shows": "last_month = 1,524,522 downloads for crawl4ai.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "b201db69a6e205d92daf8d09a5d883a8396fd927f6c78685c404d5cd0cf7ba6f"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: full crawl-to-extraction pipeline over many strategies",
+            "value": "Asynchronous crawling with a managed headless browser, session reuse, hooks and proxy rotation; Markdown generation with content filtering; CSS, XPath, regex and LLM-driven extraction strategies; deep-crawl strategies; Docker deployment and a CLI.",
+            "relative_to": "firecrawl",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Banded on the category feature matrix at the same level as firecrawl, which covers the same crawl, scrape and structured-extraction path as a hosted service. The two differ on openness rather than on what they do. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md",
+                "shows": "README documents asynchronous crawling, browser session reuse, hooks and proxy rotation, Markdown generation with content filtering, CSS/XPath/regex and LLM-driven extraction strategies, deep-crawl strategies, Docker deployment and a CLI.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718"
+              }
+            ]
+          },
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "The LICENSE is Apache-2.0 with an appended attribution requirement that binds public use as well as redistribution, so the GitHub API's Apache-2.0 label understates the terms. Verified 2026-08-30 via the GitHub API, the LICENSE body and the pypistats API."
+        },
+        {
+          "slug": "mineru",
+          "product": "MinerU",
+          "org_slug": "shanghai-ai-laboratory",
+          "org": "Shanghai AI Laboratory",
+          "type": "software",
+          "description": "Document extraction pipeline that converts PDFs and Office documents into LLM-ready Markdown and JSON, preserving reading order and handling multi-column layouts, tables, formulas and scanned pages through OCR. Published by OpenDataLab and distributed as a Python package, a Docker image and a hosted web application.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:MinerU-Open-Source-License(Apache-2.0 plus commercial thresholds; not OSI);source:public(the repository builds the extraction pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the license, not in the build)",
+            "confidence": "high",
+            "note": "Read from the LICENSE.md body rather than from the badge, and the badge is the thing to distrust here. MinerU is Apache-2.0 'subject to the additional terms below', and those terms require a separate commercial license once an organization and its affiliates exceed 100 million monthly active users or USD 20 million in monthly revenue, oblige anyone offering an online service built on it to say so prominently, and terminate the grant automatically on breach. That is a license charging for a class of use above a threshold, which is the competition_restricted tier stated directly, and the ladder scores a public source under that tier at 2/source_available. Nothing is withheld from the published tree - the whole pipeline is there and builds - so core-gated is ungated and the cap comes from the license alone. GitHub reports NOASSERTION because the file is a modified Apache text, which is substantive here rather than the usual custom-copyright-line false alarm.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/LICENSE.md",
+                "shows": "LICENSE.md body: 'MinerU is licensed under Apache License 2.0 and is subject to the additional terms below.' Section 1 requires a separate commercial license where an entity and its affiliates exceed 100 million monthly active users or USD 20 million total monthly revenue; Section 2 imposes a prominent-attribution obligation on online services; Section 3 terminates the license automatically where either is not met.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "2d9aeb5d15159329a20dd804f251c64860ba954fbd26ec02f802220e6d71cf5c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/opendatalab/MinerU",
+                "shows": "Repo metadata - license spdx_id NOASSERTION, archived false, 78,805 stars - for opendatalab/MinerU.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "9cca7dcf8f2e6206b23ceb3d0c6438404974a962566c8dabb0cafdcd8ae1feb6",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
+                "shows": "README documents the extraction pipeline built from this repository and distributed as a Python package and Docker image, with no enterprise directory, license-key-gated build or withheld component described.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "269,753 downloads of mineru in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/mineru/recent",
+                "shows": "last_month = 269,753 downloads for mineru.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "ccc3863295b4fa66f4b9d742f7de5f0419ee79fab8e98397e30886e226aa31ef"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and formulas",
+            "value": "PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
+            "relative_to": "docling",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Banded one below the docling anchor on the category feature matrix. MinerU covers the same layout, table, formula and OCR path over documents, but docling additionally parses audio through ASR, video and application-specific XML schemas, which is the breadth the top band is anchored on. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
+                "shows": "README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "OpenDataLab is a project identity under Shanghai AI Laboratory, whose contact address the GitHub org publishes as OpenDataLab@pjlab.org.cn, so the record is filed under the lab rather than under a separate org. Verified 2026-08-30 via the GitHub API, the LICENSE.md body and the pypistats API."
+        },
+        {
+          "slug": "context7",
+          "product": "Context7",
+          "org_slug": "upstash",
+          "org": "Upstash",
+          "type": "software",
+          "description": "Documentation retrieval service that supplies agents and coding assistants with current, version-correct library documentation and code examples, addressed over a hosted MCP endpoint or a CLI. The MCP server, CLI and SDK are published; the API backend, parsing engine and crawling engine that produce the index are not.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:MIT(OSI, over the published MCP server, CLI and SDK);source:partial(the API backend, parsing engine and crawling engine are private and not in the repository);core-gated:gated(the index the product exists to serve is produced by components that are not published)",
+            "confidence": "high",
+            "note": "The MIT license is real and the repository is genuinely public, which is exactly why this record needs reading past the badge. The README states it directly: 'This repository hosts the MCP server's source code. The supporting components - API backend, parsing engine, and crawling engine - are private and not part of this repository.' What ships publicly is the client half - the MCP server, a CLI and an SDK - while the documentation index that the product exists to serve is built and held privately and reached over a hosted endpoint at mcp.context7.com with an API key. That is source: partial under this ladder, a repo without the runtime, and the formula settles a partial source at 2/source_available before the license tier is consulted. An OSI license over a client does not open an engine that was never published.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/upstash/context7/master/README.md",
+                "shows": "README, numbered note: 'This repository hosts the MCP server's source code. The supporting components - API backend, parsing engine, and crawling engine - are private and not part of this repository.' Setup instructions point at the hosted server URL https://mcp.context7.com/mcp with an API key passed as a bearer token.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "c513b9ec9c006a85c63d6ad0c9fe49af3eaa517f8e59b66de0af6029ccafda13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/upstash/context7/master/LICENSE",
+                "shows": "LICENSE body is the MIT License text, covering what this repository publishes.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "85cfb556dc2b22b55d2565674fcdaac82f3f2f6b7a928d27003132721bb6736c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/upstash/context7",
+                "shows": "Repo metadata - license spdx_id MIT, archived false, 61,419 stars - for upstash/context7.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "c7519cfd85de3270bf155fe700aedbe56499810376a3c85553d3157f3adddba4",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "3,992,771 downloads of @upstash/context7-mcp in the trailing 30 days, which bands at 1M-10M, level 4 on the software adoption scale. The figure counts installs of the MCP server package and not calls to the hosted index, for which no count is published.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@upstash/context7-mcp",
+                "shows": "3,992,771 downloads for the window 2026-07-31 to 2026-08-29 for @upstash/context7-mcp.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "b2a6801d4202a538bf6a7c102598311a0fbca0e507a9a39be7fb94b52d881048"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: single-purpose retrieval service",
+            "value": "Version-aware retrieval of library documentation and code examples over MCP or a CLI, with per-library resolution and token budgeting.",
+            "relative_to": "jina-reader",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Banded with jina-reader as a single-purpose retrieval service: one kind of source, fetched and shaped for a model context, without the crawl, extraction-strategy and deployment surface the level-4 products in this category carry. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/upstash/context7/master/README.md",
+                "shows": "README documents version-aware retrieval of library documentation and code examples over MCP or a CLI, with library resolution and a token budget parameter.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "c513b9ec9c006a85c63d6ad0c9fe49af3eaa517f8e59b66de0af6029ccafda13"
+              }
+            ]
+          },
+          "overall_score": 3.6,
+          "tier": null,
+          "maturity": 3.6,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "Verified 2026-08-30 via the GitHub API, the repository README and the npm downloads API."
+        },
+        {
+          "slug": "marker",
+          "product": "Marker",
+          "org_slug": "datalab",
+          "org": "Datalab",
+          "type": "software",
+          "description": "Document conversion pipeline that turns PDFs, images, Office documents and EPUB into Markdown, JSON and HTML, running layout analysis, table and equation recognition and OCR through a stack of purpose-trained models. Published by Datalab alongside a hosted API and an on-premises offering.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:Apache-2.0(OSI, over the code)+AI-Pubs-Open-RAIL-M-Modified(model weights; free below USD 5M funding or revenue, commercial license required above it);source:public(the repository builds the conversion pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the weights license)",
+            "confidence": "high",
+            "note": "Two licenses, and the compound is resolved on the more restrictive of them because both cover the artifact you actually run. The code is Apache-2.0. The model weights the pipeline requires - Marker does not convert a document without them - are under a modified AI Pubs Open RAIL-M that the README states is 'free for research, personal use, and startups under $5M funding/revenue', with a commercial license required above that threshold. A license charging for a class of use above a revenue threshold is the competition_restricted tier, and a public source under that tier scores 2/source_available. This is deliberately not the model-context-protocol case, where a CC-BY-4.0 documentation license was moved out of the compound because it covered the project's prose rather than the artifact you run: here the bounded license covers the weights, and the weights are the product.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/LICENSE",
+                "shows": "LICENSE body is the Apache License 2.0 text, covering the repository's code.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/MODEL_LICENSE",
+                "shows": "MODEL_LICENSE body is the AI PUBS OPEN RAIL-M LICENSE (MODIFIED), Version 0.1, applying use restrictions to the model weights and their derivatives.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "636dfb8eb19efc5835ed6efb878f8b694a93f028c715d2547d831e2a55440276",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
+                "shows": "README, Commercial usage section: 'Our code is licensed under Apache 2.0 - free to use, including commercially. Our model weights use a modified AI Pubs Open Rail-M license (free for research, personal use, and startups under $5M funding/revenue). For commercial use of the model weights beyond that, visit our pricing page.'",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/datalab-to/marker",
+                "shows": "Repo metadata - license spdx_id Apache-2.0, archived false, 39,389 stars - for datalab-to/marker.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "2cf501fb97b288dd6016e359054aaafaed543236e28dc8908751670b9b87de3f",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "289,172 downloads of marker-pdf in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/marker-pdf/recent",
+                "shows": "last_month = 289,172 downloads for marker-pdf.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "9d409f427b6997f83409ab183dcae0de675e3d05c634e6537f99afcdd93b9a6a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and equations",
+            "value": "PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
+            "relative_to": "docling",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Banded one below the docling anchor on the same reading as MinerU: the same layout, table, equation and OCR path over documents, without the audio, video and application-specific XML breadth the top band is anchored on. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
+                "shows": "README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML, with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "The repository carries two licenses, Apache-2.0 over the code and a modified AI Pubs Open RAIL-M over the model weights the pipeline requires. Verified 2026-08-30 via the GitHub API, both LICENSE bodies and the pypistats API."
+        },
+        {
+          "slug": "lightpanda",
+          "product": "Lightpanda",
+          "org_slug": "lightpanda",
+          "org": "Lightpanda",
+          "type": "software",
+          "description": "Headless browser written in Zig for agent and automation workloads, implementing the DOM and a JavaScript runtime through V8 without rendering pixels, so pages are executed rather than drawn. Speaks the Chrome DevTools Protocol, so Playwright and Puppeteer clients drive it in place of Chrome.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI, copyleft);source:public(the repository builds the browser binary);core-gated:ungated(the hosted Lightpanda cloud is a separate managed service, not a carve-out of the published engine)",
+            "confidence": "high",
+            "note": "The repository states its own terms canonically. LICENSING.md names the default license for the project as AGPL-3.0-only, spelled per the SPDX License List, the LICENSE body is the AGPL-3.0 text, and the GitHub API reports the same spdx_id, so all three agree and nothing is appended after the license text. The repository builds the browser binary, and the hosted Lightpanda service is a managed offering sold beside the engine rather than functionality withheld from it, so the core is ungated. Placing AGPL in the OSI tier beside Apache rather than a rung below it is the ladder's standing rule - a copyleft obligation binds whoever redistributes and caps neither who may use the software nor at what scale - and it is a fact about AGPL rather than evidence about this product.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/lightpanda-io/browser/main/LICENSING.md",
+                "shows": "LICENSING.md body: 'The default license for this project is AGPL-3.0-only', naming licenses per the SPDX License List.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "666d657174d141b6a3062b712da59f4408378c94eed6e49b7bb8f07b03d5bca1",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lightpanda-io/browser/main/LICENSE",
+                "shows": "LICENSE body is the GNU Affero General Public License version 3 text.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/lightpanda-io/browser",
+                "shows": "Repo metadata - license spdx_id AGPL-3.0, archived false, 34,318 stars - for lightpanda-io/browser.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1afbe8cc70e7828207b5a5dff1ef49cf5d02bbac61600fc01cec890b40b294fb",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lightpanda-io/browser/main/README.md",
+                "shows": "README documents a headless browser built from this repository, driven over the Chrome DevTools Protocol, with no enterprise directory, license key or withheld component described beside it.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "d7b151484e8e40b27faa91d41875a1599b6f3c57944d1341e0492bde271c0b66",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": ">10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "34,318 GitHub stars, which lands in the >10K stars band, level 3, and the stars scale caps at 3. Lightpanda ships as a binary rather than as a package on PyPI or npm, so no download count exists for it and the stars fallback is the only instrument available. The band should be read as a floor rather than a measurement.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/lightpanda-io/browser",
+                "shows": "Repo metadata - stargazers_count = 34,318 - for lightpanda-io/browser.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1afbe8cc70e7828207b5a5dff1ef49cf5d02bbac61600fc01cec890b40b294fb"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: single-purpose engine rather than a managed browsing platform",
+            "value": "Headless browser implementing the DOM and a JavaScript runtime through V8 without a rendering pipeline, driven over the Chrome DevTools Protocol so Playwright and Puppeteer clients connect to it in place of Chrome.",
+            "relative_to": "browserbase",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Banded one below browserbase, which provides session management, proxying, stealth and observability around a browser as a managed platform. Lightpanda provides the engine and the CDP surface and leaves the platform to the caller, and its Web API coverage is still partial. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/lightpanda-io/browser/main/README.md",
+                "shows": "README documents a headless browser written in Zig implementing the DOM and a JavaScript runtime through V8 with no rendering, exposing the Chrome DevTools Protocol for Playwright and Puppeteer clients, and notes that Web API coverage is partial and in progress.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "d7b151484e8e40b27faa91d41875a1599b6f3c57944d1341e0492bde271c0b66"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "Verified 2026-08-30 via the GitHub API, the LICENSE and LICENSING.md bodies and the repository README."
         }
       ]
     },
@@ -52020,6 +52530,19 @@
         "datadog-llm-observability"
       ]
     },
+    "datalab": {
+      "slug": "datalab",
+      "display_name": "Datalab",
+      "type": "company",
+      "homepage": "https://www.datalab.to",
+      "github": [
+        "https://github.com/datalab-to"
+      ],
+      "country": "United States",
+      "products": [
+        "marker"
+      ]
+    },
     "datasette": {
       "slug": "datasette",
       "display_name": "Datasette",
@@ -52900,6 +53423,19 @@
       "country": "",
       "products": [
         "litgpt"
+      ]
+    },
+    "lightpanda": {
+      "slug": "lightpanda",
+      "display_name": "Lightpanda",
+      "type": "company",
+      "homepage": "https://lightpanda.io",
+      "github": [
+        "https://github.com/lightpanda-io"
+      ],
+      "country": "",
+      "products": [
+        "lightpanda"
       ]
     },
     "linagora": {
@@ -54229,7 +54765,8 @@
       "country": "",
       "products": [
         "internlm",
-        "lmdeploy"
+        "lmdeploy",
+        "mineru"
       ]
     },
     "significant-gravitas": {
@@ -54612,6 +55149,19 @@
         "inspect-ai"
       ]
     },
+    "unclecode": {
+      "slug": "unclecode",
+      "display_name": "UncleCode",
+      "type": "individual",
+      "homepage": "https://github.com/unclecode",
+      "github": [
+        "https://github.com/unclecode"
+      ],
+      "country": "Singapore",
+      "products": [
+        "crawl4ai"
+      ]
+    },
     "unknown": {
       "slug": "unknown",
       "display_name": "Unknown",
@@ -54661,6 +55211,19 @@
       "country": "",
       "products": [
         "culturax"
+      ]
+    },
+    "upstash": {
+      "slug": "upstash",
+      "display_name": "Upstash",
+      "type": "company",
+      "homepage": "https://upstash.com",
+      "github": [
+        "https://github.com/upstash"
+      ],
+      "country": "United States",
+      "products": [
+        "context7"
       ]
     },
     "uxl-foundation": {
@@ -54958,7 +55521,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 522,
+  "n_total": 527,
   "generated": "2026-08-30",
   "version": "0.2.0",
   "released": "2026-08-16",
@@ -54969,10 +55532,10 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 522,
-      "overlap": 292,
+      "scored": 527,
+      "overlap": 297,
       "scored_outside": 230,
-      "uncategorized": 24334,
+      "uncategorized": 24329,
       "universe": 24856
     },
     "top": [
