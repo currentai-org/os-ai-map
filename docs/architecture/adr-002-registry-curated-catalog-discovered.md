@@ -1,6 +1,15 @@
 # ADR-002: `registry` is curated, `catalog` is discovered
 
-**Status:** Accepted 2026-08-20
+**Status:** Accepted 2026-08-20. **Scope basis superseded by
+[ADR-003](adr-003-repository-scope-boundary.md) (2026-08-29).**
+
+> The `registry` vs `catalog` provenance distinction below still stands. What ADR-003 supersedes is
+> this ADR's assumption that misfiled `catalog` tables should be *migrated into repo `registry`
+> ownership*: those tables model the OSO organization, not the Gap Map's data system, so ADR-003
+> **externalized** them (frozen under platform ownership) instead. Read the "belongs in registry" /
+> "moves into catalog" / "two populations" passages below as the pre-ADR-003 plan, not current
+> intent.
+
 **Context:** `data-architecture.md` AD-3, section 10
 
 ## Decision

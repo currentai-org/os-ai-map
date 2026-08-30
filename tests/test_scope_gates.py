@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import copy
 
+import pytest
+
 import build.assets as A
 
 
@@ -24,63 +26,64 @@ def _governed(**over):
     return base
 
 
-# --- role gate (gate 1, per-role invariants, retired populations) ---------------
+# --- role gate: gate 1 and the per-role invariants -------------------------------
 
-def test_governed_output_without_release_path_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "assets", lambda: [_governed(release_path=False)])
-    assert any("gate 1" in v or "derives" in v for v in A.role_violations())
-
-
-def test_release_path_without_governed_output_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        role="repo-computation", files={"model": "warehouse/models/registry/x.sql"})])
-    assert any("gate 1" in v for v in A.role_violations())
-
-
-def test_repo_computation_with_platform_authority_is_flagged(monkeypatch):
-    # ADR-003 finding 1: a platform mirror is a dependency, never a repo-computation.
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="scores.openness_facts", table="currentai.scores.openness_facts",
-        release_path=False, role="repo-computation", authority="platform",
-        files={"model": "warehouse/models/scores/openness_facts.sql"}, mirror={"revision": 7})])
-    assert any("authority is 'platform'" in v for v in A.role_violations())
-
-
-def test_governed_data_with_model_file_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="observations.baseline", table="currentai.observations.baseline",
-        release_path=False, role="governed-data", authority="repo",
-        files={"model": "warehouse/models/observations/baseline.sql"})])
-    assert any("has a model file" in v for v in A.role_violations())
+ROLE_VIOLATIONS = [
+    ("governed_output_without_release_path", dict(release_path=False), "gate 1"),
+    ("release_path_without_governed_output",
+     dict(role="repo-computation", files={"model": "warehouse/models/registry/x.sql"}), "gate 1"),
+    ("repo_computation_with_platform_authority",
+     dict(id="scores.openness_facts", table="currentai.scores.openness_facts", release_path=False,
+          role="repo-computation", authority="platform",
+          files={"model": "warehouse/models/scores/openness_facts.sql"}, mirror={"revision": 7}),
+     "authority is 'platform'"),
+    ("governed_data_with_model_file",
+     dict(id="observations.baseline", table="currentai.observations.baseline", release_path=False,
+          role="governed-data", authority="repo",
+          files={"model": "warehouse/models/observations/baseline.sql"}), "has a model file"),
+    ("compatibility_shim_without_replacement",
+     dict(id="signal_github.repo_state", table="currentai.signal_github.repo_state", release_path=False,
+          role="compatibility-shim", status="compatibility", authority="platform"), "replacement"),
+    ("roleless_asset", dict(role=None), "is not one of"),
+    ("unknown_role_value", dict(role="banana"), "not one of"),
+]
 
 
-def test_compatibility_shim_without_replacement_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="signal_github.repo_state", table="currentai.signal_github.repo_state",
-        release_path=False, role="compatibility-shim", status="compatibility", authority="platform")])
-    assert any("replacement" in v for v in A.role_violations())
+@pytest.mark.parametrize("label,override,expected", ROLE_VIOLATIONS,
+                         ids=[m[0] for m in ROLE_VIOLATIONS])
+def test_role_violation_is_flagged(monkeypatch, label, override, expected):
+    monkeypatch.setattr(A, "assets", lambda: [_governed(**override)])
+    assert any(expected in v for v in A.role_violations()), label
 
 
-def test_retired_populations_are_rejected():
-    # finding 3: `long_tail` and `both` are retired; the vocabulary is a single value, so the
-    # required-fields/vocab gate rejects any governed asset that is not gap_map.
+def test_gap_map_is_the_only_population():
+    # The vocabulary is single-valued, so no `long_tail`/`both` asset can be introduced.
     assert A.POPULATIONS == {"gap_map"}
-    assert "long_tail" not in A.POPULATIONS and "both" not in A.POPULATIONS
 
 
-def test_roleless_asset_is_flagged(monkeypatch):
-    # Every asset must carry a role -- there is no roleless/backlog state any more.
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="registry.brand_new", table="currentai.registry.brand_new", role=None)])
-    assert any("is not one of" in v for v in A.role_violations())
+# --- kind gate: kind is derived from placement, not decorative --------------------
+
+KIND_VIOLATIONS = [
+    ("registry_claiming_evaluation",
+     dict(table="currentai.registry.products", kind="evaluation"), "derives 'registry'"),
+    ("evaluation_claiming_registry",
+     dict(table="currentai.evaluation.axis_facts", kind="registry"), "derives 'evaluation'"),
+    ("signal_collector_claiming_evaluation",
+     dict(table="currentai.signal_github.repo_state", kind="evaluation"), "derives 'observations'"),
+    ("signal_adoption_claiming_observations",
+     dict(table="currentai.signal_github.product_adoption", kind="observations"), "derives 'evaluation'"),
+    ("unknown_kind_value", dict(table="currentai.registry.products", kind="banana"), "not in"),
+]
 
 
-def test_unknown_role_value_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "assets", lambda: [_governed(role="banana")])
-    assert any("not one of" in v for v in A.role_violations())
+@pytest.mark.parametrize("label,override,expected", KIND_VIOLATIONS,
+                         ids=[m[0] for m in KIND_VIOLATIONS])
+def test_kind_violation_is_flagged(monkeypatch, label, override, expected):
+    monkeypatch.setattr(A, "assets", lambda: [_governed(**override)])
+    assert any(expected in v for v in A.kind_violations()), label
 
 
-# --- dependency gate (gates 2, 3, 4, integrity) ---------------------------------
+# --- dependency gate: gates 2, 3, 4, and contract integrity ----------------------
 
 def _oso_dep(**over):
     base = dict(
@@ -105,7 +108,7 @@ def test_dependency_also_in_assets_is_flagged(monkeypatch):
 
 
 def test_unlisted_currentai_input_is_flagged(monkeypatch):
-    # finding 2: a governed computation reading a non-governed currentai.* table is a contract.
+    # A governed computation reading a non-governed currentai.* table needs a contract.
     monkeypatch.setattr(A, "assets", lambda: [])
     monkeypatch.setattr(A, "dependencies", lambda: [])
     monkeypatch.setattr(A, "needed_tables", lambda: {"currentai.signal_foo.bar"})
@@ -141,7 +144,7 @@ def test_dependency_not_reachable_is_flagged(monkeypatch):
 
 
 def test_forged_content_contract_hash_is_flagged(monkeypatch):
-    # finding 5: an arbitrary 64-hex string must not pass -- the gate recomputes the fingerprint.
+    # An arbitrary 64-hex string must not pass -- the gate recomputes the fingerprint.
     monkeypatch.setattr(A, "assets", lambda: [])
     monkeypatch.setattr(A, "dependencies", lambda: [_oso_dep(content_contract_sha256="a" * 64)])
     monkeypatch.setattr(A, "needed_tables", lambda: {"oso.x.y"})
@@ -189,7 +192,7 @@ def test_notebook_producer_is_flagged(monkeypatch):
     assert any("gate 5" in v for v in A.notebook_root_violations())
 
 
-# --- F2 fail-closed: currentai mirror integrity + required fields ---------------
+# --- fail-closed: currentai mirror integrity + required fields ------------------
 
 import hashlib
 from pathlib import Path
@@ -239,13 +242,15 @@ def test_missing_freshness_requirement_is_flagged(monkeypatch):
     assert any("missing freshness_requirement" in v for v in A.dependency_violations())
 
 
-# --- F1 cross-commit provenance for dependency mirrors --------------------------
+# --- cross-commit provenance for dependency mirrors -----------------------------
+#
+# Prior provenance is the same mirror in the merge-base dependencies.yaml. Each negative pins one
+# rule: bytes and provenance move together and forward, and model_id is stable without a migration.
 
-def _prior_asset(**over):
+def _prior_dep(**over):
     m = {"model_id": "m", "revision": 3, "hash": "hh", "local_sha256": "aaa", "synced_at": "2026-08-15"}
     m.update(over)
-    return {"id": "signal_pypi.package_downloads", "table": "currentai.signal_pypi.package_downloads",
-            "mirror": m}
+    return {"table": "currentai.signal_pypi.package_downloads", "mirror": m}
 
 
 def _cur_dep(**over):
@@ -256,37 +261,29 @@ def _cur_dep(**over):
     return d
 
 
-def test_asset_to_dependency_transition_with_identical_provenance_passes(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep()])
-    assert A.dependency_mirror_provenance_violations() == []
-
-
 def test_dependency_bytes_changed_without_revision_advance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep(mirror={"local_sha256": "bbb", "hash": "new"})])  # bytes moved, rev still 3
     assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_dependency_provenance_changed_without_bytes_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep(mirror={"revision": 99})])  # same bytes, revision moved
     assert any("bytes did not" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_dependency_model_id_change_without_migration_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep(mirror={"model_id": "other"})])
     assert any("model_id changed" in v for v in A.dependency_mirror_provenance_violations())
 
 
-# --- F1 (re-review): the SCHEMA file is part of the cross-commit byte identity -----
+# --- the SCHEMA file is part of the cross-commit byte identity ------------------
+#
+# A schema-only edit is a byte change and must advance the revision like a model edit.
 
 _SCHEMA = "warehouse/models/evidence/product_evidence.schema.json"
 
@@ -307,42 +304,19 @@ def _cur_dep_schema(schema="scur", **m_over):
 
 
 def test_schema_changed_without_revision_advance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [])
     monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep_schema("sold")])
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("snew")])  # rev still 3
+    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("snew")])  # schema moved, rev still 3
     assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_schema_changed_with_revision_advance_is_accepted(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [])
     monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep_schema("sold")])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep_schema("snew", revision=4, hash="new")])
     assert A.dependency_mirror_provenance_violations() == []
 
 
-def test_transition_with_unchanged_schema_is_accepted(monkeypatch):
-    # prior was a governed asset (no schema_sha256); derive it from the merge-base schema file.
-    monkeypatch.setattr(A, "merge_base_assets",
-                        lambda base="origin/main": [_prior_asset(local_sha256="model")])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "_merge_base_sha", lambda base="origin/main": "fakesha")
-    monkeypatch.setattr(A, "_git_blob_sha256", lambda sha, path: "scur")  # == current schema digest
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("scur")])
-    assert A.dependency_mirror_provenance_violations() == []
-
-
-def test_transition_with_changed_schema_and_frozen_provenance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets",
-                        lambda base="origin/main": [_prior_asset(local_sha256="model")])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "_merge_base_sha", lambda base="origin/main": "fakesha")
-    monkeypatch.setattr(A, "_git_blob_sha256", lambda sha, path: "sold")  # != current schema digest
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("scur")])  # rev still 3
-    assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
-
-
-# --- F3 the root set is closed ---------------------------------------------------
+# --- the governed root set is closed ---------------------------------------------
 
 def test_unrelated_build_helper_is_not_a_root():
     """A build module that neither produces a governed table nor is a named audit root is not a
@@ -385,40 +359,135 @@ def test_receipt_as_committed_reproduces_clean():
     assert A.externalization_receipt_violations() == []
 
 
-def test_altered_base_commit_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["externalization_base_commit"] = "0" * 40  # a real-looking sha that does not resolve
-    _serve(monkeypatch, r)
-    assert any("does not resolve" in v for v in A.externalization_receipt_violations())
-
-
-def test_valid_but_wrong_ancestor_base_is_flagged(monkeypatch):
-    # A resolvable-but-incorrect ancestor (the grandparent of the true boundary) must be rejected:
-    # the base is bound to the graph-derived externalization boundary, not merely to "resolves".
-    r = _real_receipt()
+def _wrong_ancestor(r):
     real = r["externalization_base_commit"]
-    grandparent = A._parent_sha(A._parent_sha(real))  # a valid older ancestor, not the boundary
-    assert grandparent and grandparent != real
-    r["externalization_base_commit"] = grandparent
+    r["externalization_base_commit"] = A._parent_sha(A._parent_sha(real))
+
+
+def _extra_entry(r):
+    bogus = copy.deepcopy(r["assets"][0])
+    bogus["id"], bogus["table"] = "registry.still_governed", "currentai.registry.products"
+    r["assets"].append(bogus)
+    r["count"] = len(r["assets"])
+
+
+def _duplicate(r):
+    r["assets"].append(copy.deepcopy(r["assets"][0]))
+    r["count"] = len(r["assets"])
+
+
+def _drop_asset(r):
+    r["assets"] = r["assets"][:-1]
+    r["count"] = len(r["assets"])
+
+
+def _flip_population(r):
+    e = r["assets"][0]
+    e["population_was"] = "long_tail" if e["population_was"] == "gap_map" else "gap_map"
+
+
+def _altered_hash(r):
+    for e in r["assets"]:
+        if e.get("archived_source_sha256"):
+            k = next(iter(e["archived_source_sha256"]))
+            e["archived_source_sha256"][k] = "0" * 64
+            return
+
+
+def _drop_sources_archive(r):
+    for e in r["assets"]:
+        arch = e.get("archived_source_sha256") or {}
+        if any(pth.startswith("sources/") for pth in arch):
+            e["archived_source_sha256"] = {pth: h for pth, h in arch.items()
+                                           if not pth.startswith("sources/")}
+            return
+
+
+def _fabricate_platform(r):
+    audited = A._platform_models_at_commit(r["externalization_base_commit"])
+    for e in r["assets"]:
+        if e["table"] not in audited:
+            e.setdefault("platform", {})["model_id"] = "fabricated"
+            return
+
+
+def _wrong_provenance(r):
+    audited = A._platform_models_at_commit(r["externalization_base_commit"])
+    for e in r["assets"]:
+        if e["table"] in audited:
+            e["platform"]["revision_hash"] = "0" * 64
+            return
+
+
+def _break_repo_consumers(r):
+    for e in r["assets"]:
+        car = e.get("consumers_at_removal") or {}
+        if car.get("repo_read_by"):
+            e["consumer_resolution"] = "everything resolves fine, trust me"  # prose can't save it
+            car["repo_read_by"] = {"models": ["warehouse/models/made/up.sql"]}
+            return
+
+
+def _omit_platform_consumer(r):
+    for e in r["assets"]:
+        if e["table"].endswith(".entities.repos"):  # read by surviving audited state_of_os_ai models
+            e["consumers_at_removal"]["platform_models"] = []
+            return
+
+
+# One mutation of a deep copy of the committed receipt per row; the base-commit inventory, file
+# blobs, and base-committed platform audit stay real -- that reproduction is what the gate proves.
+# (Mutations that alter an existing entry also trip the independent append-only check; asserting the
+# specific substring keeps each case pinned to the invariant it exercises.)
+RECEIPT_MUTATIONS = [
+    ("base_does_not_resolve", lambda r: r.__setitem__("externalization_base_commit", "0" * 40),
+     "does not resolve"),
+    ("valid_but_wrong_ancestor_base", _wrong_ancestor, "is not the externalization boundary"),
+    ("wrong_count", lambda r: r.__setitem__("count", r["count"] + 1), "count"),
+    ("wrong_schema_version", lambda r: r.__setitem__("schema_version", 1), "schema_version"),
+    ("dropped_removed_asset", _drop_asset, "but not in the externalization receipt"),
+    ("extra_membership_entry", _extra_entry, "not an asset removed from the base inventory"),
+    ("duplicate_entry", _duplicate, "duplicate entry"),
+    ("wrong_population_was", _flip_population, "population_was"),
+    ("altered_archived_hash", _altered_hash, "!= base blob"),
+    ("unarchived_deleted_file", _drop_sources_archive, "deleted since the base commit but not archived"),
+    ("fabricated_platform_facts", _fabricate_platform, "no audited model exists to source it"),
+    ("wrong_deployed_provenance", _wrong_provenance, "platform.revision_hash"),
+    ("altered_repo_consumers", _break_repo_consumers, "repo_read_by != base read_by"),
+    ("omitted_surviving_platform_consumer", _omit_platform_consumer,
+     "absent from consumers_at_removal.platform_models"),
+    ("dishonest_verification_date",
+     lambda r: r["assets"][0].__setitem__("last_platform_verified_at", "2026-08-30"),
+     "last_platform_verified_at"),
+    ("missing_evidence_basis", lambda r: r["assets"][0].pop("evidence_basis", None),
+     "missing evidence_basis"),
+    ("transferred_without_destination", lambda r: r["assets"][0].__setitem__("disposition", "transferred"),
+     "must name destination.repository + commit"),
+]
+
+
+@pytest.mark.parametrize("label,mutate,expected", RECEIPT_MUTATIONS,
+                         ids=[m[0] for m in RECEIPT_MUTATIONS])
+def test_externalization_receipt_mutation_is_flagged(monkeypatch, label, mutate, expected):
+    r = _real_receipt()
+    mutate(r)
     _serve(monkeypatch, r)
-    assert any("is not the externalization boundary" in v
-               for v in A.externalization_receipt_violations())
+    assert any(expected in v for v in A.externalization_receipt_violations()), \
+        f"{label}: expected a violation containing {expected!r}"
 
 
 def test_base_boundary_derivation_matches_recorded():
-    # The graph-derived boundary equals what the committed receipt names -- the positive anchor for
-    # the binding, independent of the receipt's own base field.
+    # The graph-derived boundary equals what the committed receipt names, independent of its own base
+    # field -- the positive anchor for the base binding.
     tables = {e["table"] for e in A.externalized()}
     derived = A.expected_externalization_base(tables)
-    recorded = A.externalization_receipt()["externalization_base_commit"]
     assert derived is not None
-    assert derived == A._rev_parse(recorded)
+    assert derived == A._rev_parse(A.externalization_receipt()["externalization_base_commit"])
 
 
 def test_platform_facts_reproduce_against_base_audit_not_current(monkeypatch):
-    # Blocker 2: the receipt reproduces against the audit committed AT THE BASE, so a later change
-    # to the CURRENT platform_models.json must not affect the verdict. Poison the current audit and
-    # confirm the gate is unmoved.
+    # Facts reproduce against the audit committed AT THE BASE, so poisoning the current audit must
+    # not move the verdict.
     monkeypatch.setattr(A, "_platform_models",
                         lambda: {"currentai.entities.repos": {"table": "currentai.entities.repos",
                                                               "model_id": "poisoned", "revision_hash": "x",
@@ -427,177 +496,21 @@ def test_platform_facts_reproduce_against_base_audit_not_current(monkeypatch):
 
 
 def test_missing_base_audit_is_flagged(monkeypatch):
-    # If the base-committed audit cannot be read, deployed-model facts cannot reproduce -> flagged,
-    # never silently skipped.
+    # If the base-committed audit is unreadable, deployed-model facts cannot reproduce -> flagged.
     monkeypatch.setattr(A, "_platform_models_at_commit", lambda sha: {})
-    probs = A.externalization_receipt_violations()
-    assert any("no audited model exists to source it" in v for v in probs)
-
-
-def test_wrong_count_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["count"] = r["count"] + 1
-    _serve(monkeypatch, r)
-    assert any("count" in v for v in A.externalization_receipt_violations())
-
-
-def test_wrong_schema_version_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["schema_version"] = 1
-    _serve(monkeypatch, r)
-    assert any("schema_version" in v for v in A.externalization_receipt_violations())
-
-
-def test_dropping_a_removed_asset_is_flagged(monkeypatch):
-    # Membership is exact: an asset removed from the base inventory must appear in the receipt.
-    r = _real_receipt()
-    r["assets"] = r["assets"][:-1]
-    r["count"] = len(r["assets"])
-    _serve(monkeypatch, r)
-    assert any("but not in the externalization receipt" in v for v in A.externalization_receipt_violations())
-
-
-def test_extra_membership_entry_is_flagged(monkeypatch):
-    r = _real_receipt()
-    bogus = copy.deepcopy(r["assets"][0])
-    bogus["id"] = "registry.still_governed"
-    bogus["table"] = "currentai.registry.products"  # a table that is STILL governed, not removed
-    r["assets"].append(bogus)
-    r["count"] = len(r["assets"])
-    _serve(monkeypatch, r)
-    assert any("not an asset removed from the base inventory" in v
-               for v in A.externalization_receipt_violations())
-
-
-def test_duplicate_entry_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["assets"].append(copy.deepcopy(r["assets"][0]))
-    r["count"] = len(r["assets"])
-    _serve(monkeypatch, r)
-    probs = A.externalization_receipt_violations()
-    assert any("duplicate entry ids" in v for v in probs)
-    assert any("duplicate entry tables" in v for v in probs)
-
-
-def test_wrong_population_was_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["assets"][0]["population_was"] = "gap_map" if r["assets"][0]["population_was"] != "gap_map" else "long_tail"
-    _serve(monkeypatch, r)
-    assert any("population_was" in v for v in A.externalization_receipt_violations())
-
-
-def test_altered_archived_hash_is_flagged(monkeypatch):
-    r = _real_receipt()
-    for e in r["assets"]:
-        if e.get("archived_source_sha256"):
-            k = next(iter(e["archived_source_sha256"]))
-            e["archived_source_sha256"][k] = "0" * 64
-            break
-    _serve(monkeypatch, r)
-    assert any("!= base blob" in v for v in A.externalization_receipt_violations())
-
-
-def test_unarchived_deleted_file_is_flagged(monkeypatch):
-    # Drop the sources archive from the entry that carries it -> the deleted file is now unarchived.
-    r = _real_receipt()
-    for e in r["assets"]:
-        arch = e.get("archived_source_sha256") or {}
-        if any(p.startswith("sources/") for p in arch):
-            e["archived_source_sha256"] = {p: h for p, h in arch.items() if not p.startswith("sources/")}
-            break
-    _serve(monkeypatch, r)
-    assert any("deleted since the base commit but not archived" in v
-               for v in A.externalization_receipt_violations())
-
-
-def test_fabricated_platform_model_facts_are_flagged(monkeypatch):
-    # An entry with no audited model must not carry model facts.
-    pmodels = A._platform_models()
-    r = _real_receipt()
-    for e in r["assets"]:
-        if e["table"] not in pmodels:
-            e.setdefault("platform", {})["model_id"] = "fabricated-model-id"
-            break
-    _serve(monkeypatch, r)
     assert any("no audited model exists to source it" in v
                for v in A.externalization_receipt_violations())
 
 
-def test_wrong_deployed_model_provenance_is_flagged(monkeypatch):
-    pmodels = A._platform_models()
-    r = _real_receipt()
-    for e in r["assets"]:
-        if e["table"] in pmodels:
-            e["platform"]["revision_hash"] = "0" * 64
-            break
-    _serve(monkeypatch, r)
-    assert any("platform.revision_hash" in v for v in A.externalization_receipt_violations())
-
-
-def test_altered_repo_consumers_is_flagged(monkeypatch):
-    # Even with consumer_resolution prose intact, breaking the reproduced consumer graph fails --
-    # the structured, reproduced field is what satisfies the gate, never the prose.
-    r = _real_receipt()
-    for e in r["assets"]:
-        car = e.get("consumers_at_removal") or {}
-        if car.get("repo_read_by"):
-            e["consumer_resolution"] = "everything resolves fine, trust me"
-            car["repo_read_by"] = {"models": ["warehouse/models/made/up.sql"]}
-            break
-    _serve(monkeypatch, r)
-    assert any("repo_read_by != base read_by" in v for v in A.externalization_receipt_violations())
-
-
-def test_omitted_surviving_platform_consumer_is_flagged(monkeypatch):
-    # The captured platform_models list must cover every surviving audited reader (lower bound).
-    r = _real_receipt()
-    hit = False
-    for e in r["assets"]:
-        car = e.get("consumers_at_removal") or {}
-        if car.get("platform_models"):
-            # entities.repos is read by surviving audited state_of_os_ai models; clear the list.
-            if "entities.repos" in e["table"]:
-                car["platform_models"] = []
-                hit = True
-                break
-    assert hit, "expected entities.repos to record surviving platform consumers"
-    _serve(monkeypatch, r)
-    assert any("absent from consumers_at_removal.platform_models" in v
-               for v in A.externalization_receipt_violations())
-
-
-def test_dishonest_verification_date_is_flagged(monkeypatch):
-    # last_platform_verified_at must equal the asset's real prior date, not a fresh live claim.
-    r = _real_receipt()
-    r["assets"][0]["last_platform_verified_at"] = "2026-08-30"  # the recording date, not the base date
-    _serve(monkeypatch, r)
-    # only trips if the base asset's real date differs from 2026-08-30 (it does: 08-20 or 08-29)
-    assert any("last_platform_verified_at" in v for v in A.externalization_receipt_violations())
-
-
-def test_missing_evidence_basis_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["assets"][0].pop("evidence_basis", None)
-    _serve(monkeypatch, r)
-    assert any("missing evidence_basis" in v for v in A.externalization_receipt_violations())
-
-
-def test_dropped_consumer_resolution_alone_does_not_satisfy_or_break(monkeypatch):
-    # consumer_resolution is optional prose: removing it must NOT change the verdict, proving the
-    # gate never leans on it.
+def test_dropped_consumer_resolution_alone_does_not_break(monkeypatch):
+    # consumer_resolution is optional prose; removing it adds no violation. Isolated from append-only
+    # (which independently forbids modifying a merged entry) to prove the gate never leans on prose.
+    monkeypatch.setattr(A, "_merge_base_receipt", lambda base="origin/main": None)
     r = _real_receipt()
     for e in r["assets"]:
         e.pop("consumer_resolution", None)
     _serve(monkeypatch, r)
     assert A.externalization_receipt_violations() == []
-
-
-def test_transferred_without_destination_is_flagged(monkeypatch):
-    r = _real_receipt()
-    r["assets"][0]["disposition"] = "transferred"  # but no destination named
-    _serve(monkeypatch, r)
-    assert any("must name destination.repository + commit" in v
-               for v in A.externalization_receipt_violations())
 
 
 def test_removing_a_previously_recorded_entry_is_flagged(monkeypatch):

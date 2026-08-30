@@ -2,19 +2,24 @@
 
 ## Dataset layout
 
-The `currentai` warehouse uses three-part names: `currentai.<dataset>.<table>`. The table below
-covers the datasets an analyst reads most; the rest are signal, snapshot and raw-ingestion datasets.
-`warehouse/assets.yaml` inventories the tables this repo maintains, and
-`docs/architecture/data-architecture.md` documents them.
+The `currentai` warehouse uses three-part names: `currentai.<dataset>.<table>`. `warehouse/assets.yaml`
+inventories only the tables this repo **governs** — the `registry`, `observations` and `evaluation`
+datasets plus the governed `signal_*` collectors and compatibility shims. The read-only `signal_*`
+mirrors of platform-owned models are **not** governed; they are dependency contracts in
+`warehouse/dependencies.yaml`. `docs/architecture/data-architecture.md` documents both.
 
-| Dataset | Type | Key tables |
-|---------|------|------------|
-| `catalog` | Static CSV | `model_benchmarks`, `model_repos`, `stack_map` |
-| `signal_goodailist` | UDM | `repo_catalog` (the GoodAI roster, live) |
-| `entities` | UDM | `repos`, `projects`, `packages`, `models` |
-| `events` | UDM | `github_events` |
-| `metrics` | UDM | `daily` |
-| `scores` | UDM | `repos_summary`, `dependency_graph`, `fragility`, `project_summary`, `ossd_coverage` |
+The datasets below (`catalog`, `signal_goodailist`, `entities`, `events`, `metrics`, `scores`) were
+**externalized under ADR-003**: they model the OSO organization, not the Gap Map's data system, so they
+are frozen under platform ownership and are no longer repo-maintained. They still exist on the platform
+and can be queried, but treat them as OSO tables, not repo-governed assets. The worked examples further
+down that read them are historical.
+
+| Dataset | Type | Key tables | Scope |
+|---------|------|------------|-------|
+| `registry` | Static/UDM | `product_scores`, `product_artifacts`, `adoption_routes`, … | **Governed (repo)** |
+| `observations` | UDM | `product_adoption_current` | **Governed (repo)** |
+| `evaluation` | Static | `product_adoption_measurements`, `adoption_reconciliation`, `axis_*` | **Governed (repo)** |
+| `catalog` / `entities` / `events` / `metrics` / `scores` / `signal_goodailist` | UDM/CSV | — | Externalized (frozen, platform-owned) |
 
 `oso.*` tables are public and can be queried with any valid key.
 

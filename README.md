@@ -31,14 +31,15 @@ the published map.
 
 ## Architecture and the asset inventory
 
-`docs/architecture/` records how the data assets fit together: what each namespace means,
-which tables are misfiled today, and what the gates protect. The inventory it specifies is
-[`warehouse/assets.yaml`](warehouse/assets.yaml) — one entry per platform table, with grain,
-authority, producer and derived dependencies.
+`docs/architecture/` records how the data assets fit together: what each namespace means, what
+the gates protect, and where the repository boundary sits. The inventory it specifies is
+[`warehouse/assets.yaml`](warehouse/assets.yaml) — one entry per **governed** asset (ADR-003), each
+carrying a `role`, with grain, authority, producer and derived dependencies. Required OSO inputs the
+map does not own are contracts in [`warehouse/dependencies.yaml`](warehouse/dependencies.yaml).
 
-Check it before assuming a table is unused. An empty reader list is not evidence: 16 of the
-20 notebooks in the organization are not tracked here, and no deployed model definition has
-been audited yet.
+Check it before assuming a table is unused. An empty reader list is not evidence: many of the
+organization's notebooks are not tracked here, and the deployed-model audit (recorded in
+`warehouse/audits/platform_models.json`) is what confirms a table has no reader.
 
 
 ## Contribute
@@ -155,9 +156,9 @@ See [AGENTS.md](AGENTS.md) for agent-oriented project context.
 **Warehouse.** `warehouse/` holds the SQL models and fetchers that power adoption and activity
 signals. Contributors work read-only here; only maintainers write.
 
-- `warehouse/models/` — SQL and Python models, mirroring the warehouse as `models/<dataset>/<table>` (entities, events, metrics, scores, the read-only platform mirrors and the fetchers). See `warehouse/assets.yaml`.
+- `warehouse/models/` — SQL and Python model files at `models/<dataset>/<table>`. Most are governed (the registry serializers, the evaluation builders, the signal ingestion), claimed by `warehouse/assets.yaml`; the rest are **read-only mirrors of platform-owned models**, claimed by `warehouse/dependencies.yaml` as dependency contracts (a mirror binds provenance, not ownership).
 - `warehouse/data/` — frozen CSV inputs at `data/<dataset>/<table>.csv`.
-- `warehouse/assets.yaml` — the asset inventory: one entry per table, with authority, grain, provenance and derived reads/read_by.
+- `warehouse/assets.yaml` — the governed-asset inventory: one entry per governed asset with a `role`, authority, grain, provenance and derived reads/read_by. Required OSO inputs are contracts in `warehouse/dependencies.yaml`.
 
 **Operations** (require OSO MCP write access — see `docs/operations/`):
 

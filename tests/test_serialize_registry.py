@@ -260,8 +260,3 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
             "artifact_url": "https://arxiv.org/abs/2110.14168",
         }
     ]
-
-
-# The foundation_model_repos serializer tests were retired with ADR-003 step 5/6: the curated
-# reference table was externalized to platform ownership and removed from sources/ + the registry
-# publisher, so registry.foundation_model_repos is no longer compiled here.

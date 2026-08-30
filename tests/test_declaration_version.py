@@ -116,11 +116,6 @@ def test_frozen_snapshot_is_a_non_declaration():
     assert "snapshots" not in declaration_content(ROOT)
 
 
-# test_foundation_model_repos_is_a_non_declaration was retired with ADR-003 step 5/6: the
-# curated foundation-model reference table was externalized to platform ownership and removed
-# from sources/, so it is no longer a repository input to classify.
-
-
 # --- canonicalization properties --------------------------------------------------
 
 

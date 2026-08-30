@@ -312,7 +312,7 @@ def test_two_runs_from_one_fire_are_both_kept(monkeypatch):
     assert {n["id"] for n in nodes} == {"run-a", "run-b"}
 
 
-# --- row validation (Finding 3) ---------------------------------------------------
+# --- row validation --------------------------------------------------------------
 
 def _valid_rows() -> list[dict]:
     return (

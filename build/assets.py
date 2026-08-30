@@ -27,29 +27,22 @@ ROOT = Path(__file__).resolve().parent.parent
 
 NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases"}
 STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "dormant"}
-MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
-# Every governed asset is `gap_map` (ADR-003). `long_tail` is retired (steps 5-6 externalized the
-# long-tail pipelines) and `both` -- which meant overlap with that retired population -- is gone
-# with it. A single value: the vocabulary itself now forbids any non-gap_map governed asset.
+# Every governed asset is `gap_map`; the vocabulary is single-valued so nothing else can appear.
 POPULATIONS = {"gap_map"}
 
-# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the graph.
-# Every governed asset carries exactly one role (REQUIRED_FIELDS); there is no roleless state --
-# the externalization backlog drained in steps 5-6 and cannot return.
-#   governed-output   a published Gap Map artifact whose schema + publication lifecycle
-#                     are owned here (must be release_path: true, authority: repo)
+# ADR-003 repository role, ASSERTED by this field and re-derived from the asset's own fields
+# (expected_role) so an authored role that disagrees with the boundary rule is caught.
+#   governed-output   a published Gap Map artifact whose schema + publication lifecycle are
+#                     owned here (release_path: true, authority: repo).
 #   repo-computation  repo-OWNED SQL/Python implementing or auditing map semantics. MUST be
-#                     authority: repo -- a `mirror` block proves provenance, not operational
-#                     ownership, so a platform-authored mirror is NOT a repo-computation; it
-#                     is a dependency contract (dependencies.yaml).
-#   governed-data     a repo-OWNED data or control artifact that is not a computation -- the
-#                     frozen adoption baseline (bytes, not a query) and the source-runs
-#                     control snapshot. authority: repo, not release_path.
-#   compatibility-shim  a temporary shim for a governed asset (carries `replacement`; named
-#                     to avoid collision with the lifecycle `status: compatibility`). May be a
-#                     platform mirror -- a shim is transitional by definition, not owned.
+#                     authority: repo -- a `mirror` block proves provenance, not ownership, so a
+#                     platform-authored mirror is a dependency contract, not a repo-computation.
+#   governed-data     a repo-OWNED data/control artifact that is not a computation (the frozen
+#                     adoption baseline bytes, the source-runs snapshot). authority: repo.
+#   compatibility-shim  a temporary shim carrying `replacement` (named to avoid collision with
+#                     `status: compatibility`); may be a platform mirror, since a shim is not owned.
 ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
 
 # The named audit / control roots of the governed graph: repo modules that READ governed or
@@ -63,16 +56,15 @@ AUDIT_ROOTS = (
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root
-# set is CLOSED (ADR-003 finding 3): a governed root is a governed producer file, a named
-# AUDIT_ROOT, or a declared workflow here -- never "any tracked build/*.py or workflow", so an
+# set is CLOSED: a governed root is a governed producer file, a named AUDIT_ROOT, or a declared
+# workflow here -- never "any tracked build/*.py or workflow", so an
 # unrelated future helper that happens to contain a table reference cannot become a semantic
 # root and pull a peripheral table into dependencies.yaml.
 PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
 
 REQUIRED_FIELDS = (
-    "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
-    "authority", "grain", "producer", "population", "release_path", "role", "consumer_checks",
-    "refresh", "status", "verified_at",
+    "id", "table", "kind", "authority", "grain", "producer", "population", "release_path",
+    "role", "consumer_checks", "refresh", "status", "verified_at",
 )
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 DEPENDENCIES = ROOT / "warehouse" / "dependencies.yaml"
@@ -680,7 +672,7 @@ def _merge_base_receipt(base: str = "origin/main") -> dict[str, dict] | None:
 # `role` ASSERTS membership; these functions RE-DERIVE it from the asset's own fields so an
 # authored role that disagrees with the boundary rule is caught, exactly as the derived
 # read_by graph catches a hand-edited reader list. Every asset in assets.yaml is a governed
-# asset and must carry the derived role (the externalization backlog is gone; steps 5-6 done).
+# asset and carries the derived role; there is no roleless state.
 
 def expected_role(asset: dict) -> str:
     """The role ADR-003 derives for a governed asset, from its own fields.
@@ -703,9 +695,8 @@ def expected_role(asset: dict) -> str:
 def role_violations() -> list[str]:
     """Every governed asset carries the correct `role` and each role's invariants hold.
 
-    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. The
-    externalization backlog drained in steps 5-6, so there is no roleless state and no long_tail:
-    `role` and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
+    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. `role`
+    and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
     """
     problems: list[str] = []
     for a in assets():
@@ -757,6 +748,35 @@ def role_violations() -> list[str]:
     return problems
 
 
+def expected_kind(asset: dict) -> str:
+    """The semantic layer (`kind`) an asset's PHYSICAL placement derives.
+
+    A governed asset in the `registry`, `observations` or `evaluation` namespace names its own
+    kind. A `signal_*` source dataset is physically separate but semantically an OBSERVATION (a
+    raw source collector) -- unless it is a banded `product_adoption` assessment, which is an
+    EVALUATION. This is the one intentional place `kind` and namespace come apart, so keeping
+    `kind` requires enforcing it: nothing else re-derives it.
+    """
+    namespace = asset["table"].split(".")[1]
+    if namespace.startswith("signal_"):
+        return "evaluation" if asset["table"].endswith(".product_adoption") else "observations"
+    return namespace
+
+
+def kind_violations() -> list[str]:
+    """Every governed asset's `kind` is the one its placement derives (expected_kind), so `kind`
+    is a governed field, not decorative: a `registry` table cannot claim `kind: evaluation`."""
+    problems: list[str] = []
+    for a in assets():
+        if a["kind"] not in NAMESPACES:
+            problems.append(f"{a['id']}: kind {a['kind']!r} not in {sorted(NAMESPACES)}")
+            continue
+        want = expected_kind(a)
+        if a["kind"] != want:
+            problems.append(f"{a['id']}: kind is {a['kind']!r} but its placement derives {want!r}")
+    return problems
+
+
 # --- the governed graph: reachability from map roots ------------------------------------
 
 def _governed_tables() -> set[str]:
@@ -779,7 +799,7 @@ def _dependency_model_files() -> dict[str, str]:
 
 
 def _governed_root_files() -> set[str]:
-    """The map roots -- a CLOSED set (ADR-003 finding 3), never "any build module or workflow".
+    """The map roots -- a CLOSED set, never "any build module or workflow".
 
     A root is a governed producer file (a governed asset's model file, or a `build/` module named
     as a governed asset's `producer`), a named AUDIT_ROOT, or an explicitly declared publication
@@ -835,10 +855,8 @@ def dependency_readers() -> dict[str, list[str]]:
 
     Mechanically re-derived so a recorded `required_by` cannot drift. Readers are the governed
     roots (governed model files + build modules + workflows) and the dependency mirror files
-    (the openness chain reads dep->dep) -- NOT the externalization backlog's own model files,
-    whose reads leave with them, and never a notebook (gate 5). This is why an unlisted OSO
-    input a governed computation reads is caught, while a backlog table's OSO reads are not
-    the repository's contracts.
+    (the openness chain reads dep->dep), and never a notebook (gate 5). This is why an unlisted OSO
+    input a governed computation reads is caught: only what a governed root reaches is a contract.
     """
     governed = _governed_tables()
     reader_files = _governed_root_files() | set(_dependency_model_files().values())
@@ -1171,7 +1189,7 @@ def governed_internal_edges() -> set[tuple[str, str]]:
 
 
 def unreachable_repo_computations() -> list[str]:
-    """ADR-003 gate 4 / finding 4: every ACTIVE repo-computation and governed-data table is
+    """ADR-003 gate 4: every ACTIVE repo-computation and governed-data table is
     reachable upstream from a governed sink or a named audit root.
 
     A staged or dormant asset is pre-service (no consumer yet by construction) and is exempt;
@@ -1352,8 +1370,7 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
     # The byte identity is the COMPLETE claimed artifact: the model AND, when present, the
     # schema. A schema-only edit is a byte change and must advance the revision just like a
     # model edit -- otherwise a contributor could rewrite a schema, bump schema_sha256, and
-    # freeze the revision (ADR-003 re-review). The caller supplies the prior schema digest,
-    # deriving it from the merge-base schema file for the asset->dependency transition.
+    # freeze the revision.
     bytes_moved = (cur.get("local_sha256") != prior.get("local_sha256")
                    or cur.get("schema_sha256") != prior.get("schema_sha256"))
     if not bytes_moved:
@@ -1418,44 +1435,28 @@ def _git_blob_sha256(sha: str, path: str) -> str | None:
 
 
 def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[str]:
-    """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection moving the
-    seven mirrors out of assets.yaml would otherwise have lost (ADR-003 finding 1).
+    """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection a single-snapshot
+    check cannot give, since a contributor can edit a mirrored file and update its hash to match.
 
-    Prior provenance is looked up by TABLE across BOTH merge-base manifests, so the one-time
-    asset -> dependency transition is covered. The byte identity is the model AND the schema; a
-    governed-asset mirror carried no `schema_sha256`, so for the transition the prior schema
-    digest is derived from the merge-base schema file itself -- the transition is audited, not
-    exempted, and a schema edited during the move without a revision advance is still rejected.
+    The byte identity is the model AND, when the contract claims a schema file, the schema
+    (`schema_sha256`): a schema-only edit is a byte change and must advance the revision like a model
+    edit. Prior provenance is the same mirror in the merge-base `dependencies.yaml`.
     """
-    prior = {}
-    for a in (merge_base_assets(base) or []):
-        if a.get("mirror"):
-            prior[a["table"]] = a["mirror"]
-    for d in (merge_base_dependencies(base) or []):
-        if d.get("mirror"):
-            prior[d["table"]] = d["mirror"]
-    if not prior:
+    before = merge_base_dependencies(base)
+    if before is None:
         return []
-    mb = _merge_base_sha(base)
+    prior = {d["table"]: d["mirror"] for d in before if d.get("mirror")}
     problems: list[str] = []
     for d in dependencies():
         cur, was = d.get("mirror"), prior.get(d["table"])
         if not cur or not was:
             continue
-        schema_file = (d.get("files") or {}).get("schema")
-        if schema_file and not was.get("schema_sha256") and mb:
-            # transition: derive the prior schema digest from the merge-base file bytes so an
-            # unchanged schema compares equal and a changed one is caught.
-            derived = _git_blob_sha256(mb, schema_file)
-            if derived is not None:
-                was = {**was, "schema_sha256": derived}
         problems += _compare_mirror(d["table"], was, cur, bool(d.get("mirror_migration")))
     return problems
 
 
 COUNT_CLAIMS = {
     "assets": lambda: len(assets()),
-    "pending": lambda: sum(1 for a in assets() if a["migration_status"] == "pending"),
     "no_reviewed_consumer": lambda: len(no_reviewed_consumers()),
     "deployed_tables": lambda: len(deployed_tables()),
     "staged_assets": lambda: sum(1 for a in assets() if a["status"] == "staged"),
@@ -1464,14 +1465,12 @@ COUNT_CLAIMS = {
         ["git", "-C", str(ROOT), "ls-files", "warehouse"],
         capture_output=True, text=True, check=True,
     ).stdout.split()),
-    "catalog_tables": lambda: sum(1 for a in assets() if a["current_namespace"] == "catalog"),
     "model_files": lambda: len(
         [f for f in produced_files() if f.endswith((".sql", ".py"))]
     ),
     "retirement_candidates": lambda: len(retirement_candidates()),
     "in_repo_readers": lambda: len(derive_graph()["read_by"]),
     "governed_assets": lambda: sum(1 for a in assets() if a.get("role")),
-    "externalization_backlog": lambda: sum(1 for a in assets() if a.get("role") is None),
     "dependencies": lambda: len(dependencies()),
     "unobserved_crons": lambda: sum(
         1 for a in assets()
