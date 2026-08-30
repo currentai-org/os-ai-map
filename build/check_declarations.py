@@ -46,6 +46,8 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
+
 RESERVED_OWNERS = frozenset({
     "features", "about", "pricing", "marketplace", "orgs", "topics", "collections",
     "sponsors", "settings", "enterprise", "security", "readme", "explore", "apps",
@@ -75,7 +77,7 @@ def cited_source_repos(root: Path) -> list[tuple[str, str, str, frozenset]]:
         if not score_path.exists():
             continue
         score = yaml.safe_load(score_path.read_text()) or {}
-        for axis in ("openness", "adoption", "capability"):
+        for axis in axes():
             for source in ((score.get(axis) or {}).get("sources") or []):
                 if "source" not in (source.get("establishes") or []):
                     continue
