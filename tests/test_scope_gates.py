@@ -243,12 +243,14 @@ def test_missing_freshness_requirement_is_flagged(monkeypatch):
 
 
 # --- cross-commit provenance for dependency mirrors -----------------------------
+#
+# Prior provenance is the same mirror in the merge-base dependencies.yaml. Each negative pins one
+# rule: bytes and provenance move together and forward, and model_id is stable without a migration.
 
-def _prior_asset(**over):
+def _prior_dep(**over):
     m = {"model_id": "m", "revision": 3, "hash": "hh", "local_sha256": "aaa", "synced_at": "2026-08-15"}
     m.update(over)
-    return {"id": "signal_pypi.package_downloads", "table": "currentai.signal_pypi.package_downloads",
-            "mirror": m}
+    return {"table": "currentai.signal_pypi.package_downloads", "mirror": m}
 
 
 def _cur_dep(**over):
@@ -259,37 +261,29 @@ def _cur_dep(**over):
     return d
 
 
-def test_asset_to_dependency_transition_with_identical_provenance_passes(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep()])
-    assert A.dependency_mirror_provenance_violations() == []
-
-
 def test_dependency_bytes_changed_without_revision_advance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep(mirror={"local_sha256": "bbb", "hash": "new"})])  # bytes moved, rev still 3
     assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_dependency_provenance_changed_without_bytes_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep(mirror={"revision": 99})])  # same bytes, revision moved
     assert any("bytes did not" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_dependency_model_id_change_without_migration_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep()])
     monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep(mirror={"model_id": "other"})])
     assert any("model_id changed" in v for v in A.dependency_mirror_provenance_violations())
 
 
 # --- the SCHEMA file is part of the cross-commit byte identity ------------------
+#
+# A schema-only edit is a byte change and must advance the revision like a model edit.
 
 _SCHEMA = "warehouse/models/evidence/product_evidence.schema.json"
 
@@ -310,39 +304,16 @@ def _cur_dep_schema(schema="scur", **m_over):
 
 
 def test_schema_changed_without_revision_advance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [])
     monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep_schema("sold")])
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("snew")])  # rev still 3
+    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("snew")])  # schema moved, rev still 3
     assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
 
 
 def test_schema_changed_with_revision_advance_is_accepted(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [])
     monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [_prior_dep_schema("sold")])
     monkeypatch.setattr(A, "dependencies",
                         lambda: [_cur_dep_schema("snew", revision=4, hash="new")])
     assert A.dependency_mirror_provenance_violations() == []
-
-
-def test_transition_with_unchanged_schema_is_accepted(monkeypatch):
-    # prior was a governed asset (no schema_sha256); derive it from the merge-base schema file.
-    monkeypatch.setattr(A, "merge_base_assets",
-                        lambda base="origin/main": [_prior_asset(local_sha256="model")])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "_merge_base_sha", lambda base="origin/main": "fakesha")
-    monkeypatch.setattr(A, "_git_blob_sha256", lambda sha, path: "scur")  # == current schema digest
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("scur")])
-    assert A.dependency_mirror_provenance_violations() == []
-
-
-def test_transition_with_changed_schema_and_frozen_provenance_is_flagged(monkeypatch):
-    monkeypatch.setattr(A, "merge_base_assets",
-                        lambda base="origin/main": [_prior_asset(local_sha256="model")])
-    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
-    monkeypatch.setattr(A, "_merge_base_sha", lambda base="origin/main": "fakesha")
-    monkeypatch.setattr(A, "_git_blob_sha256", lambda sha, path: "sold")  # != current schema digest
-    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep_schema("scur")])  # rev still 3
-    assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
 
 
 # --- the governed root set is closed ---------------------------------------------

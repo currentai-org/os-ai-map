@@ -517,13 +517,9 @@ def test_no_candidate_while_platform_models_unaudited(inventory):
 
 
 def test_every_scheduled_asset_declares_a_timezone_and_trigger(inventory):
-    """An invariant, not a backlog count. Any asset with a cron must say which timezone it
-    is in and what trigger type was last observed -- so a schedule cannot be moved to UTC
-    while quietly dropping the evidence that it ever ran.
-
-    An earlier version of this gate asserted the non-UTC list was non-empty, which asserts
-    a backlog persists. Section 7 forbids exactly that, and it would have failed the day
-    Phase 1 finished its job."""
+    """Any asset with a cron must say which timezone it is in and what trigger type was last
+    observed -- so a schedule cannot be moved to UTC while quietly dropping the evidence that it
+    ever ran."""
     scheduled = [a for a in inventory if str(a.get("refresh", "")).startswith("dataset cron")]
     for asset in scheduled:
         assert asset.get("timezone"), f"{asset['id']}: cron with no declared timezone"
@@ -626,24 +622,15 @@ def test_single_quoted_sql_value_is_not_an_identifier(tmp_path):
 # --- counts, provenance and comment handling -------------------------------------
 
 def test_every_marked_count_matches_its_derived_value():
-    """Structural, not a denylist. The gate this replaces scanned prose for numbers that
-    had already been wrong -- 49, 28, 56 -- so by construction it could not catch the next
-    one, and it did not catch a stale 31 against an actual 34."""
+    """Each `<!-- count:KEY -->N` marker in the architecture docs equals its derived value."""
     violations = A.count_claim_violations()
     assert not violations, "stale counts:\n" + "\n".join(violations)
 
 
 def test_architecture_docs_have_no_unmarked_asset_or_table_counts():
-    """A count of assets or tables in prose must carry a marker naming what it counts, or a
-    reader cannot tell a derived figure from a typed one either.
-
-    Named for what it checks. An earlier version was called "no unmarked counts" while
-    matching only `NN assets`, which left `49 tables in the closure` and `30 model files`
-    unmarked under a name implying they were covered."""
-    # Covers every noun the architecture docs count. "tracked files" was one that slipped
-    # through: 44 was unmarked because the pattern named tables and assets only. "datasets"
-    # was the next -- a stale "25 datasets" in a reference doc against an audited 22 showed the
-    # gate did not police the dataset count either.
+    """A count of assets or tables in architecture prose must carry a `count:`/`observed:` marker
+    naming what it counts, so a reader can tell a derived figure from a typed one. The pattern
+    covers every noun the docs count (assets, tables, model files, tracked files, datasets)."""
     pattern = re.compile(
         r"\b(\d{2,3})\s+(?:assets|tables|model files|tracked files|tracked warehouse files|datasets)\b"
     )
@@ -797,7 +784,7 @@ def _mirror(**overrides):
 
 
 def test_revision_may_not_regress_when_bytes_change(monkeypatch):
-    """4 -> 3 passed the first gate, because it only required the value to differ."""
+    """A refetch advances the revision; a regression (4 -> 3) with changed bytes is rejected."""
     violations = _provenance(monkeypatch, _mirror(),
                              _mirror(revision=3, hash="h2", local_sha256="S2", synced_at="2026-08-16"))
     assert any("revision went 4 -> 3" in v for v in violations)
