@@ -46,11 +46,12 @@ warehouse/dependencies.yaml  External OSO inputs a governed asset reads — depe
                        (purpose, grain, freshness, verified_revision or content hash, owner: oso).
                        Not owned; no migration/retirement/mirror obligations. (Introduced by the
                        ADR-003 execution PRs; specified in adr-003-repository-scope-boundary.md.)
-warehouse/models/      SQL and Python models the repo OWNS or maintains for Gap Map computation —
-                       models/<dataset>/<table> maps to currentai.<dataset>.<table>. NOT an
-                       organization-wide platform mirror. Holds editable models, the compatibility
-                       shims for governed assets, and fetchers; authority is the declared field,
-                       not the directory name.
+warehouse/models/      SQL and Python model files, models/<dataset>/<table> mapping to
+                       currentai.<dataset>.<table>. NOT an organization-wide platform mirror. Most
+                       are GOVERNED (editable models, the compatibility shims, fetchers), claimed by
+                       assets.yaml; the rest are READ-ONLY mirrors of platform-owned models, claimed
+                       by dependencies.yaml as contracts (a mirror binds provenance, not ownership).
+                       Authority is the declared field, not the directory name.
 warehouse/data/        Frozen CSV inputs, data/<dataset>/<table>.csv (HF model catalog,
                        benchmarks, stack-map bridge)
 build/                 Python pipeline, see below

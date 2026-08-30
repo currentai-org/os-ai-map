@@ -8,13 +8,13 @@ different places.
 
 | Family | Models | Where the SQL lives |
 |---|---|---|
-| Legacy warehouse | `entities`, `events`, `metrics`, and the legacy `scores` stack-map models | `warehouse/models/` — **in this repo** |
-| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/models/<dataset>/` (carrying a `mirror:` block in `warehouse/assets.yaml`) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from the mirror copies.** |
+| Legacy warehouse | `entities`, `events`, `metrics`, and the legacy `scores` stack-map models | **Externalized (ADR-003)** — frozen under platform ownership and no longer in this repo. |
+| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/models/<dataset>/` and recorded as **dependency contracts in `warehouse/dependencies.yaml`** (each with a `mirror:` block) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from the mirror copies.** |
 
-The read-only mirror copies under `warehouse/models/<dataset>/` (T1 of the 2026-08-14 audit)
-make the scoring models readable without platform access. They are snapshots, not the source
-of truth — see each asset's `mirror:` block in `warehouse/assets.yaml` for the deployed
-revision, hash and sync date the file reflects.
+The read-only mirror copies under `warehouse/models/<dataset>/` make the scoring models readable
+without platform access. They are snapshots, not the source of truth — see each contract's `mirror:`
+block in `warehouse/dependencies.yaml` for the deployed revision, hash and sync date the file
+reflects.
 
 ## The deploy mechanic: revision → RELEASE → run
 
