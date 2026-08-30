@@ -56,8 +56,8 @@ AUDIT_ROOTS = (
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root
-# set is CLOSED (ADR-003 finding 3): a governed root is a governed producer file, a named
-# AUDIT_ROOT, or a declared workflow here -- never "any tracked build/*.py or workflow", so an
+# set is CLOSED: a governed root is a governed producer file, a named AUDIT_ROOT, or a declared
+# workflow here -- never "any tracked build/*.py or workflow", so an
 # unrelated future helper that happens to contain a table reference cannot become a semantic
 # root and pull a peripheral table into dependencies.yaml.
 PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
@@ -672,7 +672,7 @@ def _merge_base_receipt(base: str = "origin/main") -> dict[str, dict] | None:
 # `role` ASSERTS membership; these functions RE-DERIVE it from the asset's own fields so an
 # authored role that disagrees with the boundary rule is caught, exactly as the derived
 # read_by graph catches a hand-edited reader list. Every asset in assets.yaml is a governed
-# asset and must carry the derived role (the externalization backlog is gone; steps 5-6 done).
+# asset and carries the derived role; there is no roleless state.
 
 def expected_role(asset: dict) -> str:
     """The role ADR-003 derives for a governed asset, from its own fields.
@@ -695,9 +695,8 @@ def expected_role(asset: dict) -> str:
 def role_violations() -> list[str]:
     """Every governed asset carries the correct `role` and each role's invariants hold.
 
-    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. The
-    externalization backlog drained in steps 5-6, so there is no roleless state and no long_tail:
-    `role` and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
+    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. `role`
+    and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
     """
     problems: list[str] = []
     for a in assets():
@@ -771,7 +770,7 @@ def _dependency_model_files() -> dict[str, str]:
 
 
 def _governed_root_files() -> set[str]:
-    """The map roots -- a CLOSED set (ADR-003 finding 3), never "any build module or workflow".
+    """The map roots -- a CLOSED set, never "any build module or workflow".
 
     A root is a governed producer file (a governed asset's model file, or a `build/` module named
     as a governed asset's `producer`), a named AUDIT_ROOT, or an explicitly declared publication
@@ -827,10 +826,8 @@ def dependency_readers() -> dict[str, list[str]]:
 
     Mechanically re-derived so a recorded `required_by` cannot drift. Readers are the governed
     roots (governed model files + build modules + workflows) and the dependency mirror files
-    (the openness chain reads dep->dep) -- NOT the externalization backlog's own model files,
-    whose reads leave with them, and never a notebook (gate 5). This is why an unlisted OSO
-    input a governed computation reads is caught, while a backlog table's OSO reads are not
-    the repository's contracts.
+    (the openness chain reads dep->dep), and never a notebook (gate 5). This is why an unlisted OSO
+    input a governed computation reads is caught: only what a governed root reaches is a contract.
     """
     governed = _governed_tables()
     reader_files = _governed_root_files() | set(_dependency_model_files().values())
@@ -1163,7 +1160,7 @@ def governed_internal_edges() -> set[tuple[str, str]]:
 
 
 def unreachable_repo_computations() -> list[str]:
-    """ADR-003 gate 4 / finding 4: every ACTIVE repo-computation and governed-data table is
+    """ADR-003 gate 4: every ACTIVE repo-computation and governed-data table is
     reachable upstream from a governed sink or a named audit root.
 
     A staged or dormant asset is pre-service (no consumer yet by construction) and is exempt;
@@ -1410,8 +1407,8 @@ def _git_blob_sha256(sha: str, path: str) -> str | None:
 
 
 def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[str]:
-    """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection moving the
-    seven mirrors out of assets.yaml would otherwise have lost (ADR-003 finding 1).
+    """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection a single-snapshot
+    check cannot give, since a contributor can edit a mirrored file and update its hash to match.
 
     Prior provenance is looked up by TABLE across BOTH merge-base manifests, so the one-time
     asset -> dependency transition is covered. The byte identity is the model AND the schema; a

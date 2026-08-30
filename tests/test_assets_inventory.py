@@ -135,9 +135,6 @@ def test_phase7_openness_chain_is_a_dependency_with_retirement_context(inventory
             f"{t}: dependency must carry its Phase-7 retirement_context (#384)")
 
 
-# The entities.*/scores.* and events/metrics relocation tests were retired with ADR-003: those
-# pipelines are externalized, and re-entry is now blocked generally by the role/scope gates.
-
 
 # --- 3: mirror provenance ---------------------------------------------------------
 
@@ -603,12 +600,6 @@ def test_every_asset_is_governed_with_a_role():
         assert a["population"] == "gap_map", f"{a['id']}: population {a['population']!r}, not gap_map"
 
 
-# --- the inventory must agree with the ADR committed beside it -------------------
-
-# test_inventory_agrees_with_adr_002 was retired with ADR-003: the catalog tables ADR-002 routed
-# into registry are externalized, so there is nothing left to reconcile against it.
-
-
 def test_quoted_trino_identifiers_are_found(tmp_path):
     """`FROM "currentai"."registry"."x"` is the form every Python mirror model uses. An
     earlier extractor matched only the unquoted form and found these by accident, via a
@@ -751,11 +742,6 @@ def test_schedule_evidence_only_on_scheduled_assets(inventory):
                 assert field in asset, f"{asset['id']}: scheduled but no {field}"
             else:
                 assert field not in asset, f"{asset['id']}: unscheduled but carries {field}"
-
-
-# The openness chain is now a dependency contract (ADR-003), asserted by
-# test_phase7_openness_chain_is_a_dependency_with_retirement_context above; its former
-# population/release_path tests are retired with the reclassification.
 
 
 # --- the ledger must list exactly the derived set ------------------------------
