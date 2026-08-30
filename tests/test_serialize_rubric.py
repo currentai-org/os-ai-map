@@ -735,7 +735,7 @@ def test_real_sources_serialize_without_errors():
         # finetuning_code +2 (megatron-lm, unsloth), orchestration_agents +3 (n8n, zed's two
         # extra), telemetry_observability +2 (agentops, langwatch) and
         # training_synthetic_datasets +3 (flan-collection, redpajama-data-v2, smoltalk).
-        "base_pretrained": 117, "finetuned_chat": 174, "deployment": 131,
+        "base_pretrained": 117, "finetuned_chat": 174, "deployment": 195,
         #
         # evaluation_code 78 -> 107 with the 2026-08-11 evidence sweep of that category: all
         # seven of its deferrals came off, and a product that stops being deferred publishes its
@@ -774,7 +774,7 @@ def test_real_sources_serialize_without_errors():
         # marker, which carries five because its license is a compound of two parts, Apache-2.0
         # over the code and a modified AI Pubs Open RAIL-M over the weights. No product that was
         # already computed gained or lost a row, which is why the other seventeen categories hold.
-        "agent_tools_protocols": 145, "dataset_processing_tools": 92, "evaluation_code": 109,
+        "agent_tools_protocols": 257, "dataset_processing_tools": 92, "evaluation_code": 109,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -799,7 +799,7 @@ def test_real_sources_serialize_without_errors():
         # aws-neuron each already recorded the deciding dimension and were publishing nothing
         # because a deferred product publishes nothing; the score moved to what the ladder
         # computes and the rows appeared.
-        "finetuning_code": 139, "inference_code": 90, "ml_frameworks": 88,
+        "finetuning_code": 167, "inference_code": 90, "ml_frameworks": 104,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
@@ -864,7 +864,7 @@ def test_real_sources_serialize_without_errors():
         # clients; privatemode gained `source: partial`, its recorded `TCB-public` having been
         # outside the dimension's enum. Both reproduce the score they carried. The category now
         # defers nothing.
-        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 197,
+        "orchestration_agents": 415, "telemetry_observability": 142, "ui_api": 265,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -936,7 +936,7 @@ def test_real_sources_serialize_without_errors():
         # dimensions it records: `source`, the resolved `core_gated`, `license`, and `core-gated`
         # again under the hyphenated key the record actually uses. Verified by reading the emitted
         # rows for liger-kernel and pgvector rather than by inferring it from the count.
-        "compilers": 102, "storage": 112,
+        "compilers": 110, "storage": 124,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

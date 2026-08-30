@@ -1,0 +1,82 @@
+product: instructor
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the product
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid tier described in the README
+  confidence: medium
+  note: The LICENSE body is the MIT text, read rather than taken from the API's label, and it carries no appended
+    condition - no revenue or user threshold, no commercial-use carve-out and no attribution requirement beyond
+    the license's own. The repository is public and unarchived and builds the product itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no license-gated build, so the core reads
+    as ungated. Confidence is medium rather than high because that is a repository-and-README read, not a pricing-page
+    read.
+  raw: license:MIT(OSI);source:public(the published repository is the product);core-gated:ungated(no enterprise
+    path in the repository root and no paid tier described in the README)
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/567-labs/instructor/main/LICENSE
+    shows: LICENSE body, read in full. The MIT text with no additional terms appended after it.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 1fdd867197ab4d56e3c00ee835e4ea53aac5d54f6e6ac6d247bf866bcf3a9352
+    establishes:
+    - license
+  - url: https://api.github.com/repos/567-labs/instructor
+    shows: Repo metadata for 567-labs/instructor - license spdx_id MIT, archived false, 13,762 stars.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 0da79a7dcd635fc998c1b53c6ccf416b4d4e2df38b2692a31a21327ca666e89b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/567-labs/instructor/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a license-gated build beside the published source,
+      and for whether the repository is the whole product.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: ec2c918e7767673e37b278134b337949aae359bf8344ab552bfc4365389e2577
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 13,762 GitHub stars, which lands in the >10K stars band of the stars scale. No package artifact is declared
+    for this record yet, so stars are the only instrument available and the stars scale caps at level 3. Read the
+    band as a floor rather than a measurement; it is the weakest instrument the map carries.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://api.github.com/repos/567-labs/instructor
+    shows: Repo metadata - stargazers_count = 13,762 - for 567-labs/instructor.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 0da79a7dcd635fc998c1b53c6ccf416b4d4e2df38b2692a31a21327ca666e89b
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: low
+  note: Deliberately unscored rather than guessed. Capability in this category is banded on a feature matrix against
+    a named anchor, and that comparison has not been made for this record - no anchor was chosen and no feature
+    set was read against one. Recording a number here would be an invention, and the corpus expansion this record
+    belongs to chose to leave the axis unscored rather than fill it. It should be scored in a category-wide capability
+    pass, where every product is banded against the same anchor rather than one at a time.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/567-labs/instructor/main/README.md
+    shows: README, read for a published benchmark result, leaderboard entry or performance figure. None is cited
+      here because none was used to score.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: ec2c918e7767673e37b278134b337949aae359bf8344ab552bfc4365389e2577

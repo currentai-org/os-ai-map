@@ -1,0 +1,82 @@
+product: cog
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the product
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid tier described in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text, read rather than taken from the API's label, and it carries no
+    appended condition - no revenue or user threshold, no commercial-use carve-out and no attribution requirement
+    beyond the license's own. The repository is public and unarchived and builds the product itself. Its root tree
+    carries no enterprise, ee or commercial directory and its README describes no license-gated build, so the core
+    reads as ungated. Confidence is medium rather than high because that is a repository-and-README read, not a
+    pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the product);core-gated:ungated(no enterprise
+    path in the repository root and no paid tier described in the README)
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/replicate/cog/main/LICENSE
+    shows: LICENSE body, read in full. The Apache-2.0 text with no additional terms appended after it.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 0c525cce5051ba765a9bc9b368c69334dfb82bd2b24c8b1769d539fe28c5a66b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/replicate/cog
+    shows: Repo metadata for replicate/cog - license spdx_id Apache-2.0, archived false, 9,460 stars.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 8c706f2812652fb7a5d2670f79ef32bf3f33f5f9e85ad3af355e536f71da3de4
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/replicate/cog/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a license-gated build beside the published source,
+      and for whether the repository is the whole product.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 99613db18827bb094431491c3aab538dfadbf0e7d6a878a2a04b2e98547a70f5
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 9,460 GitHub stars, which lands in the 1K-10K stars band of the stars scale. No package artifact is declared
+    for this record yet, so stars are the only instrument available and the stars scale caps at level 3. Read the
+    band as a floor rather than a measurement; it is the weakest instrument the map carries.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://api.github.com/repos/replicate/cog
+    shows: Repo metadata - stargazers_count = 9,460 - for replicate/cog.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 8c706f2812652fb7a5d2670f79ef32bf3f33f5f9e85ad3af355e536f71da3de4
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: low
+  note: Deliberately unscored rather than guessed. Capability in this category is banded on a feature matrix against
+    a named anchor, and that comparison has not been made for this record - no anchor was chosen and no feature
+    set was read against one. Recording a number here would be an invention, and the corpus expansion this record
+    belongs to chose to leave the axis unscored rather than fill it. It should be scored in a category-wide capability
+    pass, where every product is banded against the same anchor rather than one at a time.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/replicate/cog/main/README.md
+    shows: README, read for a published benchmark result, leaderboard entry or performance figure. None is cited
+      here because none was used to score.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 99613db18827bb094431491c3aab538dfadbf0e7d6a878a2a04b2e98547a70f5
