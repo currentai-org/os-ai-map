@@ -7,12 +7,11 @@ fails if this file drifts from the renderer. Regenerate with
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
 not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->38 governed
 assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->8
-external contracts in `warehouse/dependencies.yaml`. There is no externalization backlog
-(<!-- count:externalization_backlog -->0): the long-tail pipelines and questionable gap_map tables
-were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
+external contracts in `warehouse/dependencies.yaml`. The peripheral OSO pipelines are out of scope:
+they were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
 recorded in the reproducible receipt `warehouse/audits/externalization.json`; not an ownership
-transfer to a named destination repo) — ADR-003 steps 5-6. A standalone notebook is **never** a
-reachability root (gate 5).
+transfer to a named destination repo). A standalone notebook is **never** a reachability root
+(gate 5).
 
 Reachability is a real closure from the map roots -- the governed publication sinks and the named
 audit/control build modules -- traversed UPSTREAM through repo-owned producer files (governed models

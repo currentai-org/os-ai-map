@@ -1487,7 +1487,6 @@ COUNT_CLAIMS = {
     "retirement_candidates": lambda: len(retirement_candidates()),
     "in_repo_readers": lambda: len(derive_graph()["read_by"]),
     "governed_assets": lambda: sum(1 for a in assets() if a.get("role")),
-    "externalization_backlog": lambda: sum(1 for a in assets() if a.get("role") is None),
     "dependencies": lambda: len(dependencies()),
     "unobserved_crons": lambda: sum(
         1 for a in assets()

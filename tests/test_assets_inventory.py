@@ -582,9 +582,8 @@ def test_dependency_mirror_provenance_holds():
 
 
 def test_governed_root_set_is_closed():
-    """Finding 3: the root set is governed producer files + named audit roots + declared
-    workflows only -- never "any tracked build/*.py", so an unrelated helper cannot become a
-    semantic root."""
+    """The root set is governed producer files + named audit roots + declared workflows only --
+    never "any tracked build/*.py", so an unrelated helper cannot become a semantic root."""
     roots = A._governed_root_files()
     allowed = set(A._governed_producer_paths()) | set(A.AUDIT_ROOTS) | set(A.PUBLICATION_WORKFLOWS)
     assert roots == allowed
@@ -594,8 +593,8 @@ def test_governed_root_set_is_closed():
 
 
 def test_every_asset_is_governed_with_a_role():
-    """The externalization backlog is empty (ADR-003 steps 5-6): every asset in assets.yaml is
-    governed and carries a role in the vocabulary, and every asset is population gap_map."""
+    """Every asset in assets.yaml is governed: it carries a role in the vocabulary and is
+    population gap_map."""
     for a in A.assets():
         assert a.get("role") in A.ROLES, f"{a['id']}: role {a.get('role')!r} not in {sorted(A.ROLES)}"
         assert a["population"] == "gap_map", f"{a['id']}: population {a['population']!r}, not gap_map"
