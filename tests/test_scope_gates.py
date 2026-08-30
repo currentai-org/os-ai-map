@@ -583,8 +583,10 @@ def test_missing_evidence_basis_is_flagged(monkeypatch):
 
 
 def test_dropped_consumer_resolution_alone_does_not_satisfy_or_break(monkeypatch):
-    # consumer_resolution is optional prose: removing it must NOT change the verdict, proving the
-    # gate never leans on it.
+    # consumer_resolution is optional prose: removing it must not add a violation. Isolated from the
+    # append-only check (which independently forbids modifying a merged entry) so this proves only
+    # that the gate never leans on the prose.
+    monkeypatch.setattr(A, "_merge_base_receipt", lambda base="origin/main": None)
     r = _real_receipt()
     for e in r["assets"]:
         e.pop("consumer_resolution", None)

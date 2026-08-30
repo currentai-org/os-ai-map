@@ -27,29 +27,22 @@ ROOT = Path(__file__).resolve().parent.parent
 
 NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases"}
 STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "dormant"}
-MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
-# Every governed asset is `gap_map` (ADR-003). `long_tail` is retired (steps 5-6 externalized the
-# long-tail pipelines) and `both` -- which meant overlap with that retired population -- is gone
-# with it. A single value: the vocabulary itself now forbids any non-gap_map governed asset.
+# Every governed asset is `gap_map`; the vocabulary is single-valued so nothing else can appear.
 POPULATIONS = {"gap_map"}
 
-# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the graph.
-# Every governed asset carries exactly one role (REQUIRED_FIELDS); there is no roleless state --
-# the externalization backlog drained in steps 5-6 and cannot return.
-#   governed-output   a published Gap Map artifact whose schema + publication lifecycle
-#                     are owned here (must be release_path: true, authority: repo)
+# ADR-003 repository role, ASSERTED by this field and re-derived from the asset's own fields
+# (expected_role) so an authored role that disagrees with the boundary rule is caught.
+#   governed-output   a published Gap Map artifact whose schema + publication lifecycle are
+#                     owned here (release_path: true, authority: repo).
 #   repo-computation  repo-OWNED SQL/Python implementing or auditing map semantics. MUST be
-#                     authority: repo -- a `mirror` block proves provenance, not operational
-#                     ownership, so a platform-authored mirror is NOT a repo-computation; it
-#                     is a dependency contract (dependencies.yaml).
-#   governed-data     a repo-OWNED data or control artifact that is not a computation -- the
-#                     frozen adoption baseline (bytes, not a query) and the source-runs
-#                     control snapshot. authority: repo, not release_path.
-#   compatibility-shim  a temporary shim for a governed asset (carries `replacement`; named
-#                     to avoid collision with the lifecycle `status: compatibility`). May be a
-#                     platform mirror -- a shim is transitional by definition, not owned.
+#                     authority: repo -- a `mirror` block proves provenance, not ownership, so a
+#                     platform-authored mirror is a dependency contract, not a repo-computation.
+#   governed-data     a repo-OWNED data/control artifact that is not a computation (the frozen
+#                     adoption baseline bytes, the source-runs snapshot). authority: repo.
+#   compatibility-shim  a temporary shim carrying `replacement` (named to avoid collision with
+#                     `status: compatibility`); may be a platform mirror, since a shim is not owned.
 ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
 
 # The named audit / control roots of the governed graph: repo modules that READ governed or
@@ -70,9 +63,8 @@ AUDIT_ROOTS = (
 PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
 
 REQUIRED_FIELDS = (
-    "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
-    "authority", "grain", "producer", "population", "release_path", "role", "consumer_checks",
-    "refresh", "status", "verified_at",
+    "id", "table", "kind", "authority", "grain", "producer", "population", "release_path",
+    "role", "consumer_checks", "refresh", "status", "verified_at",
 )
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 DEPENDENCIES = ROOT / "warehouse" / "dependencies.yaml"
@@ -1455,7 +1447,6 @@ def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[s
 
 COUNT_CLAIMS = {
     "assets": lambda: len(assets()),
-    "pending": lambda: sum(1 for a in assets() if a["migration_status"] == "pending"),
     "no_reviewed_consumer": lambda: len(no_reviewed_consumers()),
     "deployed_tables": lambda: len(deployed_tables()),
     "staged_assets": lambda: sum(1 for a in assets() if a["status"] == "staged"),
@@ -1464,7 +1455,6 @@ COUNT_CLAIMS = {
         ["git", "-C", str(ROOT), "ls-files", "warehouse"],
         capture_output=True, text=True, check=True,
     ).stdout.split()),
-    "catalog_tables": lambda: sum(1 for a in assets() if a["current_namespace"] == "catalog"),
     "model_files": lambda: len(
         [f for f in produced_files() if f.endswith((".sql", ".py"))]
     ),
