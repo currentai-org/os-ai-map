@@ -1775,14 +1775,18 @@ resolutions:
 - repo: abetlen/llama-cpp-python
   verdict: existing_product
   product: llama-cpp
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
-  note: 'a binding of llama-cpp, declared as one of its artifacts rather than as a product of its own.
-    Its README says so: "Simple Python bindings for @ggerganov''s llama.cpp library."'
+  note: 'Simple Python bindings for @ggerganov''s llama.cpp library, published by a different owner. Recorded
+    so no sweep proposes it as a product, but deliberately NOT declared as one of llama-cpp''s artifacts:
+    declared artifacts are the measurement identity - sum_stars_across_artifacts sums stars across them
+    and the adoption unit is downloads summed across declared artifacts - so the binding''s own reach
+    would be counted as the engine''s. Same distinction as a client package: the relationship is real,
+    the measurement identity is not shared.'
 - repo: microsoft/onnxruntime-genai
   verdict: existing_product
   product: onnx-runtime
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: 'a extension layer of onnx-runtime, declared as one of its artifacts rather than as a product
     of its own. Its README says so: "It implements the generative AI loop for ONNX models, including pre
@@ -1799,13 +1803,13 @@ resolutions:
   product: executorch
   decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
-  note: 'a third-party React Native binding over the ExecuTorch runtime, declared as one of its artifacts.
-    Its README says so: "React Native ExecuTorch provides a declarative way to run AI models on-device
-    using React Native, powered by ExecuTorch".'
+  note: 'A third-party React Native binding over the ExecuTorch runtime, published by Software Mansion.
+    Recorded so no sweep proposes it as a product, and deliberately not declared as an executorch artifact
+    for the same reason: its 1,705 stars measure adoption of the binding, not of the runtime.'
 - repo: vllm-project/production-stack
   verdict: existing_product
   product: vllm
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: 'a reference deployment of vllm, declared as one of its artifacts rather than as a product of
     its own. Its README says so: "vLLM Production Stack project provides a reference implementation on
@@ -1813,7 +1817,7 @@ resolutions:
 - repo: vllm-project/vllm-ascend
   verdict: existing_product
   product: vllm
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: 'a plugin/backend of vllm, declared as one of its artifacts rather than as a product of its own.
     Its README says so: "vLLM Ascend (`vllm-ascend`) is a community maintained hardware plugin for running
@@ -1821,7 +1825,7 @@ resolutions:
 - repo: vllm-project/vllm-omni
   verdict: existing_product
   product: vllm
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: 'a variant of vllm, declared as one of its artifacts rather than as a product of its own. Its
     README says so: "vLLM-Omni is a framework that extends its support for omni-modality model inference
@@ -1886,7 +1890,7 @@ resolutions:
   note: Kubeflow distributed training; sits between deployment and finetuning_code
 - repo: kvcache-ai/Mooncake
   verdict: unresolved
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: 'a KVCache-centric disaggregated serving platform whose Transfer Engine and Store are consumed
     by vLLM and SGLang rather than serving inference itself. Same boundary question as LMCache. Note for
@@ -1894,7 +1898,7 @@ resolutions:
     will miss.'
 - repo: LMCache/LMCache
   verdict: unresolved
-  decided_in: '#423 inference_code pass'
+  decided_in: '#424 inference_code pass'
   decided_on: '2026-08-31'
   note: a KV cache management layer, not an engine. Its README says it "can be used as a KV cache layer
     for a range of mainstream open-source serving engines", so inference_code - defined as engines and
