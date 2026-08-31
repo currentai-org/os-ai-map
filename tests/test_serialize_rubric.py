@@ -864,7 +864,7 @@ def test_real_sources_serialize_without_errors():
         # clients; privatemode gained `source: partial`, its recorded `TCB-public` having been
         # outside the dimension's enum. Both reproduce the score they carried. The category now
         # defers nothing.
-        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 197,
+        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 221,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
