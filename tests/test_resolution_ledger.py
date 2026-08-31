@@ -89,6 +89,47 @@ def test_a_repository_may_be_resolved_only_once(tmp_path):
     assert "Foo/Bar" in str(raised.value) or "foo/bar" in str(raised.value)
 
 
+#: Floor on the number of recorded decisions. Raise it deliberately when a pass appends;
+#: never lower it. Deliberately a hand-written constant rather than derived from the file:
+#: a floor that computes itself from the current ledger would happily derive 289 from a
+#: damaged one and prove itself correct. The independent number is what gives this test
+#: memory. 291 after the three 2026-08-31 category passes.
+LEDGER_FLOOR = 291
+
+
+def test_the_ledger_never_shrinks():
+    """Uniqueness protects identity integrity. It does not protect completeness.
+
+    Three per-category tranches ran serially in one session, and each rebase conflicted on
+    this file because every pass appends to it. The tempting resolution is to take one side.
+    Doing so would have been invisible to every other guard here: dropping the two entries
+    #431 appended (`tinker-cookbook`, `mlx-vlm`) produces no duplicate, leaves the four
+    sentinel cases below intact, and loads clean. Two governance decisions would simply have
+    been gone, and the next bulk run would have recreated both.
+
+    So the ledger needs a second property alongside uniqueness: it is append-only, and a
+    resolution once recorded stays recorded. A count floor is the cheap form of that. A digest
+    over the whole key set would also catch a swap, but it would change on every legitimate
+    append and so would be noise rather than signal - and a swap is not how a side-pick fails.
+    A side-pick drops a block.
+
+    Correct resolution when this file conflicts: keep BOTH sides. Every entry is an append.
+
+    Deliberately a floor and not a set of named entries. Pinning the specific decisions a
+    given pass appended would couple this test to the order those passes merge in, which is
+    the one thing a serialized queue cannot promise.
+    """
+    entries = load()
+    assert len(entries) >= LEDGER_FLOOR, (
+        f"the ledger holds {len(entries)} decisions, below the floor of {LEDGER_FLOOR}. "
+        "A resolution that was recorded has been lost - most likely a merge or rebase that "
+        "took one side of a conflict in this file instead of merging both. Recover the "
+        "missing entries from git history rather than lowering this number: "
+        "`git log -p --follow sources/resolution_ledger.yaml`. Raise the floor only when a "
+        "pass has legitimately appended."
+    )
+
+
 def test_the_real_ledger_has_no_duplicate_identity():
     """Asserted against the file itself, so appending a second entry fails here."""
     assert load()
