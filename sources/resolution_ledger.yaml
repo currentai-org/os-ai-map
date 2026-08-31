@@ -1971,3 +1971,23 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: packs a repository into one AI-readable file; document ingestion rather than orchestration
+- repo: thinking-machines-lab/tinker-cookbook
+  verdict: existing_product
+  product: tinker
+  decided_in: '#431 finetuning_code pass'
+  decided_on: '2026-08-31'
+  note: the recipe and training-loop library for Tinker, which the map already carries as the head product `tinker`
+    on the finetuning_code roster, so it is not a new product. It must also not be declared as `tinker`'s artifact
+    - the cookbook is Apache-2.0 while Tinker itself is a closed managed training API scored openness 1, and declaring
+    an externally-open repository against it would let the ladder read the closed product as open. Its stars are
+    likewise not Tinker's adoption.
+- repo: Blaizzy/mlx-vlm
+  verdict: unresolved
+  decided_in: '#431 finetuning_code pass'
+  decided_on: '2026-08-31'
+  note: reached this pass as a finetuning_code candidate and is misfiled. Its README runs 165 mentions of generation,
+    inference or serving against 10 of training or fine-tuning, and it ships a FastAPI server, continuous batching,
+    automatic prefix caching, KV-cache quantization, speculative decoding and distributed inference; LoRA and QLoRA
+    are one section near the end. So it is an engine and runtime that serves inference, which is inference_code,
+    not a library for fine-tuning models. Held rather than promoted here to keep this pass to one category. MIT,
+    stock body, ready for an inference_code pass.

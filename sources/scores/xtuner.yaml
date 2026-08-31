@@ -1,0 +1,88 @@
+product: xtuner
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: InternLM/xtuner
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier described in the README
+  confidence: high
+  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
+    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
+    and no paid tier described in the readme.'
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(InternLM/xtuner);core-gated:ungated(no enterprise or ee path in the
+    repository root and no paid tier described in the README)
+  sources:
+  - url: https://raw.githubusercontent.com/InternLM/xtuner/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/InternLM/xtuner/main/README.md
+    shows: 'README, read for the distribution and gating question: it describes installing and running the code
+      from this repository and names no enterprise, paid or licence-gated build.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8ea8e02cb3067051c568bc3b537cab0352bf3ae5ecdd0f3bf3454844d29a1935
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  banded_quantity: 1,159 PyPI downloads in the last 30 days for the xtuner package
+  note: Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real
+    usage signal. The figure is small - 1,159 downloads in 30 days against 5,187 GitHub stars - because this project
+    is consumed by cloning and installing from source rather than from the registry. Recording the authoritative
+    measurement understates reach; substituting the larger star count would overstate use, and the routing table
+    forbids falling through to a weaker signal when an authoritative one exists.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://pypistats.org/api/packages/xtuner/recent
+    shows: last_month 1159, last_week 112, last_day 11 for the xtuner package.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 486948dd5e2d3aca93bb6089fdf10282e435b7488525c34ea1cb838968c6d0e2
+  - url: https://api.github.com/repos/InternLM/xtuner
+    shows: 'Repo metadata for InternLM/xtuner: stargazers_count 5187, archived false, pushed_at 2026-08-31 - the
+      attention figure the note contrasts with the download count.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 1867b8c8bebe33b6a9e4b55d4e8eb8135d0c333376da83e7ed44cd34ddf9f81b
+capability:
+  score: 4
+  basis: feature_matrix
+  value: Dropless MoE training to 1T parameters; 200B-scale MoE without expert parallelism and 600B with intra-node
+    EP only; 64k-sequence training on 200B MoE without sequence parallelism, plus DeepSpeed Ulysses support with
+    linearly scalable sequence length; reported FSDP training throughput above traditional 3D-parallel schemes for
+    MoE above 200B; Ascend A3 Supernode and NVIDIA paths. Specialized to MoE rather than Megatron-LM's composable
+    general-purpose parallelism.
+  confidence: medium
+  note: XTuner V1's key-features section claims frontier MoE scale - 1T parameters, 200B without expert parallelism,
+    64k sequences without sequence parallelism - which is the scale story that places megatron-lm at 5. It sits
+    one band below because Megatron-LM offers composable DP/TP/PP/CP/EP with Megatron-FSDP across model families
+    and publishes weak- and strong-scaling benchmarks, whereas XTuner is specialized to MoE and its throughput claim
+    is stated in the README rather than in a published scaling study. The same one_below relation places swift and
+    llama-factory.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/InternLM/xtuner/main/README.md
+    shows: Key Features section states dropless training of 200B MoE without expert parallelism and 600B with intra-node
+      EP, 64k-sequence training on 200B MoE without sequence parallelism, DeepSpeed Ulysses support, MoE training
+      up to 1T parameters, and FSDP throughput surpassing traditional 3D parallel schemes for MoE above 200B.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8ea8e02cb3067051c568bc3b537cab0352bf3ae5ecdd0f3bf3454844d29a1935
