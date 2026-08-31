@@ -1,0 +1,83 @@
+product: mistral-rs
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the stock MIT text, Copyright (c) 2024 Eric Buehler, with no appended condition, read
+    in full rather than taken from the API's label. The repository is public and unarchived and builds the engine
+    itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated
+    build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather
+    than a pricing-page read.
+  raw: license:MIT(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path
+    in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/LICENSE
+    shows: 'LICENSE body, read in full: the stock MIT text, Copyright (c) 2024 Eric Buehler, with no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: b40bb09c7b3b6f697a8920cf9d2cb3ff8cfcf77a0fcb6d264a92842b43c4dcae
+    establishes:
+    - license
+  - url: https://api.github.com/repos/EricLBuehler/mistral.rs
+    shows: Repo metadata for EricLBuehler/mistral.rs - archived false, 7,638 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 893eebc3b21bdfac5961356c0868d2a8feb08ff2f66b684d23aac712720fcb81
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bc3ea3988517b64469f6575228622ace5b31a0e0409b87549183c6d519e04ee4
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 7,638 GitHub stars, in the 1K-10K band of the stars scale. A `mistralrs` package on PyPI resolves to this
+    repository but drew 545 downloads in the trailing 30 days against a Rust and prebuilt-binary primary distribution,
+    so it measures a minority channel and is not declared. The stars band should be read as a floor.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/EricLBuehler/mistral.rs
+    shows: Repo metadata - stargazers_count = 7,638 - for EricLBuehler/mistral.rs.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 893eebc3b21bdfac5961356c0868d2a8feb08ff2f66b684d23aac712720fcb81
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Paged attention, prefix caching, ISQ/UQFF quantization and multimodality in one engine, serving OpenAI-compatible
+    and Anthropic-compatible endpoints.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor. The feature set overlaps the anchor's closely - paged attention, prefix
+    caching, quantization - but it is banded below rather than at, because sglang holds the `at` band on a published
+    multi-node serving record this engine does not claim.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/README.md
+    shows: 'README, read for the engine''s feature set: Paged attention, prefix caching, ISQ/UQFF quantization and
+      multimodality in one engine, serving OpenAI-compatible and Anthropic-compatible endpoints.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bc3ea3988517b64469f6575228622ace5b31a0e0409b87549183c6d519e04ee4

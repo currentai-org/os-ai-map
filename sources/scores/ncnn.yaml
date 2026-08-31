@@ -1,0 +1,86 @@
+product: ncnn
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is a Tencent-authored notice stating that both the ncnn binary and the ncnn source are
+    licensed under the BSD 3-Clause License, followed by the separate terms of third-party components it vendors,
+    read in full rather than taken from the API's label. The repository is public and unarchived and builds the
+    engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated
+    build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather
+    than a pricing-page read.
+  raw: license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent/ncnn/master/LICENSE.txt
+    shows: 'LICENSE body, read in full: a Tencent-authored notice stating that both the ncnn binary and the ncnn
+      source are licensed under the BSD 3-Clause License, followed by the separate terms of third-party components
+      it vendors.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7c974bac98848df46be1af5bdaa3c3c9c01f6082a90f55caeb7f60c6208aa255
+    establishes:
+    - license
+  - url: https://api.github.com/repos/Tencent/ncnn
+    shows: Repo metadata for Tencent/ncnn - archived false, 23,768 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8468582f103eece2ef017a5c865f84e1fe4d049cfb0bad60faee2ec7d33b62a9
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Tencent/ncnn/master/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c2c82d74af40c50b29e59e6ef8102a34b0bfd5776100feda76797b3328c1f20f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 23,768 GitHub stars, which lands in the >10K band of the stars scale, level 3, where the scale caps. An
+    `ncnn` package on PyPI resolves to this repository but pypistats publishes no download figure for it, so no
+    package artifact is declared and the band rests on stars.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/Tencent/ncnn
+    shows: Repo metadata - stargazers_count = 23,768 - for Tencent/ncnn.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8468582f103eece2ef017a5c865f84e1fe4d049cfb0bad60faee2ec7d33b62a9
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: General neural network inference across mobile, embedded and desktop targets, with a model conversion toolchain;
+    not an LLM serving engine.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor. Its platform reach is wide, but the anchor is banded on LLM serving - batching,
+    paged attention, parallelism, an OpenAI-compatible surface - and this runtime provides none of that, which is
+    why it sits with the other narrow-purpose runtimes rather than with onnx-runtime at one below.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent/ncnn/master/README.md
+    shows: 'README, read for the engine''s feature set: General neural network inference across mobile, embedded
+      and desktop targets, with a model conversion toolchain; not an LLM serving engine.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c2c82d74af40c50b29e59e6ef8102a34b0bfd5776100feda76797b3328c1f20f

@@ -1,0 +1,98 @@
+product: tensorflow-serving
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/tensorflow/serving/master/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text, appendix filled in for The TensorFlow Serving
+      Authors, with no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: d00bb06dfaf0df630561dc2b037cc89af76af9c10c6044f21c4f1f3ecc5e953f
+    establishes:
+    - license
+  - url: https://api.github.com/repos/tensorflow/serving
+    shows: Repo metadata for tensorflow/serving - archived false, 6,360 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 88b4a23ab7df8dc2f30ae663eb912c7df3a88ab90001ee64ef2f66c136f0aed4
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/tensorflow/serving/master/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c212e03fbb4bcd723b8bfd0b87d8ec028794f42f0240e10fd5dd933f43657ee6
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 6,360 GitHub stars, which lands in the 1K-10K band of the stars scale, level 2, and a stars-based signal
+    caps at 3 because a star is not a use. Two larger figures exist and neither is this product's. The `tensorflow-serving-api`
+    package draws 4,627,937 downloads in the trailing 30 days, but its own summary is "TensorFlow Serving Python
+    API" - it is the client library for a running server, so its downloads measure client use rather than deployments
+    of the serving system, and it is not declared as an artifact for that reason. The `tensorflow/serving` container
+    image the README's quickstart pulls reports 80,659,067 pulls, which is the product itself, but the count is
+    cumulative since publication while this scale is monthly, so it corroborates without banding. No deployment
+    figure is published, leaving stars as the only honest instrument.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/tensorflow/serving
+    shows: Repo metadata - stargazers_count = 6,360 - for tensorflow/serving.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 557d843a32dd4a2c7597f22c20ad7dc3ce7331aa6da977b073c63bd773613c97
+  - url: https://pypi.org/pypi/tensorflow-serving-api/json
+    shows: 'PyPI metadata for the client library, cited to record why it is not banded: summary "TensorFlow Serving
+      Python API.", author Google Inc., homepage tensorflow.org/serving.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ca3a4b673484de84a4a7800a0f7ca7236b49a2fb5997d3c07c707a0a1b67fd97
+  - url: https://hub.docker.com/v2/repositories/tensorflow/serving/
+    shows: 'Docker Hub metadata: pull_count 80,659,067, cumulative since publication. Corroborating only.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 94ea8ddc5c0e148bb5838961b5217b0d8ea2466139abd4a59d9c7a8a37651ba8
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Model lifecycle management with a batching scheduler and gRPC/HTTP inference endpoints; extensible beyond
+    TensorFlow models.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor. It is a general model server designed before the LLM serving techniques
+    the anchor is banded on - paged attention, continuous batching, tensor parallelism - and documents none of them.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/tensorflow/serving/master/README.md
+    shows: 'README, read for the engine''s feature set: Model lifecycle management with a batching scheduler and
+      gRPC/HTTP inference endpoints; extensible beyond TensorFlow models.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c212e03fbb4bcd723b8bfd0b87d8ec028794f42f0240e10fd5dd933f43657ee6

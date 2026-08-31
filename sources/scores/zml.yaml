@@ -1,0 +1,82 @@
+product: zml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text with the APPENDIX omitted and no appended condition, read in full
+    rather than taken from the API's label. The repository is public and unarchived and builds the engine itself.
+    Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build,
+    so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than
+    a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/zml/zml/master/LICENSE
+    shows: 'LICENSE body, read in full: the Apache-2.0 text with the APPENDIX omitted and no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
+    establishes:
+    - license
+  - url: https://api.github.com/repos/zml/zml
+    shows: Repo metadata for zml/zml - archived false, 4,011 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 1b66e42eeb366cd4c505f832243438821a80a1740f5e0c407e81084f6b550b30
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/zml/zml/master/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: aa32b5ed364ab8d7c37bcc7b4e4bf1e6bd426178e3a37673e63482ec7e3d9aef
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,011 GitHub stars, in the 1K-10K band of the stars scale. The `zml` package on PyPI is an unrelated project
+    called zero markup language, so no package artifact is declared and stars are the only instrument available.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/zml/zml
+    shows: Repo metadata - stargazers_count = 4,011 - for zml/zml.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 1b66e42eeb366cd4c505f832243438821a80a1740f5e0c407e81084f6b550b30
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Ahead-of-time compilation of a model to a target accelerator across NVIDIA, AMD, Intel, TPU and Trainium,
+    from one stack.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor. Its hardware reach is broader than most engines here, but it compiles and
+    executes models rather than providing the batching, paged-attention and OpenAI-compatible serving surface the
+    anchor is banded on.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/zml/zml/master/README.md
+    shows: 'README, read for the engine''s feature set: Ahead-of-time compilation of a model to a target accelerator
+      across NVIDIA, AMD, Intel, TPU and Trainium, from one stack.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: aa32b5ed364ab8d7c37bcc7b4e4bf1e6bd426178e3a37673e63482ec7e3d9aef

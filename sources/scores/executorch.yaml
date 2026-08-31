@@ -1,0 +1,116 @@
+product: executorch
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the BSD-3-Clause text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock BSD 3-Clause text carrying eight copyright holders - Meta, Arm,
+      Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which is why the API reports NOASSERTION. No appended
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c58707ea5d5c0ee17af7e16f1377e4d31ad1533492ab0bf9b87ebd9f718f9e7b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pytorch/executorch
+    shows: Repo metadata for pytorch/executorch - archived false, 4,969 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 22238b2379d9b1eef9ab9fa34c66650d1cc0fd7894c4a24b7441cae4a0027fa7
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: deployment breadth - shipped in Meta's family of apps and across twelve or more hardware backends
+    from eight vendors - which is a breadth claim rather than a measured user count
+  note: 'Banded on reported deployment rather than on stars, because stars measure the wrong thing for a runtime
+    that ships inside other companies'' applications. Meta''s own engineering blog and the PyTorch documentation
+    both state that ExecuTorch powers on-device inference across Instagram, WhatsApp, Messenger, Quest and Ray-Ban
+    Meta smart glasses, for billions of people. The LICENSE corroborates the hardware side independently: its BSD-3-Clause
+    header carries eight copyright holders - Meta, Arm, Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which
+    is vendor participation in the runtime itself rather than a vendor list in marketing copy. `reported_traction`
+    records a word and never a number, so no user figure is asserted here; 4,969 GitHub stars would have banded
+    this at 2 and understated it by three levels.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://engineering.fb.com/2025/07/28/android/executorch-on-device-ml-meta-family-of-apps/
+    shows: Meta's engineering blog on ExecuTorch in the Meta family of apps, naming Instagram, WhatsApp, Messenger
+      and Quest and describing on-device inference reaching billions of people.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 66c729a0f927ffda97e4f0b892dde1fba3a22f72369d97602f205a09856ce489
+  - url: https://docs.pytorch.org/executorch/main/success-stories.html
+    shows: 'The project''s own success-stories page: "Billions of users", naming Instagram, WhatsApp, Messenger,
+      Quest and Ray-Ban deployments.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: adbd164f4bd89af11607336038a479338427867e1632a7ce220f5cdd1d819fe8
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: 'README: "It powers Meta''s on-device AI across Instagram, WhatsApp, Quest 3, Ray-Ban Meta Smart Glasses"
+      and "Powers billions of users at Meta with real-time on-device inference".'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: On-device execution of exported models through a ~50KB C++ runtime, with twelve or more hardware backends
+    across eight vendors - XNNPACK, Vulkan, Qualcomm, MediaTek and Samsung Exynos on Android, CoreML on iOS, OpenVINO
+    and CUDA on Linux and Windows, Metal and MLX on macOS - switchable by changing one partitioner line, plus the
+    export and lowering toolchain.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the vllm anchor, level with onnx-runtime, which is banded there on the same instrument:
+    execution-provider breadth across CPU, GPU, mobile and edge. An earlier reading put this two below on the view
+    that an on-device runtime is narrow by nature, which had it backwards - the backend matrix here spans eight
+    silicon vendors and four host platforms, which is wider than apple-core-ml-runtime''s single-vendor coverage
+    at the same band. It stays below the anchor because it executes exported models on device rather than serving
+    them with batching, parallelism and a multi-tenant API surface.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: 'README, read for the engine''s feature set: On-device execution of exported models through a ~50KB C++
+      runtime, with an export and lowering toolchain and backends across a dozen hardware vendors.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: README backend matrix and "12+ Hardware Backends - Open-source acceleration for Apple, Samsung, Qualcomm,
+      ARM, MediaTek, Vulkan, and more", with the per-platform table naming XNNPACK, Vulkan, Qualcomm, MediaTek,
+      Samsung Exynos, CoreML, OpenVINO, CUDA, Metal and MLX.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c

@@ -1,0 +1,81 @@
+product: fastdeploy
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text with a PaddlePaddle Authors copyright line prepended,
+      which is a notice rather than an added term.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: e8b21073737fa3549e35708e35365424f3b86c521871cabe138429f03b62e424
+    establishes:
+    - license
+  - url: https://api.github.com/repos/PaddlePaddle/FastDeploy
+    shows: Repo metadata for PaddlePaddle/FastDeploy - archived false, 3,711 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ddfae902635f783a738c386d4be163139d2f68ffe2c3f99f7c6b89aba49a05e3
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: e6db595f1598cdd1968f25675bddebde43afe7e5a39e0aade96034d51c072ee7
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 3,711 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3.
+    No package artifact is declared for this record, so stars are the only instrument available and the band should
+    be read as a floor.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/PaddlePaddle/FastDeploy
+    shows: Repo metadata - stargazers_count = 3,711 - for PaddlePaddle/FastDeploy.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ddfae902635f783a738c386d4be163139d2f68ffe2c3f99f7c6b89aba49a05e3
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Production inference and deployment for language and vision language models on the PaddlePaddle stack.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor. It serves both language and vision language models, but within one framework's
+    ecosystem rather than across the model and hardware breadth the anchor is banded on.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/README.md
+    shows: 'README, read for the engine''s feature set: Production inference and deployment for language and vision
+      language models on the PaddlePaddle stack.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: e6db595f1598cdd1968f25675bddebde43afe7e5a39e0aade96034d51c072ee7

@@ -1,0 +1,82 @@
+product: xllm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken
+    from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/xLLM-AI/xllm/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/xLLM-AI/xllm
+    shows: Repo metadata for xLLM-AI/xllm - archived false, 1,543 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ccecee8eeaa99c80fc3e1bbaca5ebb148416d21dfafe224da4523af644d6499b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/xLLM-AI/xllm/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c9a5508ed5a4ea2a09aedd222c7d82800afaf492b6d67ef7a409ed92dab9d446
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,543 GitHub stars, which lands in the 1K-10K band of the stars scale. The `xllm` package on PyPI is a different
+    project - bobazooba/xllm, an LLM finetuning library - so no package artifact is declared here and stars are
+    the only instrument available.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/xLLM-AI/xllm
+    shows: Repo metadata - stargazers_count = 1,543 - for xLLM-AI/xllm.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ccecee8eeaa99c80fc3e1bbaca5ebb148416d21dfafe224da4523af644d6499b
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Service-engine decoupled serving on Chinese accelerators, with the scheduling and availability layer separated
+    from the computation layer.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor. It carries the serving shape vllm does but over a narrower hardware target
+    - Chinese AI accelerators rather than the multi-vendor set vllm reaches - which is the same reasoning that places
+    lmdeploy one below.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/xLLM-AI/xllm/main/README.md
+    shows: 'README, read for the engine''s feature set: Service-engine decoupled serving on Chinese accelerators,
+      with the scheduling and availability layer separated from the computation layer.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c9a5508ed5a4ea2a09aedd222c7d82800afaf492b6d67ef7a409ed92dab9d446

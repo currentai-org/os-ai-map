@@ -1,0 +1,80 @@
+product: litert-lm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken
+    from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/google-ai-edge/LiteRT-LM
+    shows: Repo metadata for google-ai-edge/LiteRT-LM - archived false, 6,334 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: f14471a7f4d17517bcef5f408345766277f3feae3df066f3df015e94053a35d7
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: 22,328 downloads of litert-lm in the trailing 30 days, which bands at 10K-100K, level 2 on the software
+    adoption scale. The package resolves to this repository, so the figure is the product's own.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://pypistats.org/api/packages/litert-lm/recent
+    shows: trailing 30-day download figure
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: d2b60ab0f1297796d592df2496ac98bc7e5d05c117bee550bbe373ca8b79fa9c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Cross-platform on-device orchestration of language models over the LiteRT runtime, distributed as a CLI
+    and a C API.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor. It runs models on edge hardware rather than serving them from a datacenter,
+    so none of the batching, parallelism or multi-tenant surface the top bands rest on applies.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md
+    shows: 'README, read for the engine''s feature set: Cross-platform on-device orchestration of language models
+      over the LiteRT runtime, distributed as a CLI and a C API.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447

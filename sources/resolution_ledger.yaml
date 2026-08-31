@@ -1491,6 +1491,15 @@ resolutions:
   decided_on: '2026-08-30'
   note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
     Milvus and Pinecone were moved on 2026-08-18
+- repo: TraceMachina/nativelink
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: a Bazel and Buck2 build cache and remote execution system, not AI infrastructure - it distributes
+    build actions, not model inference. Separately, its licence is FSL-1.1-Apache-2.0, which forbids a
+    Competing Use and converts to Apache-2.0 only on the second anniversary of each release, so it would
+    score source_available rather than open even if it were in scope.
 - repo: tracer-cloud/opensre
   verdict: excluded_boundary
   boundary: domain-applications
@@ -1763,6 +1772,25 @@ resolutions:
   decided_on: '2026-08-30'
   note: repository of head product `agent2agent-protocol`, which declares no github artifact. Canonical
     casing is `a2aproject/A2A`
+- repo: abetlen/llama-cpp-python
+  verdict: existing_product
+  product: llama-cpp
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'Simple Python bindings for @ggerganov''s llama.cpp library, published by a different owner. Recorded
+    so no sweep proposes it as a product, but deliberately NOT declared as one of llama-cpp''s artifacts:
+    declared artifacts are the measurement identity - sum_stars_across_artifacts sums stars across them
+    and the adoption unit is downloads summed across declared artifacts - so the binding''s own reach
+    would be counted as the engine''s. Same distinction as a client package: the relationship is real,
+    the measurement identity is not shared.'
+- repo: microsoft/onnxruntime-genai
+  verdict: existing_product
+  product: onnx-runtime
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a extension layer of onnx-runtime, declared as one of its artifacts rather than as a product
+    of its own. Its README says so: "It implements the generative AI loop for ONNX models, including pre
+    and post processing, inference with ONNX Runtime, logits processing, search and sa"'
 - repo: modelcontextprotocol/modelcontextprotocol
   verdict: existing_product
   product: model-context-protocol
@@ -1770,6 +1798,38 @@ resolutions:
   decided_on: '2026-08-30'
   note: spec repository of head product `model-context-protocol`, which declares no github artifact, so
     repo-level dedup misses it
+- repo: software-mansion/react-native-executorch
+  verdict: existing_product
+  product: executorch
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'A third-party React Native binding over the ExecuTorch runtime, published by Software Mansion.
+    Recorded so no sweep proposes it as a product, and deliberately not declared as an executorch artifact
+    for the same reason: its 1,705 stars measure adoption of the binding, not of the runtime.'
+- repo: vllm-project/production-stack
+  verdict: existing_product
+  product: vllm
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a reference deployment of vllm, declared as one of its artifacts rather than as a product of
+    its own. Its README says so: "vLLM Production Stack project provides a reference implementation on
+    how to build an inference stack on top of vLLM."'
+- repo: vllm-project/vllm-ascend
+  verdict: existing_product
+  product: vllm
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a plugin/backend of vllm, declared as one of its artifacts rather than as a product of its own.
+    Its README says so: "vLLM Ascend (`vllm-ascend`) is a community maintained hardware plugin for running
+    vLLM seamlessly on the Ascend NPU."'
+- repo: vllm-project/vllm-omni
+  verdict: existing_product
+  product: vllm
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a variant of vllm, declared as one of its artifacts rather than as a product of its own. Its
+    README says so: "vLLM-Omni is a framework that extends its support for omni-modality model inference
+    and serving."'
 - repo: apify/apify-mcp-server
   verdict: sku_of
   product: apify
@@ -1813,11 +1873,37 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: structured generation; same shape as instructor
+- repo: kaito-project/kaito
+  verdict: unresolved
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: 'a Kubernetes operator suite that automates model inference and fine-tuning, so the category is
+    a deployment-or-inference_code call. Held for a licence reading first: GitHub reports NOASSERTION
+    because its LICENSE is Apache-2.0 REWORDED rather than verbatim - the section 2 grant has been rewritten
+    to inline the redistribution conditions and the Contributor definition appears dropped. It adds no
+    threshold, carve-out or use restriction, but the ladder tiers by literal licence name and a modified
+    text is not the approved one, which is a call for a person.'
 - repo: kubeflow/trainer
   verdict: unresolved
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: Kubeflow distributed training; sits between deployment and finetuning_code
+- repo: kvcache-ai/Mooncake
+  verdict: unresolved
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a KVCache-centric disaggregated serving platform whose Transfer Engine and Store are consumed
+    by vLLM and SGLang rather than serving inference itself. Same boundary question as LMCache. Note for
+    whoever takes it: its licence file is named LICENSE-APACHE, which a pipeline reading only LICENSE*
+    will miss.'
+- repo: LMCache/LMCache
+  verdict: unresolved
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: a KV cache management layer, not an engine. Its README says it "can be used as a KV cache layer
+    for a range of mainstream open-source serving engines", so inference_code - defined as engines and
+    runtimes that serve inference - does not fit, and neither obviously does compilers. Needs a category
+    call.
 - repo: modelcontextprotocol/go-sdk
   verdict: unresolved
   decided_in: '#413'
@@ -1872,6 +1958,14 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: a continuous inference benchmark platform; closer to benchmark_eval_data
+- repo: stacklok/toolhive
+  verdict: unresolved
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: runs and isolates MCP servers in containers with per-request policy - a control plane for agent
+    tools rather than for model inference, so it sits between deployment and agent_tools_protocols. Its
+    Apache-2.0 body is stock; the Stacklok Enterprise platform it links is a separate product sold alongside,
+    which is the langchain shape and not a gated core.
 - repo: yamadashy/repomix
   verdict: unresolved
   decided_in: '#418 review'

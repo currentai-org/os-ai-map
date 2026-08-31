@@ -14,19 +14,18 @@ openness:
       value: vLLM-project
       detail: community,PyTorch-ecosystem adjacent
   confidence: high
-  note: Apache-2.0 across the repo, re-confirmed today against the LICENSE body. The published tree is the
-    full engine with no commercial edition or enterprise-licensed directory, so nothing is gated out of
-    the source. Governance sits with the vLLM project community, adjacent to the PyTorch ecosystem.
+  note: Apache-2.0 across the repo, re-confirmed today against the LICENSE body. The published tree is the full
+    engine with no commercial edition or enterprise-licensed directory, so nothing is gated out of the source. Governance
+    sits with the vLLM project community, adjacent to the PyTorch ecosystem.
   last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated;governance:vLLM-project(community,PyTorch-ecosystem
     adjacent)
   sources:
   - url: https://github.com/vllm-project/vllm
-    shows: Public repository vllm-project/vllm, described as "A high-throughput and memory-efficient inference
-      and serving engine for LLMs"; full source tree with no commercial edition or enterprise-licensed directory
-      - the page's only "Enterprise"/"Pricing" strings are GitHub's own site navigation; README states it
-      was originally developed in the Sky Computing Lab at UC Berkeley and is now maintained by a diverse
-      community.
+    shows: Public repository vllm-project/vllm, described as "A high-throughput and memory-efficient inference and
+      serving engine for LLMs"; full source tree with no commercial edition or enterprise-licensed directory - the
+      page's only "Enterprise"/"Pricing" strings are GitHub's own site navigation; README states it was originally
+      developed in the Sky Computing Lab at UC Berkeley and is now maintained by a diverse community.
     accessed: '2026-08-09'
     establishes:
     - source
@@ -68,18 +67,21 @@ capability:
   score: 5
   basis: benchmark
   basis_detail: MLPerf Inference v6.0 (AMD Instinct MI355X submission, April 2026)
-  value: null
+  value: PagedAttention with continuous batching, prefix caching and chunked prefill; tensor, pipeline, data, expert
+    and context parallelism for distributed inference; speculative decoding; FP8 and other quantization; multi-LoRA;
+    an OpenAI-compatible API server; 200+ model architectures.
   confidence: high
-  note: vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, covering
-    gpt-oss-120b, Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency,
-    and the project reports support for 200+ model architectures on Hugging Face. It is the capability anchor
-    for this category, the engine the others here are placed relative to.
-  last_verified: '2026-08-09'
+  note: vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, covering gpt-oss-120b,
+    Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency, and the project reports
+    support for 200+ model architectures on Hugging Face. It is the capability anchor for this category, the engine
+    the others here are placed relative to. The feature set is recorded in `value` because an anchor other records
+    are banded against has to say what it is, or "one below vllm" points at nothing.
+  last_verified: '2026-08-31'
   sources:
   - url: https://rocm.blogs.amd.com/artificial-intelligence/mlperf-inference-v6.0/README.html
-    shows: AMD Instinct MI355X MLPerf Inference v6.0 submission; "tuning experiments were conducted on vLLM
-      parameters and used to refine the scheduler configurations", and the Llama 3.1 405B multi-node run
-      used "an AMD MLPerf Stack with vLLM" at 97-98% scaling efficiency.
+    shows: AMD Instinct MI355X MLPerf Inference v6.0 submission; "tuning experiments were conducted on vLLM parameters
+      and used to refine the scheduler configurations", and the Llama 3.1 405B multi-node run used "an AMD MLPerf
+      Stack with vLLM" at 97-98% scaling efficiency.
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 91705e11f8905706f022c434c23e982a8e5720edecdee78eacc4bc9d0b2bcfdc
@@ -88,3 +90,10 @@ capability:
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 3723432a3cb40acc8cfb3cfe7a575360fa1a5fe60affd907883e38adf18423ed
+  - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+    shows: 'README feature list, read for the anchor''s own capability surface: PagedAttention, continuous batching,
+      prefix caching, chunked prefill, speculative decoding, FP8 quantization, multi-LoRA, an OpenAI-compatible
+      API server, and "200+ model architectures".'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
