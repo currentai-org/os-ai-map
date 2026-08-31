@@ -90,23 +90,31 @@ jobs:
       #
       # The cron stays as a backstop. This makes the normal case immediate rather than eventual.
       #
-      # Reuses GH_FETCH_TOKEN rather than minting a second secret. It is already a classic PAT
-      # with the repo scope (refresh-data.yml asserts exactly that before it runs), and that scope
-      # is what POSTing a dispatch to aipotluck.org requires. A dedicated token would buy
-      # independent expiry; it would also be a second thing to rotate and forget.
+      # Reuses GH_FETCH_TOKEN rather than minting a second secret. Note what that token actually
+      # carries: refresh-data.yml's preflight accepts `repo` OR `public_repo`, and every other
+      # use of it is against this repository, which is public — so public_repo has always been
+      # sufficient and nothing ever asserted more. aipotluck.org is private, a public_repo token
+      # cannot see it, and GitHub masks that as 404 rather than 403 so a token cannot probe for
+      # private repositories it lacks. Until the secret carries `repo`, this step cannot succeed.
       #
-      # Skips cleanly when the token is absent, because a missing secret should degrade to the
-      # old behaviour rather than fail a publish that already succeeded. A token that is present
-      # but rejected is a different case and fails loudly, via curl --fail-with-body.
+      # continue-on-error is deliberate. Notification runs after the commit that publishes, so a
+      # failure here fails a run whose publish already succeeded: on 2026-08-30 both publish runs
+      # went red (06:45, 21:23) with the payload sitting correctly on main.
+      # The step still shows a red X and its annotation still reaches the run summary; the job
+      # goes green, because a notification is not the publish. The cron backstop covers the gap.
       - name: Notify aipotluck.org that new data is published
         if: steps.commit.outputs.published == 'true'
+        continue-on-error: true
         env:
           DISPATCH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
+          # exit 1, not exit 0. The previous version exited 0 here, which reported success for a
+          # notification it had not sent — the 2026-08-29 10:19 run looked green on an unset
+          # secret. That is the silent no-op CUR-570 exists to remove.
           if [ -z "$DISPATCH_TOKEN" ]; then
-            echo "::notice::GH_FETCH_TOKEN not set — skipping publish notification." \
-                 "aipotluck.org will pick this up on its daily cron instead."
-            exit 0
+            echo "::error::GH_FETCH_TOKEN is not set, so no publish notification was sent." \
+                 "aipotluck.org will pick this up on its cron backstop instead."
+            exit 1
           fi
           GENERATED=$(python3 -c "import json;print(json.load(open('build/notebook_data.json'))['generated'])")
           CONTRACT=$(python3 -c "import json;print(json.load(open('build/notebook_data.json')).get('contract',1))")
@@ -116,10 +124,33 @@ jobs:
           # trigger commit separately for anyone who wants it.
           PUBLISHED_SHA="${{ steps.commit.outputs.published_sha }}"
           echo "Notifying aipotluck.org: generated=$GENERATED contract=$CONTRACT source_sha=$PUBLISHED_SHA trigger_sha=$GITHUB_SHA"
-          curl --fail-with-body --silent --show-error \
+          # Capture the status instead of --fail-with-body, so a delivery failure can say which
+          # failure it is: `curl: (22) 404` alone does not say whether the token, the URL or
+          # the event type is at fault.
+          STATUS=$(curl --silent --show-error --output /tmp/dispatch-response \
+            --write-out '%{http_code}' \
             -X POST \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $DISPATCH_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/currentai-org/aipotluck.org/dispatches \
-            -d "{\"event_type\":\"gap-map-data-published\",\"client_payload\":{\"generated\":\"$GENERATED\",\"contract\":$CONTRACT,\"source_sha\":\"$PUBLISHED_SHA\",\"trigger_sha\":\"$GITHUB_SHA\"}}"
+            -d "{\"event_type\":\"gap-map-data-published\",\"client_payload\":{\"generated\":\"$GENERATED\",\"contract\":$CONTRACT,\"source_sha\":\"$PUBLISHED_SHA\",\"trigger_sha\":\"$GITHUB_SHA\"}}")
+          case "$STATUS" in
+            204)
+              echo "Dispatched gap-map-data-published to aipotluck.org."
+              ;;
+            401|403|404)
+              echo "::error::aipotluck.org/dispatches returned $STATUS. That repository is" \
+                   "private, so this almost always means GH_FETCH_TOKEN cannot see it: a classic" \
+                   "PAT with public_repo returns 404 here and needs the full repo scope. The" \
+                   "publish itself succeeded and aipotluck.org will sync on its cron backstop."
+              cat /tmp/dispatch-response
+              exit 1
+              ;;
+            *)
+              echo "::error::aipotluck.org/dispatches returned an unexpected $STATUS. The" \
+                   "publish itself succeeded; aipotluck.org will sync on its cron backstop."
+              cat /tmp/dispatch-response
+              exit 1
+              ;;
+          esac
