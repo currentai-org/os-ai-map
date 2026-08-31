@@ -1,0 +1,84 @@
+product: executorch
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the BSD-3-Clause text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock BSD 3-Clause text carrying eight copyright holders - Meta, Arm,
+      Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which is why the API reports NOASSERTION. No appended
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c58707ea5d5c0ee17af7e16f1377e4d31ad1533492ab0bf9b87ebd9f718f9e7b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pytorch/executorch
+    shows: Repo metadata for pytorch/executorch - archived false, 4,969 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 22238b2379d9b1eef9ab9fa34c66650d1cc0fd7894c4a24b7441cae4a0027fa7
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,969 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3.
+    No package artifact is declared for this record, so stars are the only instrument available and the band should
+    be read as a floor.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/pytorch/executorch
+    shows: Repo metadata - stargazers_count = 4,969 - for pytorch/executorch.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 22238b2379d9b1eef9ab9fa34c66650d1cc0fd7894c4a24b7441cae4a0027fa7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: On-device execution of exported models through a ~50KB C++ runtime, with an export and lowering toolchain
+    and backends across a dozen hardware vendors.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor, level with the other on-device runtimes here. It executes models on edge
+    hardware rather than serving them from a datacenter, so the batching, parallelism and multi-tenant surface the
+    top bands rest on does not apply.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: 'README, read for the engine''s feature set: On-device execution of exported models through a ~50KB C++
+      runtime, with an export and lowering toolchain and backends across a dozen hardware vendors.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c

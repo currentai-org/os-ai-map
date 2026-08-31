@@ -1,0 +1,83 @@
+product: sonar
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the AGPL-3.0 text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:AGPL-3.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/dphnAI/sonar/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock GNU AGPL-3.0 text, with only template placeholders in its appendix
+      and no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 06b332e1fa559c005a0fc8099741d88beb63d2433548c23931d2c396ca41aa72
+    establishes:
+    - license
+  - url: https://api.github.com/repos/dphnAI/sonar
+    shows: Repo metadata for dphnAI/sonar - archived false, 1,844 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: b6a3979d32beea56ba47bd7598ea9261acb4a5a9ea1840e8e7cf582b11bb2d37
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/dphnAI/sonar/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 6fb7952a2f0248c4d71980ad84822e027fe8714e2b2b915438dc044fcf7f8d9d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,844 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3.
+    No package artifact is declared for this record, so stars are the only instrument available and the band should
+    be read as a floor.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/dphnAI/sonar
+    shows: Repo metadata - stargazers_count = 1,844 - for dphnAI/sonar.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: b6a3979d32beea56ba47bd7598ea9261acb4a5a9ea1840e8e7cf582b11bb2d37
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Continuous batching, paged KV-cache management, optimized kernels, quantization, speculative decoding and
+    distributed serving over Hugging Face-compatible models.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor rather than level with it. The feature list matches the anchor's closely,
+    but Sonar is a fork of it, so the capability is inherited rather than independently established - and sglang
+    holds the `at` band on a record of its own.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/dphnAI/sonar/main/README.md
+    shows: 'README, read for the engine''s feature set: Continuous batching, paged KV-cache management, optimized
+      kernels, quantization, speculative decoding and distributed serving over Hugging Face-compatible models.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 6fb7952a2f0248c4d71980ad84822e027fe8714e2b2b915438dc044fcf7f8d9d

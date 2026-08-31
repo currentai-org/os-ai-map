@@ -1491,6 +1491,15 @@ resolutions:
   decided_on: '2026-08-30'
   note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
     Milvus and Pinecone were moved on 2026-08-18
+- repo: TraceMachina/nativelink
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: a Bazel and Buck2 build cache and remote execution system, not AI infrastructure - it distributes
+    build actions, not model inference. Separately, its licence is FSL-1.1-Apache-2.0, which forbids a
+    Competing Use and converts to Apache-2.0 only on the second anniversary of each release, so it would
+    score source_available rather than open even if it were in scope.
 - repo: tracer-cloud/opensre
   verdict: excluded_boundary
   boundary: domain-applications
@@ -1785,6 +1794,14 @@ resolutions:
   decided_on: '2026-08-30'
   note: spec repository of head product `model-context-protocol`, which declares no github artifact, so
     repo-level dedup misses it
+- repo: software-mansion/react-native-executorch
+  verdict: existing_product
+  product: executorch
+  decided_in: '#424 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a third-party React Native binding over the ExecuTorch runtime, declared as one of its artifacts.
+    Its README says so: "React Native ExecuTorch provides a declarative way to run AI models on-device
+    using React Native, powered by ExecuTorch".'
 - repo: vllm-project/production-stack
   verdict: existing_product
   product: vllm
@@ -1852,6 +1869,16 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: structured generation; same shape as instructor
+- repo: kaito-project/kaito
+  verdict: unresolved
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: 'a Kubernetes operator suite that automates model inference and fine-tuning, so the category is
+    a deployment-or-inference_code call. Held for a licence reading first: GitHub reports NOASSERTION
+    because its LICENSE is Apache-2.0 REWORDED rather than verbatim - the section 2 grant has been rewritten
+    to inline the redistribution conditions and the Contributor definition appears dropped. It adds no
+    threshold, carve-out or use restriction, but the ladder tiers by literal licence name and a modified
+    text is not the approved one, which is a call for a person.'
 - repo: kubeflow/trainer
   verdict: unresolved
   decided_in: '#418 review'
@@ -1927,6 +1954,14 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: a continuous inference benchmark platform; closer to benchmark_eval_data
+- repo: stacklok/toolhive
+  verdict: unresolved
+  decided_in: '#424 deployment triage'
+  decided_on: '2026-08-31'
+  note: runs and isolates MCP servers in containers with per-request policy - a control plane for agent
+    tools rather than for model inference, so it sits between deployment and agent_tools_protocols. Its
+    Apache-2.0 body is stock; the Stacklok Enterprise platform it links is a separate product sold alongside,
+    which is the langchain shape and not a gated core.
 - repo: yamadashy/repomix
   verdict: unresolved
   decided_in: '#418 review'

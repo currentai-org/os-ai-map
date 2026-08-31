@@ -1,0 +1,81 @@
+product: rtp-llm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries
+    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/alibaba/rtp-llm/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text with the copyright placeholder unfilled and no
+      appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/alibaba/rtp-llm
+    shows: Repo metadata for alibaba/rtp-llm - archived false, 1,321 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bf064ef3932577ce6d685dd0269258708ed2dd16ab7f08cf5a9126ea7b09ce7d
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/alibaba/rtp-llm/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: cde58630dd704a1d68f55ca812318dab1ee6c3e4016b1f3681eab9ce63270dac
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,321 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3.
+    No package artifact is declared for this record, so stars are the only instrument available and the band should
+    be read as a floor.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/alibaba/rtp-llm
+    shows: Repo metadata - stargazers_count = 1,321 - for alibaba/rtp-llm.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bf064ef3932577ce6d685dd0269258708ed2dd16ab7f08cf5a9126ea7b09ce7d
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: LLM inference acceleration, derived from FasterTransformer and maintained for Alibaba's own serving.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the vllm anchor. It accelerates inference as the anchor does, but over a narrower published
+    surface: no multi-node serving record and no OpenAI-compatible API server is documented.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/alibaba/rtp-llm/main/README.md
+    shows: 'README, read for the engine''s feature set: LLM inference acceleration, derived from FasterTransformer
+      and maintained for Alibaba''s own serving.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: cde58630dd704a1d68f55ca812318dab1ee6c3e4016b1f3681eab9ce63270dac
