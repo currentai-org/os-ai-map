@@ -1,0 +1,80 @@
+product: miles
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: radixark/miles
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier described in the README
+  confidence: high
+  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
+    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
+    and no paid tier described in the readme.'
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(radixark/miles);core-gated:ungated(no enterprise or ee path in the
+    repository root and no paid tier described in the README)
+  sources:
+  - url: https://raw.githubusercontent.com/radixark/miles/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bf917707c1e0ffdfe653d63aebc188a48f738f3faad9acc188c346d3618694af
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/radixark/miles/main/README.md
+    shows: 'README, read for the distribution and gating question: it describes installing and running the code
+      from this repository and names no enterprise, paid or licence-gated build.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 374fb26c8d3466bafcb5b502542603c395ce880ccbe3958d6601c34af19b8466
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  banded_quantity: 2,293 GitHub stargazers on radixark/miles, the product's only declared artifact
+  note: No package registry carries this product, so stars are the only available signal and the band is capped
+    at 3 by the instrument. 2,293 stargazers places it at level 2. Stars measure attention rather than use, which
+    is why the confidence is low. A PyPI project named `miles` exists but belongs to an unrelated package - version
+    0.1, no summary and no project URLs pointing at this repository - so it is not declared here.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/radixark/miles
+    shows: 'Repo metadata for radixark/miles: stargazers_count 2293, archived false, pushed_at 2026-08-31.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: d8908940f12e533ee673cc215780744a217697d6946546feea592da9c2637430
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Architecture: SGLang rollout paired with Megatron-LM training, plus a PyTorch FSDP2 backend for training
+    the HuggingFace implementation as-is; fully asynchronous RL with decoupled rollout and training workers and
+    configurable on- and off-policy schedules; TP/PP/EP parallelism; FP8; in-loop weight updates over P2P RDMA at
+    trillion-parameter scale (Kimi-K2.6). Frontier-scale RL infrastructure, but a narrower published method catalog
+    than verl''s.'
+  confidence: medium
+  note: Miles runs RL post-training at trillion-parameter scale on a Megatron-LM training backend with SGLang rollout,
+    and its async design and P2P RDMA weight transfer are the same class of infrastructure verl provides. It sits
+    one band below verl because verl publishes a substantially wider algorithm catalogue (PPO, GRPO, RLOO, ReMax,
+    REINFORCE++, GSPO, PRIME, DAPO, DrGRPO plus SFT/DPO) while Miles documents PPO and GRPO; method breadth is what
+    separates the top two bands in this category.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/radixark/miles/main/README.md
+    shows: About and Performance sections describe pairing SGLang for rollout with Megatron-LM for scalable training,
+      a PyTorch FSDP2 backend alternative, fully async RL with decoupled rollout/training workers, and in-loop weight
+      updates over P2P RDMA on a trillion-parameter model (Kimi-K2.6).
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 374fb26c8d3466bafcb5b502542603c395ce880ccbe3958d6601c34af19b8466

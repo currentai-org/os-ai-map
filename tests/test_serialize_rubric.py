@@ -799,7 +799,7 @@ def test_real_sources_serialize_without_errors():
         # aws-neuron each already recorded the deciding dimension and were publishing nothing
         # because a deferred product publishes nothing; the score moved to what the ladder
         # computes and the rows appeared.
-        "finetuning_code": 139, "inference_code": 138, "ml_frameworks": 88,
+        "finetuning_code": 159, "inference_code": 138, "ml_frameworks": 88,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when

@@ -1,0 +1,86 @@
+product: areal
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: areal-project/AReaL
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier described in the README
+  confidence: high
+  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
+    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
+    and no paid tier described in the readme.'
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(areal-project/AReaL);core-gated:ungated(no enterprise or ee path in
+    the repository root and no paid tier described in the README)
+  sources:
+  - url: https://raw.githubusercontent.com/areal-project/AReaL/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 741b336b77e0681e75c7fd308564c562479a22facfd5a6c4e370f40d95d2f95c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/areal-project/AReaL/main/README.md
+    shows: 'README, read for the distribution and gating question: it describes installing and running the code
+      from this repository and names no enterprise, paid or licence-gated build.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 86985a8d5dd1947f8aa53569062ae78c4632c13d91f8728407b95eaa9b93a874
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  banded_quantity: 45 PyPI downloads in the last 30 days for the areal package
+  note: Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real
+    usage signal. The figure is small - 45 downloads in 30 days against 5,705 GitHub stars - because this project
+    is consumed by cloning and installing from source rather than from the registry. Recording the authoritative
+    measurement understates reach; substituting the larger star count would overstate use, and the routing table
+    forbids falling through to a weaker signal when an authoritative one exists.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://pypistats.org/api/packages/areal/recent
+    shows: last_month 45, last_week 9, last_day 3 for the areal package.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c199dbab35142f6ab9d8cbf15f7e1aaef408b6bbf3b716110eca5a9fb42ae7bc
+  - url: https://api.github.com/repos/areal-project/AReaL
+    shows: 'Repo metadata for areal-project/AReaL: stargazers_count 5705, archived false, pushed_at 2026-08-31 -
+      the attention figure the note contrasts with the download count.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: bbae84ca90f428dbc20065f3a6918cea4845f44e5f787e0ed5b31dc14631c077
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: GRPO family, PPO, DPO and SFT with LoRA; fully asynchronous RL decoupling rollout from policy
+    update; training backends FSDP and Megatron; inference backends vLLM and SGLang; TP/PP/EP and sequence parallelism;
+    documented agentic and vision-language RL examples. Comparable distributed-RL breadth to OpenRLHF, with a stronger
+    agentic emphasis.'
+  confidence: medium
+  note: 'AReaL''s support matrix lists the algorithm, model, training-backend and inference-backend axes that place
+    OpenRLHF at 4: multiple RL algorithms over FSDP/Megatron training with vLLM/SGLang rollout, scaled by TP/PP/EP.
+    It is scored at OpenRLHF rather than above it because the two cover the same ground from different angles -
+    OpenRLHF on Ray-scheduled RLHF at 70B+, AReaL on asynchronous agentic RL - and neither reaches the method catalogue
+    of verl or nemo-rl.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/areal-project/AReaL/main/README.md
+    shows: Support Matrix section lists Algorithms, Models, Training Backends and Inference Backends; the README
+      describes a fully asynchronous RL paradigm and carries Math & Reasoning, Agentic RL and Vision-Language Model
+      example sets.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 86985a8d5dd1947f8aa53569062ae78c4632c13d91f8728407b95eaa9b93a874
