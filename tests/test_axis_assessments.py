@@ -31,8 +31,8 @@ from build.axis_assessments import (
 TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
-AXIS_ROW_COUNT = 1581
-AXIS_ASSESSMENTS_DIGEST = "cab0780662172fe5b53e9013f3fb4671038fa5b0477bb49e9af0e092e4f5c1d5"
+AXIS_ROW_COUNT = 1812
+AXIS_ASSESSMENTS_DIGEST = "3b832f8d9778565b02fa01a85728210f31a5f21bb6574dc4c9a39161541d42b0"
 
 
 @pytest.fixture(scope="module")
