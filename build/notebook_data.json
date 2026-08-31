@@ -12956,6 +12956,442 @@
             "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "This entry covers both components shipped from the NVIDIA/Megatron-LM repository, and the scores are read against that repository rather than the Megatron Core package alone. Verified 2026-08-08 via the NVIDIA/Megatron-LM README and the Megatron Core developer documentation."
+        },
+        {
+          "slug": "miles",
+          "product": "Miles",
+          "org_slug": "radixark",
+          "org": "RadixArk",
+          "type": "software",
+          "description": "Miles is a reinforcement learning framework for post-training large language and vision-language models. It pairs SGLang for rollout generation with Megatron-LM for training and offers a PyTorch FSDP2 backend as an alternative, with rollout and training workers decoupled so runs can be fully asynchronous. It is a fork of slime, maintained by RadixArk.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(radixark/miles);core-gated:ungated(no enterprise or ee path in the repository root and no paid tier described in the README)",
+            "confidence": "high",
+            "note": "Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root and no paid tier described in the readme.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/radixark/miles/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bf917707c1e0ffdfe653d63aebc188a48f738f3faad9acc188c346d3618694af",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/radixark/miles/main/README.md",
+                "shows": "README, read for the distribution and gating question: it describes installing and running the code from this repository and names no enterprise, paid or licence-gated build.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "374fb26c8d3466bafcb5b502542603c395ce880ccbe3958d6601c34af19b8466",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "banded_quantity": "2,293 GitHub stargazers on radixark/miles, the product's only declared artifact",
+            "note": "No package registry carries this product, so stars are the only available signal and the band is capped at 3 by the instrument. 2,293 stargazers places it at level 2. Stars measure attention rather than use, which is why the confidence is low. A PyPI project named `miles` exists but belongs to an unrelated package - version 0.1, no summary and no project URLs pointing at this repository - so it is not declared here.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/radixark/miles",
+                "shows": "Repo metadata for radixark/miles: stargazers_count 2293, archived false, pushed_at 2026-08-31.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "d8908940f12e533ee673cc215780744a217697d6946546feea592da9c2637430"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Architecture: SGLang rollout paired with Megatron-LM training, plus a PyTorch FSDP2 backend for training the HuggingFace implementation as-is; fully asynchronous RL with decoupled rollout and training workers and configurable on- and off-policy schedules; TP/PP/EP parallelism; FP8; in-loop weight updates over P2P RDMA at trillion-parameter scale (Kimi-K2.6). Frontier-scale RL infrastructure, but a narrower published method catalog than verl's.",
+            "confidence": "medium",
+            "note": "Miles runs RL post-training at trillion-parameter scale on a Megatron-LM training backend with SGLang rollout, and its async design and P2P RDMA weight transfer are the same class of infrastructure verl provides. It sits one band below verl because verl publishes a substantially wider algorithm catalogue (PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO, DrGRPO plus SFT/DPO) while Miles documents PPO and GRPO; method breadth is what separates the top two bands in this category.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/radixark/miles/main/README.md",
+                "shows": "About and Performance sections describe pairing SGLang for rollout with Megatron-LM for scalable training, a PyTorch FSDP2 backend alternative, fully async RL with decoupled rollout/training workers, and in-loop weight updates over P2P RDMA on a trillion-parameter model (Kimi-K2.6).",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "374fb26c8d3466bafcb5b502542603c395ce880ccbe3958d6601c34af19b8466"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via the repository LICENSE and README."
+        },
+        {
+          "slug": "areal",
+          "product": "AReaL",
+          "org_slug": "areal-project",
+          "org": "AReaL Project",
+          "type": "software",
+          "description": "AReaL is a reinforcement learning system for training reasoning and agentic language models. It uses a fully asynchronous training paradigm that decouples rollout generation from policy updates, and supports FSDP and Megatron training backends with vLLM and SGLang inference backends. It was developed by the AReaL Team at Tsinghua IIIS and Ant Group.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(areal-project/AReaL);core-gated:ungated(no enterprise or ee path in the repository root and no paid tier described in the README)",
+            "confidence": "high",
+            "note": "Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root and no paid tier described in the readme.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/areal-project/AReaL/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "741b336b77e0681e75c7fd308564c562479a22facfd5a6c4e370f40d95d2f95c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/areal-project/AReaL/main/README.md",
+                "shows": "README, read for the distribution and gating question: it describes installing and running the code from this repository and names no enterprise, paid or licence-gated build.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "86985a8d5dd1947f8aa53569062ae78c4632c13d91f8728407b95eaa9b93a874",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "banded_quantity": "45 PyPI downloads in the last 30 days for the areal package",
+            "note": "Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real usage signal. The figure is small - 45 downloads in 30 days against 5,705 GitHub stars - because this project is consumed by cloning and installing from source rather than from the registry. Recording the authoritative measurement understates reach; substituting the larger star count would overstate use, and the routing table forbids falling through to a weaker signal when an authoritative one exists.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/areal/recent",
+                "shows": "last_month 45, last_week 9, last_day 3 for the areal package.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c199dbab35142f6ab9d8cbf15f7e1aaef408b6bbf3b716110eca5a9fb42ae7bc"
+              },
+              {
+                "url": "https://api.github.com/repos/areal-project/AReaL",
+                "shows": "Repo metadata for areal-project/AReaL: stargazers_count 5705, archived false, pushed_at 2026-08-31 - the attention figure the note contrasts with the download count.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bbae84ca90f428dbc20065f3a6918cea4845f44e5f787e0ed5b31dc14631c077"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Methods: GRPO family, PPO, DPO and SFT with LoRA; fully asynchronous RL decoupling rollout from policy update; training backends FSDP and Megatron; inference backends vLLM and SGLang; TP/PP/EP and sequence parallelism; documented agentic and vision-language RL examples. Comparable distributed-RL breadth to OpenRLHF, with a stronger agentic emphasis.",
+            "confidence": "medium",
+            "note": "AReaL's support matrix lists the algorithm, model, training-backend and inference-backend axes that place OpenRLHF at 4: multiple RL algorithms over FSDP/Megatron training with vLLM/SGLang rollout, scaled by TP/PP/EP. It is scored at OpenRLHF rather than above it because the two cover the same ground from different angles - OpenRLHF on Ray-scheduled RLHF at 70B+, AReaL on asynchronous agentic RL - and neither reaches the method catalogue of verl or nemo-rl.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/areal-project/AReaL/main/README.md",
+                "shows": "Support Matrix section lists Algorithms, Models, Training Backends and Inference Backends; the README describes a fully asynchronous RL paradigm and carries Math & Reasoning, Agentic RL and Vision-Language Model example sets.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "86985a8d5dd1947f8aa53569062ae78c4632c13d91f8728407b95eaa9b93a874"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via the repository LICENSE and README and the PyPI project page."
+        },
+        {
+          "slug": "xtuner",
+          "product": "XTuner",
+          "org_slug": "shanghai-ai-laboratory",
+          "org": "Shanghai AI Laboratory",
+          "type": "software",
+          "description": "XTuner is a training engine for large mixture-of-experts models. Version 1 targets dropless MoE training at up to 1T parameters, long-sequence training through memory optimization rather than sequence parallelism, and FSDP-based throughput for MoE models above the 200B scale. It is maintained by Shanghai AI Laboratory.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(InternLM/xtuner);core-gated:ungated(no enterprise or ee path in the repository root and no paid tier described in the README)",
+            "confidence": "high",
+            "note": "Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root and no paid tier described in the readme.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/InternLM/xtuner/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache License 2.0 text, carrying no appended term or additional condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/InternLM/xtuner/main/README.md",
+                "shows": "README, read for the distribution and gating question: it describes installing and running the code from this repository and names no enterprise, paid or licence-gated build.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8ea8e02cb3067051c568bc3b537cab0352bf3ae5ecdd0f3bf3454844d29a1935",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "banded_quantity": "1,159 PyPI downloads in the last 30 days for the xtuner package",
+            "note": "Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real usage signal. The figure is small - 1,159 downloads in 30 days against 5,187 GitHub stars - because this project is consumed by cloning and installing from source rather than from the registry. Recording the authoritative measurement understates reach; substituting the larger star count would overstate use, and the routing table forbids falling through to a weaker signal when an authoritative one exists.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/xtuner/recent",
+                "shows": "last_month 1159, last_week 112, last_day 11 for the xtuner package.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "486948dd5e2d3aca93bb6089fdf10282e435b7488525c34ea1cb838968c6d0e2"
+              },
+              {
+                "url": "https://api.github.com/repos/InternLM/xtuner",
+                "shows": "Repo metadata for InternLM/xtuner: stargazers_count 5187, archived false, pushed_at 2026-08-31 - the attention figure the note contrasts with the download count.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "1867b8c8bebe33b6a9e4b55d4e8eb8135d0c333376da83e7ed44cd34ddf9f81b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Dropless MoE training to 1T parameters; 200B-scale MoE without expert parallelism and 600B with intra-node EP only; 64k-sequence training on 200B MoE without sequence parallelism, plus DeepSpeed Ulysses support with linearly scalable sequence length; reported FSDP training throughput above traditional 3D-parallel schemes for MoE above 200B; Ascend A3 Supernode and NVIDIA paths. Specialized to MoE rather than Megatron-LM's composable general-purpose parallelism.",
+            "confidence": "medium",
+            "note": "XTuner V1's key-features section claims frontier MoE scale - 1T parameters, 200B without expert parallelism, 64k sequences without sequence parallelism - which is the scale story that places megatron-lm at 5. It sits one band below because Megatron-LM offers composable DP/TP/PP/CP/EP with Megatron-FSDP across model families and publishes weak- and strong-scaling benchmarks, whereas XTuner is specialized to MoE and its throughput claim is stated in the README rather than in a published scaling study. The same one_below relation places swift and llama-factory.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/InternLM/xtuner/main/README.md",
+                "shows": "Key Features section states dropless training of 200B MoE without expert parallelism and 600B with intra-node EP, 64k-sequence training on 200B MoE without sequence parallelism, DeepSpeed Ulysses support, MoE training up to 1T parameters, and FSDP throughput surpassing traditional 3D parallel schemes for MoE above 200B.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8ea8e02cb3067051c568bc3b537cab0352bf3ae5ecdd0f3bf3454844d29a1935"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via the repository LICENSE and README and the PyPI project page."
+        },
+        {
+          "slug": "ai-toolkit",
+          "product": "AI Toolkit",
+          "org_slug": "ostris",
+          "org": "Ostris",
+          "type": "software",
+          "description": "AI Toolkit is a training suite for fine-tuning diffusion models, covering image, instruction-edit, video and audio model families including FLUX.1, FLUX.2, Qwen-Image and Wan. It trains LoRA and LyCORIS adapters, ships a web UI for configuring and monitoring runs, and provides recipes for running on RunPod and Modal.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(ostris/ai-toolkit);core-gated:ungated(no enterprise or ee path in the repository root; the README's Ostris Cloud section offers rented GPUs to fund development and an affiliate link, not a paid tier of the software)",
+            "confidence": "high",
+            "note": "MIT, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE body was read in full: the stock MIT text, with no appended condition. No enterprise or ee path in the repository root; the readme's ostris cloud section offers rented gpus to fund development and an affiliate link, not a paid tier of the software.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ostris/ai-toolkit/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock MIT licence text, carrying no appended term or additional condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "e73058fe55271c3bb4f991e695110525c9597f254360413968e01c95b0180f51",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ostris/ai-toolkit/main/README.md",
+                "shows": "README, read for the distribution and gating question: it describes installing and running the code from this repository and names no enterprise, paid or licence-gated build. Its Ostris Cloud section offers rented GPUs to fund the project, alongside a RunPod affiliate link, rather than a paid tier of the software itself.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "6298047827c11e3e331da80aaafa33bd884eb3435618cd25731d87ed92503606",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": ">10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "banded_quantity": "11,860 GitHub stargazers on ostris/ai-toolkit, the product's only declared artifact",
+            "note": "No package registry carries this product, so stars are the only available signal and the band is capped at 3 by the instrument. 11,860 stargazers places it at level 3. Stars measure attention rather than use, which is why the confidence is low.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/ostris/ai-toolkit",
+                "shows": "Repo metadata for ostris/ai-toolkit: stargazers_count 11860, archived false, pushed_at 2026-08-30.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bccf95bc0377044e1c89de4d456a4ac36126523b74b6a118079d64be3f519865"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Model breadth: FLUX.1, FLUX.2 dev and klein-base 4B/9B, Flex.1/Flex.2, Chroma, Lumina2 and Qwen-Image, plus instruction-edit, video (Wan) and audio families. Methods: LoRA and LyCORIS adapter training; web UI for run configuration and monitoring; RunPod and Modal recipes. Adapter-focused rather than full fine-tuning, and single-node in practice.",
+            "confidence": "medium",
+            "note": "A diffusion-specialist trainer with wide and current model coverage but an adapter-centric method set and no distributed-training story. It is scored against onetrainer rather than the category anchor because megatron-lm's parallelism-and-scale ladder says nothing about a consumer-GPU diffusion trainer; 3 is where this category puts a solid method catalogue at limited scale, as it does for litgpt and torchtune.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ostris/ai-toolkit/main/README.md",
+                "shows": "Supported Models section lists FLUX.1, FLUX.2 dev and klein-base 4B/9B, Flex.1, Flex.2, Chroma, Lumina2 and Qwen-Image under Image, with further Instruction/Edit, Video, Audio and Experimental groups; the README documents LoRA and LyCORIS training and an AI Toolkit UI.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "6298047827c11e3e331da80aaafa33bd884eb3435618cd25731d87ed92503606"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via the repository LICENSE and README."
+        },
+        {
+          "slug": "onetrainer",
+          "product": "OneTrainer",
+          "org_slug": "nerogar",
+          "org": "Nerogar",
+          "type": "software",
+          "description": "OneTrainer is a training application for diffusion models, supporting full fine-tuning, LoRA and embeddings across Stable Diffusion 1.5 through 3.5, SDXL, FLUX.1, FLUX.2, Qwen Image, PixArt, Sana and Hunyuan Video. It includes masked training, EMA, aspect-ratio bucketing and multi-resolution training, and runs from either a GUI or a CLI.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI);source:public(Nerogar/OneTrainer);core-gated:ungated(no enterprise or ee path in the repository root and no paid tier described in the README)",
+            "confidence": "high",
+            "note": "AGPL-3.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE body was read in full: the stock AGPL-3.0 text ending in the standard how-to-apply appendix. AGPL is an OSI licence and this ladder places it beside Apache. No enterprise or ee path in the repository root and no paid tier described in the readme.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Nerogar/OneTrainer/master/LICENSE.txt",
+                "shows": "LICENSE.txt body, read in full: the stock GNU AGPL v3 text, carrying no appended term or additional condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Nerogar/OneTrainer/master/README.md",
+                "shows": "README, read for the distribution and gating question: it describes installing and running the code from this repository and names no enterprise, paid or licence-gated build.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "48aa32571237abf00046feee286907e91535c6ee36094918f3610aed96b8af3f",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "banded_quantity": "3,192 GitHub stargazers on Nerogar/OneTrainer, the product's only declared artifact",
+            "note": "No package registry carries this product, so stars are the only available signal and the band is capped at 3 by the instrument. 3,192 stargazers places it at level 2. Stars measure attention rather than use, which is why the confidence is low.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/Nerogar/OneTrainer",
+                "shows": "Repo metadata for Nerogar/OneTrainer: stargazers_count 3192, archived false, pushed_at 2026-08-24.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bd5d22cec3fdd0408e8375943243c016947e4f26e380891fbc867d8673a76efd"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Methods: full fine-tuning, LoRA and embeddings. Model breadth: Ernie Image, Z-Image, Qwen Image, FLUX.1, FLUX.2 Dev and Klein, Chroma, Stable Diffusion 1.5/2.0/2.1/3.0/3.5, SDXL, Wuerstchen-v2, Stable Cascade, PixArt-Alpha/Sigma, Sana, Hunyuan Video and inpainting models; diffusers and ckpt formats. Training features: masked training, EMA with optional CPU offload, aspect-ratio bucketing, multi-resolution training, noise-schedule rescaling, TensorBoard, GUI and CLI. Deeper method coverage than ai-toolkit, narrower modality coverage.",
+            "confidence": "medium",
+            "note": "Scored at ai-toolkit: the two are the category's diffusion-trainer pair and trade off against each other rather than against the LLM tools. OneTrainer reaches further on method - full fine-tuning and embeddings, not only adapters - and on training technique, while ai-toolkit reaches further on modality, covering video and audio families OneTrainer does not. Neither has a distributed-training story, which is what holds both below the 4-band tools.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Nerogar/OneTrainer/master/README.md",
+                "shows": "Features section lists supported models from Ernie Image and Z-Image through SD 1.5-3.5, SDXL, FLUX.1, Flux.2 Dev and Klein, PixArt, Sana and Hunyuan Video; training methods full fine-tuning, LoRA and embeddings; and masked training, automatic backups, image augmentation, TensorBoard, EMA with CPU offload, aspect-ratio bucketing and multi-resolution training.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "48aa32571237abf00046feee286907e91535c6ee36094918f3610aed96b8af3f"
+              }
+            ],
+            "relative_to": "ai-toolkit",
+            "relation": "at"
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via the repository LICENSE and README."
         }
       ]
     },
@@ -53222,6 +53658,19 @@
         "arduino-uno-q"
       ]
     },
+    "areal-project": {
+      "slug": "areal-project",
+      "display_name": "AReaL Project",
+      "type": "lab",
+      "homepage": "https://areal-ai.io/",
+      "github": [
+        "https://github.com/areal-project"
+      ],
+      "country": "",
+      "products": [
+        "areal"
+      ]
+    },
     "argilla": {
       "slug": "argilla",
       "display_name": "Argilla",
@@ -55175,6 +55624,19 @@
         "n8n"
       ]
     },
+    "nerogar": {
+      "slug": "nerogar",
+      "display_name": "Nerogar",
+      "type": "individual",
+      "homepage": "",
+      "github": [
+        "https://github.com/Nerogar"
+      ],
+      "country": "",
+      "products": [
+        "onetrainer"
+      ]
+    },
     "new-relic": {
       "slug": "new-relic",
       "display_name": "New Relic",
@@ -55637,6 +56099,19 @@
         "ungoliant"
       ]
     },
+    "ostris": {
+      "slug": "ostris",
+      "display_name": "Ostris",
+      "type": "individual",
+      "homepage": "https://ostris.com",
+      "github": [
+        "https://github.com/ostris"
+      ],
+      "country": "",
+      "products": [
+        "ai-toolkit"
+      ]
+    },
     "paddlepaddle": {
       "slug": "paddlepaddle",
       "display_name": "PaddlePaddle",
@@ -55887,6 +56362,19 @@
         "poe"
       ]
     },
+    "radixark": {
+      "slug": "radixark",
+      "display_name": "RadixArk",
+      "type": "company",
+      "homepage": "",
+      "github": [
+        "https://github.com/radixark"
+      ],
+      "country": "",
+      "products": [
+        "miles"
+      ]
+    },
     "radxa": {
       "slug": "radxa",
       "display_name": "Radxa",
@@ -56055,7 +56543,8 @@
       "products": [
         "internlm",
         "lmdeploy",
-        "mineru"
+        "mineru",
+        "xtuner"
       ]
     },
     "significant-gravitas": {
@@ -56849,7 +57338,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 539,
+  "n_total": 544,
   "generated": "2026-08-31",
   "version": "0.2.0",
   "released": "2026-08-16",
@@ -56860,9 +57349,9 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 539,
+      "scored": 544,
       "overlap": 309,
-      "scored_outside": 230,
+      "scored_outside": 235,
       "uncategorized": 24317,
       "universe": 24856
     },
