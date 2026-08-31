@@ -172,6 +172,14 @@ POLICY_INPUTS: dict[str, dict[str, object]] = {
 
 # Non-declaration inputs — authored nowhere as a scoring declaration.
 NON_DECLARATION_INPUTS: dict[str, str] = {
+    "resolution_ledger.yaml": (
+        "governance over what MAY become a product, not a declaration of what is one. An entry "
+        "records that a candidate repository was already resolved - to an existing product, to a "
+        "SKU, or out of scope - and changes no product's identity, artifacts or score. Binding it "
+        "into the declaration digest would re-key every declaration_version_id corpus-wide "
+        "whenever somebody wrote down a boundary decision, which is a cost the cutover plan "
+        "reserves for changes that actually move a declaration."
+    ),
     "snapshots": (
         "frozen point-in-time warehouse sample (long_tail.json), hand-synced; a re-sync is "
         "not a change in the declarations."
