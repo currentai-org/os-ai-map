@@ -99,6 +99,43 @@ answerable and a sentence never did:
 The gate ratchets like the others — it covers the products that record a comparison and does
 not block the ones that do not.
 
+### Do not force every comparison through the category anchor
+
+`relative_to` may name **any sufficiently well-supported peer in the same category** — it is not
+required to be whatever product the category compares against most often. For a distant band,
+prefer a nearer peer whose capability is independently evidenced over stretching the relation
+vocabulary to reach the anchor.
+
+This matters because the vocabulary bottoms out. Against a 5-scored peer the lowest expressible
+band is `two_below`, so a product that honestly sits at 1 or 2 cannot be placed against it at
+all. Three separate category passes hit this on the same day: `mlx-vlm` was recorded
+`one_below torchtune (3)` rather than an impossible `three_below megatron-lm (5)`, `raft`
+`one_below onednn (3)`, and nine `orchestration_agents` products against `autogpt (2)`. Each is
+a better comparison than the anchor would have been, because a nearby peer says more about a
+product than a distant one does. The answer is a nearer peer, **not** more relation values:
+adding `three_below` would encode distance from an assumed global anchor, when what the corpus
+actually holds is a peer-comparison graph.
+
+### A comparison root must itself be evidenced
+
+A peer named by `relative_to` must carry a **non-null capability score, a substantive `value`,
+and evidence behind that capability**. All three, because each failure breaks something
+different: a null score makes the subtraction meaningless, an empty or placeholder `value`
+leaves "one below X" pointing at nothing a reader can see, and an unsourced value is an
+assertion nobody can re-open.
+
+On 2026-08-31 `langfuse` was named by 22 records and `openhands` by 25, and neither recorded a
+`value`. The arithmetic invariant held on all 47 bands — a `one_below` against a 4 really was a
+3 — so `check_capability` was green while the thing being compared to was unstated. **Consistent
+is not correct.** Recording `openhands`'s surface then exposed a second problem the bands
+predated: its README now leads with a control centre that runs third-party agents, so "runs
+somebody else's loop" had quietly stopped being the low-rung discriminator nine bands in that
+category rested on. Nothing could notice the product had moved, which is the exact failure
+recording comparisons as data was meant to prevent.
+
+`build/check_capability.py` reports weak roots with their fan-out, so remediation runs in the
+order that clears the most dependent bands.
+
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the

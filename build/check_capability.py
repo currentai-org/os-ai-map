@@ -172,6 +172,51 @@ def check(scores: dict, owner: dict) -> list[str]:
     return problems
 
 
+#: A comparison root has to be substantive, not merely present. `value` is prose, so a
+#: placeholder would satisfy a null check while telling a reader nothing - hence a length floor
+#: and a requirement that the capability carry its own evidence.
+_MIN_VALUE = 40
+
+
+def weak_roots(scores: dict) -> list[tuple[str, int, list[str]]]:
+    """(peer, dependents, defects) for every product other bands are placed against.
+
+    Why this exists. On 2026-08-31 `langfuse` was named by 22 records and `openhands` by 25,
+    and NEITHER recorded a capability `value`. The arithmetic invariant above held on all 47 of
+    those bands - a `one_below` against a 4 really was a 3 - so the gate was green while the
+    thing being compared to was unstated. A reader could check the subtraction and not the
+    claim, which is the difference between consistent and correct.
+
+    A root is weak when its own capability has no score, no substantive `value`, or no evidence
+    behind it. All three matter: a null score makes the arithmetic meaningless, an empty or
+    placeholder `value` leaves "one below X" pointing at nothing, and an unsourced value is an
+    assertion the next reader cannot re-open. Fan-out is reported so remediation is ordered by
+    how many bands rest on each root rather than alphabetically.
+    """
+    dependents: dict[str, list[str]] = {}
+    for slug, doc in scores.items():
+        target = (doc.get("capability") or {}).get("relative_to")
+        if target:
+            dependents.setdefault(target, []).append(slug)
+
+    weak: list[tuple[str, int, list[str]]] = []
+    for peer, users in dependents.items():
+        block = (scores.get(peer) or {}).get("capability") or {}
+        defects = []
+        if block.get("score") is None:
+            defects.append("no capability score")
+        value = (block.get("value") or "").strip()
+        if not value:
+            defects.append("no capability value")
+        elif len(value) < _MIN_VALUE:
+            defects.append(f"value is {len(value)} characters, under the {_MIN_VALUE}-character floor")
+        if not (block.get("sources") or []):
+            defects.append("capability carries no sources")
+        if defects:
+            weak.append((peer, len(users), defects))
+    return sorted(weak, key=lambda row: -row[1])
+
+
 def candidates(scores: dict, owner: dict) -> list[str]:
     """Products whose note compares them to a same-category peer without recording it."""
     found: list[str] = []
@@ -207,6 +252,15 @@ def main() -> int:
     for problem in problems:
         print(f"  ! {problem}")
     print(f"  {recorded} of {len(scores)} products record a comparison")
+
+    roots = weak_roots(scores)
+    if roots:
+        resting = sum(n for _, n, _ in roots)
+        print(f"\n  {len(roots)} weak comparison root(s), carrying {resting} dependent band(s):")
+        for peer, n, defects in roots:
+            print(f"    ~ {peer}: weak comparison root - {n} dependent(s) - {'; '.join(defects)}")
+        print("    A dependent band is checkable for arithmetic and not for correctness while its")
+        print("    root is unstated. Report-only; see the note in weak_roots().")
 
     if args.candidates:
         backlog = candidates(scores, owner)
