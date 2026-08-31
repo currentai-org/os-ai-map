@@ -57,11 +57,22 @@ workflow that clears its row, so this is the only place it happens.
    entry. Adoption may be left for the warehouse to band from artifacts. See
    [`../reference/openness.md`](../reference/openness.md), [`../reference/adoption.md`](../reference/adoption.md),
    [`../reference/capability.md`](../reference/capability.md).
-5. **Update both rosters** (category and org), and the org file if the org is new. A slug
+5. **Attest the spine, if the batch places bands by comparison.** A capability band placed
+   against a peer records `relative_to` + `relation`, and the peer will almost always have been
+   confirmed before this product existed. Do not drop the comparison into prose, and do not
+   re-date the peer's whole axis to get around it. Pick the two or three peers the batch compares
+   against, `uv run python -m build.fetch_source <the discriminating URL>` on each, read the body,
+   confirm the feature or scale claim separating the peer from the new products still reads as
+   its `value` says, and write a `comparison` block per edge. One fetch serves every edge against
+   that peer. The peer's own `last_verified` stays where it is — unless the read covered every
+   source its capability axis cites, in which case it has been re-derived and may be dated.
+   `uv run python -m build.check_refetch --product <peer>` first is cheap triage: where everything
+   reproduces, the peer's recorded values are known unchanged and the read is a formality.
+6. **Update both rosters** (category and org), and the org file if the org is new. A slug
    appears in exactly one of each. **If the product came from a registry row, delete that row
    now** — see the sixth file above. If it was the last row in the file, leave `products: []`
    rather than deleting the file: the file pairs with a category, not with its contents.
-6. **For a batch,** generate the files with a small script (dump for new files, and a helper
+7. **For a batch,** generate the files with a small script (dump for new files, and a helper
    that inserts `- <slug>` lines under existing `products:` blocks so their formatting is
    preserved). Never load-modify-dump an existing corpus file. Re-check the two hand-authored
    things a batch disturbs: category straplines and `sources/snapshots/long_tail.json`.
@@ -71,6 +82,7 @@ workflow that clears its row, so this is the only place it happens.
 uv run python -m build.validate            # must print 0 error(s)
 uv run python -m build.check_recipe        # the ladder accepts the new score
 uv run python -m build.check_verification  # producible pair; invariant if you dated it
+uv run python -m build.check_capability    # the comparisons and their attestations hold
 ```
 Preview only, never commit: `build/notebook_data.json`, `notebooks/ai-stack-map.py` (bot-owned).
 

@@ -599,9 +599,46 @@ to have re-derived a comparison against a fact nobody re-read. This is the openn
 insight applied to a different dependency: a date is worth no more than the least recently
 confirmed thing underneath it.
 
+### The evidence date and the comparison date are two dates
+
+Stated as the rule, because the two get conflated and the conflation is what stopped the
+comparison graph growing.
+
+`capability.last_verified` dates **this product's own capability evidence**: the feature matrix
+still reads as described, the benchmark number is still the published one. It ages the way any
+axis ages, on the 30-day window the freshness gate applies.
+
+`capability.comparison.last_attested` dates **the spacing between this product and a peer**. It
+has a different lifecycle, because a comparison can go false with neither product changing: the
+peer improves, a third product lands between them, or the category's discriminating rung is
+rewritten. It is never derived from a source's `accessed` date, for the same reason
+`last_verified` is not — opening a URL is a weaker claim than re-judging a conclusion.
+
+The rule above binds the dependent's whole-axis date to the peer's whole-axis date. That is
+sound but coarse, and it makes the comparison graph unable to grow: as the corpus expands, every
+new product's natural peer was confirmed before the product existed, so a tranche can compare
+its members only to each other. An edge that records its own attestation is freed from the
+peer's axis date, and pays for that with its own evidence requirement: a source read on or after
+`last_attested`, carrying `http_status` and `content_sha256`. The gate is
+`build/check_capability.py`; `docs/reference/capability.md` is normative on the field shape.
+
+**What a `content_sha256` match may prove, and what it may never prove.** A recorded digest that
+reproduces from a live body is proof the fetch was real — SHA-256 preimages are not guessable, so
+those bytes could only have come from that body. Where **every** source an axis cites reproduces,
+that is a defensible basis for re-dating that axis's own `last_verified`, and it is worth
+building. It is never a basis for dating a comparison. Not when the peer's sources reproduce, not
+when both products' sources reproduce, because the thing that falsifies a spacing is a third
+product that neither one cites. An attestation written on the strength of unchanged bytes is the
+rubber stamp this apparatus was built to stop, wearing a digest.
+
+So an attestation costs a real read of the peer. It is cheaper than a full anchor refresh in what
+it **claims**, not in what it costs, and anyone who sells it as a shortcut will get the failure
+mode back.
+
 With that recorded, a capability `last_verified` means: **the feature matrix still reads as
 described, and the comparison the band rests on has been re-derived against a peer confirmed at
-least as recently.** It does not mean the band was measured. Where `basis: benchmark`, it also
+least as recently, or attested on its own date under the split below.** It does not mean the band
+was measured. Where `basis: benchmark`, it also
 does not mean the benchmark was re-run — re-reading a published number is the claim, and the
 number is a property of a harness-plus-model pairing rather than of the product alone.
 
