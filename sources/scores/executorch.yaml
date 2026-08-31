@@ -48,37 +48,69 @@ openness:
     - source
     - core-gated
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 4,969 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3.
-    No package artifact is declared for this record, so stars are the only instrument available and the band should
-    be read as a floor.
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: deployment breadth - shipped in Meta's family of apps and across twelve or more hardware backends
+    from eight vendors - which is a breadth claim rather than a measured user count
+  note: 'Banded on reported deployment rather than on stars, because stars measure the wrong thing for a runtime
+    that ships inside other companies'' applications. Meta''s own engineering blog and the PyTorch documentation
+    both state that ExecuTorch powers on-device inference across Instagram, WhatsApp, Messenger, Quest and Ray-Ban
+    Meta smart glasses, for billions of people. The LICENSE corroborates the hardware side independently: its BSD-3-Clause
+    header carries eight copyright holders - Meta, Arm, Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which
+    is vendor participation in the runtime itself rather than a vendor list in marketing copy. `reported_traction`
+    records a word and never a number, so no user figure is asserted here; 4,969 GitHub stars would have banded
+    this at 2 and understated it by three levels.'
   last_verified: '2026-08-31'
   sources:
-  - url: https://api.github.com/repos/pytorch/executorch
-    shows: Repo metadata - stargazers_count = 4,969 - for pytorch/executorch.
+  - url: https://engineering.fb.com/2025/07/28/android/executorch-on-device-ml-meta-family-of-apps/
+    shows: Meta's engineering blog on ExecuTorch in the Meta family of apps, naming Instagram, WhatsApp, Messenger
+      and Quest and describing on-device inference reaching billions of people.
     accessed: '2026-08-31'
     http_status: 200
-    content_sha256: 22238b2379d9b1eef9ab9fa34c66650d1cc0fd7894c4a24b7441cae4a0027fa7
+    content_sha256: 66c729a0f927ffda97e4f0b892dde1fba3a22f72369d97602f205a09856ce489
+  - url: https://docs.pytorch.org/executorch/main/success-stories.html
+    shows: 'The project''s own success-stories page: "Billions of users", naming Instagram, WhatsApp, Messenger,
+      Quest and Ray-Ban deployments.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: adbd164f4bd89af11607336038a479338427867e1632a7ce220f5cdd1d819fe8
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: 'README: "It powers Meta''s on-device AI across Instagram, WhatsApp, Quest 3, Ray-Ban Meta Smart Glasses"
+      and "Powers billions of users at Meta with real-time on-device inference".'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   basis_detail: category feature matrix, banded against the vllm anchor
-  value: On-device execution of exported models through a ~50KB C++ runtime, with an export and lowering toolchain
-    and backends across a dozen hardware vendors.
+  value: On-device execution of exported models through a ~50KB C++ runtime, with twelve or more hardware backends
+    across eight vendors - XNNPACK, Vulkan, Qualcomm, MediaTek and Samsung Exynos on Android, CoreML on iOS, OpenVINO
+    and CUDA on Linux and Windows, Metal and MLX on macOS - switchable by changing one partitioner line, plus the
+    export and lowering toolchain.
   relative_to: vllm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Two bands below the vllm anchor, level with the other on-device runtimes here. It executes models on edge
-    hardware rather than serving them from a datacenter, so the batching, parallelism and multi-tenant surface the
-    top bands rest on does not apply.
+  note: 'One band below the vllm anchor, level with onnx-runtime, which is banded there on the same instrument:
+    execution-provider breadth across CPU, GPU, mobile and edge. An earlier reading put this two below on the view
+    that an on-device runtime is narrow by nature, which had it backwards - the backend matrix here spans eight
+    silicon vendors and four host platforms, which is wider than apple-core-ml-runtime''s single-vendor coverage
+    at the same band. It stays below the anchor because it executes exported models on device rather than serving
+    them with batching, parallelism and a multi-tenant API surface.'
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
     shows: 'README, read for the engine''s feature set: On-device execution of exported models through a ~50KB C++
       runtime, with an export and lowering toolchain and backends across a dozen hardware vendors.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
+  - url: https://raw.githubusercontent.com/pytorch/executorch/main/README.md
+    shows: README backend matrix and "12+ Hardware Backends - Open-source acceleration for Apple, Samsung, Qualcomm,
+      ARM, MediaTek, Vulkan, and more", with the per-platform table naming XNNPACK, Vulkan, Qualcomm, MediaTek,
+      Samsung Exynos, CoreML, OpenVINO, CUDA, Metal and MLX.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: 7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c
