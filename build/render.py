@@ -763,10 +763,10 @@ def details_payload(DATA, ORDER, mo):
     # Build a per-product payload keyed by product name, then install a delegated
     # click handler + modal via a hidden-iframe onload bootstrap (marimo strips
     # <script>, so we inject through the iframe into the parent document).
-    _payload = {}
-    for _cid in ORDER:
-        for _p in DATA["categories"][_cid]["products"]:
-            _payload[_p["product"]] = {**_p, "category_label": DATA["categories"][_cid]["label"]}
+    # Only what the modal reads, built by build/details_payload.py so the size test can
+    # import and measure the real payload rather than a second copy of this expansion.
+    from build.details_payload import details_records
+    _payload = details_records(DATA, ORDER)
     # Base64, not raw JSON. This payload is interpolated into an HTML *attribute*, so it
     # gets escaped (" -> &quot;), and a single astral character anywhere in it (a Hugging
     # Face emoji, in practice) widens the whole Python string to 4 bytes per character.

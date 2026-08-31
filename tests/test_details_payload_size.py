@@ -41,18 +41,19 @@ PAYLOAD = Path(__file__).resolve().parents[1] / "build" / "notebook_data.json"
 
 
 def _details_attribute() -> str:
-    """Rebuild exactly what build/render.py puts in the iframe's onload attribute."""
+    """Exactly what build/render.py puts in the iframe's onload attribute.
+
+    Built by importing the real payload builder. This function used to rebuild the payload
+    with its own `{**product}` expansion, which meant it measured a payload the notebook
+    never shipped: a trim in render.py changed nothing here, and this test would have gone
+    on passing or failing for reasons unrelated to what marimo actually receives.
+    """
+    from build.details_payload import details_records
+
     data = json.loads(PAYLOAD.read_text(encoding="utf-8"))
     order = data["order"] if isinstance(data.get("order"), list) else list(data["categories"])
-    payload = {}
-    for cid in order:
-        for product in data["categories"][cid]["products"]:
-            payload[product["product"]] = {
-                **product,
-                "category_label": data["categories"][cid]["label"],
-            }
     encoded = base64.b64encode(
-        json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        json.dumps(details_records(data, order), ensure_ascii=False).encode("utf-8")
     ).decode("ascii")
     # The attribute escaping render.py applies. A no-op on base64, deliberately.
     return encoded.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
@@ -87,3 +88,49 @@ def test_the_payload_is_ascii_so_one_emoji_cannot_widen_it():
         "the payload is stored at more than 1 byte per character, which means a "
         "wide character crept in and doubled what marimo measures."
     )
+
+
+def test_the_payload_carries_only_what_the_modal_renders():
+    """The trim, asserted by key rather than by size.
+
+    A size assertion alone cannot tell a payload that is small because it is correct from one
+    that is small because the corpus shrank. These name the fields the modal never reads, so
+    re-adding one fails here rather than silently eating the headroom the cap leaves.
+    """
+    from build.details_payload import details_records
+
+    data = json.loads(PAYLOAD.read_text(encoding="utf-8"))
+    order = data["order"] if isinstance(data.get("order"), list) else list(data["categories"])
+    records = details_records(data, order)
+    assert records
+
+    for record in records.values():
+        assert not {"freshness", "slug", "org_slug", "tier", "maturity", "mature",
+                    "overall_score"} & set(record)
+        for axis in ("openness", "adoption", "capability"):
+            block = record.get(axis)
+            if not isinstance(block, dict):
+                continue
+            assert not {"bucket", "governing_release", "last_verified"} & set(block)
+            for source in block.get("sources") or []:
+                assert not {"content_sha256", "accessed", "http_status",
+                            "establishes"} & set(source)
+
+
+def test_the_trim_leaves_the_fields_the_modal_does_render():
+    """The other direction: a trim that dropped `note` or `sources` would shrink the payload
+    and gut the modal, and the size test would applaud."""
+    from build.details_payload import details_records
+
+    data = json.loads(PAYLOAD.read_text(encoding="utf-8"))
+    order = data["order"] if isinstance(data.get("order"), list) else list(data["categories"])
+    records = details_records(data, order)
+
+    with_sources = 0
+    for record in records.values():
+        assert record.get("description")
+        assert "category_label" in record
+        openness = record.get("openness") or {}
+        assert "score" in openness and "note" in openness
+        with_sources += bool(openness.get("sources"))
+    assert with_sources > len(records) * 0.9
