@@ -1,0 +1,84 @@
+product: paddle
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: PaddlePaddle/Paddle
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier described in the README
+  confidence: high
+  note: Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full. A copyright line for the PaddlePaddle Authors is prepended above the licence text, which
+    is why an automated reader can report the file as non-standard; the remainder is byte-identical to the canonical
+    Apache-2.0 template and nothing follows END OF TERMS AND CONDITIONS but the standard appendix. No enterprise
+    or ee path in the repository root and no paid tier described in the readme.
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(PaddlePaddle/Paddle);core-gated:ungated(no enterprise or ee path in
+    the repository root and no paid tier described in the README)
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/Paddle/develop/LICENSE
+    shows: 'LICENSE body, read in full: a prepended ''Copyright (c) 2016 PaddlePaddle Authors. All Rights Reserved''
+      line above the stock Apache License 2.0 text. The remainder is byte-identical to the canonical template through
+      END OF TERMS AND CONDITIONS, followed only by the standard appendix. No appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ff6311c56c1b22c9209c96cc8afc16da91c24ee55a15e14ebc46fe1960dbd856
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/PaddlePaddle/Paddle/develop/README.md
+    shows: 'README, read for the distribution and gating question: it documents installing the framework from this
+      repository or from the paddlepaddle package and names no enterprise, paid or licence-gated build.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 946dc3ccb2028edbfeadbe9d453aa41802f1fc38ef80b35a7ad1e232fa147041
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: 1,785,666 PyPI downloads in the last 30 days for the paddlepaddle package
+  note: 'Banded on the authoritative PyPI route: 1,785,666 downloads in the last 30 days for the paddlepaddle package,
+    which places it at level 4. The repository carries 24,064 stars, but stars rank below every real usage signal
+    and are recorded here only as corroboration.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://pypistats.org/api/packages/paddlepaddle/recent
+    shows: last_month 1785666, last_week 240058, last_day 18483 for the paddlepaddle package.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 07e7b0810d2a6faf774504ed77de360ea410e6641a83628f5d7ec0d182e856df
+  - url: https://api.github.com/repos/PaddlePaddle/Paddle
+    shows: 'Repo metadata for PaddlePaddle/Paddle: stargazers_count 24064, archived false, pushed_at 2026-08-31.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 85ac02b85feb95040510eb296646a4af998a6b475c737535af8545b91d981362
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'A full training-and-inference framework rather than a library on top of one: unified dynamic and static
+    graphs with automatic parallelism that derives a distributed strategy from single-device tensor partitioning
+    annotations; training and inference served by the same framework for large models; high-order differentiation
+    for scientific computing; cross-platform deployment. Comparable in scope to TensorFlow.'
+  confidence: medium
+  note: 'Scored 5 on framework scope. Paddle is a foundational framework in the same sense as pytorch and tensorflow,
+    which both sit at 5 here: it owns its own graph engine, distributed execution and deployment path rather than
+    building on somebody else''s. Its automatic-parallelism and integrated training-inference design are the distinguishing
+    claims. The comparison is stated here rather than recorded as relative_to because no candidate root in this category has been confirmed as recently as this pass, and a comparison cannot claim a fresher verification date than its root.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/PaddlePaddle/Paddle/develop/README.md
+    shows: The 'PaddlePaddle New Generation Framework 3.2' section documents unified dynamic/static graphs with
+      automatic parallelism from single-card tensor partitioning annotations, integrated training and inference
+      for large models within one framework, and high-order differentiation for scientific computing.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 946dc3ccb2028edbfeadbe9d453aa41802f1fc38ef80b35a7ad1e232fa147041
