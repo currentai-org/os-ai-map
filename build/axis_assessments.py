@@ -149,10 +149,20 @@ def _adoption_basis(
 
 
 def _capability_basis(capability: Mapping) -> tuple[str | None, str | None]:
-    """(the recorded `basis` verbatim, the anchor comparison if one is recorded)."""
+    """(the recorded `basis` verbatim, the anchor comparison if one is recorded).
+
+    The attestation date rides inside this string rather than in a column of its own. Adding a
+    column to a deployed static model fails on the platform - the ALTER is multi-column and the
+    only fix is delete-and-recreate - so an optional third clause is the cheap shape here.
+    """
     relative_to = capability.get("relative_to")
     relation = capability.get("relation")
-    detail = f"relative_to={relative_to};relation={relation}" if (relative_to or relation) else None
+    if not (relative_to or relation):
+        return capability.get("basis"), None
+    detail = f"relative_to={relative_to};relation={relation}"
+    attested = (capability.get("comparison") or {}).get("last_attested")
+    if attested:
+        detail += f";attested={attested}"
     return capability.get("basis"), detail
 
 

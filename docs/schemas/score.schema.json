@@ -283,6 +283,30 @@
             "one_above"
           ],
           "description": "How this product's band sits against `relative_to`. Required with it, and meaningless without it. Deliberately tiny and domain-free, so it generalizes across categories as different as edge_hardware and benchmark_eval_data without asserting anything about what capability means in either."
+        },
+        "comparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "last_attested",
+            "sources"
+          ],
+          "description": "When the spacing recorded by `relative_to`/`relation` was last judged still to hold, and what was read on the root to judge it. Optional: an edge without it stays under the rule that the root's whole-axis confirmation must be at least as recent as this one's. Recording it is what lets a band be placed against a peer the corpus confirmed weeks ago, which is otherwise impossible as the corpus grows (issue #436). It says nothing without the pointers that name the spacing, so it requires both - spelled in `dependencies` because this file declares draft-07, where `dependentRequired` is not a keyword and is read by nothing; both spellings are carried so the constraint survives a later draft bump.",
+          "properties": {
+            "last_attested": {
+              "type": "string",
+              "format": "date",
+              "description": "The date on which the RELATIVE POSITION recorded by relative_to/relation was last judged still to hold. Distinct from capability.last_verified, which dates this product's own capability evidence. A comparison can become false with neither product changing - the peer improves, a third product lands between them, or the category's discriminating rung is rewritten - so it has its own lifecycle and its own date. Never derived from any source's accessed date."
+            },
+            "sources": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/source"
+              },
+              "description": "What was read on THE ROOT to make that judgment. Its own list, not capability.sources, because these are citations about a different product: folding them in would let a root's page count as this product's own evidence and would corrupt the weak-root check, which reads capability.sources as the root's evidence."
+            }
+          }
         }
       },
       "dependentRequired": {
@@ -291,6 +315,22 @@
         ],
         "relation": [
           "relative_to"
+        ],
+        "comparison": [
+          "relative_to",
+          "relation"
+        ]
+      },
+      "dependencies": {
+        "relative_to": [
+          "relation"
+        ],
+        "relation": [
+          "relative_to"
+        ],
+        "comparison": [
+          "relative_to",
+          "relation"
         ]
       },
       "additionalProperties": false

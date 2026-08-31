@@ -204,6 +204,17 @@ def test_capability_basis_helper_carries_the_anchor():
     assert "relative_to=gpt-4" in detail and "relation=peer" in detail
 
 
+def test_capability_basis_helper_carries_the_attestation_date_when_there_is_one():
+    """In the detail string, not a column: a column add fails on the deployed static model."""
+    _, plain = _capability_basis({"basis": "feature_matrix", "relative_to": "b", "relation": "at"})
+    assert "attested" not in plain
+    _, attested = _capability_basis({
+        "basis": "feature_matrix", "relative_to": "b", "relation": "at",
+        "comparison": {"last_attested": "2026-08-31", "sources": []},
+    })
+    assert attested == "relative_to=b;relation=at;attested=2026-08-31"
+
+
 # --- status internals, fail-closed (my strict contract) --------------------------
 
 

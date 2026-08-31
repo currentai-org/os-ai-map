@@ -17,9 +17,22 @@ from pathlib import Path
 
 import pytest
 
-from build.check_capability import candidates, check
+from build.check_capability import candidates, check, stale_attestations
 
 CATS = {"a": "cat", "b": "cat", "c": "cat", "far": "other"}
+
+
+def attestation(attested, accessed=None, **overrides) -> dict:
+    """A well-formed comparison block, so a test can spoil exactly one thing."""
+    source = {
+        "url": "https://github.com/example/b",
+        "shows": "the parallelism claim the band rests on",
+        "accessed": accessed or attested,
+        "http_status": 200,
+        "content_sha256": "0" * 64,
+    }
+    source.update(overrides)
+    return {"last_attested": attested, "sources": [source]}
 
 
 def scores(**products) -> dict:
@@ -117,6 +130,139 @@ def test_an_undated_band_needs_no_anchor_date():
         b={"score": 5, "basis": "feature_matrix"},
     )
     assert check(data, CATS) == []
+
+
+# --- the attestation on the comparison edge (#436) -------------------------------------------
+#
+# One row per state in the design's semantics table. The row that is not here is the one above:
+# a comparison with no attestation block stays on the old rule, and
+# `test_a_derived_band_cannot_be_fresher_than_what_it_derives_from` pins it unchanged.
+
+
+def test_an_attested_comparison_frees_the_band_from_the_roots_axis_date():
+    """The unlock. The root's whole-axis date no longer bounds the dependent's."""
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31),
+            "comparison": attestation(date(2026, 8, 31)),
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    assert check(data, CATS) == []
+
+
+def test_a_whole_axis_date_cannot_outrun_the_attestation_it_contains():
+    """`relative_to`/`relation` are part of the axis's score, so the part dates the whole."""
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31),
+            "comparison": attestation(date(2026, 8, 20)),
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 31)},
+    )
+    problems = check(data, CATS)
+    assert len(problems) == 1
+    assert "attested 2026-08-20" in problems[0]
+
+
+def test_an_attestation_needs_a_source_read_on_or_after_the_date_it_claims():
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 20),
+            "comparison": attestation(date(2026, 8, 31), accessed=date(2026, 8, 20)),
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    problems = check(data, CATS)
+    assert len(problems) == 1
+    assert "no attestation source was read on or after" in problems[0]
+
+
+@pytest.mark.parametrize("missing", ["http_status", "content_sha256"])
+def test_the_source_that_carries_the_date_must_carry_a_fetch(missing):
+    """Without this the first pass under pressure attests off the repo's own recorded value."""
+    block = attestation(date(2026, 8, 31))
+    del block["sources"][0][missing]
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31), "comparison": block,
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    problems = check(data, CATS)
+    assert len(problems) == 1
+    assert missing in problems[0]
+
+
+def test_an_uncovering_source_may_be_thin_as_long_as_one_covering_source_is_not():
+    """The requirement is on the source that carries the date, not on every citation."""
+    block = attestation(date(2026, 8, 31))
+    block["sources"].append(
+        {"url": "https://example.com/older", "shows": "context", "accessed": date(2026, 8, 1)}
+    )
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31), "comparison": block,
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    assert check(data, CATS) == []
+
+
+def test_a_root_re_read_since_the_spacing_was_judged_is_reported_not_failed():
+    """The root's `value` can move without its score moving, and the arithmetic will not see it."""
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 20),
+            "comparison": attestation(date(2026, 8, 20)),
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 31)},
+    )
+    assert check(data, CATS) == []
+    assert stale_attestations(data) == [("a", "b", date(2026, 8, 20), date(2026, 8, 31))]
+
+
+def test_an_attestation_the_root_has_not_outrun_is_not_in_the_queue():
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31),
+            "comparison": attestation(date(2026, 8, 31)),
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    assert stale_attestations(data) == []
+
+
+def test_an_undated_attestation_is_caught_here_too():
+    """The schema requires `last_attested`. A gate that assumes another gate ran passes silently."""
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "last_verified": date(2026, 8, 31),
+            "comparison": {"sources": [{"url": "https://example.com", "shows": "x"}]},
+        },
+        b={"score": 5, "basis": "feature_matrix", "last_verified": date(2026, 8, 13)},
+    )
+    assert "no last_attested" in check(data, CATS)[0]
+
+
+def test_an_undated_band_with_an_attestation_still_needs_the_attestation_to_hold():
+    """The escape hatch for an undated axis does not extend to the edge's own record."""
+    data = scores(
+        a={
+            "score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below",
+            "comparison": attestation(date(2026, 8, 31), accessed=date(2026, 8, 1)),
+        },
+        b={"score": 5, "basis": "feature_matrix"},
+    )
+    assert "no attestation source was read on or after" in check(data, CATS)[0]
 
 
 def test_a_comparison_must_stay_inside_the_category():
@@ -223,3 +369,31 @@ def test_a_relation_outside_capability_is_rejected_by_the_schema():
         stray[axis]["relation"] = "at"
         with pytest.raises(jsonschema.ValidationError, match="Additional properties"):
             jsonschema.validate(stray, schema)
+
+
+def test_an_attestation_without_the_comparison_it_attests_to_is_rejected_by_the_schema():
+    """`comparison` dates a spacing, so it says nothing without the pointers that name one."""
+    import json
+
+    import jsonschema
+    import yaml
+
+    root = Path(__file__).resolve().parents[1]
+    schema = json.loads((root / "docs/schemas/score.schema.json").read_text())
+    doc = yaml.safe_load((root / "sources/scores/trl.yaml").read_text())
+    doc["capability"].pop("relative_to", None)
+    doc["capability"].pop("relation", None)
+    doc["capability"]["comparison"] = {
+        "last_attested": "2026-08-31",
+        "sources": [
+            {
+                "url": "https://example.com/root",
+                "shows": "the discriminator still reads as recorded",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "0" * 64,
+            }
+        ],
+    }
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(doc, schema)
