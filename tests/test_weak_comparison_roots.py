@@ -12,8 +12,8 @@ from build.check_capability import load, weak_roots
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def _score(value=None, score=4, sources=True):
-    block = {"score": score, "basis": "feature_matrix"}
+def _score(value=None, score=4, sources=True, basis="feature_matrix"):
+    block = {"score": score, "basis": basis}
     if value is not None:
         block["value"] = value
     if sources:
@@ -45,7 +45,27 @@ def test_a_placeholder_value_is_weak_too():
     roots = weak_roots({"peer": _score("TBD"),
                         "dep": {"capability": {"score": 3, "relative_to": "peer",
                                                "relation": "one_below"}}})
-    assert roots and any("character floor" in d for d in roots[0][2])
+    assert roots and any("placeholder" in d for d in roots[0][2])
+
+
+def test_a_short_benchmark_value_is_not_weak():
+    """The false-positive path. `capability.md` allows `value` to be an exact observation, and
+    `SWE-bench Verified: 74.9` is complete at 24 characters. 63 records already record a
+    benchmark basis, so a blanket length floor would manufacture weak roots as those fill in."""
+    peer = {"capability": {"score": 5, "basis": "benchmark", "value": "SWE-bench Verified: 74.9",
+                           "sources": [{"url": "https://example.invalid", "shows": "x"}]}}
+    scores = {"peer": peer, "dep": {"capability": {"score": 4, "relative_to": "peer",
+                                                   "relation": "one_below"}}}
+    assert weak_roots(scores) == []
+
+
+def test_a_short_feature_matrix_value_is_weak():
+    """The prose floor still applies where the value IS a description."""
+    peer = {"capability": {"score": 4, "basis": "feature_matrix", "value": "does stuff",
+                           "sources": [{"url": "https://example.invalid", "shows": "x"}]}}
+    roots = weak_roots({"peer": peer, "dep": {"capability": {"score": 3, "relative_to": "peer",
+                                                             "relation": "one_below"}}})
+    assert roots and any("prose floor" in d for d in roots[0][2])
 
 
 def test_a_null_score_is_weak():

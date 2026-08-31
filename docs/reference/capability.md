@@ -106,15 +106,20 @@ required to be whatever product the category compares against most often. For a 
 prefer a nearer peer whose capability is independently evidenced over stretching the relation
 vocabulary to reach the anchor.
 
-This matters because the vocabulary bottoms out. Against a 5-scored peer the lowest expressible
-band is `two_below`, so a product that honestly sits at 1 or 2 cannot be placed against it at
-all. Three separate category passes hit this on the same day: `mlx-vlm` was recorded
-`one_below torchtune (3)` rather than an impossible `three_below megatron-lm (5)`, `raft`
-`one_below onednn (3)`, and nine `orchestration_agents` products against `autogpt (2)`. Each is
-a better comparison than the anchor would have been, because a nearby peer says more about a
-product than a distant one does. The answer is a nearer peer, **not** more relation values:
-adding `three_below` would encode distance from an assumed global anchor, when what the corpus
-actually holds is a peer-comparison graph.
+The corpus already works this way. `pinecone` is recorded `at milvus`, not against `vespa`,
+which 22 other `storage` bands name; `thunderkittens` and `hummingbird` are both `two_below
+tensorrt` rather than against `apache-tvm`, which 18 `compilers` bands name; `amazon-bedrock-
+custom-models-fine-tuning` is `one_below openai-fine-tuning-api`, a hosted peer, rather than
+against `megatron-lm`. In each case the nearer peer is the more informative comparison: a
+hosted fine-tuning service says more about another hosted fine-tuning service than a
+trillion-parameter training framework does.
+
+This also matters because the vocabulary bottoms out. Against a 5-scored peer the lowest
+expressible band is `two_below`, so a product that honestly sits at 1 or 2 cannot be placed
+against it at all — a `torchtune`-class peer at 3 can express a 2, and a 5-scored anchor cannot.
+The answer is a nearer peer, **not** more relation values: adding `three_below` would encode
+distance from an assumed global anchor, when what the corpus actually holds is a peer-comparison
+graph.
 
 ### A comparison root must itself be evidenced
 
