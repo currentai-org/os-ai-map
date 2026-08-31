@@ -99,7 +99,11 @@ def test_roots_are_ordered_by_fan_out():
 
 
 def test_the_real_corpus_is_reported_not_gated():
-    """Report-only today: 15 roots carry 68 bands, so failing the build would block every
-    scoring change until an unrelated backlog is cleared. Lower this as they are fixed."""
+    """Report-only today: 12 roots carry 18 bands, so failing the build would block every
+    scoring change until an unrelated backlog is cleared. Lower this as they are fixed.
+
+    Ten of the twelve are datasets, where a capability value has to say what the corpus
+    covers rather than how a tool performs; that is a different piece of work from the
+    engine roots this cap started with."""
     roots = weak_roots(load()[0])
-    assert len(roots) <= 15, [p for p, _, _ in roots]
+    assert len(roots) <= 12, [p for p, _, _ in roots]
