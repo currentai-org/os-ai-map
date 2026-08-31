@@ -24,7 +24,7 @@ are implemented and specified in `data-architecture.md` §4.5.
 ## Remaining follow-on work
 
 None of these blocks normal curation (adding or refreshing products and categories). Each is a
-platform- or release-integrity improvement, tracked as an issue.
+platform, evaluation, or release-integrity follow-on, tracked as an issue.
 
 | Work | Status | Issue |
 |---|---|---|
