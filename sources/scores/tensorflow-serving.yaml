@@ -47,33 +47,33 @@ openness:
     - source
     - core-gated
 adoption:
-  level: 4
-  reach: 1M-10M
-  signal_type: usage_volume
-  confidence: high
-  note: 4,627,937 downloads of tensorflow-serving-api in the trailing 30 days, which bands at 1M-10M, level 4 on
-    the software adoption scale. The package was initially not declared because it publishes no repository link;
-    ownership is established instead by its author, Google Inc., and its homepage, tensorflow.org/serving, which
-    is this project's own site. The project's `tensorflow/serving` container image corroborates independently at
-    80,659,067 pulls, though that figure is cumulative rather than monthly and so is cited rather than banded. 6,360
-    GitHub stars would have banded this at 2 and understated a serving system that ships as an image and a client
-    library rather than as a starred repository.
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 6,360 GitHub stars, which lands in the 1K-10K band of the stars scale, level 2, and a stars-based signal
+    caps at 3 because a star is not a use. Two larger figures exist and neither is this product's. The `tensorflow-serving-api`
+    package draws 4,627,937 downloads in the trailing 30 days, but its own summary is "TensorFlow Serving Python
+    API" - it is the client library for a running server, so its downloads measure client use rather than deployments
+    of the serving system, and it is not declared as an artifact for that reason. The `tensorflow/serving` container
+    image the README's quickstart pulls reports 80,659,067 pulls, which is the product itself, but the count is
+    cumulative since publication while this scale is monthly, so it corroborates without banding. No deployment
+    figure is published, leaving stars as the only honest instrument.
   last_verified: '2026-08-31'
   sources:
-  - url: https://pypistats.org/api/packages/tensorflow-serving-api/recent
-    shows: last_month = 4,627,937 downloads for tensorflow-serving-api.
+  - url: https://api.github.com/repos/tensorflow/serving
+    shows: Repo metadata - stargazers_count = 6,360 - for tensorflow/serving.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: 557d843a32dd4a2c7597f22c20ad7dc3ce7331aa6da977b073c63bd773613c97
   - url: https://pypi.org/pypi/tensorflow-serving-api/json
-    shows: 'PyPI project metadata establishing ownership without a repository link: author "Google Inc.", home_page
-      "http://tensorflow.org/serving", summary "TensorFlow Serving Python API."'
+    shows: 'PyPI metadata for the client library, cited to record why it is not banded: summary "TensorFlow Serving
+      Python API.", author Google Inc., homepage tensorflow.org/serving.'
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: ca3a4b673484de84a4a7800a0f7ca7236b49a2fb5997d3c07c707a0a1b67fd97
   - url: https://hub.docker.com/v2/repositories/tensorflow/serving/
-    shows: 'Docker Hub metadata for the tensorflow/serving image the README''s quickstart pulls: pull_count 80,659,067,
-      cumulative since publication. Corroborating only.'
+    shows: 'Docker Hub metadata: pull_count 80,659,067, cumulative since publication. Corroborating only.'
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: 94ea8ddc5c0e148bb5838961b5217b0d8ea2466139abd4a59d9c7a8a37651ba8
