@@ -63,9 +63,12 @@ If you use a coding agent, the repo ships skills that mirror these workflows: `a
 ## Touching the warehouse layout
 
 Adding, moving or retiring a data asset means updating
-[`warehouse/assets.yaml`](warehouse/assets.yaml) in the same PR — it is one entry per
-platform table, and `tests/test_assets_inventory.py` fails if a tracked model or data file
-is not declared there.
+[`warehouse/assets.yaml`](warehouse/assets.yaml) in the same PR — it is the **governed-asset**
+inventory (one entry per governed asset, each carrying a `role`; ADR-003), and
+`tests/test_assets_inventory.py` fails if a tracked model or data file is not declared there.
+Direct OSO dependencies the map reads but does not own — including the read-only platform-model
+mirrors — live in [`warehouse/dependencies.yaml`](warehouse/dependencies.yaml) as contracts, not
+here; unrelated OSO tables are absent from the repo entirely.
 
 Do not hand-edit `reads`, `read_by` or any count: they are derived from the tree by
 `build/assets.py` and compared against the file. Regenerate instead.
