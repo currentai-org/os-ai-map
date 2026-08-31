@@ -6905,12 +6905,10 @@
       "arc": "Model components",
       "layer": "model_components",
       "stage": {
-        "num": 4,
-        "name": "Competitive Open Ecosystem"
+        "num": 5,
+        "name": "Mature Open Ecosystem"
       },
-      "gaps": [
-        "resiliency"
-      ],
+      "gaps": [],
       "products": [
         {
           "slug": "llama-cpp",
@@ -8433,10 +8431,10 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "MLPerf Inference v6.0 (AMD Instinct MI355X submission, April 2026)",
-            "value": null,
+            "value": "PagedAttention with continuous batching, prefix caching and chunked prefill; tensor, pipeline, data, expert and context parallelism for distributed inference; speculative decoding; FP8 and other quantization; multi-LoRA; an OpenAI-compatible API server; 200+ model architectures.",
             "confidence": "high",
-            "note": "vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, covering gpt-oss-120b, Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency, and the project reports support for 200+ model architectures on Hugging Face. It is the capability anchor for this category, the engine the others here are placed relative to.",
-            "last_verified": "2026-08-09",
+            "note": "vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, covering gpt-oss-120b, Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency, and the project reports support for 200+ model architectures on Hugging Face. It is the capability anchor for this category, the engine the others here are placed relative to. The feature set is recorded in `value` because an anchor other records are banded against has to say what it is, or \"one below vllm\" points at nothing.",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://rocm.blogs.amd.com/artificial-intelligence/mlperf-inference-v6.0/README.html",
@@ -8451,6 +8449,13 @@
                 "accessed": "2026-08-09",
                 "http_status": 200,
                 "content_sha256": "3723432a3cb40acc8cfb3cfe7a575360fa1a5fe60affd907883e38adf18423ed"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                "shows": "README feature list, read for the anchor's own capability surface: PagedAttention, continuous batching, prefix caching, chunked prefill, speculative decoding, FP8 quantization, multi-LoRA, an OpenAI-compatible API server, and \"200+ model architectures\".",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
               }
             ]
           },
@@ -8460,7 +8465,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
         },
@@ -8847,6 +8853,1206 @@
             "latest_axis_confirmation": "2026-08-12"
           },
           "version_note": "The project has no tagged releases and is built from source, so this entry is verified against the repository head rather than a release. Verified 2026-08-09 via GitHub and the LICENSE body."
+        },
+        {
+          "slug": "xllm",
+          "product": "xLLM",
+          "org_slug": "xllm-ai",
+          "org": "xLLM-AI",
+          "type": "software",
+          "description": "xLLM is an efficient LLM inference framework specifically optimized for Chinese AI accelerators. It separates a service layer that handles scheduling and availability from an engine layer that handles computation, and is deployed at scale across JD.com's core retail business.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/xLLM-AI/xllm/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/xLLM-AI/xllm",
+                "shows": "Repo metadata for xLLM-AI/xllm - archived false, 1,543 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ccecee8eeaa99c80fc3e1bbaca5ebb148416d21dfafe224da4523af644d6499b",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/xLLM-AI/xllm/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c9a5508ed5a4ea2a09aedd222c7d82800afaf492b6d67ef7a409ed92dab9d446",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "1,543 GitHub stars, which lands in the 1K-10K band of the stars scale. The `xllm` package on PyPI is a different project - bobazooba/xllm, an LLM finetuning library - so no package artifact is declared here and stars are the only instrument available.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/xLLM-AI/xllm",
+                "shows": "Repo metadata - stargazers_count = 1,543 - for xLLM-AI/xllm.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ccecee8eeaa99c80fc3e1bbaca5ebb148416d21dfafe224da4523af644d6499b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Service-engine decoupled serving on Chinese accelerators, with the scheduling and availability layer separated from the computation layer.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. It carries the serving shape vllm does but over a narrower hardware target - Chinese AI accelerators rather than the multi-vendor set vllm reaches - which is the same reasoning that places lmdeploy one below.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/xLLM-AI/xllm/main/README.md",
+                "shows": "README, read for the engine's feature set: Service-engine decoupled serving on Chinese accelerators, with the scheduling and availability layer separated from the computation layer.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c9a5508ed5a4ea2a09aedd222c7d82800afaf492b6d67ef7a409ed92dab9d446"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The `xllm` package on PyPI is an unrelated project, so no package artifact is declared. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "zml",
+          "product": "ZML",
+          "org_slug": "zml",
+          "org": "ZML",
+          "type": "software",
+          "description": "ZML is a production inference stack built in Zig on MLIR and Bazel, compiling models directly for NVIDIA, AMD, Intel, TPU and Trainium so that a workload is not tied to one vendor's accelerator.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the Apache-2.0 text with the APPENDIX omitted and no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/zml/zml/master/LICENSE",
+                "shows": "LICENSE body, read in full: the Apache-2.0 text with the APPENDIX omitted and no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/zml/zml",
+                "shows": "Repo metadata for zml/zml - archived false, 4,011 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "1b66e42eeb366cd4c505f832243438821a80a1740f5e0c407e81084f6b550b30",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/zml/zml/master/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "aa32b5ed364ab8d7c37bcc7b4e4bf1e6bd426178e3a37673e63482ec7e3d9aef",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "4,011 GitHub stars, in the 1K-10K band of the stars scale. The `zml` package on PyPI is an unrelated project called zero markup language, so no package artifact is declared and stars are the only instrument available.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/zml/zml",
+                "shows": "Repo metadata - stargazers_count = 4,011 - for zml/zml.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "1b66e42eeb366cd4c505f832243438821a80a1740f5e0c407e81084f6b550b30"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Ahead-of-time compilation of a model to a target accelerator across NVIDIA, AMD, Intel, TPU and Trainium, from one stack.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. Its hardware reach is broader than most engines here, but it compiles and executes models rather than providing the batching, paged-attention and OpenAI-compatible serving surface the anchor is banded on.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/zml/zml/master/README.md",
+                "shows": "README, read for the engine's feature set: Ahead-of-time compilation of a model to a target accelerator across NVIDIA, AMD, Intel, TPU and Trainium, from one stack.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "aa32b5ed364ab8d7c37bcc7b4e4bf1e6bd426178e3a37673e63482ec7e3d9aef"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The `zml` package on PyPI is an unrelated project, so no package artifact is declared. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "uzu",
+          "product": "Uzu",
+          "org_slug": "mirai-tech",
+          "org": "Mirai Tech",
+          "type": "software",
+          "description": "Uzu is a high-performance on-device inference engine for Apple platforms, running models locally on iOS and macOS against unified memory so that inference needs no network round trip and no per-token cost. It ships Python, TypeScript and Swift bindings in-repo.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the stock MIT text, Copyright (c) 2025 Mirai Tech Inc., with no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/trymirai/uzu/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock MIT text, Copyright (c) 2025 Mirai Tech Inc., with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7621d17e34842470f59e711e3087cc4428d1dd41117fc6d3ddeb1e0fa6f56b20",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/trymirai/uzu",
+                "shows": "Repo metadata for trymirai/uzu - archived false, 1,684 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "aa2b4fc9550cfefc25637a84d49765eb6cf4ffa57fa9183a32afa2acf0364bd4",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/trymirai/uzu/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "21d43fce99f602d46fd9dd04b4bc980261040b36cbbbdfdbe182c2e698cd85cf",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "1,684 GitHub stars, in the 1K-10K band of the stars scale. A `uzu` package exists on PyPI and does resolve to this repository, but it drew 788 downloads in the trailing 30 days against a Rust and Swift primary distribution, so banding on it would measure a minority channel rather than the product. No package artifact is declared for that reason.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/trymirai/uzu",
+                "shows": "Repo metadata - stargazers_count = 1,684 - for trymirai/uzu.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "aa2b4fc9550cfefc25637a84d49765eb6cf4ffa57fa9183a32afa2acf0364bd4"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "On-device inference on Apple silicon against unified memory, with Python, TypeScript and Swift bindings; single-platform rather than multi-accelerator.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor, and level with llamafile, which is the other single-target local engine here. It serves one hardware family and does not carry the multi-node or parallelism surface the bands above are placed on.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/trymirai/uzu/main/README.md",
+                "shows": "README, read for the engine's feature set: On-device inference on Apple silicon against unified memory, with Python, TypeScript and Swift bindings; single-platform rather than multi-accelerator.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "21d43fce99f602d46fd9dd04b4bc980261040b36cbbbdfdbe182c2e698cd85cf"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The Rust and Swift distribution is primary, so the PyPI wrapper is not declared as an artifact. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "mistral-rs",
+          "product": "mistral.rs",
+          "org_slug": "ericlbuehler",
+          "org": "Eric Buehler",
+          "type": "software",
+          "description": "mistral.rs is an LLM inference engine written in Rust, exposing OpenAI-compatible and Anthropic-compatible endpoints from one binary. It carries paged attention, prefix caching, ISQ and UQFF quantization and multimodal support. It is not affiliated with Mistral AI.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the stock MIT text, Copyright (c) 2024 Eric Buehler, with no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/LICENSE",
+                "shows": "LICENSE body, read in full: the stock MIT text, Copyright (c) 2024 Eric Buehler, with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "b40bb09c7b3b6f697a8920cf9d2cb3ff8cfcf77a0fcb6d264a92842b43c4dcae",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/EricLBuehler/mistral.rs",
+                "shows": "Repo metadata for EricLBuehler/mistral.rs - archived false, 7,638 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "893eebc3b21bdfac5961356c0868d2a8feb08ff2f66b684d23aac712720fcb81",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bc3ea3988517b64469f6575228622ace5b31a0e0409b87549183c6d519e04ee4",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "7,638 GitHub stars, in the 1K-10K band of the stars scale. A `mistralrs` package on PyPI resolves to this repository but drew 545 downloads in the trailing 30 days against a Rust and prebuilt-binary primary distribution, so it measures a minority channel and is not declared. The stars band should be read as a floor.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/EricLBuehler/mistral.rs",
+                "shows": "Repo metadata - stargazers_count = 7,638 - for EricLBuehler/mistral.rs.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "893eebc3b21bdfac5961356c0868d2a8feb08ff2f66b684d23aac712720fcb81"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Paged attention, prefix caching, ISQ/UQFF quantization and multimodality in one engine, serving OpenAI-compatible and Anthropic-compatible endpoints.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. The feature set overlaps the anchor's closely - paged attention, prefix caching, quantization - but it is banded below rather than at, because sglang holds the `at` band on a published multi-node serving record this engine does not claim.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/EricLBuehler/mistral.rs/master/README.md",
+                "shows": "README, read for the engine's feature set: Paged attention, prefix caching, ISQ/UQFF quantization and multimodality in one engine, serving OpenAI-compatible and Anthropic-compatible endpoints.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bc3ea3988517b64469f6575228622ace5b31a0e0409b87549183c6d519e04ee4"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The Rust and prebuilt-binary distribution is primary, so the PyPI wrapper is not declared as an artifact. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "lightllm",
+          "product": "LightLLM",
+          "org_slug": "modeltc",
+          "org": "ModelTC",
+          "type": "software",
+          "description": "LightLLM is a Python-based LLM inference and serving framework built for a lightweight design and horizontal scalability, drawing on implementations including FasterTransformer, Text Generation Inference, vLLM and FlashAttention.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ModelTC/LightLLM/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ModelTC/LightLLM",
+                "shows": "Repo metadata for ModelTC/LightLLM - archived false, 4,253 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "5d4f4eca58f0ea162a65c6089d06721ef940a90092e66a3f5ddeb8a16e1fd366",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ModelTC/LightLLM/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ddf55d52d0b42186b24242203a4fdea4c255a387786f3a078f5f9ff689aaaf59",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "4,253 GitHub stars, in the 1K-10K band of the stars scale. A `lightllm` package exists on PyPI but publishes no repository link, so it could not be confirmed to belong to this project and is not declared.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/ModelTC/LightLLM",
+                "shows": "Repo metadata - stargazers_count = 4,253 - for ModelTC/LightLLM.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "5d4f4eca58f0ea162a65c6089d06721ef940a90092e66a3f5ddeb8a16e1fd366"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Python-based serving with a lightweight design and horizontal scalability, assembled from FasterTransformer, TGI, vLLM and FlashAttention techniques.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor and level with text-generation-inference, which records the comparable set - continuous batching, tensor parallelism, Flash Attention, quantization - at the same band. Placed there rather than higher because it composes those techniques rather than publishing a serving record of its own.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ModelTC/LightLLM/main/README.md",
+                "shows": "README, read for the engine's feature set: Python-based serving with a lightweight design and horizontal scalability, assembled from FasterTransformer, TGI, vLLM and FlashAttention techniques.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ddf55d52d0b42186b24242203a4fdea4c255a387786f3a078f5f9ff689aaaf59"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The `lightllm` package on PyPI names no repository, so it could not be confirmed to belong to this project. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "ncnn",
+          "product": "ncnn",
+          "org_slug": "tencent",
+          "org": "Tencent",
+          "type": "software",
+          "description": "ncnn is a neural network inference runtime optimized for mobile, embedded and desktop deployment, with no third-party dependency in its core. It ships pnnx for converting PyTorch and ONNX models into its own format, and targets general neural network inference rather than LLM serving specifically.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is a Tencent-authored notice stating that both the ncnn binary and the ncnn source are licensed under the BSD 3-Clause License, followed by the separate terms of third-party components it vendors, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Tencent/ncnn/master/LICENSE.txt",
+                "shows": "LICENSE body, read in full: a Tencent-authored notice stating that both the ncnn binary and the ncnn source are licensed under the BSD 3-Clause License, followed by the separate terms of third-party components it vendors.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7c974bac98848df46be1af5bdaa3c3c9c01f6082a90f55caeb7f60c6208aa255",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/Tencent/ncnn",
+                "shows": "Repo metadata for Tencent/ncnn - archived false, 23,768 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8468582f103eece2ef017a5c865f84e1fe4d049cfb0bad60faee2ec7d33b62a9",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Tencent/ncnn/master/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c2c82d74af40c50b29e59e6ef8102a34b0bfd5776100feda76797b3328c1f20f",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": ">10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "23,768 GitHub stars, which lands in the >10K band of the stars scale, level 3, where the scale caps. An `ncnn` package on PyPI resolves to this repository but pypistats publishes no download figure for it, so no package artifact is declared and the band rests on stars.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/Tencent/ncnn",
+                "shows": "Repo metadata - stargazers_count = 23,768 - for Tencent/ncnn.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8468582f103eece2ef017a5c865f84e1fe4d049cfb0bad60faee2ec7d33b62a9"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "General neural network inference across mobile, embedded and desktop targets, with a model conversion toolchain; not an LLM serving engine.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor. Its platform reach is wide, but the anchor is banded on LLM serving - batching, paged attention, parallelism, an OpenAI-compatible surface - and this runtime provides none of that, which is why it sits with the other narrow-purpose runtimes rather than with onnx-runtime at one below.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Tencent/ncnn/master/README.md",
+                "shows": "README, read for the engine's feature set: General neural network inference across mobile, embedded and desktop targets, with a model conversion toolchain; not an LLM serving engine.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c2c82d74af40c50b29e59e6ef8102a34b0bfd5776100feda76797b3328c1f20f"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The LICENSE.txt file states the terms for both the binary and the source, and also bundles third-party components under separate terms. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "litert-lm",
+          "product": "LiteRT-LM",
+          "org_slug": "google",
+          "org": "Google",
+          "type": "software",
+          "description": "LiteRT-LM is Google's orchestration layer for running language models with LiteRT on edge devices, engineered for cross-platform on-device execution rather than datacenter serving. It is distributed as a command-line tool and as prebuilt C API shared libraries.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/google-ai-edge/LiteRT-LM",
+                "shows": "Repo metadata for google-ai-edge/LiteRT-LM - archived false, 6,334 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "f14471a7f4d17517bcef5f408345766277f3feae3df066f3df015e94053a35d7",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "22,328 downloads of litert-lm in the trailing 30 days, which bands at 10K-100K, level 2 on the software adoption scale. The package resolves to this repository, so the figure is the product's own.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/litert-lm/recent",
+                "shows": "trailing 30-day download figure",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "d2b60ab0f1297796d592df2496ac98bc7e5d05c117bee550bbe373ca8b79fa9c"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Cross-platform on-device orchestration of language models over the LiteRT runtime, distributed as a CLI and a C API.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor. It runs models on edge hardware rather than serving them from a datacenter, so none of the batching, parallelism or multi-tenant surface the top bands rest on applies.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/google-ai-edge/LiteRT-LM/main/README.md",
+                "shows": "README, read for the engine's feature set: Cross-platform on-device orchestration of language models over the LiteRT runtime, distributed as a CLI and a C API.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7732a78b3dbd877a800bab99949f0cfd473720b00c5d1d71b96dd7d936b18447"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "rtp-llm",
+          "product": "RTP-LLM",
+          "org_slug": "alibaba-cloud",
+          "org": "Alibaba Cloud",
+          "type": "software",
+          "description": "RTP-LLM is an LLM inference acceleration engine developed by Alibaba's Foundation Model Inference Team, built on work from the FasterTransformer project.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/alibaba/rtp-llm/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text with the copyright placeholder unfilled and no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/alibaba/rtp-llm",
+                "shows": "Repo metadata for alibaba/rtp-llm - archived false, 1,321 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bf064ef3932577ce6d685dd0269258708ed2dd16ab7f08cf5a9126ea7b09ce7d",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/alibaba/rtp-llm/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "cde58630dd704a1d68f55ca812318dab1ee6c3e4016b1f3681eab9ce63270dac",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "1,321 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3. No package artifact is declared for this record, so stars are the only instrument available and the band should be read as a floor.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/alibaba/rtp-llm",
+                "shows": "Repo metadata - stargazers_count = 1,321 - for alibaba/rtp-llm.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "bf064ef3932577ce6d685dd0269258708ed2dd16ab7f08cf5a9126ea7b09ce7d"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "LLM inference acceleration, derived from FasterTransformer and maintained for Alibaba's own serving.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. It accelerates inference as the anchor does, but over a narrower published surface: no multi-node serving record and no OpenAI-compatible API server is documented.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/alibaba/rtp-llm/main/README.md",
+                "shows": "README, read for the engine's feature set: LLM inference acceleration, derived from FasterTransformer and maintained for Alibaba's own serving.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "cde58630dd704a1d68f55ca812318dab1ee6c3e4016b1f3681eab9ce63270dac"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "A NOTICE file records that the engine is based on the FasterTransformer project. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "sonar",
+          "product": "Sonar",
+          "org_slug": "dphn",
+          "org": "Dphn AI",
+          "type": "software",
+          "description": "Sonar is an inference engine for Hugging Face-compatible language and multimodal models, providing continuous batching, paged KV-cache management, optimized kernels, quantization, speculative decoding and distributed serving. It is based on vLLM.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the AGPL-3.0 text, read in full rather than taken from the API's label, and carries no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/dphnAI/sonar/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock GNU AGPL-3.0 text, with only template placeholders in its appendix and no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "06b332e1fa559c005a0fc8099741d88beb63d2433548c23931d2c396ca41aa72",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/dphnAI/sonar",
+                "shows": "Repo metadata for dphnAI/sonar - archived false, 1,844 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "b6a3979d32beea56ba47bd7598ea9261acb4a5a9ea1840e8e7cf582b11bb2d37",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/dphnAI/sonar/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "6fb7952a2f0248c4d71980ad84822e027fe8714e2b2b915438dc044fcf7f8d9d",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "1,844 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3. No package artifact is declared for this record, so stars are the only instrument available and the band should be read as a floor.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/dphnAI/sonar",
+                "shows": "Repo metadata - stargazers_count = 1,844 - for dphnAI/sonar.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "b6a3979d32beea56ba47bd7598ea9261acb4a5a9ea1840e8e7cf582b11bb2d37"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Continuous batching, paged KV-cache management, optimized kernels, quantization, speculative decoding and distributed serving over Hugging Face-compatible models.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor rather than level with it. The feature list matches the anchor's closely, but Sonar is a fork of it, so the capability is inherited rather than independently established - and sglang holds the `at` band on a record of its own.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/dphnAI/sonar/main/README.md",
+                "shows": "README, read for the engine's feature set: Continuous batching, paged KV-cache management, optimized kernels, quantization, speculative decoding and distributed serving over Hugging Face-compatible models.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "6fb7952a2f0248c4d71980ad84822e027fe8714e2b2b915438dc044fcf7f8d9d"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "fastdeploy",
+          "product": "FastDeploy",
+          "org_slug": "paddlepaddle",
+          "org": "PaddlePaddle",
+          "type": "software",
+          "description": "FastDeploy is an inference and deployment toolkit for large language models and vision language models built on PaddlePaddle, shipping out-of-the-box deployment paths for production serving.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text with a PaddlePaddle Authors copyright line prepended, which is a notice rather than an added term.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "e8b21073737fa3549e35708e35365424f3b86c521871cabe138429f03b62e424",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/PaddlePaddle/FastDeploy",
+                "shows": "Repo metadata for PaddlePaddle/FastDeploy - archived false, 3,711 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ddfae902635f783a738c386d4be163139d2f68ffe2c3f99f7c6b89aba49a05e3",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "e6db595f1598cdd1968f25675bddebde43afe7e5a39e0aade96034d51c072ee7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "3,711 GitHub stars, which lands in the 1K-10K stars band of the stars scale, where the scale caps at 3. No package artifact is declared for this record, so stars are the only instrument available and the band should be read as a floor.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/PaddlePaddle/FastDeploy",
+                "shows": "Repo metadata - stargazers_count = 3,711 - for PaddlePaddle/FastDeploy.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ddfae902635f783a738c386d4be163139d2f68ffe2c3f99f7c6b89aba49a05e3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Production inference and deployment for language and vision language models on the PaddlePaddle stack.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. It serves both language and vision language models, but within one framework's ecosystem rather than across the model and hardware breadth the anchor is banded on.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/PaddlePaddle/FastDeploy/develop/README.md",
+                "shows": "README, read for the engine's feature set: Production inference and deployment for language and vision language models on the PaddlePaddle stack.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "e6db595f1598cdd1968f25675bddebde43afe7e5a39e0aade96034d51c072ee7"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The `fastdeploy-python` package on PyPI resolves to this repository but drew 323 downloads in the trailing 30 days, so it measures a minority channel and is not declared. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "tensorflow-serving",
+          "product": "TensorFlow Serving",
+          "org_slug": "google",
+          "org": "Google",
+          "type": "software",
+          "description": "TensorFlow Serving is a serving system for machine learning models in production, handling the inference side of the lifecycle with a batching scheduler and gRPC and HTTP endpoints. It integrates with TensorFlow models out of the box and can be extended to serve other model types.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tensorflow/serving/master/LICENSE",
+                "shows": "LICENSE body, read in full: the stock Apache-2.0 text, appendix filled in for The TensorFlow Serving Authors, with no appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "d00bb06dfaf0df630561dc2b037cc89af76af9c10c6044f21c4f1f3ecc5e953f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/tensorflow/serving",
+                "shows": "Repo metadata for tensorflow/serving - archived false, 6,360 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "88b4a23ab7df8dc2f30ae663eb912c7df3a88ab90001ee64ef2f66c136f0aed4",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/tensorflow/serving/master/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c212e03fbb4bcd723b8bfd0b87d8ec028794f42f0240e10fd5dd933f43657ee6",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "6,360 GitHub stars, which lands in the 1K-10K band of the stars scale, level 2, and a stars-based signal caps at 3 because a star is not a use. Two larger figures exist and neither is this product's. The `tensorflow-serving-api` package draws 4,627,937 downloads in the trailing 30 days, but its own summary is \"TensorFlow Serving Python API\" - it is the client library for a running server, so its downloads measure client use rather than deployments of the serving system, and it is not declared as an artifact for that reason. The `tensorflow/serving` container image the README's quickstart pulls reports 80,659,067 pulls, which is the product itself, but the count is cumulative since publication while this scale is monthly, so it corroborates without banding. No deployment figure is published, leaving stars as the only honest instrument.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/tensorflow/serving",
+                "shows": "Repo metadata - stargazers_count = 6,360 - for tensorflow/serving.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "557d843a32dd4a2c7597f22c20ad7dc3ce7331aa6da977b073c63bd773613c97"
+              },
+              {
+                "url": "https://pypi.org/pypi/tensorflow-serving-api/json",
+                "shows": "PyPI metadata for the client library, cited to record why it is not banded: summary \"TensorFlow Serving Python API.\", author Google Inc., homepage tensorflow.org/serving.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "ca3a4b673484de84a4a7800a0f7ca7236b49a2fb5997d3c07c707a0a1b67fd97"
+              },
+              {
+                "url": "https://hub.docker.com/v2/repositories/tensorflow/serving/",
+                "shows": "Docker Hub metadata: pull_count 80,659,067, cumulative since publication. Corroborating only.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "94ea8ddc5c0e148bb5838961b5217b0d8ea2466139abd4a59d9c7a8a37651ba8"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Model lifecycle management with a batching scheduler and gRPC/HTTP inference endpoints; extensible beyond TensorFlow models.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor. It is a general model server designed before the LLM serving techniques the anchor is banded on - paged attention, continuous batching, tensor parallelism - and documents none of them.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/tensorflow/serving/master/README.md",
+                "shows": "README, read for the engine's feature set: Model lifecycle management with a batching scheduler and gRPC/HTTP inference endpoints; extensible beyond TensorFlow models.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c212e03fbb4bcd723b8bfd0b87d8ec028794f42f0240e10fd5dd933f43657ee6"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "executorch",
+          "product": "ExecuTorch",
+          "org_slug": "pytorch-foundation",
+          "org": "PyTorch Foundation (Linux Foundation)",
+          "type": "software",
+          "description": "ExecuTorch is PyTorch's runtime for deploying models on device, from smartphones to microcontrollers, with a base footprint of around 50KB. Models are exported to a .pte file and loaded by a lightweight C++ runtime, with backends across a dozen hardware vendors.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path in the repository root and no paid build of the engine in the README)",
+            "confidence": "medium",
+            "note": "The LICENSE body is the BSD-3-Clause text, read in full rather than taken from the API's label, and carries no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/pytorch/executorch/main/LICENSE",
+                "shows": "LICENSE body, read in full: the stock BSD 3-Clause text carrying eight copyright holders - Meta, Arm, Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which is why the API reports NOASSERTION. No appended condition.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "c58707ea5d5c0ee17af7e16f1377e4d31ad1533492ab0bf9b87ebd9f718f9e7b",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/pytorch/executorch",
+                "shows": "Repo metadata for pytorch/executorch - archived false, 4,969 stars.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "22238b2379d9b1eef9ab9fa34c66650d1cc0fd7894c4a24b7441cae4a0027fa7",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
+                "shows": "README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source, and for whether any component is stated to be private.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "banded_quantity": "deployment breadth - shipped in Meta's family of apps and across twelve or more hardware backends from eight vendors - which is a breadth claim rather than a measured user count",
+            "note": "Banded on reported deployment rather than on stars, because stars measure the wrong thing for a runtime that ships inside other companies' applications. Meta's own engineering blog and the PyTorch documentation both state that ExecuTorch powers on-device inference across Instagram, WhatsApp, Messenger, Quest and Ray-Ban Meta smart glasses, for billions of people. The LICENSE corroborates the hardware side independently: its BSD-3-Clause header carries eight copyright holders - Meta, Arm, Qualcomm, Apple, MediaTek, NXP, Samsung and Intel - which is vendor participation in the runtime itself rather than a vendor list in marketing copy. `reported_traction` records a word and never a number, so no user figure is asserted here; 4,969 GitHub stars would have banded this at 2 and understated it by three levels.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://engineering.fb.com/2025/07/28/android/executorch-on-device-ml-meta-family-of-apps/",
+                "shows": "Meta's engineering blog on ExecuTorch in the Meta family of apps, naming Instagram, WhatsApp, Messenger and Quest and describing on-device inference reaching billions of people.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "66c729a0f927ffda97e4f0b892dde1fba3a22f72369d97602f205a09856ce489"
+              },
+              {
+                "url": "https://docs.pytorch.org/executorch/main/success-stories.html",
+                "shows": "The project's own success-stories page: \"Billions of users\", naming Instagram, WhatsApp, Messenger, Quest and Ray-Ban deployments.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "adbd164f4bd89af11607336038a479338427867e1632a7ce220f5cdd1d819fe8"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
+                "shows": "README: \"It powers Meta's on-device AI across Instagram, WhatsApp, Quest 3, Ray-Ban Meta Smart Glasses\" and \"Powers billions of users at Meta with real-time on-device inference\".",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "On-device execution of exported models through a ~50KB C++ runtime, with twelve or more hardware backends across eight vendors - XNNPACK, Vulkan, Qualcomm, MediaTek and Samsung Exynos on Android, CoreML on iOS, OpenVINO and CUDA on Linux and Windows, Metal and MLX on macOS - switchable by changing one partitioner line, plus the export and lowering toolchain.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor, level with onnx-runtime, which is banded there on the same instrument: execution-provider breadth across CPU, GPU, mobile and edge. An earlier reading put this two below on the view that an on-device runtime is narrow by nature, which had it backwards - the backend matrix here spans eight silicon vendors and four host platforms, which is wider than apple-core-ml-runtime's single-vendor coverage at the same band. It stays below the anchor because it executes exported models on device rather than serving them with batching, parallelism and a multi-tenant API surface.",
+            "last_verified": "2026-08-31",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
+                "shows": "README, read for the engine's feature set: On-device execution of exported models through a ~50KB C++ runtime, with an export and lowering toolchain and backends across a dozen hardware vendors.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/pytorch/executorch/main/README.md",
+                "shows": "README backend matrix and \"12+ Hardware Backends - Open-source acceleration for Apple, Samsung, Qualcomm, ARM, MediaTek, Vulkan, and more\", with the per-platform table naming XNNPACK, Vulkan, Qualcomm, MediaTek, Samsung Exynos, CoreML, OpenVINO, CUDA, Metal and MLX.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "7cbd4cb5c4d968d1da1f2a1cfa132f8b85d5e060d08c6593663f1fe6040d206c"
+              }
+            ]
+          },
+          "overall_score": 4.5,
+          "tier": "leading",
+          "maturity": 4.5,
+          "mature": true,
+          "freshness": {
+            "date": "2026-08-31",
+            "basis": "verified"
+          },
+          "version_note": "The GitHub API reports NOASSERTION because the BSD-3-Clause header names eight copyright holders. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
         }
       ]
     },
@@ -24673,10 +25879,10 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "SWE-bench Verified",
-            "value": null,
+            "value": "An autonomous coding agent that modifies code, runs commands, browses the web and calls APIs inside a sandboxed Docker runtime, model-agnostic across 100+ providers with bring-your-own-key, driven from a GUI, a CLI or headless; and, added since this band was set, an Agent Canvas control centre that runs OpenHands, Claude Code, Codex, Gemini or any ACP-compatible agent across local, remote and cloud backends.",
             "confidence": "high",
-            "note": "Top of the open coding-agent field on SWE-bench Verified, and model-agnostic across 100+ LLM providers with bring-your-own-key. Marktechpost reports 72% SWE-bench Verified and 67.9% GAIA for OpenHands, the highest figure any independent cited source gives an open agent, above Devin 2.0 and Cursor Background Agent. All Hands AI also publishes the OpenHands Index, whose Issue Resolution board carries a SWE-bench score for each model run inside the OpenHands SDK: the best run reads 95.8 (claude-fable-5, SDK v1.18.1) and the best non-outlier 83.8 (claude-opus-4-8), with MiniMax-M3 at 76.4 the highest open-weights model among the 17 open and 16 closed models listed. That is a vendor-run harness rather than an independent leaderboard, so what it establishes is narrower than a general claim to sit at or above proprietary agents: it places OpenHands at 83.8 on SWE-bench Verified on the scaffold's own numbers. The 5 rests on that placement plus the same-model head-to-head on the Index's alternative-agents view, with the Marktechpost 72% as the independent floor.",
-            "last_verified": "2026-08-14",
+            "note": "Top of the open coding-agent field on SWE-bench Verified, and model-agnostic across 100+ LLM providers with bring-your-own-key. Marktechpost reports 72% SWE-bench Verified and 67.9% GAIA for OpenHands, the highest figure any independent cited source gives an open agent, above Devin 2.0 and Cursor Background Agent. All Hands AI also publishes the OpenHands Index, whose Issue Resolution board carries a SWE-bench score for each model run inside the OpenHands SDK: the best run reads 95.8 (claude-fable-5, SDK v1.18.1) and the best non-outlier 83.8 (claude-opus-4-8), with MiniMax-M3 at 76.4 the highest open-weights model among the 17 open and 16 closed models listed. That is a vendor-run harness rather than an independent leaderboard, so what it establishes is narrower than a general claim to sit at or above proprietary agents: it places OpenHands at 83.8 on SWE-bench Verified on the scaffold's own numbers. The 5 rests on that placement plus the same-model head-to-head on the Index's alternative-agents view, with the Marktechpost 72% as the independent floor. The feature set now sits in `value` rather than only in this note, because twenty-five products in this category name this record as `relative_to` and a comparison against an empty value cannot be checked for correctness. Recording it also surfaced a shape change the band predates: the repository README now leads with Agent Canvas, a control centre that runs third-party agents, marked beta. The agent and its SWE-bench standing are unchanged and the 5 still rests on them, but 'runs somebody else's loop' is no longer a feature only the low rungs of this category have - which is a question for the ladder rather than for this record.",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://github.com/All-Hands-AI/OpenHands",
@@ -24705,6 +25911,13 @@
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "8fe170d299824b63991e8525bbe856d6d34448d96d10137fcdaf5012a18e02bc"
+              },
+              {
+                "url": "https://api.github.com/repos/OpenHands/OpenHands/readme",
+                "shows": "README, read for the anchor's own capability surface. Leads with \"Agent Canvas\" - \"The self-hosted developer control center for coding agents and automations\", status beta - which \"Run[s] OpenHands, Claude Code, Codex, Gemini, or any ACP-compatible agent across local, remote, and cloud backends\", alongside the sandboxed Docker runtime quickstart for the agent itself.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "baf3a0845abc5a160c560cfdcc90c27ec8097c247cdd9e25aec63f6b8f5867b0"
               }
             ]
           },
@@ -24715,7 +25928,7 @@
           "freshness": {
             "date": "2026-08-12",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-14"
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "The monorepo carves an enterprise directory out to separate terms, and the cloud server is a separately licensed repository. Verified 2026-08-12 via the OpenHands monorepo LICENSE, the cloud-server LICENSE and the SDK documentation."
         },
@@ -33401,9 +34614,9 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": null,
+            "value": "End-to-end LLM tracing, prompt management with versioning, evaluations including LLM-as-a-judge, datasets for regression testing, human annotation queues, and a prompt playground, in one self-hostable platform, with OpenTelemetry ingestion and LangChain, OpenAI and LiteLLM integrations.",
             "confidence": "high",
-            "note": "End-to-end tracing, prompt management, evaluations including LLM-as-judge, datasets, annotation queues and a playground, with OpenTelemetry plus LangChain, OpenAI and LiteLLM integrations. There is no standard benchmark for observability, so the score is set on the feature matrix, and this 4 is the reference point the rest of this category is compared against.",
+            "note": "End-to-end tracing, prompt management, evaluations including LLM-as-judge, datasets, annotation queues and a playground, with OpenTelemetry plus LangChain, OpenAI and LiteLLM integrations. There is no standard benchmark for observability, so the score is set on the feature matrix, and this 4 is the reference point the rest of this category is compared against. The feature set now sits in `value` rather than only in this note: this record is named as `relative_to` by twenty-two products in the category, and a comparison against an empty value is checkable for arithmetic consistency but not for correctness - the reader cannot see what the band was placed against.",
             "sources": [
               {
                 "url": "https://github.com/langfuse/langfuse",
@@ -33418,9 +34631,16 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "edac2d534b62d4afa84842db5fb96df51031c33caeea29d46484becee0c943ca"
+              },
+              {
+                "url": "https://api.github.com/repos/langfuse/langfuse/readme",
+                "shows": "README, read for the platform's own feature list: tracing, Prompt Management, Evaluations including LLM-as-a-judge, Datasets, annotation and a Playground, self-hostable.",
+                "accessed": "2026-08-31",
+                "http_status": 200,
+                "content_sha256": "8e12bd0fed028ec81f52f9e2a239626f81973efe8f65a3391a94dea191a65211"
               }
             ],
-            "last_verified": "2026-08-13"
+            "last_verified": "2026-08-31"
           },
           "overall_score": 4.5,
           "tier": "leading",
@@ -33429,7 +34649,7 @@
           "freshness": {
             "date": "2026-08-12",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-14"
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-13 via the langfuse/langfuse repository and the Langfuse observability docs."
         },
@@ -51801,6 +53021,7 @@
         "qwen-coder",
         "qwen-instruct",
         "qwen3guard",
+        "rtp-llm",
         "zvec"
       ]
     },
@@ -52638,6 +53859,19 @@
         "dolt"
       ]
     },
+    "dphn": {
+      "slug": "dphn",
+      "display_name": "Dphn AI",
+      "type": "company",
+      "homepage": "https://dphn.ai",
+      "github": [
+        "https://github.com/dphnAI"
+      ],
+      "country": "",
+      "products": [
+        "sonar"
+      ]
+    },
     "duckduckgo": {
       "slug": "duckduckgo",
       "display_name": "DuckDuckGo",
@@ -52726,6 +53960,19 @@
       "country": "",
       "products": [
         "epoch-ai-benchmarks"
+      ]
+    },
+    "ericlbuehler": {
+      "slug": "ericlbuehler",
+      "display_name": "Eric Buehler",
+      "type": "individual",
+      "homepage": "https://github.com/EricLBuehler",
+      "github": [
+        "https://github.com/EricLBuehler"
+      ],
+      "country": "",
+      "products": [
+        "mistral-rs"
       ]
     },
     "evalplus-team-uiuc": {
@@ -52911,9 +54158,11 @@
         "ifeval",
         "jax",
         "keras",
+        "litert-lm",
         "sentencepiece",
         "shieldgemma",
-        "tensorflow"
+        "tensorflow",
+        "tensorflow-serving"
       ]
     },
     "google-cloud": {
@@ -53726,6 +54975,19 @@
         "anythingllm"
       ]
     },
+    "mirai-tech": {
+      "slug": "mirai-tech",
+      "display_name": "Mirai Tech",
+      "type": "company",
+      "homepage": "https://trymirai.com",
+      "github": [
+        "https://github.com/trymirai"
+      ],
+      "country": "",
+      "products": [
+        "uzu"
+      ]
+    },
     "mistral-ai": {
       "slug": "mistral-ai",
       "display_name": "Mistral AI",
@@ -53810,6 +55072,19 @@
       "country": "",
       "products": [
         "swift"
+      ]
+    },
+    "modeltc": {
+      "slug": "modeltc",
+      "display_name": "ModelTC",
+      "type": "lab",
+      "homepage": "https://github.com/ModelTC",
+      "github": [
+        "https://github.com/ModelTC"
+      ],
+      "country": "",
+      "products": [
+        "lightllm"
       ]
     },
     "modular": {
@@ -54362,6 +55637,19 @@
         "ungoliant"
       ]
     },
+    "paddlepaddle": {
+      "slug": "paddlepaddle",
+      "display_name": "PaddlePaddle",
+      "type": "company",
+      "homepage": "https://www.paddlepaddle.org.cn",
+      "github": [
+        "https://github.com/PaddlePaddle"
+      ],
+      "country": "",
+      "products": [
+        "fastdeploy"
+      ]
+    },
     "pathway": {
       "slug": "pathway",
       "display_name": "Pathway",
@@ -54556,6 +55844,7 @@
       "github": [],
       "country": "",
       "products": [
+        "executorch",
         "pytorch",
         "torchao",
         "torchtune"
@@ -54989,6 +56278,19 @@
         "openhermes-2-5"
       ]
     },
+    "tencent": {
+      "slug": "tencent",
+      "display_name": "Tencent",
+      "type": "company",
+      "homepage": "https://www.tencent.com",
+      "github": [
+        "https://github.com/Tencent"
+      ],
+      "country": "",
+      "products": [
+        "ncnn"
+      ]
+    },
     "tencent-ai-lab": {
       "slug": "tencent-ai-lab",
       "display_name": "Tencent AI Lab",
@@ -55401,6 +56703,19 @@
         "osworld"
       ]
     },
+    "xllm-ai": {
+      "slug": "xllm-ai",
+      "display_name": "xLLM-AI",
+      "type": "company",
+      "homepage": "https://xllm-ai.com",
+      "github": [
+        "https://github.com/xLLM-AI"
+      ],
+      "country": "",
+      "products": [
+        "xllm"
+      ]
+    },
     "zed-industries": {
       "slug": "zed-industries",
       "display_name": "Zed Industries",
@@ -55447,6 +56762,19 @@
       "country": "",
       "products": [
         "milvus"
+      ]
+    },
+    "zml": {
+      "slug": "zml",
+      "display_name": "ZML",
+      "type": "company",
+      "homepage": "https://zml.ai",
+      "github": [
+        "https://github.com/zml"
+      ],
+      "country": "",
+      "products": [
+        "zml"
       ]
     }
   },
@@ -55521,7 +56849,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 527,
+  "n_total": 539,
   "generated": "2026-08-31",
   "version": "0.2.0",
   "released": "2026-08-16",
@@ -55532,10 +56860,10 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 527,
-      "overlap": 297,
+      "scored": 539,
+      "overlap": 309,
       "scored_outside": 230,
-      "uncategorized": 24329,
+      "uncategorized": 24317,
       "universe": 24856
     },
     "top": [
