@@ -1,0 +1,89 @@
+product: pytorch-lightning
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: Lightning-AI/pytorch-lightning
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier described in the README; Lightning
+        AI sells a hosted platform, which is a separate product alongside rather than a gated core
+  confidence: high
+  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
+    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
+    and no paid tier described in the readme; lightning ai sells a hosted platform, which is a separate product
+    alongside rather than a gated core.'
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(Lightning-AI/pytorch-lightning);core-gated:ungated(no enterprise or
+    ee path in the repository root and no paid tier described in the README; Lightning AI sells a hosted platform,
+    which is a separate product alongside rather than a gated core)
+  sources:
+  - url: https://raw.githubusercontent.com/Lightning-AI/pytorch-lightning/master/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text, byte-identical to the canonical template
+      through END OF TERMS AND CONDITIONS and followed only by the standard appendix. No appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: a41e2fae9915ae56028f8dbd0bf27995f1907613cbcd2d81a61b010ad34e9fe9
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Lightning-AI/pytorch-lightning/master/README.md
+    shows: 'README, read for the distribution and gating question: it documents pip-installing the library and running
+      it locally, and describes no enterprise, paid or licence-gated build of the library. Lightning AI''s hosted
+      platform is a separate offering rather than a tier of this code.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: f7cd2824fca50d0761973646e06876563d23ae3cc87c9dde4bb53747f127466e
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: 12,410,527 PyPI downloads in the last 30 days for the pytorch-lightning package
+  note: 'Banded on the authoritative PyPI route: 12,410,527 downloads in the last 30 days for the pytorch-lightning
+    package, which places it at level 5. The same repository also publishes an umbrella `lightning` package at 5,665,410
+    downloads over the same window; it is not declared as a second artifact because it redistributes this code alongside
+    Lightning Fabric, so declaring it would claim an artifact that a separate product may later need, and the band
+    is level 5 on either reading. The repository carries 31,313 stars, recorded only as corroboration.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://pypistats.org/api/packages/pytorch-lightning/recent
+    shows: last_month 12410527, last_week 2323920, last_day 238140 for the pytorch-lightning package.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 8ffc85f0a200e9a481028fd503bb3c279e891459daaff11d29eacf02c5c5c062
+  - url: https://api.github.com/repos/Lightning-AI/pytorch-lightning
+    shows: 'Repo metadata for Lightning-AI/pytorch-lightning: stargazers_count 31313, archived false, pushed_at
+      2026-08-31.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: fc84cfc079c99f27266eeb6ef23a6255cbe00c4f7709c6307007acb1b59a52ee
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Training abstraction over PyTorch: Trainer and Fabric interfaces that move unchanged model code between
+    CPU, CUDA and MPS GPUs, TPUs, multi-GPU and multi-node configurations; distributed strategies including DDP,
+    FSDP and DeepSpeed; mixed precision out of the box. Structures a training loop rather than providing the tensor
+    engine underneath it.'
+  confidence: medium
+  note: Scored 4 as a library built on a framework rather than a framework. It structures and distributes a PyTorch
+    training loop, which is the same shape as accelerate at 4 in this category, and depends on PyTorch for the tensor
+    engine and autograd that put pytorch at 5. Its breadth of accelerator and strategy coverage is what holds it
+    at the top of that band. Stated here rather than recorded as relative_to because accelerate has not been confirmed as recently as this pass, and a comparison cannot claim a fresher verification date than its root.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/Lightning-AI/pytorch-lightning/master/README.md
+    shows: The Key features section documents switching between CPU, GPU (CUDA and MPS), TPU, multi-GPU and multi-node
+      execution with no code changes via the Fabric accelerator/devices/num_nodes arguments, and distributed strategies
+      DDP, FSDP and DeepSpeed with mixed precision available out of the box.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: f7cd2824fca50d0761973646e06876563d23ae3cc87c9dde4bb53747f127466e
