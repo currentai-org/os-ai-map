@@ -1,0 +1,90 @@
+product: private-gpt
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: zylon-ai/private-gpt
+    core-gated:
+      value: ungated
+      detail: no enterprise or ee path in the repository root and no paid tier of this code described in the README;
+        Zylon, the maintainer's commercial platform, is a separate end-to-end product built on top rather than a
+        gated build of this one
+  confidence: high
+  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
+    body was read in full: the stock Apache-2.0 text, byte-identical to the canonical template, with nothing after
+    END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root and no
+    paid tier of this code described in the readme; zylon, the maintainer''s commercial platform, is a separate
+    end-to-end product built on top rather than a gated build of this one.'
+  last_verified: '2026-08-31'
+  raw: license:Apache-2.0(OSI);source:public(zylon-ai/private-gpt);core-gated:ungated(no enterprise or ee path in
+    the repository root and no paid tier of this code described in the README; Zylon, the maintainer's commercial
+    platform, is a separate end-to-end product built on top rather than a gated build of this one)
+  sources:
+  - url: https://raw.githubusercontent.com/zylon-ai/private-gpt/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache License 2.0 text at 11,357 bytes, byte-identical to the
+      canonical template through END OF TERMS AND CONDITIONS and followed only by the standard appendix. No appended
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zylon-ai/private-gpt/main/README.md
+    shows: README, read for the distribution and gating question. The 'What PrivateGPT gives you' section lists
+      the messages API, ingestion, agentic RAG, built-in and custom tools, MCP connectors, database and CSV access
+      and embeddings, all shipped from this repository. The 'PrivateGPT vs Zylon' section states that PrivateGPT
+      is the open-source application API layer and that Zylon is a separate end-to-end platform built on top of
+      it, adding a Triton and vLLM inference server, Kubernetes packaging and support - a product sold alongside
+      rather than a licence-gated build of this code.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 3b4ae5d4ee0793b3aa65b1a292cb1409bcaf6d12f7739d38f81937135f8dab07
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  banded_quantity: 57,491 GitHub stargazers on zylon-ai/private-gpt, the product's only declared artifact
+  note: 'Banded on stars, because the product has no bridged distribution channel: it installs through a Homebrew
+    tap and a shell script rather than from PyPI, and no package on PyPI belongs to it - the names `private-gpt`
+    and `private_gpt` are unregistered, while `privategpt` and `pgpt` belong to unrelated projects. 57,491 stargazers
+    places it at level 3, and the instrument caps the band at 3 however large the count. Stars measure attention
+    rather than use, so confidence is low, and the honest reading is that this product''s real adoption is not measurable
+    with the instruments the routing table currently bridges.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/zylon-ai/private-gpt
+    shows: 'Repo metadata for zylon-ai/private-gpt: stargazers_count 57491, archived false, pushed_at 2026-08-31.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: df4c7706bd60259bd50fc497262777d03fbb4733d5456a4c42204b645fba4005
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'API-layer breadth rather than a chat surface: streaming messages API with token counting, file and artifact
+    ingestion, retrieval with citations and agentic RAG, built-in tools mirroring the Claude API (web search, web
+    fetch, code execution), custom tools and MCP connectors, structured access to databases and CSVs, embeddings
+    and orchestration. Works against any OpenAI-compatible server. Ships no UI of its own.'
+  confidence: medium
+  note: 'Scored 4 on the gateway side of this category rather than the chat side. Its retrieval, tool and connector
+    surface is the same order as anythingllm and open-webui, both 4 here, and broader than a front end like jan
+    at 3. It stops short of 5 because it deliberately ships no interface: librechat at 5 covers multi-provider chat,
+    multi-user authentication and agents together, where this covers the API layer alone.'
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/zylon-ai/private-gpt/main/README.md
+    shows: The 'What PrivateGPT gives you' section lists a standard messages API with streaming, async and token
+      counting, file and artifact ingestion, retrieval with citations and agentic RAG, built-in tools mirroring
+      the Claude API, custom tools and MCP connectors, structured access to databases and CSVs, and embeddings and
+      orchestration.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 3b4ae5d4ee0793b3aa65b1a292cb1409bcaf6d12f7739d38f81937135f8dab07
