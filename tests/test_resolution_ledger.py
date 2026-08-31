@@ -10,7 +10,15 @@ from pathlib import Path
 import pytest
 import yaml
 
-from build.resolution import LEDGER, NOT_A_NEW_PRODUCT, VERDICTS, blocks_new_product, load
+from build.resolution import (
+    LEDGER,
+    NOT_A_NEW_PRODUCT,
+    VERDICTS,
+    DuplicateResolution,
+    blocks_new_product,
+    holds_bulk_promotion,
+    load,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,6 +66,53 @@ def test_the_four_cases_that_produced_this_file(repo, verdict, target):
     assert entry["verdict"] == verdict
     if target:
         assert entry["product"] == target
+
+
+def test_a_repository_may_be_resolved_only_once(tmp_path):
+    """Governance state has no benign duplicate.
+
+    `load` used to be a dict comprehension, so two entries for one repository resolved
+    last-write-wins and the stronger decision vanished silently. The file is hand-edited by
+    people appending after each review, which is precisely how a second entry appears - and
+    docs/reference/identity.md records the same failure in the deleted slug-alias mapping.
+    """
+    ledger = tmp_path / "resolution_ledger.yaml"
+    ledger.write_text(
+        "version: 1\nresolutions:\n"
+        "- repo: Foo/Bar\n  verdict: existing_product\n  product: x\n"
+        "  decided_in: '#1'\n  note: the first decision, which must not be lost\n"
+        "- repo: foo/bar.git\n  verdict: unresolved\n"
+        "  decided_in: '#2'\n  note: a later entry for the same repository, differently cased\n"
+    )
+    with pytest.raises(DuplicateResolution) as raised:
+        load(ledger)
+    assert "Foo/Bar" in str(raised.value) or "foo/bar" in str(raised.value)
+
+
+def test_the_real_ledger_has_no_duplicate_identity():
+    """Asserted against the file itself, so appending a second entry fails here."""
+    assert load()
+
+
+def test_unresolved_holds_a_bulk_promotion_even_though_it_does_not_block_forever():
+    """The distinction that #420 got wrong.
+
+    `unresolved` means "this may come back to a later sweep", not "this proposal may publish".
+    The #418 review recorded ag-ui as a protocol filed under agent frameworks, serena as an MCP
+    retrieval toolkit and repomix as document ingestion - and the same run then published all
+    three in orchestration_agents, the category the entries say is wrong. A bulk run must park
+    them; a person may still resolve and add them by hand, which is why validate does not fail.
+    """
+    for repo in ("ag-ui-protocol/ag-ui", "oraios/serena", "yamadashy/repomix"):
+        assert blocks_new_product(repo) is None, f"{repo}: must not be a hard build error"
+        held = holds_bulk_promotion(repo)
+        assert held is not None, f"{repo}: a bulk run must park it"
+        assert held["verdict"] == "unresolved"
+
+
+def test_a_repo_with_no_entry_is_eligible():
+    """The other side of the hold: silence in the ledger is permission."""
+    assert holds_bulk_promotion("vllm-project/vllm") is None
 
 
 def test_unresolved_does_not_block():
