@@ -1,0 +1,81 @@
+product: lightllm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the stock Apache-2.0 text with no appended condition, read in full rather than taken
+    from the API's label. The repository is public and unarchived and builds the engine itself. Its root tree carries
+    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
+    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
+    path in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/ModelTC/LightLLM/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock Apache-2.0 text with no appended condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ModelTC/LightLLM
+    shows: Repo metadata for ModelTC/LightLLM - archived false, 4,253 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 5d4f4eca58f0ea162a65c6089d06721ef940a90092e66a3f5ddeb8a16e1fd366
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/ModelTC/LightLLM/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ddf55d52d0b42186b24242203a4fdea4c255a387786f3a078f5f9ff689aaaf59
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,253 GitHub stars, in the 1K-10K band of the stars scale. A `lightllm` package exists on PyPI but publishes
+    no repository link, so it could not be confirmed to belong to this project and is not declared.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/ModelTC/LightLLM
+    shows: Repo metadata - stargazers_count = 4,253 - for ModelTC/LightLLM.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 5d4f4eca58f0ea162a65c6089d06721ef940a90092e66a3f5ddeb8a16e1fd366
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Python-based serving with a lightweight design and horizontal scalability, assembled from FasterTransformer,
+    TGI, vLLM and FlashAttention techniques.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor and level with text-generation-inference, which records the comparable set
+    - continuous batching, tensor parallelism, Flash Attention, quantization - at the same band. Placed there rather
+    than higher because it composes those techniques rather than publishing a serving record of its own.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/ModelTC/LightLLM/main/README.md
+    shows: 'README, read for the engine''s feature set: Python-based serving with a lightweight design and horizontal
+      scalability, assembled from FasterTransformer, TGI, vLLM and FlashAttention techniques.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: ddf55d52d0b42186b24242203a4fdea4c255a387786f3a078f5f9ff689aaaf59

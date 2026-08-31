@@ -1,0 +1,85 @@
+product: uzu
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the engine
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid build of the engine in the README
+  confidence: medium
+  note: The LICENSE body is the stock MIT text, Copyright (c) 2025 Mirai Tech Inc., with no appended condition,
+    read in full rather than taken from the API's label. The repository is public and unarchived and builds the
+    engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated
+    build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather
+    than a pricing-page read.
+  raw: license:MIT(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise path
+    in the repository root and no paid build of the engine in the README)
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/trymirai/uzu/main/LICENSE
+    shows: 'LICENSE body, read in full: the stock MIT text, Copyright (c) 2025 Mirai Tech Inc., with no appended
+      condition.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 7621d17e34842470f59e711e3087cc4428d1dd41117fc6d3ddeb1e0fa6f56b20
+    establishes:
+    - license
+  - url: https://api.github.com/repos/trymirai/uzu
+    shows: Repo metadata for trymirai/uzu - archived false, 1,684 stars.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: aa2b4fc9550cfefc25637a84d49765eb6cf4ffa57fa9183a32afa2acf0364bd4
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/trymirai/uzu/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a licence-gated build beside the published source,
+      and for whether any component is stated to be private.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 21d43fce99f602d46fd9dd04b4bc980261040b36cbbbdfdbe182c2e698cd85cf
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,684 GitHub stars, in the 1K-10K band of the stars scale. A `uzu` package exists on PyPI and does resolve
+    to this repository, but it drew 788 downloads in the trailing 30 days against a Rust and Swift primary distribution,
+    so banding on it would measure a minority channel rather than the product. No package artifact is declared for
+    that reason.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://api.github.com/repos/trymirai/uzu
+    shows: Repo metadata - stargazers_count = 1,684 - for trymirai/uzu.
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: aa2b4fc9550cfefc25637a84d49765eb6cf4ffa57fa9183a32afa2acf0364bd4
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: On-device inference on Apple silicon against unified memory, with Python, TypeScript and Swift bindings;
+    single-platform rather than multi-accelerator.
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor, and level with llamafile, which is the other single-target local engine
+    here. It serves one hardware family and does not carry the multi-node or parallelism surface the bands above
+    are placed on.
+  last_verified: '2026-08-31'
+  sources:
+  - url: https://raw.githubusercontent.com/trymirai/uzu/main/README.md
+    shows: 'README, read for the engine''s feature set: On-device inference on Apple silicon against unified memory,
+      with Python, TypeScript and Swift bindings; single-platform rather than multi-accelerator.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 21d43fce99f602d46fd9dd04b4bc980261040b36cbbbdfdbe182c2e698cd85cf

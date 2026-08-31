@@ -1763,6 +1763,21 @@ resolutions:
   decided_on: '2026-08-30'
   note: repository of head product `agent2agent-protocol`, which declares no github artifact. Canonical
     casing is `a2aproject/A2A`
+- repo: abetlen/llama-cpp-python
+  verdict: existing_product
+  product: llama-cpp
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a binding of llama-cpp, declared as one of its artifacts rather than as a product of its own.
+    Its README says so: "Simple Python bindings for @ggerganov''s llama.cpp library."'
+- repo: microsoft/onnxruntime-genai
+  verdict: existing_product
+  product: onnx-runtime
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a extension layer of onnx-runtime, declared as one of its artifacts rather than as a product
+    of its own. Its README says so: "It implements the generative AI loop for ONNX models, including pre
+    and post processing, inference with ONNX Runtime, logits processing, search and sa"'
 - repo: modelcontextprotocol/modelcontextprotocol
   verdict: existing_product
   product: model-context-protocol
@@ -1770,6 +1785,30 @@ resolutions:
   decided_on: '2026-08-30'
   note: spec repository of head product `model-context-protocol`, which declares no github artifact, so
     repo-level dedup misses it
+- repo: vllm-project/production-stack
+  verdict: existing_product
+  product: vllm
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a reference deployment of vllm, declared as one of its artifacts rather than as a product of
+    its own. Its README says so: "vLLM Production Stack project provides a reference implementation on
+    how to build an inference stack on top of vLLM."'
+- repo: vllm-project/vllm-ascend
+  verdict: existing_product
+  product: vllm
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a plugin/backend of vllm, declared as one of its artifacts rather than as a product of its own.
+    Its README says so: "vLLM Ascend (`vllm-ascend`) is a community maintained hardware plugin for running
+    vLLM seamlessly on the Ascend NPU."'
+- repo: vllm-project/vllm-omni
+  verdict: existing_product
+  product: vllm
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a variant of vllm, declared as one of its artifacts rather than as a product of its own. Its
+    README says so: "vLLM-Omni is a framework that extends its support for omni-modality model inference
+    and serving."'
 - repo: apify/apify-mcp-server
   verdict: sku_of
   product: apify
@@ -1818,6 +1857,22 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: Kubeflow distributed training; sits between deployment and finetuning_code
+- repo: kvcache-ai/Mooncake
+  verdict: unresolved
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: 'a KVCache-centric disaggregated serving platform whose Transfer Engine and Store are consumed
+    by vLLM and SGLang rather than serving inference itself. Same boundary question as LMCache. Note for
+    whoever takes it: its licence file is named LICENSE-APACHE, which a pipeline reading only LICENSE*
+    will miss.'
+- repo: LMCache/LMCache
+  verdict: unresolved
+  decided_in: '#423 inference_code pass'
+  decided_on: '2026-08-31'
+  note: a KV cache management layer, not an engine. Its README says it "can be used as a KV cache layer
+    for a range of mainstream open-source serving engines", so inference_code - defined as engines and
+    runtimes that serve inference - does not fit, and neither obviously does compilers. Needs a category
+    call.
 - repo: modelcontextprotocol/go-sdk
   verdict: unresolved
   decided_in: '#413'
