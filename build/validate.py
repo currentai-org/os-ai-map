@@ -142,6 +142,39 @@ def validate_sources(data: dict) -> list[str]:
             if len(cat.get("products") or []) < 10:
                 errors.append(f"category {cid!r}: published category needs at least 10 scored products")
 
+    # --- resolution ledger ---
+    # A repository a person already resolved may not come back as a new product. The ledger
+    # exists because a decision recorded only in a pull request is invisible to the next bulk
+    # run: the first corpus expansion recreated `a2aproject/A2A` as a product called `a2a`
+    # though #413 had resolved it to `agent2agent-protocol`, and eleven more besides. Prose is
+    # not an input; this file is.
+    #
+    # `unresolved` is deliberately not enforced. It means a person still has to look, so a
+    # later run proposing the repository again is the intended behaviour rather than a
+    # regression, and failing the build on it would just delete the distinction.
+    from build.resolution import NOT_A_NEW_PRODUCT, load as load_ledger
+
+    ledger = load_ledger()
+    for slug, product in sorted((data.get("products") or {}).items()):
+        for artifact in (product.get("github") or []):
+            url = (artifact.get("url") or "").rstrip("/")
+            if "github.com/" not in url:
+                continue
+            repo = url.split("github.com/")[-1].removesuffix(".git").lower()
+            entry = ledger.get(repo)
+            if not entry or entry.get("verdict") not in NOT_A_NEW_PRODUCT:
+                continue
+            if entry.get("product") == slug:
+                continue
+            resolved_to = entry.get("product") or entry.get("boundary") or "out of scope"
+            errors.append(
+                f"products/{slug}.yaml: declares {repo!r}, which the resolution ledger "
+                f"resolves as {entry['verdict']} -> {resolved_to} "
+                f"(decided in {entry.get('decided_in', 'an earlier sweep')}). Either the "
+                f"ledger entry is wrong and a person should change it, or this product "
+                f"should not exist."
+            )
+
     # --- tail registry invariants ---
     # Tail rows are deliberately lighter than head product records, but identity is
     # not: a slug and a GitHub artifact may appear in only one tier and category.
