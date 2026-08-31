@@ -247,6 +247,15 @@ resolutions:
   decided_on: '2026-08-30'
   note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
     this category
+- repo: cloudposse/atmos
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#428 deployment boundary ruling'
+  decided_on: '2026-08-31'
+  note: builds, authenticates and ships Terraform, OpenTofu, Kubernetes, Helm and containers from declarative
+    stacks. General-purpose infrastructure tooling that happens to be usable for AI work, not an AI stack
+    product, and it scores nothing on the deployment category's discriminators - no isolation boundary,
+    no cold start, no accelerator scheduling, and it hosts neither models nor workloads.
 - repo: cocoindex-io/cocoindex
   verdict: excluded_boundary
   boundary: domain-applications
@@ -293,6 +302,13 @@ resolutions:
   decided_in: '#413'
   decided_on: '2026-08-30'
   note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: dagucloud/dagu
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#428 deployment boundary ruling'
+  decided_on: '2026-08-31'
+  note: a single-binary local-first workflow engine running YAML-defined DAGs over shell commands, containers,
+    Kubernetes jobs and SSH. Deliberately the opposite of a multi-tenant runtime, and general-purpose.
 - repo: danielmiessler/LifeOS
   verdict: excluded_boundary
   boundary: general-agent-frameworks
@@ -593,6 +609,14 @@ resolutions:
   decided_on: '2026-08-30'
   note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
     No category in the taxonomy holds authored agent content
+- repo: hatchet-dev/hatchet
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#428 deployment boundary ruling'
+  decided_on: '2026-08-31'
+  note: a Postgres-backed task queue and durable-execution engine. Workers are the caller's own processes,
+    so it supplies no execution boundary and no cold-start behaviour of its own; its scheduling is task
+    assignment, not compute placement. General-purpose infrastructure rather than an AI stack product.
 - repo: headroomlabs-ai/headroom
   verdict: excluded_boundary
   boundary: rag-frameworks-and-vector-search
@@ -766,6 +790,13 @@ resolutions:
   decided_on: '2026-08-30'
   note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
     No category in the taxonomy holds authored agent content
+- repo: kestra-io/kestra
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#428 deployment boundary ruling'
+  decided_on: '2026-08-31'
+  note: event-driven and scheduled workflow orchestration defined in declarative YAML, with a plugin ecosystem
+    for running scripts against databases, cloud storage and APIs. A general workflow engine, not AI-specific.
 - repo: kijai/comfyui-wanvideowrapper
   verdict: excluded_boundary
   boundary: gui-and-device-automation
@@ -1825,6 +1856,17 @@ resolutions:
   decided_in: '#418 review'
   decided_on: '2026-08-31'
   note: an MCP toolkit for semantic code retrieval; a tool, not an agent framework
+- repo: rapidsai/raft
+  verdict: unresolved
+  decided_in: '#428 deployment boundary ruling'
+  decided_on: '2026-08-31'
+  note: 'a CUDA header-only primitives library for machine learning and information retrieval - linear
+    algebra, reductions, factorization, solvers, sampling. Held on a literal category-fit question rather
+    than on a band: does it transform model computation toward hardware, which is what the compilers ladder
+    measures, or does it supply primitives to systems that do? The guide puts a kernel library at a ceiling
+    of 3 for exactly that reason, and its ANN work has since moved to cuVS, so the answer may be that
+    compilers is the wrong category rather than that the band is wrong. Moving it re-opens the instrument,
+    not just the score.'
 - repo: SemiAnalysisAI/InferenceX
   verdict: unresolved
   decided_in: '#418 review'
