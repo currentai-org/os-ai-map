@@ -90,8 +90,11 @@ def test_a_repository_may_be_resolved_only_once(tmp_path):
 
 
 #: Floor on the number of recorded decisions. Raise it deliberately when a pass appends;
-#: never lower it. 290 as of the #433 rebase.
-LEDGER_FLOOR = 290
+#: never lower it. Deliberately a hand-written constant rather than derived from the file:
+#: a floor that computes itself from the current ledger would happily derive 289 from a
+#: damaged one and prove itself correct. The independent number is what gives this test
+#: memory. 291 after the three 2026-08-31 category passes.
+LEDGER_FLOOR = 291
 
 
 def test_the_ledger_never_shrinks():
