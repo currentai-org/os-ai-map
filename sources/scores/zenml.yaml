@@ -1,0 +1,82 @@
+product: zenml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the published repository is the product
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the repository root and no paid tier described in the README
+  confidence: medium
+  note: The LICENSE body is the Apache-2.0 text, read rather than taken from the API's label, and it carries no
+    appended condition - no revenue or user threshold, no commercial-use carve-out and no attribution requirement
+    beyond the license's own. The repository is public and unarchived and builds the product itself. Its root tree
+    carries no enterprise, ee or commercial directory and its README describes no license-gated build, so the core
+    reads as ungated. Confidence is medium rather than high because that is a repository-and-README read, not a
+    pricing-page read.
+  raw: license:Apache-2.0(OSI);source:public(the published repository is the product);core-gated:ungated(no enterprise
+    path in the repository root and no paid tier described in the README)
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/zenml-io/zenml/main/LICENSE
+    shows: LICENSE body, read in full. The Apache-2.0 text with no additional terms appended after it.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: c1b9df1275e769f3dbab000d1e457a2d4b0f28eb5da6c77e48dc37eeba202ed7
+    establishes:
+    - license
+  - url: https://api.github.com/repos/zenml-io/zenml
+    shows: Repo metadata for zenml-io/zenml - license spdx_id Apache-2.0, archived false, 5,557 stars.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 9813d894defa172694fe1cfb3f2f56e52ace27c4d16bfc8a9507856250646b20
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/zenml-io/zenml/main/README.md
+    shows: README, read for a paid tier, an enterprise edition or a license-gated build beside the published source,
+      and for whether the repository is the whole product.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 0372db97c9c04edda42b55874805eaa38fbcde1d06c2d6753eb82101b0e4df99
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 5,557 GitHub stars, which lands in the 1K-10K stars band of the stars scale. No package artifact is declared
+    for this record yet, so stars are the only instrument available and the stars scale caps at level 3. Read the
+    band as a floor rather than a measurement; it is the weakest instrument the map carries.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://api.github.com/repos/zenml-io/zenml
+    shows: Repo metadata - stargazers_count = 5,557 - for zenml-io/zenml.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 9813d894defa172694fe1cfb3f2f56e52ace27c4d16bfc8a9507856250646b20
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: low
+  note: Deliberately unscored rather than guessed. Capability in this category is banded on a feature matrix against
+    a named anchor, and that comparison has not been made for this record - no anchor was chosen and no feature
+    set was read against one. Recording a number here would be an invention, and the corpus expansion this record
+    belongs to chose to leave the axis unscored rather than fill it. It should be scored in a category-wide capability
+    pass, where every product is banded against the same anchor rather than one at a time.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/zenml-io/zenml/main/README.md
+    shows: README, read for a published benchmark result, leaderboard entry or performance figure. None is cited
+      here because none was used to score.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 0372db97c9c04edda42b55874805eaa38fbcde1d06c2d6753eb82101b0e4df99

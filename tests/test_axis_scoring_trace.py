@@ -36,9 +36,9 @@ TEST_SHA = "test-git-sha"
 # Pinned goldens over the committed corpus. A change here is a change in the declarations or the
 # ladder — regenerate deliberately, never to make a red test green.
 GOLDEN = {
-    "axis_facts": (2305, "2923f3e867094e542b3c3ed7a41e418d658cb337d12325515a801f2212819452"),
-    "axis_rule_matches": (2753, "e3719b4d13f5204226e52e51866ee36c77c68c689df8dc0dd05f755c419c1f5e"),
-    "axis_results": (527, "0eccd5c843871a3b77051b8dbb1fc336a146884cdcadb41b161659b63419fe2a"),
+    "axis_facts": (2661, "586fc6a74b931009e3f5544328fbd308612ddd123c7991bcdb5d710e2ab99afa"),
+    "axis_rule_matches": (3195, "f850143bfecbf0813a23f227aeb5328fa12a2c814d97146c73ea741d3c745ee2"),
+    "axis_results": (616, "e706890fdf9af175ad4feda088186d148d9f705fa2a6eae08539764b0cf989b7"),
 }
 
 

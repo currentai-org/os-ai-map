@@ -1,0 +1,1837 @@
+# Decisions about candidate repositories that a person has already made.
+#
+# WHY THIS FILE EXISTS. A discovery sweep resolves a repository by hand - "this is the spec repo
+# of a product we already carry", "this is a vendor's MCP surface, not a product", "this is
+# authored content, not software" - and records the reasoning in a pull request. The corpus then
+# holds the DECISION nowhere a machine can read it. The next bulk run re-derives the same
+# candidate from the same pool, finds no artifact that matches, and recreates it.
+#
+# That is not hypothetical. The first corpus expansion recreated `a2aproject/A2A` as a new
+# product called `a2a`, though #413 had resolved it to `agent2agent-protocol` by hand. It
+# recreated `firecrawl/firecrawl-mcp-server`, which #413 had called an MCP surface of
+# `firecrawl` rather than a product. And it created `anthropics/knowledge-work-plugins` and
+# `promptslab/Awesome-Prompt-Engineering` as software, though #413 had parked both as authored
+# content pending an ontology decision.
+#
+# The A2A case is the sharpest, because it was self-inflicted twice over: `agent2agent-protocol`
+# declares no github artifact precisely BECAUSE #415 left it undeclared pending a ruling on
+# adoption routing. Repo-level dedup could not see it, and nothing else in the repo could either.
+#
+# VERDICTS
+#   existing_product      the repository belongs to a product already in the corpus
+#   sku_of                a surface or edition of a product, not a product of its own
+#   excluded_boundary     out of scope for the map, with the boundary named
+#   excluded_maintenance  archived, or unmaintained past the sweep's declared window
+#   unresolved            identity genuinely undecided; needs a person, not a rerun
+#
+# A bulk run must consult this file before proposing a product and must never silently
+# overturn an entry. build/validate.py enforces the half that can be enforced: no product may
+# declare a repository this file resolves elsewhere.
+#
+# Seeded 2026-08-31 from the reviewed decisions in #413. Entries are appended by later sweeps;
+# a verdict is changed only deliberately, by a person, with `decided_in` updated.
+version: 1
+resolutions:
+- repo: 0x4m4/hexstrike-ai
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: abhigyanpatwari/gitnexus
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: adbar/trafilatura
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: agents365-ai/drawio-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: agentscope-ai/agentteams
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: agricidaniel/claude-ads
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: agricidaniel/claude-seo
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: ahujasid/blender-mcp
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: aidenybai/react-grab
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: alchaincyf/huashu-design
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: alibaba/page-agent
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: antfu/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: anthropics/claude-for-legal
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: anthropics/financial-services
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: anthropics/knowledge-work-plugins
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: anysearch-ai/anysearch-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: apify/crawlee
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: apify/crawlee-python
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: arc53/docsgpt
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: BasedHardware/omi
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a wearable/screen-capture assistant product rather than a stack layer
+- repo: bradautomates/claude-video
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: browser-act/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: browser-use/browser-harness
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: builderio/gpt-crawler
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: bytedance/dolphin
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: campfirein/byterover-cli
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: chenfei-wu/taskmatrix
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: chenhg5/cc-connect
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: chuspeeism/dashi-ppt-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: clemenselflein/openmower
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: cloudflare/computer
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: cocoindex-io/cocoindex
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: coderamp-labs/gitingest
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: colbymchenry/codegraph
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: cubiq/comfyui_ipadapter_plus
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: cursortouch/windows-mcp
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: czlonkowski/n8n-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: d4vinci/scrapling
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: danielmiessler/LifeOS
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an intent-engineering platform, not a chat UI or an API gateway
+- repo: davila7/claude-code-templates
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: configuration templates for one agent, the content boundary
+- repo: deepseek-ai/deepseek-ocr
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: deusdata/codebase-memory-mcp
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: diffusionstudio/lottie
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: dmtrkovalenko/fff
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: dontbesilent2025/dbskill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: dora-rs/dora
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: robotics dataflow middleware, outside the GPAIS thesis
+- repo: dotnet/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: droidrun/mobilerun
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: dyoshikawa/rulesync
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: generates config files for coding agents
+- repo: earthtojake/text-to-cad
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: eastlondoner/vibe-tools
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: egonex-ai/understand-anything
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: elder-plinius/t3mp3st
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: entireio/cli
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: epiral/bb-browser
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: evermind-ai/everos
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: EveryInc/compound-engineering-plugin
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an authored plugin for coding agents
+- repo: evolution-foundation/evolution-api
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: executeautomation/mcp-playwright
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: eze-is/web-access
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: feyninc/chonkie
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: firerpa/lamda
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: galaxy-dawn/claude-scholar
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: garrytan/gbrain
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: garrytan/gstack
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: gentleman-programming/engram
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: getbindu/bindu
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: identity, communication and payments for agents. The payments dimension has no peer anywhere in
+    the taxonomy, so the product cannot be placed without stretching a category
+- repo: getmaxun/maxun
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: getsentry/xcodebuildmcp
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: getzep/graphiti
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: getzep/zep
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: google-labs-code/stitch-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: google/agents-cli
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: google/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: googleworkspace/cli
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: graphify-labs/graphify
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: greensock/gsap-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: grobidorg/grobid
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: gsd-build/gsd-2
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: guillaumemeyer/watermarks-remover
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: h4ckf0r0day/obscura
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: hardikpandya/stop-slop
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: headroomlabs-ai/headroom
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: herdrdev/herdr
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: heygen-com/hyperframes
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: hkuds/cli-anything
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: HKUDS/nanobot
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a personal agent framework; ui_api is for the surface, not the framework
+- repo: hkuds/openharness
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: hkuds/openspace
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: hkuds/rag-anything
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: holaboss-ai/holaos
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: hypfer/valetudo
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: iflytek/skillhub
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: integuru-ai/integuru
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: iofficeai/officecli
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: jackwener/opencli
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: jacob-bd/gemini-notebook-mcp-cli
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: jcodesmore/ai-website-cloner-template
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: jdepoix/youtube-transcript-api
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: jeffallan/claude-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: jgraph/drawio-mcp
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: jo-inc/camofox-browser
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: joeseesun/qiaomu-anything-to-notebooklm
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: k-dense-ai/scientific-agent-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: kangarooking/cangjie-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: katanaml/sparrow
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: kepano/obsidian-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: kijai/comfyui-wanvideowrapper
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: knockoutez/wigolo
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: labring/fastgpt
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: lakehq/sail
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a Spark replacement for batch and stream processing, not AI deployment
+- repo: langchain-ai/openwiki
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: larksuite/cli
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: lastmile-ai/mcp-agent
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: builds agents on MCP with workflow patterns. That is an agent framework, which the sweep boundary
+    excludes and orchestration_agents already covers; it is not a tool server
+- repo: layout-parser/layout-parser
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: Leonxlnx/taste-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: 'an authored agent skill, which is content rather than software; the boundary #413 parked pending
+    an ontology decision'
+- repo: linuxhsj/openclaw-zero-token
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: livekit/livekit
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: llmware-ai/llmware
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: lsdefine/genericagent
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: marker-inc-korea/autorag
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: marqo-ai/marqo
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: martian-engineering/lossless-claw
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: mattpocock/sandcastle
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: maziyarpanahi/openmed
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: mcp-ui-org/mcp-ui
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: UI over MCP, sitting between agent_tools_protocols and ui_api. The workflow says escalate a two-category
+    boundary rather than assign it
+- repo: mcp-use/mcp-use
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: mem0ai/mem0
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: mempalace/mempalace
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: memtensor/memos
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: memvid/memvid
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: metalbear-co/mirrord
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: micro/go-micro
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: microsoft/jarvis
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: microsoft/llmlingua
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: microsoft/omniparser
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: microsoft/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: 'a skills and Agents.md catalogue, the content boundary #413 parked'
+- repo: microsoft/webwright
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: midudev/autoskills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: mindsdb/mindshub
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: minishlab/semble
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: mishushakov/llm-scraper
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: mksglu/context-mode
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: mobile-next/mobile-mcp
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: mufeedvh/code2prompt
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: mukul975/anthropic-cybersecurity-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: mvanhorn/last30days-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: 'an authored agent skill, which is content rather than software; the boundary #413 parked pending
+    an ontology decision'
+- repo: naibowang/easyspider
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: nangohq/nango
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: nanocoai/nanoclaw
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an agent runtime in containers, not a chat UI
+- repo: naptha/tesseract.js
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: neilsonnn/image-blaster
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: neo4j-labs/llm-graph-builder
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: neomjs/neo
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a JavaScript application framework, not an AI agent framework
+- repo: netease-youdao/LobsterAI
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a desktop agent that executes work, not a chat UI
+- repo: neuml/txtai
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: nevamind-ai/memu
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: nextlevelbuilder/ui-ux-pro-max-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: 'an authored agent skill, which is content rather than software; the boundary #413 parked pending
+    an ontology decision'
+- repo: ngxson/smolvlm-realtime-webcam
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: nicobailon/visual-explainer
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: ningzimu/codex-ppt-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: nrwl/nx
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a monorepo build platform that added agent features; not an AI stack product
+- repo: ntegrals/openbrowser
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: numman-ali/openskills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: nyldn/claude-octopus
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: runs several models against one task; orchestration, not a tool
+- repo: obra/superpowers
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an agent skills framework and methodology; authored content
+- repo: omnigent-ai/omnigent
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: op7418/guizang-ppt-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: op7418/guizang-social-card-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: open-mmlab/mmocr
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: openai/plugins
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: openai/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: openbb-finance/openbb
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: openbmb/ultrarag
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: openclaw/clawhub
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: openclaw/mcporter
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: calls MCP servers from TypeScript; a client-side convenience layer that sits in orchestration_agents,
+    not in the tool and protocol layer
+- repo: openclaw/peekaboo
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: opensensenova/sensenova-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: openspg/kag
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: opensquilla/opensquilla
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: paddlepaddle/paddleocr
+  verdict: excluded_boundary
+  boundary: ocr-and-document-image-toolkits
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: OCR and document-image model toolkits. The corpus already places `olmocr`, a toolkit of exactly
+    this shape, in dataset_processing_tools, so these follow that precedent
+- repo: parthjadhav/app-store-screenshots
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: pathwaycom/llm-app
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: pennyroyaltea/gibberlink
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: phuryn/pm-skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: plastic-labs/honcho
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: pleaseprompto/notebooklm-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: primeintellect-ai/prime-agent
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: promptslab/awesome-prompt-engineering
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: quivrhq/quivr
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: rapidai/rapidocr
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: rohitg00/agentmemory
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: rowboatlabs/rowboat
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a desktop agent with memory, not a chat UI
+- repo: rtk-ai/rtk
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: run-llama/rags
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: saladday/cc-switch-cli
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: sawyerhood/dev-browser
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: sciphi-ai/r2r
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: between a retrieval service and a RAG framework; RAG frameworks are outside the sweep boundary
+- repo: semantica-agi/semantica
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: simoneavogadro/android-reverse-engineering-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: simonlin1212/a-stock-data
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: siyuan-note/siyuan
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a knowledge workspace; neither a chat UI nor an API gateway
+- repo: skyhook-io/radar
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a Kubernetes UI; its MCP server does not make it AI observability
+- repo: stablyai/orca
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: startrail-org/leann
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: startrail-org/pixelrag
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: pixel-native search index; same storage boundary as PageIndex
+- repo: steipete/agent-scripts
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: supermemoryai/supermemory
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: tencentcloud/tencentdb-agent-memory
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: The-PR-Agent/pr-agent
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a pull-request reviewer; a domain application of coding agents
+- repo: timescale/pgai
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: tracer-cloud/opensre
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: tradesdontlie/tradingview-mcp
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: ultraworkers/claw-code
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: unicity-aos/capsule-memory
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: unicity-sphere/sphere-sdk
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: unicitynetwork/whitepaper
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: usestrix/strix
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an application penetration-testing tool; a domain application
+- repo: vectifyai/pageindex
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: a document index; sits on the storage boundary, where the vector databases went on 2026-08-18
+- repo: vectorize-io/hindsight
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: vercel-labs/agent-browser
+  verdict: excluded_boundary
+  boundary: generic-browser-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: generic browser automation and scraping, excluded by the sweep boundary unless the product is
+    packaged specifically as an agent tool, which is why Steel Browser and Lightpanda were accepted and
+    these were not
+- repo: vercel-labs/open-agents
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: vercel-labs/skills
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: vercel/eve
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: vincentwei1021/video-shotcraft
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: virgiliojr94/book-to-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: vitali87/code-graph-rag
+  verdict: excluded_boundary
+  boundary: agent-memory-and-context-stores
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: agent memory is a coherent cluster with no home category. Placing it here would stretch agent_tools_protocols
+    into storage; it wants a category-proposal issue of its own
+- repo: volcengine/minecontext
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: domain applications, demos, whitepapers and other repositories outside the stack-map thesis for
+    this category
+- repo: volcengine/openviking
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: wanshuiyin/auto-claude-code-research-in-sleep
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: wavetermdev/waveterm
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: withastro/flue
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: withcoral/coral
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: one SQL interface over APIs, files and live sources; sits on the storage boundary
+- repo: worldwonderer/oh-story-claudecode
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: x-plug/mobileagent
+  verdict: excluded_boundary
+  boundary: gui-and-device-automation
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: device and GUI automation agents rather than agent-facing tool services
+- repo: xbuilderlab/cheat-on-content
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: yc-software/qm
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: yeachan-heo/oh-my-codex
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: YishenTu/claudian
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an Obsidian plugin embedding a coding agent
+- repo: yizhiyanhua-ai/fireworks-tech-graph
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: yusufkaraaslan/skill_seekers
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: zai-org/open-autoglm
+  verdict: excluded_boundary
+  boundary: general-agent-frameworks
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: general agent frameworks, excluded by the sweep boundary and adjacent to orchestration_agents
+- repo: zhaoxuya520/reverse-skill
+  verdict: excluded_boundary
+  boundary: agent-skill-and-plugin-content
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: content libraries (skills, plugins, prompt packs) rather than tools or protocols an agent calls.
+    No category in the taxonomy holds authored agent content
+- repo: zhishile/codex-auth-helper
+  verdict: excluded_boundary
+  boundary: coding-agent-developer-tooling
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: tooling aimed at coding agents and developer workflow rather than at the agent tool and protocol
+    layer
+- repo: zilliztech/gptcache
+  verdict: excluded_boundary
+  boundary: rag-frameworks-and-vector-search
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: RAG frameworks and search or vector engines. Vector databases belong to storage, where Qdrant,
+    Milvus and Pinecone were moved on 2026-08-18
+- repo: zipstack/unstract
+  verdict: excluded_boundary
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: packaged as an API deployment and ETL pipeline rather than as a tool an agent calls
+- repo: zly2006/zhihu-plus-plus
+  verdict: excluded_boundary
+  boundary: domain-applications
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a third-party Android client for one website
+- repo: airweave-ai/airweave
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: archived, last push 2026-06-05
+- repo: browsermcp/mcp
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: last push 2025-04-24, sixteen months before the sweep
+- repo: lauriewired/ghidramcp
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: last push 2025-06-23, fourteen months before the sweep
+- repo: lharries/whatsapp-mcp
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: last push 2025-07-13, thirteen months before the sweep
+- repo: quivrhq/megaparse
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: last push 2025-02-21, eighteen months before the sweep
+- repo: transitive-bullshit/agentic
+  verdict: excluded_maintenance
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: archived, last push 2026-02-11
+- repo: a2aproject/a2a
+  verdict: existing_product
+  product: agent2agent-protocol
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: repository of head product `agent2agent-protocol`, which declares no github artifact. Canonical
+    casing is `a2aproject/A2A`
+- repo: modelcontextprotocol/modelcontextprotocol
+  verdict: existing_product
+  product: model-context-protocol
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: spec repository of head product `model-context-protocol`, which declares no github artifact, so
+    repo-level dedup misses it
+- repo: apify/apify-mcp-server
+  verdict: sku_of
+  product: apify
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: 'the MCP surface of the head product apify, the shape #413 called a SKU'
+- repo: exa-labs/exa-mcp-server
+  verdict: sku_of
+  product: exa-search-api
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: MCP surface of head product `exa-search-api`; a SKU, not a product
+- repo: firecrawl/firecrawl-mcp-server
+  verdict: sku_of
+  product: firecrawl
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: MCP surface of head product `firecrawl`; a SKU, not a product
+- repo: 567-labs/instructor
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: structured output parsing for LLM calls; a library, not an agent that plans or executes
+- repo: ag-ui-protocol/ag-ui
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an agent-user interaction PROTOCOL; belongs with agent_tools_protocols, not with frameworks
+- repo: ByteDance-Seed/VeOmni
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a distributed training framework; ml_frameworks or finetuning_code, not settled
+- repo: diegosouzapw/OmniRoute
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an API gateway across 350 providers, which is ui_api's definition, not observability
+- repo: dottxt-ai/outlines
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: structured generation; same shape as instructor
+- repo: kubeflow/trainer
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: Kubeflow distributed training; sits between deployment and finetuning_code
+- repo: modelcontextprotocol/go-sdk
+  verdict: unresolved
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: the repository sits under the `modelcontextprotocol` org, and this corpus's own score record for
+    `model-context-protocol` puts governance with the Linux Foundation's AAIF. The three existing MCP
+    SDK products (`mcp-python-sdk`, `mcp-typescript-sdk`, `mcp-inspector`) are filed under `anthropic`,
+    precedent that predates the donation. Filing this row under `anthropic` extends stale precedent; filing
+    it under a new slug splits the SDK family across two orgs. Parked for a resolution that covers all
+    four records at once, not just this one
+- repo: modelcontextprotocol/java-sdk
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: the MCP Java SDK, but `java-sdk` is not a product identity; needs the naming call the Go SDK is
+    already parked on
+- repo: mvanhorn/cli-printing-press
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: the README does not establish what the product is
+- repo: open-metadata/OpenMetadata
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a data metadata platform; storage on this map means vector and retrieval stores
+- repo: opendatalab/pdf-extract-kit
+  verdict: unresolved
+  decided_in: '#413'
+  decided_on: '2026-08-30'
+  note: same org as the accepted `mineru` and functionally upstream of it. Whether these are one product
+    or two is an entity-resolution call, and the workflow says park an unresolved identity rather than
+    guess
+- repo: oraios/serena
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: an MCP toolkit for semantic code retrieval; a tool, not an agent framework
+- repo: SemiAnalysisAI/InferenceX
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: a continuous inference benchmark platform; closer to benchmark_eval_data
+- repo: yamadashy/repomix
+  verdict: unresolved
+  decided_in: '#418 review'
+  decided_on: '2026-08-31'
+  note: packs a repository into one AI-readable file; document ingestion rather than orchestration
