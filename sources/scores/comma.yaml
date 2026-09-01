@@ -1,0 +1,140 @@
+product: comma
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 safetensors, ungated (comma-v0.1-2t, -1t)
+    data:
+      value: open
+      detail: comma_v0.1_training_dataset released ungated on HF; Common Pile v0.1 corpus public (8TB,
+        openly licensed text)
+    code:
+      value: open
+      detail: data pipeline in r-three/common-pile (MIT); training on facebookresearch/lingua (BSD-3-Clause)
+        with the exact configs and metrics published in comma-v0.1-2t-checkpoints
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: 'The full stack is public: Apache-2.0 weights, the exact training dataset released ungated on
+    the Hub, the data collection and processing pipeline in an MIT repository, and the training run reproducible
+    from the published lingua config (open BSD-3-Clause framework) — the Apertus shape, where a third-party
+    open framework plus published configs and reconstruction/processing code satisfies code:open. That
+    is the {data: open, code: open, license_tier: osi} rung: 5, open_source, the fully open bucket. Checkpoints
+    are not claimed: the checkpoints repo publishes configs and training metrics rather than intermediate
+    weights, and the dimension is optional. One honest caveat carried from the card: the team cannot guarantee
+    zero unlicensed text due to license laundering upstream, which is a provenance caveat about the corpus,
+    not a restriction on what ships.'
+  raw: weights:open(Apache-2.0 safetensors, ungated);data:open(comma_v0.1_training_dataset released ungated
+    on HF; Common Pile v0.1 corpus public);code:open(data pipeline r-three/common-pile MIT; training on
+    lingua BSD-3-Clause with published configs);license:Apache-2.0(OSI)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/common-pile/comma-v0.1-2t
+    shows: '`gated: false`, cardData.license `apache-2.0`, safetensors shards listed, datasets: [common-pile/comma_v0.1_training_dataset];
+      381 downloads in the trailing 30 days.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0172fc1c7baefdbdb5e94370e22102522fc92c8b9c8a3edd1f6ab0ec4d5c3ddf
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+    shows: 'Card: "trained on 2 trillion tokens from the Comma v0.1 dataset, comprising of openly licensed
+      text from the Common Pile"; "Training was performed using lingua on 512 AMD MI300A GPUs. Hyperparameters
+      can be found in our lingua config file" linking comma-v0.1-2t-checkpoints/blob/main/config.yaml;
+      benchmark table vs OLMo Twin / Llama 2 / DeepSeekLLM; the license-laundering caveat.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
+    establishes:
+    - weights
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets/common-pile/comma_v0.1_training_dataset
+    shows: '`gated: false`, `private: false`, 12,338 downloads in the trailing 30 days — the exact training
+      mixture is published and ungated.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: cd6557643199c7bd0aca0b84275cbb7b71fe0a393c7335be44a3a363bd6d9804
+    establishes:
+    - data
+  - url: https://api.github.com/repos/r-three/common-pile
+    shows: '`license: MIT`, description "Code for collecting, processing, and preparing datasets for the
+      Common Pile" — the data pipeline end of code:open.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 1ff17c64993cdf030c96a072962937ee1a0fcf0742cddd35d85a4ccb9ddeafb3
+    establishes:
+    - code
+    - data
+  - url: https://api.github.com/repos/facebookresearch/lingua
+    shows: '`license: BSD-3-Clause`, description "Meta Lingua: a lean, efficient, and easy-to-hack codebase
+      to research LLMs" — the training framework the card names is itself open.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9403be91117fc0160fc5d8609f38c7df80172fc4e2e5f53c63d4fd8679ad7a89
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/common-pile/comma-v0.1-2t-checkpoints
+    shows: Ungated repo whose files are config.yaml, config.hq_cd.yaml, metrics.jsonl, metrics.hq_cd.jsonl
+      — the published training configs and run metrics; configs and logs rather than intermediate weights,
+      which is why checkpoints is not claimed.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d07c360d38b8ccf776d262a354577d27eee1a5a998fda6978fa88808474f58a5
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2506.05209
+    shows: 'The Common Pile v0.1 paper: "An 8TB Dataset of Public Domain and Openly Licensed Text" (Kandpal,
+      Lester, Raffel et al., with EleutherAI authors), documenting corpus construction and the Comma training
+      runs.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 41d20ef4e5f0ec3550b2c46f9b6b1cba3200cb3ad182c50d8770c28f7b3f9006
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 511 downloads in the trailing 30 days across the two declared checkpoints (comma-v0.1-2t 381;
+    comma-v0.1-1t 130), which bands at level 1 (<10K). A research artifact, not a production model — the
+    training dataset itself sees more pulls (12,338) than the weights.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/common-pile/comma-v0.1-2t
+    shows: 381 downloads in the trailing 30 days for common-pile/comma-v0.1-2t
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0172fc1c7baefdbdb5e94370e22102522fc92c8b9c8a3edd1f6ab0ec4d5c3ddf
+  - url: https://huggingface.co/api/models/common-pile/comma-v0.1-1t
+    shows: 130 downloads in the trailing 30 days for common-pile/comma-v0.1-1t
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 01c676483037a8c1bcdeda38f5dce7312d6e075de2f518cfa073ba0443822ba8
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: pretraining suite (card table vs budget-matched peers)
+  value: Comma v0.1-2T 11-task average 57.4 (ARC/MMLU/BoolQ/HellaSwag/HumanEval/MBPP...), above OLMo Twin
+    (51.6) and Llama 2 7B (55.8), below DeepSeekLLM 7B (58.8) — parity with budget-matched 2023-era 7B
+    models trained on unlicensed data.
+  confidence: high
+  note: 'The finding, stated plainly: openness is not the blocker here, capability is. A 7B model at Llama
+    2 parity sits two bands below olmo''s current fully-open frontier and level with the category''s other
+    small fully-open research models (lucie-7b, luciole, above pythia). The result the model exists to
+    demonstrate — that openly licensed data alone reaches budget-matched parity — is real, and it is a
+    2023-era bar.'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md
+    shows: 'The card''s benchmark table: Comma v0.1 2T avg 57.4 vs OLMo Twin 51.6, Llama 2 55.8, DeepSeekLLM
+      58.8; "It performs comparably to budget-matched models (7 billion parameters, 2 trillion tokens)
+      trained on unlicensed data."'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c
