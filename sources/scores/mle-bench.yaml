@@ -4,11 +4,11 @@ openness:
   class: gated
   components:
     license:
-    - name: per-competition
-      detail: 'repo LICENSE is MIT over the code only, with the explicit NOTE: "This license applies to
-        the code in this repository, but not the external datasets and files that may be downloaded while
-        using this package"; the corpus defers to each Kaggle competition''s rules — deferred_to_components
-        tier'
+    - name: per-component
+      detail: 'one component per Kaggle competition: the repo LICENSE is MIT over the code only, with
+        the explicit NOTE "This license applies to the code in this repository, but not the external datasets
+        and files that may be downloaded while using this package", so the corpus defers to each competition''s
+        own rules'
     access:
       value: terms-acceptance
       detail: data downloaded via the Kaggle API with Kaggle credentials, under Kaggle's per-competition
@@ -26,9 +26,14 @@ openness:
     terms, so availability is terms-acceptance and the gate rung fires at 3/gated before the deferred-license
     rungs are reached; no license tier can lift a gated corpus past 3. The MIT covers only the harness
     code, and the LICENSE body says so explicitly — which is also why GitHub reports NOASSERTION.
-  raw: license:per-competition(MIT code-only with data carve-out; corpus defers to Kaggle competition
-    rules);access:terms-acceptance(Kaggle API + credentials, per-competition rules);answers:released(splits
-    built from public training sets, grading in repo);datasheet:yes(README + arXiv:2410.07095)
+  raw: 'license:per-component(one component per Kaggle competition: the repo LICENSE is MIT over the code
+    only, with the explicit NOTE "This license applies to the code in this repository, but not the external
+    datasets and files that may be downloaded while using this package", so the corpus defers to each
+    competition''s own rules);access:terms-acceptance(data downloaded via the Kaggle API with Kaggle credentials,
+    under Kaggle''s per-competition rules; OpenAI does not distribute the data);answers:released(the benchmark''s
+    own test splits are constructed by the prepare scripts from public training sets, and grading scripts
+    ship in the repo — no split hidden by MLE-bench itself);datasheet:yes(repository README documents
+    composition (75 competitions), preparation and grading; arXiv:2410.07095)'
   last_verified: '2026-09-01'
   sources:
   - url: https://raw.githubusercontent.com/openai/mle-bench/main/LICENSE
@@ -50,6 +55,7 @@ openness:
     establishes:
     - access
     - datasheet
+    - answers
   - url: https://api.github.com/repos/openai/mle-bench
     shows: license spdx NOASSERTION (the classifier choking on the carve-out note), 1,727 stars, homepage
       openai.com/index/mle-bench
