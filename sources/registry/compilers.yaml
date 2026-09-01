@@ -1,8 +1,66 @@
-# Seeded from currentai.signal_goodailist.repo_catalog (upstream 2026-08-18) and triaged in
-# full on 2026-08-18: every row was either promoted to a head product in
-# sources/categories/compilers.yaml or rejected on the category boundary. Rejected rows are
-# not parked here, because a row that fails the boundary does not belong to this category at
-# any tier; the reasons are in the promotion PR. The file stays so the category keeps a place
-# to accumulate the next discovery batch.
+# Swept 2026-09-01, targeted at issue #434: compilers holds three populations (compiler/converter,
+# quantization/optimizer, kernel library) and no kernel library in the current roster scores above
+# capability 3. #434's read is that the roster is the wrong fix for that, but the corpus is also
+# missing major kernel and runtime incumbents on significance alone, independent of openness. This
+# batch completes that incumbent set rather than filtering on openness in either direction.
+#
+# GitHub reports NOASSERTION for nccl and miopen because each carries a composite or vendor-header
+# LICENSE file; both were verified open by reading the license body directly, per #434's own finding
+# and the abstain rule in sources/signal_routing.yaml. oneapi-src/oneMKL (the Interfaces project
+# #434 names) has been renamed to uxlfoundation/oneMath on GitHub - the old slug 302-redirects to the
+# new one - so the row below uses the canonical repository.
+#
+# Predeclared retrieval cutoff: GitHub search across six population-representative queries ("gpu
+# kernel library primitives", "tensor compiler", "quantization inference toolkit", "collective
+# communication gpu", "attention kernel", "gemm kernel library", "model quantization gptq awq",
+# "graph compiler neural network mlir", "cuda sparse library", "onnx converter optimizer"), sorted by
+# stars, top 15 per query, plus direct lookups for the three incumbents #434 names by hand
+# (nccl, miopen, oneMath) and the four closed vendor primitives it names for completeness
+# (cudnn, cublas, cufft, cutensor). No additional star floor beyond what each query's top-15 window
+# returned - volume at this window was small enough to triage by hand.
+#
+# cuDNN, cuBLAS, cuFFT and cuTENSOR resolve to no public repository - NVIDIA distributes them as
+# binaries - so per docs/workflows/discover-candidates.md they are parked against #365 (GitHub-backed
+# storage not yet available), not emitted. NVIDIA/cudnn-frontend is explicitly NOT used as cuDNN's
+# artifact: #434 names it as the exact hazard from the tinker-cookbook/tinker case in #431 - an
+# open wrapper repo would let an externally-open project lift a closed binary's openness score.
+#
+# rapidsai/raft stays unresolved per the #428 ledger hold and is not re-proposed. NVIDIA/cuvs, raft's
+# ANN successor per #428's own note, is parked against the same open category-fit question rather
+# than resolved unilaterally here.
 category: compilers
-products: []
+products:
+  - slug: nccl
+    display_name: NCCL
+    type: software
+    org: nvidia
+    github: NVIDIA/nccl
+    homepage: https://developer.nvidia.com/nccl
+  - slug: miopen
+    display_name: MIOpen
+    type: software
+    org: amd
+    github: ROCm/MIOpen
+    homepage: https://rocm.docs.amd.com/projects/MIOpen/
+  - slug: onemath
+    display_name: oneMath
+    type: software
+    org: uxl-foundation
+    github: uxlfoundation/oneMath
+    homepage: https://oneapi-src.github.io/oneMath/
+  - slug: flashmla
+    display_name: FlashMLA
+    type: software
+    org: deepseek-ai
+    github: deepseek-ai/FlashMLA
+  - slug: uccl
+    display_name: UCCL
+    type: software
+    org: uccl-project
+    github: uccl-project/uccl
+  - slug: auto-round
+    display_name: AutoRound
+    type: software
+    org: intel
+    github: intel/auto-round
+    pypi: auto-round
