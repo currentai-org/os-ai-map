@@ -124,6 +124,64 @@ Measured 2026-08-08, three products have SKUs under genuinely different named li
 four differ only because one SKU records the Hub's `other`, which `signal_routing.yaml` treats as
 an abstention rather than a license.
 
+## A declared artifact is a measurement identity
+
+The `github`, `pypi`, `npm`, `crates`, `huggingface` and `arxiv` arrays on a product are not a
+list of related links. `build/adoption_measurements.py:select_route` picks the
+highest-precedence declared artifact and bands adoption from it, and `signal_routing.yaml`
+routes the license and weights dimensions by artifact kind. So declaring an artifact asserts
+**this thing's numbers are this product's numbers**, and getting it wrong produces a score that
+is internally consistent, passes every gate, and is false.
+
+Nothing checks this. Uniqueness, ladder replay, digest and delta checks all verify that the
+recorded values reproduce the recorded score; none can verify that the artifact belongs to the
+product. That makes it the one identity question a reviewer has to settle by reading, and the
+three shapes below are how it has actually gone wrong.
+
+### An open satellite around a closed core
+
+A vendor ships an open repository *for* a closed product: a recipe library, a client, a
+frontend. Declaring it lets an externally-open artifact lift a closed product's openness score.
+
+`thinking-machines-lab/tinker-cookbook` is Apache-2.0 and is the training-loop library for
+Tinker, a closed managed API scored openness 1; it is recorded as `existing_product` in the
+ledger with an explicit note that it must not be declared as `tinker`'s artifact.
+`NVIDIA/cudnn-frontend` is Apache-2.0 and wraps a closed binary. Its stars and downloads are
+likewise not the core product's adoption.
+
+### A package whose name matches and whose project does not
+
+Registry names collide, and the collision is usually silent — the package exists, installs, and
+reports downloads for something else entirely. Five cases in twelve candidates during the
+2026-08-31 passes: PyPI `miles` is version 0.1 with no summary and no project URL and is not
+`radixark/miles`; `privategpt` belongs to `vietanhdev/pautobot`; `pgpt` to
+`hackedbyagirl/programengineergpt`; npm `airi` is a 0.0.1 stub with no repository field. The
+check is cheap and mandatory: does the package's `project_urls` or `home_page` point back at the
+repository being declared?
+
+### A real binding whose usage is not the head product's usage
+
+Here the artifact genuinely relates to the product and still measures the wrong population. A
+third-party language binding, a client SDK for a server, a platform wrapper: its downloads count
+its own users, not the product's.
+
+`abetlen/llama-cpp-python` and `software-mansion/react-native-executorch` were un-declared for
+this reason in #424 and kept as ledger entries instead. The client-SDK form closed PR #425,
+where five records had been re-banded off packages that were all clients — and two of the notes
+being overwritten already said so, which is the warning that this shape is easy to re-introduce
+while reading quickly.
+
+### Discovery may be automated; promotion may not
+
+Candidate association scales: a sweep can propose repo, package, model and dataset links for
+thousands of artifacts. Verifying that an association is a *measurement* identity does not
+scale, because it is a judgment about what a number means.
+
+So automation over this step should optimize for surfacing evidence and contradictions — a
+package whose backlink is missing, a licence that disagrees between two artifacts of one
+product, a download count wildly out of step with a star count — and never for declaring the
+artifact. An identity edge stays provisional until a person has read it.
+
 ## Organizations
 
 Organizations carry aliases for the same reason and under the same rule. Two exist, both
@@ -138,4 +196,8 @@ with no forwarding address breaks a join rather than a link.
 - `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description
 - `docs/schemas/product.schema.json` — `aliases` and `version_in_identity`
+- `docs/reference/adoption.md` — the instruments a declared artifact routes to, and the
+  precedence order `select_route` applies
+- `sources/resolution_ledger.yaml` — where a rejected or reassigned identity is recorded, so
+  the next sweep can read the decision
 - `docs/schemas/score.schema.json` — `openness.governing_release`
