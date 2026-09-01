@@ -1,0 +1,95 @@
+product: evalscope
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: GitHub
+    core-gated:
+      value: ungated
+    free_text:
+    - no feature-gated core
+  confidence: high
+  note: Apache-2.0 and fully public. The LICENSE body is the stock Apache-2.0 text under "Copyright 2022-2023
+    Alibaba ModelScope" with no appended terms. `pip install 'evalscope[service]'` in the README is an
+    ordinary optional-dependency extra, not a paid gate; no pricing, enterprise edition or license key
+    appears in the 28KB README.
+  raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/modelscope/evalscope/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text
+      (Copyright 2022-2023 Alibaba ModelScope) with no appended terms
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 408cec53ca230bf8a8c31d32f954354475e003e30dd9fe6b351033e958412ffa
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/modelscope/evalscope/main/README.md
+    shows: README installs with `pip install evalscope` and runs evaluation and perf stress tests locally;
+      backends (OpenCompass, VLMEvalKit, RAGEval) ship as extras. No pricing, paid tier, enterprise edition
+      or license key in the README.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 8e92617f71b8f21798e85eb6d76928e0f7473638dffb386abf4dece5cc5101e4
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: The evalscope package draws 75,444 PyPI downloads in the trailing 30 days, which bands at level
+    2 (10K-100K) on the software scale. Unlike opencompass and lmms-eval, `pip install evalscope` is the
+    README's front-and-center install path, so the registry is the product's primary channel and the count
+    is the instrument. Package identity backlink-verified (Homepage -> modelscope/evalscope, ModelScope
+    team publisher); latest release v1.11.1 uploaded 2026-08-31, on the repo's current line.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/evalscope/recent
+    shows: last_month = 75,444 downloads of the evalscope package (last_week 5,981)
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 095f70e238dc62747142585c8101e092d7e5a61ef2e59f94736d8b3af48127a4
+  - url: https://pypi.org/pypi/evalscope/json
+    shows: project_urls.Homepage = github.com/modelscope/evalscope, author ModelScope team <contact@modelscope.cn>,
+      version 1.11.1 uploaded 2026-08-31 — the package is the product, not a name collision
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5bd4a2df3602371c502cff2c6d63a60f96830ce9c425a8fee8314b464ea2d14b
+capability:
+  score: 3
+  basis: feature_matrix
+  value: built-in benchmarks (MMLU, C-Eval, GSM8K and more) across LLM/VLM/embedding/ reranker/AIGC model
+    types; inference performance stress testing and visualization; orchestrates OpenCompass, VLMEvalKit
+    and RAGEval as evaluation backends; agent evaluation mode
+  relative_to: opencompass
+  relation: one_below
+  confidence: medium
+  note: Broad model-type coverage and a performance-testing side the accuracy harnesses lack, but much
+    of its benchmark depth is delegated — OpenCompass and VLMEvalKit run as its backends — and it carries
+    no leaderboard or standardization role of its own, so it sits one below opencompass alongside bigcodebench.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
+      shows: 'the peer''s discriminating claims still read: "Pre-support for 20+ HuggingFace and API models,
+        a model evaluation scheme of 70+ datasets with about 400,000 questions", plus the CompassRank
+        leaderboard role — native depth EvalScope reaches by wrapping OpenCompass as a backend, which
+        is the one-rung spacing.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: cb19a9b1f9e99bae28c13af6bdd746f5625fbc95be7cbfe8681020c25100f65d
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/modelscope/evalscope/main/README.md
+    shows: key-features list — built-in benchmarks, multi-modal and multi-domain support, multi-backend
+      integration (OpenCompass, VLMEvalKit, RAGEval), agent evaluation mode, inference stress testing
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 8e92617f71b8f21798e85eb6d76928e0f7473638dffb386abf4dece5cc5101e4

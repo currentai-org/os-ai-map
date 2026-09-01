@@ -1,0 +1,87 @@
+product: olmes
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: GitHub
+    core-gated:
+      value: ungated
+    free_text:
+    - no feature-gated core
+  confidence: high
+  note: 'Apache-2.0 and fully public: the LICENSE body is the stock Apache-2.0 text with no appended terms,
+    and the README documents source-only install (`pip install -e .`) and local evaluation of HF models,
+    with no pricing, paid tier, enterprise edition or license key anywhere in it.'
+  raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/allenai/olmes/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text
+      with no appended terms
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e680ffe072c23dafea1a62464e20d29cf8fe37c9bf09ed04d163a6a73b2b6253
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/allenai/olmes/main/README.md
+    shows: README installs from a clone (uv sync or pip install -e .) and runs `olmes` locally against
+      HF models; task configs and the OLMES standard ship in the repo; no pricing, paid tier or license
+      key
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 62ef75fd8d50ac77cc62d076fb935b06702441cfa25a1726fef827eb3e0967df
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: 394 GitHub stars, which bands at level 1 on the stars scale (<1K). No download channel exists
+    — no PyPI package (olmes and oe-eval both 404 this session), install is from source — and external
+    usage beyond Ai2's own model releases is limited, so stars are the honest instrument. The provenance
+    (the eval standard behind OLMo and Tülu) is capability and openness signal, not adoption.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/allenai/olmes
+    shows: stargazers_count = 394, forks 105, pushed_at 2026-03-24, not archived
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 4a54527d4ec6a2b3c59f792bf3ed02c243d4ddda5cbaba55f247d4ea0e990122
+capability:
+  score: 3
+  basis: feature_matrix
+  value: reproduces published OLMo/OLMo 2/OLMo 3/Tülu 3 eval results; deep per-task configuration variants;
+    instance-level prediction records (logprobs); custom metrics and aggregations; external results storage;
+    HF and vLLM backends
+  relative_to: lighteval
+  relation: one_below
+  confidence: medium
+  note: Reproducibility-hardened derivative of lm-evaluation-harness with unusually deep task configuration
+    and instance-level logging, but a far narrower task and backend surface than the broad platforms —
+    dozens of curated suites against lighteval's 1000+ tasks and wider backend spread — so one below lighteval,
+    beside bigcodebench.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
+      shows: '"Lighteval supports 1000+ evaluation tasks across multiple domains" with backends spanning
+        inspect-ai, transformers, vLLM and SGLang — a task and backend surface an order wider than OLMES''s
+        curated suites, which is the one-rung spacing.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/allenai/olmes/main/README.md
+    shows: reproduces OLMo/OLMo 2/Tülu 3/OLMES-paper results; deep task configurations, instance-level
+      prediction data, custom metrics, external storage integration; built on lm-evaluation-harness
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 62ef75fd8d50ac77cc62d076fb935b06702441cfa25a1726fef827eb3e0967df
