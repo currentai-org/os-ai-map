@@ -1,0 +1,64 @@
+name: channel-authority
+
+# Is the channel a band was read off still the channel the product ships through?
+#
+# `select_route` keeps the authoritative usage route ahead of stars, which is what stopped a
+# star count overstating use. #435 asked whether a verified but non-primary channel should
+# abstain instead; it should not, because abstention moves no published number. What it left
+# open is the case the issue was right about: a band read off a registry release line nobody
+# has published to in a year. `docs/reference/adoption.md`'s under-coverage ladder already says
+# what to do with one; nothing checked that anybody did it. The reasoning is in
+# build/check_channel_authority.py.
+#
+# Two legs. The prose leg reads the corpus and is pinned by a test, so it runs on every PR
+# through the pytest suite and needs nothing here. The release-line leg reads the live PyPI
+# JSON API and the GitHub releases/tags API, which is what --live turns on and why this is a
+# schedule rather than a PR check: it fails on the passage of a release, not on the diff in
+# front of you, and an outside contributor could not clear it from inside their own PR.
+#
+# Weekly, on Monday, for the reason parity.yml records: a gate's cadence has to match the
+# chain it polices, and this one reads a line that moves when a project cuts a release. Placed
+# at 09:00, after the signal refreshes at 07:00 and the age gate at 08:00, so the week's
+# adoption worklist arrives in one place.
+#
+# Report-only. `--strict` exists and CI does not pass it yet: seven products currently fire the
+# release-line leg and fifteen the prose leg, and a gate that fails on the day it lands gets
+# switched off rather than fixed. Turn it on once the findings hold at zero.
+#
+# GITHUB_TOKEN is the built-in Actions token here, used only to raise the GitHub API rate limit
+# above the 60/hour an unauthenticated caller gets. 146 pypi-routed products need more than
+# that, and an exhausted limit reads as "no repository tag" — which the module treats as no
+# evidence rather than as a finding, so the failure would be a silently shrinking report.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Exit non-zero on any finding"
+        type: boolean
+        default: false
+
+jobs:
+  channel-authority:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Check every banded channel against the release line it was read off
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          # Through the environment rather than interpolated into the script body: an input
+          # expanded inline is substituted before the shell parses the line.
+          STRICT: ${{ inputs.strict }}
+        run: |
+          if [ "$STRICT" = "true" ]; then
+            uv run python -m build.check_channel_authority --live --strict
+          else
+            uv run python -m build.check_channel_authority --live
+          fi

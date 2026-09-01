@@ -32,11 +32,15 @@ TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
 AXIS_ROW_COUNT = 1659
-# Moved by the #436 attestation pass: 12 capability rows gained
-# `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison roots
-# (openrlhf, accelerate, openvino, anythingllm, sillytavern) moved `last_verified` to the day
-# their axis was re-read. No score changed and the row count is unchanged.
-AXIS_ASSESSMENTS_DIGEST = "a4b69eddcec2ad8a907b582d86a2bc574cb8294e9d5bf8792a64542f457fca58"
+# Moved 2026-09-01 by two combined passes: the #436 attestation pass (12 capability rows
+# gained `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison
+# roots - openrlhf, accelerate, openvino, anythingllm, sillytavern - moved `last_verified`
+# to the day their axis was re-read) and the areal/xtuner relabels (#435, both adoption
+# axes change instrument, which is a declaration change and exactly what this digest
+# tracks). No score changed and the row count is unchanged; the levels do NOT move - the
+# ladder's rule is to correct the instrument and leave the level to its own evidence - so
+# nothing published follows from either pass.
+AXIS_ASSESSMENTS_DIGEST = "3e19fde04ac90d31f392c5d7cd56b22660a758b45d7c1ff2edff69231dbc26e4"
 
 
 @pytest.fixture(scope="module")

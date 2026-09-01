@@ -167,6 +167,11 @@ ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 DATES_THAT_ARE_PRODUCT_FACTS = {
     ("amazon-bedrock-evaluations", "adoption"),
     ("apertus", "adoption"),
+    # A release date on each side of a trailing registry line. The whole reason the band does
+    # not rest on the download figure is that the registry stopped at 1.0.4 in June while the
+    # repository is on 2.1.0 from August; drop the dates and the note asserts a lag it can no
+    # longer show. Both are publication facts, true whether or not anybody re-reads them.
+    ("areal", "adoption"),
     ("apertus", "openness"),
     ("atropos", "adoption"),
     ("claude-haiku", "capability"),
@@ -187,6 +192,9 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("ragflow", "adoption"),
     ("sandbox-runtime", "adoption"),
     ("vercel-sandbox", "adoption"),
+    # Same shape as areal: the PyPI upload of 2025-07-11 and the v1.0.1 release of 2026-05-15
+    # are the two publication dates the 416-day gap is measured between.
+    ("xtuner", "adoption"),
 }
 
 
