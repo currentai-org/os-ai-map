@@ -32,7 +32,11 @@ TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
 AXIS_ROW_COUNT = 1659
-AXIS_ASSESSMENTS_DIGEST = "6637509b40118c5a3a9d26a21bfcc447242788c9fd6a18661abdd563aadc5de3"
+# Moved by the #436 attestation pass: 12 capability rows gained
+# `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison roots
+# (openrlhf, accelerate, openvino, anythingllm, sillytavern) moved `last_verified` to the day
+# their axis was re-read. No score changed and the row count is unchanged.
+AXIS_ASSESSMENTS_DIGEST = "a4b69eddcec2ad8a907b582d86a2bc574cb8294e9d5bf8792a64542f457fca58"
 
 
 @pytest.fixture(scope="module")
