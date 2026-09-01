@@ -238,7 +238,11 @@ def test_local_scores_matches_check_rubrics_split():
     # and Crawl4AI-Attribution-License onto `permissive_non_osi`, which no product had ever
     # reached. Each was the first product on the map to record its license, so no existing score
     # moved; the measurements are in software.yaml beside the names.
-    assert len(computed) == 548
+    # 548/5 -> 571/5 on 2026-09-01, the Round 1 calibration tranche: 23 products in across
+    # five categories, no net change to the deferral count, and no new license ruling needed -
+    # every add recorded a spelling its ladder already tiers (mle-bench's Kaggle corpus lands
+    # on the enumerated `per-component` spelling of deferred_to_components).
+    assert len(computed) == 571
     assert not set(computed) & set(deferred)
     # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
