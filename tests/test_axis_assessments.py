@@ -31,7 +31,7 @@ from build.axis_assessments import (
 TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
-AXIS_ROW_COUNT = 1659
+AXIS_ROW_COUNT = 1728
 # Moved 2026-09-01 by two combined passes: the #436 attestation pass (12 capability rows
 # gained `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison
 # roots - openrlhf, accelerate, openvino, anythingllm, sillytavern - moved `last_verified`
@@ -40,7 +40,11 @@ AXIS_ROW_COUNT = 1659
 # tracks). No score changed and the row count is unchanged; the levels do NOT move - the
 # ladder's rule is to correct the instrument and leave the level to its own evidence - so
 # nothing published follows from either pass.
-AXIS_ASSESSMENTS_DIGEST = "3e19fde04ac90d31f392c5d7cd56b22660a758b45d7c1ff2edff69231dbc26e4"
+# Moved again 2026-09-01 by the Round 1 calibration tranche: 23 products added across
+# benchmark_eval_data (5), base_pretrained (4), finetuned_chat (2), inference_code (7)
+# and evaluation_code (5), which is 69 new axis rows (23 x 3), plus the gsm8k adoption
+# re-band 4 -> 5 on a fresh 1.17M-downloads read - the one existing row that changed.
+AXIS_ASSESSMENTS_DIGEST = "f4a6e4b1942b118f97c78127ebbd48fb2e29cf5c5dc2739ce4d9f912a9ea1734"
 
 
 @pytest.fixture(scope="module")
