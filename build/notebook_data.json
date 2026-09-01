@@ -10862,14 +10862,14 @@
             "value": "Methods: PPO, REINFORCE++, GRPO, RLOO (RLHF-focused); architecture: Ray scheduling + vLLM-accelerated rollout + DeepSpeed; multi-turn agent RL; scales to 70B+ across multiple GPUs. Deep, production-grade distributed RLHF specialization; narrower than general FT tools but strong on large-scale RL.",
             "confidence": "medium",
             "note": "Deep, production-grade distributed RLHF: PPO, REINFORCE++, GRPO and RLOO, orchestrated with Ray scheduling, vLLM-accelerated rollout and DeepSpeed, scaling to 70B+ models across many GPUs, with multi-turn agent RL as well. Its method scope is RL-centric rather than full-spectrum, and it does not reach Megatron-LM's frontier scale, so it sits one band below the top.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md",
-                "shows": "Architecture section still describes Ray separating Actor/Reward/Reference/Critic models \"up to 70B+ parameters,\" vLLM for high-throughput rollout generation, and DeepSpeed ZeRO-3/AutoTP/RingAttention for training; the algorithm table still lists PPO, REINFORCE++, REINFORCE++-baseline, RLOO, GRPO, and Dr. GRPO. A new experimental \"Molt\" backend is noted as an alternative to DeepSpeed, not yet the primary path.",
-                "accessed": "2026-08-09",
+                "shows": "Architecture section still describes Ray separating Actor/Reward/Reference/Critic models \"up to 70B+ parameters,\" vLLM for high-throughput rollout generation, and DeepSpeed ZeRO-3/AutoTP/RingAttention for training; the algorithm table still lists PPO, REINFORCE++, REINFORCE++-baseline, RLOO, GRPO, and Dr. GRPO. A \"New Backend\" callout offers Molt, an Automodel-powered alternative described as more powerful than DeepSpeed, but the Architecture Foundation section is still Ray + vLLM + DeepSpeed.",
+                "accessed": "2026-08-31",
                 "http_status": 200,
-                "content_sha256": "ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553"
+                "content_sha256": "aabe426d4df1487dd525f983bec5f46958ff27733c67713818a28091984681c0"
               }
             ]
           },
@@ -10879,7 +10879,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
         },
@@ -13020,6 +13021,20 @@
             "value": "Architecture: SGLang rollout paired with Megatron-LM training, plus a PyTorch FSDP2 backend for training the HuggingFace implementation as-is; fully asynchronous RL with decoupled rollout and training workers and configurable on- and off-policy schedules; TP/PP/EP parallelism; FP8; in-loop weight updates over P2P RDMA at trillion-parameter scale (Kimi-K2.6). Frontier-scale RL infrastructure, but a narrower published method catalog than verl's.",
             "confidence": "medium",
             "note": "Miles runs RL post-training at trillion-parameter scale on a Megatron-LM training backend with SGLang rollout, and its async design and P2P RDMA weight transfer are the same class of infrastructure verl provides. It sits one band below verl because verl publishes a substantially wider algorithm catalogue (PPO, GRPO, RLOO, ReMax, REINFORCE++, GSPO, PRIME, DAPO, DrGRPO plus SFT/DPO) while Miles documents PPO and GRPO; method breadth is what separates the top two bands in this category.",
+            "relative_to": "verl",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/volcengine/verl",
+                  "shows": "Key Features still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME, DAPO and DrGRPO, alongside supervised fine-tuning, over FSDP/FSDP2/Megatron-LM training backends with vLLM, SGLang and HF Transformers rollout. That catalog is still substantially wider than the PPO and GRPO Miles documents, which is the spacing this band rests on.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "c1ad6b970072c2000b9884f2a7d4d1c834e8b42f8ccb0e19123435e4dd01010e"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -13111,6 +13126,20 @@
             "value": "Methods: GRPO family, PPO, DPO and SFT with LoRA; fully asynchronous RL decoupling rollout from policy update; training backends FSDP and Megatron; inference backends vLLM and SGLang; TP/PP/EP and sequence parallelism; documented agentic and vision-language RL examples. Comparable distributed-RL breadth to OpenRLHF, with a stronger agentic emphasis.",
             "confidence": "medium",
             "note": "AReaL's support matrix lists the algorithm, model, training-backend and inference-backend axes that place OpenRLHF at 4: multiple RL algorithms over FSDP/Megatron training with vLLM/SGLang rollout, scaled by TP/PP/EP. It is scored at OpenRLHF rather than above it because the two cover the same ground from different angles - OpenRLHF on Ray-scheduled RLHF at 70B+, AReaL on asynchronous agentic RL - and neither reaches the method catalogue of verl or nemo-rl.",
+            "relative_to": "openrlhf",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md",
+                  "shows": "The State-of-the-Art RL Algorithms section still lists PPO, REINFORCE++, REINFORCE++-baseline, GRPO, RLOO and Dr. GRPO in its estimator table, over the Ray + vLLM + DeepSpeed ZeRO-3 architecture separating Actor/Reward/Reference/Critic for models up to 70B+ parameters. That is the same order of distributed-RL breadth AReaL's support matrix documents, and neither reaches verl's method catalog.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "aabe426d4df1487dd525f983bec5f46958ff27733c67713818a28091984681c0"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -13202,6 +13231,20 @@
             "value": "Dropless MoE training to 1T parameters; 200B-scale MoE without expert parallelism and 600B with intra-node EP only; 64k-sequence training on 200B MoE without sequence parallelism, plus DeepSpeed Ulysses support with linearly scalable sequence length; reported FSDP training throughput above traditional 3D-parallel schemes for MoE above 200B; Ascend A3 Supernode and NVIDIA paths. Specialized to MoE rather than Megatron-LM's composable general-purpose parallelism.",
             "confidence": "medium",
             "note": "XTuner V1's key-features section claims frontier MoE scale - 1T parameters, 200B without expert parallelism, 64k sequences without sequence parallelism - which is the scale story that places megatron-lm at 5. It sits one band below because Megatron-LM offers composable DP/TP/PP/CP/EP with Megatron-FSDP across model families and publishes weak- and strong-scaling benchmarks, whereas XTuner is specialized to MoE and its throughput claim is stated in the README rather than in a published scaling study. The same one_below relation places swift and llama-factory.",
+            "relative_to": "megatron-lm",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/NVIDIA/Megatron-LM",
+                  "shows": "Megatron Core still advertises composable TP, PP, DP, EP and CP with FP16, BF16, FP8 and FP4 mixed precision, and Performance Benchmarking still reports training from 2B to 462B parameters across thousands of GPUs, a 462B model benchmarked on 6,144 H100 GPUs with MFU rising from 41% to 47-48%, and a GPT-3 of slightly more than 175 billion parameters strong-scaled from 96 to 4,608 H100 GPUs. The composable general-purpose parallelism and the published scaling study are what hold XTuner's MoE-specialized story one band below.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "7c7a75d3ca90f4b9e41eee29630d359164b715fc07ebd8157a6ffffdf924d454"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -29430,14 +29473,14 @@
             "value": "model breadth (40+ LLM providers, multiple vector DBs, dynamic model routing); RAG (document ingestion core use case); multimodal; multi-user (instance with permissioning); agents (no-code builder, web browsing); recent meeting-recording/summarization features",
             "confidence": "high",
             "note": "A strong full-stack chat, RAG and agent surface that hits every dimension of the category; provider and vector-DB breadth plus no-code agents put it on par with LibreChat and Open WebUI. Scheduled cron tasks, managed memories and intelligent skill selection are also present. Level 5 is held for the OSI leaders on raw breadth.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://github.com/Mintplex-Labs/anything-llm",
                 "shows": "40+ LLM providers, RAG, multi-user permissioning, no-code agents with web browsing",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-31",
                 "http_status": 200,
-                "content_sha256": "144242e11172f75c6ea72fc627d7aaf4caacf031c7b0bbc30ec3cdb835349056"
+                "content_sha256": "dc714d7518633ad9df0a862b110d093eca5ded72b37bef73ef97c537d168aeba"
               }
             ]
           },
@@ -29447,7 +29490,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-13 via the anything-llm repository and its Docker Hub listing."
         },
@@ -29921,14 +29965,14 @@
             "value": "model breadth: yes (many LLM APIs: KoboldAI/OpenAI/Claude/Mistral/local); multimodal: yes (image-gen + TTS integration); RAG/lorebooks: yes; plugins/extensions: yes (third-party); multi-user: no (single-user local)",
             "confidence": "medium",
             "note": "Feature-rich for its niche, broad backend coverage, image-gen/TTS, extensions, character/roleplay tooling (Visual Novel mode). Specialized toward roleplay rather than general-purpose assistant work; mid-tier on the general chat-UI matrix.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://github.com/SillyTavern/SillyTavern",
                 "shows": "multi-backend, image-gen, TTS, extensions, Visual Novel mode",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-31",
                 "http_status": 200,
-                "content_sha256": "913396e188c8ef5e84e46847279e65992adcbf72337e666c475853ed5ec45c91"
+                "content_sha256": "578dfe730c7c05004d6b5f6d8f6f09efe3bc48067d9055014d00961e031afde4"
               }
             ]
           },
@@ -29938,7 +29982,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-13 via the SillyTavern/SillyTavern repository."
         },
@@ -32781,6 +32826,20 @@
             "value": "API-layer breadth rather than a chat surface: streaming messages API with token counting, file and artifact ingestion, retrieval with citations and agentic RAG, built-in tools mirroring the Claude API (web search, web fetch, code execution), custom tools and MCP connectors, structured access to databases and CSVs, embeddings and orchestration. Works against any OpenAI-compatible server. Ships no UI of its own.",
             "confidence": "medium",
             "note": "Scored 4 on the gateway side of this category rather than the chat side. Its retrieval, tool and connector surface is the same order as anythingllm and open-webui, both 4 here, and broader than a front end like jan at 3. It stops short of 5 because it deliberately ships no interface: librechat at 5 covers multi-provider chat, multi-user authentication and agents together, where this covers the API layer alone.",
+            "relative_to": "anythingllm",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/Mintplex-Labs/anything-llm",
+                  "shows": "The feature list still records multi-modal support, multi-user instance support and permissioning, a no-code AI agent builder with in-workspace web browsing, scheduled cron tasks on a schedule, and drag-and-drop document ingestion with source citations, over a supported-provider section listing around forty LLM providers and eight vector databases. That retrieval, tool and connector surface is the same order as this product's, which is what holds the two level.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "dc714d7518633ad9df0a862b110d093eca5ded72b37bef73ef97c537d168aeba"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -32872,6 +32931,20 @@
             "value": "Self-hosted assistant with breadth on the integration axis: multiple chat channels, MCP tool support, a plugin system with a skill marketplace, persistent memory, a terminal UI and a desktop build, and seven documented install or deployment routes including Docker and three hosted options. Assistant-and-agent platform rather than a single chat window.",
             "confidence": "medium",
             "note": "Scored 4 alongside anythingllm and open-webui: an extensible platform with tools, plugins and memory rather than a front end over a model endpoint, which is what places jan and sillytavern at 3. It does not reach librechat at 5, which adds multi-user authentication and a broader native provider matrix.",
+            "relative_to": "anythingllm",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/Mintplex-Labs/anything-llm",
+                  "shows": "The feature list still records a no-code AI agent builder with in-workspace web browsing, custom AI agents, scheduled cron tasks, multi-modal support and multi-user instance support and permissioning, over a supported-provider section listing around forty LLM providers and eight vector databases. It remains an extensible platform with tools, memory and agents rather than a front end over a model endpoint, which is the class this band shares with it.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "dc714d7518633ad9df0a862b110d093eca5ded72b37bef73ef97c537d168aeba"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -32956,6 +33029,20 @@
             "value": "Desktop assistant with an agent-integration surface: MCP tool support, Agent Client Protocol integration, a skills system, remote control of a running instance, tape-and-trace inspection of runs, and any OpenAI- or Gemini-compatible provider plus local models through Ollama.",
             "confidence": "medium",
             "note": "Scored 4 rather than 3 on the agent surface. A desktop chat client alone is the jan shape at 3; this adds MCP tools, the Agent Client Protocol, a skills system and run tracing, which is the extensible-platform behaviour that places anythingllm and open-webui at 4. It stays below librechat at 5, which carries multi-user authentication and a wider native provider matrix.",
+            "relative_to": "anythingllm",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/Mintplex-Labs/anything-llm",
+                  "shows": "The feature list still records custom AI agents and a no-code agent builder with in-workspace web browsing, scheduled cron tasks, multi-modal support and multi-user instance support and permissioning, over a supported-provider section listing around forty LLM providers and eight vector databases. The agent and tool surface is what places it at 4, and it is the surface this product's MCP tools, Agent Client Protocol and skills system match.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "dc714d7518633ad9df0a862b110d093eca5ded72b37bef73ef97c537d168aeba"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -33040,6 +33127,20 @@
             "value": "Character-driven companion front end with a multimodal surface: speech synthesis and recognition, vision input, persistent memory, MCP tool access, and browser, desktop and mobile builds, over many providers through the xsAI client library. A persona-centred chat surface rather than a retrieval or agent platform.",
             "confidence": "medium",
             "note": "Scored 3 in the companion front-end class that sillytavern occupies. Its modality breadth - voice in and out, vision, three form factors - is real and is what puts it at the top of that band, but it organizes a character conversation rather than providing the retrieval, tool and document surface that places anythingllm and open-webui at 4.",
+            "relative_to": "sillytavern",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/SillyTavern/SillyTavern",
+                  "shows": "The README still describes a single unified interface for many LLM APIs (KoboldAI/CPP, Horde, NovelAI, Ooba, Tabby, OpenAI, OpenRouter, Claude, Mistral and more) with Visual Novel Mode, Automatic1111 and ComfyUI image generation, TTS, WorldInfo lorebooks and third-party extensions, and still describes itself as a locally installed interface with no multi-user surface. That is the companion front-end class this band shares with it.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "578dfe730c7c05004d6b5f6d8f6f09efe3bc48067d9055014d00961e031afde4"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -33124,6 +33225,20 @@
             "value": "Roleplay-oriented chat front end: character cards, persistent memory, a plugin system, speech synthesis and image generation, running in a browser, as a desktop build or under Docker. Narrower documented surface than the other companion front ends in this category.",
             "confidence": "medium",
             "note": "Scored 3 in the same companion front-end class as sillytavern, which it resembles closely in purpose and feature set. Its README is short and documents a smaller surface than airi's, so it sits at the lower end of the band rather than the top, but the class placement is what the score records.",
+            "relative_to": "sillytavern",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/SillyTavern/SillyTavern",
+                  "shows": "The README still describes a locally installed interface for many LLM APIs (KoboldAI/CPP, Horde, NovelAI, Ooba, Tabby, OpenAI, OpenRouter, Claude, Mistral and more) with Visual Novel Mode, Automatic1111 and ComfyUI image generation, TTS, WorldInfo lorebooks, character sharing and third-party extensions. The character-card, memory, plugin and image-generation surface this product documents is the same class, which is what the band records.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "578dfe730c7c05004d6b5f6d8f6f09efe3bc48067d9055014d00961e031afde4"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -33208,6 +33323,20 @@
             "value": "On-device multimodal assistant for iPhone and Mac: GGUF language models run locally, vision input, Whisper speech recognition, image generation, retrieval over local files, MCP tool access, and a documented on-device performance story. Breadth of modality on a single device rather than a server-side platform surface.",
             "confidence": "medium",
             "note": "Scored 3 in the local-application class alongside jan. Its modality range - text, vision, speech in, image generation, all on device - is wider than most of that band and is what holds it at the top of it, but it targets one person's phone and laptop rather than providing the multi-backend, document and agent platform surface that places open-webui and anythingllm at 4.",
+            "relative_to": "jan",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/janhq/jan",
+                  "shows": "The feature list still records local models downloaded and run from HuggingFace (Llama, Gemma, Qwen, GPT-oss), cloud integration with OpenAI, Anthropic, Mistral, Groq and MiniMax, custom assistants, an OpenAI-compatible local server on localhost:1337 and Model Context Protocol integration, on a single-user desktop application. That local-application class, rather than a server-side platform surface, is the band this product shares with it.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "4ab148b9cf1dff30a4c5080c13f087085de0203012e1ac0ae9fdb2cb33c50a1d"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -41923,14 +42052,14 @@
             "value": "Distributed-training abstraction: launches and runs PyTorch training on CPU/GPU/multi-GPU/TPU with mixed precision via minimal code changes.",
             "confidence": "high",
             "note": "Central infrastructure for distributed training but scoped to orchestration, not modeling.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://github.com/huggingface/accelerate",
                 "shows": "README still describes running raw PyTorch training across CPU, multi-GPU and TPU with mixed precision from a few lines of change",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-31",
                 "http_status": 200,
-                "content_sha256": "cfea9f3018826db8aa75755b06bf20678774df531143b8e5ba98581602c972eb"
+                "content_sha256": "53dc983aca6293181a80b55177990ddce94c66430983c9ee98e4399c5f327185"
               }
             ]
           },
@@ -41940,7 +42069,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-13 via GitHub and the LICENSE body."
         },
@@ -42865,14 +42995,14 @@
             "value": "Inference optimization/deployment toolkit across Intel CPU/GPU/NPU with multi-framework model conversion.",
             "confidence": "high",
             "note": "Broad inference runtime with model conversion and GenAI API, primarily Intel-hardware oriented.",
-            "last_verified": "2026-08-13",
+            "last_verified": "2026-08-31",
             "sources": [
               {
                 "url": "https://github.com/openvinotoolkit/openvino",
                 "shows": "README still describes inference optimization and deployment across Intel CPU, GPU and NPU with conversion from PyTorch, TensorFlow and ONNX",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-31",
                 "http_status": 200,
-                "content_sha256": "a14e8dae9600cfab00f871e2d62ccd80445622eff33f4201a8860caa33598f28"
+                "content_sha256": "a60992e91bebccb743b5cebecc30854665f17294180a2d687dde8ec2b4c9f3ad"
               }
             ]
           },
@@ -42882,7 +43012,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-31"
           },
           "version_note": "Verified 2026-08-13 via GitHub and the LICENSE body."
         },
@@ -43248,7 +43379,21 @@
             "basis": "feature_matrix",
             "value": "A full training-and-inference framework rather than a library on top of one: unified dynamic and static graphs with automatic parallelism that derives a distributed strategy from single-device tensor partitioning annotations; training and inference served by the same framework for large models; high-order differentiation for scientific computing; cross-platform deployment. Comparable in scope to TensorFlow.",
             "confidence": "medium",
-            "note": "Scored 5 on framework scope. Paddle is a foundational framework in the same sense as pytorch and tensorflow, which both sit at 5 here: it owns its own graph engine, distributed execution and deployment path rather than building on somebody else's. Its automatic-parallelism and integrated training-inference design are the distinguishing claims. The comparison is stated here rather than recorded as relative_to because no candidate root in this category has been confirmed as recently as this pass, and a comparison cannot claim a fresher verification date than its root.",
+            "note": "Scored 5 on framework scope. Paddle is a foundational framework in the same sense as pytorch and tensorflow, which both sit at 5 here: it owns its own graph engine, distributed execution and deployment path rather than building on somebody else's. Its automatic-parallelism and integrated training-inference design are the distinguishing claims.",
+            "relative_to": "pytorch",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/pytorch/pytorch",
+                  "shows": "The README's two-line summary still reads \"Tensor computation (like NumPy) with strong GPU acceleration\" and \"Deep neural networks built on a tape-based autograd system\", with a Dynamic Neural Networks section under it. PyTorch's 5 rests on owning the tensor engine and the autograd built on it, which is the same framework scope Paddle claims for its own graph engine and deployment path.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "3c8e06bc5967dedcd298237484a14f667abc9d41980e148b557f59de39976e49"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -43339,7 +43484,21 @@
             "basis": "feature_matrix",
             "value": "Array framework with composable function transformations (automatic differentiation, automatic vectorization, graph optimization), lazy evaluation, dynamic graph construction, a unified memory model letting arrays live in shared memory across CPU and GPU, and APIs in Python, C++, C and Swift with mlx.nn and mlx.optimizers following PyTorch conventions. Foundational in kind, but targets Apple silicon only.",
             "confidence": "medium",
-            "note": "Scored 4 rather than 5 on reach of hardware rather than depth of design. MLX has the shape of a foundational framework - its own array type, composable transforms and autodiff, and an ecosystem built on it - but it runs on Apple silicon alone, where pytorch, tensorflow and jax at 5 are hardware-portable. openvino sets the precedent in this category at 4: a technically strong framework scoped to one vendor's hardware. Stated here rather than recorded as relative_to because no candidate root has been confirmed as recently as this pass.",
+            "note": "Scored 4 rather than 5 on reach of hardware rather than depth of design. MLX has the shape of a foundational framework - its own array type, composable transforms and autodiff, and an ecosystem built on it - but it runs on Apple silicon alone, where pytorch, tensorflow and jax at 5 are hardware-portable. openvino sets the precedent in this category at 4: a technically strong framework scoped to one vendor's hardware.",
+            "relative_to": "openvino",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/openvinotoolkit/openvino",
+                  "shows": "The README still describes a toolkit for optimizing and deploying deep learning models, with Flexible Model Support converting from PyTorch, TensorFlow, ONNX, Keras, PaddlePaddle and JAX/Flax, running inference on CPU, Intel integrated and discrete GPU, and Intel NPU. That is the precedent this band rests on, a technically strong framework scoped to one vendor's hardware, held at 4 rather than 5 for the same reason MLX is.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "a60992e91bebccb743b5cebecc30854665f17294180a2d687dde8ec2b4c9f3ad"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -43430,7 +43589,21 @@
             "basis": "feature_matrix",
             "value": "Training abstraction over PyTorch: Trainer and Fabric interfaces that move unchanged model code between CPU, CUDA and MPS GPUs, TPUs, multi-GPU and multi-node configurations; distributed strategies including DDP, FSDP and DeepSpeed; mixed precision out of the box. Structures a training loop rather than providing the tensor engine underneath it.",
             "confidence": "medium",
-            "note": "Scored 4 as a library built on a framework rather than a framework. It structures and distributes a PyTorch training loop, which is the same shape as accelerate at 4 in this category, and depends on PyTorch for the tensor engine and autograd that put pytorch at 5. Its breadth of accelerator and strategy coverage is what holds it at the top of that band. Stated here rather than recorded as relative_to because accelerate has not been confirmed as recently as this pass, and a comparison cannot claim a fresher verification date than its root.",
+            "note": "Scored 4 as a library built on a framework rather than a framework. It structures and distributes a PyTorch training loop, which is the same shape as accelerate at 4 in this category, and depends on PyTorch for the tensor engine and autograd that put pytorch at 5. Its breadth of accelerator and strategy coverage is what holds it at the top of that band.",
+            "relative_to": "accelerate",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-08-31",
+              "sources": [
+                {
+                  "url": "https://github.com/huggingface/accelerate",
+                  "shows": "The README still says Accelerate \"abstracts exactly and only the boilerplate code related to multi-GPUs/TPU/fp16 and leaves the rest of your code unchanged\", adding five lines to a standard PyTorch script to run on single CPU, single GPU, multi-GPU or TPU with or without fp8, fp16 or bf16 mixed precision. Structuring and distributing somebody else's tensor engine is the shape this band shares with it.",
+                  "accessed": "2026-08-31",
+                  "http_status": 200,
+                  "content_sha256": "53dc983aca6293181a80b55177990ddce94c66430983c9ee98e4399c5f327185"
+                }
+              ]
+            },
             "last_verified": "2026-08-31",
             "sources": [
               {
@@ -58204,7 +58377,7 @@
     }
   },
   "n_total": 553,
-  "generated": "2026-08-31",
+  "generated": "2026-09-01",
   "version": "0.2.0",
   "released": "2026-08-16",
   "contract": 1,
