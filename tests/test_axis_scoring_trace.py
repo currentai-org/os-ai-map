@@ -36,9 +36,13 @@ TEST_SHA = "test-git-sha"
 # Pinned goldens over the committed corpus. A change here is a change in the declarations or the
 # ladder — regenerate deliberately, never to make a red test green.
 GOLDEN = {
-    "axis_facts": (2409, "7be8cbdf811f9a8ecc687583f77d00c53befe21c8635a1f79e93882f58981a81"),
-    "axis_rule_matches": (2882, "3d82550d57d239e005235e539cac45e1e03e45b4b77d8c07ef78fceb44076730"),
-    "axis_results": (553, "5315a172d59ded3dbc675392c18572bb9cd37fdaf4cddc3208b0b82aa0e8206b"),
+    # Regenerated 2026-09-01 for the Round 1 calibration tranche: 23 products added across
+    # five categories (axis_results 553 -> 576), their recorded evidence entering the fact
+    # and rule-match tables, and gsm8k's adoption re-band 4 -> 5 - the one pre-existing
+    # result row that changed.
+    "axis_facts": (2516, "7f0d341049a45e6137607e6bced23e61d9214371b008509498a2e3118a19226b"),
+    "axis_rule_matches": (3063, "24ceca80ab5f92cdb6e6ff9bfe79a1e693f72f58a8d27b211ce2230626609688"),
+    "axis_results": (576, "2fa24ff9f42c8799547d7fa1e2084505e98f201c42b9a5c441cc1a6a2e5fb653"),
 }
 
 

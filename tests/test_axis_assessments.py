@@ -44,7 +44,11 @@ AXIS_ROW_COUNT = 1728
 # benchmark_eval_data (5), base_pretrained (4), finetuned_chat (2), inference_code (7)
 # and evaluation_code (5), which is 69 new axis rows (23 x 3), plus the gsm8k adoption
 # re-band 4 -> 5 on a fresh 1.17M-downloads read - the one existing row that changed.
-AXIS_ASSESSMENTS_DIGEST = "f4a6e4b1942b118f97c78127ebbd48fb2e29cf5c5dc2739ce4d9f912a9ea1734"
+# The digest moved once more within the same tranche when preflight corrections
+# regenerated the new rows' raw strings from their components mappings, renamed
+# mle-bench's license to the ladder's per-component spelling and cleaned four notes -
+# same 1728 rows, corrected content.
+AXIS_ASSESSMENTS_DIGEST = "8874192a134070b545557d0b674f43905a822e17b26accb83960bc5b7d72d95a"
 
 
 @pytest.fixture(scope="module")
