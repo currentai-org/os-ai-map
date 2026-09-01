@@ -40,19 +40,36 @@ openness:
     - core-gated
 adoption:
   level: 1
-  reach: <10K
-  signal_type: usage_volume
+  signal_type: reported_traction
   confidence: medium
-  banded_quantity: 45 PyPI downloads in the last 30 days for the areal package
-  note: Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real
-    usage signal. The figure is small - 45 downloads in 30 days against 5,705 GitHub stars - because this project
-    is consumed by cloning and installing from source rather than from the registry. Recording the authoritative
-    measurement understates reach; substituting the larger star count would overstate use, and the routing table
-    forbids falling through to a weaker signal when an authoritative one exists.
+  banded_quantity: 45 monthly downloads of areal 1.0.4, a release line the repository left behind at v2.1.0 -
+    a count of a superseded version rather than a count of use
+  note: 'What changed here is the instrument, not the level. The PyPI package publishes 1.0.4, uploaded 2026-06-10
+    and the only release the project has ever made, against repository release v2.1.0 of 2026-08-25 - a whole
+    major line, so anyone on the current version reached it another way and a download count off that line
+    measures a superseded release. A usage_volume record claims to be a download count of the product; this one
+    was a download count of a version the project has moved past, which is the wrong claim rather than a wrong
+    number. The record therefore states no count: reported_traction, no numeric reach, and the 45 downloads kept
+    only as corroboration of the trailing channel. The level is deliberately left where the earlier reading put
+    it. Raising it is a separate judgment needing its own standing evidence, and the only other signal available
+    is the star count, which the routing precedence exists to keep out of an adoption band.'
   last_verified: '2026-08-31'
   sources:
+  - url: https://pypi.org/pypi/areal/json
+    shows: 'info.version 1.0.4 with a single entry in `releases`, uploaded 2026-06-10T06:48:31Z. The package has
+      made no other release, so the registry line has never moved past 1.x while the repository is on 2.1.0.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 0d186632b2f12deeeefad7706aba8dd5287a71e0e8982ead3ea3550fcc815792
+  - url: https://api.github.com/repos/areal-project/AReaL/releases/latest
+    shows: 'tag_name v2.1.0, published_at 2026-08-25T10:23:59Z, prerelease false - the current stable release
+      line, one major above the sole PyPI release.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: e3f5128c637992ae56bac603d35bac1dd6659bc922aa492c0123090eeb4491d1
   - url: https://pypistats.org/api/packages/areal/recent
-    shows: last_month 45, last_week 9, last_day 3 for the areal package.
+    shows: last_month 45, last_week 9, last_day 3 for the areal package. Recorded as a measurement of the trailing
+      registry line, explicitly NOT as the basis of the band.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: c199dbab35142f6ab9d8cbf15f7e1aaef408b6bbf3b716110eca5a9fb42ae7bc

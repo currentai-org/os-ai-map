@@ -40,19 +40,39 @@ openness:
     - core-gated
 adoption:
   level: 1
-  reach: <10K
-  signal_type: usage_volume
+  signal_type: reported_traction
   confidence: medium
-  banded_quantity: 1,159 PyPI downloads in the last 30 days for the xtuner package
-  note: Banded on the authoritative PyPI route rather than on stars, which the routing table ranks below every real
-    usage signal. The figure is small - 1,159 downloads in 30 days against 5,187 GitHub stars - because this project
-    is consumed by cloning and installing from source rather than from the registry. Recording the authoritative
-    measurement understates reach; substituting the larger star count would overstate use, and the routing table
-    forbids falling through to a weaker signal when an authoritative one exists.
+  banded_quantity: 1,159 monthly downloads of xtuner 0.2.0, a release line 416 days old that the repository left
+    behind at v1.0.1 - a count of a superseded version rather than a count of use
+  note: 'What changed here is the instrument, not the level. The PyPI package publishes 0.2.0, uploaded 2025-07-11
+    and 416 days old, while the repository has since released v1.0.1 on 2026-05-15 and the README documents XTuner
+    V1. The registry never followed the project onto that line, so a count off 0.2.0 measures the version the
+    documentation has moved past. GitHub labels v1.0.1 a pre-release even though the version string reads stable,
+    which is the publisher''s own checkbox rather than a claim about the version; the documented current release
+    is V1 either way. A usage_volume record claims to be a download count of the product, and this one counted a
+    superseded version, which is the wrong claim rather than a wrong number. The record therefore states no count:
+    reported_traction, no numeric reach, and the 1,159 downloads kept only as corroboration of the trailing
+    channel. The level is deliberately left where the earlier reading put it. Raising it is a separate judgment
+    needing its own standing evidence, and the only other signal available is the star count, which the routing
+    precedence exists to keep out of an adoption band.'
   last_verified: '2026-08-31'
   sources:
+  - url: https://pypi.org/pypi/xtuner/json
+    shows: 'info.version 0.2.0, uploaded 2025-07-11T05:43:58Z, newest of 27 releases; nothing on a 1.x line has
+      ever been published to the registry.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: 58f1487d059d62f4a3821a2c7f18b1d9d1b4f98ee419ecafce2dd1286fa93fd5
+  - url: https://api.github.com/repos/InternLM/xtuner/releases?per_page=3
+    shows: 'Newest three releases: v1.0.1 published 2026-05-15T06:57:47Z (prerelease true, draft false), v1.0.0rc0
+      of 2025-11-18, and v0.2.0 of 2025-07-11T05:43:37Z - the last release the registry matched, published the
+      same day as the PyPI upload.'
+    accessed: '2026-08-31'
+    http_status: 200
+    content_sha256: fe5b422a23ab5525be418ff584567b4a17b70848a97918b71bc35a5ea41a2419
   - url: https://pypistats.org/api/packages/xtuner/recent
-    shows: last_month 1159, last_week 112, last_day 11 for the xtuner package.
+    shows: last_month 1159, last_week 112, last_day 11 for the xtuner package. Recorded as a measurement of the
+      trailing registry line, explicitly NOT as the basis of the band.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: 486948dd5e2d3aca93bb6089fdf10282e435b7488525c34ea1cb838968c6d0e2

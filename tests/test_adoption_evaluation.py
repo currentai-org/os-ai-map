@@ -43,7 +43,10 @@ TEST_DVID = "test-declaration-version"
 
 BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c9a37a8d4"
 MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae38629742"
-RECONCILIATION_DIGEST = "a9a036c20a69e5e3eea19686855dc51799c1ea5fcff91bc9f6f71e826b811d27"
+# Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
+# is a declaration change, which is one of the four things this digest tracks. Both
+# levels stay where they were.
+RECONCILIATION_DIGEST = "0bdd78f2cb1a40374c6e02d633412b09796ce31e1da26ea8e68d5ae71ac4f69c"
 
 MEASUREMENT_COUNT = 377
 RECORDED_ASSESSMENT_COUNT = 553
