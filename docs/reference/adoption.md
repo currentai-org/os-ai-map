@@ -472,6 +472,57 @@ floor and its note says so.
 The tell to look for when reviewing: **a note that describes the signal as understating the
 product, followed by a band recorded on that signal anyway.**
 
+### The gate: `build/check_channel_authority.py`
+
+The ladder above was a habit for its first two weeks, and habits are not applied evenly. Eight
+products had already taken remedy 3 — `helm`, `laminar`, `swe-bench` and five others record
+`reported_traction` with `reach` omitted while their winning route is a bridged usage channel —
+and nothing said whether the ones that had not were exceptions or oversights. The gate is what
+makes the ladder answerable.
+
+It reports two legs and re-bands nothing.
+
+1. **The release line.** For every pypi-routed product, the newest release on the registry
+   against the repository's newest release or tag. A registry at least one **stable major line**
+   behind is a band read off a version nobody is on. Stable against stable: a pre-release repo
+   tag is a beta ahead of the registry, which is ordinary publishing, and is listed as an
+   exclusion. A repo tag that does not parse to a version is listed as undecidable, which is not
+   the same as no lag.
+2. **The note**, which is the tell above, imported from `build/sweep_status.py` rather than
+   restated so the two cannot drift.
+
+A finding leaves the report when the record stops resting on the channel: a `banded_quantity`
+naming what the figure actually counts, or a relabel to `reported_traction` with `reach` null
+and a digested source behind the level. Substituting the star count is not a remedy, and the
+precedence rule exists to stop it.
+
+**A relabel moves the instrument and nothing else.** "When a re-read may re-band" above already
+says it — move it to `reported_traction`, drop the numeric `reach`, and *leave the level alone*
+— and the temptation runs the other way every time, because the record now looks unjustified
+without a number under it. `areal` and `xtuner` are the worked examples: both correct a
+`usage_volume` claim made over a trailing release line, both keep level 1, and both say in the
+note that raising the level would be a separate judgment needing its own standing evidence. The
+only other signal either has is its star count, which is exactly what the gate's own remedy text
+forbids substituting. A relabel that also raises the level is policy C arriving through the back
+door, one product at a time.
+
+**Why it reports rather than abstains**, which is the #435 answer in one line: abstention moves
+no published number — `_stage_and_gaps` reads `L` off a count at ≥ 4.5 and `B` off a `max()`,
+and this trigger only ever fires at the bottom of a distribution — while applied to the prose
+tell as written it erases `gvisor`'s real adoption and demotes `deployment` from stage 5 to 4 on
+the strength of an honest note. Understating remains the safer error; the remedy is to say what
+was counted, not to stop counting.
+
+**The narrowness is the point.** Leg 1 is the only mechanical form of "this channel is not how
+the product ships", and it is undefined for a Hugging Face model or dataset, where the repo IS
+the artifact. The ratio test it replaces — downloads an order below stars — was rejected for
+handing stars a veto over a usage measurement, which is the overstatement failure re-entering
+one level up. `qwenpaw` is the case that settles it: its PyPI release was uploaded the same day
+as its repo tag, and only the ratio ever looked wrong.
+
+Report-only, weekly on the Monday chain (`.github/workflows/channel-authority.yml`), because it
+reads a live release line and a gate's cadence has to match the thing it polices.
+
 ## The third trap: the package that is not the product
 
 Both traps above are about ATTRIBUTION - a real count of the product credited to the wrong
@@ -536,6 +587,9 @@ category rather than a defect in it. Docker pull counts would fix most of them; 
 - [ ] The band follows from the figure in the note, in the same direction and order of
       magnitude.
 - [ ] No band was copied from a computed signal — those are observations, not scores.
+- [ ] The registry release the band was read off is on the line the repository is publishing.
+      `check_channel_authority --live` asks this; a band a whole major line behind needs the
+      under-coverage ladder applied to it.
 
 ## Related
 
