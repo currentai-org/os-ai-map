@@ -3215,6 +3215,532 @@
             "basis": "verified"
           },
           "version_note": "~12.7T-token training run with full data/code/logs and bit-reproducible training. Fully open but below OLMo 3 on fully-open evals; modest adoption. The distinguishing move is procedural rather than about the artifacts - every experiment is tracked as a public GitHub issue, so the record of how the model was reached is open as well as the recipe. Verified 2026-08-13 via the Marin announcement post, the marin-8b-base HF model card and the marin-community/marin repository."
+        },
+        {
+          "slug": "granite",
+          "product": "Granite 4.0",
+          "org_slug": "ibm",
+          "org": "IBM",
+          "type": "model",
+          "description": "IBM's enterprise foundation-model family, released October 2025 as hybrid Mamba-2/transformer models from micro (3B) through h-small (32B total, 9B active MoE). The line targets efficient long-context inference on constrained hardware and enterprise agent workloads, and ships under Apache-2.0 with ISO 42001 certification and cryptographically signed checkpoints.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0, ungated on HF across the 4.0 line);data:closed(SFT data characterized in the card (permissive public + internal synthetic + human-curated) but neither the pretraining corpus nor the mixtures are released);code:partial(ibm-granite/granite-4.0-language-models is docs/usage, no pretraining pipeline);license:Apache-2.0(OSI)",
+            "governing_release": "granite-4-0",
+            "confidence": "high",
+            "note": "Apache-2.0 weights, ungated in every 4.0 SKU read, with training data described in categories rather than released and no training pipeline. That is open weights with a closed recipe, 3 by the fallthrough. The card's data description (\"publicly available datasets with permissive license, internal synthetic data, human-curated data\") characterizes sources without fully specifying composition, so it does not reach documented-not-released, and the outcome is 3 either way because the documented-not-released rung also requires open code.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
+                "shows": "`gated: false`, cardData.license `apache-2.0`, safetensors listed; 25,719 downloads in the trailing 30 days for the flagship h-small SKU.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
+                "shows": "Card Training Data section: \"our SFT data is largely comprised of three key sources: (1) publicly available datasets with permissive license, (2) internal synthetic data targeting specific capabilities, and (3) a select set of human-curated data\" — described in categories, not released. Infrastructure section names the GB200 cluster; no training pipeline links.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea",
+                "establishes": [
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ibm-granite/granite-4.0-language-models",
+                "shows": "`license: Apache-2.0`, 210 stars; the 4.0 release repository, which carries no pretraining pipeline — what holds `code` at partial.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "a6077f345228b14f2cc1d24dd618982e4ef2a7229b783a76d8edc7fabf917b70",
+                "establishes": [
+                  "code",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "194,509 downloads in the trailing 30 days across the four declared artifacts (granite-4.0-h-tiny 88,627; granite-4.0-micro 60,053; granite-4.0-h-small 25,719; granite-4.0-h-micro 20,110), which bands at level 3 (100K-1M) on the model adoption scale. The smaller on-device SKUs carry most of the reach.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-tiny",
+                "shows": "88,627 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-tiny",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "51c663db4788981e51cb9b768df73cdb0453bdd0d0256af8957bb418174d75be"
+              },
+              {
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-micro",
+                "shows": "60,053 downloads in the trailing 30 days for ibm-granite/granite-4.0-micro",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "aa91b492e08d04f751f4481b1f412ad70b4d4c7a4f4cdcf559b93404533236f9"
+              },
+              {
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small",
+                "shows": "25,719 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-small",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71"
+              },
+              {
+                "url": "https://huggingface.co/api/models/ibm-granite/granite-4.0-h-micro",
+                "shows": "20,110 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-micro",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "b9057408d8946fb2e893c7e47112fceee053ea72808c2cf5a3bceaea665144e7"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark",
+            "basis_detail": "instruction-following / enterprise task suites (card model-index)",
+            "value": "The 4.0 flagship h-small is a 32B-total/9B-active hybrid positioned on efficiency and enterprise agent tasks rather than frontier reasoning; IBM's card benchmarks it against similar-size open-weight peers, the class whose AA reading (Llama 4 Maverick, index 14.5) defines the category's mid-tier.",
+            "relative_to": "llama",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Mid-tier: a capable efficiency-focused line, competitive within the small-to-mid open-weight class and well short of the open-weight frontier the category's 4s and 5s hold (olmo, deepseek, qwen, kimi). Sits level with llama, whose own reading is taken on Llama 4 Maverick — the same non-reasoning open-weight mid-field.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/models/llama-4-maverick",
+                  "shows": "AA's Llama 4 Maverick entry reads artificialAnalysisIntelligenceIndex 14.5 on the current scale — still the below-median open-weight non-reasoning mid-field the peer's value records, which is the class Granite 4.0's flagship also occupies, so the at-spacing holds.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "76e02ad38fef4a3f154519ab18f6bb40bedcd33bb23d5f626a71ec3588f5ca71"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md",
+                "shows": "The h-small card's evaluation tables benchmark the 4.0 line against similar-size open-weight peers on instruction-following and enterprise task suites, positioning it as competitive in its size class rather than frontier.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The Granite 4.0 mainline that granite-code-instruct's deprecation banner points to. Apache-2.0 weights with the SFT data characterized but not released and no pretraining pipeline, so open weights rather than open source. Adoption is summed across the four declared 4.0 SKUs; more exist (base variants, nano), which moves reach within the band, not across it. Verified 2026-09-01 via the granite-4.0-h-small model card and the ibm-granite/granite-4.0-language-models repository."
+        },
+        {
+          "slug": "minicpm",
+          "product": "MiniCPM",
+          "org_slug": "openbmb",
+          "org": "OpenBMB",
+          "type": "model",
+          "description": "OpenBMB's on-device model family, spanning MiniCPM3-4B through the MiniCPM4/4.1 8B hybrid-reasoning generation to the current MiniCPM5-1B. The line pairs small dense models with efficiency research — trainable sparse attention (InfLLM-V2), quantized end-side inference — to run capable models on phones and edge hardware.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0, ungated on HF across generations 3-5);data:closed(training-data research published (Ultra-FineWeb, UltraClean) but the corpus is not released end to end);code:partial(OpenBMB/MiniCPM is inference/deployment plus papers; no full pretraining pipeline);license:Apache-2.0(OSI)",
+            "governing_release": "minicpm5",
+            "confidence": "high",
+            "note": "Apache-2.0 weights, ungated in every SKU read across generations 3 through 5, with training-data research published as papers and partial dataset artifacts but no end-to-end corpus release, and a repository that carries inference and deployment rather than the pretraining pipeline. Open weights, closed recipe: 3 by the fallthrough, governed by the current MiniCPM5 generation.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM5-1B",
+                "shows": "`gated: false`, cardData.license `apache-2.0`, created 2026-05-21; 810,294 downloads in the trailing 30 days — the current generation and the line's reach.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ac06ef813bdae2747f76d01489ad1445ecdcf2d02016ff89c62e889701d22cab",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/openbmb/MiniCPM4.1-8B/raw/main/README.md",
+                "shows": "Raw card: `license: apache-2.0`; links the GitHub repo and technical report (arXiv 2506.07900) and the InfLLM-V2 paper; a hybrid reasoning model card with no released training corpus and no pretraining pipeline link.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9be2cdf7cdc40cddd0503972829c51c61c1532960d963e93dbc58aa3467539e5",
+                "establishes": [
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/OpenBMB/MiniCPM",
+                "shows": "`license: Apache-2.0`, 10,288 stars, description \"MiniCPM5-1B: A SOTA 1B on-device LLM, small yet powerful.\" — confirms MiniCPM5 is the current lead release; the repo is model usage/inference, not a training pipeline.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "41a1d711186e06c9daa3f212c33f2576d6ddd4e75531ed9af2d7ea9258a3a5df",
+                "establishes": [
+                  "code"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "922,666 downloads in the trailing 30 days across the four declared artifacts (MiniCPM5-1B 810,294; MiniCPM4.1-8B 47,819; MiniCPM4-8B 37,939; MiniCPM3-4B 26,614), which bands at level 3 (100K-1M) on the model adoption scale.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM5-1B",
+                "shows": "810,294 downloads in the trailing 30 days for openbmb/MiniCPM5-1B",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ac06ef813bdae2747f76d01489ad1445ecdcf2d02016ff89c62e889701d22cab"
+              },
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM4.1-8B",
+                "shows": "47,819 downloads in the trailing 30 days for openbmb/MiniCPM4.1-8B",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cef4894b46101893356acfdc749a514c51d2f1a755c73d28b56932001a20189b"
+              },
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM4-8B",
+                "shows": "37,939 downloads in the trailing 30 days for openbmb/MiniCPM4-8B",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "8581326a75b8090e27493eb57cef366a53a913653d05f5c2ad970ff3883aa75a"
+              },
+              {
+                "url": "https://huggingface.co/api/models/openbmb/MiniCPM3-4B",
+                "shows": "26,614 downloads in the trailing 30 days for openbmb/MiniCPM3-4B",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c18404960e900764ba867cc267ba3b7f2cfba3e56da232f93e7275001eb3a945"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark",
+            "basis_detail": "small-model suites (card comparisons vs similar-size Qwen3/Gemma)",
+            "value": "MiniCPM4.1-8B is a hybrid reasoning model the card benchmarks against similar-size peers (Qwen3-8B class); the line's claim is best-in-class capability per parameter on device, not frontier capability.",
+            "relative_to": "smollm",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "The strong end of the small/on-device class: competitive with same-size Qwen3 and Gemma checkpoints and unusually efficient at long context via sparse attention, but the ceiling is the size class itself, well below the category's open-weight frontier. Level with smollm, the category's other small-model line, whose value records the same shape of claim (outperforms same-size peers, competitive one size up).",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/blog/smollm3",
+                  "shows": "The SmolLM3 announcement still reads as the peer's value records: a 3B model that \"outperforms Llama-3.2-3B and Qwen2.5-3B\" and is competitive with 4B Qwen3/Gemma3 — the same small-model, same-size-class-wins claim MiniCPM makes at 1B-8B, so the at-spacing holds.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8eeef8fb000fc486f87baa8346d59139b33522da2dc79fe814eaeb233b7c3bf0"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/openbmb/MiniCPM4.1-8B/raw/main/README.md",
+                "shows": "The 4.1-8B card presents the line as \"a hybrid reasoning model with trainable sparse attention\" usable in deep-reasoning and non-reasoning modes, with benchmark comparisons against similar-size open models — the size-class-relative claim the band rests on.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9be2cdf7cdc40cddd0503972829c51c61c1532960d963e93dbc58aa3467539e5"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The on-device counterpart to smollm on the map. Apache-2.0 across the line, with the efficiency research published as papers and some data artifacts (Ultra-FineWeb) but no end-to-end corpus or pipeline release, so open weights rather than open source. Adoption is dominated by MiniCPM5-1B and sits near the top of its band. Verified 2026-09-01 via the MiniCPM4.1-8B and MiniCPM5-1B HF records and the OpenBMB/MiniCPM repository."
+        },
+        {
+          "slug": "seed-oss",
+          "product": "Seed-OSS",
+          "org_slug": "bytedance-seed-volcano-engine",
+          "org": "ByteDance Seed / Volcano Engine",
+          "type": "model",
+          "description": "ByteDance Seed's open-weight model line, released August 2025 as 36B base and instruct checkpoints trained on 12T tokens. The instruct model targets long-context, reasoning and agentic use with a controllable thinking budget, and the base ships in with- and without-synthetic-data variants aimed at fine-tuning research.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(36B Base, Base-woSyn and Instruct, ungated on HF);data:closed(12T-token pretraining corpus not released; the woSyn base variant is a synthetic-data ablation, not a data release);code:partial(ByteDance-Seed/seed-oss is inference/usage; no training pipeline);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Apache-2.0 weights in all three SKUs, ungated, with the 12T-token corpus unreleased and only inference code published. The card says plainly the series is released \"under the Apache-2.0 license\" and that the tech report is coming; nothing about the recipe ships. Open weights, closed recipe: 3 by the fallthrough.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Instruct",
+                "shows": "`gated: false`, cardData.license `apache-2.0`, safetensors listed; 35,117 downloads in the trailing 30 days.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f60d7b42b626fc6d991c65c6de8499c4f3b4500080c260400ee58602e3f24f6a",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/ByteDance-Seed/Seed-OSS-36B-Instruct/raw/main/README.md",
+                "shows": "Card: \"We release Seed-OSS-36B-Base (both with and without synthetic data versions) and Seed-OSS-36B-Instruct\"; \"Although trained with only 12T tokens\"; \"We release this series of models to the open-source community under the Apache-2.0 license\"; a \"Tech Report Coming Soon\" badge and no corpus or pipeline link.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "a8b639d3654d3453bed9037cd1470ea6bc43289b1058a71840f8e11a99a6ca49",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ByteDance-Seed/seed-oss",
+                "shows": "`license: Apache-2.0`, 892 stars; the release repository, carrying no training pipeline — what holds `code` at partial.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "60bd009a1a924278d964673d6741bccf381d0732fbb64edbe142fbae265e5571",
+                "establishes": [
+                  "code"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "41,913 downloads in the trailing 30 days across the two declared artifacts (Seed-OSS-36B-Instruct 35,117; Seed-OSS-36B-Base 6,796), which bands at level 2 (10K-100K) on the model adoption scale.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Instruct",
+                "shows": "35,117 downloads in the trailing 30 days for ByteDance-Seed/Seed-OSS-36B-Instruct",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f60d7b42b626fc6d991c65c6de8499c4f3b4500080c260400ee58602e3f24f6a"
+              },
+              {
+                "url": "https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Base",
+                "shows": "6,796 downloads in the trailing 30 days for ByteDance-Seed/Seed-OSS-36B-Base",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "a630e9e918acb3ad35406df1c1234f55e1466b22c5f5685626ecec13332ea6e3"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "basis_detail": "AIME/GPQA/long-context suites (card benchmark tables)",
+            "value": "Seed-OSS-36B-Instruct card benchmark tables: AIME24 91.7, AIME25 84.7-class math results and leading long-context/agentic scores among open-source peers in its size class, at 12T training tokens.",
+            "relative_to": "olmo",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "The strong 30B-class open-weight tier: card benchmarks put the instruct model at or ahead of same-size open peers on math and reasoning despite a smaller training budget, which is the same \"best of the ~32B open class, short of the trillion-parameter frontier\" reading that puts olmo at 4. Vendor-published numbers with the tech report still pending, so confidence stays medium.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://allenai.org/blog/olmo3",
+                  "shows": "The OLMo 3 post still reads as the peer's value records — \"narrowing the gap to the best open-weight models of similar scale - such as Qwen 3 32B - while training on roughly 6x fewer tokens\" — the same ~32B-class-leader claim Seed-OSS's card tables make, so the at-spacing holds. (Digest matches the peer's recorded fetch of 2026-08-13, so the page is unchanged.)",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/ByteDance-Seed/Seed-OSS-36B-Instruct/raw/main/README.md",
+                "shows": "Card benchmark tables with AIME24 91.7 for Seed-OSS-36B-Instruct against same-size open peers, plus long-context and agentic suite results; \"Although trained with only 12T tokens, Seed-OSS achieves excellent performance on several popular open benchmarks\".",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "a8b639d3654d3453bed9037cd1470ea6bc43289b1058a71840f8e11a99a6ca49"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "ByteDance's open-weight counterpart to the closed doubao-seed line, and the openness contrast between the two is the org-page signal. Apache-2.0 weights with no released corpus or training pipeline; the tech report was still \"coming soon\" on the card at read time. Verified 2026-09-01 via the Seed-OSS-36B-Instruct card and the ByteDance-Seed/seed-oss repository."
+        },
+        {
+          "slug": "comma",
+          "product": "Comma v0.1",
+          "org_slug": "eleutherai",
+          "org": "EleutherAI",
+          "type": "model",
+          "description": "A 7B base model from the EleutherAI-led Common Pile collaboration, trained on 2 trillion tokens drawn entirely from the Common Pile v0.1, an 8TB corpus of public domain and openly licensed text. It exists to test whether competitive models can be trained without unlicensed data, and performs comparably to budget-matched models like Llama 2 7B.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0 safetensors, ungated (comma-v0.1-2t, -1t));data:open(comma_v0.1_training_dataset released ungated on HF; Common Pile v0.1 corpus public (8TB, openly licensed text));code:open(data pipeline in r-three/common-pile (MIT); training on facebookresearch/lingua (BSD-3-Clause) with the exact configs and metrics published in comma-v0.1-2t-checkpoints);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "The full stack is public: Apache-2.0 weights, the exact training dataset released ungated on the Hub, the data collection and processing pipeline in an MIT repository, and the training run reproducible from the published lingua config (open BSD-3-Clause framework) — the Apertus shape, where a third-party open framework plus published configs and reconstruction/processing code satisfies code:open. That is the {data: open, code: open, license_tier: osi} rung: 5, open_source, the fully open bucket. Checkpoints are not claimed: the checkpoints repo publishes configs and training metrics rather than intermediate weights, and the dimension is optional. One honest caveat carried from the card: the team cannot guarantee zero unlicensed text due to license laundering upstream, which is a provenance caveat about the corpus, not a restriction on what ships.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/common-pile/comma-v0.1-2t",
+                "shows": "`gated: false`, cardData.license `apache-2.0`, safetensors shards listed, datasets: [common-pile/comma_v0.1_training_dataset]; 381 downloads in the trailing 30 days.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0172fc1c7baefdbdb5e94370e22102522fc92c8b9c8a3edd1f6ab0ec4d5c3ddf",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md",
+                "shows": "Card: \"trained on 2 trillion tokens from the Comma v0.1 dataset, comprising of openly licensed text from the Common Pile\"; \"Training was performed using lingua on 512 AMD MI300A GPUs. Hyperparameters can be found in our lingua config file\" linking comma-v0.1-2t-checkpoints/blob/main/config.yaml; benchmark table vs OLMo Twin / Llama 2 / DeepSeekLLM; the license-laundering caveat.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/common-pile/comma_v0.1_training_dataset",
+                "shows": "`gated: false`, `private: false`, 12,338 downloads in the trailing 30 days — the exact training mixture is published and ungated.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cd6557643199c7bd0aca0b84275cbb7b71fe0a393c7335be44a3a363bd6d9804",
+                "establishes": [
+                  "data"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/r-three/common-pile",
+                "shows": "`license: MIT`, description \"Code for collecting, processing, and preparing datasets for the Common Pile\" — the data pipeline end of code:open.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "1ff17c64993cdf030c96a072962937ee1a0fcf0742cddd35d85a4ccb9ddeafb3",
+                "establishes": [
+                  "code",
+                  "data"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/facebookresearch/lingua",
+                "shows": "`license: BSD-3-Clause`, description \"Meta Lingua: a lean, efficient, and easy-to-hack codebase to research LLMs\" — the training framework the card names is itself open.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9403be91117fc0160fc5d8609f38c7df80172fc4e2e5f53c63d4fd8679ad7a89",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/common-pile/comma-v0.1-2t-checkpoints",
+                "shows": "Ungated repo whose files are config.yaml, config.hq_cd.yaml, metrics.jsonl, metrics.hq_cd.jsonl — the published training configs and run metrics; configs and logs rather than intermediate weights, which is why checkpoints is not claimed.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d07c360d38b8ccf776d262a354577d27eee1a5a998fda6978fa88808474f58a5",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/abs/2506.05209",
+                "shows": "The Common Pile v0.1 paper: \"An 8TB Dataset of Public Domain and Openly Licensed Text\" (Kandpal, Lester, Raffel et al., with EleutherAI authors), documenting corpus construction and the Comma training runs.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "41d20ef4e5f0ec3550b2c46f9b6b1cba3200cb3ad182c50d8770c28f7b3f9006",
+                "establishes": [
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "511 downloads in the trailing 30 days across the two declared checkpoints (comma-v0.1-2t 381; comma-v0.1-1t 130), which bands at level 1 (<10K). A research artifact, not a production model — the training dataset itself sees more pulls (12,338) than the weights.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/common-pile/comma-v0.1-2t",
+                "shows": "381 downloads in the trailing 30 days for common-pile/comma-v0.1-2t",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0172fc1c7baefdbdb5e94370e22102522fc92c8b9c8a3edd1f6ab0ec4d5c3ddf"
+              },
+              {
+                "url": "https://huggingface.co/api/models/common-pile/comma-v0.1-1t",
+                "shows": "130 downloads in the trailing 30 days for common-pile/comma-v0.1-1t",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "01c676483037a8c1bcdeda38f5dce7312d6e075de2f518cfa073ba0443822ba8"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "benchmark",
+            "basis_detail": "pretraining suite (card table vs budget-matched peers)",
+            "value": "Comma v0.1-2T 11-task average 57.4 (ARC/MMLU/BoolQ/HellaSwag/HumanEval/MBPP...), above OLMo Twin (51.6) and Llama 2 7B (55.8), below DeepSeekLLM 7B (58.8) — parity with budget-matched 2023-era 7B models trained on unlicensed data.",
+            "confidence": "high",
+            "note": "The finding, stated plainly: openness is not the blocker here, capability is. A 7B model at Llama 2 parity sits two bands below olmo's current fully-open frontier and level with the category's other small fully-open research models (lucie-7b, luciole, above pythia). The result the model exists to demonstrate — that openly licensed data alone reaches budget-matched parity — is real, and it is a 2023-era bar.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/common-pile/comma-v0.1-2t/raw/main/README.md",
+                "shows": "The card's benchmark table: Comma v0.1 2T avg 57.4 vs OLMo Twin 51.6, Llama 2 55.8, DeepSeekLLM 58.8; \"It performs comparably to budget-matched models (7 billion parameters, 2 trillion tokens) trained on unlicensed data.\"",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0cd34d6d1211c0d603e98ba2812945376584b615b08089a92d39b987f8e2ec9c"
+              }
+            ]
+          },
+          "overall_score": 1.7,
+          "tier": null,
+          "maturity": 1.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The strategic candidate for the fully-open bucket: released corpus, released data pipeline, published training configs on an open third-party framework, Apache-2.0 weights — the pythia/olmo lineage brought up to a licensing-clean corpus. Capability is the honest cost: a 2020-era-frontier 7B, two bands below olmo. The card itself cautions that license laundering means the openly-licensed guarantee is not absolute. Verified 2026-09-01 via the comma-v0.1-2t card, the training-dataset record, the r-three/common-pile repository and the checkpoints repo."
         }
       ]
     },
@@ -6897,6 +7423,258 @@
             "basis": "verified"
           },
           "version_note": "Designated a Covered Model, which carries 30-day mandatory data retention. Verified 2026-08-13 via the Fable 5 launch post, the Claude platform documentation and the Claude Fable product page."
+        },
+        {
+          "slug": "gpt-oss",
+          "product": "gpt-oss",
+          "org_slug": "openai",
+          "org": "OpenAI",
+          "type": "model",
+          "description": "OpenAI's open-weight reasoning models, released August 2025 in two sizes: gpt-oss-120b (117B parameters, 5.1B active) sized for a single 80GB GPU, and gpt-oss-20b (21B parameters, 3.6B active) for local and lower-latency use. Both are MoE models post-trained for reasoning, function calling and agentic tool use, with reasoning effort configurable at the prompt, and both require the harmony response format.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(gpt-oss-120b/20b on HF, ungated safetensors);data:closed;code:partial(inference reference implementations (PyTorch/Triton) in openai/gpt-oss; no training pipeline);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Apache-2.0 weights, downloadable ungated on the Hub in both sizes, with no released training data (the card carries no datasets key and no training-data section beyond the paper's description) and only inference reference code in the openai/gpt-oss repository. Open weights with a closed recipe is the category's center of gravity, which is what 3 records. The formula lands on the fallthrough: weights open, license osi, data closed.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/openai/gpt-oss-120b",
+                "shows": "`gated: false`, `private: false`, cardData.license `apache-2.0`, safetensors weight shards listed; 5,376,994 downloads in the trailing 30 days.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5e25b5fd706abad6dcfd7b9c0291b5e0acb4025a182568c42eb0d6487a77ee61",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/openai/gpt-oss-120b/raw/main/README.md",
+                "shows": "Raw card front matter records only `license: apache-2.0` with no datasets key; the body markets \"Permissive Apache 2.0 license\", configurable reasoning effort and fine-tunability, and carries no training-data section — the recipe is not released.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "92b0408cf5dce04e4c5e4e5f2be0361da710d3650baefd7d7519badd1c687919",
+                "establishes": [
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/openai/gpt-oss",
+                "shows": "`license: Apache-2.0`, 20,362 stars, description \"gpt-oss-120b and gpt-oss-20b are two open-weight language models by OpenAI\"; the repo is reference implementations and tooling, not a training pipeline, which holds `code` at partial.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "4a520a89f00818333b56ae52c12ac51a47168311531701ac791b05cab4a67fcc",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://arxiv.org/abs/2508.10925",
+                "shows": "The gpt-oss-120b & gpt-oss-20b Model Card paper (OpenAI, 2025). Describes training at a high level; no corpus or pipeline release accompanies it. Corroborates data:closed.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "6b543ce8edf95fd2c2644ba33f535f62d808fe07a4ce195d50ed583f1e1f4088",
+                "establishes": [
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 5,
+            "reach": ">10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "11,896,046 downloads in the trailing 30 days across the two declared artifacts (openai/gpt-oss-20b 6,519,052; openai/gpt-oss-120b 5,376,994), which bands at level 5 (>10M) on the model adoption scale. The only open-weight line on the map at level 5 alongside qwen and gemma; the 20b SKU carries slightly more reach than the 120b.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/openai/gpt-oss-20b",
+                "shows": "6,519,052 downloads in the trailing 30 days for openai/gpt-oss-20b",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "198ca2a5d8a619bd3646adb63e3f7a0cae3811d43a92c53f975bb4001701a468"
+              },
+              {
+                "url": "https://huggingface.co/api/models/openai/gpt-oss-120b",
+                "shows": "5,376,994 downloads in the trailing 30 days for openai/gpt-oss-120b",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5e25b5fd706abad6dcfd7b9c0291b5e0acb4025a182568c42eb0d6487a77ee61"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "basis_detail": "Artificial Analysis Intelligence Index",
+            "value": "gpt-oss-120b (high): AA Intelligence Index 24.1 on the current scale, where the frontier sits near 60 (Claude Opus 5 63.1, GPT-5.6 Sol 60.9) and Llama 4 Maverick reads 14.5. AA's summary calls it \"amongst the leading models in intelligence\" relative to open-weight peers of similar size.",
+            "relative_to": "deepseek-r1",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "A strong open-weight reasoner, clearly above the non-reasoning open mid-field (Llama 4 Maverick at 14.5 on the same index) and clearly below the closed frontier the category's 5s hold (gpt-5, claude-opus, gemini). That is the deepseek-r1 rung: an open-weight reasoning line competitive on math/reasoning benchmarks without leading the category, so it sits at, not above, R1's 4.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
+                  "shows": "The R1 card still carries the benchmark table the peer's value quotes (AIME 2024 79.8, MATH-500 97.3, GPQA Diamond 71.5 vs OpenAI o1) — the same open-reasoner class gpt-oss-120b's AIME/GPQA-grade results place it in, and still short of the closed frontier, so the at-spacing holds.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "4a4e068c0cd8d3110395f0d11f94a5b7b6461fb09abf1088a1bfe515dd861dc8"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://artificialanalysis.ai/models/gpt-oss-120b",
+                "shows": "AA model page for gpt-oss-120b (high): embedded index data reads artificialAnalysisIntelligenceIndex 24.1 against a leaderboard whose frontier entries read ~60 (Claude Opus 5 max 63.1, GPT-5.6 Sol 60.9, Kimi K3 59.7) and whose Llama 4 Maverick entry reads 14.5; page summary: \"amongst the leading models in intelligence, but somewhat expensive when comparing to other open weight models of similar size\".",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "6b26bbf3f6d079301bc6ee31159fa487843a203f92575093faad02068f06c832"
+              }
+            ]
+          },
+          "overall_score": 4.3,
+          "tier": "strong",
+          "maturity": 4.3,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "OpenAI's first open-weight release since GPT-2: Apache-2.0 weights with no training data and no training pipeline, which is the standard open-weights-closed-recipe rung. gpt-oss-safeguard is the safety tune built on this line and is scored separately in safeguards. Verified 2026-09-01 via the gpt-oss-120b HF model card, the openai/gpt-oss repository and the model-card paper (arXiv 2508.10925)."
+        },
+        {
+          "slug": "magistral",
+          "product": "Magistral",
+          "org_slug": "mistral-ai",
+          "org": "Mistral AI",
+          "type": "model",
+          "description": "Mistral's reasoning model line, launched June 2025 in two tiers: the open-weight Magistral Small, a 24B model distilled from Magistral Medium traces with RL on top, and the API-only Magistral Medium. The current Small 1.2 adds a vision encoder and reasons in a dedicated thinking block, and fits on a single consumer GPU once quantized.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Magistral Small 2506/2507/2509, ungated Apache-2.0 on HF);post-training-data:described(SFT from Magistral Medium traces + RLVR, described in the paper, not released);code:closed(no post-training pipeline released; inference via vllm recipes only);license:Apache-2.0(OSI)",
+            "governing_release": "magistral-small-1-2",
+            "confidence": "high",
+            "note": "Apache-2.0 weights for every distributed Small release, ungated on the Hub, with the post-training mixture described in the Magistral paper rather than released and no post-training pipeline. Magistral Medium is API-only and so sits outside the distributed SKU set that the license reading governs. Open weights, closed recipe: 3 by the fallthrough.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Magistral-Small-2509",
+                "shows": "`gated: false`, cardData.license `apache-2.0`, base_model mistralai/Mistral-Small-3.2-24B-Instruct-2506; 12,960 downloads in the trailing 30 days.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "6eaf8d8863faa651cbbaa4eecc87826a76f623eaea906e6825e475bd69d224df",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/mistralai/Magistral-Small-2509/raw/main/README.md",
+                "shows": "Card: \"Building upon Mistral Small 3.2 (2506), with added reasoning capabilities, undergoing SFT from Magistral Medium traces and RL on top\"; \"Apache 2.0 License: Open license allowing usage and modification for both commercial and non-commercial purposes\"; benchmark table for Medium 1.2 and Small 1.2. No mixture or pipeline release.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5b8e286d7f1402844bdcb76650a2e96f60c6df1b1708d4ae2f6cd0789c437ade",
+                "establishes": [
+                  "weights",
+                  "post-training-data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://mistral.ai/news/magistral",
+                "shows": "The Magistral launch post (published 2025-06-10), announcing the dual release — open-weight Small and API-only Medium — which is what scopes the license reading to the Small SKUs.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "521097a1efec04702eabfbecbff45eafcb935bdc90a1dc227521d0c05ac7be98",
+                "establishes": [
+                  "weights"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "94,181 downloads in the trailing 30 days across the three declared Small releases (Magistral-Small-2506 80,730; Magistral-Small-2509 12,960; Magistral-Small-2507 491), which bands at level 2 (10K-100K). The first release still carries most of the reach.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Magistral-Small-2506",
+                "shows": "80,730 downloads in the trailing 30 days for mistralai/Magistral-Small-2506",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "835fdd9a17439b420935ec991c6d807a2d51f2bc582612bf4f27362430ec2587"
+              },
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Magistral-Small-2509",
+                "shows": "12,960 downloads in the trailing 30 days for mistralai/Magistral-Small-2509",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "6eaf8d8863faa651cbbaa4eecc87826a76f623eaea906e6825e475bd69d224df"
+              },
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Magistral-Small-2507",
+                "shows": "491 downloads in the trailing 30 days for mistralai/Magistral-Small-2507",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "3dd6d6d1ee0faa7f5cec9326e87bda4431c777e5e8f53cade0c6fa56921e9e75"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "basis_detail": "AIME/GPQA/LiveCodeBench (card benchmark table)",
+            "value": "Magistral Small 1.2: AIME24 pass@1 86.14%, AIME25 77.34% at 24B; Magistral Medium 1.2 (the tier's API member): AIME24 91.82%, GPQA Diamond 76.26%, LiveCodeBench v5 75.00%.",
+            "relative_to": "deepseek-r1",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "A capable open-weight reasoner: the 24B Small posts AIME-class math results at the deepseek-r1 rung — competitive open reasoning, short of the closed frontier the category's 5s hold — and the tier's max includes Medium 1.2, which is stronger still but API-only. Level with deepseek-r1 at 4.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://huggingface.co/deepseek-ai/DeepSeek-R1",
+                  "shows": "The R1 card still carries the peer's recorded benchmark row (AIME 2024 79.8, GPQA Diamond 71.5, MATH-500 97.3 vs OpenAI o1); Magistral Small 1.2's card figures (AIME24 86.14, GPQA 70+) sit in the same open-reasoner class, so the at-spacing holds.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "4a4e068c0cd8d3110395f0d11f94a5b7b6461fb09abf1088a1bfe515dd861dc8"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/mistralai/Magistral-Small-2509/raw/main/README.md",
+                "shows": "Benchmark Results table: Magistral Medium 1.2 AIME24 91.82% / AIME25 83.48% / GPQA Diamond 76.26% / LiveCodeBench v5 75.00%; Magistral Small 1.2 AIME24 86.14% / AIME25 77.34%.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5b8e286d7f1402844bdcb76650a2e96f60c6df1b1708d4ae2f6cd0789c437ade"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Mistral's reasoning line beside devstral (coding) and codestral (completion) on the map. Openness is read on the distributed SKU, Magistral Small, since Medium is API-only; the RL pipeline is described in the Magistral paper but not released. Verified 2026-09-01 via the Magistral-Small-2509 card and the Magistral launch post."
         }
       ]
     },
@@ -10053,6 +10831,791 @@
             "basis": "verified"
           },
           "version_note": "The GitHub API reports NOASSERTION because the BSD-3-Clause header names eight copyright holders. Verified 2026-08-31 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "mlx-vlm",
+          "product": "MLX-VLM",
+          "org_slug": "blaizzy",
+          "org": "Blaizzy (Prince Canuma)",
+          "type": "software",
+          "description": "MLX-VLM runs vision-language and omni models locally on Apple silicon using MLX, taking image, audio and video inputs alongside text. It ships a CLI and a FastAPI server with continuous batching, automatic prefix caching, KV-cache quantization and speculative decoding, and converts and quantizes Hugging Face models for local use. Fine-tuning with LoRA and QLoRA is included but the package is inference-first.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;core-gated:ungated(no enterprise or paid tier in the repository or README; the project sells nothing)",
+            "confidence": "high",
+            "note": "The LICENSE body is the stock MIT text, \"Copyright (c) 2025 Prince Canuma\", read in full rather than taken from the API label. The repository is public and unarchived and is the package itself. Nothing in the README or the repo offers a hosted, paid or enterprise build, so the core reads as ungated.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/LICENSE",
+                "shows": "LICENSE body, read in full: stock MIT text, \"Copyright (c) 2025 Prince Canuma\", no appended condition.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f74c448746be3376e27dee43e2be9ec9d55f4820cd7466c603a6c7d1fd2d25b8",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/Blaizzy/mlx-vlm",
+                "shows": "Repo metadata for Blaizzy/mlx-vlm - archived false, license MIT, 5,454 stars, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "12260b0deef9466c8991271cc0fa2fa3375908e46b4622560126b747d35cb4bc",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/README.md",
+                "shows": "README, read for a paid tier or gated build (none found) and for the product's shape: \"MLX-VLM is a package for inference and fine-tuning of Vision Language Models (VLMs) and Omni Models ... on your Mac using MLX\"; FastAPI server, continuous batching, automatic prefix caching, KV cache quantization, speculative decoding, distributed inference; fine-tuning is one late section.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f5450692c4c0bba1353b824fb92533ed41466d08c568aa4fc3c586ee0d15cd29",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI mlx-vlm drew 777,221 downloads in the trailing 30 days, banding at level 3 (100K-1M) on the software scale. The package backlinks to Blaizzy/mlx-vlm.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/mlx-vlm/recent",
+                "shows": "\"last_month\":777221",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "4d46ea197d589921743350e5e8a0df309e757010a17300ebb6eb3df1ab12a66f"
+              },
+              {
+                "url": "https://pypi.org/pypi/mlx-vlm/json",
+                "shows": "project_urls Homepage/Repository = https://github.com/Blaizzy/mlx-vlm; version 0.6.17; summary names inference and fine-tuning of VLMs on Mac using MLX.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "16799b4f305312aff75b4e36b03eed5ceea499bb4f9d72ce41335c31cfd021eb"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Local VLM/omni-model serving on Apple silicon: FastAPI server with continuous batching, automatic prefix caching, KV-cache quantization, speculative decoding (DFlash/DSpark), distributed inference; single hardware family rather than multi-accelerator.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor, level with uzu and litert-lm, the other single-target local engines: it serves one hardware family and does not carry the multi-node, multi-accelerator parallelism surface the bands above are placed on. Its multimodal input breadth (image, audio, video) is the widest of the local engines here.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README feature list, re-read today: PagedAttention, continuous batching, tensor/pipeline/data/expert parallelism, speculative decoding, OpenAI-compatible server, \"200+ model architectures\" — still the multi-accelerator, multi-node surface this product's two_below spacing is judged against. Digest identical to the one vllm's capability axis recorded on 2026-08-31.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/README.md",
+                "shows": "README sections: Server (FastAPI), Continuous Batching, Automatic Prefix Caching (APC), KV Cache Quantization, Speculative Decoding, Distributed Inference, Fine-tuning.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f5450692c4c0bba1353b824fb92533ed41466d08c568aa4fc3c586ee0d15cd29"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Reached Round 1 as a finetuning_code candidate and was refiled here per ledger #431; the README is inference-first by a wide margin. Verified 2026-09-01 via GitHub, the LICENSE body, the repository README and the PyPI project JSON."
+        },
+        {
+          "slug": "mlx-lm",
+          "product": "MLX LM",
+          "org_slug": "apple",
+          "org": "Apple",
+          "type": "software",
+          "description": "MLX LM generates text with large language models on Apple silicon using MLX, pulling any of thousands of compatible models from the Hugging Face Hub. It ships CLI commands for generation, chat, a server and quantized model conversion, with prompt caching, a rotating KV cache and distributed inference and fine-tuning through mx.distributed. Apple's ml-explore organization maintains it as the LM layer split out of the core mlx repo.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;core-gated:ungated(no enterprise or paid tier; the published repo is the whole package)",
+            "confidence": "high",
+            "note": "The LICENSE body is the stock MIT text, \"Copyright (c) 2023 Apple Inc.\", read in full. The repository is public and unarchived and builds the published package; nothing in the README names a paid tier, hosted build or withheld component, so the core reads as ungated.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/main/LICENSE",
+                "shows": "LICENSE body, read in full: stock MIT text, \"Copyright (c) 2023 Apple Inc.\", no appended condition.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ccfab7ccb2ea306f71531c8ca77bb55507606cd90768b1e32b8b52ab5b48cf01",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ml-explore/mlx-lm",
+                "shows": "Repo metadata for ml-explore/mlx-lm - archived false, license MIT, 6,853 stars, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "823520b9171e30f03a53d5c849de2f354dcc3b397e687d6cd68b43d343648d6f",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/main/README.md",
+                "shows": "README, read for a paid tier or gated build (none found) and for the product's shape: \"MLX LM is a Python package for generating text and fine-tuning large language models on Apple silicon with MLX\"; generation/chat/server CLI, HF Hub integration, quantization and upload, distributed inference and fine-tuning with mx.distributed.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "625b4478800ad2fd5d393792f7ca8d4006be9c95b725cc239a9e67b7aa891875",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI mlx-lm drew 1,124,056 downloads in the trailing 30 days, banding at level 4 (1M-10M). The package backlinks to ml-explore/mlx-lm. conda-forge distribution exists and is uncounted, so the figure is a floor on one channel of two; it does not change the band's direction.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/mlx-lm/recent",
+                "shows": "\"last_month\":1124056",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "03e01116ade545737089158340e50956860bec80ceeaede180c4d621bb88efb7"
+              },
+              {
+                "url": "https://pypi.org/pypi/mlx-lm/json",
+                "shows": "home_page = https://github.com/ml-explore/mlx-lm; version 0.31.3; summary \"LLMs with MLX and the Hugging Face Hub\".",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "914610c4167442d24a085857067b22f274663c756efed19372de7b80e62800fb"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "LM generation and serving on Apple silicon: generation/chat/server CLI, prompt caching, rotating KV cache, configurable prefill, quantized conversion to the Hub, distributed inference and fine-tuning via mx.distributed; single hardware family rather than multi-accelerator.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor, level with uzu, llamafile and the other single-target local engines: it serves one hardware family and carries none of the datacenter parallelism or disaggregation surface the 4s and 5s here are placed on. Within the Apple-silicon niche it is the reference LM runtime, which the adoption axis, not this one, credits.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README feature list, re-read today: PagedAttention, continuous batching, multi-form parallelism, speculative decoding, OpenAI-compatible server, \"200+ model architectures\" — the spacing still holds. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ml-explore/mlx-lm/main/README.md",
+                "shows": "README feature list: HF Hub integration, quantization and upload, LoRA and full fine-tuning, distributed inference and fine-tuning with mx.distributed, prompt caching, rotating fixed-size KV cache, prefill step size, mlx_lm.server.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "625b4478800ad2fd5d393792f7ca8d4006be9c95b725cc239a9e67b7aa891875"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-01 via GitHub, the LICENSE body, the repository README, the PyPI project JSON and pypistats."
+        },
+        {
+          "slug": "dynamo",
+          "product": "NVIDIA Dynamo",
+          "org_slug": "nvidia",
+          "org": "NVIDIA",
+          "type": "software",
+          "description": "Dynamo is NVIDIA's datacenter-scale inference serving stack, the orchestration layer that turns clusters running vLLM, SGLang or TensorRT-LLM into one coordinated system. It disaggregates prefill and decode into independently scalable pools, routes requests by KV cache overlap, offloads KV blocks across GPU, CPU, SSD and remote storage, and autoscales against latency SLAs. It is built in Rust and Python and deploys on Kubernetes.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI; LICENSE body carries a prepended NOTICE about vendored MIT test data, terms unmodified);source:public;core-gated:ungated(the published repo is the whole stack; NVIDIA's paid NIM/enterprise offerings are separate products sold beside it, which software.yaml does not count as gating)",
+            "confidence": "high",
+            "note": "The LICENSE body opens with a NOTICE that ./lib/llm/tests/data/deepseek-v3.2 files are MIT-licensed DeepSeek derivatives, states \"The rest of this codebase is licensed under the Apache License 2.0\", and then carries the full unmodified Apache-2.0 text. That NOTICE is why the GitHub API reports NOASSERTION; it adds no term. The repository is public, active and is the product; no component is behind a license key, and the README names no enterprise edition of Dynamo itself.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ai-dynamo/dynamo/main/LICENSE",
+                "shows": "LICENSE body, read in full: a NOTICE that test-data files under ./lib/llm/tests/data/deepseek-v3.2 are MIT-licensed derivatives of the DeepSeek-V3.2 repository, \"The rest of this codebase is licensed under the Apache License 2.0\", followed by the complete stock Apache-2.0 text with END OF TERMS AND CONDITIONS at the standard place and nothing appended after the appendix.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "aeeca3d74a13b91d17ab9211c407b8d94a77bf8d9e5750c467818d3066b8adcf",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ai-dynamo/dynamo",
+                "shows": "Repo metadata for ai-dynamo/dynamo - archived false, license NOASSERTION (the API could not classify the NOTICE-prefixed file), 7,938 stars, homepage https://docs.nvidia.com/dynamo/latest, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e5b701c378585a1a349ce9101452da3ce07d25d9963a5be2b617404eeec5c48e",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ai-dynamo/dynamo/main/README.md",
+                "shows": "README, SPDX header \"Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES ... SPDX-License-Identifier: Apache-2.0\"; \"The open-source, datacenter-scale inference stack\"; read for a paid tier or withheld component of Dynamo itself - none named; Apache-2.0 badge; PyPI ai-dynamo badge; NGC container catalog linked as packaging.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9f22a2fd61812ce65ca8611be11701a30b5ac5e331bbf1c2d4c3dccd0dd3a6b9",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "PyPI ai-dynamo drew 58,749 downloads in the trailing 30 days, banding at level 2 (10K-100K). The package backlinks to ai-dynamo/dynamo. Dynamo also ships as NGC container images, a channel that publishes no count here, so the band is a floor read on the countable channel - the semantic-kernel shape, with banded_quantity naming what the figure counts.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/ai-dynamo/recent",
+                "shows": "\"last_month\":58749",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "afd889d3c0bc63fa389cdbc783b707d8540dc7bfa142e456f0fa903a028a4659"
+              },
+              {
+                "url": "https://pypi.org/pypi/ai-dynamo/json",
+                "shows": "project_urls Repository = https://github.com/ai-dynamo/dynamo.git; version 1.4.2; summary \"Distributed Inference Framework\".",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "28dbeae6ec56a9cac078eb481ec080701c57448287d4d4dfcb79ff9be1fd1909"
+              }
+            ],
+            "banded_quantity": "PyPI downloads of the ai-dynamo package; the NGC container channel publishes no count and is uncounted"
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Cluster-level serving above the engines: disaggregated prefill/decode pools, KV-aware routing, multi-tier KV block manager (GPU/CPU/SSD/remote), SLA-driven planner and autoscaling, GPU-to-GPU weight streaming, multimodal and video generation workloads; it does not itself execute the model forward pass - vLLM, SGLang or TensorRT-LLM do.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor. Its serving-path surface at cluster scale (7x throughput per GPU on GB200 NVL72 reported via SemiAnalysis InferenceX, 2x TTFT via Baseten) is the widest in the category above single-engine scope, but the engine underneath is somebody else's product and Dynamo is inert without one, which is what keeps it off the anchor's band.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README, re-read today: vLLM is itself the engine - PagedAttention, continuous batching, parallelism, 200+ architectures - where Dynamo coordinates such engines; the one_below spacing is judged on that dependency. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ai-dynamo/dynamo/main/README.md",
+                "shows": "Core capabilities table: Disaggregated Prefill/Decode, KV-Aware Routing, KV Block Manager, ModelExpress weight streaming, SLA Planner, Grove gang scheduling, fault tolerance; \"it doesn't replace SGLang, TensorRT-LLM, or vLLM, it turns them into a coordinated multi-node inference system\"; key results 7x throughput/GPU (GB200 NVL72), 2x TTFT (Baseten).",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9f22a2fd61812ce65ca8611be11701a30b5ac5e331bbf1c2d4c3dccd0dd3a6b9"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "GitHub reports NOASSERTION because the LICENSE file opens with a NOTICE about DeepSeek test-data files before the full Apache-2.0 text; the body was read in full and the codebase license is Apache-2.0. Verified 2026-09-01 via GitHub, the LICENSE body, the repository README, the PyPI project JSON and pypistats."
+        },
+        {
+          "slug": "ktransformers",
+          "product": "KTransformers",
+          "org_slug": "kvcache-ai",
+          "org": "KVCache.AI",
+          "type": "software",
+          "description": "KTransformers runs very large language models on limited hardware by splitting inference between CPU and GPU, keeping routed experts in DRAM with AMX- and AVX-optimized kernels while the GPU handles the rest. It made DeepSeek-R1 671B runnable on a single 24GB GPU with 382GB of DRAM, supports NVIDIA, AMD, Intel and Ascend backends, and its kt-kernel is being integrated into SGLang. LoRA and full fine-tuning of MoE models through LLaMA-Factory sit alongside the inference path.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(research project; no enterprise directory, license key or paid build in the repo or README)",
+            "confidence": "high",
+            "note": "The LICENSE body is the byte-stock Apache-2.0 text (digest identical to the canonical text vLLM ships). The repository is public and very active, and the README describes a research project with no commercial edition, hosted tier or withheld component.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/LICENSE",
+                "shows": "LICENSE body, read in full: stock Apache License Version 2.0 text, unmodified (digest matches the canonical Apache-2.0 text).",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/kvcache-ai/ktransformers",
+                "shows": "Repo metadata for kvcache-ai/ktransformers - archived false, license Apache-2.0, 19,430 stars, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c82dc823565d6210cafbf5ff42a56fa9a8ee81b502200a8389424bd414c19886",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/README.md",
+                "shows": "README, read for a paid tier or gated component (none named): \"a research project focused on efficient inference and fine-tuning of large language models through CPU-GPU heterogeneous computing\"; kt-kernel Inference and SFT entry points; DeepSeek-R1 671B on single 24GB GPU / 382G DRAM; Ascend NPU, Intel Arc, ROCm, AMX support; SGLang integration roadmap.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f57f9e328a25da1759dc5a7d4ff888ff7eb6776aea58741adf40ddf419afd5f1",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": ">10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "19,430 GitHub stars, in the >10K band of the stars scale, which caps at level 3. A PyPI package exists and is the project's own, but at 2,223 downloads in the trailing 30 days it is a minority channel for a product installed through hardware-specific source builds, so banding on it would measure the wrong channel; it is left undeclared and the stars route wins.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/kvcache-ai/ktransformers",
+                "shows": "Repo metadata - stargazers_count = 19,430 - for kvcache-ai/ktransformers.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c82dc823565d6210cafbf5ff42a56fa9a8ee81b502200a8389424bd414c19886"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/ktransformers/recent",
+                "shows": "\"last_month\":2223 - the PyPI channel figure the note above declines to band on.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "373bf34cd7ec689fdf11e9b033ab258efdac73b237b4abde2b8f46072e662fc7"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "CPU-GPU heterogeneous inference for MoE models far larger than GPU memory: AMX/AVX expert kernels in DRAM, FP8/BF16 native precision, 3-layer GPU-CPU-disk prefix cache, multi-concurrency serving, backends for NVIDIA, AMD ROCm, Intel Arc and Ascend NPU; day-0 support cadence for frontier MoE releases (GLM-5.x, Kimi-K2.5, MiniMax-M3, DeepSeek-V4).",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor, level with lmdeploy and mistral-rs. It owns a capability the anchor does not have - serving 671B-class MoE models on a single consumer GPU by scheduling experts onto CPU - and spans four accelerator vendors, but it is not the datacenter throughput frontier and its serving path is now partly delivered through SGLang integration rather than standing alone.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README, re-read today: the multi-node parallelism and 200+ architecture breadth the one_below spacing is judged against. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/README.md",
+                "shows": "Updates timeline and capabilities: DeepSeek-R1/V3 on single 24GB GPU + 382G DRAM at 3~28x speedup; AMX-Int8/BF16 kernels; FP8 GPU kernel; 3-layer prefix cache; multi-concurrency; ROCm, Intel Arc, Ascend NPU support; SGLang integration; GLM-5.3, MiniMax-M3, Kimi-K2.5 day-0 support.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f57f9e328a25da1759dc5a7d4ff888ff7eb6776aea58741adf40ddf419afd5f1"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "PyPI package verified as the project's own but not declared - minority channel, 2,223 downloads/30d against 19,430 stars; adoption reads the stars route. Verified 2026-09-01 via GitHub, the LICENSE body, the repository README, the PyPI project JSON and pypistats."
+        },
+        {
+          "slug": "llm-d",
+          "product": "llm-d",
+          "org_slug": "llm-d",
+          "org": "llm-d project",
+          "type": "software",
+          "description": "llm-d is a distributed inference serving stack for Kubernetes, built above model servers like vLLM to serve production traffic across accelerators. It routes requests on prefix cache and load signals, tiers KV cache to CPU and disk, disaggregates prefill and decode, and autoscales against latency objectives, shipping as benchmarked Helm-based well-lit paths. It is a CNCF Sandbox project founded by Red Hat, Google Cloud, IBM Research, CoreWeave and NVIDIA.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(CNCF project; founders' commercial platforms (e.g. Red Hat OpenShift AI) are separate products sold beside it, which software.yaml does not count as gating)",
+            "confidence": "high",
+            "note": "The LICENSE body is the byte-stock Apache-2.0 text. The repository is public and active, the guides and Helm charts are in-tree, and no component sits behind a license key or enterprise edition; the vendors' paid platforms that bundle llm-d are separate products, the langchain shape.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/llm-d/llm-d/main/LICENSE",
+                "shows": "LICENSE body, read in full: stock Apache License Version 2.0 text, unmodified (digest matches the canonical Apache-2.0 text).",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/llm-d/llm-d",
+                "shows": "Repo metadata for llm-d/llm-d - archived false, license Apache-2.0, 4,375 stars, homepage https://www.llm-d.ai, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "019c96139e229347eb159fb5cdfda5568b6f7620ea5b30ef06f4f9b0e945cd35",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/llm-d/llm-d/main/README.md",
+                "shows": "README, read for a paid tier or withheld component (none named): \"a high-performance distributed inference serving stack optimized for production deployments on Kubernetes\"; CNCF Sandbox, founded by Red Hat, Google Cloud, IBM Research, CoreWeave, NVIDIA; intelligent routing, tiered KV cache, prefill/decode disaggregation, wide expert-parallelism, SLO-aware autoscaling, batch APIs.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "4,375 GitHub stars, in the 1K-10K band of the stars scale. The product ships through container images and Helm charts, channels that publish no count the pipeline can read, so stars are the last honest route; production deployments named in the README (Tesla/Red Hat, AWS, Oracle, Google benchmarks) indicate standing the star count understates, and raising the level on them would need its own evidenced reported_traction judgment, which this packet does not make.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/llm-d/llm-d",
+                "shows": "Repo metadata - stargazers_count = 4,375 - for llm-d/llm-d.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "019c96139e229347eb159fb5cdfda5568b6f7620ea5b30ef06f4f9b0e945cd35"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Kubernetes-native serving above the engines: prefix-cache- and load-aware routing with predicted-latency scheduling, hierarchical KV offload to CPU/disk, prefill/decode disaggregation, wide expert-parallelism (50k tok/s on a 16x16 B200 topology), SLO-aware autoscaling and batch APIs; validated on NVIDIA, AMD MI300X, Intel XPU and Google TPU. The engine underneath is vLLM or SGLang, not its own.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor, level with dynamo, which is the same architectural shape: a serving stack whose forward pass belongs to somebody else's engine. Its cross-accelerator production benchmarks are the widest validation surface of the orchestration entrants, but without an engine of its own it does not reach the anchor's band.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README, re-read today: vLLM is the engine llm-d itself orchestrates (\"Model servers like vLLM ... handle efficiently running large language models on accelerators\" - llm-d README); the one_below spacing is judged on that dependency. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/llm-d/llm-d/main/README.md",
+                "shows": "Performance highlights: 3x throughput / 2x TTFT with prefix-cache-aware routing (Llama 3.1 70B, 4x MI300X, Tesla/Red Hat); 70% higher tokens/sec with P/D disaggregation vs standard vLLM (AWS B200); 50k tok/s wide-EP on 16x16 B200; 13.9x with hierarchical KV offload; four core themes - routing, KV management, serving large models, operational excellence.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Category call settled this pass: inference_code rather than deployment - it is the serving path above engines, the same shape as dynamo, not workload hosting. Verified 2026-09-01 via GitHub, the LICENSE body and the repository README."
+        },
+        {
+          "slug": "lemonade",
+          "product": "Lemonade",
+          "org_slug": "lemonade-sdk",
+          "org": "Lemonade SDK",
+          "type": "software",
+          "description": "Lemonade is a local AI server that runs chat, coding, speech and image models on the user's own NPU and GPU, exposing OpenAI-, Anthropic- and Ollama-compatible APIs that hundreds of apps can connect to. It installs on Windows, macOS and Linux with GGUF and ONNX backends, and an embeddable binary packages the same runtime into other applications. The community builds it with optimizations from AMD engineers for Ryzen AI, Radeon and Strix Halo PCs.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI; LICENSE appends third-party MIT/attribution notices for vendored components after the unmodified text);source:public;core-gated:ungated(free local server; no paid tier, enterprise edition or license key anywhere in the repo or README)",
+            "confidence": "high",
+            "note": "The LICENSE body carries the full unmodified Apache-2.0 text (\"Copyright 2026 Lemonade Community\" in the appendix slot), followed after END OF TERMS AND CONDITIONS by attribution blocks for vendored components - Lucide icons, amdxdna_accel.h, llama.cpp, Ollama, TurnkeyML (Groq copyright), aixlog - each under its own permissive license. Those are notices about bundled third-party code, not conditions on Lemonade, so the governing license reads as clean Apache-2.0. The product is entirely free and self-hosted; nothing is withheld.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/LICENSE",
+                "shows": "LICENSE body, read in full: unmodified Apache-2.0 terms ending at END OF TERMS AND CONDITIONS, \"Copyright 2026 Lemonade Community\", then vendored-component attribution sections (Lucide, amdxdna_accel.h, llama.cpp, Ollama, TurnkeyML, aixlog), each MIT-family, with no added condition on the product itself.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "83f746cbc5a64bc4f93a0f20304d1a50403bdd6e7f5e7bf739854caf6d3018a4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/lemonade-sdk/lemonade",
+                "shows": "Repo metadata for lemonade-sdk/lemonade - archived false, license Apache-2.0, 5,560 stars, homepage https://lemonade-server.ai/, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "fa6555f1fac653dd4a012c287e97caf6046cce5f92a7a0f4c6c76fdedfb4d402",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/README.md",
+                "shows": "README, read for a paid tier (none - \"100% free and private\"): local AI server with OpenAI/Anthropic/Ollama APIs, Lemonade Server and Embeddable Lemonade flavors, Windows/macOS/Linux/Docker/Snap/PPA distribution, chat, image gen, speech gen and transcription models on NPU and GPU.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9f3647d6b4d7c4d577ac603c8126b88459fa4ba3d80c7ab9de485af04b589716",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "5,560 GitHub stars, in the 1K-10K band of the stars scale. The product ships as OS installers, Docker images, a Snap and a PPA - channels the pipeline cannot count - and the PyPI package the census named has been removed (404 this session), so stars are the only measurable route.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/lemonade-sdk/lemonade",
+                "shows": "Repo metadata - stargazers_count = 5,560 - for lemonade-sdk/lemonade.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "fa6555f1fac653dd4a012c287e97caf6046cce5f92a7a0f4c6c76fdedfb4d402"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Local multi-modal serving on consumer NPU/GPU: OpenAI-, Anthropic- and Ollama-compatible APIs, GGUF (llama.cpp) and ONNX/OGA backends, chat, image generation, speech generation and transcription, embeddable binary, Ryzen AI NPU optimization; single-node consumer hardware rather than datacenter parallelism.",
+            "relative_to": "vllm",
+            "relation": "two_below",
+            "confidence": "medium",
+            "note": "Two bands below the vllm anchor, level with llamafile and uzu among the local engines. Its NPU coverage and multi-modality are broader than the other single-node locals, but the serving engines underneath are llama.cpp and ONNX Runtime and it carries no distributed or datacenter surface.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README, re-read today: the datacenter parallelism and architecture breadth the two_below spacing is judged against. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/README.md",
+                "shows": "Feature surface: lemonade run for LLMs (Gemma GGUF), SDXL-Turbo image gen, kokoro speech gen, Whisper transcription; OpenAI/Anthropic/Ollama-compatible server; embeddable binary; NPU/GPU auto-optimization; marketplace of connected apps.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9f3647d6b4d7c4d577ac603c8126b88459fa4ba3d80c7ab9de485af04b589716"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The PyPI package lemonade-sdk named by the census no longer exists (404 this session), so no package artifact is declared and adoption reads the stars route. Verified 2026-09-01 via GitHub, the LICENSE body, the repository README and the PyPI JSON endpoint's 404."
+        },
+        {
+          "slug": "chitu",
+          "product": "Chitu",
+          "org_slug": "thu-pacman",
+          "org": "Tsinghua PACMAN Lab",
+          "type": "software",
+          "description": "Chitu is a production-grade inference engine from Tsinghua's PACMAN group focused on running large models across many kinds of hardware, from pure CPU through single GPU to multi-node clusters with prefill-decode separation. It serves DeepSeek, Qwen, GLM and Kimi models on NVIDIA GPUs and on Chinese accelerators including Ascend 910B, Muxi, Hygon and Moore Threads, with FP8 and FP4 weights converted online to run on hardware without native support. A single chitu.run executable launches multi-node and multi-instance deployments.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI; copyright line filled \"Qingcheng.AI\", terms unmodified);source:public;core-gated:ungated(paid professional services offered by email are support beside the published engine, not a withheld component; third-party code carries SPDX notices under LICENSES/ and third_party/)",
+            "confidence": "high",
+            "note": "The LICENSE body is the full Apache-2.0 text with only the appendix copyright slot filled (\"Copyright Qingcheng.AI\") - a one-line diff against the canonical text, no appended condition. The repository is public and active and is the engine itself; the README's commercial line offers professional technical service by email, which is selling support, not gating a core. Vendored third-party code is declared SPDX-style under LICENSES/ and third_party/, the REUSE-adjacent shape.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/thu-pacman/chitu/public-main/LICENSE",
+                "shows": "LICENSE body, read in full and diffed against the canonical Apache-2.0 text: identical except the appendix copyright line reads \"Copyright Qingcheng.AI\". No appended terms.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9537a03b8973fd908e99cb44d73abf2d4874af77ce60c0ad0c0aea94c06f7126",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/thu-pacman/chitu",
+                "shows": "Repo metadata for thu-pacman/chitu - archived false, license Apache-2.0, 2,997 stars, default branch public-main, pushed 2026-09-01.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cabbc58c072f7b638dfe86a9f74adf5928a0ec40ac4456583c87bb36ae955e63",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/thu-pacman/chitu/public-main/README.md",
+                "shows": "README (Chinese), read for a paid tier (professional services by email only - no gated build): \"生产级大模型推理引擎\" (production-grade LLM inference engine); milestones - DeepSeek-R1 671B single-GPU via CPU+GPU heterogeneous inference, FP4-to-FP8/BF16 online conversion, Ascend 910B native support, Moore Threads adaptation, chitu.run single-file multi-node launcher; licence section states Apache-2.0 with SPDX-marked third-party snippets under LICENSES/ and submodules under third_party/.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "2b6351d6e585163a1171f81f20c4058d53e3f25e1cb3832b23bca1986447c8ef",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "2,997 GitHub stars, in the 1K-10K band of the stars scale. Distribution is the repo and its release executables, with no package registry channel to count. Acknowledged production use in Chinese enterprise deployments (China Telecom and others credited in the README) is standing the star count may understate; raising the level would need its own evidenced judgment.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/thu-pacman/chitu",
+                "shows": "Repo metadata - stargazers_count = 2,997 - for thu-pacman/chitu.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "cabbc58c072f7b638dfe86a9f74adf5928a0ec40ac4456583c87bb36ae955e63"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix, banded against the vllm anchor",
+            "value": "Production engine spanning pure-CPU, single-GPU and multi-node cluster deployment with prefill-decode separation; CPU+GPU heterogeneous inference running DeepSeek-R1 671B on one GPU; FP4/FP8 online-conversion kernels; native backends for NVIDIA plus Ascend 910B, Muxi, Hygon and Moore Threads; single-file chitu.run launcher for multi-node, multi-instance topologies.",
+            "relative_to": "vllm",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "One band below the vllm anchor, level with xllm, rtp-llm and fastdeploy, the other production engines whose distinguishing surface is domestic-accelerator breadth. Its hardware span (five vendors plus pure CPU) and PD-separated cluster serving clear the two_below locals; it is not the community-wide throughput frontier the anchor and sglang occupy.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/vllm-project/vllm/main/README.md",
+                  "shows": "The anchor's README, re-read today: the parallelism forms and 200+ architecture breadth the one_below spacing is judged against. Digest identical to the anchor's recorded 2026-08-31 source.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/thu-pacman/chitu/public-main/README.md",
+                "shows": "Milestones and positioning: v0.6.0 chitu.run single-file multi-node/multi-instance/PD- separation launcher; v0.5.x cluster performance and Moore Threads support; v0.4.0 Ascend/NVIDIA/Muxi/Hygon adaptation serving DeepSeek/Qwen/GLM/Kimi; v0.2.2 single-GPU DeepSeek-R1 671B via CPU+GPU heterogeneous inference; v0.3.0 FP4-to-FP8/BF16 kernels.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "2b6351d6e585163a1171f81f20c4058d53e3f25e1cb3832b23bca1986447c8ef"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Default branch is public-main. README is Chinese-primary with an English copy under docs/en/. Verified 2026-09-01 via GitHub, the LICENSE body and the repository README."
         }
       ]
     },
@@ -16456,6 +18019,554 @@
             "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "A fixed default scenario pack, rubric, auditor, judge and sampling configuration make reruns comparable. Verified 2026-08-13 via the simpleaudit repository README and its LICENSE."
+        },
+        {
+          "slug": "lmms-eval",
+          "product": "lmms-eval",
+          "org_slug": "lmms-lab",
+          "org": "LMMs-Lab",
+          "type": "software",
+          "description": "Multimodal counterpart to lm-evaluation-harness, evaluating vision, video and audio language models across 100+ tasks and 30+ model families through the same config-driven CLI. EleutherAI's harness README points multimodal users here, and recent releases added an HTTP eval server, agentic task evaluation and audio benchmarks.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0/MIT(OSI; split license: MIT for the pipeline code inherited from lm-evaluation-harness, Apache-2.0 for the added code in lmms_eval/tasks and lmms_eval/models. Both parts OSI, so the most restrictive part is still osi.);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "GitHub's classifier reports NOASSERTION because the LICENSE file is a composite, but the body read this session is two stock OSI texts with a scope note each: \"For the main pipeline structure-related code, we maintain the original license provided with lm-evaluation-harness, which is the MIT License\", then \"For the multimodal models and datasets that we have added (defined as code in the lmms_eval/tasks and lmms_eval/models folders), we apply the Apache License.\" Both parts resolve to the osi tier — the rubric already names Apache-2.0/MIT verbatim — so the compound governs at osi. Fully public, and the 23KB README documents no pricing, enterprise edition, paid tier or license key.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/EvolvingLMMs-Lab/lmms-eval/license",
+                "shows": "LICENSE body is a split license: the MIT text (Copyright (c) 2025 LMMs-Lab) for the harness-derived pipeline code, then the Apache-2.0 notice for code in lmms_eval/tasks and lmms_eval/models. GitHub reports spdx_id NOASSERTION for the composite; both component licenses are OSI.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "418e737b4f5850125070f74441f327a0d4139cc81476683ac0cee0146cba4049",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/EvolvingLMMs-Lab/lmms-eval/main/README.md",
+                "shows": "README documents installing editable from a clone or from git and running the harness locally against local weights or APIs; all tasks ship in lmms_eval/tasks and models in lmms_eval/models. Nothing in the 23KB mentions pricing, a paid tier, an enterprise edition or a license key.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "116d24b3e87aa9a10c565569da9400a9a5f90ed6af0c797fadb70370178c3eaa",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "reported_traction",
+            "banded_quantity": "GitHub stars (4,386) and standing as lm-evaluation-harness's endorsed multimodal counterpart, not a download count",
+            "confidence": "medium",
+            "note": "The de-facto standard multimodal eval harness: lm-evaluation-harness's own README directs multimodal evaluation to it by name, model teams cite it for reported LMM numbers, and the repo carries 4,386 stars with releases through v0.7 (Feb 2026). The PyPI package (lmms-eval, backlink-verified) is genuinely this project but is not the measure used: it sees 7,115 downloads a month against a project whose documented install path is a git clone, so banding on it would read a minority channel rather than the project. Same shape and same remedy as opencompass in this category.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/EvolvingLMMs-Lab/lmms-eval",
+                "shows": "stargazers_count = 4,386, forks 648, pushed_at 2026-09-01, active issue flow",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e997d0d0b2d50718495f152b9e1c69df28fbddf642794cf5df49e613d8832ba3"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md",
+                "shows": "EleutherAI's README suggests users \"check out lmms-eval, a wonderful project originally forking off of the lm-evaluation-harness, for a broader range of multimodal tasks, models, and features\" — third-party standing from the category anchor itself.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d24d6ea00c246b9145e5ef6709eed56fbcf4aa4f5863fcb8a74a19b7b8d6eb98"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/lmms-eval/recent",
+                "shows": "last_month = 7,115 downloads of the lmms-eval package — recorded to document why the registry channel was NOT banded on, not as the level's basis",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "862bd6289c1f6f294c08398b56df1e7f6c5a3bed5b44bbf2b447662d02896394"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "100+ multimodal tasks across image, video and audio with 30+ model families; standalone HTTP eval server (~7.5x throughput over v0.5); agentic task evaluation (generate_until_agentic); statistically grounded results (CI, paired t-test); async serving and video I/O optimization",
+            "relative_to": "lm-evaluation-harness",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "The widest multimodal task and model coverage in the category, and the harness the category anchor's own README recommends for multimodal work — but scoped to LMMs rather than being the cross-domain standardization reference lm-evaluation-harness is, and without the leaderboard-backend role. Sits beside opencompass at 4.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md",
+                  "shows": "\"Over 60 standard academic benchmarks for LLMs, with hundreds of subtasks and variants implemented\" still reads, with the full backend spread (HF, vLLM, SGLang, NeMo, APIs); multimodal support remains a prototype the README itself routes to lmms-eval — the spacing (broadest coverage and standardization reference above, its multimodal fork one below) still holds.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "d24d6ea00c246b9145e5ef6709eed56fbcf4aa4f5863fcb8a74a19b7b8d6eb98"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/EvolvingLMMs-Lab/lmms-eval/main/README.md",
+                "shows": "100+ tasks and 30+ models linked from the header; v0.7 release notes list agentic task evaluation, HTTP eval server, audio expansion, CI and paired t-test support",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "116d24b3e87aa9a10c565569da9400a9a5f90ed6af0c797fadb70370178c3eaa"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The PyPI package exists and is genuine but is not declared as an artifact - clone install is the documented primary channel; see the adoption note. GitHub's classifier reports NOASSERTION because the LICENSE is a split MIT plus Apache-2.0, both OSI. Verified 2026-09-01 via the EvolvingLMMs-Lab/lmms-eval repository, its license endpoint, its README and the PyPI JSON backlink."
+        },
+        {
+          "slug": "evalscope",
+          "product": "EvalScope",
+          "org_slug": "modelscope-alibaba",
+          "org": "ModelScope (Alibaba)",
+          "type": "software",
+          "description": "One-stop evaluation framework from the ModelScope community that runs LLM, VLM, embedding and AIGC benchmarks and inference stress tests from a single CLI. It drives OpenCompass and VLMEvalKit as pluggable backends and adds the performance benchmarking side that plain accuracy harnesses leave out.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 and fully public. The LICENSE body is the stock Apache-2.0 text under \"Copyright 2022-2023 Alibaba ModelScope\" with no appended terms. `pip install 'evalscope[service]'` in the README is an ordinary optional-dependency extra, not a paid gate; no pricing, enterprise edition or license key appears in the 28KB README.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/modelscope/evalscope/license",
+                "shows": "GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text (Copyright 2022-2023 Alibaba ModelScope) with no appended terms",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "408cec53ca230bf8a8c31d32f954354475e003e30dd9fe6b351033e958412ffa",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/modelscope/evalscope/main/README.md",
+                "shows": "README installs with `pip install evalscope` and runs evaluation and perf stress tests locally; backends (OpenCompass, VLMEvalKit, RAGEval) ship as extras. No pricing, paid tier, enterprise edition or license key in the README.",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "8e92617f71b8f21798e85eb6d76928e0f7473638dffb386abf4dece5cc5101e4",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The evalscope package draws 75,444 PyPI downloads in the trailing 30 days, which bands at level 2 (10K-100K) on the software scale. Unlike opencompass and lmms-eval, `pip install evalscope` is the README's front-and-center install path, so the registry is the product's primary channel and the count is the instrument. Package identity backlink-verified (Homepage -> modelscope/evalscope, ModelScope team publisher).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/evalscope/recent",
+                "shows": "last_month = 75,444 downloads of the evalscope package (last_week 5,981)",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "095f70e238dc62747142585c8101e092d7e5a61ef2e59f94736d8b3af48127a4"
+              },
+              {
+                "url": "https://pypi.org/pypi/evalscope/json",
+                "shows": "project_urls.Homepage = github.com/modelscope/evalscope, author ModelScope team <contact@modelscope.cn>, version 1.11.1 uploaded 2026-08-31 — the package is the product, not a name collision",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5bd4a2df3602371c502cff2c6d63a60f96830ce9c425a8fee8314b464ea2d14b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "built-in benchmarks (MMLU, C-Eval, GSM8K and more) across LLM/VLM/embedding/ reranker/AIGC model types; inference performance stress testing and visualization; orchestrates OpenCompass, VLMEvalKit and RAGEval as evaluation backends; agent evaluation mode",
+            "relative_to": "opencompass",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Broad model-type coverage and a performance-testing side the accuracy harnesses lack, but much of its benchmark depth is delegated — OpenCompass and VLMEvalKit run as its backends — and it carries no leaderboard or standardization role of its own, so it sits one below opencompass alongside bigcodebench.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/open-compass/opencompass/main/README.md",
+                  "shows": "the peer's discriminating claims still read: \"Pre-support for 20+ HuggingFace and API models, a model evaluation scheme of 70+ datasets with about 400,000 questions\", plus the CompassRank leaderboard role — native depth EvalScope reaches by wrapping OpenCompass as a backend, which is the one-rung spacing.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "cb19a9b1f9e99bae28c13af6bdd746f5625fbc95be7cbfe8681020c25100f65d"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/modelscope/evalscope/main/README.md",
+                "shows": "key-features list — built-in benchmarks, multi-modal and multi-domain support, multi-backend integration (OpenCompass, VLMEvalKit, RAGEval), agent evaluation mode, inference stress testing",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "8e92617f71b8f21798e85eb6d76928e0f7473638dffb386abf4dece5cc5101e4"
+              }
+            ]
+          },
+          "overall_score": 2.5,
+          "tier": null,
+          "maturity": 2.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Distinct from the corpus's swift (ms-swift), the same community's training framework. Verified 2026-09-01 via the modelscope/evalscope repository, its license endpoint, its README, the PyPI JSON backlink and pypistats."
+        },
+        {
+          "slug": "vlmevalkit",
+          "product": "VLMEvalKit",
+          "org_slug": "opencompass-community",
+          "org": "OpenCompass Community",
+          "type": "software",
+          "description": "Evaluation toolkit for large vision-language models that runs 220+ models over 80+ multimodal benchmarks with one command and generation-based scoring. It produces the numbers behind the OpenVLM Leaderboard, the reference leaderboard for open multimodal models, and is installed from source rather than a package registry.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 and fully public. The LICENSE body is the stock Apache-2.0 text under \"Copyright 2023 VLMEvalKit Authors\" with no appended terms. Install is git clone + `pip install -e .`; the README documents no pricing, paid tier, enterprise edition or license key — the only commercial references are the commercial model APIs it can evaluate.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/open-compass/VLMEvalKit/license",
+                "shows": "GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text (Copyright 2023 VLMEvalKit Authors) with no appended terms",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5d7657b22ac4dc9263dd1358b858e09d1d7173d0bc91d71fb46dd23f3697083e",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md",
+                "shows": "open-source evaluation toolkit, one-command evaluation of LVLMs; all evaluation code, model configs and benchmark adapters ship in the repo; free HF leaderboards beside it; no pricing, paid tier or license key",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "reported_traction",
+            "banded_quantity": "GitHub stars (4,370) and the OpenVLM Leaderboard role, not a download count",
+            "confidence": "medium",
+            "note": "The toolkit behind the OpenVLM Leaderboard and OpenVLM Video Leaderboard (Hugging Face spaces under the opencompass org), with 4,370 stars and results published for 220+ models — the reference evaluation surface for open multimodal models, and integrated as a backend by both OpenCompass and EvalScope. No download channel exists to count: there is no package (vlmeval is the import name only, PyPI 404 this session) and the install path is a git clone, so the level rests on reported traction rather than stars alone, the same shape as opencompass's own record. Conservative alternative if the writer prefers the mechanical instrument: stars_fallback at level 2 (1K-10K stars).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/open-compass/VLMEvalKit",
+                "shows": "stargazers_count = 4,370, pushed_at 2026-08-31, description \"support 220+ LMMs, 80+ benchmarks\"",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0732ed88d98499d059a3065cd487ba730b23c60345f59c84c85df05d107c27b8"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md",
+                "shows": "header links to the OpenVLM Leaderboard and OpenVLM Video Leaderboard HF spaces and the OpenVLMRecords dataset of official evaluation records",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1"
+              },
+              {
+                "url": "https://pypi.org/simple/vlmeval/",
+                "shows": "404 — no package named vlmeval exists on PyPI, so no download channel is available to count",
+                "accessed": "2026-09-01",
+                "http_status": 404,
+                "content_sha256": "7d04f7431bbfa41a04bcc7e6b98b9de0d919756c4c671c5785c99fff45f16402"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "220+ vision-language models over 80+ multimodal benchmarks; one-command generation-based evaluation with exact-matching and LLM-based answer extraction; produces the official OpenVLM Leaderboard and OpenVLM Video Leaderboard numbers",
+            "relative_to": "opencompass",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "The multimodal peer of its own org's flagship: comparable breadth (220+ models, 80+ benchmarks against opencompass's 70+ datasets), the same leaderboard-producing role (OpenVLM against CompassRank), scoped to vision-language models rather than the cross-domain standardization reference — so at opencompass's 4, one below lm-evaluation-harness.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/open-compass/opencompass/main/README.md",
+                  "shows": "the peer's claims still read (\"70+ datasets with about 400,000 questions\", 20+ pre-supported models, CompassRank); its 2026-08-25 news line integrates VLMEvalKit as its multimodal backend — the two platforms sit at the same rung, each the reference surface for its modality.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "cb19a9b1f9e99bae28c13af6bdd746f5625fbc95be7cbfe8681020c25100f65d"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md",
+                "shows": "one-command generation-based evaluation of LVLMs; exact matching and LLM-based answer extraction; supported-benchmark and supported-model lists; official leaderboards downloadable",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1"
+              },
+              {
+                "url": "https://api.github.com/repos/open-compass/VLMEvalKit",
+                "shows": "repo description \"support 220+ LMMs, 80+ benchmarks\"",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0732ed88d98499d059a3065cd487ba730b23c60345f59c84c85df05d107c27b8"
+              }
+            ]
+          },
+          "overall_score": 3.5,
+          "tier": null,
+          "maturity": 3.5,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Kept as a separate product from opencompass: separate repo, separate scope and its own OpenVLM Leaderboard, integrated by OpenCompass as a backend. No PyPI package exists (vlmeval is the import name only; 404 on the JSON API and the simple index). Verified 2026-09-01 via the open-compass/VLMEvalKit repository, its license endpoint, its README and Quickstart."
+        },
+        {
+          "slug": "olmes",
+          "product": "OLMES",
+          "org_slug": "allen-institute-for-ai",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Ai2's evaluation system behind the OLMo and Tülu releases, built on lm-evaluation-harness with deeper task configuration, instance-level prediction logging and external results storage for faithful reproduction of published numbers. It packages the OLMES standard for evaluating base and instruction-tuned models.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 and fully public: the LICENSE body is the stock Apache-2.0 text with no appended terms, and the README documents source-only install (`pip install -e .`) and local evaluation of HF models, with no pricing, paid tier, enterprise edition or license key anywhere in it.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/allenai/olmes/license",
+                "shows": "GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text with no appended terms",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e680ffe072c23dafea1a62464e20d29cf8fe37c9bf09ed04d163a6a73b2b6253",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/allenai/olmes/main/README.md",
+                "shows": "README installs from a clone (uv sync or pip install -e .) and runs `olmes` locally against HF models; task configs and the OLMES standard ship in the repo; no pricing, paid tier or license key",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "62ef75fd8d50ac77cc62d076fb935b06702441cfa25a1726fef827eb3e0967df",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<1K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "394 GitHub stars, which bands at level 1 on the stars scale (<1K). No download channel exists — no PyPI package (olmes and oe-eval both 404 this session), install is from source — and external usage beyond Ai2's own model releases is limited, so stars are the honest instrument. The provenance (the eval standard behind OLMo and Tülu) is capability and openness signal, not adoption.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/allenai/olmes",
+                "shows": "stargazers_count = 394, forks 105, pushed_at 2026-03-24, not archived",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "4a54527d4ec6a2b3c59f792bf3ed02c243d4ddda5cbaba55f247d4ea0e990122"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "reproduces published OLMo/OLMo 2/OLMo 3/Tülu 3 eval results; deep per-task configuration variants; instance-level prediction records (logprobs); custom metrics and aggregations; external results storage; HF and vLLM backends",
+            "relative_to": "lighteval",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Reproducibility-hardened derivative of lm-evaluation-harness with unusually deep task configuration and instance-level logging, but a far narrower task and backend surface than the broad platforms — dozens of curated suites against lighteval's 1000+ tasks and wider backend spread — so one below lighteval, beside bigcodebench.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/huggingface/lighteval/main/README.md",
+                  "shows": "\"Lighteval supports 1000+ evaluation tasks across multiple domains\" with backends spanning inspect-ai, transformers, vLLM and SGLang — a task and backend surface an order wider than OLMES's curated suites, which is the one-rung spacing.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/allenai/olmes/main/README.md",
+                "shows": "reproduces OLMo/OLMo 2/Tülu 3/OLMES-paper results; deep task configurations, instance-level prediction data, custom metrics, external storage integration; built on lm-evaluation-harness",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "62ef75fd8d50ac77cc62d076fb935b06702441cfa25a1726fef827eb3e0967df"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "No PyPI package (olmes and oe-eval both 404); install is from source. Last push 2026-03-24, quiet for about five months but not archived, well inside the maintenance window; worth re-checking at the next refresh. Verified 2026-09-01 via the allenai/olmes repository, its license endpoint and its README."
+        },
+        {
+          "slug": "euroeval",
+          "product": "EuroEval",
+          "org_slug": "euroeval",
+          "org": "EuroEval",
+          "type": "software",
+          "description": "Benchmarking framework for language models across 30+ European languages, maintained at the Alexandra Institute and formerly known as ScandEval. It evaluates encoders, decoders and instruction-tuned models alike and publishes per-language leaderboards at euroeval.com.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "MIT and fully public: the LICENSE body is the stock MIT text (copyright Dan Saattrup Smart and Alexandra Instituttet A/S) with no appended terms. The package installs from PyPI, dataset-creation scripts ship in the repo, and no pricing, paid tier or license key appears in the README or on the docs site.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/EuroEval/EuroEval/license",
+                "shows": "GitHub's license endpoint reports spdx_id MIT and returns the stock MIT text (Copyright (c) 2021-2026 Dan Saattrup Smart; Copyright (c) 2022-2026 Alexandra Instituttet A/S) with no appended terms",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "4a8644ad8782eb34e414181121d9e01594e8048fd23c1c608de89141d0277d26",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/EuroEval/EuroEval/main/README.md",
+                "shows": "README documents the open framework, reproduction scripts for every evaluation dataset in src/scripts/dataset_creation, and the docs-site install path; no pricing, paid tier or license key",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e78c576c8178d374bc11feb0aad9bdfb904292ac56b02e67f05908dad31fe2c9",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The euroeval package draws 750 PyPI downloads in the trailing 30 days, banding at level 1 (<10K). The package is the documented install path and is backlink-verified. The legacy scandeval package (the project's pre-rename name) still draws 2,207 a month; summed the product stays well under 10K, so the band holds across the rename.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/euroeval/recent",
+                "shows": "last_month = 750 downloads of the euroeval package",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "3607531216e23ff40288678187bd4189412473030247801ebe9f755568e46987"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/scandeval/recent",
+                "shows": "last_month = 2,207 downloads of the legacy scandeval package — recorded so the rename's second channel is visible; the sum stays under 10K",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "683a130302239f8644b12d81add2c625d8bc5e5123e84332fe8d805ed2875a43"
+              },
+              {
+                "url": "https://pypi.org/pypi/euroeval/json",
+                "shows": "project_urls.Repository = github.com/EuroEval/EuroEval, author Dan Saattrup Smart <dan.smart@alexandra.dk>, version 18.0.0 uploaded 2026-08-14 — the package is the product",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "0b633945474edfe075403fea7d578465b3f3da29f56ad1571703a909d2011a4b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "evaluates encoders, decoders, encoder-decoders, base and instruction-tuned models across 30+ European languages; per-language public leaderboards; every evaluation dataset reproducible from scripts in the repo",
+            "relative_to": "lighteval",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "The deepest European-language coverage in the category — 30+ languages, all model classes, reproducible datasets and public leaderboards — but a single-domain harness with a narrow task surface and one primary maintainer, an order below lighteval's 1000+ tasks and backend spread, so one below lighteval beside bigcodebench and olmes.",
+            "comparison": {
+              "last_attested": "2026-09-01",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/huggingface/lighteval/main/README.md",
+                  "shows": "\"Lighteval supports 1000+ evaluation tasks across multiple domains\" with inspect-ai, transformers, vLLM and SGLang backends — the breadth EuroEval trades for per-language depth, which is the one-rung spacing.",
+                  "accessed": "2026-09-01",
+                  "http_status": 200,
+                  "content_sha256": "5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056"
+                }
+              ]
+            },
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://euroeval.com",
+                "shows": "\"the standard benchmark for evaluating language models across 30+ European languages\"; supports encoders, decoders, encoder-decoders, base and instruction-tuned models; publisher Alexandra Institute; interactive leaderboards",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "8a3a709a111bcbcfe28202d1220528bf757211e76678933012441e3f0d7c7d0f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/EuroEval/EuroEval/main/README.md",
+                "shows": "dataset reproduction scripts per language; formerly ScandEval; maintainer and docs links",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e78c576c8178d374bc11feb0aad9bdfb904292ac56b02e67f05908dad31fe2c9"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Formerly ScandEval; the legacy scandeval package still draws about 2.2K downloads a month, and even summed with euroeval's the product stays under 10K, so the rename does not move the band. Verified 2026-09-01 via the EuroEval/EuroEval repository, its license endpoint, its README, euroeval.com, the PyPI JSON backlink and pypistats."
         }
       ]
     },
@@ -16464,10 +18575,12 @@
       "arc": "Model components",
       "layer": "model_components",
       "stage": {
-        "num": 3,
-        "name": "Viable Alternatives"
+        "num": 4,
+        "name": "Competitive Open Ecosystem"
       },
-      "gaps": [],
+      "gaps": [
+        "resiliency"
+      ],
       "products": [
         {
           "slug": "humaneval",
@@ -16573,19 +18686,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "100K-1M",
+            "level": 5,
+            "reach": ">1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "960,715 Hugging Face downloads in the trailing 30 days for openai/gsm8k, which puts it in the 100K-1M band, level 4 on the dataset adoption scale. That scale tops out at >1M, an order of magnitude below the ones used for software and models, because no dataset in this corpus has ever passed 10M downloads. GSM8K is the standard grade-school math-reasoning benchmark, cited near-universally in LLM release reports.",
-            "last_verified": "2026-08-12",
+            "note": "1,167,043 Hugging Face downloads in the trailing 30 days for openai/gsm8k, above the 1M floor of the top band on the dataset adoption scale, level 5. That scale tops out at >1M, an order of magnitude below the ones used for software and models, because no dataset in this corpus has ever passed 10M downloads. GSM8K remains the standard grade-school math-reasoning benchmark, cited near-universally in LLM release reports.",
+            "last_verified": "2026-09-01",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/openai/gsm8k",
-                "shows": "960,715 downloads in the trailing 30 days for openai/gsm8k",
-                "accessed": "2026-08-12",
+                "shows": "1,167,043 downloads in the trailing 30 days for openai/gsm8k",
+                "accessed": "2026-09-01",
                 "http_status": 200,
-                "content_sha256": "20c34ca65a5f1d5aaf1bba21fbed56ce37b20da7f748f0ff5675b4a64ea51e94"
+                "content_sha256": "df6c80e76df63b397706df7aeaeec618f8d1ff17795d6465f4199e9865a1e310"
               }
             ]
           },
@@ -16606,14 +18719,14 @@
               }
             ]
           },
-          "overall_score": 4.0,
-          "tier": "strong",
-          "maturity": 4.0,
-          "mature": false,
+          "overall_score": 5.0,
+          "tier": "leading",
+          "maturity": 5.0,
+          "mature": true,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-01"
           },
           "version_note": "Verified 2026-08-13 via the openai/gsm8k dataset card on Hugging Face."
         },
@@ -18753,6 +20866,534 @@
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-13 via the ministere-culture/comparia-votes dataset card on Hugging Face."
+        },
+        {
+          "slug": "tau-bench",
+          "product": "τ-Bench",
+          "org_slug": "sierra",
+          "org": "Sierra",
+          "type": "dataset",
+          "description": "Benchmark for tool-using conversational agents that must coordinate with a simulated human user under domain policy, across airline, retail, telecom and banking-knowledge domains. Tasks, domain data and the evaluation harness ship together in the repository, with a public leaderboard at taubench.com. The current release, τ³-bench, adds voice and knowledge-retrieval evaluation on top of the τ² task set.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:MIT(repository LICENSE body read on both repos; covers code, tasks and domain data, no carve-out clause);access:open(tasks and domain data ship in the repository, plain git clone, no gate);answers:released(task definitions include the evaluation criteria; the harness grades locally, no hidden split (base split reproduces the original τ-bench task set));datasheet:yes(documents itself in the repository — domains README (structure, data format, available domains) plus arXiv:2506.07982; the mt-bench/livebench repo-documentation precedent applies)",
+            "governing_release": "tau3-bench (tau2-bench repo v1.0.1)",
+            "confidence": "medium",
+            "note": "MIT over the whole repository, ungated, with repository documentation standing in for a Hub card as the category already accepts for mt-bench and livebench. Ladder walk: license_tier open_data (MIT) + documentation present → 5/open. Confidence medium because the answer-state reading (no held-out split) rests on the README and harness design rather than an explicit statement.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/LICENSE",
+                "shows": "MIT License body, \"Copyright (c) 2025 Sierra Research\", standard text with no data carve-out",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "e67c5aa0074dfcaefd3c3a1aedb94cb539234aecd15d5a972574e3200e6252fe",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/sierra-research/tau-bench/main/LICENSE",
+                "shows": "MIT License body, \"Copyright (c) 2024 Sierra\", for the τ¹ repo",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "243d23d45b80122b5ac575586ccef352fdc9c45e6d7d2605449aca8a17478b42",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md",
+                "shows": "title \"τ-Bench:A Benchmark for Tool-Agent-User Interaction in Real-World Domains\"; τ³-bench v1.0.0/v1.0.1 announcement; arXiv:2506.07982 badge; taubench.com leaderboard; git-clone install with data in-repo; domains README link documenting domain structure and data format; backward-compatibility note naming the base split as the original τ-bench task set",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ed39688aa5d40bd73007355df65f4e41a6c250960642e56764c3ad44da1df8d2",
+                "establishes": [
+                  "datasheet",
+                  "access",
+                  "answers"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "No countable download channel exists — the only PyPI name is squatted by an unrelated package and the Hub carries no first-party dataset — so this falls back to GitHub stars, capped at level 3 by the rubric. 1,923 stars on sierra-research/tau2-bench and 1,414 on sierra-research/tau-bench, both in the 1K-10K stars band, level 2 on the stars scale. τ-bench is cited as an agent benchmark in frontier model releases, which a reviewer could read as reported_traction level 3; the measurable route is recorded instead and the question is flagged for the writer.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/sierra-research/tau2-bench",
+                "shows": "stargazers_count 1923; license spdx MIT; homepage taubench.com; pushed 2026-09-01",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "7f2eea35d75f444fc1c7a1a536a464d3a8f6fa3bcf7a459cc6c013bc4f3aedca"
+              },
+              {
+                "url": "https://api.github.com/repos/sierra-research/tau-bench",
+                "shows": "stargazers_count 1414; license spdx MIT; description \"Code and Data for Tau-Bench\"",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "21320fd959363601dfd7cf8e00e2705b52abcac9933ce1b1c96ccd72061702ce"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k). The task suite's difficulty is a quality property, not a capability score.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md",
+                "shows": "a task suite plus harness; no performance, throughput or feature claim for the capability axis to read",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ed39688aa5d40bd73007355df65f4e41a6c250960642e56764c3ad44da1df8d2"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "PyPI tau2 is an unrelated magnetic-relaxation package (gitlab.com/chilton-group/tau2), so no pypi artifact is declared; the Hub carries only third-party mirrors, so no huggingface_dataset either. One tier-level product covering the tau, tau2 and tau3 releases. Verified 2026-09-01 via the sierra-research/tau2-bench and tau-bench GitHub API records, both LICENSE bodies and the tau2-bench README."
+        },
+        {
+          "slug": "terminal-bench",
+          "product": "Terminal-Bench",
+          "org_slug": "laude-institute",
+          "org": "Laude Institute",
+          "type": "dataset",
+          "description": "Benchmark of difficult, hand-vetted tasks that agents must complete in a real terminal, from compiling and debugging code to system administration. It runs as a continuous benchmark with tagged releases (2.0, 2.1, 3.0) mirrored on Hugging Face and executed through the Harbor framework, with an audited leaderboard at tbench.ai. Frontier agent builders use it to track progress on long-horizon terminal work.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:Apache-2.0(repository LICENSE body read (terminal-bench-1); every version repo and all three Hub mirrors carry license:apache-2.0);access:open(ungated Hub mirrors (\"gated\":false) and public GitHub task sources);answers:released(tasks include oracle solutions and tests, run and graded locally by Harbor; no hidden split);datasheet:present(Hub dataset cards on each release mirror plus tbench.ai docs and repository CONTRIBUTING/task rubric)",
+            "governing_release": "terminal-bench-3.0",
+            "confidence": "high",
+            "note": "Apache-2.0 over tasks and harness, ungated release mirrors on the Hub with cards, and oracle solutions shipped in-repo. Ladder walk: license_tier open_data (Apache-2.0) + documentation present → 5/open. Governing release recorded as the newest published mirror (3.0); all tagged releases carry the same license, so the choice does not move the score.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/harbor-framework/terminal-bench-1/main/LICENSE",
+                "shows": "Apache License 2.0 full body",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/harbor-framework/terminal-bench/main/README.md",
+                "shows": "\"Terminal-Bench is a continuous benchmark, with tagged releases published on the Harbor Hub\"; latest dataset on hub.harborframework.com; harness is Harbor (uv tool install harbor); oracle-solution runs; contributing and task-review docs",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "19cd7542ab806fc5732503f2fe2d6ee7e342de549ab1acfba184060f1290b03b",
+                "establishes": [
+                  "access",
+                  "datasheet",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/harborframework/terminal-bench-2.0/raw/main/README.md",
+                "shows": "card front matter license: apache-2.0, pretty_name Terminal-Bench 2.0, citation crediting The Terminal-Bench Team via github.com/laude-institute/terminal-bench; body states the dataset is a read-only mirror whose primary source is github.com/harbor-framework/terminal-bench-2 and points at the official tbench.ai leaderboard",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "73ab4c4e8d4017583abf85606f8c0153dce935875d3f41b7d962af89a32e8a46",
+                "establishes": [
+                  "license",
+                  "datasheet"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/harborframework/terminal-bench-2.0",
+                "shows": "\"gated\":false; tags carry license:apache-2.0; 37,797 downloads in the trailing 30 days",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "ee7c806dbf546e6a99c95494d04857e7b6d7d3f46f082ae78ff35e2bf05b23b8",
+                "establishes": [
+                  "access"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "65,672 Hugging Face downloads in the trailing 30 days summed across the three official harborframework release mirrors (terminal-bench-2.0 37,797 + 2.1 14,616 + 3.0 13,259), which is the 10K-100K band, level 3 on the dataset scale. Third-party mirrors (zai-org/terminal-bench-2-verified at 16,739) are not counted. The legacy PyPI harness at 81,412 downloads/month is deliberately not banded — it measures harness installs, not dataset usage, and the current harness is harbor.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets?author=harborframework",
+                "shows": "the org's dataset list with 30-day downloads — terminal-bench-2.0 37,797, terminal-bench-2.1 14,616, terminal-bench-3.0 13,259 (plus leaderboard/results and lfs auxiliaries not counted)",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "414e77f3d0cbd3ae43a19498864e571decc853992cb690a624c08079f51cc8e8"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/terminal-bench/recent",
+                "shows": "last_month 81,412 for the legacy pypi harness — recorded, not banded",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9b6d7b707119de3a7fcd84f2db430559d65ed295a09923b01b099eb27b49155f"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/harbor-framework/terminal-bench/main/README.md",
+                "shows": "a task collection and how to run it; no performance, throughput or feature claim for the capability axis to read",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "19cd7542ab806fc5732503f2fe2d6ee7e342de549ab1acfba184060f1290b03b"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The org renamed from laude-institute to harbor-framework and the original repo is now terminal-bench-1; the product's numbers are the official harborframework Hub mirrors, whose 2.0 card states it is a read-only mirror of the GitHub source. PyPI terminal-bench is the legacy harness, superseded by harbor, and is left undeclared. Verified 2026-09-01 via the harbor-framework GitHub org listing, the canonical terminal-bench README, the repository LICENSE body and the harborframework Hub mirror cards."
+        },
+        {
+          "slug": "agentdojo",
+          "product": "AgentDojo",
+          "org_slug": "ethz-spylab",
+          "org": "ETH Zurich SPY Lab",
+          "type": "dataset",
+          "description": "Benchmark for evaluating prompt-injection attacks and defenses on tool-using LLM agents. It ships realistic task suites across workspace, banking, travel and Slack environments together with injection test cases, and grades agents on both task completion and security. The suite installs from PyPI and publishes results for common models and defenses.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:MIT(repository LICENSE body read; covers the suite, task environments and data, no carve-out);access:open(pip install agentdojo; tasks and injection cases ship in the package and repo, no gate);answers:released(ground-truth task and security checks ship with the suite and grade locally; no hidden split);datasheet:present(documentation site agentdojo.spylab.ai with API and suite docs, published results pages, plus arXiv:2406.13352)",
+            "governing_release": "agentdojo (pypi 0.1.35)",
+            "confidence": "high",
+            "note": "MIT over the whole repository, ungated distribution through PyPI and GitHub, and a maintained documentation site standing in for a Hub card under the category's repo-documentation precedent. Ladder walk: license_tier open_data (MIT) + documentation present → 5/open.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/LICENSE",
+                "shows": "MIT License body, copyright the six authors (Debenedetti, Zhang, Balunovic, Beurer-Kellner, Fischer, Tramèr), standard text with no data carve-out",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "4285a071f2d382338e52b4fb0a186d952984a34d43a33d8872e1a1d8cb43401e",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/README.md",
+                "shows": "\"A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents\"; pip install agentdojo quickstart; paper link arXiv:2406.13352; results at agentdojo.spylab.ai/results; ETH Zurich + Invariant Labs affiliation",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e",
+                "establishes": [
+                  "access",
+                  "datasheet",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://pypi.org/pypi/agentdojo/json",
+                "shows": "version 0.1.35; project_urls.repository = github.com/ethz-spylab/agentdojo, homepage agentdojo.spylab.ai — the backlink that verifies package identity",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "9d1eaedc82f694ed45c14d12d17b6a97fd28f2f3c30f247995cdbbbadb6c4c3a",
+                "establishes": [
+                  "access"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "24,142 PyPI downloads in the last month for the agentdojo package, which ships the benchmark suite itself and is backlink-verified to the repository. On the dataset scale that is the 10K-100K band, level 3. The unit caveat is flagged: the dataset bands are calibrated on HF dataset downloads and this product's channel is PyPI, but the suite IS the distribution (no HF dataset exists), matching how evalplus is banded in this category.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/agentdojo/recent",
+                "shows": "last_month 24,142 downloads for agentdojo",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "1921066838f668e213091ad679b5f8021db6022a9e2acb0b343420a0b7e38068"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/README.md",
+                "shows": "an evaluation suite; no performance, throughput or feature claim for the capability axis to read",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "Boundary call: a prompt-injection benchmark filed as benchmark data rather than a safeguard, because the product is an evaluation suite. Verified 2026-09-01 via the ethz-spylab/agentdojo GitHub API record, the MIT LICENSE body, the repository README and the PyPI project JSON, whose project_urls point back at the repository."
+        },
+        {
+          "slug": "reward-bench",
+          "product": "RewardBench",
+          "org_slug": "allen-institute-for-ai",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "Benchmark for evaluating reward models, pairing prompts with chosen and rejected responses across chat, reasoning and safety subsets. RewardBench 2 extends it with harder, unseen human prompts, and both versions publish their datasets, results and a public leaderboard. The repository provides a common inference format for scoring most open reward models.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY(license odc-by on both Hub dataset cards; the repository code is Apache-2.0 (LICENSE body read));access:open(both Hub datasets ungated (\"gated\":false), downloadable parquet);answers:released(chosen/rejected pairs are the labels and ship in the public splits; no held-out answer set for the datasets themselves);datasheet:present(dataset cards on both Hub releases with schema, subsets and citation)",
+            "governing_release": "reward-bench-2",
+            "confidence": "high",
+            "note": "ODC-BY on both dataset cards, ungated downloads, cards present. Ladder walk: license_tier open_data (odc-by is an enumerated open_data spelling) + documentation present → 5/open. Governing release is RewardBench 2, same license as v1, so the combine rule moves nothing.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/reward-bench/raw/main/README.md",
+                "shows": "card front matter license: odc-by; features prompt/chosen/chosen_model/rejected/ rejected_model; subsets and filtering documented",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "819086ae803ffe3d3126eb2c188b8c67e2a0acb91b67096727f59f5aff423256",
+                "establishes": [
+                  "license",
+                  "datasheet",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/reward-bench",
+                "shows": "\"gated\":false; tags license:odc-by; 10,022 downloads in the trailing 30 days",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "b17b6c092b847ff155de659a64b6b93160ab9d07f8fb781f1be8c2ce03e9005a",
+                "establishes": [
+                  "access"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/reward-bench-2",
+                "shows": "\"gated\":false; tags license:odc-by; 4,212 downloads in the trailing 30 days",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "2a3ac31db8254fb2493dfe39c7330286af1fc744511d675cd005e1cd629c2349",
+                "establishes": [
+                  "access",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/allenai/reward-bench/main/LICENSE",
+                "shows": "Apache License 2.0 full body, covering the evaluation code",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/allenai/reward-bench/main/README.md",
+                "shows": "fronts RewardBench and RewardBench 2 together — leaderboard space, both eval datasets, both results sets, papers arXiv:2403.13787 and arXiv:2506.01937",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "303bfafef8be5395ca3ebffb7ee6a629201d81ae7cfce04eba5223d0cf452da5",
+                "establishes": [
+                  "datasheet"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "14,234 Hugging Face downloads in the trailing 30 days summed across the two declared datasets (allenai/reward-bench 10,022 + allenai/reward-bench-2 4,212), the 10K-100K band, level 3 on the dataset scale. RewardBench is the standard reward-model leaderboard, but the band rests on the measured figure.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/reward-bench",
+                "shows": "10,022 downloads in the trailing 30 days",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "b17b6c092b847ff155de659a64b6b93160ab9d07f8fb781f1be8c2ce03e9005a"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/reward-bench-2",
+                "shows": "4,212 downloads in the trailing 30 days",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "2a3ac31db8254fb2493dfe39c7330286af1fc744511d675cd005e1cd629c2349"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/reward-bench/raw/main/README.md",
+                "shows": "a static preference-pair corpus; no performance, throughput or feature claim for the capability axis to read",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "819086ae803ffe3d3126eb2c188b8c67e2a0acb91b67096727f59f5aff423256"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "One product covering RewardBench and RewardBench 2; the repo README fronts both with datasets, results and leaderboard links. PyPI rewardbench's home_page points at a 404 path, so no pypi artifact is declared. Verified 2026-09-01 via the allenai/reward-bench GitHub API record, the LICENSE body, the repository README and both Hub dataset cards."
+        },
+        {
+          "slug": "mle-bench",
+          "product": "MLE-bench",
+          "org_slug": "openai",
+          "org": "OpenAI",
+          "type": "dataset",
+          "description": "Benchmark measuring how well AI agents perform machine learning engineering, built from 75 Kaggle competitions. OpenAI ships the preparation and grading code plus new train/test splits, and the raw competition data is downloaded from Kaggle under each competition's own rules. A public leaderboard tracks agent submissions, though new submissions are paused as of April 2026.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:per-component(one component per Kaggle competition: the repo LICENSE is MIT over the code only, with the explicit NOTE \"This license applies to the code in this repository, but not the external datasets and files that may be downloaded while using this package\", so the corpus defers to each competition's own rules);access:terms-acceptance(data downloaded via the Kaggle API with Kaggle credentials, under Kaggle's per-competition rules; OpenAI does not distribute the data);answers:released(the benchmark's own test splits are constructed by the prepare scripts from public training sets, and grading scripts ship in the repo — no split hidden by MLE-bench itself);datasheet:yes(repository README documents composition (75 competitions), preparation and grading; arXiv:2410.07095)",
+            "governing_release": "mle-bench (openai/mle-bench main)",
+            "confidence": "high",
+            "note": "The gate decides this one. The corpus is obtainable only through Kaggle with an account and per-competition terms, so availability is terms-acceptance and the gate rung fires at 3/gated before the deferred-license rungs are reached; no license tier can lift a gated corpus past 3. The MIT covers only the harness code, and the LICENSE body says so explicitly — which is also why GitHub reports NOASSERTION.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openai/mle-bench/main/LICENSE",
+                "shows": "MIT License, Copyright (c) 2024 OpenAI, standard text, then: \"NOTE: This license applies to the code in this repository, but not the external datasets and files that may be downloaded while using this package.\" — the carve-out that makes the corpus deferred and explains GitHub's NOASSERTION",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "8a44e3d54b33babc0c79b9c86cf9069e4c132fcd9ddf6f7e3b0f552ccc52c198",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/openai/mle-bench/main/README.md",
+                "shows": "dataset is 75 Kaggle competitions; prepare scripts split public training sets into new train/test; raw data downloaded with the Kaggle API requiring kaggle.json credentials; grading scripts per competition; leaderboard paused for new submissions 2026-04-24",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "586bbc19cb2a3e11be61021866ef6436cf4b4d935bb1db088984b567b76595bb",
+                "establishes": [
+                  "access",
+                  "datasheet",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/openai/mle-bench",
+                "shows": "license spdx NOASSERTION (the classifier choking on the carve-out note), 1,727 stars, homepage openai.com/index/mle-bench",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5f3e1afdc0be996b5badc877c091c6a49e49338510581092e084f5f9c2711cb6",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "GitHub is the only first-party channel — no HF dataset, no PyPI package, and the data itself is fetched from Kaggle where no per-benchmark download figure is published. The honest call is the stars fallback: 1,727 stars on openai/mle-bench, the 1K-10K band, level 2, capped at 3 by the rubric. Not banded as reported_traction because no vendor traction claim with a figure exists to cite.",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/openai/mle-bench",
+                "shows": "stargazers_count 1727",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "5f3e1afdc0be996b5badc877c091c6a49e49338510581092e084f5f9c2711cb6"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).",
+            "last_verified": "2026-09-01",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/openai/mle-bench/main/README.md",
+                "shows": "a benchmark definition plus leaderboard of OTHER systems' scores; no capability claim about the artifact itself",
+                "accessed": "2026-09-01",
+                "http_status": 200,
+                "content_sha256": "586bbc19cb2a3e11be61021866ef6436cf4b4d935bb1db088984b567b76595bb"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-01",
+            "basis": "verified"
+          },
+          "version_note": "The LICENSE is MIT over the code with an explicit carve-out excluding the external datasets, and the corpus is downloaded from Kaggle with credentials under each competition's own rules. GitHub-only channels; no first-party HF dataset or PyPI package. Verified 2026-09-01 via the openai/mle-bench GitHub API record, the LICENSE body and the repository README."
         }
       ]
     },
@@ -54489,8 +57130,10 @@
         "duplodocus",
         "hellaswag",
         "madlad-400",
+        "olmes",
         "olmocr",
         "pes2o",
+        "reward-bench",
         "tulu-3-sft-mixture",
         "wildchat-1m"
       ]
@@ -54641,7 +57284,8 @@
       "products": [
         "apple-core-ml-runtime",
         "coremltools",
-        "mlx"
+        "mlx",
+        "mlx-lm"
       ]
     },
     "arduino": {
@@ -54858,6 +57502,19 @@
         "bitsandbytes"
       ]
     },
+    "blaizzy": {
+      "slug": "blaizzy",
+      "display_name": "Blaizzy (Prince Canuma)",
+      "type": "individual",
+      "homepage": "",
+      "github": [
+        "https://github.com/Blaizzy"
+      ],
+      "country": "",
+      "products": [
+        "mlx-vlm"
+      ]
+    },
     "blaxel": {
       "slug": "blaxel",
       "display_name": "Blaxel",
@@ -54931,6 +57588,7 @@
       "products": [
         "doubao",
         "doubao-seed",
+        "seed-oss",
         "verl"
       ]
     },
@@ -55391,6 +58049,7 @@
       ],
       "country": "",
       "products": [
+        "comma",
         "lm-evaluation-harness",
         "pythia",
         "the-pile",
@@ -55419,6 +58078,32 @@
       "country": "",
       "products": [
         "mistral-rs"
+      ]
+    },
+    "ethz-spylab": {
+      "slug": "ethz-spylab",
+      "display_name": "ETH Zurich SPY Lab",
+      "type": "lab",
+      "homepage": "https://spylab.ai",
+      "github": [
+        "https://github.com/ethz-spylab"
+      ],
+      "country": "",
+      "products": [
+        "agentdojo"
+      ]
+    },
+    "euroeval": {
+      "slug": "euroeval",
+      "display_name": "EuroEval",
+      "type": "lab",
+      "homepage": "https://euroeval.com",
+      "github": [
+        "https://github.com/EuroEval"
+      ],
+      "country": "",
+      "products": [
+        "euroeval"
       ]
     },
     "evalplus-team-uiuc": {
@@ -55812,6 +58497,7 @@
       "products": [
         "beeai",
         "docling",
+        "granite",
         "granite-code-instruct",
         "granite-guardian"
       ]
@@ -55966,6 +58652,19 @@
         "suna"
       ]
     },
+    "kvcache-ai": {
+      "slug": "kvcache-ai",
+      "display_name": "KVCache.AI",
+      "type": "lab",
+      "homepage": "",
+      "github": [
+        "https://github.com/kvcache-ai"
+      ],
+      "country": "",
+      "products": [
+        "ktransformers"
+      ]
+    },
     "kwaroran": {
       "slug": "kwaroran",
       "display_name": "Kwaroran",
@@ -56094,6 +58793,32 @@
         "langwatch"
       ]
     },
+    "laude-institute": {
+      "slug": "laude-institute",
+      "display_name": "Laude Institute",
+      "type": "foundation",
+      "homepage": "https://laude.institute",
+      "github": [
+        "https://github.com/harbor-framework"
+      ],
+      "country": "",
+      "products": [
+        "terminal-bench"
+      ]
+    },
+    "lemonade-sdk": {
+      "slug": "lemonade-sdk",
+      "display_name": "Lemonade SDK",
+      "type": "unknown",
+      "homepage": "https://lemonade-server.ai",
+      "github": [
+        "https://github.com/lemonade-sdk"
+      ],
+      "country": "",
+      "products": [
+        "lemonade"
+      ]
+    },
     "lf-ai-and-data": {
       "slug": "lf-ai-and-data",
       "display_name": "LF AI & Data (Linux Foundation)",
@@ -56212,6 +58937,19 @@
         "llama-index"
       ]
     },
+    "llm-d": {
+      "slug": "llm-d",
+      "display_name": "llm-d project",
+      "type": "foundation",
+      "homepage": "https://www.llm-d.ai",
+      "github": [
+        "https://github.com/llm-d"
+      ],
+      "country": "",
+      "products": [
+        "llm-d"
+      ]
+    },
     "llm360": {
       "slug": "llm360",
       "display_name": "LLM360",
@@ -56251,6 +58989,19 @@
       "country": "USA",
       "products": [
         "chatbot-arena"
+      ]
+    },
+    "lmms-lab": {
+      "slug": "lmms-lab",
+      "display_name": "LMMs-Lab",
+      "type": "lab",
+      "homepage": "https://www.lmms-lab.com",
+      "github": [
+        "https://github.com/EvolvingLMMs-Lab"
+      ],
+      "country": "",
+      "products": [
+        "lmms-eval"
       ]
     },
     "lobehub": {
@@ -56458,6 +59209,7 @@
       "products": [
         "devstral",
         "le-chat",
+        "magistral",
         "mistral-7b-instruct",
         "mistral-fine-tuning-api",
         "mistral-large"
@@ -56531,6 +59283,7 @@
       "github": [],
       "country": "",
       "products": [
+        "evalscope",
         "swift"
       ]
     },
@@ -56788,6 +59541,7 @@
         "aegis-guard",
         "aistore",
         "cutlass",
+        "dynamo",
         "garak",
         "megatron-lm",
         "nemo-curator",
@@ -56906,9 +59660,11 @@
         "gpt-4-1",
         "gpt-4o",
         "gpt-5",
+        "gpt-oss",
         "gpt-oss-safeguard",
         "gsm8k",
         "humaneval",
+        "mle-bench",
         "o-series",
         "openai-code-interpreter",
         "openai-evals",
@@ -56950,6 +59706,7 @@
       "github": [],
       "country": "",
       "products": [
+        "minicpm",
         "ultrafeedback"
       ]
     },
@@ -56976,7 +59733,8 @@
       ],
       "country": "",
       "products": [
-        "opencompass"
+        "opencompass",
+        "vlmevalkit"
       ]
     },
     "openfn": {
@@ -57585,6 +60343,19 @@
         "xtuner"
       ]
     },
+    "sierra": {
+      "slug": "sierra",
+      "display_name": "Sierra",
+      "type": "company",
+      "homepage": "https://sierra.ai",
+      "github": [
+        "https://github.com/sierra-research"
+      ],
+      "country": "",
+      "products": [
+        "tau-bench"
+      ]
+    },
     "significant-gravitas": {
       "slug": "significant-gravitas",
       "display_name": "Significant Gravitas",
@@ -57889,6 +60660,19 @@
       "country": "",
       "products": [
         "sageattention"
+      ]
+    },
+    "thu-pacman": {
+      "slug": "thu-pacman",
+      "display_name": "Tsinghua PACMAN Lab",
+      "type": "lab",
+      "homepage": "",
+      "github": [
+        "https://github.com/thu-pacman"
+      ],
+      "country": "",
+      "products": [
+        "chitu"
       ]
     },
     "tiger-lab": {
@@ -58402,7 +61186,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 553,
+  "n_total": 576,
   "generated": "2026-09-01",
   "version": "0.2.0",
   "released": "2026-08-16",
@@ -58413,9 +61197,9 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 553,
+      "scored": 576,
       "overlap": 309,
-      "scored_outside": 244,
+      "scored_outside": 267,
       "uncategorized": 24317,
       "universe": 24856
     },
