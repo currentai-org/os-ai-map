@@ -32,6 +32,7 @@ them, are not capable of anything the axis measures, and abstain rather than sco
 | `value` | the recorded observation the band rests on: exact and quoted for a benchmark or arena placement, and often a synthesized summary of documented features for a `feature_matrix` band, not a verbatim quote. |
 | `relative_to` | the slug of the product this band was placed **against**, when placed by comparison rather than measured. |
 | `relation` | how this band sits against `relative_to`: `at`, `one_below`, `two_below`, `one_above`. Required with `relative_to`, meaningless without it. |
+| `comparison` | when the spacing recorded by `relative_to`/`relation` was last judged still to hold (`last_attested`), and what was read on the peer to judge it (`sources`). Optional. |
 | `confidence` | the curator's certainty (`high`/`medium`/`low`). Note it does not encode the strength of the instrument — a `high` can sit on a feature-matrix judgment with no measurement under it. |
 | `note` | the prose behind the band: what the product does well, what it sits below, and against whom. |
 | `sources` | the evidence, at least one for a non-null score. |
@@ -94,10 +95,64 @@ answerable and a sentence never did:
    Megatron-LM's capability was last confirmed in June and `trl` claims today, `trl` is
    claiming to have re-derived a comparison against a fact nobody re-read. This is the openness
    invariant applied to a different dependency: a date is only as good as the least recently
-   confirmed thing underneath it.
+   confirmed thing underneath it. Unless the edge carries an attestation of its own — see
+   below.
 
 The gate ratchets like the others — it covers the products that record a comparison and does
 not block the ones that do not.
+
+### Dating the edge itself
+
+Transitive freshness as written binds the dependent's **whole-axis** date to the peer's
+**whole-axis** date, and those are two claims about two different products. The consequence
+shows up as the corpus grows: every new product's natural peer was confirmed before the
+product existed, so a tranche can compare its own members to each other and to nothing else.
+That happened three times in one week in August 2026, and the comparisons were dropped into
+prose rather than asserted on a re-derivation nobody performed.
+
+`capability.comparison` records the edge's own confirmation:
+
+```yaml
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: verl
+  relation: one_below
+  comparison:
+    last_attested: 2026-08-31
+    sources:
+      - url: https://github.com/volcengine/verl
+        shows: "the algorithm catalogue, still wider than this product's"
+        accessed: 2026-08-31
+        http_status: 200
+        content_sha256: <64 hex>
+```
+
+`last_attested` dates the **spacing**, not either product. The sources are a separate list from
+`capability.sources` on purpose: they are citations about somebody else's product, and folding
+them in would let a peer's page count as this product's own evidence and would make the
+weak-root check read the wrong thing.
+
+What the gate then asks, and why each one:
+
+- the axis's `last_verified` may not be later than `last_attested` — `relative_to` and
+  `relation` are part of the score, so a whole-axis confirmation cannot outrun one of its parts;
+- at least one attestation source must record `accessed` on or after `last_attested`, or the
+  date rests on nothing;
+- that source must carry `http_status` and `content_sha256`. The judgment needs a real read of
+  the peer, and without this requirement the first pass under time pressure attests off the
+  peer's `value` as this repository already recorded it, which confirms nothing.
+
+In exchange, the peer's whole-axis date no longer bounds the dependent's. Where the peer *has*
+been re-read since the spacing was judged, `check_capability` reports the edge rather than
+failing it: the arithmetic check already fires if the peer's score moved, and this catches the
+case where its `value` moved and its score did not.
+
+One fetch attests every edge against the same peer, so a tranche pays per peer rather than per
+product. And an attestation may not re-date the peer's own `capability.last_verified` as a side
+effect — unless the read happened to cover every source that axis cites, in which case the peer
+really has been re-derived and the curator may date it. Nine of thirteen peers in the August
+backlog cited exactly one source, so that is common rather than exotic.
 
 ### Do not force every comparison through the category anchor
 
@@ -195,7 +250,9 @@ harnesses. One name for a group of products reads as a shared measurement that d
 - [ ] A comparison-placed band records `relative_to` (same category) and `relation`, and the
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.
-- [ ] `last_verified`, if present, satisfies the transitive-freshness rule.
+- [ ] `last_verified`, if present, satisfies the transitive-freshness rule — or the edge carries
+      a `comparison` block whose `last_attested` is no earlier than it and is backed by a fetched
+      source read on or after that date.
 
 ## Related
 

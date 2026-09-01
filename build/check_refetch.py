@@ -249,22 +249,32 @@ def load_sources(product: str | None = None) -> list[Source]:
             block = score.get(axis) or {}
             if not isinstance(block, dict):
                 continue
-            for source in block.get("sources") or []:
-                if not isinstance(source, dict):
-                    continue
-                digest = source.get("content_sha256")
-                if not digest:
-                    continue
-                out.append(
-                    Source(
-                        product=path.stem,
-                        axis=axis,
-                        url=str(source.get("url") or ""),
-                        digest=str(digest),
-                        status=source.get("http_status"),
-                        accessed=source.get("accessed"),
+            lists = [(axis, block.get("sources"))]
+            # A comparison attestation cites the ROOT of a peer comparison, so it lives in its
+            # own list rather than in capability.sources — folding it in would let another
+            # product's page count as this one's evidence. It is still a recorded fetch, and
+            # it is the one kind of citation nobody re-reads on the product's own refresh, so
+            # the weekly re-fetch wants it more than most.
+            comparison = block.get("comparison")
+            if isinstance(comparison, dict):
+                lists.append((f"{axis}.comparison", comparison.get("sources")))
+            for label, sources in lists:
+                for source in sources or []:
+                    if not isinstance(source, dict):
+                        continue
+                    digest = source.get("content_sha256")
+                    if not digest:
+                        continue
+                    out.append(
+                        Source(
+                            product=path.stem,
+                            axis=label,
+                            url=str(source.get("url") or ""),
+                            digest=str(digest),
+                            status=source.get("http_status"),
+                            accessed=source.get("accessed"),
+                        )
                     )
-                )
     return out
 
 

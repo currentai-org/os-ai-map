@@ -39,6 +39,13 @@ the exact failure this apparatus exists to prevent.
    Put anchors at the front and date them in the same run. Where the peer is in another category
    or an earlier run, leave `relative_to`/`relation` unset and report it; never substitute a
    different peer to satisfy the arithmetic.
+
+   This stays mandatory here. A refresh pass is where a re-read that moves a score belongs, and
+   the anchor read is the one that finds a peer whose surface has changed under the bands resting
+   on it — `openhands` is the case. The `capability.comparison` attestation
+   ([`../reference/capability.md`](../reference/capability.md)) is an alternative for
+   [`add-product.md`](add-product.md), so a batch is not blocked between refresh cycles. It is not
+   a way to skip the anchor here, and an attested edge does not exempt its peer from this run.
 3. **Preflight, gathered once.** The roster from the category file (never retyped); the recorded
    openness dimensions per product from the repo's own helpers; the warehouse signal rows for the
    whole category in one query. Respect `signal_routing.yaml`'s `never` routes.

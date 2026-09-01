@@ -39,6 +39,16 @@ nobody re-read. This is the structural analogue of the openness invariant, which
 worth the trouble: it is the same insight, that a date is only as good as the least recently
 confirmed thing underneath it.
 
+**An attested edge dates itself.** The rule above binds the dependent's *whole-axis* date to the
+root's *whole-axis* date, and those are two different claims about two different products. As the
+corpus grows, every new product's natural root is older than the product, so the comparison graph
+stops growing at the periphery (#436). A product may instead record `capability.comparison`: the
+date the spacing itself was last judged, and the read of the root that judged it. That record
+carries its own freshness requirements — a source read on or after the date, with a fetch behind
+it — and in exchange the root's axis date no longer bounds the dependent's. What it does not do is
+let a spacing be reaffirmed on unchanged bytes: a comparison can go false with nothing changing on
+either product, because the falsifier is a third product.
+
 ## What this does NOT do
 
 It does not make capability derivable, and it produces no score from evidence. The comparison
@@ -155,6 +165,11 @@ def check(scores: dict, owner: dict) -> list[str]:
             )
 
         claimed = parse_date(block.get("last_verified"))
+        comparison = block.get("comparison") or {}
+        if comparison:
+            problems.extend(_attestation_problems(slug, target, comparison, claimed))
+            continue
+
         if claimed is None:
             continue
         anchor_date = parse_date(other.get("last_verified"))
@@ -170,6 +185,82 @@ def check(scores: dict, owner: dict) -> list[str]:
                 f"confirmed {anchor_date}. The comparison was not re-derived"
             )
     return problems
+
+
+def _attestation_problems(
+    slug: str, target: str, comparison: dict, claimed: date | None
+) -> list[str]:
+    """What an attested edge must satisfy to stand on its own date.
+
+    The attestation is what lets a band be placed against a peer the corpus last confirmed
+    weeks ago. That is only sound if the date rests on a real read of the root, so the
+    requirements mirror `check_verification`'s two: the date needs a source `accessed` on or
+    after it, and that source needs a fetch to point at. Without them the mechanism becomes a
+    way to write a fresher date for less reading, which is the failure the whole apparatus
+    exists to prevent.
+
+    What is deliberately NOT here: the root's own `capability.last_verified`. Freeing the
+    dependent from it is the point. Where the root has since been re-read, `stale_attestations`
+    reports the edge for re-judgment rather than failing it.
+    """
+    problems: list[str] = []
+    attested = parse_date(comparison.get("last_attested"))
+    if attested is None:
+        # The schema requires it. Repeated here for the same reason the half-a-comparison
+        # check is: a gate that assumes another gate ran passes silently when it did not.
+        return [
+            f"{slug}:capability: records a comparison against {target} with no last_attested, "
+            f"so nothing dates the spacing"
+        ]
+
+    if claimed is not None and claimed > attested:
+        problems.append(
+            f"{slug}:capability: claims last_verified {claimed}, but the comparison against "
+            f"{target} was attested {attested}. `relative_to` and `relation` are part of this "
+            f"axis's score, so a whole-axis confirmation cannot outrun one of its parts"
+        )
+
+    sources = [s for s in (comparison.get("sources") or []) if isinstance(s, dict)]
+    covering = [s for s in sources if (parse_date(s.get("accessed")) or date.min) >= attested]
+    if not covering:
+        problems.append(
+            f"{slug}:capability: attests the comparison against {target} on {attested}, but no "
+            f"attestation source was read on or after that date. The date rests on nothing"
+        )
+        return problems
+
+    for source in covering:
+        missing = [k for k in ("http_status", "content_sha256") if not source.get(k)]
+        if missing:
+            problems.append(
+                f"{slug}:capability: the attestation source {source.get('url')!r} carries the "
+                f"{attested} date but records no {' or '.join(missing)}. A claimed confirmation "
+                f"needs a fetch to point at"
+            )
+    return problems
+
+
+def stale_attestations(scores: dict) -> list[tuple[str, str, date, date]]:
+    """(dependent, root, attested, root confirmed) for every edge the root has outrun.
+
+    Report-only, and the queue this mechanism exists to make visible. The root has been
+    re-read since the spacing was judged, so the judgment may rest on a description that has
+    since moved. The arithmetic check already fires when the root's SCORE moves; this catches
+    the case where its `value` moved and its score did not, which is exactly what `openhands`
+    turned out to have done under 25 dependent bands.
+    """
+    out: list[tuple[str, str, date, date]] = []
+    for slug, doc in sorted(scores.items()):
+        block = doc.get("capability") or {}
+        target = block.get("relative_to")
+        comparison = block.get("comparison") or {}
+        if not target or not comparison:
+            continue
+        attested = parse_date(comparison.get("last_attested"))
+        root_date = parse_date(((scores.get(target) or {}).get("capability") or {}).get("last_verified"))
+        if attested and root_date and attested < root_date:
+            out.append((slug, target, attested, root_date))
+    return out
 
 
 #: A comparison root has to be substantive, not merely present. A null check alone would let the
@@ -272,6 +363,25 @@ def main() -> int:
     for problem in problems:
         print(f"  ! {problem}")
     print(f"  {recorded} of {len(scores)} products record a comparison")
+
+    attested = sum(
+        1
+        for d in scores.values()
+        if (d.get("capability") or {}).get("relative_to")
+        and (d.get("capability") or {}).get("comparison")
+    )
+    print(
+        f"  {recorded} comparison(s) recorded, {attested} attested, {recorded - attested} "
+        f"resting on their root's axis date"
+    )
+
+    outrun = stale_attestations(scores)
+    if outrun:
+        print(f"\n  {len(outrun)} attested comparison(s) their root has been re-read since:")
+        for dep, root, when, root_date in outrun:
+            print(f"    ~ {dep} at {root}: attested {when}, {root} re-confirmed {root_date}")
+        print("    The spacing may rest on a description that has since moved. Report-only;")
+        print("    re-judge the edge and re-attest it.")
 
     roots = weak_roots(scores)
     if roots:

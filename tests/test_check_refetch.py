@@ -216,3 +216,40 @@ def test_a_wall_whose_digest_matches_is_never_confirmed():
         outcome, detail = refetch(source, 5.0)
     assert outcome != "confirmed"
     assert "never read" in detail
+
+
+def test_load_sources_walks_the_comparison_attestation(tmp_path, monkeypatch):
+    """A comparison attestation cites the ROOT, so it is exactly the kind of claim that
+    benefits from a weekly re-fetch. It sits outside `capability.sources` deliberately, which
+    means the walker has to be told about it or it re-checks nothing."""
+    import build.check_refetch as mod
+
+    folder = tmp_path / "sources" / "scores"
+    folder.mkdir(parents=True)
+    (folder / "a.yaml").write_text(
+        "product: a\n"
+        "capability:\n"
+        "  score: 4\n"
+        "  basis: feature_matrix\n"
+        "  relative_to: b\n"
+        "  relation: one_below\n"
+        "  sources:\n"
+        "    - url: https://example.com/a\n"
+        "      shows: what a does\n"
+        "      accessed: 2026-08-31\n"
+        f"      content_sha256: {DIGEST_A}\n"
+        "  comparison:\n"
+        "    last_attested: 2026-08-31\n"
+        "    sources:\n"
+        "      - url: https://example.com/b\n"
+        "        shows: what b still does\n"
+        "        accessed: 2026-08-31\n"
+        f"        content_sha256: {DIGEST_B}\n"
+    )
+    monkeypatch.setattr(mod, "ROOT", tmp_path)
+
+    found = {(s.axis, s.url, s.digest) for s in mod.load_sources()}
+    assert found == {
+        ("capability", "https://example.com/a", DIGEST_A),
+        ("capability.comparison", "https://example.com/b", DIGEST_B),
+    }
