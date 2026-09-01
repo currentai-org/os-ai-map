@@ -1,0 +1,93 @@
+product: tau-bench
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: MIT
+      detail: repository LICENSE body read on both repos; covers code, tasks and domain data, no carve-out
+        clause
+    access:
+      value: open
+      detail: tasks and domain data ship in the repository, plain git clone, no gate
+    answers:
+      value: released
+      detail: task definitions include the evaluation criteria; the harness grades locally, no hidden
+        split (base split reproduces the original τ-bench task set)
+    datasheet:
+      value: 'yes'
+      detail: documents itself in the repository — domains README (structure, data format, available domains)
+        plus arXiv:2506.07982; the mt-bench/livebench repo-documentation precedent applies
+  governing_release: tau3-bench (tau2-bench repo v1.0.1)
+  confidence: medium
+  note: 'MIT over the whole repository, ungated, with repository documentation standing in for a Hub card
+    as the category already accepts for mt-bench and livebench. Ladder walk: license_tier open_data (MIT)
+    + documentation present → 5/open. Confidence medium because the answer-state reading (no held-out
+    split) rests on the README and harness design rather than an explicit statement.'
+  raw: license:MIT(repository LICENSE, both repos, no carve-out);access:open(data in repo, ungated);answers:released(harness
+    grades locally, no hidden split);datasheet:yes(domains README + arXiv:2506.07982)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/sierra-research/tau2-bench/main/LICENSE
+    shows: MIT License body, "Copyright (c) 2025 Sierra Research", standard text with no data carve-out
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e67c5aa0074dfcaefd3c3a1aedb94cb539234aecd15d5a972574e3200e6252fe
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/sierra-research/tau-bench/main/LICENSE
+    shows: MIT License body, "Copyright (c) 2024 Sierra", for the τ¹ repo
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 243d23d45b80122b5ac575586ccef352fdc9c45e6d7d2605449aca8a17478b42
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md
+    shows: title "τ-Bench:A Benchmark for Tool-Agent-User Interaction in Real-World Domains"; τ³-bench
+      v1.0.0/v1.0.1 announcement; arXiv:2506.07982 badge; taubench.com leaderboard; git-clone install
+      with data in-repo; domains README link documenting domain structure and data format; backward-compatibility
+      note naming the base split as the original τ-bench task set
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: ed39688aa5d40bd73007355df65f4e41a6c250960642e56764c3ad44da1df8d2
+    establishes:
+    - datasheet
+    - access
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: No countable download channel exists — the only PyPI name is squatted by an unrelated package
+    and the Hub carries no first-party dataset — so this falls back to GitHub stars, capped at level 3
+    by the rubric. 1,923 stars on sierra-research/tau2-bench and 1,414 on sierra-research/tau-bench, both
+    in the 1K-10K stars band, level 2 on the stars scale. τ-bench is cited as an agent benchmark in frontier
+    model releases, which a reviewer could read as reported_traction level 3; the measurable route is
+    recorded instead and the question is flagged for the writer.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/sierra-research/tau2-bench
+    shows: stargazers_count 1923; license spdx MIT; homepage taubench.com; pushed 2026-09-01
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 7f2eea35d75f444fc1c7a1a536a464d3a8f6fa3bcf7a459cc6c013bc4f3aedca
+  - url: https://api.github.com/repos/sierra-research/tau-bench
+    shows: stargazers_count 1414; license spdx MIT; description "Code and Data for Tau-Bench"
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 21320fd959363601dfd7cf8e00e2705b52abcac9933ce1b1c96ccd72061702ce
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
+    The task suite's difficulty is a quality property, not a capability score.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/sierra-research/tau2-bench/main/README.md
+    shows: a task suite plus harness; no performance, throughput or feature claim for the capability axis
+      to read
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: ed39688aa5d40bd73007355df65f4e41a6c250960642e56764c3ad44da1df8d2

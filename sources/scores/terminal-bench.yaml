@@ -1,0 +1,102 @@
+product: terminal-bench
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: Apache-2.0
+      detail: repository LICENSE body read (terminal-bench-1); every version repo and all three Hub mirrors
+        carry license:apache-2.0
+    access:
+      value: open
+      detail: ungated Hub mirrors ("gated":false) and public GitHub task sources
+    answers:
+      value: released
+      detail: tasks include oracle solutions and tests, run and graded locally by Harbor; no hidden split
+    datasheet:
+      value: present
+      detail: Hub dataset cards on each release mirror plus tbench.ai docs and repository CONTRIBUTING/task
+        rubric
+  governing_release: terminal-bench-3.0
+  confidence: high
+  note: 'Apache-2.0 over tasks and harness, ungated release mirrors on the Hub with cards, and oracle
+    solutions shipped in-repo. Ladder walk: license_tier open_data (Apache-2.0) + documentation present
+    → 5/open. Governing release recorded as the newest published mirror (3.0); all tagged releases carry
+    the same license, so the choice does not move the score.'
+  raw: license:Apache-2.0(repo LICENSE + license:apache-2.0 on all three Hub mirrors);access:open(ungated
+    mirrors, public repo);answers:released(oracle solutions and tests in-repo);datasheet:present(Hub cards
+    per release + tbench.ai docs)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/harbor-framework/terminal-bench-1/main/LICENSE
+    shows: Apache License 2.0 full body
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/harbor-framework/terminal-bench/main/README.md
+    shows: '"Terminal-Bench is a continuous benchmark, with tagged releases published on the Harbor Hub";
+      latest dataset on hub.harborframework.com; harness is Harbor (uv tool install harbor); oracle-solution
+      runs; contributing and task-review docs'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 19cd7542ab806fc5732503f2fe2d6ee7e342de549ab1acfba184060f1290b03b
+    establishes:
+    - access
+    - datasheet
+  - url: https://huggingface.co/datasets/harborframework/terminal-bench-2.0/raw/main/README.md
+    shows: 'card front matter license: apache-2.0, pretty_name Terminal-Bench 2.0, citation crediting
+      The Terminal-Bench Team via github.com/laude-institute/terminal-bench; body states the dataset is
+      a read-only mirror whose primary source is github.com/harbor-framework/terminal-bench-2 and points
+      at the official tbench.ai leaderboard'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 73ab4c4e8d4017583abf85606f8c0153dce935875d3f41b7d962af89a32e8a46
+    establishes:
+    - license
+    - datasheet
+  - url: https://huggingface.co/api/datasets/harborframework/terminal-bench-2.0
+    shows: '"gated":false; tags carry license:apache-2.0; 37,797 downloads in the trailing 30 days'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: ee7c806dbf546e6a99c95494d04857e7b6d7d3f46f082ae78ff35e2bf05b23b8
+    establishes:
+    - access
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 65,672 Hugging Face downloads in the trailing 30 days summed across the three official harborframework
+    release mirrors (terminal-bench-2.0 37,797 + 2.1 14,616 + 3.0 13,259), which is the 10K-100K band,
+    level 3 on the dataset scale. Third-party mirrors (zai-org/terminal-bench-2-verified at 16,739) are
+    not counted. The legacy PyPI harness at 81,412 downloads/month is deliberately not banded — it measures
+    harness installs, not dataset usage, and the current harness is harbor.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/datasets?author=harborframework
+    shows: the org's dataset list with 30-day downloads — terminal-bench-2.0 37,797, terminal-bench-2.1
+      14,616, terminal-bench-3.0 13,259 (plus leaderboard/results and lfs auxiliaries not counted)
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 414e77f3d0cbd3ae43a19498864e571decc853992cb690a624c08079f51cc8e8
+  - url: https://pypistats.org/api/packages/terminal-bench/recent
+    shows: last_month 81,412 for the legacy pypi harness — recorded, not banded
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9b6d7b707119de3a7fcd84f2db430559d65ed295a09923b01b099eb27b49155f
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/harbor-framework/terminal-bench/main/README.md
+    shows: a task collection and how to run it; no performance, throughput or feature claim for the capability
+      axis to read
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 19cd7542ab806fc5732503f2fe2d6ee7e342de549ab1acfba184060f1290b03b

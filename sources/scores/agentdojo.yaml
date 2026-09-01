@@ -1,0 +1,84 @@
+product: agentdojo
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: MIT
+      detail: repository LICENSE body read; covers the suite, task environments and data, no carve-out
+    access:
+      value: open
+      detail: pip install agentdojo; tasks and injection cases ship in the package and repo, no gate
+    answers:
+      value: released
+      detail: ground-truth task and security checks ship with the suite and grade locally; no hidden split
+    datasheet:
+      value: present
+      detail: documentation site agentdojo.spylab.ai with API and suite docs, published results pages,
+        plus arXiv:2406.13352
+  governing_release: agentdojo (pypi 0.1.35)
+  confidence: high
+  note: 'MIT over the whole repository, ungated distribution through PyPI and GitHub, and a maintained
+    documentation site standing in for a Hub card under the category''s repo-documentation precedent.
+    Ladder walk: license_tier open_data (MIT) + documentation present → 5/open.'
+  raw: license:MIT(repository LICENSE, no carve-out);access:open(pip install, data in package);answers:released(checks
+    ship with suite, graded locally);datasheet:present(agentdojo.spylab.ai docs + arXiv:2406.13352)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/LICENSE
+    shows: MIT License body, copyright the six authors (Debenedetti, Zhang, Balunovic, Beurer-Kellner,
+      Fischer, Tramèr), standard text with no data carve-out
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 4285a071f2d382338e52b4fb0a186d952984a34d43a33d8872e1a1d8cb43401e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/README.md
+    shows: '"A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents";
+      pip install agentdojo quickstart; paper link arXiv:2406.13352; results at agentdojo.spylab.ai/results;
+      ETH Zurich + Invariant Labs affiliation'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e
+    establishes:
+    - access
+    - datasheet
+  - url: https://pypi.org/pypi/agentdojo/json
+    shows: version 0.1.35; project_urls.repository = github.com/ethz-spylab/agentdojo, homepage agentdojo.spylab.ai
+      — the backlink that verifies package identity
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9d1eaedc82f694ed45c14d12d17b6a97fd28f2f3c30f247995cdbbbadb6c4c3a
+    establishes:
+    - access
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: '24,142 PyPI downloads in the last month for the agentdojo package, which ships the benchmark
+    suite itself and is backlink-verified to the repository. On the dataset scale that is the 10K-100K
+    band, level 3. The unit caveat is flagged: the dataset bands are calibrated on HF dataset downloads
+    and this product''s channel is PyPI, but the suite IS the distribution (no HF dataset exists), matching
+    how evalplus is banded in this category.'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/agentdojo/recent
+    shows: last_month 24,142 downloads for agentdojo
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 1921066838f668e213091ad679b5f8021db6022a9e2acb0b343420a0b7e38068
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ethz-spylab/agentdojo/main/README.md
+    shows: an evaluation suite; no performance, throughput or feature claim for the capability axis to
+      read
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e

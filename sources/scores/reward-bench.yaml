@@ -1,0 +1,101 @@
+product: reward-bench
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: ODC-BY
+      detail: license odc-by on both Hub dataset cards; the repository code is Apache-2.0 (LICENSE body
+        read)
+    access:
+      value: open
+      detail: both Hub datasets ungated ("gated":false), downloadable parquet
+    answers:
+      value: released
+      detail: chosen/rejected pairs are the labels and ship in the public splits; no held-out answer set
+        for the datasets themselves
+    datasheet:
+      value: present
+      detail: dataset cards on both Hub releases with schema, subsets and citation
+  governing_release: reward-bench-2
+  confidence: high
+  note: 'ODC-BY on both dataset cards, ungated downloads, cards present. Ladder walk: license_tier open_data
+    (odc-by is an enumerated open_data spelling) + documentation present → 5/open. Governing release is
+    RewardBench 2, same license as v1, so the combine rule moves nothing.'
+  raw: license:ODC-BY(both Hub cards; repo code Apache-2.0);access:open(gated:false, both datasets);answers:released(labels
+    in public splits);datasheet:present(cards on both releases)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/datasets/allenai/reward-bench/raw/main/README.md
+    shows: 'card front matter license: odc-by; features prompt/chosen/chosen_model/rejected/ rejected_model;
+      subsets and filtering documented'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 819086ae803ffe3d3126eb2c188b8c67e2a0acb91b67096727f59f5aff423256
+    establishes:
+    - license
+    - datasheet
+  - url: https://huggingface.co/api/datasets/allenai/reward-bench
+    shows: '"gated":false; tags license:odc-by; 10,022 downloads in the trailing 30 days'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: b17b6c092b847ff155de659a64b6b93160ab9d07f8fb781f1be8c2ce03e9005a
+    establishes:
+    - access
+  - url: https://huggingface.co/api/datasets/allenai/reward-bench-2
+    shows: '"gated":false; tags license:odc-by; 4,212 downloads in the trailing 30 days'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 2a3ac31db8254fb2493dfe39c7330286af1fc744511d675cd005e1cd629c2349
+    establishes:
+    - access
+    - license
+  - url: https://raw.githubusercontent.com/allenai/reward-bench/main/LICENSE
+    shows: Apache License 2.0 full body, covering the evaluation code
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/allenai/reward-bench/main/README.md
+    shows: fronts RewardBench and RewardBench 2 together — leaderboard space, both eval datasets, both
+      results sets, papers arXiv:2403.13787 and arXiv:2506.01937
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 303bfafef8be5395ca3ebffb7ee6a629201d81ae7cfce04eba5223d0cf452da5
+    establishes:
+    - datasheet
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 14,234 Hugging Face downloads in the trailing 30 days summed across the two declared datasets
+    (allenai/reward-bench 10,022 + allenai/reward-bench-2 4,212), the 10K-100K band, level 3 on the dataset
+    scale. RewardBench is the standard reward-model leaderboard, but the band rests on the measured figure.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/datasets/allenai/reward-bench
+    shows: 10,022 downloads in the trailing 30 days
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: b17b6c092b847ff155de659a64b6b93160ab9d07f8fb781f1be8c2ce03e9005a
+  - url: https://huggingface.co/api/datasets/allenai/reward-bench-2
+    shows: 4,212 downloads in the trailing 30 days
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 2a3ac31db8254fb2493dfe39c7330286af1fc744511d675cd005e1cd629c2349
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/datasets/allenai/reward-bench/raw/main/README.md
+    shows: a static preference-pair corpus; no performance, throughput or feature claim for the capability
+      axis to read
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 819086ae803ffe3d3126eb2c188b8c67e2a0acb91b67096727f59f5aff423256

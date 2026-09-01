@@ -1,0 +1,90 @@
+product: mle-bench
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: per-competition
+      detail: 'repo LICENSE is MIT over the code only, with the explicit NOTE: "This license applies to
+        the code in this repository, but not the external datasets and files that may be downloaded while
+        using this package"; the corpus defers to each Kaggle competition''s rules — deferred_to_components
+        tier'
+    access:
+      value: terms-acceptance
+      detail: data downloaded via the Kaggle API with Kaggle credentials, under Kaggle's per-competition
+        rules; OpenAI does not distribute the data
+    answers:
+      value: released
+      detail: the benchmark's own test splits are constructed by the prepare scripts from public training
+        sets, and grading scripts ship in the repo — no split hidden by MLE-bench itself
+    datasheet:
+      value: 'yes'
+      detail: repository README documents composition (75 competitions), preparation and grading; arXiv:2410.07095
+  governing_release: mle-bench (openai/mle-bench main)
+  confidence: high
+  note: The gate decides this one. The corpus is obtainable only through Kaggle with an account and per-competition
+    terms, so availability is terms-acceptance and the gate rung fires at 3/gated before the deferred-license
+    rungs are reached; no license tier can lift a gated corpus past 3. The MIT covers only the harness
+    code, and the LICENSE body says so explicitly — which is also why GitHub reports NOASSERTION.
+  raw: license:per-competition(MIT code-only with data carve-out; corpus defers to Kaggle competition
+    rules);access:terms-acceptance(Kaggle API + credentials, per-competition rules);answers:released(splits
+    built from public training sets, grading in repo);datasheet:yes(README + arXiv:2410.07095)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/openai/mle-bench/main/LICENSE
+    shows: 'MIT License, Copyright (c) 2024 OpenAI, standard text, then: "NOTE: This license applies to
+      the code in this repository, but not the external datasets and files that may be downloaded while
+      using this package." — the carve-out that makes the corpus deferred and explains GitHub''s NOASSERTION'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 8a44e3d54b33babc0c79b9c86cf9069e4c132fcd9ddf6f7e3b0f552ccc52c198
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/mle-bench/main/README.md
+    shows: dataset is 75 Kaggle competitions; prepare scripts split public training sets into new train/test;
+      raw data downloaded with the Kaggle API requiring kaggle.json credentials; grading scripts per competition;
+      leaderboard paused for new submissions 2026-04-24
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 586bbc19cb2a3e11be61021866ef6436cf4b4d935bb1db088984b567b76595bb
+    establishes:
+    - access
+    - datasheet
+  - url: https://api.github.com/repos/openai/mle-bench
+    shows: license spdx NOASSERTION (the classifier choking on the carve-out note), 1,727 stars, homepage
+      openai.com/index/mle-bench
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5f3e1afdc0be996b5badc877c091c6a49e49338510581092e084f5f9c2711cb6
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: 'GitHub is the only first-party channel — no HF dataset, no PyPI package, and the data itself
+    is fetched from Kaggle where no per-benchmark download figure is published. The honest call is the
+    stars fallback: 1,727 stars on openai/mle-bench, the 1K-10K band, level 2, capped at 3 by the rubric.
+    Not banded as reported_traction because no vendor traction claim with a figure exists to cite.'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/openai/mle-bench
+    shows: stargazers_count 1727
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5f3e1afdc0be996b5badc877c091c6a49e49338510581092e084f5f9c2711cb6
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/openai/mle-bench/main/README.md
+    shows: a benchmark definition plus leaderboard of OTHER systems' scores; no capability claim about
+      the artifact itself
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 586bbc19cb2a3e11be61021866ef6436cf4b4d935bb1db088984b567b76595bb
