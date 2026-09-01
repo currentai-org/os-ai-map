@@ -2027,14 +2027,6 @@ resolutions:
     from the discovery workflow on artifact grounds and cannot be declared under any identifier.
     Apache-2.0-with-LLVM-exceptions, 921 stars, active - a real, well-maintained repository, just
     not a product of its own.'
-- repo: pytorch/TensorRT
-  verdict: excluded_boundary
-  decided_in: 'Round 2 discovery, compilers'
-  decided_on: '2026-09-01'
-  note: 'Torch-TensorRT, an open compiler wrapper around the corpus''s existing `tensorrt`
-    product, whose optimizing builder ships as a binary. Same shape as cudnn-frontend: an open
-    integration layer over a partly-closed core, which should not be declared as its own product
-    or used to lift tensorrt''s openness reading. BSD-3-Clause, 2,989 stars, active.'
 - repo: NVIDIA/cuvs
   verdict: unresolved
   decided_in: 'Round 2 discovery, compilers'
@@ -2079,20 +2071,23 @@ resolutions:
     so a future read settles both questions together if the project becomes active again.'
 - repo: evidentlyai/evidently
   verdict: unresolved
-  decided_in: 'Round 2 discovery, telemetry_observability (superseding a Round 1 census flag and
-    a same-round parked call)'
+  decided_in: 'Round 2 discovery, telemetry_observability; ruled 2026-09-01 in PR #451 review'
   decided_on: '2026-09-01'
-  note: 'Contested three times now and never settled: the Round 1 whole-corpus census
-    (2026-08-31) flagged it as an evaluation_code/telemetry_observability boundary case; this
-    round''s first telemetry_observability sweep read it as evaluation_code ("evaluation and
-    drift-testing framing... do not add here"); this round''s second sweep, run independently at
-    a lower retrieval floor, read it the opposite way and accepted it into
-    telemetry_observability ("production ML/LLM monitoring... distinct from the evaluation_code
-    harnesses that grade models"). Both readings are defensible - it genuinely does both drift
-    monitoring on deployed models and pre-deployment quality checks - which is exactly why one
-    ruling belongs here rather than being re-derived, and re-flipped, by the next sweep that
-    encounters it. Held out of both categories'' Round 2 promotion pools pending a person''s
-    call. Apache-2.0, 7,874 stars, active.'
+  note: 'Contested three times: the Round 1 whole-corpus census (2026-08-31) flagged it as an
+    evaluation_code/telemetry_observability boundary case; this round''s first
+    telemetry_observability sweep read it as evaluation_code; this round''s second sweep, run
+    independently at a lower retrieval floor, read it the opposite way. RULED in PR #451 review:
+    telemetry_observability. The deciding test is product shape, not feature overlap - evaluation
+    is one workflow inside Evidently, while continuous monitoring (a persistent UI/service
+    tracking metrics and tests over time) is its first-class surface, unlike a benchmark-runner
+    or model-ranking harness such as lm-evaluation-harness, HELM or OpenCompass. Verdict stays
+    `unresolved` rather than moving to a settled-product verdict, because the underlying question
+    a person had to look at has now been looked at and the correct next action is exactly what
+    `unresolved` already permits: propose it. It is accepted as a telemetry_observability
+    candidate in `sources/registry/telemetry_observability.yaml`. The same product-shape test
+    applies to `langwatch` and `judgeval`, held out of Round 1''s evaluation_code pass on the same
+    unresolved boundary - worth reading against this ruling before a future sweep re-derives it
+    from nothing. Apache-2.0, 7,874 stars, active.'
 - repo: FailproofAI/failproofai
   verdict: unresolved
   decided_in: 'Round 2 discovery, telemetry_observability'
