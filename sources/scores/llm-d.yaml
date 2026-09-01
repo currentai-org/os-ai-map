@@ -1,0 +1,102 @@
+product: llm-d
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: CNCF project; founders' commercial platforms (e.g. Red Hat OpenShift AI) are separate products
+        sold beside it, which software.yaml does not count as gating
+  confidence: high
+  note: The LICENSE body is the byte-stock Apache-2.0 text. The repository is public and active, the guides
+    and Helm charts are in-tree, and no component sits behind a license key or enterprise edition; the
+    vendors' paid platforms that bundle llm-d are separate products, the langchain shape.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(CNCF project; founders' commercial platforms
+    are separate products sold beside it)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/llm-d/llm-d/main/LICENSE
+    shows: 'LICENSE body, read in full: stock Apache License Version 2.0 text, unmodified (digest matches
+      the canonical Apache-2.0 text).'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/llm-d/llm-d
+    shows: Repo metadata for llm-d/llm-d - archived false, license Apache-2.0, 4,375 stars, homepage https://www.llm-d.ai,
+      pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 019c96139e229347eb159fb5cdfda5568b6f7620ea5b30ef06f4f9b0e945cd35
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/llm-d/llm-d/main/README.md
+    shows: 'README, read for a paid tier or withheld component (none named): "a high-performance distributed
+      inference serving stack optimized for production deployments on Kubernetes"; CNCF Sandbox, founded
+      by Red Hat, Google Cloud, IBM Research, CoreWeave, NVIDIA; intelligent routing, tiered KV cache,
+      prefill/decode disaggregation, wide expert-parallelism, SLO-aware autoscaling, batch APIs.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,375 GitHub stars, in the 1K-10K band of the stars scale. The product ships through container
+    images and Helm charts, channels that publish no count the pipeline can read, so stars are the last
+    honest route; production deployments named in the README (Tesla/Red Hat, AWS, Oracle, Google benchmarks)
+    indicate standing the star count understates, and raising the level on them would need its own evidenced
+    reported_traction judgment, which this packet does not make.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/llm-d/llm-d
+    shows: Repo metadata - stargazers_count = 4,375 - for llm-d/llm-d.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 019c96139e229347eb159fb5cdfda5568b6f7620ea5b30ef06f4f9b0e945cd35
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'Kubernetes-native serving above the engines: prefix-cache- and load-aware routing with predicted-latency
+    scheduling, hierarchical KV offload to CPU/disk, prefill/decode disaggregation, wide expert-parallelism
+    (50k tok/s on a 16x16 B200 topology), SLO-aware autoscaling and batch APIs; validated on NVIDIA, AMD
+    MI300X, Intel XPU and Google TPU. The engine underneath is vLLM or SGLang, not its own.'
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the vllm anchor, level with dynamo, which is the same architectural shape: a serving
+    stack whose forward pass belongs to somebody else''s engine. Its cross-accelerator production benchmarks
+    are the widest validation surface of the orchestration entrants, but without an engine of its own
+    it does not reach the anchor''s band.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README, re-read today: vLLM is the engine llm-d itself orchestrates ("Model
+        servers like vLLM ... handle efficiently running large language models on accelerators" - llm-d
+        README); the one_below spacing is judged on that dependency. Digest identical to the anchor''s
+        recorded 2026-08-31 source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/llm-d/llm-d/main/README.md
+    shows: 'Performance highlights: 3x throughput / 2x TTFT with prefix-cache-aware routing (Llama 3.1
+      70B, 4x MI300X, Tesla/Red Hat); 70% higher tokens/sec with P/D disaggregation vs standard vLLM (AWS
+      B200); 50k tok/s wide-EP on 16x16 B200; 13.9x with hierarchical KV offload; four core themes - routing,
+      KV management, serving large models, operational excellence.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: cd033c765d1dd60fddd7ddeeb583b3852283ca4b49bc5cb317d139ef869f6b08

@@ -1,0 +1,102 @@
+product: mlx-vlm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: no enterprise or paid tier in the repository or README; the project sells nothing
+  confidence: high
+  note: The LICENSE body is the stock MIT text, "Copyright (c) 2025 Prince Canuma", read in full rather
+    than taken from the API label. The repository is public and unarchived and is the package itself.
+    Nothing in the README or the repo offers a hosted, paid or enterprise build, so the core reads as
+    ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(no enterprise or paid tier in the repository
+    or README)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/LICENSE
+    shows: 'LICENSE body, read in full: stock MIT text, "Copyright (c) 2025 Prince Canuma", no appended
+      condition.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f74c448746be3376e27dee43e2be9ec9d55f4820cd7466c603a6c7d1fd2d25b8
+    establishes:
+    - license
+  - url: https://api.github.com/repos/Blaizzy/mlx-vlm
+    shows: Repo metadata for Blaizzy/mlx-vlm - archived false, license MIT, 5,454 stars, pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 12260b0deef9466c8991271cc0fa2fa3375908e46b4622560126b747d35cb4bc
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/README.md
+    shows: 'README, read for a paid tier or gated build (none found) and for the product''s shape: "MLX-VLM
+      is a package for inference and fine-tuning of Vision Language Models (VLMs) and Omni Models ...
+      on your Mac using MLX"; FastAPI server, continuous batching, automatic prefix caching, KV cache
+      quantization, speculative decoding, distributed inference; fine-tuning is one late section.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f5450692c4c0bba1353b824fb92533ed41466d08c568aa4fc3c586ee0d15cd29
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI mlx-vlm drew 777,221 downloads in the trailing 30 days, banding at level 3 (100K-1M) on the
+    software scale. The package backlinks to Blaizzy/mlx-vlm. The census figure of 798,702 (2026-08-31)
+    re-measured a touch lower a day later; same band.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/mlx-vlm/recent
+    shows: '"last_month":777221'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 4d46ea197d589921743350e5e8a0df309e757010a17300ebb6eb3df1ab12a66f
+  - url: https://pypi.org/pypi/mlx-vlm/json
+    shows: project_urls Homepage/Repository = https://github.com/Blaizzy/mlx-vlm; version 0.6.17; summary
+      names inference and fine-tuning of VLMs on Mac using MLX.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 16799b4f305312aff75b4e36b03eed5ceea499bb4f9d72ce41335c31cfd021eb
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'Local VLM/omni-model serving on Apple silicon: FastAPI server with continuous batching, automatic
+    prefix caching, KV-cache quantization, speculative decoding (DFlash/DSpark), distributed inference;
+    single hardware family rather than multi-accelerator.'
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: 'Two bands below the vllm anchor, level with uzu and litert-lm, the other single-target local
+    engines: it serves one hardware family and does not carry the multi-node, multi-accelerator parallelism
+    surface the bands above are placed on. Its multimodal input breadth (image, audio, video) is the widest
+    of the local engines here.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README feature list, re-read today: PagedAttention, continuous batching, tensor/pipeline/data/expert
+        parallelism, speculative decoding, OpenAI-compatible server, "200+ model architectures" — still
+        the multi-accelerator, multi-node surface this product''s two_below spacing is judged against.
+        Digest identical to the one vllm''s capability axis recorded on 2026-08-31.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/Blaizzy/mlx-vlm/main/README.md
+    shows: 'README sections: Server (FastAPI), Continuous Batching, Automatic Prefix Caching (APC), KV
+      Cache Quantization, Speculative Decoding, Distributed Inference, Fine-tuning.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f5450692c4c0bba1353b824fb92533ed41466d08c568aa4fc3c586ee0d15cd29

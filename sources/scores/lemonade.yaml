@@ -1,0 +1,101 @@
+product: lemonade
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; LICENSE appends third-party MIT/attribution notices for vendored components after the
+        unmodified text
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: free local server; no paid tier, enterprise edition or license key anywhere in the repo
+        or README
+  confidence: high
+  note: The LICENSE body carries the full unmodified Apache-2.0 text ("Copyright 2026 Lemonade Community"
+    in the appendix slot), followed after END OF TERMS AND CONDITIONS by attribution blocks for vendored
+    components - Lucide icons, amdxdna_accel.h, llama.cpp, Ollama, TurnkeyML (Groq copyright), aixlog
+    - each under its own permissive license. Those are notices about bundled third-party code, not conditions
+    on Lemonade, so the governing license reads as clean Apache-2.0. The product is entirely free and
+    self-hosted; nothing is withheld.
+  raw: license:Apache-2.0(OSI, vendored third-party MIT notices appended after the unmodified text);source:public;core-gated:ungated(free
+    local server; no paid tier, enterprise edition or license key)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/LICENSE
+    shows: 'LICENSE body, read in full: unmodified Apache-2.0 terms ending at END OF TERMS AND CONDITIONS,
+      "Copyright 2026 Lemonade Community", then vendored-component attribution sections (Lucide, amdxdna_accel.h,
+      llama.cpp, Ollama, TurnkeyML, aixlog), each MIT-family, with no added condition on the product itself.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 83f746cbc5a64bc4f93a0f20304d1a50403bdd6e7f5e7bf739854caf6d3018a4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/lemonade-sdk/lemonade
+    shows: Repo metadata for lemonade-sdk/lemonade - archived false, license Apache-2.0, 5,560 stars,
+      homepage https://lemonade-server.ai/, pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: fa6555f1fac653dd4a012c287e97caf6046cce5f92a7a0f4c6c76fdedfb4d402
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/README.md
+    shows: 'README, read for a paid tier (none - "100% free and private"): local AI server with OpenAI/Anthropic/Ollama
+      APIs, Lemonade Server and Embeddable Lemonade flavors, Windows/macOS/Linux/Docker/Snap/PPA distribution,
+      chat, image gen, speech gen and transcription models on NPU and GPU.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9f3647d6b4d7c4d577ac603c8126b88459fa4ba3d80c7ab9de485af04b589716
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 5,560 GitHub stars, in the 1K-10K band of the stars scale. The product ships as OS installers,
+    Docker images, a Snap and a PPA - channels the pipeline cannot count - and the PyPI package the census
+    named has been removed (404 this session), so stars are the only measurable route.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/lemonade-sdk/lemonade
+    shows: Repo metadata - stargazers_count = 5,560 - for lemonade-sdk/lemonade.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: fa6555f1fac653dd4a012c287e97caf6046cce5f92a7a0f4c6c76fdedfb4d402
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'Local multi-modal serving on consumer NPU/GPU: OpenAI-, Anthropic- and Ollama-compatible APIs,
+    GGUF (llama.cpp) and ONNX/OGA backends, chat, image generation, speech generation and transcription,
+    embeddable binary, Ryzen AI NPU optimization; single-node consumer hardware rather than datacenter
+    parallelism.'
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: Two bands below the vllm anchor, level with llamafile and uzu among the local engines. Its NPU
+    coverage and multi-modality are broader than the other single-node locals, but the serving engines
+    underneath are llama.cpp and ONNX Runtime and it carries no distributed or datacenter surface.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README, re-read today: the datacenter parallelism and architecture breadth
+        the two_below spacing is judged against. Digest identical to the anchor''s recorded 2026-08-31
+        source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/lemonade-sdk/lemonade/main/README.md
+    shows: 'Feature surface: lemonade run for LLMs (Gemma GGUF), SDXL-Turbo image gen, kokoro speech gen,
+      Whisper transcription; OpenAI/Anthropic/Ollama-compatible server; embeddable binary; NPU/GPU auto-optimization;
+      marketplace of connected apps.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9f3647d6b4d7c4d577ac603c8126b88459fa4ba3d80c7ab9de485af04b589716

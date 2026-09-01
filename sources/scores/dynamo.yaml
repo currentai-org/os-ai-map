@@ -1,0 +1,112 @@
+product: dynamo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; LICENSE body carries a prepended NOTICE about vendored MIT test data, terms unmodified
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the published repo is the whole stack; NVIDIA's paid NIM/enterprise offerings are separate
+        products sold beside it, which software.yaml does not count as gating
+  confidence: high
+  note: The LICENSE body opens with a NOTICE that ./lib/llm/tests/data/deepseek-v3.2 files are MIT-licensed
+    DeepSeek derivatives, states "The rest of this codebase is licensed under the Apache License 2.0",
+    and then carries the full unmodified Apache-2.0 text. That NOTICE is why the GitHub API reports NOASSERTION;
+    it adds no term. The repository is public, active and is the product; no component is behind a license
+    key, and the README names no enterprise edition of Dynamo itself.
+  raw: license:Apache-2.0(OSI, NOTICE about vendored MIT test data prepended, terms unmodified);source:public;core-gated:ungated(the
+    published repo is the whole stack; NVIDIA's paid enterprise offerings are separate products beside
+    it)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ai-dynamo/dynamo/main/LICENSE
+    shows: 'LICENSE body, read in full: a NOTICE that test-data files under ./lib/llm/tests/data/deepseek-v3.2
+      are MIT-licensed derivatives of the DeepSeek-V3.2 repository, "The rest of this codebase is licensed
+      under the Apache License 2.0", followed by the complete stock Apache-2.0 text with END OF TERMS
+      AND CONDITIONS at the standard place and nothing appended after the appendix.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: aeeca3d74a13b91d17ab9211c407b8d94a77bf8d9e5750c467818d3066b8adcf
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ai-dynamo/dynamo
+    shows: Repo metadata for ai-dynamo/dynamo - archived false, license NOASSERTION (the API could not
+      classify the NOTICE-prefixed file), 7,938 stars, homepage https://docs.nvidia.com/dynamo/latest,
+      pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e5b701c378585a1a349ce9101452da3ce07d25d9963a5be2b617404eeec5c48e
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/ai-dynamo/dynamo/main/README.md
+    shows: 'README, SPDX header "Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES ... SPDX-License-Identifier:
+      Apache-2.0"; "The open-source, datacenter-scale inference stack"; read for a paid tier or withheld
+      component of Dynamo itself - none named; Apache-2.0 badge; PyPI ai-dynamo badge; NGC container catalog
+      linked as packaging.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9f22a2fd61812ce65ca8611be11701a30b5ac5e331bbf1c2d4c3dccd0dd3a6b9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI ai-dynamo drew 58,749 downloads in the trailing 30 days, banding at level 2 (10K-100K). The
+    package backlinks to ai-dynamo/dynamo. Dynamo also ships as NGC container images, a channel that publishes
+    no count here, so the band is a floor read on the countable channel and understates a container-first
+    deployment pattern - the semantic-kernel shape, recorded rather than substituted.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/ai-dynamo/recent
+    shows: '"last_month":58749'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: afd889d3c0bc63fa389cdbc783b707d8540dc7bfa142e456f0fa903a028a4659
+  - url: https://pypi.org/pypi/ai-dynamo/json
+    shows: project_urls Repository = https://github.com/ai-dynamo/dynamo.git; version 1.4.2; summary "Distributed
+      Inference Framework".
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 28dbeae6ec56a9cac078eb481ec080701c57448287d4d4dfcb79ff9be1fd1909
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'Cluster-level serving above the engines: disaggregated prefill/decode pools, KV-aware routing,
+    multi-tier KV block manager (GPU/CPU/SSD/remote), SLA-driven planner and autoscaling, GPU-to-GPU weight
+    streaming, multimodal and video generation workloads; it does not itself execute the model forward
+    pass - vLLM, SGLang or TensorRT-LLM do.'
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor. Its serving-path surface at cluster scale (7x throughput per GPU
+    on GB200 NVL72 reported via SemiAnalysis InferenceX, 2x TTFT via Baseten) is the widest in the category
+    above single-engine scope, but the engine underneath is somebody else's product and Dynamo is inert
+    without one, which is what keeps it off the anchor's band.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README, re-read today: vLLM is itself the engine - PagedAttention, continuous
+        batching, parallelism, 200+ architectures - where Dynamo coordinates such engines; the one_below
+        spacing is judged on that dependency. Digest identical to the anchor''s recorded 2026-08-31 source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ai-dynamo/dynamo/main/README.md
+    shows: 'Core capabilities table: Disaggregated Prefill/Decode, KV-Aware Routing, KV Block Manager,
+      ModelExpress weight streaming, SLA Planner, Grove gang scheduling, fault tolerance; "it doesn''t
+      replace SGLang, TensorRT-LLM, or vLLM, it turns them into a coordinated multi-node inference system";
+      key results 7x throughput/GPU (GB200 NVL72), 2x TTFT (Baseten).'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9f22a2fd61812ce65ca8611be11701a30b5ac5e331bbf1c2d4c3dccd0dd3a6b9

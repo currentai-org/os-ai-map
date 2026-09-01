@@ -1,0 +1,100 @@
+product: mlx-lm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: no enterprise or paid tier; the published repo is the whole package
+  confidence: high
+  note: The LICENSE body is the stock MIT text, "Copyright (c) 2023 Apple Inc.", read in full. The repository
+    is public and unarchived and builds the published package; nothing in the README names a paid tier,
+    hosted build or withheld component, so the core reads as ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(no enterprise or paid tier; the published repo
+    is the whole package)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ml-explore/mlx-lm/main/LICENSE
+    shows: 'LICENSE body, read in full: stock MIT text, "Copyright (c) 2023 Apple Inc.", no appended condition.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: ccfab7ccb2ea306f71531c8ca77bb55507606cd90768b1e32b8b52ab5b48cf01
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ml-explore/mlx-lm
+    shows: Repo metadata for ml-explore/mlx-lm - archived false, license MIT, 6,853 stars, pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 823520b9171e30f03a53d5c849de2f354dcc3b397e687d6cd68b43d343648d6f
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/ml-explore/mlx-lm/main/README.md
+    shows: 'README, read for a paid tier or gated build (none found) and for the product''s shape: "MLX
+      LM is a Python package for generating text and fine-tuning large language models on Apple silicon
+      with MLX"; generation/chat/server CLI, HF Hub integration, quantization and upload, distributed
+      inference and fine-tuning with mx.distributed.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 625b4478800ad2fd5d393792f7ca8d4006be9c95b725cc239a9e67b7aa891875
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI mlx-lm drew 1,124,056 downloads in the trailing 30 days, banding at level 4 (1M-10M). The
+    package backlinks to ml-explore/mlx-lm. conda-forge distribution exists and is uncounted, so the figure
+    is a floor on one channel of two; it does not change the band's direction.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/mlx-lm/recent
+    shows: '"last_month":1124056'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 03e01116ade545737089158340e50956860bec80ceeaede180c4d621bb88efb7
+  - url: https://pypi.org/pypi/mlx-lm/json
+    shows: home_page = https://github.com/ml-explore/mlx-lm; version 0.31.3; summary "LLMs with MLX and
+      the Hugging Face Hub".
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 914610c4167442d24a085857067b22f274663c756efed19372de7b80e62800fb
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'LM generation and serving on Apple silicon: generation/chat/server CLI, prompt caching, rotating
+    KV cache, configurable prefill, quantized conversion to the Hub, distributed inference and fine-tuning
+    via mx.distributed; single hardware family rather than multi-accelerator.'
+  relative_to: vllm
+  relation: two_below
+  confidence: medium
+  note: 'Two bands below the vllm anchor, level with uzu, llamafile and the other single-target local
+    engines: it serves one hardware family and carries none of the datacenter parallelism or disaggregation
+    surface the 4s and 5s here are placed on. Within the Apple-silicon niche it is the reference LM runtime,
+    which the adoption axis, not this one, credits.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README feature list, re-read today: PagedAttention, continuous batching, multi-form
+        parallelism, speculative decoding, OpenAI-compatible server, "200+ model architectures" — the
+        spacing still holds. Digest identical to the anchor''s recorded 2026-08-31 source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/ml-explore/mlx-lm/main/README.md
+    shows: 'README feature list: HF Hub integration, quantization and upload, LoRA and full fine-tuning,
+      distributed inference and fine-tuning with mx.distributed, prompt caching, rotating fixed-size KV
+      cache, prefill step size, mlx_lm.server.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 625b4478800ad2fd5d393792f7ca8d4006be9c95b725cc239a9e67b7aa891875

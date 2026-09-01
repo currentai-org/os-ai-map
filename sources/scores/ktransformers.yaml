@@ -1,0 +1,103 @@
+product: ktransformers
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: research project; no enterprise directory, license key or paid build in the repo or README
+  confidence: high
+  note: The LICENSE body is the byte-stock Apache-2.0 text (digest identical to the canonical text vLLM
+    ships). The repository is public and very active, and the README describes a research project with
+    no commercial edition, hosted tier or withheld component.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(no enterprise directory, license key or
+    paid build in the repo or README)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/LICENSE
+    shows: 'LICENSE body, read in full: stock Apache License Version 2.0 text, unmodified (digest matches
+      the canonical Apache-2.0 text).'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/kvcache-ai/ktransformers
+    shows: Repo metadata for kvcache-ai/ktransformers - archived false, license Apache-2.0, 19,430 stars,
+      pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c82dc823565d6210cafbf5ff42a56fa9a8ee81b502200a8389424bd414c19886
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/README.md
+    shows: 'README, read for a paid tier or gated component (none named): "a research project focused
+      on efficient inference and fine-tuning of large language models through CPU-GPU heterogeneous computing";
+      kt-kernel Inference and SFT entry points; DeepSeek-R1 671B on single 24GB GPU / 382G DRAM; Ascend
+      NPU, Intel Arc, ROCm, AMX support; SGLang integration roadmap.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f57f9e328a25da1759dc5a7d4ff888ff7eb6776aea58741adf40ddf419afd5f1
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 19,430 GitHub stars, in the >10K band of the stars scale, which caps at level 3. A PyPI package
+    exists and is the project's own, but at 2,223 downloads in the trailing 30 days it is a minority channel
+    for a product installed through hardware-specific source builds, so banding on it would measure the
+    wrong channel; it is left undeclared and the stars route wins.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/kvcache-ai/ktransformers
+    shows: Repo metadata - stargazers_count = 19,430 - for kvcache-ai/ktransformers.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: c82dc823565d6210cafbf5ff42a56fa9a8ee81b502200a8389424bd414c19886
+  - url: https://pypistats.org/api/packages/ktransformers/recent
+    shows: '"last_month":2223 - the PyPI channel figure the note above declines to band on.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 373bf34cd7ec689fdf11e9b033ab258efdac73b237b4abde2b8f46072e662fc7
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: 'CPU-GPU heterogeneous inference for MoE models far larger than GPU memory: AMX/AVX expert kernels
+    in DRAM, FP8/BF16 native precision, 3-layer GPU-CPU-disk prefix cache, multi-concurrency serving,
+    backends for NVIDIA, AMD ROCm, Intel Arc and Ascend NPU; day-0 support cadence for frontier MoE releases
+    (GLM-5.x, Kimi-K2.5, MiniMax-M3, DeepSeek-V4).'
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor, level with lmdeploy and mistral-rs. It owns a capability the anchor
+    does not have - serving 671B-class MoE models on a single consumer GPU by scheduling experts onto
+    CPU - and spans four accelerator vendors, but it is not the datacenter throughput frontier and its
+    serving path is now partly delivered through SGLang integration rather than standing alone.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README, re-read today: the multi-node parallelism and 200+ architecture breadth
+        the one_below spacing is judged against. Digest identical to the anchor''s recorded 2026-08-31
+        source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/kvcache-ai/ktransformers/main/README.md
+    shows: 'Updates timeline and capabilities: DeepSeek-R1/V3 on single 24GB GPU + 382G DRAM at 3~28x
+      speedup; AMX-Int8/BF16 kernels; FP8 GPU kernel; 3-layer prefix cache; multi-concurrency; ROCm, Intel
+      Arc, Ascend NPU support; SGLang integration; GLM-5.3, MiniMax-M3, Kimi-K2.5 day-0 support.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f57f9e328a25da1759dc5a7d4ff888ff7eb6776aea58741adf40ddf419afd5f1
