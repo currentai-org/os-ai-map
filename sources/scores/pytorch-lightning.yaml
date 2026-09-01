@@ -77,7 +77,20 @@ capability:
   note: Scored 4 as a library built on a framework rather than a framework. It structures and distributes a PyTorch
     training loop, which is the same shape as accelerate at 4 in this category, and depends on PyTorch for the tensor
     engine and autograd that put pytorch at 5. Its breadth of accelerator and strategy coverage is what holds it
-    at the top of that band. Stated here rather than recorded as relative_to because accelerate has not been confirmed as recently as this pass, and a comparison cannot claim a fresher verification date than its root.
+    at the top of that band.
+  relative_to: accelerate
+  relation: at
+  comparison:
+    last_attested: '2026-08-31'
+    sources:
+    - url: https://github.com/huggingface/accelerate
+      shows: The README still says Accelerate "abstracts exactly and only the boilerplate code related to multi-GPUs/TPU/fp16
+        and leaves the rest of your code unchanged", adding five lines to a standard PyTorch script to run on single
+        CPU, single GPU, multi-GPU or TPU with or without fp8, fp16 or bf16 mixed precision. Structuring and distributing
+        somebody else's tensor engine is the shape this band shares with it.
+      accessed: '2026-08-31'
+      http_status: 200
+      content_sha256: 53dc983aca6293181a80b55177990ddce94c66430983c9ee98e4399c5f327185
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/Lightning-AI/pytorch-lightning/master/README.md

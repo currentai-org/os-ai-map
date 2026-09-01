@@ -77,6 +77,20 @@ capability:
     and publishes weak- and strong-scaling benchmarks, whereas XTuner is specialized to MoE and its throughput claim
     is stated in the README rather than in a published scaling study. The same one_below relation places swift and
     llama-factory.
+  relative_to: megatron-lm
+  relation: one_below
+  comparison:
+    last_attested: '2026-08-31'
+    sources:
+    - url: https://github.com/NVIDIA/Megatron-LM
+      shows: Megatron Core still advertises composable TP, PP, DP, EP and CP with FP16, BF16, FP8 and FP4 mixed
+        precision, and Performance Benchmarking still reports training from 2B to 462B parameters across thousands
+        of GPUs, a 462B model benchmarked on 6,144 H100 GPUs with MFU rising from 41% to 47-48%, and a GPT-3 of
+        slightly more than 175 billion parameters strong-scaled from 96 to 4,608 H100 GPUs. The composable general-purpose
+        parallelism and the published scaling study are what hold XTuner's MoE-specialized story one band below.
+      accessed: '2026-08-31'
+      http_status: 200
+      content_sha256: 7c7a75d3ca90f4b9e41eee29630d359164b715fc07ebd8157a6ffffdf924d454
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/InternLM/xtuner/main/README.md
