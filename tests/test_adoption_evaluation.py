@@ -46,10 +46,14 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
-RECONCILIATION_DIGEST = "0bdd78f2cb1a40374c6e02d633412b09796ce31e1da26ea8e68d5ae71ac4f69c"
+# Moved again 2026-09-01 by the Round 1 calibration tranche: 23 recorded assessments
+# added with the new products (553 -> 576) and the gsm8k level moved 4 -> 5 on a fresh
+# read. MEASUREMENTS_DIGEST is deliberately unchanged: measurements come from the
+# warehouse observation parquet, which carries no rows for the new products yet.
+RECONCILIATION_DIGEST = "880129665629304ac5893bd9efadde84a1986875e8b11de1a215617534eb0f17"
 
 MEASUREMENT_COUNT = 377
-RECORDED_ASSESSMENT_COUNT = 553
+RECORDED_ASSESSMENT_COUNT = 576
 ROUTING_POLICY_VERSION = "2"
 
 

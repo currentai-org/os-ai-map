@@ -1,0 +1,106 @@
+product: euroeval
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: GitHub
+    core-gated:
+      value: ungated
+    free_text:
+    - no feature-gated core
+  confidence: high
+  note: 'MIT and fully public: the LICENSE body is the stock MIT text (copyright Dan Saattrup Smart and
+    Alexandra Instituttet A/S) with no appended terms. The package installs from PyPI, dataset-creation
+    scripts ship in the repo, and no pricing, paid tier or license key appears in the README or on the
+    docs site.'
+  raw: license:MIT(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/EuroEval/EuroEval/license
+    shows: GitHub's license endpoint reports spdx_id MIT and returns the stock MIT text (Copyright (c)
+      2021-2026 Dan Saattrup Smart; Copyright (c) 2022-2026 Alexandra Instituttet A/S) with no appended
+      terms
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 4a8644ad8782eb34e414181121d9e01594e8048fd23c1c608de89141d0277d26
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/EuroEval/EuroEval/main/README.md
+    shows: README documents the open framework, reproduction scripts for every evaluation dataset in src/scripts/dataset_creation,
+      and the docs-site install path; no pricing, paid tier or license key
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e78c576c8178d374bc11feb0aad9bdfb904292ac56b02e67f05908dad31fe2c9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: The euroeval package draws 750 PyPI downloads in the trailing 30 days, banding at level 1 (<10K).
+    The package is the documented install path and is backlink-verified. The legacy scandeval package
+    (the project's pre-rename name) still draws 2,207 a month; summed the product stays well under 10K,
+    so the band holds across the rename.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://pypistats.org/api/packages/euroeval/recent
+    shows: last_month = 750 downloads of the euroeval package
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 3607531216e23ff40288678187bd4189412473030247801ebe9f755568e46987
+  - url: https://pypistats.org/api/packages/scandeval/recent
+    shows: last_month = 2,207 downloads of the legacy scandeval package — recorded so the rename's second
+      channel is visible; the sum stays under 10K
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 683a130302239f8644b12d81add2c625d8bc5e5123e84332fe8d805ed2875a43
+  - url: https://pypi.org/pypi/euroeval/json
+    shows: project_urls.Repository = github.com/EuroEval/EuroEval, author Dan Saattrup Smart <dan.smart@alexandra.dk>,
+      version 18.0.0 uploaded 2026-08-14 — the package is the product
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0b633945474edfe075403fea7d578465b3f3da29f56ad1571703a909d2011a4b
+capability:
+  score: 3
+  basis: feature_matrix
+  value: evaluates encoders, decoders, encoder-decoders, base and instruction-tuned models across 30+
+    European languages; per-language public leaderboards; every evaluation dataset reproducible from scripts
+    in the repo
+  relative_to: lighteval
+  relation: one_below
+  confidence: medium
+  note: The deepest European-language coverage in the category — 30+ languages, all model classes, reproducible
+    datasets and public leaderboards — but a single-domain harness with a narrow task surface and one
+    primary maintainer, an order below lighteval's 1000+ tasks and backend spread, so one below lighteval
+    beside bigcodebench and olmes.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
+      shows: '"Lighteval supports 1000+ evaluation tasks across multiple domains" with inspect-ai, transformers,
+        vLLM and SGLang backends — the breadth EuroEval trades for per-language depth, which is the one-rung
+        spacing.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://euroeval.com
+    shows: '"the standard benchmark for evaluating language models across 30+ European languages"; supports
+      encoders, decoders, encoder-decoders, base and instruction-tuned models; publisher Alexandra Institute;
+      interactive leaderboards'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 8a3a709a111bcbcfe28202d1220528bf757211e76678933012441e3f0d7c7d0f
+  - url: https://raw.githubusercontent.com/EuroEval/EuroEval/main/README.md
+    shows: dataset reproduction scripts per language; formerly ScandEval; maintainer and docs links
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e78c576c8178d374bc11feb0aad9bdfb904292ac56b02e67f05908dad31fe2c9

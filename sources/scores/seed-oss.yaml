@@ -1,0 +1,109 @@
+product: seed-oss
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 36B Base, Base-woSyn and Instruct, ungated on HF
+    data:
+      value: closed
+      detail: 12T-token pretraining corpus not released; the woSyn base variant is a synthetic-data ablation,
+        not a data release
+    code:
+      value: partial
+      detail: ByteDance-Seed/seed-oss is inference/usage; no training pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: 'Apache-2.0 weights in all three SKUs, ungated, with the 12T-token corpus unreleased and only
+    inference code published. The card says plainly the series is released "under the Apache-2.0 license"
+    and that the tech report is coming; nothing about the recipe ships. Open weights, closed recipe: 3
+    by the fallthrough.'
+  raw: weights:open(36B Base, Base-woSyn and Instruct, ungated on HF);data:closed(12T-token pretraining
+    corpus not released; the woSyn base variant is a synthetic-data ablation, not a data release);code:partial(ByteDance-Seed/seed-oss
+    is inference/usage; no training pipeline);license:Apache-2.0(OSI)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Instruct
+    shows: '`gated: false`, cardData.license `apache-2.0`, safetensors listed; 35,117 downloads in the
+      trailing 30 days.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f60d7b42b626fc6d991c65c6de8499c4f3b4500080c260400ee58602e3f24f6a
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ByteDance-Seed/Seed-OSS-36B-Instruct/raw/main/README.md
+    shows: 'Card: "We release Seed-OSS-36B-Base (both with and without synthetic data versions) and Seed-OSS-36B-Instruct";
+      "Although trained with only 12T tokens"; "We release this series of models to the open-source community
+      under the Apache-2.0 license"; a "Tech Report Coming Soon" badge and no corpus or pipeline link.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: a8b639d3654d3453bed9037cd1470ea6bc43289b1058a71840f8e11a99a6ca49
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://api.github.com/repos/ByteDance-Seed/seed-oss
+    shows: '`license: Apache-2.0`, 892 stars; the release repository, carrying no training pipeline —
+      what holds `code` at partial.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 60bd009a1a924278d964673d6741bccf381d0732fbb64edbe142fbae265e5571
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 41,913 downloads in the trailing 30 days across the two declared artifacts (Seed-OSS-36B-Instruct
+    35,117; Seed-OSS-36B-Base 6,796), which bands at level 2 (10K-100K) on the model adoption scale.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Instruct
+    shows: 35,117 downloads in the trailing 30 days for ByteDance-Seed/Seed-OSS-36B-Instruct
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f60d7b42b626fc6d991c65c6de8499c4f3b4500080c260400ee58602e3f24f6a
+  - url: https://huggingface.co/api/models/ByteDance-Seed/Seed-OSS-36B-Base
+    shows: 6,796 downloads in the trailing 30 days for ByteDance-Seed/Seed-OSS-36B-Base
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: a630e9e918acb3ad35406df1c1234f55e1466b22c5f5685626ecec13332ea6e3
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: AIME/GPQA/long-context suites (card benchmark tables)
+  value: 'Seed-OSS-36B-Instruct card benchmark tables: AIME24 91.7, AIME25 84.7-class math results and
+    leading long-context/agentic scores among open-source peers in its size class, at 12T training tokens.'
+  relative_to: olmo
+  relation: at
+  confidence: medium
+  note: 'The strong 30B-class open-weight tier: card benchmarks put the instruct model at or ahead of
+    same-size open peers on math and reasoning despite a smaller training budget, which is the same "best
+    of the ~32B open class, short of the trillion-parameter frontier" reading that puts olmo at 4. Vendor-published
+    numbers with the tech report still pending, so confidence stays medium.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://allenai.org/blog/olmo3
+      shows: The OLMo 3 post still reads as the peer's value records — "narrowing the gap to the best
+        open-weight models of similar scale - such as Qwen 3 32B - while training on roughly 6x fewer
+        tokens" — the same ~32B-class-leader claim Seed-OSS's card tables make, so the at-spacing holds.
+        (Digest matches the peer's recorded fetch of 2026-08-13, so the page is unchanged.)
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/ByteDance-Seed/Seed-OSS-36B-Instruct/raw/main/README.md
+    shows: Card benchmark tables with AIME24 91.7 for Seed-OSS-36B-Instruct against same-size open peers,
+      plus long-context and agentic suite results; "Although trained with only 12T tokens, Seed-OSS achieves
+      excellent performance on several popular open benchmarks".
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: a8b639d3654d3453bed9037cd1470ea6bc43289b1058a71840f8e11a99a6ca49

@@ -1,0 +1,113 @@
+product: magistral
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Magistral Small 2506/2507/2509, ungated Apache-2.0 on HF
+    post-training-data:
+      value: described
+      detail: SFT from Magistral Medium traces + RLVR, described in the paper, not released
+    code:
+      value: closed
+      detail: no post-training pipeline released; inference via vllm recipes only
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: magistral-small-1-2
+  confidence: high
+  note: 'Apache-2.0 weights for every distributed Small release, ungated on the Hub, with the post-training
+    mixture described in the Magistral paper rather than released and no post-training pipeline. Magistral
+    Medium is API-only and so sits outside the distributed SKU set that the license reading governs. Open
+    weights, closed recipe: 3 by the fallthrough.'
+  raw: weights:open(Magistral Small 2506/2507/2509, ungated Apache-2.0 on HF);post-training-data:described(SFT
+    from Magistral Medium traces + RLVR, described in the paper, not released);code:closed(no post-training
+    pipeline released; inference via vllm recipes only);license:Apache-2.0(OSI)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Magistral-Small-2509
+    shows: '`gated: false`, cardData.license `apache-2.0`, base_model mistralai/Mistral-Small-3.2-24B-Instruct-2506;
+      12,960 downloads in the trailing 30 days.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 6eaf8d8863faa651cbbaa4eecc87826a76f623eaea906e6825e475bd69d224df
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/mistralai/Magistral-Small-2509/raw/main/README.md
+    shows: 'Card: "Building upon Mistral Small 3.2 (2506), with added reasoning capabilities, undergoing
+      SFT from Magistral Medium traces and RL on top"; "Apache 2.0 License: Open license allowing usage
+      and modification for both commercial and non-commercial purposes"; benchmark table for Medium 1.2
+      and Small 1.2. No mixture or pipeline release.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5b8e286d7f1402844bdcb76650a2e96f60c6df1b1708d4ae2f6cd0789c437ade
+    establishes:
+    - weights
+    - post-training-data
+    - code
+    - license
+  - url: https://mistral.ai/news/magistral
+    shows: The Magistral launch post (published 2025-06-10), announcing the dual release — open-weight
+      Small and API-only Medium — which is what scopes the license reading to the Small SKUs.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 521097a1efec04702eabfbecbff45eafcb935bdc90a1dc227521d0c05ac7be98
+    establishes:
+    - weights
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 94,181 downloads in the trailing 30 days across the three declared Small releases (Magistral-Small-2506
+    80,730; Magistral-Small-2509 12,960; Magistral-Small-2507 491), which bands at level 2 (10K-100K).
+    The first release still carries most of the reach.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/mistralai/Magistral-Small-2506
+    shows: 80,730 downloads in the trailing 30 days for mistralai/Magistral-Small-2506
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 835fdd9a17439b420935ec991c6d807a2d51f2bc582612bf4f27362430ec2587
+  - url: https://huggingface.co/api/models/mistralai/Magistral-Small-2509
+    shows: 12,960 downloads in the trailing 30 days for mistralai/Magistral-Small-2509
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 6eaf8d8863faa651cbbaa4eecc87826a76f623eaea906e6825e475bd69d224df
+  - url: https://huggingface.co/api/models/mistralai/Magistral-Small-2507
+    shows: 491 downloads in the trailing 30 days for mistralai/Magistral-Small-2507
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 3dd6d6d1ee0faa7f5cec9326e87bda4431c777e5e8f53cade0c6fa56921e9e75
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: AIME/GPQA/LiveCodeBench (card benchmark table)
+  value: 'Magistral Small 1.2: AIME24 pass@1 86.14%, AIME25 77.34% at 24B; Magistral Medium 1.2 (the tier''s
+    API member): AIME24 91.82%, GPQA Diamond 76.26%, LiveCodeBench v5 75.00%.'
+  relative_to: deepseek-r1
+  relation: at
+  confidence: medium
+  note: 'A capable open-weight reasoner: the 24B Small posts AIME-class math results at the deepseek-r1
+    rung — competitive open reasoning, short of the closed frontier the category''s 5s hold — and the
+    tier''s max includes Medium 1.2, which is stronger still but API-only. Level with deepseek-r1 at 4.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
+      shows: The R1 card still carries the peer's recorded benchmark row (AIME 2024 79.8, GPQA Diamond
+        71.5, MATH-500 97.3 vs OpenAI o1); Magistral Small 1.2's card figures (AIME24 86.14, GPQA 70+)
+        sit in the same open-reasoner class, so the at-spacing holds.
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 4a4e068c0cd8d3110395f0d11f94a5b7b6461fb09abf1088a1bfe515dd861dc8
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/mistralai/Magistral-Small-2509/raw/main/README.md
+    shows: 'Benchmark Results table: Magistral Medium 1.2 AIME24 91.82% / AIME25 83.48% / GPQA Diamond
+      76.26% / LiveCodeBench v5 75.00%; Magistral Small 1.2 AIME24 86.14% / AIME25 77.34%.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5b8e286d7f1402844bdcb76650a2e96f60c6df1b1708d4ae2f6cd0789c437ade

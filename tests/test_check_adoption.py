@@ -232,6 +232,10 @@ def test_the_benchmark_corpora_refreshed_on_2026_08_12_are_on_scale(sources):
             offences.append(f"{slug}: reach {reach!r} is off the dataset scale")
         elif scale[reach] != level:
             offences.append(f"{slug}: level {level} against reach {reach!r} (scale says {scale[reach]})")
-        if adoption.get("last_verified") != "2026-08-12":
+        # gsm8k re-verified 2026-09-01, when a fresh 1,167,043/30d read re-banded it 4 -> 5;
+        # the others still carry the 2026-08-12 refresh. A DATE MOVING FORWARD with a re-read
+        # is the system working; this guard exists to catch a date quietly disappearing.
+        expected = "2026-09-01" if slug == "gsm8k" else "2026-08-12"
+        if adoption.get("last_verified") != expected:
             offences.append(f"{slug}: lost its last_verified date")
     assert not offences, "\n".join(offences)

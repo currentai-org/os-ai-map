@@ -198,11 +198,18 @@ def test_the_prose_leg_holds_at_its_known_count():
     or a relabel to `reported_traction` — and moves UP when a re-read writes a new such note.
     It went 17 -> 15 when `areal` and `xtuner` were relabeled in the change that added this
     gate. Lower it as they are resolved; at zero the check can gate strict.
+
+    15 -> 17 on 2026-09-01 with the Round 1 tranche: ktransformers and llm-d arrive with
+    uzu-shaped honest notes - each bands on stars and says in its own words what the star
+    count does not measure (a source-built product's tiny PyPI wrapper; production Helm
+    deployments no channel counts). dynamo wrote the same shape and was remedied in the
+    same change (banded_quantity naming the countable channel, note phrased as a floor),
+    which is why it is not in the set.
     """
     findings = under_coverage()
-    assert len(findings) == 15, [f[0] for f in findings]
+    assert len(findings) == 17, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
-        "aider", "faiss", "gvisor", "langflow", "llm-guard", "mistral-large", "mistral-rs",
-        "n8n", "nemo-data-designer", "nemo-guardrails", "ollama", "perplexica", "promptfoo",
-        "searxng", "uzu",
+        "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
+        "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",
+        "ollama", "perplexica", "promptfoo", "searxng", "uzu",
     }

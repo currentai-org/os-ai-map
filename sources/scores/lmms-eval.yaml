@@ -1,0 +1,113 @@
+product: lmms-eval
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0/MIT
+      detail: 'OSI; split license: MIT for the pipeline code inherited from lm-evaluation-harness, Apache-2.0
+        for the added code in lmms_eval/tasks and lmms_eval/models. Both parts OSI, so the most restrictive
+        part is still osi.'
+    source:
+      value: public
+      detail: GitHub
+    core-gated:
+      value: ungated
+    free_text:
+    - no feature-gated core
+  confidence: high
+  note: 'GitHub''s classifier reports NOASSERTION because the LICENSE file is a composite, but the body
+    read this session is two stock OSI texts with a scope note each: "For the main pipeline structure-related
+    code, we maintain the original license provided with lm-evaluation-harness, which is the MIT License",
+    then "For the multimodal models and datasets that we have added (defined as code in the lmms_eval/tasks
+    and lmms_eval/models folders), we apply the Apache License." Both parts resolve to the osi tier —
+    the rubric already names Apache-2.0/MIT verbatim — so the compound governs at osi. Fully public, and
+    the 23KB README documents no pricing, enterprise edition, paid tier or license key.'
+  raw: 'license:Apache-2.0/MIT(OSI; split license: MIT for the pipeline code inherited from lm-evaluation-harness,
+    Apache-2.0 for the added code in lmms_eval/tasks and lmms_eval/models. Both parts OSI, so the most
+    restrictive part is still osi.);source:public(GitHub);core-gated:ungated;no feature-gated core'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/EvolvingLMMs-Lab/lmms-eval/license
+    shows: 'LICENSE body is a split license: the MIT text (Copyright (c) 2025 LMMs-Lab) for the harness-derived
+      pipeline code, then the Apache-2.0 notice for code in lmms_eval/tasks and lmms_eval/models. GitHub
+      reports spdx_id NOASSERTION for the composite; both component licenses are OSI.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 418e737b4f5850125070f74441f327a0d4139cc81476683ac0cee0146cba4049
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/EvolvingLMMs-Lab/lmms-eval/main/README.md
+    shows: README documents installing editable from a clone or from git and running the harness locally
+      against local weights or APIs; all tasks ship in lmms_eval/tasks and models in lmms_eval/models.
+      Nothing in the 23KB mentions pricing, a paid tier, an enterprise edition or a license key.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 116d24b3e87aa9a10c565569da9400a9a5f90ed6af0c797fadb70370178c3eaa
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  signal_type: reported_traction
+  banded_quantity: GitHub stars (4,386) and standing as lm-evaluation-harness's endorsed multimodal counterpart,
+    not a download count
+  confidence: medium
+  note: 'The de-facto standard multimodal eval harness: lm-evaluation-harness''s own README directs multimodal
+    evaluation to it by name, model teams cite it for reported LMM numbers, and the repo carries 4,386
+    stars with releases through v0.7 (Feb 2026). The PyPI package (lmms-eval, backlink-verified) is genuinely
+    this project but is not the measure used: it sees 7,115 downloads a month against a project whose
+    documented install path is a git clone, so banding on it would read a minority channel rather than
+    the project. Same shape and same remedy as opencompass in this category.'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/EvolvingLMMs-Lab/lmms-eval
+    shows: stargazers_count = 4,386, forks 648, pushed_at 2026-09-01, active issue flow
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: e997d0d0b2d50718495f152b9e1c69df28fbddf642794cf5df49e613d8832ba3
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md
+    shows: EleutherAI's README suggests users "check out lmms-eval, a wonderful project originally forking
+      off of the lm-evaluation-harness, for a broader range of multimodal tasks, models, and features"
+      — third-party standing from the category anchor itself.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d24d6ea00c246b9145e5ef6709eed56fbcf4aa4f5863fcb8a74a19b7b8d6eb98
+  - url: https://pypistats.org/api/packages/lmms-eval/recent
+    shows: last_month = 7,115 downloads of the lmms-eval package — recorded to document why the registry
+      channel was NOT banded on, not as the level's basis
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 862bd6289c1f6f294c08398b56df1e7f6c5a3bed5b44bbf2b447662d02896394
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 100+ multimodal tasks across image, video and audio with 30+ model families; standalone HTTP
+    eval server (~7.5x throughput over v0.5); agentic task evaluation (generate_until_agentic); statistically
+    grounded results (CI, paired t-test); async serving and video I/O optimization
+  relative_to: lm-evaluation-harness
+  relation: one_below
+  confidence: medium
+  note: The widest multimodal task and model coverage in the category, and the harness the category anchor's
+    own README recommends for multimodal work — but scoped to LMMs rather than being the cross-domain
+    standardization reference lm-evaluation-harness is, and without the leaderboard-backend role. Sits
+    beside opencompass at 4.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md
+      shows: '"Over 60 standard academic benchmarks for LLMs, with hundreds of subtasks and variants implemented"
+        still reads, with the full backend spread (HF, vLLM, SGLang, NeMo, APIs); multimodal support remains
+        a prototype the README itself routes to lmms-eval — the spacing (broadest coverage and standardization
+        reference above, its multimodal fork one below) still holds.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: d24d6ea00c246b9145e5ef6709eed56fbcf4aa4f5863fcb8a74a19b7b8d6eb98
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/EvolvingLMMs-Lab/lmms-eval/main/README.md
+    shows: 100+ tasks and 30+ models linked from the header; v0.7 release notes list agentic task evaluation,
+      HTTP eval server, audio expansion, CI and paired t-test support
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 116d24b3e87aa9a10c565569da9400a9a5f90ed6af0c797fadb70370178c3eaa

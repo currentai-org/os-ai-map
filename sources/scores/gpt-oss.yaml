@@ -1,0 +1,118 @@
+product: gpt-oss
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: gpt-oss-120b/20b on HF, ungated safetensors
+    data:
+      value: closed
+    code:
+      value: partial
+      detail: inference reference implementations (PyTorch/Triton) in openai/gpt-oss; no training pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: 'Apache-2.0 weights, downloadable ungated on the Hub in both sizes, with no released training
+    data (the card carries no datasets key and no training-data section beyond the paper''s description)
+    and only inference reference code in the openai/gpt-oss repository. Open weights with a closed recipe
+    is the category''s center of gravity, which is what 3 records. The formula lands on the fallthrough:
+    weights open, license osi, data closed.'
+  raw: weights:open(gpt-oss-120b/20b on HF, ungated safetensors);data:closed;code:partial(inference reference
+    implementations (PyTorch/Triton) in openai/gpt-oss; no training pipeline);license:Apache-2.0(OSI)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/openai/gpt-oss-120b
+    shows: '`gated: false`, `private: false`, cardData.license `apache-2.0`, safetensors weight shards
+      listed; 5,376,994 downloads in the trailing 30 days.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5e25b5fd706abad6dcfd7b9c0291b5e0acb4025a182568c42eb0d6487a77ee61
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/openai/gpt-oss-120b/raw/main/README.md
+    shows: 'Raw card front matter records only `license: apache-2.0` with no datasets key; the body markets
+      "Permissive Apache 2.0 license", configurable reasoning effort and fine-tunability, and carries
+      no training-data section — the recipe is not released.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 92b0408cf5dce04e4c5e4e5f2be0361da710d3650baefd7d7519badd1c687919
+    establishes:
+    - data
+    - license
+  - url: https://api.github.com/repos/openai/gpt-oss
+    shows: '`license: Apache-2.0`, 20,362 stars, description "gpt-oss-120b and gpt-oss-20b are two open-weight
+      language models by OpenAI"; the repo is reference implementations and tooling, not a training pipeline,
+      which holds `code` at partial.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 4a520a89f00818333b56ae52c12ac51a47168311531701ac791b05cab4a67fcc
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2508.10925
+    shows: The gpt-oss-120b & gpt-oss-20b Model Card paper (OpenAI, 2025). Describes training at a high
+      level; no corpus or pipeline release accompanies it. Corroborates data:closed.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 6b543ce8edf95fd2c2644ba33f535f62d808fe07a4ce195d50ed583f1e1f4088
+    establishes:
+    - data
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 11,896,046 downloads in the trailing 30 days across the two declared artifacts (openai/gpt-oss-20b
+    6,519,052; openai/gpt-oss-120b 5,376,994), which bands at level 5 (>10M) on the model adoption scale.
+    The only open-weight line on the map at level 5 alongside qwen and gemma; the 20b SKU carries slightly
+    more reach than the 120b.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/openai/gpt-oss-20b
+    shows: 6,519,052 downloads in the trailing 30 days for openai/gpt-oss-20b
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 198ca2a5d8a619bd3646adb63e3f7a0cae3811d43a92c53f975bb4001701a468
+  - url: https://huggingface.co/api/models/openai/gpt-oss-120b
+    shows: 5,376,994 downloads in the trailing 30 days for openai/gpt-oss-120b
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5e25b5fd706abad6dcfd7b9c0291b5e0acb4025a182568c42eb0d6487a77ee61
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'gpt-oss-120b (high): AA Intelligence Index 24.1 on the current scale, where the frontier sits
+    near 60 (Claude Opus 5 63.1, GPT-5.6 Sol 60.9) and Llama 4 Maverick reads 14.5. AA''s summary calls
+    it "amongst the leading models in intelligence" relative to open-weight peers of similar size.'
+  relative_to: deepseek-r1
+  relation: at
+  confidence: medium
+  note: 'A strong open-weight reasoner, clearly above the non-reasoning open mid-field (Llama 4 Maverick
+    at 14.5 on the same index) and clearly below the closed frontier the category''s 5s hold (gpt-5, claude-opus,
+    gemini). That is the deepseek-r1 rung: an open-weight reasoning line competitive on math/reasoning
+    benchmarks without leading the category, so it sits at, not above, R1''s 4.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
+      shows: The R1 card still carries the benchmark table the peer's value quotes (AIME 2024 79.8, MATH-500
+        97.3, GPQA Diamond 71.5 vs OpenAI o1) — the same open-reasoner class gpt-oss-120b's AIME/GPQA-grade
+        results place it in, and still short of the closed frontier, so the at-spacing holds.
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 4a4e068c0cd8d3110395f0d11f94a5b7b6461fb09abf1088a1bfe515dd861dc8
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://artificialanalysis.ai/models/gpt-oss-120b
+    shows: 'AA model page for gpt-oss-120b (high): embedded index data reads artificialAnalysisIntelligenceIndex
+      24.1 against a leaderboard whose frontier entries read ~60 (Claude Opus 5 max 63.1, GPT-5.6 Sol
+      60.9, Kimi K3 59.7) and whose Llama 4 Maverick entry reads 14.5; page summary: "amongst the leading
+      models in intelligence, but somewhat expensive when comparing to other open weight models of similar
+      size".'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 6b26bbf3f6d079301bc6ee31159fa487843a203f92575093faad02068f06c832

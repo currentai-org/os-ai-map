@@ -1,0 +1,104 @@
+product: chitu
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; copyright line filled "Qingcheng.AI", terms unmodified
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: paid professional services offered by email are support beside the published engine, not
+        a withheld component; third-party code carries SPDX notices under LICENSES/ and third_party/
+  confidence: high
+  note: The LICENSE body is the full Apache-2.0 text with only the appendix copyright slot filled ("Copyright
+    Qingcheng.AI") - a one-line diff against the canonical text, no appended condition. The repository
+    is public and active and is the engine itself; the README's commercial line offers professional technical
+    service by email, which is selling support, not gating a core. Vendored third-party code is declared
+    SPDX-style under LICENSES/ and third_party/, the REUSE-adjacent shape.
+  raw: license:Apache-2.0(OSI; copyright line filled "Qingcheng.AI", terms unmodified);source:public;core-gated:ungated(paid
+    professional services offered by email are support beside the published engine, not a withheld component;
+    third-party code carries SPDX notices under LICENSES/ and third_party/)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/thu-pacman/chitu/public-main/LICENSE
+    shows: 'LICENSE body, read in full and diffed against the canonical Apache-2.0 text: identical except
+      the appendix copyright line reads "Copyright Qingcheng.AI". No appended terms.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 9537a03b8973fd908e99cb44d73abf2d4874af77ce60c0ad0c0aea94c06f7126
+    establishes:
+    - license
+  - url: https://api.github.com/repos/thu-pacman/chitu
+    shows: Repo metadata for thu-pacman/chitu - archived false, license Apache-2.0, 2,997 stars, default
+      branch public-main, pushed 2026-09-01.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: cabbc58c072f7b638dfe86a9f74adf5928a0ec40ac4456583c87bb36ae955e63
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/thu-pacman/chitu/public-main/README.md
+    shows: 'README (Chinese), read for a paid tier (professional services by email only - no gated build):
+      "生产级大模型推理引擎" (production-grade LLM inference engine); milestones - DeepSeek-R1 671B single-GPU via
+      CPU+GPU heterogeneous inference, FP4-to-FP8/BF16 online conversion, Ascend 910B native support,
+      Moore Threads adaptation, chitu.run single-file multi-node launcher; licence section states Apache-2.0
+      with SPDX-marked third-party snippets under LICENSES/ and submodules under third_party/.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 2b6351d6e585163a1171f81f20c4058d53e3f25e1cb3832b23bca1986447c8ef
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 2,997 GitHub stars, in the 1K-10K band of the stars scale. Distribution is the repo and its release
+    executables, with no package registry channel to count. Acknowledged production use in Chinese enterprise
+    deployments (China Telecom and others credited in the README) is standing the star count may understate;
+    raising the level would need its own evidenced judgment.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/thu-pacman/chitu
+    shows: Repo metadata - stargazers_count = 2,997 - for thu-pacman/chitu.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: cabbc58c072f7b638dfe86a9f74adf5928a0ec40ac4456583c87bb36ae955e63
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: category feature matrix, banded against the vllm anchor
+  value: Production engine spanning pure-CPU, single-GPU and multi-node cluster deployment with prefill-decode
+    separation; CPU+GPU heterogeneous inference running DeepSeek-R1 671B on one GPU; FP4/FP8 online-conversion
+    kernels; native backends for NVIDIA plus Ascend 910B, Muxi, Hygon and Moore Threads; single-file chitu.run
+    launcher for multi-node, multi-instance topologies.
+  relative_to: vllm
+  relation: one_below
+  confidence: medium
+  note: One band below the vllm anchor, level with xllm, rtp-llm and fastdeploy, the other production
+    engines whose distinguishing surface is domestic-accelerator breadth. Its hardware span (five vendors
+    plus pure CPU) and PD-separated cluster serving clear the two_below locals; it is not the community-wide
+    throughput frontier the anchor and sglang occupy.
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
+      shows: 'The anchor''s README, re-read today: the parallelism forms and 200+ architecture breadth
+        the one_below spacing is judged against. Digest identical to the anchor''s recorded 2026-08-31
+        source.'
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/thu-pacman/chitu/public-main/README.md
+    shows: 'Milestones and positioning: v0.6.0 chitu.run single-file multi-node/multi-instance/PD- separation
+      launcher; v0.5.x cluster performance and Moore Threads support; v0.4.0 Ascend/NVIDIA/Muxi/Hygon
+      adaptation serving DeepSeek/Qwen/GLM/Kimi; v0.2.2 single-GPU DeepSeek-R1 671B via CPU+GPU heterogeneous
+      inference; v0.3.0 FP4-to-FP8/BF16 kernels.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 2b6351d6e585163a1171f81f20c4058d53e3f25e1cb3832b23bca1986447c8ef

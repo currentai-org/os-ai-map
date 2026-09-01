@@ -1,0 +1,124 @@
+product: granite
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0, ungated on HF across the 4.0 line
+    data:
+      value: closed
+      detail: SFT data characterized in the card (permissive public + internal synthetic + human-curated)
+        but neither the pretraining corpus nor the mixtures are released
+    code:
+      value: partial
+      detail: ibm-granite/granite-4.0-language-models is docs/usage, no pretraining pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  governing_release: granite-4-0
+  confidence: high
+  note: Apache-2.0 weights, ungated in every 4.0 SKU read, with training data described in categories
+    rather than released and no training pipeline. That is open weights with a closed recipe, 3 by the
+    fallthrough. The card's data description ("publicly available datasets with permissive license, internal
+    synthetic data, human-curated data") characterizes sources without fully specifying composition, so
+    it does not reach documented-not-released, and the outcome is 3 either way because the documented-not-released
+    rung also requires open code.
+  raw: weights:open(Apache-2.0, ungated on HF across the 4.0 line);data:closed(SFT data characterized
+    in the card (permissive public + internal synthetic + human-curated) but neither the pretraining corpus
+    nor the mixtures are released);code:partial(ibm-granite/granite-4.0-language-models is docs/usage,
+    no pretraining pipeline);license:Apache-2.0(OSI)
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small
+    shows: '`gated: false`, cardData.license `apache-2.0`, safetensors listed; 25,719 downloads in the
+      trailing 30 days for the flagship h-small SKU.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md
+    shows: 'Card Training Data section: "our SFT data is largely comprised of three key sources: (1) publicly
+      available datasets with permissive license, (2) internal synthetic data targeting specific capabilities,
+      and (3) a select set of human-curated data" — described in categories, not released. Infrastructure
+      section names the GB200 cluster; no training pipeline links.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea
+    establishes:
+    - data
+    - code
+  - url: https://api.github.com/repos/ibm-granite/granite-4.0-language-models
+    shows: '`license: Apache-2.0`, 210 stars; the 4.0 release repository, which carries no pretraining
+      pipeline — what holds `code` at partial.'
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: a6077f345228b14f2cc1d24dd618982e4ef2a7229b783a76d8edc7fabf917b70
+    establishes:
+    - code
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 194,509 downloads in the trailing 30 days across the four declared artifacts (granite-4.0-h-tiny
+    88,627; granite-4.0-micro 60,053; granite-4.0-h-small 25,719; granite-4.0-h-micro 20,110), which bands
+    at level 3 (100K-1M) on the model adoption scale. The smaller on-device SKUs carry most of the reach.
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-h-tiny
+    shows: 88,627 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-tiny
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 51c663db4788981e51cb9b768df73cdb0453bdd0d0256af8957bb418174d75be
+  - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-micro
+    shows: 60,053 downloads in the trailing 30 days for ibm-granite/granite-4.0-micro
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: aa91b492e08d04f751f4481b1f412ad70b4d4c7a4f4cdcf559b93404533236f9
+  - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-h-small
+    shows: 25,719 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-small
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 3345c248cf0a3424642dcbe05c379b4dc8d4b2db3e030990206c4c2ef990ee71
+  - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-h-micro
+    shows: 20,110 downloads in the trailing 30 days for ibm-granite/granite-4.0-h-micro
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: b9057408d8946fb2e893c7e47112fceee053ea72808c2cf5a3bceaea665144e7
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: instruction-following / enterprise task suites (card model-index)
+  value: The 4.0 flagship h-small is a 32B-total/9B-active hybrid positioned on efficiency and enterprise
+    agent tasks rather than frontier reasoning; IBM's card benchmarks it against similar-size open-weight
+    peers, the class whose AA reading (Llama 4 Maverick, index 14.5) defines the category's mid-tier.
+  relative_to: llama
+  relation: at
+  confidence: medium
+  note: 'Mid-tier: a capable efficiency-focused line, competitive within the small-to-mid open-weight
+    class and well short of the open-weight frontier the category''s 4s and 5s hold (olmo, deepseek, qwen,
+    kimi). Sits level with llama, whose own reading is taken on Llama 4 Maverick — the same non-reasoning
+    open-weight mid-field.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://artificialanalysis.ai/models/llama-4-maverick
+      shows: AA's Llama 4 Maverick entry reads artificialAnalysisIntelligenceIndex 14.5 on the current
+        scale — still the below-median open-weight non-reasoning mid-field the peer's value records, which
+        is the class Granite 4.0's flagship also occupies, so the at-spacing holds.
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: 76e02ad38fef4a3f154519ab18f6bb40bedcd33bb23d5f626a71ec3588f5ca71
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-4.0-h-small/raw/main/README.md
+    shows: The h-small card's evaluation tables benchmark the 4.0 line against similar-size open-weight
+      peers on instruction-following and enterprise task suites, positioning it as competitive in its
+      size class rather than frontier.
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: d8afa48cec7096978d19fdf19fd9012b9505f428c5d64c231fde63241be176ea

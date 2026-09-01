@@ -735,7 +735,15 @@ def test_real_sources_serialize_without_errors():
         # finetuning_code +2 (megatron-lm, unsloth), orchestration_agents +3 (n8n, zed's two
         # extra), telemetry_observability +2 (agentops, langwatch) and
         # training_synthetic_datasets +3 (flan-collection, redpajama-data-v2, smoltalk).
-        "base_pretrained": 117, "finetuned_chat": 174, "deployment": 131,
+                #
+        # Five categories rose on 2026-09-01 with the Round 1 calibration tranche, one new
+        # product's evidence set at a time: base_pretrained 117 -> 133 (granite, minicpm,
+        # seed-oss, comma), finetuned_chat 174 -> 183 (gpt-oss, magistral), benchmark_eval_data
+        # 154 -> 184 (tau-bench, terminal-bench, agentdojo, reward-bench, mle-bench),
+        # inference_code 138 -> 166 (seven engines) and evaluation_code 109 -> 129 (five
+        # harnesses). No product that was already computed gained or lost a row, which is why
+        # the other thirteen categories hold.
+        "base_pretrained": 133, "finetuned_chat": 183, "deployment": 131,
         #
         # evaluation_code 78 -> 107 with the 2026-08-11 evidence sweep of that category: all
         # seven of its deferrals came off, and a product that stops being deferred publishes its
@@ -774,7 +782,7 @@ def test_real_sources_serialize_without_errors():
         # marker, which carries five because its license is a compound of two parts, Apache-2.0
         # over the code and a modified AI Pubs Open RAIL-M over the weights. No product that was
         # already computed gained or lost a row, which is why the other seventeen categories hold.
-        "agent_tools_protocols": 145, "dataset_processing_tools": 92, "evaluation_code": 109,
+        "agent_tools_protocols": 145, "dataset_processing_tools": 92, "evaluation_code": 129,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -799,7 +807,7 @@ def test_real_sources_serialize_without_errors():
         # aws-neuron each already recorded the deciding dimension and were publishing nothing
         # because a deferred product publishes nothing; the score moved to what the ladder
         # computes and the rows appeared.
-        "finetuning_code": 159, "inference_code": 138, "ml_frameworks": 100,
+        "finetuning_code": 159, "inference_code": 166, "ml_frameworks": 100,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
@@ -888,7 +896,7 @@ def test_real_sources_serialize_without_errors():
         # swe-bench-verified each start publishing their whole openness evidence set, having
         # published none of it while deferred. livecodebench and multipl-e stay deferred and
         # so still publish nothing, which is what keeps the rise to those five.
-        "training_synthetic_datasets": 197, "benchmark_eval_data": 154,
+        "training_synthetic_datasets": 197, "benchmark_eval_data": 184,
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.

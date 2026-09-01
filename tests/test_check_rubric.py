@@ -291,17 +291,19 @@ class TestRealCategories:
     def test_base_pretrained_still_reproduces_every_score(self):
         """27, down from 44 then up 1: the slug migration collapsed release-level products
         into the tier the vendor sells and moved the closed frontier models to
-        finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27. The
-        point of pinning this is that the count only ever moves for a reason recorded in a
-        commit."""
+        finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27, and
+        the Round 1 calibration tranche of 2026-09-01 took it to 31 (granite, minicpm,
+        seed-oss, comma). The point of pinning this is that the count only ever moves for a
+        reason recorded in a commit."""
         reproduced, total, problems, deferred, _ = check_category("base_pretrained", verbose=False)
         assert problems == []
-        assert (reproduced, total, deferred) == (27, 27, [])
+        assert (reproduced, total, deferred) == (31, 31, [])
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
+        """39 -> 41 on 2026-09-01: the Round 1 tranche added gpt-oss and magistral."""
         reproduced, total, problems, *_ = check_category("finetuned_chat", verbose=False)
         assert problems == []
-        assert reproduced == total == 39
+        assert reproduced == total == 41
 
     def test_no_category_defers_without_a_substantive_reason(self):
         """A deferral that prints nothing is a silent cap on coverage.
@@ -329,11 +331,11 @@ class TestRealCategories:
         assert deferred == []
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
-        """39 scored and 0 deferred. Counting a deferral as a pass is how a rubric
+        """41 scored and 0 deferred. Counting a deferral as a pass is how a rubric
         claims to describe products it cannot score, so the identity is worth keeping
         even while the deferral count is zero."""
         _, total, _, deferred, _ = check_category("finetuned_chat", verbose=False)
-        assert total + len(deferred) == 39
+        assert total + len(deferred) == 41
 
 
 def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, monkeypatch):

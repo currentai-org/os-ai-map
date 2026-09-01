@@ -1,0 +1,107 @@
+product: vlmevalkit
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: GitHub
+    core-gated:
+      value: ungated
+    free_text:
+    - no feature-gated core
+  confidence: high
+  note: Apache-2.0 and fully public. The LICENSE body is the stock Apache-2.0 text under "Copyright 2023
+    VLMEvalKit Authors" with no appended terms. Install is git clone + `pip install -e .`; the README
+    documents no pricing, paid tier, enterprise edition or license key — the only commercial references
+    are the commercial model APIs it can evaluate.
+  raw: license:Apache-2.0(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/open-compass/VLMEvalKit/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 and returns the stock Apache-2.0 text
+      (Copyright 2023 VLMEvalKit Authors) with no appended terms
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 5d7657b22ac4dc9263dd1358b858e09d1d7173d0bc91d71fb46dd23f3697083e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md
+    shows: open-source evaluation toolkit, one-command evaluation of LVLMs; all evaluation code, model
+      configs and benchmark adapters ship in the repo; free HF leaderboards beside it; no pricing, paid
+      tier or license key
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  signal_type: reported_traction
+  banded_quantity: GitHub stars (4,370) and the OpenVLM Leaderboard role, not a download count
+  confidence: medium
+  note: 'The toolkit behind the OpenVLM Leaderboard and OpenVLM Video Leaderboard (Hugging Face spaces
+    under the opencompass org), with 4,370 stars and results published for 220+ models — the reference
+    evaluation surface for open multimodal models, and integrated as a backend by both OpenCompass and
+    EvalScope. No download channel exists to count: there is no package (vlmeval is the import name only,
+    PyPI 404 this session) and the install path is a git clone, so the level rests on reported traction
+    rather than stars alone, the same shape as opencompass''s own record. Conservative alternative if
+    the writer prefers the mechanical instrument: stars_fallback at level 2 (1K-10K stars).'
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://api.github.com/repos/open-compass/VLMEvalKit
+    shows: stargazers_count = 4,370, pushed_at 2026-08-31, description "support 220+ LMMs, 80+ benchmarks"
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0732ed88d98499d059a3065cd487ba730b23c60345f59c84c85df05d107c27b8
+  - url: https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md
+    shows: header links to the OpenVLM Leaderboard and OpenVLM Video Leaderboard HF spaces and the OpenVLMRecords
+      dataset of official evaluation records
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1
+  - url: https://pypi.org/simple/vlmeval/
+    shows: 404 — no package named vlmeval exists on PyPI, so no download channel is available to count
+    accessed: '2026-09-01'
+    http_status: 404
+    content_sha256: 7d04f7431bbfa41a04bcc7e6b98b9de0d919756c4c671c5785c99fff45f16402
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 220+ vision-language models over 80+ multimodal benchmarks; one-command generation-based evaluation
+    with exact-matching and LLM-based answer extraction; produces the official OpenVLM Leaderboard and
+    OpenVLM Video Leaderboard numbers
+  relative_to: opencompass
+  relation: at
+  confidence: medium
+  note: 'The multimodal peer of its own org''s flagship: comparable breadth (220+ models, 80+ benchmarks
+    against opencompass''s 70+ datasets), the same leaderboard-producing role (OpenVLM against CompassRank),
+    scoped to vision-language models rather than the cross-domain standardization reference — so at opencompass''s
+    4, one below lm-evaluation-harness.'
+  comparison:
+    last_attested: '2026-09-01'
+    sources:
+    - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
+      shows: the peer's claims still read ("70+ datasets with about 400,000 questions", 20+ pre-supported
+        models, CompassRank); its 2026-08-25 news line integrates VLMEvalKit as its multimodal backend
+        — the two platforms sit at the same rung, each the reference surface for its modality.
+      accessed: '2026-09-01'
+      http_status: 200
+      content_sha256: cb19a9b1f9e99bae28c13af6bdd746f5625fbc95be7cbfe8681020c25100f65d
+  last_verified: '2026-09-01'
+  sources:
+  - url: https://raw.githubusercontent.com/open-compass/VLMEvalKit/main/README.md
+    shows: one-command generation-based evaluation of LVLMs; exact matching and LLM-based answer extraction;
+      supported-benchmark and supported-model lists; official leaderboards downloadable
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: f86d93987acb476a2844d87a44eb5263d5fa535009aebf74077b6d286c9629c1
+  - url: https://api.github.com/repos/open-compass/VLMEvalKit
+    shows: repo description "support 220+ LMMs, 80+ benchmarks"
+    accessed: '2026-09-01'
+    http_status: 200
+    content_sha256: 0732ed88d98499d059a3065cd487ba730b23c60345f59c84c85df05d107c27b8
