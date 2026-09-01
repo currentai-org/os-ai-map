@@ -79,6 +79,7 @@ holds it against the `cron:` lines it quotes.
 | `parity` gate | Monday 06:00 | `.github/workflows/parity.yml` |
 | `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
 | `freshness` report | Monday 08:00 | `.github/workflows/freshness.yml` |
+| `channel-authority` report | Monday 09:00 | `.github/workflows/channel-authority.yml` |
 
 The chain lands two hours before parity grades it, and the warehouse is at most a week behind
 the repo.
