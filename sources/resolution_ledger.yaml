@@ -2016,3 +2016,90 @@ resolutions:
     is fully resolved (Apache-2.0 LICENSE body read 2026-09-01, 870 stars, arXiv:2405.14573, no
     first-party HF dataset), only the category filing waits. Do not re-propose for
     benchmark_eval_data.'
+- repo: NVIDIA/cudnn-frontend
+  verdict: excluded_boundary
+  decided_in: 'Round 2 discovery, compilers'
+  decided_on: '2026-09-01'
+  note: 'the open C++/Python wrapper around the closed cuDNN binary, named explicitly in #434 as
+    the hazard: declaring it as its own product or as cuDNN''s substitute artifact would let an
+    externally-open shim launder a closed core''s openness score, the tinker-cookbook shape.
+    cuDNN itself resolves to no public repository (checked NVIDIA/cudnn, 404), so it is excluded
+    from the discovery workflow on artifact grounds and cannot be declared under any identifier.
+    Apache-2.0-with-LLVM-exceptions, 921 stars, active - a real, well-maintained repository, just
+    not a product of its own.'
+- repo: pytorch/TensorRT
+  verdict: excluded_boundary
+  decided_in: 'Round 2 discovery, compilers'
+  decided_on: '2026-09-01'
+  note: 'Torch-TensorRT, an open compiler wrapper around the corpus''s existing `tensorrt`
+    product, whose optimizing builder ships as a binary. Same shape as cudnn-frontend: an open
+    integration layer over a partly-closed core, which should not be declared as its own product
+    or used to lift tensorrt''s openness reading. BSD-3-Clause, 2,989 stars, active.'
+- repo: NVIDIA/cuvs
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, compilers'
+  decided_on: '2026-09-01'
+  note: 'cuVS, the ANN-search successor to rapidsai/raft per #428''s own note. Sits on the exact
+    same open question as the existing raft hold (#428): does it transform model computation
+    toward hardware, which is what the compilers ladder measures, or supply primitives to
+    systems that do? Parked against the same question rather than resolved unilaterally in a
+    discovery pass. Apache-2.0, 844 stars, active.'
+- repo: superduper-io/superduper
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, storage'
+  decided_on: '2026-09-01'
+  note: 'An AI data framework layered over existing databases (Postgres, MongoDB, and others)
+    rather than a storage system in its own right. Genuinely borderline between storage and
+    general-agent-frameworks - it does not fit either cleanly, and the discovering agent flagged
+    it explicitly rather than forcing a call. 5,317 stars, active.'
+- repo: RyanCodrai/turbovec
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, storage'
+  decided_on: '2026-09-01'
+  note: '16,623 stars on a repository created 2026-03-26 (about five months old at read time)
+    with only 1,441 forks and 73 subscribers - a star-to-watcher ratio well outside the pattern
+    of a genuinely adopted project of that size. Flagged per the workflow''s rule to record an
+    implausible signal rather than adjudicate it. Needs a legitimacy check before any future
+    consideration, not a rejection on the merits of the product itself.'
+- repo: jeffhajewski/latticedb
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, storage'
+  decided_on: '2026-09-01'
+  note: 'The same shape as turbovec, less extreme: 630 stars on a solo repository created
+    2025-12-20 with only 29 forks and 2 subscribers. On-topic if legitimate (an embedded
+    vector-plus-graph store), but the ratio warrants the same legitimacy check before promotion.'
+- repo: postgresml/postgresml
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, storage'
+  decided_on: '2026-09-01'
+  note: 'Two open questions, not one. Stale at read time (last push 2025-07, over a year quiet),
+    which alone would be excluded_maintenance - but the discovering agent also flagged that even
+    setting staleness aside, this is arguably inference_code (ML/GPU compute embedded in
+    Postgres) rather than storage. Left unresolved rather than filed under either reason alone,
+    so a future read settles both questions together if the project becomes active again.'
+- repo: evidentlyai/evidently
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, telemetry_observability (superseding a Round 1 census flag and
+    a same-round parked call)'
+  decided_on: '2026-09-01'
+  note: 'Contested three times now and never settled: the Round 1 whole-corpus census
+    (2026-08-31) flagged it as an evaluation_code/telemetry_observability boundary case; this
+    round''s first telemetry_observability sweep read it as evaluation_code ("evaluation and
+    drift-testing framing... do not add here"); this round''s second sweep, run independently at
+    a lower retrieval floor, read it the opposite way and accepted it into
+    telemetry_observability ("production ML/LLM monitoring... distinct from the evaluation_code
+    harnesses that grade models"). Both readings are defensible - it genuinely does both drift
+    monitoring on deployed models and pre-deployment quality checks - which is exactly why one
+    ruling belongs here rather than being re-derived, and re-flipped, by the next sweep that
+    encounters it. Held out of both categories'' Round 2 promotion pools pending a person''s
+    call. Apache-2.0, 7,874 stars, active.'
+- repo: FailproofAI/failproofai
+  verdict: unresolved
+  decided_in: 'Round 2 discovery, telemetry_observability'
+  decided_on: '2026-09-01'
+  note: 'LICENSE body read directly (not the GitHub classifier): MIT with a Commons Clause
+    no-sell restriction appended, which needs a real openness read rather than a discovery-stage
+    guess. Core product is agent-harness guardrail enforcement with observability as a secondary
+    feature, which also argues for a different category. Growth curve is fast for its age
+    (1,671 stars and 415 forks in about five months), flagged rather than trusted at face value.
+    Left unresolved on both the license and the category question.'

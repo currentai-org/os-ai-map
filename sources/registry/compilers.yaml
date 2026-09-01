@@ -28,6 +28,41 @@
 # rapidsai/raft stays unresolved per the #428 ledger hold and is not re-proposed. NVIDIA/cuvs, raft's
 # ANN successor per #428's own note, is parked against the same open category-fit question rather
 # than resolved unilaterally here.
+#
+# Second pass, swept 2026-09-01, same PR window as the first. Carl's instruction after the first
+# pass's 16-candidate total (6 accepted + ~10 individually parked, ignoring the bucket-parked ~85)
+# came in short of his 50-75 target: re-sweep at a lower floor and triage every result
+# individually rather than bucket-parking. Effective star floor lowered from ~100 to 30, each of
+# the original 10 queries widened from top-15 to top-30, plus five new queries covering angles the
+# first pass's ten queries missed ("sparse attention kernel", "int4 int8 quantization library",
+# "triton kernel library", "cuda graph compiler", "onnx runtime optimization"). Predeclared
+# retrieval cutoff: GitHub repository search, sort by stars, star floor 30, top 30 per query
+# across all fifteen queries, executed 2026-09-01.
+#
+# Every accepted row's license was read from the LICENSE body, not GitHub's classifier: taco,
+# NVIDIA/cuda-tile and NX-AI/mlstm_kernels all report NOASSERTION or a nonstandard SPDX id from
+# GitHub. taco's body is plain MIT; NVIDIA/cuda-tile's is Apache-2.0-with-LLVM-exceptions (real
+# open source, not a closed-binary wrapper - see the note on cudnn-frontend above for the case
+# this is NOT). NX-AI/mlstm_kernels ships the NXAI Community License Agreement, a Llama-3-style
+# custom license with commercial-scale restrictions - not an open license, but the row is still
+# emitted per this workflow's rule that a repository is only excluded for having no public
+# artifact, not for the license it carries; its restrictive terms are a scoring-stage fact, not a
+# discovery-stage rejection.
+#
+# NVIDIA/tensor-ir and NVIDIA/cuda-tile are two layers of the same NVIDIA MLIR toolchain
+# (tensor-ir is the frontend, cuda-tile is the IR it lowers to) but are distinct repositories with
+# distinct real functionality, unlike NVIDIA/cudnn-frontend, which stays parked (restated above).
+# NVIDIA/cuvs surfaced again in this pass's widened cuda-sparse-library window and also stays
+# parked, restated: the #428 ledger hold on rapidsai/raft is a category-fit question, not a score,
+# and this pass does not resolve it unilaterally either.
+#
+# intel/neural-speed surfaced again (int4/int8 quantization library query) but is archived - GitHub
+# reports archived: true, last push 2024-08-30 - so it is parked as superseded, not accepted.
+# uwsampl/SparseTIR (tensor compiler query) last pushed 2023-03-31 and Santosh-Gupta/SpeedTorch
+# (cuda sparse library query) last pushed 2020-02-21; both parked as unmaintained rather than
+# accepted, despite clearing the star floor. NVIDIA/MinkowskiEngine last pushed 2024-03-05 - over
+# two years stale - is parked unmaintained too, despite 2956 stars from its 3D deep learning
+# heyday.
 category: compilers
 products:
   - slug: nccl
@@ -64,3 +99,79 @@ products:
     org: intel
     github: intel/auto-round
     pypi: auto-round
+  - slug: taco
+    display_name: TACO
+    type: software
+    org: tensor-compiler
+    github: tensor-compiler/taco
+    homepage: http://tensor-compiler.org
+  - slug: finch-jl
+    display_name: Finch.jl
+    type: software
+    org: finch-tensor
+    github: finch-tensor/Finch.jl
+    pypi: finch-tensor
+    homepage: https://finch-tensor.github.io/Finch.jl
+  - slug: freetensor
+    display_name: FreeTensor
+    type: software
+    org: roastduck
+    github: roastduck/FreeTensor
+    homepage: https://roastduck.github.io/FreeTensor/
+  - slug: cuda-tile
+    display_name: CUDA Tile IR
+    type: software
+    org: nvidia
+    github: NVIDIA/cuda-tile
+  - slug: nvidia-tensor-ir
+    display_name: TensorIR
+    type: software
+    org: nvidia
+    github: NVIDIA/tensor-ir
+  - slug: flashkda
+    display_name: FlashKDA
+    type: software
+    org: moonshot-ai
+    github: MoonshotAI/FlashKDA
+  - slug: flash-sparse-attention
+    display_name: Flash Sparse Attention
+    type: software
+    org: hkust-dial
+    github: HKUSTDial/flash-sparse-attention
+    homepage: https://hkustdial.github.io/flash-sparse-attention/
+  - slug: flashqla
+    display_name: FlashQLA
+    type: software
+    org: qwen
+    github: QwenLM/FlashQLA
+  - slug: block-sparse-attention
+    display_name: Block Sparse Attention
+    type: software
+    org: mit-han-lab
+    github: mit-han-lab/Block-Sparse-Attention
+  - slug: cula
+    display_name: cuLA
+    type: software
+    org: inclusion-ai
+    github: inclusionAI/cuLA
+  - slug: humming
+    display_name: Humming
+    type: software
+    org: inclusion-ai
+    github: inclusionAI/humming
+  - slug: mlstm-kernels
+    display_name: mLSTM Kernels
+    type: software
+    org: nx-ai
+    github: NX-AI/mlstm_kernels
+  - slug: rocalution
+    display_name: rocALUTION
+    type: software
+    org: amd
+    github: ROCm/rocALUTION
+    homepage: https://rocm.docs.amd.com/projects/rocALUTION/en/latest/
+  - slug: attention-gym
+    display_name: Attention Gym
+    type: software
+    org: rise-ai
+    github: RiseAI-Sys/attention-gym
