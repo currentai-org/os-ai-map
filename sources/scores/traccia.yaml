@@ -56,22 +56,33 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: low
-  note: A pypi artifact (traccia) is declared for the warehouse to band from `currentai.signal_pypi`. This
-    session's own pypistats.org lookup was rate-limited (429) after the GitHub API budget was spent
-    confirming identity and license, so no manual download figure is recorded here rather than guessed.
-    108 GitHub stars on a repository created earlier this year is consistent with a very young product still
-    building adoption.
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: The traccia package draws 764 PyPI downloads a month, well inside the <10K band. The package is the
+    scored product - the SDK itself, not a client for the hosted Traccia platform - so its install count is
+    the product's own usage. 108 GitHub stars on a repository created in January 2026 are consistent with a
+    very young product still building adoption.
   last_verified: '2026-09-02'
   sources:
+  - url: https://pypistats.org/api/packages/traccia/recent
+    shows: last_month = 764 downloads for traccia (last_week 128, last_day 5)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1ebd9e88eaba0dd16791dc80215e69ab15c8853e12ad39c7ad32f681278be932
+  - url: https://pypi.org/pypi/traccia/json
+    shows: 'info.name traccia, version 0.1.28, project_urls Homepage and Repository https://github.com/traccia-ai/traccia-py,
+      license Apache-2.0, summary "Production-ready distributed tracing SDK for AI agents and LLM applications"
+      - the package points back at the declared repository.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1c92ac2466c908c9851689523663a2a3e33aa41d0604573ed702aa764ab5a212
   - url: https://api.github.com/repos/traccia-ai/traccia-py
     shows: stargazers_count = 108, forks_count = 20, created_at 2026-01-21, pushed_at 2026-08-24
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: 9d4adc7b01554c644840f82461a0b6e56c2ae1b47c44f6d4a96565dcb0772b72
+    content_sha256: 1a3a85ea6b11c3223b99400eb7f89c2b82f13fe1168d5396104681777acd4aeb
 capability:
   score: 4
   basis: feature_matrix

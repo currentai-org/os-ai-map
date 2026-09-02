@@ -53,30 +53,44 @@ openness:
     - core-gated
 adoption:
   level: 2
-  reach: 10K-100K
-  signal_type: usage_volume
-  confidence: medium
-  note: The declared PyPI package latitude-telemetry draws 15,728 downloads a month, inside the 10K-100K
-    band. The npm package @latitude-data/telemetry, not a routed instrument but corroborating, draws
-    27,563 downloads a month over the same window - both channels land in the same band. 4,613 GitHub
-    stars corroborate without setting the level.
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,613 GitHub stars on latitude-dev/latitude-llm, which lands in the 1K-10K stars band of the stars
+    scale, level 2. The platform is deployed as Docker Hub images, a Helm chart or a Railway template, and
+    none of those is a declarable artifact kind, so no download count of the platform itself exists to band
+    on. The telemetry packages (latitude-telemetry at 15,728 PyPI downloads a month, @latitude-data/telemetry
+    at 27,563 npm downloads a month) are one component of the platform - the instrumentation library an
+    application imports - and count instrumented applications rather than running Latitude instances, so they
+    are recorded as context and not banded. Docker Hub reports between 22,922 and 29,501 cumulative pulls per
+    image across the six platform images, a lifetime total that corroborates a small deployed base without
+    being a monthly figure.
   last_verified: '2026-09-02'
   sources:
-  - url: https://pypistats.org/api/packages/latitude-telemetry/recent
-    shows: last_month = 15,728 downloads for latitude-telemetry (last_week 3,331, last_day 632)
+  - url: https://api.github.com/repos/latitude-dev/latitude-llm
+    shows: stargazers_count = 4,613, forks_count = 387, pushed_at 2026-09-02, for latitude-dev/latitude-llm.
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: e8776da84e1555200596bf0877e26a53c75e0c9e8df8b1ad9de69f1bcf114df4
+    content_sha256: 6a56b5ab79ca871f9599d5b05fe4c99cadc9ff9fc859aaf73420e65d2afe8374
+  - url: https://hub.docker.com/v2/repositories/latitudedata/?page_size=25
+    shows: 'Six images under the latitudedata namespace with lifetime pull_count - web 22,922, api 24,418,
+      workers 23,845, ingest 24,982, workflows 29,501, migrations 27,349 - all last updated 2026-09-01.
+      Cumulative totals, not a monthly window; recorded as corroboration of the deployed base.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 8baf2e639524555bf2ed482348a06ea5ac7b6f78a2a7ff2fba73388b90422b85
+  - url: https://pypistats.org/api/packages/latitude-telemetry/recent
+    shows: last_month = 15,728 downloads for latitude-telemetry (last_week 3,331, last_day 632). A measurement
+      of one component package's channel, recorded as context and explicitly not the basis of the band.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c9f5202d6d4977a1b1f90b4b0a4b305f0ee621ae66b7b6ba45e7eeaa0bbc3517
   - url: https://api.npmjs.org/downloads/point/last-month/@latitude-data/telemetry
-    shows: 'downloads: 27,563 for @latitude-data/telemetry, 2026-07-31 to 2026-08-29'
+    shows: 'downloads: 27,563 for @latitude-data/telemetry, 2026-07-31 to 2026-08-29. A measurement of one
+      component package''s channel, recorded as context and explicitly not the basis of the band.'
     accessed: '2026-09-02'
     http_status: 200
     content_sha256: bef361e197f83bf57bc2ba7c97db929009357882e7e1924416b76b2ceb339cfa
-  - url: https://api.github.com/repos/latitude-dev/latitude-llm
-    shows: stargazers_count = 4,613, forks_count = 387, pushed_at 2026-09-01 (actively maintained)
-    accessed: '2026-09-02'
-    http_status: 200
-    content_sha256: c004e9b0be794405dcd294520bf622f4460733983d7f0548e86824fa66912a47
 capability:
   score: 4
   basis: feature_matrix

@@ -56,25 +56,38 @@ openness:
     - source
     - self-host
 adoption:
-  level: 1
-  reach: <10K
-  signal_type: usage_volume
-  confidence: medium
-  note: ragaai-catalyst draws 2,711 PyPI downloads a month, inside the <10K band. The repository's 16,156
-    GitHub stars sit far above what the download count would predict for a package this small, but a download
-    outranks a star count on this axis, and the SDK is the only countable channel for a closed hosted platform.
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No instrument measures the hosted platform, so no level is recorded. The ragaai-catalyst PyPI package
+    (2,711 downloads a month) is the client SDK, and a client's installs count the client's users rather than
+    the platform's; the repository's 16,157 stars are the same client's, and stars three orders above a package's
+    monthly downloads is the magnitude tell the adoption guide names, not a usage reading. The vendor side
+    offers nothing to read either - raga.ai serves a JavaScript shell whose only text is a healthcare-agents
+    pitch with no customer roster or count for Catalyst, and catalyst.raga.ai, the platform endpoint every SDK
+    call authenticates against, answers 404. Banding the platform off any of that would be inventing the number.
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/ragaai-catalyst/recent
-    shows: last_month = 2,711 downloads for ragaai-catalyst (last_week 359, last_day 236)
+    shows: last_month = 2,711 downloads for ragaai-catalyst (last_week 359, last_day 236). A measurement of
+      the client SDK's channel, recorded as context and explicitly not the basis of a band.
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: 3157ff38dc1f3af94598b4328c9e92cc64e2638a021ee697ce61875fe9c06196
+    content_sha256: 3f6fd97068618aa9a72bbe63e22021d8a4f7cecfcca8121f4971c0ffa1753db8
   - url: https://api.github.com/repos/raga-ai-hub/RagaAI-Catalyst
-    shows: stargazers_count = 16,156, forks_count = 3,569
+    shows: stargazers_count = 16,157, forks_count = 3,569, pushed_at 2026-02-11, for the client SDK repository.
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: 8e7f9967831d58b2a03cf19a7fb32c03c1e682f58953c380740c5c9061f09df0
+    content_sha256: 0dedb6dc5397a1a697f6b1a91270ccb34015b938c0815e9f1a630b926a0ece5c
+  - url: https://raga.ai/
+    shows: 'A 3 KB HTML shell for a client-rendered app. The only readable text is the title and meta
+      description - "RagaAI | Enterprise Healthcare AI Agent Suites", "purpose-built, production-grade AI
+      Agent Suites for Healthcare, Lifesciences, and Aerospace. Powered by Prism and Catalyst" - with no
+      customer roster, user count or download figure for Catalyst anywhere in the served body.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 03307a335fcf791a6ecc737b535e45a0bcc80b9f8903c4f58026397a2d290b21
 capability:
   score: 4
   basis: feature_matrix
@@ -106,4 +119,4 @@ capability:
       and Red-teaming, each with a working code example.'
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: 1e2c0b45a6c56e6bce6c4c68c3d6c2a2c0a6f3f4d5e8f9a0b1c2d3e4f5061728
+    content_sha256: 4530edece36d9321326cbe0c81888872fbc14b32bd3e2b07db5a28595b353cde

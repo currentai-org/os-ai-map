@@ -46,19 +46,42 @@ openness:
     establishes:
     - license
 adoption:
-  level: 5
-  reach: '>10M'
-  signal_type: usage_volume
-  confidence: high
-  note: The logfire package draws 13,695,048 PyPI downloads a month, well inside the >10M band. It rides
-    Pydantic's own large install base and OpenTelemetry-based instrumentation across a wide integration set.
+  level: 3
+  signal_type: reported_traction
+  confidence: low
+  banded_quantity: Vendor-published customer roster for the hosted platform, no count behind it; the 13,695,048
+    monthly PyPI downloads of the logfire SDK are the instrumentation channel and are not banded
+  note: The scored product is the closed hosted platform, and nothing counts its use. The vendor page names
+    a roster of paying customers - Motorola, Sophos, Weaviate, Nous Research, Airbyte, Vox Media, Pictet and
+    about fifteen more - and publishes no user, account or trace-volume figure, so the level rests on that
+    standing as a real, mid-sized commercial observability platform rather than on a measurement. The logfire
+    package's 13,695,048 PyPI downloads a month are deliberately not the band. The SDK exports to any
+    OpenTelemetry backend and is pulled in as a dependency by Pydantic AI and other instrumentation, so an
+    install of it is not a use of the platform, and reading a level 5 off it would credit the platform with
+    the whole Pydantic ecosystem's install base. The repository's 4,450 stars are consistent with a level of
+    this size and would band lower on the stars scale.
   last_verified: '2026-09-02'
   sources:
-  - url: https://pypistats.org/api/packages/logfire/recent
-    shows: last_month = 13,695,048 downloads for logfire (last_week 2,817,073, last_day 559,383)
+  - url: https://pydantic.dev/logfire
+    shows: '"Companies who trust Pydantic Logfire" lists Boosted.ai, DeepScribe, Airbyte, Evergreen.ai, Fleet
+      AI, Seekr, Polar.sh, Stuut, Alpaca, Motorway, WorkWhile, Sophos, Aignostics, Amboss, Motorola, Epistemix,
+      Nous Research, Pictet, SimpleClub, Tiger Data, Vox Media, ZenHub and Weaviate, plus one Dosu case study.
+      The only figure on the page is the free-tier quota ("10M spans, logs, and metrics free every month");
+      no user count, customer count or usage volume appears anywhere.'
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: e37536b846463c346f33b7479eb9a5c0333d515f6691a775e5cc829d4fdcf9d0
+    content_sha256: e54eaefee2d77cbc64111f54d72bc11f8e18b37d288a8a2c6b0a5de8d67a625a
+  - url: https://pypistats.org/api/packages/logfire/recent
+    shows: last_month = 13,695,048 downloads for logfire (last_week 2,817,073, last_day 559,383). A measurement
+      of the SDK channel, recorded as context and explicitly not the basis of the band.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 30ab6461394bef09bbaec5f63d86381861382ab88d620d32c3994cba46a4adbd
+  - url: https://api.github.com/repos/pydantic/logfire
+    shows: stargazers_count = 4,450, forks_count = 283, pushed_at 2026-09-02, for pydantic/logfire.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 236a19a70e0c73dddfe30cb8b65c7f850f16515bede6a39e74e3a2e6dc3bcfc5
 capability:
   score: 4
   basis: feature_matrix
