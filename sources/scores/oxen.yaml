@@ -44,15 +44,24 @@ openness:
     - source
     - core-gated
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 1,183 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. No deployment or
-    download count for the CLI, liboxen crate or oxenai PyPI bindings is published in a form that isolates real
-    usage, which leaves the stars scale and its cap of 3.
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: 4,302 PyPI downloads of `oxenai` in the trailing 30 days, which lands in the <10K band of the software
+    usage scale, level 1. oxenai is built from this repository's `oxen-python` directory and compiles liboxen into
+    the wheel, so installing it gives you Oxen itself rather than a client to an Oxen Server, and it is the one
+    declared artifact with a countable channel. It undercounts - the CLI is installed through Homebrew, cargo and
+    a shell script that publish no figures - which is why confidence is medium rather than high. The stars scale
+    would read one level higher (1,183 stars, 1K-10K), but a declared package artifact is the measurement identity
+    and its count is what the warehouse routes to.
   last_verified: '2026-09-02'
   sources:
+  - url: https://pypistats.org/api/packages/oxenai/recent
+    shows: last_month downloads = 4,302 for oxenai.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: dabe109693d849a2c18977af5907159095b16076a0edadee8e436aafa8bce800
   - url: https://api.github.com/repos/Oxen-AI/Oxen
     shows: Repo metadata - stargazers_count = 1,183 - for Oxen-AI/Oxen.
     accessed: '2026-09-02'

@@ -50,14 +50,22 @@ openness:
     - core-gated
 adoption:
   level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 1,370 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. quilt3's PyPI
-    downloads measure local client and CLI installs rather than deployed catalog stacks, which is the countable
-    channel for this kind of self-hosted platform, so the stars scale applies with its cap of 3.
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: 32,910 PyPI downloads of `quilt3` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. quilt3 is the SDK and CLI built from this repository's `api/python`, and it creates,
+    versions and installs Quilt packages against S3 without a catalog, so the count measures Quilt users rather
+    than clients of a separate server. It is a lower bound - people who only browse a deployed catalog never
+    install it - which is why confidence is medium. The stars scale would give the same level (1,370 stars,
+    1K-10K).
   last_verified: '2026-09-02'
   sources:
+  - url: https://pypistats.org/api/packages/quilt3/recent
+    shows: last_month downloads = 32,910 for quilt3.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 41ba6e90d37013ce5567c861f0d91d871f8d4285936c2f9d6b34d320c64b397e
   - url: https://api.github.com/repos/quiltdata/quilt
     shows: Repo metadata - stargazers_count = 1,370 - for quiltdata/quilt.
     accessed: '2026-09-02'

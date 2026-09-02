@@ -134,8 +134,17 @@ comments: >-
   dataset_processing_tools boundary rather than this category's, and its last real commit is
   2025-06-06 - the GitHub API's `pushed_at` read over a year newer on bot-triggered pushes with no
   accompanying commits, which is worth checking on any repository whose activity looks livelier than its
-  commit log. Its row was removed from the registry rather than parked. diskann's PyPI package
-  (`diskannpy`) binds the legacy C++ implementation the repository itself says is no longer actively
-  developed - the maintained code is a Rust-based composable DiskANN3 library - so its downloads were not
-  used for adoption, which is the same client-package caution the category's PyPI-name trap describes,
-  one layer down.
+  commit log. Its row was removed from the registry rather than parked.
+
+  Artifact identity in the round-2 roster, settled on review: a declared PyPI or npm artifact is a
+  measurement identity, so a package whose count is not the product's usage is left undeclared rather than
+  declared and discounted in the adoption note - otherwise the next warehouse refresh routes to it and
+  overwrites the star-based judgment with the wrong count. Three packages were removed on that rule:
+  `weaviate-client` (client for the server, published from a separate repository), `openmldb` (client SDK
+  for a running cluster) and `diskannpy` (binds the legacy C++ implementation the repository itself says is
+  no longer actively developed; the maintained code is a Rust-based composable DiskANN3 library). All three
+  products band from stars. Four packages stay declared and their bands were made to follow them: `quilt3`
+  (the SDK and CLI that create and install Quilt packages against S3 on their own, so a Quilt user rather than
+  a client of a server), `oxenai` (compiles liboxen into the wheel), `sptag` (first-party bindings built from
+  the repository root) and `lamindb` (the library itself). `@orama/orama` and `pixeltable` are the product
+  itself and were never in question. The reasoning for each sits in the product's comments.
