@@ -1,0 +1,97 @@
+product: weaviate
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole server,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it - Weaviate Cloud is
+    a hosted service sold beside the BSD-licensed core rather than a piece withheld from it. So source is public
+    and the core ungated.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/weaviate/weaviate/blob/main/LICENSE
+    shows: LICENSE file is the verbatim BSD 3-Clause text under a Weaviate B.V. copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 61fc440e31f16993a0358f2c2325618275d4487913d4ec310d6f32293fd32950
+    establishes:
+    - license
+  - url: https://api.github.com/repos/weaviate/weaviate
+    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main - for
+      weaviate/weaviate.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1078c5859576d2966b43561611d5f4248e7e483e8cc929f39157bd86341cea86
+    establishes:
+    - license
+    - source
+  - url: https://github.com/weaviate/weaviate/blob/main/README.md
+    shows: README describes an open-source vector database combining vector search with structured filtering, with
+      no paid tier, enterprise edition or license-key-gated build beside the BSD-3-Clause core, only a separately
+      sold hosted Weaviate Cloud service.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0123d30defd019c4b5ead051aa2c977431c4c6d6657cad81bd8a8faa7bbc87c5
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 16,776 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The weaviate-client
+    package on PyPI is a client for a running Weaviate instance rather than the server, so its downloads are not
+    attributed here. Weaviate is deployed as a Docker or Kubernetes cluster with no published deployment count,
+    which leaves the stars scale and its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/weaviate/weaviate
+    shows: Repo metadata - stargazers_count = 16,776 - for weaviate/weaviate.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1078c5859576d2966b43561611d5f4248e7e483e8cc929f39157bd86341cea86
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Vector, keyword and hybrid search with structured filtering, replication and sharding across a
+    self-hosted or managed cluster, with optional vectorizer and reranker modules that call out to models rather
+    than hosting them inside the core serving path.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a
+    product provides itself, at what scale and over how many retrieval modes. Weaviate's vectorizer and reranker
+    modules are optional integrations that call an external or containerized model rather than the core serving
+    engine hosting and evaluating one itself, which is the line the top rung holds - the same distinction that
+    keeps Milvus's and Qdrant's rerank functions at this band rather than the one above.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/vespa-engine/vespa/blob/master/README.md
+      shows: README still documents search, inference and organization over vectors, tensors, text and structured
+        data at serving time, with ML inference evaluated during serving as part of the core engine rather than
+        an optional external module.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/weaviate/weaviate/blob/main/README.md
+    shows: README documents a cloud-native vector database with replication, sharding and multi-tenancy, and an
+      optional modules system (text2vec, reranker, generative) that integrates external or containerized models
+      rather than hosting inference inside the core query engine.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0123d30defd019c4b5ead051aa2c977431c4c6d6657cad81bd8a8faa7bbc87c5

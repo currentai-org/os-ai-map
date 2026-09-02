@@ -1,0 +1,90 @@
+product: oxen
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the CLI, the Rust
+    core and the Oxen Server, and the README describes no paid tier, enterprise edition or license-gated build
+    beside it - Oxen Hub is a separately sold hosted service rather than a piece withheld from the published code.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/Oxen-AI/Oxen/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 117fd1fb0a70a3dce4ea53a15eefbd7510e7f71276c9d014d7b0cd398d0ad9e9
+    establishes:
+    - license
+  - url: https://api.github.com/repos/Oxen-AI/Oxen
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      Oxen-AI/Oxen.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 06363b965bf1ed4ae161bf3b4168f8c83d0d4ed20731f5a7e14724e3dcbd5fd2
+    establishes:
+    - license
+    - source
+  - url: https://github.com/Oxen-AI/Oxen/blob/main/README.md
+    shows: README describes a git-like data version control system with a self-hostable Oxen Server, with no paid
+      tier, enterprise edition or license-key-gated build beside the Apache-2.0 code, only the separately sold
+      Oxen Hub.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3ebc7861f9c19c87b64199761946563cf7bb204ea915d4e5ad2ae189379c6611
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,183 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. No deployment or
+    download count for the CLI, liboxen crate or oxenai PyPI bindings is published in a form that isolates real
+    usage, which leaves the stars scale and its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/Oxen-AI/Oxen
+    shows: Repo metadata - stargazers_count = 1,183 - for Oxen-AI/Oxen.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 06363b965bf1ed4ae161bf3b4168f8c83d0d4ed20731f5a7e14724e3dcbd5fd2
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Content-addressed, git-like versioning (init, add, commit, branch, merge) purpose-built for large binary
+    and tabular datasets, with a self-hostable server for remotes. Versioning depth over its own object store, no
+    vector or full-text retrieval.
+  relative_to: lakefs
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as working single-purpose store or index, level with lakefs - a
+    versioned data layer rather than a distributed, cluster-capable system, with no indexing or retrieval beyond
+    file and diff lookups.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/treeverse/lakeFS/blob/master/README.md
+      shows: README still documents zero-copy branching, committing and merging over object storage with hooks and
+        garbage collection, and no indexing or retrieval of its own.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 8f6c248a58c56f774704b5ffe4f84c0f92ad2a267aa1557e94dd558bc6d8e83c
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/Oxen-AI/Oxen/blob/main/README.md
+    shows: README documents a git-like data version control system for large repositories, with its own object
+      store and a self-hostable server, and no built-in indexing or search.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3ebc7861f9c19c87b64199761946563cf7bb204ea915d4e5ad2ae189379c6611
