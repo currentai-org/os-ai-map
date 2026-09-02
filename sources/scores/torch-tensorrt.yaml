@@ -28,7 +28,7 @@ openness:
     shows: Repo metadata for torch-tensorrt's canonical repository - private false, archived false, fork false.
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: dba0bfdb02cef522c2daa4ed2ee14270af99bec5dd4d6d42bcbb84132841ae4d
+    content_sha256: 95387fe7378846be1737a5fdb5a8006b1abd09f4261e12e5102b68db72c18d25
     establishes:
     - license
     - source
@@ -43,19 +43,27 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  signal_type: unknown
-  confidence: low
-  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
-    time.
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 33,392 PyPI downloads of `torch-tensorrt` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. The package is published from pytorch/TensorRT and `pip install torch-tensorrt` is the README's
+    install path. Torch-TensorRT also ships preinstalled in NVIDIA's PyTorch NGC containers, a channel that publishes no count,
+    so the band is a floor.
   last_verified: '2026-09-02'
   sources:
-  - url: https://api.github.com/repos/pytorch/TensorRT
-    shows: Repo metadata for torch-tensorrt's canonical repository carries no package-registry download figure of its own;
-      banding is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+  - url: https://pypistats.org/api/packages/torch-tensorrt/recent
+    shows: last_month downloads = 33,392 for torch-tensorrt
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: dba0bfdb02cef522c2daa4ed2ee14270af99bec5dd4d6d42bcbb84132841ae4d
+    content_sha256: f12e3f5a08ac77234abbd6b42a174e9e387942c0c170bc60352d49ff4c12da7a
+  - url: https://pypi.org/pypi/torch-tensorrt/json
+    shows: PyPI metadata for torch-tensorrt 2.13.0 - project_urls Repository = https://github.com/pytorch/tensorrt.git, summary
+      'Torch-TensorRT is a package which allows users to automatically compile PyTorch and TorchScript modules to TensorRT'.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6db7d00ec57efbc8aa8c9658b958b22b64f2713312d0c39ecae91bbf1c716082
 capability:
   score: 4
   basis: feature_matrix
