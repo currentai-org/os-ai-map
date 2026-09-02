@@ -1,0 +1,108 @@
+product: traccia
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, single root LICENSE
+    source:
+      value: public
+      detail: the whole tracing product - init/observe, automatic instrumentation, all listed exporters
+        (Grafana Tempo, Jaeger, Zipkin, SigNoz, console, file) - ships and runs with no account
+    core-gated:
+      value: ungated
+      detail: prompt-registry fetch (load_prompt) and persisted evaluation experiments call the hosted
+        app.traccia.ai platform, but that platform is a separate product sold beside the SDK, not a
+        withheld part of the tracing SDK itself; no ee/enterprise directory exists in the repository
+  confidence: medium
+  note: The tracing, instrumentation and offline-evaluation core is a complete, self-contained Apache-2.0
+    SDK that exports over OTLP to any collector with no account required. Two named functions - `load_prompt`
+    (a prompt registry) and persisted `evaluate()` experiments - require a workspace API key against the
+    hosted Traccia platform, which has no self-hostable equivalent in this repository. That is the same
+    shape the ladder already resolves as ungated for `pydantic-ai`+Logfire and `langchain`+LangSmith - a
+    complete open core with an optional hosted platform sold beside it, not a paid tier carved out of the
+    core's own functionality. Recorded at medium confidence because, unlike those precedents, the optional
+    platform is Traccia's own commercial product rather than an unrelated one.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(hosted platform is a separate product for
+    prompt registry and experiment persistence)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/traccia-ai/traccia-py/main/LICENSE
+    shows: Apache License, Version 2.0 full text, the sole license file in the repository.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1cd979ecb3a3f3c11f2a1f885a67aa5b1b03461fc517a963d25f84d80e07afcc
+    establishes:
+    - license
+  - url: https://api.github.com/repos/traccia-ai/traccia-py/git/trees/main?recursive=1
+    shows: The whole repository tree, 140 paths. No ee/, enterprise or premium path exists; the only
+      LICENSE is the root Apache-2.0 file.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5cc5243d98341a354a0e1a6c8389dd3d9d8aa6dfade3d7786c9b1d1055692ace
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/traccia-ai/traccia-py/main/README.md
+    shows: 'The Quick Start and "With LLM Calls" examples run `init()`/`@observe` with no API key and
+      export via OTLP. By contrast, `load_prompt` states "Requires the Traccia platform: create a
+      workspace API key" and `evaluate()`''s persisted-experiment path "Use the same workspace API key
+      as tracing"; `persist=False` is offered for "a local-only loop" of evaluate() without the platform.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2262e6ae955fb519aacc9d856571193b21d5759c9df1e3c0bd94fdb6264be9b5
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: A pypi artifact (traccia) is declared for the warehouse to band from `currentai.signal_pypi`. This
+    session's own pypistats.org lookup was rate-limited (429) after the GitHub API budget was spent
+    confirming identity and license, so no manual download figure is recorded here rather than guessed.
+    108 GitHub stars on a repository created earlier this year is consistent with a very young product still
+    building adoption.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/traccia-ai/traccia-py
+    shows: stargazers_count = 108, forks_count = 20, created_at 2026-01-21, pushed_at 2026-08-24
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 9d4adc7b01554c644840f82461a0b6e56c2ae1b47c44f6d4a96565dcb0772b72
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: at
+  value: 'Has: automatic multi-provider instrumentation (OpenAI/Anthropic/Gemini), tracing with token/cost
+    tracking, multiple OTLP exporters, prompt management with versioning and fallback (`load_prompt`),
+    offline and platform-persisted evaluation (`evaluate()` with builtin and LLM-as-judge scorers,
+    experiment comparison), and guardrail/governance evidence (EU AI Act, HIPAA) that few peers in this
+    category carry at all.'
+  confidence: medium
+  note: 'Tracing, prompt management and evaluation-with-experiments together cover every dimension this
+    category grades, and the governance/compliance evidence layer is a genuine addition over the anchor.
+    That puts it level with Langfuse at 4, with the caveat that the prompt and persisted-evaluation halves
+    depend on the hosted platform rather than shipping fully self-contained.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
+        current feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/traccia-ai/traccia-py/main/README.md
+    shows: 'Feature list: automatic instrumentation, framework integrations, LLM-aware tracing (tokens,
+      costs, prompts, completions, latency), guardrail detection, "AI Governance and Compliance: EU AI
+      Act and HIPAA-oriented evidence", prompt management via `load_prompt`/`prefetch_prompts`, and
+      offline evaluation via `evaluate()` running a task and scorers over a dataset.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2262e6ae955fb519aacc9d856571193b21d5759c9df1e3c0bd94fdb6264be9b5

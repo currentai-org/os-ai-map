@@ -1,0 +1,109 @@
+product: ragaai-catalyst
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Apache-2.0
+      detail: covers only the ragaai-catalyst client library, not the platform it talks to
+    source:
+      value: closed
+      detail: the observability/eval platform (project, dataset, trace and prompt storage, evaluation
+        execution) runs at catalyst.raga.ai; nothing in the repository builds or serves it
+    platform:
+      value: proprietary-SaaS
+      detail: every class in the README requires an access_key/secret_key issued by the hosted platform
+    self-host:
+      value: 'no'
+      detail: no server, dashboard or docker-compose file anywhere in the repository
+  confidence: high
+  note: The repository is a well-featured client SDK - project, dataset, evaluation, trace, prompt, synthetic-data
+    and guardrail management - but every one of those calls authenticates against catalyst.raga.ai and none
+    of the platform it talks to is published. A full recursive tree search found no docker, compose, server,
+    backend or dashboard path, so there is no self-host route - this is the LangSmith/PromptLayer shape, an
+    open client over a closed hosted product, not the Helicone/Opik shape where the whole stack ships.
+  raw: license:Apache-2.0(covers only the client library);source:closed(platform runs at catalyst.raga.ai);platform:proprietary-SaaS(access_key/secret_key
+    required);self-host:no(no server/dashboard/compose in the repo)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/raga-ai-hub/RagaAI-Catalyst/main/LICENSE
+    shows: Apache License, Version 2.0 full text, the sole license file in the repository. It covers this
+      client library, not the hosted platform it authenticates against.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/raga-ai-hub/RagaAI-Catalyst/main/README.md
+    shows: 'The Configuration section: "Before using RagaAI Catalyst, you need to set up your credentials"
+      via `access_key`, `secret_key` and `base_url`, with the note "Authentication to RagaAICatalyst is
+      necessary to perform any operations below." Every subsequent usage example (Project, Dataset, Evaluation,
+      Trace and Prompt Management) instantiates against that authenticated client.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4530edece36d9321326cbe0c81888872fbc14b32bd3e2b07db5a28595b353cde
+    establishes:
+    - source
+    - self-host
+  - url: https://api.github.com/repos/raga-ai-hub/RagaAI-Catalyst/git/trees/main?recursive=1
+    shows: 'The whole repository tree, 284 paths, truncated:false. Searched for docker, compose, self-host,
+      server, backend and dashboard paths: none exist. The only license-related path is the root LICENSE
+      file (Apache-2.0).'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 28cfa71134477559def6e3f9b84e4f1a5998ab7a1586599dfde37784f20b1859
+    establishes:
+    - source
+    - self-host
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: ragaai-catalyst draws 2,711 PyPI downloads a month, inside the <10K band. The repository's 16,156
+    GitHub stars sit far above what the download count would predict for a package this small, but a download
+    outranks a star count on this axis, and the SDK is the only countable channel for a closed hosted platform.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/ragaai-catalyst/recent
+    shows: last_month = 2,711 downloads for ragaai-catalyst (last_week 359, last_day 236)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3157ff38dc1f3af94598b4328c9e92cc64e2638a021ee697ce61875fe9c06196
+  - url: https://api.github.com/repos/raga-ai-hub/RagaAI-Catalyst
+    shows: stargazers_count = 16,156, forks_count = 3,569
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 8e7f9967831d58b2a03cf19a7fb32c03c1e682f58953c380740c5c9061f09df0
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: at
+  value: 'Has: project/dataset/prompt management, agentic tracing, metric-based evaluation (LLM-as-judge
+    style configs with model/provider/threshold), synthetic data generation, guardrail management and
+    red-teaming. No dedicated playground surface documented.'
+  confidence: medium
+  note: 'A broad feature matrix covering every dimension this category grades - tracing, evaluation, prompt
+    and dataset management - plus synthetic data generation, guardrails and red-teaming that few peers in
+    this category offer. That breadth puts it level with the Langfuse anchor at 4, even though (unlike
+    Langfuse) none of it is self-hostable.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management ("centrally manage, version control, and
+        collaboratively iterate on your prompts"), Evaluations, Playground and Datasets as the current
+        feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/raga-ai-hub/RagaAI-Catalyst/main/README.md
+    shows: 'Table of contents and usage sections for Project Management, Dataset Management, Evaluation,
+      Trace Management, Agentic Tracing, Prompt Management, Synthetic Data Generation, Guardrail Management
+      and Red-teaming, each with a working code example.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1e2c0b45a6c56e6bce6c4c68c3d6c2a2c0a6f3f4d5e8f9a0b1c2d3e4f5061728
