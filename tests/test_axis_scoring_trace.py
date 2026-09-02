@@ -43,9 +43,12 @@ GOLDEN = {
     # Regenerated 2026-09-02 for the compilers round-2 promotion: 18 products added
     # (axis_results 576 -> 594), each recording all three openness dimensions, so entering
     # the same shape of fact and rule-match rows the round-1 compilers roster did.
-    "axis_facts": (2588, "7849e538d678193d01a6d499f0f650275b5bf19866a265adeec59ca67001dac9"),
-    "axis_rule_matches": (3151, "4c077342486d0f97b1b29fcf0e33d3ffc7a445e3e4832e79eea98070092ae43b"),
-    "axis_results": (594, "0c0879d2c550ed32756a05074686d6f7ad2b6c2f2e45c11d42f5c2058c1fbf76"),
+    # Regenerated 2026-09-02 for the storage and telemetry_observability legs of the same
+    # round-2 promotion: 19 more products (12 storage, 7 telemetry_observability;
+    # axis_results 594 -> 613), each recording all three openness dimensions too.
+    "axis_facts": (2664, "9965ebdcf0ba415442fefec4c679663e3921825f6f2b1f2b800828775f7858b6"),
+    "axis_rule_matches": (3239, "417ac4110dc29e496128f26561c52ad42c3de4fbea0c59b43786fe4ed214885c"),
+    "axis_results": (613, "e57320da23b414ccdffde34e1537df72a3f7f637fd4171de45d929620d496e9f"),
 }
 
 

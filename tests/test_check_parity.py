@@ -248,7 +248,12 @@ def test_local_scores_matches_check_rubrics_split():
     # (cuda-tile) onto `osi`, NXAI-Community-License (mlstm-kernels) onto
     # `competition_restricted` - each the first product on the map to record its license, so
     # no existing score moved.
-    assert len(computed) == 589
+    #
+    # 589/5 -> 608/5 the same day, the storage and telemetry_observability legs of the same
+    # round-2 promotion: 12 storage products in (butterfree rejected on the category boundary)
+    # and 7 telemetry_observability products in, no net change to the deferral count. Every
+    # add recorded a license spelling the shared software ladder already tiers.
+    assert len(computed) == 608
     assert not set(computed) & set(deferred)
     # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

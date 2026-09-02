@@ -961,7 +961,11 @@ def test_real_sources_serialize_without_errors():
         # each recording all three dimensions and so publishing the same four rows per product
         # (source, the resolved core_gated, license, and core-gated again under the hyphenated
         # key) as the round-1 roster - 18 x 4 = 72 new rows, none of them deferred.
-        "compilers": 174, "storage": 112,
+        #
+        # storage 112 -> 160 on the same round-2 promotion: 12 new software products (butterfree
+        # rejected on the category boundary), the same four rows each, none deferred -
+        # 12 x 4 = 48 new rows.
+        "compilers": 174, "storage": 160,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

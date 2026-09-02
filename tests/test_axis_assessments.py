@@ -49,8 +49,11 @@ TEST_SHA = "test-git-sha"
 # same 1728 rows, corrected content.
 # 1728 -> 1782 on the compilers round-2 promotion (2026-09-02): 18 products added to
 # `compilers`, 54 new axis rows (18 x 3, one openness/adoption/capability row each).
-AXIS_ROW_COUNT = 1782
-AXIS_ASSESSMENTS_DIGEST = "c7c95707d4aa5ffcc0e8543c6b95bb204f597838a5baa175fa2c764dcc83581d"
+# 1782 -> 1839 the same day, the storage and telemetry_observability legs of the same
+# round-2 promotion: 19 more products (12 storage, 7 telemetry_observability), 57 new
+# axis rows (19 x 3).
+AXIS_ROW_COUNT = 1839
+AXIS_ASSESSMENTS_DIGEST = "2803d87b821e1bd83fc1803ba120e9014b86c28016df9c496d60e79554a36618"
 
 
 @pytest.fixture(scope="module")

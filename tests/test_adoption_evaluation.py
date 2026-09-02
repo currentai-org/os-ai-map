@@ -54,10 +54,15 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # added with the new products (576 -> 594), every one of them a null-level abstention
 # (adoption left for the warehouse to band). MEASUREMENTS_DIGEST is again unchanged for
 # the same reason: no warehouse observation rows exist yet for the new products.
-RECONCILIATION_DIGEST = "eff9c1c572a31bc5662bc9e668c35d4a850d6a887893e5073911e3a75585bde4"
+# Moved again 2026-09-02 by the storage and telemetry_observability legs of the same
+# round-2 promotion: 19 more recorded assessments (594 -> 613; 12 storage, 7
+# telemetry_observability), most hand-banded on stars/downloads rather than left null.
+# MEASUREMENTS_DIGEST stays unchanged for the same reason as the compilers leg: no
+# warehouse observation rows exist yet for any of the new products.
+RECONCILIATION_DIGEST = "49e011ba27e37ae6ac75a701aaff47a1f5cb4b1092cae0197735e9bd89a8c55b"
 
 MEASUREMENT_COUNT = 377
-RECORDED_ASSESSMENT_COUNT = 594
+RECORDED_ASSESSMENT_COUNT = 613
 ROUTING_POLICY_VERSION = "2"
 
 
