@@ -1,0 +1,20 @@
+name: quilt
+display_name: Quilt
+type: software
+description: Quilt is a scientific data management platform on AWS that packages data with metadata, documentation
+  and version history for reuse. It ships a Python SDK and CLI for creating and installing versioned data packages
+  on S3, and a self-deployed catalog stack (web UI, Lambda indexing services, and a search cluster) for browsing,
+  searching and visualizing them.
+github:
+- url: https://github.com/quiltdata/quilt
+pypi:
+- url: https://pypi.org/project/quilt3/
+comments: quilt3 on PyPI is declared as the measurement identity, and the reasoning is recorded because the
+  package is one of two components in this repository. Installing quilt3 gives you Quilt - the SDK and CLI in
+  `api/python` create, version and install data packages against S3 on their own, with the catalog and Lambda
+  stack in `catalog` and `lambdas` as an optional browsing layer over the same packages, all from the same
+  Apache-2.0 source. Every programmatic use of Quilt goes through quilt3, so its downloads count Quilt users
+  rather than clients of a separately shipped server, which is what separates it from weaviate-client or the
+  openmldb SDK. The count is a lower bound (catalog-only users never install it) and the note says so. Verified
+  2026-09-02 via the GitHub API, the PyPI metadata (Repository points back at quiltdata/quilt) and the LICENSE
+  body.

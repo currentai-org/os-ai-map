@@ -1,0 +1,89 @@
+product: freetensor
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/roastduck/FreeTensor/blob/master/LICENSE
+    shows: LICENSE body carries the verbatim Apache License 2.0 text.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f21c41a223aa2bce773357185c9d73a57491ef89715495b546fc35a27ff4a7a1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/roastduck/FreeTensor
+    shows: Repo metadata for freetensor's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5e069b8983c910fdce65244ed8447a5a2ffa5f3c96b0f3b9d281e783c7e99343
+    establishes:
+    - license
+    - source
+  - url: https://github.com/roastduck/FreeTensor/blob/master/README.md
+    shows: README describes FreeTensor as compiling loop-based tensor programs written in Python to native code, with dynamic
+      shapes, parallelization, explicit optimization transformations and automatic differentiation, and names no paid tier,
+      enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3fcefb5fad04556fd2ea245f243b6dcc7dc4c4d196bf6e6fd3d78311af9139df
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 152 GitHub stars, which lands in the <1K stars band of the stars scale, level 1. FreeTensor has no PyPI or other registry
+    package and is built from source, so no download count exists and the stars scale applies.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/roastduck/FreeTensor
+    shows: Repo metadata - stargazers_count = 152 - for roastduck/FreeTensor.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5e069b8983c910fdce65244ed8447a5a2ffa5f3c96b0f3b9d281e783c7e99343
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full compilation toolchain narrowed to one class of models'
+  value: A full compiler - parsing, transformation, parallelization, code generation and automatic differentiation - for
+    loop-based tensor programs, targeting OpenMP and CUDA, narrowed to one program class rather than TVM's multi-framework,
+    multi-vendor scope.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the apache-tvm anchor, on the same reasoning as taco and Finch.jl: a full compilation toolchain
+    - including automatic differentiation, which neither of those two provides - narrowed to one class of programs rather
+    than apache-tvm''s retargetable multi-framework, multi-vendor scope.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/roastduck/FreeTensor/blob/master/README.md
+    shows: README describes FreeTensor as compiling loop-based tensor programs written in Python to native code, with dynamic
+      shapes, parallelization, explicit optimization transformations and automatic differentiation, and names no paid tier,
+      enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3fcefb5fad04556fd2ea245f243b6dcc7dc4c4d196bf6e6fd3d78311af9139df
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

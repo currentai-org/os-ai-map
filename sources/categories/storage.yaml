@@ -1,13 +1,15 @@
 name: storage
 display_name: Storage & Retrieval
 description: 'Data stores, indexes, file systems, and versioned data layers built for persisting and retrieving training, inference, and retrieval-augmented-generation data.'
-strapline: Openness holds across the layer, with 24 of 27 products publishing a complete,
+strapline: Openness holds across the layer, with 36 of 39 products publishing a complete,
   OSI-licensed system. The three exceptions are instructive rather than incidental. Elasticsearch and
   Meilisearch both keep a separately licensed portion inside the public repository, x-pack under the
   Elastic License and an Enterprise Edition under BUSL, rather than selling a service alongside a
-  complete core; Pinecone publishes no source at all. Adoption is harder to read here than almost
-  anywhere on the map, because most of these products ship as servers and the PyPI name that matches
-  them usually belongs to a client library.
+  complete core; Pinecone publishes no source at all. RediSearch offers the identical default-triple-license
+  choice as Elasticsearch (a non-OSI branch alongside AGPL-3.0), but carries no gated directory inside the
+  published repository, so it lands in the open majority rather than beside them. Adoption is harder to
+  read here than almost anywhere on the map, because most of these products ship as servers and the PyPI
+  or npm name that matches them usually belongs to a client library.
 weights:
   adopt: 0.6
   cap: 0.4
@@ -39,14 +41,26 @@ products:
 - openlake
 - hnswlib
 - annoy
+- weaviate
+- orama
+- paradedb
+- diskann
+- sptag
+- openmldb
+- quilt
+- oxen
+- lakesoul
+- pixeltable
+- lamindb
+- redisearch
 scoring_recipe:
   version: 1
   extends: software
   derived_from:
     method: shared software ladder, checked against the hand-recorded scores
-    scores_reproduced: 27
-    scores_total: 27
-    verified_on: '2026-08-18'
+    scores_reproduced: 39
+    scores_total: 39
+    verified_on: '2026-09-02'
     checker: build/check_rubric.py
   note: >-
     The roster is software-only and inherits the shared software ladder unchanged. Three license
@@ -105,3 +119,32 @@ comments: >-
   rather than a store. Weaviate was considered as a fourth replacement for alluxio and not added: 27
   products sits mid-range for the category, so it is a candidate for the next discovery batch rather
   than a gap.
+
+  Round 2, 2026-09-02: 12 of 13 seeded rows in the registry were promoted to head products - weaviate,
+  orama, paradedb, diskann, sptag, openmldb, quilt, oxen, lakesoul, pixeltable, lamindb and redisearch -
+  which takes the roster to 39. Weaviate is the deferred candidate this file already named. RediSearch
+  was promoted on a deliberate cross-round ruling rather than a plain discovery accept: the same shape as
+  pgvector, a general-purpose store's search/vector module rather than the store itself, distinguished
+  from plain Redis, which stays excluded as too general-purpose. Its openness was checked rather than
+  assumed from the pgvector precedent - it turned out to record the identical default-triple-license
+  choice as elasticsearch, but with no directory in the published tree carrying a header that withholds
+  the OSI branch, so it lands 5/open_source rather than beside elasticsearch and meilisearch. Butterfree
+  (quintoandar/butterfree), the thirteenth seeded row, was rejected on two independent grounds: its own
+  README frames it as an ETL framework for building pipelines that feed a feature store, which is the
+  dataset_processing_tools boundary rather than this category's, and its last real commit is
+  2025-06-06 - the GitHub API's `pushed_at` read over a year newer on bot-triggered pushes with no
+  accompanying commits, which is worth checking on any repository whose activity looks livelier than its
+  commit log. Its row was removed from the registry rather than parked.
+
+  Artifact identity in the round-2 roster, settled on review: a declared PyPI or npm artifact is a
+  measurement identity, so a package whose count is not the product's usage is left undeclared rather than
+  declared and discounted in the adoption note - otherwise the next warehouse refresh routes to it and
+  overwrites the star-based judgment with the wrong count. Three packages were removed on that rule:
+  `weaviate-client` (client for the server, published from a separate repository), `openmldb` (client SDK
+  for a running cluster) and `diskannpy` (binds the legacy C++ implementation the repository itself says is
+  no longer actively developed; the maintained code is a Rust-based composable DiskANN3 library). All three
+  products band from stars. Four packages stay declared and their bands were made to follow them: `quilt3`
+  (the SDK and CLI that create and install Quilt packages against S3 on their own, so a Quilt user rather than
+  a client of a server), `oxenai` (compiles liboxen into the wheel), `sptag` (first-party bindings built from
+  the repository root) and `lamindb` (the library itself). `@orama/orama` and `pixeltable` are the product
+  itself and were never in question. The reasoning for each sits in the product's comments.

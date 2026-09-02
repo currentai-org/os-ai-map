@@ -1,0 +1,105 @@
+product: redisearch
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: LICENSE.txt states the source in this repository is available, except where a file header says otherwise,
+    under the recipient's choice of the Redis Source Available License 2.0 (RSALv2, not OSI), the Server Side
+    Public License v1 (SSPLv1, not OSI) or the GNU Affero General Public License v3 (AGPLv3, OSI) - the same
+    default-triple-license shape as elasticsearch, and AGPL-3.0 is the tier this records. Unlike elasticsearch's
+    x-pack or meilisearch's Enterprise Edition, no directory in this repository is checked to carry a header
+    naming only the non-OSI branches - the coordinator/clustering code under `src/coord` (Redis's distributed
+    serving layer) carries the identical triple-choice header as the rest of `src/`, so no functionality in the
+    published tree is withheld from the AGPL-3.0 branch. Source is public and the core ungated.
+  raw: license:AGPL-3.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/RediSearch/RediSearch/blob/master/LICENSE.txt
+    shows: LICENSE.txt states the source is available under the recipient's choice of RSALv2, SSPLv1 or AGPLv3
+      starting with Redis 8, except as otherwise specified in source code headers for specific files.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 687cf11cd8538290d735da43bca5e87728ef1042c20a80336191ca74d5c58e01
+    establishes:
+    - license
+  - url: https://api.github.com/repos/RediSearch/RediSearch
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch master - for
+      RediSearch/RediSearch.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: a0ecb4e8844fa75242e198d2a0339325d95fa5507256ba1a5576950460fdee97
+    establishes:
+    - license
+    - source
+  - url: https://github.com/RediSearch/RediSearch/blob/master/src/coord/dist_plan.h
+    shows: A source file inside the distributed coordinator/clustering directory (src/coord) carries the identical
+      "your choice of RSALv2; or SSPLv1; or AGPLv3" header as the rest of the repository, rather than a header
+      naming only the non-OSI branches - the shape that would mark a gated directory the way elasticsearch's
+      x-pack is marked.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: de8d51be75a7e35249bbee2c092dcff7a230d9324af8d38df5ab5d64d0293c84
+    establishes:
+    - core-gated
+  - url: https://github.com/RediSearch/RediSearch/blob/master/README.md
+    shows: README describes a query and indexing engine providing secondary indexing, full-text search, vector
+      similarity search and aggregations for Redis, with no separate enterprise-only directory or paid tier
+      described inside this repository.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 629ff75e1712a62215d2f09c54791b9ba0a0701515f6a0506ffd687174dbb0f2
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 6,228 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. RediSearch ships as
+    a Redis module with no standalone package registry artifact and no published deployment count, which leaves
+    the stars scale and its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/RediSearch/RediSearch
+    shows: Repo metadata - stargazers_count = 6,228 - for RediSearch/RediSearch.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: a0ecb4e8844fa75242e198d2a0339325d95fa5507256ba1a5576950460fdee97
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Secondary indexing, full-text and vector similarity search, and aggregations as a Redis module, inheriting
+    persistence, replication and clustering from Redis rather than implementing its own.
+  relative_to: pgvector
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as working single-purpose store or index, level with pgvector - the
+    same shape (a search/index module bolted onto a general-purpose store, inheriting that store's persistence
+    and distribution rather than providing its own) with a broader retrieval surface than a vector-only extension.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/pgvector/pgvector/blob/master/README.md
+      shows: README still documents exact and approximate nearest neighbour search over Postgres, inheriting
+        persistence and transactions from Postgres rather than implementing them.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 54cb3a5f4344308476cb2378469ac77d10fbff415d1b5be66608bb386ce8f527
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/RediSearch/RediSearch/blob/master/README.md
+    shows: README documents secondary indexing, full-text and vector search and aggregations as a Redis module,
+      with no storage or clustering layer of its own beyond what Redis provides.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 629ff75e1712a62215d2f09c54791b9ba0a0701515f6a0506ffd687174dbb0f2

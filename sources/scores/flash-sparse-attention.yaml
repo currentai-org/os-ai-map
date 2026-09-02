@@ -1,0 +1,96 @@
+product: flash-sparse-attention
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/HKUSTDial/flash-sparse-attention/blob/main/LICENSE
+    shows: LICENSE body is the verbatim three-clause BSD text under an HKUST(GZ) DIAL copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5e3c3b1805e407685d351b98330999b32c5faed3fbc101f3f6c43d8fd0112fdd
+    establishes:
+    - license
+  - url: https://api.github.com/repos/HKUSTDial/flash-sparse-attention
+    shows: Repo metadata for flash-sparse-attention's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: acf9daa1686fe0f3b62fb208319c4cf5eede8a160734a30fc7b995a60b8ef2c4
+    establishes:
+    - license
+    - source
+  - url: https://github.com/HKUSTDial/flash-sparse-attention/blob/main/README.md
+    shows: README describes Flash-Sparse-Attention as a high-performance trainable sparse attention implementation supporting
+      dense, sparse and gated attention, GQA/MQA, paged attention and fused low-precision quantization, with no paid tier,
+      enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d8f63f3fb001a0e081af140ac06ec5980fa08183c4c9c5cfbcd12c164fe23609
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 64 PyPI downloads of `flash-sparse-attn` in the trailing 30 days, which lands in the <10K band of the software usage
+    scale, level 1. The package is published from HKUSTDial/flash-sparse-attention and `pip install flash-sparse-attn` is
+    the README's install path.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/flash-sparse-attn/recent
+    shows: last_month downloads = 64 for flash-sparse-attn
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 17a87a6a27870aa49c3192dd822147b098cebfccabaf307c971ba07e84fdec42
+  - url: https://pypi.org/pypi/flash-sparse-attn/json
+    shows: 'PyPI metadata for flash-sparse-attn 2.0.5 - project_urls Source = https://github.com/HKUSTDial/flash-sparse-attention,
+      summary ''Flash Sparse Attention: Fast and Memory-Efficient Trainable Sparse Attention''.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 808d6507c22c2ad26852d197a1ba473c54f3f67c1d3d9884a023a34ca4d88dd0
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: Dense, sparse and gated attention kernels covering GQA/MQA, arbitrary Q/KV lengths, causal and local-window masking,
+    paged attention and fused low-precision quantization - one optimization family (attention) applied broadly across configurations
+    rather than narrowed to one model.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as one optimization family, applied broadly - the same shape as flash-attention,
+    whose feature breadth (dense/sparse/gated variants, GQA/MQA, paged attention) it matches rather than narrowing to one
+    model's attention variant. Placed two bands below the apache-tvm anchor.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/HKUSTDial/flash-sparse-attention/blob/main/README.md
+    shows: README describes Flash-Sparse-Attention as a high-performance trainable sparse attention implementation supporting
+      dense, sparse and gated attention, GQA/MQA, paged attention and fused low-precision quantization, with no paid tier,
+      enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d8f63f3fb001a0e081af140ac06ec5980fa08183c4c9c5cfbcd12c164fe23609
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

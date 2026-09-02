@@ -1,0 +1,90 @@
+product: miopen
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/ROCm/MIOpen/blob/develop_deprecated/LICENSE.txt
+    shows: LICENSE body opens with an AMD copyright line, declares the MIT text for the whole repository, and separately
+      dual-licenses two files (kernel_cache.hpp/.cpp) under MIT plus an Apache-2.0 grant from their original Vratis, Ltd.
+      author - a widening, not a restriction, since both are OSI tiers.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0eb5801ba8dae3f66cbff54fecdc50dbfaa731f8036066e543a4bc8fef401372
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ROCm/MIOpen
+    shows: Repo metadata for miopen's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4c149938cebc92d72f272f89b9e60ba7646723283b36b894f1e34e93f308744a
+    establishes:
+    - license
+    - source
+  - url: https://github.com/ROCm/MIOpen/blob/develop_deprecated/README.md
+    shows: README carries a retirement notice pointing to ROCm/rocm-libraries, describes MIOpen as AMD's library for high-performance
+      machine learning primitives, and names no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 95834e3e3204737efebcfd9e844560a462415a061c5ace7a96881db658c8a4b4
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,193 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. MIOpen ships inside the ROCm
+    distribution packages (apt, dnf, zypper) and as a source build, and AMD publishes no download count for either, so the
+    stars scale applies with its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/ROCm/MIOpen
+    shows: Repo metadata - stargazers_count = 1,193 - for ROCm/MIOpen.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4c149938cebc92d72f272f89b9e60ba7646723283b36b894f1e34e93f308744a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: Convolution, RNN, pooling, batch-normalization and fusion primitives for ROCm/HIP, the AMD counterpart to cuDNN.
+    Supplies the primitives compilers and frameworks target rather than transforming a model itself.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library, the same shape as onednn
+    and arm-compute-library. Placed two bands below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware
+    transformation pipeline a product performs, over how many inputs and targets.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/ROCm/MIOpen/blob/develop_deprecated/README.md
+    shows: README carries a retirement notice pointing to ROCm/rocm-libraries, describes MIOpen as AMD's library for high-performance
+      machine learning primitives, and names no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 95834e3e3204737efebcfd9e844560a462415a061c5ace7a96881db658c8a4b4
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

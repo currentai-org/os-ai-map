@@ -1,0 +1,92 @@
+product: flashqla
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/QwenLM/FlashQLA/blob/main/LICENSE
+    shows: LICENSE body is the verbatim MIT text under an Alibaba/Qwen copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d0b7a111f48dc0207c7e057c810ae0e2fdbc807ba654eb669ade998b2cdc3438
+    establishes:
+    - license
+  - url: https://api.github.com/repos/QwenLM/FlashQLA
+    shows: Repo metadata for flashqla's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: bd16fe61b839913652c0fd55b99f021fa8122cdea3f7a538f0825151daf5bc29
+    establishes:
+    - license
+    - source
+  - url: https://github.com/QwenLM/FlashQLA/blob/main/README.md
+    shows: README describes FlashQLA as a high-performance linear attention kernel library built on TileLang serving as
+      a flash-linear-attention GDN backend, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f6aaa48562cb3f493a897ab8bf9d07622d92ecda0e53f3ba62a779f79d56e3fa
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 2,326 PyPI downloads of `flash-qla` in the trailing 30 days, which lands in the <10K band of the software usage scale,
+    level 1. `pip install flash-qla` is the README's install path and the package description links back to QwenLM/FlashQLA.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/flash-qla/recent
+    shows: last_month downloads = 2,326 for flash-qla
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 60d33026c71ceaa41bca2c8b6f7281a51fad6ffa798da8655df823c4cddbeec2
+  - url: https://pypi.org/pypi/flash-qla/json
+    shows: 'PyPI metadata for flash-qla 0.1.2 - summary ''FlashQLA: Fused TileLang kernels for Linear Attention'', description
+      links https://github.com/QwenLM/FlashQLA, requires tilelang.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 9340429581874695351fbef966ce9b472c9e03b30d5d37d016151d98d790a88b
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set'
+  value: Forward and backward kernels for one linear-attention variant's chunked-prefill path (Gated DeltaNet), purpose-built
+    as a drop-in backend for one upstream library rather than a broad attention technique.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: 'Banded on the category feature matrix as a narrow kernel set: one linear-attention variant''s forward/backward
+    path, built to plug into one upstream API. Placed two bands below the tensorrt rung, the same level as flashkda.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/QwenLM/FlashQLA/blob/main/README.md
+    shows: README describes FlashQLA as a high-performance linear attention kernel library built on TileLang serving as
+      a flash-linear-attention GDN backend, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f6aaa48562cb3f493a897ab8bf9d07622d92ecda0e53f3ba62a779f79d56e3fa
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/NVIDIA/TensorRT/blob/main/README.md
+      shows: README still describes this repository as the NVIDIA-only open source components (plugins, ONNX parser, samples)
+        of the closed TensorRT GA release, unchanged from the claim this map's tensorrt band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 8a4644025d91b54eb5fc123aa1f9591ed74993f017b9bd745c921754c94077d3

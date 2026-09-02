@@ -31,7 +31,6 @@ from build.axis_assessments import (
 TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
-AXIS_ROW_COUNT = 1728
 # Moved 2026-09-01 by two combined passes: the #436 attestation pass (12 capability rows
 # gained `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison
 # roots - openrlhf, accelerate, openvino, anythingllm, sillytavern - moved `last_verified`
@@ -48,7 +47,22 @@ AXIS_ROW_COUNT = 1728
 # regenerated the new rows' raw strings from their components mappings, renamed
 # mle-bench's license to the ladder's per-component spelling and cleaned four notes -
 # same 1728 rows, corrected content.
-AXIS_ASSESSMENTS_DIGEST = "8874192a134070b545557d0b674f43905a822e17b26accb83960bc5b7d72d95a"
+# 1728 -> 1782 on the compilers round-2 promotion (2026-09-02): 18 products added to
+# `compilers`, 54 new axis rows (18 x 3, one openness/adoption/capability row each).
+# 1782 -> 1839 the same day, the storage and telemetry_observability legs of the same
+# round-2 promotion: 19 more products (12 storage, 7 telemetry_observability), 57 new
+# axis rows (19 x 3).
+# Moved once more within the same tranche, same row count, when the review fixes landed:
+# the 18 compilers adoption rows went from null to a band (24 usage_volume, 20
+# stars_fallback across the roster), three storage products lost a client package as
+# their instrument, and five telemetry_observability adoption rows were re-banded on the
+# product actually measured. Corrected content, no new rows.
+# And once more, same rows, when the seven telemetry_observability openness `raw` strings
+# were regenerated from their components mappings with `check_rubric.recompose` - the raw
+# is what `basis_detail` carries, and it had lagged the structured detail (check_components
+# reported 21 mismatches). No score or class moved.
+AXIS_ROW_COUNT = 1839
+AXIS_ASSESSMENTS_DIGEST = "8e4f9aa89bf63ada92f8b0b7e7026511538e0f77eeaf5e84be371f0a49bb2fda"
 
 
 @pytest.fixture(scope="module")

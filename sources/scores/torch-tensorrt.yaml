@@ -1,0 +1,96 @@
+product: torch-tensorrt
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/pytorch/TensorRT/blob/main/LICENSE
+    shows: LICENSE body is the verbatim three-clause BSD text under a PyTorch/NVIDIA copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: eda43e6ca58d57a58ced516bd4ff7c474ee55da49689dee776db8619a5e92ce1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pytorch/TensorRT
+    shows: Repo metadata for torch-tensorrt's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 95387fe7378846be1737a5fdb5a8006b1abd09f4261e12e5102b68db72c18d25
+    establishes:
+    - license
+    - source
+  - url: https://github.com/pytorch/TensorRT/blob/main/README.md
+    shows: README describes Torch-TensorRT as bringing the power of TensorRT to PyTorch to accelerate inference for any
+      PyTorch model on the NVIDIA platform, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ce8b60e87b05d137e540bac15e68e5e81e5b9369f6738e955f3a558388e74d1a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 33,392 PyPI downloads of `torch-tensorrt` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. The package is published from pytorch/TensorRT and `pip install torch-tensorrt` is the README's
+    install path. Torch-TensorRT also ships preinstalled in NVIDIA's PyTorch NGC containers, a channel that publishes no count,
+    so the band is a floor.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/torch-tensorrt/recent
+    shows: last_month downloads = 33,392 for torch-tensorrt
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f12e3f5a08ac77234abbd6b42a174e9e387942c0c170bc60352d49ff4c12da7a
+  - url: https://pypi.org/pypi/torch-tensorrt/json
+    shows: PyPI metadata for torch-tensorrt 2.13.0 - project_urls Repository = https://github.com/pytorch/tensorrt.git, summary
+      'Torch-TensorRT is a package which allows users to automatically compile PyTorch and TorchScript modules to TensorRT'.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6db7d00ec57efbc8aa8c9658b958b22b64f2713312d0c39ecae91bbf1c716082
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full compilation toolchain narrowed to one vendor''s targets'
+  value: A full compiler that lowers PyTorch, TorchScript and FX graphs through TensorRT's optimizing builder, narrowed
+    to one input framework (PyTorch) and one vendor's targets (NVIDIA GPUs) rather than apache-tvm's multi-framework, multi-vendor
+    scope.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the apache-tvm anchor, the same level as mlc-llm, coremltools, nvidia-model-optimizer, intel-neural-compressor
+    and torchao: a full compilation toolchain narrowed to one framework and one vendor''s hardware targets.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/pytorch/TensorRT/blob/main/README.md
+    shows: README describes Torch-TensorRT as bringing the power of TensorRT to PyTorch to accelerate inference for any
+      PyTorch model on the NVIDIA platform, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ce8b60e87b05d137e540bac15e68e5e81e5b9369f6738e955f3a558388e74d1a
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

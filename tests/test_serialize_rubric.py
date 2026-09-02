@@ -872,7 +872,19 @@ def test_real_sources_serialize_without_errors():
         # clients; privatemode gained `source: partial`, its recorded `TCB-public` having been
         # outside the dimension's enum. Both reproduce the score they carried. The category now
         # defers nothing.
-        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 221,
+        "orchestration_agents": 215, "ui_api": 221,
+        # telemetry_observability 114 -> 142 on 2026-09-02, the Round 2 promotion of seven
+        # candidates out of the tail registry: ragaai-catalyst, logfire, monocle, traccia, axon,
+        # latitude-llm and evidently. Five of the seven record `license`, `source` and
+        # `core-gated`, which is four rows each rather than three - the dimension publishes both
+        # the recorded hyphenated key and the resolved `core_gated` it normalizes onto, the same
+        # shape `compilers`/`storage` noted above - for 20 rows. logfire records `license`,
+        # `source` and `backend` with no core-gated key at all (its `source: partial` settles the
+        # score on its own, the same as tensorrt), three rows. ragaai-catalyst records `license`,
+        # `source`, `platform` and `self-host`, the last being the ladder's own synonym for
+        # core-gated, so it too publishes a resolved `core_gated` row alongside it: five rows.
+        # 20 + 3 + 5 is the whole rise.
+        "telemetry_observability": 142,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -944,7 +956,16 @@ def test_real_sources_serialize_without_errors():
         # dimensions it records: `source`, the resolved `core_gated`, `license`, and `core-gated`
         # again under the hyphenated key the record actually uses. Verified by reading the emitted
         # rows for liger-kernel and pgvector rather than by inferring it from the count.
-        "compilers": 102, "storage": 112,
+        #
+        # compilers 102 -> 174 on the round-2 promotion (2026-09-02): 18 new software products,
+        # each recording all three dimensions and so publishing the same four rows per product
+        # (source, the resolved core_gated, license, and core-gated again under the hyphenated
+        # key) as the round-1 roster - 18 x 4 = 72 new rows, none of them deferred.
+        #
+        # storage 112 -> 160 on the same round-2 promotion: 12 new software products (butterfree
+        # rejected on the category boundary), the same four rows each, none deferred -
+        # 12 x 4 = 48 new rows.
+        "compilers": 174, "storage": 160,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

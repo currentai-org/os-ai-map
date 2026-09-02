@@ -1,0 +1,104 @@
+product: quilt
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The single root LICENSE covers the whole repository - the Python SDK,
+    the web catalog frontend and the Lambda backend services all in one tree - and the docs describe the "Enterprise
+    Installation" as deploying this same repository's catalog and stack via CloudFormation into the customer's own
+    AWS account, not a separately licensed or closed platform. The technical reference explicitly states the Lambda
+    functions are open-source and independently security-audited. So source is public and the core ungated; the
+    README's own "Enterprise platform" language describes a deployment and support model rather than functionality
+    withheld from the published source.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/quiltdata/quilt/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text, covering the entire repository with no per-directory
+      carve-out.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/quiltdata/quilt
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      quiltdata/quilt.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 21f66eddf25219826f4b04394c7afe3d29dd26f5362f13bf2923040bc9ddec47
+    establishes:
+    - license
+    - source
+  - url: https://github.com/quiltdata/quilt/blob/master/docs/Installation.md
+    shows: Installation.md documents both the Python client (`pip install quilt3`) and the "Enterprise Installation"
+      (the catalog and stack, deployed on AWS via CloudFormation from the Catalog Installation Guide) as
+      installations of this same repository, with no license key or separate purchase gating the stack itself.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: bd8695a7beb7f1f1ffb5defb188b2cbbed41b5ec404d11ddcded3637da93b897
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: 32,910 PyPI downloads of `quilt3` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. quilt3 is the SDK and CLI built from this repository's `api/python`, and it creates,
+    versions and installs Quilt packages against S3 without a catalog, so the count measures Quilt users rather
+    than clients of a separate server. It is a lower bound - people who only browse a deployed catalog never
+    install it - which is why confidence is medium. The stars scale would give the same level (1,370 stars,
+    1K-10K).
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/quilt3/recent
+    shows: last_month downloads = 32,910 for quilt3.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 41ba6e90d37013ce5567c861f0d91d871f8d4285936c2f9d6b34d320c64b397e
+  - url: https://api.github.com/repos/quiltdata/quilt
+    shows: Repo metadata - stargazers_count = 1,370 - for quiltdata/quilt.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 21f66eddf25219826f4b04394c7afe3d29dd26f5362f13bf2923040bc9ddec47
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Versioned, metadata-rich data packages on S3 with a deployed catalog stack - web browsing, previews and
+    an indexing/search cluster provisioned alongside the storage - rather than a bare client or a single-node tool.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, alongside juicefs - Quilt provisions its own search cluster and indexing
+    Lambdas as part of the deployed stack rather than versioning over storage it does not itself index, which is
+    what keeps lakefs and dvc at the band below this one. It hosts no ranking or embedding model inside the query
+    path, so it does not reach the top rung.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/vespa-engine/vespa/blob/master/README.md
+      shows: README still documents search, inference and organization over vectors, tensors, text and structured
+        data at serving time, with ML inference evaluated inside the core engine.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/quiltdata/quilt/blob/master/docs/Installation.md
+    shows: Enterprise Installation deploys the catalog and stack - including its own search cluster and indexing
+      Lambdas - via CloudFormation from this repository's source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: bd8695a7beb7f1f1ffb5defb188b2cbbed41b5ec404d11ddcded3637da93b897

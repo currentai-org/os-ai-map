@@ -1,0 +1,91 @@
+product: diskann
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole library, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/microsoft/DiskANN/blob/main/LICENSE.txt
+    shows: LICENSE.txt is the verbatim MIT text under a Microsoft Corporation copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 7c77a44a8acd9b41fdc209864a8016b3d430b5d0e09309818d5b7444336df744
+    establishes:
+    - license
+  - url: https://api.github.com/repos/microsoft/DiskANN
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for
+      microsoft/DiskANN.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 75752b5852fa136f6f96bc6465390cfbbe8f909346f3dea03cc0e2e8756c4c17
+    establishes:
+    - license
+    - source
+  - url: https://github.com/microsoft/DiskANN/blob/main/README.md
+    shows: README describes a composable vector indexing library with no paid tier, enterprise edition or
+      license-key-gated build beside the MIT-licensed code.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f1f012a1d99fd5c41cadfddbeda6561915b4c8c36c4cdca3f918ff0d75050cb0
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,915 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. No package artifact is
+    declared - the PyPI diskannpy package binds the legacy C++ implementation the repository itself says is no
+    longer actively developed, so its downloads would measure the frozen artifact rather than the current DiskANN3
+    library, and it is left undeclared rather than declared and ignored (see the product comments). The stars scale
+    applies with its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/microsoft/DiskANN
+    shows: Repo metadata - stargazers_count = 1,915 - for microsoft/DiskANN.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 75752b5852fa136f6f96bc6465390cfbbe8f909346f3dea03cc0e2e8756c4c17
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single index family as a library'
+  value: One index family, the Vamana graph, exposed through a `DataProvider` trait and illustrative in-memory,
+    disk and Garnet-backed providers for callers to implement against. No storage, persistence service or query
+    layer of its own.
+  relative_to: hnswlib
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as single index family as a library, level with hnswlib - a single
+    algorithm family shipped as a composable library rather than a store, index server, or a broader index-family
+    toolkit like faiss.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/nmslib/hnswlib/blob/master/README.md
+      shows: README still documents a single HNSW index structure as a header-only C++ library with Python
+        bindings, with no storage, persistence service or query layer of its own.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 351e2b2c93b19b34e321a05342b67469d0a1e5257cd5c3149a8b9b1756b3778f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/microsoft/DiskANN/blob/main/README.md
+    shows: README documents a single-index-family composable library (the Vamana graph) exposing a DataProvider
+      trait for callers to implement storage against, with the legacy standalone C++ tool no longer actively
+      developed.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f1f012a1d99fd5c41cadfddbeda6561915b4c8c36c4cdca3f918ff0d75050cb0

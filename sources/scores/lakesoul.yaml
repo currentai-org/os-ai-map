@@ -1,0 +1,92 @@
+product: lakesoul
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed at the repository root (the repository also carries REUSE-convention
+    SPDX headers on individual files, but a root LICENSE exists and is the verbatim Apache-2.0 text). The
+    repository is public and unarchived and builds the whole framework, and the README describes no paid tier,
+    enterprise edition or license-gated build beside it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/lakesoul-io/LakeSoul/blob/main/LICENSE
+    shows: LICENSE file at the repository root is the verbatim Apache-2.0 text.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: db0092533d0031bf5273125b3ffed9618ef178daa99e2ce66dddd523c329a362
+    establishes:
+    - license
+  - url: https://api.github.com/repos/lakesoul-io/LakeSoul
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      lakesoul-io/LakeSoul.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1e5a1939f327d184bbe18fcf7a12741f6863fa9b3015123b2ecb6d1efef4fce8
+    establishes:
+    - license
+    - source
+  - url: https://github.com/lakesoul-io/LakeSoul/blob/main/README.md
+    shows: README describes a batteries-included lakehouse platform with no paid tier, enterprise edition or
+      license-key-gated build beside the Apache-2.0 framework.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 24af97472c1a1c9e8eb2e07c7ac50af0431e0271ecd99fbacf431da75989cce1
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 3,248 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. LakeSoul ships as a
+    table format consumed through Spark, Flink, Presto, Ray, Daft and PyArrow rather than a single installable
+    package, and no deployment count is published, which leaves the stars scale and its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/lakesoul-io/LakeSoul
+    shows: Repo metadata - stargazers_count = 3,248 - for lakesoul-io/LakeSoul.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 1e5a1939f327d184bbe18fcf7a12741f6863fa9b3015123b2ecb6d1efef4fce8
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: ACID transactions, upsert and schema evolution over a Rust-native metadata and file-IO core with
+    automated disaggregated multi-level compaction and RBAC, read and written by six distributed compute engines,
+    with a vector-capable file format.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, alongside juicefs - LakeSoul owns its own metadata management, transaction
+    log and compaction service rather than versioning storage it does not provide, which distinguishes it from
+    lakefs and dvc at the band below. It supports vector retrieval as a file-format capability rather than hosting
+    a ranking or embedding model in a serving path, so it does not reach the top rung.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/vespa-engine/vespa/blob/master/README.md
+      shows: README still documents search, inference and organization over vectors, tensors, text and structured
+        data at serving time, with ML inference evaluated inside the core engine.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/lakesoul-io/LakeSoul/blob/main/README.md
+    shows: README documents a distributed, ACID-transactional lakehouse with its own metadata management and
+      compaction service, shared across six compute engines.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 24af97472c1a1c9e8eb2e07c7ac50af0431e0271ecd99fbacf431da75989cce1

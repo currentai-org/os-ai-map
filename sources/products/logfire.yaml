@@ -1,0 +1,21 @@
+name: logfire
+display_name: Pydantic Logfire
+type: software
+description: AI and application observability platform from the Pydantic team, built on OpenTelemetry, providing
+  agent and LLM tracing, prompt management with versioning and rollout, live evaluations, datasets and
+  experiments, and SQL querying over recorded traces, metrics and logs. The Python, TypeScript and Rust SDKs
+  are open source and can export to any OpenTelemetry-compatible backend; the Logfire platform itself - the
+  UI and the server that records and displays the data - is closed source, with self-hosting available only
+  under a purchased enterprise license.
+github:
+- url: https://github.com/pydantic/logfire
+comments: The repository's own README states this directly - "This repo contains the Python SDK for logfire
+  and documentation; the server application for recording and displaying data is closed source" - and its
+  "Open-Source and Closed-Source Boundaries" section confirms the platform (UI and backend) is closed, self-hostable
+  only under a paid enterprise license. The scored product is that platform. The logfire PyPI package is
+  deliberately not declared as an artifact, because installing the SDK does not measure use of the platform -
+  it exports to any OpenTelemetry backend and is pulled in as an instrumentation dependency by Pydantic AI
+  and other libraries, so its install count can move independently of how many people send data to Logfire.
+  The repository stays declared because it is the vendor's own canonical repository for the product (the SDK
+  and the documentation), the openness read rests on it, and it is not a third-party binding. Verified 2026-09-02
+  via the pydantic/logfire repository.

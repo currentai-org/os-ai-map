@@ -50,10 +50,23 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # added with the new products (553 -> 576) and the gsm8k level moved 4 -> 5 on a fresh
 # read. MEASUREMENTS_DIGEST is deliberately unchanged: measurements come from the
 # warehouse observation parquet, which carries no rows for the new products yet.
-RECONCILIATION_DIGEST = "880129665629304ac5893bd9efadde84a1986875e8b11de1a215617534eb0f17"
+# Moved again 2026-09-02 by the compilers round-2 promotion: 18 recorded assessments
+# added with the new products (576 -> 594), every one of them a null-level abstention
+# (adoption left for the warehouse to band). MEASUREMENTS_DIGEST is again unchanged for
+# the same reason: no warehouse observation rows exist yet for the new products.
+# Moved again 2026-09-02 by the storage and telemetry_observability legs of the same
+# round-2 promotion: 19 more recorded assessments (594 -> 613; 12 storage, 7
+# telemetry_observability), most hand-banded on stars/downloads rather than left null.
+# MEASUREMENTS_DIGEST stays unchanged for the same reason as the compilers leg: no
+# warehouse observation rows exist yet for any of the new products.
+# Moved once more within the same tranche when the review fixes landed: the 18 compilers
+# assessments went from null to a recorded band, and eight storage/telemetry_observability
+# assessments changed instrument or level once client and component packages stopped
+# standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
+RECONCILIATION_DIGEST = "5bb498ace68aa546a1ce4cf68a244466c549307571c6a7349103d60e2fda6faa"
 
 MEASUREMENT_COUNT = 377
-RECORDED_ASSESSMENT_COUNT = 576
+RECORDED_ASSESSMENT_COUNT = 613
 ROUTING_POLICY_VERSION = "2"
 
 

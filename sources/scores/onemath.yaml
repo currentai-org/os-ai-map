@@ -1,0 +1,89 @@
+product: onemath
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/uxlfoundation/oneMath/blob/develop/LICENSE
+    shows: LICENSE body carries the verbatim Apache License 2.0 text under a UXL Foundation copyright header, matching the
+      SPDX-License-Identifier the repository declares.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ceb3c919089976f50d1c797b57067e685d215a61089ad2fa85880a1126318135
+    establishes:
+    - license
+  - url: https://api.github.com/repos/uxlfoundation/oneMath
+    shows: Repo metadata for onemath's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: e3b839a1d80619dbc8841b7568488498dfd66b731cfa2173ab9cbad6a7b6258e
+    establishes:
+    - license
+    - source
+  - url: https://github.com/uxlfoundation/oneMath/blob/develop/README.md
+    shows: README describes oneMath as the UXL Foundation's open-source implementation of the oneMath specification, dispatching
+      to third-party backend libraries per hardware target, with no paid tier, enterprise edition or license-gated build
+      beside it.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0b0505969c2c4a04d68c894db4914c8dd9861acb0be58a3f6805e21ad499b353
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 773 GitHub stars, which lands in the <1K stars band of the stars scale, level 1. oneMath ships as a source build and
+    inside the oneAPI toolkit installers, neither of which publishes a download count, so the stars scale applies.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/uxlfoundation/oneMath
+    shows: Repo metadata - stargazers_count = 773 - for uxlfoundation/oneMath.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: e3b839a1d80619dbc8841b7568488498dfd66b731cfa2173ab9cbad6a7b6258e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: Cross-vendor BLAS, LAPACK, FFT, RNG and sparse routines dispatched to a hardware backend per device (oneMKL, cuBLAS,
+    rocBLAS and others). Supplies the primitives compilers and frameworks target rather than transforming a model itself.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library, the same shape as onednn
+    and arm-compute-library. Placed two bands below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware
+    transformation pipeline a product performs, over how many inputs and targets.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/uxlfoundation/oneMath/blob/develop/README.md
+    shows: README describes oneMath as the UXL Foundation's open-source implementation of the oneMath specification, dispatching
+      to third-party backend libraries per hardware target, with no paid tier, enterprise edition or license-gated build
+      beside it.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0b0505969c2c4a04d68c894db4914c8dd9861acb0be58a3f6805e21ad499b353
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

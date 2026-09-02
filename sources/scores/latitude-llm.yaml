@@ -1,0 +1,134 @@
+product: latitude-llm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI, single root LICENSE; the cli, sdk/python and telemetry/python sub-packages carry their
+        own MIT/Apache-2.0 license files, none more restrictive
+    source:
+      value: public
+      detail: apps/web, the worker, the CLI and every SDK ship in this repository; self-hostable via
+        Docker Compose, a Kubernetes Helm chart, or one-click Railway deploy
+    core-gated:
+      value: ungated
+      detail: no ee/ or enterprise-only directory found in the recursive tree; the hosted Cloud tier is
+        usage-credit billing on a separately run instance, not a withheld feature
+  confidence: high
+  note: 'The whole platform - the web app, worker, CLI and SDKs - is MIT-licensed and self-hostable at
+    any scale on infrastructure the README calls "fully open infrastructure": single-host Docker Compose,
+    a Kubernetes Helm chart for a cluster, or one-click Railway. A recursive tree search for enterprise/ee/premium
+    paths found none. The hosted Latitude Cloud sells usage credits and retention beyond the free tier,
+    which is a separate commercial offering rather than a gate on the published source.'
+  raw: license:MIT(OSI, single root LICENSE; the cli, sdk/python and telemetry/python sub-packages carry
+    their own MIT/Apache-2.0 license files, none more restrictive);source:public(apps/web, the worker, the
+    CLI and every SDK ship in this repository; self-hostable via Docker Compose, a Kubernetes Helm chart,
+    or one-click Railway deploy);core-gated:ungated(no ee/ or enterprise-only directory found in the recursive
+    tree; the hosted Cloud tier is usage-credit billing on a separately run instance, not a withheld feature)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/latitude-dev/latitude-llm/development/LICENSE
+    shows: MIT License text, Copyright Latitude Data SL, the root license.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 975e429b22cb3d00e1105755f8fc1b65e368e49376aeef238f4bcefbec44bc21
+    establishes:
+    - license
+  - url: https://api.github.com/repos/latitude-dev/latitude-llm/git/trees/development?recursive=1
+    shows: The whole repository tree, 7,650 paths. No `/ee/` or `enterprise` gating directory exists;
+      packages/cli/LICENSE is Apache-2.0 and packages/sdk/python/LICENSE.md and packages/telemetry/python/LICENSE.md
+      are both MIT, none more restrictive than the root.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3f8871e3125e0ac6d63e743e7fefa5d6ed184cf509c67ad57be77d2e0de065ba
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/latitude-dev/latitude-llm/development/README.md
+    shows: 'The Self-host section: "Latitude is self-hostable at any scale, on fully open infrastructure,"
+      naming Single-host (Docker Compose), Cluster (Kubernetes Helm chart) and one-click Railway deploy
+      as the three paths, alongside "License: Latitude is licensed under the MIT License."'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 9a632fa50d146f3e71b27230b21ff857c2b959d8ca5175ce6ae389fabcbd531c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,613 GitHub stars on latitude-dev/latitude-llm, which lands in the 1K-10K stars band of the stars
+    scale, level 2. The platform is deployed as Docker Hub images, a Helm chart or a Railway template, and
+    none of those is a declarable artifact kind, so no download count of the platform itself exists to band
+    on. The telemetry packages (latitude-telemetry at 15,728 PyPI downloads a month, @latitude-data/telemetry
+    at 27,563 npm downloads a month) are one component of the platform - the instrumentation library an
+    application imports - and count instrumented applications rather than running Latitude instances, so they
+    are recorded as context and not banded. Docker Hub reports between 22,922 and 29,501 cumulative pulls per
+    image across the six platform images, a lifetime total that corroborates a small deployed base without
+    being a monthly figure.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/latitude-dev/latitude-llm
+    shows: stargazers_count = 4,613, forks_count = 387, pushed_at 2026-09-02, for latitude-dev/latitude-llm.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6a56b5ab79ca871f9599d5b05fe4c99cadc9ff9fc859aaf73420e65d2afe8374
+  - url: https://hub.docker.com/v2/repositories/latitudedata/?page_size=25
+    shows: 'Six images under the latitudedata namespace with lifetime pull_count - web 22,922, api 24,418,
+      workers 23,845, ingest 24,982, workflows 29,501, migrations 27,349 - all last updated 2026-09-01.
+      Cumulative totals, not a monthly window; recorded as corroboration of the deployed base.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 8baf2e639524555bf2ed482348a06ea5ac7b6f78a2a7ff2fba73388b90422b85
+  - url: https://pypistats.org/api/packages/latitude-telemetry/recent
+    shows: last_month = 15,728 downloads for latitude-telemetry (last_week 3,331, last_day 632). A measurement
+      of one component package's channel, recorded as context and explicitly not the basis of the band.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c9f5202d6d4977a1b1f90b4b0a4b305f0ee621ae66b7b6ba45e7eeaa0bbc3517
+  - url: https://api.npmjs.org/downloads/point/last-month/@latitude-data/telemetry
+    shows: 'downloads: 27,563 for @latitude-data/telemetry, 2026-07-31 to 2026-08-29. A measurement of one
+      component package''s channel, recorded as context and explicitly not the basis of the band.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: bef361e197f83bf57bc2ba7c97db929009357882e7e1924416b76b2ceb339cfa
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: at
+  value: 'Has: one-line telemetry capturing multi-turn sessions, tool calls and full execution paths
+    (OTel passthrough); automatic clustering of failing traces into tracked signals with status/size/trend
+    and semantic search; annotation and flagging; coding-agent dispatch (Claude Code, Cursor) that writes
+    and opens a fix PR with full trace context; regression datasets and monitors to verify a fix against
+    real failing traces.'
+  confidence: medium
+  note: 'Covers tracing, dataset-based regression testing and monitoring - the dimensions this category
+    grades - and adds an autonomous triage-and-fix loop (failure clustering, agent dispatch, verified
+    replay) that no other product in this category offers. That is a genuinely distinctive capability set,
+    held at level with the Langfuse anchor at 4 rather than above it: the category''s top rung is reserved
+    for Arize AX''s frontier-scale closed platform, and Latitude''s own dispatch loop is not yet evidenced
+    at that scale.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
+        current feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/latitude-dev/latitude-llm/development/README.md
+    shows: 'The Why Latitude section: "Observe: one line of telemetry captures every trace"; "Understand:
+      failing traces are auto-grouped into tracked signals with status, size, and trend"; "Fix: Latitude
+      dispatches your coding agents (Claude Code, Cursor) with the full context, sample traces, and a
+      deep link. It writes the smallest correct fix and opens a PR"; "Verify: fixes are replayed against
+      the real failing traces."'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 9a632fa50d146f3e71b27230b21ff857c2b959d8ca5175ce6ae389fabcbd531c
