@@ -1,0 +1,89 @@
+product: humming
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/inclusionAI/humming/blob/main/LICENSE
+    shows: LICENSE body carries the verbatim Apache License 2.0 text under an Ant Group / inclusionAI copyright header.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c95bae1d1ce0235ecccd3560b772ec1efb97f348a79f0fbe0a634f0c2ccefe2c
+    establishes:
+    - license
+  - url: https://api.github.com/repos/inclusionAI/humming
+    shows: Repo metadata for humming's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: b94569b92273de1648b2fe143ce375da43e72c0f7a8062989bc0ace71f2ca876
+    establishes:
+    - license
+    - source
+  - url: https://github.com/inclusionAI/humming/blob/main/README.md
+    shows: README describes Humming as a high-performance, lightweight, JIT-compiled GEMM kernel library for quantized inference,
+      supporting dense and MoE GEMM across a wide activation/weight type matrix, with no paid tier, enterprise edition or
+      license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: a77c814c8eb390d2acf60f08e27122ba337bea49c3f8cb84d50cd92cbf08518d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/inclusionAI/humming
+    shows: Repo metadata for humming's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: b94569b92273de1648b2fe143ce375da43e72c0f7a8062989bc0ace71f2ca876
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: A JIT-compiled GEMM kernel library spanning dense and MoE GEMM across six activation/weight dtype families and
+    every NVIDIA architecture from Turing on - one optimization family (quantized GEMM) applied broadly across formats and
+    hardware generations.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as one optimization family, applied broadly - the breadth of dtype and hardware
+    coverage puts it beside cutlass and onednn rather than a single-purpose kernel. Placed two bands below the apache-tvm
+    anchor.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/inclusionAI/humming/blob/main/README.md
+    shows: README describes Humming as a high-performance, lightweight, JIT-compiled GEMM kernel library for quantized inference,
+      supporting dense and MoE GEMM across a wide activation/weight type matrix, with no paid tier, enterprise edition or
+      license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: a77c814c8eb390d2acf60f08e27122ba337bea49c3f8cb84d50cd92cbf08518d
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

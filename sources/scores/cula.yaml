@@ -1,0 +1,87 @@
+product: cula
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/inclusionAI/cuLA/blob/main/LICENSE
+    shows: LICENSE body carries the verbatim Apache License 2.0 text under an Ant Group / inclusionAI copyright header.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5664febbb86271af0b3f41ba7ca3bd928d17d736f8df8281c8d99e9f5234c5ac
+    establishes:
+    - license
+  - url: https://api.github.com/repos/inclusionAI/cuLA
+    shows: Repo metadata for cula's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 751ac3757520504229b87f9f68a5641436a8f96cd1217d22c01a87423f494ef7
+    establishes:
+    - license
+    - source
+  - url: https://github.com/inclusionAI/cuLA/blob/main/README.md
+    shows: README describes cuLA as hand-tuned CUDA kernels for linear attention variants targeting NVIDIA Blackwell and
+      Hopper, explicitly early-stage with room for further kernel optimization, and names no paid tier, enterprise edition
+      or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0fee72ef62dca2353b25804b76882828d293bca753fed31e4fadafbd979492d9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/inclusionAI/cuLA
+    shows: Repo metadata for cula's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 751ac3757520504229b87f9f68a5641436a8f96cd1217d22c01a87423f494ef7
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set'
+  value: Hand-tuned CUDA kernels for several linear-attention variants (GLA, KDA, GDN, Lightning Attention) on one vendor's
+    newest architectures, explicitly early-stage and not yet feature-complete by its own README.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: 'Banded on the category feature matrix as a narrow kernel set: linear-attention kernels for one vendor''s GPUs,
+    self-described as early-stage. Placed two bands below the tensorrt rung.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/inclusionAI/cuLA/blob/main/README.md
+    shows: README describes cuLA as hand-tuned CUDA kernels for linear attention variants targeting NVIDIA Blackwell and
+      Hopper, explicitly early-stage with room for further kernel optimization, and names no paid tier, enterprise edition
+      or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0fee72ef62dca2353b25804b76882828d293bca753fed31e4fadafbd979492d9
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/NVIDIA/TensorRT/blob/main/README.md
+      shows: README still describes this repository as the NVIDIA-only open source components (plugins, ONNX parser, samples)
+        of the closed TensorRT GA release, unchanged from the claim this map's tensorrt band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 8a4644025d91b54eb5fc123aa1f9591ed74993f017b9bd745c921754c94077d3

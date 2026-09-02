@@ -63,6 +63,26 @@
 # accepted, despite clearing the star floor. NVIDIA/MinkowskiEngine last pushed 2024-03-05 - over
 # two years stale - is parked unmaintained too, despite 2956 stars from its 3D deep learning
 # heyday.
+#
+# Promotion triage, 2026-09-02: 18 of the 21 rows above were promoted to head products (see
+# sources/categories/compilers.yaml's comments for the roster and the two identity corrections -
+# FlashQLA's org resolves to alibaba-cloud, not a separate `qwen` org, and Torch-TensorRT's to
+# pytorch-foundation, not a bare `pytorch`). The three rows below stay in the registry, rejected on
+# the category boundary rather than parked as unresolved:
+#
+# nccl and uccl are collective-communication and P2P networking libraries (GPU allreduce/broadcast,
+# KV-cache and RL weight transfer over RoCE/InfiniBand). Neither lowers, converts, quantizes or
+# optimizes a trained model or tensor program, and neither supplies a compute primitive (GEMM,
+# convolution, attention) a compiler targets - they move data between accelerators, which is a
+# different function than everything else on this roster, including the other kernel-library
+# incumbents (miopen, oneMath) #434 asked for. No networking category exists yet to hold them.
+#
+# rocalution is AMD's iterative sparse-linear-system solver library (CG, GMRES-family Krylov
+# methods) for general HPC and scientific-computing workloads on ROCm hardware. Unlike the roster's
+# other math libraries - oneMath (BLAS/FFT/RNG dispatch), onednn and arm-compute-library (DNN
+# primitives) - it has no primary tie to trained-model or tensor-program optimization; it solves
+# linear systems for FEM/CFD-style simulation more than it serves AI workloads. Kept out on the same
+# general-purpose-adjacent reasoning round 1 used against redis and tidb.
 category: compilers
 products:
   - slug: nccl
@@ -71,112 +91,14 @@ products:
     org: nvidia
     github: NVIDIA/nccl
     homepage: https://developer.nvidia.com/nccl
-  - slug: miopen
-    display_name: MIOpen
-    type: software
-    org: amd
-    github: ROCm/MIOpen
-    homepage: https://rocm.docs.amd.com/projects/MIOpen/
-  - slug: onemath
-    display_name: oneMath
-    type: software
-    org: uxl-foundation
-    github: uxlfoundation/oneMath
-    homepage: https://oneapi-src.github.io/oneMath/
-  - slug: flashmla
-    display_name: FlashMLA
-    type: software
-    org: deepseek-ai
-    github: deepseek-ai/FlashMLA
   - slug: uccl
     display_name: UCCL
     type: software
     org: uccl-project
     github: uccl-project/uccl
-  - slug: auto-round
-    display_name: AutoRound
-    type: software
-    org: intel
-    github: intel/auto-round
-    pypi: auto-round
-  - slug: taco
-    display_name: TACO
-    type: software
-    org: tensor-compiler
-    github: tensor-compiler/taco
-    homepage: http://tensor-compiler.org
-  - slug: finch-jl
-    display_name: Finch.jl
-    type: software
-    org: finch-tensor
-    github: finch-tensor/Finch.jl
-    pypi: finch-tensor
-    homepage: https://finch-tensor.github.io/Finch.jl
-  - slug: freetensor
-    display_name: FreeTensor
-    type: software
-    org: roastduck
-    github: roastduck/FreeTensor
-    homepage: https://roastduck.github.io/FreeTensor/
-  - slug: cuda-tile
-    display_name: CUDA Tile IR
-    type: software
-    org: nvidia
-    github: NVIDIA/cuda-tile
-  - slug: nvidia-tensor-ir
-    display_name: TensorIR
-    type: software
-    org: nvidia
-    github: NVIDIA/tensor-ir
-  - slug: flashkda
-    display_name: FlashKDA
-    type: software
-    org: moonshot-ai
-    github: MoonshotAI/FlashKDA
-  - slug: flash-sparse-attention
-    display_name: Flash Sparse Attention
-    type: software
-    org: hkust-dial
-    github: HKUSTDial/flash-sparse-attention
-    homepage: https://hkustdial.github.io/flash-sparse-attention/
-  - slug: flashqla
-    display_name: FlashQLA
-    type: software
-    org: qwen
-    github: QwenLM/FlashQLA
-  - slug: block-sparse-attention
-    display_name: Block Sparse Attention
-    type: software
-    org: mit-han-lab
-    github: mit-han-lab/Block-Sparse-Attention
-  - slug: cula
-    display_name: cuLA
-    type: software
-    org: inclusion-ai
-    github: inclusionAI/cuLA
-  - slug: humming
-    display_name: Humming
-    type: software
-    org: inclusion-ai
-    github: inclusionAI/humming
-  - slug: mlstm-kernels
-    display_name: mLSTM Kernels
-    type: software
-    org: nx-ai
-    github: NX-AI/mlstm_kernels
   - slug: rocalution
     display_name: rocALUTION
     type: software
     org: amd
     github: ROCm/rocALUTION
     homepage: https://rocm.docs.amd.com/projects/rocALUTION/en/latest/
-  - slug: attention-gym
-    display_name: Attention Gym
-    type: software
-    org: rise-ai
-    github: RiseAI-Sys/attention-gym
-  - slug: torch-tensorrt
-    display_name: Torch-TensorRT
-    type: software
-    org: pytorch
-    github: pytorch/TensorRT

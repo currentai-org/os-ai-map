@@ -1,11 +1,13 @@
 name: compilers
 display_name: Compilers & Model Optimization
 description: 'Software that lowers, converts, quantizes, or otherwise optimizes trained models and tensor programs for target accelerator hardware.'
-strapline: Almost the whole layer is OSI-licensed and fully open - 25 of 26 products score 5, and
-  the exception is TensorRT, whose optimizing builder ships as a binary that the public repository
-  links against. What is scarce here is reach rather than openness, since half the roster bands at level 2
-  or below, because compilers and kernel libraries are built from source far more often than they
-  are installed from a package.
+strapline: Almost the whole layer stays OSI-licensed and fully open even after nearly doubling in
+  size - 42 of 44 products score 5, and the two exceptions are TensorRT, whose optimizing builder
+  ships as a binary that the public repository links against, and mLSTM Kernels, whose NXAI
+  Community License gates commercial use above a revenue threshold. What is scarce here is reach
+  rather than openness, since about a third of the roster bands at capability level 2 or below,
+  because compilers and kernel libraries are built from source far more often than they are
+  installed from a package.
 weights:
   adopt: 0.5
   cap: 0.5
@@ -36,14 +38,32 @@ products:
 - tf2onnx
 - onnx-simplifier
 - hummingbird
+- torch-tensorrt
+- cuda-tile
+- nvidia-tensor-ir
+- taco
+- finch-jl
+- freetensor
+- auto-round
+- miopen
+- onemath
+- humming
+- flash-sparse-attention
+- flashmla
+- flashkda
+- flashqla
+- block-sparse-attention
+- cula
+- mlstm-kernels
+- attention-gym
 scoring_recipe:
   version: 1
   extends: software
   derived_from:
     method: shared software ladder, checked against the hand-recorded scores
-    scores_reproduced: 26
-    scores_total: 26
-    verified_on: '2026-08-18'
+    scores_reproduced: 44
+    scores_total: 44
+    verified_on: '2026-09-02'
     checker: build/check_rubric.py
   note: >-
     The roster is software-only, so it inherits the shared software ladder unchanged; nothing in the
@@ -64,6 +84,15 @@ scoring_recipe:
     compilers target, and 2 is a narrow kernel set or a single-pass graph utility. apache-tvm is the
     top anchor and every other band is recorded against it or against the tensorrt rung below it,
     so `check_capability` can check the arithmetic.
+
+    Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
+    shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins
+    the `osi` tier's examples on the LLVM Foundation's own reading that the exception widens the
+    Apache-2.0 grant and caps nothing; `NXAI-Community-License` (mlstm-kernels) joins
+    `competition_restricted`'s examples on the same revenue-threshold shape n8n-Enterprise-License and
+    Modular-Community-License already cover there. Both were measured before adding and moved only
+    the one product each was added for. 18 new bands were placed: 6 at 4 (one_below apache-tvm), 5 at
+    3 and 7 at 2, all against the apache-tvm or tensorrt anchor exactly as round 1's bands were.
 comments: >-
   Columbia infrastructure category. Includes model conversion, graph and tensor compilation,
   quantization, pruning, and compiler-adjacent kernel libraries. Complete serving engines remain in
@@ -81,3 +110,23 @@ comments: >-
   published category recalibrates capability in both and is a taxonomy decision to take on its own
   rather than inside this build. litert is the one rejected candidate that plausibly belongs
   elsewhere on the map, in inference_code or edge_hardware.
+
+  Round 2, seeded per issue #434 and triaged 2026-09-02: 18 of 21 registry candidates were promoted
+  (torch-tensorrt, cuda-tile, nvidia-tensor-ir, taco, finch-jl, freetensor, auto-round, miopen,
+  onemath, humming, flash-sparse-attention, flashmla, flashkda, flashqla, block-sparse-attention,
+  cula, mlstm-kernels, attention-gym) and three rejected on the boundary. nccl and uccl are
+  collective-communication and P2P networking libraries (GPU allreduce/broadcast, KV-cache and RL
+  weight transfer) - they move data between accelerators rather than lowering, converting,
+  quantizing or optimizing a trained model or tensor program, and neither supplies the compute
+  primitives (GEMM, convolution, attention) a compiler targets, so neither fits this category or its
+  kernel-library population at any tier. rocalution is AMD's iterative sparse-linear-system solver
+  library (CG, GMRES-family Krylov methods) for general HPC and scientific-computing workloads on
+  ROCm hardware - it is not tied to trained-model or tensor-program optimization the way the roster's
+  other math libraries (oneMath, onednn, arm-compute-library) are, so it stays out on the same
+  general-purpose-adjacent reasoning that excluded redis and tidb in round 1. Two identity
+  corrections against the registry's own guesses: FlashQLA's org is alibaba-cloud, not a separate
+  `qwen` org - the map already rosters Qwen products under alibaba-cloud - and Torch-TensorRT's org
+  is pytorch-foundation, not a bare `pytorch`, matching the existing PyTorch Foundation roster.
+  MIOpen's own README carries a retirement notice pointing at the consolidated ROCm/rocm-libraries
+  monorepo; it is promoted anyway on the precedent already set by composable-kernel, which the
+  roster already carries through the identical ROCm migration.

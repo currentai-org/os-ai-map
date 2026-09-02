@@ -1,0 +1,86 @@
+product: flashkda
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/MoonshotAI/FlashKDA/blob/master/LICENSE
+    shows: LICENSE body is the verbatim MIT text under a Moonshot AI copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 05f1750624d6ab5f6dd59dea79e3156f4fec6b3065c94aeeaf265df677f9e6e8
+    establishes:
+    - license
+  - url: https://api.github.com/repos/MoonshotAI/FlashKDA
+    shows: Repo metadata for flashkda's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: b993effb2c41c6c5fec3339b49a407a143075906fe8585a4b276e56427a41337
+    establishes:
+    - license
+    - source
+  - url: https://github.com/MoonshotAI/FlashKDA/blob/master/README.md
+    shows: README describes FlashKDA as high-performance Kimi Delta Attention kernels built on CUTLASS, auto-dispatched
+      from flash-linear-attention's chunk_kda, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: fc56ca9a3cd1786d0ff526a12be21500d79ee671e5f0eeb8352fad23d3ba8fb2
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/MoonshotAI/FlashKDA
+    shows: Repo metadata for flashkda's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: b993effb2c41c6c5fec3339b49a407a143075906fe8585a4b276e56427a41337
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set'
+  value: Forward and backward CUTLASS kernels for one specific linear-attention variant (Kimi Delta Attention), purpose-built
+    for one model family rather than a broad attention or optimization technique.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: 'Banded on the category feature matrix as a narrow kernel set: one attention variant, built for one model family.
+    Placed two bands below the tensorrt rung, the same level as thunderkittens and hummingbird.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/MoonshotAI/FlashKDA/blob/master/README.md
+    shows: README describes FlashKDA as high-performance Kimi Delta Attention kernels built on CUTLASS, auto-dispatched
+      from flash-linear-attention's chunk_kda, with no paid tier, enterprise edition or license-gated build beside the published
+      source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: fc56ca9a3cd1786d0ff526a12be21500d79ee671e5f0eeb8352fad23d3ba8fb2
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/NVIDIA/TensorRT/blob/main/README.md
+      shows: README still describes this repository as the NVIDIA-only open source components (plugins, ONNX parser, samples)
+        of the closed TensorRT GA release, unchanged from the claim this map's tensorrt band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 8a4644025d91b54eb5fc123aa1f9591ed74993f017b9bd745c921754c94077d3

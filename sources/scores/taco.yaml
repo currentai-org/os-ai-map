@@ -1,0 +1,88 @@
+product: taco
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/tensor-compiler/taco/blob/master/LICENSE
+    shows: LICENSE body carries the verbatim MIT text under a copyright line naming MIT CSAIL, Adobe Systems and other contributors.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 25695fa496b8663ba42041229fdd9e6925e81a529f2afc7c19c540b81b2ca020
+    establishes:
+    - license
+  - url: https://api.github.com/repos/tensor-compiler/taco
+    shows: Repo metadata for taco's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 915bd16a9bfa59fceac7415e0ee2a2c4c827b5494653a21992a02a78bed2611c
+    establishes:
+    - license
+    - source
+  - url: https://github.com/tensor-compiler/taco/blob/master/README.md
+    shows: README describes taco as a C++ library that computes sparse and dense tensor algebra expressions with performance
+      competitive with hand-optimized kernels, usable as a library or as a C code generator, with no paid tier, enterprise
+      edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 22b7c703c5349d622d85be86b1f0e2343207c195df6827ee9e907dac3a89e877
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/tensor-compiler/taco
+    shows: Repo metadata for taco's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 915bd16a9bfa59fceac7415e0ee2a2c4c827b5494653a21992a02a78bed2611c
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full compilation toolchain narrowed to one class of models'
+  value: A full compiler - parser, iteration-space scheduling, code generation - for sparse and dense tensor algebra expressions,
+    targeting both CPUs and GPUs, but narrowed to one program class (tensor algebra) rather than TVM's multi-framework,
+    multi-vendor deep-learning scope.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the apache-tvm anchor: a full compilation toolchain - front end through code generation - narrowed
+    to one class of programs, sparse and dense tensor algebra, rather than apache-tvm''s retargetable multi-framework, multi-vendor
+    scope.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/tensor-compiler/taco/blob/master/README.md
+    shows: README describes taco as a C++ library that computes sparse and dense tensor algebra expressions with performance
+      competitive with hand-optimized kernels, usable as a library or as a C code generator, with no paid tier, enterprise
+      edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 22b7c703c5349d622d85be86b1f0e2343207c195df6827ee9e907dac3a89e877
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e
