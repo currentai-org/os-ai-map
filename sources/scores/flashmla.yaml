@@ -1,0 +1,86 @@
+product: flashmla
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/deepseek-ai/FlashMLA/blob/main/LICENSE
+    shows: LICENSE body is the verbatim MIT text under a DeepSeek copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6c73a30c14a2938abaa6afe98ebb19e6d81dac5bd4ace0cb05c61c20afa37b85
+    establishes:
+    - license
+  - url: https://api.github.com/repos/deepseek-ai/FlashMLA
+    shows: Repo metadata for flashmla's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ac524409aeab31aed141958dcc8286640c8653ce2b8697379d85bbe3ee7f1f42
+    establishes:
+    - license
+    - source
+  - url: https://github.com/deepseek-ai/FlashMLA/blob/main/README.md
+    shows: README describes FlashMLA as DeepSeek's library of optimized attention kernels powering the DeepSeek-V3 and DeepSeek-V3.2-Exp
+      models, with no paid tier, enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 46c001c53800f47148918f4fc2969102492dd5164f710fc015db1622f6f9929a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/deepseek-ai/FlashMLA
+    shows: Repo metadata for flashmla's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ac524409aeab31aed141958dcc8286640c8653ce2b8697379d85bbe3ee7f1f42
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set'
+  value: Dense and sparse multi-head latent attention kernels for the prefill and decoding stages, purpose-built for one
+    model family's attention variant (DeepSeek's MLA/DSA) rather than the general attention coverage flash-attention supplies
+    across model architectures.
+  relative_to: flash-attention
+  relation: one_below
+  confidence: medium
+  note: 'One band below flash-attention: both are attention kernel libraries, but FlashMLA''s kernels are purpose-built
+    for DeepSeek''s own multi-head latent attention and sparse attention variants rather than serving as a general-purpose
+    attention primitive across model architectures.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/deepseek-ai/FlashMLA/blob/main/README.md
+    shows: README describes FlashMLA as DeepSeek's library of optimized attention kernels powering the DeepSeek-V3 and DeepSeek-V3.2-Exp
+      models, with no paid tier, enterprise edition or license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 46c001c53800f47148918f4fc2969102492dd5164f710fc015db1622f6f9929a
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
+      shows: README still describes FlashAttention/FlashAttention-2 as exact, IO-aware attention kernels, now widely adopted
+        across training and serving stacks, unchanged from the claim this map's flash-attention band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6

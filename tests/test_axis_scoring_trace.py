@@ -40,9 +40,12 @@ GOLDEN = {
     # five categories (axis_results 553 -> 576), their recorded evidence entering the fact
     # and rule-match tables, and gsm8k's adoption re-band 4 -> 5 - the one pre-existing
     # result row that changed.
-    "axis_facts": (2516, "7f0d341049a45e6137607e6bced23e61d9214371b008509498a2e3118a19226b"),
-    "axis_rule_matches": (3063, "24ceca80ab5f92cdb6e6ff9bfe79a1e693f72f58a8d27b211ce2230626609688"),
-    "axis_results": (576, "2fa24ff9f42c8799547d7fa1e2084505e98f201c42b9a5c441cc1a6a2e5fb653"),
+    # Regenerated 2026-09-02 for the compilers round-2 promotion: 18 products added
+    # (axis_results 576 -> 594), each recording all three openness dimensions, so entering
+    # the same shape of fact and rule-match rows the round-1 compilers roster did.
+    "axis_facts": (2588, "7849e538d678193d01a6d499f0f650275b5bf19866a265adeec59ca67001dac9"),
+    "axis_rule_matches": (3151, "4c077342486d0f97b1b29fcf0e33d3ffc7a445e3e4832e79eea98070092ae43b"),
+    "axis_results": (594, "0c0879d2c550ed32756a05074686d6f7ad2b6c2f2e45c11d42f5c2058c1fbf76"),
 }
 
 

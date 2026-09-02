@@ -1,0 +1,88 @@
+product: auto-round
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core
+    ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/intel/auto-round/blob/main/LICENSE
+    shows: LICENSE body carries the verbatim Apache License 2.0 text under an Intel copyright header.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 59899c6091b540582ed617e8eeaac4919dc985ccfc35459ee9752b699be5205b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/intel/auto-round
+    shows: Repo metadata for auto-round's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5927b97f33d2daa17980e1b6f108713548c72d60c97bfac21d7ece0c22da3051
+    establishes:
+    - license
+    - source
+  - url: https://github.com/intel/auto-round/blob/main/README.md
+    shows: README describes AutoRound as an advanced quantization toolkit for LLMs and VLMs achieving high accuracy at 2-4
+      bit widths through sign-gradient descent, with broad hardware compatibility and no paid tier, enterprise edition or
+      license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 63fd2ea00530abad3f2465f24b38b8995ca7046492698c041a9f9e60c171d9a1
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/intel/auto-round
+    shows: Repo metadata for auto-round's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 5927b97f33d2daa17980e1b6f108713548c72d60c97bfac21d7ece0c22da3051
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: Sign-gradient-descent post-training quantization to 2-4 bit weights for LLMs and VLMs, with broad CPU/GPU/NPU hardware
+    compatibility. Wide model and hardware reach within a single quantization technique.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as one optimization family, applied broadly - the same shape as gptqmodel
+    and llm-compressor. Placed two bands below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware
+    transformation pipeline a product performs, over how many inputs and targets.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/intel/auto-round/blob/main/README.md
+    shows: README describes AutoRound as an advanced quantization toolkit for LLMs and VLMs achieving high accuracy at 2-4
+      bit widths through sign-gradient descent, with broad hardware compatibility and no paid tier, enterprise edition or
+      license-gated build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 63fd2ea00530abad3f2465f24b38b8995ca7046492698c041a9f9e60c171d9a1
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

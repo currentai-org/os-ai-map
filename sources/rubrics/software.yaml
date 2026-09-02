@@ -144,7 +144,21 @@ openness:
         # both deferrals stale on the same run, which is how a ruling like this is supposed
         # to close.
         examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0,
-          MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT, PostgreSQL]
+          MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT, PostgreSQL,
+          Apache-2.0-WITH-LLVM-exception]
+        # `Apache-2.0-WITH-LLVM-exception` was added on 2026-09-02, when the compilers round-2
+        # promotion turned up `cuda-tile` recording it. LLVM's exception text only widens what a
+        # derivative work may do with the Apache-2.0 grant - it drops the patent-notice
+        # requirement for object-code-only redistribution - and adds no cap on who may use the
+        # software or at what scale, so SPDX and OSI both treat the combination as the
+        # OSI-approved Apache-2.0 license. This is a different reading from `max`, which records
+        # the identical string under its own `repo-license` key (a key this ladder does not
+        # read): `max`'s governing license is the non-OSI Modular Community License layered on
+        # top, and the Apache-2.0-WITH-LLVM-exception text there covers the repository, not the
+        # product's usage terms. `cuda-tile` carries no such wrapper - the LICENSE body is the
+        # Apache-2.0-WITH-LLVM-exception text and nothing else - so the name resolves cleanly on
+        # its own here. Measured before adding: no other software-type product records this
+        # string under `license`, so the addition moved only `cuda-tile`.
       permissive_non_osi:
         definition: >-
           Not OSI-approved, but imposes no restriction on WHO may use the software or AT
@@ -260,7 +274,21 @@ openness:
         examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0, Elastic License 2.0,
           Sustainable-Use-License, n8n-Enterprise-License, Modular-Community-License, Dify-Open-Source-License,
           Open-WebUI-License, LobeHub-Community-License, PolyForm-Shield, MinerU-Open-Source-License,
-          AI-Pubs-Open-RAIL-M-Modified]
+          AI-Pubs-Open-RAIL-M-Modified, NXAI-Community-License]
+        # `NXAI-Community-License` was added on 2026-09-02, when the compilers round-2 promotion
+        # turned up `mlstm-kernels` recording it. The NXAI Community License Agreement is a
+        # Llama-3-style base with its own "Additional Commercial Terms": above EUR 100,000,000
+        # in consolidated annual revenue, incorporating the material into a commercial product
+        # or service needs a separate license NXAI may grant at its sole discretion. That is a
+        # revenue threshold above which a class of use is charged for, the tier's definition
+        # stated directly, and the same shape MinerU-Open-Source-License and marker's funding
+        # threshold already hold here under different vendor names. It is not `use_bounded` in
+        # the sense the model ladder uses that word for Llama-family licenses, because this
+        # ladder has no such tier - `competition_restricted` is where a bounded-commercial
+        # license already lands for software, on the same reading `n8n-Enterprise-License` and
+        # `Modular-Community-License` were added under. Measured before adding: no other
+        # software-type product records this string under `license`, so the addition moved only
+        # `mlstm-kernels`.
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.

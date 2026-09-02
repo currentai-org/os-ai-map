@@ -1,0 +1,87 @@
+product: finch-jl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it, so source is public and the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/finch-tensor/Finch.jl/blob/main/LICENSE
+    shows: LICENSE body is the verbatim MIT text under a Finch.jl contributors copyright line.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4937b1e65ace7c6a95dc13a3e2488b523ba9023c517de1d670114ec4d3040d25
+    establishes:
+    - license
+  - url: https://api.github.com/repos/finch-tensor/Finch.jl
+    shows: Repo metadata for finch-jl's canonical repository - private false, archived false, fork false.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4b81c0bb16c1684945c29b0deee07d7fd0a2240a82d73609ee15eee667606e70
+    establishes:
+    - license
+    - source
+  - url: https://github.com/finch-tensor/Finch.jl/blob/main/README.md
+    shows: README describes Finch as a Julia-to-Julia compiler for sparse and structured arrays that automatically generates
+      customized, fused sparse kernels from high-level array programs, with no paid tier, enterprise edition or license-gated
+      build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f7d859092bd6f0a9db477bbfd1f9e813faf1b6a93521178569363bf944bba166
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: Left for the warehouse to band from artifact download signals; no first-party usage figure recorded at promotion
+    time.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/finch-tensor/Finch.jl
+    shows: Repo metadata for finch-jl's canonical repository carries no package-registry download figure of its own; banding
+      is left for the warehouse's artifact signal pipeline rather than guessed from stars.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 4b81c0bb16c1684945c29b0deee07d7fd0a2240a82d73609ee15eee667606e70
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full compilation toolchain narrowed to one class of models'
+  value: A full Julia-to-Julia compiler that lowers high-level sparse and structured array programs into fused, customized
+    kernels, narrowed to one program class (sparse and structured tensor computation) rather than TVM's multi-framework,
+    multi-vendor deep-learning scope.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: 'One band below the apache-tvm anchor, on the same reasoning as taco: a full compilation toolchain narrowed to one
+    class of programs rather than apache-tvm''s retargetable multi-framework, multi-vendor scope.'
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/finch-tensor/Finch.jl/blob/main/README.md
+    shows: README describes Finch as a Julia-to-Julia compiler for sparse and structured arrays that automatically generates
+      customized, fused sparse kernels from high-level array programs, with no paid tier, enterprise edition or license-gated
+      build beside the published source.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: f7d859092bd6f0a9db477bbfd1f9e813faf1b6a93521178569363bf944bba166
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/apache/tvm/blob/main/README.md
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
+        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

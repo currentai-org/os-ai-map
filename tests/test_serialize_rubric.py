@@ -944,7 +944,12 @@ def test_real_sources_serialize_without_errors():
         # dimensions it records: `source`, the resolved `core_gated`, `license`, and `core-gated`
         # again under the hyphenated key the record actually uses. Verified by reading the emitted
         # rows for liger-kernel and pgvector rather than by inferring it from the count.
-        "compilers": 102, "storage": 112,
+        #
+        # compilers 102 -> 174 on the round-2 promotion (2026-09-02): 18 new software products,
+        # each recording all three dimensions and so publishing the same four rows per product
+        # (source, the resolved core_gated, license, and core-gated again under the hyphenated
+        # key) as the round-1 roster - 18 x 4 = 72 new rows, none of them deferred.
+        "compilers": 174, "storage": 112,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
