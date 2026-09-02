@@ -52,8 +52,13 @@ TEST_SHA = "test-git-sha"
 # 1782 -> 1839 the same day, the storage and telemetry_observability legs of the same
 # round-2 promotion: 19 more products (12 storage, 7 telemetry_observability), 57 new
 # axis rows (19 x 3).
+# Moved once more within the same tranche, same row count, when the review fixes landed:
+# the 18 compilers adoption rows went from null to a band (24 usage_volume, 20
+# stars_fallback across the roster), three storage products lost a client package as
+# their instrument, and five telemetry_observability adoption rows were re-banded on the
+# product actually measured. Corrected content, no new rows.
 AXIS_ROW_COUNT = 1839
-AXIS_ASSESSMENTS_DIGEST = "2803d87b821e1bd83fc1803ba120e9014b86c28016df9c496d60e79554a36618"
+AXIS_ASSESSMENTS_DIGEST = "45f454daf70cd40cd505fac7368d694f999bc9537f30e4763cb150ab4aa3a19c"
 
 
 @pytest.fixture(scope="module")

@@ -59,7 +59,11 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # telemetry_observability), most hand-banded on stars/downloads rather than left null.
 # MEASUREMENTS_DIGEST stays unchanged for the same reason as the compilers leg: no
 # warehouse observation rows exist yet for any of the new products.
-RECONCILIATION_DIGEST = "49e011ba27e37ae6ac75a701aaff47a1f5cb4b1092cae0197735e9bd89a8c55b"
+# Moved once more within the same tranche when the review fixes landed: the 18 compilers
+# assessments went from null to a recorded band, and eight storage/telemetry_observability
+# assessments changed instrument or level once client and component packages stopped
+# standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
+RECONCILIATION_DIGEST = "5bb498ace68aa546a1ce4cf68a244466c549307571c6a7349103d60e2fda6faa"
 
 MEASUREMENT_COUNT = 377
 RECORDED_ASSESSMENT_COUNT = 613
