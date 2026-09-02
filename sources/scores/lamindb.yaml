@@ -1,0 +1,87 @@
+product: lamindb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole library,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it - LaminHub is a
+    separately sold hosted service rather than a piece withheld from the published library.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/laminlabs/lamindb/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/laminlabs/lamindb
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      laminlabs/lamindb.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2f685fc5f4355b1e64a33ccbb56efe6307fda05607d3d8b7ef6d5a8b0d411548
+    establishes:
+    - license
+    - source
+  - url: https://github.com/laminlabs/lamindb/blob/main/README.md
+    shows: README describes an open-source data management library with no paid tier, enterprise edition or
+      license-key-gated build beside the Apache-2.0 library, only the separately sold LaminHub service.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d5e16eb1e688e8ed7f4e590bb3a359b58e67f8028c9f98fa9ba96dfcb1b23c4a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 365 GitHub stars, which lands in the <1K stars band of the stars scale, level 1. No countable download
+    figure was confirmed for `lamindb` on PyPI at verification time, which leaves the stars scale.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/laminlabs/lamindb
+    shows: Repo metadata - stargazers_count = 365 - for laminlabs/lamindb.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2f685fc5f4355b1e64a33ccbb56efe6307fda05607d3d8b7ef6d5a8b0d411548
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: A metadata and lineage registry (SQLite or Postgres) that tracks, versions and federates files, tables
+    and arrays across pluggable storage locations, with no distributed storage engine of its own.
+  relative_to: dvc
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as working single-purpose store or index, level with dvc - lineage,
+    versioning and governance over storage it does not itself provide or distribute, rather than a distributed
+    storage system in its own right.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/iterative/dvc/blob/main/README.rst
+      shows: README still documents content-addressed dataset and model versioning against Git over a dozen
+        storage backends, with no storage or index of its own.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: d10985fd1a1efb7ee4a28c0a4dac8a3f40cebe564dc86404aa5300e659ddeb39
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/laminlabs/lamindb/blob/main/README.md
+    shows: README documents a lineage-native metadata registry that federates data across storage locations and
+      databases, with no distributed storage engine of its own.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d5e16eb1e688e8ed7f4e590bb3a359b58e67f8028c9f98fa9ba96dfcb1b23c4a

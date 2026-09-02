@@ -31,7 +31,7 @@ from build.axis_assessments import (
 TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
-AXIS_ROW_COUNT = 1728
+AXIS_ROW_COUNT = 1764
 # Moved 2026-09-01 by two combined passes: the #436 attestation pass (12 capability rows
 # gained `relative_to=X;relation=Y;attested=DATE` in `basis_detail`, and five comparison
 # roots - openrlhf, accelerate, openvino, anythingllm, sillytavern - moved `last_verified`
@@ -48,7 +48,11 @@ AXIS_ROW_COUNT = 1728
 # regenerated the new rows' raw strings from their components mappings, renamed
 # mle-bench's license to the ladder's per-component spelling and cleaned four notes -
 # same 1728 rows, corrected content.
-AXIS_ASSESSMENTS_DIGEST = "8874192a134070b545557d0b674f43905a822e17b26accb83960bc5b7d72d95a"
+# Moved again 2026-09-02 by the Round 2 storage promotion: 12 products added
+# (weaviate, orama, paradedb, diskann, sptag, openmldb, quilt, oxen, lakesoul,
+# pixeltable, lamindb, redisearch), which is 36 new axis rows (12 x 3, all three axes
+# scored for each). No pre-existing row changed.
+AXIS_ASSESSMENTS_DIGEST = "47cd6d1cd69a1d7633a49407d39ad47b4048fbd9f100f9db9953c9952e6b0c12"
 
 
 @pytest.fixture(scope="module")

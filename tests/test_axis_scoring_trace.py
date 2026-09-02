@@ -40,9 +40,14 @@ GOLDEN = {
     # five categories (axis_results 553 -> 576), their recorded evidence entering the fact
     # and rule-match tables, and gsm8k's adoption re-band 4 -> 5 - the one pre-existing
     # result row that changed.
-    "axis_facts": (2516, "7f0d341049a45e6137607e6bced23e61d9214371b008509498a2e3118a19226b"),
-    "axis_rule_matches": (3063, "24ceca80ab5f92cdb6e6ff9bfe79a1e693f72f58a8d27b211ce2230626609688"),
-    "axis_results": (576, "2fa24ff9f42c8799547d7fa1e2084505e98f201c42b9a5c441cc1a6a2e5fb653"),
+    #
+    # Regenerated 2026-09-02 for the Round 2 storage promotion: 12 products added
+    # (weaviate, orama, paradedb, diskann, sptag, openmldb, quilt, oxen, lakesoul,
+    # pixeltable, lamindb, redisearch), taking axis_results 576 -> 588. No pre-existing
+    # result row changed.
+    "axis_facts": (2564, "1e3a2253bb71e1075dce1d3b3b21a2fabbccf6ba1cdc55cae827ef98960feb03"),
+    "axis_rule_matches": (3123, "111d751f1ed983b57aa430949a4467194b246bdd6dab0c6a705f83c0448d8f7c"),
+    "axis_results": (588, "72cd8a1c8f9cb178f8ac10c011cdb44ddcdbfff1466a9ee5a1b36e1493ed7e05"),
 }
 
 

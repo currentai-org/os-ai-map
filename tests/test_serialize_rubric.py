@@ -944,7 +944,13 @@ def test_real_sources_serialize_without_errors():
         # dimensions it records: `source`, the resolved `core_gated`, `license`, and `core-gated`
         # again under the hyphenated key the record actually uses. Verified by reading the emitted
         # rows for liger-kernel and pgvector rather than by inferring it from the count.
-        "compilers": 102, "storage": 112,
+        #
+        # storage rose 112 -> 160 with the Round 2 promotion: 12 products in
+        # (weaviate, orama, paradedb, diskann, sptag, openmldb, quilt, oxen, lakesoul,
+        # pixeltable, lamindb, redisearch), each recording the same four rows as every other
+        # product on the shared software ladder (`source`, the resolved `core_gated`,
+        # `license`, and `core-gated` again under the hyphenated key), 12 x 4 = 48.
+        "compilers": 102, "storage": 160,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

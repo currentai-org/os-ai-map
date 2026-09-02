@@ -1,0 +1,92 @@
+product: orama
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed under an OramaSearch Inc. copyright line, which is why the GitHub API
+    reports NOASSERTION. The repository is public and unarchived and builds the whole engine, and the README
+    describes no paid tier, enterprise edition or license-gated build beside it - Orama Cloud is a separately sold
+    hosted service rather than a piece withheld from the published engine.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/oramasearch/orama/blob/main/LICENSE.md
+    shows: LICENSE.md is the verbatim Apache-2.0 text under a copyright 2023 OramaSearch Inc. line, which is why
+      the GitHub API reports NOASSERTION rather than Apache-2.0.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2fb8478a8966725c8798106c6a6d006f63af4b119e66fb017de63e4fa9242686
+    establishes:
+    - license
+  - url: https://api.github.com/repos/oramasearch/orama
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
+      oramasearch/orama.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d8c441336aeb915cdef53c2352ac07f69a9de733f04d78da5d73fa7f1e70853f
+    establishes:
+    - license
+    - source
+  - url: https://github.com/oramasearch/orama/blob/main/README.md
+    shows: README describes a complete full-text, vector and hybrid search engine that runs embedded in the browser,
+      server or edge network, with no paid tier, enterprise edition or license-key-gated build beside the
+      Apache-2.0 engine, only a separately sold Orama Cloud service.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0fa4e45dcfc416b1abaa7c579e7838c0f332802f80346c069858362f01a3b774
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 5,371,921 npm downloads of `@orama/orama` in the trailing 30 days, which lands in the 1M-10M band of the
+    software usage scale, level 4. Orama ships as an embeddable library with no separate server, so the npm
+    package is the product itself rather than a client to one.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@orama/orama
+    shows: downloads = 5,371,921 for @orama/orama over 2026-07-31 to 2026-08-29.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6f34a7b7c5c6a559800dfa4d4806f5fe7160f02cf4b7f503e4468a59488abc47
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Full-text, vector and hybrid search over its own document and index storage, with persistence plugins for
+    disk and cloud, running single-node embedded in a browser, server or edge process.
+  relative_to: pgvector
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as working single-purpose store or index, level with pgvector - it
+    indexes and persists documents itself across several retrieval modes, but runs single-node with no built-in
+    clustering or replication, so it does not reach the distributed, cluster-capable band above.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/pgvector/pgvector/blob/master/README.md
+      shows: README still documents exact and approximate nearest neighbour search over Postgres with no
+        distribution or clustering of its own, inheriting persistence and transactions from Postgres rather than
+        implementing them.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 54cb3a5f4344308476cb2378469ac77d10fbff415d1b5be66608bb386ce8f527
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/oramasearch/orama/blob/main/README.md
+    shows: README documents a single-node, embeddable full-text, vector and hybrid search engine with its own
+      document and index storage, and no distributed cluster mode.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0fa4e45dcfc416b1abaa7c579e7838c0f332802f80346c069858362f01a3b774

@@ -1,0 +1,90 @@
+product: paradedb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: AGPL-3.0 license body confirmed. The repository is public and unarchived and builds the whole extension,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it - only separately
+    sold hosting options for the same AGPL-3.0 extension.
+  raw: license:AGPL-3.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/paradedb/paradedb/blob/main/LICENSE
+    shows: LICENSE file is the verbatim GNU Affero General Public License v3.0 text.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
+  - url: https://api.github.com/repos/paradedb/paradedb
+    shows: Repo metadata - license spdx_id AGPL-3.0, private false, archived false, default branch main - for
+      paradedb/paradedb.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d373c7529e1fc3aec1a0108317237789ee8681e07fe1fcbef279aacae613e1b7
+    establishes:
+    - license
+    - source
+  - url: https://github.com/paradedb/paradedb/blob/main/README.md
+    shows: README describes a Postgres extension upgrading it with a custom BM25 full-text and vector index,
+      filtering and aggregations, listing self-hosting and managed deploy options with no paid tier, enterprise
+      edition or license-key-gated build beside the AGPL-3.0 extension.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 50c0122d4671c6e110c4667acc82fa0cc357318a12f2c5760d747cdc902a1876
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 9,221 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. ParadeDB ships as a
+    Postgres extension with no standalone package registry artifact, and no deployment count is published, which
+    leaves the stars scale and its cap of 3.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/paradedb/paradedb
+    shows: Repo metadata - stargazers_count = 9,221 - for paradedb/paradedb.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d373c7529e1fc3aec1a0108317237789ee8681e07fe1fcbef279aacae613e1b7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: BM25 full-text search, vector search and aggregations behind a single custom Postgres index, inheriting
+    persistence, transactions and durability from Postgres rather than implementing its own.
+  relative_to: pgvector
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as working single-purpose store or index, level with pgvector - the
+    same shape (a Postgres extension inheriting the host database's persistence and transactions) with a broader
+    set of retrieval modes (full-text, vector and aggregation rather than vector alone), but no distribution or
+    clustering of its own beyond what Postgres provides, so it stays at this band rather than the one above.
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://github.com/pgvector/pgvector/blob/master/README.md
+      shows: README still documents exact and approximate nearest neighbour search over Postgres with no
+        distribution or clustering of its own, inheriting persistence and transactions from Postgres.
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 54cb3a5f4344308476cb2378469ac77d10fbff415d1b5be66608bb386ce8f527
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://github.com/paradedb/paradedb/blob/main/README.md
+    shows: README documents a Postgres extension for full-text, vector and aggregation search with no distributed
+      cluster mode of its own.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 50c0122d4671c6e110c4667acc82fa0cc357318a12f2c5760d747cdc902a1876
