@@ -57,8 +57,12 @@ TEST_SHA = "test-git-sha"
 # stars_fallback across the roster), three storage products lost a client package as
 # their instrument, and five telemetry_observability adoption rows were re-banded on the
 # product actually measured. Corrected content, no new rows.
+# And once more, same rows, when the seven telemetry_observability openness `raw` strings
+# were regenerated from their components mappings with `check_rubric.recompose` - the raw
+# is what `basis_detail` carries, and it had lagged the structured detail (check_components
+# reported 21 mismatches). No score or class moved.
 AXIS_ROW_COUNT = 1839
-AXIS_ASSESSMENTS_DIGEST = "45f454daf70cd40cd505fac7368d694f999bc9537f30e4763cb150ab4aa3a19c"
+AXIS_ASSESSMENTS_DIGEST = "8e4f9aa89bf63ada92f8b0b7e7026511538e0f77eeaf5e84be371f0a49bb2fda"
 
 
 @pytest.fixture(scope="module")

@@ -24,8 +24,12 @@ openness:
     complete open core with an optional hosted platform sold beside it, not a paid tier carved out of the
     core's own functionality. Recorded at medium confidence because, unlike those precedents, the optional
     platform is Traccia's own commercial product rather than an unrelated one.
-  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(hosted platform is a separate product for
-    prompt registry and experiment persistence)
+  raw: license:Apache-2.0(OSI, single root LICENSE);source:public(the whole tracing product - init/observe,
+    automatic instrumentation, all listed exporters (Grafana Tempo, Jaeger, Zipkin, SigNoz, console, file)
+    - ships and runs with no account);core-gated:ungated(prompt-registry fetch (load_prompt) and persisted
+    evaluation experiments call the hosted app.traccia.ai platform, but that platform is a separate product
+    sold beside the SDK, not a withheld part of the tracing SDK itself; no ee/enterprise directory exists
+    in the repository)
   last_verified: '2026-09-02'
   sources:
   - url: https://raw.githubusercontent.com/traccia-ai/traccia-py/main/LICENSE

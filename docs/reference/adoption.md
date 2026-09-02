@@ -349,11 +349,26 @@ no gate enforces them; `docs/workflows/refresh-category.md` is where a pass appl
   channel.** Both, not either. Refused on 2026-08-14 for `gvisor`, `ollama`, `promptfoo` and
   `opencompass`: each has a findable package, and banding on it would have moved a level on a
   minority channel. That is the under-coverage error below, met from the other direction.
-- **An SDK's downloads band the hosted platform it talks to**, with two exceptions. A package
-  that is a transitive dependency of a *different* product measures that product's reach —
-  `langsmith` is pulled in by `langchain-core`. And one SDK spanning N products may not be
-  attributed to one of them, which is `cohere-rerank-api` banded on the whole `cohere` package.
-  In both the count is real and is counting something other than the product.
+- **A package's usage bands the head product only when installing that package is itself a
+  meaningful unit of use of the scored product.** A client or component package whose population
+  can vary independently from the head product measures its own users, and is not attributed to
+  the head product merely because it is first-party or required to reach it. The question is
+  measurement-population identity, not whether the package is an SDK; `docs/reference/identity.md`
+  ("A declared artifact is a measurement identity") is the rule this one applies to adoption.
+  Settled 2026-09-02 in the Round 2 promotion (#453), **superseding** the 2026-08-14 rule that an
+  SDK's downloads band the hosted platform it talks to. That rule was too broad, and the tranche
+  showed both sides of the line: the package IS the product for `evidently`, `monocle` (the SDK is
+  the whole product), `axon` (the CLI installs and runs it) and `quilt` (a substantive product
+  surface of its own); it is a client or a component for `weaviate-client` (a server's client),
+  `openmldb` (a cluster's client), `ragaai-catalyst` (a closed platform's client), the `logfire`
+  SDK (a closed platform's open SDK, and a transitive dependency of Pydantic AI) and
+  `latitude-telemetry` (one component of a self-hosted platform). The two earlier exceptions
+  follow from the same test rather than standing beside it: a package pulled in as a transitive
+  dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK spanning N
+  products (`cohere-rerank-api` banded on the whole `cohere` package) both count something other
+  than the product. Records banded under the superseded rule are not re-banded by the rule change;
+  `langfuse`, banded on the `langfuse` client, is the known case and is flagged for its own
+  `update-product` pass.
 
 Measured 2026-08-10, 49 of the 60 products whose recorded band exceeded the computed one
 declared `usage_volume` while their own notes cited figures that matched the warehouse almost
@@ -577,6 +592,9 @@ category rather than a defect in it. Docker pull counts would fix most of them; 
 - [ ] A `usage_volume` band has a countable, **declared** artifact behind it.
 - [ ] A same-named registry package was checked for being the product rather than its client or
       an unrelated project, per "The third trap" above. `check_artifacts` cannot ask this.
+- [ ] The package the band was read from passes the measurement-population test: installing it
+      is a unit of use of the scored product, not of a client or component whose population varies
+      independently. A first-party client of a server or hosted platform fails it.
 - [ ] A `reported_traction` record cites a source with a date and a digest, and records a word
       from the vocabulary or no `reach` at all — never a number.
 - [ ] Anything read off something other than the product — a parent platform, a revenue or
