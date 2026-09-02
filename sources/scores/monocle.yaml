@@ -48,22 +48,34 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: low
-  note: A pypi artifact (monocle_apptrace) is declared for the warehouse to band from `currentai.signal_pypi`.
-    This session's own pypistats.org lookup was rate-limited (429) after the GitHub API budget was spent
-    confirming identity and license, so no manual download figure is recorded here rather than guessed.
-    GitHub shows 337 stars, consistent with a young (2024) Linux Foundation project still building adoption.
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: The monocle_apptrace package draws 48,842 PyPI downloads a month, inside the 10K-100K band. The
+    package is the product - an instrumentation SDK with no platform behind it - so its install count is
+    Monocle's own usage rather than a proxy. 337 GitHub stars on a project started in 2024 corroborate a
+    young Linux Foundation project still building adoption, without setting the level.
   last_verified: '2026-09-02'
   sources:
+  - url: https://pypistats.org/api/packages/monocle_apptrace/recent
+    shows: last_month = 48,842 downloads for monocle-apptrace (last_week 12,339, last_day 2,256)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 969125ae10c08990e0ecee5dd024e1d917698e1f4cfa9803c51a85da8115c65d
+  - url: https://pypi.org/pypi/monocle_apptrace/json
+    shows: 'info.name monocle-apptrace, version 0.8.14, project_urls Homepage https://github.com/monocle2ai/monocle,
+      author "Okahu Inc." <okahu-pypi@okahu.ai>, license Apache-2.0 - the package points back at the declared
+      repository.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 3ffa9d420393ec3916dd03bdaeefbf105c09219af4cb9b7b3186432c31aa76f8
   - url: https://api.github.com/repos/monocle2ai/monocle
     shows: stargazers_count = 337, forks_count = 58, created_at 2024-06-15, pushed_at 2026-09-01 (actively
       maintained)
     accessed: '2026-09-02'
     http_status: 200
-    content_sha256: 011f9cf2bb7eb52b3e1d1b9e591de23ca5d32921d09d13dcc8476274ca98709b
+    content_sha256: 0631e1e24c720ecd725fc57fefe6048ab1d52c0a7e13730a71f14092af504f29
 capability:
   score: 3
   basis: feature_matrix

@@ -8,11 +8,12 @@ description: Self-healing AI agent platform providing telemetry-based tracing of
   hosted cloud with usage-based billing.
 github:
 - url: https://github.com/latitude-dev/latitude-llm
-pypi:
-- url: https://pypi.org/project/latitude-telemetry
-npm:
-- url: https://www.npmjs.com/package/@latitude-data/telemetry
 comments: The whole platform - web app, worker, CLI, SDKs and telemetry packages - ships MIT-licensed in
   one repository, with no enterprise-only directory found in the recursive tree; the hosted cloud's
-  credit-based billing is a separate commercial layer. Verified 2026-09-02 via the latitude-dev/latitude-llm
+  credit-based billing is a separate commercial layer. Only the repository is declared as an artifact. The
+  latitude-telemetry PyPI package and the @latitude-data/telemetry npm package are one component of the
+  platform - the instrumentation library an application imports - so their install counts measure how many
+  applications emit traces, not how many Latitude instances run, and a component's count must not stand in
+  for the whole platform's. The platform itself installs from Docker Hub images, a Helm chart or Railway,
+  none of which is a declarable artifact kind. Verified 2026-09-02 via the latitude-dev/latitude-llm
   repository.
