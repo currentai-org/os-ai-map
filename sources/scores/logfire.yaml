@@ -1,0 +1,101 @@
+product: logfire
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: covers the Python/TypeScript/Rust SDKs and documentation in this repository only
+    source:
+      value: partial
+      detail: the SDK is published; the server application that records and displays the data (the
+        actual Logfire platform) is not in this repository or any public one
+    backend:
+      value: commercial
+      detail: hosted Logfire Cloud platform, with self-host offered only under a purchased enterprise
+        license
+  confidence: high
+  note: The repository is a genuine, standalone MIT SDK that exports OpenTelemetry data to any compatible
+    backend, but the running platform - the UI and the server that records and displays it - is closed
+    source by the vendor's own statement, with self-hosting sold as a paid enterprise product rather than
+    published. That is the `partial` rung regardless of the SDK's license, the same reading `weave` gets
+    for the same shape, though Logfire publishes less of the server side than weave does - no trace-server
+    library ships here at all.
+  raw: license:MIT(SDK/docs only);source:partial(server application not published);backend:commercial(hosted
+    platform, self-host requires a purchased enterprise license)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/pydantic/logfire/main/README.md
+    shows: 'Two statements read directly rather than assumed. First: "This repo contains the Python SDK
+      for `logfire` and documentation; the server application for recording and displaying data is closed
+      source." Second, under "Logfire Open-Source and Closed-Source Boundaries": "The Logfire SDKs ...
+      are open source ... The Logfire platform (the UI and backend) is closed source. You can self-host
+      it by purchasing an enterprise license."'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 95d781891d036b70cf65553375dedeb783b3bc93499b8151f1fde98570c97809
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/pydantic/logfire/main/LICENSE
+    shows: MIT License text, Copyright Pydantic Services inc., covering the contents of this repository
+      (the SDK and docs).
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 035507b8a1e787a16c7f138f092557a30a8ee9cc9cef6e84d11546ee3b9a45cd
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: The logfire package draws 13,695,048 PyPI downloads a month, well inside the >10M band. It rides
+    Pydantic's own large install base and OpenTelemetry-based instrumentation across a wide integration set.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://pypistats.org/api/packages/logfire/recent
+    shows: last_month = 13,695,048 downloads for logfire (last_week 2,817,073, last_day 559,383)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: e37536b846463c346f33b7479eb9a5c0333d515f6691a775e5cc829d4fdcf9d0
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: at
+  value: 'Has: OTel-native agent/LLM tracing across all signal types (traces/metrics/logs), SQL querying
+    over recorded data, a full Prompt Management section (versioning, composition, promotion/rollout,
+    scenario testing) plus a Prompt Playground, and an Evaluate surface (datasets and experiments, live
+    evals, human review, run annotation).'
+  confidence: high
+  note: 'Covers every dimension this category grades: tracing, prompt management with versioning and
+    rollout, a playground, and evaluation through datasets, experiments, live evals and human review -
+    plus SQL access over the whole recorded corpus and deep Pydantic-specific instrumentation that the
+    anchor does not have. That puts it level with Langfuse at 4.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management ("centrally manage, version control, and
+        collaboratively iterate on your prompts"), Evaluations, Playground and Datasets as the current
+        feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/pydantic/logfire/main/docs/navigation.yml
+    shows: 'Sidebar listing a whole "Prompt Management" section (concepts, UI, templates, composition
+      walkthrough, promotion and rollouts, scenario testing, application usage) and a separate "Prompt
+      Playground" page, alongside an "Evaluate" section with datasets-and-experiments, live-evals,
+      human-review and annotate-agent-runs pages.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: eb2b2f46087ec43c4da5378eaa73cc92b57e0cf87c71d79a03bcaedda113f60a
+  - url: https://raw.githubusercontent.com/pydantic/logfire/main/docs/ai-observability.md
+    shows: Deep agent-tracing description - one trace covering model calls, tool calls, database queries
+      and API requests in nested spans, with a worked example.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: da2ce65b353da13f728bedc53d0afba35df98c396262fc36d1f2de9f936a9bf7

@@ -1,0 +1,107 @@
+product: evidently
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, single root LICENSE
+    source:
+      value: public
+      detail: the full Monitoring UI service is self-hostable from this repository, per the README's own
+        "Self-host the open-source version" option
+    core-gated:
+      value: ungated
+      detail: no ee/enterprise path in the recursive tree; Evidently Cloud is a separate hosted product
+        adding dataset/user management, alerting and no-code evals on top of the same open core
+  confidence: high
+  note: Apache-2.0 throughout, with both the evaluation library and the monitoring dashboard published
+    and self-hostable. The README states the choice directly - self-host the open-source Monitoring UI,
+    or sign up for Evidently Cloud - and frames Cloud's extras (dataset/user management, alerting, no-code
+    evals) as additions on top of the open core rather than functionality withheld from it. A recursive
+    tree search found no enterprise, ee or license-key path.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Cloud is a separate hosted product, not a
+    gated core)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/evidentlyai/evidently/main/LICENSE
+    shows: Apache License, Version 2.0 full text, the sole license file in the repository.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 379054a067cbe8e134e084287550e9391d2804636687c4723f80a2c58a463f0e
+    establishes:
+    - license
+  - url: https://api.github.com/repos/evidentlyai/evidently/git/trees/main?recursive=1
+    shows: The whole repository tree, 1,528 paths. No ee/, enterprise or premium path exists; the only
+      other LICENSE-named file is a vendored JS asset's own notice.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 70d44440b9d7b474addf9f1cdde64fd76840348a6413e3cd0924676b2e67dde2
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/evidentlyai/evidently/main/README.md
+    shows: '"Monitoring UI service helps visualize metrics and test results over time. You can choose:
+      Self-host the open-source version ... or Sign up for Evidently Cloud (Recommended). Evidently Cloud
+      offers a generous free tier and extra features like dataset and user management, alerting, and
+      no-code evals."'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c8ac72c2363a2f0b7c36f38a6e7801817e5659507a2e6a37212702ad1cd51c20
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: A pypi artifact (evidently) is declared for the warehouse to band from `currentai.signal_pypi`.
+    This session's own pypistats.org lookup was rate-limited (429) throughout, so no manual download
+    figure is recorded here rather than guessed. 7,877 GitHub stars on a project active since 2020
+    corroborate a mature, established user base without setting a level on their own (stars cap at
+    level 3 under this map's instrument rules).
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/evidentlyai/evidently
+    shows: stargazers_count = 7,877, forks_count = 906, created_at 2020-11-25, pushed_at 2026-08-31
+      (actively maintained)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 77680666f7946c031a42865932b0302818bff4de1737db44f4432fb3b14288a8
+capability:
+  score: 3
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: one_below
+  value: 'Has: 100+ built-in metrics spanning tabular and text/LLM data, Reports and Test Suites (pass/fail
+    conditions, CI/CD-friendly), LLM-as-judge descriptors, data drift detection, and a Monitoring Dashboard
+    tracking metrics and tests over time (self-hosted or Cloud). No prompt management, no playground, no
+    tracing of live production LLM calls as a first-class surface.'
+  confidence: high
+  note: 'A deep and broad evaluation and monitoring library - more built-in metrics than any other product
+    in this category - with continuous monitoring as its first-class surface, which is the product-shape
+    ruling that placed it in this category. It has no prompt management and no playground, and its
+    monitoring reads on metrics and test results computed over batches of data rather than live per-call
+    tracing, which is the anchor''s core surface. That combination sits one rung below Langfuse at 4,
+    the same placement as openllmetry and monocle for a category-complete instrument missing prompt and
+    playground breadth.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
+        current feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/evidentlyai/evidently/main/README.md
+    shows: 'Feature list: "100+ built-in metrics from data drift detection to LLM judges," Reports and
+      Test Suites with pass/fail conditions, "Both offline evals and live monitoring," and a Monitoring
+      Dashboard to "visualize metrics and test results over time" - no prompt-management or playground
+      section anywhere in the document.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: c8ac72c2363a2f0b7c36f38a6e7801817e5659507a2e6a37212702ad1cd51c20

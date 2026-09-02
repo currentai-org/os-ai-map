@@ -40,9 +40,15 @@ GOLDEN = {
     # five categories (axis_results 553 -> 576), their recorded evidence entering the fact
     # and rule-match tables, and gsm8k's adoption re-band 4 -> 5 - the one pre-existing
     # result row that changed.
-    "axis_facts": (2516, "7f0d341049a45e6137607e6bced23e61d9214371b008509498a2e3118a19226b"),
-    "axis_rule_matches": (3063, "24ceca80ab5f92cdb6e6ff9bfe79a1e693f72f58a8d27b211ce2230626609688"),
-    "axis_results": (576, "2fa24ff9f42c8799547d7fa1e2084505e98f201c42b9a5c441cc1a6a2e5fb653"),
+    #
+    # Regenerated again 2026-09-02 for the Round 2 telemetry_observability promotion: seven
+    # products in (ragaai-catalyst, logfire, monocle, traccia, axon, latitude-llm,
+    # evidently), their recorded evidence entering the fact and rule-match tables and each
+    # publishing one openness result row - axis_results 576 -> 583, axis_facts 2516 -> 2544,
+    # axis_rule_matches 3063 -> 3091. No pre-existing result row changed.
+    "axis_facts": (2544, "83dadcad4ba4a1e1f7d8e3d5b6f8686cf35b1a08737bd826c390a4aeae2eda16"),
+    "axis_rule_matches": (3091, "8eff0f7e09e27c1197615e19272e75a1da03e6334d87230cce19806eb9deece0"),
+    "axis_results": (583, "72d9ac5521a3dd59747d47b17939e9b90e956a4b2de8e2339702397779653743"),
 }
 
 

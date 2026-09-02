@@ -1,0 +1,101 @@
+product: axon
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI, single root LICENSE
+    source:
+      value: public
+      detail: the CLI, backend server and dashboard all ship in this repository as three npm workspaces
+        that run entirely on the developer's own machine
+    core-gated:
+      value: ungated
+      detail: no hosted service, account or paid tier exists at all
+  confidence: high
+  note: A fully local tool - no cloud account, no hosted backend, nothing withheld. The README states
+    directly that "no cloud account is required and no data leaves your environment," and the repository
+    is a three-package monorepo (CLI, backend, dashboard) that together are the whole product.
+  raw: license:MIT(OSI);source:public;core-gated:ungated(fully local, no hosted service of any kind)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/langchain-tracer/Axon/main/LICENSE
+    shows: MIT License text, Copyright 2026 Axon, the sole license file in the repository.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 2032dc26b9fe3ee522e3751211db7ed1c3b783ca3913abe6e58bcff0d5f273f9
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/langchain-tracer/Axon/main/README.md
+    shows: 'Opens: "Axon is a local observability tool for LangChain and OpenTelemetry-instrumented AI
+      agents. It receives trace data from your application, stores it on your machine, and gives you a
+      real-time dashboard ... No cloud account is required and no data leaves your environment." Distributed
+      as three packages - @axon-ai/cli, @axon-ai/backend, @axon-ai/dashboard - that install together.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d735ddc180344eb5e75bf512ba4ea30522426dd94099b06f1c12bc307d45a1ec
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/langchain-tracer/Axon/git/trees/main?recursive=1
+    shows: The whole repository tree, 166 paths, including packages/cli, backend and dashboard. No ee/,
+      enterprise or license-key path exists; the only LICENSE is the root MIT file.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: ee4f3f7fa0455c7eb941b5abbd7db59c252528a1b4634d1e2806bab0bd4742d8
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: The CLI package @axon-ai/cli draws 186 npm downloads a month, well inside the <10K band. 159
+    GitHub stars on a repository created in late 2025 corroborate a small, young project without setting
+    the band.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@axon-ai/cli
+    shows: 'downloads: 186 for @axon-ai/cli, 2026-07-31 to 2026-08-29'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: cd035faeaba54ce2fcc8a481dc581e338dabacc62a5c3a613e2e340bc8d344a0
+  - url: https://api.github.com/repos/langchain-tracer/Axon
+    shows: stargazers_count = 159, forks_count = 12, created_at 2025-10-13, pushed_at 2026-08-06
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 71a4ce11f2ddf859c2a848b6962c6fddb4436b54263d835a11d50776e1dc0184
+capability:
+  score: 2
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: two_below
+  value: 'Has: local OTLP trace ingestion, real-time dashboard with transcript/waterfall/tree/raw span
+    views, SQLite storage. No prompt management, no evaluation, no LLM-as-judge, no datasets, no cost
+    tracking, no framework integrations beyond ingesting LangChain/OpenLLMetry OTLP output.'
+  confidence: high
+  note: 'A trace viewer and nothing more: a single-purpose local dashboard for inspecting OTLP spans
+    already emitted by another instrumentation library. It has no evaluation, prompt management, dataset
+    or cost-tracking surface at all, which is narrower than even the openllmetry/monocle instrumentation
+    layers in this category - those at least emit and route traces across many providers, where Axon only
+    visualizes what is handed to it. Two rungs below the Langfuse anchor at 4.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
+        current feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/langchain-tracer/Axon/main/README.md
+    shows: 'Feature list is entirely visualization: Overview, Transcript, Waterfall, Tree and Raw trace
+      views, backed by a local SQLite database; the "How it works" section describes only OTLP ingestion
+      and dashboard serving, with no evaluation, prompt or dataset section.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: d735ddc180344eb5e75bf512ba4ea30522426dd94099b06f1c12bc307d45a1ec

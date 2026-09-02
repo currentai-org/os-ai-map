@@ -1,0 +1,99 @@
+product: monocle
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI, single root LICENSE
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: a Linux Foundation AI & Data project with no hosted platform or commercial tier of any kind;
+        the recursive tree carries no ee/, enterprise or premium path
+  confidence: high
+  note: A pure OpenTelemetry instrumentation SDK and companion test-assertion library governed under the
+    Linux Foundation AI & Data umbrella. Everything the product does - the metamodel, the framework adapters,
+    the test tools - ships in this Apache-2.0 repository, and there is no vendor selling a hosted or gated
+    tier alongside it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(LF AI & Data governance, no hosted platform)
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/monocle2ai/monocle/main/LICENSE
+    shows: Apache License, Version 2.0 full text, the sole license file in the repository.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 6b2f6dacb88fe48ed9b055e8e80aad90b61d46a7b94bdafe0eb3cebec36566b8
+    establishes:
+    - license
+  - url: https://api.github.com/repos/monocle2ai/monocle/git/trees/main?recursive=1
+    shows: The whole repository tree, 873 paths. No ee/, enterprise, premium or entitlement path exists
+      anywhere; the only LICENSE is the root Apache-2.0 file.
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 0c5a0a02f672eb3cc20f8d0a7dd46c33cc00e3afb526ef99406a20f3f0eb4828
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/monocle2ai/monocle/main/README.md
+    shows: 'Built under the Linux Foundation AI & Data umbrella. "This repository contains the Python
+      implementation of Monocle''s tracing SDK and metamodel", plus a separate monocle-test-tools package,
+      with exports to local JSON files, console or an OTLP-compatible backend - no hosted service is
+      described anywhere.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: cf5956e9dfe89d9d4e6a9f74cece96b366116f4f477c2dc6877c092dea601bd6
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: A pypi artifact (monocle_apptrace) is declared for the warehouse to band from `currentai.signal_pypi`.
+    This session's own pypistats.org lookup was rate-limited (429) after the GitHub API budget was spent
+    confirming identity and license, so no manual download figure is recorded here rather than guessed.
+    GitHub shows 337 stars, consistent with a young (2024) Linux Foundation project still building adoption.
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://api.github.com/repos/monocle2ai/monocle
+    shows: stargazers_count = 337, forks_count = 58, created_at 2024-06-15, pushed_at 2026-09-01 (actively
+      maintained)
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: 011f9cf2bb7eb52b3e1d1b9e591de23ca5d32921d09d13dcc8476274ca98709b
+capability:
+  score: 3
+  basis: feature_matrix
+  relative_to: langfuse
+  relation: one_below
+  value: 'Has: OTel-native tracing across LangChain/LlamaIndex/Haystack/Google ADK/OpenAI/Anthropic and
+    vector stores, a metamodel standardizing GenAI span attributes, and a pytest-based trace-assertion
+    test framework (monocle-test-tools). No prompt management, no LLM-as-judge evaluation, no dataset or
+    experiment tracking, no playground.'
+  confidence: high
+  note: 'A strong, standards-focused tracing and testing layer - broad framework coverage plus a genuinely
+    distinctive trace-assertion test tool - but it stops at instrumentation and testing. There is no
+    prompt management, evaluation, dataset or playground surface, which is exactly the openllmetry shape
+    in this category: one rung below the Langfuse anchor at 4.'
+  comparison:
+    last_attested: '2026-09-02'
+    sources:
+    - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
+      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
+        current feature set, unchanged from when this anchor was set.'
+      accessed: '2026-09-02'
+      http_status: 200
+      content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f
+  last_verified: '2026-09-02'
+  sources:
+  - url: https://raw.githubusercontent.com/monocle2ai/monocle/main/README.md
+    shows: 'Feature description: a metamodel for entities (agents, prompts, responses, tools, vector
+      operations), instrumentation adapters for LangChain, LlamaIndex, Haystack, Google ADK, OpenAI and
+      Anthropic, OTLP-compatible export, and a separate monocle-test-tools package for asserting on
+      traces themselves - no evaluation, prompt-management or dataset section exists.'
+    accessed: '2026-09-02'
+    http_status: 200
+    content_sha256: cf5956e9dfe89d9d4e6a9f74cece96b366116f4f477c2dc6877c092dea601bd6

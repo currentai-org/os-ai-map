@@ -50,10 +50,16 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # added with the new products (553 -> 576) and the gsm8k level moved 4 -> 5 on a fresh
 # read. MEASUREMENTS_DIGEST is deliberately unchanged: measurements come from the
 # warehouse observation parquet, which carries no rows for the new products yet.
-RECONCILIATION_DIGEST = "880129665629304ac5893bd9efadde84a1986875e8b11de1a215617534eb0f17"
+# Moved again 2026-09-02 by the Round 2 telemetry_observability promotion: 7 recorded
+# assessments added with the new products (576 -> 583) - ragaai-catalyst and axon record
+# a level (1 each), logfire a level (5), latitude-llm a level (2), and monocle, traccia
+# and evidently record `level: null` (left for the warehouse to band). MEASUREMENTS_DIGEST
+# is deliberately unchanged for the same reason as above: the warehouse observation
+# parquet carries no rows for the new products yet.
+RECONCILIATION_DIGEST = "9d0d3f21f708dc6f726ab510a8eba739e3d3c1f43d1626040a0d617ab190e73d"
 
 MEASUREMENT_COUNT = 377
-RECORDED_ASSESSMENT_COUNT = 576
+RECORDED_ASSESSMENT_COUNT = 583
 ROUTING_POLICY_VERSION = "2"
 
 

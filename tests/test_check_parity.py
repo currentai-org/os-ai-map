@@ -242,7 +242,11 @@ def test_local_scores_matches_check_rubrics_split():
     # five categories, no net change to the deferral count, and no new license ruling needed -
     # every add recorded a spelling its ladder already tiers (mle-bench's Kaggle corpus lands
     # on the enumerated `per-component` spelling of deferred_to_components).
-    assert len(computed) == 571
+    # 571/5 -> 578/5 on 2026-09-02, the Round 2 telemetry_observability promotion: seven
+    # candidates in (ragaai-catalyst, logfire, monocle, traccia, axon, latitude-llm, evidently),
+    # no net change to the deferral count, and no new license ruling needed - every license
+    # recorded (Apache-2.0, MIT) already tiers on the shared `osi` rung.
+    assert len(computed) == 578
     assert not set(computed) & set(deferred)
     # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
