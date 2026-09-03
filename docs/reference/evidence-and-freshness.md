@@ -490,7 +490,7 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
-| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45 (temporary)`, scheduled weekly | free, weekly |
+| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45` (temporary), scheduled weekly | free, weekly |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
@@ -931,7 +931,7 @@ score for this reason.
 
 ### 5. Turn on the age gate
 
-**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45 (temporary)` gates in
+**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45` (temporary) gates in
 `.github/workflows/freshness.yml`, weekly. This is the entire point of having the field: a
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
