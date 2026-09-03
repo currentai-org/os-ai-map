@@ -7,6 +7,7 @@ from pathlib import Path
 import jsonschema
 import yaml
 
+from build.identity import fold_for_proposal, id_from_url
 from build.vocabulary import axes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
@@ -46,9 +47,11 @@ OPENNESS_CLASSES = {
 # and imported above so this gate and serialize_routing cannot disagree about the set.
 LAYERS = {"product_ux", "model_components", "infrastructure"}
 
-# The artifact kinds a tail row can dedup on. `homepage` is deliberately excluded: it is
-# addressable (counts toward "at least one artifact") but carries no adoption signal and
-# is not treated as an identity-bearing artifact -- see the identity graph design doc §2.
+# The artifact kinds a tail row can dedup on. `homepage` carries no adoption signal, but it
+# is still an identity key -- two tail rows (or a tail row and a head product) declaring the
+# same homepage domain are the same duplicate-identity problem this gate exists to catch, and
+# `serialize_registry.py` emits a `tail_products` row for a homepage exactly like any other
+# kind. Excluding it here would leave that emitted identity key ungated.
 _TAIL_ARTIFACT_KINDS = (
     "github",
     "huggingface_model",
@@ -57,41 +60,11 @@ _TAIL_ARTIFACT_KINDS = (
     "npm",
     "crates",
     "arxiv",
+    "homepage",
 )
 
-# Reduce a declared head-product artifact URL to the bare identifier a tail row would
-# store directly. Deliberately a local, small duplicate of build/serialize_registry.py's
-# `_ID_PATTERNS` rather than an import: that module imports `load_sources` from this one,
-# so importing it back here would be circular. `head_repos`'s own github regex predates
-# this and already diverged from serialize_registry's; kept as one family here instead of
-# two.
-_ARTIFACT_URL_PATTERNS = {
-    "github": re.compile(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", re.I),
-    "huggingface_model": re.compile(r"huggingface\.co/(?!datasets/)([^/]+/[^/]+?)/?$", re.I),
-    "huggingface_dataset": re.compile(r"huggingface\.co/datasets/([^/]+/[^/]+?)/?$", re.I),
-    "pypi": re.compile(r"pypi\.org/project/([^/]+)", re.I),
-    "npm": re.compile(r"npmjs\.com/package/([^/]+(?:/[^/]+)?)/?$", re.I),
-    "crates": re.compile(r"crates\.io/crates/([^/]+)", re.I),
-    "arxiv": re.compile(r"(?:arxiv\.org/(?:abs|pdf)/)?([a-z\-.]*\d{4}\.\d{4,5}|[a-z\-.]+/\d{7})", re.I),
-}
-
-
-def _canonicalize(kind: str, value: str) -> str:
-    """Fold an artifact identifier to the form dedup compares on, per kind.
-
-    Canonical forms: GitHub owner/repo lowercased with any .git suffix removed; PyPI names
-    normalized per PEP 503 (lowercase, runs of -, _ and . collapsed to -); arXiv ids
-    without the version suffix; crates and npm names lowercased; Hugging Face ids as given.
-    """
-    value = value.strip().lower()
-    if kind == "github":
-        return value.removesuffix(".git")
-    if kind == "pypi":
-        return re.sub(r"[-_.]+", "-", value)
-    if kind == "arxiv":
-        value = value.removeprefix("arxiv:")
-        return re.sub(r"v\d+$", "", value)
-    return value
+# Canonicalization and URL parsing for every artifact kind now live in build/identity.py
+# -- the one place these rules live. See `canonical` and `id_from_url`, imported above.
 
 
 def load_sources(root: Path) -> dict:
@@ -202,22 +175,21 @@ def validate_sources(data: dict) -> list[str]:
     #
     # Widened from `github` only to every declared artifact kind (#437 follow-on): a candidate
     # dismissed on PyPI or Hugging Face alone used to have no way to stay dismissed. Every kind
-    # is folded through the same `_canonical` shim `build/resolution.py` uses, which today only
-    # canonicalizes `github` (lowercase, `.git` stripped) - Task 2 replaces that shim's body to
-    # canonicalize the rest, so a differently-cased PyPI or npm name will not yet match here.
-    from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, _canonical, load as load_ledger
+    # is folded through `build.identity.fold_for_proposal`, the same function
+    # `build/resolution.py`'s ledger key now delegates to, so a differently-cased PyPI or npm
+    # name matches here too.
+    from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, load as load_ledger
 
     ledger = load_ledger()
     for slug, product in sorted((data.get("products") or {}).items()):
         for kind in _TAIL_ARTIFACT_KINDS:
-            pattern = _ARTIFACT_URL_PATTERNS[kind]
             for artifact in (product.get(kind) or []):
                 if not (isinstance(artifact, dict) and isinstance(artifact.get("url"), str)):
                     continue
-                match = pattern.search(artifact["url"].rstrip("/"))
-                if not match:
+                raw_ident = id_from_url(kind, artifact["url"])
+                if raw_ident is None:
                     continue
-                ident = _canonical(kind, match.group(1))
+                ident = fold_for_proposal(kind, raw_ident)
                 entry = ledger.get(((kind, ident), "product_equivalence"))
                 if not entry or entry.get("verdict") not in NOT_A_NEW_PRODUCT:
                     continue
@@ -272,14 +244,13 @@ def validate_sources(data: dict) -> list[str]:
     }
     for slug, product in prods.items():
         for kind in _TAIL_ARTIFACT_KINDS:
-            pattern = _ARTIFACT_URL_PATTERNS[kind]
             for artifact in product.get(kind) or []:
                 if not (isinstance(artifact, dict) and isinstance(artifact.get("url"), str)):
                     continue
-                match = pattern.search(artifact["url"].rstrip("/"))
-                if not match:
+                raw_ident = id_from_url(kind, artifact["url"])
+                if raw_ident is None:
                     continue
-                head_artifacts[(kind, _canonicalize(kind, match.group(1)))] = slug
+                head_artifacts[(kind, fold_for_proposal(kind, raw_ident))] = slug
     for cid, record in registry.items():
         if not isinstance(record, dict):
             errors.append(f"registry/{cid}.yaml: record must be a mapping")
@@ -318,7 +289,7 @@ def validate_sources(data: dict) -> list[str]:
                 if not isinstance(value, str) or not value:
                     continue
                 has_artifact = True
-                key = (kind, _canonicalize(kind, value))
+                key = (kind, fold_for_proposal(kind, value))
                 if key in head_artifacts:
                     errors.append(
                         f"registry/{cid}.yaml: {kind} artifact {value!r} already belongs to "
@@ -330,7 +301,7 @@ def validate_sources(data: dict) -> list[str]:
                         f"tail product {tail_artifacts[key]!r}"
                     )
                 tail_artifacts[key] = slug
-            if not has_artifact and not row.get("homepage"):
+            if not has_artifact:
                 errors.append(
                     f"registry/{cid}.yaml: tail slug {slug!r} has no addressable artifact "
                     "(one of github, huggingface_model, huggingface_dataset, pypi, npm, "

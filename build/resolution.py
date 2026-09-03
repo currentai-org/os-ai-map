@@ -23,6 +23,9 @@ from pathlib import Path
 
 import yaml
 
+from build.identity import fold_for_proposal as _identity_fold
+from build.identity import id_from_url as _identity_id_from_url
+
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "sources" / "resolution_ledger.yaml"
 
@@ -48,15 +51,16 @@ class DuplicateResolution(ValueError):
 def _canonical(kind: str, ident: str) -> str:
     """Fold an artifact identifier to the form the ledger keys on, per kind.
 
-    Task 2 replaces this body with `from build.identity import canonical`. Only `github` is
-    canonicalized today (lowercase, `.git` stripped); every other kind is compared as given
-    until that lands, so a differently-cased PyPI or npm name will not yet match. Kept as one
-    private function so that swap is a one-line change.
+    Delegates to `build.identity.fold_for_proposal`, the comparison form every identity
+    equality question uses (never `canonical`, which preserves declared spelling for
+    `github`/`pypi` -- see `build/identity.py`). A ledger entry written as a full GitHub
+    URL rather than `owner/repo` is routed through `id_from_url` first, so it keys on the
+    repo it names rather than on the URL string; no such entry exists in the ledger today.
     """
     ident = (ident or "").strip()
-    if kind == "github":
-        return ident.removesuffix(".git").lower()
-    return ident
+    if kind == "github" and "://" in ident:
+        ident = _identity_id_from_url("github", ident) or ident
+    return _identity_fold(kind, ident)
 
 
 def key_for(entry: Mapping) -> Key:
