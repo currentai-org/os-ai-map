@@ -917,8 +917,7 @@ unmade decision, and this replaces it.
 
 **Raised to 45 days on 2026-09-03, temporarily.** The whole corpus was dated in one August sweep and would have crossed the 30-day gate together around 09-07 to 09-12. The rolling re-verifier spreads the dates over four weekly batches; the window returns to 30 four weeks after the raise. Owner: Carl.
 
-At 45 days (temporary) the re-read is continuous rather than occasional: eighteen categories inside a
-forty-five days is roughly four a week. Two things follow. A whole category shares one confirmation
+At 45 days (temporary) the re-read is continuous rather than occasional: eighteen categories inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
 date, because a category is re-read in a single run, so categories expire in cliffs rather
 than drifting past the line one product at a time — that is the shape of the work, not a
 backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;
