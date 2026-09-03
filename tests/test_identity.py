@@ -4,10 +4,15 @@ from build import identity as I
 
 
 @pytest.mark.parametrize("kind,raw,want", [
-    ("github", "https://github.com/Dao-AILab/flash-attention.git/", "dao-ailab/flash-attention"),
-    ("github", "Dao-AILab/Flash-Attention", "dao-ailab/flash-attention"),
-    ("pypi", "Scikit_Learn", "scikit-learn"),
-    ("pypi", "https://pypi.org/project/Pillow.SIMD/", "pillow-simd"),
+    # github and pypi keep their declared spelling in `canonical` -- registry.product_artifacts
+    # is joined against externally sourced signal tables on raw equality, so rewriting case or
+    # punctuation there breaks that join. Only structural normalization (URL -> bare id, a
+    # trailing "/" or ".git" stripped) happens here; case/punctuation folding is
+    # `fold_for_proposal`'s job, tested separately below.
+    ("github", "https://github.com/Dao-AILab/flash-attention.git/", "Dao-AILab/flash-attention"),
+    ("github", "Dao-AILab/Flash-Attention", "Dao-AILab/Flash-Attention"),
+    ("pypi", "Scikit_Learn", "Scikit_Learn"),
+    ("pypi", "https://pypi.org/project/Pillow.SIMD/", "Pillow.SIMD"),
     ("npm", "@Scope/Name", "@scope/name"),
     ("crates", "Serde_JSON", "serde_json"),
     ("arxiv", "https://arxiv.org/abs/2401.12345v3", "2401.12345"),
@@ -17,6 +22,16 @@ from build import identity as I
 ])
 def test_canonical(kind, raw, want):
     assert I.canonical(kind, raw) == want
+
+
+@pytest.mark.parametrize("kind,a,b", [
+    ("github", "Dao-AILab/flash-attention", "dao-ailab/Flash-Attention"),
+    ("pypi", "Scikit_Learn", "scikit-learn"),
+    ("pypi", "Pillow.SIMD", "pillow-simd"),
+])
+def test_fold_for_proposal_compares_case_and_punctuation_insensitively(kind, a, b):
+    assert I.canonical(kind, a) != I.canonical(kind, b)
+    assert I.fold_for_proposal(kind, a) == I.fold_for_proposal(kind, b)
 
 
 def test_crates_fold_only_proposes():

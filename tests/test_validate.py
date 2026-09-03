@@ -293,6 +293,64 @@ def test_tail_row_with_only_arxiv_validates():
     assert validate_sources(d) == []
 
 
+def test_tail_row_with_only_homepage_validates():
+    """`homepage` alone is enough to satisfy `has_artifact`, same as any other kind."""
+    d = _fixture()
+    d["registry"] = {
+        "base_pretrained": {
+            "category": "base_pretrained",
+            "products": [
+                {
+                    "slug": "some-homepage-thing",
+                    "display_name": "Some Homepage Thing",
+                    "type": "software",
+                    "org": "meta",
+                    "homepage": "https://example.com",
+                }
+            ],
+        }
+    }
+    assert validate_sources(d) == []
+
+
+def test_tail_rows_sharing_a_homepage_domain_fail():
+    """`homepage` is a dedup-gated identity key, not just an addressability check (#472
+    review): two tail rows declaring the same comparison host are the same duplicate
+    identity a github or pypi collision would be, even across categories and even when
+    the URLs differ by scheme, `www.`, path or query."""
+    d = _fixture()
+    d["registry"] = {
+        "base_pretrained": {
+            "category": "base_pretrained",
+            "products": [
+                {
+                    "slug": "site-one",
+                    "display_name": "Site One",
+                    "type": "software",
+                    "org": "meta",
+                    "homepage": "https://www.Example.com/",
+                },
+            ],
+        },
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "site-two",
+                    "display_name": "Site Two",
+                    "type": "software",
+                    "org": "meta",
+                    "homepage": "http://example.com/pricing?utm=1",
+                },
+            ],
+        },
+    }
+    errs = validate_sources(d)
+    assert any(
+        "homepage artifact" in e and "already belongs to tail product 'site-one'" in e for e in errs
+    ), errs
+
+
 def test_tail_row_with_no_artifact_fails_with_a_clear_message():
     d = _fixture()
     d["registry"] = {

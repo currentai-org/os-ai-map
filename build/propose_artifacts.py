@@ -55,6 +55,7 @@ from pathlib import Path
 
 import yaml
 
+from build.identity import GH_RESERVED, HF_RESERVED, fold_for_proposal
 from build.vocabulary import artifact_kinds
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,16 +81,9 @@ def _supported_kinds() -> tuple[str, ...]:
 # subset check below stays meaningful rather than vacuous.
 NOT_A_DISTRIBUTION_ARTIFACT = frozenset({"arxiv"})
 
-# Hugging Face path segments that are not a model id. Without these, a docs or blog
-# link becomes a confident-looking candidate.
-HF_RESERVED = {
-    "datasets", "spaces", "api", "docs", "blog", "papers", "collections",
-    "models", "organizations", "settings", "join", "pricing", "tasks", "learn",
-}
-GH_RESERVED = {
-    "orgs", "topics", "search", "features", "pricing", "about", "explore",
-    "marketplace", "sponsors", "collections", "trending", "settings", "login",
-}
+# HF_RESERVED and GH_RESERVED (path segments that are not a model/repo owner) live in
+# build/identity.py -- imported above -- since they are facts about URL shape, not
+# about proposing.
 
 PATTERNS = [
     ("huggingface_dataset", re.compile(r"huggingface\.co/datasets/([\w\-.]+/[\w\-.]+)", re.I)),
@@ -142,9 +136,13 @@ def candidates_for(product: dict, scores: dict) -> dict[str, list[str]]:
             if ident.endswith(".git"):
                 ident = ident[:-4]
             found.setdefault(kind, [])
-            # GitHub and PyPI names are case-insensitive, so crewAIInc/crewAI and
-            # crewaiinc/crewai are one candidate, not a choice between two.
-            if ident.lower() not in {x.lower() for x in found[kind]}:
+            # Folded through `identity.fold_for_proposal`, not a bare `.lower()`: crewAIInc/crewAI
+            # and crewaiinc/crewai are one candidate because GitHub is case-insensitive, and
+            # crates.io/crates/serde-json is the same candidate as serde_json for this purpose,
+            # even though the two stay distinct identities once declared (`canonical` keeps `-`
+            # and `_` apart for crates).
+            folded = fold_for_proposal(kind, ident)
+            if folded not in {fold_for_proposal(kind, x) for x in found[kind]}:
                 found[kind].append(ident)
             break  # first (most specific) pattern wins for a given URL
     return found

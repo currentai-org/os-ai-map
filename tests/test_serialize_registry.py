@@ -19,11 +19,11 @@ def _sources(products=None, organizations=None, categories=None, taxonomy=None):
 
 
 def test_artifact_id_reduces_urls_to_api_identifiers():
-    # github ids are lowercased -- Task 2 unified this across validate.py, resolution.py
-    # and this module; serialize_registry previously preserved case here while validate.py's
-    # dedup already compared lowercased, which was the inconsistency Task 2 retired.
-    assert artifact_id("github", "https://github.com/allenai/OLMo") == "allenai/olmo"
-    assert artifact_id("github", "https://github.com/allenai/OLMo/") == "allenai/olmo"
+    # github ids keep their declared casing -- registry.product_artifacts is joined against
+    # signal tables on raw equality, so `artifact_id` must not rewrite it. Comparisons that
+    # need case-insensitivity go through `identity.fold_for_proposal`, not this function.
+    assert artifact_id("github", "https://github.com/allenai/OLMo") == "allenai/OLMo"
+    assert artifact_id("github", "https://github.com/allenai/OLMo/") == "allenai/OLMo"
     assert (
         artifact_id("huggingface_dataset", "https://huggingface.co/datasets/allenai/c4")
         == "allenai/c4"

@@ -43,6 +43,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - Split the `maturity` category gap into `depth` (Stage 4) and its `capability`/`adoption`
   drivers, which now fire together wherever both apply, and redefined the `adoption` gap
   independent of capability (#87, #318).
+- `registry.tail_products` now includes homepage-bearing tail rows, previously silently dropped
+  even though they validated (+27 rows; every one is a tail product that already declares
+  another artifact kind, none homepage-only) (#472).
+- Consolidated GitHub/PyPI/npm/crates/arXiv/Hugging Face artifact-identity canonicalization,
+  previously duplicated and drifted across three modules, into one (#472).
 
 ### Deprecated
 
@@ -53,6 +58,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Removed
 
 - The `maturity` gap type (#87, #318).
+
+### Fixed
+
+- `registry.product_artifacts`'s `crates` `artifact_id` now serializes the bare crate name
+  instead of the full crates.io URL (one row: `yomo`) (#472).
 
 ## [0.2.0] - 2026-08-16
 

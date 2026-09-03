@@ -29,9 +29,7 @@ def test_a_moved_repo_is_a_finding(monkeypatch):
          "resolved_repo": "SWE-bench/SWE-bench"},
     ])
     found = artifacts.github_moved({"swe-bench": product(github="princeton-nlp/SWE-bench")})
-    # `declared()` reduces the declaration through `artifact_id`, which now canonicalizes
-    # github ids to lowercase (Task 2 unified this); it used to preserve case here only.
-    assert found == [("swe-bench", "princeton-nlp/swe-bench", "SWE-bench/SWE-bench")]
+    assert found == [("swe-bench", "princeton-nlp/SWE-bench", "SWE-bench/SWE-bench")]
 
 
 def test_a_repo_already_corrected_is_not_a_finding(monkeypatch):

@@ -45,7 +45,7 @@ from pathlib import Path
 
 import yaml
 
-from build.identity import canonical
+from build.identity import fold_for_proposal
 from build.propose_artifacts import _get_json, declared_repo, pypi_info, stub_reason
 from build.serialize_registry import artifact_id
 from build.warehouse import query
@@ -98,14 +98,17 @@ def github_moved(products: dict[str, dict]) -> list[tuple[str, str, str]]:
 
 
 def canonical_repo(repo: str) -> str:
-    """`owner/name` after GitHub's own rename resolution, lowercased.
+    """`owner/name` after GitHub's own rename resolution, folded for comparison.
 
     Only called on a disagreement, so this costs one request per finding rather than one
-    per package.
+    per package. Uses `fold_for_proposal`, not `canonical`: this function only ever feeds
+    an equality check (`canonical_repo(names) == canonical_repo(ours)`), never a value
+    written anywhere, so the comparison form is right here even though `registry.
+    product_artifacts` itself keeps declared GitHub casing.
     """
     body = _get_json(f"https://api.github.com/repos/{repo}", None)
     full = (body or {}).get("full_name")
-    return canonical("github", full or repo)
+    return fold_for_proposal("github", full or repo)
 
 
 def pypi_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:

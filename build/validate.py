@@ -7,7 +7,7 @@ from pathlib import Path
 import jsonschema
 import yaml
 
-from build.identity import canonical, id_from_url
+from build.identity import fold_for_proposal, id_from_url
 from build.vocabulary import axes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
@@ -47,9 +47,11 @@ OPENNESS_CLASSES = {
 # and imported above so this gate and serialize_routing cannot disagree about the set.
 LAYERS = {"product_ux", "model_components", "infrastructure"}
 
-# The artifact kinds a tail row can dedup on. `homepage` is deliberately excluded: it is
-# addressable (counts toward "at least one artifact") but carries no adoption signal and
-# is not treated as an identity-bearing artifact -- see the identity graph design doc §2.
+# The artifact kinds a tail row can dedup on. `homepage` carries no adoption signal, but it
+# is still an identity key -- two tail rows (or a tail row and a head product) declaring the
+# same homepage domain are the same duplicate-identity problem this gate exists to catch, and
+# `serialize_registry.py` emits a `tail_products` row for a homepage exactly like any other
+# kind. Excluding it here would leave that emitted identity key ungated.
 _TAIL_ARTIFACT_KINDS = (
     "github",
     "huggingface_model",
@@ -58,6 +60,7 @@ _TAIL_ARTIFACT_KINDS = (
     "npm",
     "crates",
     "arxiv",
+    "homepage",
 )
 
 # Canonicalization and URL parsing for every artifact kind now live in build/identity.py
@@ -172,8 +175,9 @@ def validate_sources(data: dict) -> list[str]:
     #
     # Widened from `github` only to every declared artifact kind (#437 follow-on): a candidate
     # dismissed on PyPI or Hugging Face alone used to have no way to stay dismissed. Every kind
-    # is folded through `build.identity.canonical`, the same function `build/resolution.py`'s
-    # ledger key now delegates to, so a differently-cased PyPI or npm name matches here too.
+    # is folded through `build.identity.fold_for_proposal`, the same function
+    # `build/resolution.py`'s ledger key now delegates to, so a differently-cased PyPI or npm
+    # name matches here too.
     from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, load as load_ledger
 
     ledger = load_ledger()
@@ -185,7 +189,7 @@ def validate_sources(data: dict) -> list[str]:
                 raw_ident = id_from_url(kind, artifact["url"])
                 if raw_ident is None:
                     continue
-                ident = canonical(kind, raw_ident)
+                ident = fold_for_proposal(kind, raw_ident)
                 entry = ledger.get(((kind, ident), "product_equivalence"))
                 if not entry or entry.get("verdict") not in NOT_A_NEW_PRODUCT:
                     continue
@@ -246,7 +250,7 @@ def validate_sources(data: dict) -> list[str]:
                 raw_ident = id_from_url(kind, artifact["url"])
                 if raw_ident is None:
                     continue
-                head_artifacts[(kind, canonical(kind, raw_ident))] = slug
+                head_artifacts[(kind, fold_for_proposal(kind, raw_ident))] = slug
     for cid, record in registry.items():
         if not isinstance(record, dict):
             errors.append(f"registry/{cid}.yaml: record must be a mapping")
@@ -285,7 +289,7 @@ def validate_sources(data: dict) -> list[str]:
                 if not isinstance(value, str) or not value:
                     continue
                 has_artifact = True
-                key = (kind, canonical(kind, value))
+                key = (kind, fold_for_proposal(kind, value))
                 if key in head_artifacts:
                     errors.append(
                         f"registry/{cid}.yaml: {kind} artifact {value!r} already belongs to "
@@ -297,7 +301,7 @@ def validate_sources(data: dict) -> list[str]:
                         f"tail product {tail_artifacts[key]!r}"
                     )
                 tail_artifacts[key] = slug
-            if not has_artifact and not row.get("homepage"):
+            if not has_artifact:
                 errors.append(
                     f"registry/{cid}.yaml: tail slug {slug!r} has no addressable artifact "
                     "(one of github, huggingface_model, huggingface_dataset, pypi, npm, "
