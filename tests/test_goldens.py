@@ -61,3 +61,27 @@ def test_structural_invariants_hold_regardless_of_tree(computed):
     assert len(set(software.values())) == 1, software
     # The under-coverage roster is a set of slugs, and its count is the set's size.
     assert computed["under_coverage"]["count"] == len(computed["under_coverage"]["slugs"])
+
+
+def test_software_categories_covers_every_category_that_extends_software_alone():
+    """goldens.SOFTWARE_CATEGORIES is derived, not hand-listed; re-derive it independently
+    here so a category whose scoring_recipe changes (a new one starts or stops extending
+    `software` alone) shows up as a real assertion failure, not silently."""
+    from build.rubrics import load_shared, resolve_recipe_variants
+    from build.taxonomy import category_statuses
+    from build.validate import load_sources
+
+    data = load_sources(ROOT)
+    shared = load_shared(ROOT)
+    statuses = category_statuses(data.get("taxonomy") or {})
+    expected = set()
+    for slug, category in (data.get("categories") or {}).items():
+        if statuses.get(slug, "published") != "published":
+            continue
+        variants, errors = resolve_recipe_variants(category or {}, shared)
+        if errors or set(variants) != {"*"}:
+            continue
+        if variants["*"].get("extends") == "software":
+            expected.add(slug)
+    assert goldens.SOFTWARE_CATEGORIES == expected
+    assert expected, "expected at least one published category to extend the software ladder"

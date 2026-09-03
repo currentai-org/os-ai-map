@@ -22,11 +22,38 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN_PATH = Path("tests/goldens/corpus.json")
 
-SOFTWARE_CATEGORIES = frozenset({
-    "deployment", "agent_tools_protocols", "dataset_processing_tools", "evaluation_code",
-    "finetuning_code", "inference_code", "ml_frameworks", "orchestration_agents", "ui_api",
-    "telemetry_observability", "compilers", "storage",
-})
+
+def _software_only_categories(root: Path) -> frozenset[str]:
+    """Published category slugs whose scoring_recipe extends the software ladder alone.
+
+    Derived from the data instead of hand-listed, using the same routing
+    `build/serialize_rubric.py` reads: `build.rubrics.resolve_recipe_variants` resolves a
+    category's `scoring_recipe` and reports which shared ladder(s) it extends. A category
+    qualifies when that resolves to exactly the `"*"` variant naming the `software` ladder
+    in `sources/rubrics/`. A mixed category like `safeguards`
+    (`extends: {model: model, software: software}`) does not qualify, and neither does a
+    category that declares its own inline `openness` block instead of extending anything.
+    """
+    from build import rubrics
+    from build.taxonomy import category_statuses
+    from build.validate import load_sources
+
+    data = load_sources(root)
+    shared = rubrics.load_shared(root)
+    statuses = category_statuses(data.get("taxonomy") or {})
+    out: set[str] = set()
+    for slug, category in (data.get("categories") or {}).items():
+        if statuses.get(slug, "published") != "published":
+            continue
+        variants, errors = rubrics.resolve_recipe_variants(category or {}, shared)
+        if errors or set(variants) != {"*"}:
+            continue
+        if variants["*"].get("extends") == "software":
+            out.add(slug)
+    return frozenset(out)
+
+
+SOFTWARE_CATEGORIES = _software_only_categories(ROOT)
 
 # The same fixed test identities tests/test_axis_assessments.py and tests/test_axis_scoring_trace.py
 # pin their content digests with, so a digest here moves only on a declaration or ladder change,

@@ -674,9 +674,9 @@ def test_real_sources_serialize_without_errors(real_rubric):
     # license, which is the boundary tests/test_openness_buckets.py now enforces. Removing
     # them costs 6 rows per software category and 6 from `safeguards`, whose software half
     # inherits the same ladder (25 -> 19 = 10 software + 9 model).
-    SOFTWARE = ["agent_tools_protocols", "compilers", "dataset_processing_tools", "deployment",
-                "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
-                "orchestration_agents", "storage", "telemetry_observability", "ui_api"]
+    from build.goldens import SOFTWARE_CATEGORIES
+
+    SOFTWARE = sorted(SOFTWARE_CATEGORIES)
     # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
     # same 24 rules. Was 22 until compound licenses resolved on all their parts, which put
     # `flan-collection` on a deferred-license tier it had never reached while the resolver
