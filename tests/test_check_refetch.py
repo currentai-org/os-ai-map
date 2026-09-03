@@ -136,13 +136,13 @@ def test_matching_digest_is_confirmed():
     body = b"stable content"
     source = src("https://a.example/x", hashlib.sha256(body).hexdigest())
     with patch("build.check_refetch.requests.get", return_value=_response(200, body)):
-        assert refetch(source, 5.0)[0] == "confirmed"
+        assert refetch(source, 5.0, sleep=lambda _: None)[0] == "confirmed"
 
 
 def test_changed_body_is_drift_not_failure():
     source = src("https://a.example/x", DIGEST_A)
     with patch("build.check_refetch.requests.get", return_value=_response(200, b"new")):
-        assert refetch(source, 5.0)[0] == "drifted"
+        assert refetch(source, 5.0, sleep=lambda _: None)[0] == "drifted"
 
 
 @pytest.mark.parametrize("status", [429, 500, 502, 503])
@@ -150,7 +150,7 @@ def test_rate_limit_is_not_reported_dead(status: int):
     """429 and 5xx are 'not now', not 'not here'. Reported as unreachable, never as a finding."""
     source = src("https://a.example/x", DIGEST_A)
     with patch("build.check_refetch.requests.get", return_value=_response(status)):
-        outcome, detail = refetch(source, 5.0)
+        outcome, detail = refetch(source, 5.0, sleep=lambda _: None)
     assert outcome == "unreachable"
     assert "transient" in detail
 
@@ -159,7 +159,7 @@ def test_rate_limit_is_not_reported_dead(status: int):
 def test_client_errors_are_dead(status: int):
     source = src("https://a.example/x", DIGEST_A)
     with patch("build.check_refetch.requests.get", return_value=_response(status)):
-        assert refetch(source, 5.0)[0] == "gone"
+        assert refetch(source, 5.0, sleep=lambda _: None)[0] == "gone"
 
 
 def test_network_error_is_unreachable_not_dead():
@@ -167,7 +167,7 @@ def test_network_error_is_unreachable_not_dead():
     with patch(
         "build.check_refetch.requests.get", side_effect=requests.Timeout("timed out")
     ):
-        assert refetch(source, 5.0)[0] == "unreachable"
+        assert refetch(source, 5.0, sleep=lambda _: None)[0] == "unreachable"
 
 
 # --- Bot walls -------------------------------------------------------------------------
@@ -200,7 +200,7 @@ def test_a_walled_refetch_is_unreachable_not_drift():
     """DRIFTED would assert the document changed. The host just declined to serve it."""
     source = src("https://a.example/x", DIGEST_A)
     with patch("build.check_refetch.requests.get", return_value=_response(200, WALL)):
-        outcome, detail = refetch(source, 5.0)
+        outcome, detail = refetch(source, 5.0, sleep=lambda _: None)
     assert outcome == "unreachable"
     assert "bot wall" in detail
 
@@ -213,7 +213,7 @@ def test_a_wall_whose_digest_matches_is_never_confirmed():
     """
     source = src("https://a.example/x", hashlib.sha256(WALL).hexdigest())
     with patch("build.check_refetch.requests.get", return_value=_response(200, WALL)):
-        outcome, detail = refetch(source, 5.0)
+        outcome, detail = refetch(source, 5.0, sleep=lambda _: None)
     assert outcome != "confirmed"
     assert "never read" in detail
 

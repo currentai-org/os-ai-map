@@ -404,10 +404,15 @@ def resolve_duplicates(
     return failures, benign
 
 
-def refetch(source: Source, timeout: float) -> tuple[str, str]:
-    """(outcome, detail). Outcome is one of confirmed / drifted / gone / unreachable."""
+def refetch(source: Source, timeout: float, sleep=time.sleep) -> tuple[str, str]:
+    """(outcome, detail). Outcome is one of confirmed / drifted / gone / unreachable.
+
+    `sleep` is threaded through to `http_get`'s retry backoff; tests that mock the request
+    itself pass a no-op so a simulated transient status does not also cost the real backoff
+    delay.
+    """
     try:
-        response = http_get(source.url, timeout=timeout)
+        response = http_get(source.url, timeout=timeout, sleep=sleep)
     except requests.RequestException as exc:
         return "unreachable", f"{type(exc).__name__}: {exc}"
 
