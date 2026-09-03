@@ -184,6 +184,18 @@ def test_placeholder_shows_never_confirms(tmp_path):
     assert result.drifted == [("openness", "https://a/LICENSE")]
 
 
+def test_apply_carries_the_fetched_http_status_for_a_byte_identical_source(tmp_path):
+    # A byte-identical re-fetch is still a real fetch, and its response is not always a
+    # bare 200 (a conditional GET can come back 304). `apply` used to hardcode 200 for
+    # every reconfirmed source regardless of what was actually returned.
+    root = _score_with_sources(tmp_path, [_src("https://a/LICENSE", "a" * 64, ["license"])], dims=("license",))
+    fake = lambda url, **kw: {"url": url, "http_status": 304, "content_sha256": "a" * 64}  # noqa: E731
+    result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
+    reverify.apply(root, "p", result, date(2026, 9, 3))
+    src = yaml.safe_load((root / "sources/scores/p.yaml").read_text())["openness"]["sources"][0]
+    assert src["http_status"] == 304
+
+
 def test_apply_writes_the_fetched_http_status_and_new_digest_for_a_shows_confirmed_source(tmp_path):
     body_path = _body(tmp_path, "license.html", "<p>the license text, reflowed.</p>")
     root = _score_with_sources(tmp_path, [_src("https://a/LICENSE", "a" * 64, ["license"],

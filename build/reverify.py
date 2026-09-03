@@ -286,21 +286,13 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
 def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
     path = root / "sources" / "scores" / f"{slug}.yaml"
     text = path.read_text()
-    # Sources confirmed by shows-match or spdx read a body different from what was
-    # recorded, so they must carry the fresh digest and status; a byte-identical source
-    # keeps the pre-existing accessed/http_status-only write for now.
-    shows_or_spdx = set(result.reconfirmed_by_shows) | set(result.reconfirmed_by_spdx)
     for axis in result.stamped:
         for url, fetched in result.reconfirmed[axis].items():
-            if (axis, url) in shows_or_spdx:
-                updates = {
-                    "accessed": today.isoformat(),
-                    "http_status": fetched["http_status"],
-                    "content_sha256": fetched["content_sha256"],
-                }
-            else:
-                updates = {"accessed": today.isoformat(), "http_status": 200}
-            text = components.set_source(text, axis, url, updates)
+            text = components.set_source(text, axis, url, {
+                "accessed": today.isoformat(),
+                "http_status": fetched["http_status"],
+                "content_sha256": fetched["content_sha256"],
+            })
         text = components.put_field(text, today.isoformat(), axis=axis, key="last_verified", before="sources")
     if text != path.read_text():
         path.write_text(text)
