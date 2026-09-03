@@ -59,12 +59,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 
 import yaml
 
 from build import resolution
+from build.vocabulary import parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = "currentai.identity.digest"
@@ -113,18 +114,16 @@ def _as_list(value) -> list[str]:
         return [str(value)]
 
 
-def _parse_date(value) -> date:
-    """A `date`, from a `date`/`datetime`/pandas `Timestamp`/ISO string alike."""
-    if isinstance(value, datetime):
-        return value.date()
-    if isinstance(value, date):
-        return value
-    if hasattr(value, "date") and callable(getattr(value, "date")):
-        try:
-            return value.date()
-        except TypeError:
-            pass
-    return date.fromisoformat(str(value)[:10])
+def _row_date(value):
+    """The calendar date `value` names, whichever of `first_seen`/`decided_on`'s shapes it
+    arrives in -- `digest.sql` casts `first_seen` to `TIMESTAMP(6)`, a fixture may carry a
+    bare date string, and `build.vocabulary` already owns both parsers (`parse_date`,
+    `parse_timestamp`) so this delegates rather than adding a third.
+    """
+    ts = parse_timestamp(value)
+    if ts is not None:
+        return ts.date()
+    return parse_date(value)
 
 
 def _week_bounds(week: str) -> tuple[date, date]:
@@ -240,9 +239,8 @@ def _resolved_this_week(monday: date, sunday: date) -> int:
         decided_on = entry.get("decided_on")
         if not decided_on:
             continue
-        try:
-            d = date.fromisoformat(str(decided_on))
-        except ValueError:
+        d = parse_date(decided_on)
+        if d is None:
             continue
         if monday <= d <= sunday:
             count += 1
@@ -250,7 +248,8 @@ def _resolved_this_week(monday: date, sunday: date) -> int:
 
 
 def _oldest_age_weeks(rows: list[dict], monday: date) -> int:
-    dates = [_parse_date(r["first_seen"]) for r in rows if r.get("first_seen") is not None]
+    dates = [_row_date(r["first_seen"]) for r in rows if r.get("first_seen") is not None]
+    dates = [d for d in dates if d is not None]
     if not dates:
         return 0
     return max(0, (monday - min(dates)).days // 7)
@@ -304,7 +303,8 @@ def render(rows: list[dict], week: str) -> str:
 
     new_count = sum(
         1 for r in rows
-        if r.get("first_seen") is not None and monday <= _parse_date(r["first_seen"]) <= sunday
+        if r.get("first_seen") is not None
+        and (_d := _row_date(r["first_seen"])) is not None and monday <= _d <= sunday
     )
     resolved_count = _resolved_this_week(monday, sunday)
     oldest_weeks = _oldest_age_weeks(rows, monday)
