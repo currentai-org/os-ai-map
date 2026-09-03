@@ -46,6 +46,53 @@ OPENNESS_CLASSES = {
 # and imported above so this gate and serialize_routing cannot disagree about the set.
 LAYERS = {"product_ux", "model_components", "infrastructure"}
 
+# The artifact kinds a tail row can dedup on. `homepage` is deliberately excluded: it is
+# addressable (counts toward "at least one artifact") but carries no adoption signal and
+# is not treated as an identity-bearing artifact -- see the identity graph design doc §2.
+_TAIL_ARTIFACT_KINDS = (
+    "github",
+    "huggingface_model",
+    "huggingface_dataset",
+    "pypi",
+    "npm",
+    "crates",
+    "arxiv",
+)
+
+# Reduce a declared head-product artifact URL to the bare identifier a tail row would
+# store directly. Deliberately a local, small duplicate of build/serialize_registry.py's
+# `_ID_PATTERNS` rather than an import: that module imports `load_sources` from this one,
+# so importing it back here would be circular. `head_repos`'s own github regex predates
+# this and already diverged from serialize_registry's; kept as one family here instead of
+# two.
+_ARTIFACT_URL_PATTERNS = {
+    "github": re.compile(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", re.I),
+    "huggingface_model": re.compile(r"huggingface\.co/(?!datasets/)([^/]+/[^/]+?)/?$", re.I),
+    "huggingface_dataset": re.compile(r"huggingface\.co/datasets/([^/]+/[^/]+?)/?$", re.I),
+    "pypi": re.compile(r"pypi\.org/project/([^/]+)", re.I),
+    "npm": re.compile(r"npmjs\.com/package/([^/]+(?:/[^/]+)?)/?$", re.I),
+    "crates": re.compile(r"crates\.io/crates/([^/]+)", re.I),
+    "arxiv": re.compile(r"(?:arxiv\.org/(?:abs|pdf)/)?([a-z\-.]*\d{4}\.\d{4,5}|[a-z\-.]+/\d{7})", re.I),
+}
+
+
+def _canonicalize(kind: str, value: str) -> str:
+    """Fold an artifact identifier to the form dedup compares on, per kind.
+
+    Matches the canonical forms in `plans/2026-09-03-identity-graph-design.md` §2: PyPI
+    folds separator runs per PEP 503, crates lowercases without folding (`-` and `_` are
+    distinct there), an arXiv id drops its version suffix, everything else casefolds.
+    """
+    value = value.strip().lower()
+    if kind == "github":
+        return value.removesuffix(".git")
+    if kind == "pypi":
+        return re.sub(r"[-_.]+", "-", value)
+    if kind == "arxiv":
+        value = value.removeprefix("arxiv:")
+        return re.sub(r"v\d+$", "", value)
+    return value
+
 
 def load_sources(root: Path) -> dict:
     def _dir(name):
@@ -177,10 +224,17 @@ def validate_sources(data: dict) -> list[str]:
 
     # --- tail registry invariants ---
     # Tail rows are deliberately lighter than head product records, but identity is
-    # not: a slug and a GitHub artifact may appear in only one tier and category.
+    # not: a slug and an addressable artifact may appear in only one tier and category.
+    # #365 widened "addressable" past GitHub -- a candidate discovered on Hugging Face, a
+    # package registry, or in a paper is now storable too -- so dedup has to run per
+    # artifact kind rather than assuming `github` is the only one worth checking. A
+    # GitHub-only check let an HF-only or package-only candidate be added twice under two
+    # kinds with nothing noticing.
     tail_slugs: dict[str, str] = {}
-    tail_repos: dict[str, str] = {}
-    head_repos: dict[str, str] = {}
+    # Keyed (kind, canonical id) -> owning slug, shared across every registry file so a
+    # collision is caught regardless of which category first claimed the artifact.
+    tail_artifacts: dict[tuple[str, str], str] = {}
+    head_artifacts: dict[tuple[str, str], str] = {}
     # A retired slug is a settled decision, so it disqualifies a candidate exactly as a live
     # slug does: re-adding it re-opens the consolidation that retired it. Checking only
     # `slug in prods` missed that entirely -- amazon-nova-pro, an alias of amazon-nova, passed
@@ -194,11 +248,15 @@ def validate_sources(data: dict) -> list[str]:
         if isinstance(alias, str)
     }
     for slug, product in prods.items():
-        for artifact in product.get("github") or []:
-            if isinstance(artifact, dict) and isinstance(artifact.get("url"), str):
-                match = re.search(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", artifact["url"])
-                if match:
-                    head_repos[match.group(1).lower()] = slug
+        for kind in _TAIL_ARTIFACT_KINDS:
+            pattern = _ARTIFACT_URL_PATTERNS[kind]
+            for artifact in product.get(kind) or []:
+                if not (isinstance(artifact, dict) and isinstance(artifact.get("url"), str)):
+                    continue
+                match = pattern.search(artifact["url"].rstrip("/"))
+                if not match:
+                    continue
+                head_artifacts[(kind, _canonicalize(kind, match.group(1)))] = slug
     for cid, record in registry.items():
         if not isinstance(record, dict):
             errors.append(f"registry/{cid}.yaml: record must be a mapping")
@@ -214,8 +272,7 @@ def validate_sources(data: dict) -> list[str]:
             if not isinstance(row, dict):
                 continue
             slug = row.get("slug")
-            repo = row.get("github")
-            if not isinstance(slug, str) or not isinstance(repo, str):
+            if not isinstance(slug, str):
                 continue
             if slug in prods:
                 errors.append(f"registry/{cid}.yaml: tail slug {slug!r} already exists as a head product")
@@ -231,18 +288,31 @@ def validate_sources(data: dict) -> list[str]:
                     f"registry/{tail_slugs[slug]}.yaml"
                 )
             tail_slugs[slug] = cid
-            repo_key = repo.lower()
-            if repo_key in head_repos:
+
+            has_artifact = False
+            for kind in _TAIL_ARTIFACT_KINDS:
+                value = row.get(kind)
+                if not isinstance(value, str) or not value:
+                    continue
+                has_artifact = True
+                key = (kind, _canonicalize(kind, value))
+                if key in head_artifacts:
+                    errors.append(
+                        f"registry/{cid}.yaml: {kind} artifact {value!r} already belongs to "
+                        f"head product {head_artifacts[key]!r}"
+                    )
+                if key in tail_artifacts:
+                    errors.append(
+                        f"registry/{cid}.yaml: {kind} artifact {value!r} already belongs to "
+                        f"tail product {tail_artifacts[key]!r}"
+                    )
+                tail_artifacts[key] = slug
+            if not has_artifact and not row.get("homepage"):
                 errors.append(
-                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
-                    f"head product {head_repos[repo_key]!r}"
+                    f"registry/{cid}.yaml: tail slug {slug!r} has no addressable artifact "
+                    "(one of github, huggingface_model, huggingface_dataset, pypi, npm, "
+                    "crates, arxiv, or homepage)"
                 )
-            if repo_key in tail_repos:
-                errors.append(
-                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
-                    f"tail product {tail_repos[repo_key]!r}"
-                )
-            tail_repos[repo_key] = slug
 
     # --- roster <-> product invariants ---
     roster_count: dict[str, int] = {}
