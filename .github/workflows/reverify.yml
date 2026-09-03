@@ -1,0 +1,71 @@
+# Deterministic rolling re-verification (Phase 0 form). Re-fetches the digested openness
+# sources of the oldest N products and stamps a date only where every recorded dimension
+# came back byte-identical. Opens one PR per run. Drift and transient results go in the
+# report attached to the PR for the agent leg; this workflow never edits an axis whose
+# evidence changed. See build/reverify.py and docs/reference/evidence-and-freshness.md.
+name: reverify
+on:
+  schedule:
+    - cron: "0 10 * * 2"      # Tuesday 10:00 UTC, clear of the Monday gates and Thursday refetch
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "How many of the oldest products to re-verify"
+        default: "150"
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: reverify
+  cancel-in-progress: false
+jobs:
+  reverify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Re-verify the oldest products
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          uv run python -m build.reverify --limit "${{ inputs.limit || 150 }}" --report reverify-report.json --pace 1
+      - name: Gates on the result
+        run: |
+          uv run python -m build.validate
+          uv run python -m build.check_verification --verbose
+          uv run python -m build.check_capability
+      - name: Open the freshness PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain sources/scores/)" ]; then
+            echo "Nothing re-dated; no PR."
+            exit 0
+          fi
+          BRANCH="reverify/$(date -u +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add sources/scores/
+          git commit -m "chore(freshness): re-verify $(git diff --cached --name-only | wc -l | tr -d ' ') products, openness re-dated where evidence was unchanged"
+          git push -u origin "$BRANCH"
+          {
+            echo "Deterministic re-verification of the oldest products. Openness dates were stamped only where every recorded dimension's digested source came back byte-identical."
+            echo
+            echo '```'
+            uv run python - <<'PY'
+          import json
+          r = json.load(open("reverify-report.json"))
+          for p in r["products"]:
+              print(f'{p["slug"]:32} stamped={p["stamped"]} drifted={len(p["drifted"])} transient={len(p["transient"])} skipped={len(p["skipped"])}')
+          PY
+            echo '```'
+            echo
+            echo "Drifted and transient axes need the agent leg (refresh-category, scoped to these products)."
+          } > pr-body.md
+          gh pr create --title "chore(freshness): rolling re-verification $(date -u +%F)" --body-file pr-body.md --label freshness

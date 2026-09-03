@@ -421,6 +421,36 @@ dimension, so the binding constraint is the *least* recently re-read one. `max(a
 across an axis would pass an axis where one dimension was re-read today and three were last
 seen in June.
 
+### Machine re-verification
+
+`build/reverify.py` may write `accessed`, `http_status` and `content_sha256` on a source, and
+`last_verified` on an axis, and only these, and only where every recorded dimension of the
+axis has a digested source that `establishes` it and every such source re-fetched
+non-transient and confirmed. The dimension set it demands a source for is not a second copy
+of the gate's rule — it calls `build.check_verification.recorded_dimensions` directly, so a
+non-evidence key like `free_text` is never treated as requiring one.
+
+A source confirms one of three ways: the body is byte-identical (same `content_sha256`); the
+source's recorded `shows` excerpt still occurs in the fresh body, after both sides are
+whitespace-normalized and the body is tried through `html.unescape` (a placeholder `shows` —
+see `check_verification.placeholder_shows` — never confirms this way); or, for a source
+answering the `license` dimension from a GitHub license/repo API or a Hugging Face
+model-info endpoint, the fresh response's SPDX id normalizes (through
+`check_rubric.normalize_license`) to the same license already recorded, so long as the
+recorded clause is a single license rather than a `+`-joined compound. Whichever path
+confirms it, the source is rewritten with the fetch's actual `http_status` and its NEW
+`content_sha256` — a shows match records that the page still says what the source was cited
+for; the new digest is recorded so the next re-check compares against what was actually
+read. It never derives a date, never records a transient fetch, and never touches an axis
+whose evidence changed. A new verification date records a successful re-evaluation on that
+date, not a claim that the fact was established or the source changed then. Ruling on #445
+(2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
+capability are excluded from machine re-dating because their sources carry numbers that
+move. Their re-verification stays with the agent leg in `refresh-category`. Ruled again
+2026-09-03 (#445 follow-up): byte identity is the wrong test for evidence pages that
+legitimately re-render on every load, so shows-match and SPDX comparison are also
+acceptable confirmations, on the terms above.
+
 ### Catching fabrication rather than just inconsistency
 
 The invariant catches unsupported dates. It cannot catch a source that never said what
@@ -460,7 +490,7 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
-| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45 (temporary)`, scheduled weekly | free, weekly |
+| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45` (temporary), scheduled weekly | free, weekly |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
@@ -901,7 +931,7 @@ score for this reason.
 
 ### 5. Turn on the age gate
 
-**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45 (temporary)` gates in
+**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45` (temporary) gates in
 `.github/workflows/freshness.yml`, weekly. This is the entire point of having the field: a
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
