@@ -1,0 +1,37 @@
+# Turns a failed scheduled gate into something a human sees. workflow_run fires on the
+# default branch after the named workflow completes, so this also catches a workflow that
+# failed before its own steps could run. One open issue per workflow; repeats comment.
+name: report-failure
+on:
+  workflow_run:
+    workflows: [freshness, parity, artifacts, channel-authority, refetch, refresh-data, reverify]
+    types: [completed]
+permissions:
+  issues: write
+jobs:
+  report:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open or comment on the sentinel issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ github.event.workflow_run.name }}
+          URL: ${{ github.event.workflow_run.html_url }}
+          WHEN: ${{ github.event.workflow_run.run_started_at }}
+        run: |
+          TITLE="sentinel: $NAME failed"
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
+          BODY=$(cat <<EOF
+          Scheduled run of \`$NAME\` failed at $WHEN.
+
+          Run: $URL
+
+          Read the log, decide whether it is drift, staleness, or a broken upstream, and close this when the next run is green. If the gate is advisory and the finding is real, file the finding as its own issue and link it here.
+          EOF
+          )
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" -R "$GITHUB_REPOSITORY" --body "Failed again at $WHEN: $URL"
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body "$BODY"
+          fi
