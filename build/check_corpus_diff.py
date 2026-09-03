@@ -11,6 +11,11 @@ This replaces the corpus-wide digest pins that used to live in tests/ (build/gol
 they caught silent rewrites by hashing everything, which made every product PR collide.
 This gate catches the same class of change per row and per PR instead.
 
+Touched products are identified from the committed diff (`git diff --name-only base...HEAD`),
+so running this gate against uncommitted work will misreport every newly added product's rows
+as silent rewrites, even though the product is present in the working tree. Commit your work
+before running check_corpus_diff, or the review sheet will contain false positives.
+
 Output: a markdown review sheet (--sheet PATH, default stdout) meant for the PR body or the
 job summary. It is the reviewer's first read.
 """
@@ -171,7 +176,7 @@ def render_sheet(diff: CorpusDiff, row_changes: list[str]) -> str:
 def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     root = root or ROOT
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--base", required=True, help="git ref of the base (e.g. origin/main)")
+    p.add_argument("--base", required=True, help="git ref of the base (e.g. origin/main); touched products are identified from git diff base...HEAD, so commit your work first")
     p.add_argument("--allow-stage-move", action="store_true")
     p.add_argument("--sheet", type=Path, default=None)
     args = p.parse_args(argv)
