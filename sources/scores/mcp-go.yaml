@@ -51,8 +51,8 @@ adoption:
   signal_type: stars_fallback
   confidence: low
   note: 9,058 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. mcp-go ships
-    as a Go module rather than a PyPI or npm package, resolved via pkg.go.dev/go.dev rather than a registry
-    this map fetches download counts from, so the stars scale applies with its cap of 3.
+    as a Go module with no download-counting package registry, so the band rests on stars as the fallback
+    instrument, capped at 3.
   last_verified: '2026-09-03'
   sources:
   - url: https://api.github.com/repos/mark3labs/mcp-go
@@ -61,19 +61,21 @@ adoption:
     http_status: 200
     content_sha256: c316ac369f78a7563a74753d897ea9d8122fd971ba9597a1c07232d1f9d40e82
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: MCP server/client SDK feature breadth'
   value: Implements the full server, resource, tool and prompt primitives of the MCP specification
     (2025-11-25, backward compatible to 2024-11-05), including task-augmented (async, pollable) tools,
     stdio/SSE/streamable-HTTP transports, and OAuth Protected Resource Metadata for servers that require
     authorization.
-  relative_to: fastmcp
+  relative_to: mcp-typescript-sdk
   relation: one_below
   confidence: medium
-  note: Placed one band below fastmcp, the category's most feature-complete framework. mcp-go implements
-    the full protocol surface plus transports, task-augmented tools and OAuth, but is a lower-level SDK
-    without fastmcp's higher-level "Apps" layer, auth helpers and deployment tooling.
+  note: Placed one band below mcp-typescript-sdk, the official TypeScript MCP SDK and a fair same-shape
+    peer - another official, language-specific reference implementation of the same protocol. mcp-go covers
+    the full server, resource, tool and prompt surface plus transports, task-augmented tools and OAuth,
+    but has not grown mcp-typescript-sdk's multi-runtime targets (Node.js, Bun, Deno) or its optional framework
+    middleware packages (Express, Fastify, Hono, Node.js HTTP).
   last_verified: '2026-09-03'
   sources:
   - url: https://raw.githubusercontent.com/mark3labs/mcp-go/main/README.md
@@ -87,10 +89,10 @@ capability:
   comparison:
     last_attested: '2026-09-03'
     sources:
-    - url: https://github.com/PrefectHQ/fastmcp
-      shows: README still opens "FastMCP is the standard framework for working with MCP," describing three
-        pillars - servers, apps, clients - plus auth and deployment tooling that mcp-go's lower-level SDK
-        does not provide.
+    - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md
+      shows: README documents multi-runtime support (Node.js, Bun, Deno) and optional middleware packages
+        wiring MCP into Express, Fastify, Hono and Node.js HTTP - a layer mcp-go's lower-level SDK does
+        not provide.
       accessed: '2026-09-03'
       http_status: 200
-      content_sha256: b804be94976ce4e8d16712f8965bbf222a126466ebba35641673609a79c4a518
+      content_sha256: ecda9a1a30f74de6f843078d5b61bb3b4b63459987ab6c1ec55748f8154d43ae
