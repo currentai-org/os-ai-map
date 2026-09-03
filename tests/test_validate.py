@@ -1,8 +1,12 @@
+from pathlib import Path
+
 import pytest
 import yaml
 
 from build.resolution import DuplicateResolution
-from build.validate import validate_sources
+from build.validate import load_sources, validate_sources
+
+ROOT = Path(__file__).resolve().parents[1]
 
 # `llama` is the product the tests reach for; the other nine exist because a PUBLISHED
 # category owes ten scored products, and a scalar taxonomy entry means published. Padded
@@ -797,3 +801,37 @@ def test_model_family_overlapping_prefixes_warn():
     warnings = model_family_overlap_warnings(families)
     assert len(warnings) == 1
     assert "deepseek-*" in warnings[0] and "deepseek-coder-*" in warnings[0]
+
+
+# --- load_sources tolerates an older tree, but the real repo must never be one -------
+
+def test_model_families_and_org_handles_files_exist_in_the_repo():
+    """`build/check_corpus_diff.py` runs `load_sources` against a checkout of a BASE commit to
+    semantic-diff a PR's output against what main would produce -- and `load_sources` now
+    tolerates that older tree having no `sources/model_families.yaml` or
+    `sources/org_handles.yaml` at all, so a missing file loads as empty rather than raising
+    (see `_load_optional_yaml`). That tolerance must never extend to the real repo: if either
+    file were deleted from main, CI's `validate` job would still pass, silently losing every
+    declared handle and family. This test is what makes that impossible."""
+    assert (ROOT / "sources" / "model_families.yaml").exists()
+    assert (ROOT / "sources" / "org_handles.yaml").exists()
+
+
+def test_load_sources_tolerates_a_tree_with_no_model_families_or_org_handles_file(tmp_path):
+    """An older tree (a `.ccd-worktree/` base checkout from before these files existed) must
+    still serialize -- `load_sources` returns the empty-but-valid document for each, not an
+    exception."""
+    sources = tmp_path / "sources"
+    for name in ("organizations", "categories", "rubrics", "products", "scores", "registry"):
+        (sources / name).mkdir(parents=True)
+    (sources / "taxonomy.yaml").write_text("arcs: []\n")
+    # Deliberately no model_families.yaml or org_handles.yaml.
+
+    data = load_sources(tmp_path)
+    assert data["model_families"] == {"version": 1, "families": []}
+    assert data["org_handles"] == {"version": 1, "handles": []}
+    # And the real files load as themselves when present, exercised together so the two
+    # branches of `_load_optional_yaml` (absent vs present) are both covered by this pair.
+    real = load_sources(ROOT)
+    assert real["model_families"]["families"], "the real corpus must not load as empty"
+    assert real["org_handles"]["handles"], "the real corpus must not load as empty"

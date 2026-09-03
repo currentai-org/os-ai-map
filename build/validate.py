@@ -69,6 +69,24 @@ _TAIL_ARTIFACT_KINDS = (
 # -- the one place these rules live. See `canonical` and `id_from_url`, imported above.
 
 
+def _load_optional_yaml(path: Path, empty: dict) -> dict:
+    """Read a single-file source that may not exist yet at the tree being loaded.
+
+    `build/check_corpus_diff.py` runs this loader against a checkout of a BASE commit (a
+    `.ccd-worktree/`) to semantic-diff a PR's output against what main would produce -- and a
+    tree from before this file existed has no `sources/model_families.yaml` or
+    `sources/org_handles.yaml` at all. Raising there is wrong: an OLDER tree is not malformed,
+    it simply predates the file, and the loader's job is to make every tree it is pointed at
+    serialize, not to assert the file is present (that is `test_model_families_yaml_exists`
+    and its `org_handles` counterpart, over the real checkout HEAD sits on). `validate_sources`
+    still validates the file fully -- against its schema, for handle/pattern uniqueness --
+    whenever it IS present; only the load step tolerates absence.
+    """
+    if not path.exists():
+        return empty
+    return yaml.safe_load(path.read_text()) or empty
+
+
 def load_sources(root: Path) -> dict:
     def _dir(name):
         return {p.stem: yaml.safe_load(p.read_text()) for p in sorted((root / "sources" / name).glob("*.yaml"))}
@@ -80,8 +98,12 @@ def load_sources(root: Path) -> dict:
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
         "registry": _dir("registry"),
-        "model_families": yaml.safe_load((root / "sources" / "model_families.yaml").read_text()),
-        "org_handles": yaml.safe_load((root / "sources" / "org_handles.yaml").read_text()),
+        "model_families": _load_optional_yaml(
+            root / "sources" / "model_families.yaml", {"version": 1, "families": []}
+        ),
+        "org_handles": _load_optional_yaml(
+            root / "sources" / "org_handles.yaml", {"version": 1, "handles": []}
+        ),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
