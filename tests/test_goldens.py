@@ -6,6 +6,7 @@ fingerprint differs by construction, so equality is skipped there and the struct
 invariants below carry the weight; build.check_corpus_diff carries the per-row content
 check on PRs. This is what lets two product PRs merge back to back with no re-pinning.
 """
+import json
 from pathlib import Path
 
 import pytest
@@ -85,3 +86,47 @@ def test_software_categories_covers_every_category_that_extends_software_alone()
             expected.add(slug)
     assert goldens.SOFTWARE_CATEGORIES == expected
     assert expected, "expected at least one published category to extend the software ladder"
+
+
+def _write_golden(root: Path, **fields):
+    path = root / goldens.GOLDEN_PATH
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(fields))
+
+
+def test_main_check_treats_a_stale_fingerprint_as_expected_and_self_healing(tmp_path, monkeypatch, capsys):
+    """A merge that touched sources/ always leaves the fingerprint stale until
+    regenerate.yml's bot commit rewrites it. Plain --check must not redden that merge."""
+    _write_golden(tmp_path, sources_fingerprint="old")
+    monkeypatch.setattr(goldens, "fingerprint", lambda root: "new")
+    rc = goldens.main(["--check"], root=tmp_path)
+    assert rc == 0
+    assert "::notice::" in capsys.readouterr().out
+
+
+def test_main_check_strict_fails_on_a_stale_fingerprint(tmp_path, monkeypatch):
+    """--strict is for regenerate.yml to self-check right after --write, where a stale
+    fingerprint would mean the write itself did not clear the staleness."""
+    _write_golden(tmp_path, sources_fingerprint="old")
+    monkeypatch.setattr(goldens, "fingerprint", lambda root: "new")
+    rc = goldens.main(["--check", "--strict"], root=tmp_path)
+    assert rc == 1
+
+
+def test_main_check_fails_on_producer_drift_with_sources_unchanged(tmp_path, monkeypatch):
+    """Sources unchanged (fingerprint matches) but a recompute differs from the golden:
+    a producer changed and the golden was never regenerated. This must always fail,
+    --strict or not."""
+    _write_golden(tmp_path, sources_fingerprint="same", a=1)
+    monkeypatch.setattr(goldens, "fingerprint", lambda root: "same")
+    monkeypatch.setattr(goldens, "compute", lambda root: {"a": 2})
+    rc = goldens.main(["--check"], root=tmp_path)
+    assert rc == 1
+
+
+def test_main_check_passes_when_sources_unchanged_and_nothing_drifted(tmp_path, monkeypatch):
+    _write_golden(tmp_path, sources_fingerprint="same", a=1)
+    monkeypatch.setattr(goldens, "fingerprint", lambda root: "same")
+    monkeypatch.setattr(goldens, "compute", lambda root: {"a": 1})
+    rc = goldens.main(["--check"], root=tmp_path)
+    assert rc == 0

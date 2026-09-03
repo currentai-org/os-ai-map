@@ -156,17 +156,36 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--write", action="store_true")
     group.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--strict", action="store_true",
+        help="with --check, also fail on a stale fingerprint instead of treating it as "
+             "expected. A merge commit that touches sources/ always leaves the golden's "
+             "fingerprint stale until regenerate.yml's bot commit rewrites it, so plain "
+             "--check treats that as self-healing and exits 0 with a notice. --strict is "
+             "for regenerate.yml to call right after --write, as a self-check that the "
+             "commit it is about to push actually cleared the staleness.",
+    )
     args = parser.parse_args(argv)
     if args.write:
         data = write(root)
         print(f"wrote {GOLDEN_PATH}: {data['axis_assessments']['rows']} axis rows, "
               f"{data['adoption_reconciliation']['rows']} assessments")
         return 0
+
     current = load(root)
     if current["sources_fingerprint"] != fingerprint(root):
-        print(f"{GOLDEN_PATH} is stale: sources/ fingerprint differs. "
-              f"Run `uv run python -m build.goldens --write` on main.")
-        return 1
+        message = (
+            f"{GOLDEN_PATH} is stale: sources/ fingerprint differs from what it was "
+            f"computed against. Expected on a merge that touched sources/, before "
+            f"regenerate.yml's bot commit rewrites it; self-healing, not a producer bug. "
+            f"Run `uv run python -m build.goldens --write` to regenerate directly."
+        )
+        if args.strict:
+            print(message)
+            return 1
+        print(f"::notice::{message}")
+        return 0
+
     fresh = compute(root)
     stale = [k for k in fresh if fresh[k] != current.get(k)]
     if stale:
