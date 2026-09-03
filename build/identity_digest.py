@@ -22,19 +22,31 @@ seen, held back per the design's resurfacing rule -- and appear only as a count 
 total count in the footer, not per section, since they are overflow rather than a review
 decision.
 
-## The pre-filled ledger entry
+## The pre-filled block, per relation
 
-Each item carries a YAML block Carl can paste straight into `sources/resolution_ledger.yaml`
-after deciding. `resolution.py`'s ledger only formalizes two relations --
-`product_membership` and `product_equivalence` -- so a `membership` item's template uses
-`verdict: member_of` (the confirm direction; edit to `not_member_of` to reject) and an
-`equivalence` item's uses `verdict: existing_product`. `org` and `artifact_identity` items
-have no dedicated ledger relation today (the design's digest contract only worked through
-the membership example), so their template parks the artifact as `product_equivalence:
-unresolved` -- always schema-valid, and honest that a real ruling needs the ledger extended
-first, or the org edge applied directly to `sources/organizations/*.yaml` instead. Every
-template validates against `docs/schemas/resolution_ledger.schema.json` (see
-`tests/test_identity_digest.py`).
+Each item carries a pre-filled block Carl can paste straight into the file that actually
+records its kind of ruling -- never a placeholder in the wrong file, which would suppress a
+question the item never asked:
+
+- `membership` -> a `resolution_ledger.yaml` entry, `verdict: member_of` (the confirm
+  direction; edit to `not_member_of` to reject), `relation: product_membership`.
+- `equivalence` -> a `resolution_ledger.yaml` entry, `verdict: existing_product`,
+  `relation: product_equivalence`.
+- `org` -> an `org_handles.yaml` entry (`org`, `platform`, `handle`, `note`) -- an org edge is
+  never a ledger question (it does not say "is this a new product", it says "who owns this
+  account"), so a `product_equivalence` placeholder here would be worse than nothing: it
+  would durably suppress a real equivalence question about the same artifact the next time
+  one comes up. See `docs/schemas/org_handles.schema.json` (landing in a parallel PR; see
+  `_ORG_HANDLES_STUB_SCHEMA` below for the shape this validates against until then).
+- `artifact_identity` -> no block at all, just a one-line instruction. Nothing in this repo
+  records that ruling yet, and this relation never actually appears in
+  `currentai.identity.digest` today (`udms/identity_digest.sql` unions membership,
+  equivalence and org only) -- the section stays in the fixed order and says so, rather than
+  disappearing or rendering dead furniture.
+
+Every YAML block validates against its schema (see `tests/test_identity_digest.py`). A row
+whose `relation` is none of the four above raises in `render()`, before the cap is even
+applied -- an unrecognized relation must never silently rank, consume a cap slot, and vanish.
 
 ## The three scorecard numbers
 
@@ -61,10 +73,12 @@ import json
 import sys
 from datetime import date, timedelta
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import yaml
 
 from build import resolution
+from build.identity_eval import _TABLE_NOT_FOUND_MARKERS
 from build.vocabulary import parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -144,9 +158,11 @@ def _rank_key(row: dict) -> tuple:
 
 
 def _ledger_entry(row: dict, decided_on: date) -> dict:
-    """A ledger entry pre-filled from `row`, in the confirm direction of its
-    `proposed_action`. Always validates against `resolution_ledger.schema.json`; Carl edits
-    the verdict (e.g. `member_of` -> `not_member_of`) once he has actually decided.
+    """A `resolution_ledger.yaml` entry pre-filled from a `membership` or `equivalence` row,
+    in the confirm direction of its `proposed_action`. Always validates against
+    `resolution_ledger.schema.json`; Carl edits the verdict (e.g. `member_of` ->
+    `not_member_of`) once he has actually decided. Never called for `org` or
+    `artifact_identity` -- see `_org_handle_entry` and `_render_item`.
     """
     relation = row.get("relation")
     left_kind, left_id = _pair(row.get("left"))
@@ -179,21 +195,50 @@ def _ledger_entry(row: dict, decided_on: date) -> dict:
                 f"product {right_id}, not a new one."
             ),
         }
-    # org and artifact_identity: the ledger has no dedicated relation for either question
-    # today (see this module's docstring). Park the artifact under product_equivalence,
-    # which always validates, rather than inventing a relation the schema does not define.
-    target = f"org {right_id}" if relation == "org" else f"artifact pair with {right_id}"
-    return {
-        "artifact": {"kind": left_kind, "id": left_id},
-        "verdict": "unresolved",
-        "relation": "product_equivalence",
-        "decided_in": "#<issue>",
-        "decided_on": decided_on_s,
-        "note": (
-            f"digest review: {left_kind}:{left_id} against {target}; the ledger has no "
-            f"{relation} relation yet, so this only parks the artifact pending one."
-        ),
-    }
+    raise ValueError(f"_ledger_entry() takes 'membership' or 'equivalence', got {relation!r}")
+
+
+#: `left.kind` -> the `org_handles.yaml` `platform` it maps to, for the three platforms that
+#: kind actually carries an account or domain on. `pypi`/`npm`/`crates`/`arxiv` artifacts have
+#: no such handle in this vocabulary (a package publisher name is weaker, unhandled evidence
+#: per the design's org section) -- `_org_handle` falls those back to `homepage_domain` with
+#: the raw id and flags it in the note for a human to correct.
+_ORG_HANDLE_PLATFORM = {
+    "github": "github",
+    "huggingface_model": "huggingface",
+    "huggingface_dataset": "huggingface",
+    "homepage": "homepage_domain",
+}
+
+
+def _org_handle(left_kind: str, left_id: str) -> tuple[str, str]:
+    """`(platform, handle)` for an `org_handles.yaml` entry, derived from the artifact side of
+    an `org` item. `github`/`huggingface_*` carry the account as the owner segment of
+    `owner/repo`; `homepage` carries it as the URL's host.
+    """
+    platform = _ORG_HANDLE_PLATFORM.get(left_kind)
+    if platform == "homepage_domain":
+        return platform, (urlsplit(left_id).netloc or left_id)
+    if platform is not None:
+        return platform, (left_id.split("/", 1)[0] if "/" in left_id else left_id)
+    return "homepage_domain", left_id
+
+
+def _org_handle_entry(row: dict) -> dict:
+    """An `org_handles.yaml` entry pre-filled from an `org` row -- never a
+    `resolution_ledger.yaml` placeholder, since an org edge answers "who owns this account",
+    not "is this a new product"; see this module's docstring.
+    """
+    left_kind, left_id = _pair(row.get("left"))
+    _, org_slug = _pair(row.get("right"))
+    platform, handle = _org_handle(left_kind, left_id)
+    note = f"digest review: confirm {left_kind}:{left_id} is owned by org {org_slug} on {platform} ({handle})."
+    if left_kind not in _ORG_HANDLE_PLATFORM:
+        note += (
+            f" {left_kind} carries no direct platform account in this vocabulary -- platform "
+            f"defaulted to homepage_domain; verify and correct by hand before merging."
+        )
+    return {"org": org_slug, "platform": platform, "handle": handle, "note": note}
 
 
 def _render_item(row: dict, decided_on: date) -> list[str]:
@@ -203,6 +248,7 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
     evidence = _as_list(row.get("evidence"))
     penalties = _as_list(row.get("penalties"))
     options = _as_list(row.get("options"))
+    relation = row.get("relation")
 
     lines = [
         f"#### `{row.get('item_id')}`",
@@ -219,7 +265,16 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
     if row.get("state") == "resurfaced" and row.get("resurfaced_reason"):
         lines.append(f"- Resurfaced reason: {row['resurfaced_reason']}")
     lines.append("")
-    entry = _ledger_entry(row, decided_on)
+
+    if relation == "artifact_identity":
+        lines.append(
+            "_No automated block for this relation -- review the pair by hand; nothing in "
+            "this repo records an artifact-identity ruling yet._"
+        )
+        lines.append("")
+        return lines
+
+    entry = _org_handle_entry(row) if relation == "org" else _ledger_entry(row, decided_on)
     lines.append("```yaml")
     lines.append(yaml.safe_dump([entry], sort_keys=False, default_flow_style=False).rstrip())
     lines.append("```")
@@ -228,14 +283,24 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
 
 
 def _resolved_this_week(monday: date, sunday: date) -> int:
-    """Ledger entries whose `decided_on` falls in `[monday, sunday]` -- the only way to
-    learn "resolved this week", since a ruling never comes back through the digest table
-    itself (a resolved row simply stops appearing next sweep, it is not marked `resolved`).
+    """Ledger entries whose `decided_on` falls in `[monday, sunday]` AND whose relation is
+    one the digest actually proposes -- the only way to learn "resolved this week", since a
+    ruling never comes back through the digest table itself (a resolved row simply stops
+    appearing next sweep, it is not marked `resolved`).
+
+    The relation filter is `resolution.RELATIONS` (`product_equivalence`,
+    `product_membership`) -- today every ledger entry's relation is already one of those two
+    (`resolution.relation_of` defaults an absent `relation` key to `product_equivalence`, and
+    the schema names no third), so this is a no-op against the corpus as it exists. It is kept
+    anyway: a bulk backfill unrelated to this digest still counts today (see the review this
+    fixed), and this is the seam a future, more specific relation would need.
     """
     count = 0
     # `resolution.LEDGER` looked up at call time (not `load`'s bound default) so a test can
     # monkeypatch `build.resolution.LEDGER` to a fixture ledger and get a deterministic count.
     for entry in resolution.load(resolution.LEDGER).values():
+        if resolution.relation_of(entry) not in resolution.RELATIONS:
+            continue
         decided_on = entry.get("decided_on")
         if not decided_on:
             continue
@@ -255,14 +320,26 @@ def _oldest_age_weeks(rows: list[dict], monday: date) -> int:
     return max(0, (monday - min(dates)).days // 7)
 
 
-def render(rows: list[dict], week: str) -> str:
+def render(rows: list[dict], week: str, resolved_count: int | None = None) -> str:
     """The digest issue body for `week` (`"YYYY-WW"`), rendered from `rows`.
 
-    Pure over its arguments except for one read of `sources/resolution_ledger.yaml`
-    (`build.resolution.load()`), the only place "resolved this week" can come from -- see
-    this module's docstring.
+    Pure over its arguments when `resolved_count` is supplied (the CLI's `main()` always
+    supplies it, computed once via `_resolved_this_week`). Left `None`, it falls back to a
+    read of `sources/resolution_ledger.yaml` for convenience -- callers that don't care where
+    "resolved this week" comes from, and this module's own tests.
+
+    Raises `ValueError` if any row names a relation outside `RELATION_ORDER`, before the cap
+    is applied -- an unrecognized relation must never rank, silently consume a cap slot, and
+    then vanish because the section loop only iterates known relations.
     """
     monday, sunday = _week_bounds(week)
+
+    unknown = sorted({r.get("relation") for r in rows} - set(RELATION_ORDER))
+    if unknown:
+        raise ValueError(f"unknown digest relation(s) {unknown!r}; expected one of {RELATION_ORDER}")
+
+    if resolved_count is None:
+        resolved_count = _resolved_this_week(monday, sunday)
 
     eligible = [r for r in rows if r.get("state") in ACTIVE_STATES]
     eligible.sort(key=_rank_key)
@@ -286,7 +363,14 @@ def render(rows: list[dict], week: str) -> str:
         lines.append(f"### {label} ({len(items)} item{'s' if len(items) != 1 else ''})")
         lines.append("")
         if not items:
-            lines.append("_No active items this week._")
+            if relation == "artifact_identity":
+                lines.append(
+                    "_No active items this week -- udms/identity_digest.sql does not yet "
+                    "union artifact_identity edges into this table, so this section is "
+                    "always empty until it does._"
+                )
+            else:
+                lines.append("_No active items this week._")
             lines.append("")
         for row in items:
             lines.extend(_render_item(row, monday))
@@ -306,7 +390,6 @@ def render(rows: list[dict], week: str) -> str:
         if r.get("first_seen") is not None
         and (_d := _row_date(r["first_seen"])) is not None and monday <= _d <= sunday
     )
-    resolved_count = _resolved_this_week(monday, sunday)
     oldest_weeks = _oldest_age_weeks(rows, monday)
 
     lines.append("### Scorecard")
@@ -347,13 +430,15 @@ class WarehouseQueryFailed(RuntimeError):
         self.table = table
 
 
-# Trino's own wording for "this table does not exist", matched case-insensitively. Kept
-# narrow so any other failure -- auth, timeout, a missing column -- exits 2 and is never
-# read as "not provisioned yet".
-_TABLE_NOT_FOUND_MARKERS = ("does not exist", "table_not_found", "table not found")
-
-
 def _is_table_not_found(exc: Exception) -> bool:
+    """Whether `exc` is Trino's own "this table does not exist" failure.
+
+    Reuses `build.identity_eval._TABLE_NOT_FOUND_MARKERS` rather than a second copy -- that
+    tuple carries the real, verified live text (`USER_ERROR: TablesNotFound - Tables do not
+    exist or are inaccessible: <table>`) plus the singular/underscored wordings Trino uses
+    elsewhere in its error surface. A local copy of this list is exactly how it drifted from
+    the real string once already; see `build/identity_eval.py`'s own comment on that history.
+    """
     text = str(exc).lower()
     return any(marker in text for marker in _TABLE_NOT_FOUND_MARKERS)
 
@@ -411,7 +496,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[FAIL] {exc}")
             return 2
 
-    body = render(rows, args.week)
+    monday, sunday = _week_bounds(args.week)
+    resolved_count = _resolved_this_week(monday, sunday)
+    body = render(rows, args.week, resolved_count=resolved_count)
     args.out.write_text(body)
     print(f"wrote {args.out} ({len(rows)} row(s))")
     return 0

@@ -62,9 +62,15 @@ jobs:
           WEEK: ${{ steps.week.outputs.week }}
         run: |
           TITLE="identity digest: $WEEK"
-          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
+          # --state all, not --state open: the title is week-scoped, so a closed digest issue
+          # for this same week (Carl worked through it and closed it) must be updated and
+          # reopened on a re-run, never duplicated. Contrast report-failure.yml, where --state
+          # open is correct because a closed FAILURE issue means the failure was resolved and
+          # a fresh recurrence deserves a fresh issue -- the two workflows' semantics differ.
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state all --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
           if [ -n "$EXISTING" ]; then
             gh issue edit "$EXISTING" -R "$GITHUB_REPOSITORY" --body-file digest.md
+            gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY" 2>/dev/null || true
           else
             gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md
           fi
