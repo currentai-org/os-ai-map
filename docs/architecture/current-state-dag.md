@@ -5,7 +5,7 @@ fails if this file drifts from the renderer. Regenerate with
 `uv run python -c "import sys;sys.path.insert(0,'.');from build import assets;print(assets.render_dag())"`.
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
-not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->38 governed
+not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->40 governed
 assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->8
 external contracts in `warehouse/dependencies.yaml`. The peripheral OSO pipelines are out of scope:
 they were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
@@ -59,6 +59,7 @@ graph LR
     registry__evidence_abstentions[evidence_abstentions]
     registry__license_aliases[license_aliases]
     registry__organizations[organizations]
+    registry__product_aliases[product_aliases]
     registry__product_artifacts[product_artifacts]
     registry__product_categories[product_categories]
     registry__product_lineage[product_lineage]
@@ -67,6 +68,7 @@ graph LR
     registry__product_score_sources[product_score_sources]
     registry__product_scores[product_scores]
     registry__products[products]
+    registry__resolution_ledger[resolution_ledger]
     registry__tail_products[tail_products]
   end
   subgraph signal_packages
@@ -87,6 +89,7 @@ graph LR
   SRC --> registry__evidence_abstentions
   SRC --> registry__license_aliases
   SRC --> registry__organizations
+  SRC --> registry__product_aliases
   SRC --> registry__product_artifacts
   SRC --> registry__product_categories
   SRC --> registry__product_lineage
@@ -95,6 +98,7 @@ graph LR
   SRC --> registry__product_score_sources
   SRC --> registry__product_scores
   SRC --> registry__products
+  SRC --> registry__resolution_ledger
   SRC --> registry__tail_products
   observations__product_adoption_current --> evaluation__product_adoption_measurements
   registry__adoption_bands --> signal_packages__product_adoption
@@ -106,6 +110,8 @@ graph LR
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
   class registry__axis_assessments staged;
+  class registry__product_aliases staged;
+  class registry__resolution_ledger staged;
   class registry__tail_products dormant;
   class signal_packages__downloads staged;
   class signal_packages__downloads_daily staged;

@@ -5,7 +5,8 @@ the two things that would silently corrupt downstream joins: identifier parsing
 and reference integrity.
 """
 
-from build.serialize_registry import TABLES, artifact_id, build_registry, category_layers
+from build.serialize_registry import ROOT, TABLES, artifact_id, build_registry, category_layers
+from build.validate import load_sources
 
 
 def _sources(products=None, organizations=None, categories=None, taxonomy=None):
@@ -304,3 +305,28 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
             "artifact_url": "https://arxiv.org/abs/2110.14168",
         }
     ]
+
+
+def test_resolution_ledger_table_has_one_row_per_ruling():
+    tables, errors, _ = build_registry(_sources())
+    rows = tables["resolution_ledger"]
+    assert not errors
+    keys = [(r["artifact_kind"], r["artifact_id"], r["relation"]) for r in rows]
+    assert len(keys) == len(set(keys))
+    assert all(r["relation"] in ("product_equivalence", "product_membership") for r in rows)
+
+
+def test_product_aliases_table_matches_the_payload_alias_map():
+    sources = load_sources(ROOT)
+    tables, _, _ = build_registry(sources)
+    from build.serialize import _aliases
+
+    from build.validate import published_products
+
+    published = published_products(sources.get("taxonomy") or {}, sources["categories"])
+    payload_aliases = _aliases(
+        sources["products"], sources["organizations"], published=published, org_slugs=set()
+    )["products"]
+    assert {(r["alias"], r["product_slug"]) for r in tables["product_aliases"]} == set(
+        payload_aliases.items()
+    )
