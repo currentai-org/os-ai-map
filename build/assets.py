@@ -25,7 +25,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 
-NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases"}
+NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases", "identity"}
 STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "dormant"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
