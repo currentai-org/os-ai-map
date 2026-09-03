@@ -98,7 +98,7 @@ def key_for(entry: Mapping) -> LedgerKey:
     artifact = artifact_of(entry)
     relation = relation_of(entry)
     if relation == "product_membership":
-        return (artifact, relation, entry.get("resolves_to"))
+        return (artifact, relation, (entry.get("resolves_to") or "").strip())
     return (artifact, relation)
 
 
@@ -164,7 +164,7 @@ def verdict_for(
     if relation == "product_membership":
         if product_slug is None:
             raise ValueError("verdict_for(relation='product_membership') requires product_slug")
-        return ledger.get((artifact, relation, product_slug))
+        return ledger.get((artifact, relation, product_slug.strip()))
     return ledger.get((artifact, relation))
 
 
