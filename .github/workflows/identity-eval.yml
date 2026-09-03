@@ -1,27 +1,39 @@
 name: identity-eval
 
 # Replay eval: score the identity graph's edges against prior human decisions, and fail if
-# a relation with automation planned falls under its precision/recall floor. The two rules
-# that must never be broken (name-match never auto-emits, a scoring-bearing membership edge
-# never auto-emits) are pinned as tests in tests/test_identity_eval.py, run on every PR
-# through validate.yml -- this workflow is the live version of the same check, against the
-# `currentai.identity.*` edge tables. See build/identity_eval.py.
+# a relation with automation planned and enough truth to check falls under its precision/
+# recall floor. The two rules that must never be broken (name-match never auto-emits, a
+# scoring-bearing membership edge never auto-emits) are pinned as tests in
+# tests/test_identity_eval.py, run on every PR through validate.yml. See build/identity_eval.py
+# for the full contract, including the fix-round history of what this schema had to match.
 #
-# Scheduled Monday 07:00 UTC, after the identity dataset's Sunday run has had a day to land
-# on the platform.
+# Scheduled Monday 07:30 UTC, after the identity dataset's Sunday run has had a day to land,
+# and offset from `artifacts` (also Monday 07:00) to keep the two gates' logs apart.
 #
-# Also runs on push/pull_request touching the modules and sources that change what the eval
-# scores or what it scores against, so a change to the truth-derivation logic or to the
-# ledger is checked before it merges rather than waiting for Monday.
+# --allow-unprovisioned: the currentai.identity.* dataset has not deployed yet, so a live run
+# would otherwise be red every week for a failure that is not drift -- see
+# build.identity_eval.main and _identity_dataset_deployed. The flag makes a missing table exit
+# 0 ("not provisioned") instead of 2, and REFUSES to run at all if warehouse/assets.yaml ever
+# marks an identity.* asset materialized: true, so the skip cannot outlive the deploy it is
+# covering for. Remove this flag from the schedule/dispatch step in the PR that adds the
+# identity.* assets to warehouse/assets.yaml -- from that point on, a missing table is a real
+# failure again and should be reported as one.
 #
-# The `currentai.identity.*` dataset has not deployed yet, so `--from-warehouse` currently
-# exits 2 with a clear "table not found" message rather than failing the run in a way that
-# looks like drift. That is expected until the identity dataset ships; see the PR that added
-# this workflow.
+# push/pull_request runs the FIXTURE eval, never --from-warehouse: a PR cannot reach the
+# warehouse tables (they may not exist, and a fork PR has no OSO_API_KEY regardless), so it
+# checks the same never-auto-emit governance rules and floor logic against a committed fixture
+# instead. Only schedule and workflow_dispatch touch the warehouse.
+#
+# sources/products/** and sources/organizations/** are in the path triggers because that is
+# where membership, org and artifact-identity TRUTH is built from (build.identity_eval.load_truth)
+# -- a roster edit changes truth without touching build/identity*.py or the ledger.
+# sources/model_families.yaml does not exist in this repo yet (Task 4 adds the table it backs);
+# the path is kept as a forward reference so this workflow does not need a second edit when it
+# lands.
 
 on:
   schedule:
-    - cron: "0 7 * * 1"
+    - cron: "30 7 * * 1"
   workflow_dispatch:
   push:
     branches: [main]
@@ -29,11 +41,15 @@ on:
       - "build/identity*.py"
       - "sources/resolution_ledger.yaml"
       - "sources/model_families.yaml"
+      - "sources/products/**"
+      - "sources/organizations/**"
   pull_request:
     paths:
       - "build/identity*.py"
       - "sources/resolution_ledger.yaml"
       - "sources/model_families.yaml"
+      - "sources/products/**"
+      - "sources/organizations/**"
 
 jobs:
   identity-eval:
@@ -45,7 +61,13 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync --locked
-      - name: Replay the identity graph against prior human decisions
+
+      - name: Replay against a fixture (push / pull_request)
+        if: github.event_name == 'push' || github.event_name == 'pull_request'
+        run: uv run python -m build.identity_eval --edges tests/fixtures/identity_edges_pass.json --floors
+
+      - name: Replay the live identity graph (schedule / workflow_dispatch)
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
-        run: uv run python -m build.identity_eval --from-warehouse --floors
+        run: uv run python -m build.identity_eval --from-warehouse --floors --allow-unprovisioned

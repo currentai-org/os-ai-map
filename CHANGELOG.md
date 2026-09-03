@@ -31,10 +31,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `descriptions.tiers` legend in the payload (#87, #318).
 - `build/identity_eval.py`: replay eval that scores the `currentai.identity.*` edge tables
   against prior human decisions (the resolution ledger, declared artifacts, org rosters, and
-  a known-negatives set), with precision/recall floors on the four relations automation is
-  planned for and two rules pinned as tests rather than metrics — a name-match edge and a
-  scoring-bearing membership edge never auto-emit. Scheduled weekly as `identity-eval.yml`;
-  the live `--from-warehouse` run is deferred until the identity dataset deploys (#365).
+  a known-negatives set), with precision/recall floors — checked only once a relation has at
+  least 20 truth items — on the four relations automation is planned for, and two rules
+  pinned as tests rather than metrics: a name-match edge never auto-emits (checked against
+  `method` as an array, matching the deployed SQL) and a scoring-bearing membership edge
+  never auto-emits regardless of confidence. Scheduled weekly as `identity-eval.yml`, which
+  runs a fixture on every PR and `--from-warehouse --allow-unprovisioned` on schedule — the
+  flag skips cleanly (exit 0) while the identity dataset is undeployed and refuses to run
+  (exit 2) once `warehouse/assets.yaml` marks it deployed, so the gate cannot go permanently
+  red waiting on a dependency, nor silently skip past a real deploy (#365).
 
 ### Changed
 
