@@ -254,6 +254,113 @@ def test_a_tail_slug_that_is_no_alias_passes():
     assert not any("retired alias" in e for e in validate_sources(d))
 
 
+def test_tail_row_with_only_huggingface_validates():
+    """#365: a row needs at least one addressable artifact, not `github` specifically."""
+    d = _fixture()
+    d["registry"] = {
+        "base_pretrained": {
+            "category": "base_pretrained",
+            "products": [
+                {
+                    "slug": "some-hf-thing",
+                    "display_name": "Some HF Thing",
+                    "type": "model",
+                    "org": "meta",
+                    "huggingface_model": "acme/some-hf-thing",
+                }
+            ],
+        }
+    }
+    assert validate_sources(d) == []
+
+
+def test_tail_row_with_only_arxiv_validates():
+    d = _fixture()
+    d["registry"] = {
+        "base_pretrained": {
+            "category": "base_pretrained",
+            "products": [
+                {
+                    "slug": "some-paper-thing",
+                    "display_name": "Some Paper Thing",
+                    "type": "software",
+                    "org": "meta",
+                    "arxiv": "2401.12345",
+                }
+            ],
+        }
+    }
+    assert validate_sources(d) == []
+
+
+def test_tail_row_with_no_artifact_fails_with_a_clear_message():
+    d = _fixture()
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "no-artifact-thing",
+                    "display_name": "No Artifact Thing",
+                    "type": "software",
+                    "org": "meta",
+                }
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("no addressable artifact" in e for e in errs), errs
+
+
+def test_tail_rows_sharing_a_normalized_pypi_name_fail():
+    """PEP 503: runs of -, _, . fold to -, and comparison is case-insensitive."""
+    d = _fixture()
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "pkg-one",
+                    "display_name": "Pkg One",
+                    "type": "software",
+                    "org": "meta",
+                    "pypi": "My-Cool_Package",
+                },
+                {
+                    "slug": "pkg-two",
+                    "display_name": "Pkg Two",
+                    "type": "software",
+                    "org": "meta",
+                    "pypi": "my.cool.package",
+                },
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("pypi artifact" in e and "already belongs to tail product 'pkg-one'" in e for e in errs), errs
+
+
+def test_tail_row_github_matching_head_product_fails_case_insensitively():
+    """Existing behavior, extended: the tail/head collision check must not care about case."""
+    d = _fixture()
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "duplicate-of-llama",
+                    "display_name": "Duplicate",
+                    "type": "software",
+                    "org": "meta",
+                    "github": "Meta-Llama/LLAMA",
+                }
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("already belongs to head product" in e for e in errs), errs
+
+
 def test_roster_pointing_at_missing_product_fails():
     d = _fixture()
     d["categories"]["base_pretrained"]["products"].append("does-not-exist")

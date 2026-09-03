@@ -283,8 +283,13 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 {"product_slug": product_slug, "category_slug": slug}
             )
 
+    # Appended (crates, arxiv) rather than inserted, so existing per-kind ordering in any
+    # downstream diff or fixture is undisturbed -- #365 added these as tail row fields but
+    # they were still absent here, so a crates- or arxiv-only tail row validated and then
+    # silently produced no `tail_products` row at all.
     tail_artifact_kinds = (
-        "github", "pypi", "npm", "huggingface_model", "huggingface_dataset"
+        "github", "pypi", "npm", "huggingface_model", "huggingface_dataset",
+        "crates", "arxiv",
     )
     for category_slug, record in sorted(registry.items()):
         for product in record.get("products") or []:
@@ -300,8 +305,12 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                     url = f"https://www.npmjs.com/package/{identifier}"
                 elif kind == "huggingface_model":
                     url = f"https://huggingface.co/{identifier}"
-                else:
+                elif kind == "huggingface_dataset":
                     url = f"https://huggingface.co/datasets/{identifier}"
+                elif kind == "crates":
+                    url = f"https://crates.io/crates/{identifier}"
+                else:
+                    url = f"https://arxiv.org/abs/{identifier}"
                 tables["tail_products"].append(
                     {
                         "slug": product.get("slug", ""),

@@ -210,6 +210,50 @@ def test_tail_products_serialize_without_becoming_head_products():
     assert tables["categories"][0]["status"] == "preliminary"
 
 
+def test_tail_row_with_only_crates_serializes_with_the_crate_id():
+    """#365 let a crates-only tail row validate; it must not then vanish from tail_products."""
+    sources = _sources(
+        categories={"storage": {"display_name": "Storage", "weights": {}, "products": []}},
+        taxonomy={
+            "arcs": [
+                {
+                    "name": "Infrastructure",
+                    "layer": "infrastructure",
+                    "categories": [{"name": "storage", "status": "preliminary"}],
+                }
+            ]
+        },
+    )
+    sources["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "some-crate",
+                    "display_name": "Some Crate",
+                    "type": "software",
+                    "org": "acme",
+                    "crates": "some-crate",
+                }
+            ],
+        }
+    }
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    assert tables["tail_products"] == [
+        {
+            "slug": "some-crate",
+            "display_name": "Some Crate",
+            "product_type": "software",
+            "org_slug": "acme",
+            "category_slug": "storage",
+            "artifact_kind": "crates",
+            "artifact_id": "some-crate",
+            "artifact_url": "https://crates.io/crates/some-crate",
+        }
+    ]
+
+
 def test_real_sources_serialize_without_structural_errors():
     from pathlib import Path
 

@@ -5,12 +5,15 @@
 A sweep of the outside world should turn into candidate rows the map can act on: new
 products from GitHub, Hugging Face, package registries, papers, or launch venues.
 
-**Sweep every source; emit only GitHub-backed candidates.** The tail registry requires a
-`github` identifier on every row, so a candidate whose only handle is a Hugging Face repo, a
-package name, a paper or a product page cannot be stored yet. Those are still worth
-surveying — a HF release is often how you find a repo — but one that resolves to no
-repository is parked in the batch summary, against issue #365, rather than emitted. Do not
-work around this by inventing a plausible repo for a candidate that has none.
+**Sweep every source; emit any candidate with at least one addressable artifact.** The tail
+registry requires one of `github`, `huggingface_model`, `huggingface_dataset`, `pypi`, `npm`,
+`crates`, `arxiv` or `homepage` on every row (#365) — not `github` specifically, so a candidate
+whose only handle is a Hugging Face repo, a package name, or a paper can now be stored. A
+candidate that resolves to none of these — no repo, no package, no Hub entry, no paper, no
+homepage — is still parked in the batch summary rather than emitted; do not work around that by
+inventing a plausible artifact for a candidate that has none. Hardware remains a case to think
+about: `homepage` satisfies the schema, but it carries no adoption signal, so treat a
+hardware-only candidate as weaker evidence than any other artifact kind.
 
 This is the step *before* the map changes. It decides what should exist. For a single
 product you already know about use `add-product`; to turn a seeded roster into researched
@@ -84,10 +87,11 @@ preliminary alike. Then load the existing corpus:
   `sources/slug_aliases.yaml`; the single alias mapping was deleted in #157 because two
   renames of the same retired slug silently kept whichever came last. Aliases now live on
   the record that replaced the slug, so the retired set is derived, not read from a file.
-- **existing registry slugs and artifacts** — the `slug` and `github` of every row already in
-  `sources/registry/*.yaml`. These are candidates a previous sweep already found; without this
-  set a repeated sweep rediscovers and re-triages them every time, only failing at final
-  `validate` if a slug or repository collides. Loading them here is what makes a sweep
+- **existing registry slugs and artifacts** — the `slug` and every declared artifact (`github`,
+  `huggingface_model`, `huggingface_dataset`, `pypi`, `npm`, `crates`, `arxiv`) of every row
+  already in `sources/registry/*.yaml`. These are candidates a previous sweep already found;
+  without this set a repeated sweep rediscovers and re-triages them every time, only failing at
+  final `validate` if a slug or artifact collides. Loading them here is what makes a sweep
   incremental rather than a full re-triage.
 
 A candidate matching any of these sets is already known and is not a new candidate.
@@ -105,11 +109,11 @@ candidate — see the emit contract below.
    `sources/products/*.yaml`. A retired slug means the thing was deliberately consolidated or
    dropped, and re-adding it re-opens a settled decision. `amazon-nova-pro` is the shape to
    watch for: a SKU that was folded into `amazon-nova` and reads like a new product.
-3. Against the existing registry rows loaded in step 1 — every `slug` and `github` already in
-   `sources/registry/*.yaml`. A match here is a candidate a previous sweep already emitted;
-   drop it and, if the earlier decision was to park it, do not re-triage it. This set is
-   deduped *before* the warehouse pool because a match here is a settled outcome, while a match
-   in the pool is only a signal.
+3. Against the existing registry rows loaded in step 1 — every `slug` and every declared
+   artifact already in `sources/registry/*.yaml`. A match here is a candidate a previous sweep
+   already emitted; drop it and, if the earlier decision was to park it, do not re-triage it.
+   This set is deduped *before* the warehouse pool because a match here is a settled outcome,
+   while a match in the pool is only a signal.
 4. Against the warehouse discovery pool, if reachable. This step is enrichment and
    consolidation, **not rejection**: use the pool to fold several signals into one entity,
    recover the canonical `owner/repo`, and fill in artifacts. A repository being present in the
@@ -133,9 +137,15 @@ a governance event, not a data event.
 ### 5. Emit rows, not prose
 
 Each accepted candidate becomes a row in `sources/registry/<category>.yaml` satisfying
-`docs/schemas/registry.schema.json`: `slug`, `display_name`, `type`, `org` and `github` are
-required, with `pypi`, `npm`, `huggingface_model`, `huggingface_dataset` and `homepage` where
-they apply. The row rejects any other key (`additionalProperties: false`).
+`docs/schemas/registry.schema.json`: `slug`, `display_name`, `type` and `org` are required, plus
+at least one of `github`, `huggingface_model`, `huggingface_dataset`, `pypi`, `npm`, `crates`,
+`arxiv` or `homepage` (#365) — not `github` specifically. Write every artifact you have evidence
+for, not just one; the row rejects any other key (`additionalProperties: false`).
+
+A paper alone is weaker evidence of a *product* than a repo, a package, or a Hub entry: an
+`arxiv`-only row is a legitimate candidate but carries no adoption signal and no code to
+inspect, so treat it as a lower-confidence emit and say so in the batch summary rather than
+promoting it with the same confidence as a repo-backed row.
 
 **When the category has no registry file yet, create it.** Only `compilers` and `storage` have
 registry files today, so a sweep over any other category is creating the file, not appending to
@@ -168,6 +178,8 @@ identifier, so a stored URL would serialize to `https://github.com/https://githu
 | `huggingface_dataset` | `owner/name` | `https://huggingface.co/datasets/owner/name` |
 | `pypi` | `package-name` | `https://pypi.org/project/package-name/` |
 | `npm` | `package-name` | `https://www.npmjs.com/package/package-name` |
+| `crates` | `crate-name` | `https://crates.io/crates/crate-name` |
+| `arxiv` | `2401.12345` | `https://arxiv.org/abs/2401.12345` |
 | `homepage` | a full URL | — the one field that *is* a URL |
 
 Head product records are the opposite convention — `sources/products/<slug>.yaml` stores typed
@@ -182,8 +194,8 @@ and keeps neither the identifiers nor the source URLs has produced nothing the r
 ### 6. Park what you did not accept, with its reason
 
 Anything surveyed and not accepted is recorded **in the batch summary** with the reason:
-already mapped, a retired alias, a new SKU of an existing product, superseded, unmaintained,
-no public artifact, GitHub-backed storage not yet available (#365), or a boundary rejection.
+already mapped, a retired alias, a new SKU of an existing product, superseded, unmaintained, no
+addressable artifact at all, or a boundary rejection.
 Record the source URL and fetch date for a parked candidate too, not only for an accepted one:
 the sweep earlier promised provenance for *every* raw signal, and a parked candidate with no
 source URL cannot be re-checked next week — it just comes back and is triaged again from
@@ -237,15 +249,17 @@ uv run pytest tests/ -q                  # full suite
 ```
 
 `build.validate` catches a malformed registry row (including a URL where an identifier
-belongs), a candidate assigned to a category that does not exist, a slug that collides with a
-live product, a retired alias or another registry file, and a GitHub artifact already claimed
-by a head or tail product.
+belongs, or a row with no addressable artifact at all), a candidate assigned to a category that
+does not exist, a slug that collides with a live product, a retired alias or another registry
+file, and any of `github`, `huggingface_model`, `huggingface_dataset`, `pypi`, `npm`, `crates`
+or `arxiv` already claimed by a head or tail product — dedup runs per artifact kind, so a
+package-only or HF-only candidate is checked exactly as a GitHub-backed one is (#365).
 
-Two limits worth knowing, so the gate is not trusted past its reach. Artifact-level dedup is
-keyed on `github` only: two rows carrying the same `pypi` or `huggingface_model` and different
-repos both pass, so the self-dedup in step 3 is yours to get right (#365). And validation
-cannot tell a genuinely new product from one you failed to recognize — it checks identity
-collisions, not judgment.
+One limit worth knowing, so the gate is not trusted past its reach: validation cannot tell a
+genuinely new product from one you failed to recognize — it checks identity collisions, not
+judgment. `homepage` is not part of that dedup — it is addressable (satisfies the "at least one
+artifact" rule) but carries no identity-bearing signal, so two rows sharing a homepage still
+pass; catching that is on the self-dedup in step 3.
 
 ## Expected PR contents
 

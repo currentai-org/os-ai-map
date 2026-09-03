@@ -15,7 +15,17 @@
       "description": "Signal-only tail products. They carry identity and addressable artifacts but no editorial scores, and are excluded from the public scored map until promoted.",
       "items": {
         "type": "object",
-        "required": ["slug", "display_name", "type", "org", "github"],
+        "required": ["slug", "display_name", "type", "org"],
+        "anyOf": [
+          {"required": ["github"]},
+          {"required": ["huggingface_model"]},
+          {"required": ["huggingface_dataset"]},
+          {"required": ["pypi"]},
+          {"required": ["npm"]},
+          {"required": ["crates"]},
+          {"required": ["arxiv"]},
+          {"required": ["homepage"]}
+        ],
         "additionalProperties": false,
         "properties": {
           "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
@@ -25,6 +35,8 @@
           "github": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
           "pypi": {"type": "string", "minLength": 1},
           "npm": {"type": "string", "minLength": 1},
+          "crates": {"type": "string", "minLength": 1},
+          "arxiv": {"type": "string", "minLength": 1},
           "huggingface_model": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
           "huggingface_dataset": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
           "homepage": {"type": "string", "format": "uri"}

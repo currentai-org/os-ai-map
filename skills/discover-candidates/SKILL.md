@@ -1,6 +1,6 @@
 ---
 name: discover-candidates
-description: Use when sweeping the outside world for products the map does not yet have — GitHub, Hugging Face, package registries, papers, launch venues — and turning the result into candidate rows in sources/registry/. Every source is swept, but only GitHub-backed candidates can be emitted today. This is the step before the map changes. For one product you already know about use add-product; to turn a seeded roster into published products use promote-category; to re-verify what is published use refresh-category.
+description: Use when sweeping the outside world for products the map does not yet have — GitHub, Hugging Face, package registries, papers, launch venues — and turning the result into candidate rows in sources/registry/. Every source is swept, and any candidate with at least one addressable artifact (github, huggingface, a package, arxiv, or homepage) can be emitted. This is the step before the map changes. For one product you already know about use add-product; to turn a seeded roster into published products use promote-category; to re-verify what is published use refresh-category.
 ---
 
 # Discover candidates for the map
@@ -34,13 +34,16 @@ sweep that had to be thrown away.
    candidate belonging to a category added since — and parsing `sources/taxonomy.yaml` by hand
    drops the `{name, status}` entries, which is the failure that broke `build_stack_map`.
 2. **Artifacts are identifiers, not URLs.** `github: owner/repo`, not
-   `https://github.com/owner/repo`; same for `huggingface_*`, and bare package names for
-   `pypi` / `npm`. `homepage` is the only URL on the row. Serialization builds the public URL
-   *from* the identifier, so a URL there serializes to a doubled link. Source URLs and fetch
-   dates go in the batch summary, not on the row.
-3. **Only GitHub-backed candidates can be emitted.** `github` is required on every row, so an
-   HF-only, package-only, paper-only or hardware candidate is parked in the summary against
-   issue #365. Never invent a repo to satisfy the schema.
+   `https://github.com/owner/repo`; same for `huggingface_*`, `crates`, `arxiv`, and bare
+   package names for `pypi` / `npm`. `homepage` is the only URL on the row. Serialization builds
+   the public URL *from* the identifier, so a URL there serializes to a doubled link. Source
+   URLs and fetch dates go in the batch summary, not on the row.
+3. **A row needs at least one addressable artifact, not `github` specifically (#365).** Any of
+   `github`, `huggingface_model`, `huggingface_dataset`, `pypi`, `npm`, `crates`, `arxiv` or
+   `homepage` satisfies the schema, so an HF-only or package-only candidate can now be emitted.
+   A candidate with none of these is still parked in the summary. Never invent an artifact to
+   satisfy the schema, and treat an arxiv-only or homepage-only row as weaker evidence than a
+   repo- or package-backed one.
 4. **Do not invent a legitimacy rule mid-sweep.** Park the candidate and say why in the
    summary. A threshold that exists only in one run's output cannot be reproduced or appealed.
 5. **A 429 is not a measured absence.** Retry or leave the field out; never record
