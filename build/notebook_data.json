@@ -55793,6 +55793,115 @@
             "basis": "verified"
           },
           "version_note": "Promoted alongside pgvector, already on this roster - a general-purpose store's search/vector module rather than a standalone retrieval system - and distinguished from plain Redis, which stays excluded from this category as too general-purpose. Verified 2026-09-02 via the GitHub API and the LICENSE body."
+        },
+        {
+          "slug": "pgvectorscale",
+          "product": "pgvectorscale",
+          "org_slug": "tiger-data",
+          "org": "Tiger Data",
+          "type": "software",
+          "description": "pgvectorscale is a Postgres extension that complements pgvector with a StreamingDiskANN index, inspired by Microsoft's DiskANN research, and a statistical binary quantization scheme for cost-efficient storage at scale. It also adds label-based filtered vector search, combining similarity search with metadata filtering in a single index. Written in Rust using the PGRX framework and developed by Tiger Data (formerly Timescale).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:PostgreSQL(OSI);source:public;core-gated:ungated",
+            "confidence": "high",
+            "note": "The LICENSE body is the PostgreSQL License, the same OSI-approved terms pgvector records, here carrying a Tiger Data disclaimer rather than the Postgres project's own notices. GitHub's classifier resolves it to `postgresql`, not NOASSERTION. The repository is public and unarchived and builds the whole extension - the StreamingDiskANN index, statistical binary quantization and label-based filtered search - with no separate paid tier or license-gated build in the tree; Tiger Data's hosted Timescale Cloud service sits beside the extension rather than withholding any part of it. So source is public and the core ungated.",
+            "last_verified": "2026-09-03",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/timescale/pgvectorscale/main/LICENSE",
+                "shows": "The PostgreSQL License - permissive terms carrying a Tiger Data disclaimer of warranty and liability, structurally identical to the license pgvector records.",
+                "accessed": "2026-09-03",
+                "http_status": 200,
+                "content_sha256": "1fb31b095ba8b0188bc2c7eaff8d69028c2f4cfb19aaf8bd463121e7008f1e83",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/timescale/pgvectorscale",
+                "shows": "Repo metadata - license spdx_id PostgreSQL, private false, archived false, default branch main - for timescale/pgvectorscale.",
+                "accessed": "2026-09-03",
+                "http_status": 200,
+                "content_sha256": "738307b4defbd220d8f6628df2061e1b5987bef6b9b5485932e3d6732fe1d7e2",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/timescale/pgvectorscale/main/README.md",
+                "shows": "README describes StreamingDiskANN indexing, statistical binary quantization and label-based filtered vector search shipped in the one repository, installed via `CREATE EXTENSION vectorscale`, with a separate paid \"private beta\" Timescale Cloud signup offered alongside the extension rather than gating any part of what is in the tree.",
+                "accessed": "2026-09-03",
+                "http_status": 200,
+                "content_sha256": "796d2a4b84b8be04ea9dcba5afe3bacba9117a1a48617dc1404b32e4285a0466",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "3,119 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The extension installs as a Postgres extension via Docker or from source rather than a PyPI or npm package, and no distribution channel publishes a comparable download count, so the stars scale applies with its cap of 3.",
+            "last_verified": "2026-09-03",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/timescale/pgvectorscale",
+                "shows": "Repo metadata - stargazers_count = 3,119 - for timescale/pgvectorscale.",
+                "accessed": "2026-09-03",
+                "http_status": 200,
+                "content_sha256": "738307b4defbd220d8f6628df2061e1b5987bef6b9b5485932e3d6732fe1d7e2"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: single index family shipped as a library with no storage of its own",
+            "value": "Adds a StreamingDiskANN index type, statistical binary quantization and label-based filtered search on top of pgvector's existing vector columns; it indexes vectors pgvector already stores rather than persisting or serving data on its own.",
+            "relative_to": "pgvector",
+            "relation": "one_below",
+            "confidence": "medium",
+            "note": "Banded one rung below pgvector on the storage category's feature matrix. pgvector is rung 3, a working single-purpose store or index; pgvectorscale ships only a faster index type and quantization scheme over columns pgvector already defines and stores, which is rung 2, a single index family shipped as a library with no storage of its own.",
+            "last_verified": "2026-09-03",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/timescale/pgvectorscale/main/README.md",
+                "shows": "README states pgvectorscale \"complements pgvector... and introduces the following key innovations for pgvector data\", requires `CREATE EXTENSION vectorscale CASCADE` to automatically install pgvector, and indexes the vector columns pgvector defines rather than defining or storing data itself.",
+                "accessed": "2026-09-03",
+                "http_status": 200,
+                "content_sha256": "796d2a4b84b8be04ea9dcba5afe3bacba9117a1a48617dc1404b32e4285a0466"
+              }
+            ],
+            "comparison": {
+              "last_attested": "2026-09-03",
+              "sources": [
+                {
+                  "url": "https://github.com/pgvector/pgvector",
+                  "shows": "Repo page still documents \"nearest neighbor\" search over vector types stored directly in Postgres tables with joins, transactions and point-in-time recovery, the single-purpose store-and- index surface pgvectorscale's own rung is measured one below.",
+                  "accessed": "2026-09-03",
+                  "http_status": 200,
+                  "content_sha256": "caa9a3a699c0bb749a36098b578b104a92dac5cd69752e226dc97811fe598e28"
+                }
+              ]
+            }
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-03",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-03 via GitHub and the LICENSE body."
         }
       ]
     },
@@ -65275,6 +65384,19 @@
         "chitu"
       ]
     },
+    "tiger-data": {
+      "slug": "tiger-data",
+      "display_name": "Tiger Data",
+      "type": "company",
+      "homepage": "https://www.tigerdata.com",
+      "github": [
+        "https://github.com/timescale"
+      ],
+      "country": "",
+      "products": [
+        "pgvectorscale"
+      ]
+    },
     "tiger-lab": {
       "slug": "tiger-lab",
       "display_name": "TIGER-Lab",
@@ -65813,7 +65935,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 614,
+  "n_total": 615,
   "generated": "2026-09-03",
   "version": "0.2.0",
   "released": "2026-08-16",
@@ -65826,8 +65948,8 @@
       "total": 24626,
       "overlap": 309,
       "universe": 24856,
-      "scored": 614,
-      "scored_outside": 305,
+      "scored": 615,
+      "scored_outside": 306,
       "uncategorized": 24317
     },
     "top": [
