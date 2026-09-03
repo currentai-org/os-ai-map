@@ -9,3 +9,4 @@
 - [ ] I did not edit `build/notebook_data.json` or `notebooks/ai-stack-map.py`
       (a bot regenerates them on merge)
 - [ ] Product appears in exactly one category roster and one org roster
+- [ ] Label: one of tail-batch, freshness, promotion, re-band, or none for hand work. Add stage-move if the review sheet shows a stage or gap change and it is intended.
