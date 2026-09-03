@@ -46,6 +46,20 @@ def test_untouched_row_change_fails_the_gate():
     assert changes == ["p1|openness changed but sources/{scores,products}/p1.yaml did not"]
 
 
+def test_untouched_row_appearance_fails_the_gate():
+    before_rows = {"p1|openness": "row-v1"}
+    after_rows = {"p1|openness": "row-v1", "p1|capability": "row-v1"}
+    changes = ccd.compare_rows(before_rows, after_rows, touched={"p2"})
+    assert changes == ["p1|capability appeared but sources/{scores,products}/p1.yaml did not change"]
+
+
+def test_untouched_row_disappearance_fails_the_gate():
+    before_rows = {"p1|openness": "row-v1", "p1|capability": "row-v1"}
+    after_rows = {"p1|openness": "row-v1"}
+    changes = ccd.compare_rows(before_rows, after_rows, touched={"p2"})
+    assert changes == ["p1|capability disappeared but sources/{scores,products}/p1.yaml did not change"]
+
+
 def test_sheet_mentions_every_category_delta():
     before = _payload({"c": _cat(2, ["adoption"], [("a", None)])})
     after = _payload({"c": _cat(2, ["adoption"], [("a", None), ("b", None)])})

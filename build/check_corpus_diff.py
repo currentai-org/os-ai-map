@@ -109,9 +109,15 @@ def _rows_at(root: Path, ref: str | None) -> dict[str, str]:
 
 def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str]) -> list[str]:
     out = []
-    for key in sorted(set(before) & set(after)):
+    for key in sorted(set(before) | set(after)):
         slug = key.split("|", 1)[0]
-        if slug not in touched and before[key] != after[key]:
+        if slug in touched:
+            continue
+        if key in before and key not in after:
+            out.append(f"{key} disappeared but sources/{{scores,products}}/{slug}.yaml did not change")
+        elif key not in before and key in after:
+            out.append(f"{key} appeared but sources/{{scores,products}}/{slug}.yaml did not change")
+        elif before[key] != after[key]:
             out.append(f"{key} changed but sources/{{scores,products}}/{slug}.yaml did not")
     return out
 
