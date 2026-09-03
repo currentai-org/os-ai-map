@@ -69,12 +69,14 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import random
 import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 import yaml
@@ -147,6 +149,12 @@ USER_AGENT = (
 # it can decode, and this environment has no brotli; forcing `br` returned a 200 whose
 # `.content` was raw compressed bytes. Every digest taken that way would be a digest of
 # ciphertext-looking garbage that no re-fetch could reproduce or read.
+#
+# `Authorization` is the one addition, and it is scoped to GitHub's own hosts only: the
+# anonymous 60/hour limit turns a 150-product weekly re-verify into a wall of TRANSIENT
+# 429s that stamps nothing, and a token only changes GitHub's rate-limit accounting — it
+# does not change what bytes a public repo serves, so it carries none of the drift risk the
+# rest of this comment warns about.
 
 # Statuses that mean "not now" rather than "not here" — a WAF, a rate limiter or a bad
 # gateway, none of which say anything about whether the page exists.
@@ -183,6 +191,21 @@ def canonical(url: str) -> str:
     return f"https://raw.githubusercontent.com/{owner}/{repo}/{rest}"
 
 
+# Hosts that share GitHub's anonymous rate limit and accept a token on the same header.
+GITHUB_HOSTS = {"github.com", "raw.githubusercontent.com", "api.github.com"}
+
+
+def _headers(url: str) -> dict[str, str]:
+    """`User-Agent` always; `Authorization` added only for GitHub hosts, only when
+    `GITHUB_TOKEN` is set. See the note above USER_AGENT for why this is scoped so narrowly.
+    """
+    headers = {"User-Agent": USER_AGENT}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token and urlparse(url).hostname in GITHUB_HOSTS:
+        headers["Authorization"] = f"Bearer {token}"
+    return headers
+
+
 def http_get(
     url: str,
     timeout: float = 20.0,
@@ -209,7 +232,7 @@ def http_get(
         attempts += 1
         try:
             response = requests.get(
-                url, timeout=timeout, headers={"User-Agent": USER_AGENT}, allow_redirects=True
+                url, timeout=timeout, headers=_headers(url), allow_redirects=True
             )
         except requests.RequestException:
             if attempts <= retries:

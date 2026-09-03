@@ -20,7 +20,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from build.check_refetch import Source, offline_failures, refetch
+from build.check_refetch import Source, http_get, offline_failures, refetch
 from build.check_refetch import bot_wall as pr_bot_wall
 
 DIGEST_A = "a" * 64
@@ -168,6 +168,32 @@ def test_network_error_is_unreachable_not_dead():
         "build.check_refetch.requests.get", side_effect=requests.Timeout("timed out")
     ):
         assert refetch(source, 5.0)[0] == "unreachable"
+
+
+# --- GitHub authentication --------------------------------------------------------------
+# A 150-product weekly re-verify against GitHub-hosted sources burns through the anonymous
+# 60/hour limit fast; `Authorization` fixes that without changing what bytes come back, so
+# it is scoped to GitHub's own hosts and only sent when GITHUB_TOKEN is actually set.
+
+def test_github_host_gets_authorization_when_token_is_set(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "secret-token")
+    with patch("build.check_refetch.requests.get", return_value=_response(200)) as get:
+        http_get("https://raw.githubusercontent.com/org/repo/main/LICENSE", timeout=5.0)
+    assert get.call_args.kwargs["headers"]["Authorization"] == "Bearer secret-token"
+
+
+def test_non_github_host_gets_no_authorization_even_with_token_set(monkeypatch):
+    monkeypatch.setenv("GITHUB_TOKEN", "secret-token")
+    with patch("build.check_refetch.requests.get", return_value=_response(200)) as get:
+        http_get("https://example.com/page", timeout=5.0)
+    assert "Authorization" not in get.call_args.kwargs["headers"]
+
+
+def test_github_host_gets_no_authorization_when_token_is_unset(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    with patch("build.check_refetch.requests.get", return_value=_response(200)) as get:
+        http_get("https://raw.githubusercontent.com/org/repo/main/LICENSE", timeout=5.0)
+    assert "Authorization" not in get.call_args.kwargs["headers"]
 
 
 # --- Bot walls -------------------------------------------------------------------------
