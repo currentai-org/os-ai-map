@@ -18,15 +18,23 @@ case or punctuation for `github` or `pypi`, because `registry.product_artifacts`
 joined against externally sourced signal tables (GitHub's own API casing, PyPI's own
 package name) on raw equality; rewriting the declared spelling there breaks that
 join until every signal re-runs. `npm` and `crates` publish under a single
-registry-enforced casing, so folding those in `canonical` costs nothing; `arxiv` and
-`homepage` are never case-sensitive identifiers to begin with; Hugging Face ids are
-also kept as served.
+registry-enforced casing, so folding those in `canonical` costs nothing; `arxiv` is
+never a case-sensitive identifier to begin with; Hugging Face ids are also kept as
+served. `homepage` keeps its host lowercased in `canonical` (hosts are never
+case-sensitive) but its path as declared, because paths can be case-sensitive.
 
 `fold_for_proposal(kind, ident)` is the **comparison form** -- github and Hugging
 Face casefolded, PyPI folded per PEP 503 (lowercase, runs of `-`/`_`/`.` collapsed to
-`-`), crates' `-`/`_` collapsed. Every equality question -- "is this artifact already
-declared", a resolution-ledger lookup, a proposer's dedup -- goes through this, never
-through raw `canonical` values compared to each other.
+`-`), crates' `-`/`_` collapsed, homepage lowercased in full. Every equality question
+-- "is this artifact already declared", a resolution-ledger lookup, a proposer's
+dedup -- goes through this, never through raw `canonical` values compared to each
+other.
+
+A homepage is weak corroborating evidence, never identity: two distinct products
+routinely share one company's `homepage_domain` (`acme.com`), so `canonical`/
+`fold_for_proposal` key on the full URL (host + path), and a shared domain alone must
+never establish equivalence or suppress a second candidate. See the "Homepage is
+evidence, not identity" note in docs/reference/identity.md.
 """
 from __future__ import annotations
 
@@ -96,7 +104,7 @@ def id_from_url(kind: str, url: str) -> str | None:
     """
     raw = (url or "").strip()
     if kind == "homepage":
-        return homepage_domain(raw) if "." in raw else None
+        return _homepage_canonical(raw) if "." in raw else None
     pattern = _URL.get(kind)
     if pattern is None:
         raise ValueError(kind)
@@ -141,7 +149,7 @@ def canonical(kind: str, ident_or_url: str) -> str:
     if kind in ("huggingface_model", "huggingface_dataset"):
         return ident.strip("/")
     if kind == "homepage":
-        return homepage_domain(raw)
+        return _homepage_canonical(raw)
     raise ValueError(kind)
 
 
@@ -165,11 +173,31 @@ def fold_for_proposal(kind: str, ident: str) -> str:
         return c.replace("_", "-")
     if kind in ("huggingface_model", "huggingface_dataset"):
         return c.casefold()
+    if kind == "homepage":
+        return c.lower()
     return c
+
+
+def _homepage_canonical(url: str) -> str:
+    """Scheme-less canonical form: lowercased host minus `www.`, plus the path as
+    declared (case kept -- paths can be case-sensitive), minus query/fragment and any
+    trailing slash. `canonical("homepage", ...)`'s implementation; see that docstring
+    and the "Homepage is evidence, not identity" note in docs/reference/identity.md.
+    """
+    parts = urlsplit(url if "://" in url else f"https://{url}")
+    host = (parts.hostname or "").lower().removeprefix("www.")
+    path = parts.path.rstrip("/")
+    return f"{host}{path}"
 
 
 def homepage_domain(url: str) -> str:
     """The comparison host: hostname, lowercased, minus a leading `www.`.
+
+    Evidence only -- a shared host is corroborating evidence of common ownership, never
+    identity. Two distinct products at `acme.com/a` and `acme.com/b` are legitimately
+    different homepage artifacts (`canonical`/`fold_for_proposal` key on the full URL,
+    not this); use this only where the question really is "same registrable-ish host",
+    such as an org-ownership signal, not "same artifact".
 
     Not a registrable domain -- `awslabs.github.io`'s registrable domain is
     `github.io`, and this returns the full hostname regardless. The brief chose this
@@ -181,8 +209,8 @@ def homepage_domain(url: str) -> str:
 
 
 def homepage_canonical_url(url: str) -> str:
-    """The canonical evidence URL: https, comparison host, path kept, no query/fragment."""
-    parts = urlsplit(url if "://" in url else f"https://{url}")
-    host = (parts.hostname or "").lower().removeprefix("www.")
-    path = parts.path.rstrip("/")
-    return f"https://{host}{path}"
+    """The canonical evidence URL, with an explicit scheme -- an alias of
+    `canonical("homepage", url)` with `https://` prepended, for callers that need a
+    dereferenceable link rather than the bare comparison form.
+    """
+    return f"https://{canonical('homepage', url)}"
