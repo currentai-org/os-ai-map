@@ -60,6 +60,41 @@ def test_untouched_row_disappearance_fails_the_gate():
     assert changes == ["p1|capability disappeared but sources/{scores,products}/p1.yaml did not change"]
 
 
+def test_content_row_ignores_declaration_identity():
+    """PR #461: two rows identical except declaration_version_id/source_git_sha - which
+    differ between the base ref and HEAD by construction, since they are commit-scoped -
+    must compare equal via content_row, or every axis row on every PR reads as changed."""
+    base_row = {
+        "declaration_version_id": "dv-base", "source_git_sha": "sha-base",
+        "product_slug": "whylabs", "category_slug": "telemetry_observability",
+        "product_type": "software", "axis": "openness", "status": "confirmed",
+        "recorded_value": 3, "recorded_class": "open_weights", "basis": "osi",
+        "basis_detail": None, "instrument_type": None, "confidence": "high",
+        "last_verified": "2026-08-01", "hold_reason": None, "held_since": None,
+        "decision_note": None, "source_count": 2,
+    }
+    head_row = {**base_row, "declaration_version_id": "dv-head", "source_git_sha": "sha-head"}
+    assert base_row != head_row  # the fixtures really do differ, or this test proves nothing
+    assert ccd.content_row(base_row) == ccd.content_row(head_row)
+
+
+def test_content_row_still_catches_a_real_content_change():
+    base_row = {"declaration_version_id": "dv-base", "source_git_sha": "sha-base",
+                "product_slug": "whylabs", "axis": "openness", "recorded_value": 3}
+    head_row = {**base_row, "declaration_version_id": "dv-head", "source_git_sha": "sha-head",
+                "recorded_value": 5}
+    assert ccd.content_row(base_row) != ccd.content_row(head_row)
+
+
+def test_compare_rows_via_content_row_projection_ignores_identity_only_differences():
+    base_row = {"declaration_version_id": "dv-base", "source_git_sha": "sha-base",
+                "product_slug": "whylabs", "axis": "openness", "recorded_value": 3}
+    head_row = {**base_row, "declaration_version_id": "dv-head", "source_git_sha": "sha-head"}
+    before = {"whylabs|openness": ccd.content_row(base_row)}
+    after = {"whylabs|openness": ccd.content_row(head_row)}
+    assert ccd.compare_rows(before, after, touched=set()) == []
+
+
 def test_sheet_mentions_every_category_delta():
     before = _payload({"c": _cat(2, ["adoption"], [("a", None)])})
     after = _payload({"c": _cat(2, ["adoption"], [("a", None), ("b", None)])})

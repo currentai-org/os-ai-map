@@ -89,8 +89,35 @@ def touched_products(root: Path, base_ref: str) -> set[str]:
     return products_from_paths(names)
 
 
+# Columns axis_assessments.canonical_row serializes that are commit-scoped identity, not
+# content: declaration_version_id and source_git_sha are derived from the ref being read
+# (build.declaration_version.resolve), so they differ between the base ref and HEAD by
+# construction. Comparing them here would flag every row as "changed" regardless of
+# whether anything a human wrote actually changed - which is what broke PR #461 (whylabs,
+# zed, zvec, all of them). This gate cares about content, so those two columns are
+# projected out before the comparison; everything else in axis_assessments.COLUMNS still
+# has to match exactly.
+_IDENTITY_COLUMNS = frozenset({"declaration_version_id", "source_git_sha"})
+
+
+def content_row(row) -> str:
+    """Canonicalize one axis-assessment row for CONTENT comparison, excluding identity columns.
+
+    Same shape as `axis_assessments.canonical_row` (flat, deterministic JSON), minus
+    `_IDENTITY_COLUMNS`. A row missing a column reads as `None`, matching `canonical_row`.
+    """
+    from build.axis_assessments import COLUMNS
+
+    return json.dumps(
+        {k: row.get(k) for k in COLUMNS if k not in _IDENTITY_COLUMNS},
+        separators=(",", ":"), sort_keys=True,
+    )
+
+
 def _rows_at(root: Path, ref: str | None) -> dict[str, str]:
-    """Axis-assessment rows keyed by product|axis, canonicalized, for the tree at ref (None = worktree)."""
+    """Axis-assessment rows keyed by product|axis, content-canonicalized, for the tree at
+    ref (None = worktree). Content-canonicalized rather than `canonical_row` for the reason
+    `content_row` documents: identity columns differ across refs by construction."""
     from build import axis_assessments
     if ref is None:
         rows = axis_assessments.resolve(root, allow_dirty=True)
@@ -104,7 +131,7 @@ def _rows_at(root: Path, ref: str | None) -> dict[str, str]:
         finally:
             subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=root, check=True,
                            capture_output=True)
-    return {f"{r['product_slug']}|{r['axis']}": axis_assessments.canonical_row(r) for r in rows}
+    return {f"{r['product_slug']}|{r['axis']}": content_row(r) for r in rows}
 
 
 def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str]) -> list[str]:
