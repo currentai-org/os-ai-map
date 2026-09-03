@@ -47,9 +47,9 @@ computations the way they did before this split existed.
 Never the warehouse. `Truth` is assembled entirely from repo sources that are readable in
 CI with no `OSO_API_KEY`:
 
-- `build.resolution.load()` -- the resolution ledger, read through `_ledger_entries` /
-  `_equivalence_from_ledger` / `_membership_from_ledger` (pure functions over the loaded
-  items, not the loader's dict identity -- see above). An `existing_product`/`sku_of`
+- `build.resolution.load()` -- the resolution ledger, read via `.values()` through
+  `_equivalence_from_ledger` / `_membership_from_ledger` (pure functions over raw ledger
+  entries, not the loader's dict-key identity -- see above). An `existing_product`/`sku_of`
   ruling is a positive `product_equivalence` answer, keyed on `candidate_key`
   (`"<kind>:<folded id>"`, matching the deployed `equivalence_edges`/`org_edges` contract);
   `excluded_boundary`/`excluded_maintenance` is a negative one (the artifact must never
@@ -80,15 +80,17 @@ CI with no `OSO_API_KEY`:
 Membership truth is keyed on `(artifact_kind, folded artifact_id, product_slug)`, not on the
 artifact alone: a `member_of` ruling for package X against product A and a `not_member_of`
 for the SAME package against product B are two distinct truth items, not a contradiction.
-`build.resolution.load()` still enforces uniqueness per `(artifact, relation)` today (a
-stricter grain than the ledger will carry once a parallel PR adds `resolves_to` to it), so
-the ledger-consuming logic here is written as a pure function over an ITERABLE of ledger
-entries -- `_membership_from_ledger` -- rather than assuming the loader's returned dict is
-the final word on how many rulings one artifact can carry. See
+`build.resolution.load()`'s own key widened to include `resolves_to` for
+`product_membership` entries (#478) to represent exactly this, so its dict CAN now hold both
+rulings without raising `DuplicateResolution`. This module still reads entries via
+`resolution.artifact_of`/`relation_of` on each entry directly, never by parsing the loader's
+dict-key shape (`_equivalence_from_ledger`/`_membership_from_ledger` both take an ITERABLE of
+raw entries, e.g. `resolution.load().values()`) -- the key's exact shape has already changed
+once since this module was written, and reading the entry's own fields is what stays correct
+regardless of what it changes to next. See
 `tests/test_identity_eval.py::test_membership_truth_keeps_two_products_for_one_artifact_distinct`,
-which exercises this with two entries sharing one artifact key and cannot rely on
-`resolution.load()` to prove it, precisely because today's loader would raise
-`DuplicateResolution` on that YAML shape.
+which feeds two entries sharing one artifact key directly, without going through the loader,
+so it does not depend on the loader's current or any future key shape either.
 
 `org` truth is `candidate_key -> {org_slug, ...}`, a SET, not a single slug: two folded
 artifacts in the corpus today genuinely belong to two orgs each
@@ -446,20 +448,25 @@ def _declared_products() -> dict[str, dict]:
     }
 
 
-def _equivalence_from_ledger(entries: Iterable[tuple[tuple[Key, str], dict]]) -> tuple[dict[str, str], set[str]]:
+def _equivalence_from_ledger(entries: Iterable[dict]) -> tuple[dict[str, str], set[str]]:
     """(positive, negative) equivalence truth, keyed on `candidate_key`.
 
-    `entries` is an iterable of `((kind, canonical_id), relation), entry` pairs, the shape of
-    `build.resolution.load().items()` -- see `_membership_from_ledger` for why this takes an
-    iterable rather than requiring that exact dict.
+    `entries` is an iterable of raw ledger ENTRY dicts -- `build.resolution.load().values()`,
+    or any list of entries shaped the same way (e.g. `sources/resolution_ledger.yaml`'s
+    `resolutions:` list). Reads `resolution.artifact_of`/`relation_of` off each entry directly
+    rather than parsing the loader's own dict-key shape -- see `_membership_from_ledger` for
+    why that matters: the loader's key shape is `(artifact, relation)` for
+    `product_equivalence` but `(artifact, relation, resolves_to)` for `product_membership`
+    (`build/resolution.py::key_for`, #478), and this module has no business assuming either
+    shape holds.
     """
     positive: dict[str, str] = {}
     negative: set[str] = set()
-    for (key, relation), entry in entries:
-        if relation != "product_equivalence":
+    for entry in entries:
+        if resolution.relation_of(entry) != "product_equivalence":
             continue
         verdict = entry["verdict"]
-        ck = candidate_key(*key)
+        ck = candidate_key(*resolution.artifact_of(entry))
         if verdict in ("existing_product", "sku_of"):
             slug = entry.get("resolves_to") or entry.get("product")
             if slug:
@@ -470,27 +477,28 @@ def _equivalence_from_ledger(entries: Iterable[tuple[tuple[Key, str], dict]]) ->
     return positive, negative
 
 
-def _membership_from_ledger(entries: Iterable[tuple[tuple[Key, str], dict]]) -> dict[tuple[Key, str], bool]:
+def _membership_from_ledger(entries: Iterable[dict]) -> dict[tuple[Key, str], bool]:
     """Membership truth, keyed on `(artifact_kind, folded artifact_id, product_slug)`.
 
-    Takes an ITERABLE, not a dict keyed uniquely on `(artifact, relation)` --
-    `build.resolution.load()` enforces that narrower uniqueness today
-    (`resolution.DuplicateResolution`), but a `member_of` ruling for artifact X against
-    product A and a `not_member_of` for the SAME X against product B are two distinct truth
-    items, not a contradiction, once the ledger's grain includes `resolves_to` (a parallel
-    PR). Grouping on the full `(key, resolves_to)` pair here, rather than trusting the
-    loader's key identity, is what makes that safe either way --
-    `tests/test_identity_eval.py::test_membership_truth_keeps_two_products_for_one_artifact_distinct`
-    proves it with two entries sharing one artifact key, which today's loader could not
-    itself return without raising.
+    `entries` is an iterable of raw ledger ENTRY dicts (see `_equivalence_from_ledger`), read
+    via `resolution.artifact_of`/`relation_of` rather than the loader's own dict-key identity.
+    `build.resolution.load()` used to enforce uniqueness per bare `(artifact, relation)`,
+    which could not represent a `member_of` ruling for artifact X against product A alongside
+    a `not_member_of` for the SAME X against product B -- #478 widened the loader's own key to
+    `(artifact, relation, resolves_to)` for `product_membership`, fixing that at the source.
+    This function still groups on the full `(artifact, resolves_to)` pair itself rather than
+    trusting whatever shape the loader's key happens to be, so it stays correct independently
+    of that key's exact shape -- `tests/test_identity_eval.py::
+    test_membership_truth_keeps_two_products_for_one_artifact_distinct` feeds two entries
+    sharing one artifact key without going through the loader at all.
     """
     out: dict[tuple[Key, str], bool] = {}
-    for (key, relation), entry in entries:
-        if relation != "product_membership":
+    for entry in entries:
+        if resolution.relation_of(entry) != "product_membership":
             continue
         slug = entry.get("resolves_to")
         if slug:
-            out[(key, slug)] = entry["verdict"] == "member_of"
+            out[(resolution.artifact_of(entry), slug)] = entry["verdict"] == "member_of"
     return out
 
 
@@ -519,7 +527,7 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
     can inject a bad entry and assert `load_truth` raises rather than silently corrupting the
     membership table -- see `KnownNegativeDeclaredError`.
     """
-    ledger_items = list(resolution.load().items())
+    ledger_items = list(resolution.load().values())
     equivalence, equivalence_negatives = _equivalence_from_ledger(ledger_items)
     membership = _membership_from_ledger(ledger_items)
 

@@ -42,9 +42,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   computed over the pool slice automation would actually act on. Scheduled weekly as
   `identity-eval.yml`, which runs a fixture on every PR and
   `--from-warehouse --allow-unprovisioned` on schedule — the flag skips cleanly (exit 0) only
-  on a genuine missing-table error while the identity dataset is undeployed, exits 2 on any
-  other failure (auth, timeout, a missing column), and refuses to run at all once
-  `warehouse/assets.yaml` marks the dataset deployed (#365).
+  on a genuine missing-table error (matched against Trino's own live wording, verified against
+  `currentai.identity.equivalence_edges` while undeployed: a live `--from-warehouse` run now
+  exits 0 as intended) while the identity dataset is undeployed, exits 2 on any other failure
+  (auth, timeout, a missing column, an unrecognized `candidate_tier`/`product_tier` value),
+  and refuses to run at all once `warehouse/assets.yaml` marks the dataset deployed (#365).
 
 ### Changed
 

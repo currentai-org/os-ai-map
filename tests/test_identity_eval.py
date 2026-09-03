@@ -329,26 +329,56 @@ def test_org_and_equivalence_truth_use_candidate_key_format():
 
 
 def test_membership_truth_keeps_two_products_for_one_artifact_distinct():
-    """Cannot be built through `build.resolution.load()` today -- its dict is keyed on
-    `(artifact, relation)` alone, so two entries sharing that composite would raise
-    `DuplicateResolution` before this function ever saw them. Feeding `_membership_from_ledger`
-    a plain LIST (rather than a dict) proves the grouping logic itself is correct for the
-    finer grain a parallel PR is expected to give the loader."""
-    key = ("pypi", "x")
+    """`_membership_from_ledger` takes raw ledger ENTRY dicts (e.g.
+    `resolution.load().values()`), not the loader's dict-key identity -- #478 widened
+    `build.resolution.load()`'s own key to `(artifact, relation, resolves_to)` for
+    `product_membership`, so its dict can now legitimately hold both a `member_of` and a
+    `not_member_of` ruling for the same artifact against two different products. This
+    function groups on `(resolution.artifact_of(entry), resolves_to)` itself, independent of
+    whatever the loader's key shape is or becomes next."""
     entries = [
-        ((key, "product_membership"), {"verdict": "member_of", "resolves_to": "product-a"}),
-        ((key, "product_membership"), {"verdict": "not_member_of", "resolves_to": "product-b"}),
+        {"artifact": {"kind": "pypi", "id": "x"}, "relation": "product_membership",
+         "verdict": "member_of", "resolves_to": "product-a"},
+        {"artifact": {"kind": "pypi", "id": "x"}, "relation": "product_membership",
+         "verdict": "not_member_of", "resolves_to": "product-b"},
     ]
     truth = _membership_from_ledger(entries)
+    key = ("pypi", "x")
     assert truth[(key, "product-a")] is True
     assert truth[(key, "product-b")] is False
 
 
 def test_membership_key_includes_product_slug():
-    key = ("github", "a/b")
-    entries = [((key, "product_membership"), {"verdict": "member_of", "resolves_to": "p"})]
+    entries = [{"artifact": {"kind": "github", "id": "a/b"}, "relation": "product_membership",
+                "verdict": "member_of", "resolves_to": "p"}]
     truth = _membership_from_ledger(entries)
-    assert truth == {(key, "p"): True}
+    assert truth == {(("github", "a/b"), "p"): True}
+
+
+def test_membership_truth_via_the_real_loader_now_that_478_landed(tmp_path):
+    """End-to-end through `build.resolution.load()` itself, on a temp ledger file -- proves
+    the loader's own widened key (#478) and this module's consumption of it agree, not just
+    the pure function in isolation."""
+    from build import resolution as _resolution
+
+    ledger_doc = {
+        "resolutions": [
+            {"artifact": {"kind": "pypi", "id": "y"}, "relation": "product_membership",
+             "verdict": "member_of", "resolves_to": "product-a", "decided_in": "#test",
+             "decided_on": "2026-09-04", "note": "test fixture, not a real ruling"},
+            {"artifact": {"kind": "pypi", "id": "y"}, "relation": "product_membership",
+             "verdict": "not_member_of", "resolves_to": "product-b", "decided_in": "#test",
+             "decided_on": "2026-09-04", "note": "test fixture, not a real ruling"},
+        ]
+    }
+    ledger_path = tmp_path / "resolution_ledger.yaml"
+    ledger_path.write_text(yaml.dump(ledger_doc))
+    ledger = _resolution.load(ledger_path)
+
+    truth = _membership_from_ledger(ledger.values())
+    key = ("pypi", "y")
+    assert truth[(key, "product-a")] is True
+    assert truth[(key, "product-b")] is False
 
 
 # ---------------------------------------------------------------------------
