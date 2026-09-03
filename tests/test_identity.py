@@ -18,7 +18,9 @@ from build import identity as I
     ("arxiv", "https://arxiv.org/abs/2401.12345v3", "2401.12345"),
     ("arxiv", "arxiv:cs/0112017v1", "cs/0112017"),
     ("huggingface_model", "https://huggingface.co/Meta-Llama/Llama-3", "Meta-Llama/Llama-3"),
-    ("homepage", "http://www.Example.com/products/foo/?utm=1#x", "example.com"),
+    ("homepage", "http://www.Example.com/products/foo/?utm=1#x", "example.com/products/foo"),
+    ("homepage", "https://www.Example.com/Product/", "example.com/Product"),
+    ("homepage", "example.com", "example.com"),
 ])
 def test_canonical(kind, raw, want):
     assert I.canonical(kind, raw) == want
@@ -46,6 +48,30 @@ def test_hf_compares_casefolded_but_keeps_case():
 
 def test_homepage_canonical_url_keeps_the_path_as_evidence():
     assert I.homepage_canonical_url("http://www.example.com/products/foo/?a=1") == "https://example.com/products/foo"
+
+
+def test_homepage_canonical_url_is_a_canonical_alias_with_a_scheme():
+    assert I.homepage_canonical_url("www.Example.com/Product/") == f"https://{I.canonical('homepage', 'www.Example.com/Product/')}"
+
+
+def test_homepage_fold_for_proposal_lowercases_the_full_url_but_canonical_keeps_path_case():
+    a, b = "https://www.Example.com/Product", "https://example.com/product"
+    assert I.canonical("homepage", a) != I.canonical("homepage", b)
+    assert I.fold_for_proposal("homepage", a) == I.fold_for_proposal("homepage", b)
+
+
+def test_homepage_different_paths_on_one_domain_are_distinct_identities():
+    """A homepage is evidence, not identity -- one company's domain routinely hosts more
+    than one product, so two different paths on it must not collapse to one artifact id."""
+    a = I.fold_for_proposal("homepage", "https://acme.com/widgets")
+    b = I.fold_for_proposal("homepage", "https://acme.com/gadgets")
+    assert a != b
+
+
+def test_homepage_same_url_folds_equal_regardless_of_scheme_www_or_query():
+    a = I.fold_for_proposal("homepage", "https://www.Acme.com/Widgets/")
+    b = I.fold_for_proposal("homepage", "http://acme.com/Widgets?utm=1")
+    assert a == b
 
 
 def test_every_kind_has_a_url_pattern():

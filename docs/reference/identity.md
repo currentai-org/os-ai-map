@@ -138,6 +138,18 @@ recorded values reproduce the recorded score; none can verify that the artifact 
 product. That makes it the one identity question a reviewer has to settle by reading, and the
 three shapes below are how it has actually gone wrong.
 
+### Homepage is evidence, not identity
+
+`homepage` is on the artifact-kind list, but it is not a measurement identity like the others -
+nothing bands adoption or routes license/weights off it. It is corroborating evidence: mainly
+who owns a product, sometimes that two records are the same thing when other evidence already
+points that way. The artifact id is the full canonical URL (host and path; see
+`build/identity.py`'s `canonical("homepage", ...)`), not the bare domain, because one company's
+domain routinely hosts several distinct products at different paths - `acme.com/widgets` and
+`acme.com/gadgets` are two products, not a collision. A shared `homepage_domain` alone must never
+establish equivalence between two candidates or suppress a second one from being proposed; it is
+a fact to weigh alongside the rest, never a verdict by itself.
+
 ### An open satellite around a closed core
 
 A vendor ships an open repository *for* a closed product: a recipe library, a client, a

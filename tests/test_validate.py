@@ -313,11 +313,11 @@ def test_tail_row_with_only_homepage_validates():
     assert validate_sources(d) == []
 
 
-def test_tail_rows_sharing_a_homepage_domain_fail():
+def test_tail_rows_sharing_a_homepage_url_fail():
     """`homepage` is a dedup-gated identity key, not just an addressability check (#472
-    review): two tail rows declaring the same comparison host are the same duplicate
-    identity a github or pypi collision would be, even across categories and even when
-    the URLs differ by scheme, `www.`, path or query."""
+    review, corrected in #365): two tail rows declaring the same comparison URL are the
+    same duplicate identity a github or pypi collision would be, even across categories
+    and even when the URLs differ by scheme, `www.`, trailing slash or query."""
     d = _fixture()
     d["registry"] = {
         "base_pretrained": {
@@ -340,7 +340,7 @@ def test_tail_rows_sharing_a_homepage_domain_fail():
                     "display_name": "Site Two",
                     "type": "software",
                     "org": "meta",
-                    "homepage": "http://example.com/pricing?utm=1",
+                    "homepage": "http://example.com?utm=1",
                 },
             ],
         },
@@ -349,6 +349,41 @@ def test_tail_rows_sharing_a_homepage_domain_fail():
     assert any(
         "homepage artifact" in e and "already belongs to tail product 'site-one'" in e for e in errs
     ), errs
+
+
+def test_tail_rows_sharing_a_homepage_domain_at_different_paths_do_not_collide():
+    """A homepage is evidence, not identity (#365): one company's domain routinely hosts
+    more than one distinct product, so two tail rows at different paths on the same
+    domain are legitimately different artifacts, not a duplicate-identity collision."""
+    d = _fixture()
+    d["registry"] = {
+        "base_pretrained": {
+            "category": "base_pretrained",
+            "products": [
+                {
+                    "slug": "acme-widgets",
+                    "display_name": "Acme Widgets",
+                    "type": "software",
+                    "org": "meta",
+                    "homepage": "https://acme.com/widgets",
+                },
+            ],
+        },
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "acme-gadgets",
+                    "display_name": "Acme Gadgets",
+                    "type": "software",
+                    "org": "meta",
+                    "homepage": "https://acme.com/gadgets",
+                },
+            ],
+        },
+    }
+    errs = validate_sources(d)
+    assert not any("homepage artifact" in e for e in errs), errs
 
 
 def test_tail_row_with_no_artifact_fails_with_a_clear_message():

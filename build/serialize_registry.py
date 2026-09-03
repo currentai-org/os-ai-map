@@ -50,7 +50,7 @@ import csv
 import sys
 from pathlib import Path
 
-from build.identity import ARXIV_ID, canonical, homepage_canonical_url, homepage_domain, id_from_url
+from build.identity import ARXIV_ID, canonical, homepage_canonical_url, id_from_url
 from build.resolution import load as load_resolution_ledger
 from build.serialize import _aliases
 from build.taxonomy import arc_categories, category_statuses
@@ -300,8 +300,14 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
     # bug: a homepage-only tail row satisfies the `anyOf` in the schema and validates, but
     # emitted zero `tail_products` rows because this list never carried it. Unlike the other
     # kinds, a tail row's `homepage` field is already a full URI (see
-    # docs/schemas/registry.schema.json), so it is reduced with `homepage_domain`/
+    # docs/schemas/registry.schema.json), so it is reduced with `canonical`/
     # `homepage_canonical_url` directly rather than through the URL-templating below.
+    # `artifact_id` carries the full canonical URL (host + path), not the bare domain --
+    # a homepage is evidence, not identity, and two products sharing a company's domain
+    # at different paths are not a collision (see docs/reference/identity.md). SQL that
+    # wants the domain alone derives it from this URL rather than reading a separate
+    # column; `homepage_domain` stays available for that derivation but is not stored
+    # here.
     tail_artifact_kinds = (
         "github", "pypi", "npm", "huggingface_model", "huggingface_dataset",
         "crates", "arxiv", "homepage",
@@ -313,7 +319,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 if not identifier:
                     continue
                 if kind == "homepage":
-                    row_artifact_id = homepage_domain(identifier)
+                    row_artifact_id = canonical("homepage", identifier)
                     url = homepage_canonical_url(identifier)
                 else:
                     row_artifact_id = identifier

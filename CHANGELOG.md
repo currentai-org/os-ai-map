@@ -16,6 +16,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Fixed
+
+- `homepage` artifact identity now keys on the full canonical URL (host and path), not the bare
+  domain — two products sharing one company's domain at different paths are no longer treated as
+  a collision. A shared domain is corroborating evidence of ownership, never proof of identity;
+  it never establishes equivalence between two candidates and never suppresses a second one.
+  `registry.tail_products` homepage rows now carry that full URL in `artifact_id` (#365).
+
 ### Added
 
 - Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
