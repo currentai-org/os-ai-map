@@ -17,7 +17,7 @@ the same three constants get rediscovered as findings every time somebody greps 
 | product artifact kinds | `sources/signal_routing.yaml` `artifact_key` | `build/vocabulary.artifact_kinds` | `test_proposer_support_is_defined_by_handlers_not_by_routing` |
 | method words a provenance line may not name | `build/product_prose.py` `METHOD_WORDS` | imported | `test_the_method_vocabulary_has_exactly_one_definition` |
 | date handling | `build/vocabulary.py` — `is_iso_date`, `parse_date` | imported | `test_date_validation_rejects_impossible_dates`, `test_date_handling_has_exactly_one_owner` |
-| which products are publicly visible | `build/validate.published_products` | imported by `serialize` | `test_preliminary_products_reach_no_public_index`, `test_long_tail_scored_counts_published_categories_only` |
+| which products are publicly visible | `build/validate.published_products` | imported by `serialize` | `test_preliminary_products_reach_no_public_index`, `test_long_tail_scored_is_derived_not_gated` |
 
 Several of these carry a decision worth keeping in view.
 

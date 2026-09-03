@@ -206,8 +206,8 @@ def test_the_prose_leg_holds_at_its_known_count():
     same change (banded_quantity naming the countable channel, note phrased as a floor),
     which is why it is not in the set.
     """
+    # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
-    assert len(findings) == 17, [f[0] for f in findings]
     assert {f[0] for f in findings} == {
         "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
         "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",

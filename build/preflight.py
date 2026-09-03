@@ -72,6 +72,13 @@ PLAN: dict[str, tuple[str, str]] = {
         "compares the PR against its merge base, which needs the PR context. Locally the same "
         "class of problem is caught by this module's own generated-file check below.",
     ),
+    "Corpus goldens check (stale fingerprint is a notice; producer drift fails)": (RUN, ""),
+    "Semantic diff against the base (stage, gaps, tiers, untouched-row rewrites)": (
+        CI_ONLY,
+        "needs a base ref to diff against and a PR label to decide --allow-stage-move, neither "
+        "of which exists outside a pull_request run. The local equivalent is "
+        "`uv run python -m build.check_corpus_diff --base <ref>` directly.",
+    ),
 }
 
 

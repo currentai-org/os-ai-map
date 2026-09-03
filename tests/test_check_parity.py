@@ -10,6 +10,7 @@ failure mode this gate exists to catch, one level up.
 
 import build.check_parity as parity
 from build.check_parity import as_pair, local_scores
+from build.validate import load_sources
 
 
 def row(product, category, score=None, klass=None, deferred=False, rule=None):
@@ -253,7 +254,8 @@ def test_local_scores_matches_check_rubrics_split():
     # round-2 promotion: 12 storage products in (butterfree rejected on the category boundary)
     # and 7 telemetry_observability products in, no net change to the deferral count. Every
     # add recorded a license spelling the shared software ladder already tiers.
-    assert len(computed) == 608
+    # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
+    assert len(computed) + len(deferred) == len(load_sources(parity.ROOT)["scores"])
     assert not set(computed) & set(deferred)
     # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

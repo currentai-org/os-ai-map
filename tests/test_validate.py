@@ -66,31 +66,32 @@ def test_matching_stems_produce_no_identity_error():
     assert not any("does not match the filename stem" in e for e in validate_sources(d))
 
 
-def test_long_tail_scored_must_match_product_count():
-    d = _fixture()
-    d["long_tail"] = {"counts": {"scored": 999}}
-    errs = validate_sources(d)
-    assert any("counts.scored" in e for e in errs)
-    d["long_tail"]["counts"]["scored"] = len(FIXTURE_PRODUCTS)  # now matches the roster
-    assert not any("counts.scored" in e for e in validate_sources(d))
+def test_long_tail_scored_is_derived_not_gated():
+    """A product addition must not require editing sources/snapshots/long_tail.json.
 
-
-def test_long_tail_scored_counts_published_categories_only():
-    """Reproduces the review finding on the compilers/storage promotion.
-
-    A preliminary category may hold fully scored head products — that is the state a
-    category is in while it is being built. `serialize.py` omits them from the payload, so
-    counting them here let `counts.scored` exceed `n_total`, and the notebook's "of the N
-    products scored above" then named products the reader could not see. The check passed
-    the whole time, which is why it is worth a test rather than a comment.
+    `counts.scored` used to be a hand-synced number, gated here against the published
+    roster. It is now derived at serialize time (build.serialize.derived_long_tail_counts)
+    and no longer read from the file at all, so nothing here should ever flag it — not a
+    stale value, not a missing one, not one that disagrees with a preliminary category's
+    unpublished roster.
     """
     d = _fixture()
-    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
-    d["long_tail"] = {"counts": {"scored": len(FIXTURE_PRODUCTS)}}  # the files, now unpublished
-    errs = validate_sources(d)
-    assert any("counts.scored" in e and "published categories (0)" in e for e in errs)
-    d["long_tail"]["counts"]["scored"] = 0  # nothing is published, so nothing is scored above
-    assert not any("counts.scored" in e for e in validate_sources(d))
+    d["long_tail"] = {"counts": {"scored": 999}}  # would have failed the old gate
+    assert not [e for e in validate_sources(d) if "counts.scored" in e]
+    d["long_tail"]["counts"].pop("scored")  # missing entirely is fine too
+    assert not [e for e in validate_sources(d) if "counts.scored" in e]
+
+
+def test_derived_long_tail_counts():
+    from build.serialize import derived_long_tail_counts
+
+    frozen = {"counts": {"repos": 10, "models": 5, "packages": 5,
+                         "total": 20, "overlap": 3, "universe": 22}}
+    out = derived_long_tail_counts(frozen, published={"a", "b", "c", "d"})
+    assert out["scored"] == 4
+    assert out["scored_outside"] == 1
+    assert out["uncategorized"] == 17
+    assert out["total"] == 20
 
 
 def test_head_products_in_a_preliminary_category_are_not_an_error():

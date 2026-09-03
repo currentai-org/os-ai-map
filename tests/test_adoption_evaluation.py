@@ -63,10 +63,9 @@ MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae3
 # assessments went from null to a recorded band, and eight storage/telemetry_observability
 # assessments changed instrument or level once client and component packages stopped
 # standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
-RECONCILIATION_DIGEST = "5bb498ace68aa546a1ce4cf68a244466c549307571c6a7349103d60e2fda6faa"
+# Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
 
 MEASUREMENT_COUNT = 377
-RECORDED_ASSESSMENT_COUNT = 613
 ROUTING_POLICY_VERSION = "2"
 
 
@@ -372,16 +371,11 @@ def test_a_float_just_over_a_threshold_bands_above_not_floored():
 # --- reconciliation: complete coverage of the recorded assessments ---------------
 
 
-def test_reconciliation_reproduces_the_baseline_golden(reconciliation_rows):
-    assert len(reconciliation_rows) == RECORDED_ASSESSMENT_COUNT
-    assert _digest(reconciliation_rows, reconciliation_row) == RECONCILIATION_DIGEST
-
-
 def test_every_recorded_assessment_gets_exactly_one_row(reconciliation_rows, scores):
     recorded = {s for s, doc in scores.items() if isinstance(doc.get("adoption"), dict)}
     rows_by_product = [r["product_slug"] for r in reconciliation_rows]
     assert set(rows_by_product) == recorded
-    assert len(rows_by_product) == len(recorded) == RECORDED_ASSESSMENT_COUNT
+    assert len(rows_by_product) == len(recorded)
 
 
 def test_deliberate_null_assessments_are_covered_as_abstained(reconciliation_rows, scores):

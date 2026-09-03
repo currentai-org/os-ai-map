@@ -6,8 +6,9 @@ on:
     paths:
       - "sources/**"
       - "docs/methodology.md"
-      - "build/serialize.py"
-      - "build/render.py"
+      - "build/**"
+      - "!build/notebook_data.json"
+      - "tests/test_serialize_rubric.py"
   # Manual re-run. The path filter above is right for the normal case — regenerate when the
   # inputs change — but it leaves no way to re-run after a fix to something the filter does not
   # watch. On 2026-08-07 a bug in build/check_retirement.py aborted this workflow before its
@@ -58,12 +59,14 @@ jobs:
         run: uv run python -m build.render
       - name: Sync README stat badges
         run: uv run python -m build.update_readme
+      - name: Regenerate corpus goldens
+        run: uv run python -m build.goldens --write
       - name: Notebook structure check
         run: |
           uv run marimo check notebooks/ai-stack-map.py
       - name: Commit regenerated artifacts
         run: |
-          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md"
+          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md tests/goldens/corpus.json"
           if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
             exit 0

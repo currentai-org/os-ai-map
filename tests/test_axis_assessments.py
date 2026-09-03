@@ -8,7 +8,6 @@ when those inputs change, never on an ordinary commit.
 """
 
 import csv
-import hashlib
 import json
 from pathlib import Path
 
@@ -61,8 +60,7 @@ TEST_SHA = "test-git-sha"
 # were regenerated from their components mappings with `check_rubric.recompose` - the raw
 # is what `basis_detail` carries, and it had lagged the structured detail (check_components
 # reported 21 mismatches). No score or class moved.
-AXIS_ROW_COUNT = 1839
-AXIS_ASSESSMENTS_DIGEST = "8e4f9aa89bf63ada92f8b0b7e7026511538e0f77eeaf5e84be371f0a49bb2fda"
+# Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
 
 
 @pytest.fixture(scope="module")
@@ -85,10 +83,6 @@ def sources():
     return load_sources(Path(__file__).resolve().parents[1])
 
 
-def _digest(rows) -> str:
-    return hashlib.sha256("\n".join(sorted(canonical_row(r) for r in rows)).encode()).hexdigest()
-
-
 def _score_block(**over) -> dict:
     base = {"score": 5, "class": "open_source", "components": {"license": [{"name": "MIT"}]},
             "confidence": "high", "last_verified": "2026-08-13",
@@ -103,14 +97,6 @@ def _run(scores, held=None, *, population=None):
         population or [("cat", "p", "software")], scores, held or {}, {}, {}, [], {},
         declaration_version_id=TEST_DVID, source_git_sha=TEST_SHA,
     )
-
-
-# --- the pinned golden -----------------------------------------------------------
-
-
-def test_reproduces_the_baseline_golden(rows):
-    assert len(rows) == AXIS_ROW_COUNT
-    assert _digest(rows) == AXIS_ASSESSMENTS_DIGEST
 
 
 def test_keys_on_the_declaration_and_carries_no_release_id(rows):

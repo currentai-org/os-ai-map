@@ -293,17 +293,18 @@ class TestRealCategories:
         into the tier the vendor sells and moved the closed frontier models to
         finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27, and
         the Round 1 calibration tranche of 2026-09-01 took it to 31 (granite, minicpm,
-        seed-oss, comma). The point of pinning this is that the count only ever moves for a
-        reason recorded in a commit."""
-        reproduced, total, problems, deferred, _ = check_category("base_pretrained", verbose=False)
-        assert problems == []
-        assert (reproduced, total, deferred) == (31, 31, [])
+        seed-oss, comma). Census now lives in tests/goldens/corpus.json; see build/goldens.py.
+        """
+        report = check_category("base_pretrained", verbose=False)
+        assert report.problems == []
+        assert report.reproduced == report.total and report.deferred == []
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
-        """39 -> 41 on 2026-09-01: the Round 1 tranche added gpt-oss and magistral."""
-        reproduced, total, problems, *_ = check_category("finetuned_chat", verbose=False)
-        assert problems == []
-        assert reproduced == total == 41
+        """39 -> 41 on 2026-09-01: the Round 1 tranche added gpt-oss and magistral.
+        Census now lives in tests/goldens/corpus.json; see build/goldens.py."""
+        report = check_category("finetuned_chat", verbose=False)
+        assert report.problems == []
+        assert report.reproduced == report.total and report.deferred == []
 
     def test_no_category_defers_without_a_substantive_reason(self):
         """A deferral that prints nothing is a silent cap on coverage.
@@ -331,11 +332,22 @@ class TestRealCategories:
         assert deferred == []
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
-        """41 scored and 0 deferred. Counting a deferral as a pass is how a rubric
-        claims to describe products it cannot score, so the identity is worth keeping
-        even while the deferral count is zero."""
-        _, total, _, deferred, _ = check_category("finetuned_chat", verbose=False)
-        assert total + len(deferred) == 41
+        """Counting a deferral as a pass is how a rubric claims to describe products it
+        cannot score, so the identity is worth keeping even while the deferral count is
+        zero: every product this category has a score file for is either
+        reproduced-and-counted-in-total or excluded-and-deferred, never both and never
+        neither. Derived from the category's own roster rather than pinned, so it holds
+        across a product add. Census now lives in tests/goldens/corpus.json; see
+        build/goldens.py."""
+        report = check_category("finetuned_chat", verbose=False)
+        category = yaml.safe_load(
+            (ROOT / "sources" / "categories" / "finetuned_chat.yaml").read_text()
+        )
+        roster = sum(
+            1 for product in category.get("products") or []
+            if (ROOT / "sources" / "scores" / f"{product}.yaml").exists()
+        )
+        assert report.total + len(report.deferred) == roster
 
 
 def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, monkeypatch):

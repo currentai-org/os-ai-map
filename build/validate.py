@@ -374,16 +374,9 @@ def validate_sources(data: dict) -> list[str]:
     # "of the N products scored above" named products the reader could not see. Caught in
     # review of the compilers/storage promotion, reproduced by marking one of the two
     # preliminary again: `n_total: 496` against `counts.scored: 522`.
-    lt = data.get("long_tail")
-    if lt:
-        scored = (lt.get("counts") or {}).get("scored")
-        published = published_products(taxonomy, cats)
-        if scored is not None and scored != len(published):
-            errors.append(f"long_tail counts.scored ({scored}) != the number of products in "
-                          f"published categories ({len(published)}); re-sync "
-                          f"sources/snapshots/long_tail.json after a batch. Products in "
-                          f"preliminary categories are deliberately not counted: the payload "
-                          f"omits them, so the notebook does not show them above")
+    # long_tail counts.scored is derived at serialize time (build.serialize.derived_long_tail_counts),
+    # so a product addition never edits sources/snapshots/long_tail.json. The old gate here compared a
+    # hand-synced number against the roster; the number no longer exists in the file.
 
     # --- `establishes` must name a real dimension ---
     # A source's `establishes` list is what makes a re-check claim checkable: it records

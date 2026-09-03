@@ -266,8 +266,8 @@ After any `components` edit, regenerate `raw` or CI fails.
 
 ### Traps worth knowing before you start
 
-- **Adding a product touches five files**, not four: product, score, category roster, org
-  roster, and `sources/snapshots/long_tail.json` (gated in `validate.py`).
+- **Adding a product touches four files**: product, score, category roster, org roster. The
+  long-tail counts and the corpus goldens are derived or bot-regenerated on merge.
 - **Every schema sets `additionalProperties: false`.** An invented field fails `validate`
   rather than being ignored — there is no `litmus` field on a category.
 - **Counts written in prose drift.** Regenerate a number before repeating it; `check_recipe`,
