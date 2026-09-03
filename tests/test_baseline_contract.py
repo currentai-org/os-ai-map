@@ -23,6 +23,7 @@ import pyarrow.parquet as pq
 import pytest
 import yaml
 
+from build.identity import canonical
 from build.serialize_registry import build_registry
 from build.validate import load_sources
 
@@ -131,17 +132,25 @@ def test_product_type_is_never_null(rows):
 def test_every_row_matches_a_declared_artifact(rows):
     """Declared-artifact coverage, re-checked against the frozen bytes: every observation's
     (product_slug, artifact_kind, artifact_id) is a declared artifact in registry.product_artifacts
-    — the same guarantee the current-state model's coverage guard enforces at materialization."""
+    — the same guarantee the current-state model's coverage guard enforces at materialization.
+
+    Compared through `build.identity.canonical` on both sides: the frozen baseline was captured
+    before Task 2 unified `product_artifacts.artifact_id` to a lowercased github form, so its
+    rows still carry GitHub's own casing (e.g. `Agenta-AI/agenta`). The baseline's bytes are
+    immutable (see the module docstring); the coverage question this test asks is identity, not
+    byte equality, so it canonicalizes rather than comparing raw strings.
+    """
     tables, _errors, _warnings = build_registry(load_sources(ROOT))
     declared = {
-        (r["product_slug"], r["artifact_kind"], r["artifact_id"])
+        (r["product_slug"], r["artifact_kind"], canonical(r["artifact_kind"], r["artifact_id"]))
         for r in tables["product_artifacts"]
     }
     undeclared = sorted(
         {
             (r["product_slug"], r["artifact_kind"], r["artifact_id"])
             for r in rows
-            if (r["product_slug"], r["artifact_kind"], r["artifact_id"]) not in declared
+            if (r["product_slug"], r["artifact_kind"], canonical(r["artifact_kind"], r["artifact_id"]))
+            not in declared
         }
     )
     assert not undeclared, f"baseline rows for undeclared artifacts: {undeclared[:5]}"

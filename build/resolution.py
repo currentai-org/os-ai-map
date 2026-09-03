@@ -23,6 +23,8 @@ from pathlib import Path
 
 import yaml
 
+from build.identity import canonical as _identity_canonical
+
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "sources" / "resolution_ledger.yaml"
 
@@ -48,15 +50,10 @@ class DuplicateResolution(ValueError):
 def _canonical(kind: str, ident: str) -> str:
     """Fold an artifact identifier to the form the ledger keys on, per kind.
 
-    Task 2 replaces this body with `from build.identity import canonical`. Only `github` is
-    canonicalized today (lowercase, `.git` stripped); every other kind is compared as given
-    until that lands, so a differently-cased PyPI or npm name will not yet match. Kept as one
-    private function so that swap is a one-line change.
+    Delegates to `build.identity.canonical`, the one place these rules live -- see
+    `build/identity.py`.
     """
-    ident = (ident or "").strip()
-    if kind == "github":
-        return ident.removesuffix(".git").lower()
-    return ident
+    return _identity_canonical(kind, ident)
 
 
 def key_for(entry: Mapping) -> Key:

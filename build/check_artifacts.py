@@ -45,6 +45,7 @@ from pathlib import Path
 
 import yaml
 
+from build.identity import canonical
 from build.propose_artifacts import _get_json, declared_repo, pypi_info, stub_reason
 from build.serialize_registry import artifact_id
 from build.warehouse import query
@@ -104,7 +105,7 @@ def canonical_repo(repo: str) -> str:
     """
     body = _get_json(f"https://api.github.com/repos/{repo}", None)
     full = (body or {}).get("full_name")
-    return (full or repo).lower()
+    return canonical("github", full or repo)
 
 
 def pypi_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:

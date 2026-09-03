@@ -47,10 +47,10 @@ from __future__ import annotations
 
 import argparse
 import csv
-import re
 import sys
 from pathlib import Path
 
+from build.identity import ARXIV_ID, canonical, homepage_canonical_url, homepage_domain, id_from_url
 from build.resolution import load as load_resolution_ledger
 from build.serialize import _aliases
 from build.taxonomy import arc_categories, category_statuses
@@ -118,18 +118,6 @@ TABLES: dict[str, tuple[str, ...]] = {
     "product_aliases": ("alias", "product_slug"),
 }
 
-_ID_PATTERNS = {
-    "github": r"github\.com/([^/]+/[^/]+)",
-    "huggingface_model": r"huggingface\.co/(?!datasets/)(.+)",
-    "huggingface_dataset": r"huggingface\.co/datasets/(.+)",
-    "pypi": r"pypi\.org/project/([^/]+)",
-    "npm": r"npmjs\.com/package/(.+)",
-    # Accept an abs/pdf URL or a bare id, and normalize to the bare id so the
-    # DOI is derivable as 10.48550/arXiv.<id> without further parsing.
-    "arxiv": r"(?:arxiv\.org/(?:abs|pdf)/)?(\d{4}\.\d{4,5})(?:v\d+)?",
-}
-
-
 def _urls(value: object) -> list[str]:
     """Artifact values are lists of {url: ...}; tolerate a bare string too."""
     if isinstance(value, str):
@@ -145,21 +133,26 @@ def _urls(value: object) -> list[str]:
 
 
 def artifact_id(kind: str, url: str) -> str | None:
-    """Reduce a URL to the identifier the relevant API expects.
+    """Reduce a URL to the canonical identifier the relevant API expects.
 
     Returns None when the URL is not addressable as that artifact kind — an
-    org-level GitHub link, for instance, which names no repo.
+    org-level GitHub link, for instance, which names no repo. Delegates the
+    pattern and the canonical form to `build.identity`, except arXiv also
+    accepts a bare id with no `arxiv:` wrapper (`id_from_url` requires one),
+    since that is the form a tail registry row and this module's own callers
+    sometimes carry.
     """
-    trimmed = url.rstrip("/")
-    pattern = _ID_PATTERNS.get(kind)
-    if pattern is None:
-        return trimmed or None
-    match = re.search(pattern, trimmed)
-    if match is None:
+    trimmed = (url or "").rstrip("/")
+    if not trimmed:
         return None
-    # The github pattern already requires owner/repo, so an org-level link fails
-    # to match above and is reported rather than silently reduced.
-    return match.group(1) or None
+    ident = id_from_url(kind, trimmed)
+    if ident is not None:
+        return canonical(kind, ident)
+    if kind == "arxiv":
+        bare = trimmed.removeprefix("arxiv:").removeprefix("ARXIV:")
+        match = ARXIV_ID.match(bare)
+        return match.group(1).lower() if match else None
+    return None
 
 
 def category_layers(taxonomy: dict) -> dict[str, tuple[str, str]]:
@@ -300,13 +293,18 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 {"product_slug": product_slug, "category_slug": slug}
             )
 
-    # Appended (crates, arxiv) rather than inserted, so existing per-kind ordering in any
-    # downstream diff or fixture is undisturbed -- #365 added these as tail row fields but
-    # they were still absent here, so a crates- or arxiv-only tail row validated and then
-    # silently produced no `tail_products` row at all.
+    # Appended (crates, arxiv, homepage) rather than inserted, so existing per-kind ordering
+    # in any downstream diff or fixture is undisturbed -- #365 added crates/arxiv as tail row
+    # fields but they were still absent here, so a crates- or arxiv-only tail row validated
+    # and then silently produced no `tail_products` row at all. `homepage` had the identical
+    # bug: a homepage-only tail row satisfies the `anyOf` in the schema and validates, but
+    # emitted zero `tail_products` rows because this list never carried it. Unlike the other
+    # kinds, a tail row's `homepage` field is already a full URI (see
+    # docs/schemas/registry.schema.json), so it is reduced with `homepage_domain`/
+    # `homepage_canonical_url` directly rather than through the URL-templating below.
     tail_artifact_kinds = (
         "github", "pypi", "npm", "huggingface_model", "huggingface_dataset",
-        "crates", "arxiv",
+        "crates", "arxiv", "homepage",
     )
     for category_slug, record in sorted(registry.items()):
         for product in record.get("products") or []:
@@ -314,20 +312,25 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 identifier = product.get(kind)
                 if not identifier:
                     continue
-                if kind == "github":
-                    url = f"https://github.com/{identifier}"
-                elif kind == "pypi":
-                    url = f"https://pypi.org/project/{identifier}/"
-                elif kind == "npm":
-                    url = f"https://www.npmjs.com/package/{identifier}"
-                elif kind == "huggingface_model":
-                    url = f"https://huggingface.co/{identifier}"
-                elif kind == "huggingface_dataset":
-                    url = f"https://huggingface.co/datasets/{identifier}"
-                elif kind == "crates":
-                    url = f"https://crates.io/crates/{identifier}"
+                if kind == "homepage":
+                    row_artifact_id = homepage_domain(identifier)
+                    url = homepage_canonical_url(identifier)
                 else:
-                    url = f"https://arxiv.org/abs/{identifier}"
+                    row_artifact_id = identifier
+                    if kind == "github":
+                        url = f"https://github.com/{identifier}"
+                    elif kind == "pypi":
+                        url = f"https://pypi.org/project/{identifier}/"
+                    elif kind == "npm":
+                        url = f"https://www.npmjs.com/package/{identifier}"
+                    elif kind == "huggingface_model":
+                        url = f"https://huggingface.co/{identifier}"
+                    elif kind == "huggingface_dataset":
+                        url = f"https://huggingface.co/datasets/{identifier}"
+                    elif kind == "crates":
+                        url = f"https://crates.io/crates/{identifier}"
+                    else:
+                        url = f"https://arxiv.org/abs/{identifier}"
                 tables["tail_products"].append(
                     {
                         "slug": product.get("slug", ""),
@@ -336,7 +339,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                         "org_slug": product.get("org", ""),
                         "category_slug": category_slug,
                         "artifact_kind": kind,
-                        "artifact_id": identifier,
+                        "artifact_id": row_artifact_id,
                         "artifact_url": url,
                     }
                 )
