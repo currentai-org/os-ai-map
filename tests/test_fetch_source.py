@@ -67,7 +67,7 @@ def test_a_dead_host_is_a_record_not_a_crash():
     import requests
 
     with patch("build.fetch_source.requests.get", side_effect=requests.ConnectionError("no route")):
-        record = fetch("https://gone.example/x")
+        record = fetch("https://gone.example/x", sleep=lambda _: None)
     assert record["http_status"] is None
     assert "ConnectionError" in record["error"]
     assert "content_sha256" not in record, "nothing was served, so nothing may be recorded"

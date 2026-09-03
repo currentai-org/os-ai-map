@@ -243,12 +243,18 @@ def test_untracked_files_outside_sources_are_ignored(tmp_path):
     assert worktree_is_clean_for_identity(repo) is True
 
 
+@pytest.mark.serial
 def test_untracked_declaration_is_excluded_from_the_digest_and_refused():
     """The reproduction on the real repo: an untracked YAML in sources/categories/.
 
     Two guarantees at once — the digest reads only tracked files, so the untracked probe does NOT
     change it (closing `probe_digested=True`); and resolve() REFUSES rather than emit an id over a
     tree that carries a declaration the commit does not (closing `clean_probe=True`).
+
+    Marked `serial`: this writes a real (if transient) file into `sources/categories/` on the
+    checked-out worktree. Any other test that globs that directory while this one has the probe
+    on disk would see an extra, malformed entry, so it must not run concurrently with the rest
+    of the suite.
     """
     probe = ROOT / "sources" / "categories" / "_declaration_version_untracked_probe.yaml"
     assert not probe.exists()

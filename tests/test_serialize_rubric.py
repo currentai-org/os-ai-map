@@ -126,6 +126,22 @@ def _real_sources(root):
     return sources
 
 
+@pytest.fixture(scope="module")
+def real_rubric():
+    """The repo's real sources, policy, routing, and the rubric built from them, computed
+    once per module. `build_rubric` is pure and none of the tests below mutate its output,
+    so re-parsing the whole corpus and rebuilding the rubric per test bought nothing.
+    """
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+
+    root = Path(__file__).resolve().parents[1]
+    sources = _real_sources(root)
+    tables, errors, warnings = build_rubric(sources, load_policy(root), load_routing(root))
+    return sources, tables, errors, warnings
+
+
 def test_split_value_separates_the_bare_value_from_its_detail():
     assert split_value("open(downloadable on HF, gated)") == ("open", "downloadable on HF, gated")
     assert split_value("Apache-2.0(OSI)") == ("Apache-2.0", "OSI")
@@ -623,13 +639,8 @@ def test_every_declared_table_is_present():
     assert set(tables) == set(TABLES)
 
 
-def test_real_sources_serialize_without_errors():
-    from pathlib import Path
-
-    from build.serialize_rubric import load_policy, load_routing
-
-    root = Path(__file__).resolve().parents[1]
-    tables, errors, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+def test_real_sources_serialize_without_errors(real_rubric):
+    _sources, tables, errors, _warnings = real_rubric
     assert errors == [], f"rubric has errors: {errors[:5]}"
 
     # Asserted per category rather than as a total, so a new recipe shows up as its
@@ -970,18 +981,13 @@ def test_real_sources_serialize_without_errors():
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 
-def test_every_scored_product_carries_a_row_for_each_formula_dimension():
+def test_every_scored_product_carries_a_row_for_each_formula_dimension(real_rubric):
     """The warehouse joins a rule's `condition_key` against the `dimension` column,
     so a dimension recorded under a different key has to be emitted under the
     DIMENSION name. Emitted under the raw key instead, the condition silently fails
     to match and the product falls through to `otherwise` — scored on an absence.
     """
-    from pathlib import Path
-
-    from build.serialize_rubric import load_policy, load_routing
-
-    root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+    _sources, tables, _errors, _warnings = real_rubric
 
     by_product: dict[tuple[str, str], set[str]] = {}
     for row in tables["product_openness_evidence"]:
@@ -999,7 +1005,7 @@ def test_every_scored_product_carries_a_row_for_each_formula_dimension():
     assert missing == [], f"no data row emitted for: {missing}"
 
 
-def test_a_value_alias_is_translated_before_it_reaches_the_warehouse():
+def test_a_value_alias_is_translated_before_it_reaches_the_warehouse(real_rubric):
     """`core_gated` reads `self-host`, whose vocabulary is `yes`/`no`/`none` rather than
     `gated`/`ungated`. The warehouse joins a rule's `condition_value` against this column,
     so the translation has to happen on the way out or `openness_computed` would have to
@@ -1009,12 +1015,7 @@ def test_a_value_alias_is_translated_before_it_reaches_the_warehouse():
     The recorded spelling is not lost: `self-host` is still emitted under its own name by
     the traceability pass, so both rows are in the evidence store.
     """
-    from pathlib import Path
-
-    from build.serialize_rubric import load_policy, load_routing
-
-    root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+    _sources, tables, _errors, _warnings = real_rubric
 
     rows = {
         (r["dimension"], r["value"], r["in_declared_enum"])
@@ -1024,7 +1025,7 @@ def test_a_value_alias_is_translated_before_it_reaches_the_warehouse():
     assert rows == {("core_gated", "gated", True), ("self-host", "none", "")}
 
 
-def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
+def test_license_is_emitted_under_the_name_the_warehouse_joins_on(real_rubric):
     """`license_tier.reads` lets a category accept the license under another key.
 
     deepseek-coder records `model-license`, because its card separates the code license
@@ -1034,14 +1035,9 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     while reproducing locally. Exactly one license row per scored product, under
     `license`, is what keeps the two in step.
     """
-    from pathlib import Path
-
     from build.rubrics import resolve_recipe_variants
-    from build.serialize_rubric import load_policy, load_routing
 
-    root = Path(__file__).resolve().parents[1]
-    sources = _real_sources(root)
-    tables, _, _ = build_rubric(sources, load_policy(root), load_routing(root))
+    sources, tables, _errors, _warnings = real_rubric
 
     # Deferred products are excluded: a category has declared the rubric does not decide
     # them, and several are deferred precisely BECAUSE no license is recorded. Asserting a
@@ -1132,7 +1128,7 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     assert len(deepseek) == 1 and deepseek[0]["value"] == "DeepSeek-Model-License"
 
 
-def test_a_compound_license_publishes_every_part():
+def test_a_compound_license_publishes_every_part(real_rubric):
     """The three products check_parity was diverging on, and the one that must NOT split.
 
     `serialize_rubric` used to publish the license through `split_value`, which severs a
@@ -1147,12 +1143,7 @@ def test_a_compound_license_publishes_every_part():
     part. A serializer that split on punctuation cannot tell it from `zed`; one that
     publishes what the record says does not have to.
     """
-    from pathlib import Path
-
-    from build.serialize_rubric import load_policy, load_routing
-
-    root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+    _sources, tables, _errors, _warnings = real_rubric
 
     def license_parts(product):
         return [
@@ -1174,7 +1165,7 @@ def test_a_compound_license_publishes_every_part():
     assert license_parts("culturax") == ["follows mC4 + OSCAR-2301 terms"]
 
 
-def test_evidence_never_puts_two_values_on_one_grain():
+def test_evidence_never_puts_two_values_on_one_grain(real_rubric):
     """One product/category/dimension/part must carry one value. Two would let the
     warehouse pick between a base corpus and a post-training mixture by row order.
 
@@ -1185,12 +1176,8 @@ def test_evidence_never_puts_two_values_on_one_grain():
     hide behind the license's allowance.
     """
     from collections import Counter
-    from pathlib import Path
 
-    from build.serialize_rubric import load_policy, load_routing
-
-    root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+    _sources, tables, _errors, _warnings = real_rubric
     rows = tables["product_openness_evidence"]
 
     counts = Counter(
