@@ -1,0 +1,51 @@
+name: identity-eval
+
+# Replay eval: score the identity graph's edges against prior human decisions, and fail if
+# a relation with automation planned falls under its precision/recall floor. The two rules
+# that must never be broken (name-match never auto-emits, a scoring-bearing membership edge
+# never auto-emits) are pinned as tests in tests/test_identity_eval.py, run on every PR
+# through validate.yml -- this workflow is the live version of the same check, against the
+# `currentai.identity.*` edge tables. See build/identity_eval.py.
+#
+# Scheduled Monday 07:00 UTC, after the identity dataset's Sunday run has had a day to land
+# on the platform.
+#
+# Also runs on push/pull_request touching the modules and sources that change what the eval
+# scores or what it scores against, so a change to the truth-derivation logic or to the
+# ledger is checked before it merges rather than waiting for Monday.
+#
+# The `currentai.identity.*` dataset has not deployed yet, so `--from-warehouse` currently
+# exits 2 with a clear "table not found" message rather than failing the run in a way that
+# looks like drift. That is expected until the identity dataset ships; see the PR that added
+# this workflow.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "build/identity*.py"
+      - "sources/resolution_ledger.yaml"
+      - "sources/model_families.yaml"
+  pull_request:
+    paths:
+      - "build/identity*.py"
+      - "sources/resolution_ledger.yaml"
+      - "sources/model_families.yaml"
+
+jobs:
+  identity-eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Replay the identity graph against prior human decisions
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: uv run python -m build.identity_eval --from-warehouse --floors

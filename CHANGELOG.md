@@ -29,6 +29,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
   4.0 ≤ score < 4.5, else `null`) fields, a `depth` category gap that fires at Stage 4, and a
   `descriptions.tiers` legend in the payload (#87, #318).
+- `build/identity_eval.py`: replay eval that scores the `currentai.identity.*` edge tables
+  against prior human decisions (the resolution ledger, declared artifacts, org rosters, and
+  a known-negatives set), with precision/recall floors on the four relations automation is
+  planned for and two rules pinned as tests rather than metrics — a name-match edge and a
+  scoring-bearing membership edge never auto-emit. Scheduled weekly as `identity-eval.yml`;
+  the live `--from-warehouse` run is deferred until the identity dataset deploys (#365).
 
 ### Changed
 
