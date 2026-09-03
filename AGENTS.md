@@ -353,6 +353,17 @@ normative `docs/reference/evidence-and-freshness.md`.
 - OSO MCP connects via HTTP to `https://mcp.oso.xyz/mcp` with a Bearer token in `.mcp.json`
   (maintainer only; the file is gitignored).
 
+## Testing
+
+- Fast local loop: `uv run pytest -q -n auto -m "not serial"`. `-n auto` runs the suite across
+  local cores via `pytest-xdist`; `not serial` skips the handful of tests that mutate the real
+  working tree and would collide with a concurrent worker (run those separately with
+  `uv run pytest -q -m serial`, which is effectively `-n 0`).
+- CI runs the whole suite, network tests included, the same way: `-n auto -m "not serial"` then
+  `-m serial`. Nothing is skipped there.
+- A new test that hits a real external endpoint must carry `@pytest.mark.network`. It still runs
+  in CI; the marker exists so the fast loop can exclude it locally when offline.
+
 ## Common references
 
 - Query conventions: `docs/reference/queries.md`
