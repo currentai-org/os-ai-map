@@ -102,12 +102,15 @@ emitted org in the truth set for a candidate counts as correct.
 
 Only the four edge tables -- `currentai.identity.{artifact_identity,membership,equivalence,
 org}_edges` -- read with an explicit column list (never `SELECT *`, see `WAREHOUSE_COLUMNS`).
-`equivalence_edges` and `org_edges` already carry a kind-prefixed `candidate_key`, an
-`artifact_kind` column and `candidate_tier` in the deployed SQL; `artifact_identity_edges`
-does not yet carry `candidate_tier` (it spans all tiers already, per its own header, but has
-not had the column added) -- `WAREHOUSE_COLUMNS` names it anyway, ahead of that column
-landing, per the F1 ruling. Truth is never re-derived from the warehouse's own `registry.*`
-mirrors, so the same eval logic runs identically against a live run and against a fixture.
+All three tiered relations' SQL FILES carry `candidate_tier` as of this writing, including
+`artifact_identity_edges`; the DEPLOYED table can still lag the file it is built from --
+verified live on 2026-09-03 (`artifact_identity_edges` was queryable and missing the column;
+`equivalence_edges`/`org_edges` were not deployed at all yet). Read the live run's own error
+rather than trusting a sentence here about what is deployed on any given day -- a column
+mismatch exits 2 naming the column (`WarehouseQueryFailed`), a missing table exits 2 or 0
+under `--allow-unprovisioned` (`WarehouseTableMissing`). Truth is never re-derived from the
+warehouse's own `registry.*` mirrors, so the same eval logic runs identically against a live
+run and against a fixture.
 
 A missing table exits 2 naming it (or 0, under `--allow-unprovisioned`, ONLY when the failure
 is specifically a table-not-found error -- see `_is_table_not_found` and F2 below; every other
@@ -236,10 +239,10 @@ WAREHOUSE_TABLES: dict[str, str] = {
     "org": "currentai.identity.org_edges",
 }
 
-# Explicit column lists for `--from-warehouse` -- never `SELECT *`. `equivalence` and `org`
-# match `udms/identity_{equivalence,org}_edges.sql` as deployed, `candidate_tier` included.
-# `artifact_identity` includes `candidate_tier` ahead of the SQL carrying it (F1 ruling) --
-# the model already spans all tiers, the explicit column is pending.
+# Explicit column lists for `--from-warehouse` -- never `SELECT *`. All three tiered
+# relations' SQL FILES carry `candidate_tier` (see the module docstring for the caveat that
+# the deployed table can still lag the file it is built from -- confirmed true, live, for
+# `artifact_identity_edges` on 2026-09-03).
 WAREHOUSE_COLUMNS: dict[str, tuple[str, ...]] = {
     "artifact_identity": (
         "artifact_kind", "artifact_id_a", "artifact_id_b", "candidate_tier", "confidence",
@@ -373,8 +376,11 @@ def _tier_split(rows: list[dict]) -> tuple[list[dict], list[dict]]:
     """(declared, pool) -- `rows` split on `candidate_tier`. `declared` is `head`/`tail`, the
     population `Truth` is built from; `pool` is undeclared candidates, the population
     automation might actually act on. A row with a missing or unrecognized `candidate_tier`
-    lands in neither bucket -- `REQUIRED_COLUMNS` makes that unreachable through
-    `validate_columns`, but this function does not assume its caller ran that check.
+    lands in neither bucket, silently zeroing out a metric rather than raising -- this
+    function does not itself validate the value, and does not assume its caller did either.
+    `validate_columns` DOES check the tier vocabulary (`TIER_VALUES`) for any caller that runs
+    it first, which is every path through `main` (SF1) -- but `replay`/`_score_tiered` can
+    still be called directly, e.g. from a test, without that check.
     """
     declared = [r for r in rows if r.get("candidate_tier") in ("head", "tail")]
     pool = [r for r in rows if r.get("candidate_tier") == "pool"]
@@ -745,10 +751,24 @@ class WarehouseQueryFailed(RuntimeError):
 
 
 # Trino's own wording for "this table does not exist" (and pyoso/PyStarburst wrapping of it),
-# matched case-insensitively against the exception's string form. Deliberately narrow: any
-# OTHER failure -- auth, timeout, a missing column on a table that DOES exist -- must exit 2
-# and never be read as "not provisioned yet".
-_TABLE_NOT_FOUND_MARKERS = ("does not exist", "table_not_found", "table not found")
+# matched case-insensitively against the exception's string form. The real, verified text --
+# confirmed live against currentai.identity.equivalence_edges and org_edges while both were
+# undeployed -- is `USER_ERROR: TablesNotFound - Tables do not exist or are inaccessible:
+# <table>` (a 404). A round-1 version of this list matched the singular "does not exist" and
+# the underscored "table_not_found", neither of which appears in that camel-case, plural
+# wording, so it never fired -- MF1. `tablesnotfound` (the camel-case error code, lowercased)
+# and the plural phrase are the two markers that actually match the live text; `does not
+# exist` and `table_not_found`/`TABLE_NOT_FOUND` are kept too, since Trino's own bare wording
+# for a missing table elsewhere in its error surface uses the singular. Deliberately narrow:
+# any OTHER failure -- auth, timeout, a missing column on a table that DOES exist -- must
+# exit 2 and never be read as "not provisioned yet".
+_TABLE_NOT_FOUND_MARKERS = (
+    "tablesnotfound",
+    "do not exist or are inaccessible",
+    "does not exist",
+    "table_not_found",
+    "table not found",
+)
 
 
 def _is_table_not_found(exc: Exception) -> bool:
@@ -764,6 +784,33 @@ class EdgeColumnMissing(RuntimeError):
         )
         self.relation = relation
         self.column = column
+
+
+# The only tier tokens any deployed model emits. SF1: a redeployed SQL that changes the tier
+# vocabulary or its casing (`'Head'`, or a fourth tier) must not silently zero out a metric --
+# `_tier_split` puts an unrecognized value in neither bucket with no error of its own.
+TIER_VALUES = frozenset({"head", "tail", "pool"})
+
+# Which column(s) on each relation carry a tier value that must be in `TIER_VALUES`.
+# `equivalence` carries two independent tiers -- `candidate_tier` (the artifact) and
+# `product_tier` (the product it resolves to) -- and both are checked; `membership` has only
+# `product_tier` (it has no candidate_tier column at all, being declared-only already).
+TIER_COLUMNS: dict[str, tuple[str, ...]] = {
+    "artifact_identity": ("candidate_tier",),
+    "membership": ("product_tier",),
+    "equivalence": ("candidate_tier", "product_tier"),
+    "org": ("candidate_tier",),
+}
+
+
+class EdgeValueInvalid(RuntimeError):
+    def __init__(self, relation: str, column: str, value: object):
+        super().__init__(
+            f"{relation} edges: column {column!r} = {value!r}, not one of {sorted(TIER_VALUES)}"
+        )
+        self.relation = relation
+        self.column = column
+        self.value = value
 
 
 def _identity_dataset_deployed(path: Path = ASSETS_PATH) -> list[str]:
@@ -815,16 +862,24 @@ def validate_columns(edges: dict[str, list[dict]]) -> None:
     column, rather than letting a `_score_*` function `KeyError` on a `None` deep inside a
     scheduled run. Also raises (via `_check_known_relations`) if `edges` carries a relation
     name outside `EDGE_RELATIONS` -- a typo must not be silently skipped (F3).
+
+    Also checks (SF1) that every `TIER_COLUMNS` value is actually in `TIER_VALUES`, raising
+    `EdgeValueInvalid` with the offending value otherwise -- a redeployed SQL that renames or
+    recases a tier would otherwise pass this check, land in neither `_tier_split` bucket, and
+    zero out a metric with nothing in the output pointing at the cause.
     """
     _check_known_relations(edges)
     for relation, rows in edges.items():
-        required = REQUIRED_COLUMNS.get(relation)
-        if not required:
-            continue
+        required = REQUIRED_COLUMNS.get(relation) or ()
+        tier_columns = TIER_COLUMNS.get(relation) or ()
         for row in rows:
             for column in required:
                 if row.get(column) is None:
                     raise EdgeColumnMissing(relation, column)
+            for column in tier_columns:
+                value = row.get(column)
+                if value is not None and value not in TIER_VALUES:
+                    raise EdgeValueInvalid(relation, column, value)
 
 
 def floor_status(relation: str, metrics: dict[str, Metrics]) -> str:
@@ -836,14 +891,22 @@ def floor_status(relation: str, metrics: dict[str, Metrics]) -> str:
     if m.n_truth < MIN_TRUTH:
         return f"insufficient truth ({m.n_truth} < {MIN_TRUTH})"
     p_floor, r_floor = FLOORS[relation]
-    precision = m.precision if m.precision is not None else 0.0
+    # SF2: `precision is None` means the declared slice emitted nothing at all -- there is
+    # nothing to have gotten wrong, so it ABSTAINS rather than reading as 0.0 and failing a
+    # precision floor for a reason that is not a precision problem. `recall` is never None
+    # here (n_truth >= MIN_TRUTH > 0 guarantees `_score` computed a real value), but the
+    # fallback is kept for defensive symmetry with `floor_failures`.
+    precision_ok = m.precision is None or m.precision >= p_floor
     recall = m.recall if m.recall is not None else 0.0
-    return "checked (pass)" if precision >= p_floor and recall >= r_floor else "checked (FAIL)"
+    return "checked (pass)" if precision_ok and recall >= r_floor else "checked (FAIL)"
 
 
 def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
     """Relations under their floor. Only relations `FLOORS` names are checked, and only when
     `n_truth >= MIN_TRUTH` -- see `floor_status` for the same logic surfaced per-relation.
+    `precision is None` (nothing emitted in the declared slice) abstains rather than failing
+    (SF2); `recall` still fails on 0.0 -- "recovered none of the known truth" is always a real
+    signal, unlike "wrong about zero emissions".
     """
     failures: list[str] = []
     for relation, (precision_floor, recall_floor) in FLOORS.items():
@@ -852,9 +915,8 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
         m = metrics[relation]
         if m.n_truth < MIN_TRUTH:
             continue
-        precision = m.precision if m.precision is not None else 0.0
-        if precision < precision_floor:
-            failures.append(f"{relation}: precision {precision:.3f} < floor {precision_floor:.2f}")
+        if m.precision is not None and m.precision < precision_floor:
+            failures.append(f"{relation}: precision {m.precision:.3f} < floor {precision_floor:.2f}")
         recall = m.recall if m.recall is not None else 0.0
         if recall < recall_floor:
             failures.append(f"{relation}: recall {recall:.3f} < floor {recall_floor:.2f}")
@@ -935,7 +997,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         validate_columns(edges)
-    except (EdgeColumnMissing, ValueError) as exc:
+    except (EdgeColumnMissing, EdgeValueInvalid, ValueError) as exc:
         print(f"[FAIL] {exc}")
         return 2
 

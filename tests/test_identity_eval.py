@@ -20,6 +20,7 @@ import build.warehouse as warehouse_module
 from build.identity_eval import (
     KNOWN_NEGATIVES,
     EdgeColumnMissing,
+    EdgeValueInvalid,
     KnownNegativeDeclaredError,
     Truth,
     WarehouseQueryFailed,
@@ -482,6 +483,30 @@ def test_floor_status_checked_and_passing():
     assert floor_failures(metrics) == []
 
 
+def test_floor_status_abstains_on_precision_when_nothing_emitted():
+    """SF2: `precision is None` (the declared slice emitted nothing at all) must not read as
+    0.0 and fail a precision floor for a reason that is not a precision problem -- only
+    recall's real 0.0 should fail here."""
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
+    edges = {"org": []}  # nothing emitted at all
+    metrics = replay(edges, truth)
+    assert metrics["org"].precision is None
+    assert metrics["org"].recall == 0.0
+    assert floor_status("org", metrics) == "checked (FAIL)"  # recall 0.0 still fails
+    failures = floor_failures(metrics)
+    assert not any("precision" in f for f in failures)
+    assert any("recall" in f for f in failures)
+
+
+def test_floor_status_passes_when_precision_abstains_and_recall_clears():
+    """Constructed `Metrics` directly: `precision is None` with `recall` clearing its floor
+    must read as a pass -- the abstention logic must not force a FAIL just because precision
+    has nothing to say."""
+    metrics = {"org": identity_eval_module.Metrics(precision=None, recall=1.0, n_truth=30, n_emitted_at_threshold=0)}
+    assert floor_status("org", metrics) == "checked (pass)"
+    assert floor_failures(metrics) == []
+
+
 # ---------------------------------------------------------------------------
 # column validation: exit-2-worthy, not a KeyError
 # ---------------------------------------------------------------------------
@@ -507,6 +532,36 @@ def test_validate_columns_raises_on_missing_candidate_tier():
     with pytest.raises(EdgeColumnMissing) as exc_info:
         validate_columns(edges)
     assert exc_info.value.column == "candidate_tier"
+
+
+def test_validate_columns_raises_on_unrecognized_candidate_tier_value():
+    """SF1: a redeployed SQL that changes the tier vocabulary or its casing (`'Head'`, or a
+    fourth tier) must not pass validation and then silently zero out a metric."""
+    edges = {"org": [{"candidate_key": "github:a/b", "org_slug": "acme", "confidence": 1.0,
+                      "candidate_tier": "Head"}]}
+    with pytest.raises(EdgeValueInvalid) as exc_info:
+        validate_columns(edges)
+    assert exc_info.value.relation == "org"
+    assert exc_info.value.column == "candidate_tier"
+    assert exc_info.value.value == "Head"
+
+
+def test_validate_columns_raises_on_unrecognized_product_tier_value():
+    edges = {"equivalence": [{"candidate_key": "github:a/b", "product_slug": "p",
+                               "candidate_tier": "head", "product_tier": "bogus"}]}
+    with pytest.raises(EdgeValueInvalid) as exc_info:
+        validate_columns(edges)
+    assert exc_info.value.column == "product_tier"
+
+
+def test_main_exits_2_on_unrecognized_tier_value(tmp_path):
+    fixture = tmp_path / "edges.json"
+    fixture.write_text(
+        '{"org": [{"candidate_key": "github:a/b", "org_slug": "acme", "confidence": 1.0, '
+        '"candidate_tier": "pooled"}]}'
+    )
+    rc = main(["--edges", str(fixture)])
+    assert rc == 2
 
 
 def test_validate_columns_passes_on_rows_shaped_exactly_like_each_sql():
@@ -556,7 +611,22 @@ def test_validate_columns_passes_on_rows_shaped_exactly_like_each_sql():
 # ---------------------------------------------------------------------------
 
 
-def test_is_table_not_found_matches_trino_wording():
+# The REAL error text, verified live (2026-09-03) against currentai.identity.equivalence_edges
+# and org_edges while both were undeployed: a 400/404 OsoHTTPError wrapping this Trino message.
+# A round-1 marker list ("does not exist" singular, "table_not_found" underscored) missed this
+# entirely -- it is plural and camel-case -- which is MF1. Pinned verbatim, not paraphrased, so
+# a future edit to the marker list is checked against the actual production string.
+REAL_TRINO_TABLE_NOT_FOUND = (
+    "USER_ERROR: TablesNotFound - Tables do not exist or are inaccessible: "
+    "currentai.identity.equivalence_edges"
+)
+
+
+def test_is_table_not_found_matches_the_real_trino_error_verbatim():
+    assert _is_table_not_found(Exception(REAL_TRINO_TABLE_NOT_FOUND))
+
+
+def test_is_table_not_found_matches_other_trino_wordings_too():
     assert _is_table_not_found(Exception("line 1:15: Table 'currentai.identity.org_edges' does not exist"))
     assert _is_table_not_found(Exception("TABLE_NOT_FOUND: no such table"))
     assert _is_table_not_found(Exception("Table not found: foo"))
@@ -570,7 +640,7 @@ def test_is_table_not_found_does_not_match_other_failures():
 
 def test_load_edges_from_warehouse_table_not_found_raises_typed(monkeypatch):
     def fake_query(sql):
-        raise Exception("line 1:15: Table 'currentai.identity.artifact_identity_edges' does not exist")
+        raise Exception(REAL_TRINO_TABLE_NOT_FOUND)
 
     monkeypatch.setattr(warehouse_module, "query", fake_query)
     with pytest.raises(WarehouseTableMissing) as exc_info:
@@ -589,7 +659,7 @@ def test_load_edges_from_warehouse_other_failure_raises_query_failed_not_missing
 
 def test_main_allow_unprovisioned_exits_0_on_genuine_table_not_found(monkeypatch):
     def fake_query(sql):
-        raise Exception("Table 'currentai.identity.artifact_identity_edges' does not exist")
+        raise Exception(REAL_TRINO_TABLE_NOT_FOUND)
 
     monkeypatch.setattr(warehouse_module, "query", fake_query)
     rc = main(["--from-warehouse", "--allow-unprovisioned"])
