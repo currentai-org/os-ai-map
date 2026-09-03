@@ -718,6 +718,27 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: registry.product_aliases
+  table: currentai.registry.product_aliases
+  kind: registry
+  authority: repo
+  population: gap_map
+  release_path: true
+  role: governed-output
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per alias, published products only
+  producer: build/serialize_registry.py + build/publish_registry.py
+  publication_role: identity_input
+  refresh: CI push on merge to main
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
+  status: staged
+  materialized: false
+  verified_at: '2026-09-03'
 - id: registry.product_artifacts
   table: currentai.registry.product_artifacts
   kind: registry
@@ -918,6 +939,27 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: registry.resolution_ledger
+  table: currentai.registry.resolution_ledger
+  kind: registry
+  authority: repo
+  population: gap_map
+  release_path: true
+  role: governed-output
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (artifact_kind, artifact_id, relation)
+  producer: build/serialize_registry.py + build/publish_registry.py
+  publication_role: identity_input
+  refresh: CI push on merge to main
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
+  status: staged
+  materialized: false
+  verified_at: '2026-09-03'
 - id: registry.tail_products
   table: currentai.registry.tail_products
   kind: registry

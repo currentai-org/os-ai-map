@@ -1651,16 +1651,17 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
-staged, not deployed                         <!-- count:staged_assets -->6
+staged, not deployed                         <!-- count:staged_assets -->8
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->38
+logical assets in warehouse/assets.yaml     <!-- count:assets -->40
 ```
 
-The staged six are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the
-Phase-3 `registry.axis_assessments` candidate: tracked assets whose tables do not exist on the
-platform yet. The two Phase-3 evaluation candidates that were staged here,
+The staged eight are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), the
+Phase-3 `registry.axis_assessments` candidate, and the Phase-1 identity outputs
+`registry.resolution_ledger` and `registry.product_aliases`: tracked assets whose tables do not
+exist on the platform yet. The two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
 **deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
 was later **externalized** under ADR-003 — frozen under platform ownership and removed from this

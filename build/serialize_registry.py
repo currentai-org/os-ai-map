@@ -21,6 +21,9 @@ Emitted tables (one CSV each, written to build/registry/):
   product_categories    product_slug, category_slug
   product_organizations product_slug, org_slug
   product_lineage       product_slug, relation, target
+  resolution_ledger     artifact_kind, artifact_id, relation, verdict, resolves_to,
+                        boundary, decided_in, decided_on, note
+  product_aliases       alias, product_slug
 
 `arxiv` exists so citation lookups join on an exact identifier. Matching papers
 by product name was measured at 2 correct out of 10 — APPS resolved to a medical
@@ -48,8 +51,10 @@ import re
 import sys
 from pathlib import Path
 
+from build.resolution import load as load_resolution_ledger
+from build.serialize import _aliases
 from build.taxonomy import arc_categories, category_statuses
-from build.validate import load_sources
+from build.validate import load_sources, published_products
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
@@ -99,6 +104,18 @@ TABLES: dict[str, tuple[str, ...]] = {
     "product_categories": ("product_slug", "category_slug"),
     "product_organizations": ("product_slug", "org_slug"),
     "product_lineage": ("product_slug", "relation", "target"),
+    "resolution_ledger": (
+        "artifact_kind",
+        "artifact_id",
+        "relation",
+        "verdict",
+        "resolves_to",
+        "boundary",
+        "decided_in",
+        "decided_on",
+        "note",
+    ),
+    "product_aliases": ("alias", "product_slug"),
 }
 
 _ID_PATTERNS = {
@@ -323,6 +340,34 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                         "artifact_url": url,
                     }
                 )
+
+    # The decision memory: one row per (artifact, relation) ruling, exactly the grain
+    # `build.resolution.load` keys on. Sorted for determinism, since this feeds the same
+    # daily automated PR the other tables do.
+    ledger = load_resolution_ledger()
+    for (kind, canonical_id), relation in sorted(ledger):
+        entry = ledger[((kind, canonical_id), relation)]
+        tables["resolution_ledger"].append(
+            {
+                "artifact_kind": kind,
+                "artifact_id": canonical_id,
+                "relation": relation,
+                "verdict": entry.get("verdict", ""),
+                "resolves_to": entry.get("resolves_to") or entry.get("product") or "",
+                "boundary": entry.get("boundary") or "",
+                "decided_in": entry.get("decided_in") or "",
+                "decided_on": entry.get("decided_on") or "",
+                "note": entry.get("note") or "",
+            }
+        )
+
+    # Aliases, published products only -- must match build.serialize._aliases exactly
+    # (same helper, same "published" set) so the table and the notebook payload can never
+    # disagree about which redirects exist.
+    published = published_products(sources.get("taxonomy") or {}, categories)
+    product_aliases = _aliases(products, organizations, published, set())["products"]
+    for alias, product_slug in sorted(product_aliases.items()):
+        tables["product_aliases"].append({"alias": alias, "product_slug": product_slug})
 
     placed = {row["product_slug"] for row in tables["product_categories"]}
     owned = {row["product_slug"] for row in tables["product_organizations"]}

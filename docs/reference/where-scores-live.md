@@ -13,6 +13,12 @@ looks like a score is frozen, external, or keyed to something other than a gap-m
 Recorded, mirrored, recomputed and measured are four different things here, and a query is only
 as good as knowing which one it hit.
 
+Two more `registry` tables carry no axis at all and are easy to mistake for one because they sit
+next to `product_scores`: `currentai.registry.resolution_ledger` (the identity rulings a discovery
+sweep has already made, one row per artifact and relation) and `currentai.registry.product_aliases`
+(retired slug → live slug, published products only). Both are identity bookkeeping, not
+measurements — see `build/serialize_registry.py`.
+
 ## The one table — `currentai.registry.product_scores`
 
 522 rows, one per product per category, all three axes with their own confidence and
