@@ -1,0 +1,76 @@
+name: identity-digest
+
+# Weekly digest of low-confidence identity items, rendered from `currentai.identity.digest`
+# into one review issue -- see `build/identity_digest.py` for the render contract and
+# `docs/workflows/discover-candidates.md` for how a parked item comes back.
+#
+# Scheduled Monday 09:00 UTC, after `identity-eval` (Monday 07:30 UTC) has had time to run
+# and after the identity dataset's Sunday 05:30 UTC materialization has had a day to land.
+#
+# --allow-unprovisioned: the currentai.identity.digest model has not deployed yet, so a live
+# run would otherwise be red every week for a failure that is not drift -- see
+# build.identity_digest.main. A missing table renders "skipped: ..." to stdout instead of a
+# digest body, and the issue step is skipped entirely in that case. Remove this flag from the
+# schedule/dispatch step once the model is deployed -- from that point on, a missing table is
+# a real failure again and should be reported as one.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  identity-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Compute the ISO week
+        id: week
+        run: echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Render the digest
+        id: render
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          set +e
+          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md --allow-unprovisioned)
+          STATUS=$?
+          echo "$OUTPUT"
+          if [ $STATUS -ne 0 ]; then
+            exit $STATUS
+          fi
+          if echo "$OUTPUT" | grep -q "^skipped:"; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skipped=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the digest issue
+        if: steps.render.outputs.skipped != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          WEEK: ${{ steps.week.outputs.week }}
+        run: |
+          TITLE="identity digest: $WEEK"
+          # --state all, not --state open: the title is week-scoped, so a closed digest issue
+          # for this same week (Carl worked through it and closed it) must be updated and
+          # reopened on a re-run, never duplicated. Contrast report-failure.yml, where --state
+          # open is correct because a closed FAILURE issue means the failure was resolved and
+          # a fresh recurrence deserves a fresh issue -- the two workflows' semantics differ.
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state all --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
+          if [ -n "$EXISTING" ]; then
+            gh issue edit "$EXISTING" -R "$GITHUB_REPOSITORY" --body-file digest.md
+            gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY" 2>/dev/null || true
+          else
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md
+          fi

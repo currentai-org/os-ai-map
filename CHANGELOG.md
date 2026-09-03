@@ -26,6 +26,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A weekly digest issue of low-confidence identity items (`identity-digest.yml`, Monday
+  09:00 UTC): membership, equivalence, and org edges the identity graph could not auto-emit,
+  capped at 25 a week, each with a pre-filled ledger entry ready to paste into
+  `sources/resolution_ledger.yaml` once decided (#365).
 - Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
   4.0 ≤ score < 4.5, else `null`) fields, a `depth` category gap that fires at Stage 4, and a
   `descriptions.tiers` legend in the payload (#87, #318).
