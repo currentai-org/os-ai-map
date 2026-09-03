@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resolution ledger entry",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "repo": {"type": "string", "description": "GitHub owner/repo. Legacy key; equivalent to artifact: {kind: github, id: <repo>}. One of repo or artifact is required."},
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id"],
+      "properties": {
+        "kind": {"enum": ["github", "huggingface_model", "huggingface_dataset", "pypi", "npm", "crates", "arxiv", "homepage"]},
+        "id": {"type": "string", "minLength": 1}
+      },
+      "description": "The artifact this ruling is about, in canonical form. Lets a package-only or HF-only dismissal persist, so it does not return every sweep."
+    },
+    "verdict": {"enum": ["existing_product", "sku_of", "excluded_boundary", "excluded_maintenance", "unresolved", "member_of", "not_member_of"]},
+    "relation": {"enum": ["product_equivalence", "product_membership"], "description": "Which question this ruling answers. Absent means product_equivalence (every entry before 2026-09 answered that question). A ruling suppresses only questions of its own relation."},
+    "product": {"type": "string", "description": "Legacy name for resolves_to on existing_product and sku_of entries."},
+    "resolves_to": {"type": "string", "description": "The product slug this artifact belongs to (member_of) or does not (not_member_of), or resolves to (existing_product, sku_of)."},
+    "boundary": {"type": "string"},
+    "decided_in": {"type": "string"},
+    "decided_on": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "note": {"type": "string", "minLength": 20}
+  },
+  "required": ["verdict", "decided_in", "decided_on", "note"],
+  "oneOf": [{"required": ["repo"]}, {"required": ["artifact"]}],
+  "allOf": [
+    {"if": {"properties": {"verdict": {"enum": ["member_of", "not_member_of"]}}}, "then": {"required": ["relation", "resolves_to"], "properties": {"relation": {"const": "product_membership"}}}},
+    {"if": {"properties": {"verdict": {"enum": ["existing_product", "sku_of"]}}}, "then": {"anyOf": [{"required": ["product"]}, {"required": ["resolves_to"]}]}}
+  ]
+}

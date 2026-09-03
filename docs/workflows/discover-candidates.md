@@ -120,7 +120,14 @@ candidate — see the emit contract below.
    pool does not disqualify it — the pool *is* the long-tail set this workflow harvests from.
    Only rule a candidate out here when the pool resolves it to a slug or repository already
    caught by dedup sets 1–3.
-5. Against itself: the same tool arriving from GitHub, PyPI and Hugging Face is one
+5. Against the resolution ledger (`sources/resolution_ledger.yaml`) - a candidate any relation
+   has already ruled on is not new. A `product_equivalence` ruling in `NOT_A_NEW_PRODUCT`
+   (`existing_product`, `sku_of`, `excluded_boundary`, `excluded_maintenance`) drops the
+   candidate outright; `unresolved` holds it for a person rather than proposing it again. A
+   `product_membership` ruling (`member_of`, `not_member_of`) is a separate question about
+   measurement, not identity, and does not by itself dedup a candidate. See
+   `docs/reference/identity.md#rulings-are-typed-by-relation`.
+6. Against itself: the same tool arriving from GitHub, PyPI and Hugging Face is one
    candidate, not three.
 
 Entity resolution is the part that goes wrong. Where two signals might be the same product
