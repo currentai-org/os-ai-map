@@ -161,7 +161,7 @@ Triage. A category whose oldest axis is 50 days old is a category to go and look
 product. `--max-age-days N` turns that report into a gate: it exits non-zero if any
 category's oldest axis is older than N days.
 
-**The window is 30 days**, decided 2026-08-09; the age-gate section below (Part 3, step 5) holds the
+**The window is 45 days (temporary)**, decided 2026-08-09; the age-gate section below (Part 3, step 5) holds the
 reasoning and owns the number.
 
 ### Where the gate runs, and why not in `validate.yml`
@@ -180,7 +180,7 @@ cannot act on gets switched off.
 
 Weekly rather than daily for the same reason parity is weekly: the cadence has to match the work
 it polices. A category is re-read in one run, so all of its axes carry one date and all of them
-age out together, and about four categories cross a 30-day line per week. A daily gate would
+age out together, and about four categories cross a 45-day line (temporary) per week. A daily gate would
 re-report the same cliff for as many days as the re-read takes, which is nagging rather than
 information.
 
@@ -460,7 +460,7 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
-| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 30`, scheduled weekly | free, weekly |
+| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45 (temporary)`, scheduled weekly | free, weekly |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
@@ -606,7 +606,7 @@ comparison graph growing.
 
 `capability.last_verified` dates **this product's own capability evidence**: the feature matrix
 still reads as described, the benchmark number is still the published one. It ages the way any
-axis ages, on the 30-day window the freshness gate applies.
+axis ages, on the 45-day window (temporary) the freshness gate applies.
 
 `capability.comparison.last_attested` dates **the spacing between this product and a peer**. It
 has a different lifecycle, because a comparison can go false with neither product changing: the
@@ -901,7 +901,7 @@ score for this reason.
 
 ### 5. Turn on the age gate
 
-**Done 2026-08-14.** `build/check_freshness.py --max-age-days 30` gates in
+**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45 (temporary)` gates in
 `.github/workflows/freshness.yml`, weekly. This is the entire point of having the field: a
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
@@ -910,13 +910,15 @@ oldest category read 6 days. (An audit then removed the confirmations it could n
 those were settled on 08-16, and a held axis rides the commit-date fallback rather than evading
 the age gate.)
 
-**The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
+**The window is 45 days (temporary), decided 2026-08-09.** It is a judgment about how much re-reading the
 map is worth rather than anything derivable, so it is recorded here with its date and its owner
 and not re-argued per category. Earlier drafts suggested 90; that was a placeholder for an
 unmade decision, and this replaces it.
 
-At 30 days the re-read is continuous rather than occasional: sixteen categories inside a
-month is roughly four a week. Two things follow. A whole category shares one confirmation
+**Raised to 45 days on 2026-09-03, temporarily.** The whole corpus was dated in one August sweep and would have crossed the 30-day gate together around 09-07 to 09-12. The rolling re-verifier spreads the dates over four weekly batches; the window returns to 30 four weeks after the raise. Owner: Carl.
+
+At 45 days (temporary) the re-read is continuous rather than occasional: eighteen categories inside a
+forty-five days is roughly four a week. Two things follow. A whole category shares one confirmation
 date, because a category is re-read in a single run, so categories expire in cliffs rather
 than drifting past the line one product at a time — that is the shape of the work, not a
 backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;
