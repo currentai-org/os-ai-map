@@ -22,7 +22,9 @@ jobs:
       - name: Validate sources (schema + cross-file invariants)
         run: uv run python -m build.validate
       - name: Run tests
-        run: uv run pytest -q
+        run: |
+          uv run pytest -q -n auto -m "not serial"
+          uv run pytest -q -m serial
 
       # The invariant, the digest requirement and the producible-pair check. Free, no
       # network, and scoped so they cover exactly what has been done: invariant and digests
