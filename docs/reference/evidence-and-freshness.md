@@ -421,6 +421,18 @@ dimension, so the binding constraint is the *least* recently re-read one. `max(a
 across an axis would pass an axis where one dimension was re-read today and three were last
 seen in June.
 
+### Machine re-verification
+
+`build/reverify.py` may write `accessed`, `http_status` and `last_verified`, and only these,
+and only where every recorded dimension of an axis has a digested source that `establishes`
+it and every such source re-fetched byte-identical (same `content_sha256`, non-transient).
+It never derives a date, never records a transient fetch, and never touches an axis whose
+evidence changed. A new verification date records a successful re-evaluation on that date,
+not a claim that the fact was established or the source changed then. Ruling on #445
+(2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
+capability are excluded from machine re-dating because their sources carry numbers that
+move. Their re-verification stays with the agent leg in `refresh-category`.
+
 ### Catching fabrication rather than just inconsistency
 
 The invariant catches unsupported dates. It cannot catch a source that never said what

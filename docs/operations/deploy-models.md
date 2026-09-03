@@ -80,6 +80,7 @@ holds it against the `cron:` lines it quotes.
 | `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
 | `freshness` report | Monday 08:00 | `.github/workflows/freshness.yml` |
 | `channel-authority` report | Monday 09:00 | `.github/workflows/channel-authority.yml` |
+| `reverify` (re-dates openness on the oldest 150 products where evidence is unchanged; opens one PR) | Tue 10:00 | `.github/workflows/reverify.yml` |
 
 The chain lands two hours before parity grades it, and the warehouse is at most a week behind
 the repo.
