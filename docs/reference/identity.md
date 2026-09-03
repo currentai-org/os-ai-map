@@ -182,6 +182,26 @@ package whose backlink is missing, a licence that disagrees between two artifact
 product, a download count wildly out of step with a star count — and never for declaring the
 artifact. An identity edge stays provisional until a person has read it.
 
+### Rulings are typed by relation
+
+The resolution ledger (`sources/resolution_ledger.yaml`) is not only about GitHub repositories,
+and not only about whether a candidate is a new product. Every entry names an artifact - `repo`,
+or `artifact: {kind, id}` for a Hugging Face model or dataset, a PyPI, npm or crates package, an
+arXiv paper, or a homepage - and answers one typed question, its `relation`:
+
+- **`product_equivalence`** - is this artifact a new product, or does it already belong to one?
+  Verdicts: `existing_product`, `sku_of`, `excluded_boundary`, `excluded_maintenance`,
+  `unresolved`. Every entry written before 2026-09 answered this question, and `relation` may be
+  omitted for it - absent reads as `product_equivalence`.
+- **`product_membership`** - does this artifact's measurement belong to `resolves_to`'s adoption
+  number? Verdicts: `member_of`, `not_member_of`. A `resolves_to` is required.
+
+A ruling answers only its own relation. `not_member_of` on `elasticsearch-py`'s PyPI package
+says its downloads are not `elasticsearch`'s adoption - it says nothing about whether
+`elasticsearch-py` is itself a new product, which is a separate question a person may still have
+to rule on. The schema at `docs/schemas/resolution_ledger.schema.json` is normative for the
+shape; `build/resolution.py` is the reader.
+
 ## Organizations
 
 Organizations carry aliases for the same reason and under the same rule. Two exist, both

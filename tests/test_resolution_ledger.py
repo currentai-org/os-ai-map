@@ -5,40 +5,49 @@ its identity and boundary decisions in pull request prose, where nothing could r
 the first bulk expansion duly recreated twelve repositories that #413 had already resolved -
 one of them a product the corpus already carries under another name.
 """
+import json
 from pathlib import Path
 
 import pytest
 import yaml
+import jsonschema
 
 from build.resolution import (
     LEDGER,
     NOT_A_NEW_PRODUCT,
+    RELATIONS,
     VERDICTS,
     DuplicateResolution,
     blocks_new_product,
     holds_bulk_promotion,
     load,
+    membership_ruling,
+    verdict_for,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def test_the_ledger_parses_and_every_verdict_is_known():
     entries = load()
     assert entries
-    for repo, entry in entries.items():
-        assert entry["verdict"] in VERDICTS, f"{repo}: unknown verdict {entry['verdict']!r}"
-        assert repo == repo.lower(), "keys are lowercased for identity comparison"
-        assert len(entry.get("note") or "") > 20, f"{repo}: a decision needs its reasoning"
-        assert entry.get("decided_in"), f"{repo}: a decision needs a provenance"
+    for (kind, ident), relation in entries.keys():
+        entry = entries[((kind, ident), relation)]
+        assert entry["verdict"] in VERDICTS, f"{kind}/{ident}: unknown verdict {entry['verdict']!r}"
+        if kind == "github":
+            assert ident == ident.lower(), "github identity is compared lowercased"
+        assert len(entry.get("note") or "") > 20, f"{kind}/{ident}: a decision needs its reasoning"
+        assert entry.get("decided_in"), f"{kind}/{ident}: a decision needs a provenance"
 
 
 def test_a_resolved_repo_names_what_it_resolved_to():
     """`existing_product` and `sku_of` point at a product; `excluded_boundary` names a boundary.
     Without that an entry blocks a candidate while saying nothing about why."""
-    for repo, entry in load().items():
+    for (kind, ident), relation in load().keys():
+        entry = load()[((kind, ident), relation)]
         if entry["verdict"] in ("existing_product", "sku_of"):
-            assert entry.get("product"), f"{repo}: {entry['verdict']} must name a product"
+            assert entry.get("product") or entry.get("resolves_to"), \
+                f"{kind}/{ident}: {entry['verdict']} must name a product"
         if entry["verdict"] == "excluded_boundary":
             assert entry.get("boundary") or entry.get("note")
 
@@ -47,8 +56,11 @@ def test_named_products_exist_in_the_corpus():
     """A ledger pointing at a slug the corpus dropped is stale, and would block a candidate
     on the authority of a product that is no longer there."""
     slugs = {p.stem for p in (ROOT / "sources" / "products").glob("*.yaml")}
-    missing = {repo: e["product"] for repo, e in load().items()
-               if e.get("product") and e["product"] not in slugs}
+    missing = {
+        key: (e.get("product") or e.get("resolves_to"))
+        for key, e in load().items()
+        if (e.get("product") or e.get("resolves_to")) and (e.get("product") or e.get("resolves_to")) not in slugs
+    }
     assert not missing, f"ledger points at products that do not exist: {missing}"
 
 
@@ -61,7 +73,7 @@ def test_named_products_exist_in_the_corpus():
 def test_the_four_cases_that_produced_this_file(repo, verdict, target):
     """Named individually because each was recreated as a product by a bulk run that could
     not see the decision. A regression here is the whole failure coming back."""
-    entry = blocks_new_product(repo)
+    entry = blocks_new_product("github", repo)
     assert entry is not None, f"{repo} must be blocked from becoming a new product"
     assert entry["verdict"] == verdict
     if target:
@@ -80,24 +92,19 @@ def test_a_repository_may_be_resolved_only_once(tmp_path):
     ledger.write_text(
         "version: 1\nresolutions:\n"
         "- repo: Foo/Bar\n  verdict: existing_product\n  product: x\n"
-        "  decided_in: '#1'\n  note: the first decision, which must not be lost\n"
+        "  decided_in: '#1'\n  decided_on: '2026-08-01'\n  note: the first decision, which must not be lost\n"
         "- repo: foo/bar.git\n  verdict: unresolved\n"
-        "  decided_in: '#2'\n  note: a later entry for the same repository, differently cased\n"
+        "  decided_in: '#2'\n  decided_on: '2026-08-02'\n  note: a later entry for the same repository, differently cased\n"
     )
     with pytest.raises(DuplicateResolution) as raised:
         load(ledger)
-    assert "Foo/Bar" in str(raised.value) or "foo/bar" in str(raised.value)
+    assert "Foo/Bar" in str(raised.value) or "foo/bar" in str(raised.value) or "foo/bar" in str(raised.value).lower()
 
 
-#: Floor on the number of recorded decisions. Raise it deliberately when a pass appends;
-#: never lower it. Deliberately a hand-written constant rather than derived from the file:
-#: a floor that computes itself from the current ledger would happily derive 289 from a
-#: damaged one and prove itself correct. The independent number is what gives this test
-#: memory. 291 after the three 2026-08-31 category passes.
-LEDGER_FLOOR = 291
+LEDGER_FLOOR = 302  # trued up 2026-09-03 from 291; the ratchet below requires exact equality
 
 
-def test_the_ledger_never_shrinks():
+def test_the_ledger_never_shrinks_and_the_floor_moves_with_it():
     """Uniqueness protects identity integrity. It does not protect completeness.
 
     Three per-category tranches ran serially in one session, and each rebase conflicted on
@@ -108,26 +115,17 @@ def test_the_ledger_never_shrinks():
     been gone, and the next bulk run would have recreated both.
 
     So the ledger needs a second property alongside uniqueness: it is append-only, and a
-    resolution once recorded stays recorded. A count floor is the cheap form of that. A digest
-    over the whole key set would also catch a swap, but it would change on every legitimate
-    append and so would be noise rather than signal - and a swap is not how a side-pick fails.
-    A side-pick drops a block.
+    resolution once recorded stays recorded. A count floor is the cheap form of that. Now an
+    exact-equality ratchet rather than a `>=` floor: a PR that appends N entries raises the
+    floor by N in the same PR (#437), so drift in either direction fails here immediately
+    rather than accumulating silently until the next true-up.
 
     Correct resolution when this file conflicts: keep BOTH sides. Every entry is an append.
-
-    Deliberately a floor and not a set of named entries. Pinning the specific decisions a
-    given pass appended would couple this test to the order those passes merge in, which is
-    the one thing a serialized queue cannot promise.
     """
-    entries = load()
-    assert len(entries) >= LEDGER_FLOOR, (
-        f"the ledger holds {len(entries)} decisions, below the floor of {LEDGER_FLOOR}. "
-        "A resolution that was recorded has been lost - most likely a merge or rebase that "
-        "took one side of a conflict in this file instead of merging both. Recover the "
-        "missing entries from git history rather than lowering this number: "
-        "`git log -p --follow sources/resolution_ledger.yaml`. Raise the floor only when a "
-        "pass has legitimately appended."
-    )
+    n = len(yaml.safe_load(LEDGER.read_text())["resolutions"])
+    assert n == LEDGER_FLOOR, (
+        f"ledger has {n} entries but LEDGER_FLOOR is {LEDGER_FLOOR}; a PR that appends N entries "
+        f"raises the floor by N in the same PR (#437)")
 
 
 def test_the_real_ledger_has_no_duplicate_identity():
@@ -145,24 +143,24 @@ def test_unresolved_holds_a_bulk_promotion_even_though_it_does_not_block_forever
     them; a person may still resolve and add them by hand, which is why validate does not fail.
     """
     for repo in ("ag-ui-protocol/ag-ui", "oraios/serena", "yamadashy/repomix"):
-        assert blocks_new_product(repo) is None, f"{repo}: must not be a hard build error"
-        held = holds_bulk_promotion(repo)
+        assert blocks_new_product("github", repo) is None, f"{repo}: must not be a hard build error"
+        held = holds_bulk_promotion("github", repo)
         assert held is not None, f"{repo}: a bulk run must park it"
         assert held["verdict"] == "unresolved"
 
 
 def test_a_repo_with_no_entry_is_eligible():
     """The other side of the hold: silence in the ledger is permission."""
-    assert holds_bulk_promotion("vllm-project/vllm") is None
+    assert holds_bulk_promotion("github", "vllm-project/vllm") is None
 
 
 def test_unresolved_does_not_block():
     """`unresolved` means a person still has to look. A rerun proposing the repository again
     is the intended behaviour, so it must not be enforced like a decision."""
     assert "unresolved" not in NOT_A_NEW_PRODUCT
-    unresolved = [r for r, e in load().items() if e["verdict"] == "unresolved"]
-    for repo in unresolved:
-        assert blocks_new_product(repo) is None
+    unresolved = [(kind, ident) for ((kind, ident), relation), e in load().items() if e["verdict"] == "unresolved"]
+    for kind, ident in unresolved:
+        assert blocks_new_product(kind, ident) is None
 
 
 def test_no_product_declares_a_repo_the_ledger_resolves_elsewhere():
@@ -177,11 +175,15 @@ def test_no_product_declares_a_repo_the_ledger_resolves_elsewhere():
             if "github.com/" not in url:
                 continue
             repo = url.split("github.com/")[-1].removesuffix(".git").lower()
-            entry = ledger.get(repo)
-            if (entry and entry["verdict"] in NOT_A_NEW_PRODUCT
-                    and entry.get("product") != path.stem):
+            entry = verdict_for("github", repo, "product_equivalence", ledger)
+            resolved_to = entry.get("product") or entry.get("resolves_to") if entry else None
+            if entry and entry["verdict"] in NOT_A_NEW_PRODUCT and resolved_to != path.stem:
                 offences.append(f"{path.stem} declares {repo} ({entry['verdict']})")
     assert not offences, offences
+
+
+ALLOWED_KEYS = {"repo", "artifact", "verdict", "relation", "product", "resolves_to",
+                "boundary", "decided_in", "decided_on", "note"}
 
 
 def test_the_ledger_is_hand_maintainable():
@@ -189,6 +191,44 @@ def test_the_ledger_is_hand_maintainable():
     doc = yaml.safe_load(LEDGER.read_text())
     assert doc["version"] == 1
     assert isinstance(doc["resolutions"], list)
-    assert all(isinstance(e, dict) and set(e) <= {
-        "repo", "verdict", "product", "boundary", "decided_in", "decided_on", "note"}
-        for e in doc["resolutions"])
+    for e in doc["resolutions"]:
+        assert set(e) <= ALLOWED_KEYS, sorted(set(e) - ALLOWED_KEYS)
+
+
+def test_every_entry_validates_against_the_schema():
+    schema = json.loads((ROOT / "docs" / "schemas" / "resolution_ledger.schema.json").read_text())
+    for e in yaml.safe_load(LEDGER.read_text())["resolutions"]:
+        jsonschema.validate(e, schema)
+
+
+def test_keys_are_kind_and_canonical_id():
+    ledger = load()
+    for ((kind, ident), relation), entry in ledger.items():
+        assert kind in {"github", "huggingface_model", "huggingface_dataset", "pypi", "npm",
+                         "crates", "arxiv", "homepage"}
+        assert relation in RELATIONS
+        if kind == "github":
+            assert ident == ident.lower() and not ident.endswith(".git")
+
+
+def test_relation_defaults_to_equivalence_for_legacy_entries():
+    ledger = load()
+    assert all(e.get("relation", "product_equivalence") in RELATIONS for e in ledger.values())
+
+
+def test_a_membership_ruling_does_not_suppress_an_equivalence_question(tmp_path):
+    path = tmp_path / "ledger.yaml"
+    path.write_text(yaml.safe_dump({"version": 1, "resolutions": [{
+        "artifact": {"kind": "pypi", "id": "elasticsearch"}, "verdict": "not_member_of",
+        "relation": "product_membership", "resolves_to": "elasticsearch",
+        "decided_in": "#472", "decided_on": "2026-09-15",
+        "note": "elasticsearch-py is the client of the Java engine; its downloads are not this product's"}]}))
+    ledger = load(path)
+    assert membership_ruling("pypi", "elasticsearch", "elasticsearch", ledger)["verdict"] == "not_member_of"
+    assert blocks_new_product("pypi", "elasticsearch", ledger) is None
+    assert holds_bulk_promotion("pypi", "elasticsearch", ledger) is None
+
+
+def test_verdict_for_strips_git_suffix_like_load_does():
+    ledger = {(("github", "foo/bar"), "product_equivalence"): {"verdict": "unresolved"}}
+    assert verdict_for("github", "Foo/Bar.git", "product_equivalence", ledger) is not None

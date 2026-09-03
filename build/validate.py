@@ -190,36 +190,59 @@ def validate_sources(data: dict) -> list[str]:
                 errors.append(f"category {cid!r}: published category needs at least 10 scored products")
 
     # --- resolution ledger ---
-    # A repository a person already resolved may not come back as a new product. The ledger
+    # An artifact a person already resolved may not come back as a new product. The ledger
     # exists because a decision recorded only in a pull request is invisible to the next bulk
     # run: the first corpus expansion recreated `a2aproject/A2A` as a product called `a2a`
     # though #413 had resolved it to `agent2agent-protocol`, and eleven more besides. Prose is
     # not an input; this file is.
     #
     # `unresolved` is deliberately not enforced. It means a person still has to look, so a
-    # later run proposing the repository again is the intended behaviour rather than a
+    # later run proposing the artifact again is the intended behaviour rather than a
     # regression, and failing the build on it would just delete the distinction.
-    from build.resolution import NOT_A_NEW_PRODUCT, load as load_ledger
+    #
+    # Widened from `github` only to every declared artifact kind (#437 follow-on): a candidate
+    # dismissed on PyPI or Hugging Face alone used to have no way to stay dismissed. Every kind
+    # is folded through the same `_canonical` shim `build/resolution.py` uses, which today only
+    # canonicalizes `github` (lowercase, `.git` stripped) - Task 2 replaces that shim's body to
+    # canonicalize the rest, so a differently-cased PyPI or npm name will not yet match here.
+    from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, _canonical, load as load_ledger
 
     ledger = load_ledger()
     for slug, product in sorted((data.get("products") or {}).items()):
-        for artifact in (product.get("github") or []):
-            url = (artifact.get("url") or "").rstrip("/")
-            if "github.com/" not in url:
-                continue
-            repo = url.split("github.com/")[-1].removesuffix(".git").lower()
-            entry = ledger.get(repo)
-            if not entry or entry.get("verdict") not in NOT_A_NEW_PRODUCT:
-                continue
-            if entry.get("product") == slug:
-                continue
-            resolved_to = entry.get("product") or entry.get("boundary") or "out of scope"
+        for kind in _TAIL_ARTIFACT_KINDS:
+            pattern = _ARTIFACT_URL_PATTERNS[kind]
+            for artifact in (product.get(kind) or []):
+                if not (isinstance(artifact, dict) and isinstance(artifact.get("url"), str)):
+                    continue
+                match = pattern.search(artifact["url"].rstrip("/"))
+                if not match:
+                    continue
+                ident = _canonical(kind, match.group(1))
+                entry = ledger.get(((kind, ident), "product_equivalence"))
+                if not entry or entry.get("verdict") not in NOT_A_NEW_PRODUCT:
+                    continue
+                resolved_to = entry.get("product") or entry.get("resolves_to")
+                if resolved_to == slug:
+                    continue
+                resolved_to = resolved_to or entry.get("boundary") or "out of scope"
+                errors.append(
+                    f"products/{slug}.yaml: declares {kind} {ident!r}, which the resolution "
+                    f"ledger resolves as {entry['verdict']} -> {resolved_to} "
+                    f"(decided in {entry.get('decided_in', 'an earlier sweep')}). Either the "
+                    f"ledger entry is wrong and a person should change it, or this product "
+                    f"should not exist."
+                )
+
+    # A `member_of`/`not_member_of` verdict answers a `product_membership` question; recording
+    # one under any other relation would make `verdict_for` read it as an equivalence ruling it
+    # never made.
+    for (key, relation), entry in ledger.items():
+        if entry.get("verdict") in MEMBERSHIP_VERDICTS and relation != "product_membership":
+            kind, ident = key
             errors.append(
-                f"products/{slug}.yaml: declares {repo!r}, which the resolution ledger "
-                f"resolves as {entry['verdict']} -> {resolved_to} "
-                f"(decided in {entry.get('decided_in', 'an earlier sweep')}). Either the "
-                f"ledger entry is wrong and a person should change it, or this product "
-                f"should not exist."
+                f"resolution ledger: {kind} {ident!r} carries verdict {entry['verdict']!r} but "
+                f"relation {relation!r}; member_of/not_member_of require relation: "
+                "product_membership"
             )
 
     # --- tail registry invariants ---
@@ -559,6 +582,22 @@ def validate_sources(data: dict) -> list[str]:
             jsonschema.validate(record, registry_schema)
         except jsonschema.ValidationError as e:
             errors.append(f"registry/{cid}: schema: {e.message}")
+
+    # `sources/resolution_ledger.yaml` is one file rather than a directory, loaded straight
+    # from disk here rather than through `load_ledger` above, so a malformed entry is reported
+    # by slot in the file rather than silently swallowed by `load`'s duplicate-key check.
+    from build.resolution import LEDGER
+
+    ledger_schema = json.loads(
+        (Path(__file__).resolve().parents[1] / "docs" / "schemas" / "resolution_ledger.schema.json").read_text()
+    )
+    ledger_doc = yaml.safe_load(LEDGER.read_text()) or {}
+    for i, entry in enumerate(ledger_doc.get("resolutions") or []):
+        try:
+            jsonschema.validate(entry, ledger_schema)
+        except jsonschema.ValidationError as e:
+            label = entry.get("repo") or (entry.get("artifact") or {}).get("id") or f"entry {i}"
+            errors.append(f"resolution_ledger.yaml: {label}: schema: {e.message}")
 
     return errors
 

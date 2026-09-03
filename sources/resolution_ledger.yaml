@@ -23,10 +23,22 @@
 #   excluded_boundary     out of scope for the map, with the boundary named
 #   excluded_maintenance  archived, or unmaintained past the sweep's declared window
 #   unresolved            identity genuinely undecided; needs a person, not a rerun
+#   member_of             this artifact's measurement belongs to `resolves_to` (relation: product_membership)
+#   not_member_of         this artifact's measurement does NOT belong to `resolves_to`, though it
+#                          may look related (relation: product_membership)
+#
+# ARTIFACT and RELATION. An entry names what it is about with either `repo` (legacy shorthand
+# for a GitHub identity) or `artifact: {kind, id}`, which also covers huggingface_model,
+# huggingface_dataset, pypi, npm, crates, arxiv and homepage. `relation` says which question the
+# entry answers: `product_equivalence` ("is this a new product, or does it already belong to
+# one?" - the only question every entry before 2026-09 answered, and the default when `relation`
+# is absent) or `product_membership` ("does this artifact's usage count toward `resolves_to`'s
+# adoption measurement?"). A ruling suppresses only questions of its own relation - a
+# not_member_of on a package never answers a later equivalence question about the same package.
 #
 # A bulk run must consult this file before proposing a product and must never silently
 # overturn an entry. build/validate.py enforces the half that can be enforced: no product may
-# declare a repository this file resolves elsewhere.
+# declare an artifact this file resolves elsewhere, under the same relation.
 #
 # Seeded 2026-08-31 from the reviewed decisions in #413. Entries are appended by later sweeps;
 # a verdict is changed only deliberately, by a person, with `decided_in` updated.
