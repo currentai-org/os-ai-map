@@ -178,7 +178,13 @@ def validate_sources(data: dict) -> list[str]:
     # is folded through `build.identity.fold_for_proposal`, the same function
     # `build/resolution.py`'s ledger key now delegates to, so a differently-cased PyPI or npm
     # name matches here too.
-    from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, load as load_ledger
+    from build.resolution import (
+        MEMBERSHIP_VERDICTS,
+        NOT_A_NEW_PRODUCT,
+        artifact_of,
+        relation_of,
+        load as load_ledger,
+    )
 
     ledger = load_ledger()
     for slug, product in sorted((data.get("products") or {}).items()):
@@ -208,9 +214,10 @@ def validate_sources(data: dict) -> list[str]:
     # A `member_of`/`not_member_of` verdict answers a `product_membership` question; recording
     # one under any other relation would make `verdict_for` read it as an equivalence ruling it
     # never made.
-    for (key, relation), entry in ledger.items():
+    for entry in ledger.values():
+        relation = relation_of(entry)
         if entry.get("verdict") in MEMBERSHIP_VERDICTS and relation != "product_membership":
-            kind, ident = key
+            kind, ident = artifact_of(entry)
             errors.append(
                 f"resolution ledger: {kind} {ident!r} carries verdict {entry['verdict']!r} but "
                 f"relation {relation!r}; member_of/not_member_of require relation: "

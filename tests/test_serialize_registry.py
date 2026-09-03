@@ -314,7 +314,7 @@ def test_resolution_ledger_table_has_one_row_per_ruling():
     tables, errors, _ = build_registry(_sources())
     rows = tables["resolution_ledger"]
     assert not errors
-    keys = [(r["artifact_kind"], r["artifact_id"], r["relation"]) for r in rows]
+    keys = [(r["artifact_kind"], r["artifact_id"], r["relation"], r["resolves_to"]) for r in rows]
     assert len(keys) == len(set(keys))
     assert all(r["relation"] in ("product_equivalence", "product_membership") for r in rows)
 

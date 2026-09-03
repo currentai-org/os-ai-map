@@ -23,6 +23,10 @@ Emitted tables (one CSV each, written to build/registry/):
   product_lineage       product_slug, relation, target
   resolution_ledger     artifact_kind, artifact_id, relation, verdict, resolves_to,
                         boundary, decided_in, decided_on, note
+                        (grain: one row per (artifact_kind, artifact_id, relation,
+                         resolves_to) -- a product_membership ruling names the product
+                         it is about, so the same artifact may carry a separate row per
+                         product it has been weighed against)
   product_aliases       alias, product_slug
 
 `arxiv` exists so citation lookups join on an exact identifier. Matching papers
@@ -51,7 +55,9 @@ import sys
 from pathlib import Path
 
 from build.identity import ARXIV_ID, canonical, homepage_canonical_url, id_from_url
+from build.resolution import artifact_of as _ledger_artifact_of
 from build.resolution import load as load_resolution_ledger
+from build.resolution import relation_of as _ledger_relation_of
 from build.serialize import _aliases
 from build.taxonomy import arc_categories, category_statuses
 from build.validate import load_sources, published_products
@@ -350,12 +356,18 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                     }
                 )
 
-    # The decision memory: one row per (artifact, relation) ruling, exactly the grain
-    # `build.resolution.load` keys on. Sorted for determinism, since this feeds the same
-    # daily automated PR the other tables do.
+    # The decision memory: one row per (artifact, relation, resolves_to) ruling, exactly the
+    # grain `build.resolution.load` keys on -- a `product_membership` ruling is a statement
+    # about ONE product, so the same artifact may carry a separate `member_of`/`not_member_of`
+    # row per product it has been weighed against. Sorted for determinism, since this feeds the
+    # same daily automated PR the other tables do.
     ledger = load_resolution_ledger()
-    for (kind, canonical_id), relation in sorted(ledger):
-        entry = ledger[((kind, canonical_id), relation)]
+    for entry in sorted(
+        ledger.values(),
+        key=lambda e: (*_ledger_artifact_of(e), _ledger_relation_of(e), e.get("resolves_to") or ""),
+    ):
+        kind, canonical_id = _ledger_artifact_of(entry)
+        relation = _ledger_relation_of(entry)
         tables["resolution_ledger"].append(
             {
                 "artifact_kind": kind,

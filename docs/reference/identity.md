@@ -214,6 +214,12 @@ says its downloads are not `elasticsearch`'s adoption - it says nothing about wh
 to rule on. The schema at `docs/schemas/resolution_ledger.schema.json` is normative for the
 shape; `build/resolution.py` is the reader.
 
+Membership is a relation between an artifact and a *product*, not a fact about the artifact
+alone, so `resolves_to` is part of the ledger key for `product_membership` rulings - one PyPI
+package may legitimately be `member_of` one product's measurement and `not_member_of` another's.
+`product_equivalence` has no such second axis: an artifact either is a new product or belongs to
+exactly one, so its key stays `(artifact, relation)`.
+
 ## Organizations
 
 Organizations carry aliases for the same reason and under the same rule. Two exist, both
