@@ -35,11 +35,16 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   least 20 truth items — on the four relations automation is planned for, and two rules
   pinned as tests rather than metrics: a name-match edge never auto-emits (checked against
   `method` as an array, matching the deployed SQL) and a scoring-bearing membership edge
-  never auto-emits regardless of confidence. Scheduled weekly as `identity-eval.yml`, which
-  runs a fixture on every PR and `--from-warehouse --allow-unprovisioned` on schedule — the
-  flag skips cleanly (exit 0) while the identity dataset is undeployed and refuses to run
-  (exit 2) once `warehouse/assets.yaml` marks it deployed, so the gate cannot go permanently
-  red waiting on a dependency, nor silently skip past a real deploy (#365).
+  never auto-emits regardless of confidence. Truth is built from DECLARED (head/tail)
+  artifacts only, so `equivalence`, `org` and `artifact_identity` — sourced from every tier,
+  head/tail/pool — split on their `candidate_tier` column: precision/recall are computed over
+  the declared slice truth covers, and `n_emitted_at_threshold`/the review digest are
+  computed over the pool slice automation would actually act on. Scheduled weekly as
+  `identity-eval.yml`, which runs a fixture on every PR and
+  `--from-warehouse --allow-unprovisioned` on schedule — the flag skips cleanly (exit 0) only
+  on a genuine missing-table error while the identity dataset is undeployed, exits 2 on any
+  other failure (auth, timeout, a missing column), and refuses to run at all once
+  `warehouse/assets.yaml` marks the dataset deployed (#365).
 
 ### Changed
 

@@ -6,43 +6,41 @@ automation can act on. Before any of that is allowed to auto-emit, this module a
 question: against every identity decision a person has already made, how often would the
 graph have agreed?
 
-## Fix round 1 -- this rewrite
+## Fix rounds
 
-The first version of this module was reviewed against the deployed SQL at
-`/workspace/GitHub/oso-external/currentai-org/udms/identity_*.sql` and failed on schema: it
-compared `method` (an `ARRAY(VARCHAR)` in every deployed model) to a bare string, so the
-name-match prohibition was inert; it read `artifact_kind`/`artifact_id` columns that
-`equivalence_edges` and `artifact_identity_edges` do not carry; `org`'s `candidate_key`
-carried no kind prefix while truth's did; `artifact_identity` truth was a self-loop that
-could never match the deployed pair grain; two `KNOWN_NEGATIVES` were declared, scored
-artifacts rather than known negatives; `scoring_bearing` could be bypassed by passing a
-metric name instead of an edge-table name; `recall` could exceed 1.0 on duplicate-spelling
-edges; and `membership_non_scoring`'s recall floor was mathematically unsatisfiable because
-every declared kind in the corpus happens to have an adoption route. This version fixes all
-of that -- see the full review at
-`.superpowers/sdd/2026-09-03-phase-1-identity-implementation/task-6-review.md` for detail on
-each finding (M1-M9).
+Two rounds of review against the deployed SQL at
+`/workspace/GitHub/oso-external/currentai-org/udms/identity_*.sql` shaped this module; the
+full history is in
+`.superpowers/sdd/2026-09-03-phase-1-identity-implementation/task-6-review.md` (findings
+M1-M9, then F1-F5). What follows is the settled contract, not a chronology.
 
-Two further additions landed in the same fix round, from a second reviewer disposition:
+## The declared/pool tier split (F1)
 
-- `--allow-unprovisioned` (`--from-warehouse` only): treats a missing
-  `currentai.identity.*` table as "not deployed yet" and exits 0 instead of 2, so the
-  scheduled workflow is not red for months while Task 6 waits on the dataset to ship. It
-  refuses to run at all -- exit 2, before touching the warehouse -- if `warehouse/assets.yaml`
-  already marks any `identity.*` asset `materialized: true`, so the skip cannot outlive the
-  deploy it is meant to wait for.
-- Membership truth is keyed on `(artifact_kind, folded artifact_id, product_slug)`, not on
-  the artifact alone: a `member_of` ruling for package X against product A and a
-  `not_member_of` for the SAME package against product B are two distinct truth items, not a
-  contradiction. `build.resolution.load()` still enforces uniqueness per `(artifact,
-  relation)` today (a stricter grain than the ledger will carry once a parallel PR adds
-  `resolves_to` to it), so the ledger-consuming logic here is written as a pure function over
-  an ITERABLE of ledger entries -- `_membership_from_ledger` -- rather than assuming the
-  loader's returned dict is the final word on how many rulings one artifact can carry. See
-  `tests/test_identity_eval.py::test_membership_truth_keeps_two_products_for_one_artifact_distinct`,
-  which exercises this with two entries sharing one artifact key and cannot rely on
-  `resolution.load()` to prove it, precisely because today's loader would raise
-  `DuplicateResolution` on that YAML shape.
+The replay question is "would the graph have recovered what a person already declared" --
+and truth (the ledger, `sources/products/*.yaml`, org rosters) is built entirely from
+**declared** artifacts. `equivalence_edges`, `org_edges` and `artifact_identity_edges` are
+NOT declared-only: they are sourced from `currentai.identity.artifact_nodes`, which spans
+every tier -- `head`/`tail` (declared) and `pool` (undeclared candidates nobody has looked
+at). Scoring precision/recall over the unfiltered edge set compares two populations that are
+disjoint outside the `head`/`tail` slice, which makes a floor unsatisfiable no matter how
+good the graph is -- the same defect M8 named for `membership_non_scoring`, recurring here
+for `equivalence`/`org`/`artifact_identity` because their SQL, correctly, is not
+declared-only.
+
+So every edge in those three tables carries `candidate_tier` (`head`/`tail`/`pool` --
+`membership` needs no equivalent column: it is sourced only from
+`registry.product_artifacts`/`tail_products`, so it is declared-only already, per its own SQL
+header). `replay` splits on it:
+
+- **Precision and recall** are computed over `head`/`tail` edges only -- the population truth
+  actually covers. This answers "would the graph have recovered what was already declared".
+- **`n_emitted_at_threshold` and `digest_items`** are computed over `pool` edges only -- the
+  population automation would actually act on, since a `head`/`tail` artifact is already
+  known and has nothing to discover. A `head`/`tail` edge that fails to emit is not a review
+  queue item; it is scoring data.
+
+`membership` is unaffected -- it has no pool population to split, so its edges feed both
+computations the way they did before this split existed.
 
 ## Where truth comes from
 
@@ -79,20 +77,52 @@ CI with no `OSO_API_KEY`:
   non-scoring for `membership_non_scoring`'s `n_truth` -- see `MIN_TRUTH` below for why this
   matters.
 
+Membership truth is keyed on `(artifact_kind, folded artifact_id, product_slug)`, not on the
+artifact alone: a `member_of` ruling for package X against product A and a `not_member_of`
+for the SAME package against product B are two distinct truth items, not a contradiction.
+`build.resolution.load()` still enforces uniqueness per `(artifact, relation)` today (a
+stricter grain than the ledger will carry once a parallel PR adds `resolves_to` to it), so
+the ledger-consuming logic here is written as a pure function over an ITERABLE of ledger
+entries -- `_membership_from_ledger` -- rather than assuming the loader's returned dict is
+the final word on how many rulings one artifact can carry. See
+`tests/test_identity_eval.py::test_membership_truth_keeps_two_products_for_one_artifact_distinct`,
+which exercises this with two entries sharing one artifact key and cannot rely on
+`resolution.load()` to prove it, precisely because today's loader would raise
+`DuplicateResolution` on that YAML shape.
+
+`org` truth is `candidate_key -> {org_slug, ...}`, a SET, not a single slug: two folded
+artifacts in the corpus today genuinely belong to two orgs each
+(`github:swe-bench/swe-bench` under both `princeton-nlp` and `princeton-nlp-openai`;
+`huggingface_dataset:allenai/tulu-3-sft-mixture` under both `ai2` and
+`allen-institute-for-ai`), and an earlier version of this module used `dict.setdefault`,
+which silently kept only the first org read and scored the second as a false positive. Every
+emitted org in the truth set for a candidate counts as correct.
+
 ## What `--from-warehouse` supplies, and what it does not
 
 Only the four edge tables -- `currentai.identity.{artifact_identity,membership,equivalence,
-org}_edges`, read with an explicit column list (never `SELECT *`) written to the CONTRACT
-this fix round settled, not to the SQL files as they exist today: `equivalence_edges` and
-`org_edges` do not yet carry a kind-prefixed `candidate_key` or an `artifact_kind` column,
-per the review's M2/M3 -- a parallel change updates the SQL to that shape before deploy.
-Truth is never re-derived from the warehouse's own `registry.*` mirrors, so the same eval
-logic runs identically against a live run and against a fixture.
+org}_edges` -- read with an explicit column list (never `SELECT *`, see `WAREHOUSE_COLUMNS`).
+`equivalence_edges` and `org_edges` already carry a kind-prefixed `candidate_key`, an
+`artifact_kind` column and `candidate_tier` in the deployed SQL; `artifact_identity_edges`
+does not yet carry `candidate_tier` (it spans all tiers already, per its own header, but has
+not had the column added) -- `WAREHOUSE_COLUMNS` names it anyway, ahead of that column
+landing, per the F1 ruling. Truth is never re-derived from the warehouse's own `registry.*`
+mirrors, so the same eval logic runs identically against a live run and against a fixture.
 
-A missing table exits 2 naming it (or 0, under `--allow-unprovisioned`, if the dataset is
-not yet marked deployed); a missing REQUIRED column on an actual row exits 2 naming it too --
+A missing table exits 2 naming it (or 0, under `--allow-unprovisioned`, ONLY when the failure
+is specifically a table-not-found error -- see `_is_table_not_found` and F2 below; every other
+failure, including a missing column, a bad key, or an expired `OSO_API_KEY`, exits 2
+regardless of the flag). A missing REQUIRED column on an actual row exits 2 naming it too --
 `validate_columns` checks before any `_score_*` function ever indexes a row, so no `KeyError`
-can escape to a traceback in a scheduled run.
+can escape to a traceback in a scheduled run. Both `validate_columns` and `replay` reject an
+edges dict keyed by anything outside `EDGE_RELATIONS` -- a renamed or misspelled relation
+(`"orgs"` for `"org"`) raises rather than silently scoring nothing and reporting green.
+
+`--allow-unprovisioned` (`--from-warehouse` only): treats a genuine missing-table error as
+"not deployed yet" and exits 0 instead of 2, so the scheduled workflow is not red for months
+while the identity dataset ships. It refuses to run at all -- exit 2, before touching the
+warehouse -- if `warehouse/assets.yaml` already marks any `identity.*` asset
+`materialized: true`, so the skip cannot outlive the deploy it is meant to wait for.
 
 ## Insufficient truth, not a floor that can never be met
 
@@ -207,28 +237,37 @@ WAREHOUSE_TABLES: dict[str, str] = {
 }
 
 # Explicit column lists for `--from-warehouse` -- never `SELECT *`. `equivalence` and `org`
-# are written to the candidate_key/artifact_kind CONTRACT this fix round settled (see the
-# module docstring), not to `udms/identity_{equivalence,org}_edges.sql` as they read today.
+# match `udms/identity_{equivalence,org}_edges.sql` as deployed, `candidate_tier` included.
+# `artifact_identity` includes `candidate_tier` ahead of the SQL carrying it (F1 ruling) --
+# the model already spans all tiers, the explicit column is pending.
 WAREHOUSE_COLUMNS: dict[str, tuple[str, ...]] = {
-    "artifact_identity": ("artifact_kind", "artifact_id_a", "artifact_id_b", "confidence", "method", "penalties"),
+    "artifact_identity": (
+        "artifact_kind", "artifact_id_a", "artifact_id_b", "candidate_tier", "confidence",
+        "method", "penalties",
+    ),
     "membership": (
         "artifact_kind", "artifact_id", "product_tier", "product_slug", "confidence", "method",
         "penalties", "scoring_bearing",
     ),
-    "equivalence": ("artifact_kind", "candidate_key", "product_tier", "product_slug", "confidence", "method", "penalties"),
-    "org": ("artifact_kind", "candidate_key", "org_slug", "confidence", "method", "penalties"),
+    "equivalence": (
+        "candidate_key", "artifact_kind", "candidate_tier", "product_tier", "product_slug",
+        "confidence", "method", "penalties",
+    ),
+    "org": ("candidate_key", "artifact_kind", "candidate_tier", "org_slug", "confidence", "method", "penalties"),
 }
 
 # The columns `_score_*` actually indexes. A row missing one of these cannot be scored --
 # `validate_columns` catches it before any `_score_*` function runs, so no `KeyError` escapes.
 # `scoring_bearing` is required for `membership`, not merely defaulted, because a missing flag
 # defaulting to "not scoring-bearing" would be exactly the kind of fail-open the governance
-# rule exists to prevent.
+# rule exists to prevent. `candidate_tier` is required on the three tiered relations because a
+# missing value would land in NEITHER the declared nor the pool bucket in `_tier_split`,
+# silently zeroing out a metric rather than raising.
 REQUIRED_COLUMNS: dict[str, tuple[str, ...]] = {
-    "artifact_identity": ("artifact_kind", "artifact_id_a", "artifact_id_b"),
+    "artifact_identity": ("artifact_kind", "artifact_id_a", "artifact_id_b", "candidate_tier"),
     "membership": ("artifact_kind", "artifact_id", "product_slug", "scoring_bearing"),
-    "equivalence": ("candidate_key", "product_slug"),
-    "org": ("candidate_key", "org_slug"),
+    "equivalence": ("candidate_key", "product_slug", "candidate_tier"),
+    "org": ("candidate_key", "org_slug", "candidate_tier"),
 }
 
 
@@ -297,6 +336,15 @@ def emits(edge: dict, relation: str) -> bool:
     return float(edge.get("confidence") or 0.0) >= threshold
 
 
+def _check_known_relations(edges: dict[str, list[dict]]) -> None:
+    """Raises if `edges` carries a key outside `EDGE_RELATIONS` -- a rename or a typo
+    (`"orgs"` for `"org"`) must not silently score as "not evaluated" and print green (F3).
+    """
+    unknown = sorted(set(edges) - set(EDGE_RELATIONS))
+    if unknown:
+        raise ValueError(f"unknown edge relation(s) {unknown!r}; expected one of {EDGE_RELATIONS}")
+
+
 def emitted_at_threshold(edges: dict[str, list[dict]]) -> dict[str, list[dict]]:
     """`edges`, filtered per relation to what would actually auto-emit."""
     return {relation: [e for e in items if emits(e, relation)] for relation, items in edges.items()}
@@ -307,11 +355,38 @@ def digest_items(edges: dict[str, list[dict]]) -> list[dict]:
     A name-match edge and a scoring-bearing membership edge both land here rather than
     vanishing, which is what the two never-auto-emit tests check on top of
     `emitted_at_threshold` being empty: excluded from automation is not discarded.
+
+    Restricted to `pool`-tier rows for the three relations that carry `candidate_tier` --
+    the review queue is what automation might actually propose, and a `head`/`tail` edge
+    names an artifact that is already declared, so a person reviewing the queue has nothing
+    to do with it. `membership` has no tier column (its SQL is declared-only already), so its
+    rows are unfiltered, as before the F1 tier split existed.
     """
     out: list[dict] = []
     for relation, items in edges.items():
-        out.extend(e for e in items if not emits(e, relation))
+        candidates = items if relation == "membership" else _tier_split(items)[1]
+        out.extend(e for e in candidates if not emits(e, relation))
     return out
+
+
+def _tier_split(rows: list[dict]) -> tuple[list[dict], list[dict]]:
+    """(declared, pool) -- `rows` split on `candidate_tier`. `declared` is `head`/`tail`, the
+    population `Truth` is built from; `pool` is undeclared candidates, the population
+    automation might actually act on. A row with a missing or unrecognized `candidate_tier`
+    lands in neither bucket -- `REQUIRED_COLUMNS` makes that unreachable through
+    `validate_columns`, but this function does not assume its caller ran that check.
+    """
+    declared = [r for r in rows if r.get("candidate_tier") in ("head", "tail")]
+    pool = [r for r in rows if r.get("candidate_tier") == "pool"]
+    return declared, pool
+
+
+def _equivalence_key(e: dict) -> tuple:
+    return (e.get("candidate_key"), e.get("product_slug"))
+
+
+def _org_key(e: dict) -> tuple:
+    return (e.get("candidate_key"), e.get("org_slug"))
 
 
 @dataclass
@@ -324,7 +399,9 @@ class Truth:
     False (is known NOT to be -- a ledger `not_member_of` or a `KNOWN_NEGATIVES` entry). Two
     verdicts against the SAME artifact for two different products are two distinct keys, not
     a collision -- see `_membership_from_ledger`.
-    `org`: candidate_key -> the org slug that artifact's product belongs to.
+    `org`: candidate_key -> the SET of org slugs that artifact's product(s) belong to (not a
+    single slug -- two folded artifacts in the corpus genuinely belong to two orgs each; see
+    the module docstring's F5 note). Any org in the set counts as correct.
     `identity_pairs`: `{(artifact_kind, folded_a, folded_b)}` for declared spelling pairs that
     fold to the same comparison key (folded_a == folded_b by construction -- see the module
     docstring). Empty in the corpus today.
@@ -336,7 +413,7 @@ class Truth:
     equivalence: dict[str, str] = field(default_factory=dict)
     equivalence_negatives: set[str] = field(default_factory=set)
     membership: dict[tuple[Key, str], bool] = field(default_factory=dict)
-    org: dict[str, str] = field(default_factory=dict)
+    org: dict[str, set[str]] = field(default_factory=dict)
     identity_pairs: set[tuple[str, str, str]] = field(default_factory=set)
     route_kinds: frozenset[str] = field(default_factory=frozenset)
 
@@ -462,14 +539,17 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
             identity_pairs.add((kind, lo, hi))
 
     # Declared artifacts: positive membership truth, and org truth bridged through each
-    # product's org.
-    product_org: dict[str, str] = {}
+    # product's org(s). `product_org` is `product_slug -> {org_slug, ...}` -- a SET, not a
+    # single value, because a product can be listed in more than one org's roster (e.g.
+    # `swe-bench` under both `princeton-nlp` and `princeton-nlp-openai`); a plain assignment
+    # here would have the same F5 bug one step removed.
+    product_org: dict[str, set[str]] = {}
     for path in sorted((ROOT / "sources" / "organizations").glob("*.yaml")):
         roster = yaml.safe_load(path.read_text()) or {}
         for slug in roster.get("products") or []:
-            product_org[slug] = path.stem
+            product_org.setdefault(slug, set()).add(path.stem)
 
-    org: dict[str, str] = {}
+    org: dict[str, set[str]] = {}
     for slug, product in products.items():
         for kind in KINDS:
             for entry in product.get(kind) or []:
@@ -479,7 +559,7 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
                 key = _membership_key(kind, ident)
                 membership.setdefault((key, slug), True)
                 if slug in product_org:
-                    org.setdefault(candidate_key(kind, ident), product_org[slug])
+                    org.setdefault(candidate_key(kind, ident), set()).update(product_org[slug])
 
     declared_true = {(k, s) for (k, s), is_member in membership.items() if is_member}
     for neg in known_negatives:
@@ -525,9 +605,6 @@ def _score(emitted: list[dict], key_fn, correct_fn, n_truth: int) -> Metrics:
 
 
 def _score_equivalence(emitted: list[dict], truth: Truth) -> Metrics:
-    def key_fn(e: dict):
-        return (e.get("candidate_key"), e.get("product_slug"))
-
     def correct_fn(e: dict):
         ck, slug = e.get("candidate_key"), e.get("product_slug")
         if ck in truth.equivalence_negatives:
@@ -535,7 +612,7 @@ def _score_equivalence(emitted: list[dict], truth: Truth) -> Metrics:
         ok = truth.equivalence.get(ck) == slug
         return ok, (ck if ok else None)
 
-    return _score(emitted, key_fn, correct_fn, len(truth.equivalence))
+    return _score(emitted, _equivalence_key, correct_fn, len(truth.equivalence))
 
 
 def _score_membership(emitted: list[dict], truth: Truth, scoring_bearing: bool) -> Metrics:
@@ -556,15 +633,20 @@ def _score_membership(emitted: list[dict], truth: Truth, scoring_bearing: bool) 
 
 
 def _score_org(emitted: list[dict], truth: Truth) -> Metrics:
-    def key_fn(e: dict):
-        return (e.get("candidate_key"), e.get("org_slug"))
+    """F5 fix: `truth.org` maps a candidate_key to a SET of org slugs, and ANY of them is
+    correct -- a folded artifact genuinely belonging to two orgs must not score the second,
+    correctly emitted org as a false positive. `n_truth` counts distinct
+    `(candidate_key, org_slug)` PAIRS, not distinct candidate_keys, so a two-org artifact
+    counts as two truth items for recall, not one.
+    """
 
     def correct_fn(e: dict):
-        ck = e.get("candidate_key")
-        ok = truth.org.get(ck) == e.get("org_slug")
-        return ok, (ck if ok else None)
+        ck, slug = e.get("candidate_key"), e.get("org_slug")
+        ok = slug in truth.org.get(ck, ())
+        return ok, ((ck, slug) if ok else None)
 
-    return _score(emitted, key_fn, correct_fn, len(truth.org))
+    n_truth = sum(len(orgs) for orgs in truth.org.values())
+    return _score(emitted, _org_key, correct_fn, n_truth)
 
 
 def _identity_pair(e: dict) -> tuple[str, str, str]:
@@ -584,8 +666,29 @@ def _score_identity(emitted: list[dict], truth: Truth) -> Metrics:
     return _score(emitted, _identity_pair, correct_fn, len(truth.identity_pairs))
 
 
+def _score_tiered(rows: list[dict], truth: Truth, relation: str, score_fn, key_fn) -> Metrics:
+    """The F1 tier split: precision/recall over `head`/`tail` (declared) edges that pass
+    `emits`, `n_emitted_at_threshold` over `pool` (undeclared) edges that pass `emits`.
+    `score_fn` is one of `_score_equivalence`/`_score_org`/`_score_identity`; `key_fn` is its
+    matching dedup key, reused here so the pool count dedupes the same way precision's
+    denominator does.
+    """
+    declared, pool = _tier_split(rows)
+    emitted_declared = [e for e in declared if emits(e, relation)]
+    emitted_pool = [e for e in pool if emits(e, relation)]
+    metrics = score_fn(emitted_declared, truth)
+    pool_count = len({key_fn(e) for e in emitted_pool})
+    return Metrics(metrics.precision, metrics.recall, metrics.n_truth, pool_count)
+
+
 def replay(edges: dict[str, list[dict]], truth: Truth) -> dict[str, Metrics]:
     """Score every relation `edges` carries against `truth`.
+
+    `equivalence`, `org` and `artifact_identity` are tier-split (F1): precision/recall are
+    computed over `head`/`tail` edges (the declared population `truth` covers), while
+    `n_emitted_at_threshold` is computed over `pool` edges (what automation would actually
+    propose) -- see `_score_tiered` and the module docstring. `membership` has no tier
+    column (its SQL is declared-only already) and is unaffected.
 
     `membership` is one edge table but two questions for governance purposes, so it is split
     here into `membership_scoring` and `membership_non_scoring` -- the only two relation
@@ -597,31 +700,60 @@ def replay(edges: dict[str, list[dict]], truth: Truth) -> dict[str, Metrics]:
     `membership_scoring`'s `n_emitted_at_threshold` is always 0 by construction: `emits`
     forbids a scoring-bearing edge from emitting at any confidence.
     """
-    at_threshold = emitted_at_threshold(edges)
+    _check_known_relations(edges)
     out: dict[str, Metrics] = {}
 
     if "equivalence" in edges:
-        out["equivalence"] = _score_equivalence(at_threshold["equivalence"], truth)
+        out["equivalence"] = _score_tiered(edges["equivalence"], truth, "equivalence", _score_equivalence, _equivalence_key)
     if "artifact_identity" in edges:
-        out["artifact_identity"] = _score_identity(at_threshold["artifact_identity"], truth)
+        out["artifact_identity"] = _score_tiered(edges["artifact_identity"], truth, "artifact_identity", _score_identity, _identity_pair)
     if "org" in edges:
-        out["org"] = _score_org(at_threshold["org"], truth)
+        out["org"] = _score_tiered(edges["org"], truth, "org", _score_org, _org_key)
     if "membership" in edges:
-        emitted_membership = at_threshold["membership"]  # already all non-bearing, by `emits`
-        out["membership_non_scoring"] = _score_membership(emitted_membership, truth, scoring_bearing=False)
+        at_threshold = [e for e in edges["membership"] if emits(e, "membership")]  # already all non-bearing
+        out["membership_non_scoring"] = _score_membership(at_threshold, truth, scoring_bearing=False)
         out["membership_scoring"] = _score_membership([], truth, scoring_bearing=True)
 
     return out
 
 
 class WarehouseTableMissing(RuntimeError):
+    """The table genuinely does not exist -- the only failure `--allow-unprovisioned` may
+    swallow. See `_is_table_not_found`.
+    """
+
     def __init__(self, table: str, cause: Exception):
         super().__init__(
-            f"{table} could not be queried ({type(cause).__name__}: {cause}). The "
+            f"{table} does not exist ({type(cause).__name__}: {cause}). The "
             f"currentai.identity.* dataset has not deployed yet -- see docs/operations/"
             f"deploy-models.md."
         )
         self.table = table
+
+
+class WarehouseQueryFailed(RuntimeError):
+    """A query against `table` failed for a reason OTHER than the table not existing --
+    auth, a timeout, a planner error, a missing column on an existing table. Always exits 2,
+    `--allow-unprovisioned` or not: F2 -- the flag exists to cover exactly one signal
+    ("not deployed yet"), and conflating it with every other failure class would let an
+    expired `OSO_API_KEY` or a genuine schema break report "skipped" and stay green.
+    """
+
+    def __init__(self, table: str, cause: Exception):
+        super().__init__(f"{table} could not be queried ({type(cause).__name__}: {cause})")
+        self.table = table
+
+
+# Trino's own wording for "this table does not exist" (and pyoso/PyStarburst wrapping of it),
+# matched case-insensitively against the exception's string form. Deliberately narrow: any
+# OTHER failure -- auth, timeout, a missing column on a table that DOES exist -- must exit 2
+# and never be read as "not provisioned yet".
+_TABLE_NOT_FOUND_MARKERS = ("does not exist", "table_not_found", "table not found")
+
+
+def _is_table_not_found(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return any(marker in text for marker in _TABLE_NOT_FOUND_MARKERS)
 
 
 class EdgeColumnMissing(RuntimeError):
@@ -652,9 +784,12 @@ def _identity_dataset_deployed(path: Path = ASSETS_PATH) -> list[str]:
 
 
 def load_edges_from_warehouse() -> dict[str, list[dict]]:
-    """The four edge tables, read live with an explicit column list per table. Raises
-    `WarehouseTableMissing` naming whichever table could not be queried, rather than letting
-    the first one crash the run opaquely.
+    """The four edge tables, read live with an explicit column list per table.
+
+    Raises `WarehouseTableMissing` when the failure's own text says the table does not exist
+    (`_is_table_not_found`) -- the only case `--allow-unprovisioned` may treat as "not
+    deployed yet". Every other query failure -- auth, timeout, a missing column, a planner
+    error -- raises `WarehouseQueryFailed`, which always exits 2 (F2).
     """
     from build.warehouse import query
 
@@ -664,7 +799,9 @@ def load_edges_from_warehouse() -> dict[str, list[dict]]:
         try:
             edges[relation] = query(f"SELECT {columns} FROM {table}")
         except Exception as exc:  # noqa: BLE001 -- re-raised typed, with the table named
-            raise WarehouseTableMissing(table, exc) from exc
+            if _is_table_not_found(exc):
+                raise WarehouseTableMissing(table, exc) from exc
+            raise WarehouseQueryFailed(table, exc) from exc
     return edges
 
 
@@ -676,8 +813,10 @@ def validate_columns(edges: dict[str, list[dict]]) -> None:
     """Every row of every relation `REQUIRED_COLUMNS` names carries those columns with a
     non-null value. Raises `EdgeColumnMissing` naming the first offending relation and
     column, rather than letting a `_score_*` function `KeyError` on a `None` deep inside a
-    scheduled run.
+    scheduled run. Also raises (via `_check_known_relations`) if `edges` carries a relation
+    name outside `EDGE_RELATIONS` -- a typo must not be silently skipped (F3).
     """
+    _check_known_relations(edges)
     for relation, rows in edges.items():
         required = REQUIRED_COLUMNS.get(relation)
         if not required:
@@ -783,12 +922,20 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
             print(f"[FAIL] {exc}")
             return 2
+        except WarehouseQueryFailed as exc:
+            # Never swallowed by --allow-unprovisioned -- see F2 and WarehouseQueryFailed's
+            # own docstring. This is deliberately NOT an `except (WarehouseTableMissing,
+            # WarehouseQueryFailed)` above with a branch inside: the flag must only ever be
+            # able to suppress one exception TYPE, not one condition checked inside a shared
+            # handler that a future edit could loosen.
+            print(f"[FAIL] {exc}")
+            return 2
     else:
         edges = load_edges_from_file(args.edges)
 
     try:
         validate_columns(edges)
-    except EdgeColumnMissing as exc:
+    except (EdgeColumnMissing, ValueError) as exc:
         print(f"[FAIL] {exc}")
         return 2
 

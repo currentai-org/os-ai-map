@@ -20,9 +20,13 @@ name: identity-eval
 # failure again and should be reported as one.
 #
 # push/pull_request runs the FIXTURE eval, never --from-warehouse: a PR cannot reach the
-# warehouse tables (they may not exist, and a fork PR has no OSO_API_KEY regardless), so it
-# checks the same never-auto-emit governance rules and floor logic against a committed fixture
-# instead. Only schedule and workflow_dispatch touch the warehouse.
+# warehouse tables (they may not exist, and a fork PR has no OSO_API_KEY regardless). The
+# fixture (tests/fixtures/identity_edges_pass.json) carries all four edge tables in the real
+# WAREHOUSE_COLUMNS shape, so this run exercises the scoring math, the tier split and the
+# schema end to end -- it is not a substitute for the two never-auto-emit governance rules,
+# which are pinned as pytest tests (test_name_match_never_auto_emits*,
+# test_scoring_bearing_*) and run on every PR through validate.yml regardless of this
+# workflow. Only schedule and workflow_dispatch touch the warehouse.
 #
 # sources/products/** and sources/organizations/** are in the path triggers because that is
 # where membership, org and artifact-identity TRUTH is built from (build.identity_eval.load_truth)

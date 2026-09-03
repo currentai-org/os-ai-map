@@ -6,20 +6,27 @@ directly (`_equivalence_from_ledger`, `_membership_from_ledger`) rather than goi
 produce without raising (two rulings against one artifact, two different products) can still
 be tested here -- see `test_membership_truth_keeps_two_products_for_one_artifact_distinct`.
 
-The `currentai.identity.*` dataset has not deployed, so nothing here touches the warehouse.
+The `currentai.identity.*` dataset has not deployed, so nothing here touches the warehouse;
+the F2 tests stub `build.warehouse.query` directly rather than hitting a real endpoint.
 """
 
 from __future__ import annotations
 
+import pytest
 import yaml
 
+import build.identity_eval as identity_eval_module
+import build.warehouse as warehouse_module
 from build.identity_eval import (
     KNOWN_NEGATIVES,
     EdgeColumnMissing,
     KnownNegativeDeclaredError,
     Truth,
+    WarehouseQueryFailed,
+    WarehouseTableMissing,
     _equivalence_from_ledger,
     _identity_dataset_deployed,
+    _is_table_not_found,
     _membership_from_ledger,
     candidate_key,
     digest_items,
@@ -27,6 +34,7 @@ from build.identity_eval import (
     emitted_at_threshold,
     floor_failures,
     floor_status,
+    load_edges_from_warehouse,
     load_truth,
     main,
     replay,
@@ -112,15 +120,93 @@ def test_emits_rejects_a_metric_name_instead_of_an_edge_table_name():
     its own output table) and silently skip the scoring_bearing check for it. Now it raises."""
     edge = {"artifact_kind": "pypi", "artifact_id": "x", "product_slug": "y",
             "confidence": 1.0, "method": ["declared"], "scoring_bearing": True}
-    try:
+    with pytest.raises(ValueError):
         emits(edge, "membership_non_scoring")
-        assert False, "expected ValueError"
-    except ValueError:
-        pass
 
 
 # ---------------------------------------------------------------------------
-# precision/recall math, dedup, recall clamp
+# F3: an unrecognized relation name raises, in both validate_columns and replay
+# ---------------------------------------------------------------------------
+
+
+def test_validate_columns_raises_on_unknown_relation_name():
+    with pytest.raises(ValueError):
+        validate_columns({"orgs": []})  # typo for "org"
+
+
+def test_replay_raises_on_unknown_relation_name():
+    with pytest.raises(ValueError):
+        replay({"orgs": []}, REAL_TRUTH)
+
+
+def test_emitted_at_threshold_raises_on_unknown_relation_name_via_emits():
+    with pytest.raises(ValueError):
+        emitted_at_threshold({"orgs": [{"confidence": 1.0, "method": ["x"]}]})
+
+
+# ---------------------------------------------------------------------------
+# F1: the declared/pool tier split -- precision/recall over head/tail, n_emitted over pool
+# ---------------------------------------------------------------------------
+
+
+def test_precision_recall_computed_over_declared_tier_only():
+    """A `pool`-tier edge, even a perfectly correct-looking one, must not count toward
+    precision or recall -- truth is built from declared (head/tail) artifacts only, so a pool
+    edge is out of population by construction (F1)."""
+    truth = Truth(equivalence={"github:a/b": "p"})
+    edges = {"equivalence": [
+        {"candidate_key": "github:a/b", "candidate_tier": "pool", "product_slug": "p",
+         "confidence": 1.0, "method": ["resolution_ledger"]},
+    ]}
+    m = replay(edges, truth)["equivalence"]
+    assert m.precision is None
+    assert m.recall == 0.0
+
+
+def test_n_emitted_at_threshold_computed_over_pool_tier_only():
+    """A `head`-tier edge, however many of them pass `emits`, must not inflate
+    `n_emitted_at_threshold` -- that field answers "how many NEW things would launch",
+    and a declared artifact has nothing to discover (F1)."""
+    truth = Truth(equivalence={"github:a/b": "p"})
+    edges = {"equivalence": [
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "product_slug": "p",
+         "confidence": 1.0, "method": ["resolution_ledger"]},
+        {"candidate_key": "github:c/d", "candidate_tier": "pool", "product_slug": "q",
+         "confidence": 1.0, "method": ["resolution_ledger"]},
+    ]}
+    m = replay(edges, truth)["equivalence"]
+    assert m.precision == 1.0  # the one declared edge, correct
+    assert m.n_emitted_at_threshold == 1  # the one pool edge, regardless of correctness
+
+
+def test_digest_items_excludes_declared_tier_and_includes_pool_tier():
+    edges = {"equivalence": [
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "product_slug": "p",
+         "confidence": 0.1, "method": ["model_family"]},  # below threshold, declared -> not a digest item
+        {"candidate_key": "github:c/d", "candidate_tier": "pool", "product_slug": "q",
+         "confidence": 0.1, "method": ["model_family"]},  # below threshold, pool -> a digest item
+    ]}
+    items = digest_items(edges)
+    assert len(items) == 1
+    assert items[0]["candidate_key"] == "github:c/d"
+
+
+def test_membership_unaffected_by_tier_split_no_candidate_tier_column():
+    """membership's SQL is declared-only already, so it has no candidate_tier and both
+    precision/recall AND n_emitted_at_threshold draw from the same emitted set, unlike the
+    three tiered relations."""
+    truth = Truth(membership={(("pypi", "x"), "p"): True})
+    edges = {"membership": [
+        {"artifact_kind": "pypi", "artifact_id": "x", "product_slug": "p",
+         "confidence": 1.0, "method": ["declared"], "scoring_bearing": False},
+    ]}
+    m = replay(edges, truth)["membership_non_scoring"]
+    assert m.precision == 1.0
+    assert m.n_emitted_at_threshold == 1
+
+
+# ---------------------------------------------------------------------------
+# precision/recall math, dedup, recall clamp (declared-tier edges throughout)
 # ---------------------------------------------------------------------------
 
 
@@ -128,9 +214,9 @@ def test_precision_recall_math():
     truth = Truth(equivalence={"github:a2aproject/a2a": "agent2agent-protocol"})
     edges = {
         "equivalence": [
-            {"candidate_key": "github:a2aproject/a2a", "product_slug": "agent2agent-protocol",
-             "confidence": 1.0, "method": ["resolution_ledger"]},
-            {"candidate_key": "github:x/y", "product_slug": "wrong",
+            {"candidate_key": "github:a2aproject/a2a", "candidate_tier": "head",
+             "product_slug": "agent2agent-protocol", "confidence": 1.0, "method": ["resolution_ledger"]},
+            {"candidate_key": "github:x/y", "candidate_tier": "head", "product_slug": "wrong",
              "confidence": 1.0, "method": ["resolution_ledger"]},
         ]
     }
@@ -138,7 +224,6 @@ def test_precision_recall_math():
     assert m.precision == 0.5
     assert m.recall == 1.0
     assert m.n_truth == 1
-    assert m.n_emitted_at_threshold == 2
 
 
 def test_duplicate_head_tail_edges_collapse_in_precision_and_recall():
@@ -147,23 +232,23 @@ def test_duplicate_head_tail_edges_collapse_in_precision_and_recall():
     truth = Truth(equivalence={"github:a/b": "p"})
     edges = {
         "equivalence": [
-            {"candidate_key": "github:a/b", "product_tier": "head", "product_slug": "p",
-             "confidence": 1.0, "method": ["resolution_ledger"]},
-            {"candidate_key": "github:a/b", "product_tier": "tail", "product_slug": "p",
-             "confidence": 1.0, "method": ["resolution_ledger"]},
+            {"candidate_key": "github:a/b", "candidate_tier": "head", "product_tier": "head",
+             "product_slug": "p", "confidence": 1.0, "method": ["resolution_ledger"]},
+            {"candidate_key": "github:a/b", "candidate_tier": "head", "product_tier": "tail",
+             "product_slug": "p", "confidence": 1.0, "method": ["resolution_ledger"]},
         ]
     }
     m = replay(edges, truth)["equivalence"]
-    assert m.n_emitted_at_threshold == 1
     assert m.precision == 1.0
     assert m.recall == 1.0
 
 
 def test_recall_cannot_exceed_one():
-    truth = Truth(org={"github:a/b": "acme"})
+    truth = Truth(org={"github:a/b": {"acme"}})
     edges = {
         "org": [
-            {"candidate_key": "github:a/b", "org_slug": "acme", "confidence": 1.0, "method": ["org_handle"]},
+            {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "acme",
+             "confidence": 1.0, "method": ["org_handle"]},
         ]
     }
     m = replay(edges, truth)["org"]
@@ -172,8 +257,8 @@ def test_recall_cannot_exceed_one():
 
 def test_wrong_target_counts_as_both_false_positive_and_miss():
     truth = Truth(equivalence={"github:a/b": "p"})
-    edges = {"equivalence": [{"candidate_key": "github:a/b", "product_slug": "wrong",
-                               "confidence": 1.0, "method": ["resolution_ledger"]}]}
+    edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "head",
+                               "product_slug": "wrong", "confidence": 1.0, "method": ["resolution_ledger"]}]}
     m = replay(edges, truth)["equivalence"]
     assert m.precision == 0.0
     assert m.recall == 0.0
@@ -181,10 +266,41 @@ def test_wrong_target_counts_as_both_false_positive_and_miss():
 
 def test_equivalence_negative_scored_as_false_positive_not_just_excluded():
     truth = Truth(equivalence_negatives={"github:a/b"})
-    edges = {"equivalence": [{"candidate_key": "github:a/b", "product_slug": "anything",
-                               "confidence": 1.0, "method": ["resolution_ledger"]}]}
+    edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "head",
+                               "product_slug": "anything", "confidence": 1.0, "method": ["resolution_ledger"]}]}
     m = replay(edges, truth)["equivalence"]
     assert m.precision == 0.0
+
+
+# ---------------------------------------------------------------------------
+# F5: org truth is a SET of orgs per candidate key
+# ---------------------------------------------------------------------------
+
+
+def test_org_truth_holds_more_than_one_org_per_candidate_key_in_the_real_corpus():
+    multi = {ck: orgs for ck, orgs in REAL_TRUTH.org.items() if len(orgs) > 1}
+    assert "github:swe-bench/swe-bench" in multi
+    assert multi["github:swe-bench/swe-bench"] == {"princeton-nlp", "princeton-nlp-openai"}
+
+
+def test_second_org_for_a_shared_candidate_key_scores_correct_not_a_false_positive():
+    """The F5 bug: `dict.setdefault` kept only the first org read and scored the second,
+    equally correct org as a false positive. Both must score correct now."""
+    truth = Truth(org={"github:a/b": {"org-one", "org-two"}})
+    edges = {"org": [
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "org-one",
+         "confidence": 1.0, "method": ["org_handle"]},
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "org-two",
+         "confidence": 1.0, "method": ["org_handle"]},
+    ]}
+    m = replay(edges, truth)["org"]
+    assert m.precision == 1.0
+    assert m.n_truth == 2  # two distinct (candidate_key, org_slug) pairs
+    assert m.recall == 1.0
+
+
+def test_org_n_truth_counts_pairs_not_candidate_keys():
+    assert sum(len(orgs) for orgs in REAL_TRUTH.org.values()) > len(REAL_TRUTH.org)
 
 
 # ---------------------------------------------------------------------------
@@ -199,10 +315,10 @@ def test_candidate_key_is_kind_prefixed_and_folded():
 
 def test_org_and_equivalence_truth_use_candidate_key_format():
     for ck in list(REAL_TRUTH.org)[:20]:
-        kind, _, rest = ck.partition(":")
+        _kind, _, rest = ck.partition(":")
         assert rest, ck
     for ck in list(REAL_TRUTH.equivalence)[:20]:
-        kind, _, rest = ck.partition(":")
+        _kind, _, rest = ck.partition(":")
         assert rest, ck
 
 
@@ -281,7 +397,7 @@ def test_artifact_identity_pair_scoring_folds_both_sides():
     truth = Truth(identity_pairs={("github", "a/b", "a/b")})
     edges = {"artifact_identity": [
         {"artifact_kind": "github", "artifact_id_a": "A/B", "artifact_id_b": "a/b",
-         "confidence": 1.0, "method": ["fold_collapse"]},
+         "candidate_tier": "head", "confidence": 1.0, "method": ["fold_collapse"]},
     ]}
     m = replay(edges, truth)["artifact_identity"]
     assert m.precision == 1.0
@@ -304,17 +420,15 @@ def test_known_negative_declared_as_real_artifact_raises():
     (`sources/products/milvus.yaml`, with an explicit `artifact_exceptions.pypi_repo_mismatch`),
     so a KNOWN_NEGATIVES entry claiming otherwise must raise, not silently overwrite the truth."""
     bad = ({"kind": "pypi", "artifact_id": "pymilvus", "product_slug": "milvus"},)
-    try:
+    with pytest.raises(KnownNegativeDeclaredError):
         load_truth(known_negatives=bad)
-        assert False, "expected KnownNegativeDeclaredError"
-    except KnownNegativeDeclaredError:
-        pass
 
 
-def test_known_negatives_are_all_undeclared_in_truth():
-    for neg in KNOWN_NEGATIVES:
-        key = (neg["kind"], neg["artifact_id"])
-        assert REAL_TRUTH.membership.get((key, neg["product_slug"])) is False, neg
+# `test_known_negatives_are_all_undeclared_in_truth` (round-1 M9 partial fix) is dropped: it
+# asserted `truth.membership[(key, slug)] is False`, a value `load_truth` writes
+# unconditionally for every KNOWN_NEGATIVES entry regardless of whether the entry is actually
+# correct -- a tautology, not a check. `test_known_negatives_no_longer_includes_declared_artifacts`
+# and `test_known_negative_declared_as_real_artifact_raises` are the real guard (F4).
 
 
 # ---------------------------------------------------------------------------
@@ -325,7 +439,8 @@ def test_known_negatives_are_all_undeclared_in_truth():
 def test_floor_status_insufficient_truth_below_min():
     truth = Truth(equivalence={f"github:{i}/x": "p" for i in range(5)})
     edges = {"equivalence": [
-        {"candidate_key": f"github:{i}/x", "product_slug": "p", "confidence": 1.0, "method": ["resolution_ledger"]}
+        {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "product_slug": "p",
+         "confidence": 1.0, "method": ["resolution_ledger"]}
         for i in range(5)
     ]}
     metrics = replay(edges, truth)
@@ -344,9 +459,10 @@ def test_floor_status_not_evaluated_when_relation_absent():
 
 
 def test_floor_status_checked_and_failing():
-    truth = Truth(org={f"github:{i}/x": "acme" for i in range(30)})
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
     edges = {"org": [
-        {"candidate_key": f"github:{i}/x", "org_slug": "wrong", "confidence": 1.0, "method": ["org_handle"]}
+        {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "wrong",
+         "confidence": 1.0, "method": ["org_handle"]}
         for i in range(30)
     ]}
     metrics = replay(edges, truth)
@@ -355,9 +471,10 @@ def test_floor_status_checked_and_failing():
 
 
 def test_floor_status_checked_and_passing():
-    truth = Truth(org={f"github:{i}/x": "acme" for i in range(30)})
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
     edges = {"org": [
-        {"candidate_key": f"github:{i}/x", "org_slug": "acme", "confidence": 1.0, "method": ["org_handle"]}
+        {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "acme",
+         "confidence": 1.0, "method": ["org_handle"]}
         for i in range(30)
     ]}
     metrics = replay(edges, truth)
@@ -372,52 +489,136 @@ def test_floor_status_checked_and_passing():
 
 def test_validate_columns_raises_on_missing_required_column():
     edges = {"equivalence": [{"product_slug": "p", "confidence": 1.0}]}  # no candidate_key
-    try:
+    with pytest.raises(EdgeColumnMissing) as exc_info:
         validate_columns(edges)
-        assert False, "expected EdgeColumnMissing"
-    except EdgeColumnMissing as exc:
-        assert exc.relation == "equivalence"
-        assert exc.column == "candidate_key"
+    assert exc_info.value.relation == "equivalence"
+    assert exc_info.value.column == "candidate_key"
 
 
 def test_validate_columns_raises_on_null_value_not_just_absent_key():
     edges = {"org": [{"candidate_key": "github:a/b", "org_slug": None, "confidence": 1.0}]}
-    try:
+    with pytest.raises(EdgeColumnMissing) as exc_info:
         validate_columns(edges)
-        assert False, "expected EdgeColumnMissing"
-    except EdgeColumnMissing as exc:
-        assert exc.column == "org_slug"
+    assert exc_info.value.column == "org_slug"
 
 
-def test_validate_columns_passes_on_a_row_shaped_exactly_like_each_sql():
-    """Fixture rows shaped exactly like `WAREHOUSE_COLUMNS` for each relation -- the review's
-    M2/M3 asked for a fixture in the real column shape; this is that fixture, run through
-    `validate_columns` and `replay` end to end without a crash."""
+def test_validate_columns_raises_on_missing_candidate_tier():
+    edges = {"org": [{"candidate_key": "github:a/b", "org_slug": "acme", "confidence": 1.0}]}
+    with pytest.raises(EdgeColumnMissing) as exc_info:
+        validate_columns(edges)
+    assert exc_info.value.column == "candidate_tier"
+
+
+def test_validate_columns_passes_on_rows_shaped_exactly_like_each_sql():
+    """F3: at least one head/tail (declared) row and one pool row per tiered relation, in the
+    exact `WAREHOUSE_COLUMNS` shape -- this is the same fixture committed at
+    `tests/fixtures/identity_edges_pass.json`, exercised here via `validate_columns` +
+    `replay` end to end without a crash."""
     edges = {
         "artifact_identity": [
             {"artifact_kind": "github", "artifact_id_a": "a/b", "artifact_id_b": "a/c",
-             "confidence": 0.9, "method": ["github_redirect"], "penalties": 0},
+             "candidate_tier": "head", "confidence": 0.9, "method": ["github_redirect"], "penalties": []},
+            {"artifact_kind": "github", "artifact_id_a": "x/y", "artifact_id_b": "x/z",
+             "candidate_tier": "pool", "confidence": 0.9, "method": ["github_redirect"], "penalties": []},
         ],
         "membership": [
             {"artifact_kind": "pypi", "artifact_id": "foo", "product_tier": "head",
-             "product_slug": "foo", "confidence": 1.0, "method": ["declared"], "penalties": 0,
+             "product_slug": "foo", "confidence": 1.0, "method": ["declared"], "penalties": [],
              "scoring_bearing": True},
+            {"artifact_kind": "homepage", "artifact_id": "example.com", "product_tier": "tail",
+             "product_slug": "bar", "confidence": 0.95, "method": ["declared"], "penalties": [],
+             "scoring_bearing": False},
         ],
         "equivalence": [
-            {"artifact_kind": "github", "candidate_key": "github:a/b", "product_tier": "head",
-             "product_slug": "p", "confidence": 1.0, "method": ["resolution_ledger"], "penalties": 0},
+            {"artifact_kind": "github", "candidate_key": "github:a/b", "candidate_tier": "head",
+             "product_tier": "head", "product_slug": "p", "confidence": 1.0,
+             "method": ["resolution_ledger"], "penalties": []},
+            {"artifact_kind": "pypi", "candidate_key": "pypi:x", "candidate_tier": "pool",
+             "product_tier": "tail", "product_slug": "q", "confidence": 0.8,
+             "method": ["model_family"], "penalties": []},
         ],
         "org": [
-            {"artifact_kind": "github", "candidate_key": "github:a/b", "org_slug": "acme",
-             "confidence": 0.85, "method": ["org_handle"], "penalties": 0},
+            {"artifact_kind": "github", "candidate_key": "github:a/b", "candidate_tier": "head",
+             "org_slug": "acme", "confidence": 0.85, "method": ["org_handle"], "penalties": []},
+            {"artifact_kind": "github", "candidate_key": "github:x/y", "candidate_tier": "pool",
+             "org_slug": "acme", "confidence": 0.85, "method": ["org_handle"], "penalties": []},
         ],
     }
     validate_columns(edges)  # must not raise
-    replay(edges, REAL_TRUTH)  # must not raise
+    metrics = replay(edges, REAL_TRUTH)  # must not raise
+    # sanity: the pool rows must not have leaked into any declared-only scoring, and every
+    # relation is present in the output.
+    assert set(metrics) == {"artifact_identity", "membership_scoring", "membership_non_scoring", "equivalence", "org"}
 
 
 # ---------------------------------------------------------------------------
-# --allow-unprovisioned
+# F2: --allow-unprovisioned swallows table-not-found only, never another exception class
+# ---------------------------------------------------------------------------
+
+
+def test_is_table_not_found_matches_trino_wording():
+    assert _is_table_not_found(Exception("line 1:15: Table 'currentai.identity.org_edges' does not exist"))
+    assert _is_table_not_found(Exception("TABLE_NOT_FOUND: no such table"))
+    assert _is_table_not_found(Exception("Table not found: foo"))
+
+
+def test_is_table_not_found_does_not_match_other_failures():
+    assert not _is_table_not_found(Exception("401 Unauthorized"))
+    assert not _is_table_not_found(Exception("Column 'artifact_kind' cannot be resolved"))
+    assert not _is_table_not_found(Exception("Read timed out"))
+
+
+def test_load_edges_from_warehouse_table_not_found_raises_typed(monkeypatch):
+    def fake_query(sql):
+        raise Exception("line 1:15: Table 'currentai.identity.artifact_identity_edges' does not exist")
+
+    monkeypatch.setattr(warehouse_module, "query", fake_query)
+    with pytest.raises(WarehouseTableMissing) as exc_info:
+        load_edges_from_warehouse()
+    assert "artifact_identity_edges" in exc_info.value.table
+
+
+def test_load_edges_from_warehouse_other_failure_raises_query_failed_not_missing(monkeypatch):
+    def fake_query(sql):
+        raise Exception("401 Unauthorized: invalid API key")
+
+    monkeypatch.setattr(warehouse_module, "query", fake_query)
+    with pytest.raises(WarehouseQueryFailed):
+        load_edges_from_warehouse()
+
+
+def test_main_allow_unprovisioned_exits_0_on_genuine_table_not_found(monkeypatch):
+    def fake_query(sql):
+        raise Exception("Table 'currentai.identity.artifact_identity_edges' does not exist")
+
+    monkeypatch.setattr(warehouse_module, "query", fake_query)
+    rc = main(["--from-warehouse", "--allow-unprovisioned"])
+    assert rc == 0
+
+
+def test_main_allow_unprovisioned_still_exits_2_on_a_non_missing_table_failure(monkeypatch):
+    """F2: the flag exists to cover exactly one signal. An auth failure, a timeout, or a
+    missing column on a table that DOES exist must exit 2 even with the flag set -- otherwise
+    a rotated API key or a broken deployed schema reports "skipped" and stays green forever."""
+    def fake_query(sql):
+        raise Exception("401 Unauthorized: invalid API key")
+
+    monkeypatch.setattr(warehouse_module, "query", fake_query)
+    rc = main(["--from-warehouse", "--allow-unprovisioned"])
+    assert rc == 2
+
+
+def test_main_without_allow_unprovisioned_exits_2_on_table_not_found_too(monkeypatch):
+    def fake_query(sql):
+        raise Exception("does not exist")
+
+    monkeypatch.setattr(warehouse_module, "query", fake_query)
+    rc = main(["--from-warehouse"])
+    assert rc == 2
+
+
+# ---------------------------------------------------------------------------
+# --allow-unprovisioned: refused once the identity dataset is marked deployed
 # ---------------------------------------------------------------------------
 
 
@@ -442,8 +643,6 @@ def test_identity_dataset_deployed_ignores_non_identity_assets(tmp_path):
 def test_main_rejects_allow_unprovisioned_when_dataset_deployed(tmp_path, monkeypatch):
     p = tmp_path / "assets.yaml"
     p.write_text(yaml.dump({"assets": [{"id": "identity.equivalence_edges", "materialized": True}]}))
-    import build.identity_eval as identity_eval_module
-
     monkeypatch.setattr(identity_eval_module, "ASSETS_PATH", p)
     rc = main(["--from-warehouse", "--allow-unprovisioned"])
     assert rc == 2
