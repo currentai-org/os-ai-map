@@ -19,12 +19,11 @@ a day per twenty-five candidates.
   requests an hour and this workflow needs three to four per candidate.
 
 ## Files this changes
-Per promoted product, six concerns:
+Per promoted product, five concerns:
 1. `sources/products/<slug>.yaml` and 2. `sources/scores/<slug>.yaml` - the records.
 3. `sources/categories/<cat>.yaml` - the head roster, in display order.
 4. `sources/organizations/<org>.yaml` - the org roster, created if the org is new.
 5. `sources/registry/<cat>.yaml` - the row comes **out**.
-6. `sources/snapshots/long_tail.json` - `counts.scored` follows the published roster (gated).
 
 Plus, once per category: the category's `strapline`, its `scoring_recipe.derived_from` counts, and
 `sources/taxonomy.yaml` when the status flips. A product moved in from another category also
@@ -91,9 +90,9 @@ touches that category's roster and its own capability band.
 
 8. **Publish only when the conditions hold.** Flip `sources/taxonomy.yaml` to `status: published`
    when the category has an evidence-based strapline, at least ten fully scored head products,
-   coherent capability anchors, and no unresolved identity or boundary dispute on the roster. Then
-   re-sync `counts.scored` in `sources/snapshots/long_tail.json`. If a condition fails, leave the
-   category preliminary and say in the PR exactly what blocks it.
+   coherent capability anchors, and no unresolved identity or boundary dispute on the roster. The
+   long-tail `counts.scored` follows automatically at serialize time - nothing to re-sync. If a
+   condition fails, leave the category preliminary and say in the PR exactly what blocks it.
 
 **Head products in a preliminary category are normal, not an error.** That is the state this whole
 workflow passes through, and `validate` allows it deliberately. While a category is preliminary its
@@ -125,11 +124,11 @@ fifty live repos reported before the token was checked.
 Preview only, never commit: `build/notebook_data.json`, `notebooks/ai-stack-map.py` (bot-owned).
 
 ## Expected PR contents
-The six files per product, the category record, `sources/taxonomy.yaml`, and the long-tail
-snapshot. In the description: the final count, every rejection and replacement with its reason,
-the capability rung definitions and anchors, and anything still deferred or resting on weak
-evidence. A census pinned in a test - a per-category row count, a corpus total - moves in the same
-PR with the reason written beside it.
+The five files per product, the category record, and `sources/taxonomy.yaml`. In the description:
+the final count, every rejection and replacement with its reason, the capability rung definitions
+and anchors, and anything still deferred or resting on weak evidence. No census is pinned in a test
+any more. The PR's review sheet from `build.check_corpus_diff` states the stage, gap, and tier delta
+per category; a stage move must be intended and carried by the `stage-move` label.
 
 ## Stop and escalate when
 - The category has **no `scoring_recipe`**, or its evidence is prose the ladder cannot read →

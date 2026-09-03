@@ -98,7 +98,7 @@ what you edit.
 | `sources/scores/` | Per-product `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
 | `sources/taxonomy.yaml` | Arc grouping + display order; the three arcs are the Columbia ontology layers | Every category appears in exactly one arc |
 | `sources/allowlists/` | `undigested_sources.txt`, the sources grandfathered before the digest discipline | Anything not listed must carry a `content_sha256`; the list only shrinks |
-| `sources/snapshots/` | `long_tail.json`, the frozen dedup counts | Re-sync after a batch, or `validate` fails on the product count |
+| `sources/snapshots/` | `long_tail.json`, the frozen dedup counts | |
 
 Category slugs use underscore form (`base_pretrained`); product and org slugs use hyphenated
 kebab-case (`llama-3-1`, `allen-ai`). Artifact keys on products (only those that apply): `github`,
@@ -181,7 +181,8 @@ read-only warehouse boundary:
 **Companion notebooks.** `pypi-geo-trends.py`, `oss-ai-trends.py`, and `long-tail-explorer.py` are
 standalone marimo notebooks that sit outside the build pipeline and query `currentai.*` warehouse
 tables live via `pyoso`, so the bot never regenerates them. `sources/snapshots/long_tail.json` is a
-hand-frozen fixture, not yet derived from live data.
+hand-frozen fixture, not yet derived from live data; its roster-dependent counts are derived at
+build time.
 
 </details>
 

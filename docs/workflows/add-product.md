@@ -11,16 +11,13 @@ you want to change it, use [`update-product.md`](update-product.md) instead.
 - Enough **primary-source evidence** to score openness, and to say what it is.
 
 ## Files this changes
-Five, and all in the same PR:
+Four, and all in the same PR:
 1. `sources/products/<slug>.yaml` — the product record.
 2. `sources/scores/<slug>.yaml` — its three-axis score.
 3. `sources/categories/<cat>.yaml` — append the slug to the roster.
 4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new).
-5. `sources/snapshots/long_tail.json` — the dedup counts, regenerated (gated by `validate`).
 
-`CONTRIBUTING.md` historically listed only the first four. The fifth is real.
-
-**A sixth, when the product starts life as a discovered candidate.** If a row for this slug
+**A fifth, when the product starts life as a discovered candidate.** If a row for this slug
 exists in `sources/registry/<cat>.yaml` — put there by
 [`discover-candidates.md`](discover-candidates.md) — that row **comes out** in the same PR. A
 slug may live in exactly one tier, so adding the head product without removing the tail row
@@ -70,12 +67,12 @@ workflow that clears its row, so this is the only place it happens.
    reproduces, the peer's recorded values are known unchanged and the read is a formality.
 6. **Update both rosters** (category and org), and the org file if the org is new. A slug
    appears in exactly one of each. **If the product came from a registry row, delete that row
-   now** — see the sixth file above. If it was the last row in the file, leave `products: []`
+   now** — see the fifth file above. If it was the last row in the file, leave `products: []`
    rather than deleting the file: the file pairs with a category, not with its contents.
 7. **For a batch,** generate the files with a small script (dump for new files, and a helper
    that inserts `- <slug>` lines under existing `products:` blocks so their formatting is
-   preserved). Never load-modify-dump an existing corpus file. Re-check the two hand-authored
-   things a batch disturbs: category straplines and `sources/snapshots/long_tail.json`.
+   preserved). Never load-modify-dump an existing corpus file. Re-check the one hand-authored
+   thing a batch disturbs: category straplines.
 
 ## Validation
 ```bash
@@ -87,7 +84,7 @@ uv run python -m build.check_capability    # the comparisons and their attestati
 Preview only, never commit: `build/notebook_data.json`, `notebooks/ai-stack-map.py` (bot-owned).
 
 ## Expected PR contents
-The five files above — six when a discovered candidate's registry row comes out — and nothing
+The four files above — five when a discovered candidate's registry row comes out — and nothing
 generated. A one-line note per product on the evidence that settled its openness score.
 
 ## Stop and escalate when

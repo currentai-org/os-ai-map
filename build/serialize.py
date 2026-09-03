@@ -229,10 +229,30 @@ def _catalog_ids(prods: dict) -> dict:
     return ids
 
 
+def derived_long_tail_counts(frozen: dict, published: set[str]) -> dict:
+    """Counts that depend on the roster are derived here, never read from the file.
+
+    `scored` is the published head count; `scored_outside` and `uncategorized` follow from
+    it and the frozen `overlap` and `total`. Only the frozen universe numbers (repos,
+    models, packages, total, overlap, universe) still live in long_tail.json, so adding a
+    product no longer edits that file. See #329 for making the universe itself live.
+    """
+    counts = dict(frozen.get("counts") or {})
+    scored = len(published)
+    overlap = int(counts.get("overlap", 0))
+    total = int(counts.get("total", 0))
+    counts["scored"] = scored
+    counts["scored_outside"] = scored - overlap
+    counts["uncategorized"] = total - overlap
+    return counts
+
+
 def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     """Drop frozen 'top' sample rows that are now categorized products. The frozen
-    counts stay as the point-in-time warehouse snapshot (synced by hand after a
-    batch); only the visible sample is derived so it never lists a scored product.
+    universe numbers stay as the point-in-time warehouse snapshot (synced by hand
+    after a batch); the roster-dependent counts (`scored`, `scored_outside`,
+    `uncategorized`) are derived from the published roster instead, and the visible
+    sample is derived too, so neither ever lists a scored product.
 
     `prods` must be the PUBLISHED products, not every product file. A product in a
     preliminary category is absent from the payload's categories, so dropping its row from
@@ -243,6 +263,7 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     lt = dict(frozen)
     lt["top"] = [t for t in frozen.get("top", [])
                  if t.get("name", "").lower() not in ids.get(t.get("type"), set())]
+    lt["counts"] = derived_long_tail_counts(frozen, set(prods))
     return lt
 
 
