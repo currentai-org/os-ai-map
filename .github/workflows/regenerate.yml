@@ -61,6 +61,8 @@ jobs:
         run: uv run python -m build.update_readme
       - name: Regenerate corpus goldens
         run: uv run python -m build.goldens --write
+      - name: Self-check the golden
+        run: uv run python -m build.goldens --check --strict
       - name: Notebook structure check
         run: |
           uv run marimo check notebooks/ai-stack-map.py
