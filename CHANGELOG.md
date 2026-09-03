@@ -29,6 +29,24 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
   4.0 ≤ score < 4.5, else `null`) fields, a `depth` category gap that fires at Stage 4, and a
   `descriptions.tiers` legend in the payload (#87, #318).
+- `build/identity_eval.py`: replay eval that scores the `currentai.identity.*` edge tables
+  against prior human decisions (the resolution ledger, declared artifacts, org rosters, and
+  a known-negatives set), with precision/recall floors — checked only once a relation has at
+  least 20 truth items — on the four relations automation is planned for, and two rules
+  pinned as tests rather than metrics: a name-match edge never auto-emits (checked against
+  `method` as an array, matching the deployed SQL) and a scoring-bearing membership edge
+  never auto-emits regardless of confidence. Truth is built from DECLARED (head/tail)
+  artifacts only, so `equivalence`, `org` and `artifact_identity` — sourced from every tier,
+  head/tail/pool — split on their `candidate_tier` column: precision/recall are computed over
+  the declared slice truth covers, and `n_emitted_at_threshold`/the review digest are
+  computed over the pool slice automation would actually act on. Scheduled weekly as
+  `identity-eval.yml`, which runs a fixture on every PR and
+  `--from-warehouse --allow-unprovisioned` on schedule — the flag skips cleanly (exit 0) only
+  on a genuine missing-table error (matched against Trino's own live wording, verified against
+  `currentai.identity.equivalence_edges` while undeployed: a live `--from-warehouse` run now
+  exits 0 as intended) while the identity dataset is undeployed, exits 2 on any other failure
+  (auth, timeout, a missing column, an unrecognized `candidate_tier`/`product_tier` value),
+  and refuses to run at all once `warehouse/assets.yaml` marks the dataset deployed (#365).
 
 ### Changed
 
