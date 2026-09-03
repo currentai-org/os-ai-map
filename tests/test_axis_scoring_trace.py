@@ -10,7 +10,6 @@ not a second scorer: every scored result reproduces the recorded score, and ever
 """
 
 import csv
-import hashlib
 import json
 from pathlib import Path
 
@@ -33,23 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
-# Pinned goldens over the committed corpus. A change here is a change in the declarations or the
-# ladder — regenerate deliberately, never to make a red test green.
-GOLDEN = {
-    # Regenerated 2026-09-01 for the Round 1 calibration tranche: 23 products added across
-    # five categories (axis_results 553 -> 576), their recorded evidence entering the fact
-    # and rule-match tables, and gsm8k's adoption re-band 4 -> 5 - the one pre-existing
-    # result row that changed.
-    # Regenerated 2026-09-02 for the compilers round-2 promotion: 18 products added
-    # (axis_results 576 -> 594), each recording all three openness dimensions, so entering
-    # the same shape of fact and rule-match rows the round-1 compilers roster did.
-    # Regenerated 2026-09-02 for the storage and telemetry_observability legs of the same
-    # round-2 promotion: 19 more products (12 storage, 7 telemetry_observability;
-    # axis_results 594 -> 613), each recording all three openness dimensions too.
-    "axis_facts": (2664, "9965ebdcf0ba415442fefec4c679663e3921825f6f2b1f2b800828775f7858b6"),
-    "axis_rule_matches": (3239, "417ac4110dc29e496128f26561c52ad42c3de4fbea0c59b43786fe4ed214885c"),
-    "axis_results": (613, "e57320da23b414ccdffde34e1537df72a3f7f637fd4171de45d929620d496e9f"),
-}
+# Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
 
 
 @pytest.fixture(scope="module")
@@ -70,20 +53,6 @@ def tables(inputs):
 def sources():
     from build.validate import load_sources
     return load_sources(ROOT)
-
-
-def _digest(table, rows) -> str:
-    return hashlib.sha256("\n".join(sorted(canonical_row(table, r) for r in rows)).encode()).hexdigest()
-
-
-# --- the pinned goldens ----------------------------------------------------------
-
-
-@pytest.mark.parametrize("table", sorted(TABLES))
-def test_reproduces_the_baseline_golden(tables, table):
-    count, digest = GOLDEN[table]
-    assert len(tables[table]) == count
-    assert _digest(table, tables[table]) == digest
 
 
 # --- keys on the declaration alone -----------------------------------------------

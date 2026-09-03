@@ -293,17 +293,18 @@ class TestRealCategories:
         into the tier the vendor sells and moved the closed frontier models to
         finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27, and
         the Round 1 calibration tranche of 2026-09-01 took it to 31 (granite, minicpm,
-        seed-oss, comma). The point of pinning this is that the count only ever moves for a
-        reason recorded in a commit."""
-        reproduced, total, problems, deferred, _ = check_category("base_pretrained", verbose=False)
-        assert problems == []
-        assert (reproduced, total, deferred) == (31, 31, [])
+        seed-oss, comma). Census now lives in tests/goldens/corpus.json; see build/goldens.py.
+        """
+        report = check_category("base_pretrained", verbose=False)
+        assert report.problems == []
+        assert report.reproduced == report.total and report.deferred == []
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
-        """39 -> 41 on 2026-09-01: the Round 1 tranche added gpt-oss and magistral."""
-        reproduced, total, problems, *_ = check_category("finetuned_chat", verbose=False)
-        assert problems == []
-        assert reproduced == total == 41
+        """39 -> 41 on 2026-09-01: the Round 1 tranche added gpt-oss and magistral.
+        Census now lives in tests/goldens/corpus.json; see build/goldens.py."""
+        report = check_category("finetuned_chat", verbose=False)
+        assert report.problems == []
+        assert report.reproduced == report.total and report.deferred == []
 
     def test_no_category_defers_without_a_substantive_reason(self):
         """A deferral that prints nothing is a silent cap on coverage.

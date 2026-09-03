@@ -72,6 +72,12 @@ PLAN: dict[str, tuple[str, str]] = {
         "compares the PR against its merge base, which needs the PR context. Locally the same "
         "class of problem is caught by this module's own generated-file check below.",
     ),
+    "Corpus goldens status (informational on PRs, must be current on main)": (
+        CI_ONLY,
+        "branches on `github.event_name`, which is a GitHub Actions context with no meaning "
+        "run locally as plain bash. The local equivalent is `uv run python -m build.goldens "
+        "--check` directly.",
+    ),
 }
 
 

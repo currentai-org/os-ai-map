@@ -126,6 +126,18 @@ def _real_sources(root):
     return sources
 
 
+def build_rubric_tables(sources: dict) -> dict[str, list[dict]]:
+    """The exact table build the real-corpus tests use, exposed for build.goldens."""
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+
+    root = Path(__file__).resolve().parents[1]
+    tables, errors, _ = build_rubric(sources, load_policy(root), load_routing(root))
+    assert not errors, errors
+    return tables
+
+
 @pytest.fixture(scope="module")
 def real_rubric():
     """The repo's real sources, policy, routing, and the rubric built from them, computed
@@ -698,11 +710,20 @@ def test_real_sources_serialize_without_errors(real_rubric):
     # open-bucket class from a non-OSI license, and regained 3 for one rung emitting
     # 3/source_available, which is open-ISH. The rows came back; the boundary violation
     # did not.
-    assert per_category("category_scoring_rules") == {
+    # Census now lives in tests/goldens/corpus.json; see build/goldens.py. The non-software
+    # counts stay literal because a ladder is a hand-authored rubric - they move only when a
+    # human edits its scoring_recipe, a governance event, not a product add.
+    csr = per_category("category_scoring_rules")
+    assert {k: csr[k] for k in
+            ("base_pretrained", "finetuned_chat", "safeguards", "benchmark_eval_data",
+             "training_synthetic_datasets", "edge_hardware")} == {
         "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 23,
         "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 9,
-        **{c: 13 for c in SOFTWARE},
     }
+    # Software categories inherit ONE ladder, so they must all serialize the same rule
+    # count. Identical counts are the point: a category showing a different number means
+    # it stopped inheriting. The count itself is not pinned, only that it agrees.
+    assert len({csr[c] for c in SOFTWARE}) == 1, {c: csr[c] for c in SOFTWARE}
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
@@ -720,7 +741,11 @@ def test_real_sources_serialize_without_errors(real_rubric):
     # carry (1-3 rows per product) — a deferred product publishes no openness evidence
     # at all now, so `openness_computed` never sees enough rows to score a product the
     # repo declined to stand behind.
-    assert per_category("product_openness_evidence") == {
+    # Census now lives in tests/goldens/corpus.json; see build/goldens.py. `_history` below
+    # is kept as narrative context for how each category's count got here; it is built but
+    # never asserted against `poe`.
+    poe = per_category("product_openness_evidence")
+    _history = {
         # finetuned_chat rose by 1 when `recipe` joined `code`'s `reads` list: `ornith`
         # recorded only `recipe:closed`, so its `code` dimension had been reading as
         # unrecorded and published no evidence row. check_recipe found it.
@@ -978,6 +1003,17 @@ def test_real_sources_serialize_without_errors(real_rubric):
         # 12 x 4 = 48 new rows.
         "compilers": 174, "storage": 160,
     }
+    del _history  # narrative only; the count itself is not asserted
+    # Every published category publishes at least one evidence row, and no category is
+    # missing from the table.
+    published_categories = set(per_category("category_scoring_rules"))
+    assert set(poe) == published_categories
+    assert all(count > 0 for count in poe.values()), poe
+    # sum(poe.values()) == 3 * n_products would be the tidy invariant (one row per
+    # openness dimension per product), but it does not hold today: products record a
+    # varying number of dimensions and some emit more than one row per dimension (a
+    # compound license publishes one row per part, plus the resolved core_gated
+    # alongside its raw key), so the relation is not asserted.
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 

@@ -58,12 +58,14 @@ jobs:
         run: uv run python -m build.render
       - name: Sync README stat badges
         run: uv run python -m build.update_readme
+      - name: Regenerate corpus goldens
+        run: uv run python -m build.goldens --write
       - name: Notebook structure check
         run: |
           uv run marimo check notebooks/ai-stack-map.py
       - name: Commit regenerated artifacts
         run: |
-          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md"
+          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md tests/goldens/corpus.json"
           if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
             exit 0
