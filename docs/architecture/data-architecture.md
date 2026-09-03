@@ -1657,11 +1657,12 @@ dormant, no platform table yet              <!-- count:dormant_assets -->1
 logical assets in warehouse/assets.yaml     <!-- count:assets -->42
 ```
 
-The staged eight are the three `signal_packages` models from issue #314,
+The staged ten are the three `signal_packages` models from issue #314,
 `observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), the
 Phase-3 `registry.axis_assessments` candidate, and the Phase-1 identity outputs
-`registry.resolution_ledger` and `registry.product_aliases`: tracked assets whose tables do not
-exist on the platform yet. The two Phase-3 evaluation candidates that were staged here,
+`registry.resolution_ledger`, `registry.product_aliases`, `registry.org_handles` and
+`registry.model_families`: tracked assets whose tables do not exist on the platform yet. The
+two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
 **deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
 was later **externalized** under ADR-003 — frozen under platform ownership and removed from this

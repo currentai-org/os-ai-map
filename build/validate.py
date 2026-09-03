@@ -420,11 +420,21 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         if platform == "homepage_domain":
             folded = folded.removeprefix("www.")
         key = (platform, folded)
-        if key in handle_owner and handle_owner[key] != oslug:
-            errors.append(
-                f"sources/org_handles.yaml: handle {platform}:{raw!r} claimed by both "
-                f"{handle_owner[key]!r} and {oslug!r}"
-            )
+        if key in handle_owner:
+            # Same key twice is still a grain violation even when it is the same org
+            # claiming it twice -- registry.org_handles is one row per (platform, handle),
+            # so a byte-identical duplicate entry is not a no-op, it is a second row nothing
+            # downstream expects.
+            if handle_owner[key] == oslug:
+                errors.append(
+                    f"sources/org_handles.yaml: handle {platform}:{raw!r} is declared twice "
+                    f"for organization {oslug!r}"
+                )
+            else:
+                errors.append(
+                    f"sources/org_handles.yaml: handle {platform}:{raw!r} claimed by both "
+                    f"{handle_owner[key]!r} and {oslug!r}"
+                )
             continue
         handle_owner[key] = oslug
 
@@ -677,12 +687,21 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
             # Two families claiming the same pattern is a real contradiction -- the table
             # would carry two rows for one glob, and a consumer joining on it reads
             # whichever it happens to see first. A hard error, unlike the overlap warning
-            # below: this is not a precedence question, it is the same key twice.
-            if pattern in pattern_owner and pattern_owner[pattern] != product:
-                errors.append(
-                    f"sources/model_families.yaml: pattern {pattern!r} is claimed by both "
-                    f"{pattern_owner[pattern]!r} and {product!r}"
-                )
+            # below: this is not a precedence question, it is the same key twice -- even a
+            # byte-identical duplicate (same pattern, same product) still violates the
+            # table's one-row-per-pattern grain, so it is caught here too, not just a
+            # genuinely contradictory pair.
+            if pattern in pattern_owner:
+                if pattern_owner[pattern] == product:
+                    errors.append(
+                        f"sources/model_families.yaml: pattern {pattern!r} is declared twice "
+                        f"for product {product!r}"
+                    )
+                else:
+                    errors.append(
+                        f"sources/model_families.yaml: pattern {pattern!r} is claimed by both "
+                        f"{pattern_owner[pattern]!r} and {product!r}"
+                    )
             else:
                 pattern_owner[pattern] = product
 

@@ -712,6 +712,18 @@ def test_org_handle_collision_is_a_hard_error():
     assert any("shared-account" in e and "claimed by both" in e for e in errs)
 
 
+def test_org_handle_exact_duplicate_same_org_is_still_a_hard_error():
+    """registry.org_handles is one row per (platform, handle) -- a byte-identical duplicate
+    entry for the SAME org is still a second row nothing downstream expects, not a no-op."""
+    d = _fixture()
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "github", "handle": "meta-llama"},
+        {"org": "meta", "platform": "github", "handle": "meta-llama"},
+    ]
+    errs = validate_sources(d)
+    assert any("meta-llama" in e and "declared twice" in e for e in errs)
+
+
 def test_org_handle_collision_folds_case():
     d = _with_second_org(_fixture())
     d["org_handles"]["handles"] = [
@@ -761,6 +773,18 @@ def test_model_family_duplicate_pattern_is_a_hard_error():
     ]
     errs = validate_sources(d)
     assert any("llama-*" in e and "claimed by both" in e for e in errs)
+
+
+def test_model_family_exact_duplicate_same_product_is_still_a_hard_error():
+    """registry.model_families is one row per pattern -- a byte-identical duplicate entry
+    (same pattern, same product) still violates that grain, not just a contradictory pair."""
+    d = _fixture()
+    d["model_families"]["families"] = [
+        {"pattern": "llama-*", "product": "llama", "decided_in": "#1", "note": "x" * 20},
+        {"pattern": "llama-*", "product": "llama", "decided_in": "#2", "note": "y" * 20},
+    ]
+    errs = validate_sources(d)
+    assert any("llama-*" in e and "declared twice" in e for e in errs)
 
 
 def test_model_family_pattern_must_match_its_own_product():
