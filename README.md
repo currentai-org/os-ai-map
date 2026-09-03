@@ -98,7 +98,7 @@ what you edit.
 | `sources/scores/` | Per-product `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
 | `sources/taxonomy.yaml` | Arc grouping + display order; the three arcs are the Columbia ontology layers | Every category appears in exactly one arc |
 | `sources/allowlists/` | `undigested_sources.txt`, the sources grandfathered before the digest discipline | Anything not listed must carry a `content_sha256`; the list only shrinks |
-| `sources/snapshots/` | `long_tail.json`, the frozen dedup counts | |
+| `sources/snapshots/` | `long_tail.json`, the frozen dedup counts | Frozen universe counts; roster counts are derived at build time |
 
 Category slugs use underscore form (`base_pretrained`); product and org slugs use hyphenated
 kebab-case (`llama-3-1`, `allen-ai`). Artifact keys on products (only those that apply): `github`,

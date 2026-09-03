@@ -43,7 +43,7 @@ Usage:
     uv run python -m build.sweep_status
     uv run python -m build.sweep_status --verbose
     uv run python -m build.sweep_status --next            # just the next category's slug
-    uv run python -m build.sweep_status --max-age-days 30 # what has gone stale in a month
+    uv run python -m build.sweep_status --max-age-days 45 # what has gone stale past the window
     uv run python -m build.sweep_status --since 2026-07-01
     uv run python -m build.sweep_status --retracting      # notes that correct themselves
     uv run python -m build.sweep_status --under-coverage  # bands their own note disowns
