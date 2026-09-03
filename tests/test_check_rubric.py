@@ -332,11 +332,22 @@ class TestRealCategories:
         assert deferred == []
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
-        """41 scored and 0 deferred. Counting a deferral as a pass is how a rubric
-        claims to describe products it cannot score, so the identity is worth keeping
-        even while the deferral count is zero."""
-        _, total, _, deferred, _ = check_category("finetuned_chat", verbose=False)
-        assert total + len(deferred) == 41
+        """Counting a deferral as a pass is how a rubric claims to describe products it
+        cannot score, so the identity is worth keeping even while the deferral count is
+        zero: every product this category has a score file for is either
+        reproduced-and-counted-in-total or excluded-and-deferred, never both and never
+        neither. Derived from the category's own roster rather than pinned, so it holds
+        across a product add. Census now lives in tests/goldens/corpus.json; see
+        build/goldens.py."""
+        report = check_category("finetuned_chat", verbose=False)
+        category = yaml.safe_load(
+            (ROOT / "sources" / "categories" / "finetuned_chat.yaml").read_text()
+        )
+        roster = sum(
+            1 for product in category.get("products") or []
+            if (ROOT / "sources" / "scores" / f"{product}.yaml").exists()
+        )
+        assert report.total + len(report.deferred) == roster
 
 
 def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, monkeypatch):
