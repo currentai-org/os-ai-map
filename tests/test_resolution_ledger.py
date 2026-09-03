@@ -18,10 +18,12 @@ from build.resolution import (
     RELATIONS,
     VERDICTS,
     DuplicateResolution,
+    artifact_of,
     blocks_new_product,
     holds_bulk_promotion,
     load,
     membership_ruling,
+    relation_of,
     verdict_for,
 )
 
@@ -31,8 +33,8 @@ ROOT = Path(__file__).resolve().parent.parent
 def test_the_ledger_parses_and_every_verdict_is_known():
     entries = load()
     assert entries
-    for (kind, ident), relation in entries.keys():
-        entry = entries[((kind, ident), relation)]
+    for entry in entries.values():
+        kind, ident = artifact_of(entry)
         assert entry["verdict"] in VERDICTS, f"{kind}/{ident}: unknown verdict {entry['verdict']!r}"
         if kind == "github":
             assert ident == ident.lower(), "github identity is compared lowercased"
@@ -43,8 +45,8 @@ def test_the_ledger_parses_and_every_verdict_is_known():
 def test_a_resolved_repo_names_what_it_resolved_to():
     """`existing_product` and `sku_of` point at a product; `excluded_boundary` names a boundary.
     Without that an entry blocks a candidate while saying nothing about why."""
-    for (kind, ident), relation in load().keys():
-        entry = load()[((kind, ident), relation)]
+    for entry in load().values():
+        kind, ident = artifact_of(entry)
         if entry["verdict"] in ("existing_product", "sku_of"):
             assert entry.get("product") or entry.get("resolves_to"), \
                 f"{kind}/{ident}: {entry['verdict']} must name a product"
@@ -99,6 +101,44 @@ def test_a_repository_may_be_resolved_only_once(tmp_path):
     with pytest.raises(DuplicateResolution) as raised:
         load(ledger)
     assert "Foo/Bar" in str(raised.value) or "foo/bar" in str(raised.value) or "foo/bar" in str(raised.value).lower()
+
+
+def _membership_entry(product_slug, verdict, decided_in, note):
+    return {
+        "artifact": {"kind": "pypi", "id": "widget"}, "verdict": verdict,
+        "relation": "product_membership", "resolves_to": product_slug,
+        "decided_in": decided_in, "decided_on": "2026-09-03", "note": note,
+    }
+
+
+def test_one_artifact_may_carry_a_membership_ruling_for_two_products(tmp_path):
+    """Membership is a relation between an artifact and a PRODUCT, not a global fact about the
+    artifact. One PyPI package can legitimately be `member_of` product-a's measurement and
+    `not_member_of` product-b's - that is two different keys, not a duplicate."""
+    path = tmp_path / "resolution_ledger.yaml"
+    path.write_text(yaml.safe_dump({"version": 1, "resolutions": [
+        _membership_entry("product-a", "member_of", "#1", "widget's downloads are product-a's own"),
+        _membership_entry("product-b", "not_member_of", "#2", "widget looks related but is not product-b's"),
+    ]}))
+    ledger = load(path)  # must not raise
+    assert membership_ruling("pypi", "widget", "product-a", ledger)["verdict"] == "member_of"
+    assert membership_ruling("pypi", "widget", "product-b", ledger)["verdict"] == "not_member_of"
+    # a lookup against a third product sees neither ruling
+    assert membership_ruling("pypi", "widget", "product-c", ledger) is None
+
+
+def test_two_membership_rulings_for_the_same_artifact_and_product_is_a_duplicate(tmp_path):
+    """The other side of the fix: `resolves_to` is part of the key, but the key is still
+    enforced - a `member_of` and a `not_member_of` for the SAME artifact and SAME product is
+    the same question answered twice, and that stays an error."""
+    path = tmp_path / "resolution_ledger.yaml"
+    path.write_text(yaml.safe_dump({"version": 1, "resolutions": [
+        _membership_entry("product-a", "member_of", "#1", "widget's downloads are product-a's own"),
+        _membership_entry("product-a", "not_member_of", "#2", "reversed on reconsideration, later sweep"),
+    ]}))
+    with pytest.raises(DuplicateResolution) as raised:
+        load(path)
+    assert "widget" in str(raised.value)
 
 
 LEDGER_FLOOR = 302  # trued up 2026-09-03 from 291; the ratchet below requires exact equality
@@ -158,7 +198,7 @@ def test_unresolved_does_not_block():
     """`unresolved` means a person still has to look. A rerun proposing the repository again
     is the intended behaviour, so it must not be enforced like a decision."""
     assert "unresolved" not in NOT_A_NEW_PRODUCT
-    unresolved = [(kind, ident) for ((kind, ident), relation), e in load().items() if e["verdict"] == "unresolved"]
+    unresolved = [artifact_of(e) for e in load().values() if e["verdict"] == "unresolved"]
     for kind, ident in unresolved:
         assert blocks_new_product(kind, ident) is None
 
@@ -203,7 +243,9 @@ def test_every_entry_validates_against_the_schema():
 
 def test_keys_are_kind_and_canonical_id():
     ledger = load()
-    for ((kind, ident), relation), entry in ledger.items():
+    for entry in ledger.values():
+        kind, ident = artifact_of(entry)
+        relation = relation_of(entry)
         assert kind in {"github", "huggingface_model", "huggingface_dataset", "pypi", "npm",
                          "crates", "arxiv", "homepage"}
         assert relation in RELATIONS

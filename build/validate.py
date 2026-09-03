@@ -8,6 +8,7 @@ import jsonschema
 import yaml
 
 from build.identity import fold_for_proposal, id_from_url
+from build.resolution import LEDGER
 from build.vocabulary import axes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
@@ -104,7 +105,10 @@ def published_products(taxonomy: dict, cats: dict) -> set[str]:
     }
 
 
-def validate_sources(data: dict) -> list[str]:
+def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
+    """`ledger_path` is a seam for tests: it lets a test point every resolution-ledger check at
+    a temp file instead of the real `sources/resolution_ledger.yaml`, which this function
+    otherwise reads unconditionally."""
     errors: list[str] = []
     orgs, cats, prods, scores = (data["organizations"], data["categories"],
                                  data["products"], data["scores"])
@@ -178,9 +182,15 @@ def validate_sources(data: dict) -> list[str]:
     # is folded through `build.identity.fold_for_proposal`, the same function
     # `build/resolution.py`'s ledger key now delegates to, so a differently-cased PyPI or npm
     # name matches here too.
-    from build.resolution import MEMBERSHIP_VERDICTS, NOT_A_NEW_PRODUCT, load as load_ledger
+    from build.resolution import (
+        MEMBERSHIP_VERDICTS,
+        NOT_A_NEW_PRODUCT,
+        artifact_of,
+        relation_of,
+        load as load_ledger,
+    )
 
-    ledger = load_ledger()
+    ledger = load_ledger(ledger_path)
     for slug, product in sorted((data.get("products") or {}).items()):
         for kind in _TAIL_ARTIFACT_KINDS:
             for artifact in (product.get(kind) or []):
@@ -208,13 +218,36 @@ def validate_sources(data: dict) -> list[str]:
     # A `member_of`/`not_member_of` verdict answers a `product_membership` question; recording
     # one under any other relation would make `verdict_for` read it as an equivalence ruling it
     # never made.
-    for (key, relation), entry in ledger.items():
+    for entry in ledger.values():
+        relation = relation_of(entry)
         if entry.get("verdict") in MEMBERSHIP_VERDICTS and relation != "product_membership":
-            kind, ident = key
+            kind, ident = artifact_of(entry)
             errors.append(
                 f"resolution ledger: {kind} {ident!r} carries verdict {entry['verdict']!r} but "
                 f"relation {relation!r}; member_of/not_member_of require relation: "
                 "product_membership"
+            )
+
+    # `resolves_to` is part of the ledger key for `product_membership` (`build/resolution.py`
+    # keys on artifact + relation + resolves_to), so a slug that does not exist -- retired,
+    # renamed, or simply mistyped -- silently forks the key rather than raising: a ruling meant
+    # to match an existing `member_of`/`not_member_of` entry for the same product would instead
+    # be treated as a ruling about a different (nonexistent) product and pass `load` clean. An
+    # exact match, because product slugs are kebab-case and a casing slip is exactly the kind of
+    # drift that must never fork a key silently.
+    product_slugs = set((data.get("products") or {}).keys())
+    for entry in ledger.values():
+        if relation_of(entry) != "product_membership":
+            continue
+        resolves_to = (entry.get("resolves_to") or "").strip()
+        if resolves_to not in product_slugs:
+            kind, ident = artifact_of(entry)
+            errors.append(
+                f"resolution ledger: {kind} {ident!r} carries a product_membership ruling for "
+                f"resolves_to {resolves_to!r}, which is not a product slug in the corpus "
+                f"(decided in {entry.get('decided_in', 'an earlier sweep')}). resolves_to is "
+                f"part of the ledger key, so an unknown or mistyped slug never matches the "
+                f"product it was meant to name."
             )
 
     # --- tail registry invariants ---
@@ -557,12 +590,10 @@ def validate_sources(data: dict) -> list[str]:
     # `sources/resolution_ledger.yaml` is one file rather than a directory, loaded straight
     # from disk here rather than through `load_ledger` above, so a malformed entry is reported
     # by slot in the file rather than silently swallowed by `load`'s duplicate-key check.
-    from build.resolution import LEDGER
-
     ledger_schema = json.loads(
         (Path(__file__).resolve().parents[1] / "docs" / "schemas" / "resolution_ledger.schema.json").read_text()
     )
-    ledger_doc = yaml.safe_load(LEDGER.read_text()) or {}
+    ledger_doc = yaml.safe_load(ledger_path.read_text()) or {}
     for i, entry in enumerate(ledger_doc.get("resolutions") or []):
         try:
             jsonschema.validate(entry, ledger_schema)

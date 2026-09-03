@@ -17,7 +17,7 @@
     "verdict": {"enum": ["existing_product", "sku_of", "excluded_boundary", "excluded_maintenance", "unresolved", "member_of", "not_member_of"]},
     "relation": {"enum": ["product_equivalence", "product_membership"], "description": "Which question this ruling answers. Absent means product_equivalence (every entry before 2026-09 answered that question). A ruling suppresses only questions of its own relation."},
     "product": {"type": "string", "description": "Legacy name for resolves_to on existing_product and sku_of entries."},
-    "resolves_to": {"type": "string", "description": "The product slug this artifact belongs to (member_of) or does not (not_member_of), or resolves to (existing_product, sku_of)."},
+    "resolves_to": {"type": "string", "description": "The product slug this artifact belongs to (member_of) or does not (not_member_of), or resolves to (existing_product, sku_of). For relation: product_membership, resolves_to is part of the ledger key alongside artifact and relation - the same artifact may carry a separate member_of/not_member_of ruling for a different product."},
     "boundary": {"type": "string"},
     "decided_in": {"type": "string"},
     "decided_on": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},

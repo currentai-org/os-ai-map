@@ -71,6 +71,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 - `registry.product_artifacts`'s `crates` `artifact_id` now serializes the bare crate name
   instead of the full crates.io URL (one row: `yomo`) (#472).
+- The resolution ledger now keys a `product_membership` ruling on the product it names
+  (`resolves_to`), not on the artifact alone. One package can legitimately be `member_of` one
+  product's measurement and `not_member_of` another's — the loader used to raise
+  `DuplicateResolution` on that legitimate case. `registry.resolution_ledger`'s grain moves to
+  one row per `(artifact_kind, artifact_id, relation, resolves_to)` to match (#365).
 
 ## [0.2.0] - 2026-08-16
 

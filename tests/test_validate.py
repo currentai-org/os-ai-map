@@ -1,3 +1,7 @@
+import pytest
+import yaml
+
+from build.resolution import DuplicateResolution
 from build.validate import validate_sources
 
 # `llama` is the product the tests reach for; the other nine exist because a PUBLISHED
@@ -633,3 +637,43 @@ def test_a_fetched_source_with_status_and_digest_validates():
         {"http_status": 200, "content_sha256": "a" * 64}
     )
     assert validate_sources(d) == []
+
+
+def _membership_entry(product_slug, verdict, decided_in, note):
+    return {
+        "artifact": {"kind": "pypi", "id": "widget"}, "verdict": verdict,
+        "relation": "product_membership", "resolves_to": product_slug,
+        "decided_in": decided_in, "decided_on": "2026-09-03", "note": note,
+    }
+
+
+def _write_ledger(tmp_path, resolutions):
+    path = tmp_path / "resolution_ledger.yaml"
+    path.write_text(yaml.safe_dump({"version": 1, "resolutions": resolutions}))
+    return path
+
+
+def test_a_member_of_and_not_member_of_for_the_same_artifact_and_product_is_a_duplicate(tmp_path):
+    """`resolves_to` is part of the ledger key `build/resolution.py` enforces uniqueness on, but
+    the key is still enforced: a member_of and a not_member_of naming the SAME product are the
+    same question answered twice, not two legitimate rulings."""
+    path = _write_ledger(tmp_path, [
+        _membership_entry("llama", "member_of", "#1", "widget's downloads are llama's own usage"),
+        _membership_entry("llama", "not_member_of", "#2", "reversed on reconsideration, later sweep"),
+    ])
+    with pytest.raises(DuplicateResolution):
+        validate_sources(_fixture(), ledger_path=path)
+
+
+def test_a_membership_ruling_naming_an_unknown_product_is_a_hard_error(tmp_path):
+    """resolves_to is part of the ledger key, so a retired, renamed, or mistyped slug never
+    matches the product the ruling was meant to name - it silently forks the key instead of
+    raising, which is worse than a build failure."""
+    path = _write_ledger(tmp_path, [
+        _membership_entry(
+            "not-a-real-product", "not_member_of", "#1",
+            "widget looks related to this product but its downloads are not its own",
+        ),
+    ])
+    errs = validate_sources(_fixture(), ledger_path=path)
+    assert any("not-a-real-product" in e and "not a product slug" in e for e in errs)

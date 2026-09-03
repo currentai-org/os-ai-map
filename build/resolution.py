@@ -6,11 +6,14 @@ package's downloads are not this product's usage" - and records the reasoning in
 which no later run can read. The first corpus expansion duly recreated four repositories that
 #413 had already resolved - one of them a product the corpus carries under another name.
 
-Keyed on (artifact kind, canonical id). Every verdict is typed by relation, and a ruling
-suppresses only questions of its own relation: a `not_member_of` on a PyPI package never
-suppresses a later equivalence question about the same package. Entries written before 2026-09
-carry no relation and are read as `product_equivalence`, which is the only question they ever
-answered. The file is never rewritten by code; it only grows (#437).
+Keyed on (artifact kind, canonical id) plus relation - and, for `product_membership`, plus the
+product the ruling names (`resolves_to`), because membership is a relation between an artifact
+and a PRODUCT, not a fact about the artifact alone. One PyPI package can legitimately be
+`member_of` product-a's measurement and `not_member_of` product-b's; those are different keys,
+not a duplicate. A ruling suppresses only questions of its own relation: a `not_member_of` on a
+PyPI package never suppresses a later equivalence question about the same package. Entries
+written before 2026-09 carry no relation and are read as `product_equivalence`, which is the
+only question they ever answered. The file is never rewritten by code; it only grows (#437).
 
 This module is the reader. `build/validate.py` enforces the half that can be enforced
 mechanically, and a bulk pipeline is expected to consult `verdict_for` (or one of the three
@@ -42,10 +45,17 @@ MEMBERSHIP_VERDICTS = frozenset({"member_of", "not_member_of"})
 VERDICTS = EQUIVALENCE_VERDICTS | MEMBERSHIP_VERDICTS
 
 Key = tuple[str, str]
+#: The full ledger key: `(artifact, relation)` for `product_equivalence`, `(artifact, relation,
+#: resolves_to)` for `product_membership`. Membership is a relation between an artifact and a
+#: PRODUCT, so the product it names is part of the key -- one PyPI package may legitimately be
+#: `member_of` product-a and `not_member_of` product-b, and those are two different keys, not a
+#: duplicate.
+LedgerKey = tuple
 
 
 class DuplicateResolution(ValueError):
-    """Two entries answer the same (artifact, relation) question. Never benign for governance state."""
+    """Two entries answer the same (artifact, relation[, resolves_to]) question. Never benign for
+    governance state."""
 
 
 def _canonical(kind: str, ident: str) -> str:
@@ -63,7 +73,7 @@ def _canonical(kind: str, ident: str) -> str:
     return _identity_fold(kind, ident)
 
 
-def key_for(entry: Mapping) -> Key:
+def artifact_of(entry: Mapping) -> Key:
     """The (kind, canonical id) an entry is about, whether written as `repo` or `artifact`."""
     if "artifact" in entry:
         return (entry["artifact"]["kind"], _canonical(entry["artifact"]["kind"], entry["artifact"]["id"]))
@@ -76,50 +86,86 @@ def relation_of(entry: Mapping) -> str:
     return entry.get("relation") or "product_equivalence"
 
 
-def load(path: Path = LEDGER) -> dict[tuple[Key, str], dict]:
-    """Ledger keyed by `((kind, canonical id), relation)`.
+def key_for(entry: Mapping) -> LedgerKey:
+    """The full ledger key this entry occupies: `(artifact, relation)` for `product_equivalence`,
+    `(artifact, relation, resolves_to)` for `product_membership`.
 
-    A duplicate (artifact, relation) pair raises rather than resolving last-write-wins. The dict
-    comprehension this replaced would silently keep whichever entry came last, so
-    `Foo/Bar: existing_product` followed by `foo/bar: unresolved` would quietly discard the
-    stronger decision - and the file is hand-edited by people appending after each review, which
-    is exactly how that happens. `docs/reference/identity.md` records the same failure in the
-    deleted slug-alias mapping: two renames of one retired slug, and whichever came last won.
+    Membership is a relation between an artifact and a PRODUCT, not a global fact about the
+    artifact, so its key carries the product it names. Without the third element, a `member_of`
+    ruling for product-a and a `not_member_of` ruling for product-b on the SAME package would
+    collide as if they were the same question -- and one legitimately is not the other.
+    """
+    artifact = artifact_of(entry)
+    relation = relation_of(entry)
+    if relation == "product_membership":
+        return (artifact, relation, (entry.get("resolves_to") or "").strip())
+    return (artifact, relation)
 
-    The same artifact may carry both an equivalence ruling and a membership ruling - a package
-    can simultaneously not be a new product on its own AND be ruled in or out of another
-    product's measurement - so uniqueness is enforced per relation, not per artifact.
+
+def load(path: Path = LEDGER) -> dict[LedgerKey, dict]:
+    """Ledger keyed by `key_for`: `(artifact, relation)` for `product_equivalence`, `(artifact,
+    relation, resolves_to)` for `product_membership`.
+
+    A duplicate key raises rather than resolving last-write-wins. The dict comprehension this
+    replaced would silently keep whichever entry came last, so `Foo/Bar: existing_product`
+    followed by `foo/bar: unresolved` would quietly discard the stronger decision - and the file
+    is hand-edited by people appending after each review, which is exactly how that happens.
+    `docs/reference/identity.md` records the same failure in the deleted slug-alias mapping: two
+    renames of one retired slug, and whichever came last won.
+
+    The same artifact may carry an equivalence ruling AND one membership ruling per product it is
+    weighed against - a package can simultaneously not be a new product on its own, be ruled a
+    member of one product's measurement, and ruled out of another's - so uniqueness is enforced
+    per full key, not per artifact.
     """
     if not path.exists():
         return {}
     doc = yaml.safe_load(path.read_text()) or {}
-    out: dict[tuple[Key, str], dict] = {}
+    out: dict[LedgerKey, dict] = {}
     for entry in (doc.get("resolutions") or []):
         k = key_for(entry)
-        relation = relation_of(entry)
-        composite = (k, relation)
-        if composite in out:
-            prior = out[composite]
+        if k in out:
+            prior = out[k]
+            kind, ident = k[0]
+            relation = k[1]
+            target = f", resolves_to {k[2]!r}" if len(k) == 3 else ""
             raise DuplicateResolution(
-                f"{path.name}: {k} is resolved twice for {relation!r} - already "
-                f"{prior['verdict']!r} from {prior.get('decided_in')}, now "
+                f"{path.name}: {kind} {ident!r} is resolved twice for {relation!r}{target} - "
+                f"already {prior['verdict']!r} from {prior.get('decided_in')}, now "
                 f"{entry.get('verdict')!r} from {entry.get('decided_in')}. Identity is compared "
                 f"canonicalized, so these are one artifact. Merge them."
             )
-        out[composite] = entry
+        out[k] = entry
     return out
 
 
-def verdict_for(kind: str, ident: str, relation: str, ledger: Mapping | None = None) -> dict | None:
+def verdict_for(
+    kind: str,
+    ident: str,
+    relation: str,
+    ledger: Mapping | None = None,
+    *,
+    product_slug: str | None = None,
+) -> dict | None:
     """The recorded ruling for an artifact and relation, or None if never resolved.
 
     `verdict_for("github", repo, "product_equivalence")` behaves exactly as the old single-arg
     `verdict_for(repo)` did for repo entries: `_canonical` strips `.git` and lowercases here just
     as `load` does when building the keys, so a differently-cased or `.git`-suffixed lookup still
     matches.
+
+    `relation="product_membership"` requires `product_slug`: membership is a statement about ONE
+    product's measurement, not a global fact about the artifact, so a lookup that does not name
+    the product cannot be answered. The `relation="product_equivalence"` path ignores
+    `product_slug`.
     """
     ledger = load() if ledger is None else ledger
-    return ledger.get(((kind, _canonical(kind, ident)), relation))
+    artifact = (kind, _canonical(kind, ident))
+    if relation == "product_membership":
+        if product_slug is None:
+            raise ValueError("verdict_for(relation='product_membership') requires product_slug")
+        return ledger.get((artifact, relation, product_slug.strip()))
+    return ledger.get((artifact, relation))
 
 
 def blocks_new_product(kind: str, ident: str, ledger: Mapping | None = None) -> dict | None:
@@ -151,9 +197,8 @@ def holds_bulk_promotion(kind: str, ident: str, ledger: Mapping | None = None) -
 def membership_ruling(kind: str, ident: str, product_slug: str, ledger: Mapping | None = None) -> dict | None:
     """The `product_membership` ruling for this artifact against `product_slug`, if any.
 
-    Only returns an entry whose `resolves_to` matches `product_slug`: a `member_of` or
-    `not_member_of` ruling is a statement about ONE product's measurement, not a global fact
-    about the artifact, so a lookup against a different product must not see it.
+    A `member_of` or `not_member_of` ruling is a statement about ONE product's measurement, not
+    a global fact about the artifact, so `product_slug` is part of the key `verdict_for` looks
+    up here - a lookup against a different product simply misses.
     """
-    entry = verdict_for(kind, ident, "product_membership", ledger)
-    return entry if entry and entry.get("resolves_to") == product_slug else None
+    return verdict_for(kind, ident, "product_membership", ledger, product_slug=product_slug)
