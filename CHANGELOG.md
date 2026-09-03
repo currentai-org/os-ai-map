@@ -30,6 +30,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   09:00 UTC): membership, equivalence, and org edges the identity graph could not auto-emit,
   capped at 25 a week, each with a pre-filled ledger entry ready to paste into
   `sources/resolution_ledger.yaml` once decided (#365).
+- Organization platform handles (`sources/org_handles.yaml`) and model release-name families
+  (`sources/model_families.yaml`), published as `registry.org_handles` and
+  `registry.model_families` — declared identity evidence for who owns which account and which
+  release names bridge to which tier-level product (#474).
 - Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
   4.0 ≤ score < 4.5, else `null`) fields, a `depth` category gap that fires at Stage 4, and a
   `descriptions.tiers` legend in the payload (#87, #318).

@@ -227,6 +227,65 @@ consolidations rather than renames: `google-deepmind` into `google`, `alibaba` i
 `alibaba-cloud`. `org_slug` is emitted into the payload and joined in the registry, so a rename
 with no forwarding address breaks a join rather than a link.
 
+### Handles are ownership evidence, not adoption evidence
+
+`sources/org_handles.yaml` (`registry.org_handles` when published) records which platform
+accounts and domains an organization publishes under — `github`, `huggingface`, `homepage_domain`
+— one row per `{org, platform, handle}`. It lives outside `sources/organizations/*.yaml`
+deliberately: an organization's own file is a declaration and folds into
+`declaration_version_id`, but who owns which account is evidence established independently of
+that declaration, revisable without re-keying it. `build/declaration_version.py` classifies
+`org_handles.yaml` as a non-declaration input for the same reason `resolution_ledger.yaml` is one
+— see there for the ruling.
+
+Seeded from what each org file already declares: the account segment of an *org-level*
+`github[].url` (a repo-level URL such as `github.com/keirp/OpenWebMath` is parsed too, but
+recorded with a `note` flagging the weaker provenance, since the owner segment of a repo URL is
+still a real account); the domain of `homepage`, except on a known multi-tenant host
+(`github.com`, `huggingface.co`, …) where a bare hostname identifies no single org; and
+`handles.huggingface` only where a `homepage` is itself a `huggingface.co/<account>` URL, never
+invented. A `github.com/<account>` homepage is read the same way — it is exactly the
+`huggingface.co/<account>` case, one platform over.
+
+A handle is never joined for scores: it says who owns an account, not how much that account is
+used, and a download or star count still has to come from the artifact-level signal tables. One
+`(platform, handle)` pair belongs to one organization; `build/validate.py` enforces that as a hard
+error, folded the same way any other identity comparison is (case-insensitive, and a leading
+`www.` stripped for a domain). Where two org files genuinely share an account or domain —
+`openai` / `openai-internal`, `anthropic` / `anthropic-internal`, `ai2` /
+`allen-institute-for-ai`, `mistral-ai` / `mistral-ai-api`, `princeton-nlp` /
+`princeton-nlp-openai` — the handle is assigned to the public or canonical org, and the row's
+`note` names the sibling; the sibling org file is untouched.
+
+### Model families bridge a release name to a tier-level slug
+
+Vendors ship version-numbered releases under one product line — `grok-3`, `grok-4` — but the map
+scores the tier-level slug a vendor sells (`grok`), not each release (see "How far to collapse:
+what the vendor sells" above). `sources/model_families.yaml` records the bridge: a lowercase
+glob `pattern` (`grok-*`, always the product slug plus `-*`) that matches a release name, the
+`product` slug it resolves to, and `decided_in`, the pull request where a person ruled it. Each
+family is one human ruling, not a mechanical inference — a discovery sweep can propose a match,
+but a bridge is only real once it is in this file. `build/validate.py` rejects two families
+naming the same `pattern` with different products, and requires `pattern` to equal
+`<product>-*` exactly. `registry.model_families` is the published form; it is identity evidence,
+not a scoring declaration, so it changes no product's `openness`, `adoption` or `capability` and
+is excluded from `declaration_version_id`'s digest (`build/declaration_version.py`).
+
+The initial 25 families were derived mechanically — every `type: model` product whose `aliases`
+already carry a version-token variant of its own slug — and then reviewed and confirmed by a
+person in #474 before merge, which is what `decided_in` records for each. A mechanical
+derivation is a candidate list, not a ruling on its own; a future addition follows the same
+path, proposed and then confirmed in the PR that adds it.
+
+**Overlapping patterns: the longest match wins.** Two families can legitimately overlap —
+`deepseek-*` → `deepseek` and `deepseek-coder-*` → `deepseek-coder` are both real, because
+`deepseek-coder` is its own tier-level slug, not a release of `deepseek` — and a release name
+like `deepseek-coder-v2-instruct` matches both patterns. When that happens, **the longest
+matching pattern wins**: a consumer resolving a release name must try every pattern and keep the
+one with the most characters, never the first one it happens to read. `build/validate.py` flags
+this shape as a warning (not an error, since it is a legitimate case) whenever one family's
+pattern is a literal prefix of another's and the two name different products.
+
 ## Related
 
 - `docs/reference/evidence-and-freshness.md` — how a score earns `last_verified`, and the gates
@@ -239,3 +298,7 @@ with no forwarding address breaks a join rather than a link.
 - `sources/resolution_ledger.yaml` — where a rejected or reassigned identity is recorded, so
   the next sweep can read the decision
 - `docs/schemas/score.schema.json` — `openness.governing_release`
+- `sources/org_handles.yaml`, `docs/schemas/org_handles.schema.json` — which accounts and
+  domains an organization publishes under
+- `sources/model_families.yaml`, `docs/schemas/model_families.schema.json` — which release
+  patterns bridge to which tier-level product

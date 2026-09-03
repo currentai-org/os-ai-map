@@ -39,6 +39,8 @@ def _fixture():
         },
         "products": {slug: product(slug) for slug in FIXTURE_PRODUCTS},
         "scores": {slug: score(slug) for slug in FIXTURE_PRODUCTS},
+        "model_families": {"version": 1, "families": []},
+        "org_handles": {"version": 1, "handles": []},
     }
 
 def test_valid_fixture_passes():
@@ -677,3 +679,121 @@ def test_a_membership_ruling_naming_an_unknown_product_is_a_hard_error(tmp_path)
     ])
     errs = validate_sources(_fixture(), ledger_path=path)
     assert any("not-a-real-product" in e and "not a product slug" in e for e in errs)
+
+
+# --- org handles (sources/org_handles.yaml) -----------------------------------------
+
+def _with_second_org(d):
+    """A fixture with a second, product-less organization to collide handles against."""
+    d["organizations"]["acme"] = {"name": "acme", "display_name": "Acme", "products": []}
+    return d
+
+
+def test_org_handle_is_fine_when_it_belongs_to_one_org():
+    d = _with_second_org(_fixture())
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "github", "handle": "meta-llama"},
+        {"org": "acme", "platform": "github", "handle": "acme-labs"},
+    ]
+    assert validate_sources(d) == []
+
+
+def test_org_handle_collision_is_a_hard_error():
+    d = _with_second_org(_fixture())
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "github", "handle": "shared-account"},
+        {"org": "acme", "platform": "github", "handle": "shared-account"},
+    ]
+    errs = validate_sources(d)
+    assert any("shared-account" in e and "claimed by both" in e for e in errs)
+
+
+def test_org_handle_collision_folds_case():
+    d = _with_second_org(_fixture())
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "github", "handle": "SharedAccount"},
+        {"org": "acme", "platform": "github", "handle": "sharedaccount"},
+    ]
+    errs = validate_sources(d)
+    assert any("claimed by both" in e for e in errs)
+
+
+def test_org_handle_collision_strips_leading_www():
+    d = _with_second_org(_fixture())
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "homepage_domain", "handle": "www.shared.example"},
+        {"org": "acme", "platform": "homepage_domain", "handle": "shared.example"},
+    ]
+    errs = validate_sources(d)
+    assert any("claimed by both" in e for e in errs)
+
+
+def test_org_handle_does_not_collide_with_an_unrelated_orgs_slug():
+    """A handle string that happens to equal another org's SLUG is not a collision -- the
+    uniqueness key is (platform, folded handle), never an org slug."""
+    d = _with_second_org(_fixture())
+    d["org_handles"]["handles"] = [
+        {"org": "meta", "platform": "github", "handle": "acme"},
+    ]
+    assert validate_sources(d) == []
+
+
+def test_org_handle_naming_unknown_org_is_an_error():
+    d = _fixture()
+    d["org_handles"]["handles"] = [
+        {"org": "no-such-org", "platform": "github", "handle": "whatever"},
+    ]
+    errs = validate_sources(d)
+    assert any("no-such-org" in e and "no sources/organizations" in e for e in errs)
+
+
+# --- model families (sources/model_families.yaml) -----------------------------------
+
+def test_model_family_duplicate_pattern_is_a_hard_error():
+    d = _fixture()
+    d["model_families"]["families"] = [
+        {"pattern": "llama-*", "product": "llama", "decided_in": "#1", "note": "x" * 20},
+        {"pattern": "llama-*", "product": "filler-a", "decided_in": "#2", "note": "y" * 20},
+    ]
+    errs = validate_sources(d)
+    assert any("llama-*" in e and "claimed by both" in e for e in errs)
+
+
+def test_model_family_pattern_must_match_its_own_product():
+    d = _fixture()
+    d["model_families"]["families"] = [
+        {"pattern": "llama-*", "product": "filler-a", "decided_in": "#1", "note": "x" * 20},
+    ]
+    errs = validate_sources(d)
+    assert any("does not match its own product" in e for e in errs)
+
+
+def test_model_family_overlap_is_a_warning_not_an_error():
+    from build.validate import model_family_overlap_warnings
+
+    d = _fixture()
+    d["model_families"]["families"] = [
+        {"pattern": "llama-*", "product": "llama", "decided_in": "#1", "note": "x" * 20},
+    ]
+    # One family alone never warns -- overlap needs a second, different-product pattern.
+    assert model_family_overlap_warnings(d["model_families"]) == []
+    assert validate_sources(d) == []
+
+
+def test_model_family_overlapping_prefixes_warn():
+    from build.validate import model_family_overlap_warnings
+
+    families = {
+        "families": [
+            {"pattern": "deepseek-*", "product": "deepseek", "decided_in": "#1", "note": "x" * 20},
+            {
+                "pattern": "deepseek-coder-*",
+                "product": "deepseek-coder",
+                "decided_in": "#2",
+                "note": "y" * 20,
+            },
+        ]
+    }
+    warnings = model_family_overlap_warnings(families)
+    assert len(warnings) == 1
+    assert "deepseek-*" in warnings[0] and "deepseek-coder-*" in warnings[0]

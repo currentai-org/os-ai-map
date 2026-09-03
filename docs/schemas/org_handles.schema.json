@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Organization handles",
+  "type": "object",
+  "description": "Which platform accounts and domains an organization publishes under -- ownership evidence for identity resolution, never joined for scores or adoption. Kept as its own file, outside sources/organizations/*.yaml, so a handle edit never re-keys declaration_version_id: an organization's own record (name, products, homepage, github) IS the declaration and belongs in the digest, but who owns which account is a fact ABOUT that declaration, established independently and revisable without touching it. See docs/reference/identity.md and build/declaration_version.py::NON_DECLARATION_INPUTS.",
+  "required": ["version", "handles"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "description": "Schema version. Bump only on a breaking shape change."
+    },
+    "handles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["org", "platform", "handle"],
+        "additionalProperties": false,
+        "properties": {
+          "org": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "The organization slug. Must resolve to a real sources/organizations/<org>.yaml."
+          },
+          "platform": {
+            "enum": ["github", "huggingface", "homepage_domain"],
+            "description": "Which platform this handle names an account or domain on."
+          },
+          "handle": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The account name (github, huggingface) or domain (homepage_domain), in its declared casing. build/validate.py enforces that one (platform, folded handle) maps to exactly one org -- folded by casefold, and homepage_domain additionally strips a leading `www.`."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional: why this handle is assigned here rather than elsewhere -- e.g. it is shared with a sibling org record, or it was recovered from a repo-level URL rather than an account page."
+          }
+        }
+      }
+    }
+  }
+}

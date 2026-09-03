@@ -319,6 +319,116 @@ def test_resolution_ledger_table_has_one_row_per_ruling():
     assert all(r["relation"] in ("product_equivalence", "product_membership") for r in rows)
 
 
+def test_organizations_github_is_the_first_declared_url_not_a_sorted_one():
+    """`organizations.github` is flattened to a single value -- the FIRST declared account
+    URL, matching every other single-valued column in this table. The full roster (and every
+    other platform) lives in org_handles, not here."""
+    sources = _sources(
+        organizations={
+            "zeta-labs": {
+                "products": [],
+                "github": [
+                    {"url": "https://github.com/zeta-two"},
+                    {"url": "https://github.com/zeta-one"},
+                ],
+            }
+        },
+    )
+    tables, _, _ = build_registry(sources)
+    row = next(r for r in tables["organizations"] if r["slug"] == "zeta-labs")
+    assert row["github"] == "https://github.com/zeta-two", "must be the first DECLARED url"
+
+
+def test_organizations_github_is_empty_string_with_no_account():
+    tables, _, _ = build_registry(_sources(organizations={"acme": {"products": []}}))
+    row = next(r for r in tables["organizations"] if r["slug"] == "acme")
+    assert row["github"] == ""
+
+
+# --- org_handles ---------------------------------------------------------------------
+
+def test_org_handles_table_explodes_every_platform_and_sorts():
+    sources = _sources(organizations={"meta": {"products": []}, "acme": {"products": []}})
+    sources["org_handles"] = {
+        "handles": [
+            {"org": "acme", "platform": "homepage_domain", "handle": "acme.example"},
+            {"org": "meta", "platform": "github", "handle": "meta-llama"},
+            {"org": "acme", "platform": "github", "handle": "acme-labs"},
+            {"org": "meta", "platform": "huggingface", "handle": "meta-hf"},
+        ]
+    }
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    assert tables["org_handles"] == [
+        {"platform": "github", "handle": "acme-labs", "org_slug": "acme"},
+        {"platform": "github", "handle": "meta-llama", "org_slug": "meta"},
+        {"platform": "homepage_domain", "handle": "acme.example", "org_slug": "acme"},
+        {"platform": "huggingface", "handle": "meta-hf", "org_slug": "meta"},
+    ]
+
+
+def test_org_handles_naming_unknown_org_is_an_error_not_a_silent_drop():
+    sources = _sources(organizations={"meta": {"products": []}})
+    sources["org_handles"] = {
+        "handles": [{"org": "no-such-org", "platform": "github", "handle": "whatever"}]
+    }
+    tables, errors, _ = build_registry(sources)
+    assert any("unknown organization" in e and "no-such-org" in e for e in errors)
+    assert tables["org_handles"] == []
+
+
+def test_org_handles_table_empty_when_the_file_is_absent():
+    """`_sources()` carries no `org_handles` key at all -- the same missing-key tolerance
+    every other optional source (`registry`, `model_families`) already has."""
+    tables, errors, _ = build_registry(_sources())
+    assert errors == []
+    assert tables["org_handles"] == []
+
+
+# --- model_families -------------------------------------------------------------------
+
+def test_model_families_table_shape_and_sort_order():
+    sources = _sources(
+        products={
+            "llama": {"type": "model", "display_name": "Llama"},
+            "grok": {"type": "model", "display_name": "Grok"},
+        },
+    )
+    sources["model_families"] = {
+        "families": [
+            {"pattern": "llama-*", "product": "llama", "decided_in": "#2", "note": "b" * 20},
+            {"pattern": "grok-*", "product": "grok", "decided_in": "#1", "note": "a" * 20},
+        ]
+    }
+    tables, errors, _ = build_registry(sources)
+    assert not [e for e in errors if "model_families" in e]
+    assert [r["pattern"] for r in tables["model_families"]] == ["grok-*", "llama-*"]
+    assert tables["model_families"][0] == {
+        "pattern": "grok-*",
+        "product_slug": "grok",
+        "note": "a" * 20,
+        "decided_in": "#1",
+    }
+
+
+def test_model_families_unknown_product_is_an_error_not_a_silent_drop():
+    sources = _sources()
+    sources["model_families"] = {
+        "families": [
+            {"pattern": "ghost-*", "product": "ghost", "decided_in": "#1", "note": "x" * 20},
+        ]
+    }
+    tables, errors, _ = build_registry(sources)
+    assert any("unknown product 'ghost'" in e for e in errors)
+    assert tables["model_families"] == []
+
+
+def test_model_families_table_empty_when_the_file_is_absent():
+    tables, errors, _ = build_registry(_sources())
+    assert errors == []
+    assert tables["model_families"] == []
+
+
 def test_product_aliases_table_matches_the_payload_alias_map():
     sources = load_sources(ROOT)
     tables, _, _ = build_registry(sources)

@@ -28,6 +28,8 @@ Emitted tables (one CSV each, written to build/registry/):
                          it is about, so the same artifact may carry a separate row per
                          product it has been weighed against)
   product_aliases       alias, product_slug
+  org_handles           platform, handle, org_slug
+  model_families        pattern, product_slug, note, decided_in
 
 `arxiv` exists so citation lookups join on an exact identifier. Matching papers
 by product name was measured at 2 correct out of 10 — APPS resolved to a medical
@@ -122,6 +124,8 @@ TABLES: dict[str, tuple[str, ...]] = {
         "note",
     ),
     "product_aliases": ("alias", "product_slug"),
+    "org_handles": ("platform", "handle", "org_slug"),
+    "model_families": ("pattern", "product_slug", "note", "decided_in"),
 }
 
 def _urls(value: object) -> list[str]:
@@ -255,13 +259,18 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                         )
 
     for slug, org in sorted(organizations.items()):
+        # `organizations.github` is flattened to the first declared account URL, matching
+        # every other single-valued column in this table -- the full set of accounts (and
+        # every other platform handle) lives in `org_handles`, which a consumer joins on
+        # `org_slug` for the complete roster.
+        github_urls = _urls(org.get("github"))
         tables["organizations"].append(
             {
                 "slug": slug,
                 "display_name": org.get("display_name", ""),
                 "type": org.get("type", ""),
                 "homepage": org.get("homepage", ""),
-                "github": org.get("github", ""),
+                "github": github_urls[0] if github_urls else "",
                 "country": org.get("country", ""),
             }
         )
@@ -272,6 +281,25 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
             tables["product_organizations"].append(
                 {"product_slug": product_slug, "org_slug": slug}
             )
+
+    # Org handles live in their own file (sources/org_handles.yaml), not on the organization
+    # record -- see docs/reference/identity.md. `org` is checked against the real org set
+    # here too, matching the model_families pattern below: build.validate already gates this,
+    # but a caller that runs serialize_registry standalone must not silently drop a bad row.
+    for entry in sorted(
+        (sources.get("org_handles") or {}).get("handles") or [],
+        key=lambda e: (e.get("org", ""), e.get("platform", ""), e.get("handle", "")),
+    ):
+        org_slug, platform, handle = entry.get("org"), entry.get("platform"), entry.get("handle")
+        if org_slug not in organizations:
+            errors.append(
+                f"org_handles: handle {platform}:{handle!r} names unknown organization "
+                f"'{org_slug}'"
+            )
+            continue
+        tables["org_handles"].append(
+            {"platform": platform, "handle": handle, "org_slug": org_slug}
+        )
 
     for slug, category in sorted(categories.items()):
         arc_name, layer = layers.get(slug, ("", ""))
@@ -381,6 +409,32 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 "note": entry.get("note") or "",
             }
         )
+
+    # Model families: which release-name patterns bridge to which tier-level product slug.
+    # Every `product` is checked against the real product set here too -- build.validate
+    # already gates this, but a caller that runs serialize_registry standalone (as
+    # build.validate does not) must not silently drop a bad row.
+    for entry in sorted(
+        (sources.get("model_families") or {}).get("families") or [],
+        key=lambda e: e.get("pattern", ""),
+    ):
+        product_slug = entry.get("product")
+        if product_slug not in products:
+            errors.append(
+                f"model_families: pattern '{entry.get('pattern')}' names unknown product "
+                f"'{product_slug}'"
+            )
+            continue
+        tables["model_families"].append(
+            {
+                "pattern": entry.get("pattern", ""),
+                "product_slug": product_slug,
+                "note": entry.get("note", ""),
+                "decided_in": entry.get("decided_in", ""),
+            }
+        )
+
+    tables["org_handles"].sort(key=lambda row: (row["platform"], row["handle"], row["org_slug"]))
 
     # Aliases, published products only -- must match build.serialize._aliases exactly
     # (same helper, same "published" set) so the table and the notebook payload can never

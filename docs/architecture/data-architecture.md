@@ -1651,10 +1651,10 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
-staged, not deployed                         <!-- count:staged_assets -->8
+staged, not deployed                         <!-- count:staged_assets -->10
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->40
+logical assets in warehouse/assets.yaml     <!-- count:assets -->42
 ```
 
 The staged eight are the three `signal_packages` models from issue #314,

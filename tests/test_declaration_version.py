@@ -331,3 +331,31 @@ def test_canonicalization_version_participates_in_the_id(monkeypatch):
     before = declaration_version_id(sha, digest)
     monkeypatch.setattr(dv, "CANONICALIZATION_VERSION", CANONICALIZATION_VERSION + 1)
     assert dv.declaration_version_id(sha, digest) != before
+
+
+# --- org_handles.yaml / model_families.yaml are non-declaration inputs ---------------
+
+def test_org_handles_and_model_families_are_non_declaration_inputs():
+    """Both are identity evidence, not scoring declarations: an edit must not re-key
+    declaration_version_id corpus-wide. `test_source_inventory_is_fully_classified` above
+    already proves each entry of sources/ lands in exactly one bucket; this test names these
+    two specifically so a future refactor that moves either one into DECLARATION_INPUTS fails
+    here with a clear reason, not just as an unexplained digest change downstream."""
+    assert "org_handles.yaml" in NON_DECLARATION_INPUTS
+    assert "model_families.yaml" in NON_DECLARATION_INPUTS
+    assert len(NON_DECLARATION_INPUTS["org_handles.yaml"]) >= 20
+    assert "org_handles.yaml" not in DECLARATION_INPUTS
+    assert "model_families.yaml" not in DECLARATION_INPUTS
+
+
+def test_organization_declarations_carry_no_handles_key():
+    """Handles were moved OUT of sources/organizations/*.yaml into their own non-declaration
+    file specifically so a handle edit does not re-key every organization's declaration
+    content. This guards against the field silently reappearing on the org record: if it
+    does, the digest changes on every future handle correction, which is the exact cost
+    org_handles.yaml exists to avoid (see docs/reference/identity.md)."""
+    content = declaration_content(ROOT)
+    orgs = content.get("organizations")
+    assert isinstance(orgs, dict) and orgs, "no organization declarations found"
+    offenders = [name for name, doc in orgs.items() if isinstance(doc, dict) and "handles" in doc]
+    assert not offenders, f"organization files still carry a handles key: {offenders}"

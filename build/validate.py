@@ -21,9 +21,10 @@ _SCHEMA_FOR_DIR = {
     "products": "product",
     "scores": "score",
 }
-# taxonomy.yaml is one file, not a directory, so it is schema-checked separately below
-# rather than through _SCHEMA_FOR_DIR. Listed here so _load_schemas picks it up.
-_EXTRA_SCHEMAS = ("taxonomy",)
+# taxonomy.yaml, model_families.yaml and org_handles.yaml are single files, not directories,
+# so they are schema-checked separately below rather than through _SCHEMA_FOR_DIR. Listed
+# here so _load_schemas picks them up.
+_EXTRA_SCHEMAS = ("taxonomy", "model_families", "org_handles")
 
 
 def _load_schemas(root: Path) -> dict:
@@ -79,6 +80,8 @@ def load_sources(root: Path) -> dict:
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
         "registry": _dir("registry"),
+        "model_families": yaml.safe_load((root / "sources" / "model_families.yaml").read_text()),
+        "org_handles": yaml.safe_load((root / "sources" / "org_handles.yaml").read_text()),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
@@ -367,6 +370,42 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         if n != 1:
             errors.append(f"product {slug!r}: must appear in exactly one org roster (found in {n})")
 
+    # --- org handles (sources/org_handles.yaml) ---
+    # Handles live outside the org record on purpose (see docs/reference/identity.md): an
+    # organization's own file is a declaration and folds into declaration_version_id, but who
+    # owns which account is evidence established independently of that declaration. Schema
+    # validation for this file happens below, alongside model_families and taxonomy, once
+    # `schemas` is loaded; the two cross-file checks here do not need it: `org` must resolve
+    # to a real organization, and a handle is ownership evidence, so evidence that names two
+    # owners is not evidence of either -- one (platform, handle) pair may belong to one org
+    # only. Compared folded (casefold; homepage_domain additionally strips a leading "www.")
+    # so two spellings of the same account do not slip past as distinct.
+    org_handles = data.get("org_handles") or {}
+    handle_owner: dict[tuple[str, str], str] = {}
+    for entry in org_handles.get("handles") or []:
+        if not isinstance(entry, dict):
+            continue
+        oslug, platform, raw = entry.get("org"), entry.get("platform"), entry.get("handle")
+        if not (isinstance(oslug, str) and isinstance(platform, str) and isinstance(raw, str)):
+            continue
+        if oslug not in orgs:
+            errors.append(
+                f"sources/org_handles.yaml: handle {platform}:{raw!r} names organization "
+                f"{oslug!r}, which has no sources/organizations/{oslug}.yaml"
+            )
+            continue
+        folded = raw.casefold()
+        if platform == "homepage_domain":
+            folded = folded.removeprefix("www.")
+        key = (platform, folded)
+        if key in handle_owner and handle_owner[key] != oslug:
+            errors.append(
+                f"sources/org_handles.yaml: handle {platform}:{raw!r} claimed by both "
+                f"{handle_owner[key]!r} and {oslug!r}"
+            )
+            continue
+        handle_owner[key] = oslug
+
     # --- scores ---
     for slug, sc in scores.items():
         if slug not in prods:
@@ -578,6 +617,53 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     except jsonschema.ValidationError as e:
         errors.append(f"sources/taxonomy.yaml: schema: {e.message}")
 
+    # org_handles.yaml is single-file, schema-checked the same way as taxonomy.yaml above.
+    # The cross-file checks (org exists, one owner per handle) already ran above, before
+    # `schemas` existed.
+    try:
+        jsonschema.validate(org_handles, schemas["org_handles"])
+    except jsonschema.ValidationError as e:
+        errors.append(f"sources/org_handles.yaml: schema: {e.message}")
+
+    # model_families.yaml is single-file, schema-checked the same way as taxonomy.yaml above.
+    # Every `product` must resolve to a real sources/products/<slug>.yaml -- a family bridge
+    # naming no product is a typo, not a ruling.
+    model_families = data.get("model_families") or {}
+    try:
+        jsonschema.validate(model_families, schemas["model_families"])
+    except jsonschema.ValidationError as e:
+        errors.append(f"sources/model_families.yaml: schema: {e.message}")
+    pattern_owner: dict[str, str] = {}
+    family_entries = [e for e in (model_families.get("families") or []) if isinstance(e, dict)]
+    for entry in family_entries:
+        product = entry.get("product")
+        pattern = entry.get("pattern")
+        if product and product not in prods:
+            errors.append(
+                f"sources/model_families.yaml: family {pattern!r} names product "
+                f"{product!r}, which has no sources/products/{product}.yaml"
+            )
+        # The pattern's prefix must equal the product it bridges to -- `<slug>-*`, never
+        # `foo-*` -> `bar`. Otherwise the file could declare a bridge whose own glob
+        # disagrees with what it claims to name, which is not a ruling, it is a typo.
+        if isinstance(pattern, str) and isinstance(product, str) and pattern != f"{product}-*":
+            errors.append(
+                f"sources/model_families.yaml: pattern {pattern!r} does not match its own "
+                f"product {product!r} -- expected {product}-*"
+            )
+        if isinstance(pattern, str):
+            # Two families claiming the same pattern is a real contradiction -- the table
+            # would carry two rows for one glob, and a consumer joining on it reads
+            # whichever it happens to see first. A hard error, unlike the overlap warning
+            # below: this is not a precedence question, it is the same key twice.
+            if pattern in pattern_owner and pattern_owner[pattern] != product:
+                errors.append(
+                    f"sources/model_families.yaml: pattern {pattern!r} is claimed by both "
+                    f"{pattern_owner[pattern]!r} and {product!r}"
+                )
+            else:
+                pattern_owner[pattern] = product
+
     registry_schema = json.loads(
         (Path(__file__).resolve().parents[1] / "docs" / "schemas" / "registry.schema.json").read_text()
     )
@@ -604,10 +690,48 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     return errors
 
 
+def model_family_overlap_warnings(model_families: dict) -> list[str]:
+    """Non-fatal: patterns whose prefixes overlap, so a plain prefix match is ambiguous.
+
+    `deepseek-*` and `deepseek-coder-*` are both legitimate -- `deepseek-coder` genuinely is
+    its own tier-level slug, not a release of `deepseek` -- but a release name like
+    `deepseek-coder-v2-instruct` matches both. `docs/reference/identity.md` states the
+    precedence rule (the longest matching pattern wins), and this only surfaces the case
+    where a reader needs to know that rule exists. A strict prefix refinement (one pattern is
+    literally a longer prefix of the other) is exactly the shape that rule resolves, so it is
+    a warning rather than an error; two DIFFERENT products claiming the identical pattern is
+    a real contradiction and is gated as a hard error in `validate_sources` instead.
+    """
+    warnings: list[str] = []
+    entries = [e for e in (model_families.get("families") or []) if isinstance(e, dict)]
+    for i, a in enumerate(entries):
+        pa, prod_a = a.get("pattern"), a.get("product")
+        if not isinstance(pa, str) or not pa.endswith("*"):
+            continue
+        prefix_a = pa[:-1]
+        for b in entries[i + 1 :]:
+            pb, prod_b = b.get("pattern"), b.get("product")
+            if not isinstance(pb, str) or not pb.endswith("*") or prod_a == prod_b:
+                continue
+            prefix_b = pb[:-1]
+            if prefix_a == prefix_b:
+                continue  # same pattern, different product -- a hard error above, not a warning
+            if prefix_a.startswith(prefix_b) or prefix_b.startswith(prefix_a):
+                warnings.append(
+                    f"model_families: pattern {pa!r} ({prod_a}) and {pb!r} ({prod_b}) overlap "
+                    "-- the longest matching pattern wins (docs/reference/identity.md)"
+                )
+    return warnings
+
+
 if __name__ == "__main__":
     import sys
-    errs = validate_sources(load_sources(Path(__file__).resolve().parents[1]))
+    src = load_sources(Path(__file__).resolve().parents[1])
+    errs = validate_sources(src)
     for e in errs:
         print("ERROR:", e)
-    print(f"\n{len(errs)} error(s)")
+    warns = model_family_overlap_warnings(src.get("model_families") or {})
+    for w in warns:
+        print("WARNING:", w)
+    print(f"\n{len(errs)} error(s), {len(warns)} warning(s)")
     sys.exit(1 if errs else 0)
