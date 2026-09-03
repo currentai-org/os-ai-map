@@ -134,6 +134,22 @@ jobs:
       - name: Retirement gate (a removed slug carries a redirect alias)
         run: uv run python -m build.check_retirement
 
+      # Per-PR semantic diff of the published narrative: stage, gap, product-count, and tier
+      # deltas per category, plus a check that no axis-assessment row changed for a product
+      # whose source files this PR did not touch. A stage move fails unless the PR carries the
+      # `stage-move` label. This is the replacement for the corpus-wide digest pins that used to
+      # live in tests/ (build/goldens.py) -- those caught a silent rewrite by hashing everything,
+      # which made every product PR collide; this catches the same class of change per row and
+      # per PR instead. See build/check_corpus_diff.py.
+      - name: Semantic diff against the base (stage, gaps, tiers, untouched-row rewrites)
+        if: github.event_name == 'pull_request'
+        env:
+          ALLOW: ${{ contains(github.event.pull_request.labels.*.name, 'stage-move') && '--allow-stage-move' || '' }}
+        run: |
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          uv run python -m build.check_corpus_diff --base "origin/${{ github.base_ref }}" $ALLOW --sheet review-sheet.md
+          cat review-sheet.md >> "$GITHUB_STEP_SUMMARY"
+
       # The payload's own identity invariants: slugs, org_slug resolution, aliases, and
       # the freshness canary that catches a shallow-clone checkout from the inside. See
       # build/check_payload.py.
