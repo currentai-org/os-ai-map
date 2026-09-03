@@ -79,9 +79,9 @@ _ARTIFACT_URL_PATTERNS = {
 def _canonicalize(kind: str, value: str) -> str:
     """Fold an artifact identifier to the form dedup compares on, per kind.
 
-    Matches the canonical forms in `plans/2026-09-03-identity-graph-design.md` §2: PyPI
-    folds separator runs per PEP 503, crates lowercases without folding (`-` and `_` are
-    distinct there), an arXiv id drops its version suffix, everything else casefolds.
+    Canonical forms: GitHub owner/repo lowercased with any .git suffix removed; PyPI names
+    normalized per PEP 503 (lowercase, runs of -, _ and . collapsed to -); arXiv ids
+    without the version suffix; crates and npm names lowercased; Hugging Face ids as given.
     """
     value = value.strip().lower()
     if kind == "github":
