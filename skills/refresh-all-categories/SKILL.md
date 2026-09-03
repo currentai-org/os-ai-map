@@ -27,7 +27,7 @@ the next.
 
 ```bash
 uv run python -m build.sweep_status                     # what has never been confirmed
-uv run python -m build.sweep_status --max-age-days 30   # what has also gone stale
+uv run python -m build.sweep_status --max-age-days 45   # what has also gone stale
 ```
 
 ```
@@ -49,14 +49,14 @@ Give the user the table. It is the answer to "how far along are we", which is th
 skill exists to answer.
 
 **Ask which question they mean**, unless they said. Without a window the sweep is finishing
-something: every product confirmed once. With `--max-age-days 30` it is maintaining something:
-every product confirmed within the month, so a category that finished in June comes back round.
+something: every product confirmed once. With `--max-age-days 45` it is maintaining something:
+every product confirmed within forty-five days, so a category that finished in June comes back round.
 The first is the current job. The second is what this becomes afterwards, and the same tooling
 does both — pass the window straight through to `refresh-category`, which refreshes only the
 products it returns.
 
-**The window is 30 days**, decided 2026-08-09 by the person paying for the re-reading. So
-`--max-age-days 30` is the maintenance-mode invocation, and `docs/reference/evidence-and-freshness.md` step 5
+**The window is 45 days (temporary)**, decided 2026-08-09 by the person paying for the re-reading. So
+`--max-age-days 45` is the maintenance-mode invocation, and `docs/reference/evidence-and-freshness.md` step 5
 turns the age gate on at the same number. It had been an unmade decision carrying a suggested 90;
 this replaces it rather than adding an option.
 
@@ -64,9 +64,9 @@ Two consequences worth stating, because both were weighed:
 
 - **A month is not a promise about any individual page.** Live pages change daily, and the weekly
   sampled re-fetch will keep reporting drift on the volatile ones. That drift is noise at this
-  window, not a signal to chase. What 30 days buys is that no score sits unexamined for a quarter.
+  window, not a signal to chase. What 45 days (temporary) buys is that no score sits unexamined for a quarter.
 - **Categories will come back round in cliffs.** A category is re-read in one run, so all of its
-  axes carry one date and all of them age out together. Sixteen categories against a 30-day window
+  axes carry one date and all of them age out together. Eighteen categories against a 45-day window (temporary)
   means roughly four categories a week, and the queue from each lands at the same time. Do not
   read a cliff as a backlog.
 

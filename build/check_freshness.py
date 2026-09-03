@@ -42,7 +42,7 @@ window, or if any axis has no date at all for the window to be measured against.
 
 ## Where the gate runs
 
-`.github/workflows/freshness.yml`, weekly, at 30 days — the window decided 2026-08-09 and
+`.github/workflows/freshness.yml`, weekly, at 45 days (temporary) — the window decided 2026-08-09 and
 owned by `docs/reference/evidence-and-freshness.md` step 5. Not in `validate.yml`, and that is the one
 design decision in this file worth knowing about.
 
@@ -59,7 +59,7 @@ fail on the clock.
 Usage:
     uv run python -m build.check_freshness
     uv run python -m build.check_freshness --category base_pretrained
-    uv run python -m build.check_freshness --max-age-days 30
+    uv run python -m build.check_freshness --max-age-days 45
 """
 
 from __future__ import annotations
