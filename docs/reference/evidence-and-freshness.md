@@ -423,15 +423,33 @@ seen in June.
 
 ### Machine re-verification
 
-`build/reverify.py` may write `accessed`, `http_status` and `last_verified`, and only these,
-and only where every recorded dimension of an axis has a digested source that `establishes`
-it and every such source re-fetched byte-identical (same `content_sha256`, non-transient).
-It never derives a date, never records a transient fetch, and never touches an axis whose
-evidence changed. A new verification date records a successful re-evaluation on that date,
-not a claim that the fact was established or the source changed then. Ruling on #445
+`build/reverify.py` may write `accessed`, `http_status` and `content_sha256` on a source, and
+`last_verified` on an axis, and only these, and only where every recorded dimension of the
+axis has a digested source that `establishes` it and every such source re-fetched
+non-transient and confirmed. The dimension set it demands a source for is not a second copy
+of the gate's rule — it calls `build.check_verification.recorded_dimensions` directly, so a
+non-evidence key like `free_text` is never treated as requiring one.
+
+A source confirms one of three ways: the body is byte-identical (same `content_sha256`); the
+source's recorded `shows` excerpt still occurs in the fresh body, after both sides are
+whitespace-normalized and the body is tried through `html.unescape` (a placeholder `shows` —
+see `check_verification.placeholder_shows` — never confirms this way); or, for a source
+answering the `license` dimension from a GitHub license/repo API or a Hugging Face
+model-info endpoint, the fresh response's SPDX id normalizes (through
+`check_rubric.normalize_license`) to the same license already recorded, so long as the
+recorded clause is a single license rather than a `+`-joined compound. Whichever path
+confirms it, the source is rewritten with the fetch's actual `http_status` and its NEW
+`content_sha256` — a shows match records that the page still says what the source was cited
+for; the new digest is recorded so the next re-check compares against what was actually
+read. It never derives a date, never records a transient fetch, and never touches an axis
+whose evidence changed. A new verification date records a successful re-evaluation on that
+date, not a claim that the fact was established or the source changed then. Ruling on #445
 (2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
 capability are excluded from machine re-dating because their sources carry numbers that
-move. Their re-verification stays with the agent leg in `refresh-category`.
+move. Their re-verification stays with the agent leg in `refresh-category`. Ruled again
+2026-09-03 (#445 follow-up): byte identity is the wrong test for evidence pages that
+legitimately re-render on every load, so shows-match and SPDX comparison are also
+acceptable confirmations, on the terms above.
 
 ### Catching fabrication rather than just inconsistency
 
