@@ -129,21 +129,18 @@ ledger_key AS (
     resolves_to AS product_slug,
     artifact_kind,
     artifact_kind || ':' ||
+      -- Two branches, because there are only two rules. pypi and crates collapse `[-_.]+` runs
+      -- to a single `-`; every other kind folds by LOWER() alone -- github and the two Hub kinds
+      -- because the id is already `<owner>/<name>`, homepage because the whole canonical URL is
+      -- the key (path included, exactly as in identity_artifact_nodes.sql's `keyed` CTE and
+      -- identity_candidates.sql). Until 2026-09-04 the homepage branch extracted the bare host,
+      -- which disagreed with both siblings and with build/identity.py::fold_for_proposal; the fix
+      -- made it identical to the default, and it was then kept as a separate branch for one pass,
+      -- which reads as if it did something. It did not. Do not re-add a kind whose rule is
+      -- LOWER(artifact_id) as its own branch -- add a branch only when the rule differs.
       CASE
-        WHEN artifact_kind IN ('github', 'huggingface_model', 'huggingface_dataset')
-          THEN LOWER(artifact_id)
         WHEN artifact_kind IN ('pypi', 'crates')
           THEN REGEXP_REPLACE(LOWER(artifact_id), '[-_.]+', '-')
-        -- homepage folds the WHOLE canonical URL, path included -- LOWER() is the entire rule,
-        -- exactly as in identity_artifact_nodes.sql's `keyed` CTE and identity_candidates.sql.
-        -- Until 2026-09-04 this branch extracted the bare host, which disagreed with both
-        -- siblings and with build/identity.py::fold_for_proposal: a ledger ruling on
-        -- `acme.com/product` would have been keyed `homepage:acme.com` and matched the wrong
-        -- node (or, once two products share a domain, several). Inert today -- the live ledger
-        -- is 302 rows, every one of them `github` -- and fixed here because this model was being
-        -- revised anyway, which is the moment the last pass named for it.
-        WHEN artifact_kind = 'homepage'
-          THEN LOWER(artifact_id)
         ELSE LOWER(artifact_id)
       END AS candidate_key
   FROM currentai.registry.resolution_ledger

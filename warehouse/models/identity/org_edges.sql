@@ -48,12 +48,14 @@
 --
 -- Host matching, both homepage paths (fixed 2026-09-04 -- both emitted ZERO rows before):
 --   1. The host is extracted from artifact_key rather than used raw:
---      REGEXP_EXTRACT(artifact_key, '^([^/]+)', 1) with a leading `www.` stripped. Homepage
---      artifact_id is moving to the full canonical URL (host lowercased, `www.` stripped, path
---      kept, no trailing slash) in a parallel repo change, so `example.com/product` will fold to
---      a key with a path segment in it. Today's 27 homepage keys are still bare hosts, so the
---      extraction is a no-op on live data -- it exists so the model does not silently go to zero
---      the week the repo change lands.
+--      REGEXP_EXTRACT(artifact_key, '^([^/]+)', 1) with a leading `www.` stripped. That extraction
+--      is load-bearing now, not a precaution: homepage keys carry the full canonical URL (host
+--      lowercased, `www.` stripped, path kept, no trailing slash) since
+--      identity_artifact_nodes.sql was corrected to keep the path, and nine of the 27 live
+--      homepage keys have a path segment in them (`developer.nvidia.com/nccl`,
+--      `rocm.docs.amd.com/projects/rocALUTION/en/latest`, ...). Comparing a key like that against
+--      an org domain raw matches nothing, which is what this line prevents. Do not "simplify" it
+--      away.
 --   2. A candidate host matches an org domain when it EQUALS it or is a SUBDOMAIN of it
 --      (`host LIKE '%.' || domain`). Exact equality alone is why both paths were inert: none of
 --      the 27 homepage nodes is a bare registered org domain, but three are subdomains of one --
@@ -82,7 +84,7 @@
 --   org_handle (github)      https://github.com/<handle> | org_handles: <org> github <handle>
 --   org_handle (huggingface) https://huggingface.co/<handle> | org_handles: <org> huggingface <handle>
 --   org_handle (homepage)    https://<handle> | org_handles: <org> homepage_domain <handle>
---   hf_namespace              https://huggingface.co/<ns> | namespace matches org <org> huggingface handle
+--   hf_namespace             https://huggingface.co/<ns> | namespace matches org <org> huggingface handle
 --   homepage_domain          https://<candidate host> | host matches org <org> homepage_domain handle
 -- The homepage_domain excerpt is the ruling's wording verbatim even though this path reads
 -- registry.organizations.homepage rather than org_handles -- the two homepage paths land on the

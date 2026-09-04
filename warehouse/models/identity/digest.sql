@@ -79,21 +79,31 @@
 -- derived by folding the artifact via currentai.identity.artifact_nodes (the same fold CASE
 -- duplicated across this dataset; see identity_artifact_nodes.sql's `keyed` CTE).
 --
--- evidence_kinds and last_evidence_change are NOT read from currentai.identity.candidates.
--- candidates.evidence_kinds tried to aggregate membership_edges' method vocabulary, but
--- membership_edges' name_match evidence itself reads currentai.identity.candidates -- a genuine
--- cycle in the model DAG (candidates -> membership_edges -> candidates), so the platform can
--- never resolve it and candidates.evidence_kinds is deployed as a permanently empty array. This
--- model breaks the cycle on the read side: it aggregates the method vocabulary itself, straight
--- from the three edge tables it already joins (membership_edges, equivalence_edges, org_edges),
--- in the `candidate_evidence` CTE below -- no read of currentai.identity.digest's own prior
--- output either, so no model in this dataset reads its own prior materialization.
--- last_evidence_change is the MAX of whatever per-edge timestamp this model can reach (today:
--- only currentai.identity.artifact_nodes.last_observed_at, reachable for membership items via
--- the same fold-join used for candidate_key -- equivalence and org items have no edge-reachable
--- timestamp today), falling back to the candidate's own last_evidence_change (computed in
--- identity_candidates.sql from first_seen and the resolution_ledger, which is NOT part of this
--- cycle) when nothing edge-side is reachable.
+-- NO FETCH TIMESTAMP FEEDS ANY STATE DECISION IN THIS MODEL (reviewer ruling, 2026-09-04).
+-- currentai.identity.artifact_nodes.last_observed_at is a FETCH time -- the weekly run rewrites
+-- it on every pass -- so deriving an evidence-change time from it made every row look changed
+-- this week: `parked` became unreachable, all 25 review slots went to name-match-only items
+-- labelled `resurfaced_evidence`, and every alias item sat in `pool`. That is the freshness rule
+-- the repo already states (docs/guides/freshness.md): an evidence time is when the evidence was
+-- confirmed, never when a fetcher last looked. Two consequences here:
+--   * `last_evidence_change` is the resolution_ledger `decided_on` of a ruling naming this
+--     candidate (the `ledger_change` CTE below, folded to candidate_key exactly as
+--     identity_candidates.sql folds it), and NULL when no such ruling exists. It is NOT read from
+--     currentai.identity.candidates.last_evidence_change, which is
+--     GREATEST(node.last_observed_at, ledger) and so carries the fetch time inside it.
+--   * name-match-only is decided from the ITEM's own `method` array, not from an aggregate over
+--     the candidate. There is no candidate-level evidence-kind aggregation in this model any more
+--     (currentai.identity.candidates.evidence_kinds is a permanently empty array -- it tried to
+--     aggregate membership_edges' method vocabulary, but membership_edges reads
+--     currentai.identity.candidates for its name_match evidence, a genuine cycle in the model
+--     DAG). Per-item `method` answers the same question for a review decision -- what does THIS
+--     claim rest on -- without the cycle, without the UNNEST-and-regroup over three edge tables,
+--     and without any timestamp.
+-- DEFERRED: the `evidence_changed` resurfacing reason. It needs an evidence-history table (per
+-- (candidate_key, method) first-seen/last-confirmed rows) that does not exist; nothing reachable
+-- today dates a piece of evidence rather than a fetch. Until it exists the only resurfacing
+-- reason is 'age', and `resurfaced_reason` is NULL for every other row. Do not reinstate
+-- 'evidence_changed' from a fetch column.
 --
 -- sweep_week = sweep_week_start = DATE_TRUNC('week', CURRENT_DATE) AS DATE. This model runs
 -- weekly (Sunday 05:30 UTC, see docs/operations/deploy-models.md), so each run's CURRENT_DATE
@@ -103,96 +113,78 @@
 -- column (revision 3, deployed 2026-09-03), so a future version of this model can join it
 -- consistently with the other two edge tables. It is not read here yet.
 --
--- state:
---   parked      evidence_kinds = ARRAY['name_match'] (the weakest signal -- no other evidence has
---               ever attached to this candidate) AND last_evidence_change is more than 7 days
---               old AND first_seen is less than 56 days old. Held back from the review queue.
---   resurfaced  name-match-only, but EITHER first_seen >= 56 days ago (resurfaced_reason =
---               'age') OR last_evidence_change is within the last 7 days (resurfaced_reason =
---               'evidence_changed'). Competes for the same 25 weekly slots as `active`.
---   active      not name-match-only (or has no candidate context to test); ranked alongside
---               `resurfaced` items and capped at 25 rows per sweep_week.
---   pool        an active- or resurfaced-eligible item that ranked beyond the top 25 this week;
---               overflow, not reviewed this sweep. resurfaced_reason is NULL for a pool row even
---               if it was resurfaced-eligible pre-cap -- it did not actually resurface this week.
--- Ranking is GLOBAL; presentation is separate (reviewer ruling, 2026-09-04). The old key led
--- with `CASE relation WHEN 'equivalence' THEN 0 ELSE 1 END`, which handed all 25 slots to
--- equivalence items and starved every blast_radius = 3 membership item -- the only items that
--- can move a score -- behind them. Relation is now the fourth key, not the first, so the cap
--- selects the 25 most important items in the whole sweep regardless of relation:
+-- state (no timestamp in this logic is a fetch time -- see the ruling above):
+--   name_match_only  every element of the item's own `method` array is 'name_match'. The weakest
+--               signal there is: a repo or Hub id whose name segment happens to equal a product
+--               slug, with nothing else pointing at it. An item carrying any other method
+--               (product_alias, model_family, org_handle, hf_namespace, homepage_domain,
+--               resolution_ledger alongside another source) is NOT name-match-only.
+--   parked      name_match_only AND first_seen >= sweep_week_start - 56 days. Recently discovered
+--               and resting on a name collision alone: held out of the review queue, never
+--               ranked, `rank` NULL.
+--   resurfaced  name_match_only AND first_seen < sweep_week_start - 56 days, resurfaced_reason
+--               'age'. It has sat in the pool for eight weeks or more, so it gets a look.
+--               Competes for the same 25 weekly slots as `active`.
+--   active      NOT name_match_only. Alias, model-family, handle, hf-namespace and ledger-backed
+--               evidence all qualify. Ranked alongside `resurfaced` and capped at 25.
+--   pool        an active- or resurfaced-eligible item that did not make the 25-slot cap this
+--               week; overflow, not reviewed this sweep, `rank` NULL and resurfaced_reason NULL
+--               (it did not actually resurface this week).
+-- Ranking is GLOBAL; presentation is separate (reviewer ruling, 2026-09-04). The key, in order:
 --   1. blast_radius DESC              (3 = a ruling moves a score)
---   2. resurfacing urgency DESC       (resurfaced/evidence_changed, then resurfaced/age, then
---                                      plain active -- something that changed outranks something
---                                      that merely aged, which outranks something new)
+--   2. urgency                        (resurfaced/age first, then plain active -- something that
+--                                      has waited eight weeks outranks something new)
 --   3. first_seen ASC                 (older first -- an item starved for weeks wins the tie)
 --   4. relation priority              (equivalence, membership, org, artifact_identity)
 --   5. confidence DESC
--- `tiebreak` (downloads + stars) is no longer a ranking key; it stays as an output column
--- because build/identity_digest.py orders WITHIN a rendered section by it.
--- Cap: ROW_NUMBER() OVER (PARTITION BY sweep_week ORDER BY <the five keys above>) among state IN
--- ('active', 'resurfaced')-eligible rows; rank <= 25 keeps its state, rank > 25 becomes 'pool'.
--- That row number is exposed as the `rank` column (INTEGER, 1 = most important) so a renderer
--- can group by relation for display and still show, or re-sort by, the global standing. A parked
--- row never competed for a slot, so its `rank` is NULL; a `pool` row carries its real rank,
--- which is > 25 by definition. Output is ordered by the same key.
+-- `tiebreak` (downloads + stars) is not a ranking key; it stays as an output column because
+-- build/identity_digest.py orders WITHIN a rendered section by it.
+--
+-- Cap: 25 items per sweep_week, filled with a PER-RELATION RESERVATION (reviewer ruling,
+-- 2026-09-04) rather than purely globally. A purely global cap let one relation and one evidence
+-- class monopolize the whole queue -- the week the ranking went global, all 25 slots went to
+-- membership items and the equivalence and org sections rendered zero. So:
+--   1. the top 5 eligible items of EACH relation by the key above are taken first (fewer if a
+--      relation has fewer than 5 eligible items -- there is no padding and no relation is owed a
+--      slot it cannot fill), then
+--   2. the remaining slots are filled by global order from what is left.
+-- With three live relations the reservation claims at most 15 of the 25 slots, so global standing
+-- still decides the majority of the queue. `rank` is the item's final position in the selected
+-- set, 1..25, ordered by the global key -- NOT the pre-cap global order. A row outside the cap
+-- (`pool`) and a `parked` row both get `rank` NULL: neither is being reviewed this week, and a
+-- rank on an unreviewed row invited exactly the "rank means selected" misreading. Output is
+-- ordered by the global key, parked rows last.
 --
 -- Output casts: explicit CAST on every output column (DATE sweep_week, VARCHAR strings, DOUBLE
 -- confidence, ARRAY(VARCHAR) method/evidence/penalties/options, INTEGER blast_radius, BIGINT
 -- tiebreak, INTEGER rank), matching the deploy pass's fix on the first four models. Date
 -- arithmetic uses DATE_ADD('day', -N, sweep_week), not the `date - INTERVAL 'N' DAY` operator
--- form, and the result is cast to TIMESTAMP(6) before comparing against
--- first_seen/last_evidence_change (both TIMESTAMP(6)).
+-- form, and the result is cast to TIMESTAMP(6) before comparing against first_seen (TIMESTAMP(6)
+-- throughout this dataset).
 
 WITH sweep AS (
   SELECT CAST(DATE_TRUNC('week', CURRENT_DATE) AS DATE) AS sweep_week
 ),
 
--- Method vocabulary and reachable evidence timestamp per candidate_key, aggregated straight from
--- the three edge tables (no read of currentai.identity.candidates.evidence_kinds, which is a
--- permanently empty array -- see the header note above on why). This is the cycle-free
--- replacement for the aggregation candidates.sql used to do.
-membership_evidence AS (
+-- The only evidence-DATED source this model can reach: a resolution_ledger ruling naming the
+-- candidate. decided_on is the day a human decided, which is what an evidence time means. Folded
+-- to candidate_key with the same CASE identity_candidates.sql and identity_equivalence_edges.sql
+-- use (Trino has no shared macro, so it is intentionally duplicated, not re-derived
+-- differently). MAX(CAST(decided_on AS TIMESTAMP(6))) matches identity_candidates.sql: decided_on
+-- is a text column, every live value parses, and a malformed one should fail loudly rather than
+-- become a silent NULL.
+-- No fetch column appears here, and none may be added: see the header ruling.
+ledger_change AS (
   SELECT
-    n.artifact_kind || ':' || n.artifact_key AS candidate_key,
-    meth AS method,
-    n.last_observed_at AS evidence_ts
-  FROM currentai.identity.membership_edges m
-  JOIN currentai.identity.artifact_nodes n
-    ON n.artifact_kind = m.artifact_kind AND CONTAINS(n.also_seen_as, m.artifact_id)
-  CROSS JOIN UNNEST(m.method) AS t(meth)
-),
-
-equivalence_evidence AS (
-  SELECT
-    e.candidate_key,
-    meth AS method,
-    CAST(NULL AS TIMESTAMP(6)) AS evidence_ts
-  FROM currentai.identity.equivalence_edges e
-  CROSS JOIN UNNEST(e.method) AS t(meth)
-),
-
-org_evidence AS (
-  SELECT
-    o.candidate_key,
-    meth AS method,
-    CAST(NULL AS TIMESTAMP(6)) AS evidence_ts
-  FROM currentai.identity.org_edges o
-  CROSS JOIN UNNEST(o.method) AS t(meth)
-),
-
-candidate_evidence AS (
-  SELECT
-    candidate_key,
-    CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(method))) AS ARRAY(VARCHAR)) AS evidence_kinds,
-    MAX(evidence_ts) AS max_edge_ts
-  FROM (
-    SELECT * FROM membership_evidence
-    UNION ALL
-    SELECT * FROM equivalence_evidence
-    UNION ALL
-    SELECT * FROM org_evidence
-  )
-  GROUP BY candidate_key
+    artifact_kind || ':' ||
+      CASE
+        WHEN artifact_kind IN ('pypi', 'crates')
+          THEN REGEXP_REPLACE(LOWER(artifact_id), '[-_.]+', '-')
+        ELSE LOWER(artifact_id)
+      END AS candidate_key,
+    MAX(CAST(decided_on AS TIMESTAMP(6))) AS last_ruling_at
+  FROM currentai.registry.resolution_ledger
+  GROUP BY 1
 ),
 
 membership_items AS (
@@ -216,8 +208,7 @@ membership_items AS (
     (m.product_tier = 'head') AS product_is_head,
     c.downloads_30d,
     c.stars,
-    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen,
-    COALESCE(c.last_evidence_change, TIMESTAMP '1970-01-01') AS candidate_last_evidence_change
+    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen
   FROM currentai.identity.membership_edges m
   LEFT JOIN currentai.identity.artifact_nodes n
     ON n.artifact_kind = m.artifact_kind AND n.artifact_id = m.artifact_id
@@ -247,8 +238,7 @@ equivalence_items AS (
     (e.product_tier = 'head') AS product_is_head,
     c.downloads_30d,
     c.stars,
-    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen,
-    COALESCE(c.last_evidence_change, TIMESTAMP '1970-01-01') AS candidate_last_evidence_change
+    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen
   FROM currentai.identity.equivalence_edges e
   LEFT JOIN currentai.identity.candidates c ON c.candidate_key = e.candidate_key
   -- 'product_alias' is deliberately NOT excluded here (reviewer ruling 2026-09-04): it is capped
@@ -281,8 +271,7 @@ org_items AS (
     FALSE AS product_is_head,
     c.downloads_30d,
     c.stars,
-    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen,
-    COALESCE(c.last_evidence_change, TIMESTAMP '1970-01-01') AS candidate_last_evidence_change
+    COALESCE(c.first_seen, DATE '1970-01-01') AS first_seen
   -- org_edges has no 1.0 authoritative source in this plan (0.85/0.80/0.75 only), so the only
   -- filter here is the pool-tier restriction.
   FROM currentai.identity.org_edges o
@@ -324,22 +313,27 @@ scored AS (
     CAST(ARRAY['confirm', 'reject', 'park'] AS ARRAY(VARCHAR)) AS options,
     CAST('no edge' AS VARCHAR) AS default_if_ignored,
     CAST(ci.first_seen AS TIMESTAMP(6)) AS first_seen,
-    CAST(COALESCE(ce.max_edge_ts, ci.candidate_last_evidence_change) AS TIMESTAMP(6))
-      AS last_evidence_change,
-    COALESCE(ce.evidence_kinds, ci.method) AS evidence_kinds
+    -- Evidence time, not fetch time: the ledger ruling that named this candidate, or NULL when
+    -- no ruling names it. See the header ruling -- do not COALESCE a fetch column in here.
+    CAST(lc.last_ruling_at AS TIMESTAMP(6)) AS last_evidence_change
   FROM current_items ci
   CROSS JOIN sweep s
-  LEFT JOIN candidate_evidence ce ON ce.candidate_key = ci.candidate_key
+  LEFT JOIN ledger_change lc ON lc.candidate_key = ci.candidate_key
 ),
 
--- week_ago / eight_weeks_ago via DATE_ADD (not the `date - INTERVAL` operator form) and cast to
--- TIMESTAMP(6) so they compare cleanly against last_evidence_change/first_seen (both TIMESTAMP(6)
--- throughout this dataset).
+-- eight_weeks_ago via DATE_ADD (not the `date - INTERVAL` operator form) and cast to TIMESTAMP(6)
+-- so it compares cleanly against first_seen, which is TIMESTAMP(6) throughout this dataset.
+-- name-match-only is read off the item's OWN method array: every element is 'name_match'. FILTER
+-- rather than `method = ARRAY['name_match']` so an item that somehow carries the same method
+-- twice still reads as name-match-only, and the CARDINALITY > 0 guard keeps an item with an empty
+-- method array (none live -- checked) out of the parked branch instead of into it.
 thresholds AS (
   SELECT
     *,
-    (evidence_kinds = ARRAY['name_match']) AS is_name_match_only,
-    CAST(DATE_ADD('day', -7, sweep_week) AS TIMESTAMP(6)) AS week_ago,
+    (
+      CARDINALITY(method) > 0
+      AND CARDINALITY(FILTER(method, m -> m <> 'name_match')) = 0
+    ) AS is_name_match_only,
     CAST(DATE_ADD('day', -56, sweep_week) AS TIMESTAMP(6)) AS eight_weeks_ago
   FROM scored
 ),
@@ -349,24 +343,24 @@ pre_state AS (
     *,
     CASE
       WHEN NOT is_name_match_only THEN 'active_candidate'
-      WHEN first_seen <= eight_weeks_ago THEN 'resurfaced_age'
-      WHEN last_evidence_change >= week_ago THEN 'resurfaced_evidence'
+      WHEN first_seen < eight_weeks_ago THEN 'resurfaced_age'
       ELSE 'parked'
     END AS pre_state_label
   FROM thresholds
 ),
 
 -- Global ranking. Relation is the FOURTH key, not the first -- see the header on why the old
--- relation-first key starved every blast_radius = 3 membership item. The two ordering CASEs are
--- factored out here so the window function, the exposed `rank` column and the final ORDER BY
--- cannot drift apart.
+-- relation-first key starved every blast_radius = 3 membership item. The ordering CASEs are
+-- factored out here so the window functions, the exposed `rank` column and the final ORDER BY
+-- cannot drift apart. `parked_last` keeps parked rows out of the way of every ROW_NUMBER below
+-- without a WHERE (they still have to appear in the output).
 priorities AS (
   SELECT
     *,
+    CASE WHEN pre_state_label = 'parked' THEN 1 ELSE 0 END AS parked_last,
     CASE pre_state_label
-      WHEN 'resurfaced_evidence' THEN 0
-      WHEN 'resurfaced_age' THEN 1
-      ELSE 2
+      WHEN 'resurfaced_age' THEN 0
+      ELSE 1
     END AS urgency_rank,
     CASE relation
       WHEN 'equivalence' THEN 0
@@ -377,7 +371,9 @@ priorities AS (
   FROM pre_state
 ),
 
-ranked AS (
+-- Two orderings over the eligible rows, on the identical key: the global standing, and the
+-- standing within the row's own relation. The second is what the per-relation reservation reads.
+orders AS (
   SELECT
     *,
     CASE
@@ -385,14 +381,63 @@ ranked AS (
         ROW_NUMBER() OVER (
           PARTITION BY sweep_week
           ORDER BY
+            parked_last,
             blast_radius DESC,
             urgency_rank,
             first_seen ASC,
             relation_rank,
             confidence DESC
         )
-    END AS eligible_rank
+    END AS global_order,
+    CASE
+      WHEN pre_state_label <> 'parked' THEN
+        ROW_NUMBER() OVER (
+          PARTITION BY sweep_week, relation
+          ORDER BY
+            parked_last,
+            blast_radius DESC,
+            urgency_rank,
+            first_seen ASC,
+            relation_rank,
+            confidence DESC
+        )
+    END AS relation_order
   FROM priorities
+),
+
+-- The cap, with the per-relation reservation. Each relation's top 5 eligible items are claimed
+-- first (a relation with fewer than 5 claims fewer -- nothing is padded), and the rest of the 25
+-- goes to global order. `slot_order <= 25` is therefore the selected set; it is NOT the item's
+-- rank, because the reservation deliberately jumps items ahead of their global standing.
+selection AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (
+      PARTITION BY sweep_week
+      ORDER BY
+        CASE WHEN global_order IS NULL THEN 1 ELSE 0 END,
+        CASE WHEN relation_order <= 5 THEN 0 ELSE 1 END,
+        global_order
+    ) AS slot_order
+  FROM orders
+),
+
+-- `rank` is the selected item's 1..25 position in GLOBAL order, so a reserved item that was
+-- promoted into the cap still shows its true standing. The PARTITION BY on the selected flag is
+-- what restarts the numbering at 1 inside the cap; rows outside it get NULL.
+ranked AS (
+  SELECT
+    *,
+    CASE
+      WHEN global_order IS NOT NULL AND slot_order <= 25 THEN
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            sweep_week,
+            CASE WHEN global_order IS NOT NULL AND slot_order <= 25 THEN 1 ELSE 0 END
+          ORDER BY global_order
+        )
+    END AS final_rank
+  FROM selection
 )
 
 SELECT
@@ -416,24 +461,26 @@ SELECT
   CAST(
     CASE
       WHEN pre_state_label = 'parked' THEN 'parked'
-      WHEN eligible_rank <= 25 AND pre_state_label = 'active_candidate' THEN 'active'
-      WHEN eligible_rank <= 25 THEN 'resurfaced'
-      ELSE 'pool'
+      WHEN final_rank IS NULL THEN 'pool'
+      WHEN pre_state_label = 'resurfaced_age' THEN 'resurfaced'
+      ELSE 'active'
     END AS VARCHAR
   ) AS state,
+  -- 'age' is the only reason today: 'evidence_changed' is deferred until an evidence-history
+  -- table exists (see the header). NULL on every row that is not a resurfaced item inside the cap.
   CAST(
     CASE
-      WHEN eligible_rank <= 25 AND pre_state_label = 'resurfaced_age' THEN 'age'
-      WHEN eligible_rank <= 25 AND pre_state_label = 'resurfaced_evidence' THEN 'evidence_changed'
+      WHEN final_rank IS NOT NULL AND pre_state_label = 'resurfaced_age' THEN 'age'
       ELSE CAST(NULL AS VARCHAR)
     END AS VARCHAR
   ) AS resurfaced_reason,
-  -- Global standing, 1 = most important. NULL for a parked row, which never competed for a
-  -- slot; > 25 for a pool row. Exposed so a renderer can group by relation for display without
-  -- losing the ranking the cap was actually decided on.
-  CAST(eligible_rank AS INTEGER) AS "rank"
+  -- Final position in this week's 25, 1 = most important, in global order. NULL for a parked row
+  -- (never competed) and for a pool row (competed, missed the cap) -- neither is being reviewed
+  -- this week, and a rank on an unreviewed row reads as if it were.
+  CAST(final_rank AS INTEGER) AS "rank"
 FROM ranked
 ORDER BY
+  parked_last,
   blast_radius DESC,
   urgency_rank,
   first_seen ASC,
