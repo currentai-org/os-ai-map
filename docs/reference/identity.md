@@ -257,14 +257,22 @@ error, folded the same way any other identity comparison is (case-insensitive, a
 `princeton-nlp-openai` — the handle is assigned to the public or canonical org, and the row's
 `note` names the sibling; the sibling org file is untouched.
 
-A handle is also the graph's only route from an artifact to an org, which is why
-`build/identity_eval.py` measures `org` recall against **recoverable** truth rather than every
-declared `(candidate_key, org_slug)` pair: an org with no handle can never be recovered no matter
-how good the graph is, so including it would bound recall at the coverage fraction and read as a
-graph defect instead of the curation gap it actually is. Precision truth is unaffected — every
-emitted org edge is still judged against the full truth set. The eval prints a `handle coverage:
-<orgs with a handle>/<orgs rostered> (<pct>)` line so the gap stays visible as its own number
-rather than disappearing into a passing recall score.
+A handle is also the graph's only route from an artifact to an org, and each route runs from one
+artifact kind to one handle platform. So `build/identity_eval.py` measures `org` recall against
+**recoverable** truth, decided per `(artifact, org)` pair rather than per org: a `github:owner/repo`
+pair needs a `github` handle folding to `owner`; a `huggingface_model` or `huggingface_dataset` pair
+needs a `huggingface` handle equal to the namespace; a `homepage` pair needs a `homepage_domain`
+handle equal to the host or a parent domain of it (`acme.com` covers `docs.acme.com`). A `pypi`,
+`npm`, `crates` or `arxiv` identifier names a package or a paper and never its publisher, so no
+handle on any platform can bridge one and those pairs are excluded from recall entirely.
+
+The point is that an unbridgeable pair is not a graph defect, and holding it against recall bounds
+recall below 1 no matter how good the graph is. Precision truth is unaffected — every emitted org
+edge is still judged against the full truth set. The eval prints what was excluded and why:
+`n_truth_unrecoverable` per relation, a per-artifact-kind breakdown of it (which is what separates
+`pypi`, structurally unreachable, from a `github` artifact whose org simply declares no `github`
+handle), and a `handle coverage` line per route — for each route, how many of the orgs that
+actually own artifacts on it declare the handle it needs.
 
 ### Proposing handles
 
@@ -339,9 +347,24 @@ hash (ADR-003). They are not governed assets — nothing deploys from the mirror
 one changes nothing.
 
 Two repo-side readers grade the deployed graph. `build/identity_eval.py` replays the four edge
-tables against the resolution ledger's prior human rulings; `build/identity_digest.py` renders
-`identity.digest` into the weekly review digest. Both are audit roots, which is what puts the
-dataset inside the repo's governed dependency closure.
+tables against prior human decisions; `build/identity_digest.py` renders `identity.digest` into the
+weekly review digest. Both are audit roots, which is what puts the dataset inside the repo's
+governed dependency closure.
+
+The eval's truth is every declaration, both tiers. A `sources/registry/*.yaml` tail row states that
+an artifact is a product's and names the org that owns it, which is the same kind of decision a
+head product file records — so tail rows carry membership truth, `org` truth, and any fold-collapse
+pairs they form, read through `build/serialize_registry.py`'s own `tail_product_rows` so the eval
+and `registry.tail_products` cannot disagree about which fields are artifacts. Each truth item
+keeps the tier that declared it and the eval reports the head/tail split per relation. This is also
+what gives `membership_non_scoring` a floor at all: `homepage` is the only artifact kind with no
+adoption route, no head product declares one, and the tail rows that do are what put
+`membership_non_scoring` over the minimum truth count its floor needs to mean anything. That
+relation's truth set is therefore small enough (27) that one edge decides whether it clears the
+floor, so its failures need reading twice — a tail homepage edit is emitted from the last published
+`registry.tail_products` until the weekly publish lands, and the same edit staleness-fails the
+committed pass fixture. `build/identity_eval.py`'s module docstring carries both readings, and the
+eval prints them next to the failing row.
 
 ## Related
 

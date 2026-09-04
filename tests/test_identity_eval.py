@@ -12,6 +12,7 @@ the F2 tests stub `build.warehouse.query` directly rather than hitting a real en
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -19,8 +20,11 @@ import yaml
 
 import build.identity_eval as identity_eval_module
 import build.warehouse as warehouse_module
+from build.identity import fold_for_proposal
 from build.identity_eval import (
     KNOWN_NEGATIVES,
+    MIN_TRUTH,
+    ORG_ROUTES,
     EdgeColumnMissing,
     EdgeValueInvalid,
     KnownNegativeDeclaredError,
@@ -38,11 +42,15 @@ from build.identity_eval import (
     emitted_at_threshold,
     floor_failures,
     floor_status,
+    fold_handle,
     load_edges_from_warehouse,
     load_truth,
     main,
     org_handle_coverage,
+    org_pair_recoverable,
+    print_table,
     replay,
+    tail_membership_rows,
     validate_columns,
 )
 
@@ -250,7 +258,7 @@ def test_duplicate_head_tail_edges_collapse_in_precision_and_recall():
 
 
 def test_recall_cannot_exceed_one():
-    truth = Truth(org={"github:a/b": {"acme"}}, recoverable_orgs=frozenset({"acme"}))
+    truth = Truth(org={"github:a/b": {"acme"}}, org_handles={"acme": {"github": frozenset({"a"})}})
     edges = {
         "org": [
             {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "acme",
@@ -292,7 +300,13 @@ def test_org_truth_holds_more_than_one_org_per_candidate_key_in_the_real_corpus(
 def test_second_org_for_a_shared_candidate_key_scores_correct_not_a_false_positive():
     """The F5 bug: `dict.setdefault` kept only the first org read and scored the second,
     equally correct org as a false positive. Both must score correct now."""
-    truth = Truth(org={"github:a/b": {"org-one", "org-two"}}, recoverable_orgs=frozenset({"org-one", "org-two"}))
+    truth = Truth(
+        org={"github:a/b": {"org-one", "org-two"}},
+        org_handles={
+            "org-one": {"github": frozenset({"a"})},
+            "org-two": {"github": frozenset({"a"})},
+        },
+    )
     edges = {"org": [
         {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "org-one",
          "confidence": 1.0, "method": ["org_handle"]},
@@ -310,35 +324,99 @@ def test_org_n_truth_counts_pairs_not_candidate_keys():
 
 
 # ---------------------------------------------------------------------------
-# org recall is measured against recoverable truth (an org must declare a handle)
+# org recall is measured per handle route, pair by pair
 # ---------------------------------------------------------------------------
 
 
-def test_org_without_a_handle_drops_out_of_recall_truth():
-    """An org with no declared handle can never be recovered by the graph, so it must not
-    inflate `org`'s recall denominator -- `n_truth` counts only pairs whose org is
-    recoverable."""
+def test_github_pair_recoverable_only_when_the_owner_matches_a_github_handle():
+    truth = Truth(org_handles={"acme": {"github": frozenset({"acme-labs"})}})
+    assert org_pair_recoverable("github:acme-labs/widget", "acme", truth) is True
+    assert org_pair_recoverable("github:someone-else/widget", "acme", truth) is False
+
+
+def test_github_pair_not_recoverable_through_a_handle_on_another_route():
+    """The pre-#482-followup rule accepted any handle on any platform. A `homepage_domain`
+    handle cannot bridge a GitHub artifact -- there is no route from one to the other."""
+    truth = Truth(org_handles={"acme": {"homepage_domain": frozenset({"acme.com"})}})
+    assert org_pair_recoverable("github:acme/widget", "acme", truth) is False
+
+
+def test_huggingface_pairs_recoverable_through_the_namespace_on_both_kinds():
+    truth = Truth(org_handles={"acme": {"huggingface": frozenset({"acme-ai"})}})
+    assert org_pair_recoverable("huggingface_model:acme-ai/tiny", "acme", truth) is True
+    assert org_pair_recoverable("huggingface_dataset:acme-ai/corpus", "acme", truth) is True
+    assert org_pair_recoverable("huggingface_model:other/tiny", "acme", truth) is False
+
+
+def test_homepage_pair_recoverable_on_an_exact_host_and_on_a_parent_domain():
+    """A `homepage_domain` handle is deliberately broader than the artifact: an org declares
+    one domain and hangs product pages off subdomains of it."""
+    truth = Truth(org_handles={"acme": {"homepage_domain": frozenset({"acme.com"})}})
+    assert org_pair_recoverable("homepage:acme.com/product", "acme", truth) is True
+    assert org_pair_recoverable("homepage:docs.acme.com/product", "acme", truth) is True
+    assert org_pair_recoverable("homepage:acme.com", "acme", truth) is True
+
+
+def test_homepage_pair_not_recoverable_on_a_domain_that_merely_ends_in_the_same_letters():
+    """`notacme.com` is not a subdomain of `acme.com`; the suffix test has to be on a label
+    boundary or every look-alike domain reads as recoverable."""
+    truth = Truth(org_handles={"acme": {"homepage_domain": frozenset({"acme.com"})}})
+    assert org_pair_recoverable("homepage:notacme.com/product", "acme", truth) is False
+
+
+def test_handles_are_matched_folded_not_raw():
+    truth = Truth(org_handles={"acme": {"github": frozenset({fold_handle("github", "Acme-Labs")})}})
+    assert org_pair_recoverable("github:acme-labs/widget", "acme", truth) is True
+
+
+def test_fold_handle_strips_www_for_a_domain_only():
+    assert fold_handle("homepage_domain", "WWW.Acme.com") == "acme.com"
+    assert fold_handle("github", "WWW-Acme") == "www-acme"
+
+
+@pytest.mark.parametrize("candidate", ["pypi:torch", "npm:react", "crates:serde", "arxiv:2401.00001"])
+def test_kinds_with_no_owner_concept_are_never_recoverable(candidate):
+    """Even for an org that declares a handle on every route -- these identifiers name a
+    package or a paper, never who publishes it, so no handle could bridge them."""
+    truth = Truth(org_handles={"acme": {
+        "github": frozenset({"acme"}),
+        "huggingface": frozenset({"acme"}),
+        "homepage_domain": frozenset({"acme.com"}),
+    }})
+    assert org_pair_recoverable(candidate, "acme", truth) is False
+
+
+def test_pypi_truth_is_excluded_from_recall_and_counted_per_kind():
+    """The routed pair counts; the pypi pair is excluded from the denominator and appears in
+    the breakdown under its own kind."""
     truth = Truth(
-        org={"github:a/b": {"has-handle"}, "github:c/d": {"no-handle"}},
-        recoverable_orgs=frozenset({"has-handle"}),
-        orgs_rostered=frozenset({"has-handle", "no-handle"}),
+        org={"github:acme/widget": {"acme"}, "pypi:widget": {"acme"}},
+        org_handles={"acme": {"github": frozenset({"acme"})}},
     )
     m = replay({"org": []}, truth)["org"]
     assert m.n_truth == 1
     assert m.n_truth_unrecoverable == 1
+    assert m.unrecoverable_by_kind == {"pypi": 1}
 
 
-def test_emitted_edge_to_a_handle_less_org_still_counts_toward_precision():
-    """Precision truth is unchanged: an edge correctly naming an org with no declared handle
-    is still a correct edge, and must not be scored as a false positive just because that org
-    cannot contribute to recall."""
+def test_a_github_pair_whose_org_declares_no_github_handle_is_counted_under_github():
+    """A curation gap and a structural exclusion both land in `n_truth_unrecoverable`, and the
+    per-kind breakdown is what tells them apart."""
     truth = Truth(
-        org={"github:a/b": {"no-handle"}},
-        recoverable_orgs=frozenset(),
-        orgs_rostered=frozenset({"no-handle"}),
+        org={"github:acme/widget": {"acme"}, "arxiv:2401.00001": {"acme"}},
+        org_handles={"acme": {"homepage_domain": frozenset({"acme.com"})}},
     )
+    m = replay({"org": []}, truth)["org"]
+    assert m.n_truth == 0
+    assert m.unrecoverable_by_kind == {"arxiv": 1, "github": 1}
+
+
+def test_emitted_edge_to_an_unrecoverable_pair_still_counts_toward_precision():
+    """Precision truth is unrestricted: an edge correctly naming an org is a correct edge,
+    even where no handle route could have found it."""
+    truth = Truth(org={"pypi:widget": {"acme"}}, org_handles={})
     edges = {"org": [
-        {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "no-handle",
+        {"candidate_key": "pypi:widget", "candidate_tier": "head", "org_slug": "acme",
          "confidence": 1.0, "method": ["org_handle"]},
     ]}
     m = replay(edges, truth)["org"]
@@ -348,19 +426,53 @@ def test_emitted_edge_to_a_handle_less_org_still_counts_toward_precision():
     assert m.n_truth_unrecoverable == 1
 
 
-def test_handle_coverage_computed_correctly_on_a_fixture():
+def test_org_routes_cover_exactly_the_declared_handle_platforms():
+    """`ORG_ROUTES`' platforms are the `org_handles.yaml` schema's own enum. A new platform
+    added there needs a route here, or its handles quietly bridge nothing."""
+    schema = json.loads((ROOT / "docs" / "schemas" / "org_handles.schema.json").read_text())
+    enum = schema["properties"]["handles"]["items"]["properties"]["platform"]["enum"]
+    assert set(ORG_ROUTES.values()) == set(enum)
+
+
+def test_handle_coverage_is_per_route_on_a_fixture():
+    """The denominator is orgs with artifacts ON THAT ROUTE, not every rostered org: `acme`
+    has a github artifact and a github handle, `beta` has a github artifact and only a
+    homepage handle, and `gamma` is never counted against github at all."""
     truth = Truth(
-        recoverable_orgs=frozenset({"a", "b"}),
-        orgs_rostered=frozenset({"a", "b", "c", "d"}),
+        org={
+            "github:acme/widget": {"acme"},
+            "github:beta/widget": {"beta"},
+            "homepage:gamma.com": {"gamma"},
+            "pypi:widget": {"delta"},
+        },
+        org_handles={
+            "acme": {"github": frozenset({"acme"})},
+            "beta": {"homepage_domain": frozenset({"beta.com"})},
+            "gamma": {"homepage_domain": frozenset({"gamma.com"})},
+        },
     )
-    assert org_handle_coverage(truth) == (2, 4)
+    coverage = org_handle_coverage(truth)
+    assert coverage["github"] == (1, 2)
+    assert coverage["homepage_domain"] == (1, 1)
+    assert coverage["huggingface"] == (0, 0)
 
 
-def test_org_handle_coverage_against_the_real_corpus_matches_recoverable_orgs():
-    n_with_handle, n_rostered = org_handle_coverage(REAL_TRUTH)
-    assert n_with_handle == len(REAL_TRUTH.recoverable_orgs)
-    assert n_rostered == len(REAL_TRUTH.orgs_rostered)
-    assert 0 < n_with_handle <= n_rostered
+def test_handle_coverage_against_the_real_corpus_has_a_row_per_route():
+    coverage = org_handle_coverage(REAL_TRUTH)
+    assert set(coverage) == set(ORG_ROUTES.values())
+    for route, (n_with_handle, n_rostered) in coverage.items():
+        assert 0 <= n_with_handle <= n_rostered, route
+    assert coverage["github"][1] > 0  # the corpus certainly has github artifacts
+
+
+def test_main_prints_a_coverage_line_per_route(tmp_path, capsys):
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"org": []}')
+    assert main(["--edges", str(fixture)]) == 0
+    out = capsys.readouterr().out
+    assert "github handles" in out
+    assert "hf handles" in out
+    assert "homepage handles" in out
 
 
 def test_non_org_relations_carry_zero_n_truth_unrecoverable():
@@ -472,14 +584,216 @@ def test_membership_split_by_route_kinds_not_by_edge_scoring_bearing():
     assert m["membership_scoring"].n_emitted_at_threshold == 0  # nothing scoring-bearing can ever emit
 
 
-def test_membership_non_scoring_truth_is_zero_against_the_real_corpus():
-    """Every declared kind in today's corpus has an adoption route, so
-    `membership_non_scoring`'s truth is 0 -- `floor_status` must report "insufficient truth",
-    not attempt an unsatisfiable floor (the review's M8)."""
-    assert sum(
-        1 for (key, _slug), is_member in REAL_TRUTH.membership.items()
+def test_membership_non_scoring_truth_is_all_tail_homepage_in_the_real_corpus():
+    """`homepage` is the only kind with no adoption route, and no head product declares one --
+    so every non-scoring truth item comes from a tail row. Before tail declarations counted,
+    this was 0 and the relation could only ever report "insufficient truth" (the review's M8)."""
+    non_scoring = [
+        (key, slug) for (key, slug), is_member in REAL_TRUTH.membership.items()
         if is_member and key[0] not in REAL_TRUTH.route_kinds
-    ) == 0
+    ]
+    assert {key[0] for key, _slug in non_scoring} == {"homepage"}
+    assert all(REAL_TRUTH.membership_tier[item] == "tail" for item in non_scoring)
+
+
+def test_membership_non_scoring_now_clears_min_truth_and_is_really_floored():
+    """The intended consequence of counting tail declarations: the relation is over
+    `MIN_TRUTH`, so its floor is enforced for the first time rather than waived."""
+    metrics = replay({"membership": []}, REAL_TRUTH)
+    assert metrics["membership_non_scoring"].n_truth >= MIN_TRUTH
+    assert floor_status("membership_non_scoring", metrics).startswith("checked")
+
+
+# ---------------------------------------------------------------------------
+# tail declarations are truth
+# ---------------------------------------------------------------------------
+
+
+def _tail_rows():
+    from build.serialize_registry import load_registry, tail_product_rows
+
+    return tail_product_rows(load_registry(ROOT))
+
+
+def test_every_tail_row_is_membership_truth_typed_by_its_kind():
+    """A tail row is a declaration: the artifact belongs to that product. Scoring vs
+    non-scoring is decided by the artifact kind's adoption route, exactly as for a head
+    declaration -- the tier does not enter into it."""
+    rows = _tail_rows()
+    assert rows, "the tail registry is empty; this test would be vacuous"
+    for row in rows:
+        key = (row["artifact_kind"], fold_for_proposal(row["artifact_kind"], row["artifact_id"]))
+        item = (key, row["slug"])
+        assert REAL_TRUTH.membership.get(item) is True, item
+        assert REAL_TRUTH.membership_tier[item] == "tail", item
+
+
+def test_tail_membership_truth_lands_in_the_bucket_its_kind_routes_to():
+    rows = _tail_rows()
+    metrics = replay({"membership": []}, REAL_TRUTH)
+    tail_homepage = {
+        (("homepage", fold_for_proposal("homepage", r["artifact_id"])), r["slug"])
+        for r in rows if r["artifact_kind"] == "homepage"
+    }
+    assert tail_homepage
+    assert metrics["membership_non_scoring"].n_truth_tail == len(tail_homepage)
+    assert metrics["membership_scoring"].n_truth_tail == len(rows) - len(tail_homepage)
+
+
+def test_every_tail_row_with_an_org_is_org_truth():
+    for row in _tail_rows():
+        if not row["org_slug"]:
+            continue
+        ck = candidate_key(row["artifact_kind"], row["artifact_id"])
+        assert row["org_slug"] in REAL_TRUTH.org[ck], ck
+        assert REAL_TRUTH.org_tier[(ck, row["org_slug"])] in ("head", "tail")
+
+
+def test_tail_org_truth_carries_the_tail_tier():
+    """A tail org pair is tagged `tail` unless the same (artifact, org) pair is also declared
+    in the head, where the head record wins."""
+    rows = [r for r in _tail_rows() if r["org_slug"]]
+    tiers = {
+        REAL_TRUTH.org_tier[(candidate_key(r["artifact_kind"], r["artifact_id"]), r["org_slug"])]
+        for r in rows
+    }
+    assert "tail" in tiers
+
+
+def test_tail_declarations_produce_identity_fold_truth(monkeypatch):
+    """Two tail rows spelling one GitHub repo differently fold to the same comparison key,
+    which is `artifact_identity` truth. The real corpus has no such pair (validate gates
+    duplicate tail artifacts), so this drives `load_truth` over a synthetic registry."""
+    monkeypatch.setattr(identity_eval_module, "load_registry", lambda root=None: {
+        "compilers": {
+            "category": "compilers",
+            "products": [
+                {"slug": "tail-one", "display_name": "One", "type": "software",
+                 "org": "acme", "github": "Acme/Widget"},
+                {"slug": "tail-two", "display_name": "Two", "type": "software",
+                 "org": "acme", "github": "acme/widget"},
+            ],
+        }
+    })
+    truth = load_truth()
+    assert ("github", "acme/widget", "acme/widget") in truth.identity_pairs
+    assert truth.identity_tier[("github", "acme/widget", "acme/widget")] == "tail"
+
+
+def test_a_fold_pair_spanning_head_and_tail_is_recorded_as_head(monkeypatch):
+    """The head declaration is the stronger record, so a mixed pair counts once, under head."""
+    folded = next(
+        ident
+        for (kind, ident), _slug in REAL_TRUTH.membership
+        if kind == "github" and ident != ident.upper()
+    )
+    monkeypatch.setattr(identity_eval_module, "load_registry", lambda root=None: {
+        "compilers": {
+            "category": "compilers",
+            "products": [
+                {"slug": "tail-one", "display_name": "One", "type": "software",
+                 "org": "acme", "github": folded.upper()},
+            ],
+        }
+    })
+    truth = load_truth()
+    pair = ("github", folded, folded)
+    assert pair in truth.identity_pairs
+    assert truth.identity_tier[pair] == "head"
+
+
+PASS_FIXTURE = ROOT / "tests" / "fixtures" / "identity_edges_pass.json"
+
+
+def test_the_pass_fixture_tail_rows_match_the_corpus():
+    """The committed pass fixture carries the corpus's own tail declarations, and
+    `membership_non_scoring`'s floor is judged against them -- 27 truth items, so one stale row
+    is a ~3.7% precision swing and the CI failure names the relation rather than the fixture.
+    This test fails first, and names the fix.
+    """
+    fixture = json.loads(PASS_FIXTURE.read_text())
+    stored = [row for row in fixture["membership"] if row.get("product_tier") == "tail"]
+    assert stored == tail_membership_rows(REAL_TRUTH.route_kinds), (
+        "tests/fixtures/identity_edges_pass.json's tail membership rows no longer match "
+        "sources/registry/*.yaml. Regenerate with: uv run python -m build.identity_eval "
+        "--write-fixture tests/fixtures/identity_edges_pass.json"
+    )
+
+
+def test_write_fixture_leaves_head_rows_and_other_relations_alone(tmp_path):
+    """Regeneration replaces the tail block only: a hand-written head row keeps its wording, and
+    every other relation is untouched, so a regeneration diff shows the corpus change only."""
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({
+        "membership": [
+            {"artifact_kind": "arxiv", "artifact_id": "1803.05457", "product_tier": "head",
+             "product_slug": "ai2-arc", "confidence": 1.0, "method": ["declared"],
+             "penalties": [], "scoring_bearing": True},
+            {"artifact_kind": "homepage", "artifact_id": "stale.example.com",
+             "product_tier": "tail", "product_slug": "gone", "confidence": 0.95,
+             "method": ["declared"], "penalties": [], "scoring_bearing": False},
+        ],
+        "org": [{"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "acme",
+                 "confidence": 0.85, "method": ["org_handle"], "penalties": []}],
+    }))
+    removed, written = identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    doc = json.loads(path.read_text())
+    assert (removed, written) == (1, len(tail_membership_rows(REAL_TRUTH.route_kinds)))
+    assert doc["membership"][0]["product_slug"] == "ai2-arc"
+    assert not any(row["artifact_id"] == "stale.example.com" for row in doc["membership"])
+    assert len(doc["org"]) == 1
+
+
+def test_write_fixture_is_idempotent(tmp_path):
+    path = tmp_path / "edges.json"
+    path.write_text(PASS_FIXTURE.read_text())
+    identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    once = path.read_text()
+    identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    assert path.read_text() == once
+    assert once == PASS_FIXTURE.read_text()  # and the committed fixture is already regenerated
+
+
+def test_main_write_fixture_rewrites_and_scores_nothing(tmp_path, capsys):
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({"membership": []}))
+    assert main(["--write-fixture", str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "sources/registry" in out
+    assert "relation" not in out  # no table -- this mode scores nothing
+    assert json.loads(path.read_text())["membership"]
+
+
+def test_a_stale_fixture_tail_row_fails_the_floor_with_the_publish_lag_note(tmp_path, capsys):
+    """The failure mode the note exists for: one wrong row out of 27 breaks the 0.98 precision
+    floor, and the message has to say that a red run can mean "republish" or "regenerate the
+    fixture" rather than "the graph regressed"."""
+    rows = tail_membership_rows(REAL_TRUTH.route_kinds)
+    stale = [dict(row) for row in rows]
+    next(row for row in stale if row["artifact_kind"] == "homepage")["artifact_id"] = "gone.example.com"
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({"membership": stale}))
+    assert main(["--edges", str(path), "--floors"]) == 1
+    out = capsys.readouterr().out
+    assert "membership_non_scoring: precision" in out
+    assert "publish" in out
+    assert "--write-fixture" in out
+
+
+def test_head_and_tail_counts_appear_in_the_table(capsys):
+    metrics = replay({"membership": []}, REAL_TRUTH)
+    print_table(metrics)
+    out = capsys.readouterr().out
+    assert "n_head" in out
+    assert "n_tail" in out
+    assert str(metrics["membership_non_scoring"].n_truth_tail) in out
+
+
+def test_the_unrecoverable_breakdown_prints_under_the_table(capsys):
+    truth = Truth(org={"pypi:widget": {"acme"}}, org_handles={})
+    print_table(replay({"org": []}, truth))
+    out = capsys.readouterr().out
+    assert "org truth with no handle route (1): pypi 1" in out
 
 
 # ---------------------------------------------------------------------------
@@ -534,6 +848,17 @@ def test_known_negative_declared_as_real_artifact_raises():
 # ---------------------------------------------------------------------------
 
 
+def _thirty_recoverable_github_pairs() -> Truth:
+    """30 org truth pairs that clear `MIN_TRUTH` and are all recoverable: one org, one github
+    handle, thirty repos under it. Every candidate key has to share the owner segment the
+    handle names, or the pairs drop out of the recall denominator and the floor is never
+    checked at all."""
+    return Truth(
+        org={f"github:acme/x{i}": {"acme"} for i in range(30)},
+        org_handles={"acme": {"github": frozenset({"acme"})}},
+    )
+
+
 def test_floor_status_insufficient_truth_below_min():
     truth = Truth(equivalence={f"github:{i}/x": "p" for i in range(5)})
     edges = {"equivalence": [
@@ -557,9 +882,9 @@ def test_floor_status_not_evaluated_when_relation_absent():
 
 
 def test_floor_status_checked_and_failing():
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
+    truth = _thirty_recoverable_github_pairs()
     edges = {"org": [
-        {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "wrong",
+        {"candidate_key": f"github:acme/x{i}", "candidate_tier": "head", "org_slug": "wrong",
          "confidence": 1.0, "method": ["org_handle"]}
         for i in range(30)
     ]}
@@ -569,9 +894,9 @@ def test_floor_status_checked_and_failing():
 
 
 def test_floor_status_checked_and_passing():
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
+    truth = _thirty_recoverable_github_pairs()
     edges = {"org": [
-        {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "acme",
+        {"candidate_key": f"github:acme/x{i}", "candidate_tier": "head", "org_slug": "acme",
          "confidence": 1.0, "method": ["org_handle"]}
         for i in range(30)
     ]}
@@ -584,7 +909,7 @@ def test_floor_status_abstains_on_precision_when_nothing_emitted():
     """SF2: `precision is None` (the declared slice emitted nothing at all) must not read as
     0.0 and fail a precision floor for a reason that is not a precision problem -- only
     recall's real 0.0 should fail here."""
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
+    truth = _thirty_recoverable_github_pairs()
     edges = {"org": []}  # nothing emitted at all
     metrics = replay(edges, truth)
     assert metrics["org"].precision is None

@@ -55,12 +55,24 @@ CI with no `OSO_API_KEY`:
   `excluded_boundary`/`excluded_maintenance` is a negative one (the artifact must never
   resolve to *any* product). A `member_of`/`not_member_of` ruling is a positive or negative
   `product_membership` answer, keyed on `(artifact_kind, folded artifact_id, product_slug)`.
-- `sources/products/*.yaml` -- every artifact a product declares is a positive membership
+- `sources/products/*.yaml` -- every artifact a HEAD product declares is a positive membership
   truth. Two or more DISTINCT declared spellings of the same kind that fold to the same
   comparison key are `artifact_identity` truth (a fold-collapse pair) -- there are none in
   the corpus today, so this truth set is empty; see `test_artifact_identity_truth_is_empty_today`.
+- `sources/registry/*.yaml` -- the TAIL. A tail row is a declaration too: somebody wrote down
+  that this artifact is this product's, owned by this org, and the replay question ("would the
+  graph have recovered what a person already declared") does not care which tier the
+  declaration sits in. Tail rows contribute membership truth, `org` truth, and any fold-collapse
+  pairs they form with each other or with a head spelling. Read through
+  `build.serialize_registry.tail_product_rows`/`load_registry` -- the same derivation
+  `registry.tail_products` is built from, so which fields count as artifacts and how a
+  homepage is reduced cannot drift between the table and this eval. Every truth item carries
+  its `tier`, so the table reports the head/tail split of each relation's `n_truth` rather than
+  quietly pooling them.
 - `sources/organizations/*.yaml` -- each org's `products:` roster, bridged through a
-  product's declared artifacts, gives `candidate_key -> org_slug` truth.
+  product's declared artifacts, gives `candidate_key -> org_slug` truth. A tail row names its
+  org directly (`org:`), which is the same truth one step shorter; a tail org need not have an
+  `sources/organizations/<slug>.yaml` file at all, and most today do not.
 - `KNOWN_NEGATIVES` -- artifacts a person has confirmed do NOT belong where a naive signal
   would place them: eight PyPI packages, verified against `sources/scores/*.yaml` notes in
   the `storage` category, that share (or nearly share) a product's name but are that
@@ -100,28 +112,39 @@ artifacts in the corpus today genuinely belong to two orgs each
 which silently kept only the first org read and scored the second as a false positive. Every
 emitted org in the truth set for a candidate counts as correct.
 
-## Org recall is measured against recoverable truth
+## Org recall is measured per handle route, pair by pair
 
 The graph can only recover an org through a declared handle in `sources/org_handles.yaml`
-(`registry.org_handles` once published) -- there is no other route from an artifact to an
-org. Org truth, however, is every declared `(candidate_key, org_slug)` pair bridged through a
-product's org roster, whether or not that org happens to declare a handle -- most of the
-corpus does (302 of 347 orgs, any platform, as of this writing), but a curation gap in
-`org_handles.yaml` is not a graph defect, and scoring recall against the full, unrestricted
-truth set bounds recall at the coverage fraction no matter how good the graph is. So **org
-recall truth is restricted to pairs whose `org_slug` declares at least one handle** (any
-platform) in `sources/org_handles.yaml` -- `Truth.recoverable_orgs`, loaded via the same
-optional-YAML loader `build.validate` uses (`_load_optional_yaml`, tolerant of the file not
-existing at all in an older tree). Precision truth is unchanged: every emitted org edge is
-still judged against the full truth set, since an edge to an org with no handle is either
-wrong (real false positive) or a graph capability this eval has no business hiding.
+(`registry.org_handles` once published) -- there is no other route from an artifact to an org,
+and a route runs from ONE artifact kind to ONE handle platform. So recoverability is a property
+of the `(artifact, org)` PAIR, not of the org: whether the org declares a handle on the route
+that this artifact's kind actually travels.
 
-Two things stay visible so the restriction cannot quietly hide the curation gap: the eval
-prints a `handle coverage: <orgs with >=1 handle>/<orgs rostered> (<pct>)` line (`orgs
-rostered` = every organization with at least one product on its roster, the population org
-truth is drawn from), and `Metrics.n_truth_unrecoverable` -- the truth pairs dropped from
-`org`'s recall denominator because their org has no handle -- appears in the table for every
-relation (0 except for `org`).
+- `github:<owner>/<repo>` -- the org must declare a `github` handle whose folded value equals
+  `<owner>`.
+- `huggingface_model:<ns>/<name>`, `huggingface_dataset:<ns>/<name>` -- a `huggingface` handle
+  equal to `<ns>`.
+- `homepage:<host><path>` -- a `homepage_domain` handle equal to `<host>`, or a parent domain of
+  it (`acme.com` covers `docs.acme.com`).
+- `pypi`, `npm`, `crates`, `arxiv` -- no owner concept in the identifier at all, so no route
+  exists and no handle could ever bridge one. These are excluded from org recall entirely.
+
+An earlier version restricted recall to pairs whose org declared **any** handle on **any**
+platform, which was too generous in both directions at once: it kept a `pypi` pair (structurally
+unrecoverable) because the org happened to declare a homepage, and it kept a `github` pair whose
+org declares only a homepage domain. `ORG_ROUTES` and `org_pair_recoverable` replace that rule.
+
+Precision truth is unchanged: every emitted org edge is judged against the FULL truth set, since
+an edge to an org that declares no matching handle is either wrong (a real false positive) or a
+graph capability this eval has no business hiding.
+
+Two things keep the exclusion legible in the output. `Metrics.n_truth_unrecoverable`
+(in the table for every relation, 0 except `org`) counts the pairs dropped from the recall
+denominator, and `Metrics.unrecoverable_by_kind` breaks that down per artifact kind, printed
+under the table -- so a structural exclusion (`pypi`) and a curation gap (a `github` artifact
+whose org declares no `github` handle) are two readable numbers rather than one lump. And
+`org_handle_coverage` is now per route: for each route, how many of the orgs that actually have
+artifacts on it declare the handle it needs.
 
 ## What `--from-warehouse` supplies, and what it does not
 
@@ -159,9 +182,35 @@ today and the workflow no longer passes it.
 
 A relation's floor is enforced only when `n_truth >= MIN_TRUTH` (20). Below that, the table
 prints `insufficient truth (n)` for that relation and `--floors` cannot exit 1 on it --
-`artifact_identity` (0 truth pairs today) and `membership_non_scoring` (0 truth items with a
-kind that has no adoption route, today only `homepage`, which no product declares) would
-otherwise floor on data that cannot possibly satisfy them, which is exactly the review's M8.
+`artifact_identity` (0 truth pairs today) would otherwise floor on data that cannot possibly
+satisfy it, which is exactly the review's M8.
+
+`membership_non_scoring` was in the same position until tail declarations became truth: the
+only artifact kind with no adoption route is `homepage`, no head product declares one, and the
+tail rows that do were not being read. They are now, which puts the relation over `MIN_TRUTH`
+and under a real floor for the first time. Clearing that floor is the graph's job; a floor that
+now bites is the point of counting the truth, not a reason to raise `MIN_TRUTH`.
+
+## `membership_non_scoring` has no headroom, so read its failures twice
+
+Its truth set is the tail's homepage declarations and nothing else -- 27 today. One wrong or
+missing edge is a ~3.7% swing, which is already more than the 0.98 precision floor allows. Two
+things that are not regressions land as a failure on that row, and `FLOOR_NOTES` prints both
+next to it so a log alone is enough to tell them apart:
+
+- **Publish lag.** Truth is the repo; the edges are the warehouse. A tail homepage row edited or
+  deleted in `sources/registry/*.yaml` is still emitted from the last published
+  `registry.tail_products` until the weekly publish lands, so the scheduled Monday run can go
+  red on precision for an edit that is already correct. The fix is a republish, not a graph
+  change -- diff `sources/registry/*.yaml` against the published table before reading it as a
+  defect.
+- **A stale fixture.** The committed pass fixture carries the corpus's tail rows, so the same
+  edit makes the PR-time fixture run fail too. `--write-fixture` regenerates that block, and
+  `test_the_pass_fixture_tail_rows_match_the_corpus` fails first, naming the fixture, so the
+  floor message is not the only thing pointing at it.
+
+Neither is a reason to widen the floor or raise `MIN_TRUTH`. The relation is small because the
+tail's homepage coverage is small; it gets headroom by the corpus growing.
 
 ## The two rules pinned as tests, not metrics
 
@@ -191,15 +240,16 @@ import argparse
 import itertools
 import json
 import sys
+from collections import Counter
 from collections.abc import Iterable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import yaml
 
 from build import resolution
-from build.identity import KINDS, fold_for_proposal
-from build.serialize_registry import artifact_id
+from build.identity import KINDS, fold_for_proposal, fold_handle
+from build.serialize_registry import artifact_id, load_registry, tail_product_rows
 from build.validate import _load_optional_yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -237,10 +287,52 @@ FLOORS: dict[str, tuple[float, float]] = {
 }
 
 # Below this many truth items, a floor cannot mean anything -- see the module docstring on
-# `artifact_identity` and `membership_non_scoring`, both 0 in the corpus today.
+# `artifact_identity`, 0 in the corpus today.
 MIN_TRUTH = 20
 
+# Printed under a floor failure for the named relation. What goes here is the reading a log
+# alone cannot supply: which failures are not regressions. See the module docstring's
+# "membership_non_scoring has no headroom" section for the arithmetic.
+FLOOR_NOTES: dict[str, str] = {
+    "membership_non_scoring": (
+        "this relation's entire truth set is the tail's homepage declarations (27 today), so a\n"
+        "  SINGLE wrong or missing edge is a ~3.7% swing -- there is no headroom by construction.\n"
+        "  Two non-regressions look like this failure. (1) A tail homepage row edited in the repo\n"
+        "  is still emitted by the warehouse until the weekly registry publish lands, so a red\n"
+        "  scheduled run soon after such an edit means republish, not regression -- check\n"
+        "  sources/registry/*.yaml against the published registry.tail_products before reading it\n"
+        "  as a graph defect. (2) On a fixture run, the fixture's own tail rows may be stale:\n"
+        "  regenerate with `uv run python -m build.identity_eval --write-fixture <path>`."
+    ),
+}
+
 ALL_RELATIONS = ("equivalence", "membership_scoring", "membership_non_scoring", "artifact_identity", "org")
+
+# The artifact kind -> handle platform routes an artifact can reach an org through, and the only
+# kinds `org` recall is measured over. A kind absent from this map carries no owner in its
+# identifier -- `pypi:torch`, `npm:react`, `crates:serde`, `arxiv:2401.00001` name a package or a
+# paper, never who publishes it -- so no handle on any platform could bridge it, and its truth
+# pairs are counted unrecoverable rather than held against recall. See the module docstring.
+ORG_ROUTES: dict[str, str] = {
+    "github": "github",
+    "huggingface_model": "huggingface",
+    "huggingface_dataset": "huggingface",
+    "homepage": "homepage_domain",
+}
+
+# How each route is labeled in the `handle coverage` line, in print order.
+ORG_ROUTE_LABELS: tuple[tuple[str, str], ...] = (
+    ("github", "github handles"),
+    ("huggingface", "hf handles"),
+    ("homepage_domain", "homepage handles"),
+)
+
+# What a route's coverage denominator is named in that same line.
+ORG_ROUTE_ARTIFACTS: dict[str, str] = {
+    "github": "github",
+    "huggingface": "hf",
+    "homepage_domain": "homepage",
+}
 
 # Eight storage-category products whose same- or near-same-named PyPI package is a verified
 # client library, not the product's own countable artifact -- read from each product's
@@ -444,12 +536,17 @@ class Truth:
     `route_kinds`: artifact kinds `sources/signal_routing.yaml` compiles at least one adoption
     route for -- used only to split membership truth into scoring/non-scoring buckets for
     `n_truth`, mirroring `identity_membership_edges.sql`'s own `scoring_bearing` derivation.
-    `recoverable_orgs`: rostered org slugs (every org with >=1 product on its roster) that
-    declare at least one handle in `sources/org_handles.yaml` -- the graph's only route from an
-    artifact to an org. `org` recall truth is restricted to this set (see the module docstring
-    "Org recall is measured against recoverable truth"); `org` precision truth is not.
-    `orgs_rostered`: every rostered org slug, recoverable or not -- the denominator of the
-    `handle coverage` line (`org_handle_coverage`).
+    `org_handles`: `org_slug -> platform -> {folded handle, ...}`, read from
+    `sources/org_handles.yaml` -- the graph's only route from an artifact to an org, and what
+    `org_pair_recoverable` consults per pair to decide whether a truth pair belongs in `org`'s
+    recall denominator (see the module docstring "Org recall is measured per handle route").
+    `org` precision truth is unrestricted.
+
+    The four `*_tier` maps carry the declaring tier (`"head"`/`"tail"`) of each truth item, so
+    the table can report the split. A key absent from one of them has no known tier -- a ledger
+    ruling naming a product slug that is neither a head product nor a tail row, say -- and
+    counts toward `n_truth` but neither `n_head` nor `n_tail`. `org_tier` prefers `"head"` where
+    a pair is declared in both tiers, since the head declaration is the stronger record.
     """
 
     equivalence: dict[str, str] = field(default_factory=dict)
@@ -458,8 +555,11 @@ class Truth:
     org: dict[str, set[str]] = field(default_factory=dict)
     identity_pairs: set[tuple[str, str, str]] = field(default_factory=set)
     route_kinds: frozenset[str] = field(default_factory=frozenset)
-    recoverable_orgs: frozenset[str] = field(default_factory=frozenset)
-    orgs_rostered: frozenset[str] = field(default_factory=frozenset)
+    org_handles: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
+    equivalence_tier: dict[str, str] = field(default_factory=dict)
+    membership_tier: dict[tuple[Key, str], str] = field(default_factory=dict)
+    org_tier: dict[tuple[str, str], str] = field(default_factory=dict)
+    identity_tier: dict[tuple[str, str, str], str] = field(default_factory=dict)
 
 
 @dataclass
@@ -468,10 +568,17 @@ class Metrics:
     recall: float | None
     n_truth: int
     n_emitted_at_threshold: int
-    # Truth pairs excluded from `n_truth`/recall because they cannot be recovered by the graph
-    # at all -- only meaningful for `org` (an org with no declared handle in
-    # `sources/org_handles.yaml`); 0 for every other relation.
+    # Truth pairs excluded from `n_truth`/recall because no handle route could recover them --
+    # only meaningful for `org`; 0 for every other relation. `unrecoverable_by_kind` breaks the
+    # same count down per artifact kind, which is what separates a structural exclusion (`pypi`
+    # has no owner in its identifier) from a curation gap (a `github` artifact whose org
+    # declares no `github` handle).
     n_truth_unrecoverable: int = 0
+    unrecoverable_by_kind: dict[str, int] = field(default_factory=dict)
+    # The head/tail split of `n_truth`. These need not sum to `n_truth`: a truth item whose
+    # declaring tier is unknown counts in neither (see `Truth`'s `*_tier` maps).
+    n_truth_head: int = 0
+    n_truth_tail: int = 0
 
 
 class KnownNegativeDeclaredError(ValueError):
@@ -545,27 +652,79 @@ def _membership_from_ledger(entries: Iterable[dict]) -> dict[tuple[Key, str], bo
 ORG_HANDLES_PATH = ROOT / "sources" / "org_handles.yaml"
 
 
-def _orgs_with_handles(path: Path = ORG_HANDLES_PATH) -> frozenset[str]:
-    """Org slugs that declare at least one handle (any platform) in `sources/org_handles.yaml`.
+def _org_handles(path: Path = ORG_HANDLES_PATH) -> dict[str, dict[str, frozenset[str]]]:
+    """`org_slug -> platform -> {folded handle, ...}` from `sources/org_handles.yaml`.
 
     Reuses `build.validate._load_optional_yaml` -- the same loader `validate_sources` reads
     this file with -- so an older tree that predates the file (no `sources/org_handles.yaml`
-    at all) reads as "no orgs declare a handle" rather than raising, exactly as it does there.
+    at all) reads as "no org declares a handle" rather than raising, exactly as it does there.
     """
     doc = _load_optional_yaml(path, {"version": 1, "handles": []})
-    return frozenset(
-        entry["org"]
-        for entry in doc.get("handles") or []
-        if isinstance(entry, dict) and isinstance(entry.get("org"), str)
-    )
+    by_org: dict[str, dict[str, set[str]]] = {}
+    for entry in doc.get("handles") or []:
+        if not isinstance(entry, dict):
+            continue
+        org_slug, platform, handle = entry.get("org"), entry.get("platform"), entry.get("handle")
+        if not (isinstance(org_slug, str) and isinstance(platform, str) and isinstance(handle, str)):
+            continue
+        by_org.setdefault(org_slug, {}).setdefault(platform, set()).add(fold_handle(platform, handle))
+    return {org: {p: frozenset(h) for p, h in platforms.items()} for org, platforms in by_org.items()}
 
 
-def org_handle_coverage(truth: Truth) -> tuple[int, int]:
-    """`(orgs with >=1 handle, orgs rostered)` -- the two numbers behind the `handle coverage`
-    line. `truth.recoverable_orgs` is already restricted to rostered orgs (see `load_truth`),
-    so its size is the numerator directly.
+def _owner_segment(kind: str, folded_id: str) -> str | None:
+    """The part of a folded artifact key a handle can be compared to, or None if the kind
+    carries no owner. `github`/Hugging Face ids are `<owner>/<name>`; a folded homepage key is
+    `<host><path>`, so the host is everything up to the first `/`.
     """
-    return len(truth.recoverable_orgs), len(truth.orgs_rostered)
+    if kind == "homepage":
+        return folded_id.split("/", 1)[0] or None
+    owner, separator, _name = folded_id.partition("/")
+    return owner if separator and owner else None
+
+
+def org_pair_recoverable(candidate_key_value: str, org_slug: str, truth: Truth) -> bool:
+    """Whether the graph could reach `org_slug` from this artifact through a declared handle.
+
+    True only when the artifact's kind has a handle route (`ORG_ROUTES`) AND the org declares a
+    handle on that route matching the artifact's owner segment. A `homepage_domain` handle also
+    matches a subdomain of itself (`acme.com` covers `docs.acme.com`), which is the one route
+    where the declared handle is deliberately broader than the artifact -- an org publishes one
+    domain and hangs product pages off it. The other routes are exact.
+    """
+    kind, _, folded = (candidate_key_value or "").partition(":")
+    route = ORG_ROUTES.get(kind)
+    if route is None:
+        return False
+    owner = _owner_segment(kind, folded)
+    if not owner:
+        return False
+    handles = truth.org_handles.get(org_slug, {}).get(route) or frozenset()
+    if route == "homepage_domain":
+        return any(owner == handle or owner.endswith(f".{handle}") for handle in handles)
+    return owner in handles
+
+
+def org_handle_coverage(truth: Truth) -> dict[str, tuple[int, int]]:
+    """Per route: `(orgs declaring the handle that route needs, orgs with artifacts on it)`.
+
+    The denominator is the population that route's recall is actually drawn from -- orgs that
+    own at least one artifact of a kind travelling that route -- not every rostered org, which
+    would mix a missing `huggingface` handle into `github`'s coverage and back.
+    """
+    per_route: dict[str, tuple[set[str], set[str]]] = {
+        route: (set(), set()) for route in ORG_ROUTES.values()
+    }
+    for ck, orgs in truth.org.items():
+        kind, _, _folded = ck.partition(":")
+        route = ORG_ROUTES.get(kind)
+        if route is None:
+            continue
+        with_handle, rostered = per_route[route]
+        for org_slug in orgs:
+            rostered.add(org_slug)
+            if truth.org_handles.get(org_slug, {}).get(route):
+                with_handle.add(org_slug)
+    return {route: (len(with_handle), len(rostered)) for route, (with_handle, rostered) in per_route.items()}
 
 
 def _route_kinds() -> frozenset[str]:
@@ -598,25 +757,51 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
     membership = _membership_from_ledger(ledger_items)
 
     products = _declared_products()
+    # Tail declarations are truth too -- see the module docstring. Read through
+    # `serialize_registry`'s own derivation so this eval and `registry.tail_products` cannot
+    # disagree about which tail fields are artifacts.
+    tail_rows = tail_product_rows(load_registry(ROOT))
+    head_slugs = set(products)
+    tail_slugs = {row["slug"] for row in tail_rows if row["slug"]}
+
+    def tier_of_product(slug: str | None) -> str | None:
+        if slug in head_slugs:
+            return "head"
+        if slug in tail_slugs:
+            return "tail"
+        return None
 
     # fold-collapse artifact_identity truth: distinct declared spellings of one kind that fold
-    # to the same comparison key. None exist in the corpus today (see the module docstring),
-    # so this is deliberately built from first principles rather than assumed empty.
-    by_key: dict[Key, set[str]] = {}
+    # to the same comparison key, from either tier. None exist in the corpus today (see the
+    # module docstring), so this is deliberately built from first principles rather than
+    # assumed empty.
+    by_key: dict[Key, dict[str, str]] = {}
     for product in products.values():
         for kind in KINDS:
             for entry in product.get(kind) or []:
                 ident = artifact_id(kind, entry.get("url") or "")
                 if ident:
-                    by_key.setdefault((kind, fold_for_proposal(kind, ident)), set()).add(ident)
+                    by_key.setdefault((kind, fold_for_proposal(kind, ident)), {})[ident] = "head"
+    for row in tail_rows:
+        kind, ident = row["artifact_kind"], row["artifact_id"]
+        if ident:
+            by_key.setdefault((kind, fold_for_proposal(kind, ident)), {}).setdefault(ident, "tail")
+
     identity_pairs: set[tuple[str, str, str]] = set()
+    identity_tier: dict[tuple[str, str, str], str] = {}
     for (kind, _folded), spellings in by_key.items():
         if len(spellings) < 2:
             continue
         for a, b in itertools.combinations(sorted(spellings), 2):
             fa, fb = fold_for_proposal(kind, a), fold_for_proposal(kind, b)
             lo, hi = sorted((fa, fb))
-            identity_pairs.add((kind, lo, hi))
+            pair = (kind, lo, hi)
+            identity_pairs.add(pair)
+            # A pair spanning both tiers is recorded as head: the head declaration is the
+            # stronger record, and a mixed pair counted twice would double the split.
+            tier = "head" if "head" in (spellings[a], spellings[b]) else "tail"
+            if identity_tier.get(pair) != "head":
+                identity_tier[pair] = tier
 
     # Declared artifacts: positive membership truth, and org truth bridged through each
     # product's org(s). `product_org` is `product_slug -> {org_slug, ...}` -- a SET, not a
@@ -629,7 +814,15 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
         for slug in roster.get("products") or []:
             product_org.setdefault(slug, set()).add(path.stem)
 
+    membership_tier: dict[tuple[Key, str], str] = {}
     org: dict[str, set[str]] = {}
+    org_tier: dict[tuple[str, str], str] = {}
+
+    def record_org(ck: str, org_slug: str, tier: str) -> None:
+        org.setdefault(ck, set()).add(org_slug)
+        if org_tier.get((ck, org_slug)) != "head":
+            org_tier[(ck, org_slug)] = tier
+
     for slug, product in products.items():
         for kind in KINDS:
             for entry in product.get(kind) or []:
@@ -638,8 +831,34 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
                     continue
                 key = _membership_key(kind, ident)
                 membership.setdefault((key, slug), True)
-                if slug in product_org:
-                    org.setdefault(candidate_key(kind, ident), set()).update(product_org[slug])
+                membership_tier[(key, slug)] = "head"
+                for org_slug in product_org.get(slug, ()):
+                    record_org(candidate_key(kind, ident), org_slug, "head")
+
+    # The tail, same two relations. A tail row names its org directly rather than through a
+    # roster, and that org need not have a `sources/organizations/<slug>.yaml` file at all --
+    # most tail orgs today do not, which is why their pairs land in `n_truth_unrecoverable`
+    # (no file, no handles, no route) rather than dragging recall down.
+    for row in tail_rows:
+        kind, ident, slug = row["artifact_kind"], row["artifact_id"], row["slug"]
+        if not (ident and slug):
+            continue
+        key = _membership_key(kind, ident)
+        membership.setdefault((key, slug), True)
+        if membership_tier.get((key, slug)) != "head":
+            membership_tier[(key, slug)] = "tail"
+        if row.get("org_slug"):
+            record_org(candidate_key(kind, ident), row["org_slug"], "tail")
+
+    # Ledger rulings carry no tier of their own; the product they name does.
+    for (key, slug) in membership:
+        if (key, slug) not in membership_tier:
+            tier = tier_of_product(slug)
+            if tier:
+                membership_tier[(key, slug)] = tier
+    equivalence_tier = {
+        ck: tier for ck, slug in equivalence.items() if (tier := tier_of_product(slug))
+    }
 
     declared_true = {(k, s) for (k, s), is_member in membership.items() if is_member}
     for neg in known_negatives:
@@ -653,9 +872,6 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
             )
         membership[(key, neg["product_slug"])] = False
 
-    orgs_rostered = frozenset(o for orgs in product_org.values() for o in orgs)
-    recoverable_orgs = orgs_rostered & _orgs_with_handles()
-
     return Truth(
         equivalence=equivalence,
         equivalence_negatives=equivalence_negatives,
@@ -663,8 +879,11 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
         org=org,
         identity_pairs=identity_pairs,
         route_kinds=_route_kinds(),
-        recoverable_orgs=recoverable_orgs,
-        orgs_rostered=orgs_rostered,
+        org_handles=_org_handles(),
+        equivalence_tier=equivalence_tier,
+        membership_tier=membership_tier,
+        org_tier=org_tier,
+        identity_tier=identity_tier,
     )
 
 
@@ -689,6 +908,14 @@ def _score(emitted: list[dict], key_fn, correct_fn, n_truth: int) -> Metrics:
     return Metrics(precision, recall, n_truth, n_emitted)
 
 
+def _tier_counts(keys: Iterable, tiers: dict) -> tuple[int, int]:
+    """`(n_head, n_tail)` over `keys`, read from a `Truth.*_tier` map. A key the map does not
+    carry has no known tier and counts in neither, so these need not sum to `n_truth`.
+    """
+    counted = Counter(tiers.get(key) for key in keys)
+    return counted["head"], counted["tail"]
+
+
 def _score_equivalence(emitted: list[dict], truth: Truth) -> Metrics:
     def correct_fn(e: dict):
         ck, slug = e.get("candidate_key"), e.get("product_slug")
@@ -697,7 +924,9 @@ def _score_equivalence(emitted: list[dict], truth: Truth) -> Metrics:
         ok = truth.equivalence.get(ck) == slug
         return ok, (ck if ok else None)
 
-    return _score(emitted, _equivalence_key, correct_fn, len(truth.equivalence))
+    metrics = _score(emitted, _equivalence_key, correct_fn, len(truth.equivalence))
+    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(truth.equivalence, truth.equivalence_tier)
+    return metrics
 
 
 def _score_membership(emitted: list[dict], truth: Truth, scoring_bearing: bool) -> Metrics:
@@ -709,12 +938,14 @@ def _score_membership(emitted: list[dict], truth: Truth, scoring_bearing: bool) 
         ok = truth.membership.get(k) is True
         return ok, (k if ok else None)
 
-    n_truth = sum(
-        1
-        for (key, _slug), is_member in truth.membership.items()
+    counted = [
+        (key, slug)
+        for (key, slug), is_member in truth.membership.items()
         if is_member and (key[0] in truth.route_kinds) == scoring_bearing
-    )
-    return _score(emitted, key_fn, correct_fn, n_truth)
+    ]
+    metrics = _score(emitted, key_fn, correct_fn, len(counted))
+    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(counted, truth.membership_tier)
+    return metrics
 
 
 def _score_org(emitted: list[dict], truth: Truth) -> Metrics:
@@ -724,24 +955,29 @@ def _score_org(emitted: list[dict], truth: Truth) -> Metrics:
     `(candidate_key, org_slug)` PAIRS, not distinct candidate_keys, so a two-org artifact
     counts as two truth items for recall, not one.
 
-    Recall truth is further restricted to pairs whose org declares a handle
-    (`truth.recoverable_orgs` -- see the module docstring "Org recall is measured against
-    recoverable truth"); precision truth is not. `correct_fn` returns `tk = None` for a
-    correct-but-unrecoverable match, which keeps it out of `matched_truth`/recall (via `_score`
-    filtering `tk is not None`) while it still counts toward `n_correct`/precision, since
-    `is_correct` is `True` either way.
+    Recall truth is restricted to pairs `org_pair_recoverable` accepts -- the artifact's kind
+    has a handle route and the org declares a matching handle on it (see the module docstring
+    "Org recall is measured per handle route"); precision truth is not. `correct_fn` returns
+    `tk = None` for a correct-but-unrecoverable match, which keeps it out of
+    `matched_truth`/recall (via `_score` filtering `tk is not None`) while it still counts
+    toward `n_correct`/precision, since `is_correct` is `True` either way.
     """
 
     def correct_fn(e: dict):
         ck, slug = e.get("candidate_key"), e.get("org_slug")
         ok = slug in truth.org.get(ck, ())
-        recoverable = ok and slug in truth.recoverable_orgs
+        recoverable = ok and org_pair_recoverable(ck, slug, truth)
         return ok, ((ck, slug) if recoverable else None)
 
-    n_truth_total = sum(len(orgs) for orgs in truth.org.values())
-    n_truth = sum(1 for orgs in truth.org.values() for slug in orgs if slug in truth.recoverable_orgs)
-    metrics = _score(emitted, _org_key, correct_fn, n_truth)
-    metrics.n_truth_unrecoverable = n_truth_total - n_truth
+    pairs = [(ck, slug) for ck, orgs in truth.org.items() for slug in orgs]
+    recoverable_pairs = [pair for pair in pairs if org_pair_recoverable(*pair, truth)]
+    metrics = _score(emitted, _org_key, correct_fn, len(recoverable_pairs))
+    metrics.n_truth_unrecoverable = len(pairs) - len(recoverable_pairs)
+    unrecoverable = set(pairs) - set(recoverable_pairs)
+    metrics.unrecoverable_by_kind = dict(
+        sorted(Counter(ck.partition(":")[0] for ck, _slug in unrecoverable).items())
+    )
+    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(recoverable_pairs, truth.org_tier)
     return metrics
 
 
@@ -759,7 +995,9 @@ def _score_identity(emitted: list[dict], truth: Truth) -> Metrics:
         ok = pair in truth.identity_pairs
         return ok, (pair if ok else None)
 
-    return _score(emitted, _identity_pair, correct_fn, len(truth.identity_pairs))
+    metrics = _score(emitted, _identity_pair, correct_fn, len(truth.identity_pairs))
+    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(truth.identity_pairs, truth.identity_tier)
+    return metrics
 
 
 def _score_tiered(rows: list[dict], truth: Truth, relation: str, score_fn, key_fn) -> Metrics:
@@ -774,7 +1012,9 @@ def _score_tiered(rows: list[dict], truth: Truth, relation: str, score_fn, key_f
     emitted_pool = [e for e in pool if emits(e, relation)]
     metrics = score_fn(emitted_declared, truth)
     pool_count = len({key_fn(e) for e in emitted_pool})
-    return Metrics(metrics.precision, metrics.recall, metrics.n_truth, pool_count, metrics.n_truth_unrecoverable)
+    # `replace`, not a positional rebuild: every field but the emitted count carries over, so a
+    # new `Metrics` field cannot be silently dropped here the way a positional call would drop it.
+    return replace(metrics, n_emitted_at_threshold=pool_count)
 
 
 def replay(edges: dict[str, list[dict]], truth: Truth) -> dict[str, Metrics]:
@@ -967,6 +1207,63 @@ def load_edges_from_file(path: Path) -> dict[str, list[dict]]:
     return json.loads(path.read_text())
 
 
+# The confidence and method a fixture's tail membership rows carry. Not a claim about what the
+# deployed model emits for any particular row: 0.95 clears `membership_non_scoring`'s 0.90
+# threshold, and `declared` is what a declaration-sourced membership edge is labeled, which is
+# all the fixture needs to exercise the scoring path.
+FIXTURE_TAIL_CONFIDENCE = 0.95
+FIXTURE_TAIL_METHOD = ("declared",)
+
+
+def tail_membership_rows(route_kinds: frozenset[str]) -> list[dict]:
+    """The `membership` rows a fixture should carry for the tail, in `WAREHOUSE_COLUMNS` shape.
+
+    Derived from the same `tail_product_rows` truth is, so a fixture regenerated with
+    `--write-fixture` is the corpus's tail declarations and nothing else. `scoring_bearing`
+    mirrors the deployed SQL's own derivation (does the kind have an adoption route), which is
+    why this takes `route_kinds` rather than hardcoding `homepage`.
+    """
+    return [
+        {
+            "artifact_kind": row["artifact_kind"],
+            "artifact_id": row["artifact_id"],
+            "product_tier": "tail",
+            "product_slug": row["slug"],
+            "confidence": FIXTURE_TAIL_CONFIDENCE,
+            "method": list(FIXTURE_TAIL_METHOD),
+            "penalties": [],
+            "scoring_bearing": row["artifact_kind"] in route_kinds,
+        }
+        for row in sorted(
+            tail_product_rows(load_registry(ROOT)),
+            key=lambda r: (r["slug"], r["artifact_kind"], r["artifact_id"]),
+        )
+    ]
+
+
+def write_fixture(path: Path, route_kinds: frozenset[str]) -> tuple[int, int]:
+    """Regenerate `path`'s tail membership rows from the tail registry, in place.
+
+    Every other row and relation is left exactly as it was -- only `membership` rows with
+    `product_tier: "tail"` are replaced, so a hand-written head row keeps its wording and a
+    regeneration diff shows the corpus change and nothing else. Returns `(rows removed, rows
+    written)`.
+
+    The fixture stays COMMITTED rather than being generated at test time on purpose: it is what
+    the `identity-eval` workflow grades on every PR, and a gate that builds its own input from
+    the corpus it then grades against cannot fail. Committing it keeps the tail block reviewable
+    in a diff, and `test_the_pass_fixture_tail_rows_match_the_corpus` is what catches it going
+    stale.
+    """
+    doc = json.loads(path.read_text())
+    kept = [row for row in doc.get("membership") or [] if row.get("product_tier") != "tail"]
+    generated = tail_membership_rows(route_kinds)
+    removed = len(doc.get("membership") or []) - len(kept)
+    doc["membership"] = kept + generated
+    path.write_text(json.dumps(doc, indent=2) + "\n")
+    return removed, len(generated)
+
+
 def validate_columns(edges: dict[str, list[dict]]) -> None:
     """Every row of every relation `REQUIRED_COLUMNS` names carries those columns with a
     non-null value. Raises `EdgeColumnMissing` naming the first offending relation and
@@ -1035,9 +1332,15 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
 
 
 def print_table(metrics: dict[str, Metrics]) -> None:
+    """The per-relation table, then the `org` unrecoverable breakdown under it.
+
+    `n_head`/`n_tail` split `n_truth` by the tier that declared each truth item; they need not
+    sum to `n_truth` (a ledger ruling naming neither a head product nor a tail row has no
+    tier). The breakdown line prints only for relations that have one, which today is `org`.
+    """
     header = (
         f"{'relation':24s} {'precision':>10s} {'recall':>10s} {'n_truth':>8s} "
-        f"{'n_emitted':>10s} {'n_unrecov':>10s}  status"
+        f"{'n_head':>8s} {'n_tail':>8s} {'n_emitted':>10s} {'n_unrecov':>10s}  status"
     )
     print(header)
     print("-" * len(header))
@@ -1045,13 +1348,17 @@ def print_table(metrics: dict[str, Metrics]) -> None:
         m = metrics.get(relation)
         precision = f"{m.precision:.3f}" if m and m.precision is not None else "n/a"
         recall = f"{m.recall:.3f}" if m and m.recall is not None else "n/a"
-        n_truth = m.n_truth if m else 0
-        n_emitted = m.n_emitted_at_threshold if m else 0
-        n_unrecov = m.n_truth_unrecoverable if m else 0
         print(
-            f"{relation:24s} {precision:>10s} {recall:>10s} {n_truth:>8d} {n_emitted:>10d} "
-            f"{n_unrecov:>10d}  {floor_status(relation, metrics)}"
+            f"{relation:24s} {precision:>10s} {recall:>10s} {(m.n_truth if m else 0):>8d} "
+            f"{(m.n_truth_head if m else 0):>8d} {(m.n_truth_tail if m else 0):>8d} "
+            f"{(m.n_emitted_at_threshold if m else 0):>10d} "
+            f"{(m.n_truth_unrecoverable if m else 0):>10d}  {floor_status(relation, metrics)}"
         )
+    for relation in ALL_RELATIONS:
+        m = metrics.get(relation)
+        if m and m.unrecoverable_by_kind:
+            breakdown = ", ".join(f"{kind} {count}" for kind, count in m.unrecoverable_by_kind.items())
+            print(f"\n{relation} truth with no handle route ({m.n_truth_unrecoverable}): {breakdown}")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1059,6 +1366,14 @@ def main(argv: list[str] | None = None) -> int:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--from-warehouse", action="store_true", help="read the four identity edge tables live")
     source.add_argument("--edges", type=Path, help="path to a JSON fixture of edges, keyed by relation")
+    source.add_argument(
+        "--write-fixture", type=Path, metavar="PATH",
+        help=(
+            "regenerate a fixture's tail membership rows from sources/registry/*.yaml and exit "
+            "(scores nothing). Run this after a tail registry edit changes which artifacts the "
+            "tail declares."
+        ),
+    )
     parser.add_argument(
         "--floors", action="store_true",
         help="exit 1 if any relation with automation planned and sufficient truth falls under its floor",
@@ -1077,6 +1392,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.allow_unprovisioned and not args.from_warehouse:
         print("[FAIL] --allow-unprovisioned only applies to --from-warehouse")
         return 2
+
+    if args.write_fixture:
+        removed, written = write_fixture(args.write_fixture, _route_kinds())
+        print(
+            f"{args.write_fixture}: replaced {removed} tail membership row(s) with {written} "
+            f"derived from sources/registry/*.yaml"
+        )
+        return 0
 
     if args.from_warehouse:
         if args.allow_unprovisioned:
@@ -1132,9 +1455,15 @@ def main(argv: list[str] | None = None) -> int:
     metrics = replay(edges, truth)
     print_table(metrics)
 
-    n_with_handle, n_rostered = org_handle_coverage(truth)
-    pct = (100 * n_with_handle / n_rostered) if n_rostered else 0.0
-    print(f"\nhandle coverage: {n_with_handle}/{n_rostered} ({pct:.1f}%)")
+    coverage = org_handle_coverage(truth)
+    parts = []
+    for route, label in ORG_ROUTE_LABELS:
+        n_with_handle, n_rostered = coverage.get(route, (0, 0))
+        parts.append(
+            f"{label} {n_with_handle}/{n_rostered} orgs with "
+            f"{ORG_ROUTE_ARTIFACTS[route]} artifacts"
+        )
+    print("\nhandle coverage: " + "; ".join(parts))
 
     if args.floors:
         failures = floor_failures(metrics)
@@ -1142,6 +1471,9 @@ def main(argv: list[str] | None = None) -> int:
             print("\n[FAIL] under floor:")
             for line in failures:
                 print(f"  {line}")
+            for relation, note in FLOOR_NOTES.items():
+                if any(failure.startswith(f"{relation}:") for failure in failures):
+                    print(f"\n  {relation}: {note}")
             return 1
         print("\n[OK] every checked relation clears its precision/recall floor")
 

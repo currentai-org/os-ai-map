@@ -7,7 +7,7 @@ from pathlib import Path
 import jsonschema
 import yaml
 
-from build.identity import fold_for_proposal, id_from_url
+from build.identity import fold_for_proposal, fold_handle, id_from_url
 from build.resolution import LEDGER
 from build.vocabulary import axes, SIGNAL_TYPES
 
@@ -400,8 +400,10 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     # `schemas` is loaded; the two cross-file checks here do not need it: `org` must resolve
     # to a real organization, and a handle is ownership evidence, so evidence that names two
     # owners is not evidence of either -- one (platform, handle) pair may belong to one org
-    # only. Compared folded (casefold; homepage_domain additionally strips a leading "www.")
-    # so two spellings of the same account do not slip past as distinct.
+    # only. Compared through `build.identity.fold_handle` (casefold; homepage_domain additionally
+    # strips a leading "www.") so two spellings of the same account do not slip past as distinct
+    # -- the same helper `build/identity_eval.py` folds with when it decides whether a handle
+    # bridges an artifact to an org, rather than a fifth hand-mirror of the rule.
     org_handles = data.get("org_handles") or {}
     handle_owner: dict[tuple[str, str], str] = {}
     for entry in org_handles.get("handles") or []:
@@ -416,10 +418,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
                 f"{oslug!r}, which has no sources/organizations/{oslug}.yaml"
             )
             continue
-        folded = raw.casefold()
-        if platform == "homepage_domain":
-            folded = folded.removeprefix("www.")
-        key = (platform, folded)
+        key = (platform, fold_handle(platform, raw))
         if key in handle_owner:
             # Same key twice is still a grain violation even when it is the same org
             # claiming it twice -- registry.org_handles is one row per (platform, handle),

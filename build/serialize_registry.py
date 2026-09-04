@@ -56,6 +56,8 @@ import csv
 import sys
 from pathlib import Path
 
+import yaml
+
 from build.identity import ARXIV_ID, canonical, homepage_canonical_url, id_from_url
 from build.resolution import artifact_of as _ledger_artifact_of
 from build.resolution import load as load_resolution_ledger
@@ -177,6 +179,93 @@ def category_layers(taxonomy: dict) -> dict[str, tuple[str, str]]:
             if isinstance(name, str) and isinstance(layer, str):
                 out[slug] = (name, layer)
     return out
+
+
+# Appended (crates, arxiv, homepage) rather than inserted, so existing per-kind ordering
+# in any downstream diff or fixture is undisturbed -- #365 added crates/arxiv as tail row
+# fields but they were still absent here, so a crates- or arxiv-only tail row validated
+# and then silently produced no `tail_products` row at all. `homepage` had the identical
+# bug: a homepage-only tail row satisfies the `anyOf` in the schema and validates, but
+# emitted zero `tail_products` rows because this list never carried it.
+TAIL_ARTIFACT_KINDS = (
+    "github", "pypi", "npm", "huggingface_model", "huggingface_dataset",
+    "crates", "arxiv", "homepage",
+)
+
+
+def load_registry(root: Path = ROOT) -> dict:
+    """The tail registry records, keyed by category slug.
+
+    The same shape `build.validate.load_sources` puts under its `registry` key, loaded on its
+    own for a caller that needs the tail rows and nothing else (`build.identity_eval`) --
+    `load_sources` reads the whole scored corpus, which is several seconds this caller has no
+    use for.
+    """
+    return {
+        path.stem: yaml.safe_load(path.read_text()) or {}
+        for path in sorted((root / "sources" / "registry").glob("*.yaml"))
+    }
+
+
+def tail_artifact_url(kind: str, identifier: str) -> str:
+    """The dereferenceable URL for a tail row's artifact of this kind.
+
+    Unlike the other kinds, a tail row's `homepage` field is already a full URI (see
+    docs/schemas/registry.schema.json), so it goes through `homepage_canonical_url` rather
+    than the per-kind templating.
+    """
+    if kind == "homepage":
+        return homepage_canonical_url(identifier)
+    if kind == "github":
+        return f"https://github.com/{identifier}"
+    if kind == "pypi":
+        return f"https://pypi.org/project/{identifier}/"
+    if kind == "npm":
+        return f"https://www.npmjs.com/package/{identifier}"
+    if kind == "huggingface_model":
+        return f"https://huggingface.co/{identifier}"
+    if kind == "huggingface_dataset":
+        return f"https://huggingface.co/datasets/{identifier}"
+    if kind == "crates":
+        return f"https://crates.io/crates/{identifier}"
+    if kind == "arxiv":
+        return f"https://arxiv.org/abs/{identifier}"
+    raise ValueError(kind)
+
+
+def tail_product_rows(registry: dict) -> list[dict]:
+    """One `tail_products` row per (tail product, declared artifact).
+
+    Split out of `build_registry` so `build.identity_eval` can read tail declarations as
+    replay truth through the same derivation rather than re-parsing `sources/registry/*.yaml`
+    with its own idea of which fields are artifacts. `artifact_id` carries a homepage's full
+    canonical URL (host + path), not the bare domain -- a homepage is evidence, not identity,
+    and two products sharing a company's domain at different paths are not a collision (see
+    docs/reference/identity.md). SQL that wants the domain alone derives it from this URL
+    rather than reading a separate column; `homepage_domain` stays available for that
+    derivation but is not stored here.
+    """
+    rows: list[dict] = []
+    for category_slug, record in sorted(registry.items()):
+        for product in record.get("products") or []:
+            for kind in TAIL_ARTIFACT_KINDS:
+                identifier = product.get(kind)
+                if not identifier:
+                    continue
+                row_artifact_id = canonical("homepage", identifier) if kind == "homepage" else identifier
+                rows.append(
+                    {
+                        "slug": product.get("slug", ""),
+                        "display_name": product.get("display_name", ""),
+                        "product_type": product.get("type", ""),
+                        "org_slug": product.get("org", ""),
+                        "category_slug": category_slug,
+                        "artifact_kind": kind,
+                        "artifact_id": row_artifact_id,
+                        "artifact_url": tail_artifact_url(kind, identifier),
+                    }
+                )
+    return rows
 
 
 def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], list[str]]:
@@ -327,62 +416,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 {"product_slug": product_slug, "category_slug": slug}
             )
 
-    # Appended (crates, arxiv, homepage) rather than inserted, so existing per-kind ordering
-    # in any downstream diff or fixture is undisturbed -- #365 added crates/arxiv as tail row
-    # fields but they were still absent here, so a crates- or arxiv-only tail row validated
-    # and then silently produced no `tail_products` row at all. `homepage` had the identical
-    # bug: a homepage-only tail row satisfies the `anyOf` in the schema and validates, but
-    # emitted zero `tail_products` rows because this list never carried it. Unlike the other
-    # kinds, a tail row's `homepage` field is already a full URI (see
-    # docs/schemas/registry.schema.json), so it is reduced with `canonical`/
-    # `homepage_canonical_url` directly rather than through the URL-templating below.
-    # `artifact_id` carries the full canonical URL (host + path), not the bare domain --
-    # a homepage is evidence, not identity, and two products sharing a company's domain
-    # at different paths are not a collision (see docs/reference/identity.md). SQL that
-    # wants the domain alone derives it from this URL rather than reading a separate
-    # column; `homepage_domain` stays available for that derivation but is not stored
-    # here.
-    tail_artifact_kinds = (
-        "github", "pypi", "npm", "huggingface_model", "huggingface_dataset",
-        "crates", "arxiv", "homepage",
-    )
-    for category_slug, record in sorted(registry.items()):
-        for product in record.get("products") or []:
-            for kind in tail_artifact_kinds:
-                identifier = product.get(kind)
-                if not identifier:
-                    continue
-                if kind == "homepage":
-                    row_artifact_id = canonical("homepage", identifier)
-                    url = homepage_canonical_url(identifier)
-                else:
-                    row_artifact_id = identifier
-                    if kind == "github":
-                        url = f"https://github.com/{identifier}"
-                    elif kind == "pypi":
-                        url = f"https://pypi.org/project/{identifier}/"
-                    elif kind == "npm":
-                        url = f"https://www.npmjs.com/package/{identifier}"
-                    elif kind == "huggingface_model":
-                        url = f"https://huggingface.co/{identifier}"
-                    elif kind == "huggingface_dataset":
-                        url = f"https://huggingface.co/datasets/{identifier}"
-                    elif kind == "crates":
-                        url = f"https://crates.io/crates/{identifier}"
-                    else:
-                        url = f"https://arxiv.org/abs/{identifier}"
-                tables["tail_products"].append(
-                    {
-                        "slug": product.get("slug", ""),
-                        "display_name": product.get("display_name", ""),
-                        "product_type": product.get("type", ""),
-                        "org_slug": product.get("org", ""),
-                        "category_slug": category_slug,
-                        "artifact_kind": kind,
-                        "artifact_id": row_artifact_id,
-                        "artifact_url": url,
-                    }
-                )
+    tables["tail_products"].extend(tail_product_rows(registry))
 
     # The decision memory: one row per (artifact, relation, resolves_to) ruling, exactly the
     # grain `build.resolution.load` keys on -- a `product_membership` ruling is a statement
