@@ -52,17 +52,24 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   the site can read products, scores and freshness dates at request time instead of loading
   `build/notebook_data.json`. Two groups of table: the target model from CLEVER FRANKE (products,
   the three axes, sources, lineage, categories, layers, stages, gaps, aliases, long tail) and the
-  registry tables `publish_registry` publishes, prefixed `registry_`. Eight enums are enforced,
-  and an unmapped payload value fails the load rather than being coerced. It runs in
+  registry tables `publish_registry` publishes, prefixed `registry_`. The model's primary keys,
+  `NOT NULL`s, uniques and foreign keys are enforced by the database, so a load that would serve
+  a dangling id fails instead. Five enums are enforced too, and an unmapped payload value fails
+  the load rather than being coerced. It runs in
   `registry.yml` on every push to `main`, one step after the OSO publish, and needs the
   `NEON_DATABASE_URL` secret. The load is atomic: rows go into `os-ai-map_staging` and the
-  cutover is three schema renames in one transaction, so a reader mid-request sees the whole old
-  schema or the whole new one. A `publish_runs` row records the commit, the schema version, the
+  cutover is two schema renames in one transaction, so a reader mid-request sees the whole old
+  schema or the whole new one. Nothing is dropped in that transaction: the old schema is
+  reclaimed at the start of the next run, and only after `pg_depend` shows nothing outside the
+  publisher's own schemas depends on it, because `CASCADE` follows dependencies rather than
+  schema membership. The gallery tables are not published at all — they are CMS-authored, and a
+  schema rebuilt from source cannot hold rows it did not produce. A `publish_runs` row records the commit, the schema version, the
   build and release dates and the per-table row counts of each load. The table set, grain and
   types live in `build/neon_schema.py`, which is the one place to change them. After the load,
   `build/neon_status.py` connects again and writes the table and row counts a reader now sees,
-  plus the `publish_runs` row, to the run summary; `gh workflow run registry.yml --ref <branch>
-  -f neon_only=true` runs the same load from a branch with the OSO publish skipped (#365).
+  the constraint tally and the `publish_runs` row, to the run summary;
+  `gh workflow run registry.yml --ref <branch>` runs the same load from a branch, with the OSO
+  publish guarded on `push` to `main` so a dispatch never reaches it (#365).
 
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed

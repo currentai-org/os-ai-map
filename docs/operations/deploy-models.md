@@ -224,13 +224,17 @@ transaction, so it is safe to re-run and a reader never sees a half-loaded schem
 is shared with the rest of the site, and the publisher refuses to run against `drizzle`,
 `payload` or `public`.
 
-To verify a change to the load before it reaches `main`, dispatch the workflow on the branch
-with `neon_only`, which skips the OSO publish (the static models are org-wide and a branch must
-not overwrite them) and writes the resulting table counts to the run summary:
+To verify a change to the load before it reaches `main`, dispatch the workflow on the branch.
+A dispatch always skips the OSO publish — the static models are org-wide and a branch must not
+overwrite them — and writes the resulting table counts, the constraint tally and the
+`publish_runs` row to the run summary:
 
 ```bash
-gh workflow run registry.yml --ref <branch> -f neon_only=true
+gh workflow run registry.yml --ref <branch>
 ```
+
+There is no flag to remember: the OSO step is guarded on `push` to `main`, so a dispatch never
+reaches it, on any ref.
 
 See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
 carries, and what it deliberately does not have.

@@ -35,16 +35,40 @@ schema identifiers are quoted everywhere and have their own validator.
 
 Site readers query this database continuously, so a load must never be observable
 half-finished. Rows go into `<target>_staging`, which is dropped and recreated on every run,
-and the cutover is three renames in one transaction:
+and the cutover is two renames in one transaction:
 
-    DROP SCHEMA IF EXISTS "os-ai-map_previous" CASCADE   -- a run that died mid-swap
     ALTER SCHEMA "os-ai-map" RENAME TO "os-ai-map_previous"
     ALTER SCHEMA "os-ai-map_staging" RENAME TO "os-ai-map"
-    DROP SCHEMA "os-ai-map_previous" CASCADE
 
 A reader sees the old schema or the new one. On the first run there is no target to rename,
 so the swap is the single staging rename; that case is decided by reading
 `information_schema.schemata`, not by catching an error.
+
+Nothing is dropped inside that transaction, which is deliberate on both counts. `DROP SCHEMA
+… CASCADE` takes `AccessExclusiveLock` on every table it removes, so a drop in the cutover
+would hold the applied-but-uncommitted renames behind any in-flight site query, and new
+readers would then queue behind the pending exclusive lock — one slow reader stalling every
+reader for as long as it runs. Pure catalog renames take no table locks at all. `lock_timeout`
+is still set on the session and the transaction is retried, because the schema's own catalog
+row can be contended.
+
+## Reclaiming the previous schema, which is where the blast radius is
+
+The old schema is left in place as `<target>_previous` and reclaimed at the *start* of the
+next run, not at the end of this one. Before dropping it, `pg_depend` is checked for
+dependents outside the three schemas this publisher manages, and if any exist the run fails
+listing them instead of dropping.
+
+That check is the point. `PROTECTED_SCHEMAS` stops the publisher naming someone else's
+schema, but CASCADE follows dependencies, not schema membership: a view in `payload` over
+`os-ai-map.products`, or a foreign key from a CMS table into it, still depends on that table
+after the rename, because a rename does not detach dependents. A CASCADE would drop the
+dependent object too, in its own schema, silently, on every publish — the same accident
+`PROTECTED_SCHEMAS` exists to prevent, one indirection out.
+
+A rename-based cutover cannot carry such a dependent forward, so failing loudly is the whole
+of the remedy available here. See "What the CMS owns" in `build/neon_schema.py` for what to
+build instead.
 
 Grants are applied to the staging schema *before* the swap. A rename carries privileges
 with it, so the new schema is readable the instant it becomes visible rather than after a
@@ -82,6 +106,7 @@ import json
 import os
 import re
 import sys
+import time
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -183,18 +208,20 @@ def infer_column_type(name: str, values: list[str]) -> str:
 
 @dataclass(frozen=True)
 class TablePlan:
-    """One CSV, resolved to a table: its name, its typed columns, and its row count."""
+    """One CSV, resolved to a table: its name, columns, constraints and row count."""
 
     name: str
     columns: tuple[tuple[str, str], ...]
     row_count: int
     path: Path
+    constraints: tuple[str, ...] = ()
 
 
 def plan_table(
     path: Path,
     declared: tuple[tuple[str, str], ...] | None = None,
     name: str | None = None,
+    constraints: tuple[str, ...] = (),
 ) -> TablePlan:
     """Plan one CSV. `declared` supplies the column types; without it they are inferred.
 
@@ -223,7 +250,11 @@ def plan_table(
             for index, name in enumerate(header)
         )
     return TablePlan(
-        name=name or path.stem, columns=columns, row_count=len(rows), path=path
+        name=name or path.stem,
+        columns=columns,
+        row_count=len(rows),
+        path=path,
+        constraints=constraints,
     )
 
 
@@ -269,7 +300,13 @@ def plan(
     if payload_path.exists():
         write_site_csvs(load_payload(payload_path), site_dir)
         for name, spec in SITE_TABLES.items():
-            plans.append(plan_table(site_dir / f"{name}.csv", declared=spec.columns))
+            plans.append(
+                plan_table(
+                    site_dir / f"{name}.csv",
+                    declared=spec.columns,
+                    constraints=spec.constraints,
+                )
+            )
     else:
         missing.extend(SITE_TABLES)
 
@@ -328,18 +365,31 @@ def check_schema_is_ours(schema: str) -> None:
         )
 
 
-def create_table_sql(schema: str, columns: tuple[tuple[str, str], ...], name: str) -> str:
-    """DDL for one table. An enum column's type carries `{schema}`, filled in here.
+def create_table_sql(
+    schema: str,
+    columns: tuple[tuple[str, str], ...],
+    name: str,
+    constraints: tuple[str, ...] = (),
+) -> str:
+    """DDL for one table. An enum type or a FK target carries `{schema}`, filled in here.
 
     Enum types are schema-scoped and are created inside the staging schema so they travel
     with the rename, which means a column referencing one has to qualify it — the staging
-    schema is never on the search path.
+    schema is never on the search path. A foreign key's target is qualified for the same
+    reason, so the reference resolves inside the schema being built rather than against
+    whatever `os-ai-map` happens to hold at the time.
+
+    `constraints` is empty for the registry group: the serializers declare column names only,
+    so there is nothing to derive a key from, and inventing one would be this module guessing
+    at another module's grain.
     """
     quoted_schema = quote_schema(schema)
-    body = ",\n  ".join(
+    parts = [
         f"{quote_ident(column)} {sql_type.format(schema=quoted_schema)}"
         for column, sql_type in columns
-    )
+    ]
+    parts += [clause.format(schema=quoted_schema) for clause in constraints]
+    body = ",\n  ".join(parts)
     return f"CREATE TABLE {quoted_schema}.{quote_ident(name)} (\n  {body}\n)"
 
 
@@ -389,22 +439,165 @@ def grant_sql(schema: str, role: str | None) -> list[str]:
 
 
 def swap_sql(schema: str, live_exists: bool) -> list[str]:
-    """The cutover, as the statements to run inside one transaction.
+    """The cutover, as the statements to run inside one transaction. Renames only.
 
     `live_exists` decides the shape rather than an exception: on the first run there is no
     live schema to rename, and renaming a schema that is not there is a different error
     from every other reason a rename fails.
+
+    Nothing is dropped here. The old schema is left as `<schema>_previous` for the next run
+    to reclaim, because a `DROP SCHEMA … CASCADE` in this transaction would both take
+    `AccessExclusiveLock` on every table it removes — stalling the cutover behind any
+    in-flight reader — and follow dependencies out of this schema. See `reclaim_previous`.
     """
     staging = f"{schema}_staging"
     previous = f"{schema}_previous"
     if not live_exists:
         return [f"ALTER SCHEMA {quote_schema(staging)} RENAME TO {quote_schema(schema)}"]
     return [
-        f"DROP SCHEMA IF EXISTS {quote_schema(previous)} CASCADE",
         f"ALTER SCHEMA {quote_schema(schema)} RENAME TO {quote_schema(previous)}",
         f"ALTER SCHEMA {quote_schema(staging)} RENAME TO {quote_schema(schema)}",
-        f"DROP SCHEMA {quote_schema(previous)} CASCADE",
     ]
+
+
+# Objects in these schemas may depend on the previous schema's tables: they are ours, and the
+# dependency is one this publisher created (a foreign key inside the map group, an index).
+def working_schemas(schema: str) -> list[str]:
+    return [schema, f"{schema}_staging", f"{schema}_previous"]
+
+
+# Dependents of the previous schema's relations that live somewhere else on the instance.
+# Two shapes, because those are the two a CASCADE would silently take with it: a view or
+# materialized view selecting from one of our tables (via pg_rewrite), and a foreign key
+# pointing into one (via pg_constraint). Both are reported with the schema, the relation and
+# how it depends, because the message has to be actionable by someone who did not write this.
+DEPENDENTS_SQL = """
+WITH previous AS (
+    SELECT c.oid
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = %(previous)s
+)
+SELECT DISTINCT n.nspname AS schema_name, c.relname AS relation, 'view or rule' AS via
+FROM pg_depend d
+JOIN previous p ON p.oid = d.refobjid
+JOIN pg_rewrite r ON r.oid = d.objid AND d.classid = 'pg_rewrite'::regclass
+JOIN pg_class c ON c.oid = r.ev_class
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE NOT (n.nspname = ANY(%(working)s))
+UNION
+SELECT DISTINCT n.nspname, c.relname, 'foreign key ' || co.conname
+FROM pg_constraint co
+JOIN previous p ON p.oid = co.confrelid
+JOIN pg_class c ON c.oid = co.conrelid
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE NOT (n.nspname = ANY(%(working)s))
+ORDER BY 1, 2
+"""
+
+
+class ExternalDependents(RuntimeError):
+    """Something outside this publisher's schemas depends on the schema about to be dropped."""
+
+
+def schema_exists(cursor, schema: str) -> bool:
+    cursor.execute(
+        "SELECT 1 FROM information_schema.schemata WHERE schema_name = %s", (schema,)
+    )
+    return cursor.fetchone() is not None
+
+
+def external_dependents(cursor, schema: str) -> list[tuple[str, str, str]]:
+    """(schema, relation, how) for every dependent of `<schema>_previous` we do not own."""
+    cursor.execute(
+        DEPENDENTS_SQL,
+        {"previous": f"{schema}_previous", "working": working_schemas(schema)},
+    )
+    return [tuple(row) for row in cursor.fetchall()]
+
+
+def reclaim_previous(cursor, schema: str) -> bool:
+    """Drop `<schema>_previous` if it is safe to. Returns whether anything was dropped.
+
+    Runs at the start of a publish, before the staging build, so a run that cannot safely
+    reclaim fails before it has done any work rather than after loading 18,000 rows.
+
+    Raises `ExternalDependents` rather than dropping when anything outside the three working
+    schemas depends on it. A rename-based cutover has nowhere to carry such a dependent
+    forward, so this cannot be repaired here — but dropping someone else's view to get on
+    with a publish is not a trade this publisher is allowed to make on its own.
+    """
+    previous = f"{schema}_previous"
+    if not schema_exists(cursor, previous):
+        return False
+    dependents = external_dependents(cursor, schema)
+    if dependents:
+        listed = "\n".join(
+            f"  {dep_schema}.{relation}  ({via})" for dep_schema, relation, via in dependents
+        )
+        raise ExternalDependents(
+            f"{len(dependents)} object(s) outside {schema!r} depend on {previous!r}, which "
+            f"this run needs to drop:\n{listed}\n"
+            f"Dropping it would take them with it (CASCADE follows dependencies, not schema "
+            f"membership), so this run has stopped instead. A view over a table in {schema!r} "
+            f"cannot survive the cutover in any case — the rename leaves it bound to the old "
+            f"table by OID. Drop or repoint these objects, or move them to a schema that "
+            f"reads {schema!r} directly; see 'What the CMS owns' in build/neon_schema.py."
+        )
+    cursor.execute(f"DROP SCHEMA IF EXISTS {quote_schema(previous)} CASCADE")
+    return True
+
+
+# The swap contends only for the schemas' own catalog rows now that it drops nothing, but a
+# concurrent DDL or a long transaction holding the namespace can still block it. Five seconds
+# is far longer than a rename needs and short enough that a stalled cutover retries rather
+# than parks; three attempts, because the second failing for the same reason as the first is
+# already evidence that waiting is not the remedy.
+LOCK_TIMEOUT = "5s"
+SWAP_ATTEMPTS = 3
+SWAP_BACKOFF = (1.0, 3.0)
+# 55P03 lock_not_available (our lock_timeout firing), 40P01 deadlock_detected.
+RETRYABLE_SQLSTATES = frozenset({"55P03", "40P01"})
+
+
+def is_retryable(error: Exception) -> bool:
+    """Whether a failed swap is worth another attempt. Reads the SQLSTATE, never the message.
+
+    A driver-independent predicate: psycopg exposes `sqlstate`, and a test can raise anything
+    carrying the attribute without standing up a database.
+    """
+    return getattr(error, "sqlstate", None) in RETRYABLE_SQLSTATES
+
+
+def swap_in_place(
+    connection,
+    schema: str,
+    live_exists: bool,
+    *,
+    attempts: int = SWAP_ATTEMPTS,
+    sleep=time.sleep,
+) -> int:
+    """Run the cutover in one transaction, retrying a lock timeout. Returns the attempt count.
+
+    Each attempt is its own transaction: a lock timeout aborts it, so retrying inside the
+    failed transaction would be retrying inside an aborted one.
+    """
+    for attempt in range(1, attempts + 1):
+        try:
+            with connection.transaction(), connection.cursor() as cursor:
+                for statement in swap_sql(schema, live_exists):
+                    cursor.execute(statement)
+            return attempt
+        except Exception as error:
+            if attempt == attempts or not is_retryable(error):
+                raise
+            delay = SWAP_BACKOFF[min(attempt, len(SWAP_BACKOFF)) - 1]
+            print(
+                f"  swap attempt {attempt} could not take its lock; retrying in {delay:g}s",
+                file=sys.stderr,
+            )
+            sleep(delay)
+    raise AssertionError("unreachable: the loop returns or raises")
 
 
 def require_ssl(dsn: str) -> str:
@@ -458,9 +651,13 @@ def declaration_identity() -> tuple[str | None, str | None]:
 def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None) -> dict:
     """Load every plan into the staging schema and swap it into place. Returns the run record.
 
-    The only two schemas touched are `schema` and `<schema>_staging` (plus `<schema>_previous`,
-    which exists only between two statements of the swap). `check_schema_is_ours` runs first,
-    because the instance is shared and the cutover drops schemas with CASCADE.
+    The only schemas touched are `schema`, `<schema>_staging` and `<schema>_previous`, which
+    holds the last load until this one reclaims it. `check_schema_is_ours` runs first, because
+    the instance is shared and reclaiming drops a schema with CASCADE.
+
+    Order matters: the previous schema is reclaimed before the staging build, so a run that
+    cannot safely drop it fails before loading anything, and the swap has a free name to
+    rename the live schema to.
     """
     import psycopg
 
@@ -482,6 +679,12 @@ def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None
 
     with psycopg.connect(require_ssl(dsn), autocommit=True) as connection:
         with connection.cursor() as cursor:
+            # Session-wide, so it covers the swap transaction and every statement here. A
+            # rename needs milliseconds; anything that waits five seconds for a lock is
+            # contended, and waiting longer inside a cutover is the failure mode to avoid.
+            cursor.execute(f"SET lock_timeout = '{LOCK_TIMEOUT}'")
+            if reclaim_previous(cursor, schema):
+                print(f"  reclaimed {schema}_previous from the last load")
             cursor.execute(f"DROP SCHEMA IF EXISTS {quote_schema(staging)} CASCADE")
             cursor.execute(f"CREATE SCHEMA {quote_schema(staging)}")
             # Enums first: a table referencing one cannot be created before the type exists,
@@ -489,7 +692,9 @@ def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None
             for statement in create_enum_sql(staging):
                 cursor.execute(statement)
             for plan_ in plans:
-                cursor.execute(create_table_sql(staging, plan_.columns, plan_.name))
+                cursor.execute(
+                    create_table_sql(staging, plan_.columns, plan_.name, plan_.constraints)
+                )
                 with cursor.copy(copy_sql(staging, plan_)) as copy:
                     stream_bytes(plan_.path, copy.write)
                 print(f"  {plan_.name:<24} {plan_.row_count:>6} rows")
@@ -515,15 +720,12 @@ def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None
             for statement in grant_sql(staging, read_role):
                 cursor.execute(statement)
 
-            cursor.execute(
-                "SELECT 1 FROM information_schema.schemata WHERE schema_name = %s", (schema,)
-            )
-            live_exists = cursor.fetchone() is not None
+            live_exists = schema_exists(cursor, schema)
 
         # One transaction, so no reader ever sees the schema absent or half-renamed.
-        with connection.transaction(), connection.cursor() as cursor:
-            for statement in swap_sql(schema, live_exists):
-                cursor.execute(statement)
+        attempts = swap_in_place(connection, schema, live_exists)
+        if attempts > 1:
+            print(f"  swap committed on attempt {attempts}")
 
     return record
 
@@ -560,11 +762,16 @@ def main() -> int:
         )
         for plan_ in plans:
             group = "map" if plan_.name in SITE_TABLES else "registry"
+            keys = f"{len(plan_.constraints):>2} constraints" if plan_.constraints else ""
             print(
                 f"  {plan_.name:<28} {plan_.row_count:>6} rows  "
-                f"{len(plan_.columns):>2} columns  [{group}]"
+                f"{len(plan_.columns):>2} columns  [{group}] {keys}"
             )
         print(f"  {len(ENUMS)} enums: {', '.join(ENUMS)}")
+        print(
+            f"  {sum(len(p.constraints) for p in plans)} table constraints "
+            f"(primary keys, uniques and foreign keys, on the map group)"
+        )
         # Only the inferred types are worth printing. The map group's are declared in
         # build/neon_schema.py, where a reader can see them next to the grain they describe;
         # the registry group's are a guess this run made about the data, which is the thing

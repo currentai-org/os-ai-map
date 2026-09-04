@@ -59,8 +59,8 @@ The instance is shared. `drizzle`, `payload` and `public` belong to other parts 
 *The map* — the target model from CLEVER FRANKE, with Carl's amendments: `products`,
 `organizations`, `categories`, `layers`, `stages`, `gaps`, `gaps_categories`, `openness`,
 `adoption`, `capability`, `sources`, `product_lineage`, `aliases`, `long_tail_top`,
-`long_tail_counts`, and the three `gallery*` tables. Every row is derived from
-`build/notebook_data.json`, so what Postgres serves is what the repo published.
+`long_tail_counts`. Every row is derived from `build/notebook_data.json`, so what Postgres
+serves is what the repo published.
 
 *The registry*, prefixed `registry_` — the same tables `publish_registry` publishes to OSO,
 derived from that module rather than from a directory listing, so the two surfaces carry the
@@ -78,13 +78,18 @@ the same ids and a diff of two loads is readable. The real key is `slug`. Organi
 `slug`, aliases on `alias`, and `categories` carries a `slug` alongside its id — the PDF omitted
 it, and every deep link and every join from the registry group needs it.
 
-**The eight enums are enforced.** `alias_kind`, `freshness_basis`, `lineage_relation`,
-`capability_relation`, `metric_name`, `health_status`, `integration_type`, `gap_type` are
-created in the schema, and a payload value with no mapping fails the load naming the value
-rather than being coerced to something adjacent. One mapping is lossy and worth knowing:
-`capability.relation` in the payload is a signed distance (`at`, `one_above`, `one_below`,
-`two_below`) and the enum has none, so `one_below` and `two_below` both arrive as `tier_below`.
-The exact distance is only in `capability.notes`.
+**The five enums are enforced.** `alias_kind`, `freshness_basis`, `lineage_relation`,
+`capability_relation` and `metric_name` are created in the schema, and a payload value with no
+mapping fails the load naming the value rather than being coerced to something adjacent. The
+DBML's other three (`health_status`, `integration_type`, `gap_type`) belong to the gallery
+tables and are not created here — see "What the CMS owns" below.
+
+**The DBML's constraints are real.** Every primary key, `NOT NULL`, unique and foreign key the
+target model declares is emitted in the CREATE statement, so the database enforces the model
+rather than the site discovering a dangling id at render time. `categories.slug` also gets a
+unique the DBML does not declare, because the column is an amendment and a duplicate slug
+would break the deep links it exists for. A violation aborts the COPY, the staging schema is
+discarded, and the live schema stays exactly where it was — failing there is the point.
 
 ### The three dates, which are three different questions
 
@@ -105,18 +110,61 @@ anything was checked.
 on OSO, and no table in `os-ai-map` recomputes an axis. A question about what the map *says* is
 answerable here; whether the warehouse *agrees* is `check_parity` against the tables above.
 
-**Gallery content.** `gallery`, `gallery_products` and `gallery_gaps` are created and left
-empty. Gallery entries are authored CMS-side, in the `payload` schema, not derived from the
-map's data — the tables exist so the site's queries compile before that content lands.
+### What the CMS owns
+
+**Gallery content is not in this schema.** `gallery`, `gallery_products` and `gallery_gaps`
+were here, created and left empty so the site's queries would compile. That was a hazard
+rather than a courtesy: this publisher drops and recreates its schema on every load, so the
+first gallery row an editor wrote would have been deleted by the next push to `main`, with
+nothing raising anywhere and every artifact of the publish still reporting `gallery 0 rows`.
+
+A schema rebuilt from source can only hold rows it produced. Gallery content is authored, so
+it belongs in the CMS's own `payload` schema, or in a separate `os-ai-map_cms` schema that
+this publisher never creates, never drops and never grants on. Both are on the same database,
+so a join across them costs a qualified name and nothing else.
+
+**For whoever builds that:** a *view* in the CMS schema over a table in `os-ai-map` will not
+survive a load. The cutover renames the schema, and a view binds to the table it was created
+over by OID rather than by name, so the view ends up pointing into `os-ai-map_previous` and is
+dropped when that is reclaimed. `publish_neon.reclaim_previous` detects exactly this and
+refuses to run rather than dropping the view — the failure is loud, but it is still a failure.
+Read the map's tables directly, or materialize a copy CMS-side.
+
+### Two things the designers should know about the data
+
+**`sources.notes` is always NULL.** The target model has the column and the payload has no
+field for it, so nothing here fills it. In the other direction, the payload's `establishes`,
+`content_sha256` and `http_status` have no column in the target model. `shows` is the one that
+maps.
+
+**`capability.relation` is lossy.** The payload carries a signed distance (`at`, `one_above`,
+`one_below`, `two_below`) and the target enum has none, so `one_below` and `two_below` both
+arrive as `tier_below`. The exact distance is only in `capability.notes`. `anchor` is in the
+enum and unused. If the front end needs the distance, the enum has to grow.
 
 ### The load is atomic, and the swap is the migration path
 
-Rows go into `os-ai-map_staging`, dropped and recreated each run, and the cutover is
-`os-ai-map` → `os-ai-map_previous`, `os-ai-map_staging` → `os-ai-map`, drop
-`os-ai-map_previous`, all three renames in one transaction. A reader sees the whole old schema
-or the whole new one, never a table that has loaded next to one that has not. Grants are
-applied to the staging schema before the swap, since a rename carries privileges with it;
-`NEON_READ_ROLE` names the role granted `SELECT`, and unset means `PUBLIC`.
+Rows go into `os-ai-map_staging`, dropped and recreated each run, and the cutover is two
+renames in one transaction: `os-ai-map` → `os-ai-map_previous`, then `os-ai-map_staging` →
+`os-ai-map`. A reader sees the whole old schema or the whole new one, never a table that has
+loaded next to one that has not. Grants are applied to the staging schema before the swap,
+since a rename carries privileges with it; `NEON_READ_ROLE` names the role granted `SELECT`,
+and unset means `PUBLIC`.
+
+**Nothing is dropped in that transaction.** `DROP SCHEMA … CASCADE` takes an exclusive lock on
+every table it removes, so a drop in the cutover would hold the applied-but-uncommitted
+renames behind any in-flight site query, and arriving readers would queue behind the pending
+lock — one slow reader stalling every reader for as long as it runs. Pure catalog renames take
+no table locks. `lock_timeout` is 5s on the session and the swap transaction is retried three
+times with backoff, because the schema's own catalog row can still be contended.
+
+The old schema stays as `os-ai-map_previous` and is reclaimed at the *start* of the next run,
+after `pg_depend` is checked for dependents outside the three schemas this publisher manages.
+If any exist the run fails listing them, rather than dropping. `PROTECTED_SCHEMAS` stops the
+publisher naming someone else's schema, but CASCADE follows dependencies, not schema
+membership: a view in `payload` over `os-ai-map.products`, or a foreign key from a CMS table
+into it, still depends on that table after the rename. Without the check, a CASCADE would drop
+that object too, in its own schema, silently, on every publish.
 
 There is no migration tool, and for now there does not need to be one: every publish rebuilds
 the schema from `build/neon_schema.py`, so a shape change is live on the next load with no

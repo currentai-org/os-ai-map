@@ -9,6 +9,7 @@ without connecting, and that a DSN never reaches stdout or stderr.
 
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -30,24 +31,32 @@ from build.neon_schema import (
 from build.publish_neon import (
     DEFAULT_SCHEMA,
     DSN_ENV,
+    LOCK_TIMEOUT,
     PROTECTED_SCHEMAS,
     PUBLISHED_TABLES,
     RUN_COLUMNS,
     RUN_TABLE,
+    SWAP_ATTEMPTS,
+    ExternalDependents,
     create_enum_sql,
     create_table_sql,
     copy_sql,
+    external_dependents,
     grant_sql,
     infer_column_type,
+    is_retryable,
     plan,
     plan_table,
     check_schema_is_ours,
     quote_ident,
     quote_schema,
+    reclaim_previous,
     require_ssl,
     scrub,
     stream_bytes,
+    swap_in_place,
     swap_sql,
+    working_schemas,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -211,6 +220,7 @@ def test_the_swap_touches_only_the_target_and_its_two_working_schemas():
         f"{DEFAULT_SCHEMA}_previous",
     }
     assert not named & PROTECTED_SCHEMAS
+    assert set(working_schemas(DEFAULT_SCHEMA)) == named
 
 
 # --- the swap -------------------------------------------------------------------------
@@ -223,19 +233,21 @@ def test_the_first_run_is_a_single_rename():
     ]
 
 
-def test_the_steady_state_swap_moves_aside_renames_and_drops_in_that_order():
+def test_the_steady_state_swap_is_two_renames_and_moves_the_live_schema_aside_first():
     assert swap_sql("gapmap", live_exists=True) == [
-        'DROP SCHEMA IF EXISTS "gapmap_previous" CASCADE',
         'ALTER SCHEMA "gapmap" RENAME TO "gapmap_previous"',
         'ALTER SCHEMA "gapmap_staging" RENAME TO "gapmap"',
-        'DROP SCHEMA "gapmap_previous" CASCADE',
     ]
 
 
-def test_the_swap_clears_a_previous_schema_left_by_a_run_that_died_mid_cutover():
-    statements = swap_sql("gapmap", live_exists=True)
-    assert statements[0].startswith('DROP SCHEMA IF EXISTS "gapmap_previous"')
-    assert statements.index('ALTER SCHEMA "gapmap" RENAME TO "gapmap_previous"') == 1
+def test_the_cutover_transaction_drops_nothing():
+    """A DROP here would take AccessExclusiveLock on every table it removes, holding the
+    applied-but-uncommitted renames behind any in-flight reader — and it would follow
+    dependencies out of this schema. Reclaiming is the next run's job."""
+    for live_exists in (True, False):
+        for statement in swap_sql("gapmap", live_exists=live_exists):
+            assert "DROP" not in statement.upper()
+            assert "CASCADE" not in statement.upper()
 
 
 def test_the_swap_never_drops_the_live_schema_by_name():
@@ -411,16 +423,16 @@ def _complete_dir(directory: Path) -> Path:
 
 # --- enums ----------------------------------------------------------------------------
 
-def test_all_eight_enums_are_declared():
+def test_the_five_enums_the_map_uses_are_declared():
+    """The DBML's other three belong to the gallery tables, which the CMS owns. An enum no
+    column can reference would be dead metadata, and one created here would be worse: a CMS
+    table referencing it would depend on a schema this publisher renames on every load."""
     assert set(ENUMS) == {
         "alias_kind",
         "freshness_basis",
         "lineage_relation",
         "capability_relation",
         "metric_name",
-        "health_status",
-        "integration_type",
-        "gap_type",
     }
 
 
@@ -530,11 +542,15 @@ def test_each_axis_has_exactly_one_row_per_product():
         assert len({row["product_id"] for row in rows}) == len(products)
 
 
-def test_the_gallery_tables_are_created_empty_because_the_content_is_cms_side():
-    payload = load_payload()
+def test_the_gallery_tables_are_not_published_at_all():
+    """They were created empty so the site's queries would compile, which was a hazard: the
+    swap rebuilds the schema, so the first row an editor wrote would be deleted by the next
+    push to main with nothing raising. A schema rebuilt from source holds only rows it
+    produced. See "What the CMS owns" in build/neon_schema.py."""
     for name in ("gallery", "gallery_products", "gallery_gaps"):
-        assert SITE_TABLES[name].rows(payload) == []
-        assert SITE_TABLES[name].columns, f"{name} still needs its columns"
+        assert name not in SITE_TABLES
+    for enum in ("health_status", "integration_type", "gap_type"):
+        assert enum not in ENUMS
 
 
 def test_the_long_tail_tables_are_filled_from_the_payload():
@@ -685,6 +701,323 @@ def test_the_status_report_reads_back_every_column_the_run_record_writes():
     selected = RUNS_SQL.split("FROM")[0]
     for column, _type in RUN_COLUMNS:
         assert column in selected, f"{column} is written but never read back"
+
+
+# --- reclaiming the previous schema ---------------------------------------------------
+
+
+class _StubCursor:
+    """Enough of a cursor to drive `reclaim_previous` without a database.
+
+    Answers by inspecting the statement rather than by position, so a reordering of the
+    function's queries does not silently change what the stub is answering.
+    """
+
+    def __init__(self, *, previous_exists: bool = True, dependents=()):
+        self.previous_exists = previous_exists
+        self.dependents = list(dependents)
+        self.executed: list[tuple[str, object]] = []
+        self._result: list[tuple] = []
+
+    def execute(self, statement, params=None):
+        text = str(statement)
+        self.executed.append((text, params))
+        if "information_schema.schemata" in text:
+            self._result = [(1,)] if self.previous_exists else []
+        elif "pg_depend" in text:
+            self._result = list(self.dependents)
+        else:
+            self._result = []
+
+    def fetchone(self):
+        return self._result[0] if self._result else None
+
+    def fetchall(self):
+        return list(self._result)
+
+    @property
+    def statements(self) -> list[str]:
+        return [text for text, _params in self.executed]
+
+
+def test_reclaiming_drops_the_previous_schema_when_nothing_outside_depends_on_it():
+    cursor = _StubCursor(previous_exists=True, dependents=())
+    assert reclaim_previous(cursor, DEFAULT_SCHEMA) is True
+    assert any(
+        f'DROP SCHEMA IF EXISTS "{DEFAULT_SCHEMA}_previous" CASCADE' in statement
+        for statement in cursor.statements
+    )
+
+
+def test_reclaiming_is_a_no_op_when_there_is_no_previous_schema():
+    """The first run, and any run after one that reclaimed cleanly."""
+    cursor = _StubCursor(previous_exists=False)
+    assert reclaim_previous(cursor, DEFAULT_SCHEMA) is False
+    assert not any("DROP SCHEMA" in statement for statement in cursor.statements)
+
+
+def test_an_external_dependent_fails_the_run_and_is_never_dropped():
+    """CASCADE follows dependencies, not schema membership. A view in `payload` over one of
+    our tables still depends on it after the rename, so a CASCADE would drop it — in its own
+    schema, silently, on every publish. That is the accident PROTECTED_SCHEMAS exists to
+    prevent, one indirection out."""
+    cursor = _StubCursor(
+        previous_exists=True,
+        dependents=[
+            ("payload", "gallery_view", "view or rule"),
+            ("drizzle", "case_studies", "foreign key case_studies_product_fk"),
+        ],
+    )
+    with pytest.raises(ExternalDependents) as error:
+        reclaim_previous(cursor, DEFAULT_SCHEMA)
+    message = str(error.value)
+    assert "payload.gallery_view" in message
+    assert "drizzle.case_studies" in message
+    assert "view or rule" in message
+    assert "foreign key case_studies_product_fk" in message
+    assert not any("DROP SCHEMA" in statement for statement in cursor.statements)
+
+
+def test_the_dependency_check_asks_about_previous_and_exempts_only_our_own_schemas():
+    cursor = _StubCursor(previous_exists=True)
+    external_dependents(cursor, DEFAULT_SCHEMA)
+    query, params = cursor.executed[-1]
+    assert "pg_depend" in query and "pg_constraint" in query
+    assert params["previous"] == f"{DEFAULT_SCHEMA}_previous"
+    assert params["working"] == working_schemas(DEFAULT_SCHEMA)
+    assert not set(params["working"]) & PROTECTED_SCHEMAS
+
+
+def test_the_working_schemas_are_exactly_the_three_this_publisher_manages():
+    assert working_schemas("gapmap") == ["gapmap", "gapmap_staging", "gapmap_previous"]
+
+
+# --- the swap transaction, and its retry ----------------------------------------------
+
+
+class _SqlstateError(Exception):
+    def __init__(self, sqlstate: str):
+        super().__init__(f"stub failure {sqlstate}")
+        self.sqlstate = sqlstate
+
+
+class _FakeConnection:
+    """`transaction()` and `cursor()`, enough for `swap_in_place`."""
+
+    def __init__(self, *, fail_times: int = 0, sqlstate: str = "55P03"):
+        self.fail_times = fail_times
+        self.sqlstate = sqlstate
+        self.attempts = 0
+        self.statements: list[str] = []
+
+    def transaction(self):
+        from contextlib import contextmanager
+
+        @contextmanager
+        def _transaction():
+            self.attempts += 1
+            if self.attempts <= self.fail_times:
+                raise _SqlstateError(self.sqlstate)
+            yield
+
+        return _transaction()
+
+    def cursor(self):
+        from contextlib import contextmanager
+
+        outer = self
+
+        class _Cursor:
+            def execute(self, statement, params=None):
+                outer.statements.append(str(statement))
+
+        @contextmanager
+        def _cursor():
+            yield _Cursor()
+
+        return _cursor()
+
+
+@pytest.mark.parametrize("sqlstate,expected", [("55P03", True), ("40P01", True), ("23505", False), (None, False)])
+def test_only_a_lock_failure_is_worth_retrying(sqlstate, expected):
+    """SQLSTATE, never the message: 55P03 is our own lock_timeout firing, 40P01 a deadlock.
+    A constraint violation (23505) is the load telling us the data is wrong, and retrying it
+    would just fail again more slowly."""
+    assert is_retryable(_SqlstateError(sqlstate) if sqlstate else Exception("boom")) is expected
+
+
+def test_the_swap_commits_on_the_first_attempt_when_the_lock_is_free():
+    connection = _FakeConnection()
+    slept: list[float] = []
+    assert swap_in_place(connection, "gapmap", True, sleep=slept.append) == 1
+    assert connection.statements == swap_sql("gapmap", live_exists=True)
+    assert slept == []
+
+
+def test_a_contended_swap_is_retried_with_backoff_and_then_commits():
+    connection = _FakeConnection(fail_times=2)
+    slept: list[float] = []
+    assert swap_in_place(connection, "gapmap", True, sleep=slept.append) == 3
+    assert slept == [1.0, 3.0]
+    assert connection.statements == swap_sql("gapmap", live_exists=True)
+
+
+def test_a_swap_that_never_gets_its_lock_raises_after_the_last_attempt():
+    connection = _FakeConnection(fail_times=99)
+    with pytest.raises(_SqlstateError):
+        swap_in_place(connection, "gapmap", True, sleep=lambda _seconds: None)
+    assert connection.attempts == SWAP_ATTEMPTS
+
+
+def test_a_failure_that_is_not_about_locks_is_not_retried():
+    connection = _FakeConnection(fail_times=99, sqlstate="23505")
+    with pytest.raises(_SqlstateError):
+        swap_in_place(connection, "gapmap", True, sleep=lambda _seconds: None)
+    assert connection.attempts == 1, "a constraint violation must fail on the first attempt"
+
+
+def test_a_lock_timeout_is_set_and_is_short():
+    """Longer than a rename needs by orders of magnitude, short enough that a stalled
+    cutover retries rather than parks."""
+    assert LOCK_TIMEOUT.endswith("s")
+    assert int(LOCK_TIMEOUT.rstrip("s")) <= 10
+
+
+# --- the constraints the DBML declares ------------------------------------------------
+
+# Transcribed from plans/neon-initial-schema.dbml (Laith, CLEVER FRANKE) plus Carl's
+# amendments. Pinned rather than parsed: the DBML lives outside this repo, so a test that
+# read it would pass locally and fail in CI. Gallery tables are absent on purpose — the CMS
+# owns them.
+_DBML_CONSTRAINTS: dict[str, set[str]] = {
+    "layers": {'PRIMARY KEY ("id")'},
+    "stages": {'PRIMARY KEY ("id")'},
+    "gaps": {'PRIMARY KEY ("id")'},
+    "categories": {
+        'PRIMARY KEY ("id")',
+        'UNIQUE ("slug")',
+        'FOREIGN KEY ("layer") REFERENCES {schema}."layers" ("id")',
+        'FOREIGN KEY ("stage") REFERENCES {schema}."stages" ("id")',
+    },
+    "gaps_categories": {
+        'FOREIGN KEY ("cat_id") REFERENCES {schema}."categories" ("id")',
+        'FOREIGN KEY ("gap_id") REFERENCES {schema}."gaps" ("id")',
+    },
+    "organizations": {'PRIMARY KEY ("slug")'},
+    "products": {
+        'PRIMARY KEY ("id")',
+        'UNIQUE ("slug")',
+        'FOREIGN KEY ("org_slug") REFERENCES {schema}."organizations" ("slug")',
+        'FOREIGN KEY ("category") REFERENCES {schema}."categories" ("id")',
+    },
+    "openness": {
+        'PRIMARY KEY ("product_id")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
+    "adoption": {
+        'PRIMARY KEY ("product_id")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
+    "capability": {
+        'PRIMARY KEY ("product_id")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
+    "sources": {
+        'PRIMARY KEY ("id")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
+    "product_lineage": {
+        'PRIMARY KEY ("id")',
+        'FOREIGN KEY ("product_id") REFERENCES {schema}."products" ("id")',
+    },
+    "aliases": {'PRIMARY KEY ("alias")'},
+    "long_tail_top": {'PRIMARY KEY ("id")'},
+    "long_tail_counts": set(),
+}
+
+# Every `[not null]` in the DBML, plus categories.slug: the column is Carl's amendment and a
+# nullable unique column admits any number of NULLs.
+_DBML_NOT_NULL: tuple[tuple[str, str], ...] = (
+    ("products", "slug"),
+    ("products", "org_slug"),
+    ("products", "category"),
+    ("categories", "slug"),
+    ("categories", "layer"),
+    ("categories", "stage"),
+    ("sources", "product_id"),
+    ("sources", "metric_type"),
+    ("product_lineage", "product_id"),
+    ("gaps_categories", "cat_id"),
+    ("gaps_categories", "gap_id"),
+)
+
+
+def test_the_map_group_is_exactly_the_dbmls_tables():
+    assert set(SITE_TABLES) == set(_DBML_CONSTRAINTS)
+
+
+@pytest.mark.parametrize("table", sorted(_DBML_CONSTRAINTS))
+def test_every_constraint_the_dbml_declares_is_in_the_generated_ddl(table):
+    """The database enforces the model, rather than the site discovering a dangling id at
+    render time. A violation aborts the COPY, the staging schema is discarded and the live
+    schema stays where it was, which is the point."""
+    spec = SITE_TABLES[table]
+    sql = create_table_sql("os-ai-map_staging", spec.columns, table, spec.constraints)
+    for clause in _DBML_CONSTRAINTS[table]:
+        assert clause.format(schema='"os-ai-map_staging"') in sql, f"{table}: missing {clause}"
+
+
+@pytest.mark.parametrize("table,column", _DBML_NOT_NULL)
+def test_every_not_null_the_dbml_declares_is_in_the_generated_ddl(table, column):
+    spec = SITE_TABLES[table]
+    sql = create_table_sql("os-ai-map_staging", spec.columns, table, spec.constraints)
+    definition = dict(spec.columns)[column]
+    assert "NOT NULL" in definition, f"{table}.{column} is nullable"
+    assert f'"{column}"' in sql
+
+
+def test_no_constraint_is_declared_for_the_registry_group():
+    """The serializers declare column names only, so there is nothing to derive a key from,
+    and inventing one would be this module guessing at another module's grain."""
+    plans, _missing = plan()
+    for plan_ in plans:
+        if plan_.name not in SITE_TABLES:
+            assert plan_.constraints == ()
+
+
+def test_a_foreign_key_target_is_qualified_with_the_schema_being_built():
+    """The staging schema is never on the search path, so an unqualified reference would
+    resolve against whatever the live schema holds at the time."""
+    spec = SITE_TABLES["products"]
+    sql = create_table_sql("os-ai-map_staging", spec.columns, "products", spec.constraints)
+    assert 'REFERENCES "os-ai-map_staging"."organizations"' in sql
+    assert 'REFERENCES "organizations"' not in sql
+
+
+def test_the_tables_are_ordered_parents_first_so_every_reference_resolves():
+    """A FK can only be created after its target table exists, and the COPY into a child can
+    only succeed after the parent's rows are in. Both follow from the declared order."""
+    order = list(SITE_TABLES)
+    for position, (name, spec) in enumerate(SITE_TABLES.items()):
+        for clause in spec.constraints:
+            for referent in re.findall(r'REFERENCES \{schema\}\."([^"]+)"', clause):
+                assert referent in order, f"{name} references unknown table {referent}"
+                assert order.index(referent) <= position, (
+                    f"{name} references {referent}, which is created later"
+                )
+
+
+def test_the_constraint_tally_the_read_back_reports_is_the_one_the_ddl_asks_for():
+    """The read-back counts what `information_schema` holds, so the two numbers agreeing is
+    what proves the swap created the constraints rather than merely being asked to."""
+    from build.neon_status import constraints_sql
+
+    rendered = constraints_sql("os-ai-map").as_string()
+    assert "information_schema.table_constraints" in rendered
+    assert "constraint_schema = 'os-ai-map'" in rendered
+    # Postgres materializes a CHECK per NOT NULL column, which would swamp the tally with
+    # something the column list already shows.
+    assert "constraint_type <> 'CHECK'" in rendered
 
 
 # --- helpers --------------------------------------------------------------------------

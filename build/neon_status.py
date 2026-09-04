@@ -63,6 +63,27 @@ FROM {schema}.{table}
 ORDER BY published_at DESC
 """
 
+# Constraints as the database actually holds them, not as the DDL asked for them. The map
+# group's keys and foreign keys are the load's integrity gate, so a swap that quietly created
+# tables without them is the thing worth catching — and `information_schema` is the reader's
+# own view of it. CHECK is excluded: Postgres materializes one per NOT NULL column, which
+# would swamp the count with something already visible in the column list.
+CONSTRAINTS_SQL = """
+SELECT constraint_type, count(*) AS n
+FROM information_schema.table_constraints
+WHERE constraint_schema = {schema}
+  AND constraint_type <> 'CHECK'
+GROUP BY constraint_type
+ORDER BY 1
+"""
+
+
+def constraints_sql(schema: str):
+    """The per-type constraint tally, with the schema composed in as a literal."""
+    from psycopg import sql
+
+    return sql.SQL(CONSTRAINTS_SQL).format(schema=sql.Literal(schema))
+
 
 def counts_sql(schema: str):
     """The per-table `count(*)` query with the schema composed in as a literal.
@@ -90,6 +111,16 @@ def report(dsn: str, schema: str) -> str:
             lines.append(f"| `{name}` | {count:,} |")
         total = sum(count for name, count in rows if name != RUN_TABLE)
         lines.append(f"\n{len(rows)} tables, {total:,} rows outside `{RUN_TABLE}`.\n")
+
+        cursor.execute(constraints_sql(schema))
+        constraints = cursor.fetchall()
+        total_constraints = sum(n for _type, n in constraints)
+        lines.append(f"### Constraints in `{schema}` — {total_constraints} total\n")
+        lines.append("| constraint | count |")
+        lines.append("|---|---:|")
+        for constraint_type, count in constraints:
+            lines.append(f"| {constraint_type} | {count} |")
+        lines.append("")
 
         cursor.execute(RUNS_SQL.format(schema=quote_schema(schema), table=f'"{RUN_TABLE}"'))
         runs = cursor.fetchall()

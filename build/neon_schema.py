@@ -27,12 +27,35 @@ is readable. The real key is `slug`, which is what a deep link carries. Organiza
 and the site needs it). Ids for `sources` and `product_lineage` are positional over a
 deterministic walk, for the same reason.
 
+## The constraints are real, and a violation fails the run
+
+Every `[pk]`, `[not null]`, `[unique]` and `ref:` the DBML declares is emitted in the CREATE
+statement, so the database enforces them rather than the site discovering a dangling id at
+render time. `categories.slug` gets a UNIQUE the DBML does not declare, because the column
+itself is an amendment and a duplicate slug would break the deep links it exists for.
+
+That makes a COPY the integrity gate: a NULL in a `[not null]` column, a duplicate key or an
+unresolvable reference aborts the load, the staging schema is discarded and the live schema
+stays exactly where it was. Failing there is the point — the alternative is a serving layer
+that answers with a foreign key pointing at nothing.
+
+`SITE_TABLES` is therefore ordered parents-first: every table's referents are created and
+filled before it is. `tests/test_publish_neon.py` asserts that order against the declared
+references rather than trusting the dict's shape.
+
 ## Enums are enforced, never coerced
 
-The eight enums are created in the schema and the payload's values are mapped onto them by
+The five enums are created in the schema and the payload's values are mapped onto them by
 `ENUM_MAPS`. A value with no mapping raises `UnmappedValue` and fails the load naming the
 value and the column — a serving layer that silently coerced an unknown vocabulary item to
 something adjacent would be worse than one that stopped.
+
+The DBML declares eight. `health_status`, `integration_type` and `gap_type` belong to the
+gallery tables, which are not here (see "What the CMS owns" below), so the types are not
+created either: an enum no column can reference is dead metadata, and one created *here*
+would be worse than dead, because a CMS table referencing it would acquire a dependency on a
+schema this publisher renames out from under it on every load. The vocabulary stays declared
+in the DBML, which is the contract with the designers.
 
 One mapping is lossy and worth knowing about. `capability.relation` in the payload is
 `at` / `one_above` / `one_below` / `two_below`, a signed distance; the target enum is
@@ -62,12 +85,25 @@ it is looking at, so `publish_runs.schema_version` carries `SCHEMA_VERSION` — 
 same commit as any change to a group-B table, column, or enum. Once something outside this
 repo depends on the shape, this is the point where a real migration path replaces the swap.
 
-## Empty on purpose
+## What the CMS owns, and why it cannot live here
 
-`gallery`, `gallery_products` and `gallery_gaps` are created and left empty: gallery content
-is authored CMS-side (the `payload` schema), not derived from the map's data, so there is
-nothing here to fill them with and a table that exists is what lets the site's queries
-compile before the content lands.
+The DBML's `gallery`, `gallery_products` and `gallery_gaps` are **not** in this module. They
+were, created and left empty so the site's queries would compile, and that was a hazard
+rather than a courtesy: this publisher drops and recreates its schema on every load, so the
+first gallery row an editor wrote would be deleted by the next push to `main` with nothing
+raising anywhere. `--check` would still print `gallery 0 rows` and the read-back would still
+report `| gallery | 0 |`, so the loss was invisible in every artifact the publish produced.
+
+A schema rebuilt from source can only hold rows it produced. Gallery content is authored, so
+it belongs either in the CMS's own `payload` schema or in a separate `os-ai-map_cms` schema —
+which this publisher never creates, never drops and never grants on. The site joins across
+schemas; both are on the same database, so that costs a qualified name and nothing else.
+
+Note for whoever builds it: a **view** in that schema over a table in `os-ai-map` will not
+survive, because the cutover renames the schema and a view binds to the table it was created
+over by OID, not by name. `publish_neon.reclaim_previous` detects exactly that dependency and
+refuses to run rather than dropping the view — so the failure is loud, but it is still a
+failure. Read the map's tables directly, or materialize a copy on the CMS side.
 """
 
 from __future__ import annotations
@@ -83,8 +119,12 @@ from build.vocabulary import axes
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 
-# Bump on any change to a group-B table, column, or enum. Recorded on every publish_runs row.
-SCHEMA_VERSION = 1
+# Bump on any change to a group-B table, column, constraint or enum. Recorded on every
+# publish_runs row.
+#   1: the initial load.
+#   2: the gallery tables and their three enums removed (CMS-owned); the DBML's primary keys,
+#      NOT NULLs, uniques and foreign keys emitted for the first time.
+SCHEMA_VERSION = 2
 
 # Group A's tables keep their serializer names, prefixed, because both groups share a schema.
 REGISTRY_PREFIX = "registry_"
@@ -96,6 +136,8 @@ class UnmappedValue(ValueError):
 
 # --- enums ----------------------------------------------------------------------------
 
+# The DBML's `health_status`, `integration_type` and `gap_type` are absent on purpose: they
+# belong to the gallery tables, which the CMS owns. See the module docstring.
 ENUMS: dict[str, tuple[str, ...]] = {
     "alias_kind": ("product", "organization"),
     "freshness_basis": ("commit", "verified"),
@@ -104,9 +146,6 @@ ENUMS: dict[str, tuple[str, ...]] = {
     # The three scored axes, from the score schema rather than restated here — a fourth axis
     # must not reach a serving layer whose enum silently rejects it.
     "metric_name": axes(),
-    "health_status": ("healthy", "partial", "gap"),
-    "integration_type": ("known_build", "documented_component", "similarity"),
-    "gap_type": ("structural", "weak_layer"),
 }
 
 # Payload vocabulary -> enum value, per enum. Identity where the two already agree; spelled
@@ -164,12 +203,30 @@ def enum_type(name: str) -> str:
 # --- helpers --------------------------------------------------------------------------
 
 
+def references(column: str, table: str, target: str) -> str:
+    """A table-level FOREIGN KEY clause. `{schema}` is filled in at DDL time.
+
+    Qualified with the schema being built, because the staging schema is never on the search
+    path — the same reason `enum_type` qualifies an enum.
+    """
+    return (
+        f'FOREIGN KEY ("{column}") REFERENCES {{schema}}."{table}" ("{target}")'
+    )
+
+
 @dataclass(frozen=True)
 class SiteTable:
-    """One group-B table: its typed columns and how to get its rows from the payload."""
+    """One group-B table: its columns, its table-level constraints, and its rows.
+
+    A column's second element is its full definition after the name, so it carries `NOT NULL`
+    where the DBML declares one — Postgres has no table-level form of it. Keys, uniques and
+    foreign keys are table-level and live in `constraints`, which reads closer to the DBML
+    than an inline `[pk]` would and keeps composite cases expressible.
+    """
 
     columns: tuple[tuple[str, str], ...]
     rows: Callable[[dict], list[dict]]
+    constraints: tuple[str, ...] = ()
 
     @property
     def column_names(self) -> tuple[str, ...]:
@@ -510,33 +567,51 @@ def _long_tail_counts(payload: dict) -> list[dict]:
     return [{"count": value, "type": key} for key, value in sorted(counts.items())]
 
 
-def _empty(_payload: dict) -> list[dict]:
-    """Created, never filled. See "Empty on purpose" in the module docstring."""
-    return []
-
-
 # --- group B table set ----------------------------------------------------------------
 
 SITE_TABLES: dict[str, SiteTable] = {
-    "layers": SiteTable((("id", "INTEGER"), ("label", "VARCHAR")), _layers),
-    "stages": SiteTable(
-        (("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")), _stages
+    "layers": SiteTable(
+        (("id", "INTEGER"), ("label", "VARCHAR")),
+        _layers,
+        constraints=('PRIMARY KEY ("id")',),
     ),
-    "gaps": SiteTable((("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")), _gaps),
+    "stages": SiteTable(
+        (("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")),
+        _stages,
+        constraints=('PRIMARY KEY ("id")',),
+    ),
+    "gaps": SiteTable(
+        (("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")),
+        _gaps,
+        constraints=('PRIMARY KEY ("id")',),
+    ),
     "categories": SiteTable(
         (
             ("id", "INTEGER"),
-            ("slug", "VARCHAR"),
+            # NOT NULL as well as UNIQUE: a nullable unique column admits any number of
+            # NULLs, which would defeat the deep links the amendment exists for.
+            ("slug", "VARCHAR NOT NULL"),
             ("label", "VARCHAR"),
             ("arc", "VARCHAR"),
-            ("layer", "INTEGER"),
+            ("layer", "INTEGER NOT NULL"),
             ("description", "TEXT"),
-            ("stage", "INTEGER"),
+            ("stage", "INTEGER NOT NULL"),
         ),
         _categories,
+        constraints=(
+            'PRIMARY KEY ("id")',
+            'UNIQUE ("slug")',
+            references("layer", "layers", "id"),
+            references("stage", "stages", "id"),
+        ),
     ),
     "gaps_categories": SiteTable(
-        (("cat_id", "INTEGER"), ("gap_id", "INTEGER")), _gaps_categories
+        (("cat_id", "INTEGER NOT NULL"), ("gap_id", "INTEGER NOT NULL")),
+        _gaps_categories,
+        constraints=(
+            references("cat_id", "categories", "id"),
+            references("gap_id", "gaps", "id"),
+        ),
     ),
     "organizations": SiteTable(
         (
@@ -548,16 +623,17 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("country", "VARCHAR"),
         ),
         _organizations,
+        constraints=('PRIMARY KEY ("slug")',),
     ),
     "products": SiteTable(
         (
             ("id", "INTEGER"),
-            ("slug", "VARCHAR"),
-            ("org_slug", "VARCHAR"),
+            ("slug", "VARCHAR NOT NULL"),
+            ("org_slug", "VARCHAR NOT NULL"),
             ("name", "VARCHAR"),
             ("org", "VARCHAR"),
             ("type", "VARCHAR"),
-            ("category", "INTEGER"),
+            ("category", "INTEGER NOT NULL"),
             ("description", "TEXT"),
             ("maturity", "REAL"),
             ("mature", "BOOLEAN"),
@@ -566,6 +642,12 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("freshness_basis", enum_type("freshness_basis")),
         ),
         _products,
+        constraints=(
+            'PRIMARY KEY ("id")',
+            'UNIQUE ("slug")',
+            references("org_slug", "organizations", "slug"),
+            references("category", "categories", "id"),
+        ),
     ),
     "openness": SiteTable(
         (
@@ -580,6 +662,8 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("governing_release", "VARCHAR"),
         ),
         _openness,
+        # `ref: -` in the DBML: one row per product, so the FK column is also the key.
+        constraints=('PRIMARY KEY ("product_id")', references("product_id", "products", "id")),
     ),
     "adoption": SiteTable(
         (
@@ -592,6 +676,7 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("last_verified", "DATE"),
         ),
         _adoption,
+        constraints=('PRIMARY KEY ("product_id")', references("product_id", "products", "id")),
     ),
     "capability": SiteTable(
         (
@@ -607,6 +692,7 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("relation", enum_type("capability_relation")),
         ),
         _capability,
+        constraints=('PRIMARY KEY ("product_id")', references("product_id", "products", "id")),
     ),
     "sources": SiteTable(
         (
@@ -615,23 +701,26 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("shows", "TEXT"),
             ("notes", "TEXT"),
             ("accessed", "DATE"),
-            ("product_id", "INTEGER"),
-            ("metric_type", enum_type("metric_name")),
+            ("product_id", "INTEGER NOT NULL"),
+            ("metric_type", enum_type("metric_name") + " NOT NULL"),
         ),
         _sources,
+        constraints=('PRIMARY KEY ("id")', references("product_id", "products", "id")),
     ),
     "product_lineage": SiteTable(
         (
             ("id", "INTEGER"),
-            ("product_id", "INTEGER"),
+            ("product_id", "INTEGER NOT NULL"),
             ("relation", enum_type("lineage_relation")),
             ("target", "VARCHAR"),
         ),
         _product_lineage,
+        constraints=('PRIMARY KEY ("id")', references("product_id", "products", "id")),
     ),
     "aliases": SiteTable(
         (("alias", "VARCHAR"), ("kind", enum_type("alias_kind")), ("canonical", "VARCHAR")),
         _aliases,
+        constraints=('PRIMARY KEY ("alias")',),
     ),
     "long_tail_top": SiteTable(
         (
@@ -642,38 +731,11 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("description", "TEXT"),
         ),
         _long_tail_top,
+        constraints=('PRIMARY KEY ("id")',),
     ),
+    # No key in the DBML, and none to invent: the grain is one row per product type.
     "long_tail_counts": SiteTable(
         (("count", "INTEGER"), ("type", "VARCHAR")), _long_tail_counts
-    ),
-    # CMS-side content. Created so the site's queries compile; never filled from here.
-    "gallery": SiteTable(
-        (
-            ("id", "INTEGER"),
-            ("slug", "VARCHAR"),
-            ("title", "VARCHAR"),
-            ("health", enum_type("health_status")),
-            ("description", "TEXT"),
-        ),
-        _empty,
-    ),
-    "gallery_products": SiteTable(
-        (
-            ("gallery_id", "INTEGER"),
-            ("product_id", "INTEGER"),
-            ("integration", enum_type("integration_type")),
-        ),
-        _empty,
-    ),
-    "gallery_gaps": SiteTable(
-        (
-            ("id", "INTEGER"),
-            ("gallery_id", "INTEGER"),
-            ("type", enum_type("gap_type")),
-            ("title", "VARCHAR"),
-            ("description", "TEXT"),
-        ),
-        _empty,
     ),
 }
 
