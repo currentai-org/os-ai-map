@@ -4,9 +4,19 @@
  "reclaim_note": "A table can legitimately come back. When an in-scope governed asset starts reading an externalized table, the transition is recorded as a 'reclaims' event -- disposition history in-scope -> externalized -> reclaimed-as-dependency -- and the original 'assets' entry stays byte-identical, because it is history. 'reclaimed-as-dependency' means the table is STILL platform-owned and still not deployed from this repo; it is once again inside the repo's governed dependency graph, represented by a warehouse/dependencies.yaml contract with a mirror block (provenance, not ownership). Each record carries table, prior_disposition, prior_date, new_disposition, date, reason and governed_reader (the in-repo file that now reads it). build.assets.reclaim_violations() checks the prior entry exists with the stated disposition and date, that governed_reader exists and genuinely reads the table (same scanner the rest of the graph uses), and that the contract with a mirror block exists; a contract for an externalized table with no reclaim record is a hard error too. Only 'frozen-without-producer' is reclaimable: a 'transferred' table is owned by its named destination repo, so a contract's owner: oso would be false, and that case needs a ruling. A reclaim re-admits ONLY the files its own contract claims (the mirror model and any schema beside it, both content-bound by the mirror hashes); every other archived path stays under the deleted-from-the-worktree rule, and only the contract's own mirror path may derive the reclaimed table. 'count' and 'assets' are the HISTORICAL removed set and never shrink; 'still_external_count' = count - reclaimed_count is the population currently outside the graph, stated here rather than inferred.",
  "externalization_base_commit": "caebc97ef1c6cbb541d4a98a64f2b6ad30af810e",
  "count": 28,
- "reclaimed_count": 0,
- "still_external_count": 28,
- "reclaims": [],
+ "reclaimed_count": 1,
+ "still_external_count": 27,
+ "reclaims": [
+  {
+   "table": "currentai.signal_goodailist.repo_catalog",
+   "prior_disposition": "frozen-without-producer",
+   "prior_date": "2026-08-30",
+   "new_disposition": "reclaimed-as-dependency",
+   "date": "2026-09-04",
+   "reason": "read by the identity graph's artifact_nodes model, which entered scope on 2026-09-03",
+   "governed_reader": "warehouse/models/identity/artifact_nodes.sql"
+  }
+ ],
  "assets": [
   {
    "id": "catalog.country_populations",

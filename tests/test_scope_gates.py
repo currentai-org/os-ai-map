@@ -592,8 +592,23 @@ def _contract(mirror=True):
 
 
 def _serve_contract(monkeypatch, contract):
-    real = A.dependencies()
+    """Stand in the fixture's contract for RECLAIM_TABLE's real one.
+
+    The committed `dependencies.yaml` now carries a contract for RECLAIM_TABLE (the reclaim is
+    real), so the fixture has to REPLACE it rather than append beside it -- otherwise `None`
+    would not mean "no contract" and the no-contract cases could never fire.
+    """
+    real = [d for d in A.dependencies() if d.get("table") != RECLAIM_TABLE]
     monkeypatch.setattr(A, "dependencies", lambda: real + ([contract] if contract else []))
+
+
+def _receipt_without_the_reclaim():
+    """The committed receipt as it read before RECLAIM_TABLE was reclaimed."""
+    r = _real_receipt()
+    r["reclaims"] = []
+    r["reclaimed_count"] = 0
+    r["still_external_count"] = r["count"]
+    return r
 
 
 def _serve_read(monkeypatch, reader, table=RECLAIM_TABLE):
@@ -670,7 +685,7 @@ def test_reclaimed_contract_without_a_mirror_block_is_flagged(monkeypatch):
 
 
 def test_contract_for_an_externalized_table_without_a_reclaim_is_flagged(monkeypatch):
-    r = _real_receipt()
+    r = _receipt_without_the_reclaim()
     _serve(monkeypatch, r)  # no reclaims entry at all
     _serve_contract(monkeypatch, _contract())
     assert any("with no reclaim record" in v for v in A.reclaim_violations())
@@ -733,7 +748,7 @@ def test_reclaimed_mirror_file_may_exist_again(monkeypatch):
     real_has = A._worktree_has
     monkeypatch.setattr(A, "_worktree_has", lambda p: p == RECLAIM_MIRROR or real_has(p))
 
-    pristine = _real_receipt()
+    pristine = _receipt_without_the_reclaim()
     r = copy.deepcopy(pristine)
     rec = _reclaim_record(r)
     _serve(monkeypatch, r)
@@ -829,4 +844,10 @@ def test_a_version_2_receipt_without_reclaims_still_validates(monkeypatch):
     for k in ("reclaims", "reclaimed_count", "still_external_count", "reclaim_note"):
         r.pop(k, None)
     _serve(monkeypatch, r)
+    # A pre-reclaim receipt also predates RECLAIM_TABLE's contract and its restored mirror, so
+    # the fixture withdraws both; left in place, the converse and archived-file checks would fire
+    # and the version bump would look at fault.
+    _serve_contract(monkeypatch, None)
+    real_has = A._worktree_has
+    monkeypatch.setattr(A, "_worktree_has", lambda p: p != RECLAIM_MIRROR and real_has(p))
     assert A.externalization_receipt_violations() == []
