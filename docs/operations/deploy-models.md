@@ -18,7 +18,9 @@ block in `warehouse/dependencies.yaml` for the deployed revision, hash and sync 
 reflects. The identity dataset is mirrored the same way, under `warehouse/models/identity/`: after
 any `identity.*` revision is released, resync the mirror file from the platform's released code and
 update that contract's `verified_revision`, `mirror.revision`, `mirror.hash`, `mirror.local_sha256`
-and `mirror.synced_at`, or the dependency gate fails on the hash.
+and `mirror.synced_at`, or the dependency gate fails on the hash. That gate only proves the file
+matches its own contract; "Mirror resync" below covers the weekly check that the contract still
+matches the platform, and what to do when it does not.
 
 ## The deploy mechanic: revision → RELEASE → run
 
@@ -85,6 +87,7 @@ holds it against the `cron:` lines it quotes.
 | `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
 | `identity-eval` (replay eval against prior human decisions; fails on a floored relation) | Monday 07:30 | `.github/workflows/identity-eval.yml` |
 | `freshness` report | Monday 08:00 | `.github/workflows/freshness.yml` |
+| `mirror-drift` (every `mirror:` contract against the platform's latest revision) | Monday 08:30 | `.github/workflows/mirror-drift.yml` |
 | `channel-authority` report | Monday 09:00 | `.github/workflows/channel-authority.yml` |
 | `reverify` (re-dates openness on the oldest 150 products where evidence is unchanged; opens one PR) | Tuesday 10:00 | `.github/workflows/reverify.yml` |
 | `identity-digest` (weekly review issue of low-confidence identity items) | Monday 09:00 | `.github/workflows/identity-digest.yml` |
@@ -126,6 +129,54 @@ Pushing the declarations is step 1, not the whole job:
 uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
 # then walk the chain above, in order, and prove it with check_parity
 ```
+
+## Mirror resync, when the drift sentinel fires
+
+`build/check_mirror_drift.py` compares every `mirror:` contract in `warehouse/dependencies.yaml`
+against the platform once a week (`.github/workflows/mirror-drift.yml`, Monday 08:30 UTC), and a
+red run opens a `sentinel` issue. It exists because nothing else could see this failure: the
+dependency gate proves a mirror file matches its own contract, which stays true no matter how far
+the platform has moved on, so the repo can review revision N while N+1 builds the table.
+
+It reports four findings, and they are not the same job:
+
+- **`revision`** — the platform's latest revision number is ahead of the contract. Resync.
+- **`hash`** — same revision number, different hash. The number the repo pins now denotes
+  different content; resync, and look at why a revision was rewritten in place.
+- **`code`** — number and hash agree and the deployed source does not match the mirror file
+  below its banner. Either the mirror was hand-edited, or the hash is not a hash of the code.
+- **`missing`** — the platform serves no model at that `model_id`. Do not resync; find out
+  whether the model was deleted or recreated, because the contract's anchor is gone.
+
+To resync one contract:
+
+1. Read the deployed code. `GetDataModel` with the contract's `mirror.model_id` returns
+   `latestRevision` — `revisionNumber`, `hash`, `code` and `createdAt`.
+2. Replace the mirror file's body with that `code`, **keeping the five-line
+   `PLATFORM MIRROR (read-only)` banner**. The banner is why `mirror.local_sha256` and
+   `mirror.hash` are different hashes of nearly the same text, and the drift check strips it
+   before comparing.
+3. Update the contract: `verified_revision` and `mirror.revision` to the new revision number,
+   `mirror.hash` to the platform's hash, `mirror.local_sha256` to `sha256` of the file's bytes
+   **including** the banner, and `mirror.synced_at` to today. `model_id` does not change — a
+   changed `model_id` is a different model, and the cross-commit gate rejects it.
+4. If the schema file changed too, update `mirror.schema_sha256` the same way. A schema-only
+   edit is still a byte change and must advance the revision.
+5. Run the gates: `uv run pytest tests/test_scope_gates.py -q` for the contract's integrity,
+   then `uv run python -m build.check_mirror_drift` to confirm the sentinel is green.
+
+Resync in one commit per contract where you can. The cross-commit coherence gate reads bytes,
+revision, hash and `synced_at` as one movement, and a batch that half-lands is harder to read
+than several small ones.
+
+**The sentinel cannot see an unreleased revision, and does not pretend to.** The platform
+exposes no release marker — `GetDataModel` has no release field and `GetAssetChangelog`'s
+`publishStatus` is null on every revision in this org — so the check compares against
+`latestRevision`. A contract behind the latest revision is worth a look either way: either the
+newer revision is released and the mirror describes code that no longer runs, or it is not
+released yet and the resync is cheap now. What the check cannot do is confirm that the revision
+it found is the one a run would materialize; that is the same gap as the missing
+revision-versus-release assertion noted above.
 
 ## The parity gate
 

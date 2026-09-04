@@ -22,7 +22,7 @@ DOC = ROOT / "docs/operations/deploy-models.md"
 # The gates whose times the doc's table quotes. Dataset crons live on the platform and
 # cannot be read from the repo, so they are out of scope here by construction.
 GATES = ("parity", "artifacts", "freshness", "channel-authority", "reverify", "identity-eval",
-         "identity-digest")
+         "identity-digest", "mirror-drift")
 
 _DAYS = {"1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday",
          "5": "Friday", "6": "Saturday", "0": "Sunday"}
