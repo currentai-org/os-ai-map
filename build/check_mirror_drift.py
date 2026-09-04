@@ -48,7 +48,8 @@ different things:
   * `revision` — the numbers differ. The plain case: the platform moved on.
   * `hash` — the numbers agree and the platform's hash does not. Worse than a revision bump,
     because it means the same revision number now denotes different content, and nothing in
-    the repo's own gates could ever see it.
+    the repo's own gates could ever see it. Identical code does not soften this one: either the
+    platform rewrote a revision in place or the contract's hash is mis-pinned.
   * `code` — numbers and hash agree, and the deployed source does not match the mirror file's
     body. This is the belt-and-braces check: it does not trust the hash to be a hash of the
     code, and it is the only one of the three that a maintainer editing a mirror file by hand
@@ -60,15 +61,21 @@ so the contract is anchored to something that no longer exists.
 ## `metadata-only`, which is not drift
 
 The platform mints a revision for changes that touch no code: a cron cleared, a description
-filled in. The numbers then disagree while the deployed source is byte-identical to the mirror,
-and calling that drift sends a maintainer to resync a file that cannot change. So the code
-comparison runs on every contract, not only on the ones whose numbers already agree, and a
-revision or hash disagreement over identical code is reported as `metadata-only` and exits 0.
+filled in. The revision numbers then disagree while the deployed source is byte-identical to the
+mirror, and calling that drift sends a maintainer to resync a file that cannot change. So the
+code comparison runs on every contract, not only on the ones whose numbers already agree, and a
+NEW REVISION over identical code is reported as `metadata-only` and exits 0.
 
-Exit 1 is reserved for a disagreement the code itself confirms: `code` drift, or a revision or
-hash mismatch whose deployed source really does differ. `metadata-only` is still worth
-recording in the contract — `mirror.code_unchanged_from` is how (see the `dependencies.yaml`
-header) — but it is a bookkeeping job, not a stale mirror.
+The "new revision" half is load-bearing, and it is why a hash disagreement at an unchanged
+revision number stays `hash` however well the code matches. There is nothing to record in that
+case: `mirror.code_unchanged_from` authorizes advancing to a revision, the coherence gate
+rejects a marker whose revision does not advance, and so reporting it as metadata-only would
+instruct a commit the repo's own gate refuses.
+
+Exit 1 is therefore `code` drift, a `hash` disagreement, and a revision mismatch whose deployed
+source really does differ. `metadata-only` is still worth recording in the contract —
+`mirror.code_unchanged_from` is how (see the `dependencies.yaml` header) — but it is a
+bookkeeping job, not a stale mirror.
 
 ## The banner
 
@@ -244,13 +251,24 @@ def compare(contract: dict, node: dict | None, root: Path) -> Row:
                f"revision {platform_revision} on both sides, and its hash is {platform_hash} "
                f"against the contract's {mirror.get('hash')}")
 
-    if code_match:
+    if code_match and not revision_match:
         # A revision the platform minted without touching the code -- a cron cleared, a
         # description added. Nothing to resync; the contract records it with
         # mirror.code_unchanged_from.
         return row("metadata-only", f"{numbers}, and the deployed source is byte-identical to "
                                     f"{contract['files']['model']} below its banner")
-    return row("revision" if not revision_match else "hash", f"{numbers}; {code_detail}")
+    if not revision_match:
+        return row("revision", f"{numbers}; {code_detail}")
+    # Same revision number, different hash. Identical code does NOT excuse it: a metadata-only
+    # revision is a new revision, and there is none here. Either the platform rewrote a revision
+    # in place or the contract's `mirror.hash` is mis-pinned, and neither is recordable -- the
+    # coherence gate rejects a marker whose revision does not advance, so reporting this as
+    # metadata-only would instruct a commit the repo's own gate refuses.
+    return row("hash", f"{numbers}; a hash change with no new revision is a mis-pin or an "
+                       f"in-place rewrite, not a metadata-only revision"
+                       + (f" ({code_detail})" if code_detail else
+                          " -- the deployed source does match the mirror, which narrows it to "
+                          "the recorded hash"))
 
 
 def check(contracts: list[dict], client, root: Path) -> list[Row]:

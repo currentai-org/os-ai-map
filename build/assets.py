@@ -1606,7 +1606,8 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
       3. the revision strictly advances;
       4. the mirrored bytes are unchanged -- enforced from both sides, since the marker is only
          reachable when neither sha moved AND setting it alongside changed bytes is itself a
-         violation (the marker's own claim would be false);
+         violation (the marker's own claim would be false). The next genuine resync therefore
+         DELETES the marker line along with everything else it updates;
       5. `synced_at` does not regress.
 
     `hash` is allowed to move here and not required to: the platform's hash does change across
@@ -1650,7 +1651,8 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
     if marker is not None:
         problems.append(
             f"{label}: mirror.code_unchanged_from is set to {marker!r} but the mirrored bytes "
-            "changed; a resync that moves the bytes is not a metadata-only revision"
+            "changed; a resync that moves the bytes is not a metadata-only revision -- DELETE "
+            "the code_unchanged_from line, the rest of the resync stands"
         )
     if isinstance(old_rev, int) and isinstance(new_rev, int):
         if new_rev <= old_rev:

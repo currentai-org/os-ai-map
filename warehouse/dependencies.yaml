@@ -25,7 +25,9 @@
 #         code_unchanged_from to the revision the contract currently records, and advance
 #         verified_revision, mirror.revision, mirror.hash (live, from GetDataModel) and
 #         mirror.synced_at. Leave local_sha256 and schema_sha256 alone -- the marker's whole claim
-#         is that they do not move, and the gate rejects it if they do.
+#         is that they do not move, and the gate rejects it if they do, so the next genuine resync
+#         DELETES the code_unchanged_from line. A `hash` finding at an unchanged revision number is
+#         not this case: there is no new revision to advance to, so it wants a look, not a marker.
 #       - oso.* upstream -> content_contract_sha256 over table + grain + TYPED expected_columns
 #         (name + type + nullable), recomputed by the gate + a verified_at date.
 #         Reproduce: sha256(table + "\n" + expected_grain + "\n" +

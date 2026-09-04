@@ -125,7 +125,8 @@ def test_the_same_revision_with_a_different_hash_over_different_code_is_hash_dri
 def test_a_newer_platform_revision_over_identical_code_is_metadata_only(tmp_path):
     """A cron cleared or a description added. The contract is behind by a number and by
     nothing else, so sending a maintainer to resync would be sending them to copy a file
-    onto itself."""
+    onto itself. A NEW revision is required, which is what separates this from the hash case
+    below."""
     row = compare(build_tree(tmp_path), node(revision=5, hash_="newhash"), tmp_path)
     assert row.status == "metadata-only"
     assert not row.drifted
@@ -134,12 +135,16 @@ def test_a_newer_platform_revision_over_identical_code_is_metadata_only(tmp_path
     assert "byte-identical" in row.detail
 
 
-def test_a_hash_change_over_identical_code_is_metadata_only(tmp_path):
-    """Same treatment when it is the hash rather than the revision that moved: the source is
-    what decides whether there is anything to do."""
+def test_a_hash_change_with_no_new_revision_stays_hash_drift(tmp_path):
+    """Identical code does NOT make this metadata-only. There is no new revision to record, the
+    coherence gate rejects a marker whose revision does not advance, and so calling it
+    metadata-only would tell a maintainer to make a commit the repo's own gate refuses. It is a
+    mis-pinned hash or an in-place rewrite, and it stays loud."""
     row = compare(build_tree(tmp_path), node(hash_="rewritten"), tmp_path)
-    assert row.status == "metadata-only"
-    assert not row.drifted
+    assert row.status == "hash"
+    assert row.drifted
+    assert row.code_match is True
+    assert "mis-pin" in row.detail
 
 
 def test_a_metadata_only_sweep_exits_zero_and_names_the_marker(tmp_path, capsys):
