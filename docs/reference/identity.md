@@ -266,6 +266,26 @@ emitted org edge is still judged against the full truth set. The eval prints a `
 <orgs with a handle>/<orgs rostered> (<pct>)` line so the gap stays visible as its own number
 rather than disappearing into a passing recall score.
 
+### Proposing handles
+
+`build/propose_org_handles.py` proposes `huggingface` handles from the namespaces of already
+declared `huggingface_model` / `huggingface_dataset` artifacts, since seeding a namespace as a
+handle would be wrong the same way `TheBloke` or `bartowski` would be — a namespace can be a
+mirror or republisher rather than the owning org. It groups each namespace by the org of the
+products declared under it and proposes it only when that grouping is unambiguous: the namespace
+maps to exactly one organization in the corpus, is not already declared for that or any other
+organization, and is not one of the known mirror/aggregator accounts in `KNOWN_AGGREGATORS`. A
+namespace that maps to more than one organization — in the corpus itself, or against an
+already-declared handle — is listed as a conflict instead of guessed at.
+
+The output is a markdown checklist plus a fenced YAML block of ready-to-paste entries, run
+through review once as a GitHub issue rather than seeded silently. Ticking a box and pasting the
+matching entry into `sources/org_handles.yaml` in a PR is what persists a handle; an unticked
+proposal is simply not adopted. `--check-graph` cross-checks each proposal against
+`currentai.identity.org_edges`, marking one "graph agrees" when the deployed identity graph
+already infers the same `(namespace, org)` pair at confidence ≥0.8 via its own `hf_namespace`
+method — corroboration, not a substitute for the human tick.
+
 ### Model families bridge a release name to a tier-level slug
 
 Vendors ship version-numbered releases under one product line — `grok-3`, `grok-4` — but the map
