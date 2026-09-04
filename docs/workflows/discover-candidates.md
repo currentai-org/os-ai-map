@@ -300,16 +300,22 @@ A sweep is not the only source of identity candidates: the identity graph (`curr
 also proposes membership, equivalence, and org edges against artifacts already in the pool, and a
 low-confidence one needs a human look the same way a parked sweep candidate does. Every Monday,
 `identity-digest.yml` renders `currentai.identity.digest` into one GitHub issue titled `identity
-digest: <week>`, capped at 25 active items and grouped equivalence, then membership, then org, then
-artifact identity. Each item carries a pre-filled `resolution_ledger.yaml` entry Carl can edit and
-paste in once he has decided — see `build/identity_digest.py`.
+digest: <week>`. Ranking and presentation are separate: `udms/identity_digest.sql` computes a
+global `rank` (1..25 for this week's reviewable items, `NULL` otherwise), and `build/identity_digest.py`
+only renders that order — it never re-sorts. The issue groups items by relation (equivalence, then
+membership, org, artifact identity) for readability, but each item shows its global rank so the
+cross-section order is still visible, and a "Top 5 this week" list at the top names the five
+highest-ranked items regardless of section. Each item carries a pre-filled `resolution_ledger.yaml`
+entry Carl can edit and paste in once he has decided, and its evidence renders as linked bullets
+(`<url> | <excerpt>` from the table becomes `[excerpt](url)`) rather than bare method names.
 
 An item whose only evidence is a folded name match is `parked`, not shown as a reviewable item —
 it comes back only once its evidence changes (a new backlink, a new artifact) or once it has sat
-unreviewed for eight weeks, at which point it `resurfaces` and carries the reason. This mirrors the
-sweep's own parking discipline above: a weak signal is recorded and revisited, not repeated at full
-weight every week. An item ranked below the weekly cap is not dropped either — it stays in the pool
-and is counted, not reviewed, until it ranks back in.
+unreviewed for eight weeks, at which point it `resurfaces` and carries the reason (`age` is the
+only one the SQL emits today), competing for a rank like any other item. Parked items render only
+as a count per relation. This mirrors the sweep's own parking discipline above: a weak signal is
+recorded and revisited, not repeated at full weight every week. An item ranked below the weekly cap
+is not dropped either — it stays in the pool and is counted, not reviewed, until it ranks back in.
 
 ## Relevant reference material
 
