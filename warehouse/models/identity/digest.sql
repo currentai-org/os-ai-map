@@ -70,9 +70,9 @@
 --   artifact/candidate. BIGINT, not INTEGER (changed 2026-09-04). Both inputs are BIGINT columns
 --   on currentai.identity.candidates and the sum is a raw download count: the live maximum is
 --   246,135,287, already 11% of the INT32 range, so a corpus one order of magnitude larger turns
---   the cast into a hard run failure rather than a degraded value. It is no longer a ranking key
---   in this model (see the ranking note below) -- build/identity_digest.py still orders WITHIN a
---   rendered section by it.
+--   the cast into a hard run failure rather than a degraded value. It is again a ranking key, the
+--   sixth (reviewer ruling, 2026-09-04) -- build/identity_digest.py also orders WITHIN a rendered
+--   section by it.
 --
 -- Candidate context: downloads_30d, stars and first_seen are read from
 -- currentai.identity.candidates by candidate_key -- for membership items, candidate_key is
@@ -99,11 +99,26 @@
 --     DAG). Per-item `method` answers the same question for a review decision -- what does THIS
 --     claim rest on -- without the cycle, without the UNNEST-and-regroup over three edge tables,
 --     and without any timestamp.
--- DEFERRED: the `evidence_changed` resurfacing reason. It needs an evidence-history table (per
--- (candidate_key, method) first-seen/last-confirmed rows) that does not exist; nothing reachable
--- today dates a piece of evidence rather than a fetch. Until it exists the only resurfacing
--- reason is 'age', and `resurfaced_reason` is NULL for every other row. Do not reinstate
--- 'evidence_changed' from a fetch column.
+-- DEFERRED: ALL RESURFACING. Both reasons are off, and the `resurfaced` state is unreachable by
+-- construction (reviewer ruling, 2026-09-04). The `resurfaced` and `resurfaced_reason` columns
+-- stay in the schema, and `resurfaced_reason` is NULL on every row.
+--   * 'evidence_changed' needs an evidence-history table (per (candidate_key, method)
+--     first-seen / last-confirmed rows) that does not exist; nothing reachable today dates a
+--     piece of evidence rather than a fetch.
+--   * 'age' is gone too, and this is the change from v6. It rested on
+--     `first_seen < sweep_week_start - 56 days`, but `first_seen` is a SNAPSHOT OBSERVATION TIME,
+--     not a discovery date: identity_candidates.sql sets it from
+--     artifact_nodes.last_observed_at, a MAX over fetched_at / source_updated_at that the weekly
+--     run rewrites, so every candidate reads as first seen this week and the branch was
+--     unreachable anyway. Making it fire would mean inventing an age -- and an artifact's
+--     creation date on GitHub or the Hub is NOT a legitimate proxy for when this pipeline first
+--     saw it, so it must not be substituted in. Fake aging would resurface items on a clock that
+--     has nothing to do with how long anyone actually waited.
+-- Consequence, stated plainly: a name-match-only item is `parked` INDEFINITELY. It leaves parking
+-- only by acquiring stronger evidence, which makes it `active` on the ordinary rule because it is
+-- no longer name-match-only -- not by waiting. Phase 3B may reinstate resurfacing once a real
+-- observation-history table exists; until then do not reinstate either reason, and in particular
+-- do not reinstate one from a fetch column or an artifact creation date.
 --
 -- sweep_week = sweep_week_start = DATE_TRUNC('week', CURRENT_DATE) AS DATE. This model runs
 -- weekly (Sunday 05:30 UTC, see docs/operations/deploy-models.md), so each run's CURRENT_DATE
@@ -119,26 +134,36 @@
 --               slug, with nothing else pointing at it. An item carrying any other method
 --               (product_alias, model_family, org_handle, hf_namespace, homepage_domain,
 --               resolution_ledger alongside another source) is NOT name-match-only.
---   parked      name_match_only AND first_seen >= sweep_week_start - 56 days. Recently discovered
---               and resting on a name collision alone: held out of the review queue, never
---               ranked, `rank` NULL.
---   resurfaced  name_match_only AND first_seen < sweep_week_start - 56 days, resurfaced_reason
---               'age'. It has sat in the pool for eight weeks or more, so it gets a look.
---               Competes for the same 25 weekly slots as `active`.
+--   parked      name_match_only, with no age escape (see the DEFERRED note above). Resting on a
+--               name collision alone: held out of the review queue indefinitely, never ranked,
+--               `rank` NULL. It leaves parking by gaining a second kind of evidence, which makes
+--               it `active` because it is then no longer name-match-only.
+--   resurfaced  UNREACHABLE today. Kept in the vocabulary and in the schema for Phase 3B; no row
+--               can carry it, because the only two resurfacing reasons are deferred.
 --   active      NOT name_match_only. Alias, model-family, handle, hf-namespace and ledger-backed
---               evidence all qualify. Ranked alongside `resurfaced` and capped at 25.
---   pool        an active- or resurfaced-eligible item that did not make the 25-slot cap this
---               week; overflow, not reviewed this sweep, `rank` NULL and resurfaced_reason NULL
---               (it did not actually resurface this week).
--- Ranking is GLOBAL; presentation is separate (reviewer ruling, 2026-09-04). The key, in order:
+--               evidence all qualify. Ranked and capped at 25.
+--   pool        an active-eligible item that did not make the 25-slot cap this week; overflow,
+--               not reviewed this sweep, `rank` NULL and resurfaced_reason NULL.
+-- Ranking is GLOBAL and TOTAL; presentation is separate (reviewer ruling, 2026-09-04). The key,
+-- in order:
 --   1. blast_radius DESC              (3 = a ruling moves a score)
---   2. urgency                        (resurfaced/age first, then plain active -- something that
---                                      has waited eight weeks outranks something new)
---   3. first_seen ASC                 (older first -- an item starved for weeks wins the tie)
+--   2. urgency                        (resurfaced first, then plain active. Inert today -- no row
+--                                      is resurfaced -- and kept so reinstating resurfacing in
+--                                      Phase 3B does not have to re-litigate the key's shape.)
+--   3. first_seen ASC                 (older first. Also inert today: first_seen is a fetch
+--                                      observation rewritten every run, so it is the same value
+--                                      corpus-wide. Kept for the same reason as urgency.)
 --   4. relation priority              (equivalence, membership, org, artifact_identity)
 --   5. confidence DESC
--- `tiebreak` (downloads + stars) is not a ranking key; it stays as an output column because
--- build/identity_digest.py orders WITHIN a rendered section by it.
+--   6. tiebreak DESC                  (downloads + stars -- the bigger artifact wins a tie)
+--   7. item_id ASC                    (THE ABSOLUTE FINAL KEY. Every earlier key can tie, and
+--                                      keys 2 and 3 tie on every row today; without a unique last
+--                                      key Trino's ROW_NUMBER assigned positions in whatever
+--                                      order the fragment happened to produce, so `rank` differed
+--                                      run to run over identical input. item_id is unique within a
+--                                      sweep_week (this model's grain), so the order is now total
+--                                      and identical inputs give identical ranks. Do not remove
+--                                      it, and do not add a key after it.)
 --
 -- Cap: 25 items per sweep_week, filled with a PER-RELATION RESERVATION (reviewer ruling,
 -- 2026-09-04) rather than purely globally. A purely global cap let one relation and one evidence
@@ -157,10 +182,9 @@
 --
 -- Output casts: explicit CAST on every output column (DATE sweep_week, VARCHAR strings, DOUBLE
 -- confidence, ARRAY(VARCHAR) method/evidence/penalties/options, INTEGER blast_radius, BIGINT
--- tiebreak, INTEGER rank), matching the deploy pass's fix on the first four models. Date
--- arithmetic uses DATE_ADD('day', -N, sweep_week), not the `date - INTERVAL 'N' DAY` operator
--- form, and the result is cast to TIMESTAMP(6) before comparing against first_seen (TIMESTAMP(6)
--- throughout this dataset).
+-- tiebreak, INTEGER rank), matching the deploy pass's fix on the first four models. There is no
+-- date arithmetic left in this model: the only consumer was the 56-day age branch, removed with
+-- resurfacing.
 
 WITH sweep AS (
   SELECT CAST(DATE_TRUNC('week', CURRENT_DATE) AS DATE) AS sweep_week
@@ -321,29 +345,30 @@ scored AS (
   LEFT JOIN ledger_change lc ON lc.candidate_key = ci.candidate_key
 ),
 
--- eight_weeks_ago via DATE_ADD (not the `date - INTERVAL` operator form) and cast to TIMESTAMP(6)
--- so it compares cleanly against first_seen, which is TIMESTAMP(6) throughout this dataset.
 -- name-match-only is read off the item's OWN method array: every element is 'name_match'. FILTER
 -- rather than `method = ARRAY['name_match']` so an item that somehow carries the same method
 -- twice still reads as name-match-only, and the CARDINALITY > 0 guard keeps an item with an empty
 -- method array (none live -- checked) out of the parked branch instead of into it.
+-- No age threshold is computed here any more: the 56-day branch is gone with resurfacing (see the
+-- DEFERRED note in the header). Do not reintroduce one from first_seen -- it is a fetch
+-- observation, not a discovery date.
 thresholds AS (
   SELECT
     *,
     (
       CARDINALITY(method) > 0
       AND CARDINALITY(FILTER(method, m -> m <> 'name_match')) = 0
-    ) AS is_name_match_only,
-    CAST(DATE_ADD('day', -56, sweep_week) AS TIMESTAMP(6)) AS eight_weeks_ago
+    ) AS is_name_match_only
   FROM scored
 ),
 
+-- Two labels only. name-match-only parks indefinitely; everything else competes. There is no
+-- 'resurfaced_age' label, so the `resurfaced` state below is unreachable by construction.
 pre_state AS (
   SELECT
     *,
     CASE
       WHEN NOT is_name_match_only THEN 'active_candidate'
-      WHEN first_seen < eight_weeks_ago THEN 'resurfaced_age'
       ELSE 'parked'
     END AS pre_state_label
   FROM thresholds
@@ -358,6 +383,8 @@ priorities AS (
   SELECT
     *,
     CASE WHEN pre_state_label = 'parked' THEN 1 ELSE 0 END AS parked_last,
+    -- Constant 1 today: no label resurfaces. Kept so the documented key keeps its shape when
+    -- Phase 3B reinstates a resurfaced label.
     CASE pre_state_label
       WHEN 'resurfaced_age' THEN 0
       ELSE 1
@@ -373,6 +400,10 @@ priorities AS (
 
 -- Two orderings over the eligible rows, on the identical key: the global standing, and the
 -- standing within the row's own relation. The second is what the per-relation reservation reads.
+-- Both keys end in `tiebreak DESC, item_id ASC`, and item_id is unique within a sweep_week, so
+-- each ordering is TOTAL: identical input gives identical ranks, run after run. Before that last
+-- key the 20 org items in the cap tied on all five earlier keys and ROW_NUMBER assigned their
+-- positions by whatever order the fragment produced.
 orders AS (
   SELECT
     *,
@@ -386,7 +417,9 @@ orders AS (
             urgency_rank,
             first_seen ASC,
             relation_rank,
-            confidence DESC
+            confidence DESC,
+            tiebreak DESC,
+            item_id ASC
         )
     END AS global_order,
     CASE
@@ -399,7 +432,9 @@ orders AS (
             urgency_rank,
             first_seen ASC,
             relation_rank,
-            confidence DESC
+            confidence DESC,
+            tiebreak DESC,
+            item_id ASC
         )
     END AS relation_order
   FROM priorities
@@ -417,7 +452,11 @@ selection AS (
       ORDER BY
         CASE WHEN global_order IS NULL THEN 1 ELSE 0 END,
         CASE WHEN relation_order <= 5 THEN 0 ELSE 1 END,
-        global_order
+        global_order,
+        -- global_order is already unique among eligible rows, so this only settles the parked
+        -- rows (global_order NULL), whose slot_order is never read. Present so no ROW_NUMBER in
+        -- this model has a non-total key.
+        item_id ASC
     ) AS slot_order
   FROM orders
 ),
@@ -458,22 +497,19 @@ SELECT
   default_if_ignored,
   first_seen,
   last_evidence_change,
+  -- 'resurfaced' is not emitted: both resurfacing reasons are deferred and no pre_state_label
+  -- resurfaces, so the state is unreachable. It stays in the vocabulary for Phase 3B.
   CAST(
     CASE
       WHEN pre_state_label = 'parked' THEN 'parked'
       WHEN final_rank IS NULL THEN 'pool'
-      WHEN pre_state_label = 'resurfaced_age' THEN 'resurfaced'
       ELSE 'active'
     END AS VARCHAR
   ) AS state,
-  -- 'age' is the only reason today: 'evidence_changed' is deferred until an evidence-history
-  -- table exists (see the header). NULL on every row that is not a resurfaced item inside the cap.
-  CAST(
-    CASE
-      WHEN final_rank IS NOT NULL AND pre_state_label = 'resurfaced_age' THEN 'age'
-      ELSE CAST(NULL AS VARCHAR)
-    END AS VARCHAR
-  ) AS resurfaced_reason,
+  -- NULL on every row, always: 'age' is retired (first_seen is a fetch observation, not a
+  -- discovery date) and 'evidence_changed' waits on an evidence-history table. The column stays
+  -- in the schema so Phase 3B can populate it without a schema change. See the header.
+  CAST(NULL AS VARCHAR) AS resurfaced_reason,
   -- Final position in this week's 25, 1 = most important, in global order. NULL for a parked row
   -- (never competed) and for a pool row (competed, missed the cap) -- neither is being reviewed
   -- this week, and a rank on an unreviewed row reads as if it were.
@@ -485,4 +521,6 @@ ORDER BY
   urgency_rank,
   first_seen ASC,
   relation_rank,
-  confidence DESC
+  confidence DESC,
+  tiebreak DESC,
+  item_id ASC
