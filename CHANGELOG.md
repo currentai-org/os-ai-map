@@ -18,13 +18,26 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `mirror.code_unchanged_from` in `warehouse/dependencies.yaml`: a marker letting a mirror contract
+  record a platform revision that was minted over byte-identical code (a cron cleared, a
+  description added), which the coherence gate would otherwise forbid forever. Accepted only when
+  the marker names the revision committed at the merge base, the revision strictly advances, the
+  mirrored bytes are unchanged and `synced_at` does not regress; setting it alongside changed bytes
+  is itself a violation, so the next genuine resync deletes the line.
+  `currentai.scores.openness_facts` (7 → 9),
+  `currentai.scores.openness_computed` (15 → 17) and `currentai.signal_github.artifact_state`
+  (2 → 3) now record the deployed revision (#365).
+
 - `build/propose_org_handles.py`, which proposes `huggingface` org handles from the namespaces of
   already declared Hugging Face artifacts, grouped by org and checked for aggregator accounts and
   ownership conflicts, for review as a GitHub issue rather than seeded silently (#365).
 - A weekly mirror-drift sentinel (`mirror-drift.yml`, Monday 08:30 UTC): every `mirror:` contract
-  in `warehouse/dependencies.yaml` is compared against the platform's latest revision, and a
-  mismatch opens a `sentinel` issue. Reports revision, hash, code and missing-model drift
-  separately, and exits 2 rather than passing whenever the platform cannot be read at all. Closes
+  in `warehouse/dependencies.yaml` is compared against the platform's latest revision, and a red
+  run is picked up by `report-failure.yml`, which opens or comments on the `sentinel` issue.
+  Reports revision, hash, code, metadata-only and missing-model findings separately, and exits 2
+  rather than passing whenever the platform cannot be read at all. A newer platform revision over
+  byte-identical code is `metadata-only` and exits 0; a hash change at an unchanged revision
+  number stays drift however well the code matches. Closes
   the gap where the repo's own gates stay green while the platform releases past a mirror; the
   first runs found eight of seventeen contracts behind. "Mirror resync" in
   `docs/operations/deploy-models.md` is the runbook (#365).

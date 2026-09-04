@@ -48,7 +48,8 @@ different things:
   * `revision` — the numbers differ. The plain case: the platform moved on.
   * `hash` — the numbers agree and the platform's hash does not. Worse than a revision bump,
     because it means the same revision number now denotes different content, and nothing in
-    the repo's own gates could ever see it.
+    the repo's own gates could ever see it. Identical code does not soften this one: either the
+    platform rewrote a revision in place or the contract's hash is mis-pinned.
   * `code` — numbers and hash agree, and the deployed source does not match the mirror file's
     body. This is the belt-and-braces check: it does not trust the hash to be a hash of the
     code, and it is the only one of the three that a maintainer editing a mirror file by hand
@@ -56,6 +57,25 @@ different things:
 
 `missing` is a fourth and the loudest: the platform serves no model at that `model_id` at all,
 so the contract is anchored to something that no longer exists.
+
+## `metadata-only`, which is not drift
+
+The platform mints a revision for changes that touch no code: a cron cleared, a description
+filled in. The revision numbers then disagree while the deployed source is byte-identical to the
+mirror, and calling that drift sends a maintainer to resync a file that cannot change. So the
+code comparison runs on every contract, not only on the ones whose numbers already agree, and a
+NEW REVISION over identical code is reported as `metadata-only` and exits 0.
+
+The "new revision" half is load-bearing, and it is why a hash disagreement at an unchanged
+revision number stays `hash` however well the code matches. There is nothing to record in that
+case: `mirror.code_unchanged_from` authorizes advancing to a revision, the coherence gate
+rejects a marker whose revision does not advance, and so reporting it as metadata-only would
+instruct a commit the repo's own gate refuses.
+
+Exit 1 is therefore `code` drift, a `hash` disagreement, and a revision mismatch whose deployed
+source really does differ. `metadata-only` is still worth recording in the contract —
+`mirror.code_unchanged_from` is how (see the `dependencies.yaml` header) — but it is a
+bookkeeping job, not a stale mirror.
 
 ## The banner
 
@@ -150,7 +170,12 @@ class Row:
 
     @property
     def drifted(self) -> bool:
-        return self.status != "ok"
+        """Whether a maintainer has a resync to do. `metadata-only` is a finding, not drift."""
+        return self.status not in ("ok", "metadata-only")
+
+    @property
+    def metadata_only(self) -> bool:
+        return self.status == "metadata-only"
 
 
 def mirror_contracts(root: Path) -> list[dict]:
@@ -161,6 +186,27 @@ def mirror_contracts(root: Path) -> list[dict]:
     """
     doc = yaml.safe_load((root / "warehouse/dependencies.yaml").read_text()) or {}
     return [d for d in (doc.get("dependencies") or []) if d.get("mirror")]
+
+
+def code_verdict(contract: dict, revision: dict, root: Path) -> tuple[bool, str]:
+    """Whether the deployed source matches the mirror file below its banner, and why not.
+
+    Run on every contract, not only where the numbers agree, because it is what separates a
+    metadata-only platform revision from a stale mirror.
+    """
+    path = root / contract["files"]["model"]
+    if not path.exists():
+        # dependency_violations already fails on this; reported here too so a drift run
+        # against a broken tree explains itself rather than raising.
+        return False, f"mirror file {contract['files']['model']} is missing"
+    local = strip_mirror_banner(path.read_text())
+    deployed = revision.get("code") or ""
+    if sha256_text(local) != sha256_text(deployed):
+        return False, (
+            f"the deployed source does not match {contract['files']['model']} below its banner "
+            f"({len(deployed)} chars deployed against {len(local)} mirrored)"
+        )
+    return True, ""
 
 
 def compare(contract: dict, node: dict | None, root: Path) -> Row:
@@ -181,52 +227,48 @@ def compare(contract: dict, node: dict | None, root: Path) -> Row:
     platform_hash = revision.get("hash")
     revised_at = revision.get("createdAt")
 
-    if platform_revision != contract_revision:
+    revision_match = platform_revision == contract_revision
+    hash_match = platform_hash == mirror.get("hash")
+    # The source comparison decides every remaining case, so it runs before the numbers are
+    # judged. It is also the only check a hand-edited mirror with a refreshed local_sha256
+    # cannot get past.
+    code_match, code_detail = code_verdict(contract, revision, root)
+
+    def row(status: str, detail: str) -> Row:
         return Row(
-            table=table, status="revision", contract_revision=contract_revision,
-            platform_revision=platform_revision, hash_match=platform_hash == mirror.get("hash"),
-            code_match=None, revised_at=revised_at,
-            detail=f"the platform's latest revision is {platform_revision}, "
-                   f"the contract records {contract_revision}",
+            table=table, status=status, contract_revision=contract_revision,
+            platform_revision=platform_revision, hash_match=hash_match, code_match=code_match,
+            revised_at=revised_at, detail=detail,
         )
 
-    if platform_hash != mirror.get("hash"):
-        return Row(
-            table=table, status="hash", contract_revision=contract_revision,
-            platform_revision=platform_revision, hash_match=False, code_match=None,
-            revised_at=revised_at,
-            detail=f"revision {platform_revision} on both sides, and its hash is "
-                   f"{platform_hash} against the contract's {mirror.get('hash')}",
-        )
+    if revision_match and hash_match:
+        if code_match:
+            return row("ok", "")
+        return row("code", f"revision {platform_revision} and hash agree, and {code_detail}")
 
-    # Numbers agree. Compare the source itself, which is the only one of the three checks a
-    # hand-edited mirror with a refreshed local_sha256 cannot get past.
-    path = root / contract["files"]["model"]
-    if not path.exists():
-        # dependency_violations already fails on this; reported here too so a drift run
-        # against a broken tree explains itself rather than raising.
-        return Row(
-            table=table, status="code", contract_revision=contract_revision,
-            platform_revision=platform_revision, hash_match=True, code_match=False,
-            revised_at=revised_at, detail=f"mirror file {contract['files']['model']} is missing",
-        )
-    local = strip_mirror_banner(path.read_text())
-    deployed = revision.get("code") or ""
-    if sha256_text(local) != sha256_text(deployed):
-        return Row(
-            table=table, status="code", contract_revision=contract_revision,
-            platform_revision=platform_revision, hash_match=True, code_match=False,
-            revised_at=revised_at,
-            detail=f"revision {platform_revision} and hash agree, and the deployed source "
-                   f"does not match {contract['files']['model']} below its banner "
-                   f"({len(deployed)} chars deployed against {len(local)} mirrored)",
-        )
+    numbers = (f"the platform's latest revision is {platform_revision} against the contract's "
+               f"{contract_revision}" if not revision_match else
+               f"revision {platform_revision} on both sides, and its hash is {platform_hash} "
+               f"against the contract's {mirror.get('hash')}")
 
-    return Row(
-        table=table, status="ok", contract_revision=contract_revision,
-        platform_revision=platform_revision, hash_match=True, code_match=True,
-        revised_at=revised_at,
-    )
+    if code_match and not revision_match:
+        # A revision the platform minted without touching the code -- a cron cleared, a
+        # description added. Nothing to resync; the contract records it with
+        # mirror.code_unchanged_from.
+        return row("metadata-only", f"{numbers}, and the deployed source is byte-identical to "
+                                    f"{contract['files']['model']} below its banner")
+    if not revision_match:
+        return row("revision", f"{numbers}; {code_detail}")
+    # Same revision number, different hash. Identical code does NOT excuse it: a metadata-only
+    # revision is a new revision, and there is none here. Either the platform rewrote a revision
+    # in place or the contract's `mirror.hash` is mis-pinned, and neither is recordable -- the
+    # coherence gate rejects a marker whose revision does not advance, so reporting this as
+    # metadata-only would instruct a commit the repo's own gate refuses.
+    return row("hash", f"{numbers}; a hash change with no new revision is a mis-pin or an "
+                       f"in-place rewrite, not a metadata-only revision"
+                       + (f" ({code_detail})" if code_detail else
+                          " -- the deployed source does match the mirror, which narrows it to "
+                          "the recorded hash"))
 
 
 def check(contracts: list[dict], client, root: Path) -> list[Row]:
@@ -289,15 +331,29 @@ def main(argv: list[str] | None = None, root: Path | None = None, client=None) -
 
     print(render_table(rows))
     drifted = [r for r in rows if r.drifted]
-    print(f"\n{len(rows) - len(drifted)} of {len(rows)} mirror contracts match the platform, "
+    metadata_only = [r for r in rows if r.metadata_only]
+    print(f"\n{len(rows) - len(drifted)} of {len(rows)} mirror contracts match the platform's "
+          f"deployed source ({len(metadata_only)} of them over a metadata-only revision), "
           f"{len(drifted)} drifted")
+    for row in metadata_only:
+        print(f"  - {row.table} [metadata-only]: {row.detail}")
     for row in drifted:
         print(f"  x {row.table} [{row.status}]: {row.detail}")
 
     if args.report:
         args.report.write_text(json.dumps(
             {"checked": len(rows), "drifted": len(drifted),
+             "metadata_only": len(metadata_only),
              "rows": [asdict(r) for r in rows]}, indent=2) + "\n")
+
+    if metadata_only and not drifted:
+        print(
+            "\nEvery contract mirrors the source the platform is running. The revisions marked "
+            "metadata-only\nmoved without the code moving; record each one by setting "
+            "mirror.code_unchanged_from to the\nrevision currently in the contract, then "
+            "advancing verified_revision, mirror.revision,\nmirror.hash and mirror.synced_at. "
+            'The runbook is "Metadata-only revisions" in\ndocs/operations/deploy-models.md.'
+        )
 
     if drifted:
         print(
@@ -308,7 +364,7 @@ def main(argv: list[str] | None = None, root: Path | None = None, client=None) -
             '"Mirror resync" in docs/operations/deploy-models.md.'
         )
         return 1
-    print("[OK] every mirror contract matches the platform's latest revision")
+    print("[OK] every mirror contract mirrors the source the platform is running")
     return 0
 
 

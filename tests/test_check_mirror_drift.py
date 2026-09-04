@@ -1,10 +1,11 @@
-"""The mirror-drift sentinel must separate four findings from each other, and from silence.
+"""The mirror-drift sentinel must separate five findings from each other, and from silence.
 
 Written against a stub client rather than the platform, because the whole value of the gate
 is the distinction it draws between "the mirror is stale", "the same revision number now
-means different bytes", "the numbers agree and the code does not", and "we could not tell".
-Those are four different things a maintainer does four different things about, and only the
-last one must never be reported as a pass.
+means different bytes", "the numbers agree and the code does not", "the numbers moved and the
+code did not", and "we could not tell". Those are five different things a maintainer does five
+different things about; only the fourth is not a resync, and only the last must never be
+reported as a pass.
 
 The stub returns platform nodes in the shape `GetDataModel` actually returns -- a
 `latestRevision` carrying `revisionNumber`, `hash`, `code` and `createdAt` -- so the
@@ -100,20 +101,73 @@ def test_a_matching_contract_is_ok(tmp_path):
     assert row.platform_revision == row.contract_revision == 4
 
 
-def test_a_newer_platform_revision_is_revision_drift(tmp_path):
-    row = compare(build_tree(tmp_path), node(revision=5, hash_="newhash"), tmp_path)
+def test_a_newer_platform_revision_over_different_code_is_revision_drift(tmp_path):
+    row = compare(build_tree(tmp_path), node(revision=5, hash_="newhash", code="SELECT 2\n"),
+                  tmp_path)
     assert row.status == "revision"
     assert row.drifted
     assert (row.contract_revision, row.platform_revision) == (4, 5)
     assert "latest revision is 5" in row.detail
+    assert "does not match" in row.detail
 
 
-def test_the_same_revision_with_a_different_hash_is_hash_drift(tmp_path):
+def test_the_same_revision_with_a_different_hash_over_different_code_is_hash_drift(tmp_path):
     """The worst of the three: the number the repo pins now denotes different content."""
-    row = compare(build_tree(tmp_path), node(hash_="rewritten"), tmp_path)
+    row = compare(build_tree(tmp_path), node(hash_="rewritten", code="SELECT 2\n"), tmp_path)
     assert row.status == "hash"
+    assert row.drifted
     assert row.hash_match is False
     assert "rewritten" in row.detail
+
+
+# --- the revision the platform minted over code it did not touch -------------------------
+
+def test_a_newer_platform_revision_over_identical_code_is_metadata_only(tmp_path):
+    """A cron cleared or a description added. The contract is behind by a number and by
+    nothing else, so sending a maintainer to resync would be sending them to copy a file
+    onto itself. A NEW revision is required, which is what separates this from the hash case
+    below."""
+    row = compare(build_tree(tmp_path), node(revision=5, hash_="newhash"), tmp_path)
+    assert row.status == "metadata-only"
+    assert not row.drifted
+    assert row.metadata_only
+    assert (row.hash_match, row.code_match) == (False, True)
+    assert "byte-identical" in row.detail
+
+
+def test_a_hash_change_with_no_new_revision_stays_hash_drift(tmp_path):
+    """Identical code does NOT make this metadata-only. There is no new revision to record, the
+    coherence gate rejects a marker whose revision does not advance, and so calling it
+    metadata-only would tell a maintainer to make a commit the repo's own gate refuses. It is a
+    mis-pinned hash or an in-place rewrite, and it stays loud."""
+    row = compare(build_tree(tmp_path), node(hash_="rewritten"), tmp_path)
+    assert row.status == "hash"
+    assert row.drifted
+    assert row.code_match is True
+    assert "mis-pin" in row.detail
+
+
+def test_a_metadata_only_sweep_exits_zero_and_names_the_marker(tmp_path, capsys):
+    """Exit 0, because there is no stale mirror -- but the run still says what to record."""
+    write_dependencies(tmp_path, [build_tree(tmp_path)])
+    code = main([], root=tmp_path, client=StubClient(node(revision=5, hash_="newhash")))
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "0 drifted" in out
+    assert "1 of them over a metadata-only revision" in out
+    assert "code_unchanged_from" in out
+    assert "Mirror resync" not in out
+
+
+def test_a_metadata_only_row_is_counted_apart_in_the_report(tmp_path):
+    write_dependencies(tmp_path, [build_tree(tmp_path)])
+    report = tmp_path / "drift.json"
+    code = main(["--report", str(report)], root=tmp_path,
+                client=StubClient(node(revision=5, hash_="newhash")))
+    assert code == 0
+    payload = json.loads(report.read_text())
+    assert (payload["checked"], payload["drifted"], payload["metadata_only"]) == (1, 0, 1)
+    assert payload["rows"][0]["status"] == "metadata-only"
 
 
 def test_matching_numbers_over_different_source_is_code_drift(tmp_path):
@@ -160,7 +214,8 @@ def test_a_clean_sweep_exits_zero_and_writes_the_report(tmp_path, capsys):
 
 def test_any_drift_exits_one_and_names_the_runbook(tmp_path, capsys):
     write_dependencies(tmp_path, [build_tree(tmp_path)])
-    code = main([], root=tmp_path, client=StubClient(node(revision=9, hash_="h9")))
+    code = main([], root=tmp_path,
+                client=StubClient(node(revision=9, hash_="h9", code="SELECT 2\n")))
     assert code == 1
     out = capsys.readouterr().out
     assert "1 drifted" in out

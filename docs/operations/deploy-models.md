@@ -133,20 +133,31 @@ uv run python -m build.serialize_rubric && uv run python -m build.publish_regist
 ## Mirror resync, when the drift sentinel fires
 
 `build/check_mirror_drift.py` compares every `mirror:` contract in `warehouse/dependencies.yaml`
-against the platform once a week (`.github/workflows/mirror-drift.yml`, Monday 08:30 UTC), and a
-red run opens a `sentinel` issue. It exists because nothing else could see this failure: the
+against the platform once a week (`.github/workflows/mirror-drift.yml`, Monday 08:30 UTC). A red
+run is picked up by `report-failure.yml`, which opens or comments on the `sentinel` issue —
+`mirror-drift` is in that workflow's `workflow_run` list. The check exists because nothing else
+could see this failure: the
 dependency gate proves a mirror file matches its own contract, which stays true no matter how far
 the platform has moved on, so the repo can review revision N while N+1 builds the table.
 
-It reports four findings, and they are not the same job:
+It reports five findings, and they are not the same job:
 
-- **`revision`** — the platform's latest revision number is ahead of the contract. Resync.
+- **`revision`** — the platform's latest revision number is ahead of the contract, over
+  different code. Resync.
 - **`hash`** — same revision number, different hash. The number the repo pins now denotes
-  different content; resync, and look at why a revision was rewritten in place.
+  different content; resync, and look at why a revision was rewritten in place. Identical code
+  does not soften this: there is no new revision to record, so it is a mis-pinned `mirror.hash`
+  or an in-place rewrite either way.
 - **`code`** — number and hash agree and the deployed source does not match the mirror file
   below its banner. Either the mirror was hand-edited, or the hash is not a hash of the code.
+- **`metadata-only`** — the platform's revision number is ahead and the deployed source is
+  byte-identical to the mirror. Nothing to resync; see below.
 - **`missing`** — the platform serves no model at that `model_id`. Do not resync; find out
   whether the model was deleted or recreated, because the contract's anchor is gone.
+
+Everything but `metadata-only` exits 1. The check compares the deployed source on every
+contract, not just the ones whose numbers already agree, so that a revision minted over
+unchanged code is not reported as a stale mirror.
 
 To resync one contract:
 
@@ -159,7 +170,10 @@ To resync one contract:
 3. Update the contract: `verified_revision` and `mirror.revision` to the new revision number,
    `mirror.hash` to the platform's hash, `mirror.local_sha256` to `sha256` of the file's bytes
    **including** the banner, and `mirror.synced_at` to today. `model_id` does not change — a
-   changed `model_id` is a different model, and the cross-commit gate rejects it.
+   changed `model_id` is a different model, and the cross-commit gate rejects it. **If the
+   contract carries `mirror.code_unchanged_from`, delete that line.** It claims the mirrored
+   bytes have not moved, and a resync moves them; leaving it in fails the coherence gate. See
+   "Metadata-only revisions" below.
 4. If the schema file changed too, update `mirror.schema_sha256` the same way. A schema-only
    edit is still a byte change and must advance the revision.
 5. Run the gates: `uv run pytest tests/test_scope_gates.py -q` for the contract's integrity,
@@ -168,6 +182,30 @@ To resync one contract:
 Resync in one commit per contract where you can. The cross-commit coherence gate reads bytes,
 revision, hash and `synced_at` as one movement, and a batch that half-lands is harder to read
 than several small ones.
+
+### Metadata-only revisions
+
+The platform mints a revision for edits that touch no code — a cron cleared, a description
+filled in — and the mirror bytes are then identical by construction. Because the coherence gate
+requires revision, hash and `synced_at` to move only when the bytes move, such a contract cannot
+record the revision that is actually deployed, and the sentinel would report it forever.
+`mirror.code_unchanged_from` is the escape valve, the same shape as `mirror_migration` for
+`model_id`: an explicit claim, in the contract, naming the revision the code is unchanged from.
+
+Confirm the sentinel reports the contract `metadata-only` first, then set
+`mirror.code_unchanged_from` to the revision the contract currently records and advance
+`verified_revision`, `mirror.revision`, `mirror.hash` (live, from `GetDataModel`) and
+`mirror.synced_at`. Leave `local_sha256` and `schema_sha256` untouched. The gate accepts the
+move only if the marker equals the revision committed at the merge base, the revision strictly
+advances, the mirrored bytes are unchanged and `synced_at` does not regress — an offline gate
+cannot verify the platform's side of the claim, so it pins the claim to a shape a reviewer can
+check in one look. Setting the marker alongside changed bytes is itself a violation, which is
+why the next genuine resync of the contract deletes the line (step 3 above).
+
+A `hash` finding at an unchanged revision number is **not** this case, however well the code
+matches. The marker authorizes advancing to a revision, and there is no new revision to advance
+to; a contract in that state has a mis-pinned `mirror.hash` or sits on a revision the platform
+rewrote in place, and both want a look rather than a marker.
 
 **The sentinel cannot see an unreleased revision, and does not pretend to.** The platform
 exposes no release marker — `GetDataModel` has no release field and `GetAssetChangelog`'s
