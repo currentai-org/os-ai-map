@@ -28,6 +28,26 @@
 -- Spot check from the deploy brief: a PyPI-declared product should read TRUE (pypi has a route),
 -- a homepage-declared product should read FALSE (homepage has no adoption route).
 --
+-- evidence (ARRAY(VARCHAR), added 2026-09-04 per reviewer ruling): one `<url> | <excerpt>`
+-- string per contributing evidence item, NOT a repeat of the method-name vocabulary. A reviewer
+-- reading the digest needs a link they can open and a phrase saying what it says; a method label
+-- ('declared', 'name_match') tells them neither. Shapes emitted by this model:
+--   declared (head)  <repo>/sources/products/<product_slug>.yaml | declared <kind> artifact
+--   declared (tail)  <repo>/sources/registry/<category_slug>.yaml | declared <kind> artifact
+--   name_match       <artifact url> | name segment equals product slug
+-- where <repo> is https://github.com/currentai-org/os-ai-map/blob/main.
+-- The tail form deviates from the ruling's single example (which names sources/products/) on
+-- purpose: a tail product is not declared in sources/products/ at all -- it is a row inside
+-- sources/registry/<category>.yaml (build/serialize_registry.py emits tail_products from
+-- exactly that file, and carries category_slug for it). Pointing a reviewer at a URL that 404s
+-- would be worse than a slightly different string.
+-- Artifact URLs are built per kind, matching build/serialize_registry.py's own artifact_url
+-- construction byte for byte (github, huggingface model/dataset, pypi with its trailing slash,
+-- npm, crates, arxiv, homepage). registry.product_artifacts and registry.tail_products both
+-- carry an `artifact_url` column, but the CASE is used instead so every evidence string in this
+-- dataset is built the same way -- equivalence_edges and org_edges read artifact_nodes, which
+-- has no url column at all.
+--
 -- TODO verify on deploy: the name-normalization rule below (lowercase, non [a-z0-9] runs
 -- collapsed to a single '-', trimmed) is a reasonable guess at "the same product name", not a
 -- rule taken from an existing module; tighten or replace once real name-match false positives
@@ -40,7 +60,9 @@ WITH declared_head AS (
     'head' AS product_tier,
     product_slug,
     1.0 AS confidence,
-    'declared' AS method
+    'declared' AS method,
+    'https://github.com/currentai-org/os-ai-map/blob/main/sources/products/'
+      || product_slug || '.yaml | declared ' || artifact_kind || ' artifact' AS evidence_item
   FROM currentai.registry.product_artifacts
 ),
 
@@ -51,7 +73,11 @@ declared_tail AS (
     'tail' AS product_tier,
     slug AS product_slug,
     1.0 AS confidence,
-    'declared' AS method
+    'declared' AS method,
+    -- sources/registry/<category>.yaml, not sources/products/<slug>.yaml: a tail product is a
+    -- row inside its category's registry file and has no file of its own. See the header.
+    'https://github.com/currentai-org/os-ai-map/blob/main/sources/registry/'
+      || category_slug || '.yaml | declared ' || artifact_kind || ' artifact' AS evidence_item
   FROM currentai.registry.tail_products
 ),
 
@@ -93,7 +119,20 @@ candidate_names AS (
         END,
         '[^a-zA-Z0-9]+', '-'
       ))
-    ) AS normalized_name
+    ) AS normalized_name,
+    -- Per-kind artifact URL, identical in construction to build/serialize_registry.py's
+    -- artifact_url. See the header on why the CASE is used rather than a registry column.
+    CASE artifact_kind
+      WHEN 'github' THEN 'https://github.com/' || artifact_id
+      WHEN 'huggingface_model' THEN 'https://huggingface.co/' || artifact_id
+      WHEN 'huggingface_dataset' THEN 'https://huggingface.co/datasets/' || artifact_id
+      WHEN 'pypi' THEN 'https://pypi.org/project/' || artifact_id || '/'
+      WHEN 'npm' THEN 'https://www.npmjs.com/package/' || artifact_id
+      WHEN 'crates' THEN 'https://crates.io/crates/' || artifact_id
+      WHEN 'arxiv' THEN 'https://arxiv.org/abs/' || artifact_id
+      WHEN 'homepage' THEN 'https://' || artifact_id
+      ELSE artifact_id
+    END AS artifact_url
   FROM currentai.identity.candidates
 ),
 
@@ -104,7 +143,8 @@ name_match AS (
     pt.product_tier,
     p.slug AS product_slug,
     0.5 AS confidence,
-    'name_match' AS method
+    'name_match' AS method,
+    c.artifact_url || ' | name segment equals product slug' AS evidence_item
   FROM candidate_names c
   JOIN currentai.registry.products p
     ON c.normalized_name = LOWER(p.slug)
@@ -137,6 +177,7 @@ SELECT
   CAST(m.product_slug AS VARCHAR) AS product_slug,
   CAST(GREATEST(0, LEAST(1, MAX(m.confidence) - 0)) AS DOUBLE) AS confidence,
   ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(m.method))) AS method,
+  CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(m.evidence_item))) AS ARRAY(VARCHAR)) AS evidence,
   CAST(ARRAY[] AS ARRAY(VARCHAR)) AS penalties,
   CAST(m.artifact_kind IN (SELECT artifact_kind FROM route_kinds) AS BOOLEAN) AS scoring_bearing
 FROM combined m

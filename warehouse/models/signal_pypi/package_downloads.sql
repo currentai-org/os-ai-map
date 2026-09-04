@@ -20,6 +20,19 @@
 --     the adoption input; it is not a user count.
 --   * History is short. `days_observed` and `window_start` make the window
 --     explicit so a partial window is visible instead of reading as a decline.
+--
+-- The adoption bands are NOT defined here. They were, until 2026-08-09, as a
+-- hardcoded CASE that applied one scale to every product type - which is the
+-- repo/warehouse split check_parity exists to catch, one axis over, and it was
+-- wrong for datasets: no dataset artifact in the corpus exceeds 10M monthly
+-- downloads, so level 5 was unreachable for the whole type. They now come from
+-- currentai.registry.adoption_bands, declared per product type in
+-- sources/rubrics/<type>.yaml and pushed by CI.
+--
+-- A type with no bands declared gets a NULL level rather than another type's
+-- scale. `hardware` is deliberately in that state - a board has no download
+-- count - and the abstention is the same rule signal_routing.yaml states for
+-- sources: abstain rather than substitute.
 WITH bounds AS (
   SELECT MAX(day) AS last_day FROM oso.pypi_downloads.daily_downloads_by_package
 ),
@@ -43,31 +56,56 @@ windowed AS (
   FROM oso.pypi_downloads.daily_downloads_by_package d
   CROSS JOIN bounds b
   GROUP BY d.package
+),
+measured AS (
+  SELECT
+    r.product_slug,
+    r.product_type,
+    r.package,
+    w.downloads_30d,
+    w.downloads_7d,
+    w.days_observed,
+    w.max_country_count AS countries_seen,
+    w.first_day_seen,
+    w.last_day_seen,
+    CAST(b.last_day - INTERVAL '30' DAY AS DATE) AS window_start,
+    w.package IS NULL AS missing_from_pypi
+  FROM roster r
+  CROSS JOIN bounds b
+  LEFT JOIN windowed w
+    ON LOWER(r.package) = LOWER(w.package)
+),
+-- The highest band whose exclusive lower bound the figure clears. A type absent
+-- from the table contributes no row, so the LEFT JOIN leaves the level NULL.
+banded AS (
+  SELECT
+    m.product_slug,
+    m.package,
+    -- Cast explicitly: the band level arrives from a CSV static model, and the
+    -- column this feeds is declared INTEGER. Letting the width be inferred is how
+    -- a declared schema and a produced one drift apart.
+    CAST(MAX(b.level) AS INTEGER) AS adoption_level
+  FROM measured m
+  JOIN currentai.registry.adoption_bands b
+    ON b.product_type = m.product_type
+   AND m.downloads_30d > b.above
+  WHERE m.downloads_30d IS NOT NULL
+  GROUP BY m.product_slug, m.package
 )
 SELECT
-  r.product_slug,
-  r.product_type,
-  r.package,
-  w.downloads_30d,
-  w.downloads_7d,
-  w.days_observed,
-  w.max_country_count AS countries_seen,
-  w.first_day_seen,
-  w.last_day_seen,
-  CAST(b.last_day - INTERVAL '30' DAY AS DATE) AS window_start,
-  -- Adoption band on the map's own scale, so the level is derived here rather
-  -- than re-derived by every consumer. The level-5 floor is >10M monthly.
-  CASE
-    WHEN w.downloads_30d IS NULL THEN NULL
-    WHEN w.downloads_30d > 10000000 THEN 5
-    WHEN w.downloads_30d > 1000000 THEN 4
-    WHEN w.downloads_30d > 100000 THEN 3
-    WHEN w.downloads_30d > 10000 THEN 2
-    ELSE 1
-  END AS adoption_level,
-  -- A roster package absent from PyPI entirely is a data-quality signal, not a zero.
-  w.package IS NULL AS missing_from_pypi
-FROM roster r
-CROSS JOIN bounds b
-LEFT JOIN windowed w
-  ON LOWER(r.package) = LOWER(w.package)
+  m.product_slug,
+  m.product_type,
+  m.package,
+  m.downloads_30d,
+  m.downloads_7d,
+  m.days_observed,
+  m.countries_seen,
+  m.first_day_seen,
+  m.last_day_seen,
+  m.window_start,
+  bd.adoption_level,
+  m.missing_from_pypi
+FROM measured m
+LEFT JOIN banded bd
+  ON bd.product_slug = m.product_slug
+ AND bd.package = m.package
