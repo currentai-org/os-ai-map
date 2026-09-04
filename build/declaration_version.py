@@ -187,6 +187,19 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
         "frozen point-in-time warehouse sample (long_tail.json), hand-synced; a re-sync is "
         "not a change in the declarations."
     ),
+    "model_families.yaml": (
+        "a family bridge names a release-to-slug mapping and changes no product's "
+        "declaration. It records that a discovered release name matches an EXISTING "
+        "product's tier, the same kind of decision resolution_ledger.yaml records for "
+        "artifact identity -- not a claim about what that product is, owns or scores."
+    ),
+    "org_handles.yaml": (
+        "ownership evidence for identity resolution; never joined for scores; changes no "
+        "product declaration. Kept out of the declaration inputs deliberately -- unlike a "
+        "handle recorded inside the org's own file, an edit here does not re-key "
+        "declaration_version_id for every future handle correction, matching the "
+        "resolution_ledger.yaml precedent above."
+    ),
 }
 
 

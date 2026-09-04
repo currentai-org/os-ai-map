@@ -5,7 +5,7 @@ fails if this file drifts from the renderer. Regenerate with
 `uv run python -c "import sys;sys.path.insert(0,'.');from build import assets;print(assets.render_dag())"`.
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
-not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->40 governed
+not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->42 governed
 assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->8
 external contracts in `warehouse/dependencies.yaml`. The peripheral OSO pipelines are out of scope:
 they were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
@@ -58,6 +58,8 @@ graph LR
     registry__category_scoring_rules[category_scoring_rules]
     registry__evidence_abstentions[evidence_abstentions]
     registry__license_aliases[license_aliases]
+    registry__model_families[model_families]
+    registry__org_handles[org_handles]
     registry__organizations[organizations]
     registry__product_aliases[product_aliases]
     registry__product_artifacts[product_artifacts]
@@ -88,6 +90,8 @@ graph LR
   SRC --> registry__category_scoring_rules
   SRC --> registry__evidence_abstentions
   SRC --> registry__license_aliases
+  SRC --> registry__model_families
+  SRC --> registry__org_handles
   SRC --> registry__organizations
   SRC --> registry__product_aliases
   SRC --> registry__product_artifacts
@@ -110,6 +114,8 @@ graph LR
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
   class registry__axis_assessments staged;
+  class registry__model_families staged;
+  class registry__org_handles staged;
   class registry__product_aliases staged;
   class registry__resolution_ledger staged;
   class registry__tail_products dormant;

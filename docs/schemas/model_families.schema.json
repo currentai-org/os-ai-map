@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Model families",
+  "type": "object",
+  "description": "Which model-release name patterns bridge to which tier-level product slug (e.g. `grok-*` -> `grok`). This file is identity evidence for the resolution layer, not a scoring declaration: it names a bridge from a version-specific release name to the tier-level slug the vendor sells, so a run that discovers a new `grok-5` release can be pointed at the existing `grok` product rather than proposed as a new one. Every `pattern` -> `product` bridge is a human ruling recorded once, in `decided_in`, and applied everywhere. See docs/reference/identity.md.",
+  "required": ["version", "families"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "description": "Schema version. Bump only on a breaking shape change."
+    },
+    "families": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern", "product", "decided_in", "note"],
+        "additionalProperties": false,
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*-\\*$",
+            "description": "A lowercase glob over release names, e.g. `grok-*`: the tier-level slug plus a mandatory `-` separator and a trailing `*`. Matches any release name that starts with the given prefix. build/validate.py additionally requires the prefix (the pattern minus its trailing `-*`) to equal `product` exactly, so a family can never bridge to a product its own pattern does not name. When two families' prefixes overlap (`deepseek-*` / `deepseek-coder-*`), the longest matching pattern wins -- see docs/reference/identity.md."
+          },
+          "product": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "The tier-level product slug this pattern bridges to. Must resolve to a real sources/products/<slug>.yaml."
+          },
+          "decided_in": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The pull request (or other record) that ruled this bridge, e.g. `#476`."
+          },
+          "note": {
+            "type": "string",
+            "minLength": 20,
+            "description": "Why this pattern bridges to this product. Factual, not a restatement of the pattern."
+          }
+        }
+      }
+    }
+  }
+}
