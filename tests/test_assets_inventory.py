@@ -816,6 +816,82 @@ def test_a_same_day_refetch_is_legal(monkeypatch):
                            _mirror(revision=5, hash="h2", local_sha256="S2"))
 
 
+# --- metadata-only platform revisions, and the marker that authorizes recording one ---------
+# The platform mints revisions over byte-identical code (a cron cleared, a description added).
+# Without an escape valve the affected contracts can never record the deployed revision, so the
+# weekly sentinel fires on them forever. `mirror.code_unchanged_from` is that valve, and these
+# tests pin the four ways of getting it wrong as tightly as the one way of getting it right.
+
+def test_a_metadata_only_revision_is_allowed_with_the_marker(monkeypatch):
+    """Bytes unchanged, revision advanced, and the marker names the prior revision."""
+    after = _mirror(revision=5, hash="h2", synced_at="2026-08-20", code_unchanged_from=4)
+    assert _provenance(monkeypatch, _mirror(), after) == []
+
+
+def test_the_marker_must_name_the_prior_committed_revision(monkeypatch):
+    """An arbitrary number would let the marker authorize any bump. It has to name the state
+    the reviewer can see in the merge base."""
+    after = _mirror(revision=5, hash="h2", synced_at="2026-08-20", code_unchanged_from=3)
+    violations = _provenance(monkeypatch, _mirror(), after)
+    assert any("code_unchanged_from is 3" in v for v in violations), violations
+    assert any("committed at the merge base (4)" in v for v in violations), violations
+
+
+def test_the_marker_is_rejected_when_the_bytes_changed(monkeypatch):
+    """The marker's own claim is that the code did not move. Bytes moving makes it false, so
+    it is a violation in its own right rather than a no-op on the resync path."""
+    after = _mirror(revision=5, hash="h2", local_sha256="S2", synced_at="2026-08-20",
+                    code_unchanged_from=4)
+    violations = _provenance(monkeypatch, _mirror(), after)
+    assert any("but the mirrored bytes changed" in v for v in violations), violations
+
+
+def test_the_marker_does_not_excuse_a_revision_that_does_not_advance(monkeypatch):
+    """A metadata-only revision is still a new revision. Freezing or regressing the number
+    while moving the hash is the drift the gate exists to catch."""
+    for revision in (4, 3):
+        after = _mirror(revision=revision, hash="h2", synced_at="2026-08-20",
+                        code_unchanged_from=4)
+        violations = _provenance(monkeypatch, _mirror(), after)
+        assert any("still advances the revision" in v for v in violations), (revision, violations)
+
+
+def test_the_marker_does_not_excuse_synced_at_moving_backward(monkeypatch):
+    after = _mirror(revision=5, hash="h2", synced_at="2026-08-01", code_unchanged_from=4)
+    violations = _provenance(monkeypatch, _mirror(), after)
+    assert any("moved backward" in v for v in violations), violations
+
+
+def test_provenance_still_may_not_move_without_the_marker(monkeypatch):
+    """The default is unchanged: silence means bytes and provenance move together."""
+    after = _mirror(revision=5, hash="h2", synced_at="2026-08-20")
+    assert _provenance(monkeypatch, _mirror(), after) == [
+        "x.y: provenance changed but the mirrored bytes did not"
+    ]
+
+
+def test_the_marker_alone_changes_nothing_when_no_provenance_moved(monkeypatch):
+    """Adding the marker without advancing anything is inert, not a violation -- the gate
+    judges movement, and there is none."""
+    assert _provenance(monkeypatch, _mirror(), _mirror(code_unchanged_from=4)) == []
+
+
+def test_the_three_metadata_only_contracts_carry_the_marker():
+    """The contracts the platform revised without touching their code. Named rather than
+    counted, because the marker is a per-contract claim a reviewer signed off on; a fourth
+    contract acquiring one should be a deliberate edit to this list."""
+    marked = {d["table"]: d["mirror"]["code_unchanged_from"]
+              for d in A.dependencies() if (d.get("mirror") or {}).get("code_unchanged_from")}
+    assert marked == {
+        "currentai.scores.openness_facts": 7,
+        "currentai.scores.openness_computed": 15,
+        "currentai.signal_github.artifact_state": 2,
+    }
+    for table, prior in marked.items():
+        mirror = next(d for d in A.dependencies() if d["table"] == table)["mirror"]
+        assert mirror["revision"] > prior, table
+
+
 # --- the platform-model audit is reproducible from a committed receipt -------------
 # platform_models: checked is not 57 authored booleans; it is backed by
 # warehouse/audits/platform_models.json, the credential-free receipt of the Phase 0b audit.

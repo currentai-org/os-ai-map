@@ -1588,6 +1588,29 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
     Bytes and provenance move together and forward: if `local_sha256` changed, `revision` must
     advance, `hash` must change, and `synced_at` must not go backward; if the bytes did NOT
     change, none of the provenance may. `model_id` is stable unless a migration authorizes it.
+
+    The one exception, and why it exists: the platform mints a revision for changes that touch
+    no code at all -- a cron cleared, a description filled in. The mirror bytes are then
+    identical by construction, so the default rule forbids the contract from ever recording the
+    revision that is actually deployed, and the weekly sentinel
+    (`build/check_mirror_drift`) reports drift on it forever. `mirror.code_unchanged_from` is
+    the escape valve, the exact analogue of `mirror_migration` for `model_id`: an explicit,
+    reviewable claim naming the revision the code is unchanged FROM. An offline gate cannot
+    verify that claim -- it has no platform to ask -- so what it does instead is pin the claim
+    down hard enough that a reviewer can check it in one look, and reject every shape that is
+    not the narrow case it exists for:
+
+      1. the marker is present (silence still means "bytes and provenance move together");
+      2. it equals the revision committed at the merge base, so it names a real prior state
+         rather than an arbitrary number;
+      3. the revision strictly advances;
+      4. the mirrored bytes are unchanged -- enforced from both sides, since the marker is only
+         reachable when neither sha moved AND setting it alongside changed bytes is itself a
+         violation (the marker's own claim would be false);
+      5. `synced_at` does not regress.
+
+    `hash` is allowed to move here and not required to: the platform's hash does change across
+    a metadata-only revision, but that is its business, not a rule the repo should depend on.
     """
     problems: list[str] = []
     if cur.get("model_id") != prior.get("model_id") and not has_migration:
@@ -1601,11 +1624,34 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
     # freeze the revision.
     bytes_moved = (cur.get("local_sha256") != prior.get("local_sha256")
                    or cur.get("schema_sha256") != prior.get("schema_sha256"))
-    if not bytes_moved:
-        if any(cur.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
-            problems.append(f"{label}: provenance changed but the mirrored bytes did not")
-        return problems
+    marker = cur.get("code_unchanged_from")
     old_rev, new_rev = prior.get("revision"), cur.get("revision")
+    if not bytes_moved:
+        if not any(cur.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
+            return problems
+        if marker is None:
+            problems.append(f"{label}: provenance changed but the mirrored bytes did not")
+            return problems
+        if marker != old_rev:
+            problems.append(
+                f"{label}: mirror.code_unchanged_from is {marker!r}, which is not the revision "
+                f"committed at the merge base ({old_rev!r}); the marker must name the prior "
+                "recorded revision"
+            )
+        if not (isinstance(old_rev, int) and isinstance(new_rev, int) and new_rev > old_rev):
+            problems.append(
+                f"{label}: a metadata-only revision still advances the revision, and it went "
+                f"{old_rev!r} -> {new_rev!r}"
+            )
+        old_at, new_at = str(prior.get("synced_at") or ""), str(cur.get("synced_at") or "")
+        if new_at < old_at:
+            problems.append(f"{label}: synced_at moved backward, {old_at} -> {new_at}")
+        return problems
+    if marker is not None:
+        problems.append(
+            f"{label}: mirror.code_unchanged_from is set to {marker!r} but the mirrored bytes "
+            "changed; a resync that moves the bytes is not a metadata-only revision"
+        )
     if isinstance(old_rev, int) and isinstance(new_rev, int):
         if new_rev <= old_rev:
             problems.append(

@@ -17,6 +17,15 @@
 #         EVERY claimed file (model via local_sha256, schema via schema_sha256) against the bytes on
 #         disk; cross-commit coherence (bytes move with revision/hash/synced_at, model_id stable) is
 #         gated across BOTH manifests, including the one-time asset->dependency move;
+#         A metadata-only platform revision (a cron cleared, a description added) mints a new
+#         revision over byte-identical code, so bytes-move-with-revision would forbid the contract
+#         from ever recording the deployed revision. `mirror.code_unchanged_from: <prior revision>`
+#         is the escape valve, the analogue of `mirror_migration` for model_id. Recipe: confirm
+#         `uv run python -m build.check_mirror_drift` reports the contract `metadata-only`, then set
+#         code_unchanged_from to the revision the contract currently records, and advance
+#         verified_revision, mirror.revision, mirror.hash (live, from GetDataModel) and
+#         mirror.synced_at. Leave local_sha256 and schema_sha256 alone -- the marker's whole claim
+#         is that they do not move, and the gate rejects it if they do.
 #       - oso.* upstream -> content_contract_sha256 over table + grain + TYPED expected_columns
 #         (name + type + nullable), recomputed by the gate + a verified_at date.
 #         Reproduce: sha256(table + "\n" + expected_grain + "\n" +
@@ -59,17 +68,18 @@ dependencies:
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/scores/openness_computed.sql
-  verified_revision: 7
+  verified_revision: 9
   owner: oso
   files:
     model: warehouse/models/scores/openness_facts.sql
     schema: warehouse/models/scores/openness_facts.schema.json
   mirror:
     model_id: 68d9e34c-b0b6-460b-b4ae-21b7016eb1f8
-    revision: 7
-    hash: 7ce706d47d74cc433b6eb02b7b8558d26af21f6689d83426296d2457fa3ad26c
+    revision: 9
+    hash: de80c94bdc10b1ffcc00f92882b7b60587ed15881c86fe50e701565bc54e891b
     local_sha256: 1952f4b3939ade83f4ec239795ad234fa3ec8464c1789edb4d66374f072e4e39
-    synced_at: '2026-08-15'
+    synced_at: '2026-09-04'
+    code_unchanged_from: 7
     schema_sha256: e0af61b46f8e470354b9c0c5e1efe8fc419cd37bbbfccc3bdbf44991ecddebf9
   platform_schedule:
     cron: 0 4 * * 1
@@ -85,17 +95,18 @@ dependencies:
   required_by:
   - build/apply_scores.py
   - build/check_parity.py
-  verified_revision: 15
+  verified_revision: 17
   owner: oso
   files:
     model: warehouse/models/scores/openness_computed.sql
     schema: warehouse/models/scores/openness_computed.schema.json
   mirror:
     model_id: 6aef560b-cc85-4a9d-afa8-8f4798208e74
-    revision: 15
-    hash: 5606414402e540d23105552aa2320e4d62cdc71540e84e1d1a8db842df429ca1
+    revision: 17
+    hash: b72dca7a6b36b9aa529d64089df7cf14f6e9d409aa7ed746554b2475e1031824
     local_sha256: afc40feea6966d0ad946b0f2ae1d00b8ad4f5a9a6e2fb74dea8383ec5d88b464
-    synced_at: '2026-08-15'
+    synced_at: '2026-09-04'
+    code_unchanged_from: 15
     schema_sha256: 0802e69dd10acc0575ba95e845514f59ec818b6b51e5a69551ceaa2fec910a8e
   platform_schedule:
     cron: 0 4 * * 1
@@ -114,16 +125,17 @@ dependencies:
   - warehouse/models/identity/artifact_identity_edges.sql
   - warehouse/models/observations/product_adoption_current.sql
   - warehouse/models/signal_github/product_adoption.sql
-  verified_revision: 2
+  verified_revision: 3
   owner: oso
   files:
     model: warehouse/models/signal_github/artifact_state.py
   mirror:
     model_id: fed14549-c660-44fc-a6cc-c859795bde7f
-    revision: 2
-    hash: 4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f
+    revision: 3
+    hash: 50753eeafde043fc4e7ba8674143296fea8e311805adfd9e78ae51bd4053b2e8
     local_sha256: 66b18ee046d741510a0669028c8b4fb4dd47c8190ca0f92d83c6ccdb20b7f9ea
-    synced_at: '2026-08-24'
+    synced_at: '2026-09-04'
+    code_unchanged_from: 2
   platform_schedule:
     cron: 0 3 * * 0
     timezone: UTC
