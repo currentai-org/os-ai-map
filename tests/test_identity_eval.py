@@ -38,6 +38,7 @@ from build.identity_eval import (
     load_edges_from_warehouse,
     load_truth,
     main,
+    org_handle_coverage,
     replay,
     validate_columns,
 )
@@ -245,7 +246,7 @@ def test_duplicate_head_tail_edges_collapse_in_precision_and_recall():
 
 
 def test_recall_cannot_exceed_one():
-    truth = Truth(org={"github:a/b": {"acme"}})
+    truth = Truth(org={"github:a/b": {"acme"}}, recoverable_orgs=frozenset({"acme"}))
     edges = {
         "org": [
             {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "acme",
@@ -287,7 +288,7 @@ def test_org_truth_holds_more_than_one_org_per_candidate_key_in_the_real_corpus(
 def test_second_org_for_a_shared_candidate_key_scores_correct_not_a_false_positive():
     """The F5 bug: `dict.setdefault` kept only the first org read and scored the second,
     equally correct org as a false positive. Both must score correct now."""
-    truth = Truth(org={"github:a/b": {"org-one", "org-two"}})
+    truth = Truth(org={"github:a/b": {"org-one", "org-two"}}, recoverable_orgs=frozenset({"org-one", "org-two"}))
     edges = {"org": [
         {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "org-one",
          "confidence": 1.0, "method": ["org_handle"]},
@@ -302,6 +303,68 @@ def test_second_org_for_a_shared_candidate_key_scores_correct_not_a_false_positi
 
 def test_org_n_truth_counts_pairs_not_candidate_keys():
     assert sum(len(orgs) for orgs in REAL_TRUTH.org.values()) > len(REAL_TRUTH.org)
+
+
+# ---------------------------------------------------------------------------
+# org recall is measured against recoverable truth (an org must declare a handle)
+# ---------------------------------------------------------------------------
+
+
+def test_org_without_a_handle_drops_out_of_recall_truth():
+    """An org with no declared handle can never be recovered by the graph, so it must not
+    inflate `org`'s recall denominator -- `n_truth` counts only pairs whose org is
+    recoverable."""
+    truth = Truth(
+        org={"github:a/b": {"has-handle"}, "github:c/d": {"no-handle"}},
+        recoverable_orgs=frozenset({"has-handle"}),
+        orgs_rostered=frozenset({"has-handle", "no-handle"}),
+    )
+    m = replay({"org": []}, truth)["org"]
+    assert m.n_truth == 1
+    assert m.n_truth_unrecoverable == 1
+
+
+def test_emitted_edge_to_a_handle_less_org_still_counts_toward_precision():
+    """Precision truth is unchanged: an edge correctly naming an org with no declared handle
+    is still a correct edge, and must not be scored as a false positive just because that org
+    cannot contribute to recall."""
+    truth = Truth(
+        org={"github:a/b": {"no-handle"}},
+        recoverable_orgs=frozenset(),
+        orgs_rostered=frozenset({"no-handle"}),
+    )
+    edges = {"org": [
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "no-handle",
+         "confidence": 1.0, "method": ["org_handle"]},
+    ]}
+    m = replay(edges, truth)["org"]
+    assert m.precision == 1.0  # still counted correct for precision
+    assert m.n_truth == 0  # but excluded from the recall denominator
+    assert m.recall is None  # no recoverable truth at all -- nothing to have recalled
+    assert m.n_truth_unrecoverable == 1
+
+
+def test_handle_coverage_computed_correctly_on_a_fixture():
+    truth = Truth(
+        recoverable_orgs=frozenset({"a", "b"}),
+        orgs_rostered=frozenset({"a", "b", "c", "d"}),
+    )
+    assert org_handle_coverage(truth) == (2, 4)
+
+
+def test_org_handle_coverage_against_the_real_corpus_matches_recoverable_orgs():
+    n_with_handle, n_rostered = org_handle_coverage(REAL_TRUTH)
+    assert n_with_handle == len(REAL_TRUTH.recoverable_orgs)
+    assert n_rostered == len(REAL_TRUTH.orgs_rostered)
+    assert 0 < n_with_handle <= n_rostered
+
+
+def test_non_org_relations_carry_zero_n_truth_unrecoverable():
+    truth = Truth(equivalence={"github:a/b": "p"})
+    edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "head",
+                              "product_slug": "p", "confidence": 1.0, "method": ["m"]}]}
+    m = replay(edges, truth)["equivalence"]
+    assert m.n_truth_unrecoverable == 0
 
 
 # ---------------------------------------------------------------------------
@@ -490,7 +553,7 @@ def test_floor_status_not_evaluated_when_relation_absent():
 
 
 def test_floor_status_checked_and_failing():
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
     edges = {"org": [
         {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "wrong",
          "confidence": 1.0, "method": ["org_handle"]}
@@ -502,7 +565,7 @@ def test_floor_status_checked_and_failing():
 
 
 def test_floor_status_checked_and_passing():
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
     edges = {"org": [
         {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "org_slug": "acme",
          "confidence": 1.0, "method": ["org_handle"]}
@@ -517,7 +580,7 @@ def test_floor_status_abstains_on_precision_when_nothing_emitted():
     """SF2: `precision is None` (the declared slice emitted nothing at all) must not read as
     0.0 and fail a precision floor for a reason that is not a precision problem -- only
     recall's real 0.0 should fail here."""
-    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)})
+    truth = Truth(org={f"github:{i}/x": {"acme"} for i in range(30)}, recoverable_orgs=frozenset({"acme"}))
     edges = {"org": []}  # nothing emitted at all
     metrics = replay(edges, truth)
     assert metrics["org"].precision is None
