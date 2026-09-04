@@ -177,8 +177,15 @@ jobs:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: uv run python -m build.publish_neon
       # Read the schema back independently and put the counts in the run summary. A publish
-      # returning 0 says the swap committed; this says what a reader now sees.
+      # returning 0 says the swap committed; this says what a reader now sees. Also teed to
+      # the step log, because the run summary is only readable in the web UI and this is the
+      # record you want when comparing two runs from a terminal. The report carries no part
+      # of the DSN, by construction — see build/neon_status.py.
       - name: Report what Neon is serving
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
-        run: uv run python -m build.neon_status >> "$GITHUB_STEP_SUMMARY"
+        # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would
+        # succeed and the step would pass over a read-back that failed.
+        run: |
+          set -o pipefail
+          uv run python -m build.neon_status | tee -a "$GITHUB_STEP_SUMMARY"
