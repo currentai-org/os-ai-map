@@ -64,6 +64,11 @@ read `os-ai-map` can also read the superseded corpus under `os-ai-map_previous`.
 meant to, and the publisher does not stop anything from trying — do not build against that
 name.
 
+**Nothing reads Neon yet.** The front end still consumes `build/notebook_data.json`, so the
+four ordering columns above are preservation for the consumer that comes next rather than
+something in use today. A publish that dropped the information would destroy it, and carrying
+it costs four integers per row.
+
 **Neon serves the site's tables, and nothing else.** The target model from CLEVER FRANKE,
 with Carl's amendments: `products`, `organizations`, `categories`, `layers`, `stages`, `gaps`,
 `gaps_categories`, `openness`, `adoption`, `capability`, `sources`, `product_lineage`,
@@ -94,10 +99,16 @@ by mistake matches nothing rather than appearing to work.
 
 The natural key per table: `products.slug`, `categories.slug`, `layers` and `gaps` by their
 label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
-`(product_slug, relation, target)`, `sources` by `(product_slug, metric, url)`. Organizations
-key on `slug` and aliases on `alias`, with no surrogate at all. A source list that carries the
-same URL twice on the same axis gets `#2` appended before hashing, so both rows are
-addressable.
+`(product_slug, relation, target)`, `sources` by
+`(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
+`alias`, with no surrogate at all.
+
+A source's key carries `shows` and `accessed` because the URL alone does not identify the row.
+One source list can hold the same URL twice on the same axis — 69 pairs today — and every one
+of those pairs is a re-verification that recorded a different claim or a different date. They
+are two observations of one page, and those two fields are what tell them apart. The
+consequence worth knowing: editing a source's `shows` or `accessed` moves that row's id,
+because it is a different observation and an id moves when its natural key does.
 
 **The slug remains canonical.** A deep link, a bookmark, a CMS reference, anything another
 system stores or a person reads should carry the slug, not the id. The id is a join key, and
@@ -168,8 +179,8 @@ Four places, all deliberate, all in `build/neon_schema.py`:
 | Departure | Why |
 |---|---|
 | `id` and every column referencing one are `bigint`, not `integer` | The ids are 63-bit hashes. 63 rather than 64 because Postgres has no unsigned integer and half the ids would otherwise be negative. |
-| `categories.slug`, which the DBML omits | Every deep link and every join from the registry group is by slug, and it carries a `UNIQUE` for the same reason. |
-| `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | The old positional ids carried the layer stack order, the map's curated category order, the long tail's ranking and the stage number. A hashed id carries none of that, so it moved into columns of its own. `ORDER BY sort_order` is what `ORDER BY id` used to mean. |
+| `categories.slug`, which the DBML omits | Every deep link is by slug, and so is every join from the warehouse's registry tables; it carries a `UNIQUE` for the same reason. |
+| `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | The old positional ids carried the layer stack order, the map's curated category order, the long tail's ranking and the stage number — `categories.stage` *was* the stage number, and `stages.id` was the number it pointed at. A hashed id carries none of that, and the model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So it moved into columns of its own; `ORDER BY sort_order` is what `ORDER BY id` used to mean. |
 | `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
 
 ### Two things the designers should know about the data

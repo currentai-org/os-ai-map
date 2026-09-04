@@ -677,6 +677,12 @@ def main() -> int:
     parser.add_argument(
         "--site-dir", type=Path, default=SITE_DIR, help="where the site tables' CSVs are rendered"
     )
+    parser.add_argument(
+        "--payload",
+        type=Path,
+        default=PAYLOAD_PATH,
+        help=f"the payload every table is rendered from (default {PAYLOAD_PATH.name})",
+    )
     args = parser.parse_args()
 
     try:
@@ -686,7 +692,7 @@ def main() -> int:
         return 2
 
     try:
-        plans, missing = plan(args.site_dir)
+        plans, missing = plan(args.site_dir, args.payload)
     except IdCollision as error:
         # Two natural keys on one surrogate id. The COPY would fail on the primary key and
         # name neither of them, so the publish stops here with both in hand.

@@ -25,6 +25,7 @@ from build.neon_schema import (
     IdCollision,
     UnmappedValue,
     build_site_tables,
+    check_ids_unique,
     enum_value,
     load_payload,
     product_ids,
@@ -420,7 +421,16 @@ def _fixture_payload(extra_slug: str | None = None) -> dict:
             "product": "Mid",
             "org_slug": "acme",
             "type": "model",
-            "openness": {"score": 3, "sources": [{"url": "https://example.test/mid"}]},
+            "openness": {
+                "score": 3,
+                "sources": [
+                    {
+                        "url": "https://example.test/mid",
+                        "shows": "the licence",
+                        "accessed": "2026-08-13",
+                    }
+                ],
+            },
             "lineage": {"derived_from": ["some-base"]},
         },
         {"slug": "zeta-product", "product": "Zeta", "org_slug": "acme", "type": "model"},
@@ -443,7 +453,7 @@ def _fixture_payload(extra_slug: str | None = None) -> dict:
         },
         "descriptions": {"categories": {}, "gaps": {}, "stages": {}},
         "organizations": {"acme": {"display_name": "Acme", "type": "company"}},
-        "aliases": {},
+        "aliases": {"products": {"mid": "mid-product"}},
         "long_tail": {"top": [{"name": "Tail One"}], "counts": {"model": 1}},
     }
 
@@ -485,7 +495,7 @@ def test_the_foreign_keys_in_a_fixture_corpus_resolve_to_the_hashed_parents():
     }
     assert [row["product_id"] for row in tables["sources"]] == [mid]
     assert [row["id"] for row in tables["sources"]] == [
-        stable_id("sources", "mid-product|openness|https://example.test/mid")
+        stable_id("sources", "mid-product|openness|2026-08-13|https://example.test/mid|the licence")
     ]
     assert [row["id"] for row in tables["product_lineage"]] == [
         stable_id("product_lineage", "mid-product|derived_from|some-base")
@@ -495,18 +505,67 @@ def test_the_foreign_keys_in_a_fixture_corpus_resolve_to_the_hashed_parents():
     ]
 
 
-def test_a_repeated_source_url_still_gets_an_id_of_its_own():
-    """A product can list the same URL twice on the same axis, and both rows need a key."""
+def test_the_same_url_read_twice_is_two_observations_with_two_ids():
+    """A source list can carry the same URL twice on the same axis. Each entry is a separate
+    re-verification, so `shows` and `accessed` are part of the key rather than tie-breakers."""
     payload = _fixture_payload()
     product = payload["categories"]["a_category"]["products"][0]
     product["openness"]["sources"] = [
-        {"url": "https://example.test/mid"},
-        {"url": "https://example.test/mid"},
+        {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-13"},
+        {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-14"},
     ]
     ids = [row["id"] for row in build_site_tables(payload)["sources"]]
-    assert len(set(ids)) == 2
-    assert ids[0] == stable_id("sources", "mid-product|openness|https://example.test/mid")
-    assert ids[1] == stable_id("sources", "mid-product|openness|https://example.test/mid#2")
+    assert ids == [
+        stable_id("sources", "mid-product|openness|2026-08-13|https://example.test/mid|the licence"),
+        stable_id("sources", "mid-product|openness|2026-08-14|https://example.test/mid|the licence"),
+    ]
+
+
+def test_deleting_one_re_verification_leaves_the_others_id_alone():
+    """The defect the fuller key exists to prevent. Keyed on the URL alone, deleting the
+    earlier of a pair promoted the later one into the un-suffixed key and handed it the
+    deleted row's id — so a stored reference resolved to a row with a different claim and a
+    different date, and nothing raised, because the ids were still unique."""
+    both = _fixture_payload()
+    product = both["categories"]["a_category"]["products"][0]
+    first = {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-13"}
+    second = {"url": "https://example.test/mid", "shows": "a wider claim", "accessed": "2026-08-14"}
+    product["openness"]["sources"] = [first, second]
+    before = {row["id"]: row["shows"] for row in build_site_tables(both)["sources"]}
+
+    survivor_only = _fixture_payload()
+    survivor_only["categories"]["a_category"]["products"][0]["openness"]["sources"] = [second]
+    after = {row["id"]: row["shows"] for row in build_site_tables(survivor_only)["sources"]}
+
+    survivor = next(ident for ident, shows in before.items() if shows == "a wider claim")
+    deleted = next(ident for ident, shows in before.items() if shows == "the licence")
+    assert list(after) == [survivor], "the survivor kept its own id"
+    assert deleted not in after, "the deleted row's id was not handed to anyone"
+
+
+def test_the_disambiguator_never_fires_on_the_real_corpus():
+    """`_disambiguate` numbers by walk position, so it carries the very bug the natural keys
+    exist to avoid. It is a guard against a future corpus, not a working part of the scheme —
+    a red here means two source rows are genuinely indistinguishable and the key needs
+    widening, not that the suffix should be relied on."""
+    from build.neon_schema import _axis, _by_slug, _source_key
+    from build.vocabulary import axes
+
+    payload = load_payload()
+    keys = [
+        _source_key(slug, metric, source)
+        for slug, _cid, product in _by_slug(payload)
+        for metric in axes()
+        for source in _axis(product, metric).get("sources") or []
+        if isinstance(source, dict)
+    ]
+    duplicates = {key for key in keys if keys.count(key) > 1} if len(keys) != len(set(keys)) else set()
+    assert not duplicates, f"{len(duplicates)} source keys repeat, so the suffix would fire"
+    # The suffix is appended, so only a key already ending `#<digits>` shares its namespace.
+    # A `#` anywhere else — a fragment in a URL, a note in `shows` — cannot be mistaken for one.
+    collidable = [key for key in keys if re.search(r"#\d+$", key)]
+    assert not collidable, f"{len(collidable)} keys end in a suffix shape the disambiguator uses"
+    assert len(build_site_tables(payload)["sources"]) == len(keys)
 
 
 @pytest.mark.parametrize(
@@ -569,6 +628,44 @@ def test_a_collision_exits_the_publisher_with_1(monkeypatch, tmp_path, capsys):
     )
     assert publisher.main() == 1
     assert "id collision" in capsys.readouterr().err
+
+
+def test_the_guard_covers_every_table_the_dbml_gives_a_key(monkeypatch):
+    """Keyed off the declared PRIMARY KEY rather than off a column named `id`, so the four
+    whose key is `product_id`, `slug` or `alias` are inside it too. The two tables the DBML
+    gives no key are the only ones exempt."""
+    from build.neon_schema import primary_key
+
+    keyed = {name for name in SITE_TABLES if primary_key(name)}
+    assert keyed == set(SITE_TABLES) - {"gaps_categories", "long_tail_counts"}
+    assert primary_key("openness") == ("product_id",)
+    assert primary_key("organizations") == ("slug",)
+    assert primary_key("aliases") == ("alias",)
+    assert primary_key("gaps_categories") == ()
+
+
+@pytest.mark.parametrize(
+    "table,column",
+    [("openness", "product_id"), ("organizations", "slug"), ("aliases", "alias")],
+)
+def test_a_duplicate_on_a_non_id_primary_key_is_caught_too(table, column):
+    """The `id`-only version of this guard skipped seven tables while claiming to cover
+    every way a duplicate could reach one."""
+    tables = build_site_tables(_fixture_payload())
+    rows = tables[table]
+    assert rows, f"{table} has no rows in the fixture corpus"
+    tables[table] = [rows[0], dict(rows[0])]
+    with pytest.raises(IdCollision) as error:
+        check_ids_unique(tables)
+    assert table in str(error.value)
+    assert str(rows[0][column]) in str(error.value)
+
+
+def test_a_table_with_no_declared_key_is_skipped_not_half_scanned():
+    """`gaps_categories` and `long_tail_counts` have no key in the DBML and none to invent."""
+    tables = build_site_tables(_fixture_payload())
+    tables["long_tail_counts"] = tables["long_tail_counts"] * 2
+    check_ids_unique(tables)
 
 
 def test_the_ordinal_the_id_used_to_carry_kept_a_column_of_its_own():
@@ -1132,6 +1229,28 @@ def test_every_not_null_the_dbml_declares_is_in_the_generated_ddl(table, column)
     definition = dict(spec.columns)[column]
     assert "NOT NULL" in definition, f"{table}.{column} is nullable"
     assert f'"{column}"' in sql
+
+
+def test_a_missing_payload_reports_every_table_pending_rather_than_planning_none(tmp_path):
+    """`build/notebook_data.json` is tracked, so this branch is nearly unreachable — which
+    makes it likelier to rot unnoticed, not less. Every table is rendered from the payload, so
+    without it there is nothing to load and the tables are reported, not silently skipped."""
+    plans, missing = plan(
+        site_dir=tmp_path / "site", payload_path=tmp_path / "no-such-payload.json"
+    )
+    assert plans == []
+    assert missing == list(SITE_TABLES)
+
+
+def test_a_publish_with_no_payload_exits_2_and_says_what_to_build(tmp_path):
+    """Loading the rest would publish a partial map that looks complete."""
+    result = _run(
+        ["--site-dir", str(tmp_path / "site"), "--payload", str(tmp_path / "absent.json")],
+        {DSN_ENV: FAKE_DSN},
+    )
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "missing tables" in result.stderr
+    assert "notebook_data.json" in result.stderr
 
 
 def test_every_planned_table_is_one_the_schema_module_declares(tmp_path):

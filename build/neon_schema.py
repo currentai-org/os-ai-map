@@ -32,8 +32,9 @@ so a mistaken join across them finds nothing rather than appearing to work.
 
 The natural key per table: `products.slug`, `categories.slug`, `layers` and `gaps` by their
 label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
-`(product_slug, relation, target)`, `sources` by `(product_slug, metric, url)`. Organizations
-key on `slug` and aliases on `alias` directly, with no surrogate at all.
+`(product_slug, relation, target)`, `sources` by
+`(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
+`alias` directly, with no surrogate at all.
 
 The ids are 63-bit, so the columns are `BIGINT` where the designers' model says `integer`.
 Postgres has no unsigned integer type, which is why 63 bits and not 64: the top bit would
@@ -43,20 +44,34 @@ make half the ids negative.
 but a link, a bookmark, a CMS row or anything a person reads should carry the slug. The id
 is a join key, and it changes if the natural key it is derived from ever changes.
 
-One source list can carry the same URL twice on the same axis (69 such pairs today), so a
-repeat gets `#2`, `#3` appended to its key before hashing. That keeps every row addressable,
-at the cost that removing one of a duplicated pair moves the other's id. The real remedy is
-not to record the same source twice.
+A source's key carries `shows` and `accessed` because the URL alone does not identify the
+row: one source list can hold the same URL twice on the same axis (69 pairs today), and each
+of those pairs is a re-verification recording a different claim or a different date. They are
+two observations, and the key is what tells them apart. `_disambiguate` remains as a last
+resort for a future corpus and fires on nothing today, which a test asserts against the real
+payload — if it ever did fire it would number by position, and a deleted row would hand its id
+to its surviving twin.
 
 ## The ordinal the id used to carry now has its own column
 
-`layers.id`, `categories.id`, `stages.id` and `long_tail_top.id` were positions, and three
-of those positions were load-bearing: the layer stack order, the map's curated category
-order, the stage number a category's `stage` FK pointed at, and the long tail's ranking. A
-hashed id carries none of that, so it moved into `layers.sort_order`,
-`categories.sort_order`, `long_tail_top.sort_order` and `stages.num` — a departure from the
-designers' model, added because dropping the information would have been the worse one.
-`ORDER BY sort_order` is what the old `ORDER BY id` meant.
+`layers.id`, `categories.id`, `stages.id` and `long_tail_top.id` were positions, and each of
+those positions carried something: the layer stack order, the map's curated category order,
+the long tail's ranking, and — most sharply — the stage number, because `categories.stage`
+was literally the number and `stages.id` was literally the number it pointed at. A hashed id
+carries none of that.
+
+The designers' model has nowhere else to put it. `layers` is `{id, label}`, `stages` is
+`{id, label, desc}`, `long_tail_top` has no ordering field, and `stages` has no number, so
+`label` is a display name and the `descriptions.stages` legend keys on a number the table
+would no longer hold. Drop the information and a consumer cannot render the stack bottom-up,
+cannot reproduce the curated order, cannot rank the tail, and cannot say which stage "Stage 3"
+is. So it moved into `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`
+and `stages.num`. `ORDER BY sort_order` is what the old `ORDER BY id` meant.
+
+Four columns the designers' model does not declare, and nothing reads Neon today — the front
+end still consumes `notebook_data.json`. This is preservation for the consumer that comes
+next, because a publish that drops the information destroys it, and the cost of carrying it is
+four integers per row.
 
 ## The constraints are real, and a violation fails the run
 
@@ -141,6 +156,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -174,8 +190,9 @@ class IdCollision(RuntimeError):
 
 # --- stable ids -----------------------------------------------------------------------
 
-# The composite natural keys (`sources`, `product_lineage`) join their parts with this. Not a
-# character any slug, relation or metric name contains, so the join is unambiguous.
+# The composite natural keys (`sources`, `product_lineage`) join their parts with this. The
+# join is unambiguous because each key puts its controlled values first and leaves at most one
+# unbounded component last, not because the separator is unusual — see `_source_key`.
 KEY_SEPARATOR = "|"
 
 
@@ -226,12 +243,18 @@ def _id_map(table: str, keys: Iterable[str]) -> dict[str, int]:
 
 
 def _disambiguate(keys: Iterable[str]) -> list[str]:
-    """Append `#2`, `#3` to a key that repeats, so every row has one key of its own.
+    """Append `#2`, `#3` to a key that repeats. A last resort that should never fire.
 
-    Only `sources` needs this: a product's source list can carry the same URL twice on the
-    same axis. The consequence is that removing one of a duplicated pair moves the other's
-    id, which is a reason to dedupe the source list rather than a reason to number rows by
-    position again.
+    It numbers by walk position, so if it ever does fire it carries the bug the natural keys
+    exist to avoid: delete the earlier of a repeated pair and the later one is promoted into
+    the un-suffixed key, **inheriting the deleted row's id**. A stored reference then resolves
+    to a different row with no gate firing, which is worse than the positional scheme this
+    module replaced, because that one renumbered visibly and en masse.
+
+    So the keys handed to it must already be unique. `sources` is the only caller and its key
+    includes `shows` and `accessed`, under which no two rows in the corpus collide —
+    `tests/test_publish_neon.py` asserts that on the real payload. This stays as a guard
+    against a future corpus, not as a working part of the scheme.
     """
     seen: dict[str, int] = {}
     out = []
@@ -241,28 +264,51 @@ def _disambiguate(keys: Iterable[str]) -> list[str]:
     return out
 
 
+_PRIMARY_KEY = re.compile(r'PRIMARY KEY \(([^)]*)\)')
+
+
+def primary_key(table: str) -> tuple[str, ...]:
+    """The columns in a table's declared PRIMARY KEY, or `()` where it declares none.
+
+    Read from the constraint the DDL actually emits rather than restated, so a key that moves
+    moves this too. `gaps_categories` and `long_tail_counts` have no key in the DBML and none
+    to invent, so they come back empty.
+    """
+    for clause in SITE_TABLES[table].constraints:
+        match = _PRIMARY_KEY.match(clause)
+        if match:
+            return tuple(part.strip().strip('"') for part in match.group(1).split(","))
+    return ()
+
+
 def check_ids_unique(tables: dict[str, list[dict]]) -> None:
-    """Fail the publish if any table's `id` column repeats. The last gate before COPY.
+    """Fail the publish if any table repeats its primary key. The last gate before COPY.
+
+    Keyed off each table's declared PRIMARY KEY rather than off a column literally named
+    `id`, so it also covers the four whose key is `product_id`, `slug` or `alias`. The two
+    tables the DBML gives no key are the two it skips, and nothing else is exempt.
 
     `_id_map` catches a collision where both natural keys are in hand, which is the case that
-    can name them. This is the backstop for every other way a duplicate id could reach a
-    table — a builder that stopped going through `_id_map`, a key computed twice from
-    different fields — and it runs over the rows that are actually about to be written.
+    can name them. This is the backstop for every other way a duplicate could reach a table —
+    a builder that stopped going through `_id_map`, a key computed twice from different
+    fields — and it runs over the rows that are actually about to be written.
     """
     for name, rows in tables.items():
-        seen: dict[int, dict] = {}
+        key_columns = primary_key(name)
+        if not key_columns:
+            continue
+        seen: dict[tuple, dict] = {}
         for row in rows:
-            ident = row.get("id")
-            if ident is None:
-                break  # this table has no id column at all
-            first = seen.get(ident)
+            key = tuple(row.get(column) for column in key_columns)
+            first = seen.get(key)
             if first is not None:
+                shown = key[0] if len(key) == 1 else key
                 raise IdCollision(
-                    f"{name}: id {ident} is used by two rows, {first!r} and {row!r}. "
-                    f"The table's primary key would reject one of them at COPY time; "
-                    f"this publish has stopped instead."
+                    f"{name}: primary key {shown!r} is used by two rows, {first!r} and "
+                    f"{row!r}. Postgres would reject one of them at COPY time; this publish "
+                    f"has stopped instead."
                 )
-            seen[ident] = row
+            seen[key] = row
 
 
 # --- enums ----------------------------------------------------------------------------
@@ -587,12 +633,51 @@ def _capability(payload: dict) -> list[dict]:
     return out
 
 
+def _source_key(slug: str, metric: str, source: dict) -> str:
+    """`(product_slug, metric, url, shows, accessed)` — the natural key of one source row.
+
+    The URL alone does not identify the row. A product's source list can carry the same URL
+    twice on the same axis (69 pairs today), and every one of those pairs is a
+    re-verification: the same page read on a different date, or recorded as showing something
+    different. They are two observations, not one row duplicated, so the key has to carry what
+    tells them apart.
+
+    Keying on the URL alone and numbering the repeats would mean that deleting the earlier of
+    a pair promoted the later one into the un-suffixed key and handed it the deleted row's id.
+    Anything holding the old id would then resolve to a row with a different claim and a
+    different date, with no gate firing — the exact failure the hashed ids exist to prevent.
+
+    Two consequences, both intended. Editing a source's `shows` or `accessed` moves that row's
+    id, because it is a different observation of the same URL and the module's rule is that an
+    id moves when its natural key does. And the key is order-independent: reordering a source
+    list, or deleting a sibling, leaves every other row's id alone.
+
+    The parts are joined slug, metric, accessed, url, shows: the three controlled values
+    first, then the free text, with the only genuinely unbounded one (`shows`, which holds
+    prose) last. That ordering is what makes the joined string unambiguous, rather than any
+    property of the separator — a `|` inside `shows` cannot shift a boundary, because there is
+    nothing after it.
+    """
+    return KEY_SEPARATOR.join(
+        (
+            slug,
+            metric,
+            source.get("accessed") or "",
+            source.get("url") or "",
+            source.get("shows") or "",
+        )
+    )
+
+
 def _sources(payload: dict) -> list[dict]:
     """Every source on every axis, one row each, in the deterministic walk order.
 
     The target model has a `notes` column the payload has no field for; the payload's
     `establishes`, `content_sha256` and `http_status` have no column. `shows` is the one that
     maps, and `notes` stays NULL rather than being filled with an adjacent field.
+
+    The grain is one *observation*, which is why the key carries `shows` and `accessed`: see
+    `_source_key`.
     """
     ids = product_ids(payload)
     walked: list[tuple[str, str, dict]] = []
@@ -601,10 +686,7 @@ def _sources(payload: dict) -> list[dict]:
             for source in _axis(product, metric).get("sources") or []:
                 if isinstance(source, dict):
                     walked.append((slug, metric, source))
-    keys = _disambiguate(
-        KEY_SEPARATOR.join((slug, metric, source.get("url") or ""))
-        for slug, metric, source in walked
-    )
+    keys = _disambiguate(_source_key(slug, metric, source) for slug, metric, source in walked)
     source_ids = _id_map("sources", keys)
 
     out = []
@@ -674,9 +756,8 @@ def _categories(payload: dict) -> list[dict]:
         out.append(
             {
                 "id": ident,
-                # Not in the PDF. Added because every deep link and every join from the
-                # registry group is by slug, and an id assigned by curated order changes
-                # whenever the order does.
+                # Not in the PDF. Added because every deep link is by slug, and the id it
+                # sits beside is a hash rather than something a person can read or guess.
                 "slug": cid,
                 "sort_order": order[cid],
                 "label": category.get("label") or "",
