@@ -100,6 +100,29 @@ artifacts in the corpus today genuinely belong to two orgs each
 which silently kept only the first org read and scored the second as a false positive. Every
 emitted org in the truth set for a candidate counts as correct.
 
+## Org recall is measured against recoverable truth
+
+The graph can only recover an org through a declared handle in `sources/org_handles.yaml`
+(`registry.org_handles` once published) -- there is no other route from an artifact to an
+org. Org truth, however, is every declared `(candidate_key, org_slug)` pair bridged through a
+product's org roster, whether or not that org happens to declare a handle -- most of the
+corpus does (302 of 347 orgs, any platform, as of this writing), but a curation gap in
+`org_handles.yaml` is not a graph defect, and scoring recall against the full, unrestricted
+truth set bounds recall at the coverage fraction no matter how good the graph is. So **org
+recall truth is restricted to pairs whose `org_slug` declares at least one handle** (any
+platform) in `sources/org_handles.yaml` -- `Truth.recoverable_orgs`, loaded via the same
+optional-YAML loader `build.validate` uses (`_load_optional_yaml`, tolerant of the file not
+existing at all in an older tree). Precision truth is unchanged: every emitted org edge is
+still judged against the full truth set, since an edge to an org with no handle is either
+wrong (real false positive) or a graph capability this eval has no business hiding.
+
+Two things stay visible so the restriction cannot quietly hide the curation gap: the eval
+prints a `handle coverage: <orgs with >=1 handle>/<orgs rostered> (<pct>)` line (`orgs
+rostered` = every organization with at least one product on its roster, the population org
+truth is drawn from), and `Metrics.n_truth_unrecoverable` -- the truth pairs dropped from
+`org`'s recall denominator because their org has no handle -- appears in the table for every
+relation (0 except for `org`).
+
 ## What `--from-warehouse` supplies, and what it does not
 
 Only the four edge tables -- `currentai.identity.{artifact_identity,membership,equivalence,
@@ -174,6 +197,7 @@ import yaml
 from build import resolution
 from build.identity import KINDS, fold_for_proposal
 from build.serialize_registry import artifact_id
+from build.validate import _load_optional_yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS_PATH = ROOT / "warehouse" / "assets.yaml"
@@ -416,6 +440,12 @@ class Truth:
     `route_kinds`: artifact kinds `sources/signal_routing.yaml` compiles at least one adoption
     route for -- used only to split membership truth into scoring/non-scoring buckets for
     `n_truth`, mirroring `identity_membership_edges.sql`'s own `scoring_bearing` derivation.
+    `recoverable_orgs`: rostered org slugs (every org with >=1 product on its roster) that
+    declare at least one handle in `sources/org_handles.yaml` -- the graph's only route from an
+    artifact to an org. `org` recall truth is restricted to this set (see the module docstring
+    "Org recall is measured against recoverable truth"); `org` precision truth is not.
+    `orgs_rostered`: every rostered org slug, recoverable or not -- the denominator of the
+    `handle coverage` line (`org_handle_coverage`).
     """
 
     equivalence: dict[str, str] = field(default_factory=dict)
@@ -424,6 +454,8 @@ class Truth:
     org: dict[str, set[str]] = field(default_factory=dict)
     identity_pairs: set[tuple[str, str, str]] = field(default_factory=set)
     route_kinds: frozenset[str] = field(default_factory=frozenset)
+    recoverable_orgs: frozenset[str] = field(default_factory=frozenset)
+    orgs_rostered: frozenset[str] = field(default_factory=frozenset)
 
 
 @dataclass
@@ -432,6 +464,10 @@ class Metrics:
     recall: float | None
     n_truth: int
     n_emitted_at_threshold: int
+    # Truth pairs excluded from `n_truth`/recall because they cannot be recovered by the graph
+    # at all -- only meaningful for `org` (an org with no declared handle in
+    # `sources/org_handles.yaml`); 0 for every other relation.
+    n_truth_unrecoverable: int = 0
 
 
 class KnownNegativeDeclaredError(ValueError):
@@ -500,6 +536,32 @@ def _membership_from_ledger(entries: Iterable[dict]) -> dict[tuple[Key, str], bo
         if slug:
             out[(resolution.artifact_of(entry), slug)] = entry["verdict"] == "member_of"
     return out
+
+
+ORG_HANDLES_PATH = ROOT / "sources" / "org_handles.yaml"
+
+
+def _orgs_with_handles(path: Path = ORG_HANDLES_PATH) -> frozenset[str]:
+    """Org slugs that declare at least one handle (any platform) in `sources/org_handles.yaml`.
+
+    Reuses `build.validate._load_optional_yaml` -- the same loader `validate_sources` reads
+    this file with -- so an older tree that predates the file (no `sources/org_handles.yaml`
+    at all) reads as "no orgs declare a handle" rather than raising, exactly as it does there.
+    """
+    doc = _load_optional_yaml(path, {"version": 1, "handles": []})
+    return frozenset(
+        entry["org"]
+        for entry in doc.get("handles") or []
+        if isinstance(entry, dict) and isinstance(entry.get("org"), str)
+    )
+
+
+def org_handle_coverage(truth: Truth) -> tuple[int, int]:
+    """`(orgs with >=1 handle, orgs rostered)` -- the two numbers behind the `handle coverage`
+    line. `truth.recoverable_orgs` is already restricted to rostered orgs (see `load_truth`),
+    so its size is the numerator directly.
+    """
+    return len(truth.recoverable_orgs), len(truth.orgs_rostered)
 
 
 def _route_kinds() -> frozenset[str]:
@@ -587,6 +649,9 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
             )
         membership[(key, neg["product_slug"])] = False
 
+    orgs_rostered = frozenset(o for orgs in product_org.values() for o in orgs)
+    recoverable_orgs = orgs_rostered & _orgs_with_handles()
+
     return Truth(
         equivalence=equivalence,
         equivalence_negatives=equivalence_negatives,
@@ -594,6 +659,8 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
         org=org,
         identity_pairs=identity_pairs,
         route_kinds=_route_kinds(),
+        recoverable_orgs=recoverable_orgs,
+        orgs_rostered=orgs_rostered,
     )
 
 
@@ -652,15 +719,26 @@ def _score_org(emitted: list[dict], truth: Truth) -> Metrics:
     correctly emitted org as a false positive. `n_truth` counts distinct
     `(candidate_key, org_slug)` PAIRS, not distinct candidate_keys, so a two-org artifact
     counts as two truth items for recall, not one.
+
+    Recall truth is further restricted to pairs whose org declares a handle
+    (`truth.recoverable_orgs` -- see the module docstring "Org recall is measured against
+    recoverable truth"); precision truth is not. `correct_fn` returns `tk = None` for a
+    correct-but-unrecoverable match, which keeps it out of `matched_truth`/recall (via `_score`
+    filtering `tk is not None`) while it still counts toward `n_correct`/precision, since
+    `is_correct` is `True` either way.
     """
 
     def correct_fn(e: dict):
         ck, slug = e.get("candidate_key"), e.get("org_slug")
         ok = slug in truth.org.get(ck, ())
-        return ok, ((ck, slug) if ok else None)
+        recoverable = ok and slug in truth.recoverable_orgs
+        return ok, ((ck, slug) if recoverable else None)
 
-    n_truth = sum(len(orgs) for orgs in truth.org.values())
-    return _score(emitted, _org_key, correct_fn, n_truth)
+    n_truth_total = sum(len(orgs) for orgs in truth.org.values())
+    n_truth = sum(1 for orgs in truth.org.values() for slug in orgs if slug in truth.recoverable_orgs)
+    metrics = _score(emitted, _org_key, correct_fn, n_truth)
+    metrics.n_truth_unrecoverable = n_truth_total - n_truth
+    return metrics
 
 
 def _identity_pair(e: dict) -> tuple[str, str, str]:
@@ -692,7 +770,7 @@ def _score_tiered(rows: list[dict], truth: Truth, relation: str, score_fn, key_f
     emitted_pool = [e for e in pool if emits(e, relation)]
     metrics = score_fn(emitted_declared, truth)
     pool_count = len({key_fn(e) for e in emitted_pool})
-    return Metrics(metrics.precision, metrics.recall, metrics.n_truth, pool_count)
+    return Metrics(metrics.precision, metrics.recall, metrics.n_truth, pool_count, metrics.n_truth_unrecoverable)
 
 
 def replay(edges: dict[str, list[dict]], truth: Truth) -> dict[str, Metrics]:
@@ -934,7 +1012,7 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
 def print_table(metrics: dict[str, Metrics]) -> None:
     header = (
         f"{'relation':24s} {'precision':>10s} {'recall':>10s} {'n_truth':>8s} "
-        f"{'n_emitted':>10s}  status"
+        f"{'n_emitted':>10s} {'n_unrecov':>10s}  status"
     )
     print(header)
     print("-" * len(header))
@@ -944,7 +1022,11 @@ def print_table(metrics: dict[str, Metrics]) -> None:
         recall = f"{m.recall:.3f}" if m and m.recall is not None else "n/a"
         n_truth = m.n_truth if m else 0
         n_emitted = m.n_emitted_at_threshold if m else 0
-        print(f"{relation:24s} {precision:>10s} {recall:>10s} {n_truth:>8d} {n_emitted:>10d}  {floor_status(relation, metrics)}")
+        n_unrecov = m.n_truth_unrecoverable if m else 0
+        print(
+            f"{relation:24s} {precision:>10s} {recall:>10s} {n_truth:>8d} {n_emitted:>10d} "
+            f"{n_unrecov:>10d}  {floor_status(relation, metrics)}"
+        )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1012,6 +1094,10 @@ def main(argv: list[str] | None = None) -> int:
     truth = load_truth()
     metrics = replay(edges, truth)
     print_table(metrics)
+
+    n_with_handle, n_rostered = org_handle_coverage(truth)
+    pct = (100 * n_with_handle / n_rostered) if n_rostered else 0.0
+    print(f"\nhandle coverage: {n_with_handle}/{n_rostered} ({pct:.1f}%)")
 
     if args.floors:
         failures = floor_failures(metrics)

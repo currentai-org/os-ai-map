@@ -257,6 +257,15 @@ error, folded the same way any other identity comparison is (case-insensitive, a
 `princeton-nlp-openai` — the handle is assigned to the public or canonical org, and the row's
 `note` names the sibling; the sibling org file is untouched.
 
+A handle is also the graph's only route from an artifact to an org, which is why
+`build/identity_eval.py` measures `org` recall against **recoverable** truth rather than every
+declared `(candidate_key, org_slug)` pair: an org with no handle can never be recovered no matter
+how good the graph is, so including it would bound recall at the coverage fraction and read as a
+graph defect instead of the curation gap it actually is. Precision truth is unaffected — every
+emitted org edge is still judged against the full truth set. The eval prints a `handle coverage:
+<orgs with a handle>/<orgs rostered> (<pct>)` line so the gap stays visible as its own number
+rather than disappearing into a passing recall score.
+
 ### Model families bridge a release name to a tier-level slug
 
 Vendors ship version-numbered releases under one product line — `grok-3`, `grok-4` — but the map
