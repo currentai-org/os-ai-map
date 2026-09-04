@@ -41,6 +41,158 @@ NULL rather than absent, so "not measured" and "no such column" cannot be confus
 `adoption_signal_type` travels with `adoption_level` deliberately: a stars band and a downloads
 band are different scales, so a query that ranks across `signal_type` is wrong.
 
+## The Neon serving layer — the `os-ai-map` schema
+
+The front end reads products, scores and freshness dates from Postgres rather than from the
+warehouse, because a page render cannot wait on a Trino query. `build/publish_neon.py` loads
+the `os-ai-map` schema on every push to `main` that triggers `registry.yml`, one step after the
+OSO publish. This is what deprecates `build/notebook_data.json` as the site's transport; the
+file itself stays the repo's build artifact and its gate contract, and is the *input* to the
+load.
+
+The instance is shared. `drizzle`, `payload` and `public` belong to other parts of the site;
+`os-ai-map` is the gap map's, and the publisher touches only it and its own two working
+schemas, `os-ai-map_staging` and `os-ai-map_previous`. It refuses to run against any of the
+other three.
+
+Both working names are steady state, not transients. `os-ai-map_staging` exists while a load
+runs. `os-ai-map_previous` exists **between** runs and holds the entire previous corpus —
+tables, rows, enum types, and the `SELECT` grant that travelled with the rename — until the
+start of the next publish reclaims it. So the database normally carries two readable copies of
+the map: the live one and the one it replaced. Storage is roughly double, and anything that can
+read `os-ai-map` can also read the superseded corpus under `os-ai-map_previous`. Nothing is
+meant to, and the publisher does not stop anything from trying — do not build against that
+name.
+
+**Two groups of table, one schema.**
+
+*The map* — the target model from CLEVER FRANKE, with Carl's amendments: `products`,
+`organizations`, `categories`, `layers`, `stages`, `gaps`, `gaps_categories`, `openness`,
+`adoption`, `capability`, `sources`, `product_lineage`, `aliases`, `long_tail_top`,
+`long_tail_counts`. Every row is derived from `build/notebook_data.json`, so what Postgres
+serves is what the repo published.
+
+*The registry*, prefixed `registry_` — the same tables `publish_registry` publishes to OSO,
+derived from that module rather than from a directory listing, so the two surfaces carry the
+same registry by construction. The prefix exists because both groups have a `products`, a
+`categories` and an `organizations`.
+
+Plus `publish_runs`: exactly one row, describing the load you are looking at — the swap
+replaces the table along with everything else, so it is a stamp on the current corpus and not
+an accumulating history. It carries `run_id`, `published_at`, `schema_version`,
+`built_at`, `released_at`, `source_git_sha`, `declaration_version_id`, `table_count` and a
+`row_counts` JSONB. That row is how you tell which commit and which shape the serving layer is
+showing.
+
+**Keys are natural where the payload has one.** `products.id` exists for the FK shape the
+designers specified, but it is assigned by sorted slug on every load, so the same corpus gives
+the same ids and a diff of two loads is readable. The real key is `slug`. Organizations key on
+`slug`, aliases on `alias`, and `categories` carries a `slug` alongside its id — the PDF omitted
+it, and every deep link and every join from the registry group needs it.
+
+**The five enums are enforced.** `alias_kind`, `freshness_basis`, `lineage_relation`,
+`capability_relation` and `metric_name` are created in the schema, and a payload value with no
+mapping fails the load naming the value rather than being coerced to something adjacent. The
+DBML's other three (`health_status`, `integration_type`, `gap_type`) belong to the gallery
+tables and are not created here — see "What the CMS owns" below.
+
+**The DBML's constraints are real.** Every primary key, `NOT NULL`, unique and foreign key the
+target model declares is emitted in the CREATE statement, so the database enforces the model
+rather than the site discovering a dangling id at render time. `categories.slug` also gets a
+unique the DBML does not declare, because the column is an amendment and a duplicate slug
+would break the deep links it exists for. A violation aborts the COPY, the staging schema is
+discarded, and the live schema stays exactly where it was — failing there is the point.
+
+### The three dates, which are three different questions
+
+| Where | Column | Question it answers |
+|---|---|---|
+| `publish_runs` | `built_at` | When was this data built? The payload's `generated`. |
+| `publish_runs` | `released_at` | When was the release cut? The payload's `released`, which `build/serialize.py::release_date` reads from `CHANGELOG.md`. |
+| `products` | `freshness_date`, `freshness_basis` | When was this product's score last confirmed, and how — `verified` by a human, or `commit` as the fallback to the score file's last commit. |
+| `openness`, `adoption`, `capability` | `last_verified` | The same question asked of one axis. |
+
+`docs/reference/evidence-and-freshness.md` is normative for what a freshness date means and how it is
+derived. Do not read `built_at` as a freshness date: it says when the build ran, not when
+anything was checked.
+
+### What is not there
+
+**The warehouse recomputation.** `scores.openness_facts` and `scores.openness_computed` stay
+on OSO, and no table in `os-ai-map` recomputes an axis. A question about what the map *says* is
+answerable here; whether the warehouse *agrees* is `check_parity` against the tables above.
+
+### What the CMS owns
+
+**Gallery content is not in this schema.** `gallery`, `gallery_products` and `gallery_gaps`
+were here, created and left empty so the site's queries would compile. That was a hazard
+rather than a courtesy: this publisher drops and recreates its schema on every load, so the
+first gallery row an editor wrote would have been deleted by the next push to `main`, with
+nothing raising anywhere and every artifact of the publish still reporting `gallery 0 rows`.
+
+A schema rebuilt from source can only hold rows it produced. Gallery content is authored, so
+it belongs in the CMS's own `payload` schema, or in a separate `os-ai-map_cms` schema that
+this publisher never creates, never drops and never grants on. Both are on the same database,
+so a join across them costs a qualified name and nothing else.
+
+**For whoever builds that:** a *view* in the CMS schema over a table in `os-ai-map` will not
+survive a load. The cutover renames the schema, and a view binds to the table it was created
+over by OID rather than by name, so the view ends up pointing into `os-ai-map_previous` and is
+dropped when that is reclaimed. `publish_neon.reclaim_previous` detects exactly this and
+refuses to run rather than dropping the view — the failure is loud, but it is still a failure.
+Read the map's tables directly, or materialize a copy CMS-side.
+
+### Two things the designers should know about the data
+
+**`sources.notes` is always NULL.** The target model has the column and the payload has no
+field for it, so nothing here fills it. In the other direction, the payload's `establishes`,
+`content_sha256` and `http_status` have no column in the target model. `shows` is the one that
+maps.
+
+**`capability.relation` is lossy.** The payload carries a signed distance (`at`, `one_above`,
+`one_below`, `two_below`) and the target enum has none, so `one_below` and `two_below` both
+arrive as `tier_below`. The exact distance is only in `capability.notes`. `anchor` is in the
+enum and unused. If the front end needs the distance, the enum has to grow.
+
+### The load is atomic, and the swap is the migration path
+
+Rows go into `os-ai-map_staging`, dropped and recreated each run, and the cutover is two
+renames in one transaction: `os-ai-map` → `os-ai-map_previous`, then `os-ai-map_staging` →
+`os-ai-map`. A reader sees the whole old schema or the whole new one, never a table that has
+loaded next to one that has not. Grants are applied to the staging schema before the swap,
+since a rename carries privileges with it; `NEON_READ_ROLE` names the role granted `SELECT`,
+and unset means `PUBLIC`.
+
+**Nothing is dropped in that transaction.** `DROP SCHEMA … CASCADE` takes an exclusive lock on
+every table it removes, so a drop in the cutover would hold the applied-but-uncommitted
+renames behind any in-flight site query, and arriving readers would queue behind the pending
+lock — one slow reader stalling every reader for as long as it runs. Pure catalog renames take
+no table locks. `lock_timeout` is 5s on the session and the swap transaction is retried three
+times with backoff, because the schema's own catalog row can still be contended.
+
+The old schema stays as `os-ai-map_previous` and is reclaimed at the *start* of the next run,
+after `pg_depend` is checked for dependents outside the three schemas this publisher manages.
+If any exist the run fails listing them, rather than dropping. `PROTECTED_SCHEMAS` stops the
+publisher naming someone else's schema, but CASCADE follows dependencies, not schema
+membership: a view in `payload` over `os-ai-map.products`, or a foreign key from a CMS table
+into it, still depends on that table after the rename. Without the check, a CASCADE would drop
+that object too, in its own schema, silently, on every publish.
+
+There is no migration tool, and for now there does not need to be one: every publish rebuilds
+the schema from `build/neon_schema.py`, so a shape change is live on the next load with no
+ALTER anywhere. What that costs is a reader's ability to tell which shape it has, which is why
+`publish_runs.schema_version` exists — bump `SCHEMA_VERSION` in the same commit as any change
+to a table, column or enum. Once something outside this repo depends on the shape, that is the
+point where a real migration path replaces the swap.
+
+Column types for the map group are declared in `build/neon_schema.py`, next to the grain they
+describe. The registry group's are inferred from the data, because the serializers declare
+column names and not types: TEXT unless every non-empty value in the column parses as BOOLEAN,
+INTEGER, DOUBLE PRECISION or DATE, and identity columns (`slug`, anything ending `_slug` or
+`_id`) pinned to TEXT whatever they look like. A digits-only artifact id is a string with
+digits in it. An empty CSV field loads as NULL on both groups, so "absent" and "empty" are the
+same value.
+
 ## Openness — computed and gated
 
 | Where | What | Currency |

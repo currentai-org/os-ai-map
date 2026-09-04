@@ -80,6 +80,7 @@ holds it against the `cron:` lines it quotes.
 | What | When (UTC) | Where the cron lives |
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
+| `os-ai-map` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
@@ -127,6 +128,8 @@ Pushing the declarations is step 1, not the whole job:
 ```bash
 # push the repo's declarations and wait for the static models to materialize
 uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
+# load the same declarations into Neon, which is what the site reads
+uv run python -m build.publish_neon           # --check to plan without connecting
 # then walk the chain above, in order, and prove it with check_parity
 ```
 
@@ -215,6 +218,31 @@ newer revision is released and the mirror describes code that no longer runs, or
 released yet and the resync is cheap now. What the check cannot do is confirm that the revision
 it found is the one a run would materialize; that is the same gap as the missing
 revision-versus-release assertion noted above.
+The Neon step needs `NEON_DATABASE_URL` (in CI, the repository secret of that name; locally,
+the value in `.env`). It loads into `os-ai-map_staging` and swaps that into `os-ai-map` in one
+transaction, so it is safe to re-run and a reader never sees a half-loaded schema. The instance
+is shared with the rest of the site, and the publisher refuses to run against `drizzle`,
+`payload` or `public`.
+
+To verify a change to the load before it reaches `main`, dispatch the workflow on the branch.
+A dispatch always skips the OSO publish — the static models are org-wide and a branch must not
+overwrite them — and writes the resulting table counts, the constraint tally and the
+`publish_runs` row to the run summary:
+
+```bash
+gh workflow run registry.yml --ref <branch>
+```
+
+There is no flag to remember: the OSO step is guarded on `push` to `main`, so a dispatch never
+reaches it, on any ref.
+
+**OSO publishing now happens only on a push to `main`.** To republish the static models without
+a new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an
+empty commit — a `workflow_dispatch` will load Neon and leave OSO untouched however it is
+invoked.
+
+See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
+carries, and what it deliberately does not have.
 
 ## The parity gate
 

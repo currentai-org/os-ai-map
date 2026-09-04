@@ -38,6 +38,10 @@ on:
       - "build/resolution.py"
       - "build/vocabulary.py"
       - "build/publish_registry.py"
+      - "build/publish_neon.py"
+      - "build/neon_schema.py"
+      - "build/neon_status.py"
+      - "build/notebook_data.json"
       - ".github/workflows/registry.yml"
   push:
     branches: [main]
@@ -64,6 +68,16 @@ on:
       - "build/resolution.py"
       - "build/vocabulary.py"
       - "build/publish_registry.py"
+      - "build/publish_neon.py"
+      - "build/neon_schema.py"
+      - "build/neon_status.py"
+      # The site tables in Neon are built from the payload, so a regeneration of it is a
+      # change to what the serving layer holds.
+      - "build/notebook_data.json"
+  # A dispatch always means "load Neon from this ref, leave OSO alone". No input decides it:
+  # the OSO static models are org-wide, and a flag defaulting to false meant that forgetting
+  # `-f neon_only=true` published a branch's declarations over them. The guard is the event
+  # and the ref, which nobody can forget. tests/test_registry_triggers.py pins it.
   workflow_dispatch:
 
 jobs:
@@ -102,9 +116,18 @@ jobs:
       # here on the PR instead.
       - name: Check the scores table builds
         run: uv run python -m build.serialize_scores --check
+      # The Neon plan: which tables would be created and what type each column would get.
+      # Connects to nothing and needs no secret, so it runs on a fork PR too.
+      - name: Check the Neon publish plan
+        run: uv run python -m build.publish_neon --check
 
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
+  #
+  # A `workflow_dispatch` runs the same job on the dispatched ref with the OSO publish
+  # skipped. That is how the Postgres serving layer gets verified from a branch: the Neon
+  # schema is swapped atomically and re-loadable, so a branch run costs nothing beyond a
+  # reload, whereas the OSO static models are org-wide and a branch must not overwrite them.
   publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -130,9 +153,35 @@ jobs:
         run: uv run python -m build.serialize_routing
       - name: Serialize the recorded scores
         run: uv run python -m build.serialize_scores
+      # Push to main only. The static models are org-wide, so a dispatch from any ref —
+      # including main — leaves them alone; there is no flag to forget.
       - name: Publish to OSO
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
+      # The site's serving layer, after OSO rather than instead of it, and on every event that
+      # reaches this job. The load goes into
+      # os-ai-map_staging and is swapped into os-ai-map in one transaction, so a reader mid-request
+      # sees the old schema or the new one. No `if:` guard on the secret: an absent
+      # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
+      # leaves the site serving whatever the last successful run left behind.
+      - name: Publish to Neon
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: uv run python -m build.publish_neon
+      # Read the schema back independently and put the counts in the run summary. A publish
+      # returning 0 says the swap committed; this says what a reader now sees. Also teed to
+      # the step log, because the run summary is only readable in the web UI and this is the
+      # record you want when comparing two runs from a terminal. The report carries no part
+      # of the DSN, by construction — see build/neon_status.py.
+      - name: Report what Neon is serving
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would
+        # succeed and the step would pass over a read-back that failed.
+        run: |
+          set -o pipefail
+          uv run python -m build.neon_status | tee -a "$GITHUB_STEP_SUMMARY"

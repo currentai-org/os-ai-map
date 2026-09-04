@@ -68,6 +68,44 @@ def test_every_module_the_serializers_reach_triggers_the_workflow(event: str):
     )
 
 
+def publish_steps() -> list[dict]:
+    doc = yaml.safe_load(WORKFLOW.read_text())
+    return doc["jobs"]["publish"]["steps"]
+
+
+def step_named(name: str) -> dict:
+    for step in publish_steps():
+        if step.get("name") == name:
+            return step
+    raise AssertionError(f"no step named {name!r} in the publish job")
+
+
+def test_the_oso_publish_runs_only_on_a_push_to_main():
+    """The static models are org-wide. The guard used to be a `neon_only` dispatch input
+    defaulting to false, so forgetting `-f neon_only=true` published a branch's declarations
+    over them — an invariant the comments asserted and nothing enforced. The event and the
+    ref cannot be forgotten."""
+    guard = step_named("Publish to OSO")["if"]
+    assert "push" in guard
+    assert "refs/heads/main" in guard
+    assert "github.event_name" in guard and "github.ref" in guard
+
+
+def test_a_dispatch_reaches_the_neon_steps_on_any_ref():
+    """That is what the dispatch is for: the Neon schema is swapped atomically and
+    re-loadable, so a branch run costs nothing beyond a reload."""
+    for name in ("Publish to Neon", "Report what Neon is serving"):
+        assert "if" not in step_named(name), f"{name} must not be guarded by event or ref"
+
+
+def test_no_input_decides_whether_oso_is_published():
+    """A flag that defaults to the safe value is still a flag someone forgets."""
+    doc = yaml.safe_load(WORKFLOW.read_text())
+    triggers = doc.get("on") or doc.get(True)
+    assert not (triggers.get("workflow_dispatch") or {}).get("inputs")
+    assert "inputs." not in WORKFLOW.read_text()
+
+
 def test_the_closure_is_actually_walking_transitively():
     """Guard on the guard: if the walk stopped at the seeds, the test above would pass
     vacuously the moment someone trimmed the trigger list back to three entries."""
