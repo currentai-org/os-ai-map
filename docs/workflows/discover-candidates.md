@@ -322,8 +322,7 @@ behind the digest table: `first_seen` is written by the sweep that materializes 
 snapshot rather than the discovery, and an item proposed for months reads as first seen this week.
 Age-based resurfacing is disabled on the platform for that reason, `evidence` is the only
 resurfacing reason in the vocabulary, and the scorecard's "oldest unresolved age" line reads *not
-available until an observation history exists* instead of a number. A wrong age in a scorecard is
-worse than an absent one: it invites a starvation decision on evidence that does not exist. The
+available until an observation history exists* instead of a number. The
 "new this week" count still reads `first_seen` — whether a row's `first_seen` falls inside this
 sweep's own window is a question about the current snapshot, not about how long anything has
 waited. Both come back when the platform keeps a history; the `resurfaced` state and its rendering

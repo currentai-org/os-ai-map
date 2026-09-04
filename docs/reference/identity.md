@@ -287,7 +287,7 @@ So `org` recall is a **regression invariant**, not a floor:
 
 | Relation | Precision | Recall | Kind of check |
 |---|---|---|---|
-| `equivalence` | ≥ 1.00 | ≥ 0.90 | floor, floor |
+| `equivalence` | ≥ 1.00 | ≥ 0.90 | floor, floor (15 truth items today, so waived) |
 | `membership_non_scoring` | ≥ 0.98 | ≥ 0.90 | floor, floor |
 | `artifact_identity` | ≥ 0.99 | ≥ 0.95 | floor, floor (0 truth pairs today, so waived) |
 | `membership_scoring` | — | — | never automated, so never floored |
@@ -298,6 +298,13 @@ failure means and therefore who fixes it: a floor miss is a graph quality proble
 miss is a resolver bug, and the eval's status column labels the `org` row `recall invariant` so the
 two are never confused. `FLOORS["org"]`'s recall entry is `None` for the same reason — a coverage
 floor is the wrong shape for that number.
+
+The invariant is scored **only on a live `--from-warehouse` run**. A fixture is a snapshot of what
+the warehouse emitted on the day it was taken, while truth is the corpus as it is today, so
+declaring one product whose org already declares a matching handle drops the fixture's recall with
+the resolver behaving perfectly. On a `--edges` run the row reads `recall invariant not evaluated
+(fixture)` and the run cannot fail on it. Precision floors are graded in both modes: a wrong edge
+stays wrong however old the snapshot is, which is exactly what a floor asks.
 
 Coverage is measured separately, per route, and carries **no target floor yet** — the `huggingface`
 route's numbers are pending the handle review in issue #483, and a floor set before that lands

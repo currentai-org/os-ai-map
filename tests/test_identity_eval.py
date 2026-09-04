@@ -1019,15 +1019,60 @@ def test_a_relation_with_a_recall_floor_still_says_floor(capsys):
     assert floor_status("equivalence", metrics) == "checked (pass): precision floor, recall floor"
 
 
-def test_a_recall_invariant_failure_exits_one_under_floors(tmp_path, capsys):
+def test_a_recall_invariant_failure_exits_one_under_floors(monkeypatch, capsys):
     """Nothing emitted, so org recall is 0.0 against 282 recoverable pairs in the real corpus:
-    an invariant failure, and it must still exit 1 the way a floor failure does."""
-    fixture = tmp_path / "edges.json"
-    fixture.write_text('{"org": []}')
-    assert main(["--edges", str(fixture), "--floors"]) == 1
+    an invariant failure, and on a LIVE run it must exit 1 the way a floor failure does."""
+    monkeypatch.setattr(warehouse_module, "query", lambda sql: [])
+    assert main(["--from-warehouse", "--floors"]) == 1
     out = capsys.readouterr().out
     assert "[FAIL] under floor or invariant:" in out
     assert "< invariant 0.99" in out
+
+
+def test_fixture_mode_does_not_grade_the_invariant(tmp_path, capsys):
+    """A fixture is a snapshot of edges taken against an earlier corpus, so its recall drops
+    when a product is declared, not when the resolver regresses. Grading it there would accuse
+    the resolver of a miss the snapshot's own age caused."""
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"org": []}')
+    assert main(["--edges", str(fixture), "--floors"]) == 0
+    out = capsys.readouterr().out
+    assert "recall invariant not evaluated (fixture)" in out
+    assert "invariant 0.99" not in out
+
+
+def test_the_invariant_is_skipped_in_fixture_mode_and_graded_live():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.5, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert invariant_failures(metrics, live=False) == []
+    assert invariant_failures(metrics, live=True) != []
+    assert invariant_failures(metrics) != []  # defaults to grading, never to skipping
+
+
+def test_floor_status_labels_the_invariant_as_unevaluated_in_fixture_mode():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.5, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    # The precision floor still applies -- a wrong edge stays wrong however old the snapshot is.
+    assert floor_status("org", metrics, live=False) == (
+        "checked (pass): precision floor, recall invariant not evaluated (fixture)"
+    )
+    assert floor_status("org", metrics, live=True) == "checked (FAIL): precision floor, recall invariant"
+
+
+def test_a_precision_floor_still_fails_in_fixture_mode():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=0.5, recall=1.0, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert floor_status("org", metrics, live=False).startswith("checked (FAIL)")
+    assert any("precision" in f for f in floor_failures(metrics))
 
 
 # ---------------------------------------------------------------------------
@@ -1073,6 +1118,13 @@ def test_coverage_ratchet_is_a_ratio_not_a_count():
 def test_an_empty_live_denominator_passes_vacuously():
     """No orgs on the route means nothing to cover -- not a coverage regression."""
     assert coverage_ratchet({"github": (0, 0)}, {"github": (2, 4)}) == []
+
+
+def test_a_route_losing_every_handle_fails():
+    """The case that matters most: the population is still there, the handles are gone."""
+    assert coverage_ratchet({"github": (0, 299)}, {"github": (2, 4)}) == [
+        "github: coverage 0/299 fell below the pinned 2/4"
+    ]
 
 
 def test_a_route_with_no_pinned_baseline_is_never_failed():

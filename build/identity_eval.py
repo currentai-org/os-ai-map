@@ -174,15 +174,20 @@ A route whose denominator falls to 0 passes vacuously -- there are no orgs on it
 The comparison is by cross-multiplication rather than float division, so a pinned ratio is
 never re-derived at a different precision than it was written at.
 
-One consequence for the committed pass fixture, `tests/fixtures/identity_edges_pass.json`:
-at a 0.99 invariant its `org` rows have to cover essentially every recoverable pair the corpus
-declares, so declaring a new product whose org has a matching handle makes the PR-time fixture
-run fail on the invariant until the fixture's `org` block is topped up with that pair. That is
-the same staleness treadmill `membership_non_scoring`'s tail rows already have, and the same
-resolution: the fixture is a committed snapshot, reviewable in a diff, and a loud failure is
-what tells you it has fallen behind. `--write-fixture` regenerates the tail membership block
-only -- the `org` block is deliberately NOT generated from truth, since a fixture built from
-the truth it is then graded against cannot fail.
+**The invariant is scored only under `--from-warehouse`.** A fixture is a snapshot of what the
+warehouse emitted on the day it was taken; truth is the corpus as it is today. Declare one
+product whose org already declares a matching handle and the fixture's recall drops below 0.99
+through no fault of the resolver -- and the message a fixture failure prints ("the resolver
+missed a pair a declared handle already bridges") would be a false accusation against a
+resolver that emits the pair correctly and was simply never re-snapshotted. So
+`invariant_failures` takes `live` and returns nothing in fixture mode, `floor_status` renders
+the `org` row `recall invariant not evaluated (fixture)` rather than leaving a reader to infer
+it from a passing run, and the PR-time fixture run keeps doing what a fixture can honestly do:
+exercise the scoring math, the tier split, precision, and the schema end to end.
+
+Floors are not treated this way. A floor asks whether the emitted edges were WRONG, which a
+snapshot can answer -- an incorrect edge stays incorrect however old the snapshot is. Only
+recall depends on the fixture being complete.
 
 ## What `--from-warehouse` supplies, and what it does not
 
@@ -839,8 +844,7 @@ def write_coverage_baseline(
 ) -> dict[str, tuple[int, int]]:
     """Pin `coverage` as the new baseline, in `ORG_ROUTE_LABELS` order. Returns what it wrote.
 
-    Only `--write-coverage-baseline` calls this. A failing run must never call it: a ratchet
-    that raises its own reference value on failure ratchets nothing.
+    Only `--write-coverage-baseline` calls this; nothing on the scoring path does.
     """
     doc = {route: list(coverage.get(route, (0, 0))) for route, _label in ORG_ROUTE_LABELS}
     path.write_text(json.dumps(doc, indent=2) + "\n")
@@ -1468,13 +1472,18 @@ def validate_columns(edges: dict[str, list[dict]]) -> None:
                     raise EdgeValueInvalid(relation, column, value)
 
 
-def floor_status(relation: str, metrics: dict[str, Metrics]) -> str:
+def floor_status(relation: str, metrics: dict[str, Metrics], live: bool = True) -> str:
     """The status cell for `relation`, naming which rules were applied to it.
 
     The verdict is `checked (pass)`/`checked (FAIL)` as before, followed by the rules that
     produced it -- `precision floor`, `recall floor`, `recall invariant`. The label matters:
     `org`'s recall is a regression invariant, not a coverage floor (see the module docstring),
     and the table is where a reader learns which of the two they are looking at.
+
+    `live=False` (a `--edges` run) renders a recall invariant as `recall invariant not
+    evaluated (fixture)` and leaves it out of the verdict -- a fixture cannot answer the
+    question the invariant asks. Defaults to `True` so a caller that forgets the argument
+    grades rather than skips.
     """
     if relation not in metrics:
         return "not evaluated (edge table absent from input)"
@@ -1500,8 +1509,11 @@ def floor_status(relation: str, metrics: dict[str, Metrics]) -> str:
         rules.append("recall floor")
         ok = ok and recall >= r_floor
     if invariant is not None:
-        rules.append("recall invariant")
-        ok = ok and recall >= invariant
+        if live:
+            rules.append("recall invariant")
+            ok = ok and recall >= invariant
+        else:
+            rules.append("recall invariant not evaluated (fixture)")
     return f"checked ({'pass' if ok else 'FAIL'}): {', '.join(rules)}"
 
 
@@ -1532,12 +1544,19 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
     return failures
 
 
-def invariant_failures(metrics: dict[str, Metrics]) -> list[str]:
+def invariant_failures(metrics: dict[str, Metrics], live: bool = True) -> list[str]:
     """Relations under a recall INVARIANT -- the resolver failed to use evidence it already
     has. Same `MIN_TRUTH` gate and same exit 1 as a floor; a different message, because the
     reading is different: this is a regression to debug in the resolver, not a curation gap to
     fill by declaring more handles. Coverage is what measures the latter.
+
+    Returns `[]` when `live` is false. The invariant compares live edges against today's
+    corpus, and a fixture is a snapshot of edges taken on an earlier corpus -- grading it there
+    accuses the resolver of a miss the fixture's own age caused (see the module docstring).
+    Defaults to `True`: forgetting the argument grades, it does not skip.
     """
+    if not live:
+        return []
     failures: list[str] = []
     for relation, invariant in RECALL_INVARIANTS.items():
         if relation not in metrics:
@@ -1554,7 +1573,7 @@ def invariant_failures(metrics: dict[str, Metrics]) -> list[str]:
     return failures
 
 
-def print_table(metrics: dict[str, Metrics]) -> None:
+def print_table(metrics: dict[str, Metrics], live: bool = True) -> None:
     """The per-relation table, then the `org` unrecoverable breakdown under it.
 
     `n_head`/`n_tail` split `n_truth` by the tier that declared each truth item; they need not
@@ -1575,7 +1594,7 @@ def print_table(metrics: dict[str, Metrics]) -> None:
             f"{relation:24s} {precision:>10s} {recall:>10s} {(m.n_truth if m else 0):>8d} "
             f"{(m.n_truth_head if m else 0):>8d} {(m.n_truth_tail if m else 0):>8d} "
             f"{(m.n_emitted_at_threshold if m else 0):>10d} "
-            f"{(m.n_truth_unrecoverable if m else 0):>10d}  {floor_status(relation, metrics)}"
+            f"{(m.n_truth_unrecoverable if m else 0):>10d}  {floor_status(relation, metrics, live)}"
         )
     for relation in ALL_RELATIONS:
         m = metrics.get(relation)
@@ -1594,8 +1613,8 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             f"recompute per-route handle coverage from the corpus, pin it in "
             f"{_repo_path(COVERAGE_BASELINE_PATH)}, and exit (scores nothing). This is "
-            f"how the ratchet is RAISED, deliberately, in its own commit -- a failing run "
-            f"never rewrites its own baseline."
+            f"how the ratchet is RAISED, deliberately, in its own commit; a failing run never "
+            f"rewrites its own baseline."
         ),
     )
     source.add_argument(
@@ -1696,7 +1715,7 @@ def main(argv: list[str] | None = None) -> int:
 
     truth = load_truth()
     metrics = replay(edges, truth)
-    print_table(metrics)
+    print_table(metrics, live=args.from_warehouse)
 
     coverage = org_handle_coverage(truth)
     try:
@@ -1727,7 +1746,7 @@ def main(argv: list[str] | None = None) -> int:
         exit_code = 1
 
     if args.floors:
-        failures = floor_failures(metrics) + invariant_failures(metrics)
+        failures = floor_failures(metrics) + invariant_failures(metrics, live=args.from_warehouse)
         if failures:
             print("\n[FAIL] under floor or invariant:")
             for line in failures:
@@ -1737,7 +1756,7 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"\n  {relation}: {note}")
             exit_code = 1
         else:
-            print("\n[OK] every checked relation clears its precision floor and recall invariant")
+            print("\n[OK] every checked relation clears its floors and invariants")
 
     return exit_code
 

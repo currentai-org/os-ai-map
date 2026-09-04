@@ -28,6 +28,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `currentai.scores.openness_computed` (15 → 17) and `currentai.signal_github.artifact_state`
   (2 → 3) now record the deployed revision (#365).
 
+- A per-route handle-coverage metric in `build/identity_eval.py` — for each of `github`,
+  `huggingface` and `homepage_domain`, how many of the orgs owning artifacts on that route declare
+  the handle it needs — with a baseline ratchet in
+  `tests/fixtures/identity_coverage_baseline.json` (github 211/299, huggingface 2/61,
+  homepage_domain 6/27). Any scoring run exits 1 if a route's live ratio falls below its pinned
+  ratio, so coverage can only go up; `--write-coverage-baseline` re-pins the file deliberately.
+  Target floors wait on the Hugging Face handle review (#491).
+
 - `build/propose_org_handles.py`, which proposes `huggingface` org handles from the namespaces of
   already declared Hugging Face artifacts, grouped by org and checked for aggregator accounts and
   ownership conflicts, for review as a GitHub issue rather than seeded silently (#365).
@@ -106,8 +114,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `descriptions.tiers` legend in the payload (#87, #318).
 - `build/identity_eval.py`: replay eval that scores the `currentai.identity.*` edge tables
   against prior human decisions (the resolution ledger, declared artifacts, org rosters, and
-  a known-negatives set), with precision/recall floors — checked only once a relation has at
-  least 20 truth items — on the four relations automation is planned for, and two rules
+  a known-negatives set), with precision floors on the four relations automation is planned
+  for and recall floors on three of them — checked only once a relation has at least 20 truth
+  items. `org` recall is a regression invariant instead (≥ 0.99, graded on live runs only),
+  since its truth is restricted to the pairs a declared handle can bridge, and per-route
+  handle coverage is the coverage metric in its place. Two rules are
   pinned as tests rather than metrics: a name-match edge never auto-emits (checked against
   `method` as an array, matching the deployed SQL) and a scoring-bearing membership edge
   never auto-emits regardless of confidence. Truth is built from DECLARED (head/tail)
@@ -116,7 +127,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   the declared slice truth covers, and `n_emitted_at_threshold`/the review digest are
   computed over the pool slice automation would actually act on. Scheduled weekly as
   `identity-eval.yml`, which runs a fixture on every PR and
-  `--from-warehouse --allow-unprovisioned` on schedule — the flag skips cleanly (exit 0) only
+  `--from-warehouse` on schedule — `--allow-unprovisioned`, which the workflows no longer pass,
+  skips cleanly (exit 0) only
   on a genuine missing-table error (matched against Trino's own live wording, verified against
   `currentai.identity.equivalence_edges` while undeployed: a live `--from-warehouse` run now
   exits 0 as intended) while the identity dataset is undeployed, exits 2 on any other failure
@@ -125,6 +137,16 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Reclassified `org` recall in the identity eval from a coverage floor to a regression invariant at
+  ≥ 0.99, graded on live runs only. Recoverability is decided by the same handle route the graph
+  emits on, so recall answers "does the resolver use the evidence we gave it" and never "have we
+  given it enough" — the eval labels the row `recall invariant`, and per-route handle coverage is
+  what measures reach. Org precision keeps its 0.97 floor (#491).
+- The identity digest no longer resurfaces a parked item on age, or reports an item's age. The digest
+  table has no observation history behind it — `first_seen` dates the snapshot, not the discovery —
+  so the parked line promises only that an item returns when its evidence gets stronger, the
+  scorecard's oldest-unresolved-age line says the history does not exist yet, and `evidence` is the
+  only resurfacing reason in the vocabulary (#491).
 - Dropped `--allow-unprovisioned` from the `identity-eval` and `identity-digest` workflows now
   that the identity dataset is deployed and contracted. Both modules refuse the flag once a
   `currentai.identity.*` contract with a `mirror` block exists, so a missing table is a real

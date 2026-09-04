@@ -29,6 +29,13 @@ name: identity-eval
 # test_the_pass_fixture_tail_rows_match_the_corpus fails first and names that command, so the
 # floor message is not the only signal.
 #
+# What the fixture run does NOT grade is org's recall invariant. A fixture is a snapshot of what
+# the warehouse emitted on the day it was taken, while truth is the corpus as it is today, so a
+# newly declared product drops the fixture's recall through no fault of the resolver. The fixture
+# run prints `recall invariant not evaluated (fixture)` on that row and grades the scoring math,
+# the tier split, precision and the schema; the invariant is scored on the live run only.
+# Precision floors are graded in both modes -- a wrong edge stays wrong however old the snapshot.
+#
 # This fixture run is not a substitute for the two never-auto-emit governance rules,
 # which are pinned as pytest tests (test_name_match_never_auto_emits*,
 # test_scoring_bearing_*) and run on every PR through validate.yml regardless of this
