@@ -5,6 +5,8 @@ footer numbers.
 a fixture resolution ledger), never the warehouse, so this suite runs offline like every
 other test in this repo. The CLI's warehouse plumbing (table-not-found vs any other error,
 `--allow-unprovisioned`) is exercised by monkeypatching `build.identity_digest.load_rows_from_warehouse`.
+`currentai.identity.digest` is deployed and contracted, so `--allow-unprovisioned` is refused
+against the committed tree; the tests that need the query path stand in an empty manifest.
 """
 
 from __future__ import annotations
@@ -370,7 +372,20 @@ def test_missing_table_exits_2_without_allow_unprovisioned(monkeypatch, tmp_path
     assert not out.exists()
 
 
-def test_missing_table_exits_0_with_allow_unprovisioned(monkeypatch, tmp_path):
+@pytest.fixture
+def uncontracted_digest(monkeypatch, tmp_path):
+    """Point the provisioning record at an empty dependency manifest.
+
+    The two tests below are about which EXCEPTION CLASS `--allow-unprovisioned` may swallow.
+    The committed tree contracts `identity.digest` with a mirror block, so the flag is refused
+    before any query runs unless the fixture withdraws that record first.
+    """
+    deps = tmp_path / "dependencies.yaml"
+    deps.write_text(yaml.dump({"dependencies": []}))
+    monkeypatch.setattr(digest, "DEPENDENCIES_PATH", deps)
+
+
+def test_missing_table_exits_0_with_allow_unprovisioned(monkeypatch, tmp_path, uncontracted_digest):
     def _raise():
         raise digest.WarehouseTableMissing(digest.TABLE, RuntimeError("does not exist"))
 
@@ -381,7 +396,9 @@ def test_missing_table_exits_0_with_allow_unprovisioned(monkeypatch, tmp_path):
     assert not out.exists()
 
 
-def test_other_warehouse_failure_always_exits_2_even_with_allow_unprovisioned(monkeypatch, tmp_path):
+def test_other_warehouse_failure_always_exits_2_even_with_allow_unprovisioned(
+    monkeypatch, tmp_path, uncontracted_digest
+):
     def _raise():
         raise digest.WarehouseQueryFailed(digest.TABLE, RuntimeError("access denied"))
 
@@ -390,6 +407,41 @@ def test_other_warehouse_failure_always_exits_2_even_with_allow_unprovisioned(mo
     code = digest.main(["--week", "2026-36", "--out", str(out), "--allow-unprovisioned"])
     assert code == 2
     assert not out.exists()
+
+
+def test_digest_is_contracted_reads_the_committed_manifest():
+    assert digest._digest_is_contracted() is True
+
+
+def test_digest_is_contracted_ignores_a_contract_with_no_mirror(tmp_path):
+    deps = tmp_path / "dependencies.yaml"
+    deps.write_text(yaml.dump({"dependencies": [{"table": digest.TABLE}]}))
+    assert digest._digest_is_contracted(deps) is False
+
+
+def test_allow_unprovisioned_is_refused_once_the_table_is_contracted(monkeypatch, tmp_path):
+    """No query is attempted -- the refusal comes before the warehouse is touched."""
+    def _boom():
+        raise AssertionError("the warehouse must not be queried after the refusal")
+
+    monkeypatch.setattr(digest, "load_rows_from_warehouse", _boom)
+    out = tmp_path / "out.md"
+    code = digest.main(["--week", "2026-36", "--out", str(out), "--allow-unprovisioned"])
+    assert code == 2
+    assert not out.exists()
+
+
+def test_the_digest_workflow_does_not_pass_allow_unprovisioned():
+    """The flag cannot come back while the contract stands: `main` refuses it, so a workflow
+    still passing it would fail every scheduled run."""
+    wf = (ROOT / ".github" / "workflows" / "identity-digest.yml").read_text()
+    for line in wf.splitlines():
+        if line.lstrip().startswith("#"):
+            continue
+        assert "--allow-unprovisioned" not in line, (
+            "identity-digest.yml passes --allow-unprovisioned, but currentai.identity.digest "
+            "is contracted in warehouse/dependencies.yaml and build.identity_digest refuses it"
+        )
 
 
 def test_rows_flag_reads_a_fixture_instead_of_the_warehouse(tmp_path):

@@ -7,12 +7,10 @@ name: identity-digest
 # Scheduled Monday 09:00 UTC, after `identity-eval` (Monday 07:30 UTC) has had time to run
 # and after the identity dataset's Sunday 05:30 UTC materialization has had a day to land.
 #
-# --allow-unprovisioned: the currentai.identity.digest model has not deployed yet, so a live
-# run would otherwise be red every week for a failure that is not drift -- see
-# build.identity_digest.main. A missing table renders "skipped: ..." to stdout instead of a
-# digest body, and the issue step is skipped entirely in that case. Remove this flag from the
-# schedule/dispatch step once the model is deployed -- from that point on, a missing table is
-# a real failure again and should be reported as one.
+# The render step passes no --allow-unprovisioned: currentai.identity.digest is deployed and
+# carries a mirror-bound dependency contract in warehouse/dependencies.yaml, so a missing
+# table is a real failure again and is reported as one (exit 2). The flag would be refused
+# anyway -- build.identity_digest.main rejects it once that contract exists.
 
 on:
   schedule:
@@ -43,7 +41,7 @@ jobs:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
         run: |
           set +e
-          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md --allow-unprovisioned)
+          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md)
           STATUS=$?
           echo "$OUTPUT"
           if [ $STATUS -ne 0 ]; then

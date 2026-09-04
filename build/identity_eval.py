@@ -149,8 +149,11 @@ edges dict keyed by anything outside `EDGE_RELATIONS` -- a renamed or misspelled
 `--allow-unprovisioned` (`--from-warehouse` only): treats a genuine missing-table error as
 "not deployed yet" and exits 0 instead of 2, so the scheduled workflow is not red for months
 while the identity dataset ships. It refuses to run at all -- exit 2, before touching the
-warehouse -- if `warehouse/assets.yaml` already marks any `identity.*` asset
-`materialized: true`, so the skip cannot outlive the deploy it is meant to wait for.
+warehouse -- once the repo records the dataset as deployed: either `warehouse/assets.yaml`
+marks an `identity.*` asset `materialized: true`, or `warehouse/dependencies.yaml` carries an
+`identity.*` contract with a `mirror` block. So the skip cannot outlive the deploy it is meant
+to wait for. All seven models deployed on 2026-09-04 and are contracted, so the flag is refused
+today and the workflow no longer passes it.
 
 ## Insufficient truth, not a floor that can never be met
 
@@ -201,6 +204,7 @@ from build.validate import _load_optional_yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS_PATH = ROOT / "warehouse" / "assets.yaml"
+DEPENDENCIES_PATH = ROOT / "warehouse" / "dependencies.yaml"
 
 Key = tuple[str, str]
 
@@ -916,6 +920,27 @@ def _identity_dataset_deployed(path: Path = ASSETS_PATH) -> list[str]:
     )
 
 
+def _identity_dataset_contracted(path: Path = DEPENDENCIES_PATH) -> list[str]:
+    """`currentai.identity.*` tables `warehouse/dependencies.yaml` contracts with a mirror block.
+
+    The identity models are platform-authored, so under ADR-003 they are dependency contracts and
+    never governed assets -- `warehouse/assets.yaml` will not carry them, and
+    `_identity_dataset_deployed` will keep returning `[]` however deployed the dataset is. A
+    contract with a `mirror` block is the equivalent record: it pins a model id, a released
+    revision and the hash of the mirrored code, none of which can be written for a table that
+    does not exist. So it refuses `--allow-unprovisioned` for the same reason a materialized
+    asset does.
+    """
+    if not path.exists():
+        return []
+    doc = yaml.safe_load(path.read_text()) or {}
+    return sorted(
+        str(d.get("table"))
+        for d in (doc.get("dependencies") or [])
+        if str(d.get("table", "")).startswith("currentai.identity.") and (d.get("mirror") or {})
+    )
+
+
 def load_edges_from_warehouse() -> dict[str, list[dict]]:
     """The four edge tables, read live with an explicit column list per table.
 
@@ -1043,7 +1068,8 @@ def main(argv: list[str] | None = None) -> int:
         help=(
             "--from-warehouse only: a missing currentai.identity.* table exits 0 (\"not "
             "provisioned yet\") instead of 2. Refused -- exit 2, no query attempted -- if "
-            "warehouse/assets.yaml already marks any identity.* asset materialized: true."
+            "warehouse/assets.yaml already marks any identity.* asset materialized: true, or "
+            "warehouse/dependencies.yaml contracts any identity.* table with a mirror block."
         ),
     )
     args = parser.parse_args(argv)
@@ -1058,12 +1084,23 @@ def main(argv: list[str] | None = None) -> int:
             # function-definition time, so a test that monkeypatches the module-level
             # ASSETS_PATH would otherwise be silently ignored here.
             deployed = _identity_dataset_deployed(ASSETS_PATH)
-            if deployed:
+            contracted = _identity_dataset_contracted(DEPENDENCIES_PATH)
+            if deployed or contracted:
+                where = []
+                if deployed:
+                    where.append(
+                        f"warehouse/assets.yaml already marks {', '.join(deployed)} "
+                        f"materialized: true"
+                    )
+                if contracted:
+                    where.append(
+                        f"warehouse/dependencies.yaml already contracts "
+                        f"{', '.join(contracted)} with a mirror block"
+                    )
                 print(
-                    f"[FAIL] --allow-unprovisioned refused: warehouse/assets.yaml already marks "
-                    f"{', '.join(deployed)} materialized: true. The identity dataset is deployed, "
-                    f"so a missing table is a real failure, not an unprovisioned skip -- remove "
-                    f"--allow-unprovisioned from the caller."
+                    f"[FAIL] --allow-unprovisioned refused: {'; '.join(where)}. The identity "
+                    f"dataset is deployed, so a missing table is a real failure, not an "
+                    f"unprovisioned skip -- remove --allow-unprovisioned from the caller."
                 )
                 return 2
         try:
