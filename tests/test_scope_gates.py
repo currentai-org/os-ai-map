@@ -533,3 +533,300 @@ def test_modifying_a_previously_recorded_entry_is_flagged(monkeypatch):
     monkeypatch.setattr(A, "_merge_base_receipt", lambda base="origin/main": prior)
     _serve(monkeypatch, r)
     assert any(first in v and "modified" in v for v in A.externalization_receipt_violations())
+
+
+# --- reclaimed-as-dependency: externalized -> back inside the dependency graph ----
+#
+# The receipt's history is append-only, so a table that comes back does NOT lose its
+# externalization entry: a `reclaims` record is appended and the historical removed set stays the
+# size it was. These tests build that transition on temp fixtures over the real committed receipt
+# -- the same simulation PR #480 makes real for `signal_goodailist.repo_catalog`.
+
+RECLAIM_TABLE = "currentai.signal_goodailist.repo_catalog"
+RECLAIM_MIRROR = "warehouse/models/signal_goodailist/repo_catalog.py"
+
+
+def _standin_reader():
+    """A real tracked model file, used as the fixture's governed reader.
+
+    The reclaim gate insists the reader EXISTS in the tree, so the fixture cannot invent a path;
+    what it may stand in for is the read itself, which derive_graph() supplies below.
+    """
+    for a in A.assets():
+        mf = (a.get("files") or {}).get("model")
+        if mf and mf.endswith(".sql") and (A.ROOT / mf).exists():
+            return mf
+    raise AssertionError("no tracked .sql model file to stand in as a governed reader")
+
+
+def _reclaim_record(r, **over):
+    """An appended reclaim record for RECLAIM_TABLE, with the counts the receipt must state."""
+    prior = next(e for e in r["assets"] if e["table"] == RECLAIM_TABLE)
+    rec = dict(
+        table=RECLAIM_TABLE,
+        prior_disposition=prior["disposition"],
+        prior_date=prior["recorded_at"],
+        new_disposition="reclaimed-as-dependency",
+        date="2026-09-04",
+        reason="read by the identity graph's artifact_nodes model",
+        governed_reader=_standin_reader(),
+    )
+    rec.update(over)
+    r["reclaims"] = [rec]
+    r["reclaimed_count"] = 1
+    r["still_external_count"] = r["count"] - 1
+    return rec
+
+
+def _contract(mirror=True):
+    return {
+        "table": RECLAIM_TABLE,
+        "owner": "oso",
+        "purpose": "identity_graph",
+        "expected_grain": "one row per repo",
+        "freshness_requirement": "<= 30 days",
+        "verified_revision": 4,
+        "mirror": {"revision": 4, "model_id": "c7d3a3d9-578c-4c54-8ccf-71879bdd43d2"} if mirror else {},
+        "files": {"model": RECLAIM_MIRROR},
+    }
+
+
+def _serve_contract(monkeypatch, contract):
+    real = A.dependencies()
+    monkeypatch.setattr(A, "dependencies", lambda: real + ([contract] if contract else []))
+
+
+def _serve_read(monkeypatch, reader, table=RECLAIM_TABLE):
+    real = A.derive_graph()
+    graph = {"reads": dict(real["reads"]), "read_by": real["read_by"]}
+    refs = dict(graph["reads"].get(reader) or {"internal": [], "external": []})
+    if table:
+        refs["internal"] = sorted(set(refs["internal"]) | {table.removeprefix("currentai.")})
+    graph["reads"][reader] = refs
+    monkeypatch.setattr(A, "derive_graph", lambda: graph)
+
+
+def test_valid_reclaim_passes(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert A.reclaim_violations() == []
+    assert A.externalization_receipt_violations() == []
+
+
+def test_reclaim_without_a_prior_externalization_record_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r, table="currentai.registry.never_externalized")
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, dict(_contract(), table=rec["table"]))
+    _serve_read(monkeypatch, rec["governed_reader"], table=rec["table"])
+    assert any("records no prior externalization entry" in v for v in A.reclaim_violations())
+
+
+def test_reclaim_with_the_wrong_prior_date_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r, prior_date="2020-01-01")
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("prior_date" in v for v in A.reclaim_violations())
+
+
+def test_reclaim_whose_reader_does_not_read_the_table_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"], table=None)  # the file reads, but not this
+    assert any("does not read" in v for v in A.reclaim_violations())
+
+
+def test_reclaim_whose_reader_is_not_in_the_tree_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _reclaim_record(r, governed_reader="warehouse/models/identity/not_here_yet.sql")
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    assert any("does not exist in this tree" in v for v in A.reclaim_violations())
+
+
+def test_reclaim_without_a_dependency_contract_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, None)
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("has no contract for it" in v for v in A.reclaim_violations())
+
+
+def test_reclaimed_contract_without_a_mirror_block_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract(mirror=False))
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("has no mirror block" in v for v in A.reclaim_violations())
+
+
+def test_contract_for_an_externalized_table_without_a_reclaim_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _serve(monkeypatch, r)  # no reclaims entry at all
+    _serve_contract(monkeypatch, _contract())
+    assert any("with no reclaim record" in v for v in A.reclaim_violations())
+    assert any("also a dependency contract" in v for v in A.externalization_receipt_violations())
+
+
+def test_reclaim_counts_must_be_stated(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    r["still_external_count"] = r["count"]  # the shrink is not written down
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("still_external_count" in v for v in A.reclaim_violations())
+
+
+def test_reclaim_leaves_the_original_externalization_entry_unchanged(monkeypatch):
+    committed = copy.deepcopy(
+        next(e for e in A.externalized() if e["table"] == RECLAIM_TABLE))
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    entry = next(e for e in A.externalized() if e["table"] == RECLAIM_TABLE)
+    assert entry == committed, "a reclaim must not edit the externalization record it transitions from"
+    assert entry["disposition"] == "frozen-without-producer"
+    assert not [v for v in A.externalization_receipt_violations()
+                if "append-only" in v or "modified" in v or "removed" in v]
+
+
+def test_removed_set_is_historical_minus_reclaimed(monkeypatch):
+    r = _real_receipt()
+    historical = r["count"]
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+
+    # the historical removed set never shrinks, and still names the reclaimed table
+    assert len(A.externalized()) == historical
+    assert RECLAIM_TABLE in {e["table"] for e in A.externalized()}
+    # the currently-out population shrinks by exactly the reclaimed tables
+    still = A.still_externalized()
+    assert len(still) == historical - 1
+    assert RECLAIM_TABLE not in {e["table"] for e in still}
+    assert A.reclaimed_tables() == {RECLAIM_TABLE}
+    # and the reproduction gate still counts it as removed from the base inventory
+    assert not [v for v in A.externalization_receipt_violations() if RECLAIM_TABLE in v]
+
+
+def test_reclaimed_mirror_file_may_exist_again(monkeypatch):
+    """The archived file is deleted-at-externalization evidence, not a permanent ban.
+
+    A reclaimed table gets its read-only mirror back at the same path (PR #480 restores exactly
+    RECLAIM_MIRROR), so the "still exists in the worktree" check is answered by the reclaim -- the
+    archived hash still has to reproduce from the base blob either way. The worktree lookup is
+    stood in for rather than writing into the real tree, which would race the other workers.
+    """
+    real_has = A._worktree_has
+    monkeypatch.setattr(A, "_worktree_has", lambda p: p == RECLAIM_MIRROR or real_has(p))
+
+    pristine = _real_receipt()
+    r = copy.deepcopy(pristine)
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert not [v for v in A.externalization_receipt_violations() if "still exists" in v]
+
+    # without the reclaim, the same restored file is a violation
+    _serve(monkeypatch, pristine)
+    _serve_contract(monkeypatch, None)
+    assert any("still exists in the worktree" in v
+               for v in A.externalization_receipt_violations())
+
+
+# --- the reclaim carve-outs are scoped, and a transferred table is not reclaimable ---
+
+def test_reclaim_from_a_transferred_disposition_is_flagged(monkeypatch):
+    """Only a frozen table is reclaimable.
+
+    A `transferred` table is owned by its named destination repo, so a contract for it would have
+    to declare `owner: oso` falsely. The gate fails closed until that gets a ruling.
+    """
+    r = _real_receipt()
+    prior = next(e for e in r["assets"] if e["table"] == RECLAIM_TABLE)
+    prior["disposition"] = "transferred"
+    prior["destination"] = {"repository": "someone-else/repo", "commit": "0" * 40}
+    rec = _reclaim_record(r, prior_disposition="transferred")
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("cannot reclaim from disposition 'transferred'" in v and "needs a ruling" in v
+               for v in A.reclaim_violations())
+
+
+def test_reclaim_does_not_re_admit_an_archived_file_the_contract_does_not_claim(monkeypatch):
+    """M1: the archived-file carve-out is the contract's mirror paths, not the whole entry.
+
+    An entry that archived a fetcher as well as its model must not, once reclaimed, let the fetcher
+    reappear: only the contract's declared files are content-bound by the mirror hashes.
+    """
+    r = _real_receipt()
+    entry = next(e for e in r["assets"] if e["table"] == RECLAIM_TABLE)
+    fetcher = "sources/fetchers/goodailist.py"
+    entry["archived_source_sha256"] = dict(entry["archived_source_sha256"])
+    entry["archived_source_sha256"][fetcher] = "0" * 64
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())  # claims only RECLAIM_MIRROR
+    _serve_read(monkeypatch, rec["governed_reader"])
+
+    real_has = A._worktree_has
+    monkeypatch.setattr(
+        A, "_worktree_has", lambda p: p in (RECLAIM_MIRROR, fetcher) or real_has(p))
+    violations = A.externalization_receipt_violations()
+    assert any(fetcher in v and "still exists in the worktree" in v for v in violations), violations
+    assert not [v for v in violations if RECLAIM_MIRROR in v and "still exists" in v]
+
+
+def test_reclaim_does_not_license_a_second_producer_of_the_table(monkeypatch):
+    """M2: only the contract's own mirror path may derive a reclaimed table.
+
+    Any other repo model file resolving to the same table is still a producer, and the message
+    names it rather than claiming the table has none.
+    """
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_read(monkeypatch, rec["governed_reader"])
+
+    # the contract claims a DIFFERENT model path, so the mirror-layout file is an extra producer
+    _serve_contract(monkeypatch, dict(_contract(), files={"model": "warehouse/models/other/x.py"}))
+    real_assets = A.assets()
+    other = dict(real_assets[0], files={"model": RECLAIM_MIRROR})
+    monkeypatch.setattr(A, "assets", lambda: real_assets[1:] + [other])
+    assert any(RECLAIM_MIRROR in v and "still produces it" in v
+               for v in A.externalization_receipt_violations())
+
+
+def test_reclaims_require_the_current_schema_version(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    r["schema_version"] = 2
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("reclaims need schema_version" in v for v in A.reclaim_violations())
+
+
+def test_a_version_2_receipt_without_reclaims_still_validates(monkeypatch):
+    """The bump to 3 is additive: a receipt predating the reclaim block is still a valid receipt."""
+    r = _real_receipt()
+    r["schema_version"] = 2
+    for k in ("reclaims", "reclaimed_count", "still_external_count", "reclaim_note"):
+        r.pop(k, None)
+    _serve(monkeypatch, r)
+    assert A.externalization_receipt_violations() == []

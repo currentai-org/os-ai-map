@@ -16,6 +16,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
+  an in-scope governed asset starts reading again moves from externalized back into the governed
+  dependency graph as a recorded event instead of an edited record. The disposition history is
+  append-only (in-scope → externalized → reclaimed-as-dependency) and gated: the reclaim must name
+  the prior entry, an in-repo reader that genuinely reads the table, and a dependency contract with
+  a mirror block (#365).
+
 ### Fixed
 
 - `homepage` artifact identity now keys on the full canonical URL (host and path), not the bare

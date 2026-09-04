@@ -1910,6 +1910,22 @@ Every asset in `assets.yaml` is governed and carries a role; there is no roleles
   gate plus the role/scope gates keep any `long_tail` or peripheral table from re-entering the
   inventory. The tail-candidate registry (`registry.tail_products`) is a distinct governed
   `gap_map` asset, not `long_tail`.
+- **Reclaims.** The receipt is append-only and records a disposition history: in-scope →
+  externalized (`frozen-without-producer` / `transferred`) → `reclaimed-as-dependency`. When an
+  in-scope governed asset starts reading an externalized table, a `reclaims` record is appended
+  (`table`, `prior_disposition`, `prior_date`, `new_disposition`, `date`, `reason`,
+  `governed_reader`) and the original entry is left byte-identical. `reclaimed-as-dependency` means
+  the table is still platform-owned and still not deployed from here, but is back inside the
+  governed dependency graph as a `dependencies.yaml` contract with a mirror block — never as a
+  governed asset. `build.assets.reclaim_violations()` requires the prior entry to exist with the
+  stated disposition and date, `governed_reader` to exist and genuinely read the table, and the
+  contract with its mirror to be present; a contract for an externalized table with no reclaim
+  record fails just as hard. Only `frozen-without-producer` is reclaimable (a `transferred` table is
+  owned by its named destination, so `owner: oso` would be false — that case needs a ruling), and a
+  reclaim re-admits only the files the contract itself claims, so a fetcher or data file cannot come
+  back with the mirror. `count`/`assets` are the historical removed set and never shrink;
+  `still_external_count` = `count` − `reclaimed_count` is the population currently outside the
+  graph, stated in the file. See ADR-003's "Reclaiming a dependency" addendum.
 - **Reachability.** Every ACTIVE `repo-computation`/`governed-data` table is reachable upstream from
   a governed sink or a named audit root -- no dead nodes in the governed graph (staged/dormant
   pre-service assets are exempt).
