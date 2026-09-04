@@ -41,6 +41,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   the gap where the repo's own gates stay green while the platform releases past a mirror; the
   first runs found eight of seventeen contracts behind. "Mirror resync" in
   `docs/operations/deploy-models.md` is the runbook (#365).
+- `build/publish_neon.py` loads the serialized registry tables into Neon (Postgres) as the
+  `gapmap` schema, so the front end can read the declarations at request time instead of going
+  through the warehouse. It runs in `registry.yml` on every push to `main`, one step after the
+  OSO publish, and requires the `NEON_DATABASE_URL` secret. The load is atomic: rows go into
+  `gapmap_staging` and the cutover is three schema renames in one transaction, so a reader
+  mid-request sees the whole old schema or the whole new one. A `gapmap.publish_runs` row
+  records the commit, the declaration version and the per-table row counts of each load (#365).
 
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed

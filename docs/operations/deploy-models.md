@@ -80,6 +80,7 @@ holds it against the `cron:` lines it quotes.
 | What | When (UTC) | Where the cron lives |
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
+| `gapmap` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
@@ -127,6 +128,8 @@ Pushing the declarations is step 1, not the whole job:
 ```bash
 # push the repo's declarations and wait for the static models to materialize
 uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
+# load the same declarations into Neon, which is what the site reads
+uv run python -m build.publish_neon           # --check to plan without connecting
 # then walk the chain above, in order, and prove it with check_parity
 ```
 
@@ -215,6 +218,11 @@ newer revision is released and the mirror describes code that no longer runs, or
 released yet and the resync is cheap now. What the check cannot do is confirm that the revision
 it found is the one a run would materialize; that is the same gap as the missing
 revision-versus-release assertion noted above.
+The Neon step needs `NEON_DATABASE_URL` (in CI, the repository secret of that name; locally,
+the value in `.env`). It loads into `gapmap_staging` and swaps that into `gapmap` in one
+transaction, so it is safe to re-run and a reader never sees a half-loaded schema. See
+`docs/reference/where-scores-live.md` for what the schema holds and what it deliberately does
+not.
 
 ## The parity gate
 

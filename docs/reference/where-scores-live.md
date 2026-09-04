@@ -41,6 +41,39 @@ NULL rather than absent, so "not measured" and "no such column" cannot be confus
 `adoption_signal_type` travels with `adoption_level` deliberately: a stars band and a downloads
 band are different scales, so a query that ranks across `signal_type` is wrong.
 
+## The Neon serving layer — `gapmap`
+
+The front end reads the declarations from Postgres rather than from the warehouse, because a
+page render cannot wait on a Trino query. `build/publish_neon.py` loads every CSV the
+serializers have written into `build/registry/` as a table in the `gapmap` schema, on every push
+to `main` that triggers `registry.yml` — the same trigger and the same job as the OSO publish,
+one step after it.
+
+What is there: the registry tables. `products`, `organizations`, `categories`,
+`product_artifacts`, `product_categories`, `product_organizations`, `product_lineage`,
+`tail_products`, `resolution_ledger`, `product_aliases`, `org_handles`, `model_families`, plus
+`publish_runs` — one row per load, carrying `run_id`, `published_at`, `source_git_sha`,
+`declaration_version_id`, `table_count` and a `row_counts` JSONB of the per-table counts. That
+row is how you tell which commit the serving layer is showing.
+
+What is not there: **the warehouse recomputation**. `scores.openness_facts` and
+`scores.openness_computed` stay on OSO, and nothing in `gapmap` recomputes an axis. So a
+question about what the map *says* is answerable here, and a question about whether the
+warehouse *agrees* is not — that is `check_parity` against the tables above.
+
+The load is atomic. Rows go into `gapmap_staging`, which is dropped and recreated each run, and
+the cutover is `gapmap` → `gapmap_previous`, `gapmap_staging` → `gapmap`, drop
+`gapmap_previous`, all three renames in one transaction. A reader sees the whole old schema or
+the whole new one, never a table that has loaded next to one that has not. Grants are applied to
+the staging schema before the swap, since a rename carries privileges with it. `NEON_READ_ROLE`
+names the role granted `SELECT`; unset means `PUBLIC`.
+
+Column types are inferred from the data and deliberately timid: TEXT unless every non-empty
+value in a column parses as BOOLEAN, INTEGER, DOUBLE PRECISION or DATE, and identity columns
+(`slug`, anything ending `_slug` or `_id`) are pinned to TEXT whatever they look like. A
+digits-only artifact id is a string with digits in it, and letting one run's values decide
+otherwise would change the column type from under a query.
+
 ## Openness — computed and gated
 
 | Where | What | Currency |

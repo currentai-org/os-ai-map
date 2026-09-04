@@ -38,6 +38,7 @@ on:
       - "build/resolution.py"
       - "build/vocabulary.py"
       - "build/publish_registry.py"
+      - "build/publish_neon.py"
       - ".github/workflows/registry.yml"
   push:
     branches: [main]
@@ -64,6 +65,7 @@ on:
       - "build/resolution.py"
       - "build/vocabulary.py"
       - "build/publish_registry.py"
+      - "build/publish_neon.py"
   workflow_dispatch:
 
 jobs:
@@ -102,6 +104,10 @@ jobs:
       # here on the PR instead.
       - name: Check the scores table builds
         run: uv run python -m build.serialize_scores --check
+      # The Neon plan: which tables would be created and what type each column would get.
+      # Connects to nothing and needs no secret, so it runs on a fork PR too.
+      - name: Check the Neon publish plan
+        run: uv run python -m build.publish_neon --check
 
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
@@ -136,3 +142,12 @@ jobs:
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
+      # The site's serving layer, after OSO rather than instead of it. The load goes into
+      # gapmap_staging and is swapped into gapmap in one transaction, so a reader mid-request
+      # sees the old schema or the new one. No `if:` guard on the secret: an absent
+      # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
+      # leaves the site serving whatever the last successful run left behind.
+      - name: Publish to Neon
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: uv run python -m build.publish_neon
