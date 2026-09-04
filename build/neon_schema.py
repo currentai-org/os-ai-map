@@ -78,6 +78,7 @@ from pathlib import Path
 from typing import Callable
 
 from build.publish_registry import TABLES as REGISTRY_TABLES
+from build.vocabulary import axes
 
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
@@ -100,7 +101,9 @@ ENUMS: dict[str, tuple[str, ...]] = {
     "freshness_basis": ("commit", "verified"),
     "lineage_relation": ("derived_from", "curated_with", "trains"),
     "capability_relation": ("tier_below", "tier_above", "peer", "anchor"),
-    "metric_name": ("openness", "adoption", "capability"),
+    # The three scored axes, from the score schema rather than restated here — a fourth axis
+    # must not reach a serving layer whose enum silently rejects it.
+    "metric_name": axes(),
     "health_status": ("healthy", "partial", "gap"),
     "integration_type": ("known_build", "documented_component", "similarity"),
     "gap_type": ("structural", "weak_layer"),
@@ -125,7 +128,7 @@ ENUM_MAPS: dict[str, dict[str, str]] = {
         "two_below": "tier_below",
         "anchor": "anchor",
     },
-    "metric_name": {"openness": "openness", "adoption": "adoption", "capability": "capability"},
+    "metric_name": {axis: axis for axis in axes()},
 }
 
 
@@ -377,7 +380,7 @@ def _sources(payload: dict) -> list[dict]:
     out = []
     next_id = 1
     for slug, _cid, product in _by_slug(payload):
-        for metric in ("openness", "adoption", "capability"):
+        for metric in axes():
             for source in _axis(product, metric).get("sources") or []:
                 if not isinstance(source, dict):
                     continue

@@ -637,6 +637,56 @@ def test_the_embedded_newline_is_not_counted_as_an_extra_row():
     assert dict(plan_.columns)["note"] == "TEXT"
 
 
+# --- the read-back query --------------------------------------------------------------
+
+
+def test_the_read_back_query_reaches_postgres_with_its_own_format_specifiers_intact():
+    """`%I` is Postgres's, and psycopg claims `%` the moment parameters are passed.
+
+    The first CI run of build/neon_status.py failed here: psycopg scanned the statement,
+    found `%I`, and refused it before connecting. The schema is composed in as a literal
+    instead, so there are no parameters and nothing scans the query.
+    """
+    from build.neon_status import counts_sql
+
+    rendered = counts_sql("os-ai-map").as_string()
+    assert "format('select count(*) as c from %I.%I', table_schema, table_name)" in rendered
+    assert "%%" not in rendered, "a doubled specifier would reach format() as a literal %"
+    assert "{schema}" not in rendered
+
+
+def test_the_read_back_query_quotes_the_schema_it_filters_on():
+    from build.neon_status import counts_sql
+
+    rendered = counts_sql("os-ai-map").as_string()
+    assert "WHERE table_schema = 'os-ai-map'" in rendered
+
+
+def test_a_schema_name_carrying_a_quote_cannot_break_out_of_the_read_back_query():
+    """`sql.Literal` escapes the value. This is not string interpolation into SQL."""
+    from build.neon_status import counts_sql
+
+    rendered = counts_sql("o'brien").as_string()
+    assert "'o''brien'" in rendered
+
+
+def test_the_runs_query_names_the_schema_and_the_run_table():
+    from build.neon_status import RUNS_SQL
+
+    rendered = RUNS_SQL.format(schema=quote_schema("os-ai-map"), table=f'"{RUN_TABLE}"')
+    assert f'FROM "os-ai-map"."{RUN_TABLE}"' in rendered
+    assert "%" not in rendered, "the runs query passes no parameters either"
+
+
+def test_the_status_report_reads_back_every_column_the_run_record_writes():
+    """A column added to RUN_COLUMNS and not to the report is a column nobody ever sees."""
+    from build.neon_status import RUNS_SQL
+
+    selected = RUNS_SQL.split("FROM")[0]
+    for column, _type in RUN_COLUMNS:
+        assert column in selected, f"{column} is written but never read back"
+
+
 # --- helpers --------------------------------------------------------------------------
 
 _TMP: dict[str, Path] = {}

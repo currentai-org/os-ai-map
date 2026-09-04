@@ -10,6 +10,16 @@ statement. The alternative, `pg_class.reltuples`, is an estimate maintained by A
 reads as `-1` on a table that has just been created — precisely the state every table is in
 after a swap.
 
+That query contains Postgres's own `format('... %I.%I', ...)`, and `%` is also psycopg's
+client-side placeholder marker. psycopg scans the whole query for placeholders whenever
+parameters are passed, and rejects `%I` before the statement ever leaves the process — which
+is how the first CI run of this module failed. Doubling it to `%%I` would work, but only while
+parameters keep being passed: drop them and psycopg stops unescaping, so `%%I` reaches
+Postgres and `format()` reads it as a literal `%` followed by `I`. So the schema is composed
+into the query as a literal with `psycopg.sql` and no parameters are passed at all. With
+`params=None` psycopg does not scan for placeholders, and `%I` reaches the server as written
+whatever anyone does to this module later.
+
 Environment:
     NEON_DATABASE_URL   required
 
@@ -33,6 +43,8 @@ from build.publish_neon import (
     scrub,
 )
 
+# `{schema}` is filled by `counts_sql`, not by a query parameter. See the module docstring:
+# the `%I` below is Postgres's, and passing parameters would make psycopg claim it.
 COUNTS_SQL = """
 SELECT table_name,
        (xpath('/row/c/text()',
@@ -40,7 +52,7 @@ SELECT table_name,
                   format('select count(*) as c from %I.%I', table_schema, table_name),
                   false, true, '')))[1]::text::int AS rows
 FROM information_schema.tables
-WHERE table_schema = %s
+WHERE table_schema = {schema}
 ORDER BY 1
 """
 
@@ -52,12 +64,24 @@ ORDER BY published_at DESC
 """
 
 
+def counts_sql(schema: str):
+    """The per-table `count(*)` query with the schema composed in as a literal.
+
+    A literal rather than a parameter, so the statement carries no placeholders and psycopg
+    leaves Postgres's `%I` alone. `sql.Literal` quotes and escapes the value, so this is not
+    string interpolation into SQL.
+    """
+    from psycopg import sql
+
+    return sql.SQL(COUNTS_SQL).format(schema=sql.Literal(schema))
+
+
 def report(dsn: str, schema: str) -> str:
     import psycopg
 
     lines: list[str] = []
     with psycopg.connect(require_ssl(dsn)) as connection, connection.cursor() as cursor:
-        cursor.execute(COUNTS_SQL, (schema,))
+        cursor.execute(counts_sql(schema))
         rows = cursor.fetchall()
         lines.append(f"### `{schema}` tables after the load\n")
         lines.append("| table | rows |")

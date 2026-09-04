@@ -168,7 +168,7 @@ jobs:
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
       # The site's serving layer, after OSO rather than instead of it. The load goes into
-      # gapmap_staging and is swapped into gapmap in one transaction, so a reader mid-request
+      # os-ai-map_staging and is swapped into os-ai-map in one transaction, so a reader mid-request
       # sees the old schema or the new one. No `if:` guard on the secret: an absent
       # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
       # leaves the site serving whatever the last successful run left behind.

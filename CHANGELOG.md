@@ -59,7 +59,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   cutover is three schema renames in one transaction, so a reader mid-request sees the whole old
   schema or the whole new one. A `publish_runs` row records the commit, the schema version, the
   build and release dates and the per-table row counts of each load. The table set, grain and
-  types live in `build/neon_schema.py`, which is the one place to change them (#365).
+  types live in `build/neon_schema.py`, which is the one place to change them. After the load,
+  `build/neon_status.py` connects again and writes the table and row counts a reader now sees,
+  plus the `publish_runs` row, to the run summary; `gh workflow run registry.yml --ref <branch>
+  -f neon_only=true` runs the same load from a branch with the OSO publish skipped (#365).
 
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed
