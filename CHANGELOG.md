@@ -18,6 +18,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `build/propose_org_handles.py`, which proposes `huggingface` org handles from the namespaces of
+  already declared Hugging Face artifacts, grouped by org and checked for aggregator accounts and
+  ownership conflicts, for review as a GitHub issue rather than seeded silently (#365).
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed
   dependency graph as a recorded event instead of an edited record. The disposition history is
