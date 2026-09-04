@@ -21,6 +21,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - `build/propose_org_handles.py`, which proposes `huggingface` org handles from the namespaces of
   already declared Hugging Face artifacts, grouped by org and checked for aggregator accounts and
   ownership conflicts, for review as a GitHub issue rather than seeded silently (#365).
+- A weekly mirror-drift sentinel (`mirror-drift.yml`, Monday 08:30 UTC): every `mirror:` contract
+  in `warehouse/dependencies.yaml` is compared against the platform's latest revision, and a
+  mismatch opens a `sentinel` issue. Reports revision, hash, code and missing-model drift
+  separately, and exits 2 rather than passing whenever the platform cannot be read at all. Closes
+  the gap where the repo's own gates stay green while the platform releases past a mirror; the
+  first runs found eight of seventeen contracts behind. "Mirror resync" in
+  `docs/operations/deploy-models.md` is the runbook (#365).
+
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed
   dependency graph as a recorded event instead of an edited record. The disposition history is

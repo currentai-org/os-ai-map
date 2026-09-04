@@ -1,0 +1,61 @@
+name: mirror-drift
+
+# The sentinel over `warehouse/dependencies.yaml`'s mirror blocks: does each contract still
+# describe the model the platform is actually running?
+#
+# Every other gate over those contracts reads only the repo. `build/assets.dependency_violations`
+# proves a mirror file hashes to its declared `local_sha256`, that `verified_revision` equals
+# `mirror.revision`, and that bytes and revision move together across commits — and all of that
+# stays green while the platform releases revision N+1 over a mirror of N. The repo then
+# evaluates and reviews code that is no longer what builds the table, and nothing anywhere
+# notices. This is the only check that leaves the repo to look.
+#
+# Weekly, Monday 08:30 UTC, after the identity dataset's Sunday 05:30 sweep and the Monday
+# 03:00/04:00 scoring chain have landed. This gate reads asset metadata rather than tables, so
+# it has no ordering relationship to either the chain or any other gate — the half hour is
+# there to keep it off `freshness` at 08:00 and out of its logs, which is the reason every
+# other Monday gate sits on its own minute. The cadence matches the mirrors' own, which is
+# "whenever a maintainer deploys" — weekly is a sentinel's interval, not a correctness one,
+# and the finding it reports does not go stale.
+#
+# Deliberately NOT a pull_request gate. A PR cannot reach the platform (a fork PR has no
+# OSO_API_KEY) and, more to the point, drift here is not caused by the PR: it is caused by
+# something that happened on the platform. Failing contributors' PRs for a maintainer's
+# unsynced deploy would be the fastest way to get this switched off.
+#
+# Two failing exit codes, and they mean different jobs: 1 is drift and the job is a resync, 2
+# is "nothing could be checked" and the job is to find out why. Everything that stops the check
+# happening lands in 2 — unreachable, non-200, a 200 refusing the call (what a rotated
+# OSO_API_KEY looks like), an undecodable body. Never 0: a sentinel that goes quiet when it
+# loses its only source of truth still shows a green tick, and that tick is then evidence of
+# nothing while continuing to read as evidence. See build/check_mirror_drift.py.
+
+on:
+  schedule:
+    - cron: "30 8 * * 1"
+  workflow_dispatch:
+
+jobs:
+  mirror-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Compare every mirror contract against the platform
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: uv run python -m build.check_mirror_drift --report mirror-drift.json
+
+      - name: Keep the verdicts
+        # The report is the input to a resync, so it outlives a red run's log.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mirror-drift-report
+          path: mirror-drift.json
+          if-no-files-found: ignore
