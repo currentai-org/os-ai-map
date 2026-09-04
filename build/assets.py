@@ -309,6 +309,19 @@ def dependencies() -> list[dict]:
 
 
 EXTERNALIZATION_DISPOSITIONS = {"frozen-without-producer", "transferred"}
+# The third state in an externalized table's append-only history:
+#   in-scope -> externalized (frozen-without-producer | transferred) -> reclaimed-as-dependency
+# `reclaimed-as-dependency` means the table is STILL platform-owned and still not deployed from
+# this repo, but is once again inside the repo's governed dependency graph because an in-scope
+# governed asset reads it. Its representation is a `warehouse/dependencies.yaml` contract with a
+# mirror block -- provenance, not ownership. A reclaim never edits or removes the original
+# externalization entry; it is recorded as a separate event so the history stays append-only and
+# the still-external population shrinks explicitly rather than silently.
+RECLAIM_DISPOSITION = "reclaimed-as-dependency"
+RECLAIM_REQUIRED_FIELDS = (
+    "table", "prior_disposition", "prior_date", "new_disposition", "date", "reason",
+    "governed_reader",
+)
 EXTERNALIZATION_SCHEMA_VERSION = 2
 PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
 # The externalized artifacts live under these path prefixes; every file that existed under them
@@ -324,8 +337,33 @@ def externalization_receipt() -> dict:
 
 
 def externalized() -> list[dict]:
-    """The externalization receipt's asset entries, or [] if absent."""
+    """The externalization receipt's asset entries, or [] if absent.
+
+    This is the HISTORICAL removed set and it never shrinks: a table that is later reclaimed
+    keeps its entry here unchanged. Use `still_externalized()` for the tables that are currently
+    out of the repo's dependency graph.
+    """
     return externalization_receipt().get("assets") or []
+
+
+def reclaims() -> list[dict]:
+    """The receipt's reclaim events (externalized -> reclaimed-as-dependency), or [] if none."""
+    return externalization_receipt().get("reclaims") or []
+
+
+def reclaimed_tables() -> set[str]:
+    """The full table names the receipt records as reclaimed back into the dependency graph."""
+    return {r.get("table") for r in reclaims() if r.get("table")}
+
+
+def still_externalized() -> list[dict]:
+    """The externalization entries whose tables have NOT been reclaimed.
+
+    `len(externalized()) - len(reclaims())` by construction, which is the arithmetic the receipt
+    states in `still_external_count` and the gate re-derives.
+    """
+    reclaimed = reclaimed_tables()
+    return [e for e in externalized() if e.get("table") not in reclaimed]
 
 
 def _git_commit_exists(sha: str) -> bool:
@@ -433,11 +471,136 @@ def expected_externalization_base(recorded_tables: set[str]) -> str | None:
     return None
 
 
+def _worktree_has(path: str) -> bool:
+    """Whether a repo-relative path exists in the worktree (one seam, so a test can stand it in)."""
+    return (ROOT / path).exists()
+
+
 def _norm_read_by(rb) -> dict:
     """A read_by block normalized to sorted lists so two provenance snapshots compare by value."""
     if not rb:
         return {}
     return {k: sorted(v) for k, v in rb.items() if v}
+
+
+def reclaim_violations() -> list[str]:
+    """A reclaim is a real, evidenced transition -- never a way to quietly re-enter the graph.
+
+    A `reclaims` record is valid only if all of the following hold:
+
+    * SHAPE -- every required field is present, `new_disposition` is `reclaimed-as-dependency`,
+      and no table is reclaimed twice;
+    * HISTORY -- the table has a prior externalization entry in the same receipt whose
+      `disposition` and `recorded_at` equal the record's `prior_disposition` and `prior_date`, so
+      the record names the state it is transitioning FROM and cannot invent one;
+    * READER -- `governed_reader` is a file that exists in this tree AND genuinely reads the
+      table, re-derived from the same SQL/Python scanner the rest of the graph uses. A reclaim is
+      caused by an in-scope reader; without one the table has no business back in the graph;
+    * REPRESENTATION -- a `warehouse/dependencies.yaml` contract for the table exists and carries
+      a mirror block. `reclaimed-as-dependency` IS that contract; a reclaim without one is a
+      claim with nothing behind it.
+
+    The converse is equally a hard error: a contract for a table that appears in the receipt but
+    carries no reclaim record means the externalization was undone silently.
+
+    Finally the receipt must state the arithmetic: `reclaimed_count` equals the number of records
+    and `still_external_count` equals the historical entry count minus it, so the shrinking of the
+    still-external population is written down rather than inferred.
+    """
+    problems: list[str] = []
+    receipt = externalization_receipt()
+    if not receipt:
+        return problems
+
+    entries = receipt.get("assets") or []
+    records = receipt.get("reclaims") or []
+    entries_by_table = {e.get("table"): e for e in entries if e.get("table")}
+    deps_by_table = {d.get("table"): d for d in dependencies() if d.get("table")}
+
+    seen: set[str] = set()
+    graph: dict | None = None
+    for r in records:
+        t = r.get("table")
+        label = t or f"reclaim record {r!r}"
+        for field in RECLAIM_REQUIRED_FIELDS:
+            if not str(r.get(field) or "").strip():
+                problems.append(f"{label}: reclaim record is missing {field}")
+        if not t:
+            continue
+        if t in seen:
+            problems.append(f"{t}: listed more than once in the receipt's reclaims")
+        seen.add(t)
+
+        if r.get("new_disposition") != RECLAIM_DISPOSITION:
+            problems.append(
+                f"{t}: reclaim new_disposition {r.get('new_disposition')!r} != "
+                f"{RECLAIM_DISPOSITION!r}")
+
+        # HISTORY -- the prior state is the receipt's own, not the record's assertion.
+        prior = entries_by_table.get(t)
+        if prior is None:
+            problems.append(
+                f"{t}: reclaimed but the receipt records no prior externalization entry for it; "
+                "a reclaim is a transition out of an externalized state, not a new one")
+        else:
+            if prior.get("disposition") != r.get("prior_disposition"):
+                problems.append(
+                    f"{t}: reclaim prior_disposition {r.get('prior_disposition')!r} != the "
+                    f"recorded externalization disposition {prior.get('disposition')!r}")
+            if str(r.get("prior_date")) != str(prior.get("recorded_at")):
+                problems.append(
+                    f"{t}: reclaim prior_date {r.get('prior_date')!r} != the externalization "
+                    f"entry's recorded_at {prior.get('recorded_at')!r}")
+
+        # READER -- the in-scope file that put the table back in the graph, verified by reading it.
+        reader = r.get("governed_reader")
+        if reader:
+            if not (ROOT / reader).exists():
+                problems.append(
+                    f"{t}: reclaim governed_reader {reader} does not exist in this tree; a "
+                    "reclaim needs the in-repo asset that reads the table")
+            else:
+                if graph is None:
+                    graph = derive_graph()
+                refs = graph["reads"].get(reader) or {"internal": [], "external": []}
+                reads_it = (
+                    t in set(refs["external"])
+                    or t.removeprefix("currentai.") in set(refs["internal"])
+                )
+                if not reads_it:
+                    problems.append(
+                        f"{t}: reclaim governed_reader {reader} does not read {t}; the reclaim "
+                        "reason must be a real read, re-derived from the file")
+
+        # REPRESENTATION -- the contract with a mirror block IS the reclaimed state.
+        dep = deps_by_table.get(t)
+        if dep is None:
+            problems.append(
+                f"{t}: {RECLAIM_DISPOSITION} but warehouse/dependencies.yaml has no contract for "
+                "it; the reclaimed state is a dependency contract with a mirror block")
+        elif not (dep.get("mirror") or {}):
+            problems.append(
+                f"{t}: reclaimed dependency contract has no mirror block; a reclaimed table stays "
+                "platform-owned, so the repo keeps a read-only mirror as provenance")
+
+    # The converse: re-contracting an externalized table without recording the transition.
+    for t in sorted(deps_by_table):
+        if t in entries_by_table and t not in seen:
+            problems.append(
+                f"{t}: dependency contract for a table the receipt externalized, with no reclaim "
+                f"record; append a reclaims entry (new_disposition: {RECLAIM_DISPOSITION}) rather "
+                "than re-entering the graph silently")
+
+    # The arithmetic is stated in the file, not inferred by the reader.
+    if receipt.get("reclaimed_count") != len(records):
+        problems.append(
+            f"receipt reclaimed_count {receipt.get('reclaimed_count')!r} != {len(records)} "
+            "reclaim records")
+    if receipt.get("still_external_count") != len(entries) - len(records):
+        problems.append(
+            f"receipt still_external_count {receipt.get('still_external_count')!r} != "
+            f"{len(entries)} externalized - {len(records)} reclaimed")
+    return problems
 
 
 def externalization_receipt_violations() -> list[str]:
@@ -478,6 +641,14 @@ def externalization_receipt_violations() -> list[str]:
       as a transfer, and each entry is genuinely gone from the governed inventory, the dependency
       manifest, and every repository producer;
     * APPEND-ONLY -- every entry recorded in the receipt at the merge base survives unchanged here.
+
+    RECLAIMS. A table can legitimately come back: `reclaimed-as-dependency` (see
+    `reclaim_violations`) records the transition when an in-scope governed asset starts reading an
+    externalized table. Its externalization entry stays byte-identical -- it is history, and the
+    historical removed set never shrinks -- but the checks that assert the table is gone from every
+    live surface (dependency manifest, repository producer, worktree file) are answered by the
+    reclaim record instead. The table stays out of `assets.yaml` either way: reclaimed means
+    contracted, never governed.
     """
     problems: list[str] = []
     receipt = externalization_receipt()
@@ -485,6 +656,8 @@ def externalization_receipt_violations() -> list[str]:
         return problems  # no receipt is not a violation; nothing was externalized
 
     entries = receipt.get("assets") or []
+    reclaimed = {r.get("table") for r in (receipt.get("reclaims") or []) if r.get("table")}
+    problems += reclaim_violations()
 
     # -- document well-formedness --------------------------------------------------
     if receipt.get("schema_version") != EXTERNALIZATION_SCHEMA_VERSION:
@@ -525,10 +698,13 @@ def externalization_receipt_violations() -> list[str]:
     governed = set(by_table())
     dep_tables = {d.get("table") for d in dependencies()}
     dep_tables_bare = {t.removeprefix("currentai.") for t in dep_tables if t}
+    # A reclaimed table is a dependency contract again, yet it still belongs to the HISTORICAL
+    # removed set this receipt records -- so it counts as removed here. Without that carve-out the
+    # removed set would shrink silently and the receipt would read as having invented an entry.
     removed = {
         t for t in base_assets
         if t.removeprefix("currentai.") not in governed
-        and t.removeprefix("currentai.") not in dep_tables_bare
+        and (t.removeprefix("currentai.") not in dep_tables_bare or t in reclaimed)
     }
     recorded = set(tables)
     for t in sorted(removed - recorded):
@@ -554,12 +730,14 @@ def externalization_receipt_violations() -> list[str]:
         if b is None:
             continue  # membership check above already flagged this
 
-        # still gone from every live surface
+        # still gone from every live surface (a reclaim answers the dependency/mirror ones)
         if t.removeprefix("currentai.") in governed:
             problems.append(f"{t}: externalized but still a governed asset in assets.yaml")
-        if t in dep_tables:
-            problems.append(f"{t}: externalized but also a dependency contract")
-        if t in producer_tables:
+        if t in dep_tables and t not in reclaimed:
+            problems.append(
+                f"{t}: externalized but also a dependency contract; record the transition as a "
+                f"reclaim (new_disposition: {RECLAIM_DISPOSITION}) if an in-scope asset now reads it")
+        if t in producer_tables and t not in reclaimed:
             problems.append(f"{t}: externalized but a repository model file still produces it")
 
         # identity + population reproduce from the base asset
@@ -590,7 +768,9 @@ def externalization_receipt_violations() -> list[str]:
                 problems.append(f"{t}: archived {path} did not exist at the base commit")
             elif want != h:
                 problems.append(f"{t}: archived {path} hash {h} != base blob {want}")
-            if (ROOT / path).exists():
+            # A reclaimed table's mirror file legitimately exists again; the archived hash still
+            # has to reproduce from the base blob, which is checked above either way.
+            if _worktree_has(path) and t not in reclaimed:
                 problems.append(f"{t}: archived {path} still exists in the worktree (not deleted)")
 
         # consumer provenance: repo readers + external consumers reproduce from the base asset

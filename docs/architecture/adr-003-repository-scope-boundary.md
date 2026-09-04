@@ -250,3 +250,32 @@ and their runbooks stay superseded.
   old boundary — a freeze, not a completed ownership transfer.
 - The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
   OSO assets into repository governance.
+
+## Addendum — reclaiming a dependency (2026-09-04)
+
+Externalization is not permanent exile. An externalized table can become a legitimate category-3
+input again when an in-scope governed asset starts reading it. The boundary rule is unchanged: what
+qualifies the table is a named repo computation that reads it, exactly as for any other dependency
+contract. Nothing here weakens a gate or creates an exception for a particular table.
+
+The transition is recorded, not erased. `warehouse/audits/externalization.json` stays append-only, so
+the disposition history reads **in-scope → externalized (`frozen-without-producer` or `transferred`)
+→ `reclaimed-as-dependency`**: the original entry in `assets` is left byte-identical, and a `reclaims`
+record is appended alongside it carrying `table`, `prior_disposition`, `prior_date`,
+`new_disposition`, `date`, `reason`, and `governed_reader` — the in-repo file that now reads the
+table.
+
+`reclaimed-as-dependency` means the table is **still platform-owned and still not deployed from this
+repo**, and is once again inside the repo's governed dependency graph. Its representation is a
+`warehouse/dependencies.yaml` contract with a mirror block, which is provenance, not ownership. A
+reclaimed table never becomes a governed asset; `assets.yaml` and the receipt's `assets` list are
+both untouched by a reclaim.
+
+`build.assets.reclaim_violations()` enforces it. A reclaim record is valid only if the table has a
+prior externalization entry with the stated disposition and date, `governed_reader` exists in the
+tree and genuinely reads the table (re-derived with the same scanner as the rest of the graph), and a
+contract with a mirror block exists for it. The converse is also a hard error: a contract for a table
+the receipt externalized, with no reclaim record, means the externalization was undone silently. The
+reproduction check then treats a reclaimed table as still in the **historical** removed set — that
+set never shrinks — while `still_external_count` records the population currently outside the graph,
+so the shrink is written down rather than inferred.
