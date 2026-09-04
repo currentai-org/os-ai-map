@@ -67,6 +67,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Dropped `--allow-unprovisioned` from the `identity-eval` and `identity-digest` workflows now
+  that the identity dataset is deployed and contracted. Both modules refuse the flag once a
+  `currentai.identity.*` contract with a `mirror` block exists, so a missing table is a real
+  failure again rather than a green skip (#365).
 - Split the labour between stage and gap text: a stage says where a category stands, a gap says
   what it needs. They render together in the category drawer, and written in one mood they
   restated each other — `depth` fires if and only if the stage is 4, so both sentences carried
@@ -91,6 +95,17 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   another artifact kind, none homepage-only) (#472).
 - Consolidated GitHub/PyPI/npm/crates/arXiv/Hugging Face artifact-identity canonicalization,
   previously duplicated and drifted across three modules, into one (#472).
+- Brought all seven deployed `currentai.identity.*` models under repo governance (ADR-003):
+  read-only mirrors under `warehouse/models/identity/`, plus dependency contracts pinning each
+  model id, released revision and file hash, so `build/identity_eval.py`'s and
+  `build/identity_digest.py`'s inputs are versioned, hashed and reviewable. Mirrored the three
+  pool feeds (`signal_hfhub.model_universe`, `signal_openrouter.models`,
+  `signal_goodailist.repo_catalog`) the same way, since the dependency gate requires a mirror
+  for every `currentai.*` input a governed reader reaches (#365).
+- Recorded `currentai.signal_goodailist.repo_catalog`'s return to the dependency graph as a
+  `reclaimed-as-dependency` event in `warehouse/audits/externalization.json`: the identity
+  graph's `artifact_nodes` model reads it, so it is contracted again while the original
+  externalization entry stays byte-identical as history (#365).
 
 ### Deprecated
 

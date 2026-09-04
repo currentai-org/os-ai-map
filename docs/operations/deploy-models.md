@@ -10,11 +10,15 @@ different places.
 |---|---|---|
 | Legacy warehouse | `entities`, `events`, `metrics`, and the legacy `scores` stack-map models | **Externalized (ADR-003)** — frozen under platform ownership and no longer in this repo. |
 | Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/models/<dataset>/` and recorded as **dependency contracts in `warehouse/dependencies.yaml`** (each with a `mirror:` block) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from the mirror copies.** |
+| Identity graph | all seven `identity.*` models (`artifact_nodes`, `candidates`, `artifact_identity_edges`, `membership_edges`, `equivalence_edges`, `org_edges`, `digest`), plus the pool feeds `signal_hfhub.model_universe`, `signal_openrouter.models`, `signal_goodailist.repo_catalog` | On the OSO platform, same mirror-and-contract pattern as the scoring chain. `build/identity_eval.py` and `build/identity_digest.py` are the repo-side readers. |
 
 The read-only mirror copies under `warehouse/models/<dataset>/` make the scoring models readable
 without platform access. They are snapshots, not the source of truth — see each contract's `mirror:`
 block in `warehouse/dependencies.yaml` for the deployed revision, hash and sync date the file
-reflects.
+reflects. The identity dataset is mirrored the same way, under `warehouse/models/identity/`: after
+any `identity.*` revision is released, resync the mirror file from the platform's released code and
+update that contract's `verified_revision`, `mirror.revision`, `mirror.hash`, `mirror.local_sha256`
+and `mirror.synced_at`, or the dependency gate fails on the hash.
 
 ## The deploy mechanic: revision → RELEASE → run
 
@@ -74,6 +78,7 @@ holds it against the `cron:` lines it quotes.
 | What | When (UTC) | Where the cron lives |
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
+| `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
 | `parity` gate | Monday 06:00 | `.github/workflows/parity.yml` |

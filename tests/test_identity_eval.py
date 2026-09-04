@@ -6,11 +6,13 @@ directly (`_equivalence_from_ledger`, `_membership_from_ledger`) rather than goi
 produce without raising (two rulings against one artifact, two different products) can still
 be tested here -- see `test_membership_truth_keeps_two_products_for_one_artifact_distinct`.
 
-The `currentai.identity.*` dataset has not deployed, so nothing here touches the warehouse;
+All seven `currentai.identity.*` models are deployed, but nothing here touches the warehouse;
 the F2 tests stub `build.warehouse.query` directly rather than hitting a real endpoint.
 """
 
 from __future__ import annotations
+
+from pathlib import Path
 
 import pytest
 import yaml
@@ -26,6 +28,7 @@ from build.identity_eval import (
     WarehouseQueryFailed,
     WarehouseTableMissing,
     _equivalence_from_ledger,
+    _identity_dataset_contracted,
     _identity_dataset_deployed,
     _is_table_not_found,
     _membership_from_ledger,
@@ -43,6 +46,7 @@ from build.identity_eval import (
     validate_columns,
 )
 
+ROOT = Path(__file__).resolve().parent.parent
 REAL_TRUTH = load_truth()
 
 
@@ -750,7 +754,24 @@ def test_load_edges_from_warehouse_other_failure_raises_query_failed_not_missing
         load_edges_from_warehouse()
 
 
-def test_main_allow_unprovisioned_exits_0_on_genuine_table_not_found(monkeypatch):
+@pytest.fixture
+def unrecorded_deploy(monkeypatch, tmp_path):
+    """Point both provisioning records at empty files.
+
+    The F2 tests below are about which EXCEPTION CLASS `--allow-unprovisioned` may swallow, not
+    about the refusal. The committed tree now records the identity dataset as deployed (seven
+    mirror-bound contracts), so the flag is refused before any query runs unless the fixture
+    withdraws that record first.
+    """
+    assets = tmp_path / "assets.yaml"
+    assets.write_text(yaml.dump({"assets": []}))
+    deps = tmp_path / "dependencies.yaml"
+    deps.write_text(yaml.dump({"dependencies": []}))
+    monkeypatch.setattr(identity_eval_module, "ASSETS_PATH", assets)
+    monkeypatch.setattr(identity_eval_module, "DEPENDENCIES_PATH", deps)
+
+
+def test_main_allow_unprovisioned_exits_0_on_genuine_table_not_found(monkeypatch, unrecorded_deploy):
     def fake_query(sql):
         raise Exception(REAL_TRINO_TABLE_NOT_FOUND)
 
@@ -759,7 +780,7 @@ def test_main_allow_unprovisioned_exits_0_on_genuine_table_not_found(monkeypatch
     assert rc == 0
 
 
-def test_main_allow_unprovisioned_still_exits_2_on_a_non_missing_table_failure(monkeypatch):
+def test_main_allow_unprovisioned_still_exits_2_on_a_non_missing_table_failure(monkeypatch, unrecorded_deploy):
     """F2: the flag exists to cover exactly one signal. An auth failure, a timeout, or a
     missing column on a table that DOES exist must exit 2 even with the flag set -- otherwise
     a rotated API key or a broken deployed schema reports "skipped" and stays green forever."""
@@ -809,6 +830,69 @@ def test_main_rejects_allow_unprovisioned_when_dataset_deployed(tmp_path, monkey
     monkeypatch.setattr(identity_eval_module, "ASSETS_PATH", p)
     rc = main(["--from-warehouse", "--allow-unprovisioned"])
     assert rc == 2
+
+
+def test_identity_dataset_contracted_reads_mirror_bound_contracts(tmp_path):
+    p = tmp_path / "dependencies.yaml"
+    p.write_text(yaml.dump({"dependencies": [
+        {"table": "currentai.identity.digest", "mirror": {"revision": 4, "model_id": "x"}},
+    ]}))
+    assert _identity_dataset_contracted(p) == ["currentai.identity.digest"]
+
+
+def test_identity_dataset_contracted_ignores_a_contract_with_no_mirror(tmp_path):
+    p = tmp_path / "dependencies.yaml"
+    p.write_text(yaml.dump({"dependencies": [{"table": "currentai.identity.digest"}]}))
+    assert _identity_dataset_contracted(p) == []
+
+
+def test_identity_dataset_contracted_ignores_non_identity_tables(tmp_path):
+    p = tmp_path / "dependencies.yaml"
+    p.write_text(yaml.dump({"dependencies": [
+        {"table": "currentai.signal_hfhub.model_universe", "mirror": {"revision": 3}},
+    ]}))
+    assert _identity_dataset_contracted(p) == []
+
+
+def test_main_rejects_allow_unprovisioned_when_the_dataset_is_contracted(tmp_path, monkeypatch):
+    """A contract with a mirror block is the platform-owned equivalent of a materialized asset.
+
+    identity.* tables are never governed assets under ADR-003, so `_identity_dataset_deployed`
+    stays empty however deployed the dataset is -- the contract is the only record, and the
+    refusal has to read it or the flag would outlive the deploy forever.
+    """
+    assets = tmp_path / "assets.yaml"
+    assets.write_text(yaml.dump({"assets": []}))
+    deps = tmp_path / "dependencies.yaml"
+    deps.write_text(yaml.dump({"dependencies": [
+        {"table": "currentai.identity.membership_edges", "mirror": {"revision": 2, "model_id": "x"}},
+    ]}))
+    monkeypatch.setattr(identity_eval_module, "ASSETS_PATH", assets)
+    monkeypatch.setattr(identity_eval_module, "DEPENDENCIES_PATH", deps)
+    rc = main(["--from-warehouse", "--allow-unprovisioned"])
+    assert rc == 2
+
+
+def test_the_committed_tree_refuses_allow_unprovisioned():
+    """The real repo state, not a fixture: the dataset is contracted, so the flag is dead."""
+    assert _identity_dataset_contracted() != []
+    assert main(["--from-warehouse", "--allow-unprovisioned"]) == 2
+
+
+def test_the_eval_workflow_does_not_pass_allow_unprovisioned():
+    """The flag cannot come back while the contracts stand.
+
+    `main` refuses it, so a workflow that still passed it would fail every scheduled run -- this
+    catches that at review time instead, and pins the two facts together.
+    """
+    wf = (ROOT / ".github" / "workflows" / "identity-eval.yml").read_text()
+    for line in wf.splitlines():
+        if line.lstrip().startswith("#"):
+            continue
+        assert "--allow-unprovisioned" not in line, (
+            "identity-eval.yml passes --allow-unprovisioned, but the identity dataset is "
+            "contracted in warehouse/dependencies.yaml and build.identity_eval refuses the flag"
+        )
 
 
 def test_main_rejects_allow_unprovisioned_without_from_warehouse(tmp_path):

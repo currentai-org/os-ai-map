@@ -83,6 +83,7 @@ from build.vocabulary import parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = "currentai.identity.digest"
+DEPENDENCIES_PATH = ROOT / "warehouse" / "dependencies.yaml"
 
 #: Section order -- equivalence first, per the design's digest contract, then the rest in
 #: the order the brief names them.
@@ -464,6 +465,24 @@ def load_rows_from_file(path: Path) -> list[dict]:
     return json.loads(path.read_text())
 
 
+def _digest_is_contracted(path: Path = DEPENDENCIES_PATH) -> bool:
+    """Does `warehouse/dependencies.yaml` carry a mirror-bound contract for `TABLE`?
+
+    `identity.digest` is platform-authored, so under ADR-003 it is a dependency contract and
+    never a governed asset. A contract with a `mirror` block pins a model id, a released
+    revision and the hash of the mirrored code -- none of which can be written for a table that
+    does not exist -- so it is the repo's record that the model is deployed, and it refuses
+    `--allow-unprovisioned`.
+    """
+    if not path.exists():
+        return False
+    doc = yaml.safe_load(path.read_text()) or {}
+    return any(
+        d.get("table") == TABLE and (d.get("mirror") or {})
+        for d in (doc.get("dependencies") or [])
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--week", required=True, help='ISO week, e.g. "2026-36"')
@@ -476,7 +495,8 @@ def main(argv: list[str] | None = None) -> int:
         "--allow-unprovisioned", action="store_true",
         help=(
             "a missing currentai.identity.digest table exits 0 (\"skipped\") instead of 2. "
-            "Ignored when --rows is given."
+            "Ignored when --rows is given. Refused -- exit 2, no query attempted -- once "
+            "warehouse/dependencies.yaml contracts the table with a mirror block."
         ),
     )
     args = parser.parse_args(argv)
@@ -484,6 +504,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.rows:
         rows = load_rows_from_file(args.rows)
     else:
+        if args.allow_unprovisioned and _digest_is_contracted(DEPENDENCIES_PATH):
+            print(
+                f"[FAIL] --allow-unprovisioned refused: warehouse/dependencies.yaml already "
+                f"contracts {TABLE} with a mirror block. The model is deployed, so a missing "
+                f"table is a real failure, not an unprovisioned skip -- remove "
+                f"--allow-unprovisioned from the caller."
+            )
+            return 2
         try:
             rows = load_rows_from_warehouse()
         except WarehouseTableMissing as exc:

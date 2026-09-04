@@ -111,6 +111,7 @@ dependencies:
   required_by:
   - build/check_artifacts.py
   - warehouse/models/evidence/product_evidence.sql
+  - warehouse/models/identity/artifact_identity_edges.sql
   - warehouse/models/observations/product_adoption_current.sql
   - warehouse/models/signal_github/product_adoption.sql
   verified_revision: 2
@@ -214,3 +215,211 @@ dependencies:
   owner: oso
   verified_at: '2026-08-29'
   content_contract_sha256: fc944c8a4d6faf77bd3ee10b4616e6dc99ea1a1481e0ff94a0ceca29ee9543fc
+- table: currentai.identity.artifact_nodes
+  purpose: identity_graph_nodes
+  expected_grain: one row per (artifact_kind, artifact_key)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/identity/artifact_identity_edges.sql
+  - warehouse/models/identity/candidates.sql
+  - warehouse/models/identity/digest.sql
+  - warehouse/models/identity/equivalence_edges.sql
+  - warehouse/models/identity/org_edges.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/identity/artifact_nodes.sql
+  mirror:
+    model_id: 0840576c-47d4-4152-bfac-9e38c5272281
+    revision: 3
+    hash: c3e497612e897b7f76f17f540abe9e4ea4db972e43466a5387f5561c5ff1fa9b
+    local_sha256: 457e083c6ebcf0ef2652a5886e6c4405e43b5c51a535f3d8450bfbadeda0a509
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.artifact_identity_edges
+  purpose: identity_artifact_pair_evidence
+  expected_grain: one row per (artifact_kind, artifact_id_a, artifact_id_b), artifact_id_a < artifact_id_b
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/identity_eval.py
+  verified_revision: 4
+  owner: oso
+  files:
+    model: warehouse/models/identity/artifact_identity_edges.sql
+  mirror:
+    model_id: 6e2c9743-16ca-4a56-b84f-c83fd9a37774
+    revision: 4
+    hash: a37c47d1a980b4465467d6171785772978fe6b56b1a9e5a413742bfea5573877
+    local_sha256: 094c313884e48e6f3b9264004ba4dd766f48d2bfefd6ee9c305410f01b60dfd4
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.candidates
+  purpose: identity_review_candidates
+  expected_grain: one row per candidate_key
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/identity/digest.sql
+  - warehouse/models/identity/membership_edges.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/identity/candidates.sql
+  mirror:
+    model_id: fbe4495a-8908-4e04-9269-1727d88a0bf5
+    revision: 3
+    hash: 7cffa8f8d5331e4207ceb7fcdd7e5117cd8a17376d0a941f469a74b5fe43a893
+    local_sha256: 1ab19f1712401ea280bef97d68bdce79fcf584a38ca57fbff7ca53a68c157786
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.membership_edges
+  purpose: identity_product_membership
+  expected_grain: one row per (artifact_kind, artifact_id, product_tier, product_slug)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/identity_eval.py
+  - warehouse/models/identity/digest.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/identity/membership_edges.sql
+  mirror:
+    model_id: cb3be49c-a049-4874-885b-f940a263632c
+    revision: 2
+    hash: 090307bd5a58796d872c4aa6de1642cf94d407bcc3a8f5bd25ca8a9768258dc8
+    local_sha256: 2caaded893310531eccddb0bd49c59bb6b02435ea0dca2174518bc394e75fa61
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.equivalence_edges
+  purpose: identity_equivalence_evidence
+  expected_grain: one row per (candidate_key, product_tier, product_slug)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/identity_eval.py
+  - warehouse/models/identity/digest.sql
+  verified_revision: 5
+  owner: oso
+  files:
+    model: warehouse/models/identity/equivalence_edges.sql
+  mirror:
+    model_id: 10fc9fc9-799b-454b-bead-6b7fb91e2123
+    revision: 5
+    hash: c9bca213c7442ee20a62fdb7725299d2b8b10c34777efb7e1814a9391fc1fd92
+    local_sha256: d1d4c3e5400bf4b365020be262381320d4927f8afe22cceefacca60b82ad4342
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.org_edges
+  purpose: identity_org_attribution
+  expected_grain: one row per (candidate_key, org_slug)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/identity_eval.py
+  - warehouse/models/identity/digest.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/identity/org_edges.sql
+  mirror:
+    model_id: d64df19d-4f58-46db-89d4-83d8dad206eb
+    revision: 3
+    hash: fddb77887404396590f3855f9cbe606d0092f38a91f9d0c389acde26afa80b64
+    local_sha256: 18b943bbd141beda97cc3417fa32dbca072ac7aa8a8b3e880a234ec2b5c07ebe
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.identity.digest
+  purpose: identity_review_digest
+  expected_grain: one row per (sweep_week, item_id)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/identity_digest.py
+  verified_revision: 4
+  owner: oso
+  files:
+    model: warehouse/models/identity/digest.sql
+  mirror:
+    model_id: 8c2cdffc-58c7-4ea3-b90f-eef0e5c8cca3
+    revision: 4
+    hash: 9a013b01ab3daf786da07904d32ded934402195f898403177f8baccbdc39fddd
+    local_sha256: cd186745cff120b655448464024692de513c1fb258edd8403e1f6e3e005a7145
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 5 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
+- table: currentai.signal_hfhub.model_universe
+  purpose: huggingface_hub_candidate_universe
+  expected_grain: one row per Hub model repo (hf_id) with downloads_30d >= 1000 at fetch time
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/identity/artifact_nodes.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/signal_hfhub/model_universe.py
+  mirror:
+    model_id: b0f248d5-1f9e-41dd-9344-8a244969d5d6
+    revision: 3
+    hash: 538356e638af218bdf615c71355ca404cd99c25a7c0e6d2632d1724e25570b6e
+    local_sha256: 7902a1d8138d49a401292c51552632c7fbb32cd8cbe0f947d2efe2db0863de0f
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 30 1 * * 0
+    timezone: UTC
+    last_observed_trigger: null
+- table: currentai.signal_openrouter.models
+  purpose: openrouter_candidate_enrichment
+  expected_grain: one row per model
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/identity/candidates.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/signal_openrouter/models.py
+  mirror:
+    model_id: 5c77342a-b208-4b9f-b02e-593c2ec31420
+    revision: 2
+    hash: 6a71c8375494620b0fc9a39c958eba2f74bc2e2b8156be82a3ae1fe00df6e36d
+    local_sha256: f5c44e607701bfa420b300b9801464d8dbb677900fb574e40f9a759b1934adf3
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: null
+- table: currentai.signal_goodailist.repo_catalog
+  purpose: github_candidate_universe
+  expected_grain: one row per tracked GitHub repo (repo)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/identity/artifact_nodes.sql
+  verified_revision: 4
+  owner: oso
+  files:
+    model: warehouse/models/signal_goodailist/repo_catalog.py
+  mirror:
+    model_id: c7d3a3d9-578c-4c54-8ccf-71879bdd43d2
+    revision: 4
+    hash: 5a6e622459ef9cf8edaa80953eaff8dc15e093649493831485f49d3a794c4c57
+    local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
+    synced_at: '2026-09-04'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: SCHEDULED

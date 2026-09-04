@@ -10,14 +10,11 @@ name: identity-eval
 # Scheduled Monday 07:30 UTC, after the identity dataset's Sunday run has had a day to land,
 # and offset from `artifacts` (also Monday 07:00) to keep the two gates' logs apart.
 #
-# --allow-unprovisioned: the currentai.identity.* dataset has not deployed yet, so a live run
-# would otherwise be red every week for a failure that is not drift -- see
-# build.identity_eval.main and _identity_dataset_deployed. The flag makes a missing table exit
-# 0 ("not provisioned") instead of 2, and REFUSES to run at all if warehouse/assets.yaml ever
-# marks an identity.* asset materialized: true, so the skip cannot outlive the deploy it is
-# covering for. Remove this flag from the schedule/dispatch step in the PR that adds the
-# identity.* assets to warehouse/assets.yaml -- from that point on, a missing table is a real
-# failure again and should be reported as one.
+# The live step passes no --allow-unprovisioned: all seven currentai.identity.* models are
+# deployed and carry mirror-bound dependency contracts in warehouse/dependencies.yaml, so a
+# missing table is a real failure again and is reported as one (exit 2). The flag would be
+# refused anyway -- build.identity_eval.main rejects it once a contract with a mirror block
+# exists, the platform-owned equivalent of an asset marked materialized: true.
 #
 # push/pull_request runs the FIXTURE eval, never --from-warehouse: a PR cannot reach the
 # warehouse tables (they may not exist, and a fork PR has no OSO_API_KEY regardless). The
@@ -74,4 +71,4 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
-        run: uv run python -m build.identity_eval --from-warehouse --floors --allow-unprovisioned
+        run: uv run python -m build.identity_eval --from-warehouse --floors

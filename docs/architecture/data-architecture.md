@@ -1345,7 +1345,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->26 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->36 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1723,7 +1723,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->15   (13 models, 3 ingest, 17 mirror)
+  of which SQL/Python models   <!-- count:model_files -->25   (13 models, 3 ingest, 17 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
