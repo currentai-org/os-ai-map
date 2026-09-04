@@ -57,7 +57,9 @@
 --        `tiny-random/phi-4` (a random-weights test stub, not phi-4 at all) earns the same edge
 --        as `microsoft/phi-4`. 0.9 keeps a declared alias ahead of a model-family match (0.8)
 --        and behind a resolution_ledger ruling (1.0), which is the true ordering of how much
---        human judgment stands behind each.
+--        human judgment stands behind each. Because it is no longer scored as certain,
+--        currentai.identity.digest no longer excludes an alias-only edge from the review queue
+--        (reviewer ruling 2026-09-04) -- see that model's header.
 --   0.8  model family -- currentai.registry.model_families, `pattern` matched via LIKE with the
 --        glob `*` turned into SQL `%` (ESCAPE '\', and any literal `%` in the pattern escaped
 --        first so it is not itself read as a wildcard). Where several pattern rows match the same
@@ -92,6 +94,18 @@
 -- boundary, decided_in, decided_on, note, resolves_to), so the product slug is read straight from
 -- `resolves_to`, which is populated on every existing_product / sku_of row.
 --
+-- evidence (ARRAY(VARCHAR), added 2026-09-04 per reviewer ruling): one `<url> | <excerpt>`
+-- string per contributing evidence item, NOT a repeat of the method-name vocabulary. Shapes:
+--   resolution_ledger  <repo>/sources/resolution_ledger.yaml | ruling <verdict> decided_in <decided_in>
+--   product_alias      <artifact url> | product_aliases: <alias> -> <product>
+--   model_family       <artifact url> | model_families: <pattern> -> <product>
+--   name_match         <artifact url> | name segment equals product slug
+-- where <repo> is https://github.com/currentai-org/os-ai-map/blob/main. Artifact URLs are built
+-- per kind, matching build/serialize_registry.py's artifact_url construction; a
+-- huggingface_dataset therefore gets the /datasets/ form rather than the bare
+-- https://huggingface.co/<id> the ruling's model-family example shows, because that is the URL
+-- that actually resolves.
+--
 -- Output casts: explicit CAST on every output column (VARCHAR strings, DOUBLE confidence,
 -- ARRAY(VARCHAR) method/penalties), matching the deploy pass's fix on the first four models --
 -- the confidence literals (1.0/0.9/0.8/0.5) are Trino DECIMAL, not DOUBLE, so `GREATEST(0, LEAST(1,
@@ -111,6 +125,7 @@ WITH all_nodes AS (
 ledger_key AS (
   SELECT
     verdict,
+    decided_in,
     resolves_to AS product_slug,
     artifact_kind,
     artifact_kind || ':' ||
@@ -119,11 +134,16 @@ ledger_key AS (
           THEN LOWER(artifact_id)
         WHEN artifact_kind IN ('pypi', 'crates')
           THEN REGEXP_REPLACE(LOWER(artifact_id), '[-_.]+', '-')
+        -- homepage folds the WHOLE canonical URL, path included -- LOWER() is the entire rule,
+        -- exactly as in identity_artifact_nodes.sql's `keyed` CTE and identity_candidates.sql.
+        -- Until 2026-09-04 this branch extracted the bare host, which disagreed with both
+        -- siblings and with build/identity.py::fold_for_proposal: a ledger ruling on
+        -- `acme.com/product` would have been keyed `homepage:acme.com` and matched the wrong
+        -- node (or, once two products share a domain, several). Inert today -- the live ledger
+        -- is 302 rows, every one of them `github` -- and fixed here because this model was being
+        -- revised anyway, which is the moment the last pass named for it.
         WHEN artifact_kind = 'homepage'
-          THEN REGEXP_REPLACE(
-                 REGEXP_EXTRACT(LOWER(artifact_id), '^(?:[a-z]+://)?([^/]+)', 1),
-                 '^www\.', ''
-               )
+          THEN LOWER(artifact_id)
         ELSE LOWER(artifact_id)
       END AS candidate_key
   FROM currentai.registry.resolution_ledger
@@ -165,7 +185,10 @@ ledger_evidence AS (
     pt.product_tier,
     lk.product_slug,
     1.0 AS confidence,
-    'resolution_ledger' AS method
+    'resolution_ledger' AS method,
+    'https://github.com/currentai-org/os-ai-map/blob/main/sources/resolution_ledger.yaml'
+      || ' | ruling ' || lk.verdict || ' decided_in '
+      || COALESCE(lk.decided_in, '(unrecorded)') AS evidence_item
   FROM ledger_key lk
   LEFT JOIN all_nodes n
     ON n.candidate_key = lk.candidate_key AND n.artifact_kind = lk.artifact_kind
@@ -187,7 +210,20 @@ candidate_names AS (
         END,
         '[^a-zA-Z0-9]+', '-'
       ))
-    ) AS normalized_name
+    ) AS normalized_name,
+    -- Per-kind artifact URL, identical in construction to build/serialize_registry.py's
+    -- artifact_url. artifact_nodes carries no url column, hence the CASE.
+    CASE artifact_kind
+      WHEN 'github' THEN 'https://github.com/' || artifact_id
+      WHEN 'huggingface_model' THEN 'https://huggingface.co/' || artifact_id
+      WHEN 'huggingface_dataset' THEN 'https://huggingface.co/datasets/' || artifact_id
+      WHEN 'pypi' THEN 'https://pypi.org/project/' || artifact_id || '/'
+      WHEN 'npm' THEN 'https://www.npmjs.com/package/' || artifact_id
+      WHEN 'crates' THEN 'https://crates.io/crates/' || artifact_id
+      WHEN 'arxiv' THEN 'https://arxiv.org/abs/' || artifact_id
+      WHEN 'homepage' THEN 'https://' || artifact_id
+      ELSE artifact_id
+    END AS artifact_url
   FROM all_nodes
 ),
 
@@ -206,7 +242,9 @@ alias_evidence AS (
     pt.product_tier,
     pa.product_slug,
     0.9 AS confidence,
-    'product_alias' AS method
+    'product_alias' AS method,
+    cn.artifact_url || ' | product_aliases: ' || pa.alias || ' -> '
+      || pa.product_slug AS evidence_item
   FROM currentai.registry.product_aliases pa
   JOIN candidate_names cn
     ON cn.normalized_name =
@@ -228,6 +266,8 @@ family_matches AS (
     cn.candidate_tier,
     mf.product_slug,
     mf.pattern,
+    cn.artifact_url || ' | model_families: ' || mf.pattern || ' -> '
+      || mf.product_slug AS evidence_item,
     ROW_NUMBER() OVER (
       PARTITION BY cn.candidate_key
       ORDER BY LENGTH(mf.pattern) DESC
@@ -246,7 +286,8 @@ family_evidence AS (
     candidate_tier,
     product_slug,
     0.8 AS confidence,
-    'model_family' AS method
+    'model_family' AS method,
+    evidence_item
   FROM family_matches
   WHERE pattern_rank = 1
 ),
@@ -259,24 +300,25 @@ name_evidence AS (
     pt.product_tier,
     p.slug AS product_slug,
     0.5 AS confidence,
-    'name_match' AS method
+    'name_match' AS method,
+    cn.artifact_url || ' | name segment equals product slug' AS evidence_item
   FROM candidate_names cn
   JOIN currentai.registry.products p ON cn.normalized_name = LOWER(p.slug)
   JOIN products_tier_ranked pt ON pt.slug = p.slug
 ),
 
 combined AS (
-  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method
+  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method, evidence_item
   FROM ledger_evidence
   UNION ALL
-  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method
+  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method, evidence_item
   FROM alias_evidence
   UNION ALL
-  SELECT fe.candidate_key, fe.artifact_kind, fe.candidate_tier, pt.product_tier, fe.product_slug, fe.confidence, fe.method
+  SELECT fe.candidate_key, fe.artifact_kind, fe.candidate_tier, pt.product_tier, fe.product_slug, fe.confidence, fe.method, fe.evidence_item
   FROM family_evidence fe
   JOIN products_tier_ranked pt ON pt.slug = fe.product_slug
   UNION ALL
-  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method
+  SELECT candidate_key, artifact_kind, candidate_tier, product_tier, product_slug, confidence, method, evidence_item
   FROM name_evidence
 )
 
@@ -288,6 +330,7 @@ SELECT
   CAST(product_slug AS VARCHAR) AS product_slug,
   CAST(GREATEST(0, LEAST(1, MAX(confidence) - 0)) AS DOUBLE) AS confidence,
   CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(method))) AS ARRAY(VARCHAR)) AS method,
+  CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(evidence_item))) AS ARRAY(VARCHAR)) AS evidence,
   CAST(ARRAY[] AS ARRAY(VARCHAR)) AS penalties
 FROM combined
 GROUP BY candidate_key, artifact_kind, product_tier, product_slug

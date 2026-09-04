@@ -77,6 +77,17 @@
 -- spelling -- so `handle_platform_map` below carries the mapping, exactly the case the original
 -- TODO on this line anticipated.
 --
+-- evidence (ARRAY(VARCHAR), added 2026-09-04 per reviewer ruling): one `<url> | <excerpt>`
+-- string per contributing evidence item, NOT a repeat of the method-name vocabulary. Shapes:
+--   org_handle (github)      https://github.com/<handle> | org_handles: <org> github <handle>
+--   org_handle (huggingface) https://huggingface.co/<handle> | org_handles: <org> huggingface <handle>
+--   org_handle (homepage)    https://<handle> | org_handles: <org> homepage_domain <handle>
+--   hf_namespace              https://huggingface.co/<ns> | namespace matches org <org> huggingface handle
+--   homepage_domain          https://<candidate host> | host matches org <org> homepage_domain handle
+-- The homepage_domain excerpt is the ruling's wording verbatim even though this path reads
+-- registry.organizations.homepage rather than org_handles -- the two homepage paths land on the
+-- same three candidates today and a reviewer sees both strings on one row.
+--
 -- Output casts: explicit CAST on every output column (VARCHAR strings, DOUBLE confidence,
 -- ARRAY(VARCHAR) method/penalties), matching the deploy pass's fix on the first four models --
 -- the confidence literals (0.85/0.80/0.75) are Trino DECIMAL, not DOUBLE, so
@@ -133,6 +144,17 @@ handle_platform_map AS (
   ) AS t (platform, artifact_kind)
 ),
 
+-- The URL an org_handles row itself points at, per platform: a github account page, a Hub
+-- namespace page, or the bare domain as an https URL.
+handle_urls AS (
+  SELECT * FROM (
+    VALUES
+      ('github', 'https://github.com/'),
+      ('huggingface', 'https://huggingface.co/'),
+      ('homepage_domain', 'https://')
+  ) AS t (platform, url_prefix)
+),
+
 handle_evidence AS (
   SELECT
     co.candidate_key,
@@ -140,12 +162,15 @@ handle_evidence AS (
     co.candidate_tier,
     oh.org_slug,
     0.85 AS evidence,
-    'org_handle' AS method
+    'org_handle' AS method,
+    hu.url_prefix || LOWER(oh.handle) || ' | org_handles: ' || oh.org_slug || ' '
+      || oh.platform || ' ' || LOWER(oh.handle) AS evidence_item
   FROM candidate_owner co
   JOIN handle_platform_map hpm ON hpm.artifact_kind = co.artifact_kind
   JOIN currentai.registry.org_handles oh
     ON oh.platform = hpm.platform
    AND LOWER(oh.handle) = co.handle_token
+  JOIN handle_urls hu ON hu.platform = oh.platform
   JOIN currentai.registry.organizations o ON o.slug = oh.org_slug
 ),
 
@@ -160,7 +185,9 @@ homepage_handle_evidence AS (
     co.candidate_tier,
     oh.org_slug,
     0.85 AS evidence,
-    'org_handle' AS method
+    'org_handle' AS method,
+    'https://' || LOWER(oh.handle) || ' | org_handles: ' || oh.org_slug
+      || ' homepage_domain ' || LOWER(oh.handle) AS evidence_item
   FROM candidate_owner co
   JOIN currentai.registry.org_handles oh
     ON oh.platform = 'homepage_domain'
@@ -176,7 +203,9 @@ hf_namespace_evidence AS (
     co.candidate_tier,
     o.slug AS org_slug,
     0.80 AS evidence,
-    'hf_namespace' AS method
+    'hf_namespace' AS method,
+    'https://huggingface.co/' || co.owner_handle || ' | namespace matches org ' || o.slug
+      || ' huggingface handle' AS evidence_item
   FROM candidate_owner co
   JOIN currentai.registry.organizations o ON LOWER(o.slug) = co.owner_handle
   WHERE co.artifact_kind IN ('huggingface_model', 'huggingface_dataset')
@@ -212,7 +241,9 @@ homepage_evidence AS (
     co.candidate_tier,
     h.slug AS org_slug,
     0.75 AS evidence,
-    'homepage_domain' AS method
+    'homepage_domain' AS method,
+    'https://' || co.handle_token || ' | host matches org ' || h.slug
+      || ' homepage_domain handle' AS evidence_item
   FROM candidate_owner co
   JOIN unambiguous_org_hosts h
     ON co.handle_token = h.org_host
@@ -237,6 +268,7 @@ SELECT
   CAST(org_slug AS VARCHAR) AS org_slug,
   CAST(GREATEST(0, LEAST(1, MAX(evidence) - 0)) AS DOUBLE) AS confidence,
   CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(method))) AS ARRAY(VARCHAR)) AS method,
+  CAST(ARRAY_SORT(ARRAY_DISTINCT(ARRAY_AGG(evidence_item))) AS ARRAY(VARCHAR)) AS evidence,
   CAST(ARRAY[] AS ARRAY(VARCHAR)) AS penalties
 FROM combined
 GROUP BY candidate_key, artifact_kind, org_slug
