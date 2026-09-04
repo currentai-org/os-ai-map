@@ -25,11 +25,35 @@ five highest-ranked items regardless of section.
 `parked` rows never render as items -- they are weak (name-match-only) evidence recently
 seen, held back per the design's resurfacing rule -- and appear only as a count per section,
 alongside the sentence explaining why. `resurfaced` items are ranked and rendered like any
-other item, but carry their `resurfaced_reason` (`age` is the only one the SQL produces today).
-Alias-evidence items (`product_alias`, confidence 0.9) are `active` and render like any other
-item -- they are not a distinct case. `pool` rows are eligible items that ranked below this
-week's cap; they appear only as one total count in the footer, not per section, since they are
-overflow rather than a review decision.
+other item, and carry their `resurfaced_reason`. Alias-evidence items (`product_alias`,
+confidence 0.9) are `active` and render like any other item -- they are not a distinct case.
+`pool` rows are eligible items that ranked below this week's cap; they appear only as one
+total count in the footer, not per section, since they are overflow rather than a review
+decision.
+
+## Age-based resurfacing is disabled, and so is anything computed from `first_seen`
+
+The digest table has no observation history behind it: `first_seen` is written by the sweep
+that materializes the table, so it dates the snapshot, not the discovery. An item that has
+been proposed for months reads as first seen this week, and one re-proposed after a gap loses
+the gap entirely.
+
+So two things that read an ELAPSED time off that column are off. ("New this week" still reads
+it, and stays: it asks whether a row's `first_seen` falls in this sweep's own window, which is
+a question about the current snapshot rather than about how long anything has been waiting.)
+
+- **Resurfacing after an age.** A parked item comes back when its evidence gets stronger (a new
+  backlink, a new artifact), and by nothing else. The parked line says exactly that, with no
+  day count in it. The platform side is dropping the `age` reason for the same reason.
+- **"Oldest unresolved age" in the scorecard.** It reads "not available until an observation
+  history exists" rather than a number computed from `first_seen`. A wrong number in a
+  scorecard is worse than an absent one: it invites a starvation decision on evidence that
+  does not exist.
+
+The `resurfaced` state itself stays -- state handling, ranking, the reason line -- because
+evidence-driven resurfacing is real and Phase 3B may add more reasons. What shrank is the
+vocabulary: `RESURFACED_REASONS` is `("evidence",)`, and a row arriving with anything else
+renders with a note saying so instead of being presented as a current reason.
 
 ## The pre-filled block, per relation
 
@@ -74,9 +98,9 @@ inference's name, not something a reviewer can check.
   (`week`'s Monday through Sunday); resolved cannot be read off the digest table at all --
   it is counted from `sources/resolution_ledger.yaml` entries whose `decided_on` falls in
   the same window, via `build.resolution.load()`.
-- **Oldest unresolved age**: `week`'s Monday minus the earliest `first_seen` across every
-  row (not just the ranked ones), in whole weeks. Catches an item starved behind the top-25
-  ranking indefinitely.
+- **Oldest unresolved age**: not available. `first_seen` dates the snapshot, not the
+  discovery (see above), so this line names the missing history instead of computing a number
+  from it. It comes back when the platform keeps an observation history.
 - **Ranked items by relation**: how the ranked/rendered set (post-cap) splits across the four
   sections -- a quick check that one relation has not swallowed the whole queue.
 - **Overflow this week**: `pool`-state rows -- eligible but ranked below the cap.
@@ -119,6 +143,13 @@ RELATION_LABELS = {
 #: rendered item list -- matching the cap `udms/identity_digest.sql` already enforces.
 CAP = 25
 ACTIVE_STATES = ("active", "resurfaced")
+#: The reasons a parked item may come back. `age` was removed when age-based resurfacing was
+#: disabled on the platform -- `first_seen` dates the snapshot, not the discovery, so there is
+#: no age to resurface on. The tuple is a vocabulary, not a filter: a row carrying something
+#: else still renders, with a note saying the reason is not current.
+RESURFACED_REASONS = ("evidence",)
+#: What the scorecard prints where an age would go, until an observation history exists.
+NO_AGE_HISTORY = "not available until an observation history exists"
 
 
 def _pair(value) -> tuple[str, str]:
@@ -295,8 +326,18 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
         f"- Proposed action: {row.get('proposed_action')}",
         f"- Options: {', '.join(options) if options else 'none'}",
     ])
-    if row.get("state") == "resurfaced" and row.get("resurfaced_reason"):
-        lines.append(f"- Resurfaced reason: {row['resurfaced_reason']}")
+    reason = row.get("resurfaced_reason")
+    if row.get("state") == "resurfaced" and reason:
+        if reason in RESURFACED_REASONS:
+            lines.append(f"- Resurfaced reason: {reason}")
+        else:
+            # `age` lands here now: the platform is dropping it, but a lagging table can still
+            # carry it, and presenting a retired reason as a current one would have a reviewer
+            # act on an age the data cannot support.
+            lines.append(
+                f"- Resurfaced reason: {reason} (not a current reason -- the vocabulary is "
+                f"{', '.join(RESURFACED_REASONS)}; age-based resurfacing is disabled)"
+            )
     lines.append("")
 
     if relation == "artifact_identity":
@@ -343,14 +384,6 @@ def _resolved_this_week(monday: date, sunday: date) -> int:
         if monday <= d <= sunday:
             count += 1
     return count
-
-
-def _oldest_age_weeks(rows: list[dict], monday: date) -> int:
-    dates = [_row_date(r["first_seen"]) for r in rows if r.get("first_seen") is not None]
-    dates = [d for d in dates if d is not None]
-    if not dates:
-        return 0
-    return max(0, (monday - min(dates)).days // 7)
 
 
 def render(rows: list[dict], week: str, resolved_count: int | None = None) -> str:
@@ -442,10 +475,7 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         for row in items:
             lines.extend(_render_item(row, monday))
         parked_n = parked_by_relation.get(relation, 0)
-        lines.append(
-            f"Parked: {parked_n} (name-match only; resurfaces after 56 days or when evidence "
-            f"changes)"
-        )
+        lines.append(f"Parked: {parked_n} (name-match only; resurfaces when stronger evidence appears)")
         lines.append("")
 
     if cut:
@@ -460,7 +490,6 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         if r.get("first_seen") is not None
         and (_d := _row_date(r["first_seen"])) is not None and monday <= _d <= sunday
     )
-    oldest_weeks = _oldest_age_weeks(rows, monday)
     ranked_by_relation = {
         relation: len([r for r in capped if r.get("relation") == relation])
         for relation in RELATION_ORDER
@@ -470,9 +499,10 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
     lines.append("")
     lines.append(f"- Unresolved pool size: {len(rows)}")
     lines.append(f"- New vs resolved this week: {new_count} new, {resolved_count} resolved")
-    lines.append(
-        f"- Oldest unresolved age: {oldest_weeks} week{'s' if oldest_weeks != 1 else ''}"
-    )
+    # Deliberately not computed from `first_seen` -- that column dates the snapshot, not the
+    # discovery, so any number here would measure the last run's timing. See the module
+    # docstring's "Age-based resurfacing is disabled" section.
+    lines.append(f"- Oldest unresolved age: {NO_AGE_HISTORY}")
     lines.append(
         "- Ranked items by relation: "
         + ", ".join(f"{RELATION_LABELS[r]} {ranked_by_relation[r]}" for r in RELATION_ORDER)

@@ -310,12 +310,24 @@ entry Carl can edit and paste in once he has decided, and its evidence renders a
 (`<url> | <excerpt>` from the table becomes `[excerpt](url)`) rather than bare method names.
 
 An item whose only evidence is a folded name match is `parked`, not shown as a reviewable item —
-it comes back only once its evidence changes (a new backlink, a new artifact) or once it has sat
-unreviewed for eight weeks, at which point it `resurfaces` and carries the reason (`age` is the
-only one the SQL emits today), competing for a rank like any other item. Parked items render only
-as a count per relation. This mirrors the sweep's own parking discipline above: a weak signal is
-recorded and revisited, not repeated at full weight every week. An item ranked below the weekly cap
-is not dropped either — it stays in the pool and is counted, not reviewed, until it ranks back in.
+it comes back once its evidence gets stronger (a new backlink, a new artifact), at which point it
+`resurfaces` and carries its reason, competing for a rank like any other item. Parked items render
+only as a count per relation. This mirrors the sweep's own parking discipline above: a weak signal
+is recorded and revisited, not repeated at full weight every week. An item ranked below the weekly
+cap is not dropped either — it stays in the pool and is counted, not reviewed, until it ranks back
+in.
+
+**Nothing resurfaces on age, and the digest reports no ages.** There is no observation history
+behind the digest table: `first_seen` is written by the sweep that materializes it, so it dates the
+snapshot rather than the discovery, and an item proposed for months reads as first seen this week.
+Age-based resurfacing is disabled on the platform for that reason, `evidence` is the only
+resurfacing reason in the vocabulary, and the scorecard's "oldest unresolved age" line reads *not
+available until an observation history exists* instead of a number. A wrong age in a scorecard is
+worse than an absent one: it invites a starvation decision on evidence that does not exist. The
+"new this week" count still reads `first_seen` — whether a row's `first_seen` falls inside this
+sweep's own window is a question about the current snapshot, not about how long anything has
+waited. Both come back when the platform keeps a history; the `resurfaced` state and its rendering
+stay in place for that.
 
 ## Relevant reference material
 
