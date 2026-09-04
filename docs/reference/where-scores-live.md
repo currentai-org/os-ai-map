@@ -64,18 +64,22 @@ read `os-ai-map` can also read the superseded corpus under `os-ai-map_previous`.
 meant to, and the publisher does not stop anything from trying — do not build against that
 name.
 
-**Two groups of table, one schema.**
+**Nothing reads Neon yet.** The front end still consumes `build/notebook_data.json`, so the
+four ordering columns above are preservation for the consumer that comes next rather than
+something in use today. A publish that dropped the information would destroy it, and carrying
+it costs four integers per row.
 
-*The map* — the target model from CLEVER FRANKE, with Carl's amendments: `products`,
-`organizations`, `categories`, `layers`, `stages`, `gaps`, `gaps_categories`, `openness`,
-`adoption`, `capability`, `sources`, `product_lineage`, `aliases`, `long_tail_top`,
-`long_tail_counts`. Every row is derived from `build/notebook_data.json`, so what Postgres
-serves is what the repo published.
+**Neon serves the site's tables, and nothing else.** The target model from CLEVER FRANKE,
+with Carl's amendments: `products`, `organizations`, `categories`, `layers`, `stages`, `gaps`,
+`gaps_categories`, `openness`, `adoption`, `capability`, `sources`, `product_lineage`,
+`aliases`, `long_tail_top`, `long_tail_counts`. Every row is derived from
+`build/notebook_data.json`, so what Postgres serves is what the repo published.
 
-*The registry*, prefixed `registry_` — the same tables `publish_registry` publishes to OSO,
-derived from that module rather than from a directory listing, so the two surfaces carry the
-same registry by construction. The prefix exists because both groups have a `products`, a
-`categories` and an `organizations`.
+The registry tables were loaded here too for a while, prefixed `registry_`, so Neon and the
+warehouse would carry the same declarations. Nothing on the site read them, so they are gone.
+**The registry surface lives in the warehouse** as `currentai.registry.*`, and on disk as
+`build/registry/*.csv` — not in Neon. A question about what the repo declares is answerable
+there; Neon answers what the site renders.
 
 Plus `publish_runs`: exactly one row, describing the load you are looking at — the swap
 replaces the table along with everything else, so it is a stamp on the current corpus and not
@@ -84,11 +88,37 @@ an accumulating history. It carries `run_id`, `published_at`, `schema_version`,
 `row_counts` JSONB. That row is how you tell which commit and which shape the serving layer is
 showing.
 
-**Keys are natural where the payload has one.** `products.id` exists for the FK shape the
-designers specified, but it is assigned by sorted slug on every load, so the same corpus gives
-the same ids and a diff of two loads is readable. The real key is `slug`. Organizations key on
-`slug`, aliases on `alias`, and `categories` carries a `slug` alongside its id — the PDF omitted
-it, and every deep link and every join from the registry group needs it.
+**Ids are stable across loads, and the slug is still the identity.** Every surrogate `id` in
+the map group is `stable_id(table, natural_key)` — the first 63 bits of a SHA-256 over the
+table name and the row's own key. Ids used to be positions in a sorted list, so adding one
+product renumbered every row after it and any id that had reached a URL, a cache or a CMS row
+pointed at a different product after the next publish. A hashed id does not move when the
+corpus grows, so it is safe to store as an internal reference. Hashing the table name in as
+well means the same slug in two tables gets two different ids, and a join that crosses tables
+by mistake matches nothing rather than appearing to work.
+
+The natural key per table: `products.slug`, `categories.slug`, `layers` and `gaps` by their
+label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
+`(product_slug, relation, target)`, `sources` by
+`(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
+`alias`, with no surrogate at all.
+
+A source's key carries `shows` and `accessed` because the URL alone does not identify the row.
+One source list can hold the same URL twice on the same axis — 69 pairs today — and every one
+of those pairs is a re-verification that recorded a different claim or a different date. They
+are two observations of one page, and those two fields are what tell them apart. The
+consequence worth knowing: editing a source's `shows` or `accessed` moves that row's id,
+because it is a different observation and an id moves when its natural key does.
+
+**The slug remains canonical.** A deep link, a bookmark, a CMS reference, anything another
+system stores or a person reads should carry the slug, not the id. The id is a join key, and
+it changes if the natural key it is derived from ever changes. `categories` carries a `slug`
+alongside its id for exactly this reason — the PDF omitted it, and every deep link and every
+join from the warehouse's registry tables needs it.
+
+Before writing, the publisher asserts that no table has a repeated id and fails the run naming
+the table and both natural keys if one does. A duplicate would otherwise be rejected by the
+primary key at COPY time, in a message naming neither.
 
 **The five enums are enforced.** `alias_kind`, `freshness_basis`, `lineage_relation`,
 `capability_relation` and `metric_name` are created in the schema, and a payload value with no
@@ -142,6 +172,17 @@ dropped when that is reclaimed. `publish_neon.reclaim_previous` detects exactly 
 refuses to run rather than dropping the view — the failure is loud, but it is still a failure.
 Read the map's tables directly, or materialize a copy CMS-side.
 
+### Where this departs from the designers' model
+
+Four places, all deliberate, all in `build/neon_schema.py`:
+
+| Departure | Why |
+|---|---|
+| `id` and every column referencing one are `bigint`, not `integer` | The ids are 63-bit hashes. 63 rather than 64 because Postgres has no unsigned integer and half the ids would otherwise be negative. |
+| `categories.slug`, which the DBML omits | Every deep link is by slug, and so is every join from the warehouse's registry tables; it carries a `UNIQUE` for the same reason. |
+| `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | The old positional ids carried the layer stack order, the map's curated category order, the long tail's ranking and the stage number — `categories.stage` *was* the stage number, and `stages.id` was the number it pointed at. A hashed id carries none of that, and the model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So it moved into columns of its own; `ORDER BY sort_order` is what `ORDER BY id` used to mean. |
+| `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
+
 ### Two things the designers should know about the data
 
 **`sources.notes` is always NULL.** The target model has the column and the payload has no
@@ -185,13 +226,9 @@ ALTER anywhere. What that costs is a reader's ability to tell which shape it has
 to a table, column or enum. Once something outside this repo depends on the shape, that is the
 point where a real migration path replaces the swap.
 
-Column types for the map group are declared in `build/neon_schema.py`, next to the grain they
-describe. The registry group's are inferred from the data, because the serializers declare
-column names and not types: TEXT unless every non-empty value in the column parses as BOOLEAN,
-INTEGER, DOUBLE PRECISION or DATE, and identity columns (`slug`, anything ending `_slug` or
-`_id`) pinned to TEXT whatever they look like. A digits-only artifact id is a string with
-digits in it. An empty CSV field loads as NULL on both groups, so "absent" and "empty" are the
-same value.
+Every column's type is declared in `build/neon_schema.py`, next to the grain it describes;
+nothing is inferred from a run of the data. An empty CSV field loads as NULL, so "absent" and
+"empty" are the same value.
 
 ## Openness — computed and gated
 

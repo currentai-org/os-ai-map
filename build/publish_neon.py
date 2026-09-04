@@ -9,9 +9,13 @@ never replaced by them.
 
 This module is a generic CSV-to-Postgres loader with an atomic schema swap. It knows nothing
 about the gap map: the tables, enums, grain, keys and column types all live in
-`build/neon_schema.py`, which is the one place to change when the data model moves. Two
-groups today — the designers' target model, built from the payload, and the registry tables
-`publish_registry` publishes, prefixed `registry_` so the two surfaces cannot collide.
+`build/neon_schema.py`, which is the one place to change when the data model moves. One
+surface today — the designers' target model, built from the payload.
+
+The registry tables `publish_registry` sends to OSO were loaded here too for a while, prefixed
+`registry_`. Nothing on the site read them, so they are gone: the registry surface lives in
+the warehouse as `currentai.registry.*` and in `build/registry/*.csv`, and Neon serves the
+site's tables plus `publish_runs`.
 
 Nothing computed is here. `scores.openness_facts` and `scores.openness_computed` stay on
 OSO, and no table in this schema recomputes an axis. See
@@ -83,20 +87,13 @@ Grants are applied to the staging schema *before* the swap. A rename carries pri
 with it, so the new schema is readable the instant it becomes visible rather than after a
 follow-up statement that could fail on its own.
 
-## Column types: declared for the target model, inferred for the registry
+## Column types are declared, never inferred
 
-`neon_schema.SITE_TABLES` declares its own types and its enums, because that module defines
-the shape.
-The serializers declare column *names* only, so a registry column's type is inferred:
-TEXT by default and as the fallback, and BOOLEAN, INTEGER/BIGINT, DOUBLE PRECISION or DATE
-only when every non-empty value in the column parses as one. Identity columns (`slug`,
-anything ending `_slug` or `_id`) are pinned to TEXT whatever they look like — a
-numeric-looking artifact id is a string with digits in it, and letting one run of the data
-decide otherwise would change the column type from under a query the next time a
-non-numeric id arrives.
+`neon_schema.SITE_TABLES` declares every column's type and its enums, because that module
+defines the shape. Nothing here guesses a type from a run of the data.
 
 In CSV mode an unquoted empty field is NULL, so an absent value arrives as NULL rather than
-as an empty string, on both groups.
+as an empty string.
 
 Environment:
     NEON_DATABASE_URL   required for a publish (not for --check)
@@ -124,17 +121,13 @@ from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 from build.neon_schema import (
     ENUMS,
+    IdCollision,
     PAYLOAD_PATH,
-    REGISTRY_PREFIX,
     SCHEMA_VERSION,
     SITE_TABLES,
     load_payload,
     write_site_csvs,
 )
-from build.publish_registry import TABLES as PUBLISHED_TABLES
-from build.serialize_registry import OUT_DIR
-from build.serialize_registry import TABLES as REGISTRY_TABLES
-from build.serialize_registry import build_registry, write_tables
 
 ROOT = Path(__file__).resolve().parents[1]
 # The gap map's own schema on a shared Neon instance. Hyphenated, hence quoted everywhere.
@@ -145,7 +138,7 @@ PROTECTED_SCHEMAS = frozenset(
     {"drizzle", "payload", "public", "information_schema", "pg_catalog", "pg_toast"}
 )
 # Where the site tables' CSVs are rendered. Separate from build/registry/, which belongs to
-# the serializers and is published to OSO from.
+# the serializers and is published to the warehouse from.
 SITE_DIR = ROOT / "build" / "neon"
 DSN_ENV = "NEON_DATABASE_URL"
 READ_ROLE_ENV = "NEON_READ_ROLE"
@@ -171,50 +164,6 @@ RUN_COLUMNS: tuple[tuple[str, str], ...] = (
     ("row_counts", "JSONB"),
 )
 
-# Never inferred away from TEXT, however this run's values happen to look.
-_TEXT_NAMES = frozenset({"slug", "artifact_id", "alias", "handle", "pattern", "target"})
-
-_INT = re.compile(r"^-?\d+$")
-_INT32 = 2**31 - 1
-_TRUE_FALSE = frozenset({"true", "false"})
-
-
-def is_text_column(name: str) -> bool:
-    """Identity columns stay TEXT. Slugs and ids are strings that sometimes hold digits."""
-    return name in _TEXT_NAMES or name.endswith("_slug") or name.endswith("_id")
-
-
-def _all_parse(values: list[str], parse) -> bool:
-    for value in values:
-        try:
-            parse(value)
-        except (TypeError, ValueError):
-            return False
-    return True
-
-
-def infer_column_type(name: str, values: list[str]) -> str:
-    """The narrowest type every non-empty value in the column satisfies, else TEXT.
-
-    An all-empty column is TEXT: nothing in the data argues for anything narrower, and a
-    guess would be reversed by the first real value.
-    """
-    if is_text_column(name):
-        return "TEXT"
-    present = [v for v in values if v != ""]
-    if not present:
-        return "TEXT"
-    if all(v.lower() in _TRUE_FALSE for v in present):
-        return "BOOLEAN"
-    if all(_INT.match(v) for v in present):
-        return "INTEGER" if all(abs(int(v)) <= _INT32 for v in present) else "BIGINT"
-    if _all_parse(present, float):
-        return "DOUBLE PRECISION"
-    if _all_parse(present, lambda v: datetime.strptime(v, "%Y-%m-%d")):
-        return "DATE"
-    return "TEXT"
-
-
 @dataclass(frozen=True)
 class TablePlan:
     """One CSV, resolved to a table: its name, columns, constraints and row count."""
@@ -228,104 +177,55 @@ class TablePlan:
 
 def plan_table(
     path: Path,
-    declared: tuple[tuple[str, str], ...] | None = None,
-    name: str | None = None,
+    declared: tuple[tuple[str, str], ...],
     constraints: tuple[str, ...] = (),
 ) -> TablePlan:
-    """Plan one CSV. `declared` supplies the column types; without it they are inferred.
+    """Plan one CSV against the columns `neon_schema` declares for it.
 
-    `name` is the destination table, which is not always the file's stem: group A's tables
-    are prefixed so they cannot collide with group B's `products`/`categories`/`organizations`
-    in the shared schema.
-
-    A declared spec is still checked against the file's header, because a spec that has
-    drifted from the CSV it describes would otherwise COPY values into the wrong columns —
-    which Postgres would accept wherever the types happened to line up.
+    The spec is checked against the file's header, because a spec that has drifted from the
+    CSV it describes would otherwise COPY values into the wrong columns — which Postgres
+    would accept wherever the types happened to line up.
     """
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.reader(handle)
         header = next(reader, [])
         rows = list(reader)
-    if declared is not None:
-        expected = [name for name, _type in declared]
-        if header != expected:
-            raise ValueError(
-                f"{path.name}: header {header} does not match the declared columns {expected}"
-            )
-        columns = declared
-    else:
-        columns = tuple(
-            (name, infer_column_type(name, [row[index] if index < len(row) else "" for row in rows]))
-            for index, name in enumerate(header)
+    expected = [name for name, _type in declared]
+    if header != expected:
+        raise ValueError(
+            f"{path.name}: header {header} does not match the declared columns {expected}"
         )
     return TablePlan(
-        name=name or path.stem,
-        columns=columns,
+        name=path.stem,
+        columns=declared,
         row_count=len(rows),
         path=path,
         constraints=constraints,
     )
 
 
-def ensure_registry_csvs(directory: Path) -> None:
-    """Regenerate the registry serializer's own CSVs when they are absent.
-
-    Only that one. The rubric, routing and scores serializers each have their own
-    preconditions, and a publisher that silently invoked all four would hide which one
-    produced a surprising table — so their absence is reported by `plan` rather than
-    papered over here.
-    """
-    if all((directory / f"{name}.csv").exists() for name in REGISTRY_TABLES):
-        return
-    from build.validate import load_sources
-
-    tables, errors, _warnings = build_registry(load_sources(ROOT))
-    if errors:
-        raise RuntimeError(
-            f"the registry does not serialize cleanly ({len(errors)} error(s)); "
-            f"run build.serialize_registry to see them"
-        )
-    write_tables(tables, directory)
-
-
 def plan(
-    directory: Path = OUT_DIR,
     site_dir: Path = SITE_DIR,
     payload_path: Path = PAYLOAD_PATH,
 ) -> tuple[list[TablePlan], list[str]]:
-    """(plans, missing) over both groups, group B first, each in its declared order.
+    """(plans, missing) over the site tables, in their declared parents-first order.
 
     Never a glob. `missing` names the declared tables whose CSV has not been written, which
-    a real publish refuses and `--check` reports — a table is absent because a serializer
-    has not run, and loading the rest would publish a partial map that looks complete.
+    a real publish refuses and `--check` reports — loading the rest would publish a partial
+    map that looks complete.
 
-    The site tables are rendered to CSV here from `build/notebook_data.json`, so both groups
-    reach the database through one COPY path.
+    The CSVs are rendered here from `build/notebook_data.json`, so every table reaches the
+    database through one COPY path.
     """
-    ensure_registry_csvs(directory)
-    plans: list[TablePlan] = []
-    missing: list[str] = []
+    if not payload_path.exists():
+        return [], list(SITE_TABLES)
 
-    if payload_path.exists():
-        write_site_csvs(load_payload(payload_path), site_dir)
-        for name, spec in SITE_TABLES.items():
-            plans.append(
-                plan_table(
-                    site_dir / f"{name}.csv",
-                    declared=spec.columns,
-                    constraints=spec.constraints,
-                )
-            )
-    else:
-        missing.extend(SITE_TABLES)
-
-    for name in PUBLISHED_TABLES:
-        path = directory / f"{name}.csv"
-        if path.exists():
-            plans.append(plan_table(path, name=f"{REGISTRY_PREFIX}{name}"))
-        else:
-            missing.append(f"{REGISTRY_PREFIX}{name}")
-    return plans, missing
+    write_site_csvs(load_payload(payload_path), site_dir)
+    plans = [
+        plan_table(site_dir / f"{name}.csv", declared=spec.columns, constraints=spec.constraints)
+        for name, spec in SITE_TABLES.items()
+    ]
+    return plans, []
 
 
 def quote_ident(name: str) -> str:
@@ -388,9 +288,6 @@ def create_table_sql(
     reason, so the reference resolves inside the schema being built rather than against
     whatever `os-ai-map` happens to hold at the time.
 
-    `constraints` is empty for the registry group: the serializers declare column names only,
-    so there is nothing to derive a key from, and inventing one would be this module guessing
-    at another module's grain.
     """
     quoted_schema = quote_schema(schema)
     parts = [
@@ -777,9 +674,14 @@ def main() -> int:
     )
     parser.add_argument("--dsn-env", default=DSN_ENV, help=f"env var holding the DSN (default {DSN_ENV})")
     parser.add_argument("--schema", default=DEFAULT_SCHEMA, help=f"target schema (default {DEFAULT_SCHEMA})")
-    parser.add_argument("--dir", type=Path, default=OUT_DIR, help="directory of serialized CSVs")
     parser.add_argument(
         "--site-dir", type=Path, default=SITE_DIR, help="where the site tables' CSVs are rendered"
+    )
+    parser.add_argument(
+        "--payload",
+        type=Path,
+        default=PAYLOAD_PATH,
+        help=f"the payload every table is rendered from (default {PAYLOAD_PATH.name})",
     )
     args = parser.parse_args()
 
@@ -789,42 +691,35 @@ def main() -> int:
         print(str(error), file=sys.stderr)
         return 2
 
-    plans, missing = plan(args.dir, args.site_dir)
+    try:
+        plans, missing = plan(args.site_dir, args.payload)
+    except IdCollision as error:
+        # Two natural keys on one surrogate id. The COPY would fail on the primary key and
+        # name neither of them, so the publish stops here with both in hand.
+        print(f"id collision: {error}", file=sys.stderr)
+        return 1
 
     if args.check:
-        # A plan, not a gate on completeness: on a PR only the registry serializer's CSVs
-        # exist, because the check job validates the other three without writing. So the
-        # unwritten tables are reported as pending rather than failed.
-        total_declared = len(PUBLISHED_TABLES) + len(SITE_TABLES)
+        # A plan, not a gate on completeness: without the payload there is nothing to render,
+        # so the tables are reported as pending rather than failed.
         print(
-            f"would load {total_declared} tables into {args.schema}_staging, "
+            f"would load {len(SITE_TABLES)} tables into {args.schema}_staging, "
             f"then swap to {args.schema}:"
         )
         for plan_ in plans:
-            group = "map" if plan_.name in SITE_TABLES else "registry"
             keys = f"{len(plan_.constraints):>2} constraints" if plan_.constraints else ""
             print(
                 f"  {plan_.name:<28} {plan_.row_count:>6} rows  "
-                f"{len(plan_.columns):>2} columns  [{group}] {keys}"
+                f"{len(plan_.columns):>2} columns  {keys}"
             )
         print(f"  {len(ENUMS)} enums: {', '.join(ENUMS)}")
         print(
             f"  {sum(len(p.constraints) for p in plans)} table constraints "
-            f"(primary keys, uniques and foreign keys, on the map group)"
+            f"(primary keys, uniques and foreign keys)"
         )
-        # Only the inferred types are worth printing. The map group's are declared in
-        # build/neon_schema.py, where a reader can see them next to the grain they describe;
-        # the registry group's are a guess this run made about the data, which is the thing
-        # a reviewer needs to see change.
-        for plan_ in plans:
-            if plan_.name in SITE_TABLES:
-                continue
-            for column, sql_type in plan_.columns:
-                if sql_type != "TEXT":
-                    print(f"    inferred {plan_.name}.{column} -> {sql_type}")
         print(f"  {RUN_TABLE:<28} {1:>6} row   {len(RUN_COLUMNS):>2} columns  [run record]")
         for name in missing:
-            print(f"  {name:<28}  pending: not serialized yet")
+            print(f"  {name:<28}  pending: build/notebook_data.json has not been built")
         return 0
 
     # Configuration before inputs: with no DSN there is nowhere to publish whatever the
@@ -836,9 +731,9 @@ def main() -> int:
 
     if missing:
         print(
-            f"missing tables: {missing}. Run build.serialize_registry, build.serialize_rubric, "
-            f"build.serialize_routing and build.serialize_scores first — loading the rest "
-            f"would publish a partial map that looks complete.",
+            f"missing tables: {missing}. Every one is rendered from build/notebook_data.json, "
+            f"so build the payload first — loading the rest would publish a partial map that "
+            f"looks complete.",
             file=sys.stderr,
         )
         return 2

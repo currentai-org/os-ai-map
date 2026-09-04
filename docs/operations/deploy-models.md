@@ -128,7 +128,7 @@ Pushing the declarations is step 1, not the whole job:
 ```bash
 # push the repo's declarations and wait for the static models to materialize
 uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
-# load the same declarations into Neon, which is what the site reads
+# load the site's tables into Neon, which is what the front end reads
 uv run python -m build.publish_neon           # --check to plan without connecting
 # then walk the chain above, in order, and prove it with check_parity
 ```

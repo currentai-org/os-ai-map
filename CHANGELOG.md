@@ -137,6 +137,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Every surrogate `id` in the Neon serving layer is now derived from the row's natural key —
+  the first 63 bits of `sha256("<table>:<key>")` — instead of from its position in a sorted
+  list. Adding one product used to renumber every row after it, so an id that had reached a
+  URL, a cache or a CMS reference pointed at a different product after the next publish. The
+  id and foreign-key columns widen from `integer` to `bigint` to hold the hash, the publish
+  fails naming both keys if two ever collide, and the ordinal the old ids carried moves into
+  `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order` and `stages.num`.
+  `schema_version` is 3. The slug stays the canonical identity for links and for anything
+  another system stores (#365).
 - Reclassified `org` recall in the identity eval from a coverage floor to a regression invariant at
   ≥ 0.99, graded on live runs only. Recoverability is decided by the same handle route the graph
   emits on, so recall answers "does the resolver use the evidence we gave it" and never "have we
@@ -195,6 +204,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Removed
 
+- The `registry_*` tables from the Neon load. They were there so Neon and the warehouse would
+  carry the same declarations, but nothing on the site read them and the designers never asked
+  for them; the registry surface stays in the warehouse as `currentai.registry.*` and on disk
+  as `build/registry/*.csv`. Neon now holds the 15 site tables from the target model plus
+  `publish_runs` — 41 tables down to 15 (#365).
 - The `maturity` gap type (#87, #318).
 
 ### Fixed

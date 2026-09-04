@@ -1,7 +1,7 @@
 """The Neon publisher, without a database.
 
-Everything that decides what reaches the serving layer is a pure function here — the type
-a column gets, the DDL for a table, the statement sequence the cutover runs — so all of it
+Everything that decides what reaches the serving layer is a pure function here — the id a
+row gets, the DDL for a table, the statement sequence the cutover runs — so all of it
 is tested against strings rather than against a live Postgres. The two things that cannot
 be checked that way are covered by running the CLI as a subprocess: that `--check` plans
 without connecting, and that a DSN never reaches stdout or stderr.
@@ -16,24 +16,26 @@ from pathlib import Path
 
 import pytest
 
+import build.neon_schema
 from build.neon_schema import (
-    ALL_TABLES,
     ENUM_MAPS,
     ENUMS,
-    REGISTRY_PREFIX,
     SCHEMA_VERSION,
     SITE_TABLES,
+    IdCollision,
     UnmappedValue,
+    build_site_tables,
+    check_ids_unique,
     enum_value,
     load_payload,
     product_ids,
+    stable_id,
 )
 from build.publish_neon import (
     DEFAULT_SCHEMA,
     DSN_ENV,
     LOCK_TIMEOUT,
     PROTECTED_SCHEMAS,
-    PUBLISHED_TABLES,
     RUN_COLUMNS,
     RUN_TABLE,
     SWAP_ATTEMPTS,
@@ -43,7 +45,6 @@ from build.publish_neon import (
     copy_sql,
     external_dependents,
     grant_sql,
-    infer_column_type,
     is_retryable,
     plan,
     plan_table,
@@ -65,43 +66,6 @@ ROOT = Path(__file__).resolve().parent.parent
 FAKE_DSN = "postgresql://mapuser:pw-tripwire-9f31@nowhere-tripwire.example.invalid/gapmapdb"
 
 
-# --- type inference ------------------------------------------------------------------
-
-@pytest.mark.parametrize(
-    ("name", "values", "expected"),
-    [
-        ("weight_adopt", ["0.6", "0.3", ""], "DOUBLE PRECISION"),
-        ("table_count", ["1", "12", "300"], "INTEGER"),
-        ("big", ["9999999999"], "BIGINT"),
-        ("decided_on", ["2026-08-30", ""], "DATE"),
-        ("is_mature", ["true", "false"], "BOOLEAN"),
-        ("is_mature", ["True", "FALSE"], "BOOLEAN"),
-        ("note", ["a note", ""], "TEXT"),
-        ("mixed", ["1", "one"], "TEXT"),
-        ("blank", ["", ""], "TEXT"),
-        ("almost_date", ["2026-08-30", "August"], "TEXT"),
-    ],
-)
-def test_a_column_gets_the_narrowest_type_every_value_satisfies(name, values, expected):
-    assert infer_column_type(name, values) == expected
-
-
-@pytest.mark.parametrize(
-    "name", ["slug", "product_slug", "category_slug", "artifact_id", "declaration_version_id"]
-)
-def test_identity_columns_stay_text_however_numeric_this_run_looks(name):
-    """A digits-only artifact id is a string with digits in it.
-
-    Inferring INTEGER off one run's values would change the column type from under a query
-    the first time a non-numeric id arrives.
-    """
-    assert infer_column_type(name, ["1", "2", "3"]) == "TEXT"
-
-
-def test_an_empty_column_is_text_not_a_guess():
-    assert infer_column_type("artifact_url", []) == "TEXT"
-
-
 # --- DDL ------------------------------------------------------------------------------
 
 def test_create_table_sql_names_the_schema_and_every_typed_column():
@@ -114,7 +78,10 @@ def test_create_table_sql_names_the_schema_and_every_typed_column():
 
 
 def test_copy_sql_lists_the_columns_and_reads_a_header():
-    plan = plan_table(_write_csv("products", "slug,display_name\na,A\nb,B\n"))
+    plan = plan_table(
+        _write_csv("products", "slug,display_name\na,A\nb,B\n"),
+        declared=(("slug", "VARCHAR"), ("display_name", "VARCHAR")),
+    )
     sql = copy_sql("gapmap_staging", plan)
     assert 'COPY "gapmap_staging"."products" ("slug", "display_name")' in sql
     assert "FORMAT csv, HEADER true" in sql
@@ -308,9 +275,10 @@ def _run(args: list[str], env_extra: dict[str, str] | None = None) -> subprocess
 def test_check_plans_without_a_dsn_and_prints_the_row_counts():
     result = _run(["--check"])
     assert result.returncode == 0, result.stderr
-    assert "would load" in result.stdout
+    assert f"would load {len(SITE_TABLES)} tables" in result.stdout
     assert "products" in result.stdout
     assert RUN_TABLE in result.stdout
+    assert "registry_" not in result.stdout, "Neon serves the site's tables and nothing else"
 
 
 def test_a_publish_with_no_dsn_exits_2_and_says_which_variable():
@@ -323,15 +291,7 @@ def test_a_publish_with_no_dsn_exits_2_and_says_which_variable():
 def test_no_part_of_the_dsn_ever_reaches_stdout_or_stderr(tmp_path):
     """The publish will fail — the host does not resolve — and the failure is the point:
     a libpq error quotes the host, one delimiter from the password."""
-    result = _run(
-        [
-            "--dir",
-            str(_complete_dir(tmp_path / "csv")),
-            "--site-dir",
-            str(tmp_path / "site"),
-        ],
-        {DSN_ENV: FAKE_DSN},
-    )
+    result = _run(["--site-dir", str(tmp_path / "site")], {DSN_ENV: FAKE_DSN})
     assert result.returncode == 1, result.stdout + result.stderr
     output = result.stdout + result.stderr
     for secret in (FAKE_DSN, "pw-tripwire-9f31", "nowhere-tripwire.example.invalid", "mapuser"):
@@ -339,87 +299,6 @@ def test_no_part_of_the_dsn_ever_reaches_stdout_or_stderr(tmp_path):
 
 
 # --- the table set --------------------------------------------------------------------
-
-def test_the_registry_group_is_the_set_publish_registry_publishes_to_oso():
-    """Neon and the warehouse must carry the same registry surface.
-
-    Derived from `publish_registry.TABLES`, never from a glob over the output directory: a
-    glob makes the published surface depend on which serializers happened to have run, so a
-    directory left by a partial run would quietly publish a smaller map.
-    """
-    from build.publish_registry import TABLES as OSO_TABLES
-
-    assert PUBLISHED_TABLES == OSO_TABLES
-    for name in OSO_TABLES:
-        assert f"{REGISTRY_PREFIX}{name}" in ALL_TABLES
-
-
-def test_every_serializers_tables_are_in_the_set():
-    from build.serialize_registry import TABLES as REGISTRY
-    from build.serialize_routing import TABLES as ROUTING
-    from build.serialize_rubric import TABLES as RUBRIC
-    from build.serialize_scores import TABLES as SCORES
-
-    for spec in (REGISTRY, RUBRIC, ROUTING, SCORES):
-        assert set(spec).issubset(set(PUBLISHED_TABLES))
-
-
-def test_the_two_groups_do_not_collide():
-    """Both surfaces share one schema and both have a products, a categories and an
-    organizations. The prefix is what keeps them apart."""
-    assert set(SITE_TABLES) & set(PUBLISHED_TABLES), "the overlap is the reason for the prefix"
-    assert len(set(ALL_TABLES)) == len(ALL_TABLES)
-    assert not set(SITE_TABLES) & {f"{REGISTRY_PREFIX}{n}" for n in PUBLISHED_TABLES}
-
-
-def test_a_declared_table_with_no_csv_is_reported_missing_not_skipped(tmp_path):
-    """A table is absent because a serializer has not run. Loading the rest would publish
-    a partial map that looks complete.
-
-    Into an empty directory the registry serializer's own tables are regenerated, so what is
-    left missing is the rubric, routing and scores sets — exactly the ones this module will
-    not run for you.
-    """
-    from build.serialize_registry import TABLES as OWN
-
-    plans, missing = plan(tmp_path, site_dir=tmp_path / "site")
-    loaded = {p.name for p in plans if p.name not in SITE_TABLES}
-    assert loaded == {f"{REGISTRY_PREFIX}{n}" for n in OWN}
-    assert set(missing) == {
-        f"{REGISTRY_PREFIX}{n}" for n in PUBLISHED_TABLES if n not in OWN
-    }
-    assert missing, "the other three serializers have not run, so something must be missing"
-
-
-def test_plans_come_back_in_the_declared_order_map_group_first(tmp_path):
-    """The map group loads first, so a failure in the part the site reads shows up first."""
-    plans, _missing = plan(site_dir=tmp_path / "site")
-    names = [p.name for p in plans]
-    assert names == [name for name in ALL_TABLES if name in set(names)]
-    assert names[: len(SITE_TABLES)] == list(SITE_TABLES)
-
-
-def test_a_publish_missing_a_csv_exits_2_and_names_the_serializers(tmp_path):
-    result = _run(
-        ["--dir", str(tmp_path), "--site-dir", str(tmp_path / "site")], {DSN_ENV: FAKE_DSN}
-    )
-    assert result.returncode == 2
-    assert "missing tables" in result.stderr
-    assert "serialize_scores" in result.stderr
-
-
-def _complete_dir(directory: Path) -> Path:
-    """A header-only CSV per declared registry table, so the completeness gate passes.
-
-    Header-only is a real state — a serializer emits a header for every table it declares,
-    filled or not — and it lets a test exercise what happens after planning without running
-    four serializers.
-    """
-    directory.mkdir(parents=True, exist_ok=True)
-    for name in PUBLISHED_TABLES:
-        (directory / f"{name}.csv").write_text("slug\n", encoding="utf-8")
-    return directory
-
 
 # --- enums ----------------------------------------------------------------------------
 
@@ -493,19 +372,329 @@ def test_every_relation_the_payload_actually_carries_is_mapped():
 
 # --- keys -----------------------------------------------------------------------------
 
-def test_product_ids_are_assigned_by_sorted_slug_so_a_load_is_reproducible():
-    """Surrogate ids exist for the designers' FK shape, but an id that moved between loads
-    would make a diff of two loads unreadable."""
+def test_stable_id_is_deterministic():
+    """The whole point: the same table and key give the same id on every load, forever."""
+    assert stable_id("products", "vllm") == stable_id("products", "vllm")
+    assert stable_id("products", "vllm") != stable_id("products", "sglang")
+
+
+def test_stable_id_is_scoped_to_its_table():
+    """The table name is hashed in, so a category and a product sharing a slug do not share
+    an id — a join that crosses tables by mistake matches nothing rather than working."""
+    assert stable_id("products", "olmo-3") != stable_id("categories", "olmo-3")
+    assert stable_id("categories", "evaluation") != stable_id("gaps", "evaluation")
+
+
+def test_an_id_is_a_positive_bigint_because_postgres_has_no_unsigned_integer():
+    """63 bits, not 64: keeping the top bit would make half the ids negative."""
+    for key in ("vllm", "olmo-3", "", "x" * 500, "a|b|c"):
+        ident = stable_id("products", key)
+        assert 0 <= ident < 2**63
+
+
+def test_product_ids_are_derived_from_the_slug_not_from_a_position():
     payload = load_payload()
     ids = product_ids(payload)
-    assert sorted(ids.values()) == list(range(1, len(ids) + 1))
-    assert [slug for slug, _id in sorted(ids.items(), key=lambda kv: kv[1])] == sorted(ids)
     assert product_ids(payload) == ids
+    for slug, ident in ids.items():
+        assert ident == stable_id("products", slug)
+
+
+def test_publishing_the_same_corpus_twice_gives_identical_ids():
+    """A publish that renumbered would move every id that had escaped into a URL or a cache."""
+    payload = load_payload()
+    first = build_site_tables(payload)
+    second = build_site_tables(load_payload())
+    for name, rows in first.items():
+        assert [row.get("id") for row in rows] == [row.get("id") for row in second[name]]
+
+
+def _fixture_payload(extra_slug: str | None = None) -> dict:
+    """A two-product corpus, optionally with a third product sorting before both.
+
+    Small on purpose: the property under test is that inserting a row leaves the others
+    alone, and a fixture makes the inserted row's position in the sort explicit.
+    """
+    products = [
+        {
+            "slug": "mid-product",
+            "product": "Mid",
+            "org_slug": "acme",
+            "type": "model",
+            "openness": {
+                "score": 3,
+                "sources": [
+                    {
+                        "url": "https://example.test/mid",
+                        "shows": "the licence",
+                        "accessed": "2026-08-13",
+                    }
+                ],
+            },
+            "lineage": {"derived_from": ["some-base"]},
+        },
+        {"slug": "zeta-product", "product": "Zeta", "org_slug": "acme", "type": "model"},
+    ]
+    if extra_slug:
+        products.insert(0, {"slug": extra_slug, "product": "New", "org_slug": "acme", "type": "model"})
+    return {
+        "generated": "2026-09-04",
+        "order": ["a_category"],
+        "layer_order": ["model_components"],
+        "categories": {
+            "a_category": {
+                "label": "A Category",
+                "arc": "build",
+                "layer": "model_components",
+                "stage": {"num": 2},
+                "gaps": [],
+                "products": products,
+            }
+        },
+        "descriptions": {"categories": {}, "gaps": {}, "stages": {}},
+        "organizations": {"acme": {"display_name": "Acme", "type": "company"}},
+        "aliases": {"products": {"mid": "mid-product"}},
+        "long_tail": {"top": [{"name": "Tail One"}], "counts": {"model": 1}},
+    }
+
+
+def test_inserting_a_product_alphabetically_first_moves_no_existing_id():
+    """The bug this replaces: ids were positions in a sorted slug list, so adding one product
+    renumbered every row after it and any id in a URL, a cache or a CMS row pointed at a
+    different product after the next publish."""
+    before = build_site_tables(_fixture_payload())
+    after = build_site_tables(_fixture_payload(extra_slug="aaa-new-product"))
+
+    for name, rows in before.items():
+        keyed = {row.get("id"): row for row in rows if row.get("id") is not None}
+        after_ids = {row.get("id") for row in after[name]}
+        for ident, row in keyed.items():
+            assert ident in after_ids, f"{name}: {row} was renumbered by the insertion"
+
+    products_before = {row["slug"]: row["id"] for row in before["products"]}
+    products_after = {row["slug"]: row["id"] for row in after["products"]}
+    assert products_before.items() <= products_after.items()
+    assert set(products_after) - set(products_before) == {"aaa-new-product"}
+
+
+def test_the_foreign_keys_in_a_fixture_corpus_resolve_to_the_hashed_parents():
+    """The FKs are the reason the ids have to move together: a child row hashed from one key
+    and a parent from another would produce a dangling reference the COPY would reject."""
+    tables = build_site_tables(_fixture_payload())
+    assert {row["category"] for row in tables["products"]} == {
+        stable_id("categories", "a_category")
+    }
+    assert {row["layer"] for row in tables["categories"]} == {
+        stable_id("layers", "model_components")
+    }
+    assert {row["stage"] for row in tables["categories"]} == {stable_id("stages", "2")}
+    mid = stable_id("products", "mid-product")
+    assert {row["product_id"] for row in tables["openness"]} == {
+        mid,
+        stable_id("products", "zeta-product"),
+    }
+    assert [row["product_id"] for row in tables["sources"]] == [mid]
+    assert [row["id"] for row in tables["sources"]] == [
+        stable_id("sources", "mid-product|openness|2026-08-13|https://example.test/mid|the licence")
+    ]
+    assert [row["id"] for row in tables["product_lineage"]] == [
+        stable_id("product_lineage", "mid-product|derived_from|some-base")
+    ]
+    assert [row["id"] for row in tables["long_tail_top"]] == [
+        stable_id("long_tail_top", "Tail One")
+    ]
+
+
+def test_the_same_url_read_twice_is_two_observations_with_two_ids():
+    """A source list can carry the same URL twice on the same axis. Each entry is a separate
+    re-verification, so `shows` and `accessed` are part of the key rather than tie-breakers."""
+    payload = _fixture_payload()
+    product = payload["categories"]["a_category"]["products"][0]
+    product["openness"]["sources"] = [
+        {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-13"},
+        {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-14"},
+    ]
+    ids = [row["id"] for row in build_site_tables(payload)["sources"]]
+    assert ids == [
+        stable_id("sources", "mid-product|openness|2026-08-13|https://example.test/mid|the licence"),
+        stable_id("sources", "mid-product|openness|2026-08-14|https://example.test/mid|the licence"),
+    ]
+
+
+def test_deleting_one_re_verification_leaves_the_others_id_alone():
+    """The defect the fuller key exists to prevent. Keyed on the URL alone, deleting the
+    earlier of a pair promoted the later one into the un-suffixed key and handed it the
+    deleted row's id — so a stored reference resolved to a row with a different claim and a
+    different date, and nothing raised, because the ids were still unique."""
+    both = _fixture_payload()
+    product = both["categories"]["a_category"]["products"][0]
+    first = {"url": "https://example.test/mid", "shows": "the licence", "accessed": "2026-08-13"}
+    second = {"url": "https://example.test/mid", "shows": "a wider claim", "accessed": "2026-08-14"}
+    product["openness"]["sources"] = [first, second]
+    before = {row["id"]: row["shows"] for row in build_site_tables(both)["sources"]}
+
+    survivor_only = _fixture_payload()
+    survivor_only["categories"]["a_category"]["products"][0]["openness"]["sources"] = [second]
+    after = {row["id"]: row["shows"] for row in build_site_tables(survivor_only)["sources"]}
+
+    survivor = next(ident for ident, shows in before.items() if shows == "a wider claim")
+    deleted = next(ident for ident, shows in before.items() if shows == "the licence")
+    assert list(after) == [survivor], "the survivor kept its own id"
+    assert deleted not in after, "the deleted row's id was not handed to anyone"
+
+
+def test_the_disambiguator_never_fires_on_the_real_corpus():
+    """`_disambiguate` numbers by walk position, so it carries the very bug the natural keys
+    exist to avoid. It is a guard against a future corpus, not a working part of the scheme —
+    a red here means two source rows are genuinely indistinguishable and the key needs
+    widening, not that the suffix should be relied on."""
+    from build.neon_schema import _axis, _by_slug, _source_key
+    from build.vocabulary import axes
+
+    payload = load_payload()
+    keys = [
+        _source_key(slug, metric, source)
+        for slug, _cid, product in _by_slug(payload)
+        for metric in axes()
+        for source in _axis(product, metric).get("sources") or []
+        if isinstance(source, dict)
+    ]
+    duplicates = {key for key in keys if keys.count(key) > 1} if len(keys) != len(set(keys)) else set()
+    assert not duplicates, f"{len(duplicates)} source keys repeat, so the suffix would fire"
+    # The suffix is appended, so only a key already ending `#<digits>` shares its namespace.
+    # A `#` anywhere else — a fragment in a URL, a note in `shows` — cannot be mistaken for one.
+    collidable = [key for key in keys if re.search(r"#\d+$", key)]
+    assert not collidable, f"{len(collidable)} keys end in a suffix shape the disambiguator uses"
+    assert len(build_site_tables(payload)["sources"]) == len(keys)
+
+
+@pytest.mark.parametrize(
+    "table",
+    [name for name, spec in SITE_TABLES.items() if "id" in dict(spec.columns)],
+)
+def test_every_id_column_is_a_bigint(table):
+    """63-bit ids do not fit an INTEGER. The departure from the designers' `integer` is
+    deliberate and is recorded in docs/reference/where-scores-live.md."""
+    assert dict(SITE_TABLES[table].columns)["id"].startswith("BIGINT")
+
+
+@pytest.mark.parametrize(
+    "table,column",
+    [
+        ("categories", "layer"),
+        ("categories", "stage"),
+        ("gaps_categories", "cat_id"),
+        ("gaps_categories", "gap_id"),
+        ("products", "category"),
+        ("openness", "product_id"),
+        ("adoption", "product_id"),
+        ("capability", "product_id"),
+        ("sources", "product_id"),
+        ("product_lineage", "product_id"),
+    ],
+)
+def test_every_foreign_key_column_is_a_bigint_too(table, column):
+    """A narrower child column than its parent would reject the very ids it references."""
+    assert dict(SITE_TABLES[table].columns)[column].startswith("BIGINT")
+
+
+def test_a_collision_fails_the_build_naming_the_table_and_both_keys(monkeypatch):
+    """Two natural keys on one id would be rejected by the primary key at COPY time, in a
+    message naming neither. This stops first, with both in hand."""
+    real = build.neon_schema.stable_id
+    monkeypatch.setattr(
+        build.neon_schema,
+        "stable_id",
+        lambda table, key: 7 if table == "products" else real(table, key),
+    )
+    with pytest.raises(IdCollision) as error:
+        build_site_tables(_fixture_payload())
+    message = str(error.value)
+    assert "products" in message
+    assert "mid-product" in message and "zeta-product" in message
+
+
+def test_a_collision_exits_the_publisher_with_1(monkeypatch, tmp_path, capsys):
+    """A collision must not reach the COPY. `plan` renders the map group's CSVs, so the guard
+    runs before anything connects — on a `--check` as well as on a publish."""
+    import build.publish_neon as publisher
+
+    monkeypatch.setattr(build.neon_schema, "stable_id", lambda table, key: 7)
+    with pytest.raises(IdCollision):
+        plan(site_dir=tmp_path / "site")
+
+    monkeypatch.setattr(
+        sys, "argv", ["publish_neon", "--check", "--site-dir", str(tmp_path / "cli")]
+    )
+    assert publisher.main() == 1
+    assert "id collision" in capsys.readouterr().err
+
+
+def test_the_guard_covers_every_table_the_dbml_gives_a_key(monkeypatch):
+    """Keyed off the declared PRIMARY KEY rather than off a column named `id`, so the four
+    whose key is `product_id`, `slug` or `alias` are inside it too. The two tables the DBML
+    gives no key are the only ones exempt."""
+    from build.neon_schema import primary_key
+
+    keyed = {name for name in SITE_TABLES if primary_key(name)}
+    assert keyed == set(SITE_TABLES) - {"gaps_categories", "long_tail_counts"}
+    assert primary_key("openness") == ("product_id",)
+    assert primary_key("organizations") == ("slug",)
+    assert primary_key("aliases") == ("alias",)
+    assert primary_key("gaps_categories") == ()
+
+
+@pytest.mark.parametrize(
+    "table,column",
+    [("openness", "product_id"), ("organizations", "slug"), ("aliases", "alias")],
+)
+def test_a_duplicate_on_a_non_id_primary_key_is_caught_too(table, column):
+    """The `id`-only version of this guard skipped seven tables while claiming to cover
+    every way a duplicate could reach one."""
+    tables = build_site_tables(_fixture_payload())
+    rows = tables[table]
+    assert rows, f"{table} has no rows in the fixture corpus"
+    tables[table] = [rows[0], dict(rows[0])]
+    with pytest.raises(IdCollision) as error:
+        check_ids_unique(tables)
+    assert table in str(error.value)
+    assert str(rows[0][column]) in str(error.value)
+
+
+def test_a_table_with_no_declared_key_is_skipped_not_half_scanned():
+    """`gaps_categories` and `long_tail_counts` have no key in the DBML and none to invent."""
+    tables = build_site_tables(_fixture_payload())
+    tables["long_tail_counts"] = tables["long_tail_counts"] * 2
+    check_ids_unique(tables)
+
+
+def test_the_ordinal_the_id_used_to_carry_kept_a_column_of_its_own():
+    """`layers.id`, `categories.id`, `stages.id` and `long_tail_top.id` were positions, and
+    three of those positions meant something. A hash carries none of it."""
+    payload = load_payload()
+    tables = build_site_tables(payload)
+    assert [row["sort_order"] for row in tables["layers"]] == list(
+        range(1, len(payload["layer_order"]) + 1)
+    )
+    assert [row["sort_order"] for row in tables["categories"]] == list(
+        range(1, len(payload["order"]) + 1)
+    )
+    assert [row["slug"] for row in tables["categories"]] == list(payload["order"])
+    assert [row["num"] for row in tables["stages"]] == sorted(row["num"] for row in tables["stages"])
+    assert [row["sort_order"] for row in tables["long_tail_top"]] == list(
+        range(1, len(tables["long_tail_top"]) + 1)
+    )
+
+
+def test_the_schema_version_records_the_id_change():
+    """No migration tool: the swap rebuilds the schema, so `publish_runs.schema_version` is
+    how a reader tells positional ids from hashed ones."""
+    assert SCHEMA_VERSION >= 3
 
 
 def test_categories_carry_a_slug_the_pdf_omitted():
-    """Every deep link and every join from the registry group is by slug, and an id assigned
-    by curated order changes whenever the order does."""
+    """Every deep link is by slug, and the id it sits beside is a hash rather than something
+    a person can read."""
     assert "slug" in dict(SITE_TABLES["categories"].columns)
 
 
@@ -678,9 +867,10 @@ def test_the_awkward_value_survives_a_full_csv_round_trip():
 
 
 def test_the_embedded_newline_is_not_counted_as_an_extra_row():
-    plan_ = plan_table(_write_csv("awkward", _AWKWARD))
+    plan_ = plan_table(
+        _write_csv("awkward", _AWKWARD), declared=(("slug", "VARCHAR"), ("note", "TEXT"))
+    )
     assert plan_.row_count == 1
-    assert dict(plan_.columns)["note"] == "TEXT"
 
 
 # --- the read-back query --------------------------------------------------------------
@@ -1041,18 +1231,42 @@ def test_every_not_null_the_dbml_declares_is_in_the_generated_ddl(table, column)
     assert f'"{column}"' in sql
 
 
-def test_no_constraint_is_declared_for_the_registry_group(tmp_path):
-    """The serializers declare column names only, so there is nothing to derive a key from,
-    and inventing one would be this module guessing at another module's grain.
+def test_a_missing_payload_reports_every_table_pending_rather_than_planning_none(tmp_path):
+    """`build/notebook_data.json` is tracked, so this branch is nearly unreachable — which
+    makes it likelier to rot unnoticed, not less. Every table is rendered from the payload, so
+    without it there is nothing to load and the tables are reported, not silently skipped."""
+    plans, missing = plan(
+        site_dir=tmp_path / "site", payload_path=tmp_path / "no-such-payload.json"
+    )
+    assert plans == []
+    assert missing == list(SITE_TABLES)
 
-    `site_dir` is a tmp path because `plan` renders the map group's CSVs: writing them into
-    the real `build/neon/` would race the `--check` subprocess test under `-n 4`, and the
-    loser reads a half-written header.
+
+def test_a_publish_with_no_payload_exits_2_and_says_what_to_build(tmp_path):
+    """Loading the rest would publish a partial map that looks complete."""
+    result = _run(
+        ["--site-dir", str(tmp_path / "site"), "--payload", str(tmp_path / "absent.json")],
+        {DSN_ENV: FAKE_DSN},
+    )
+    assert result.returncode == 2, result.stdout + result.stderr
+    assert "missing tables" in result.stderr
+    assert "notebook_data.json" in result.stderr
+
+
+def test_every_planned_table_is_one_the_schema_module_declares(tmp_path):
+    """Neon serves the site's tables and nothing else. The registry surface lives in the
+    warehouse as `currentai.registry.*` and in `build/registry/*.csv`.
+
+    `site_dir` is a tmp path because `plan` renders the CSVs: writing them into the real
+    `build/neon/` would race the `--check` subprocess test under `-n 4`, and the loser reads
+    a half-written header.
     """
-    plans, _missing = plan(site_dir=tmp_path / "site")
+    plans, missing = plan(site_dir=tmp_path / "site")
+    assert [plan_.name for plan_ in plans] == list(SITE_TABLES)
+    assert missing == []
     for plan_ in plans:
-        if plan_.name not in SITE_TABLES:
-            assert plan_.constraints == ()
+        assert plan_.columns == SITE_TABLES[plan_.name].columns
+        assert plan_.constraints == SITE_TABLES[plan_.name].constraints
 
 
 def test_a_foreign_key_target_is_qualified_with_the_schema_being_built():
@@ -1104,22 +1318,26 @@ def _write_csv(name: str, text: str) -> Path:
     return path
 
 
+_DECLARED = (("slug", "VARCHAR"), ("label", "VARCHAR"))
+
+
 def test_plan_table_reads_the_header_and_counts_data_rows_only():
-    plan = plan_table(_write_csv("categories", "slug,weight_adopt\na,0.6\nb,0.3\n"))
+    plan = plan_table(_write_csv("categories", "slug,label\na,A\nb,B\n"), declared=_DECLARED)
     assert plan.name == "categories"
     assert plan.row_count == 2
-    assert plan.columns == (("slug", "TEXT"), ("weight_adopt", "DOUBLE PRECISION"))
+    assert plan.columns == _DECLARED
 
 
 def test_a_header_only_csv_plans_as_a_real_table_with_no_rows():
-    """A serializer emits a header for every table it declares, filled or not."""
-    plan = plan_table(_write_csv("tail_products", "slug,artifact_id\n"))
+    """An empty table is loaded as an empty table: a serving layer that answers "no rows" is
+    better than one that answers "no such table"."""
+    plan = plan_table(_write_csv("empty", "slug,label\n"), declared=_DECLARED)
     assert plan.row_count == 0
-    assert plan.columns == (("slug", "TEXT"), ("artifact_id", "TEXT"))
+    assert plan.columns == _DECLARED
 
 
-def test_a_short_row_does_not_shift_a_columns_inferred_type():
-    """csv tolerates a row with missing trailing fields; the absent value is empty, not
-    the next column's."""
-    plan = plan_table(_write_csv("ragged", "a,b\n1,2\n3\n"))
-    assert dict(plan.columns)["b"] == "INTEGER"
+def test_a_header_that_has_drifted_from_the_declared_columns_is_refused():
+    """A spec that no longer describes its CSV would COPY values into the wrong columns,
+    which Postgres accepts wherever the types happen to line up."""
+    with pytest.raises(ValueError, match="does not match the declared columns"):
+        plan_table(_write_csv("drifted", "slug,name\na,A\n"), declared=_DECLARED)

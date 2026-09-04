@@ -4,28 +4,74 @@
 knows nothing about the gap map. This module is the map half: which tables exist, which
 enums, what every column is, and where each row comes from.
 
-Group B is the designers' target model, transcribed in
+`SITE_TABLES` is the designers' target model, transcribed in
 `Current-AI-Initial-Schema.pdf` (Laith, CLEVER FRANKE) with Carl's amendments. This load
-exists to deprecate `build/notebook_data.json` as the site's transport, so every group-B row
-is derived from that payload's semantics — the same content the front end reads today, at a
+exists to deprecate `build/notebook_data.json` as the site's transport, so every row here is
+derived from that payload's semantics — the same content the front end reads today, at a
 grain a query can use. Rows come from the file rather than from a fresh `build_payload`
 because it is the repo's build artifact and its gate contract: what Postgres serves is
 byte-for-byte what the repo published, not a second derivation that could disagree with it.
 
-Group A is the registry surface: exactly `build.publish_registry.TABLES`, the four
-serializers' declared sets, read from that module rather than from a glob over
-`build/registry/`, so Neon and the OSO warehouse carry the same tables by construction.
-Group A names are prefixed `registry_` in Postgres, because both groups share one schema and
-both have a `products`, a `categories` and an `organizations`.
+That is the whole surface. The registry tables the serializers write to `build/registry/*.csv`
+were loaded here too for a while, prefixed `registry_`, so Neon and the warehouse would carry
+the same declarations. Nothing on the site ever read them and the designers never asked for
+them, so they are gone: the registry surface lives in the warehouse as `currentai.registry.*`
+and in `build/registry/*.csv`, and Neon serves the site's tables and nothing else.
 
-## Keys are natural where the payload has one
+## Keys are natural where the payload has one, and every surrogate id is derived from one
 
-`products.id` exists for the FK shape the designers specified, but it is assigned by sorted
-slug order on every load, so the same corpus produces the same ids and a diff of two loads
-is readable. The real key is `slug`, which is what a deep link carries. Organizations key on
-`slug`, aliases on `alias`, categories carry a `slug` alongside their id (the PDF omitted it
-and the site needs it). Ids for `sources` and `product_lineage` are positional over a
-deterministic walk, for the same reason.
+`products.id` exists for the FK shape the designers specified. It is not a position: it is
+`stable_id("products", slug)`, the first 63 bits of a SHA-256 over the table name and the
+row's natural key. Ids used to be assigned by sorted slug order, which meant adding one
+product renumbered every row after it — so any id that had escaped into a URL, a cache or a
+CMS reference pointed at a different product after the next publish. Deriving the id from
+the key instead makes it stable across loads and independent of what else is in the corpus.
+
+Hashing the table name in as well means the same slug in two tables gets two different ids,
+so a mistaken join across them finds nothing rather than appearing to work.
+
+The natural key per table: `products.slug`, `categories.slug`, `layers` and `gaps` by their
+label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
+`(product_slug, relation, target)`, `sources` by
+`(product_slug, metric, url, shows, accessed)`. Organizations key on `slug` and aliases on
+`alias` directly, with no surrogate at all.
+
+The ids are 63-bit, so the columns are `BIGINT` where the designers' model says `integer`.
+Postgres has no unsigned integer type, which is why 63 bits and not 64: the top bit would
+make half the ids negative.
+
+**The slug is still the identity.** A stable id is safe to store as an internal reference,
+but a link, a bookmark, a CMS row or anything a person reads should carry the slug. The id
+is a join key, and it changes if the natural key it is derived from ever changes.
+
+A source's key carries `shows` and `accessed` because the URL alone does not identify the
+row: one source list can hold the same URL twice on the same axis (69 pairs today), and each
+of those pairs is a re-verification recording a different claim or a different date. They are
+two observations, and the key is what tells them apart. `_disambiguate` remains as a last
+resort for a future corpus and fires on nothing today, which a test asserts against the real
+payload — if it ever did fire it would number by position, and a deleted row would hand its id
+to its surviving twin.
+
+## The ordinal the id used to carry now has its own column
+
+`layers.id`, `categories.id`, `stages.id` and `long_tail_top.id` were positions, and each of
+those positions carried something: the layer stack order, the map's curated category order,
+the long tail's ranking, and — most sharply — the stage number, because `categories.stage`
+was literally the number and `stages.id` was literally the number it pointed at. A hashed id
+carries none of that.
+
+The designers' model has nowhere else to put it. `layers` is `{id, label}`, `stages` is
+`{id, label, desc}`, `long_tail_top` has no ordering field, and `stages` has no number, so
+`label` is a display name and the `descriptions.stages` legend keys on a number the table
+would no longer hold. Drop the information and a consumer cannot render the stack bottom-up,
+cannot reproduce the curated order, cannot rank the tail, and cannot say which stage "Stage 3"
+is. So it moved into `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`
+and `stages.num`. `ORDER BY sort_order` is what the old `ORDER BY id` meant.
+
+Four columns the designers' model does not declare, and nothing reads Neon today — the front
+end still consumes `notebook_data.json`. This is preservation for the consumer that comes
+next, because a publish that drops the information destroys it, and the cost of carrying it is
+four integers per row.
 
 ## The constraints are real, and a violation fails the run
 
@@ -82,7 +128,7 @@ There is no migration tool and no need for one yet. Every publish rebuilds the s
 this module and swaps it into place atomically, so a shape change here becomes live on the
 next load with no ALTER anywhere. What that costs is a reader's ability to tell which shape
 it is looking at, so `publish_runs.schema_version` carries `SCHEMA_VERSION` — bump it in the
-same commit as any change to a group-B table, column, or enum. Once something outside this
+same commit as any change to a table, column, constraint or enum here. Once something outside this
 repo depends on the shape, this is the point where a real migration path replaces the swap.
 
 ## What the CMS owns, and why it cannot live here
@@ -108,30 +154,161 @@ failure. Read the map's tables directly, or materialize a copy on the CMS side.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from build.publish_registry import TABLES as REGISTRY_TABLES
 from build.vocabulary import axes
 
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 
-# Bump on any change to a group-B table, column, constraint or enum. Recorded on every
+# Bump on any change to a table, column, constraint or enum here. Recorded on every
 # publish_runs row.
 #   1: the initial load.
 #   2: the gallery tables and their three enums removed (CMS-owned); the DBML's primary keys,
 #      NOT NULLs, uniques and foreign keys emitted for the first time.
-SCHEMA_VERSION = 2
-
-# Group A's tables keep their serializer names, prefixed, because both groups share a schema.
-REGISTRY_PREFIX = "registry_"
-
+#   3: the `registry_*` tables dropped from the load — nothing on the site read them and the
+#      registry surface lives in the warehouse. Every surrogate id derived from the row's
+#      natural key by `stable_id` instead of from its position, so ids no longer renumber
+#      when the corpus grows; id and foreign-key columns widened from INTEGER to BIGINT to
+#      hold them; the ordinal those ids used to carry moved into `layers.sort_order`,
+#      `categories.sort_order`, `long_tail_top.sort_order` and `stages.num`.
+SCHEMA_VERSION = 3
 
 class UnmappedValue(ValueError):
     """A payload value with no place in the target enum. Fails the load, names the value."""
+
+
+class IdCollision(RuntimeError):
+    """Two different natural keys hashed to the same id. Fails the load, names both."""
+
+
+# --- stable ids -----------------------------------------------------------------------
+
+# The composite natural keys (`sources`, `product_lineage`) join their parts with this. The
+# join is unambiguous because each key puts its controlled values first and leaves at most one
+# unbounded component last, not because the separator is unusual — see `_source_key`.
+KEY_SEPARATOR = "|"
+
+
+def stable_id(table: str, key: str) -> int:
+    """A surrogate id for a row, derived from its natural key rather than its position.
+
+    The first 63 bits of `sha256("<table>:<key>")`, as a positive integer. Two properties,
+    and the function exists for both:
+
+    1. **Stable across loads.** The same table and key always give the same id, so adding or
+       removing a row renumbers nothing else. An id that has escaped into a URL, a cache or a
+       CMS reference still points at the same row after the next publish, which an id
+       assigned by position did not.
+    2. **Scoped to the table.** The table name is hashed in, so the same slug in two tables
+       gets two different ids. A join that crosses tables by mistake matches nothing instead
+       of appearing to work.
+
+    63 bits rather than 64 because Postgres has no unsigned integer type and the columns are
+    `BIGINT`: keeping the top bit would make half the ids negative. 63 bits over a few
+    thousand rows per table leaves a collision probability far below any other failure mode
+    here, and `_id_map` fails the load rather than trusting that.
+    """
+    digest = hashlib.sha256(f"{table}:{key}".encode()).digest()
+    return int.from_bytes(digest[:8], "big") >> 1
+
+
+def _id_map(table: str, keys: Iterable[str]) -> dict[str, int]:
+    """natural key -> id for one table, refusing a collision rather than losing a row.
+
+    A duplicate key is fine and collapses (the callers pass keys that are unique by
+    construction); two *different* keys landing on the same id is not, because the table's
+    primary key would reject one of them at COPY time with a message naming neither.
+    """
+    out: dict[str, int] = {}
+    by_id: dict[int, str] = {}
+    for key in keys:
+        ident = stable_id(table, key)
+        clash = by_id.get(ident)
+        if clash is not None and clash != key:
+            raise IdCollision(
+                f"{table}: {key!r} and {clash!r} both hash to id {ident}. Two natural keys "
+                f"cannot share a surrogate id, so this publish has stopped rather than drop "
+                f"one of them. Change one of the keys, or widen stable_id."
+            )
+        by_id[ident] = key
+        out[key] = ident
+    return out
+
+
+def _disambiguate(keys: Iterable[str]) -> list[str]:
+    """Append `#2`, `#3` to a key that repeats. A last resort that should never fire.
+
+    It numbers by walk position, so if it ever does fire it carries the bug the natural keys
+    exist to avoid: delete the earlier of a repeated pair and the later one is promoted into
+    the un-suffixed key, **inheriting the deleted row's id**. A stored reference then resolves
+    to a different row with no gate firing, which is worse than the positional scheme this
+    module replaced, because that one renumbered visibly and en masse.
+
+    So the keys handed to it must already be unique. `sources` is the only caller and its key
+    includes `shows` and `accessed`, under which no two rows in the corpus collide —
+    `tests/test_publish_neon.py` asserts that on the real payload. This stays as a guard
+    against a future corpus, not as a working part of the scheme.
+    """
+    seen: dict[str, int] = {}
+    out = []
+    for key in keys:
+        seen[key] = seen.get(key, 0) + 1
+        out.append(key if seen[key] == 1 else f"{key}#{seen[key]}")
+    return out
+
+
+_PRIMARY_KEY = re.compile(r'PRIMARY KEY \(([^)]*)\)')
+
+
+def primary_key(table: str) -> tuple[str, ...]:
+    """The columns in a table's declared PRIMARY KEY, or `()` where it declares none.
+
+    Read from the constraint the DDL actually emits rather than restated, so a key that moves
+    moves this too. `gaps_categories` and `long_tail_counts` have no key in the DBML and none
+    to invent, so they come back empty.
+    """
+    for clause in SITE_TABLES[table].constraints:
+        match = _PRIMARY_KEY.match(clause)
+        if match:
+            return tuple(part.strip().strip('"') for part in match.group(1).split(","))
+    return ()
+
+
+def check_ids_unique(tables: dict[str, list[dict]]) -> None:
+    """Fail the publish if any table repeats its primary key. The last gate before COPY.
+
+    Keyed off each table's declared PRIMARY KEY rather than off a column literally named
+    `id`, so it also covers the four whose key is `product_id`, `slug` or `alias`. The two
+    tables the DBML gives no key are the two it skips, and nothing else is exempt.
+
+    `_id_map` catches a collision where both natural keys are in hand, which is the case that
+    can name them. This is the backstop for every other way a duplicate could reach a table —
+    a builder that stopped going through `_id_map`, a key computed twice from different
+    fields — and it runs over the rows that are actually about to be written.
+    """
+    for name, rows in tables.items():
+        key_columns = primary_key(name)
+        if not key_columns:
+            continue
+        seen: dict[tuple, dict] = {}
+        for row in rows:
+            key = tuple(row.get(column) for column in key_columns)
+            first = seen.get(key)
+            if first is not None:
+                shown = key[0] if len(key) == 1 else key
+                raise IdCollision(
+                    f"{name}: primary key {shown!r} is used by two rows, {first!r} and "
+                    f"{row!r}. Postgres would reject one of them at COPY time; this publish "
+                    f"has stopped instead."
+                )
+            seen[key] = row
 
 
 # --- enums ----------------------------------------------------------------------------
@@ -216,7 +393,7 @@ def references(column: str, table: str, target: str) -> str:
 
 @dataclass(frozen=True)
 class SiteTable:
-    """One group-B table: its columns, its table-level constraints, and its rows.
+    """One table: its columns, its table-level constraints, and its rows.
 
     A column's second element is its full definition after the name, so it carries `NOT NULL`
     where the DBML declares one — Postgres has no table-level form of it. Keys, uniques and
@@ -257,19 +434,29 @@ def _pg_array(values) -> str:
 
 
 def product_ids(payload: dict) -> dict[str, int]:
-    """slug -> id, assigned by sorted slug so a load is reproducible and a diff is readable."""
+    """slug -> id, hashed from the slug so adding a product renumbers nothing."""
     slugs = sorted(
         {p["slug"] for cid in payload.get("order") or [] for p in payload["categories"][cid]["products"]}
     )
-    return {slug: index for index, slug in enumerate(slugs, start=1)}
+    return _id_map("products", slugs)
 
 
 def category_ids(payload: dict) -> dict[str, int]:
-    """slug -> id, in the map's own curated `order`."""
+    """slug -> id. The curated `order` decides `categories.sort_order`, not the id."""
+    return _id_map("categories", payload.get("order") or [])
+
+
+def category_order(payload: dict) -> dict[str, int]:
+    """slug -> position in the map's own curated order, 1-based."""
     return {cid: index for index, cid in enumerate(payload.get("order") or [], start=1)}
 
 
 def layer_ids(payload: dict) -> dict[str, int]:
+    return _id_map("layers", payload.get("layer_order") or [])
+
+
+def layer_order(payload: dict) -> dict[str, int]:
+    """label -> position in the stack, bottom first, 1-based."""
     return {layer: index for index, layer in enumerate(payload.get("layer_order") or [], start=1)}
 
 
@@ -279,7 +466,15 @@ def gap_ids(payload: dict) -> dict[str, int]:
     A gap kind that no category currently has is still a kind the site renders a label for.
     """
     legend = (payload.get("descriptions") or {}).get("gaps") or {}
-    return {kind: index for index, kind in enumerate(sorted(legend), start=1)}
+    return _id_map("gaps", sorted(legend))
+
+
+def stage_ids() -> dict[int, int]:
+    """Stage number -> id. The number itself stays readable in `stages.num`."""
+    from build.serialize import _STAGE_NAMES
+
+    by_key = _id_map("stages", [str(num) for num in sorted(_STAGE_NAMES)])
+    return {num: by_key[str(num)] for num in sorted(_STAGE_NAMES)}
 
 
 def _walk_products(payload: dict):
@@ -296,7 +491,7 @@ def _by_slug(payload: dict) -> list[tuple[str, str, dict]]:
     return rows
 
 
-# --- group B row builders -------------------------------------------------------------
+# --- row builders -------------------------------------------------------------
 
 
 def _products(payload: dict) -> list[dict]:
@@ -438,42 +633,82 @@ def _capability(payload: dict) -> list[dict]:
     return out
 
 
+def _source_key(slug: str, metric: str, source: dict) -> str:
+    """`(product_slug, metric, url, shows, accessed)` — the natural key of one source row.
+
+    The URL alone does not identify the row. A product's source list can carry the same URL
+    twice on the same axis (69 pairs today), and every one of those pairs is a
+    re-verification: the same page read on a different date, or recorded as showing something
+    different. They are two observations, not one row duplicated, so the key has to carry what
+    tells them apart.
+
+    Keying on the URL alone and numbering the repeats would mean that deleting the earlier of
+    a pair promoted the later one into the un-suffixed key and handed it the deleted row's id.
+    Anything holding the old id would then resolve to a row with a different claim and a
+    different date, with no gate firing — the exact failure the hashed ids exist to prevent.
+
+    Two consequences, both intended. Editing a source's `shows` or `accessed` moves that row's
+    id, because it is a different observation of the same URL and the module's rule is that an
+    id moves when its natural key does. And the key is order-independent: reordering a source
+    list, or deleting a sibling, leaves every other row's id alone.
+
+    The parts are joined slug, metric, accessed, url, shows: the three controlled values
+    first, then the free text, with the only genuinely unbounded one (`shows`, which holds
+    prose) last. That ordering is what makes the joined string unambiguous, rather than any
+    property of the separator — a `|` inside `shows` cannot shift a boundary, because there is
+    nothing after it.
+    """
+    return KEY_SEPARATOR.join(
+        (
+            slug,
+            metric,
+            source.get("accessed") or "",
+            source.get("url") or "",
+            source.get("shows") or "",
+        )
+    )
+
+
 def _sources(payload: dict) -> list[dict]:
     """Every source on every axis, one row each, in the deterministic walk order.
 
     The target model has a `notes` column the payload has no field for; the payload's
     `establishes`, `content_sha256` and `http_status` have no column. `shows` is the one that
     maps, and `notes` stays NULL rather than being filled with an adjacent field.
+
+    The grain is one *observation*, which is why the key carries `shows` and `accessed`: see
+    `_source_key`.
     """
     ids = product_ids(payload)
-    out = []
-    next_id = 1
+    walked: list[tuple[str, str, dict]] = []
     for slug, _cid, product in _by_slug(payload):
         for metric in axes():
             for source in _axis(product, metric).get("sources") or []:
-                if not isinstance(source, dict):
-                    continue
-                out.append(
-                    {
-                        "id": next_id,
-                        "url": source.get("url") or "",
-                        "shows": source.get("shows") or "",
-                        "notes": "",
-                        "accessed": source.get("accessed") or "",
-                        "product_id": ids[slug],
-                        "metric_type": enum_value(
-                            "metric_name", metric, column="sources.metric_type"
-                        ),
-                    }
-                )
-                next_id += 1
+                if isinstance(source, dict):
+                    walked.append((slug, metric, source))
+    keys = _disambiguate(_source_key(slug, metric, source) for slug, metric, source in walked)
+    source_ids = _id_map("sources", keys)
+
+    out = []
+    for key, (slug, metric, source) in zip(keys, walked, strict=True):
+        out.append(
+            {
+                "id": source_ids[key],
+                "url": source.get("url") or "",
+                "shows": source.get("shows") or "",
+                "notes": "",
+                "accessed": source.get("accessed") or "",
+                "product_id": ids[slug],
+                "metric_type": enum_value("metric_name", metric, column="sources.metric_type"),
+            }
+        )
     return out
 
 
 def _product_lineage(payload: dict) -> list[dict]:
+    """One row per edge, keyed by `(product_slug, relation, target)` — the edge itself."""
     ids = product_ids(payload)
-    out = []
-    next_id = 1
+    walked: list[tuple[str, str, str, str]] = []
     for slug, _cid, product in _by_slug(payload):
         lineage = product.get("lineage")
         if not isinstance(lineage, dict):
@@ -481,58 +716,78 @@ def _product_lineage(payload: dict) -> list[dict]:
         for relation, targets in lineage.items():
             mapped = enum_value("lineage_relation", relation, column="product_lineage.relation")
             for target in targets or []:
-                out.append(
-                    {
-                        "id": next_id,
-                        "product_id": ids[slug],
-                        "relation": mapped,
-                        "target": target if isinstance(target, str) else str(target),
-                    }
-                )
-                next_id += 1
-    return out
+                text = target if isinstance(target, str) else str(target)
+                walked.append((slug, relation, mapped, text))
+    keys = _disambiguate(
+        KEY_SEPARATOR.join((slug, relation, target)) for slug, relation, _mapped, target in walked
+    )
+    edge_ids = _id_map("product_lineage", keys)
+    return [
+        {
+            "id": edge_ids[key],
+            "product_id": ids[slug],
+            "relation": mapped,
+            "target": target,
+        }
+        for key, (slug, _relation, mapped, target) in zip(keys, walked, strict=True)
+    ]
 
 
 def _categories(payload: dict) -> list[dict]:
     cats = category_ids(payload)
+    order = category_order(payload)
     layers = layer_ids(payload)
+    stages = stage_ids()
     legend = (payload.get("descriptions") or {}).get("categories") or {}
     out = []
-    for cid, index in cats.items():
+    for cid, ident in cats.items():
         category = payload["categories"][cid]
         layer = category.get("layer") or ""
         if layer not in layers:
             raise UnmappedValue(
                 f"category {cid!r} names layer {layer!r}, which is not in layer_order"
             )
+        stage_num = (category.get("stage") or {}).get("num")
+        if stage_num not in stages:
+            raise UnmappedValue(
+                f"category {cid!r} is at stage {stage_num!r}, which is not a stage on the "
+                f"ladder; categories.stage is NOT NULL and references stages.id"
+            )
         out.append(
             {
-                "id": index,
-                # Not in the PDF. Added because every deep link and every join from the
-                # registry group is by slug, and an id assigned by curated order changes
-                # whenever the order does.
+                "id": ident,
+                # Not in the PDF. Added because every deep link is by slug, and the id it
+                # sits beside is a hash rather than something a person can read or guess.
                 "slug": cid,
+                "sort_order": order[cid],
                 "label": category.get("label") or "",
                 "arc": category.get("arc") or "",
                 "layer": layers[layer],
                 "description": legend.get(cid) or "",
-                "stage": (category.get("stage") or {}).get("num"),
+                "stage": stages[stage_num],
             }
         )
     return out
 
 
 def _layers(payload: dict) -> list[dict]:
-    return [{"id": index, "label": layer} for layer, index in layer_ids(payload).items()]
+    ids = layer_ids(payload)
+    order = layer_order(payload)
+    return [{"id": ident, "sort_order": order[layer], "label": layer} for layer, ident in ids.items()]
 
 
 def _stages(payload: dict) -> list[dict]:
-    """The stage ladder, id = stage number. Names and descriptions are methodology constants."""
+    """The stage ladder. Names and descriptions are methodology constants.
+
+    `num` is the stage number the whole methodology speaks in ("Stage 3"), which used to be
+    the id. It is a column of its own now that the id is a hash.
+    """
     from build.serialize import _STAGE_NAMES
 
+    ids = stage_ids()
     legend = (payload.get("descriptions") or {}).get("stages") or {}
     return [
-        {"id": num, "label": name, "desc": legend.get(str(num)) or ""}
+        {"id": ids[num], "num": num, "label": name, "desc": legend.get(str(num)) or ""}
         for num, name in sorted(_STAGE_NAMES.items())
     ]
 
@@ -540,8 +795,8 @@ def _stages(payload: dict) -> list[dict]:
 def _gaps(payload: dict) -> list[dict]:
     legend = (payload.get("descriptions") or {}).get("gaps") or {}
     return [
-        {"id": index, "label": kind, "desc": legend.get(kind) or ""}
-        for kind, index in gap_ids(payload).items()
+        {"id": ident, "label": kind, "desc": legend.get(kind) or ""}
+        for kind, ident in gap_ids(payload).items()
     ]
 
 
@@ -549,22 +804,24 @@ def _gaps_categories(payload: dict) -> list[dict]:
     cats = category_ids(payload)
     gaps = gap_ids(payload)
     out = []
-    for cid, index in cats.items():
+    for cid, ident in cats.items():
         for kind in payload["categories"][cid].get("gaps") or []:
             if kind not in gaps:
                 raise UnmappedValue(
                     f"category {cid!r} carries gap {kind!r}, which the payload's gap legend "
                     f"does not describe"
                 )
-            out.append({"cat_id": index, "gap_id": gaps[kind]})
+            out.append({"cat_id": ident, "gap_id": gaps[kind]})
     return out
 
 
 def _long_tail_top(payload: dict) -> list[dict]:
     top = (payload.get("long_tail") or {}).get("top") or []
+    ids = _id_map("long_tail_top", [row.get("name") or "" for row in top])
     return [
         {
-            "id": index,
+            "id": ids[row.get("name") or ""],
+            "sort_order": index,
             "name": row.get("name") or "",
             "type": row.get("type") or "",
             "usage_label": row.get("usage_label") or "",
@@ -579,35 +836,46 @@ def _long_tail_counts(payload: dict) -> list[dict]:
     return [{"count": value, "type": key} for key, value in sorted(counts.items())]
 
 
-# --- group B table set ----------------------------------------------------------------
+# --- the table set ----------------------------------------------------------------
 
 SITE_TABLES: dict[str, SiteTable] = {
     "layers": SiteTable(
-        (("id", "INTEGER"), ("label", "VARCHAR")),
+        # `sort_order` is the stack position the id used to be, bottom first. Not in the
+        # designers' model; added when the id became a hash and stopped carrying it.
+        (("id", "BIGINT"), ("sort_order", "INTEGER NOT NULL"), ("label", "VARCHAR")),
         _layers,
         constraints=('PRIMARY KEY ("id")',),
     ),
     "stages": SiteTable(
-        (("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")),
+        # `num` is the stage number the methodology speaks in, 0-5, which used to be the id.
+        (
+            ("id", "BIGINT"),
+            ("num", "INTEGER NOT NULL"),
+            ("label", "VARCHAR"),
+            ("desc", "TEXT"),
+        ),
         _stages,
-        constraints=('PRIMARY KEY ("id")',),
+        constraints=('PRIMARY KEY ("id")', 'UNIQUE ("num")'),
     ),
     "gaps": SiteTable(
-        (("id", "INTEGER"), ("label", "VARCHAR"), ("desc", "TEXT")),
+        (("id", "BIGINT"), ("label", "VARCHAR"), ("desc", "TEXT")),
         _gaps,
         constraints=('PRIMARY KEY ("id")',),
     ),
     "categories": SiteTable(
         (
-            ("id", "INTEGER"),
+            ("id", "BIGINT"),
+            # The map's curated order, which the id used to carry. `ORDER BY sort_order` is
+            # what `ORDER BY id` used to mean.
+            ("sort_order", "INTEGER NOT NULL"),
             # NOT NULL as well as UNIQUE: a nullable unique column admits any number of
             # NULLs, which would defeat the deep links the amendment exists for.
             ("slug", "VARCHAR NOT NULL"),
             ("label", "VARCHAR"),
             ("arc", "VARCHAR"),
-            ("layer", "INTEGER NOT NULL"),
+            ("layer", "BIGINT NOT NULL"),
             ("description", "TEXT"),
-            ("stage", "INTEGER NOT NULL"),
+            ("stage", "BIGINT NOT NULL"),
         ),
         _categories,
         constraints=(
@@ -618,7 +886,7 @@ SITE_TABLES: dict[str, SiteTable] = {
         ),
     ),
     "gaps_categories": SiteTable(
-        (("cat_id", "INTEGER NOT NULL"), ("gap_id", "INTEGER NOT NULL")),
+        (("cat_id", "BIGINT NOT NULL"), ("gap_id", "BIGINT NOT NULL")),
         _gaps_categories,
         constraints=(
             references("cat_id", "categories", "id"),
@@ -639,13 +907,13 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "products": SiteTable(
         (
-            ("id", "INTEGER"),
+            ("id", "BIGINT"),
             ("slug", "VARCHAR NOT NULL"),
             ("org_slug", "VARCHAR NOT NULL"),
             ("name", "VARCHAR"),
             ("org", "VARCHAR"),
             ("type", "VARCHAR"),
-            ("category", "INTEGER NOT NULL"),
+            ("category", "BIGINT NOT NULL"),
             ("description", "TEXT"),
             ("maturity", "REAL"),
             ("mature", "BOOLEAN"),
@@ -663,7 +931,7 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "openness": SiteTable(
         (
-            ("product_id", "INTEGER"),
+            ("product_id", "BIGINT"),
             ("score", "INTEGER"),
             ("class", "VARCHAR"),
             ("components", "TEXT"),
@@ -679,7 +947,7 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "adoption": SiteTable(
         (
-            ("product_id", "INTEGER"),
+            ("product_id", "BIGINT"),
             ("level", "INTEGER"),
             ("reach", "VARCHAR"),
             ("signal_type", "VARCHAR"),
@@ -692,7 +960,7 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "capability": SiteTable(
         (
-            ("product_id", "INTEGER"),
+            ("product_id", "BIGINT"),
             ("score", "INTEGER"),
             ("basis", "VARCHAR"),
             ("basis_detail", "TEXT"),
@@ -708,12 +976,12 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "sources": SiteTable(
         (
-            ("id", "INTEGER"),
+            ("id", "BIGINT"),
             ("url", "TEXT"),
             ("shows", "TEXT"),
             ("notes", "TEXT"),
             ("accessed", "DATE"),
-            ("product_id", "INTEGER NOT NULL"),
+            ("product_id", "BIGINT NOT NULL"),
             ("metric_type", enum_type("metric_name") + " NOT NULL"),
         ),
         _sources,
@@ -721,8 +989,8 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "product_lineage": SiteTable(
         (
-            ("id", "INTEGER"),
-            ("product_id", "INTEGER NOT NULL"),
+            ("id", "BIGINT"),
+            ("product_id", "BIGINT NOT NULL"),
             ("relation", enum_type("lineage_relation")),
             ("target", "VARCHAR"),
         ),
@@ -736,7 +1004,9 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
     "long_tail_top": SiteTable(
         (
-            ("id", "INTEGER"),
+            ("id", "BIGINT"),
+            # The ranking the id used to carry.
+            ("sort_order", "INTEGER NOT NULL"),
             ("name", "VARCHAR"),
             ("type", "VARCHAR"),
             ("usage_label", "VARCHAR"),
@@ -751,23 +1021,18 @@ SITE_TABLES: dict[str, SiteTable] = {
     ),
 }
 
-# Group A's names as they appear in Postgres.
-REGISTRY_TABLE_NAMES: tuple[str, ...] = tuple(f"{REGISTRY_PREFIX}{n}" for n in REGISTRY_TABLES)
-# The full surface, group B then group A, in a stable load order. Group B first so a failure
-# in the part the site actually reads is the first thing a log shows.
-ALL_TABLES: tuple[str, ...] = tuple(SITE_TABLES) + REGISTRY_TABLE_NAMES
-
-
 def build_site_tables(payload: dict) -> dict[str, list[dict]]:
-    """Every group-B table's rows, keyed by table name."""
-    return {name: spec.rows(payload) for name, spec in SITE_TABLES.items()}
+    """Every table's rows, keyed by table name, with its ids checked for collisions."""
+    tables = {name: spec.rows(payload) for name, spec in SITE_TABLES.items()}
+    check_ids_unique(tables)
+    return tables
 
 
 def write_site_csvs(payload: dict, out_dir: Path) -> None:
-    """Write one CSV per group-B table, so the same loader handles both groups.
+    """Write one CSV per table, so everything reaches Postgres through one COPY path.
 
-    Group A arrives as CSVs the serializers wrote; rendering group B the same way means
-    there is one COPY path, one type story and one place a quoting bug could live.
+    Rendering to CSV rather than inserting row by row means there is one type story and one
+    place a quoting bug could live, and it reuses the serializers' writer.
     """
     from build.serialize_registry import write_tables
 
