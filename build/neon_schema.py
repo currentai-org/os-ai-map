@@ -314,12 +314,24 @@ def _products(payload: dict) -> list[dict]:
                 f"products.category (a single FK) cannot represent"
             )
         seen.add(slug)
+        org_slug = product.get("org_slug") or ""
+        if not org_slug:
+            # `products.org_slug` is NOT NULL and references `organizations`. Writing "" here
+            # sent an empty string into COPY, which CSV reads as NULL, so the load died on a
+            # constraint naming the column and not the row — leaving whoever hit it to find
+            # which of 615 products was missing an org. The payload's own gates should catch
+            # this first; if one slips through, it slips through named.
+            raise UnmappedValue(
+                f"product {slug!r} has no org_slug, which products.org_slug (NOT NULL, "
+                f"referencing organizations.slug) cannot represent. Give the product an "
+                f"organization in sources/, or the load will refuse it."
+            )
         freshness = _axis(product, "freshness")
         out.append(
             {
                 "id": ids[slug],
                 "slug": slug,
-                "org_slug": product.get("org_slug") or "",
+                "org_slug": org_slug,
                 "name": product.get("product") or "",
                 "org": product.get("org") or "",
                 "type": product.get("type") or "",

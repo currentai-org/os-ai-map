@@ -236,6 +236,11 @@ gh workflow run registry.yml --ref <branch>
 There is no flag to remember: the OSO step is guarded on `push` to `main`, so a dispatch never
 reaches it, on any ref.
 
+**OSO publishing now happens only on a push to `main`.** To republish the static models without
+a new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an
+empty commit — a `workflow_dispatch` will load Neon and leave OSO untouched however it is
+invoked.
+
 See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
 carries, and what it deliberately does not have.
 

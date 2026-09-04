@@ -51,8 +51,18 @@ file itself stays the repo's build artifact and its gate contract, and is the *i
 load.
 
 The instance is shared. `drizzle`, `payload` and `public` belong to other parts of the site;
-`os-ai-map` is the gap map's, and the publisher touches only it and its own
-`os-ai-map_staging`. It refuses to run against any of the other three.
+`os-ai-map` is the gap map's, and the publisher touches only it and its own two working
+schemas, `os-ai-map_staging` and `os-ai-map_previous`. It refuses to run against any of the
+other three.
+
+Both working names are steady state, not transients. `os-ai-map_staging` exists while a load
+runs. `os-ai-map_previous` exists **between** runs and holds the entire previous corpus —
+tables, rows, enum types, and the `SELECT` grant that travelled with the rename — until the
+start of the next publish reclaims it. So the database normally carries two readable copies of
+the map: the live one and the one it replaced. Storage is roughly double, and anything that can
+read `os-ai-map` can also read the superseded corpus under `os-ai-map_previous`. Nothing is
+meant to, and the publisher does not stop anything from trying — do not build against that
+name.
 
 **Two groups of table, one schema.**
 
@@ -67,7 +77,9 @@ derived from that module rather than from a directory listing, so the two surfac
 same registry by construction. The prefix exists because both groups have a `products`, a
 `categories` and an `organizations`.
 
-Plus `publish_runs`: one row per load, carrying `run_id`, `published_at`, `schema_version`,
+Plus `publish_runs`: exactly one row, describing the load you are looking at — the swap
+replaces the table along with everything else, so it is a stamp on the current corpus and not
+an accumulating history. It carries `run_id`, `published_at`, `schema_version`,
 `built_at`, `released_at`, `source_git_sha`, `declaration_version_id`, `table_count` and a
 `row_counts` JSONB. That row is how you tell which commit and which shape the serving layer is
 showing.

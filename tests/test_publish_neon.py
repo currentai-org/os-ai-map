@@ -533,6 +533,36 @@ def test_the_foreign_keys_resolve_to_rows_that_exist():
         assert row["gap_id"] in gap_id_set
 
 
+def test_a_product_with_no_org_fails_naming_the_product():
+    """`products.org_slug` is NOT NULL and references `organizations`. Writing "" sent an
+    empty string into COPY, which CSV reads as NULL, so the load died on a constraint naming
+    the column — leaving whoever hit it to work out which of 615 products was missing an org.
+    """
+    payload = load_payload()
+    victim = next(
+        product
+        for cid in payload["order"]
+        for product in payload["categories"][cid]["products"]
+    )
+    slug = victim["slug"]
+    saved = victim.get("org_slug")
+    victim["org_slug"] = ""
+    try:
+        with pytest.raises(UnmappedValue) as error:
+            SITE_TABLES["products"].rows(payload)
+        assert slug in str(error.value)
+        assert "org_slug" in str(error.value)
+    finally:
+        victim["org_slug"] = saved
+
+
+def test_every_product_in_the_corpus_has_an_org():
+    """The guard above only helps if the corpus is clean today; a red here is a data fix."""
+    payload = load_payload()
+    rows = SITE_TABLES["products"].rows(payload)
+    assert all(row["org_slug"] for row in rows)
+
+
 def test_each_axis_has_exactly_one_row_per_product():
     payload = load_payload()
     products = SITE_TABLES["products"].rows(payload)
@@ -778,6 +808,41 @@ def test_an_external_dependent_fails_the_run_and_is_never_dropped():
     assert not any("DROP SCHEMA" in statement for statement in cursor.statements)
 
 
+def test_a_column_typed_by_one_of_our_enums_is_a_dependent_too():
+    """The hazard here is not a table. The enum types are created in the staging schema so
+    they travel with the rename, which means they travel into `_previous` — so a CMS column
+    declared `os-ai-map.health_status` ends up typed by a type in `_previous`, and reclaiming
+    would drop the type and take the column with it."""
+    cursor = _StubCursor(
+        previous_exists=True,
+        dependents=[("payload", "case_studies.health", "column typed health_status")],
+    )
+    with pytest.raises(ExternalDependents) as error:
+        reclaim_previous(cursor, DEFAULT_SCHEMA)
+    message = str(error.value)
+    assert "payload.case_studies.health" in message
+    assert "column typed health_status" in message
+    assert not any("DROP SCHEMA" in statement for statement in cursor.statements)
+
+
+def test_the_dependency_check_covers_relations_and_types_and_skips_composite_types():
+    """Three arms: views and rules, foreign keys, and columns typed by one of our enums.
+
+    Composite types are excluded because every table has one, so including them would report
+    each of our own tables as a dependent of itself.
+    """
+    cursor = _StubCursor(previous_exists=True)
+    external_dependents(cursor, DEFAULT_SCHEMA)
+    query, _params = cursor.executed[-1]
+    assert "pg_rewrite" in query
+    assert "pg_constraint" in query
+    assert "pg_attribute" in query and "pg_type" in query
+    assert "atttypid" in query
+    assert "typtype <> 'c'" in query
+    # A dropped column keeps its pg_attribute row and its atttypid.
+    assert "attisdropped" in query
+
+
 def test_the_dependency_check_asks_about_previous_and_exempts_only_our_own_schemas():
     cursor = _StubCursor(previous_exists=True)
     external_dependents(cursor, DEFAULT_SCHEMA)
@@ -976,10 +1041,15 @@ def test_every_not_null_the_dbml_declares_is_in_the_generated_ddl(table, column)
     assert f'"{column}"' in sql
 
 
-def test_no_constraint_is_declared_for_the_registry_group():
+def test_no_constraint_is_declared_for_the_registry_group(tmp_path):
     """The serializers declare column names only, so there is nothing to derive a key from,
-    and inventing one would be this module guessing at another module's grain."""
-    plans, _missing = plan()
+    and inventing one would be this module guessing at another module's grain.
+
+    `site_dir` is a tmp path because `plan` renders the map group's CSVs: writing them into
+    the real `build/neon/` would race the `--check` subprocess test under `-n 4`, and the
+    loser reads a half-written header.
+    """
+    plans, _missing = plan(site_dir=tmp_path / "site")
     for plan_ in plans:
         if plan_.name not in SITE_TABLES:
             assert plan_.constraints == ()

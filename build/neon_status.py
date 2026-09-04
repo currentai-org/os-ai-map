@@ -17,8 +17,12 @@ is how the first CI run of this module failed. Doubling it to `%%I` would work, 
 parameters keep being passed: drop them and psycopg stops unescaping, so `%%I` reaches
 Postgres and `format()` reads it as a literal `%` followed by `I`. So the schema is composed
 into the query as a literal with `psycopg.sql` and no parameters are passed at all. With
-`params=None` psycopg does not scan for placeholders, and `%I` reaches the server as written
-whatever anyone does to this module later.
+`params=None` psycopg does not scan for placeholders, so `%I` reaches the server as written.
+
+That holds only as long as no caller passes parameters. `counts_sql` and `constraints_sql`
+compose the one value each query needs, so there is nothing left to parameterize — but adding
+a `params` argument at either `execute` below would reintroduce the failure, and no test pins
+that property of the call site.
 
 Environment:
     NEON_DATABASE_URL   required

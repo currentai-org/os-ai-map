@@ -26,10 +26,19 @@ model instead. Postgres has a perfectly good empty table, and a serving layer th
 ## The schema, which shares an instance
 
 The Neon instance is shared: `drizzle`, `payload` and `public` belong to other parts of the
-site, and `os-ai-map` is the gap map's. So this touches exactly two schemas — its target and
-`<target>_staging` — creates and drops nothing else, and refuses outright to run against a
-schema on `PROTECTED_SCHEMAS`. The default target's name carries a hyphen, which is why
-schema identifiers are quoted everywhere and have their own validator.
+site, and `os-ai-map` is the gap map's. So this touches exactly three schemas — its target,
+`<target>_staging` and `<target>_previous` — creates and drops nothing else, and refuses
+outright to run against a schema on `PROTECTED_SCHEMAS`. The default target's name carries a
+hyphen, which is why schema identifiers are quoted everywhere and have their own validator.
+
+All three are steady-state names, not transients. `<target>_staging` exists while a load is
+running; `<target>_previous` exists *between* runs, holding the whole previous corpus —
+tables, rows, enum types and the `SELECT` grant that travelled with the rename. So the
+instance normally carries two readable copies of the map, and the previous one is only
+reclaimed at the start of the next publish. Two consequences worth knowing: the storage is
+roughly double, and anything with `SELECT` on the map can still read the superseded corpus
+under the `_previous` name until the next load. Nothing is meant to read it, and the swap
+does not stop anything from trying.
 
 ## Atomicity, because a reader is always mid-request
 
@@ -284,7 +293,7 @@ def plan(
     site_dir: Path = SITE_DIR,
     payload_path: Path = PAYLOAD_PATH,
 ) -> tuple[list[TablePlan], list[str]]:
-    """(plans, missing) over both groups, group A first, each in its declared order.
+    """(plans, missing) over both groups, group B first, each in its declared order.
 
     Never a glob. `missing` names the declared tables whose CSV has not been written, which
     a real publish refuses and `--check` reports — a table is absent because a serializer
@@ -466,21 +475,38 @@ def working_schemas(schema: str) -> list[str]:
     return [schema, f"{schema}_staging", f"{schema}_previous"]
 
 
-# Dependents of the previous schema's relations that live somewhere else on the instance.
-# Two shapes, because those are the two a CASCADE would silently take with it: a view or
-# materialized view selecting from one of our tables (via pg_rewrite), and a foreign key
-# pointing into one (via pg_constraint). Both are reported with the schema, the relation and
-# how it depends, because the message has to be actionable by someone who did not write this.
+# Dependents of the previous schema that live somewhere else on the instance. Three shapes,
+# because those are the three a CASCADE would silently take with it, and each is reported with
+# the schema, the relation and how it depends — the message has to be actionable by someone
+# who did not write this.
+#
+#   1. a view or materialized view selecting from one of our tables (pg_rewrite);
+#   2. a foreign key pointing into one (pg_constraint);
+#   3. a column anywhere else typed as one of our enums (pg_attribute -> pg_type).
+#
+# The third is easy to miss because the hazard is not a table at all. The enum types are
+# created inside the staging schema so they travel with the rename, which means they travel
+# into `_previous` too — so a CMS column declared `os-ai-map.health_status` ends up typed by a
+# type in `_previous`, and reclaiming would drop the type and the column with it. Composite
+# types (relkind 'c') are excluded: every table has one, so they would report each of our own
+# tables as a dependent of itself.
 DEPENDENTS_SQL = """
-WITH previous AS (
+WITH previous_relations AS (
     SELECT c.oid
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
     WHERE n.nspname = %(previous)s
+),
+previous_types AS (
+    SELECT t.oid, t.typname
+    FROM pg_type t
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE n.nspname = %(previous)s
+      AND t.typtype <> 'c'
 )
 SELECT DISTINCT n.nspname AS schema_name, c.relname AS relation, 'view or rule' AS via
 FROM pg_depend d
-JOIN previous p ON p.oid = d.refobjid
+JOIN previous_relations p ON p.oid = d.refobjid
 JOIN pg_rewrite r ON r.oid = d.objid AND d.classid = 'pg_rewrite'::regclass
 JOIN pg_class c ON c.oid = r.ev_class
 JOIN pg_namespace n ON n.oid = c.relnamespace
@@ -488,10 +514,19 @@ WHERE NOT (n.nspname = ANY(%(working)s))
 UNION
 SELECT DISTINCT n.nspname, c.relname, 'foreign key ' || co.conname
 FROM pg_constraint co
-JOIN previous p ON p.oid = co.confrelid
+JOIN previous_relations p ON p.oid = co.confrelid
 JOIN pg_class c ON c.oid = co.conrelid
 JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE NOT (n.nspname = ANY(%(working)s))
+UNION
+SELECT DISTINCT n.nspname, c.relname || '.' || a.attname, 'column typed ' || t.typname
+FROM pg_attribute a
+JOIN previous_types t ON t.oid = a.atttypid
+JOIN pg_class c ON c.oid = a.attrelid
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE NOT (n.nspname = ANY(%(working)s))
+  AND a.attnum > 0
+  AND NOT a.attisdropped
 ORDER BY 1, 2
 """
 
@@ -508,7 +543,12 @@ def schema_exists(cursor, schema: str) -> bool:
 
 
 def external_dependents(cursor, schema: str) -> list[tuple[str, str, str]]:
-    """(schema, relation, how) for every dependent of `<schema>_previous` we do not own."""
+    """(schema, relation, how) for every dependent of `<schema>_previous` we do not own.
+
+    Covers tables and the enum types, which is not the same question: the types are created
+    in the staging schema so they travel with the rename, so a column elsewhere declared with
+    one of ours is typed by a type that is now in `_previous`.
+    """
     cursor.execute(
         DEPENDENTS_SQL,
         {"previous": f"{schema}_previous", "working": working_schemas(schema)},
