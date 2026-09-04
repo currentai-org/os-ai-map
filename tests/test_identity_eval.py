@@ -50,6 +50,7 @@ from build.identity_eval import (
     org_pair_recoverable,
     print_table,
     replay,
+    tail_membership_rows,
     validate_columns,
 )
 
@@ -699,6 +700,84 @@ def test_a_fold_pair_spanning_head_and_tail_is_recorded_as_head(monkeypatch):
     pair = ("github", folded, folded)
     assert pair in truth.identity_pairs
     assert truth.identity_tier[pair] == "head"
+
+
+PASS_FIXTURE = ROOT / "tests" / "fixtures" / "identity_edges_pass.json"
+
+
+def test_the_pass_fixture_tail_rows_match_the_corpus():
+    """The committed pass fixture carries the corpus's own tail declarations, and
+    `membership_non_scoring`'s floor is judged against them -- 27 truth items, so one stale row
+    is a ~3.7% precision swing and the CI failure names the relation rather than the fixture.
+    This test fails first, and names the fix.
+    """
+    fixture = json.loads(PASS_FIXTURE.read_text())
+    stored = [row for row in fixture["membership"] if row.get("product_tier") == "tail"]
+    assert stored == tail_membership_rows(REAL_TRUTH.route_kinds), (
+        "tests/fixtures/identity_edges_pass.json's tail membership rows no longer match "
+        "sources/registry/*.yaml. Regenerate with: uv run python -m build.identity_eval "
+        "--write-fixture tests/fixtures/identity_edges_pass.json"
+    )
+
+
+def test_write_fixture_leaves_head_rows_and_other_relations_alone(tmp_path):
+    """Regeneration replaces the tail block only: a hand-written head row keeps its wording, and
+    every other relation is untouched, so a regeneration diff shows the corpus change only."""
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({
+        "membership": [
+            {"artifact_kind": "arxiv", "artifact_id": "1803.05457", "product_tier": "head",
+             "product_slug": "ai2-arc", "confidence": 1.0, "method": ["declared"],
+             "penalties": [], "scoring_bearing": True},
+            {"artifact_kind": "homepage", "artifact_id": "stale.example.com",
+             "product_tier": "tail", "product_slug": "gone", "confidence": 0.95,
+             "method": ["declared"], "penalties": [], "scoring_bearing": False},
+        ],
+        "org": [{"candidate_key": "github:a/b", "candidate_tier": "head", "org_slug": "acme",
+                 "confidence": 0.85, "method": ["org_handle"], "penalties": []}],
+    }))
+    removed, written = identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    doc = json.loads(path.read_text())
+    assert (removed, written) == (1, len(tail_membership_rows(REAL_TRUTH.route_kinds)))
+    assert doc["membership"][0]["product_slug"] == "ai2-arc"
+    assert not any(row["artifact_id"] == "stale.example.com" for row in doc["membership"])
+    assert len(doc["org"]) == 1
+
+
+def test_write_fixture_is_idempotent(tmp_path):
+    path = tmp_path / "edges.json"
+    path.write_text(PASS_FIXTURE.read_text())
+    identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    once = path.read_text()
+    identity_eval_module.write_fixture(path, REAL_TRUTH.route_kinds)
+    assert path.read_text() == once
+    assert once == PASS_FIXTURE.read_text()  # and the committed fixture is already regenerated
+
+
+def test_main_write_fixture_rewrites_and_scores_nothing(tmp_path, capsys):
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({"membership": []}))
+    assert main(["--write-fixture", str(path)]) == 0
+    out = capsys.readouterr().out
+    assert "sources/registry" in out
+    assert "relation" not in out  # no table -- this mode scores nothing
+    assert json.loads(path.read_text())["membership"]
+
+
+def test_a_stale_fixture_tail_row_fails_the_floor_with_the_publish_lag_note(tmp_path, capsys):
+    """The failure mode the note exists for: one wrong row out of 27 breaks the 0.98 precision
+    floor, and the message has to say that a red run can mean "republish" or "regenerate the
+    fixture" rather than "the graph regressed"."""
+    rows = tail_membership_rows(REAL_TRUTH.route_kinds)
+    stale = [dict(row) for row in rows]
+    next(row for row in stale if row["artifact_kind"] == "homepage")["artifact_id"] = "gone.example.com"
+    path = tmp_path / "edges.json"
+    path.write_text(json.dumps({"membership": stale}))
+    assert main(["--edges", str(path), "--floors"]) == 1
+    out = capsys.readouterr().out
+    assert "membership_non_scoring: precision" in out
+    assert "publish" in out
+    assert "--write-fixture" in out
 
 
 def test_head_and_tail_counts_appear_in_the_table(capsys):

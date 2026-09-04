@@ -138,7 +138,7 @@ Precision truth is unchanged: every emitted org edge is judged against the FULL 
 an edge to an org that declares no matching handle is either wrong (a real false positive) or a
 graph capability this eval has no business hiding.
 
-Two things keep the exclusion visible rather than flattering. `Metrics.n_truth_unrecoverable`
+Two things keep the exclusion legible in the output. `Metrics.n_truth_unrecoverable`
 (in the table for every relation, 0 except `org`) counts the pairs dropped from the recall
 denominator, and `Metrics.unrecoverable_by_kind` breaks that down per artifact kind, printed
 under the table -- so a structural exclusion (`pypi`) and a curation gap (a `github` artifact
@@ -191,6 +191,27 @@ tail rows that do were not being read. They are now, which puts the relation ove
 and under a real floor for the first time. Clearing that floor is the graph's job; a floor that
 now bites is the point of counting the truth, not a reason to raise `MIN_TRUTH`.
 
+## `membership_non_scoring` has no headroom, so read its failures twice
+
+Its truth set is the tail's homepage declarations and nothing else -- 27 today. One wrong or
+missing edge is a ~3.7% swing, which is already more than the 0.98 precision floor allows. Two
+things that are not regressions land as a failure on that row, and `FLOOR_NOTES` prints both
+next to it so a log alone is enough to tell them apart:
+
+- **Publish lag.** Truth is the repo; the edges are the warehouse. A tail homepage row edited or
+  deleted in `sources/registry/*.yaml` is still emitted from the last published
+  `registry.tail_products` until the weekly publish lands, so the scheduled Monday run can go
+  red on precision for an edit that is already correct. The fix is a republish, not a graph
+  change -- diff `sources/registry/*.yaml` against the published table before reading it as a
+  defect.
+- **A stale fixture.** The committed pass fixture carries the corpus's tail rows, so the same
+  edit makes the PR-time fixture run fail too. `--write-fixture` regenerates that block, and
+  `test_the_pass_fixture_tail_rows_match_the_corpus` fails first, naming the fixture, so the
+  floor message is not the only thing pointing at it.
+
+Neither is a reason to widen the floor or raise `MIN_TRUTH`. The relation is small because the
+tail's homepage coverage is small; it gets headroom by the corpus growing.
+
 ## The two rules pinned as tests, not metrics
 
 A metric is a rate that is allowed to miss sometimes. These are not that:
@@ -227,7 +248,7 @@ from pathlib import Path
 import yaml
 
 from build import resolution
-from build.identity import KINDS, fold_for_proposal
+from build.identity import KINDS, fold_for_proposal, fold_handle
 from build.serialize_registry import artifact_id, load_registry, tail_product_rows
 from build.validate import _load_optional_yaml
 
@@ -266,8 +287,24 @@ FLOORS: dict[str, tuple[float, float]] = {
 }
 
 # Below this many truth items, a floor cannot mean anything -- see the module docstring on
-# `artifact_identity` and `membership_non_scoring`, both 0 in the corpus today.
+# `artifact_identity`, 0 in the corpus today.
 MIN_TRUTH = 20
+
+# Printed under a floor failure for the named relation. What goes here is the reading a log
+# alone cannot supply: which failures are not regressions. See the module docstring's
+# "membership_non_scoring has no headroom" section for the arithmetic.
+FLOOR_NOTES: dict[str, str] = {
+    "membership_non_scoring": (
+        "this relation's entire truth set is the tail's homepage declarations (27 today), so a\n"
+        "  SINGLE wrong or missing edge is a ~3.7% swing -- there is no headroom by construction.\n"
+        "  Two non-regressions look like this failure. (1) A tail homepage row edited in the repo\n"
+        "  is still emitted by the warehouse until the weekly registry publish lands, so a red\n"
+        "  scheduled run soon after such an edit means republish, not regression -- check\n"
+        "  sources/registry/*.yaml against the published registry.tail_products before reading it\n"
+        "  as a graph defect. (2) On a fixture run, the fixture's own tail rows may be stale:\n"
+        "  regenerate with `uv run python -m build.identity_eval --write-fixture <path>`."
+    ),
+}
 
 ALL_RELATIONS = ("equivalence", "membership_scoring", "membership_non_scoring", "artifact_identity", "org")
 
@@ -613,21 +650,6 @@ def _membership_from_ledger(entries: Iterable[dict]) -> dict[tuple[Key, str], bo
 
 
 ORG_HANDLES_PATH = ROOT / "sources" / "org_handles.yaml"
-
-
-def fold_handle(platform: str, handle: str) -> str:
-    """A declared handle folded for comparison against a folded artifact key.
-
-    Case only, plus a leading `www.` stripped for a domain -- the same folding
-    `build/validate.py` applies when it enforces one `(platform, handle)` per organization, so
-    the uniqueness gate and this eval cannot disagree about which handle matches what. Not
-    `fold_for_proposal`: a handle is an ACCOUNT, not an artifact id, and PEP 503 or crate
-    `-`/`_` collapsing has no business touching a GitHub account name.
-    """
-    folded = (handle or "").strip().casefold()
-    if platform == "homepage_domain":
-        folded = folded.removeprefix("www.")
-    return folded
 
 
 def _org_handles(path: Path = ORG_HANDLES_PATH) -> dict[str, dict[str, frozenset[str]]]:
@@ -1185,6 +1207,63 @@ def load_edges_from_file(path: Path) -> dict[str, list[dict]]:
     return json.loads(path.read_text())
 
 
+# The confidence and method a fixture's tail membership rows carry. Not a claim about what the
+# deployed model emits for any particular row: 0.95 clears `membership_non_scoring`'s 0.90
+# threshold, and `declared` is what a declaration-sourced membership edge is labeled, which is
+# all the fixture needs to exercise the scoring path.
+FIXTURE_TAIL_CONFIDENCE = 0.95
+FIXTURE_TAIL_METHOD = ("declared",)
+
+
+def tail_membership_rows(route_kinds: frozenset[str]) -> list[dict]:
+    """The `membership` rows a fixture should carry for the tail, in `WAREHOUSE_COLUMNS` shape.
+
+    Derived from the same `tail_product_rows` truth is, so a fixture regenerated with
+    `--write-fixture` is the corpus's tail declarations and nothing else. `scoring_bearing`
+    mirrors the deployed SQL's own derivation (does the kind have an adoption route), which is
+    why this takes `route_kinds` rather than hardcoding `homepage`.
+    """
+    return [
+        {
+            "artifact_kind": row["artifact_kind"],
+            "artifact_id": row["artifact_id"],
+            "product_tier": "tail",
+            "product_slug": row["slug"],
+            "confidence": FIXTURE_TAIL_CONFIDENCE,
+            "method": list(FIXTURE_TAIL_METHOD),
+            "penalties": [],
+            "scoring_bearing": row["artifact_kind"] in route_kinds,
+        }
+        for row in sorted(
+            tail_product_rows(load_registry(ROOT)),
+            key=lambda r: (r["slug"], r["artifact_kind"], r["artifact_id"]),
+        )
+    ]
+
+
+def write_fixture(path: Path, route_kinds: frozenset[str]) -> tuple[int, int]:
+    """Regenerate `path`'s tail membership rows from the tail registry, in place.
+
+    Every other row and relation is left exactly as it was -- only `membership` rows with
+    `product_tier: "tail"` are replaced, so a hand-written head row keeps its wording and a
+    regeneration diff shows the corpus change and nothing else. Returns `(rows removed, rows
+    written)`.
+
+    The fixture stays COMMITTED rather than being generated at test time on purpose: it is what
+    the `identity-eval` workflow grades on every PR, and a gate that builds its own input from
+    the corpus it then grades against cannot fail. Committing it keeps the tail block reviewable
+    in a diff, and `test_the_pass_fixture_tail_rows_match_the_corpus` is what catches it going
+    stale.
+    """
+    doc = json.loads(path.read_text())
+    kept = [row for row in doc.get("membership") or [] if row.get("product_tier") != "tail"]
+    generated = tail_membership_rows(route_kinds)
+    removed = len(doc.get("membership") or []) - len(kept)
+    doc["membership"] = kept + generated
+    path.write_text(json.dumps(doc, indent=2) + "\n")
+    return removed, len(generated)
+
+
 def validate_columns(edges: dict[str, list[dict]]) -> None:
     """Every row of every relation `REQUIRED_COLUMNS` names carries those columns with a
     non-null value. Raises `EdgeColumnMissing` naming the first offending relation and
@@ -1287,6 +1366,14 @@ def main(argv: list[str] | None = None) -> int:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--from-warehouse", action="store_true", help="read the four identity edge tables live")
     source.add_argument("--edges", type=Path, help="path to a JSON fixture of edges, keyed by relation")
+    source.add_argument(
+        "--write-fixture", type=Path, metavar="PATH",
+        help=(
+            "regenerate a fixture's tail membership rows from sources/registry/*.yaml and exit "
+            "(scores nothing). Run this after a tail registry edit changes which artifacts the "
+            "tail declares."
+        ),
+    )
     parser.add_argument(
         "--floors", action="store_true",
         help="exit 1 if any relation with automation planned and sufficient truth falls under its floor",
@@ -1305,6 +1392,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.allow_unprovisioned and not args.from_warehouse:
         print("[FAIL] --allow-unprovisioned only applies to --from-warehouse")
         return 2
+
+    if args.write_fixture:
+        removed, written = write_fixture(args.write_fixture, _route_kinds())
+        print(
+            f"{args.write_fixture}: replaced {removed} tail membership row(s) with {written} "
+            f"derived from sources/registry/*.yaml"
+        )
+        return 0
 
     if args.from_warehouse:
         if args.allow_unprovisioned:
@@ -1376,6 +1471,9 @@ def main(argv: list[str] | None = None) -> int:
             print("\n[FAIL] under floor:")
             for line in failures:
                 print(f"  {line}")
+            for relation, note in FLOOR_NOTES.items():
+                if any(failure.startswith(f"{relation}:") for failure in failures):
+                    print(f"\n  {relation}: {note}")
             return 1
         print("\n[OK] every checked relation clears its precision/recall floor")
 

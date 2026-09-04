@@ -20,7 +20,16 @@ name: identity-eval
 # warehouse tables (they may not exist, and a fork PR has no OSO_API_KEY regardless). The
 # fixture (tests/fixtures/identity_edges_pass.json) carries all four edge tables in the real
 # WAREHOUSE_COLUMNS shape, so this run exercises the scoring math, the tier split and the
-# schema end to end -- it is not a substitute for the two never-auto-emit governance rules,
+# schema end to end. Its membership rows for the tail are the corpus's own tail declarations, so
+# a tail registry edit makes this run fail on membership_non_scoring's floor (27 truth items,
+# no headroom) until the fixture is regenerated:
+#
+#   uv run python -m build.identity_eval --write-fixture tests/fixtures/identity_edges_pass.json
+#
+# test_the_pass_fixture_tail_rows_match_the_corpus fails first and names that command, so the
+# floor message is not the only signal.
+#
+# This fixture run is not a substitute for the two never-auto-emit governance rules,
 # which are pinned as pytest tests (test_name_match_never_auto_emits*,
 # test_scoring_bearing_*) and run on every PR through validate.yml regardless of this
 # workflow. Only schedule and workflow_dispatch touch the warehouse.
@@ -33,7 +42,8 @@ name: identity-eval
 # are recoverable at all, and so moves org recall's denominator.
 # sources/model_families.yaml does not exist in this repo yet (Task 4 adds the table it backs);
 # the path is kept as a forward reference so this workflow does not need a second edit when it
-# lands.
+# lands. tests/fixtures/identity_edges_pass.json is a trigger path too: it is what the PR-time
+# run grades, so a commit that only regenerates it has to re-run the eval it is regenerated for.
 
 on:
   schedule:
@@ -49,6 +59,7 @@ on:
       - "sources/organizations/**"
       - "sources/registry/**"
       - "sources/org_handles.yaml"
+      - "tests/fixtures/identity_edges_pass.json"
   pull_request:
     paths:
       - "build/identity*.py"
@@ -58,6 +69,7 @@ on:
       - "sources/organizations/**"
       - "sources/registry/**"
       - "sources/org_handles.yaml"
+      - "tests/fixtures/identity_edges_pass.json"
 
 jobs:
   identity-eval:

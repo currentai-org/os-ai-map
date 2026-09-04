@@ -268,7 +268,7 @@ handle on any platform can bridge one and those pairs are excluded from recall e
 
 The point is that an unbridgeable pair is not a graph defect, and holding it against recall bounds
 recall below 1 no matter how good the graph is. Precision truth is unaffected — every emitted org
-edge is still judged against the full truth set. What the eval prints keeps the exclusion honest:
+edge is still judged against the full truth set. The eval prints what was excluded and why:
 `n_truth_unrecoverable` per relation, a per-artifact-kind breakdown of it (which is what separates
 `pypi`, structurally unreachable, from a `github` artifact whose org simply declares no `github`
 handle), and a `handle coverage` line per route — for each route, how many of the orgs that
@@ -336,10 +336,15 @@ an artifact is a product's and names the org that owns it, which is the same kin
 head product file records — so tail rows carry membership truth, `org` truth, and any fold-collapse
 pairs they form, read through `build/serialize_registry.py`'s own `tail_product_rows` so the eval
 and `registry.tail_products` cannot disagree about which fields are artifacts. Each truth item
-keeps the tier that declared it and the eval reports the head/tail split per relation. One
-consequence worth naming: `homepage` is the only artifact kind with no adoption route, no head
-product declares one, and the tail rows that do are what put `membership_non_scoring` over the
-minimum truth count its floor needs to mean anything.
+keeps the tier that declared it and the eval reports the head/tail split per relation. This is also
+what gives `membership_non_scoring` a floor at all: `homepage` is the only artifact kind with no
+adoption route, no head product declares one, and the tail rows that do are what put
+`membership_non_scoring` over the minimum truth count its floor needs to mean anything. That
+relation's truth set is therefore small enough (27) that one edge decides whether it clears the
+floor, so its failures need reading twice — a tail homepage edit is emitted from the last published
+`registry.tail_products` until the weekly publish lands, and the same edit staleness-fails the
+committed pass fixture. `build/identity_eval.py`'s module docstring carries both readings, and the
+eval prints them next to the failing row.
 
 ## Related
 

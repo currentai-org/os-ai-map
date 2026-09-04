@@ -178,6 +178,23 @@ def fold_for_proposal(kind: str, ident: str) -> str:
     return c
 
 
+def fold_handle(platform: str, handle: str) -> str:
+    """A declared org handle (`sources/org_handles.yaml`) folded for comparison.
+
+    Case only, plus a leading `www.` stripped for a domain. `build/validate.py` folds this way
+    to enforce one `(platform, handle)` per organization and `build/identity_eval.py` folds
+    this way to decide whether a handle bridges an artifact to an org; both import this, so the
+    uniqueness gate and the eval cannot disagree about which handle matches what.
+
+    Deliberately not `fold_for_proposal`: a handle is an ACCOUNT or a DOMAIN, not an artifact
+    id, so PEP 503 collapsing or crate `-`/`_` folding has no business touching it.
+    """
+    folded = (handle or "").strip().casefold()
+    if platform == "homepage_domain":
+        folded = folded.removeprefix("www.")
+    return folded
+
+
 def _homepage_canonical(url: str) -> str:
     """Scheme-less canonical form: lowercased host minus `www.`, plus the path as
     declared (case kept -- paths can be case-sensitive), minus query/fragment and any
