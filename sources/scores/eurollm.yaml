@@ -1,0 +1,138 @@
+product: eurollm
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0, BF16 safetensors, ungated
+    data:
+      value: open
+      detail: multilingual web pretraining data released as EuroWeb-2512 + EuroBlocks-SFT instruction data
+    code:
+      value: open
+      detail: pretraining pipeline deep-spin/Megatron-LM-pretrain + evaluation codebase deep-spin/eurollm-eval
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: 'EuroLLM-22B is a full open-source release on the OLMo/Pythia/Apertus tier: the pretraining
+    corpus, the code that consumed it, and an OSI license over the weights. The technical report (arXiv:2602.05879)
+    states outright, "we release our base and instruction-tuned models, our multilingual web pretraining
+    data and updated EuroBlocks instruction datasets, as well as our pre-training and evaluation codebases".
+    Each was confirmed: the 22B-2512 weights are Apache-2.0 BF16 safetensors and ungated on Hugging Face;
+    the multilingual web pretraining data ships as the public utter-project/EuroWeb-2512 dataset (with a
+    matching EuroLLM-Multilingual-Data-2512) and the instruction data as EuroBlocks-SFT-2512; and the
+    pretraining pipeline is the public deep-spin/Megatron-LM-pretrain repository (a Megatron-LM fork,
+    the same shape as Apertus''s Megatron-LM recipe) alongside the public deep-spin/eurollm-eval harness.
+    With data open, code open and the license OSI, the recipe lands the family at 5. The corpus mixture''s
+    later high-quality and parallel components are documented in the report rather than fully released,
+    but the released web pretraining data plus the training pipeline satisfy data:open by a released
+    dataset rather than by reconstruction scripts.'
+  last_verified: '2026-09-04'
+  raw: weights:open(Apache-2.0, BF16 safetensors, ungated);data:open(EuroWeb-2512 multilingual web pretraining
+    data + EuroBlocks-SFT instruction data);code:open(deep-spin/Megatron-LM-pretrain pretraining pipeline
+    + deep-spin/eurollm-eval);license:Apache-2.0(OSI)
+  sources:
+  - url: https://huggingface.co/api/models/utter-project/EuroLLM-22B-2512
+    shows: '`private: false`, `gated: false`, `license: apache-2.0`, `safetensors.total` 22,637,328,384
+      BF16 parameters, LlamaForCausalLM, 35 language tags including all 24 official EU languages. Establishes
+      that the weights are downloadable, ungated and OSI-licensed.'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 5194a2f48a03b38b4e11ab77c6859007a4e8399de8408d9fefa200d14df958b8
+    establishes: [weights, license]
+  - url: https://huggingface.co/utter-project/EuroLLM-22B-2512
+    shows: 'Model card "Model Card for EuroLLM-22B": "License: Apache License 2.0"; 22B parameter multilingual
+      transformer trained from scratch on ~4T tokens on the MareNostrum5 supercomputer; describes the three
+      pretraining phases (initial 3.6T, annealing 400B, annealing-to-zero 100B) and the data sources (web,
+      parallel, Wikipedia, Arxiv, books, math, code, Apollo).'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: d1a3dc2ce9cf358b536898d6e11b193e3b0da7a86bbcd29992d8fc9f232d8c17
+    establishes: [weights, license]
+  - url: https://arxiv.org/abs/2602.05879
+    shows: 'EuroLLM-22B Technical Report abstract: "To support future research, we release our base and
+      instruction-tuned models, our multilingual web pretraining data and updated EuroBlocks instruction
+      datasets, as well as our pre-training and evaluation codebases." Establishes the data and code release
+      as a first-party claim by the model''s authors.'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 6be57584f9eec5c9a0e861595d0c2684d5122f5256b6db33458277729048d9d8
+    establishes: [data, code]
+  - url: https://arxiv.org/pdf/2602.05879
+    shows: 'Technical report body links the released pretraining codebase github.com/deep-spin/Megatron-LM-pretrain
+      and evaluation codebase github.com/deep-spin/eurollm-eval, and the released data
+      huggingface.co/datasets/utter-project/EuroLLM-Multilingual-Data-2512 and EuroBlocks-SFT-2512.
+      deep-spin/Megatron-LM-pretrain was independently confirmed to be a public Megatron-LM fork (pretrain_gpt.py,
+      megatron/), and deep-spin/eurollm-eval a public repository.'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289
+    establishes: [data, code]
+  - url: https://huggingface.co/api/datasets/utter-project/EuroWeb-2512
+    shows: '`private: false`, `gated: false`, size category 1B<n<10B; the released multilingual web pretraining
+      dataset for the EuroLLM-22B (2512) release, with ~16K downloads in the trailing 30 days. Establishes
+      data:open by a released dataset.'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 285566722fe13e247b7af2d6519b0467b81ba234e0f9af65e92c6174a93fa606
+    establishes: [data]
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: '127,672 downloads in the trailing 30 days summed across the family''s shipped SKUs on the
+    utter-project Hugging Face org: EuroLLM-22B-Instruct-2512 31,111; 9B-Instruct-2512 28,779; 1.7B-Instruct
+    27,659; 9B-Instruct 18,632; 1.7B 11,974; 9B-2512 2,866; 9B 2,832; 22B-2512 2,603; 22B-Instruct-Preview
+    1,111; 22B-Preview 105. Bands at level 3 (100K-1M) on the model adoption scale; confidence medium
+    because the total sits not far above the 100K floor and download figures move month to month. The
+    instruction-tuned 9B/1.7B SKUs carry the bulk of the traffic while the new 22B flagship is still ramping.'
+  last_verified: '2026-09-04'
+  sources:
+  - url: https://huggingface.co/api/models?author=utter-project&full=false&limit=100
+    shows: 'Trailing-30-day `downloads` per EuroLLM SKU on the utter-project org, summing to 127,672 across
+      the ten shipped base and instruct variants (22B/9B/1.7B).'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 5792ec1a12a4544956ef53aa5a7024c2f90766b603b8def5046d2ea2dd5ee2ad
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MMLU / instruction-tuned English + multilingual suite
+  relative_to: apertus
+  relation: at
+  value: EuroLLM-22B-Instruct MMLU 69.8, MMLU-Pro 50.8, ARC-C 89.8, GSM8K 85.5 (English, Table 3); the
+    strongest fully-open European model, beating Apertus-70B on MMLU (67.9) with roughly one third of the
+    parameters, but trailing the frontier open-weights (Qwen-3-32B 84.0, Gemma-3-27B 80.4, Llama-3.3-70B
+    84.6) by ~10-15 pts on MMLU.
+  confidence: high
+  note: 'Mid-tier capability, the same profile and band as Apertus: competitive with the prior open
+    generation and unusually strong multilingually across the 35 supported languages, but below the 2026
+    frontier on reasoning and knowledge. The value proposition is full openness and European-language
+    breadth rather than raw SOTA. The EuroLLM-22B technical report''s Table 3 measures EuroLLM-22B and the
+    Apertus baselines on the same instruction-tuned English suite, and states EuroLLM-22B "is the strongest
+    model among the fully open European systems considered" while "the EuroLLM family still trails the very
+    best open-weights models overall". Placed level with Apertus, both at 3.'
+  last_verified: '2026-09-04'
+  comparison:
+    last_attested: '2026-09-04'
+    sources:
+    - url: https://arxiv.org/pdf/2602.05879
+      shows: 'Table 3 (English benchmarks) reports EuroLLM-22B and Apertus-8B/Apertus-70B on one suite:
+        EuroLLM-22B MMLU 69.8 vs Apertus-70B 67.9, MMLU-Pro 50.8 vs 41.9, ARC-C 89.8 vs 84.7; the paper
+        names EuroLLM-22B the strongest fully-open European system and competitive with Apertus-70B at
+        ~1/3 the parameters. Apertus''s own placement (score 3) is reaffirmed rather than moved.'
+      accessed: '2026-09-04'
+      http_status: 200
+      content_sha256: 904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289
+  sources:
+  - url: https://arxiv.org/pdf/2602.05879
+    shows: 'Table 3: EuroLLM-22B-Instruct English scores (IFEval 67.2, Hellaswag 69.7, MMLU 69.8, MMLU-Pro
+      50.8, BBH 55.3, ARC-C 89.8, GPQA 26.8, GSM8K 85.5, MATH-500 54.5, HumanEval 53.9) against Apertus,
+      OLMo-3, Llama-3, Gemma-3 and Qwen-3 baselines; prose "EuroLLM-22B is the strongest model among the
+      fully open European systems" and "still trails the very best open-weights models overall".'
+    accessed: '2026-09-04'
+    http_status: 200
+    content_sha256: 904a51563c7103be383bc60761a34820b6256ca016725505f10b399cf7f5c289
