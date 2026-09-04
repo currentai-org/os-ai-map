@@ -180,7 +180,15 @@ def test_parked_rows_never_render_as_items_only_as_a_count():
     assert "`parked-one`" not in body
     assert "`parked-two`" not in body
     assert "`active-one`" in body
-    assert "Parked: 2 (name-match only; resurfaces after 56 days or when evidence changes)" in body
+    assert "Parked: 2 (name-match only; resurfaces when stronger evidence appears)" in body
+
+
+def test_parked_wording_names_no_age(tmp_path):
+    """Age-based resurfacing is disabled: `first_seen` dates the snapshot, not the discovery,
+    so the parked line must promise nothing about a day count."""
+    body = digest.render([_row("membership", "parked-one", state="parked")], "2026-36", resolved_count=0)
+    assert "56 days" not in body
+    assert "resurfaces when stronger evidence appears" in body
 
 
 def test_pool_rows_render_as_a_single_total_not_per_section():
@@ -196,17 +204,30 @@ def test_pool_rows_render_as_a_single_total_not_per_section():
 
 
 def test_resurfaced_items_carry_their_reason():
-    rows = [_row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="age")]
+    rows = [_row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="evidence")]
     body = digest.render(rows, "2026-36", resolved_count=0)
-    assert "Resurfaced reason: age" in body
+    assert "Resurfaced reason: evidence" in body
     assert "`resurfaced-one`" in body
+
+
+def test_the_resurfaced_reason_vocabulary_is_evidence_only():
+    assert digest.RESURFACED_REASONS == ("evidence",)
+
+
+def test_a_retired_resurfaced_reason_renders_with_a_note_not_as_a_current_reason():
+    """`age` can still arrive from a lagging table. It renders -- dropping it would hide a row
+    -- but flagged, so a reviewer does not act on an age the data cannot support."""
+    rows = [_row("org", "resurfaced-old", state="resurfaced", rank=1, resurfaced_reason="age")]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "Resurfaced reason: age (not a current reason" in body
+    assert "age-based resurfacing is disabled" in body
 
 
 def test_resurfaced_items_are_ranked_and_rendered_like_any_other_item():
     """Alongside `active`, `resurfaced` is one of the two states that competes for the cap and
     renders as an item -- not a third bucket."""
     rows = [
-        _row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="age"),
+        _row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="evidence"),
         _row("org", "active-one", state="active", rank=2),
     ]
     body = digest.render(rows, "2026-36", resolved_count=0)
@@ -488,25 +509,30 @@ def test_footer_reports_ranked_items_by_relation():
     )
 
 
-def test_oldest_unresolved_age_uses_first_seen_across_all_rows_not_just_ranked():
-    """Footer 'oldest unresolved age' reads `first_seen` across every row -- parked and pool
-    included -- since a starved item is exactly the one the top-25 ranking never surfaces."""
+def test_oldest_unresolved_age_is_not_computed_from_first_seen():
+    """`first_seen` dates the snapshot, not the discovery, so no age is computable from it.
+    These two rows would have read '8 weeks' under the old arithmetic (sweep Monday for
+    2026-36 is 2026-08-31); the footer must name the missing history instead."""
     rows = [
         _row("membership", "old-parked", state="parked", first_seen="2026-07-06"),
         _row("membership", "new-ranked", rank=1, first_seen="2026-08-25"),
     ]
     body = digest.render(rows, "2026-36", resolved_count=0)
-    assert "Oldest unresolved age: 8 weeks" in body
+    assert (
+        "Oldest unresolved age: not available until an observation history exists" in body
+    )
+    assert "8 weeks" not in body
 
 
-def test_oldest_unresolved_age_in_weeks_from_first_seen():
-    # Sweep Monday for 2026-36 is 2026-08-31; 8 weeks earlier is 2026-07-06.
+def test_new_this_week_still_reads_first_seen():
+    """Disabling the AGE line does not disable the window question: whether a row's
+    `first_seen` falls inside this sweep is a fact about the current snapshot."""
     rows = [
-        _row("membership", "old-one", first_seen="2026-07-06"),
-        _row("membership", "new-one", first_seen="2026-08-25"),
+        _row("membership", "old-one", rank=1, first_seen="2026-07-06"),
+        _row("membership", "new-one", rank=2, first_seen="2026-09-01"),
     ]
     body = digest.render(rows, "2026-36", resolved_count=0)
-    assert "Oldest unresolved age: 8 weeks" in body
+    assert "New vs resolved this week: 1 new, 0 resolved" in body
 
 
 # -- warehouse plumbing -------------------------------------------------------------------------

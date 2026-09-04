@@ -274,6 +274,56 @@ edge is still judged against the full truth set. The eval prints what was exclud
 handle), and a `handle coverage` line per route — for each route, how many of the orgs that
 actually own artifacts on it declare the handle it needs.
 
+### Recall and coverage are two different questions
+
+**Recall = does the resolver use the evidence we gave it. Coverage = have we given it enough
+evidence.** Recoverable-pair recall reads 1.000 today, and that number says nothing about how much
+of the corpus the graph can reach: recoverability is defined by the same handle route the graph
+emits on, so a pair no handle bridges is never in the denominator. Read as coverage it is
+meaningless; read as a regression check it is exactly right — a miss means the resolver failed to
+use evidence already sitting in `sources/org_handles.yaml`.
+
+So `org` recall is a **regression invariant**, not a floor:
+
+| Relation | Precision | Recall | Kind of check |
+|---|---|---|---|
+| `equivalence` | ≥ 1.00 | ≥ 0.90 | floor, floor (15 truth items today, so waived) |
+| `membership_non_scoring` | ≥ 0.98 | ≥ 0.90 | floor, floor |
+| `artifact_identity` | ≥ 0.99 | ≥ 0.95 | floor, floor (0 truth pairs today, so waived) |
+| `membership_scoring` | — | — | never automated, so never floored |
+| `org` | ≥ 0.97 | ≥ 0.99 | precision **floor**, recall **invariant** |
+
+Both exit 1, and both are waived below the 20-item minimum truth count. The difference is what a
+failure means and therefore who fixes it: a floor miss is a graph quality problem, an invariant
+miss is a resolver bug, and the eval's status column labels the `org` row `recall invariant` so the
+two are never confused. `FLOORS["org"]`'s recall entry is `None` for the same reason — a coverage
+floor is the wrong shape for that number.
+
+The invariant is scored **only on a live `--from-warehouse` run**. A fixture is a snapshot of what
+the warehouse emitted on the day it was taken, while truth is the corpus as it is today, so
+declaring one product whose org already declares a matching handle drops the fixture's recall with
+the resolver behaving perfectly. On a `--edges` run the row reads `recall invariant not evaluated
+(fixture)` and the run cannot fail on it. Precision floors are graded in both modes: a wrong edge
+stays wrong however old the snapshot is, which is exactly what a floor asks.
+
+Coverage is measured separately, per route, and carries **no target floor yet** — the `huggingface`
+route's numbers are pending the handle review in issue #483, and a floor set before that lands
+would be a guess. What it carries instead is a **baseline ratchet**:
+`tests/fixtures/identity_coverage_baseline.json` pins today's `(orgs with a handle, orgs with
+artifacts)` per route, and any run exits 1 if a route's live ratio falls below its pinned ratio.
+Coverage can only go up. The pinned values as of this writing:
+
+| Route | Coverage | Denominator |
+|---|---|---|
+| `github` | 211/299 | orgs owning a `github` artifact |
+| `huggingface` | 2/61 | orgs owning a `huggingface_model` or `huggingface_dataset` artifact |
+| `homepage_domain` | 6/27 | orgs owning a `homepage` artifact |
+
+`uv run python -m build.identity_eval --write-coverage-baseline` re-pins the file from the corpus.
+That is a deliberate act in its own commit — raising the ratchet because coverage genuinely rose,
+or lowering it because a route's population genuinely shrank and the reason is written down. No
+failing run ever rewrites its own baseline; a ratchet that did would ratchet nothing.
+
 ### Proposing handles
 
 `build/propose_org_handles.py` proposes `huggingface` handles from the namespaces of already

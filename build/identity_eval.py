@@ -146,6 +146,49 @@ whose org declares no `github` handle) are two readable numbers rather than one 
 `org_handle_coverage` is now per route: for each route, how many of the orgs that actually have
 artifacts on it declare the handle it needs.
 
+## Recall is an invariant; handle coverage is the coverage metric
+
+Recall and coverage answer two different questions, and conflating them is what made org
+recall read 1.000 and mean nothing:
+
+- **recall = does the resolver use the evidence we gave it.** Recoverable-pair recall is
+  computed over exactly the pairs a declared handle could bridge, so recoverability is defined
+  by the same route the graph emits on. That makes it a REGRESSION INVARIANT, not a coverage
+  target: a miss is the resolver failing to use evidence it already has, which is a bug rather
+  than a curation gap. `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
+  failure under `--floors`, and the table labels that row `recall invariant` rather than
+  `recall floor` so nobody reads a 1.000 as coverage.
+- **coverage = have we given it enough evidence.** That is `org_handle_coverage`, per route:
+  orgs with a handle on that route over orgs that own artifacts of that kind. Three routes,
+  three numbers -- `github`, `huggingface`, `homepage_domain`.
+
+Coverage carries no target floor yet; the `huggingface` route's numbers are pending the HF
+handle review in issue #483, and a floor set before that lands would be a guess. What it
+carries instead is a **baseline ratchet**: `tests/fixtures/identity_coverage_baseline.json`
+pins today's `(with_handle, rostered)` per route, and a run exits 1 if any route's live ratio
+falls BELOW its pinned ratio. So coverage can only go up. `--write-coverage-baseline`
+rewrites that file from the live corpus; it is a deliberate act in its own commit, never
+something a failing run does for itself, or the ratchet would ratchet nothing.
+
+A route whose denominator falls to 0 passes vacuously -- there are no orgs on it to cover.
+The comparison is by cross-multiplication rather than float division, so a pinned ratio is
+never re-derived at a different precision than it was written at.
+
+**The invariant is scored only under `--from-warehouse`.** A fixture is a snapshot of what the
+warehouse emitted on the day it was taken; truth is the corpus as it is today. Declare one
+product whose org already declares a matching handle and the fixture's recall drops below 0.99
+through no fault of the resolver -- and the message a fixture failure prints ("the resolver
+missed a pair a declared handle already bridges") would be a false accusation against a
+resolver that emits the pair correctly and was simply never re-snapshotted. So
+`invariant_failures` takes `live` and returns nothing in fixture mode, `floor_status` renders
+the `org` row `recall invariant not evaluated (fixture)` rather than leaving a reader to infer
+it from a passing run, and the PR-time fixture run keeps doing what a fixture can honestly do:
+exercise the scoring math, the tier split, precision, and the schema end to end.
+
+Floors are not treated this way. A floor asks whether the emitted edges were WRONG, which a
+snapshot can answer -- an incorrect edge stays incorrect however old the snapshot is. Only
+recall depends on the fixture being complete.
+
 ## What `--from-warehouse` supplies, and what it does not
 
 Only the four edge tables -- `currentai.identity.{artifact_identity,membership,equivalence,
@@ -232,6 +275,7 @@ Usage:
     uv run python -m build.identity_eval --edges fixture.json --floors
     uv run python -m build.identity_eval --from-warehouse --floors
     uv run python -m build.identity_eval --from-warehouse --floors --allow-unprovisioned
+    uv run python -m build.identity_eval --write-coverage-baseline
 """
 
 from __future__ import annotations
@@ -279,12 +323,23 @@ THRESHOLDS: dict[str, float] = {
 # is planned, and only when the relation clears `MIN_TRUTH` -- see the module docstring.
 # `membership_scoring` carries no floor because it is never automated: `emits` forbids a
 # scoring-bearing membership edge from emitting at any confidence.
-FLOORS: dict[str, tuple[float, float]] = {
+#
+# `org`'s recall floor is `None` on purpose: recoverability is defined by the same handle route
+# the graph emits on, so its recall is not a coverage measure and does not belong in a table of
+# coverage floors. It is checked as a regression invariant instead -- see `RECALL_INVARIANTS`
+# and the module docstring's "Recall is an invariant" section.
+FLOORS: dict[str, tuple[float, float | None]] = {
     "artifact_identity": (0.99, 0.95),
     "membership_non_scoring": (0.98, 0.90),
     "equivalence": (1.00, 0.90),
-    "org": (0.97, 0.85),
+    "org": (0.97, None),
 }
+
+# Recall levels that are regression invariants rather than coverage floors: a miss means the
+# resolver failed to use evidence it already has. Checked under `--floors` exactly like a floor
+# (same `MIN_TRUTH` gate, same exit 1), and labeled `recall invariant` in the table so a 1.000
+# is never misread as coverage.
+RECALL_INVARIANTS: dict[str, float] = {"org": 0.99}
 
 # Below this many truth items, a floor cannot mean anything -- see the module docstring on
 # `artifact_identity`, 0 in the corpus today.
@@ -333,6 +388,12 @@ ORG_ROUTE_ARTIFACTS: dict[str, str] = {
     "huggingface": "hf",
     "homepage_domain": "homepage",
 }
+
+# Today's per-route handle coverage, pinned. A run exits 1 if any route's live ratio falls
+# below the ratio pinned here; `--write-coverage-baseline` is the only thing that rewrites it.
+# It sits under `tests/fixtures/` with the eval's other committed inputs rather than in
+# `sources/`: it is a gate's reference value, not a declaration about any product.
+COVERAGE_BASELINE_PATH = ROOT / "tests" / "fixtures" / "identity_coverage_baseline.json"
 
 # Eight storage-category products whose same- or near-same-named PyPI package is a verified
 # client library, not the product's own countable artifact -- read from each product's
@@ -725,6 +786,127 @@ def org_handle_coverage(truth: Truth) -> dict[str, tuple[int, int]]:
             if truth.org_handles.get(org_slug, {}).get(route):
                 with_handle.add(org_slug)
     return {route: (len(with_handle), len(rostered)) for route, (with_handle, rostered) in per_route.items()}
+
+
+def _repo_path(path: Path) -> str:
+    """`path` as a repo-relative string where it is inside the repo, absolute otherwise -- so
+    a message stays readable when a test points the constant at a tmp directory."""
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+class CoverageBaselineInvalid(RuntimeError):
+    """`tests/fixtures/identity_coverage_baseline.json` is not a `{route: [with_handle,
+    rostered]}` object over `ORG_ROUTES`' platforms. Raised rather than defaulted: a baseline
+    that silently reads as empty is a ratchet that holds nothing.
+    """
+
+
+def load_coverage_baseline(path: Path = COVERAGE_BASELINE_PATH) -> dict[str, tuple[int, int]]:
+    """The pinned per-route coverage, `route -> (with_handle, rostered)`.
+
+    A missing file reads as `{}` -- an older tree that predates the ratchet has nothing to
+    ratchet against, and that is not a failure. A file that EXISTS but is malformed raises:
+    the whole point of the ratchet is that it cannot be defeated by accident.
+    """
+    if not path.exists():
+        return {}
+    try:
+        doc = json.loads(path.read_text())
+    except json.JSONDecodeError as exc:
+        raise CoverageBaselineInvalid(f"{path} is not valid JSON: {exc}") from exc
+    if not isinstance(doc, dict):
+        raise CoverageBaselineInvalid(f"{path} must be an object of route -> [with_handle, rostered]")
+    routes = set(ORG_ROUTES.values())
+    out: dict[str, tuple[int, int]] = {}
+    for route, pair in doc.items():
+        if route not in routes:
+            raise CoverageBaselineInvalid(
+                f"{path} names route {route!r}, which is not one of {sorted(routes)}"
+            )
+        if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+            raise CoverageBaselineInvalid(f"{path}: {route!r} must be [with_handle, rostered], got {pair!r}")
+        with_handle, rostered = pair
+        if not (isinstance(with_handle, int) and isinstance(rostered, int)):
+            raise CoverageBaselineInvalid(f"{path}: {route!r} must be two integers, got {pair!r}")
+        if with_handle < 0 or rostered < 0 or with_handle > rostered:
+            raise CoverageBaselineInvalid(
+                f"{path}: {route!r} = {pair!r} is not a coverage ratio (0 <= with_handle <= rostered)"
+            )
+        out[route] = (with_handle, rostered)
+    return out
+
+
+def write_coverage_baseline(
+    coverage: dict[str, tuple[int, int]], path: Path = COVERAGE_BASELINE_PATH
+) -> dict[str, tuple[int, int]]:
+    """Pin `coverage` as the new baseline, in `ORG_ROUTE_LABELS` order. Returns what it wrote.
+
+    Only `--write-coverage-baseline` calls this; nothing on the scoring path does.
+    """
+    doc = {route: list(coverage.get(route, (0, 0))) for route, _label in ORG_ROUTE_LABELS}
+    path.write_text(json.dumps(doc, indent=2) + "\n")
+    return {route: tuple(pair) for route, pair in doc.items()}  # type: ignore[misc]
+
+
+def _below_baseline(live: tuple[int, int], pinned: tuple[int, int]) -> bool:
+    """Is `live`'s ratio strictly below `pinned`'s? Cross-multiplied rather than divided, so a
+    pinned ratio is never re-derived at a different precision than it was written at.
+
+    A pinned denominator of 0 pins a ratio of 0 and nothing can fall below it; a live
+    denominator of 0 leaves no orgs on the route to cover, so it passes vacuously (both fall
+    out of the cross-multiplication without a special case).
+    """
+    live_n, live_d = live
+    base_n, base_d = pinned
+    return live_n * base_d < base_n * live_d
+
+
+def coverage_ratchet(
+    coverage: dict[str, tuple[int, int]], baseline: dict[str, tuple[int, int]]
+) -> list[str]:
+    """Routes whose live coverage fell below the pinned baseline, one message each.
+
+    Only routes the baseline actually pins are checked -- a new route in `ORG_ROUTES` with no
+    pinned value yet is reported as `no baseline` in the printed lines, not failed.
+    """
+    failures: list[str] = []
+    for route, _label in ORG_ROUTE_LABELS:
+        pinned = baseline.get(route)
+        if pinned is None:
+            continue
+        live = coverage.get(route, (0, 0))
+        if _below_baseline(live, pinned):
+            failures.append(
+                f"{route}: coverage {live[0]}/{live[1]} fell below the pinned "
+                f"{pinned[0]}/{pinned[1]}"
+            )
+    return failures
+
+
+def coverage_lines(
+    coverage: dict[str, tuple[int, int]], baseline: dict[str, tuple[int, int]]
+) -> list[str]:
+    """The three `handle coverage` lines, one per route, each with its ratchet status."""
+    lines = [
+        "handle coverage (coverage = have we given the resolver enough evidence):",
+    ]
+    for route, label in ORG_ROUTE_LABELS:
+        live_n, live_d = coverage.get(route, (0, 0))
+        pinned = baseline.get(route)
+        if pinned is None:
+            status = "no baseline"
+        elif _below_baseline((live_n, live_d), pinned):
+            status = f"BELOW BASELINE {pinned[0]}/{pinned[1]}"
+        else:
+            status = f"at or above baseline {pinned[0]}/{pinned[1]}"
+        lines.append(
+            f"  {label:18s} {live_n:>4d}/{live_d:<4d} orgs with "
+            f"{ORG_ROUTE_ARTIFACTS[route]} artifacts -- {status}"
+        )
+    return lines
 
 
 def _route_kinds() -> frozenset[str]:
@@ -1290,23 +1472,49 @@ def validate_columns(edges: dict[str, list[dict]]) -> None:
                     raise EdgeValueInvalid(relation, column, value)
 
 
-def floor_status(relation: str, metrics: dict[str, Metrics]) -> str:
+def floor_status(relation: str, metrics: dict[str, Metrics], live: bool = True) -> str:
+    """The status cell for `relation`, naming which rules were applied to it.
+
+    The verdict is `checked (pass)`/`checked (FAIL)` as before, followed by the rules that
+    produced it -- `precision floor`, `recall floor`, `recall invariant`. The label matters:
+    `org`'s recall is a regression invariant, not a coverage floor (see the module docstring),
+    and the table is where a reader learns which of the two they are looking at.
+
+    `live=False` (a `--edges` run) renders a recall invariant as `recall invariant not
+    evaluated (fixture)` and leaves it out of the verdict -- a fixture cannot answer the
+    question the invariant asks. Defaults to `True` so a caller that forgets the argument
+    grades rather than skips.
+    """
     if relation not in metrics:
         return "not evaluated (edge table absent from input)"
-    if relation not in FLOORS:
+    if relation not in FLOORS and relation not in RECALL_INVARIANTS:
         return "no floor (never automated)"
     m = metrics[relation]
     if m.n_truth < MIN_TRUTH:
         return f"insufficient truth ({m.n_truth} < {MIN_TRUTH})"
-    p_floor, r_floor = FLOORS[relation]
+    p_floor, r_floor = FLOORS.get(relation, (None, None))
+    invariant = RECALL_INVARIANTS.get(relation)
     # SF2: `precision is None` means the declared slice emitted nothing at all -- there is
     # nothing to have gotten wrong, so it ABSTAINS rather than reading as 0.0 and failing a
     # precision floor for a reason that is not a precision problem. `recall` is never None
     # here (n_truth >= MIN_TRUTH > 0 guarantees `_score` computed a real value), but the
     # fallback is kept for defensive symmetry with `floor_failures`.
-    precision_ok = m.precision is None or m.precision >= p_floor
     recall = m.recall if m.recall is not None else 0.0
-    return "checked (pass)" if precision_ok and recall >= r_floor else "checked (FAIL)"
+    rules: list[str] = []
+    ok = True
+    if p_floor is not None:
+        rules.append("precision floor")
+        ok = ok and (m.precision is None or m.precision >= p_floor)
+    if r_floor is not None:
+        rules.append("recall floor")
+        ok = ok and recall >= r_floor
+    if invariant is not None:
+        if live:
+            rules.append("recall invariant")
+            ok = ok and recall >= invariant
+        else:
+            rules.append("recall invariant not evaluated (fixture)")
+    return f"checked ({'pass' if ok else 'FAIL'}): {', '.join(rules)}"
 
 
 def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
@@ -1315,6 +1523,9 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
     `precision is None` (nothing emitted in the declared slice) abstains rather than failing
     (SF2); `recall` still fails on 0.0 -- "recovered none of the known truth" is always a real
     signal, unlike "wrong about zero emissions".
+
+    A relation whose recall floor is `None` (`org`) is checked by `invariant_failures`
+    instead; both are collected under `--floors` and both exit 1.
     """
     failures: list[str] = []
     for relation, (precision_floor, recall_floor) in FLOORS.items():
@@ -1325,13 +1536,44 @@ def floor_failures(metrics: dict[str, Metrics]) -> list[str]:
             continue
         if m.precision is not None and m.precision < precision_floor:
             failures.append(f"{relation}: precision {m.precision:.3f} < floor {precision_floor:.2f}")
+        if recall_floor is None:
+            continue
         recall = m.recall if m.recall is not None else 0.0
         if recall < recall_floor:
             failures.append(f"{relation}: recall {recall:.3f} < floor {recall_floor:.2f}")
     return failures
 
 
-def print_table(metrics: dict[str, Metrics]) -> None:
+def invariant_failures(metrics: dict[str, Metrics], live: bool = True) -> list[str]:
+    """Relations under a recall INVARIANT -- the resolver failed to use evidence it already
+    has. Same `MIN_TRUTH` gate and same exit 1 as a floor; a different message, because the
+    reading is different: this is a regression to debug in the resolver, not a curation gap to
+    fill by declaring more handles. Coverage is what measures the latter.
+
+    Returns `[]` when `live` is false. The invariant compares live edges against today's
+    corpus, and a fixture is a snapshot of edges taken on an earlier corpus -- grading it there
+    accuses the resolver of a miss the fixture's own age caused (see the module docstring).
+    Defaults to `True`: forgetting the argument grades, it does not skip.
+    """
+    if not live:
+        return []
+    failures: list[str] = []
+    for relation, invariant in RECALL_INVARIANTS.items():
+        if relation not in metrics:
+            continue
+        m = metrics[relation]
+        if m.n_truth < MIN_TRUTH:
+            continue
+        recall = m.recall if m.recall is not None else 0.0
+        if recall < invariant:
+            failures.append(
+                f"{relation}: recall {recall:.3f} < invariant {invariant:.2f} -- the resolver "
+                f"missed a pair a declared handle already bridges"
+            )
+    return failures
+
+
+def print_table(metrics: dict[str, Metrics], live: bool = True) -> None:
     """The per-relation table, then the `org` unrecoverable breakdown under it.
 
     `n_head`/`n_tail` split `n_truth` by the tier that declared each truth item; they need not
@@ -1352,7 +1594,7 @@ def print_table(metrics: dict[str, Metrics]) -> None:
             f"{relation:24s} {precision:>10s} {recall:>10s} {(m.n_truth if m else 0):>8d} "
             f"{(m.n_truth_head if m else 0):>8d} {(m.n_truth_tail if m else 0):>8d} "
             f"{(m.n_emitted_at_threshold if m else 0):>10d} "
-            f"{(m.n_truth_unrecoverable if m else 0):>10d}  {floor_status(relation, metrics)}"
+            f"{(m.n_truth_unrecoverable if m else 0):>10d}  {floor_status(relation, metrics, live)}"
         )
     for relation in ALL_RELATIONS:
         m = metrics.get(relation)
@@ -1366,6 +1608,15 @@ def main(argv: list[str] | None = None) -> int:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--from-warehouse", action="store_true", help="read the four identity edge tables live")
     source.add_argument("--edges", type=Path, help="path to a JSON fixture of edges, keyed by relation")
+    source.add_argument(
+        "--write-coverage-baseline", action="store_true",
+        help=(
+            f"recompute per-route handle coverage from the corpus, pin it in "
+            f"{_repo_path(COVERAGE_BASELINE_PATH)}, and exit (scores nothing). This is "
+            f"how the ratchet is RAISED, deliberately, in its own commit; a failing run never "
+            f"rewrites its own baseline."
+        ),
+    )
     source.add_argument(
         "--write-fixture", type=Path, metavar="PATH",
         help=(
@@ -1392,6 +1643,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.allow_unprovisioned and not args.from_warehouse:
         print("[FAIL] --allow-unprovisioned only applies to --from-warehouse")
         return 2
+
+    if args.write_coverage_baseline:
+        # Explicit path, not the bound default -- see the `--allow-unprovisioned` block below
+        # for the same reason: a default parameter is bound once at definition time, so a test
+        # that monkeypatches the module-level path would otherwise be ignored.
+        pinned = write_coverage_baseline(org_handle_coverage(load_truth()), COVERAGE_BASELINE_PATH)
+        print(f"{_repo_path(COVERAGE_BASELINE_PATH)}: pinned handle coverage")
+        for route, label in ORG_ROUTE_LABELS:
+            n, d = pinned[route]
+            print(f"  {label:18s} {n}/{d}")
+        return 0
 
     if args.write_fixture:
         removed, written = write_fixture(args.write_fixture, _route_kinds())
@@ -1453,31 +1715,50 @@ def main(argv: list[str] | None = None) -> int:
 
     truth = load_truth()
     metrics = replay(edges, truth)
-    print_table(metrics)
+    print_table(metrics, live=args.from_warehouse)
 
     coverage = org_handle_coverage(truth)
-    parts = []
-    for route, label in ORG_ROUTE_LABELS:
-        n_with_handle, n_rostered = coverage.get(route, (0, 0))
-        parts.append(
-            f"{label} {n_with_handle}/{n_rostered} orgs with "
-            f"{ORG_ROUTE_ARTIFACTS[route]} artifacts"
+    try:
+        baseline = load_coverage_baseline(COVERAGE_BASELINE_PATH)
+    except CoverageBaselineInvalid as exc:
+        print(f"[FAIL] {exc}")
+        return 2
+    print("")
+    for line in coverage_lines(coverage, baseline):
+        print(line)
+
+    exit_code = 0
+
+    # The ratchet is not gated on `--floors`: a floor is a judgment about the graph, while the
+    # ratchet is a fact about the corpus, and it holds on every run that scores.
+    ratchet = coverage_ratchet(coverage, baseline)
+    if ratchet:
+        print("\n[FAIL] handle coverage fell below its pinned baseline:")
+        for line in ratchet:
+            print(f"  {line}")
+        print(
+            f"\n  Coverage only ratchets up. Either restore the handles the corpus lost, or -- if\n"
+            f"  the drop is deliberate (an org file removed, a route's population genuinely\n"
+            f"  shrank) -- re-pin it on purpose with `uv run python -m build.identity_eval\n"
+            f"  --write-coverage-baseline` in its own commit, saying why. Nothing rewrites\n"
+            f"  {_repo_path(COVERAGE_BASELINE_PATH)} automatically."
         )
-    print("\nhandle coverage: " + "; ".join(parts))
+        exit_code = 1
 
     if args.floors:
-        failures = floor_failures(metrics)
+        failures = floor_failures(metrics) + invariant_failures(metrics, live=args.from_warehouse)
         if failures:
-            print("\n[FAIL] under floor:")
+            print("\n[FAIL] under floor or invariant:")
             for line in failures:
                 print(f"  {line}")
             for relation, note in FLOOR_NOTES.items():
                 if any(failure.startswith(f"{relation}:") for failure in failures):
                     print(f"\n  {relation}: {note}")
-            return 1
-        print("\n[OK] every checked relation clears its precision/recall floor")
+            exit_code = 1
+        else:
+            print("\n[OK] every checked relation clears its floors and invariants")
 
-    return 0
+    return exit_code
 
 
 if __name__ == "__main__":

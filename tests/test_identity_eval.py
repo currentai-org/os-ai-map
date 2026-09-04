@@ -22,9 +22,13 @@ import build.identity_eval as identity_eval_module
 import build.warehouse as warehouse_module
 from build.identity import fold_for_proposal
 from build.identity_eval import (
+    COVERAGE_BASELINE_PATH,
+    FLOORS,
     KNOWN_NEGATIVES,
     MIN_TRUTH,
     ORG_ROUTES,
+    RECALL_INVARIANTS,
+    CoverageBaselineInvalid,
     EdgeColumnMissing,
     EdgeValueInvalid,
     KnownNegativeDeclaredError,
@@ -37,12 +41,16 @@ from build.identity_eval import (
     _is_table_not_found,
     _membership_from_ledger,
     candidate_key,
+    coverage_lines,
+    coverage_ratchet,
     digest_items,
     emits,
     emitted_at_threshold,
     floor_failures,
     floor_status,
     fold_handle,
+    invariant_failures,
+    load_coverage_baseline,
     load_edges_from_warehouse,
     load_truth,
     main,
@@ -52,6 +60,7 @@ from build.identity_eval import (
     replay,
     tail_membership_rows,
     validate_columns,
+    write_coverage_baseline,
 )
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -889,7 +898,7 @@ def test_floor_status_checked_and_failing():
         for i in range(30)
     ]}
     metrics = replay(edges, truth)
-    assert floor_status("org", metrics) == "checked (FAIL)"
+    assert floor_status("org", metrics) == "checked (FAIL): precision floor, recall invariant"
     assert any("org" in f for f in floor_failures(metrics))
 
 
@@ -901,8 +910,9 @@ def test_floor_status_checked_and_passing():
         for i in range(30)
     ]}
     metrics = replay(edges, truth)
-    assert floor_status("org", metrics) == "checked (pass)"
+    assert floor_status("org", metrics) == "checked (pass): precision floor, recall invariant"
     assert floor_failures(metrics) == []
+    assert invariant_failures(metrics) == []
 
 
 def test_floor_status_abstains_on_precision_when_nothing_emitted():
@@ -914,10 +924,10 @@ def test_floor_status_abstains_on_precision_when_nothing_emitted():
     metrics = replay(edges, truth)
     assert metrics["org"].precision is None
     assert metrics["org"].recall == 0.0
-    assert floor_status("org", metrics) == "checked (FAIL)"  # recall 0.0 still fails
-    failures = floor_failures(metrics)
-    assert not any("precision" in f for f in failures)
-    assert any("recall" in f for f in failures)
+    # recall 0.0 still fails -- as an invariant now, not a floor
+    assert floor_status("org", metrics) == "checked (FAIL): precision floor, recall invariant"
+    assert not any("precision" in f for f in floor_failures(metrics))
+    assert any("recall" in f for f in invariant_failures(metrics))
 
 
 def test_floor_status_passes_when_precision_abstains_and_recall_clears():
@@ -925,8 +935,299 @@ def test_floor_status_passes_when_precision_abstains_and_recall_clears():
     must read as a pass -- the abstention logic must not force a FAIL just because precision
     has nothing to say."""
     metrics = {"org": identity_eval_module.Metrics(precision=None, recall=1.0, n_truth=30, n_emitted_at_threshold=0)}
-    assert floor_status("org", metrics) == "checked (pass)"
+    assert floor_status("org", metrics) == "checked (pass): precision floor, recall invariant"
     assert floor_failures(metrics) == []
+    assert invariant_failures(metrics) == []
+
+
+# ---------------------------------------------------------------------------
+# org recall is an INVARIANT, not a coverage floor
+# ---------------------------------------------------------------------------
+
+
+def test_org_carries_a_precision_floor_and_no_recall_floor():
+    """The ruling: precision keeps its 0.97 hard floor; recoverable-pair recall moves out of
+    the floors table and into `RECALL_INVARIANTS` at 0.99."""
+    assert FLOORS["org"] == (0.97, None)
+    assert RECALL_INVARIANTS["org"] == 0.99
+
+
+def test_only_org_recall_is_an_invariant_today():
+    """The other relations' recall floors ARE coverage measures -- their truth is not defined
+    by the route the graph emits on -- so they stay floors."""
+    assert set(RECALL_INVARIANTS) == {"org"}
+    for relation in ("artifact_identity", "membership_non_scoring", "equivalence"):
+        assert FLOORS[relation][1] is not None, relation
+
+
+def test_recall_under_the_invariant_is_reported_as_an_invariant_not_a_floor():
+    """0.985 would have cleared the old 0.85 recall floor comfortably. Under the invariant it
+    fails, and the message says why: the resolver missed a pair it already had a handle for."""
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.985, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert floor_failures(metrics) == []
+    failures = invariant_failures(metrics)
+    assert len(failures) == 1
+    assert failures[0].startswith("org: recall 0.985 < invariant 0.99")
+    assert "declared handle already bridges" in failures[0]
+    assert floor_status("org", metrics) == "checked (FAIL): precision floor, recall invariant"
+
+
+def test_recall_at_the_invariant_passes():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.99, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert invariant_failures(metrics) == []
+    assert floor_status("org", metrics) == "checked (pass): precision floor, recall invariant"
+
+
+def test_the_invariant_is_waived_below_min_truth():
+    """Same gate a floor gets: an invariant over 3 truth items measures nothing either."""
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.0, n_truth=3, n_emitted_at_threshold=0
+        )
+    }
+    assert invariant_failures(metrics) == []
+    assert floor_status("org", metrics).startswith("insufficient truth")
+
+
+def test_the_table_labels_org_recall_an_invariant(capsys):
+    truth = _thirty_recoverable_github_pairs()
+    edges = {"org": [
+        {"candidate_key": f"github:acme/x{i}", "candidate_tier": "head", "org_slug": "acme",
+         "confidence": 1.0, "method": ["org_handle"]}
+        for i in range(30)
+    ]}
+    print_table(replay(edges, truth))
+    org_row = next(line for line in capsys.readouterr().out.splitlines() if line.startswith("org "))
+    assert "recall invariant" in org_row
+    assert "recall floor" not in org_row
+
+
+def test_a_relation_with_a_recall_floor_still_says_floor(capsys):
+    metrics = {
+        "equivalence": identity_eval_module.Metrics(
+            precision=1.0, recall=1.0, n_truth=30, n_emitted_at_threshold=0
+        )
+    }
+    assert floor_status("equivalence", metrics) == "checked (pass): precision floor, recall floor"
+
+
+def test_a_recall_invariant_failure_exits_one_under_floors(monkeypatch, capsys):
+    """Nothing emitted, so org recall is 0.0 against 282 recoverable pairs in the real corpus:
+    an invariant failure, and on a LIVE run it must exit 1 the way a floor failure does."""
+    monkeypatch.setattr(warehouse_module, "query", lambda sql: [])
+    assert main(["--from-warehouse", "--floors"]) == 1
+    out = capsys.readouterr().out
+    assert "[FAIL] under floor or invariant:" in out
+    assert "< invariant 0.99" in out
+
+
+def test_fixture_mode_does_not_grade_the_invariant(tmp_path, capsys):
+    """A fixture is a snapshot of edges taken against an earlier corpus, so its recall drops
+    when a product is declared, not when the resolver regresses. Grading it there would accuse
+    the resolver of a miss the snapshot's own age caused."""
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"org": []}')
+    assert main(["--edges", str(fixture), "--floors"]) == 0
+    out = capsys.readouterr().out
+    assert "recall invariant not evaluated (fixture)" in out
+    assert "invariant 0.99" not in out
+
+
+def test_the_invariant_is_skipped_in_fixture_mode_and_graded_live():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.5, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert invariant_failures(metrics, live=False) == []
+    assert invariant_failures(metrics, live=True) != []
+    assert invariant_failures(metrics) != []  # defaults to grading, never to skipping
+
+
+def test_floor_status_labels_the_invariant_as_unevaluated_in_fixture_mode():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=1.0, recall=0.5, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    # The precision floor still applies -- a wrong edge stays wrong however old the snapshot is.
+    assert floor_status("org", metrics, live=False) == (
+        "checked (pass): precision floor, recall invariant not evaluated (fixture)"
+    )
+    assert floor_status("org", metrics, live=True) == "checked (FAIL): precision floor, recall invariant"
+
+
+def test_a_precision_floor_still_fails_in_fixture_mode():
+    metrics = {
+        "org": identity_eval_module.Metrics(
+            precision=0.5, recall=1.0, n_truth=282, n_emitted_at_threshold=0
+        )
+    }
+    assert floor_status("org", metrics, live=False).startswith("checked (FAIL)")
+    assert any("precision" in f for f in floor_failures(metrics))
+
+
+# ---------------------------------------------------------------------------
+# handle coverage: the coverage metric, and its baseline ratchet
+# ---------------------------------------------------------------------------
+
+
+def test_the_committed_baseline_is_a_valid_ratio_per_route():
+    baseline = load_coverage_baseline(COVERAGE_BASELINE_PATH)
+    assert set(baseline) == set(ORG_ROUTES.values())
+    for route, (with_handle, rostered) in baseline.items():
+        assert 0 <= with_handle <= rostered, route
+
+
+def test_the_live_corpus_is_at_or_above_the_committed_baseline():
+    """The ratchet itself, run against the tree. Coverage may rise -- this is not an equality
+    check -- but a commit that drops a route's ratio fails here and in the eval."""
+    coverage = org_handle_coverage(REAL_TRUTH)
+    assert coverage_ratchet(coverage, load_coverage_baseline(COVERAGE_BASELINE_PATH)) == []
+
+
+def test_coverage_ratchet_passes_at_the_baseline_and_above_it():
+    baseline = {"github": (2, 4), "huggingface": (1, 10), "homepage_domain": (0, 0)}
+    assert coverage_ratchet(baseline, baseline) == []
+    improved = {"github": (3, 4), "huggingface": (2, 10), "homepage_domain": (1, 1)}
+    assert coverage_ratchet(improved, baseline) == []
+
+
+def test_coverage_ratchet_fails_below_the_pinned_ratio():
+    baseline = {"github": (2, 4), "huggingface": (1, 10), "homepage_domain": (0, 0)}
+    dropped = {"github": (1, 4), "huggingface": (1, 10), "homepage_domain": (0, 0)}
+    failures = coverage_ratchet(dropped, baseline)
+    assert failures == ["github: coverage 1/4 fell below the pinned 2/4"]
+
+
+def test_coverage_ratchet_is_a_ratio_not_a_count():
+    """A route whose numerator AND denominator both shrink by the same proportion has not
+    regressed: 1/2 is 2/4. A count comparison would fail this."""
+    assert coverage_ratchet({"github": (1, 2)}, {"github": (2, 4)}) == []
+    assert coverage_ratchet({"github": (1, 3)}, {"github": (2, 4)}) != []
+
+
+def test_an_empty_live_denominator_passes_vacuously():
+    """No orgs on the route means nothing to cover -- not a coverage regression."""
+    assert coverage_ratchet({"github": (0, 0)}, {"github": (2, 4)}) == []
+
+
+def test_a_route_losing_every_handle_fails():
+    """The case that matters most: the population is still there, the handles are gone."""
+    assert coverage_ratchet({"github": (0, 299)}, {"github": (2, 4)}) == [
+        "github: coverage 0/299 fell below the pinned 2/4"
+    ]
+
+
+def test_a_route_with_no_pinned_baseline_is_never_failed():
+    assert coverage_ratchet({"github": (0, 300)}, {}) == []
+
+
+def test_coverage_lines_carry_a_line_per_route_and_its_ratchet_status():
+    coverage = {"github": (1, 4), "huggingface": (2, 10), "homepage_domain": (1, 1)}
+    baseline = {"github": (2, 4), "huggingface": (2, 10)}
+    lines = coverage_lines(coverage, baseline)
+    assert len(lines) == 4  # a heading, then one line per route
+    assert "coverage = have we given the resolver enough evidence" in lines[0]
+    assert "github handles" in lines[1] and "BELOW BASELINE 2/4" in lines[1]
+    assert "hf handles" in lines[2] and "at or above baseline 2/10" in lines[2]
+    assert "homepage handles" in lines[3] and "no baseline" in lines[3]
+
+
+def test_main_exits_one_when_a_route_falls_below_its_baseline(tmp_path, monkeypatch, capsys):
+    """The ratchet holds without `--floors`: it is a fact about the corpus, not a judgment
+    about the graph."""
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps({"github": [299, 299]}))
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 1
+    out = capsys.readouterr().out
+    assert "[FAIL] handle coverage fell below its pinned baseline:" in out
+    assert "fell below the pinned 299/299" in out
+    assert "--write-coverage-baseline" in out  # how the ratchet is raised deliberately
+
+
+def test_main_exits_zero_at_the_baseline(tmp_path, monkeypatch, capsys):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps({"github": [0, 299]}))
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 0
+    assert "at or above baseline 0/299" in capsys.readouterr().out
+
+
+def test_write_coverage_baseline_rewrites_the_file_from_the_corpus(tmp_path):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps({"github": [1, 1]}))
+    written = write_coverage_baseline(org_handle_coverage(REAL_TRUTH), baseline)
+    assert written == org_handle_coverage(REAL_TRUTH)
+    assert load_coverage_baseline(baseline) == written
+    assert set(json.loads(baseline.read_text())) == set(ORG_ROUTES.values())
+
+
+def test_the_write_coverage_baseline_flag_pins_and_scores_nothing(tmp_path, monkeypatch, capsys):
+    baseline = tmp_path / "baseline.json"
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    assert main(["--write-coverage-baseline"]) == 0
+    out = capsys.readouterr().out
+    assert "pinned handle coverage" in out
+    assert "relation" not in out  # no table -- this mode scores nothing
+    assert load_coverage_baseline(baseline) == org_handle_coverage(REAL_TRUTH)
+
+
+def test_the_baseline_is_never_rewritten_by_a_scoring_run(tmp_path, monkeypatch):
+    """A ratchet that raises its own reference value on failure ratchets nothing."""
+    baseline = tmp_path / "baseline.json"
+    pinned = {"github": [299, 299]}
+    baseline.write_text(json.dumps(pinned))
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 1
+    assert json.loads(baseline.read_text()) == pinned
+
+
+def test_a_missing_baseline_file_reads_as_no_ratchet(tmp_path):
+    assert load_coverage_baseline(tmp_path / "absent.json") == {}
+
+
+@pytest.mark.parametrize("body", [
+    '["github"]',
+    '{"gitlab": [1, 2]}',
+    '{"github": [1]}',
+    '{"github": ["1", "2"]}',
+    '{"github": [3, 2]}',
+    '{"github": [-1, 2]}',
+    "not json at all",
+])
+def test_a_malformed_baseline_raises_rather_than_defaulting_to_empty(tmp_path, body):
+    """An empty read would be a ratchet holding nothing, which is the one failure mode a
+    ratchet must not have."""
+    path = tmp_path / "baseline.json"
+    path.write_text(body)
+    with pytest.raises(CoverageBaselineInvalid):
+        load_coverage_baseline(path)
+
+
+def test_a_malformed_baseline_exits_two_from_main(tmp_path, monkeypatch, capsys):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text('{"gitlab": [1, 2]}')
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 2
+    assert "not one of" in capsys.readouterr().out
 
 
 # ---------------------------------------------------------------------------
