@@ -42,6 +42,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   09:00 UTC): membership, equivalence, and org edges the identity graph could not auto-emit,
   capped at 25 a week, each with a pre-filled ledger entry ready to paste into
   `sources/resolution_ledger.yaml` once decided (#365).
+- The digest renderer now reads the table's own `rank` and never re-sorts: items render in
+  `currentai.identity.digest`'s rank order, grouped by relation for reading but each carrying
+  its global rank, with a "Top 5 this week" summary at the top; `evidence` renders as linked
+  bullets instead of bare method names, parked items collapse to a per-relation count, and the
+  scorecard gets a fourth line breaking the ranked set down by relation (#365).
 - Organization platform handles (`sources/org_handles.yaml`) and model release-name families
   (`sources/model_families.yaml`), published as `registry.org_handles` and
   `registry.model_families` — declared identity evidence for who owns which account and which

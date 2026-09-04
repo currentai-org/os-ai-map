@@ -6,21 +6,30 @@ active review queue at 25 rows. This module renders that table into the markdown
 one GitHub issue, so the review happens where Carl already works instead of in a warehouse
 client.
 
-## Section order and the cap
+## Ranking and presentation are separate
 
-`render()` groups items into four sections -- equivalence, membership, org, artifact
-identity, in that fixed order (equivalence first, per the design's digest contract) -- and
-within a section orders by `blast_radius` descending, `tiebreak` descending, `confidence`
-descending. Only `state in (active, resurfaced)` rows render as reviewable items; the SQL
-already caps those at 25 rows per sweep, but `render()` re-applies the same cap defensively
-(so a fixture or a future SQL revision cannot silently blow the queue past what a person can
-review in a sitting) and says how many were cut if more than 25 arrive.
+Ranking is `udms/identity_digest.sql`'s job (reviewer ruling, 2026-09-04): the SQL computes a
+global `rank INTEGER`, 1..25 for this week's reviewable items and `NULL` for everything else.
+`render()` orders items by that column and never re-sorts them by a key of its own -- there is
+no `_rank_key` in this module any more. Only `state in (active, resurfaced)` rows carrying a
+non-`NULL` rank render as items; the SQL already caps those at 25 per sweep, so more than 25
+arriving here should not happen, but `render()` still renders only the first 25 by rank and
+prints a warning line if it does.
+
+Presentation groups those ranked items into four sections for readability -- equivalence,
+membership, org, artifact identity, in that fixed order -- but each item's heading carries its
+global rank (e.g. `#7`), so the cross-section order the SQL computed stays visible even though
+the page reads section by section. A "Top 5 this week" list at the top of the issue names the
+five highest-ranked items regardless of section.
 
 `parked` rows never render as items -- they are weak (name-match-only) evidence recently
-seen, held back per the design's resurfacing rule -- and appear only as a count per section.
-`pool` rows are eligible items that ranked below this week's cap; they appear only as one
-total count in the footer, not per section, since they are overflow rather than a review
-decision.
+seen, held back per the design's resurfacing rule -- and appear only as a count per section,
+alongside the sentence explaining why. `resurfaced` items are ranked and rendered like any
+other item, but carry their `resurfaced_reason` (`age` is the only one the SQL produces today).
+Alias-evidence items (`product_alias`, confidence 0.9) are `active` and render like any other
+item -- they are not a distinct case. `pool` rows are eligible items that ranked below this
+week's cap; they appear only as one total count in the footer, not per section, since they are
+overflow rather than a review decision.
 
 ## The pre-filled block, per relation
 
@@ -48,7 +57,15 @@ Every YAML block validates against its schema (see `tests/test_identity_digest.p
 whose `relation` is none of the four above raises in `render()`, before the cap is even
 applied -- an unrecognized relation must never silently rank, consume a cap slot, and vanish.
 
-## The three scorecard numbers
+## Evidence rendering
+
+Each `evidence` element is `<url> | <excerpt>` -- a link a reviewer can open and a phrase
+saying what it says. Each renders as its own bullet, `- [excerpt](url)`; an element with no
+` | ` falls back to plain text rather than breaking the item. `method` never substitutes for
+evidence -- it stays its own compact, comma-joined label line, since a method name is the
+inference's name, not something a reviewer can check.
+
+## The scorecard
 
 - **Unresolved pool size**: every row in the digest table, since none of them carry
   `state = resolved` (that only happens once a ruling lands and the *next* sweep drops the
@@ -58,7 +75,11 @@ applied -- an unrecognized relation must never silently rank, consume a cap slot
   it is counted from `sources/resolution_ledger.yaml` entries whose `decided_on` falls in
   the same window, via `build.resolution.load()`.
 - **Oldest unresolved age**: `week`'s Monday minus the earliest `first_seen` across every
-  row, in whole weeks. Catches an item starved behind the top-25 ranking indefinitely.
+  row (not just the ranked ones), in whole weeks. Catches an item starved behind the top-25
+  ranking indefinitely.
+- **Ranked items by relation**: how the ranked/rendered set (post-cap) splits across the four
+  sections -- a quick check that one relation has not swallowed the whole queue.
+- **Overflow this week**: `pool`-state rows -- eligible but ranked below the cap.
 
 CLI:
     uv run python -m build.identity_digest --week 2026-36 --out /tmp/digest.md
@@ -148,14 +169,18 @@ def _week_bounds(week: str) -> tuple[date, date]:
     return monday, monday + timedelta(days=6)
 
 
-def _rank_key(row: dict) -> tuple:
-    """Section order, then `blast_radius` desc, `tiebreak` desc, `confidence` desc."""
-    relation = row.get("relation")
-    section_rank = RELATION_ORDER.index(relation) if relation in RELATION_ORDER else len(RELATION_ORDER)
-    blast_radius = int(row.get("blast_radius") or 0)
-    tiebreak = int(row.get("tiebreak") or 0)
-    confidence = float(row.get("confidence") or 0.0)
-    return (section_rank, -blast_radius, -tiebreak, -confidence)
+def _render_evidence_bullet(item: str) -> str:
+    """One `evidence` element rendered as a markdown bullet body (without the leading `- `).
+
+    The warehouse emits each element as `<url> | <excerpt>` -- a link a reviewer can open and
+    a phrase saying what it says. An element with no ` | ` (a fixture shortcut, or a future
+    evidence source that has no URL) falls back to plain text rather than raising, since a
+    malformed evidence string is not a reason to drop the whole item.
+    """
+    if " | " in item:
+        url, excerpt = item.split(" | ", 1)
+        return f"[{excerpt}]({url})"
+    return item
 
 
 def _ledger_entry(row: dict, decided_on: date) -> dict:
@@ -250,19 +275,26 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
     penalties = _as_list(row.get("penalties"))
     options = _as_list(row.get("options"))
     relation = row.get("relation")
+    rank = row.get("rank")
 
     lines = [
-        f"#### `{row.get('item_id')}`",
+        f"#### #{rank} `{row.get('item_id')}`",
         "",
         f"- Left: `({left_kind}, {left_id})`",
         f"- Right: `({right_kind}, {right_id})`",
         f"- Confidence: {row.get('confidence')}",
         f"- Method: {', '.join(methods) if methods else 'none'}",
-        f"- Evidence: {', '.join(evidence) if evidence else 'none'}",
+        "- Evidence:",
+    ]
+    if evidence:
+        lines.extend(f"  - {_render_evidence_bullet(e)}" for e in evidence)
+    else:
+        lines.append("  - none")
+    lines.extend([
         f"- Penalties: {', '.join(penalties) if penalties else 'none'}",
         f"- Proposed action: {row.get('proposed_action')}",
         f"- Options: {', '.join(options) if options else 'none'}",
-    ]
+    ])
     if row.get("state") == "resurfaced" and row.get("resurfaced_reason"):
         lines.append(f"- Resurfaced reason: {row['resurfaced_reason']}")
     lines.append("")
@@ -324,6 +356,17 @@ def _oldest_age_weeks(rows: list[dict], monday: date) -> int:
 def render(rows: list[dict], week: str, resolved_count: int | None = None) -> str:
     """The digest issue body for `week` (`"YYYY-WW"`), rendered from `rows`.
 
+    Ranking is `udms/identity_digest.sql`'s job, not this module's: `render()` orders items by
+    the table's own `rank` column (ascending, `NULL` excluded) and never re-sorts them by any
+    key of its own. `state in (active, resurfaced)` rows carrying a non-`NULL` rank are this
+    week's reviewable items, capped at 25 -- the SQL already enforces that cap, so more than 25
+    ranked rows arriving here should never happen; if it does, the first 25 by rank render and
+    a warning prints (see below), the same defensive posture the old key-based cap had.
+
+    Items render grouped under relation headings, in the fixed section order (equivalence,
+    membership, org, artifact identity) for readability, but each item's heading carries its
+    global `rank` so the cross-section order the SQL computed stays visible.
+
     Pure over its arguments when `resolved_count` is supplied (the CLI's `main()` always
     supplies it, computed once via `_resolved_this_week`). Left `None`, it falls back to a
     read of `sources/resolution_ledger.yaml` for convenience -- callers that don't care where
@@ -342,10 +385,17 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
     if resolved_count is None:
         resolved_count = _resolved_this_week(monday, sunday)
 
-    eligible = [r for r in rows if r.get("state") in ACTIVE_STATES]
-    eligible.sort(key=_rank_key)
-    cut = max(0, len(eligible) - CAP)
-    capped = eligible[:CAP]
+    ranked_rows = [
+        r for r in rows if r.get("state") in ACTIVE_STATES and r.get("rank") is not None
+    ]
+    ranked_rows.sort(key=lambda r: r["rank"])
+    cut = max(0, len(ranked_rows) - CAP)
+    if cut:
+        print(
+            f"warning: {len(ranked_rows)} ranked item(s) exceed the weekly cap of {CAP}; "
+            f"rendering the first {CAP} by rank."
+        )
+    capped = ranked_rows[:CAP]
 
     parked_by_relation: dict[str, int] = {}
     pool_total = 0
@@ -358,6 +408,22 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
             pool_total += 1
 
     lines = [f"# identity digest: {week}", ""]
+
+    lines.append("### Top 5 this week")
+    lines.append("")
+    if capped:
+        for row in capped[:5]:
+            left_kind, left_id = _pair(row.get("left"))
+            right_kind, right_id = _pair(row.get("right"))
+            lines.append(
+                f"{row['rank']}. {RELATION_LABELS.get(row.get('relation'), row.get('relation'))}: "
+                f"`{left_kind}:{left_id}` → `{right_kind}:{right_id}` "
+                f"(confidence {row.get('confidence')})"
+            )
+    else:
+        lines.append("_No ranked items this week._")
+    lines.append("")
+
     for relation in RELATION_ORDER:
         items = [r for r in capped if r.get("relation") == relation]
         label = RELATION_LABELS[relation]
@@ -376,7 +442,10 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         for row in items:
             lines.extend(_render_item(row, monday))
         parked_n = parked_by_relation.get(relation, 0)
-        lines.append(f"Parked (weak evidence only, held back): {parked_n}")
+        lines.append(
+            f"Parked: {parked_n} (name-match only; resurfaces after 56 days or when evidence "
+            f"changes)"
+        )
         lines.append("")
 
     if cut:
@@ -392,6 +461,10 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         and (_d := _row_date(r["first_seen"])) is not None and monday <= _d <= sunday
     )
     oldest_weeks = _oldest_age_weeks(rows, monday)
+    ranked_by_relation = {
+        relation: len([r for r in capped if r.get("relation") == relation])
+        for relation in RELATION_ORDER
+    }
 
     lines.append("### Scorecard")
     lines.append("")
@@ -399,6 +472,10 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
     lines.append(f"- New vs resolved this week: {new_count} new, {resolved_count} resolved")
     lines.append(
         f"- Oldest unresolved age: {oldest_weeks} week{'s' if oldest_weeks != 1 else ''}"
+    )
+    lines.append(
+        "- Ranked items by relation: "
+        + ", ".join(f"{RELATION_LABELS[r]} {ranked_by_relation[r]}" for r in RELATION_ORDER)
     )
     lines.append(f"- Overflow this week (ranked below the cap, not reviewed): {pool_total}")
     lines.append("")

@@ -43,9 +43,20 @@ ORG_HANDLE_ENTRY_SCHEMA = {
 }
 
 
-def _row(relation, item_id, *, state="active", blast_radius=1, tiebreak=0, confidence=0.5,
+def _row(relation, item_id, *, state="active", rank=1, blast_radius=1, tiebreak=0, confidence=0.5,
          left=None, right=None, first_seen="2026-08-01", resurfaced_reason=None,
-         method=("declared",)):
+         method=("declared",), evidence=None):
+    """A digest row in the current `udms/identity_digest.sql` column contract.
+
+    `rank` defaults to 1 for the common single-row case; a test exercising rank order supplies
+    distinct values explicitly, since `render()` no longer derives an order from
+    `blast_radius`/`tiebreak`/`confidence` -- those three stay as plain output columns a fixture
+    can still set, but they are not read by the renderer any more. `evidence` defaults to one
+    `<url> | <excerpt>` string per method so a body always has something to link, matching the
+    warehouse's real shape rather than the old method-name-as-evidence placeholder.
+    """
+    if evidence is None:
+        evidence = [f"https://example.com/{item_id} | {m}" for m in method]
     return {
         "sweep_week": "2026-08-31",
         "relation": relation,
@@ -55,7 +66,7 @@ def _row(relation, item_id, *, state="active", blast_radius=1, tiebreak=0, confi
         "right": right or {"kind": "product", "id": "target"},
         "confidence": confidence,
         "method": list(method),
-        "evidence": list(method),
+        "evidence": list(evidence),
         "penalties": [],
         "proposed_action": f"confirm_{relation}_edge",
         "blast_radius": blast_radius,
@@ -66,6 +77,7 @@ def _row(relation, item_id, *, state="active", blast_radius=1, tiebreak=0, confi
         "last_evidence_change": first_seen,
         "state": state,
         "resurfaced_reason": resurfaced_reason,
+        "rank": rank if state in ("active", "resurfaced") else None,
     }
 
 
@@ -96,33 +108,71 @@ def test_sections_render_equivalence_first_then_membership_org_artifact_identity
     assert order == ["Equivalence", "Membership", "Org", "Artifact identity"]
 
 
-def test_within_a_section_ranks_by_blast_radius_then_tiebreak_then_confidence():
+def test_within_a_section_items_render_in_the_tables_rank_order():
+    """`render()` orders strictly by the `rank` column, ascending -- not by blast_radius,
+    tiebreak, or confidence (those are carried as plain columns but no longer read for
+    ordering). Rows are deliberately built with a rank order that contradicts what the old
+    `_rank_key` (blast_radius desc, tiebreak desc, confidence desc) would have produced, so a
+    regression back to that key would fail this test.
+    """
     rows = [
-        _row("membership", "low", blast_radius=1, tiebreak=0, confidence=0.1),
-        _row("membership", "high-blast", blast_radius=3, tiebreak=0, confidence=0.5),
-        _row("membership", "mid-tiebreak", blast_radius=1, tiebreak=100, confidence=0.5),
-        _row("membership", "mid-confidence", blast_radius=1, tiebreak=0, confidence=0.6),
+        _row("membership", "would-be-last", rank=1, blast_radius=1, tiebreak=0, confidence=0.1),
+        _row("membership", "would-be-first", rank=4, blast_radius=3, tiebreak=0, confidence=0.5),
+        _row("membership", "would-be-second", rank=3, blast_radius=1, tiebreak=100, confidence=0.5),
+        _row("membership", "would-be-third", rank=2, blast_radius=1, tiebreak=0, confidence=0.6),
     ]
     body = digest.render(rows, "2026-36", resolved_count=0)
     positions = {row_id: body.index(f"`{row_id}`") for row_id in
-                 ("high-blast", "mid-tiebreak", "mid-confidence", "low")}
+                 ("would-be-last", "would-be-third", "would-be-second", "would-be-first")}
     ordered = sorted(positions, key=positions.get)
-    assert ordered == ["high-blast", "mid-tiebreak", "mid-confidence", "low"]
+    assert ordered == ["would-be-last", "would-be-third", "would-be-second", "would-be-first"]
+
+
+def test_item_heading_carries_its_global_rank():
+    rows = [_row("membership", "m1", rank=7)]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "#### #7 `m1`" in body
+
+
+def test_rows_missing_rank_do_not_render_as_items():
+    """An `active`/`resurfaced` row with no rank should not happen per the SQL contract, but
+    `render()` must not crash or silently treat it as rank-0 -- it is simply not an item this
+    week."""
+    row = _row("membership", "no-rank")
+    row["rank"] = None
+    body = digest.render([row], "2026-36", resolved_count=0)
+    assert "`no-rank`" not in body
 
 
 # -- cap, parked/pool policy, and unknown relations -------------------------------------------
 
 
-def test_cap_of_25_active_items_and_the_overflow_is_reported():
-    rows = [_row("membership", f"item-{i}", blast_radius=1, tiebreak=100 - i) for i in range(30)]
+def test_cap_of_25_ranked_items_and_the_overflow_is_reported():
+    """Should not happen per the SQL contract (it caps `rank` at 25 itself), but `render()`
+    still defends: only the first 25 by rank render, the rest are reported as cut, and a
+    warning prints."""
+    rows = [_row("membership", f"item-{i}", rank=i + 1) for i in range(30)]
     body = digest.render(rows, "2026-36", resolved_count=0)
-    assert body.count("#### `item-") == 25
+    assert body.count("`item-") == 25
     assert "5 additional item(s)" in body
+    for i in range(25):
+        assert f"item-{i}" in body
+    for i in range(25, 30):
+        assert f"`item-{i}`" not in body
+
+
+def test_warning_prints_when_more_than_25_are_ranked(capsys):
+    rows = [_row("membership", f"item-{i}", rank=i + 1) for i in range(26)]
+    digest.render(rows, "2026-36", resolved_count=0)
+    out = capsys.readouterr().out
+    assert "warning" in out.lower()
+    assert "26" in out
+    assert "25" in out
 
 
 def test_parked_rows_never_render_as_items_only_as_a_count():
     rows = [
-        _row("membership", "active-one", state="active"),
+        _row("membership", "active-one", state="active", rank=1),
         _row("membership", "parked-one", state="parked"),
         _row("membership", "parked-two", state="parked"),
     ]
@@ -130,14 +180,14 @@ def test_parked_rows_never_render_as_items_only_as_a_count():
     assert "`parked-one`" not in body
     assert "`parked-two`" not in body
     assert "`active-one`" in body
-    assert "Parked (weak evidence only, held back): 2" in body
+    assert "Parked: 2 (name-match only; resurfaces after 56 days or when evidence changes)" in body
 
 
 def test_pool_rows_render_as_a_single_total_not_per_section():
     rows = [
         _row("membership", "m-pool", state="pool"),
         _row("org", "o-pool", state="pool"),
-        _row("equivalence", "e-active", state="active"),
+        _row("equivalence", "e-active", state="active", rank=1),
     ]
     body = digest.render(rows, "2026-36", resolved_count=0)
     assert "`m-pool`" not in body
@@ -146,9 +196,39 @@ def test_pool_rows_render_as_a_single_total_not_per_section():
 
 
 def test_resurfaced_items_carry_their_reason():
-    rows = [_row("org", "resurfaced-one", state="resurfaced", resurfaced_reason="age")]
+    rows = [_row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="age")]
     body = digest.render(rows, "2026-36", resolved_count=0)
     assert "Resurfaced reason: age" in body
+    assert "`resurfaced-one`" in body
+
+
+def test_resurfaced_items_are_ranked_and_rendered_like_any_other_item():
+    """Alongside `active`, `resurfaced` is one of the two states that competes for the cap and
+    renders as an item -- not a third bucket."""
+    rows = [
+        _row("org", "resurfaced-one", state="resurfaced", rank=1, resurfaced_reason="age"),
+        _row("org", "active-one", state="active", rank=2),
+    ]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "### Org (2 items)" in body
+    assert "`resurfaced-one`" in body
+    assert "`active-one`" in body
+
+
+def test_alias_evidence_item_renders_like_any_other_active_item():
+    """Alias-evidence items (`product_alias`, confidence 0.9) are `active`, not a distinct
+    case -- they render exactly like any other item, YAML block included."""
+    rows = [_row(
+        "equivalence", "alias-one", state="active", rank=1, confidence=0.9,
+        method=["product_alias"],
+        evidence=["https://huggingface.co/acme/widget-v2 | product_aliases: widget-v2 -> widget"],
+        left={"kind": "huggingface_model", "id": "acme/widget-v2"},
+        right={"kind": "product", "id": "widget"},
+    )]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "`alias-one`" in body
+    assert "```yaml" in body
+    assert "[product_aliases: widget-v2 -> widget](https://huggingface.co/acme/widget-v2)" in body
 
 
 def test_unknown_relation_raises_before_the_cap():
@@ -163,11 +243,76 @@ def test_artifact_identity_section_says_why_it_is_empty():
     assert "does not yet union artifact_identity edges" in body
 
 
+# -- evidence rendering -------------------------------------------------------------------------
+
+
+def test_evidence_element_renders_as_a_markdown_link_bullet():
+    rows = [_row(
+        "membership", "m1", rank=1,
+        evidence=["https://github.com/acme/widget | acme owns the widget backlink"],
+    )]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "- [acme owns the widget backlink](https://github.com/acme/widget)" in body
+
+
+def test_evidence_element_without_a_pipe_falls_back_to_plain_text():
+    rows = [_row("membership", "m1", rank=1, evidence=["no url here"])]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "- no url here" in body
+
+
+def test_method_is_a_compact_label_never_rendered_as_evidence():
+    rows = [_row(
+        "membership", "m1", rank=1, method=["package_backlink"],
+        evidence=["https://pypi.org/project/m1 | listed as a dependant of acme"],
+    )]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "- Method: package_backlink" in body
+    # the method name never appears as its own evidence bullet
+    assert "- package_backlink" not in body
+
+
+def test_no_evidence_renders_a_none_bullet():
+    rows = [_row("membership", "m1", rank=1, evidence=[])]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "- Evidence:" in body
+    assert "  - none" in body
+
+
+# -- the "Top 5 this week" summary ----------------------------------------------------------------
+
+
+def test_top_5_lists_the_five_highest_ranked_items_regardless_of_section():
+    rows = [
+        _row("membership", "m1", rank=1),
+        _row("org", "o1", rank=2),
+        _row("equivalence", "e1", rank=3),
+        _row("membership", "m2", rank=4),
+        _row("org", "o2", rank=5),
+        _row("equivalence", "e2", rank=6),
+    ]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    top5 = body.split("### Top 5 this week")[1].split("### Equivalence")[0]
+    for item_id in ("m1", "o1", "e1", "m2", "o2"):
+        assert item_id in top5
+    assert "e2" not in top5
+
+
+def test_top_5_shows_rank_relation_left_right_and_confidence():
+    rows = [_row(
+        "membership", "m1", rank=1, confidence=0.75,
+        left={"kind": "pypi", "id": "m1"}, right={"kind": "product", "id": "acme"},
+    )]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    top5 = body.split("### Top 5 this week")[1].split("###", 1)[0]
+    assert "1. Membership: `pypi:m1` → `product:acme` (confidence 0.75)" in top5
+
+
 # -- per-relation blocks: membership/equivalence -> resolution_ledger.yaml --------------------
 
 
 def test_membership_ledger_entry_uses_product_membership_relation():
-    rows = [_row("membership", "m1", left={"kind": "pypi", "id": "m1"},
+    rows = [_row("membership", "m1", rank=1, left={"kind": "pypi", "id": "m1"},
                  right={"kind": "product", "id": "acme"})]
     body = digest.render(rows, "2026-36", resolved_count=0)
     entry = yaml.safe_load(body.split("```yaml")[1].split("```")[0])[0]
@@ -328,6 +473,30 @@ def test_resolved_count_excludes_entries_outside_the_digests_relations(tmp_path,
                                     "verdict": "confirmed", "note": "not a digest relation"},
     }
     assert all(resolution.relation_of(e) not in resolution.RELATIONS for e in fake_entries.values())
+
+
+def test_footer_reports_ranked_items_by_relation():
+    rows = [
+        _row("membership", "m1", rank=1),
+        _row("membership", "m2", rank=2),
+        _row("org", "o1", rank=3),
+    ]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert (
+        "Ranked items by relation: Equivalence 0, Membership 2, Org 1, Artifact identity 0"
+        in body
+    )
+
+
+def test_oldest_unresolved_age_uses_first_seen_across_all_rows_not_just_ranked():
+    """Footer 'oldest unresolved age' reads `first_seen` across every row -- parked and pool
+    included -- since a starved item is exactly the one the top-25 ranking never surfaces."""
+    rows = [
+        _row("membership", "old-parked", state="parked", first_seen="2026-07-06"),
+        _row("membership", "new-ranked", rank=1, first_seen="2026-08-25"),
+    ]
+    body = digest.render(rows, "2026-36", resolved_count=0)
+    assert "Oldest unresolved age: 8 weeks" in body
 
 
 def test_oldest_unresolved_age_in_weeks_from_first_seen():
