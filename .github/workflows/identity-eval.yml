@@ -25,9 +25,12 @@ name: identity-eval
 # test_scoring_bearing_*) and run on every PR through validate.yml regardless of this
 # workflow. Only schedule and workflow_dispatch touch the warehouse.
 #
-# sources/products/** and sources/organizations/** are in the path triggers because that is
-# where membership, org and artifact-identity TRUTH is built from (build.identity_eval.load_truth)
-# -- a roster edit changes truth without touching build/identity*.py or the ledger.
+# sources/products/**, sources/organizations/**, sources/registry/** and sources/org_handles.yaml
+# are in the path triggers because that is where TRUTH is built from
+# (build.identity_eval.load_truth) -- a roster edit, a tail row or a handle changes truth without
+# touching build/identity*.py or the ledger. Tail rows are declarations too, so sources/registry/**
+# moves membership, org and artifact-identity truth; org_handles.yaml decides which org truth pairs
+# are recoverable at all, and so moves org recall's denominator.
 # sources/model_families.yaml does not exist in this repo yet (Task 4 adds the table it backs);
 # the path is kept as a forward reference so this workflow does not need a second edit when it
 # lands.
@@ -44,6 +47,8 @@ on:
       - "sources/model_families.yaml"
       - "sources/products/**"
       - "sources/organizations/**"
+      - "sources/registry/**"
+      - "sources/org_handles.yaml"
   pull_request:
     paths:
       - "build/identity*.py"
@@ -51,6 +56,8 @@ on:
       - "sources/model_families.yaml"
       - "sources/products/**"
       - "sources/organizations/**"
+      - "sources/registry/**"
+      - "sources/org_handles.yaml"
 
 jobs:
   identity-eval:
