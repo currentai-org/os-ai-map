@@ -322,7 +322,16 @@ RECLAIM_REQUIRED_FIELDS = (
     "table", "prior_disposition", "prior_date", "new_disposition", "date", "reason",
     "governed_reader",
 )
-EXTERNALIZATION_SCHEMA_VERSION = 2
+# Only a frozen table can be reclaimed. A `transferred` table is owned by a NAMED DESTINATION
+# repository, so contracting it here would force `owner: oso` (which every contract must declare)
+# to be false, and the mirror's model_id/verified_revision would anchor to a model the destination
+# now owns. Reclaiming a transferred table therefore needs a ruling, not a gate that shrugs.
+RECLAIMABLE_FROM = {"frozen-without-producer"}
+# 3 adds the reclaim block (`reclaims`, `reclaimed_count`, `still_external_count`, `reclaim_note`)
+# to the version-2 document. Both are accepted: a version-2 receipt has no reclaims, and the
+# reclaim fields fail closed when absent, so an older receipt still validates.
+EXTERNALIZATION_SCHEMA_VERSION = 3
+EXTERNALIZATION_SCHEMA_VERSIONS = {2, 3}
 PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
 # The externalized artifacts live under these path prefixes; every file that existed under them
 # at the base commit and is now gone must be archived in the receipt (completeness check).
@@ -359,8 +368,9 @@ def reclaimed_tables() -> set[str]:
 def still_externalized() -> list[dict]:
     """The externalization entries whose tables have NOT been reclaimed.
 
-    `len(externalized()) - len(reclaims())` by construction, which is the arithmetic the receipt
-    states in `still_external_count` and the gate re-derives.
+    A table-membership filter. Its size is `len(externalized()) - len(reclaims())` as the gates
+    enforce -- they require every reclaim to name a distinct table that has a prior entry -- and
+    that is the arithmetic the receipt states in `still_external_count`.
     """
     reclaimed = reclaimed_tables()
     return [e for e in externalized() if e.get("table") not in reclaimed]
@@ -492,7 +502,8 @@ def reclaim_violations() -> list[str]:
       and no table is reclaimed twice;
     * HISTORY -- the table has a prior externalization entry in the same receipt whose
       `disposition` and `recorded_at` equal the record's `prior_disposition` and `prior_date`, so
-      the record names the state it is transitioning FROM and cannot invent one;
+      the record names the state it is transitioning FROM and cannot invent one, and that prior
+      disposition is in RECLAIMABLE_FROM (only a frozen table; a `transferred` one needs a ruling);
     * READER -- `governed_reader` is a file that exists in this tree AND genuinely reads the
       table, re-derived from the same SQL/Python scanner the rest of the graph uses. A reclaim is
       caused by an in-scope reader; without one the table has no business back in the graph;
@@ -551,11 +562,17 @@ def reclaim_violations() -> list[str]:
                 problems.append(
                     f"{t}: reclaim prior_date {r.get('prior_date')!r} != the externalization "
                     f"entry's recorded_at {prior.get('recorded_at')!r}")
+            if prior.get("disposition") not in RECLAIMABLE_FROM:
+                problems.append(
+                    f"{t}: cannot reclaim from disposition {prior.get('disposition')!r}; only "
+                    f"{sorted(RECLAIMABLE_FROM)} is reclaimable. A transferred table is owned by "
+                    "its named destination, so a contract's `owner: oso` would be false and the "
+                    "mirror would anchor to a model that repo now owns -- this needs a ruling")
 
         # READER -- the in-scope file that put the table back in the graph, verified by reading it.
         reader = r.get("governed_reader")
         if reader:
-            if not (ROOT / reader).exists():
+            if not _worktree_has(reader):
                 problems.append(
                     f"{t}: reclaim governed_reader {reader} does not exist in this tree; a "
                     "reclaim needs the in-repo asset that reads the table")
@@ -591,15 +608,22 @@ def reclaim_violations() -> list[str]:
                 f"record; append a reclaims entry (new_disposition: {RECLAIM_DISPOSITION}) rather "
                 "than re-entering the graph silently")
 
+    # The reclaim block arrived with schema 3; a version-2 receipt predates it and carries none.
+    if records and receipt.get("schema_version") != EXTERNALIZATION_SCHEMA_VERSION:
+        problems.append(
+            f"receipt carries {len(records)} reclaim record(s) but declares schema_version "
+            f"{receipt.get('schema_version')!r}; reclaims need schema_version "
+            f"{EXTERNALIZATION_SCHEMA_VERSION}")
     # The arithmetic is stated in the file, not inferred by the reader.
-    if receipt.get("reclaimed_count") != len(records):
-        problems.append(
-            f"receipt reclaimed_count {receipt.get('reclaimed_count')!r} != {len(records)} "
-            "reclaim records")
-    if receipt.get("still_external_count") != len(entries) - len(records):
-        problems.append(
-            f"receipt still_external_count {receipt.get('still_external_count')!r} != "
-            f"{len(entries)} externalized - {len(records)} reclaimed")
+    if receipt.get("schema_version") == EXTERNALIZATION_SCHEMA_VERSION:
+        if receipt.get("reclaimed_count") != len(records):
+            problems.append(
+                f"receipt reclaimed_count {receipt.get('reclaimed_count')!r} != {len(records)} "
+                "reclaim records")
+        if receipt.get("still_external_count") != len(entries) - len(records):
+            problems.append(
+                f"receipt still_external_count {receipt.get('still_external_count')!r} != "
+                f"{len(entries)} externalized - {len(records)} reclaimed")
     return problems
 
 
@@ -660,9 +684,10 @@ def externalization_receipt_violations() -> list[str]:
     problems += reclaim_violations()
 
     # -- document well-formedness --------------------------------------------------
-    if receipt.get("schema_version") != EXTERNALIZATION_SCHEMA_VERSION:
+    if receipt.get("schema_version") not in EXTERNALIZATION_SCHEMA_VERSIONS:
         problems.append(
-            f"receipt schema_version {receipt.get('schema_version')!r} != {EXTERNALIZATION_SCHEMA_VERSION}")
+            f"receipt schema_version {receipt.get('schema_version')!r} not in "
+            f"{sorted(EXTERNALIZATION_SCHEMA_VERSIONS)}")
     if receipt.get("count") != len(entries):
         problems.append(f"receipt count {receipt.get('count')!r} != {len(entries)} entries")
     ids = [e.get("id") for e in entries]
@@ -720,6 +745,11 @@ def externalization_receipt_violations() -> list[str]:
     producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
     producer_tables = {table_for_path(p) for p in producers if p}
     archived_all: set[str] = set()
+    # A reclaim re-admits ONLY the files its own contract claims -- the mirror model (and a schema
+    # file beside it), whose bytes `_mirror_integrity` then binds. Every other archived path stays
+    # under the "gone from the worktree" rule, so a reclaim cannot smuggle a fetcher or a data file
+    # back in, and only the contract's own mirror path may derive the reclaimed table.
+    deps_by_table_here = {d["table"]: d for d in dependencies() if d.get("table")}
 
     for e in entries:
         t = e.get("table")
@@ -737,8 +767,16 @@ def externalization_receipt_violations() -> list[str]:
             problems.append(
                 f"{t}: externalized but also a dependency contract; record the transition as a "
                 f"reclaim (new_disposition: {RECLAIM_DISPOSITION}) if an in-scope asset now reads it")
-        if t in producer_tables and t not in reclaimed:
-            problems.append(f"{t}: externalized but a repository model file still produces it")
+        # A reclaimed table may be derived by exactly one path: its contract's mirror model. Any
+        # other repo model file deriving it is still a producer, reclaim or not.
+        mirror_model = None
+        if t in reclaimed:
+            mirror_model = ((deps_by_table_here.get(t) or {}).get("files") or {}).get("model")
+        other_producers = {p for p in producers if p and p != mirror_model and table_for_path(p) == t}
+        if t in producer_tables and (t not in reclaimed or other_producers):
+            problems.append(
+                f"{t}: externalized but a repository model file still produces it"
+                + (f" ({', '.join(sorted(other_producers))})" if other_producers else ""))
 
         # identity + population reproduce from the base asset
         if e.get("id") != b.get("id"):
@@ -760,7 +798,13 @@ def externalization_receipt_violations() -> list[str]:
             if extra:
                 problems.append(f"{t}: platform carries {sorted(extra)} but no audited model exists to source it")
 
-        # archived hashes reproduce from base blobs; the files are really gone
+        # archived hashes reproduce from base blobs; the files are really gone -- except the ones
+        # a reclaim's own contract claims, which are content-bound by _mirror_integrity instead.
+        reclaim_allowed = set()
+        if t in reclaimed:
+            reclaim_allowed = {
+                p for p in ((deps_by_table_here.get(t) or {}).get("files") or {}).values() if p
+            }
         for path, h in (e.get("archived_source_sha256") or {}).items():
             archived_all.add(path)
             want = _git_blob_sha256(base, path)
@@ -768,9 +812,11 @@ def externalization_receipt_violations() -> list[str]:
                 problems.append(f"{t}: archived {path} did not exist at the base commit")
             elif want != h:
                 problems.append(f"{t}: archived {path} hash {h} != base blob {want}")
-            # A reclaimed table's mirror file legitimately exists again; the archived hash still
-            # has to reproduce from the base blob, which is checked above either way.
-            if _worktree_has(path) and t not in reclaimed:
+            # A reclaimed table's mirror file legitimately exists again; every OTHER archived path
+            # -- a fetcher, a data file, a schema the contract does not claim -- stays deleted, or
+            # the repo has quietly re-acquired producer-side files for a platform-owned table. The
+            # archived hash still has to reproduce from the base blob, which is checked above.
+            if _worktree_has(path) and path not in reclaim_allowed:
                 problems.append(f"{t}: archived {path} still exists in the worktree (not deleted)")
 
         # consumer provenance: repo readers + external consumers reproduce from the base asset

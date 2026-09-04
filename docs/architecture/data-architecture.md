@@ -1919,7 +1919,10 @@ Every asset in `assets.yaml` is governed and carries a role; there is no roleles
   governed asset. `build.assets.reclaim_violations()` requires the prior entry to exist with the
   stated disposition and date, `governed_reader` to exist and genuinely read the table, and the
   contract with its mirror to be present; a contract for an externalized table with no reclaim
-  record fails just as hard. `count`/`assets` are the historical removed set and never shrink;
+  record fails just as hard. Only `frozen-without-producer` is reclaimable (a `transferred` table is
+  owned by its named destination, so `owner: oso` would be false — that case needs a ruling), and a
+  reclaim re-admits only the files the contract itself claims, so a fetcher or data file cannot come
+  back with the mirror. `count`/`assets` are the historical removed set and never shrink;
   `still_external_count` = `count` − `reclaimed_count` is the population currently outside the
   graph, stated in the file. See ADR-003's "Reclaiming a dependency" addendum.
 - **Reachability.** Every ACTIVE `repo-computation`/`governed-data` table is reachable upstream from

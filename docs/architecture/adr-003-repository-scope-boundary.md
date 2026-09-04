@@ -253,8 +253,8 @@ and their runbooks stay superseded.
 
 ## Addendum — reclaiming a dependency (2026-09-04)
 
-Externalization is not permanent exile. An externalized table can become a legitimate category-3
-input again when an in-scope governed asset starts reading it. The boundary rule is unchanged: what
+An externalized table can come back. It becomes a legitimate category-3 input again when an in-scope
+governed asset starts reading it. The boundary rule is unchanged: what
 qualifies the table is a named repo computation that reads it, exactly as for any other dependency
 contract. Nothing here weakens a gate or creates an exception for a particular table.
 
@@ -279,3 +279,14 @@ the receipt externalized, with no reclaim record, means the externalization was 
 reproduction check then treats a reclaimed table as still in the **historical** removed set — that
 set never shrinks — while `still_external_count` records the population currently outside the graph,
 so the shrink is written down rather than inferred.
+
+Two limits keep a reclaim from being a general amnesty:
+
+- **Only a frozen table is reclaimable.** `prior_disposition` must be `frozen-without-producer`. A
+  `transferred` table is owned by its named destination repository, so a contract for it would have
+  to declare `owner: oso` falsely and its mirror would anchor to a model that repo now owns.
+  Reclaiming a transferred table needs a ruling; until there is one the gate fails closed.
+- **A reclaim re-admits only the files its own contract claims.** The archived-file and
+  producer checks are relaxed for the contract's declared mirror paths and nothing else, so a
+  fetcher, a data file, or a second model deriving the same table stays a violation. Those mirror
+  paths are then content-bound by the existing mirror integrity check.

@@ -746,3 +746,87 @@ def test_reclaimed_mirror_file_may_exist_again(monkeypatch):
     _serve_contract(monkeypatch, None)
     assert any("still exists in the worktree" in v
                for v in A.externalization_receipt_violations())
+
+
+# --- the reclaim carve-outs are scoped, and a transferred table is not reclaimable ---
+
+def test_reclaim_from_a_transferred_disposition_is_flagged(monkeypatch):
+    """Only a frozen table is reclaimable.
+
+    A `transferred` table is owned by its named destination repo, so a contract for it would have
+    to declare `owner: oso` falsely. The gate fails closed until that gets a ruling.
+    """
+    r = _real_receipt()
+    prior = next(e for e in r["assets"] if e["table"] == RECLAIM_TABLE)
+    prior["disposition"] = "transferred"
+    prior["destination"] = {"repository": "someone-else/repo", "commit": "0" * 40}
+    rec = _reclaim_record(r, prior_disposition="transferred")
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("cannot reclaim from disposition 'transferred'" in v and "needs a ruling" in v
+               for v in A.reclaim_violations())
+
+
+def test_reclaim_does_not_re_admit_an_archived_file_the_contract_does_not_claim(monkeypatch):
+    """M1: the archived-file carve-out is the contract's mirror paths, not the whole entry.
+
+    An entry that archived a fetcher as well as its model must not, once reclaimed, let the fetcher
+    reappear: only the contract's declared files are content-bound by the mirror hashes.
+    """
+    r = _real_receipt()
+    entry = next(e for e in r["assets"] if e["table"] == RECLAIM_TABLE)
+    fetcher = "sources/fetchers/goodailist.py"
+    entry["archived_source_sha256"] = dict(entry["archived_source_sha256"])
+    entry["archived_source_sha256"][fetcher] = "0" * 64
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())  # claims only RECLAIM_MIRROR
+    _serve_read(monkeypatch, rec["governed_reader"])
+
+    real_has = A._worktree_has
+    monkeypatch.setattr(
+        A, "_worktree_has", lambda p: p in (RECLAIM_MIRROR, fetcher) or real_has(p))
+    violations = A.externalization_receipt_violations()
+    assert any(fetcher in v and "still exists in the worktree" in v for v in violations), violations
+    assert not [v for v in violations if RECLAIM_MIRROR in v and "still exists" in v]
+
+
+def test_reclaim_does_not_license_a_second_producer_of_the_table(monkeypatch):
+    """M2: only the contract's own mirror path may derive a reclaimed table.
+
+    Any other repo model file resolving to the same table is still a producer, and the message
+    names it rather than claiming the table has none.
+    """
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    _serve(monkeypatch, r)
+    _serve_read(monkeypatch, rec["governed_reader"])
+
+    # the contract claims a DIFFERENT model path, so the mirror-layout file is an extra producer
+    _serve_contract(monkeypatch, dict(_contract(), files={"model": "warehouse/models/other/x.py"}))
+    real_assets = A.assets()
+    other = dict(real_assets[0], files={"model": RECLAIM_MIRROR})
+    monkeypatch.setattr(A, "assets", lambda: real_assets[1:] + [other])
+    assert any(RECLAIM_MIRROR in v and "still produces it" in v
+               for v in A.externalization_receipt_violations())
+
+
+def test_reclaims_require_the_current_schema_version(monkeypatch):
+    r = _real_receipt()
+    rec = _reclaim_record(r)
+    r["schema_version"] = 2
+    _serve(monkeypatch, r)
+    _serve_contract(monkeypatch, _contract())
+    _serve_read(monkeypatch, rec["governed_reader"])
+    assert any("reclaims need schema_version" in v for v in A.reclaim_violations())
+
+
+def test_a_version_2_receipt_without_reclaims_still_validates(monkeypatch):
+    """The bump to 3 is additive: a receipt predating the reclaim block is still a valid receipt."""
+    r = _real_receipt()
+    r["schema_version"] = 2
+    for k in ("reclaims", "reclaimed_count", "still_external_count", "reclaim_note"):
+        r.pop(k, None)
+    _serve(monkeypatch, r)
+    assert A.externalization_receipt_violations() == []
