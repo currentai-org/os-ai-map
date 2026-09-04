@@ -28,7 +28,7 @@ that merely exists on OSO, or is read only by a standalone notebook or another p
 externalization (the 28 backlog assets removed from this repo's inventory + publisher and frozen under
 platform ownership — disposition `frozen-without-producer`, no OSO deletion; see
 `warehouse/audits/externalization.json`) have both landed. The governed inventory is the Gap Map's own
-data system — 38 governed assets + 8 dependency contracts; `population: long_tail` is retired and the
+data system — 42 governed assets + 18 dependency contracts; `population: long_tail` is retired and the
 gates keep peripheral OSO tables out. The old Phase-5 namespace-move runbooks stay **superseded**.
 
 ## Conventions

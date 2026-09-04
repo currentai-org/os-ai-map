@@ -295,6 +295,34 @@ one with the most characters, never the first one it happens to read. `build/val
 this shape as a warning (not an error, since it is a legitimate case) whenever one family's
 pattern is a literal prefix of another's and the two name different products.
 
+## Where the graph lives
+
+The identity questions this guide describes in prose are also computed as a graph on the OSO
+platform, in the `currentai.identity` dataset. Seven models, all deployed:
+
+| Table | What one row is |
+|---|---|
+| `artifact_nodes` | a folded artifact, with every declared spelling that folds onto it |
+| `candidates` | an undeclared pool artifact worth reviewing |
+| `artifact_identity_edges` | two declared spellings that are the same artifact |
+| `membership_edges` | an artifact belongs to a product |
+| `equivalence_edges` | a candidate is the same product as a declared one |
+| `org_edges` | a candidate belongs to an organization |
+| `digest` | a reviewable claim, ranked for the weekly sweep |
+
+The pool feeds `signal_hfhub.model_universe`, `signal_openrouter.models` and
+`signal_goodailist.repo_catalog` supply the undeclared candidates. All ten tables are
+platform-owned: the repo keeps read-only mirrors under `warehouse/models/identity/` and
+`warehouse/models/signal_{hfhub,openrouter,goodailist}/`, each recorded as a dependency contract
+in `warehouse/dependencies.yaml` with a `mirror:` block pinning the model id, revision and file
+hash (ADR-003). They are not governed assets — nothing deploys from the mirror copies, and editing
+one changes nothing.
+
+Two repo-side readers grade the deployed graph. `build/identity_eval.py` replays the four edge
+tables against the resolution ledger's prior human rulings; `build/identity_digest.py` renders
+`identity.digest` into the weekly review digest. Both are audit roots, which is what puts the
+dataset inside the repo's governed dependency closure.
+
 ## Related
 
 - `docs/reference/evidence-and-freshness.md` — how a score earns `last_verified`, and the gates

@@ -6,7 +6,7 @@ fails if this file drifts from the renderer. Regenerate with
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
 not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->42 governed
-assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->8
+assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->18
 external contracts in `warehouse/dependencies.yaml`. The peripheral OSO pipelines are out of scope:
 they were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
 recorded in the reproducible receipt `warehouse/audits/externalization.json`; not an ownership
@@ -132,16 +132,35 @@ graph LR
 ```mermaid
 graph LR
   currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep --> currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep
+  currentai__identity__artifact_identity_edges[currentai.identity.artifact_identity_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
+  currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep --> currentai__identity__artifact_identity_edges[currentai.identity.artifact_identity_edges]:::dep
+  currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
+  currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep --> currentai__identity__equivalence_edges[currentai.identity.equivalence_edges]:::dep
+  currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep --> currentai__identity__org_edges[currentai.identity.org_edges]:::dep
+  currentai__identity__candidates[currentai.identity.candidates]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__identity__candidates[currentai.identity.candidates]:::dep --> currentai__identity__membership_edges[currentai.identity.membership_edges]:::dep
+  currentai__identity__digest[currentai.identity.digest]:::dep --> build/identity_digest__py[build/identity_digest.py]:::audit
+  currentai__identity__equivalence_edges[currentai.identity.equivalence_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
+  currentai__identity__equivalence_edges[currentai.identity.equivalence_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__identity__membership_edges[currentai.identity.membership_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
+  currentai__identity__membership_edges[currentai.identity.membership_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
+  currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> build/identity_eval__py[build/identity_eval.py]:::audit
+  currentai__identity__org_edges[currentai.identity.org_edges]:::dep --> currentai__identity__digest[currentai.identity.digest]:::dep
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/apply_scores__py[build/apply_scores.py]:::audit
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/check_parity__py[build/check_parity.py]:::audit
   currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep --> currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__identity__artifact_identity_edges[currentai.identity.artifact_identity_edges]:::dep
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]
+  currentai__signal_goodailist__repo_catalog[currentai.signal_goodailist.repo_catalog]:::dep --> currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep
+  currentai__signal_hfhub__model_universe[currentai.signal_hfhub.model_universe]:::dep --> currentai__identity__artifact_nodes[currentai.identity.artifact_nodes]:::dep
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__signal_huggingface__product_adoption[currentai.signal_huggingface.product_adoption]
+  currentai__signal_openrouter__models[currentai.signal_openrouter.models]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
   currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
   currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]

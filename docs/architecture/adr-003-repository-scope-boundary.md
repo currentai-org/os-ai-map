@@ -9,8 +9,8 @@ pipelines + 4 questionable gap_map tables) were removed from this repo's invento
 `warehouse/audits/externalization.json` (archived source hashes, platform IDs, consumers at removal).
 That is the no-orphan disposition, **not** a verified ownership transfer to a named destination repo:
 **no OSO table was deleted** — each deployed table is retained and frozen at its last publish, its
-repo producer removed, and its consumers still resolve against it. The governed inventory is now 38
-governed assets + 8 dependency contracts; the `long_tail` population is retired and the backlog is
+repo producer removed, and its consumers still resolve against it. The governed inventory is now 42
+governed assets + 18 dependency contracts; the `long_tail` population is retired and the backlog is
 empty, kept so by the gates.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every

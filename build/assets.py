@@ -53,6 +53,8 @@ AUDIT_ROOTS = (
     "build/check_parity.py",     # protects the openness dual-run
     "build/apply_scores.py",     # applies the recorded score corpus
     "build/check_artifacts.py",  # audits declared-artifact coverage of the signals
+    "build/identity_eval.py",    # replays the identity dataset's edges against human rulings
+    "build/identity_digest.py",  # renders the weekly review digest from identity.digest
 )
 
 # Explicitly declared publication workflows that read tables directly (none today). The root
