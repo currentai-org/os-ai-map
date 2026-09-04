@@ -41,38 +41,97 @@ NULL rather than absent, so "not measured" and "no such column" cannot be confus
 `adoption_signal_type` travels with `adoption_level` deliberately: a stars band and a downloads
 band are different scales, so a query that ranks across `signal_type` is wrong.
 
-## The Neon serving layer — `gapmap`
+## The Neon serving layer — the `os-ai-map` schema
 
-The front end reads the declarations from Postgres rather than from the warehouse, because a
-page render cannot wait on a Trino query. `build/publish_neon.py` loads every CSV the
-serializers have written into `build/registry/` as a table in the `gapmap` schema, on every push
-to `main` that triggers `registry.yml` — the same trigger and the same job as the OSO publish,
-one step after it.
+The front end reads products, scores and freshness dates from Postgres rather than from the
+warehouse, because a page render cannot wait on a Trino query. `build/publish_neon.py` loads
+the `os-ai-map` schema on every push to `main` that triggers `registry.yml`, one step after the
+OSO publish. This is what deprecates `build/notebook_data.json` as the site's transport; the
+file itself stays the repo's build artifact and its gate contract, and is the *input* to the
+load.
 
-What is there: the registry tables. `products`, `organizations`, `categories`,
-`product_artifacts`, `product_categories`, `product_organizations`, `product_lineage`,
-`tail_products`, `resolution_ledger`, `product_aliases`, `org_handles`, `model_families`, plus
-`publish_runs` — one row per load, carrying `run_id`, `published_at`, `source_git_sha`,
-`declaration_version_id`, `table_count` and a `row_counts` JSONB of the per-table counts. That
-row is how you tell which commit the serving layer is showing.
+The instance is shared. `drizzle`, `payload` and `public` belong to other parts of the site;
+`os-ai-map` is the gap map's, and the publisher touches only it and its own
+`os-ai-map_staging`. It refuses to run against any of the other three.
 
-What is not there: **the warehouse recomputation**. `scores.openness_facts` and
-`scores.openness_computed` stay on OSO, and nothing in `gapmap` recomputes an axis. So a
-question about what the map *says* is answerable here, and a question about whether the
-warehouse *agrees* is not — that is `check_parity` against the tables above.
+**Two groups of table, one schema.**
 
-The load is atomic. Rows go into `gapmap_staging`, which is dropped and recreated each run, and
-the cutover is `gapmap` → `gapmap_previous`, `gapmap_staging` → `gapmap`, drop
-`gapmap_previous`, all three renames in one transaction. A reader sees the whole old schema or
-the whole new one, never a table that has loaded next to one that has not. Grants are applied to
-the staging schema before the swap, since a rename carries privileges with it. `NEON_READ_ROLE`
-names the role granted `SELECT`; unset means `PUBLIC`.
+*The map* — the target model from CLEVER FRANKE, with Carl's amendments: `products`,
+`organizations`, `categories`, `layers`, `stages`, `gaps`, `gaps_categories`, `openness`,
+`adoption`, `capability`, `sources`, `product_lineage`, `aliases`, `long_tail_top`,
+`long_tail_counts`, and the three `gallery*` tables. Every row is derived from
+`build/notebook_data.json`, so what Postgres serves is what the repo published.
 
-Column types are inferred from the data and deliberately timid: TEXT unless every non-empty
-value in a column parses as BOOLEAN, INTEGER, DOUBLE PRECISION or DATE, and identity columns
-(`slug`, anything ending `_slug` or `_id`) are pinned to TEXT whatever they look like. A
-digits-only artifact id is a string with digits in it, and letting one run's values decide
-otherwise would change the column type from under a query.
+*The registry*, prefixed `registry_` — the same tables `publish_registry` publishes to OSO,
+derived from that module rather than from a directory listing, so the two surfaces carry the
+same registry by construction. The prefix exists because both groups have a `products`, a
+`categories` and an `organizations`.
+
+Plus `publish_runs`: one row per load, carrying `run_id`, `published_at`, `schema_version`,
+`built_at`, `released_at`, `source_git_sha`, `declaration_version_id`, `table_count` and a
+`row_counts` JSONB. That row is how you tell which commit and which shape the serving layer is
+showing.
+
+**Keys are natural where the payload has one.** `products.id` exists for the FK shape the
+designers specified, but it is assigned by sorted slug on every load, so the same corpus gives
+the same ids and a diff of two loads is readable. The real key is `slug`. Organizations key on
+`slug`, aliases on `alias`, and `categories` carries a `slug` alongside its id — the PDF omitted
+it, and every deep link and every join from the registry group needs it.
+
+**The eight enums are enforced.** `alias_kind`, `freshness_basis`, `lineage_relation`,
+`capability_relation`, `metric_name`, `health_status`, `integration_type`, `gap_type` are
+created in the schema, and a payload value with no mapping fails the load naming the value
+rather than being coerced to something adjacent. One mapping is lossy and worth knowing:
+`capability.relation` in the payload is a signed distance (`at`, `one_above`, `one_below`,
+`two_below`) and the enum has none, so `one_below` and `two_below` both arrive as `tier_below`.
+The exact distance is only in `capability.notes`.
+
+### The three dates, which are three different questions
+
+| Where | Column | Question it answers |
+|---|---|---|
+| `publish_runs` | `built_at` | When was this data built? The payload's `generated`. |
+| `publish_runs` | `released_at` | When was the release cut? The payload's `released`, which `build/serialize.py::release_date` reads from `CHANGELOG.md`. |
+| `products` | `freshness_date`, `freshness_basis` | When was this product's score last confirmed, and how — `verified` by a human, or `commit` as the fallback to the score file's last commit. |
+| `openness`, `adoption`, `capability` | `last_verified` | The same question asked of one axis. |
+
+`docs/reference/evidence-and-freshness.md` is normative for what a freshness date means and how it is
+derived. Do not read `built_at` as a freshness date: it says when the build ran, not when
+anything was checked.
+
+### What is not there
+
+**The warehouse recomputation.** `scores.openness_facts` and `scores.openness_computed` stay
+on OSO, and no table in `os-ai-map` recomputes an axis. A question about what the map *says* is
+answerable here; whether the warehouse *agrees* is `check_parity` against the tables above.
+
+**Gallery content.** `gallery`, `gallery_products` and `gallery_gaps` are created and left
+empty. Gallery entries are authored CMS-side, in the `payload` schema, not derived from the
+map's data — the tables exist so the site's queries compile before that content lands.
+
+### The load is atomic, and the swap is the migration path
+
+Rows go into `os-ai-map_staging`, dropped and recreated each run, and the cutover is
+`os-ai-map` → `os-ai-map_previous`, `os-ai-map_staging` → `os-ai-map`, drop
+`os-ai-map_previous`, all three renames in one transaction. A reader sees the whole old schema
+or the whole new one, never a table that has loaded next to one that has not. Grants are
+applied to the staging schema before the swap, since a rename carries privileges with it;
+`NEON_READ_ROLE` names the role granted `SELECT`, and unset means `PUBLIC`.
+
+There is no migration tool, and for now there does not need to be one: every publish rebuilds
+the schema from `build/neon_schema.py`, so a shape change is live on the next load with no
+ALTER anywhere. What that costs is a reader's ability to tell which shape it has, which is why
+`publish_runs.schema_version` exists — bump `SCHEMA_VERSION` in the same commit as any change
+to a table, column or enum. Once something outside this repo depends on the shape, that is the
+point where a real migration path replaces the swap.
+
+Column types for the map group are declared in `build/neon_schema.py`, next to the grain they
+describe. The registry group's are inferred from the data, because the serializers declare
+column names and not types: TEXT unless every non-empty value in the column parses as BOOLEAN,
+INTEGER, DOUBLE PRECISION or DATE, and identity columns (`slug`, anything ending `_slug` or
+`_id`) pinned to TEXT whatever they look like. A digits-only artifact id is a string with
+digits in it. An empty CSV field loads as NULL on both groups, so "absent" and "empty" are the
+same value.
 
 ## Openness — computed and gated
 

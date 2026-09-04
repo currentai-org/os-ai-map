@@ -39,6 +39,9 @@ on:
       - "build/vocabulary.py"
       - "build/publish_registry.py"
       - "build/publish_neon.py"
+      - "build/neon_schema.py"
+      - "build/neon_status.py"
+      - "build/notebook_data.json"
       - ".github/workflows/registry.yml"
   push:
     branches: [main]
@@ -66,7 +69,20 @@ on:
       - "build/vocabulary.py"
       - "build/publish_registry.py"
       - "build/publish_neon.py"
+      - "build/neon_schema.py"
+      - "build/neon_status.py"
+      # The site tables in Neon are built from the payload, so a regeneration of it is a
+      # change to what the serving layer holds.
+      - "build/notebook_data.json"
   workflow_dispatch:
+    inputs:
+      neon_only:
+        description: >-
+          Load Neon from the dispatched ref and skip the OSO publish. For verifying the
+          Postgres serving layer from a branch: the OSO static models are org-wide and a
+          branch must not overwrite them, so a branch run publishes to Neon alone.
+        type: boolean
+        default: false
 
 jobs:
   # On a PR, prove the registry is internally consistent. Structural problems
@@ -111,6 +127,12 @@ jobs:
 
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
+  #
+  # A `workflow_dispatch` with `neon_only=true` runs the same job on the dispatched ref with
+  # the OSO publish skipped. That is how the Postgres serving layer gets verified from a
+  # branch: the Neon schema is swapped atomically and re-loadable, so a branch run costs
+  # nothing beyond a reload, whereas the OSO static models are org-wide and a branch must not
+  # overwrite them.
   publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -136,7 +158,10 @@ jobs:
         run: uv run python -m build.serialize_routing
       - name: Serialize the recorded scores
         run: uv run python -m build.serialize_scores
+      # Skipped on a `neon_only` dispatch. `inputs.neon_only` is empty on a push, so the
+      # negation is true there and the normal path is untouched.
       - name: Publish to OSO
+        if: ${{ !inputs.neon_only }}
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
@@ -151,3 +176,9 @@ jobs:
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: uv run python -m build.publish_neon
+      # Read the schema back independently and put the counts in the run summary. A publish
+      # returning 0 says the swap committed; this says what a reader now sees.
+      - name: Report what Neon is serving
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: uv run python -m build.neon_status >> "$GITHUB_STEP_SUMMARY"

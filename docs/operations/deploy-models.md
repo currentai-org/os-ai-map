@@ -80,7 +80,7 @@ holds it against the `cron:` lines it quotes.
 | What | When (UTC) | Where the cron lives |
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
-| `gapmap` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
+| `os-ai-map` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
@@ -219,10 +219,21 @@ released yet and the resync is cheap now. What the check cannot do is confirm th
 it found is the one a run would materialize; that is the same gap as the missing
 revision-versus-release assertion noted above.
 The Neon step needs `NEON_DATABASE_URL` (in CI, the repository secret of that name; locally,
-the value in `.env`). It loads into `gapmap_staging` and swaps that into `gapmap` in one
-transaction, so it is safe to re-run and a reader never sees a half-loaded schema. See
-`docs/reference/where-scores-live.md` for what the schema holds and what it deliberately does
-not.
+the value in `.env`). It loads into `os-ai-map_staging` and swaps that into `os-ai-map` in one
+transaction, so it is safe to re-run and a reader never sees a half-loaded schema. The instance
+is shared with the rest of the site, and the publisher refuses to run against `drizzle`,
+`payload` or `public`.
+
+To verify a change to the load before it reaches `main`, dispatch the workflow on the branch
+with `neon_only`, which skips the OSO publish (the static models are org-wide and a branch must
+not overwrite them) and writes the resulting table counts to the run summary:
+
+```bash
+gh workflow run registry.yml --ref <branch> -f neon_only=true
+```
+
+See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
+carries, and what it deliberately does not have.
 
 ## The parity gate
 

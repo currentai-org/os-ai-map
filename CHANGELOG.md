@@ -48,6 +48,18 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `gapmap_staging` and the cutover is three schema renames in one transaction, so a reader
   mid-request sees the whole old schema or the whole new one. A `gapmap.publish_runs` row
   records the commit, the declaration version and the per-table row counts of each load (#365).
+- `build/publish_neon.py` loads the gap map into Neon (Postgres) as the `os-ai-map` schema, so
+  the site can read products, scores and freshness dates at request time instead of loading
+  `build/notebook_data.json`. Two groups of table: the target model from CLEVER FRANKE (products,
+  the three axes, sources, lineage, categories, layers, stages, gaps, aliases, long tail) and the
+  registry tables `publish_registry` publishes, prefixed `registry_`. Eight enums are enforced,
+  and an unmapped payload value fails the load rather than being coerced. It runs in
+  `registry.yml` on every push to `main`, one step after the OSO publish, and needs the
+  `NEON_DATABASE_URL` secret. The load is atomic: rows go into `os-ai-map_staging` and the
+  cutover is three schema renames in one transaction, so a reader mid-request sees the whole old
+  schema or the whole new one. A `publish_runs` row records the commit, the schema version, the
+  build and release dates and the per-table row counts of each load. The table set, grain and
+  types live in `build/neon_schema.py`, which is the one place to change them (#365).
 
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed
