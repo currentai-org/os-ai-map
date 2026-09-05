@@ -1,4 +1,84 @@
+import subprocess
+from pathlib import Path
+
+import yaml
+
 from build import check_corpus_diff as ccd
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def _git(cwd, *args):
+    return subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, text=True).stdout
+
+
+def _clone(dest: Path) -> Path:
+    """A local clone of the repo the tests run in, so a synthetic commit is isolated from it."""
+    subprocess.run(["git", "clone", "--local", "--no-hardlinks", "--quiet", str(ROOT), str(dest)],
+                   check=True, capture_output=True, text=True)
+    _git(dest, "config", "user.email", "ccd-test@example.invalid")
+    _git(dest, "config", "user.name", "ccd test")
+    return dest
+
+
+def _pick_editable_non_leading(repo: Path) -> tuple[str, str]:
+    """A (category, slug) whose score file carries an integer adoption.level and whose tier is
+    not already 'leading', so forcing the axes to 5 lands it in the leading tier for sure."""
+    payload = ccd._payload_at(repo)
+    for cid, cat in payload["categories"].items():
+        for prod in cat.get("products", []):
+            if prod.get("tier") == "leading":
+                continue
+            slug = prod["slug"]
+            doc = yaml.safe_load((repo / "sources" / "scores" / f"{slug}.yaml").read_text())
+            if isinstance((doc.get("adoption") or {}).get("level"), int):
+                return cid, slug
+    raise AssertionError("no editable non-leading product found in the corpus")
+
+
+def test_reports_a_tier_move_from_source_with_notebook_data_untouched(tmp_path):
+    """The #497 regression guard. A source change that alters a product's tier, with
+    build/notebook_data.json deliberately left untouched (as the contributor checklist
+    requires), must be reported. The old gate compared the committed payload against itself
+    and printed an empty sheet here; reserializing from source makes the delta real."""
+    repo = _clone(tmp_path / "repo")
+    base = _git(repo, "rev-parse", "HEAD").strip()
+
+    _cid, slug = _pick_editable_non_leading(repo)
+    score = repo / "sources" / "scores" / f"{slug}.yaml"
+    doc = yaml.safe_load(score.read_text())
+    doc["adoption"]["level"] = 5
+    doc.setdefault("capability", {})["score"] = 5
+    score.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True))
+    _git(repo, "add", f"sources/scores/{slug}.yaml")
+    _git(repo, "commit", "-m", "synthetic: force a leading tier")
+
+    changed = _git(repo, "diff", "--name-only", f"{base}...HEAD").split()
+    assert changed == [f"sources/scores/{slug}.yaml"]  # notebook_data.json really is untouched
+
+    sheet_path = tmp_path / "sheet.md"
+    rc = ccd.main(["--base", base, "--sheet", str(sheet_path)], root=repo)
+    sheet = sheet_path.read_text()
+    assert f"{slug}:" in sheet and "-> leading" in sheet, sheet
+    assert rc == 0  # a tier move alone is reported but does not fail the gate
+
+
+def test_no_source_change_reports_nothing(tmp_path):
+    """The symmetric half: serializing both sides from source must not manufacture a delta.
+    A commit that touches no source file leaves the sheet empty and the gate green."""
+    repo = _clone(tmp_path / "repo")
+    base = _git(repo, "rev-parse", "HEAD").strip()
+
+    (repo / "docs" / "_ccd_probe.md").write_text("not a source file\n")
+    _git(repo, "add", "docs/_ccd_probe.md")
+    _git(repo, "commit", "-m", "docs-only change")
+
+    sheet_path = tmp_path / "sheet.md"
+    rc = ccd.main(["--base", base, "--sheet", str(sheet_path)], root=repo)
+    sheet = sheet_path.read_text()
+    assert "stage moves: none" in sheet
+    assert "untouched-product row changes: none" in sheet
+    assert rc == 0
 
 
 def _payload(categories):
