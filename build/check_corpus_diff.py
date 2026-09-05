@@ -1,11 +1,19 @@
 """The semantic-diff gate: what a PR does to the published narrative.
 
-Compares HEAD's committed build/notebook_data.json against the freshly serialized payload
+Serializes the payload FRESH from the source files at both the base ref and the PR's tree
 and reports, per category, the stage, gap set, product count, and tier deltas. A stage
 move fails the gate unless --allow-stage-move is passed (CI passes it when the PR carries
 the `stage-move` label), so a stage can only move on purpose. Separately, every axis
 assessment row belonging to a product whose source files the PR did not touch must be
 byte-identical before and after; a change there is a silent rewrite and fails the gate.
+
+Both sides are built in memory by `build.serialize.build_payload` (no file is written), so
+the committed `build/notebook_data.json` is never read. That copy used to be the `after`
+side, but the contributor checklist forbids editing it on a product PR, so it was identical
+to the base copy on every such PR and the payload diff was always empty - the gate was blind
+to exactly the stage, gap and tier moves it exists to catch (#497). Serializing both sides
+from source, the way the untouched-row half already did, is what makes the diff real; it also
+keeps a no-op PR comparing equal, since the same serializer runs on each side.
 
 This replaces the corpus-wide digest pins that used to live in tests/ (build/goldens.py):
 they caught silent rewrites by hashing everything, which made every product PR collide.
@@ -119,24 +127,48 @@ def content_row(row) -> str:
     )
 
 
-def _rows_at(root: Path, ref: str | None) -> dict[str, str]:
-    """Axis-assessment rows keyed by product|axis, content-canonicalized, for the tree at
-    ref (None = worktree). Content-canonicalized rather than `canonical_row` for the reason
-    `content_row` documents: identity columns differ across refs by construction."""
+def _payload_at(tree: Path) -> dict:
+    """The published payload, serialized fresh in memory from the source files at `tree`.
+
+    Returns the dict `build/notebook_data.json` is dumped from, without writing it: the gate
+    is side-effect-free and never reads the committed copy. `generated`/`version`/`released`
+    and per-product `freshness` are left out because `diff_payloads` compares only the
+    per-category stage, gaps, product set and tiers - none of those fields - so this gate does
+    not depend on git-log freshness (and so does not need a full-depth checkout for the payload
+    half, only for the touched-row worktree read)."""
+    from build.serialize import build_payload
+    from build.validate import load_sources
+
+    sources = load_sources(tree)
+    frozen = json.loads((tree / "sources" / "snapshots" / "long_tail.json").read_text())
+    return build_payload(sources, frozen)
+
+
+def _rows(rows) -> dict[str, str]:
+    """Axis-assessment rows keyed by product|axis, content-canonicalized (identity columns
+    projected out for the reason `content_row` documents: they differ across refs by
+    construction)."""
+    return {f"{r['product_slug']}|{r['axis']}": content_row(r) for r in rows}
+
+
+def _snapshot_at(root: Path, ref: str | None) -> tuple[dict, dict[str, str]]:
+    """(payload, content-canonicalized rows) built fresh from the tree at `ref`.
+
+    `ref is None` reads the working tree in place; otherwise a detached worktree at `ref`
+    keeps the read honest without touching the checkout. Both halves are serialized from the
+    SAME ref, so a no-op PR compares equal and only a real source change shows."""
     from build import axis_assessments
     if ref is None:
-        rows = axis_assessments.resolve(root, allow_dirty=True)
-    else:
-        # A temporary worktree at ref keeps the comparison honest without touching the checkout.
-        tmp = root / ".ccd-worktree"
-        subprocess.run(["git", "worktree", "add", "--detach", str(tmp), ref], cwd=root, check=True,
+        return _payload_at(root), _rows(axis_assessments.resolve(root, allow_dirty=True))
+    # A temporary worktree at ref keeps the comparison honest without touching the checkout.
+    tmp = root / ".ccd-worktree"
+    subprocess.run(["git", "worktree", "add", "--detach", str(tmp), ref], cwd=root, check=True,
+                   capture_output=True)
+    try:
+        return _payload_at(tmp), _rows(axis_assessments.resolve(tmp, allow_dirty=True))
+    finally:
+        subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=root, check=True,
                        capture_output=True)
-        try:
-            rows = axis_assessments.resolve(tmp, allow_dirty=True)
-        finally:
-            subprocess.run(["git", "worktree", "remove", "--force", str(tmp)], cwd=root, check=True,
-                           capture_output=True)
-    return {f"{r['product_slug']}|{r['axis']}": content_row(r) for r in rows}
 
 
 def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str]) -> list[str]:
@@ -152,10 +184,6 @@ def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str
         elif before[key] != after[key]:
             out.append(f"{key} changed but sources/{{scores,products}}/{slug}.yaml did not")
     return out
-
-
-def untouched_row_changes(root: Path, base_ref: str, touched: set[str]) -> list[str]:
-    return compare_rows(_rows_at(root, base_ref), _rows_at(root, None), touched)
 
 
 def render_sheet(diff: CorpusDiff, row_changes: list[str]) -> str:
@@ -181,13 +209,11 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     p.add_argument("--sheet", type=Path, default=None)
     args = p.parse_args(argv)
 
-    before_txt = subprocess.run(["git", "show", f"{args.base}:build/notebook_data.json"], cwd=root,
-                                capture_output=True, text=True, check=True).stdout
-    before = json.loads(before_txt)
-    after = json.loads((root / "build" / "notebook_data.json").read_text())
-    diff = diff_payloads(before, after)
+    before_payload, before_rows = _snapshot_at(root, args.base)
+    after_payload, after_rows = _snapshot_at(root, None)
+    diff = diff_payloads(before_payload, after_payload)
     touched = touched_products(root, args.base)
-    row_changes = untouched_row_changes(root, args.base, touched)
+    row_changes = compare_rows(before_rows, after_rows, touched)
     sheet = render_sheet(diff, row_changes)
     (args.sheet.write_text(sheet) if args.sheet else print(sheet))
 
