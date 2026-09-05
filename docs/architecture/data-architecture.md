@@ -39,7 +39,7 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 
 As of 2026-08-20:
 
-- `sources/` is the authoritative corpus: 18 published categories and 522 products.
+- `sources/` is the authoritative corpus of categories and products.
 - CI validates and compiles the YAML into registry static models, a JSON payload, and published notebooks.
 - `currentai.registry.product_scores` mirrors every published product and all three recorded axes.
 - Openness is also recomputed in OSO through `evidence.product_evidence`, `scores.openness_facts`, and `scores.openness_computed`; `build/check_parity.py` compares the independent result with the repository.

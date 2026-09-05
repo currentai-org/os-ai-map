@@ -21,7 +21,7 @@ measurements — see `build/serialize_registry.py`.
 
 ## The one table — `currentai.registry.product_scores`
 
-522 rows, one per product per category, all three axes with their own confidence and
+One row per product per category, all three axes with their own confidence and
 `last_verified`, plus the derived `overall_score`, `maturity`, `is_mature` and `score_tier`.
 Published by `build/serialize_scores.py` on every push to `main` touching `sources/**`.
 
@@ -32,11 +32,12 @@ Two properties to know before querying it:
   implementation of it. So these numbers are the numbers the front end shows.
 - **Published-map products only.** `build_payload` excludes preliminary categories by design, so
   a preliminary category's products are absent from this table even though
-  `currentai.registry.categories` would carry the category itself. All 18 categories are
-  published today, which is why the count is 522 and not a subset.
+  `currentai.registry.categories` would carry the category itself. While no category is
+  preliminary the table covers the whole published corpus; a preliminary one makes it a subset.
 
-Coverage: openness on all 522 rows, adoption on 502, capability on 496. An unmeasured axis is
-NULL rather than absent, so "not measured" and "no such column" cannot be confused.
+Coverage: openness is present on every row. Adoption and capability may be absent, because an
+axis abstains where no qualifying instrument or peer comparison exists. An unmeasured axis is
+NULL rather than missing, so "not measured" and "no such column" cannot be confused.
 
 `adoption_signal_type` travels with `adoption_level` deliberately: a stars band and a downloads
 band are different scales, so a query that ranks across `signal_type` is wrong.
