@@ -37,8 +37,6 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 
 ## 2. Current state
 
-As of 2026-08-20:
-
 - `sources/` is the authoritative corpus of categories and products.
 - CI validates and compiles the YAML into registry static models, a JSON payload, and published notebooks.
 - `currentai.registry.product_scores` mirrors every published product and all three recorded axes.
@@ -49,9 +47,9 @@ As of 2026-08-20:
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`** (each carrying a `mirror:` block — the compatibility shims are the exception, governed assets in `assets.yaml`). The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
-- Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
-- Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->31 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the <!-- count:deployed_tables -->31 is derived from `assets.yaml` on every run. See section 11.3 for how the <!-- count:deployed_tables -->31 reconciles with the inventory's size.
+- Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
+- Some platform tables have no repository source and no in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
+- The inventory tracks <!-- count:deployed_tables -->31 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1343,19 +1341,12 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
-<!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->36 tracked files under `warehouse/`. The structure below is the target, and the
-mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
-from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
-the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
-committed point-in-time attestation of the `source_runs` snapshot (§4.3), then the
-`artifact_state` rename added the two new source mirror files
-`signal_github/artifact_state.py` and `signal_huggingface/artifact_state.py` alongside the
-retained `repo_state.py` / `hub_state.py`. Phase 2's baseline capture added two more:
-`warehouse/data/observations/product_adoption_baseline.parquet`, the frozen bytes themselves,
-and `warehouse/audits/product_adoption_baseline.json`, their provenance receipt. The ADR-003
-mechanism then added `warehouse/dependencies.yaml`, the external dependency manifest (§11.7).
+<!-- count:tracked_warehouse_files -->36 files are tracked under `warehouse/`, and the mirror
+layout of 11.1 is in place. Alongside the models sit the audit receipts —
+`warehouse/audits/platform_models.json` (the deployed-model audit) and
+`warehouse/audits/source_runs.json` (the `source_runs` attestation, §4.3) — the frozen adoption
+baseline `warehouse/data/observations/product_adoption_baseline.parquet` with its provenance
+receipt, and `warehouse/dependencies.yaml`, the external dependency manifest (§11.7).
 
 ### 11.1 Target layout
 

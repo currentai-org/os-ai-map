@@ -126,13 +126,14 @@ def test_readme_router_lists_every_primary_skill():
         assert f"workflows/{s}.md" in readme, f"docs/README.md router omits {s}"
 
 
-# Docs that are deliberately not routed from docs/README.md. A tombstone exists to catch an
-# old link, not to be discovered; keeping it out of the router is the point. Anything else
-# added here needs a reason in the same commit.
+# Docs deliberately not routed from docs/README.md, each with the reason it is excluded. A
+# tombstone exists to catch an old link, not to be discovered, so keeping it out of the router
+# is the point. The reason is a required value rather than a comment so the invariant is
+# machine-visible as this list grows.
 UNROUTED_DOCS = {
-    "operations/phase5-execution-runbook.md",
-    "operations/phase5-namespace-migration.md",
-    "architecture/migration-status.md",
+    "operations/phase5-execution-runbook.md": "tombstone; superseded by ADR-003",
+    "operations/phase5-namespace-migration.md": "tombstone; superseded by ADR-003",
+    "architecture/migration-status.md": "tombstone; migration complete, contract in data-architecture.md",
 }
 
 
@@ -153,8 +154,10 @@ def test_readme_routes_every_reference_and_architecture_doc():
                 unrouted.append(rel)
     assert not unrouted, (
         f"docs/README.md routes to none of these: {unrouted}. "
-        f"Add each to its table, or to UNROUTED_DOCS with a reason."
+        f"Add each to its table, or to UNROUTED_DOCS with the reason it is excluded."
     )
+    blank = sorted(k for k, v in UNROUTED_DOCS.items() if not str(v).strip())
+    assert not blank, f"UNROUTED_DOCS entries with no reason given: {blank}"
 
 
 def test_readme_names_every_registered_skill():

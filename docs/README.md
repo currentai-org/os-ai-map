@@ -52,9 +52,11 @@ Growth of the corpus should almost never require a documentation change. If addi
 would make a sentence wrong, that sentence is describing the size of a mutable set — rewrite it
 structurally ("adoption may be absent where no qualifying instrument exists") or delete it.
 
-**Every rule has one normative home.** `reference/` holds it; workflows link rather than
-restate. Two plausible-looking statements of the same rule are more dangerous than one stale
-number, because both read as authoritative. This applies within a file as much as across them.
+**Every rule has one normative home.** Reference docs own domain semantics; architecture docs
+and ADRs own system boundaries and architectural decisions; operations docs own maintainer
+procedures. Every other document links to that home rather than restating the rule. Two
+plausible-looking statements of the same rule are more dangerous than one stale number, because
+both read as authoritative. This applies within a file as much as across them.
 
 ## Reference material
 
