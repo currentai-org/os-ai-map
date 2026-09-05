@@ -29,19 +29,6 @@ the published map.
 
 ---
 
-## Architecture and the asset inventory
-
-`docs/architecture/` records how the data assets fit together: what each namespace means, what
-the gates protect, and where the repository boundary sits. The inventory it specifies is
-[`warehouse/assets.yaml`](warehouse/assets.yaml) — one entry per **governed** asset (ADR-003), each
-carrying a `role`, with grain, authority, producer and derived dependencies. Required OSO inputs the
-map does not own are contracts in [`warehouse/dependencies.yaml`](warehouse/dependencies.yaml).
-
-Check it before assuming a table is unused. An empty reader list is not evidence: many of the
-organization's notebooks are not tracked here, and the deployed-model audit (recorded in
-`warehouse/audits/platform_models.json`) is what confirms a table has no reader.
-
-
 ## Contribute
 
 The map is a public, iterative effort, and community curation is the point. There are two ways in:
@@ -144,47 +131,9 @@ Warehouse queries (via `pyoso`) need `OSO_API_KEY`; with `direnv`, place it in `
 Guides worth knowing: [openness scoring](docs/reference/openness.md),
 [adoption scoring](docs/reference/adoption.md), [gap analysis](docs/reference/gap-analysis.md),
 and [query conventions](docs/reference/queries.md).
-See [AGENTS.md](AGENTS.md) for agent-oriented project context.
-
----
-
-<details>
-<summary><strong>Maintainer &amp; internal reference</strong></summary>
-
-<br>
-
-**Warehouse.** `warehouse/` holds the SQL models and fetchers that power adoption and activity
-signals. Contributors work read-only here; only maintainers write.
-
-- `warehouse/models/` — SQL and Python model files at `models/<dataset>/<table>`. Most are governed (the registry serializers, the evaluation builders, the signal ingestion), claimed by `warehouse/assets.yaml`; the rest are **read-only mirrors of platform-owned models**, claimed by `warehouse/dependencies.yaml` as dependency contracts (a mirror binds provenance, not ownership).
-- `warehouse/data/` — frozen CSV inputs at `data/<dataset>/<table>.csv`.
-- `warehouse/assets.yaml` — the governed-asset inventory: one entry per governed asset with a `role`, authority, grain, provenance and derived reads/read_by. Required OSO inputs are contracts in `warehouse/dependencies.yaml`.
-
-**Operations** (require OSO MCP write access — see `docs/operations/`):
-
-- `deploy-models.md` — revise and release UDM SQL changes
-- `refresh-data.md` — run fetchers and reload static models
-- `publish-map.md` — serialize, render, and publish the live notebook
-
-**Editor skills.** Eight skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
-read-only warehouse boundary:
-
-- `edit-category` — create a category, or edit its description, strapline, weights, or roster
-- `add-product` — add a new product (scaffolds product + score YAML, updates the roster)
-- `build-rubric` — derive a category's openness ladder, or extend a shared one to it
-- `update-product` — change an existing product (identity, prose, a score, rosters, retirement)
-- `refresh-category` — re-verify a whole category: scores and prose together, to the PR
-- `refresh-all-categories` — drive the sweep: report progress, pick the next category
-- `add-data-source` — register a new external data source and add a fetcher
-- `pyoso-analyst` — query `currentai.*` tables via `pyoso` (read-only analysis)
-
-**Companion notebooks.** `pypi-geo-trends.py`, `oss-ai-trends.py`, and `long-tail-explorer.py` are
-standalone marimo notebooks that sit outside the build pipeline and query `currentai.*` warehouse
-tables live via `pyoso`, so the bot never regenerates them. `sources/snapshots/long_tail.json` is a
-hand-frozen fixture, not yet derived from live data; its roster-dependent counts are derived at
-build time.
-
-</details>
+See [AGENTS.md](AGENTS.md) for agent-oriented project context, the full directory map, and
+maintainer operations. How the data assets fit together — namespaces, gates, and the repository
+boundary — is in [`docs/architecture/`](docs/architecture/).
 
 ---
 
