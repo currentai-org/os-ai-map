@@ -135,7 +135,7 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   table has no observation history behind it — `first_seen` dates the snapshot, not the discovery —
   so the parked line promises only that an item returns when its evidence gets stronger, the
   scorecard's oldest-unresolved-age line says the history does not exist yet, and `evidence` is the
-  only resurfacing reason in the vocabulary (#490).
+  only resurfacing reason in the vocabulary (#491).
 - Dropped `--allow-unprovisioned` from the `identity-eval` and `identity-digest` workflows now
   that the identity dataset is deployed and contracted. Both modules refuse the flag once a
   `currentai.identity.*` contract with a `mirror` block exists, so a missing table is a real
