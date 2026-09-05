@@ -131,7 +131,7 @@ lags), and `cronTimezone == "UTC"` still holds on all ten. The schedule normaliz
 | `metrics` | 06:00 | SCHEDULED | **FAILED** (transient ConnectTimeout) | 2026-08-23T06:00:16Z |
 
 **The two failures are model-body failures, not schedule defects — both fired exactly on their UTC
-cron.** They are recorded here and in `docs/architecture/migration-status.md`; neither gates Phase 1.
+cron.** They are recorded here; neither gates Phase 1.
 
 - `metrics.daily` timed out (`ConnectTimeout`) during materialization at 06:00Z. A manual re-run
   the same morning (08:54→09:02Z) succeeded, so this was transient infrastructure, not a defect.
@@ -150,7 +150,7 @@ The inventory now reflects the proven platform state — never ahead of it:
    one of the ten datasets fired SCHEDULED, so every asset they hold records the observation
    (including `signal_semanticscholar`, whose schedule fired even though its model failed).
 3. `unobserved_crons` recomputed 18 → 10 (the remaining ten are all out of Phase 1's scope); the
-   marker in `docs/architecture/migration-status.md` is updated and `uv run pytest -q` passes.
+   `uv run pytest -q` passes.
 
 ## Rollback
 

@@ -6,7 +6,7 @@ document that needs it links here.
 
 What is NOT here, deliberately: the delivery phases and the per-phase agent assignments.
 Those are session-scoped and live outside the repository. Phase status and the retirement
-ledger are in `migration-status.md` next to this file.
+ledger are derived by `build/assets.py`, not authored.
 
 Two architecture decision records carry the ownership and namespace decisions in full:
 `adr-001-repo-owns-scoring-semantics.md` and
@@ -1741,7 +1741,6 @@ against an actual 30. These numbers must be generated, not typed — see the clo
 | `docs/architecture/data-architecture.md` | Sections 1-13 and 17-18 of this specification. |
 | `docs/architecture/adr-001-repo-owns-scoring-semantics.md` | AD-1. |
 | `docs/architecture/adr-002-registry-curated-catalog-discovered.md` | AD-3. |
-| `docs/architecture/migration-status.md` | Phase status and retirement ledger, including the atomicity split of 12.2. |
 | `tests/test_assets_inventory.py` | The checks in 11.5. |
 
 **Move, base name unchanged (24)** — the dataset prefix becomes the directory
@@ -2029,7 +2028,7 @@ valid releases — that is the accepted cost in 12.2 — but they must never rec
 candidate that failed.
 
 If the warehouse evaluator cannot run without overwriting current registry tables, record that
-as a transitional limitation in `migration-status.md` until release-scoped candidate inputs
+as a transitional limitation in 12.2 until release-scoped candidate inputs
 exist. Do not describe the ordering as satisfied while the evaluator requires the overwrite.
 
 ### 12.2 Atomicity
@@ -2078,9 +2077,9 @@ onto every `registry` table — one of which carries the front-end contract — 
 than it returns.
 
 Therefore the definition-of-done clause "joining current public tables cannot mix releases
-silently" is **met for release-aware consumers and unmet for compatibility consumers**. Record
-that split in `docs/architecture/migration-status.md` and do not mark the clause complete on
-the strength of the first half.
+silently" is **met for release-aware consumers and unmet for compatibility consumers**. That
+split is the state in force until Phase 8 (#412) lands release manifests; this section is where
+it is recorded, and the clause is not complete on the strength of the first half.
 
 If any step fails:
 

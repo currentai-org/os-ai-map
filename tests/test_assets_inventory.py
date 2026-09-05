@@ -745,19 +745,6 @@ def test_no_reviewed_consumer_count_is_derived_not_authored():
     )
 
 
-def test_ledger_lists_exactly_the_assets_with_no_reviewed_consumer():
-    """The ledger named `signal_packages.*` (3, staged) when only one of the three
-    qualifies -- its two siblings have reviewed model consumers. A prose table that
-    generalizes over a wildcard cannot be trusted, so it is compared to the derived set."""
-    ledger = (ROOT / "docs/architecture/migration-status.md").read_text(encoding="utf-8")
-    section = ledger.split("## Assets with no reviewed consumer")[1].split("\n## ")[0]
-    listed = set(re.findall(r"^\| `([a-z_]+\.[a-z_0-9]+)`", section, re.M))
-    derived = {a["id"] for a in A.no_reviewed_consumers()}
-    assert listed == derived, (
-        f"ledger drifted: listed-only {sorted(listed - derived)}, "
-        f"derived-only {sorted(derived - listed)}"
-    )
-
 
 def test_deployed_staged_and_dormant_reconcile_to_the_inventory():
     """The three numbers the docs quote must add up, or the explanation of why the

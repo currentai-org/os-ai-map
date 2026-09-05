@@ -102,7 +102,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # value computed under an older rule cannot silently pass for a current one.
 CANONICALIZATION_VERSION = 1
 
-# The repository-owned evaluator is Phase 6 (docs/architecture/migration-status.md); it does
+# The repository-owned evaluator is Phase 6 (#411); it does
 # not exist yet. Until it lands, the evaluator component is a declared sentinel rather than a
 # real version, so a ``declaration_version_id`` is well-formed and forward-compatible today and
 # only its evaluator component moves when Phase 6 ships. It is NOT the empty string: an absent
