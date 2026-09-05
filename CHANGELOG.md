@@ -16,6 +16,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-05
+
+Moved discovery off hand curation, and built the identity graph and Postgres serving layer
+underneath it — **616 products across 18 categories**, from **348 organizations**.
+
 ### Added
 
 - `mirror.code_unchanged_from` in `warehouse/dependencies.yaml`: a marker letting a mirror contract
@@ -270,6 +275,7 @@ Initial release: the first full snapshot of the AI Stack Map corpus, at the star
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
 adoption, and capability. Tagged at commit `2e9d6eb`.
 
-[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/currentai-org/os-ai-map/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/currentai-org/os-ai-map/releases/tag/v0.1.0

@@ -43,8 +43,12 @@ Read the Unreleased notes and pick the largest applicable step. This project fol
 | **MINOR** (`Y`) | A backward-compatible addition. | New products, categories, or data sources; a new optional schema field; a new skill or workflow. |
 | **PATCH** (`Z`) | A correction that changes no structure. | Score-value corrections; prose or doc fixes; evidence refreshes; build-helper bug fixes. |
 
-If the Unreleased section is empty, there is nothing to release — stop. Before `1.0.0`, a
-MAJOR-worthy change bumps the MINOR instead (`0.y` may break); say so in the changelog.
+If the Unreleased section is empty, there is nothing to release — stop.
+
+Before `1.0.0` the repository is in rapid iteration and `0.y` may break, so a MAJOR-worthy
+change is simply a MINOR bump. Do not annotate it in the changelog and do not raise it as a
+decision at release time — pick the number from the table and move on. If a *named* downstream
+consumer has to act, tell them directly instead. Revisit at 1.0.0.
 
 ## Steps
 
