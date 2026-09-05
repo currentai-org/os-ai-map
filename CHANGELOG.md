@@ -23,22 +23,17 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   description added), which the coherence gate would otherwise forbid forever. Accepted only when
   the marker names the revision committed at the merge base, the revision strictly advances, the
   mirrored bytes are unchanged and `synced_at` does not regress; setting it alongside changed bytes
-  is itself a violation, so the next genuine resync deletes the line.
-  `currentai.scores.openness_facts` (7 → 9),
-  `currentai.scores.openness_computed` (15 → 17) and `currentai.signal_github.artifact_state`
-  (2 → 3) now record the deployed revision (#365).
-
+  is itself a violation, so the next genuine resync deletes the line (#489).
 - A per-route handle-coverage metric in `build/identity_eval.py` — for each of `github`,
   `huggingface` and `homepage_domain`, how many of the orgs owning artifacts on that route declare
   the handle it needs — with a baseline ratchet in
   `tests/fixtures/identity_coverage_baseline.json` (github 211/299, huggingface 2/61,
   homepage_domain 6/27). Any scoring run exits 1 if a route's live ratio falls below its pinned
   ratio, so coverage can only go up; `--write-coverage-baseline` re-pins the file deliberately.
-  Target floors wait on the Hugging Face handle review (#491).
-
+  Target floors wait on the Hugging Face handle review (#487, #491).
 - `build/propose_org_handles.py`, which proposes `huggingface` org handles from the namespaces of
   already declared Hugging Face artifacts, grouped by org and checked for aggregator accounts and
-  ownership conflicts, for review as a GitHub issue rather than seeded silently (#365).
+  ownership conflicts, for review as a GitHub issue rather than seeded silently (#484).
 - A weekly mirror-drift sentinel (`mirror-drift.yml`, Monday 08:30 UTC): every `mirror:` contract
   in `warehouse/dependencies.yaml` is compared against the platform's latest revision, and a red
   run is picked up by `report-failure.yml`, which opens or comments on the `sentinel` issue.
@@ -48,19 +43,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   number stays drift however well the code matches. Closes
   the gap where the repo's own gates stay green while the platform releases past a mirror; the
   first runs found eight of seventeen contracts behind. "Mirror resync" in
-  `docs/operations/deploy-models.md` is the runbook (#365).
-- `build/publish_neon.py` loads the serialized registry tables into Neon (Postgres) as the
-  `gapmap` schema, so the front end can read the declarations at request time instead of going
-  through the warehouse. It runs in `registry.yml` on every push to `main`, one step after the
-  OSO publish, and requires the `NEON_DATABASE_URL` secret. The load is atomic: rows go into
-  `gapmap_staging` and the cutover is three schema renames in one transaction, so a reader
-  mid-request sees the whole old schema or the whole new one. A `gapmap.publish_runs` row
-  records the commit, the declaration version and the per-table row counts of each load (#365).
+  `docs/operations/deploy-models.md` is the runbook (#486).
 - `build/publish_neon.py` loads the gap map into Neon (Postgres) as the `os-ai-map` schema, so
   the site can read products, scores and freshness dates at request time instead of loading
-  `build/notebook_data.json`. Two groups of table: the target model from CLEVER FRANKE (products,
-  the three axes, sources, lineage, categories, layers, stages, gaps, aliases, long tail) and the
-  registry tables `publish_registry` publishes, prefixed `registry_`. The model's primary keys,
+  `build/notebook_data.json`. The tables are the target model from CLEVER FRANKE: products,
+  the three axes, sources, lineage, categories, layers, stages, gaps, aliases and long tail.
+  The model's primary keys,
   `NOT NULL`s, uniques and foreign keys are enforced by the database, so a load that would serve
   a dangling id fails instead. Five enums are enforced too, and an unmapped payload value fails
   the load rather than being coerced. It runs in
@@ -77,34 +65,22 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `build/neon_status.py` connects again and writes the table and row counts a reader now sees,
   the constraint tally and the `publish_runs` row, to the run summary;
   `gh workflow run registry.yml --ref <branch>` runs the same load from a branch, with the OSO
-  publish guarded on `push` to `main` so a dispatch never reaches it (#365).
-
+  publish guarded on `push` to `main` so a dispatch never reaches it (#485).
 - An explicit `reclaimed-as-dependency` transition in the externalization receipt, so a table that
   an in-scope governed asset starts reading again moves from externalized back into the governed
   dependency graph as a recorded event instead of an edited record. The disposition history is
   append-only (in-scope → externalized → reclaimed-as-dependency) and gated: the reclaim must name
   the prior entry, an in-repo reader that genuinely reads the table, and a dependency contract with
-  a mirror block (#365).
-
-### Fixed
-
-- `homepage` artifact identity now keys on the full canonical URL (host and path), not the bare
-  domain — two products sharing one company's domain at different paths are no longer treated as
-  a collision. A shared domain is corroborating evidence of ownership, never proof of identity;
-  it never establishes equivalence between two candidates and never suppresses a second one.
-  `registry.tail_products` homepage rows now carry that full URL in `artifact_id` (#365).
-
-### Added
-
+  a mirror block (#481).
 - A weekly digest issue of low-confidence identity items (`identity-digest.yml`, Monday
   09:00 UTC): membership, equivalence, and org edges the identity graph could not auto-emit,
   capped at 25 a week, each with a pre-filled ledger entry ready to paste into
-  `sources/resolution_ledger.yaml` once decided (#365).
+  `sources/resolution_ledger.yaml` once decided (#479).
 - The digest renderer now reads the table's own `rank` and never re-sorts: items render in
   `currentai.identity.digest`'s rank order, grouped by relation for reading but each carrying
   its global rank, with a "Top 5 this week" summary at the top; `evidence` renders as linked
   bullets instead of bare method names, parked items collapse to a per-relation count, and the
-  scorecard gets a fourth line breaking the ranked set down by relation (#365).
+  scorecard gets a fourth line breaking the ranked set down by relation (#490).
 - Organization platform handles (`sources/org_handles.yaml`) and model release-name families
   (`sources/model_families.yaml`), published as `registry.org_handles` and
   `registry.model_families` — declared identity evidence for who owns which account and which
@@ -133,10 +109,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `currentai.identity.equivalence_edges` while undeployed: a live `--from-warehouse` run now
   exits 0 as intended) while the identity dataset is undeployed, exits 2 on any other failure
   (auth, timeout, a missing column, an unrecognized `candidate_tier`/`product_tier` value),
-  and refuses to run at all once `warehouse/assets.yaml` marks the dataset deployed (#365).
+  and refuses to run at all once `warehouse/assets.yaml` marks the dataset deployed (#476).
 
 ### Changed
 
+- Resynced five drifted mirrors against the platform's released revisions:
+  `currentai.scores.openness_facts` (7 → 9),
+  `currentai.scores.openness_computed` (15 → 17) and `currentai.signal_github.artifact_state`
+  (2 → 3) now record the deployed revision (#488).
 - Every surrogate `id` in the Neon serving layer is now derived from the row's natural key —
   the first 63 bits of `sha256("<table>:<key>")` — instead of from its position in a sorted
   list. Adding one product used to renumber every row after it, so an id that had reached a
@@ -145,12 +125,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   fails naming both keys if two ever collide, and the ordinal the old ids carried moves into
   `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order` and `stages.num`.
   `schema_version` is 3. The slug stays the canonical identity for links and for anything
-  another system stores (#365).
+  another system stores (#496).
 - Reclassified `org` recall in the identity eval from a coverage floor to a regression invariant at
   ≥ 0.99, graded on live runs only. Recoverability is decided by the same handle route the graph
   emits on, so recall answers "does the resolver use the evidence we gave it" and never "have we
   given it enough" — the eval labels the row `recall invariant`, and per-route handle coverage is
-  what measures reach. Org precision keeps its 0.97 floor (#491).
+  what measures reach. Org precision keeps its 0.97 floor (#482, #491).
 - The identity digest no longer resurfaces a parked item on age, or reports an item's age. The digest
   table has no observation history behind it — `first_seen` dates the snapshot, not the discovery —
   so the parked line promises only that an item returns when its evidence gets stronger, the
@@ -159,7 +139,7 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - Dropped `--allow-unprovisioned` from the `identity-eval` and `identity-digest` workflows now
   that the identity dataset is deployed and contracted. Both modules refuse the flag once a
   `currentai.identity.*` contract with a `mirror` block exists, so a missing table is a real
-  failure again rather than a green skip (#365).
+  failure again rather than a green skip (#480).
 - Split the labour between stage and gap text: a stage says where a category stands, a gap says
   what it needs. They render together in the category drawer, and written in one mood they
   restated each other — `depth` fires if and only if the stage is 4, so both sentences carried
@@ -190,11 +170,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   `build/identity_digest.py`'s inputs are versioned, hashed and reviewable. Mirrored the three
   pool feeds (`signal_hfhub.model_universe`, `signal_openrouter.models`,
   `signal_goodailist.repo_catalog`) the same way, since the dependency gate requires a mirror
-  for every `currentai.*` input a governed reader reaches (#365).
+  for every `currentai.*` input a governed reader reaches (#480).
 - Recorded `currentai.signal_goodailist.repo_catalog`'s return to the dependency graph as a
   `reclaimed-as-dependency` event in `warehouse/audits/externalization.json`: the identity
   graph's `artifact_nodes` model reads it, so it is contracted again while the original
-  externalization entry stays byte-identical as history (#365).
+  externalization entry stays byte-identical as history (#481).
 
 ### Deprecated
 
@@ -204,22 +184,23 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Removed
 
-- The `registry_*` tables from the Neon load. They were there so Neon and the warehouse would
-  carry the same declarations, but nothing on the site read them and the designers never asked
-  for them; the registry surface stays in the warehouse as `currentai.registry.*` and on disk
-  as `build/registry/*.csv`. Neon now holds the 15 site tables from the target model plus
-  `publish_runs` — 41 tables down to 15 (#365).
 - The `maturity` gap type (#87, #318).
 
 ### Fixed
 
+- `homepage` artifact identity now keys on the full canonical URL (host and path), not the bare
+  domain — two products sharing one company's domain at different paths are no longer treated as
+  a collision. A shared domain is corroborating evidence of ownership, never proof of identity;
+  it never establishes equivalence between two candidates and never suppresses a second one.
+  `registry.tail_products` homepage rows now carry that full URL in `artifact_id` (#477).
 - `registry.product_artifacts`'s `crates` `artifact_id` now serializes the bare crate name
   instead of the full crates.io URL (one row: `yomo`) (#472).
 - The resolution ledger now keys a `product_membership` ruling on the product it names
   (`resolves_to`), not on the artifact alone. One package can legitimately be `member_of` one
   product's measurement and `not_member_of` another's — the loader used to raise
   `DuplicateResolution` on that legitimate case. `registry.resolution_ledger`'s grain moves to
-  one row per `(artifact_kind, artifact_id, relation, resolves_to)` to match (#365).
+  one row per `(artifact_kind, artifact_id, relation, resolves_to)` to match (#478).
+
 
 ## [0.2.0] - 2026-08-16
 
