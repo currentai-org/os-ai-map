@@ -54,12 +54,11 @@ Phase 1 is accepted in two steps, and you own only the first:
 - **#494** — EuroLLM, the first hand-authored product driven through the reviewed loop end to
   end (openness 3 / open_weights after two review rounds): **MERGED**.
 - **#498** — adopt 51 first-party Hugging Face handles from #483, hold 18; the `princeton-nlp`
-  shared-account correction applied: **GREEN / MERGE-READY**.
+  shared-account correction applied: **MERGED**.
 - **#500** — fix `build/check_corpus_diff.py` to compare freshly serialized payloads (#497):
-  **GREEN / MERGE-READY**.
+  **MERGED**.
 
-When #498 and #500 merge, change their two state words to **MERGED**. Nothing else in this
-prompt depends on the merge.
+All three of the above are now on `main`; the machinery this prompt reviews is live.
 
 ## Identity is closed
 
