@@ -126,6 +126,53 @@ def test_readme_router_lists_every_primary_skill():
         assert f"workflows/{s}.md" in readme, f"docs/README.md router omits {s}"
 
 
+# Docs deliberately not routed from docs/README.md, each with the reason it is excluded. A
+# tombstone exists to catch an old link, not to be discovered, so keeping it out of the router
+# is the point. The reason is a required value rather than a comment so the invariant is
+# machine-visible as this list grows.
+UNROUTED_DOCS = {
+    "operations/phase5-execution-runbook.md": "tombstone; superseded by ADR-003",
+    "operations/phase5-namespace-migration.md": "tombstone; superseded by ADR-003",
+    "architecture/migration-status.md": "tombstone; migration complete, contract in data-architecture.md",
+}
+
+
+def test_readme_routes_every_reference_and_architecture_doc():
+    """A doc nothing links to goes stale unobserved, and agents implement from whatever prose
+    they find instead. adr-004 governs the tail architecture and was reachable from nothing in
+    the repo -- not docs/, AGENTS.md, README.md, CONTRIBUTING.md or skills/ -- while Phase 1
+    was being built against it. This is the gate that would have caught that.
+    """
+    readme = (REPO / "docs" / "README.md").read_text(encoding="utf-8")
+    unrouted = []
+    for sub in ("reference", "architecture"):
+        for doc in sorted((REPO / "docs" / sub).glob("*.md")):
+            rel = f"{sub}/{doc.name}"
+            if rel in UNROUTED_DOCS:
+                continue
+            if rel not in readme:
+                unrouted.append(rel)
+    assert not unrouted, (
+        f"docs/README.md routes to none of these: {unrouted}. "
+        f"Add each to its table, or to UNROUTED_DOCS with the reason it is excluded."
+    )
+    blank = sorted(k for k, v in UNROUTED_DOCS.items() if not str(v).strip())
+    assert not blank, f"UNROUTED_DOCS entries with no reason given: {blank}"
+
+
+def test_readme_names_every_registered_skill():
+    """The router gated primary skills only. `clean-score-notes` was classified `advanced` in
+    skills/registry.yaml and named nowhere in docs/README.md, because nothing checked the
+    advanced and internal lists.
+    """
+    readme = (REPO / "docs" / "README.md").read_text(encoding="utf-8")
+    reg = yaml.safe_load((REPO / "skills" / "registry.yaml").read_text())
+    named = {e["skill"] if isinstance(e, dict) else e
+             for group in reg.values() for e in group}
+    missing = sorted(s for s in named if f"`{s}`" not in readme)
+    assert not missing, f"docs/README.md names no skill for: {missing}"
+
+
 # ── The integrity contract for workflows and the skill registry ──────────────────────────
 
 def _registry() -> dict:

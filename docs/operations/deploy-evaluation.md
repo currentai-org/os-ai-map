@@ -177,7 +177,6 @@ Once the tables exist on the platform:
   `active` / `materialized: true`, and record the `dataset_id`. Update `verified_at`.
 - Regenerate the derived counts and DAG with `build/assets.py`, and update the staged/deployed
   counts in `docs/architecture/data-architecture.md`.
-- Update the Phase-3 row in `docs/architecture/migration-status.md`.
 
 ## Note on the current state
 

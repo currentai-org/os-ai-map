@@ -103,7 +103,7 @@ that invariant, making the id transition impossible to attribute to the evaluato
 
 Static models replace in place and are published sequentially, so mid-cutover some tables carry the
 new id and some the old. There is no release-scoped materialization yet (`releases.*` does not exist;
-atomicity is transitional per `migration-status.md`). Mitigations:
+atomicity is transitional per `data-architecture.md` 12.2). Mitigations:
 
 - **Low blast radius today.** Nothing consumes these tables cross-generation on the platform: the
   Phase-4 gate is disabled and the Phase-7 retirement has not begun, so no live query joins an
@@ -215,8 +215,8 @@ After the swap, in one reconciliation PR (mirroring the Unit-2 reconciliation):
 - `pyoso` read-back of every table: row counts and schemas unchanged from the candidates.
 - Assert the single shared new `declaration_version_id` across all deployed declaration-keyed tables
   in the cutover set (the §8 single-identity invariant, now against the platform).
-- Update `assets.yaml` (`verified_at`, note the new declaration generation), `migration-status.md`
-  (record the §7 transition table; mark the sentinel retired), `data-architecture.md` §4.5 and the
+- Update `assets.yaml` (`verified_at`, note the new declaration generation; record the §7
+  transition table and mark the sentinel retired), `data-architecture.md` §4.5 and the
   "Versioning identities" section (`evaluator_version` is now `v1-repo-openness-evaluator`, with the
   D1 bump policy), and any `where-scores-live` / DAG counts the change touches.
 

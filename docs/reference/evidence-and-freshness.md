@@ -6,8 +6,7 @@ of the three axes see `docs/methodology.md`; when a rule here changes, change it
 and make the code follow.
 
 This document merges the former `freshness.md` (what the date means) and `verification.md`
-(how it is earned). Part 1 is the meaning; Part 2 is the mechanism; Part 3 is coverage
-status and the history behind the rules.
+(how it is earned). Part 1 is the meaning, Part 2 the mechanism, Part 3 the coverage rules.
 
 ---
 
@@ -161,8 +160,8 @@ Triage. A category whose oldest axis is 50 days old is a category to go and look
 product. `--max-age-days N` turns that report into a gate: it exits non-zero if any
 category's oldest axis is older than N days.
 
-**The window is 45 days (temporary)**, decided 2026-08-09; the age-gate section below (Part 3, step 5) holds the
-reasoning and owns the number.
+**The window is 45 days, temporarily.** The age-gate section below owns the number and holds
+the reasoning; it is not restated here.
 
 ### Where the gate runs, and why not in `validate.yml`
 
@@ -180,7 +179,7 @@ cannot act on gets switched off.
 
 Weekly rather than daily for the same reason parity is weekly: the cadence has to match the work
 it polices. A category is re-read in one run, so all of its axes carry one date and all of them
-age out together, and about four categories cross a 45-day line (temporary) per week. A daily gate would
+age out together, and about four categories cross the 45-day line per week. A daily gate would
 re-report the same cliff for as many days as the re-read takes, which is nagging rather than
 information.
 
@@ -490,7 +489,7 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
-| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45` (temporary), scheduled weekly | free, weekly |
+| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45`, scheduled weekly | free, weekly |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
@@ -636,7 +635,7 @@ comparison graph growing.
 
 `capability.last_verified` dates **this product's own capability evidence**: the feature matrix
 still reads as described, the benchmark number is still the published one. It ages the way any
-axis ages, on the 45-day window (temporary) the freshness gate applies.
+axis ages, the 45-day freshness window applies.
 
 `capability.comparison.last_attested` dates **the spacing between this product and a peer**. It
 has a different lifecycle, because a comparison can go false with neither product changing: the
@@ -767,187 +766,22 @@ little since; the split has not.
 "Signal-backed" means every source the axis cites is on a host a fetcher already re-derives
 automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis, OpenRouter.
 
-## The plan, in order
+## The age gate
 
-The order matters more than usual here, because two of the steps get cheaper by waiting and
-one gets done twice if rushed.
-
-### 1. Finish the recipes — 16/16 categories ✅ **done 2026-08-01**
-
-All sixteen categories carry a `scoring_recipe`. The last three landed as PRs #131, #135 and
-#137, and `safeguards` was corrected from 0/26 to 21/26 in #138 and #139.
-
-Four shared ladders now exist — `software` (ten categories), `model` (two), `dataset` (two)
-and `hardware` (one) — plus `base_pretrained`'s own. `build/check_recipe.py` gates the
-structure of every one of them on every PR, and `skills/build-rubric/SKILL.md` is the
-procedure for the next one.
-
-Two things this step turned out to depend on, neither of which the plan anticipated:
-
-- **A category can only be laddered if its `components` VALUES are controlled tokens.**
-  `check_rubric` matches `head(value)` against a declared enum, so a category recording
-  sentences cannot be read at all. `edge_hardware` had the tidiest key coverage of the three
-  and 71% prose values, which is why it went last and needed a normalization pass first. Key
-  coverage is not readiness; measuring the prose share is now step 0 of the guide.
-- **"One dataset ladder covers both dataset categories" was optimistic.** Applied unchanged to
-  `benchmark_eval_data` the ladder reproduced 0 of 27, because that category spells the card
-  key `datasheet` and because a benchmark may not be published at all — an internal eval suite
-  or a held-out test set — which `gate` had no rung for. The shared ladder widened rather than
-  forking, and `training_synthetic_datasets` came through identical.
-
-**This had to precede step 2**, and still does for anyone re-reading the order: step 2
-generalizes the scoring SQL off its hardcoded model dimensions, and that generalization is
-driven by the complete dimension vocabulary. Doing it before `dataset` and `hardware` existed
-would have meant doing it twice.
-
-`safeguards` is no longer on this list, and it is why `extends` now accepts two forms. It
-holds 9 products typed `model` and 17 typed `software`, so a single shared ladder could not
-cover it. `scoring_recipe.extends` can now be a mapping of product type to ladder name —
-`safeguards` declares `model: model, software: software` — resolved per product by the
-`type:` field in `sources/products/<slug>.yaml`, through `build/rubrics.py`'s
-`resolve_recipe_variants` and `recipe_for`. That forced the other half of the extraction
-too: the fine-tuned model ladder moved out of `finetuned_chat.yaml` into a shared
-`sources/rubrics/model.yaml`, so `safeguards` could reference it alongside `software.yaml`.
-
-The machinery landed; the scores did not. `safeguards` reproduces 21 of its 26 products.
-The other 5 sit in the category's `deferred` block: a license resolving to the wrong tier,
-evidence recorded under a key the ladder does not read, a couple of judgment calls on which
-SKU governs a bundled guard model. Correcting those 5 is what remains, through curation
-rather than more machinery.
-
-### 2. Generalize the scoring SQL, once ✅ **done 2026-08-05**
-
-`currentai.scores.openness_computed` resolved `weights`, `data`, `code` and `license` by name
-in hardcoded UNION branches, so 13 of the 16 categories produced no rows at all: their rules
-test `source`, `core_gated`, `availability`, `answers`, `documentation`, `schematics` and
-`toolchain`, nothing built those facts, and with no `otherwise` rung in those ladders every
-product fell out of the join. 74 rows of a possible 470.
-
-It now reads the dimensions each ladder DECLARES, from a new
-`currentai.registry.category_dimensions`, so a seventeenth category scores in the warehouse
-the day its recipe lands. **470 rows, 384 scored, and `check_parity` reports zero divergence
-from `check_rubric` on every one of them.**
-
-What it took, beyond the generic resolution:
-
-- **A split into two models.** Generalizing took the query to 174 Trino stages against a
-  ceiling of 150, because the resolution CTEs are read several times each by the rule walk
-  and Trino replans the subtree per reference. `currentai.scores.openness_facts` now holds one
-  row per (product, category, declared dimension) and `openness_computed` walks the rules over
-  it. That is also the audit chain's third link, which this guide describes and which had no
-  table: "which fact did this score rest on, at what grade" is now a select.
-- **The rule join carries the product type.** `rule_index` is unique only within
-  `(category_slug, product_type)`, so `safeguards` — guardrail models on one ladder, guardrail
-  software on another — was the category where joining on the slug alone interleaves two
-  ladders' numbering.
-- **The tier-free allowance.** The unmapped-license guard now fires only for ladders that ask
-  about a license. `sources/rubrics/hardware.yaml` declares no `license_tier` and none of the
-  20 edge products records one, so applied unconditionally the guard nulls all 20.
-- **The per-rung tier rule, still outstanding in the warehouse.** The repo narrowed the same
-  guard a second time: `check_rubric` resolves a license tier only for a rung that actually
-  tests one, so a product the software ladder settles on `source` alone is scored whether or
-  not its license maps. Five products score that way today — `apify`, `chatbot-arena`,
-  `patronus-evaluation-platform`, `artificial-analysis-intelligence-index` and `confer`, all
-  at 2/source_available — and the SQL in `currentai.scores.openness_computed` still resolves
-  the tier up front. Until it carries the same rule, those five reproduce in the repo and
-  abstain in the warehouse, and `check_parity` will report them as a repo/warehouse
-  disagreement. That is the safe direction and a loud one, which is the reason to leave it
-  reported rather than suppress it.
-- **`dims_recorded` and `all_recorded_dims_from_dataset`.** `dims_relied_on` counts only what
-  the winning rule reads, which is the wrong denominator — this guide requires every dimension
-  the score *records*. The new columns are the precondition for step 3, and for openness the
-  boolean is false almost everywhere, which is the honest answer rather than a gap.
-- **A `category_deferrals` table.** `deferred` lived only in the repo, so the warehouse did
-  not know which products a category had held back. Deferred products now carry a row with a
-  null score and the recorded reason, and the rule walk is skipped for them.
-
-  This was a correctness fix, not observability. `sources/rubrics/model.yaml` ends in
-  `otherwise: {score: 3, class: open_weights}`, so a deferred product on the model ladder was
-  scored rather than dropped: `safeguards` published a computed openness for nine guardrail
-  models the repo had explicitly declined to stand behind, and seven of the nine disagreed
-  with the published value.
-
-Three things this step turned up that the plan did not anticipate:
-
-- **The evidence model was three recipes stale.** `currentai.evidence.product_evidence` last
-  materialized before the dataset, hardware and safeguards recipes landed — and before the
-  slug collapse in #121, so it still held 47 orchestration products where the repo has 36.
-  None of these models carries a cron, so "the repo is ahead of the warehouse" had a second
-  cause underneath the SQL. Crons are step 5 of the plan in `layer2-status`; until then a
-  publish is only half a refresh.
-- **The roster cannot come from the evidence store.** It was
-  `SELECT DISTINCT product_slug, category_slug FROM product_evidence`, which quietly made
-  coverage conditional on evidence existing: `serialize_rubric` emits no document rows for a
-  deferred product, so 36 of the 86 deferrals — the ones with no Hub or GitHub artifact to
-  generate a dataset row either — were absent rather than unscored. It is now
-  `product_categories`, which is what a category claims.
-- **`license:none` resolved two ways.** `check_rubric` maps `none`, `closed` and `proprietary`
-  to a tier NAMED `proprietary` whether or not the ladder declares one; the warehouse joins a
-  real lookup table and found no row, so three internal-eval benchmarks scored locally and
-  came back null. The dataset ladder's `unstated` tier already means exactly this, so the
-  three tokens are now declared there rather than left to a fallback. Precisely the shape of
-  drift `check_parity` exists to catch, and it was caught by the first run of it.
-
-### 3. The automated freshness pass — roughly 400 axes ✅ **done 2026-08-13**
-
-Adoption and capability, restricted to axes where every recorded dimension is signal-derived.
-The date is the signal fetch date. No reading and no judgment, which is exactly why it can
-run unattended and why it must be fenced to those axes only.
-
-### 4. The re-read pass — roughly 1106 URLs ✅ **done 2026-08-14**
-
-Closed by the 08-13/14 all-corpus sweep, which dated all 1,416 axes; a follow-up audit removed
-the confirmations it could not support, and the 08-16 reconciliation settled those. The
-description below is kept as the standing procedure for re-running it.
-
-Everything else, all of openness included. **Fold the deferral backlog into this pass rather
-than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
-re-check that earns its `last_verified`; done as two passes it is the same pages fetched
-twice, and it re-verifies scores that are about to change.
-
-**The prose refresh folds in on the same argument.** A product's `description` and `comments`
-are brought up to `docs/reference/product-copy.md` in the same read, because refreshing them means
-opening the pages this pass already fetches, and because a prose pass run on its own does not
-open primary sources at all. One PR per category carries both halves. The runbook's Phase 4 has
-the unit of work; the split of authority is unchanged — this guide governs the score and the
-date, `product-copy.md` governs the prose, and the `comments` verification line still earns no
-`last_verified`.
-
-That backlog is the declared deferrals: 5 products across 4 categories as of 2026-08-14, down
-from 81. Every category has a recipe now, and `safeguards` — which used to contribute all 26 of
-its products here — defers none. The
-composition is roughly: products whose prose does not settle a dimension the ladder reads,
-products whose recorded license maps to no tier, and a handful where the ladder and the
-recorded score genuinely disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode`, all
-pairs some rule can produce, so producible-pairs passes them and only `check_rubric` objects).
-
-Regenerate the number rather than trusting it — `check_recipe` prints per-category counts, and
-the figure has moved several times in a week.
-
-**Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
-out of a pass like this, and the first run of producible-pairs moved 17 openness scores or
-classes before the gate could land at all. `apply_scores --check` exits non-zero on a moved
-score for this reason.
-
-### 5. Turn on the age gate
-
-**Done 2026-08-14.** `build/check_freshness.py --max-age-days 45` (temporary) gates in
+`build/check_freshness.py --max-age-days 45` gates in
 `.github/workflows/freshness.yml`, weekly. This is the entire point of having the field: a
-category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
-only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
-that, and on the day the gate landed all 1,416 axes carried a real `last_verified` and the
-oldest category read 6 days. (An audit then removed the confirmations it could not support;
-those were settled on 08-16, and a held axis rides the commit-date fallback rather than evading
-the age gate.)
+category whose oldest axis is older than the window is a category to go and look at. A held
+axis rides the commit-date fallback rather than evading the gate.
 
-**The window is 45 days (temporary), decided 2026-08-09.** It is a judgment about how much re-reading the
-map is worth rather than anything derivable, so it is recorded here with its date and its owner
-and not re-argued per category. Earlier drafts suggested 90; that was a placeholder for an
-unmade decision, and this replaces it.
+**The window is 45 days, temporarily, and returns to 30 four weeks after 2026-09-03 (#457).**
+It is a judgment about how much re-reading the map is worth rather than anything derivable, so
+it is owned here and not re-argued per category. Owner: Carl.
 
-**Raised to 45 days on 2026-09-03, temporarily.** The whole corpus was dated in one August sweep and would have crossed the 30-day gate together around 09-07 to 09-12. The rolling re-verifier spreads the dates over four weekly batches; the window returns to 30 four weeks after the raise. Owner: Carl.
+The raise exists because the whole corpus was dated in one August sweep and would have crossed
+the 30-day gate together, between 09-07 and 09-12. The rolling re-verifier spreads those dates
+over four weekly batches; once it has, the window reverts.
 
-At 45 days (temporary) the re-read is continuous rather than occasional: eighteen categories inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
+At 45 days the re-read is continuous rather than occasional: eighteen categories inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
 date, because a category is re-read in a single run, so categories expire in cliffs rather
 than drifting past the line one product at a time — that is the shape of the work, not a
 backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;

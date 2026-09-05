@@ -14,8 +14,8 @@ A model, a training framework and a dataset are capable of different things, so 
 
 Capability is the axis the map is weakest at, and it says so plainly. Openness is
 reproducible from recorded evidence and adoption is a banded signal, but capability is
-**neither measured nor computed** here. Nothing in `build/` derives it. Measured 2026-08-08,
-373 of 472 `value` fields are prose and not one is a bare number. The band is a curator's
+**neither measured nor computed** here. Nothing in `build/` derives it. Most `value` fields
+are prose rather than a bare number, by design. The band is a curator's
 judgment, and the honest thing the axis does is record what that judgment rested on so it can
 be checked and refreshed.
 

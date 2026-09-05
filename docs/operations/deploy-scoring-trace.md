@@ -122,7 +122,6 @@ Once the tables exist on the platform:
 - Regenerate the derived DAG and counts with `build/assets.py` (the `staged_assets` count marker
   moves), and update `docs/architecture/current-state-dag.md` and the counts in
   `docs/architecture/data-architecture.md`.
-- Update the Phase-6 row in `docs/architecture/migration-status.md`.
 
 ## The `evaluator_version` cutover is a SEPARATE, gated step — do not fold it into this deploy
 
