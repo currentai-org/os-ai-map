@@ -25,7 +25,7 @@ down that read them are historical.
 
 ## Starting points
 
-**For notebook queries:** use `scores.repos_summary` (15K rows, pre-computed snapshot):
+**For notebook queries:** use `scores.repos_summary` (a pre-computed snapshot):
 ```sql
 SELECT * FROM currentai.scores.repos_summary WHERE country = 'France' ORDER BY stars DESC
 ```

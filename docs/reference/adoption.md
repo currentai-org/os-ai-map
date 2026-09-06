@@ -97,7 +97,7 @@ scale two orders below the other.
 
 Declared per **product type** in `sources/rubrics/<type>.yaml`, serialized by
 `build/serialize_rubric.py` into `currentai.registry.adoption_bands`, and read from there by
-the scoring models. Four declarations rather than sixteen, because the scale is a property of
+the scoring models. Four declarations rather than one per category, because the scale is a property of
 what the thing IS, which is what the rubrics are already keyed on.
 
 | level | `software` / `model` | `dataset` |
@@ -125,7 +125,7 @@ Older notes in this project said datasets ran *two* orders lower. The data says 
 
 ### Why `hardware` declares none
 
-A board has no download count. All 20 hardware products record a qualitative reach — `niche`,
+A board has no download count. Hardware products record a qualitative reach — `niche`,
 `broad`, `mass-market` — and none records a figure, so the type declares `qualitative: true`
 and an empty `bands` list.
 
@@ -189,8 +189,8 @@ in a place nothing was looking.
 alternative considered was one order higher throughout, so that ChatGPT at ~900M weekly actives
 and Poe at ~18M monthly actives did not both land at 5. That was rejected: **a level has to
 mean one magnitude across the whole map**, or `adoption` stops being comparable between a
-package and an app. 19 of the 23 sit at level 5, and that is the map saying these are all
-mass-market surfaces, which they are. A top band holding a wide range is the ordinary cost of a
+package and an app. Most records on this instrument sit at level 5, and that is the map saying
+these are all mass-market surfaces, which they are. A top band holding a wide range is the ordinary cost of a
 five-point scale, not a defect in this instrument.
 
 **The labels carry `users`** for the same reason the stars labels carry `stars` — and here
@@ -208,7 +208,7 @@ A model scores on the surface it powers — `gpt-5` on ChatGPT — and its note 
 loud. What the scale will not accept silently is a figure that is **not an active count**: an
 all-time or cumulative user total, a device installed base, a paid-seat count. Those are the
 `active_users` form of the under-coverage error below, a substitution wearing a measurement's
-label, and three records carry one today with the substitution named in the note:
+label. The records that carry one name the substitution in the note:
 `github-copilot` and `github-copilot-ide` (20M **all-time**, not active) and
 `apple-core-ml-runtime` (2.5B active **devices** — a person with an iPhone and a Mac is two of
 it). `doubao` used to be a fourth, banding on ~330M *total* users; a measured 382M MAU now
@@ -270,10 +270,10 @@ instrument and whether it is `bridged`; `artifact_key` names what a product must
 that source to have anything to read, and `requires_evidence` carries the re-fetch fields.
 
 **The first draft required recomputation for `usage_volume` outright, and its own test caught
-the error.** 15 of the 55 unrouted records already carry a digested source —
+the error.** A sizable minority of the unrouted records already carried a digested source —
 `agent-infra-sandbox` cites `api.npmjs.org/downloads/point/last-month` showing 4,670 downloads,
 with a digest. That claim is perfectly checkable; it just is not re-derivable by a pipeline that
-reads no npm. Failing it would have told 15 authors their careful evidence did not count.
+reads no npm. Failing it would have told those authors their careful evidence did not count.
 
 **Why the escape hatch stays shut.** Without the re-fetch leg, an unbacked record could pass by
 relabelling itself `reported_traction` — moving an unverifiable claim into the one instrument
@@ -380,8 +380,8 @@ not follow from the evidence the score itself recorded.
 
 | model | grain | covers | route |
 |---|---|---|---|
-| `currentai.signal_pypi.package_downloads` | package | 98 software products | PyPI |
-| `currentai.signal_huggingface.product_adoption` | **product** | 112 model / dataset products | Hugging Face |
+| `currentai.signal_pypi.package_downloads` | package | software products declaring a `pypi` artifact | PyPI |
+| `currentai.signal_huggingface.product_adoption` | **product** | model / dataset products declaring a Hugging Face artifact | Hugging Face |
 
 Both read the bands from `registry.adoption_bands` and band on the product's declared type.
 Neither writes anything back to `sources/`: **a computed band is an observation, never a
@@ -390,12 +390,12 @@ score.** Only a person sets `level`, and only per `evidence-and-freshness.md`.
 ### Sum across the family, not per artifact
 
 `signal_routing.yaml` declares `sum_across_artifacts: true` for adoption, because the map's
-unit is the product family rather than a repo. 107 model artifacts belong to 55 products, so
-banding per artifact scores nearly half of them on a single SKU: `gemma` sums to 22.1M across
-six and lands at 5, where its largest single SKU would not.
+unit is the product family rather than a repo. Model artifacts routinely outnumber the products
+that own them, so banding per artifact scores a product on a single SKU: `gemma` sums across its
+SKUs and lands at 5, where its largest single SKU would not.
 
-`product_adoption` does this; `package_downloads` does not yet need to (98 products, 98
-packages), and the hole is latent there rather than closed.
+`product_adoption` does this; `package_downloads` does not yet need to (a routed product declares
+one package), and the hole is latent there rather than closed.
 
 ### Route order, and taking the sum WITHIN the winning route
 
@@ -431,7 +431,7 @@ it does not make the claim automatic, it makes it falsifiable.
 
 ## Signals considered and their traps
 
-- **GitHub stars** — real, already fetched for 258 products, banded nowhere yet. Capped at
+- **GitHub stars** — real, already fetched wherever a repo is declared, banded nowhere yet. Capped at
   level 3 by the rubric because stars measure attention rather than use. **Open route.**
 - **Vendor SDK downloads** — `mistralai`, `anthropic`, `cohere` on PyPI are dated proxies for
   API integration, and the trap is attribution. `cohere-rerank-api` is currently banded on
@@ -489,8 +489,8 @@ product, followed by a band recorded on that signal anyway.**
 
 ### The gate: `build/check_channel_authority.py`
 
-The ladder above was a habit for its first two weeks, and habits are not applied evenly. Eight
-products had already taken remedy 3 — `helm`, `laminar`, `swe-bench` and five others record
+The ladder above was a habit for its first two weeks, and habits are not applied evenly. Some
+products had already taken remedy 3 — `helm`, `laminar` and `swe-bench` among them record
 `reported_traction` with `reach` omitted while their winning route is a bridged usage channel —
 and nothing said whether the ones that had not were exceptions or oversights. The gate is what
 makes the ladder answerable.
@@ -578,8 +578,8 @@ Three questions settle it, and all three are answerable from the package's own J
 
 Where the package turns out to be a client, the server usually has no countable channel at all, so
 the honest outcome is `stars_fallback` and its cap of 3 - understating a widely deployed system,
-and saying so in the note. Thirteen of `storage`'s twenty-seven bands are there for this reason,
-which is the highest share on the map after `dataset_processing_tools`, and it is a property of the
+and saying so in the note. A large share of `storage`'s bands are there for this reason,
+the highest on the map after `dataset_processing_tools`, and it is a property of the
 category rather than a defect in it. Docker pull counts would fix most of them; there is no
 `docker` artifact kind to declare, which is the platform-side ask.
 
