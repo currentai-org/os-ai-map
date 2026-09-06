@@ -119,7 +119,7 @@ Worth stating plainly, because the code makes them look alike and they behave op
   reweights maturity from a blend to a single axis rather than declining to score. The product
   keeps counting toward the stage.
 
-That fallback is right for the case it was written for. 21 of the 26 null-capability products
+That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
 everyone evaluates against is, by that fact, a good corpus.
 
@@ -130,11 +130,11 @@ it counts as a category-leading fully-open product on one axis while a reader as
 **A correction, because this guide got the stakes wrong on first writing.** It claimed that
 `agent_tools_protocols`'s stage rested on that null, on the reasoning that one category-leading fully-open
 product is the entire `stage >= 4` threshold. The rule is real but the inference was not
-checked against the category: it has **seven** category-leading fully-open products, not one — MCP, `fastmcp`,
-`qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and six of them
+checked against the category: it has **several** category-leading fully-open products, not one — MCP, `fastmcp`,
+`qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and most of them
 reach 4.5 from a real adoption *and* a real capability score with no null in the arithmetic.
-Seven clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting MCP
-entirely leaves six and changes nothing. The methodological defect is unaffected; the claim
+That comfortably clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting
+MCP entirely changes nothing. The methodological defect is unaffected; the claim
 that a stage depended on it was wrong, and was caught by re-deriving it against
 `build/serialize.py` rather than reasoning from the threshold.
 
@@ -178,7 +178,7 @@ and crediting partially-open products to it would blur exactly the open-source-v
 line the map is built to expose. Open-weights models therefore never advance a stage. Counting
 also distinguishes resiliency from a single standout (see Stage 5).
 
-This is consequential but bounded: counting open-weights as fully open would move only three
+This is consequential but bounded: counting open-weights as fully open would move only a few
 categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2→3,
 `edge_hardware` 3→4), and would leave every infrastructure and tooling verdict unchanged.
 
@@ -269,11 +269,11 @@ reported an openness gap instead, so nobody reading the map could see it.
 clear their cutoffs and the blend still misses 4.5, neither driver fires and the category carries
 only whatever `openness` applies — possibly nothing. The stage number already says the category
 has not reached the leading-product threshold; inventing an adoption or capability shortfall where
-the axis clears its cutoff would be a knowingly false label. Exactly one category is in this state:
-`benchmark_eval_data`, whose fully-open benchmarks are adoption 4 with a **null capability**, so
+the axis clears its cutoff would be a knowingly false label. `benchmark_eval_data` is the case:
+its fully-open benchmarks are adoption 4 with a **null capability**, so
 the blend is adoption alone and tops out at 4.0 — adoption is not short, capability is simply
-unmeasured. The fix is to score capability for evaluation sets — the axis is already applied to 4
-of that category's 27 products — which is filed separately. If unmeasured axes become common
+unmeasured. The fix is to score capability for evaluation sets — the axis is already applied to
+some of that category's products — which is filed separately. If unmeasured axes become common
 enough to name, add a gap for that state deliberately rather than reusing an inaccurate one.
 
 ### Declaring the disclosure gap

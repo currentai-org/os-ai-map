@@ -50,7 +50,7 @@ version_in_identity: OpenAI markets GPT-4o as a distinct product, not a version 
 ```
 
 The presence of the field is the exemption and the value is the reason — the same shape a
-category's `deferred` block uses. Six products carry one today. Datasets and hardware are not
+category's `deferred` block uses. Datasets and hardware are not
 checked, because there the version genuinely is the identity: `oscar-2301` is a specific crawl,
 `raspberry-pi-5` is a specific board, and the next one is a different product rather than an
 update.
@@ -95,7 +95,7 @@ openness:
   governing_release: gemma-4
 ```
 
-It is **declared rather than derived**, and the reason is worth keeping: 6 of the 15 products
+It is **declared rather than derived**, and the reason is worth keeping: many of the products
 carrying one are closed or API-only, with no artifact to date. A derivation would cover some
 products and not others, and a reader could not tell which kind they were looking at.
 
@@ -222,7 +222,7 @@ exactly one, so its key stays `(artifact, relation)`.
 
 ## Organizations
 
-Organizations carry aliases for the same reason and under the same rule. Two exist, both
+Organizations carry aliases for the same reason and under the same rule. The ones that exist are
 consolidations rather than renames: `google-deepmind` into `google`, `alibaba` into
 `alibaba-cloud`. `org_slug` is emitted into the payload and joined in the registry, so a rename
 with no forwarding address breaks a join rather than a link.
@@ -287,9 +287,9 @@ So `org` recall is a **regression invariant**, not a floor:
 
 | Relation | Precision | Recall | Kind of check |
 |---|---|---|---|
-| `equivalence` | ≥ 1.00 | ≥ 0.90 | floor, floor (15 truth items today, so waived) |
+| `equivalence` | ≥ 1.00 | ≥ 0.90 | floor, floor (waived while under the minimum truth count) |
 | `membership_non_scoring` | ≥ 0.98 | ≥ 0.90 | floor, floor |
-| `artifact_identity` | ≥ 0.99 | ≥ 0.95 | floor, floor (0 truth pairs today, so waived) |
+| `artifact_identity` | ≥ 0.99 | ≥ 0.95 | floor, floor (waived while under the minimum truth count) |
 | `membership_scoring` | — | — | never automated, so never floored |
 | `org` | ≥ 0.97 | ≥ 0.99 | precision **floor**, recall **invariant** |
 
@@ -311,13 +311,14 @@ route's numbers are pending the handle review in issue #483, and a floor set bef
 would be a guess. What it carries instead is a **baseline ratchet**:
 `tests/fixtures/identity_coverage_baseline.json` pins today's `(orgs with a handle, orgs with
 artifacts)` per route, and any run exits 1 if a route's live ratio falls below its pinned ratio.
-Coverage can only go up. The pinned values as of this writing:
+Coverage can only go up. Read the pinned ratios from that file rather than from a copy here; the
+routes and their denominators are:
 
-| Route | Coverage | Denominator |
-|---|---|---|
-| `github` | 211/299 | orgs owning a `github` artifact |
-| `huggingface` | 2/61 | orgs owning a `huggingface_model` or `huggingface_dataset` artifact |
-| `homepage_domain` | 6/27 | orgs owning a `homepage` artifact |
+| Route | Denominator |
+|---|---|
+| `github` | orgs owning a `github` artifact |
+| `huggingface` | orgs owning a `huggingface_model` or `huggingface_dataset` artifact |
+| `homepage_domain` | orgs owning a `homepage` artifact |
 
 `uv run python -m build.identity_eval --write-coverage-baseline` re-pins the file from the corpus.
 That is a deliberate act in its own commit — raising the ratchet because coverage genuinely rose,
@@ -376,7 +377,7 @@ pattern is a literal prefix of another's and the two name different products.
 ## Where the graph lives
 
 The identity questions this guide describes in prose are also computed as a graph on the OSO
-platform, in the `currentai.identity` dataset. Seven models, all deployed:
+platform, in the `currentai.identity` dataset. These models, all deployed:
 
 | Table | What one row is |
 |---|---|
@@ -389,7 +390,7 @@ platform, in the `currentai.identity` dataset. Seven models, all deployed:
 | `digest` | a reviewable claim, ranked for the weekly sweep |
 
 The pool feeds `signal_hfhub.model_universe`, `signal_openrouter.models` and
-`signal_goodailist.repo_catalog` supply the undeclared candidates. All ten tables are
+`signal_goodailist.repo_catalog` supply the undeclared candidates. All of these tables are
 platform-owned: the repo keeps read-only mirrors under `warehouse/models/identity/` and
 `warehouse/models/signal_{hfhub,openrouter,goodailist}/`, each recorded as a dependency contract
 in `warehouse/dependencies.yaml` with a `mirror:` block pinning the model id, revision and file
@@ -410,7 +411,7 @@ keeps the tier that declared it and the eval reports the head/tail split per rel
 what gives `membership_non_scoring` a floor at all: `homepage` is the only artifact kind with no
 adoption route, no head product declares one, and the tail rows that do are what put
 `membership_non_scoring` over the minimum truth count its floor needs to mean anything. That
-relation's truth set is therefore small enough (27) that one edge decides whether it clears the
+relation's truth set is therefore small enough that one edge decides whether it clears the
 floor, so its failures need reading twice — a tail homepage edit is emitted from the last published
 `registry.tail_products` until the weekly publish lands, and the same edit staleness-fails the
 committed pass fixture. `build/identity_eval.py`'s module docstring carries both readings, and the

@@ -245,8 +245,12 @@ token, or leave the field absent and say the fetch did not complete. Never recor
 and capability are earned later against evidence, under `add-product` or `promote-category`.
 Preliminary scoring here would be a number with no source behind it.
 
-**No bot PRs.** The sweep ends at populated registry files and a summary for a human to
-approve. Opening PRs per candidate is not part of this workflow.
+**Automation may open the PR; only a human merges it.** Under
+[ADR-004](../architecture/adr-004-machine-proposals-and-the-public-tail.md#decision), a sweep
+may end in a bot-opened pull request carrying the machine-generated review sheet and exactly
+one label — here, `tail-batch`. What automation never does is merge: the registry rows and the
+batch summary exist for a human to review and accept. Open one PR for the batch, not one per
+candidate.
 
 ## Validation
 

@@ -69,7 +69,7 @@ A held axis reaches the payload as `basis: partial` rather than through the fall
 
 **Changed what it claims, not merely touched.** Some commits move a file without
 reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
-mapping in all 472 files, carrying a byte-identical `raw:` copy of the string it
+mapping in every score file, carrying a byte-identical `raw:` copy of the string it
 replaced, so no published value moves — and dating by touch would have republished 78 of
 the first batch's 84 products as reviewed on the migration day. A commit date is only
 defensible here because it dates a review, so a commit that reviewed nothing must not
@@ -144,8 +144,8 @@ one product-level date, "everything" is the constraint: a product whose axes wer
 the 9th, 11th and 13th is defensibly current only through the **9th**. Publishing the 13th
 says "at least one axis was confirmed then", which is a weaker claim wearing the stronger
 one's label — the same overstatement as publishing a held axis as verified, in a less obvious
-form. It was `max()` until 2026-08-15, and 176 of the 472 products carry differing axis dates,
-so this is the common case rather than an edge. `latest_axis_confirmation` carries the newest
+form. It was `max()` until 2026-08-15, and products whose axes carry differing dates are the
+common case rather than an edge. `latest_axis_confirmation` carries the newest
 date for anyone who wants "when was this last touched", emitted only where it differs.
 
 Note what `partial` does *not* depend on. It follows from an axis being unconfirmed, not from
@@ -179,7 +179,7 @@ cannot act on gets switched off.
 
 Weekly rather than daily for the same reason parity is weekly: the cadence has to match the work
 it polices. A category is re-read in one run, so all of its axes carry one date and all of them
-age out together, and about four categories cross the 45-day line per week. A daily gate would
+age out together, and a few categories cross the 45-day line each week. A daily gate would
 re-report the same cliff for as many days as the re-read takes, which is nagging rather than
 information.
 
@@ -564,8 +564,8 @@ the evidence and asks only whether the pair exists in the ladder, so deferring c
 ### Two shared utilities, so the mechanism cannot be bypassed
 
 - **`build/components.py`** — the only supported way to edit a `components` field. The
-  block-safe rewriter with the reparse assertion. 277 of the 470 score files fold that
-  scalar across lines, 57 of them across three or more, so any hand-rolled
+  block-safe rewriter with the reparse assertion. Many score files fold that
+  scalar across lines, some across three or more, so any hand-rolled
   `^  components: (.*)$` substitution splices keys mid-string and corrupts the value
   silently. A shared helper means the next script cannot re-invent that. Generic over the
   field, so a score correction and a components edit are the same operation with the same
@@ -590,9 +590,9 @@ different in kind and can be automated — see the table below.
 
 ## What a capability confirmation attests to
 
-Less than the other two axes, and the difference is worth stating before roughly 400 dates get
-written across adoption and capability in step 3. **42 capability axes carry a
-`last_verified` today**, so this is a paragraph now and an audit of 400 dates later.
+Less than the other two axes, and the difference is worth stating before dates get written
+across adoption and capability in step 3 — a paragraph now, rather than an audit of every one
+of those dates later.
 
 Capability is not measured on this map. Measured on 2026-08-08, 322 of 472 products record
 `basis: feature_matrix` against 86 `benchmark`, and `value` is prose in every one of the 372
@@ -601,10 +601,10 @@ the four rubrics, and `signal_routing.yaml` records the axis as effectively unro
 external anchors are unbridged, and both rank *models*, so neither can say anything about a
 training framework or a sandbox.
 
-What actually places many bands is a comparison to a peer. Roughly a hundred products in the
+What actually places many bands is a comparison to a peer. Many products in the
 corpus put themselves against another product in their own category — "one tier below the
-Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the
-27 notes does it. That comparison was the instrument, and it lived in an English sentence.
+Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every note does
+it. That comparison was the instrument, and it lived in an English sentence.
 
 So it is recorded instead:
 
@@ -725,9 +725,9 @@ This follows from a rule already stated above — *"a re-check that changes noth
 the date"* — and refusing to date nulls would contradict it, treating "the answer is none" as
 the one answer that cannot be confirmed.
 
-**It is also load-bearing for coverage.** 43 products carry at least one null axis. If a null
-can never be dated, none of those 43 can ever be fully verified, however carefully anyone reads
-them — and the unreachable set is not random. It is almost entirely the hosted features sold
+**It is also load-bearing for coverage.** Products carrying at least one null axis are a real
+slice of the corpus. If a null can never be dated, none of them can ever be fully verified,
+however carefully anyone reads them — and the unreachable set is not random. It is almost entirely the hosted features sold
 inside a larger platform, which is a real and interesting part of the map, not a rounding error.
 
 Two things a dated abstention must still do:
@@ -781,7 +781,7 @@ The raise exists because the whole corpus was dated in one August sweep and woul
 the 30-day gate together, between 09-07 and 09-12. The rolling re-verifier spreads those dates
 over four weekly batches; once it has, the window reverts.
 
-At 45 days the re-read is continuous rather than occasional: eighteen categories inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
+At 45 days the re-read is continuous rather than occasional: every category inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
 date, because a category is re-read in a single run, so categories expire in cliffs rather
 than drifting past the line one product at a time — that is the shape of the work, not a
 backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;

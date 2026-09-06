@@ -19,8 +19,8 @@ are prose rather than a bare number, by design. The band is a curator's
 judgment, and the honest thing the axis does is record what that judgment rested on so it can
 be checked and refreshed.
 
-A null score is an abstention, not a gap: 26 products, datasets and a wire protocol among
-them, are not capable of anything the axis measures, and abstain rather than score 0.
+A null score is an abstention, not a gap: some records — datasets and a wire protocol among
+them — are not capable of anything the axis measures, and abstain rather than score 0.
 
 ## The recorded fields
 
@@ -60,7 +60,7 @@ evidence, and a checker that could not tell them apart could not route or gate t
 
 Many bands are not measured at all. As of 2026-08-14, 114 products record a peer comparison
 (with perhaps another ~36 candidates that still live in prose) — "one tier below the Megatron-LM
-anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the 27 notes does it.
+anchor", "mid-tier next to langfuse" — and in `finetuning_code` every note does it.
 Peer comparison is **a major capability instrument**, not demonstrably most of the axis, and until
 2026-08-08 it lived inside an English sentence where nothing could check it, refresh it, or notice
 when the product it named moved.
@@ -162,8 +162,8 @@ prefer a nearer peer whose capability is independently evidenced over stretching
 vocabulary to reach the anchor.
 
 The corpus already works this way. `pinecone` is recorded `at milvus`, not against `vespa`,
-which 22 other `storage` bands name; `thunderkittens` and `hummingbird` are both `two_below
-tensorrt` rather than against `apache-tvm`, which 18 `compilers` bands name; `amazon-bedrock-
+which most other `storage` bands name; `thunderkittens` and `hummingbird` are both `two_below
+tensorrt` rather than against `apache-tvm`, which most `compilers` bands name; `amazon-bedrock-
 custom-models-fine-tuning` is `one_below openai-fine-tuning-api`, a hosted peer, rather than
 against `megatron-lm`. In each case the nearer peer is the more informative comparison: a
 hosted fine-tuning service says more about another hosted fine-tuning service than a
@@ -204,10 +204,10 @@ axis is won or lost. Two rules, both learned on 2026-08-18 while banding `compil
 **Count the products per rung before you accept the wording.** A rung holding a third of the
 category is not discriminating between anything; it is a label. `storage`'s top rung was first
 written as "a distributed retrieval platform that also ranks or runs inference in the serving
-path", which admitted seven of twenty-seven products - Vespa and Elasticsearch, but also every
-vector database that fuses scores, since Qdrant has RRF and DBSF, Infinity has tensor reranking and
-Milvus has rerank functions. Reworded to "hosts and evaluates ranking or embedding models inside
-the serving path" it admits two. Nothing about the products changed; the definition stopped being
+path", which on that day admitted seven of the twenty-seven products then in the category - Vespa
+and Elasticsearch, but also every vector database that fuses scores, since Qdrant has RRF and DBSF,
+Infinity has tensor reranking and Milvus has rerank functions. Reworded to "hosts and evaluates
+ranking or embedding models inside the serving path" it admitted two. Nothing about the products changed; the definition stopped being
 satisfiable by almost all of them. The distribution is the diagnostic, and it costs one query.
 
 **Prefer a definition stated as a capability the product either has or has not, over one stated as

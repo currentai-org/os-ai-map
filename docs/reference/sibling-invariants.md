@@ -90,7 +90,7 @@ which SPELLING had been used rather than off the normalized status, on the reaso
 ground that scalar entries predate the feature and should not be disturbed. What that bought was a
 published category owing nothing: a scalar entry pointing at a file with only `name`,
 `display_name` and an empty roster produced zero errors and would have shipped visibly empty. The
-checks now run on the normalized value, and every one of the sixteen scalar entries already
+checks now run on the normalized value, and every scalar entry already
 satisfied them, which is the measurement that should have preceded the exemption.
 
 

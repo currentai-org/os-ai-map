@@ -152,8 +152,8 @@ the field.
 
 ### The verification line — canonical form
 
-The corpus carries this idiom 227 ways ("Verified live June 2026", "verified live on HF
-June 2026", "Verified live 2026-06-22 via primary sources", …). Standardize on:
+The corpus carries this idiom in many spellings ("Verified live June 2026", "verified live on
+HF June 2026", "Verified live 2026-06-22 via primary sources", …). Standardize on:
 
 ```
 Verified <YYYY-MM-DD> via <source>.
@@ -286,7 +286,7 @@ as a stand-in for a count. If a number matters, it is an `adoption` score, not a
 A "latest version" clause fails the same test for the same reason: the next release makes
 it wrong, and nothing in the repo will notice. `v0.26.0 released 2026-07-25` and
 `Latest stable v1.2.1 ...; 1.3.0 release candidates in progress` are both promises the map
-cannot keep across several hundred products. The `github`/`pypi`/`huggingface_*` links
+cannot keep across the whole corpus. The `github`/`pypi`/`huggingface_*` links
 already point at the page showing the current release. Do not restate it.
 
 Three cases are **durable** and stay:

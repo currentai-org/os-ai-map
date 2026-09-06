@@ -250,8 +250,8 @@ cited as proof was the documented example of the bug.
 
 Two related rules follow from the same document and must not be re-derived:
 
-- **Product freshness is the OLDEST confirmed axis, not the newest.** 176 of 472 products carry
-  differing axis dates, so this is the common case. Publishing the newest "says at least one
+- **Product freshness is the OLDEST confirmed axis, not the newest.** Products whose axes carry
+  differing dates are the common case. Publishing the newest "says at least one
   axis was confirmed then, which is a weaker claim wearing the stronger one's label — the same
   overstatement as publishing a held axis as verified".
 - `latest_axis_confirmation` already exists as a DERIVED field emitted only where it differs.

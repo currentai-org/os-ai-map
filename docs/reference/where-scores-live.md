@@ -105,8 +105,8 @@ label, `stages` by their stage number, `long_tail_top` by its name, `product_lin
 `alias`, with no surrogate at all.
 
 A source's key carries `shows` and `accessed` because the URL alone does not identify the row.
-One source list can hold the same URL twice on the same axis — 69 pairs today — and every one
-of those pairs is a re-verification that recorded a different claim or a different date. They
+One source list can hold the same URL twice on the same axis, and every such pair is a
+re-verification that recorded a different claim or a different date. They
 are two observations of one page, and those two fields are what tell them apart. The
 consequence worth knowing: editing a source's `shows` or `accessed` moves that row's id,
 because it is a different observation and an id moves when its natural key does.
@@ -252,25 +252,26 @@ The **score** is curated in `sources/scores/*.yaml` as `adoption.level`, and mir
 What the warehouse does hold is a **measured band per product**, from whichever channel the
 product declares:
 
-| Table | Instrument | Products | Agrees with the repo |
-|---|---|---|---|
-| `currentai.signal_huggingface.product_adoption` | 30-day Hub downloads | 115 | **96%** (111/115) |
-| `currentai.signal_pypi.package_downloads` | monthly PyPI downloads | 106 | **91%** (97/106) |
-| `currentai.signal_github.product_adoption` | stars, a declared **fallback** | 120 | **50%** (60/120) |
+| Table | Instrument | Agrees with the repo |
+|---|---|---|
+| `currentai.signal_huggingface.product_adoption` | 30-day Hub downloads | nearly always |
+| `currentai.signal_pypi.package_downloads` | monthly PyPI downloads | nearly always |
+| `currentai.signal_github.product_adoption` | stars, a declared **fallback** | about half the time |
 
 Read those three rates together and they say something specific rather than alarming. Where a
 product publishes a download channel, the repo and the warehouse agree. Where adoption rests on
-stars, they part company — and in 56 of the 60 disagreements the repo bands **higher**, by one
-level 28 times, two levels 21 times, and three or more 7 times.
+stars, they part company — and in nearly every one of those disagreements the repo bands
+**higher**, usually by one level and sometimes by more. Count them yourself against the tables
+rather than quoting a figure from here; the signal crons move them weekly.
 
 That is the fallback behaving like a fallback: stars are a weaker proxy than downloads and land
 lower on their own scale, and `docs/reference/adoption.md` is explicit that a band is only comparable
-within its `signal_type`. So it is not 60 errors. It is 56 products whose adoption rests on the
-weakest instrument the map has, banded above what that instrument alone would support, with no
-gate over any of it. Worth a pass, not a correction sweep.
+within its `signal_type`. So the disagreements are not errors. They are products whose adoption
+rests on the weakest instrument the map has, banded above what that instrument alone would
+support, with no gate over any of it. Worth a pass, not a correction sweep.
 
-**The 50 products promoted on 2026-08-19 have no signal rows yet.** The signal crons are Sunday,
-so the earliest is 2026-08-23.
+**A newly promoted product has no signal rows until the next cron.** The signal crons are
+Sunday, so the batch promoted on 2026-08-19 was first measurable on 2026-08-23.
 
 ## Capability — mirrored, never recomputed
 

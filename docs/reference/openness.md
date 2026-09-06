@@ -29,12 +29,12 @@ Each `sources/scores/<slug>.yaml` carries two separate, analyst-assigned opennes
 Every non-null value needs a primary `sources:` entry. Both fields were originally assigned
 by hand against MOF/OSI, and that history is why `components`/`note` read as editorial prose.
 
-**A deterministic formula now exists for most of the map.** All 18 categories declare a
+**A deterministic formula now exists for most of the map.** Every category declares a
 `scoring_recipe` that names an ordered rule list over dimension values, and
 `build/check_rubric.py` replays it against each product's recorded `components` to check that
 the recorded score is the one the rules produce. Most recipes `extend` a shared ladder in
 [`sources/rubrics/`](../../sources/rubrics/) rather than restating one: `software.yaml` covers
-twelve categories directly plus the software half of `safeguards`, `model.yaml` the fine-tuned and guardrail models. A category holding more
+the software categories directly plus the software half of `safeguards`, `model.yaml` the fine-tuned and guardrail models. A category holding more
 than one kind of product maps `extends` per product type.
 
 Three caveats, because "a formula exists" is easy to over-read:
@@ -150,8 +150,8 @@ license families. The **caps** are what is universal.
 Before the scale, the same license family was scored two ways. `Llama-3.1-Community` was
 `3/open_weights` on `llama-guard` in `safeguards` and `2/restricted` on `llama-instruct` in
 `finetuned_chat`. `CC-BY-NC` capped `command-r` at 2 while `CC-BY-NC-SA` left `personahub` at
-5. Ten products carry a bounded commercial license; six were recorded 2 and four were recorded
-3.
+5. Of the ten products then carrying a bounded commercial license, six were recorded 2 and four
+were recorded 3.
 
 Applying the scale on 2026-08-01 moved seven scores: six from `2/restricted` to
 `3/open_weights` (`llama`, `codellama`, `llama-instruct`, `tulu`, `jamba-large`, `codegemma`)
@@ -216,9 +216,9 @@ corpus also answered that question 54 times under `self-host`, in a vocabulary o
 on the other. Whether a vendor lets you run the published thing yourself *is* whether the
 core is withheld, so these were never two facts.
 
-Twenty-three records carry both keys, and they never disagree — 11 `yes`/`ungated`, 10
-`primary`/`ungated`, 2 `only`/`ungated`, and no contradictions in either direction. That
-agreement is what licenses the merge. Until 2026-08-11 `self-host` was an undeclared key,
+Twenty-three records carried both keys at the time of the merge, and they never disagreed — 11
+`yes`/`ungated`, 10 `primary`/`ungated`, 2 `only`/`ungated`, and no contradictions in either
+direction. That agreement is what licensed the merge. Until 2026-08-11 `self-host` was an undeclared key,
 which meant it was dropped before the formula ran, and the 31 records that used it *instead*
 of `core-gated` left the dimension unanswered.
 
@@ -286,9 +286,9 @@ precedent, which is why the rule is now stated here and in `sources/rubrics/soft
 rather than left to be rediscovered.
 
 One caveat for anyone applying it: not every `core-gated: gated` in the corpus was recorded
-against this test. Twenty-two products reach the gated rung, and a number of them record their
-gate as a managed cloud "on top" of a complete OSI core — the shape this section says is
-*ungated* — with no withheld component named. Those predate the rule and have not been re-read.
+against this test. Some products reaching the gated rung record their gate as a managed cloud
+"on top" of a complete OSI core — the shape this section says is *ungated* — with no withheld
+component named. Those predate the rule and have not been re-read.
 A `gated` value is not evidence that somebody applied this rule; check what the record says is
 actually withheld.
 
@@ -309,7 +309,7 @@ recorded against the artifact they actually govern. `llamafirewall` is 5/open_so
 `openai-evals` was already resolved this way before the rule was written: it records
 `license: MIT`, `source: public(full framework + registry)` and
 `per-dataset-licenses: mixed(CC/CC0/Apache for bundled data)`, and scores 5 on the framework.
-Those two are the only bundles of this shape in the corpus today.
+Any further bundle of this shape resolves the same way.
 
 The rule does have an edge, and it is worth stating so nobody stretches it. It applies where the
 bundled artifact is *substitutable* — you can point LlamaFirewall at a different model and it
@@ -331,8 +331,8 @@ This is recorded as an `accessory_host` dimension in `sources/rubrics/hardware.y
 as an extra rung. The rung version — `{schematics: partial, toolchain: partial}` → 4 — would have
 reproduced the number the HAT then held and been non-monotonic: `ti-am67a` and
 `qualcomm-dragonwing-rb3-gen-2` both record `{partial, open}` and score 3, so it would have ranked
-strictly weaker evidence strictly higher. One product records `accessory-host` today; the next
-accessory records its host rather than needing another rung.
+strictly weaker evidence strictly higher. An accessory records its host rather than needing a
+rung of its own.
 
 The dimension earned itself on 2026-08-14, sooner than expected. `raspberry-pi-5` was corrected
 from 4 to 3 — it publishes a mechanical drawing and two STEP files and no schematic of the board,
@@ -407,7 +407,7 @@ Both are choices, not oversights, and neither moves the binary line.
 
 The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `restricted`
 and `closed`, and `open` is the only word above `gated`, so every corpus classed `open` sits
-in that bucket — 51 products today, including one at 3 and six at 4. A model at 4
+in that bucket, including ones scored below 5. A model at 4
 is `open_weights` and open-ish; a corpus at 4 is `open`. `the-pile` (license deferring to
 per-subset terms, Books3 withdrawn) and `stack-edu` (deferring to The Stack v2's gated terms)
 are counted as open on that basis. Closing it means giving the vocabulary a middle class and
