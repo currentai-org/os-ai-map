@@ -155,10 +155,11 @@ recall read 1.000 and mean nothing:
   computed over exactly the pairs a declared handle could bridge, so recoverability is defined
   by the same route the graph emits on. That makes it a REGRESSION INVARIANT, not a coverage
   target: a miss is the resolver failing to use evidence it already has, which is a bug rather
-  than a curation gap -- PROVIDED the resolver has actually seen that evidence. It has not
-  between a mid-week registry merge and the following Sunday's identity rebuild, and in that
-  window this invariant fails without a defect behind it. `FLOOR_NOTES['org']` carries the
-  two-table check that tells the cases apart; the edge counts alone do not.
+  than a curation gap -- PROVIDED the resolver has actually seen that evidence, which between a
+  mid-week registry merge and the next identity rebuild it may not have. In that window a
+  failure here can have no defect behind it, so a failure is not self-interpreting.
+  `FLOOR_NOTES['org']` carries what to check and says plainly which of those checks narrow the
+  question rather than answering it; the edge counts answer nothing on their own.
   `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
@@ -254,10 +255,12 @@ them apart:
   `registry.tail_products` until the weekly publish lands, so the scheduled Monday run can go
   red on precision for an edit that is already correct. The fix is a republish, not a graph
   change -- diff `sources/registry/*.yaml` against the published table before reading it as a
-  defect. **Two tables can be behind, not one, and this note used to name only the first.** The
-  registry republishes on merge; the IDENTITY models rebuild Sunday. On 2026-09-07 the registry
-  was current and identity was not, so diffing the repo against the published registry said
-  "no lag" while recall sat at 0.529 -- the diff has to reach the identity edge table too.
+  defect. **More than one table can be behind, and this note used to name only the first.** The
+  registry republishes on merge; the identity models rebuild on their own schedule. On
+  2026-09-07 the registry was current and identity was not, so diffing the repo against the
+  published registry said "no lag" while recall sat at 0.529. The diff has to reach the identity
+  edge table too -- filtered to `product_tier = 'tail'`, or it compares against a table that is
+  mostly head declarations -- and counts on either side narrow the question without settling it.
 - **A stale fixture.** The committed pass fixture carries the corpus's tail rows, so the same
   edit makes the PR-time fixture run fail too. `--write-fixture` regenerates that block, and
   `test_the_pass_fixture_tail_rows_match_the_corpus` fails first, naming the fixture, so the
@@ -341,6 +344,36 @@ THRESHOLDS: dict[str, float] = {
 # and the module docstring's "Recall is an invariant" section.
 FLOORS: dict[str, tuple[float, float | None]] = {
     "artifact_identity": (0.99, 0.95),
+    "membership_non_scoring": (0.98, 0.90),
+    "equivalence": (1.00, 0.90),
+    "org": (
+        "part of this relation's truth is TAIL-derived, and the pipeline is a staircase: the\n"
+        "  identity dataset rebuilds on its own schedule (Sunday), the registry republishes when a\n"
+        "  batch MERGES, and this eval runs Monday 07:30 UTC. So a mid-week registry merge CAN\n"
+        "  leave truth ahead of the edges with no resolver defect behind it. That is a hypothesis\n"
+        "  to test, not a conclusion to reach from this failure.\n"
+        "  Two things do NOT establish it. `n_emitted` holding steady while `n_truth` grows is\n"
+        "  equally consistent with a resolver that read the new inputs and emitted nothing. Nor do\n"
+        "  row counts: a replacement can preserve a count, and unrelated edges can offset missing\n"
+        "  ones.\n"
+        "  What counts CAN do is narrow it. Compare the same population on both sides -- note the\n"
+        "  tier filter, without which you are comparing tail rows against a table that is mostly\n"
+        "  head:\n"
+        "    SELECT artifact_kind, COUNT(*) FROM currentai.registry.tail_products GROUP BY 1\n"
+        "    SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges\n"
+        "      WHERE product_tier = 'tail' GROUP BY 1\n"
+        "  Registry ahead of identity is CONSISTENT with a trailing layer and worth pursuing;\n"
+        "  agreement makes a trailing layer unlikely for that kind and points back at the resolver.\n"
+        "  Neither is proof. What decides it is run provenance: did the identity dataset's last run\n"
+        "  succeed, and which registry revision did it consume.\n"
+        "  And this relation depends on more than membership: org_edges reads\n"
+        "  currentai.identity.{artifact_nodes,candidates,digest} and\n"
+        "  currentai.registry.{org_handles,organizations}. Any of those can be the stale one, so\n"
+        "  checking membership alone does not clear the relation.\n"
+        "  Worked example, 2026-09-07: merging 67 registry rows took org recall 1.000 -> 0.980 while\n"
+        "  the registry was already current (51 tail homepage rows, matching the repo) and identity\n"
+        "  held 27. Registry lag was the wrong first guess; the identity side was the one behind."
+    ),
     "membership_non_scoring": (0.98, 0.90),
     "equivalence": (1.00, 0.90),
     "org": (0.97, None),
