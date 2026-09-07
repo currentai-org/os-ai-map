@@ -1,104 +1,168 @@
 # Swept 2026-09-07 (weekly tail batch). Category selected because the map reads it at maturity
 # stage 3 with `adoption` and `openness` gaps.
 #
-# Sources: Hugging Face model API, seven ranked queries (text-generation by downloads, by likes and
-# by trending score; all models by downloads and by trending score; `base` and `instruct` searches),
-# top 100 each. Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads, executed
-# 2026-09-07. Sub-floor rows were returned but not triaged individually; gpt-j is accepted below
-# despite sitting under the floor, because the cutoff bounds retrieval and never rejects a product
-# the sweep recognized.
+# Sources: Hugging Face model API, nine ranked listings - seven in the first pass (text-generation by
+# downloads, by likes and by trending score; all models by downloads and by trending score; `base`
+# and `instruct` searches over text-generation) and two in a second, replenishing pass (fill-mask by
+# downloads and by likes) - top 100 each. Predeclared retrieval cutoff: 1,000,000 trailing-30-day
+# downloads, executed 2026-09-07. That floor applies to every ranked listing here, in both passes,
+# and nothing below it is accepted.
 #
-# How the fields on these rows were produced, in full: the primary identifier and `type` come
-# verbatim from the API response of the query that returned the signal; `display_name` and `org`
-# transcribe the declared repository or model name and the declared owner login under the
-# normalization tabulated in the batch summary; `category` is the category declared for that query
-# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
-# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
-# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+# How every field on these rows was produced, mechanically and in full:
+#   `slug`          slugify(declared repository or model name). Where that string is already a head
+#                   slug, a retired alias, an existing registry slug or another row in this batch,
+#                   slugify(declared owner)-slugify(declared name) instead. A row whose slug still
+#                   collides is parked, not renamed by hand.
+#   `display_name`  the declared name, verbatim.
+#   `org`           the organization `sources/org_handles.yaml` already declares for that platform
+#                   and owner login; where no handle is declared, slugify(declared owner login).
+#   `type`          `software` for a GitHub repository signal, `model` for a Hugging Face model.
+#   `category`      the category declared for the query that returned the signal (GitHub), or the
+#                   category the declared-metadata rule names from the model's own `tags` and
+#                   `pipeline_tag` (Hugging Face).
+#   artifacts       the identifier from the API response, plus the repository's declared homepage
+#                   where it declares one.
+# Nothing between the API response and the row below is a reading, and no field folds two
+# identifiers into one product: collapsing `roberta-base` and `roberta-large` into a `roberta`
+# product line is an editorial act, so it happens when a person promotes the row, not here.
 #
-# For a model the ranked queries carry no declared category, so the category comes from the model's
-# own declared metadata: `conversational` in the declared tags names finetuned_chat, and a declared
-# language-model pipeline_tag (fill-mask, text-generation, text2text-generation, translation,
-# summarization) without it names base_pretrained. A model declaring neither is parked -
-# google/electra-base-discriminator declares no pipeline_tag at all and is parked for that reason,
-# and LiquidAI/LFM2.5-2.6B declares `conversational`, so it is emitted in finetuned_chat.yaml
-# instead of here. The rule and its application to each row are tabulated in the batch summary.
+# Acceptance is a predicate, not a list: inside the predeclared retrieval cutoff, survives dedup
+# against head slugs, retired aliases, existing registry rows, the resolution ledger and itself,
+# carries an addressable identifier that is not a URL, and has a derivable category. Judgment can
+# park a candidate; it cannot admit one. Every park is in the batch summary with its reason.
 #
-# What this pass found is that the map's model rosters are organized as families, and the ranked
-# Hugging Face queries are dominated by releases of families already on the map - 411 of the raw
-# signals fold onto an existing family under sources/model_families.yaml or the release-suffix rule
-# in docs/reference/identity.md, and 77 more resolve to a head product directly. What is genuinely
-# missing is the encoder and early-decoder generation the map never recorded: BERT, RoBERTa, XLM-RoBERTa, T5, DeBERTa,
-# ModernBERT, DistilBERT, GPT-2, GPT-J and OPT, all of them still drawing tens of millions of
-# downloads a month, plus two recent lines (OpenELM, PowerMoE).
+# A ranked listing declares no category, so the category comes from the model's own declared
+# metadata: tag `conversational` with pipeline_tag `text-generation` or absent names finetuned_chat;
+# pipeline_tag `text-generation`, `fill-mask` or `translation` without that tag names
+# base_pretrained. A model declaring neither is parked as having no derivable category.
 #
-# Escalated rather than emitted: the ranked queries also surfaced large, heavily used populations the
-# taxonomy has no category for - text embedding and reranking models, speech and audio models,
-# vision and vision-language backbones, generative image/video models and time-series forecasters.
-# Every one is parked in the batch summary against a category-proposal issue. This is the largest
-# coverage gap the sweep found and it is a governance question, not a data one.
-#
-# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
-# docs/sweeps/2026-09-07-tail-batch.md.
+# Counts, the source URL and fetch date behind every candidate accepted or parked, the retrieval
+# cutoffs, the query manifest and the duplicate mappings are in
+# docs/sweeps/2026-09-07-tail-batch.md. Nothing here is scored.
 category: base_pretrained
 products:
-  - slug: bert
-    display_name: BERT
+  - slug: bert-base-cased
+    display_name: "bert-base-cased"
     type: model
-    org: google
-    huggingface_model: google-bert/bert-base-uncased
-  - slug: roberta
-    display_name: RoBERTa
+    org: google-bert
+    huggingface_model: "google-bert/bert-base-cased"
+  - slug: bert-base-multilingual-cased
+    display_name: "bert-base-multilingual-cased"
     type: model
-    org: meta
-    huggingface_model: FacebookAI/roberta-base
-  - slug: xlm-roberta
-    display_name: XLM-RoBERTa
+    org: google-bert
+    huggingface_model: "google-bert/bert-base-multilingual-cased"
+  - slug: bert-base-multilingual-uncased
+    display_name: "bert-base-multilingual-uncased"
     type: model
-    org: meta
-    huggingface_model: FacebookAI/xlm-roberta-base
-  - slug: t5
-    display_name: T5
+    org: google-bert
+    huggingface_model: "google-bert/bert-base-multilingual-uncased"
+  - slug: bert-base-uncased
+    display_name: "bert-base-uncased"
     type: model
-    org: google
-    huggingface_model: google-t5/t5-small
-  - slug: deberta
-    display_name: DeBERTa
+    org: google-bert
+    huggingface_model: "google-bert/bert-base-uncased"
+  - slug: bert-large-portuguese-cased
+    display_name: "bert-large-portuguese-cased"
+    type: model
+    org: neuralmind
+    huggingface_model: "neuralmind/bert-large-portuguese-cased"
+  - slug: bio-clinicalbert
+    display_name: "Bio_ClinicalBERT"
+    type: model
+    org: emilyalsentzer
+    huggingface_model: "emilyalsentzer/Bio_ClinicalBERT"
+  - slug: biomednlp-biomedbert-base-uncased-abstract
+    display_name: "BiomedNLP-BiomedBERT-base-uncased-abstract"
     type: model
     org: microsoft
-    huggingface_model: microsoft/mdeberta-v3-base
-  - slug: modernbert
-    display_name: ModernBERT
+    huggingface_model: "microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract"
+  - slug: deberta-v3-base
+    display_name: "deberta-v3-base"
     type: model
-    org: answer-ai
-    huggingface_model: answerdotai/ModernBERT-base
-  - slug: distilbert
-    display_name: DistilBERT
+    org: microsoft
+    huggingface_model: "microsoft/deberta-v3-base"
+  - slug: deberta-v3-large
+    display_name: "deberta-v3-large"
     type: model
-    org: hugging-face
-    huggingface_model: distilbert/distilbert-base-uncased
-  - slug: gpt-2
-    display_name: GPT-2
+    org: microsoft
+    huggingface_model: "microsoft/deberta-v3-large"
+  - slug: distilbert-base-uncased
+    display_name: "distilbert-base-uncased"
     type: model
-    org: openai
-    huggingface_model: openai-community/gpt2
-  - slug: opt
-    display_name: OPT
+    org: distilbert
+    huggingface_model: "distilbert/distilbert-base-uncased"
+  - slug: distilroberta-base
+    display_name: "distilroberta-base"
     type: model
-    org: meta
-    huggingface_model: facebook/opt-125m
-  - slug: openelm
-    display_name: OpenELM
+    org: distilbert
+    huggingface_model: "distilbert/distilroberta-base"
+  - slug: gpt2
+    display_name: "gpt2"
+    type: model
+    org: openai-community
+    huggingface_model: "openai-community/gpt2"
+  - slug: gpt2-large
+    display_name: "gpt2-large"
+    type: model
+    org: openai-community
+    huggingface_model: "openai-community/gpt2-large"
+  - slug: mdeberta-v3-base
+    display_name: "mdeberta-v3-base"
+    type: model
+    org: microsoft
+    huggingface_model: "microsoft/mdeberta-v3-base"
+  - slug: modernbert-base
+    display_name: "ModernBERT-base"
+    type: model
+    org: answerdotai
+    huggingface_model: "answerdotai/ModernBERT-base"
+  - slug: modernbert-large
+    display_name: "ModernBERT-large"
+    type: model
+    org: answerdotai
+    huggingface_model: "answerdotai/ModernBERT-large"
+  - slug: openelm-1-1b-instruct
+    display_name: "OpenELM-1_1B-Instruct"
     type: model
     org: apple
-    huggingface_model: apple/OpenELM-1_1B-Instruct
-  - slug: powermoe
-    display_name: PowerMoE
+    huggingface_model: "apple/OpenELM-1_1B-Instruct"
+  - slug: opt-125m
+    display_name: "opt-125m"
     type: model
-    org: ibm
-    huggingface_model: ibm-research/PowerMoE-3b
-  - slug: gpt-j
-    display_name: GPT-J
+    org: facebook
+    huggingface_model: "facebook/opt-125m"
+  - slug: powermoe-3b
+    display_name: "PowerMoE-3b"
     type: model
-    org: eleutherai
-    huggingface_model: EleutherAI/gpt-j-6b
+    org: ibm-research
+    huggingface_model: "ibm-research/PowerMoE-3b"
+  - slug: roberta-base
+    display_name: "roberta-base"
+    type: model
+    org: facebookai
+    huggingface_model: "FacebookAI/roberta-base"
+  - slug: roberta-large
+    display_name: "roberta-large"
+    type: model
+    org: facebookai
+    huggingface_model: "FacebookAI/roberta-large"
+  - slug: t5-base
+    display_name: "t5-base"
+    type: model
+    org: google-t5
+    huggingface_model: "google-t5/t5-base"
+  - slug: t5-small
+    display_name: "t5-small"
+    type: model
+    org: google-t5
+    huggingface_model: "google-t5/t5-small"
+  - slug: xlm-roberta-base
+    display_name: "xlm-roberta-base"
+    type: model
+    org: facebookai
+    huggingface_model: "FacebookAI/xlm-roberta-base"
+  - slug: xlm-roberta-large
+    display_name: "xlm-roberta-large"
+    type: model
+    org: facebookai
+    huggingface_model: "FacebookAI/xlm-roberta-large"

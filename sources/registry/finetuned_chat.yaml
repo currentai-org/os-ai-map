@@ -1,40 +1,45 @@
 # Swept 2026-09-07 (weekly tail batch). Category selected because the map reads it at maturity
-# stage 3 with an `openness` gap.
+# stage 3 and its roster is the thinnest of the model categories.
 #
-# Sources: the same ten Hugging Face model queries as base_pretrained and safeguards, top 100 each,
-# executed 2026-09-07. Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads on the
-# ranked queries. EXAONE sits below that floor (373,508) and is accepted anyway, because the cutoff
-# bounds retrieval and never rejects a product the sweep recognized.
+# Sources: the same nine Hugging Face ranked listings as base_pretrained, plus two in the second
+# pass filtered on the declared `conversational` tag (by downloads and by likes), top 100 each.
+# Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads, executed 2026-09-07.
 #
-# How the fields on these rows were produced, in full: the primary identifier and `type` come
-# verbatim from the API response of the query that returned the signal; `display_name` and `org`
-# transcribe the declared repository or model name and the declared owner login under the
-# normalization tabulated in the batch summary; `category` is the category declared for that query
-# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
-# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
-# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+# How every field on these rows was produced, mechanically and in full:
+#   `slug`          slugify(declared repository or model name). Where that string is already a head
+#                   slug, a retired alias, an existing registry slug or another row in this batch,
+#                   slugify(declared owner)-slugify(declared name) instead. A row whose slug still
+#                   collides is parked, not renamed by hand.
+#   `display_name`  the declared name, verbatim.
+#   `org`           the organization `sources/org_handles.yaml` already declares for that platform
+#                   and owner login; where no handle is declared, slugify(declared owner login).
+#   `type`          `software` for a GitHub repository signal, `model` for a Hugging Face model.
+#   `category`      the category declared for the query that returned the signal (GitHub), or the
+#                   category the declared-metadata rule names from the model's own `tags` and
+#                   `pipeline_tag` (Hugging Face).
+#   artifacts       the identifier from the API response, plus the repository's declared homepage
+#                   where it declares one.
+# Nothing between the API response and the row below is a reading, and no field folds two
+# identifiers into one product: collapsing `roberta-base` and `roberta-large` into a `roberta`
+# product line is an editorial act, so it happens when a person promotes the row, not here.
 #
-# Category comes from the model's own declared metadata: each row below declares the
-# `conversational` tag, which is what names this category rather than base_pretrained. Nearly every
-# other instruct-tuned model the ranked queries returned folds onto a family already on the map
-# under sources/model_families.yaml, which is why this file is short.
+# Acceptance is a predicate, not a list: inside the predeclared retrieval cutoff, survives dedup
+# against head slugs, retired aliases, existing registry rows, the resolution ledger and itself,
+# carries an addressable identifier that is not a URL, and has a derivable category. Judgment can
+# park a candidate; it cannot admit one. Every park is in the batch summary with its reason.
 #
-# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
-# docs/sweeps/2026-09-07-tail-batch.md.
+# The category comes from the model's own declared metadata: tag `conversational` with pipeline_tag
+# `text-generation` or absent names finetuned_chat. A conversational model declaring a
+# non-text pipeline_tag (`image-text-to-text`, for instance) has no derivable category here and is
+# parked rather than routed by an editorial reading of what it is.
+#
+# Counts, the source URL and fetch date behind every candidate accepted or parked, the retrieval
+# cutoffs, the query manifest and the duplicate mappings are in
+# docs/sweeps/2026-09-07-tail-batch.md. Nothing here is scored.
 category: finetuned_chat
 products:
-  - slug: lfm2
-    display_name: Liquid LFM2
-    type: model
-    org: liquid-ai
-    huggingface_model: LiquidAI/LFM2.5-2.6B
-  - slug: dolphin
-    display_name: Dolphin
+  - slug: dolphin-2-9-1-yi-1-5-34b
+    display_name: "dolphin-2.9.1-yi-1.5-34b"
     type: model
     org: dphn
-    huggingface_model: dphn/dolphin-2.9.1-yi-1.5-34b
-  - slug: exaone
-    display_name: EXAONE
-    type: model
-    org: lg-ai-research
-    huggingface_model: LGAI-EXAONE/EXAONE-3.5-7.8B-Instruct
+    huggingface_model: "dphn/dolphin-2.9.1-yi-1.5-34b"

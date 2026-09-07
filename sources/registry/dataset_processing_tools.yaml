@@ -2,95 +2,126 @@
 # it at maturity stage 2 with an `adoption` gap - the lowest stage in the taxonomy - so the roster is
 # where new candidates are most likely to change the reading.
 #
-# Sources: GitHub repository search, 14 queries (six free-text, eight topic-scoped: synthetic-data,
-# data-curation, deduplication, web-crawler+llm, data-quality+machine-learning). Predeclared
-# retrieval cutoff: sort by stars, top 30 per query, floor 1,000 all-time stars and a push no older
-# than 2025-09-07, executed 2026-09-07. Rows below that floor were returned but not triaged
-# individually; the cutoff bounds retrieval only, and six sub-floor rows the sweep did recognize
-# (data-prep-kit, semhash, deepfabric, magpie, datadreamer, bonito) are accepted below and flagged as
-# such in the batch summary.
+# Sources: GitHub repository search, 18 queries - 14 in the first pass (six free-text, eight
+# topic-scoped: synthetic-data, data-curation, deduplication, web-crawler+llm,
+# data-quality+machine-learning) and four in a second, replenishing pass (topic:data-augmentation,
+# topic:ocr+topic:pdf, topic:dataset+topic:llm, topic:tokenizer). Predeclared retrieval cutoff,
+# identical in both passes: sort by stars, top 30 per query, floor 1,000 all-time stars and a push no
+# older than 2025-09-07, executed 2026-09-07. A candidate below that cutoff is parked with the floor
+# that excluded it - no candidate is accepted below it, and no floor was lowered to reach a row count.
 #
-# How the fields on these rows were produced, in full: the primary identifier and `type` come
-# verbatim from the API response of the query that returned the signal; `display_name` and `org`
-# transcribe the declared repository or model name and the declared owner login under the
-# normalization tabulated in the batch summary; `category` is the category declared for that query
-# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
-# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
-# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+# How every field on these rows was produced, mechanically and in full:
+#   `slug`          slugify(declared repository or model name). Where that string is already a head
+#                   slug, a retired alias, an existing registry slug or another row in this batch,
+#                   slugify(declared owner)-slugify(declared name) instead. A row whose slug still
+#                   collides is parked, not renamed by hand.
+#   `display_name`  the declared name, verbatim.
+#   `org`           the organization `sources/org_handles.yaml` already declares for that platform
+#                   and owner login; where no handle is declared, slugify(declared owner login).
+#   `type`          `software` for a GitHub repository signal, `model` for a Hugging Face model.
+#   `category`      the category declared for the query that returned the signal (GitHub), or the
+#                   category the declared-metadata rule names from the model's own `tags` and
+#                   `pipeline_tag` (Hugging Face).
+#   artifacts       the identifier from the API response, plus the repository's declared homepage
+#                   where it declares one.
+# Nothing between the API response and the row below is a reading, and no field folds two
+# identifiers into one product: collapsing `roberta-base` and `roberta-large` into a `roberta`
+# product line is an editorial act, so it happens when a person promotes the row, not here.
 #
-# Parked rather than stretched to fit: general-purpose file backup and block deduplication (restic,
-# borg, kopia and eleven more), tabular and privacy synthetic-data generators (SDV, CTGAN, Synthea,
-# mimesis), label-quality tooling (cleanlab, splink, zingg), the three image-side candidates
-# (BlenderProc, fastdup, fiftyone) on an unresolved text-versus-vision boundary, and baidu/Unlimited-OCR.
+# Acceptance is a predicate, not a list: inside the predeclared retrieval cutoff, survives dedup
+# against head slugs, retired aliases, existing registry rows, the resolution ledger and itself,
+# carries an addressable identifier that is not a URL, and has a derivable category. Judgment can
+# park a candidate; it cannot admit one. Every park is in the batch summary with its reason.
 #
-# Counts, every parked candidate with its reason, the source URL and fetch date behind every
-# candidate, and the duplicate mappings behind the reconciliation are in
+# Counts, the source URL and fetch date behind every candidate accepted or parked, the retrieval
+# cutoffs, the query manifest and the duplicate mappings are in
 # docs/sweeps/2026-09-07-tail-batch.md. Nothing here is scored.
 category: dataset_processing_tools
 products:
-  - slug: bespoke-curator
-    display_name: Bespoke Curator
+  - slug: ade-cli
+    display_name: "ade-cli"
     type: software
-    org: bespoke-labs
-    github: bespokelabsai/curator
-  - slug: data-prep-kit
-    display_name: Data Prep Kit
-    type: software
-    org: ibm
-    github: data-prep-kit/data-prep-kit
-  - slug: semhash
-    display_name: SemHash
-    type: software
-    org: minish-lab
-    github: MinishLab/semhash
-  - slug: deepfabric
-    display_name: DeepFabric
-    type: software
-    org: nolabs-ai
-    github: nolabs-ai/deepfabric
-  - slug: magpie
-    display_name: Magpie
-    type: software
-    org: magpie-align
-    github: magpie-align/magpie
-  - slug: datadreamer
-    display_name: DataDreamer
-    type: software
-    org: datadreamer-dev
-    github: datadreamer-dev/DataDreamer
-  - slug: graphgen
-    display_name: GraphGen
-    type: software
-    org: internscience
-    github: InternScience/GraphGen
-  - slug: synthetic-data-kit
-    display_name: Synthetic Data Kit
-    type: software
-    org: meta
-    github: meta-llama/synthetic-data-kit
+    org: landing-ai
+    github: "landing-ai/ade-cli"
+    homepage: "https://docs.landing.ai/ade/ade-overview"
   - slug: aisheets
-    display_name: AI Sheets
+    display_name: "aisheets"
     type: software
     org: hugging-face
-    github: huggingface/aisheets
-  - slug: bonito
-    display_name: Bonito
+    github: "huggingface/aisheets"
+    homepage: "https://huggingface.co/spaces/aisheets/sheets"
+  - slug: curator
+    display_name: "curator"
     type: software
-    org: bats-research
-    github: BatsResearch/bonito
-  - slug: text-extract-api
-    display_name: Text Extract API
+    org: bespokelabsai
+    github: "bespokelabsai/curator"
+    homepage: "https://docs.bespokelabs.ai/bespoke-curator"
+  - slug: easy-dataset
+    display_name: "easy-dataset"
     type: software
-    org: catchthetornado
-    github: CatchTheTornado/text-extract-api
+    org: conardli
+    github: "ConardLi/easy-dataset"
+    homepage: "https://docs.easy-dataset.com"
+  - slug: gigatoken
+    display_name: "gigatoken"
+    type: software
+    org: marcelroed
+    github: "marcelroed/gigatoken"
+  - slug: graphgen
+    display_name: "GraphGen"
+    type: software
+    org: internscience
+    github: "InternScience/GraphGen"
+    homepage: "https://chenzihong.gitbook.io/graphgen-cookbook/"
   - slug: markpdfdown
-    display_name: MarkPDFDown
+    display_name: "markpdfdown"
     type: software
     org: markpdfdown
-    github: MarkPDFdown/markpdfdown
+    github: "MarkPDFdown/markpdfdown"
+  - slug: parsr
+    display_name: "Parsr"
+    type: software
+    org: axa-group
+    github: "axa-group/Parsr"
+  - slug: pdf-craft
+    display_name: "pdf-craft"
+    type: software
+    org: oomol-lab
+    github: "oomol-lab/pdf-craft"
+    homepage: "https://pdf.oomol.com"
+  - slug: pymupdf
+    display_name: "PyMuPDF"
+    type: software
+    org: pymupdf
+    github: "pymupdf/PyMuPDF"
+    homepage: "https://pymupdf.readthedocs.io/?utm_source=github&utm_medium=referral&utm_campaign=pymupdf_github&utm_content=about&utm_term=docs"
+  - slug: snorkel
+    display_name: "snorkel"
+    type: software
+    org: snorkel-team
+    github: "snorkel-team/snorkel"
+    homepage: "https://snorkel.org"
+  - slug: synthetic-data-kit
+    display_name: "synthetic-data-kit"
+    type: software
+    org: meta-llama
+    github: "meta-llama/synthetic-data-kit"
+    homepage: "https://pypi.org/project/synthetic-data-kit/"
+  - slug: text-extract-api
+    display_name: "text-extract-api"
+    type: software
+    org: catchthetornado
+    github: "CatchTheTornado/text-extract-api"
+    homepage: "https://demo.doctractor.com"
+  - slug: unstructured
+    display_name: "unstructured"
+    type: software
+    org: unstructured-io
+    github: "Unstructured-IO/unstructured"
+    homepage: "https://www.unstructured.io/"
   - slug: webclaw
-    display_name: WebClaw
+    display_name: "webclaw"
     type: software
     org: 0xmassi
-    github: 0xMassi/webclaw
-    homepage: https://webclaw.io
+    github: "0xMassi/webclaw"
+    homepage: "https://webclaw.io"

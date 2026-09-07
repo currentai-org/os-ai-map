@@ -1,118 +1,137 @@
 # Swept 2026-09-07 (weekly tail batch). Category selected because the map reads it at maturity
 # stage 3 with an `adoption` gap.
 #
-# Sources: GitHub repository search, eight queries (six topic-scoped: guardrails, llm-security,
-# prompt-injection, red-teaming, ai-safety, content-moderation; two free-text) and three Hugging
-# Face model searches (guard, safety, moderation), each sorted by downloads. Predeclared retrieval
-# cutoff: GitHub top 30 per query, floor 1,000 stars and a push no older than 2025-09-07; Hugging
-# Face top 100 per query, floor 5,000 trailing-30-day downloads. Executed 2026-09-07.
+# Sources: GitHub repository search, 12 queries - eight in the first pass (six topic-scoped:
+# guardrails, llm-security, prompt-injection, red-teaming, ai-safety, content-moderation; two
+# free-text) and four in a second, replenishing pass (topic:ai-security, topic:pii,
+# topic:llm-safety, topic:agent-security) - plus three Hugging Face model searches (guard, safety,
+# moderation) sorted by downloads. Predeclared retrieval cutoff: GitHub top 30 per query, floor
+# 1,000 stars and a push no older than 2025-09-07; Hugging Face top 100 per query, floor 5,000
+# trailing-30-day downloads for these category-scoped searches. Executed 2026-09-07.
 #
-# How the fields on these rows were produced, in full: the primary identifier and `type` come
-# verbatim from the API response of the query that returned the signal; `display_name` and `org`
-# transcribe the declared repository or model name and the declared owner login under the
-# normalization tabulated in the batch summary; `category` is the category declared for that query
-# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
-# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
-# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+# How every field on these rows was produced, mechanically and in full:
+#   `slug`          slugify(declared repository or model name). Where that string is already a head
+#                   slug, a retired alias, an existing registry slug or another row in this batch,
+#                   slugify(declared owner)-slugify(declared name) instead. A row whose slug still
+#                   collides is parked, not renamed by hand.
+#   `display_name`  the declared name, verbatim.
+#   `org`           the organization `sources/org_handles.yaml` already declares for that platform
+#                   and owner login; where no handle is declared, slugify(declared owner login).
+#   `type`          `software` for a GitHub repository signal, `model` for a Hugging Face model.
+#   `category`      the category declared for the query that returned the signal (GitHub), or the
+#                   category the declared-metadata rule names from the model's own `tags` and
+#                   `pipeline_tag` (Hugging Face).
+#   artifacts       the identifier from the API response, plus the repository's declared homepage
+#                   where it declares one.
+# Nothing between the API response and the row below is a reading, and no field folds two
+# identifiers into one product: collapsing `roberta-base` and `roberta-large` into a `roberta`
+# product line is an editorial act, so it happens when a person promotes the row, not here.
 #
-# Parked rather than stretched to fit: twelve general offensive-security and penetration-testing
-# projects (sliver, dirsearch, afrog, BlackArch and the rest), LLM gateways (bifrost, llmgateway,
-# semantic-router), evaluation and observability platforms, microsoft/presidio (a general-purpose PII
-# framework, parked because only an editorial argument brings it inside the category) and
-# Falconsai/nsfw_image_detection (an image classifier from a ranked query with no declared category).
-# Guard models that fold onto an existing head product (Llama Guard releases, Granite Guardian
-# releases, NVIDIA's Nemotron content-safety line) are duplicates, not candidates.
+# Acceptance is a predicate, not a list: inside the predeclared retrieval cutoff, survives dedup
+# against head slugs, retired aliases, existing registry rows, the resolution ledger and itself,
+# carries an addressable identifier that is not a URL, and has a derivable category. Judgment can
+# park a candidate; it cannot admit one. Every park is in the batch summary with its reason.
 #
-# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
-# docs/sweeps/2026-09-07-tail-batch.md.
+# Counts, the source URL and fetch date behind every candidate accepted or parked, the retrieval
+# cutoffs, the query manifest and the duplicate mappings are in
+# docs/sweeps/2026-09-07-tail-batch.md. Nothing here is scored.
 category: safeguards
 products:
-  - slug: skillspector
-    display_name: SkillSpector
-    type: software
-    org: nvidia
-    github: NVIDIA/SkillSpector
-  - slug: superagent
-    display_name: Superagent
-    type: software
-    org: superagent-ai
-    github: superagent-ai/superagent
-    homepage: https://superagent.sh
-  - slug: ai-infra-guard
-    display_name: AI-Infra-Guard
-    type: software
-    org: tencent
-    github: Tencent/AI-Infra-Guard
   - slug: agent-governance-toolkit
-    display_name: Agent Governance Toolkit
+    display_name: "agent-governance-toolkit"
     type: software
     org: microsoft
-    github: microsoft/agent-governance-toolkit
-  - slug: agentic-security
-    display_name: Agentic Security
-    type: software
-    org: msoedov
-    github: msoedov/agentic_security
-  - slug: fuzzyai
-    display_name: FuzzyAI
-    type: software
-    org: cyberark
-    github: cyberark/FuzzyAI
-  - slug: promptmap
-    display_name: promptmap
-    type: software
-    org: utkusen
-    github: utkusen/promptmap
+    github: "microsoft/agent-governance-toolkit"
   - slug: agentic-radar
-    display_name: Agentic Radar
+    display_name: "agentic-radar"
     type: software
     org: splx-ai
-    github: splx-ai/agentic-radar
-    homepage: https://splx.ai
-  - slug: valqore
-    display_name: Valqore
+    github: "splx-ai/agentic-radar"
+    homepage: "https://splx.ai"
+  - slug: agentic-security
+    display_name: "agentic_security"
     type: software
-    org: valqore
-    github: valqore/valqore
-    homepage: https://www.valqore.io
+    org: msoedov
+    github: "msoedov/agentic_security"
+    homepage: "https://agentic-security.vercel.app"
+  - slug: ai-infra-guard
+    display_name: "AI-Infra-Guard"
+    type: software
+    org: tencent
+    github: "Tencent/AI-Infra-Guard"
+    homepage: "https://tencent.github.io/AI-Infra-Guard/"
   - slug: cc-safety-net
-    display_name: cc-safety-net
+    display_name: "cc-safety-net"
     type: software
     org: kenryu42
-    github: kenryu42/cc-safety-net
-    homepage: https://ccsafetynet.com
-  - slug: stable-diffusion-safety-checker
-    display_name: Stable Diffusion Safety Checker
-    type: model
-    org: compvis
-    huggingface_model: CompVis/stable-diffusion-safety-checker
-  - slug: ncii-guard
-    display_name: NCII Guard
-    type: model
-    org: hugging-face
-    huggingface_model: hfmlsoc/ncii-guard-v02
-  - slug: modernguard
-    display_name: ModernGuard
-    type: model
-    org: guardion
-    huggingface_model: guardion/ModernGuard-1
-  - slug: koalaai-text-moderation
-    display_name: KoalaAI Text Moderation
-    type: model
-    org: koala-ai
-    huggingface_model: KoalaAI/Text-Moderation
+    github: "kenryu42/cc-safety-net"
+    homepage: "https://ccsafetynet.com"
+  - slug: fuzzyai
+    display_name: "FuzzyAI"
+    type: software
+    org: cyberark
+    github: "cyberark/FuzzyAI"
   - slug: gliner-guard-omni
-    display_name: GLiNER Guard Omni
+    display_name: "gliner-guard-omni"
     type: model
     org: hivetrace
-    huggingface_model: hivetrace/gliner-guard-omni
-  - slug: polite-guard
-    display_name: Polite Guard
-    type: model
-    org: intel
-    huggingface_model: Intel/polite-guard
-  - slug: gliner2-guardrails-pii
-    display_name: GLiNER2 Guardrails PII
+    huggingface_model: "hivetrace/gliner-guard-omni"
+  - slug: gliner2-guardrails-pii-multi
+    display_name: "GLiNER2-Guardrails-PII-Multi"
     type: model
     org: fastino
-    huggingface_model: fastino/GLiNER2-Guardrails-PII-Multi
+    huggingface_model: "fastino/GLiNER2-Guardrails-PII-Multi"
+  - slug: modernguard-1
+    display_name: "ModernGuard-1"
+    type: model
+    org: guardion
+    huggingface_model: "guardion/ModernGuard-1"
+  - slug: nasiko
+    display_name: "nasiko"
+    type: software
+    org: nasiko-labs
+    github: "Nasiko-Labs/nasiko"
+    homepage: "https://www.nasiko.com"
+  - slug: ncii-guard-v02
+    display_name: "ncii-guard-v02"
+    type: model
+    org: hfmlsoc
+    huggingface_model: "hfmlsoc/ncii-guard-v02"
+  - slug: polite-guard
+    display_name: "polite-guard"
+    type: model
+    org: intel
+    huggingface_model: "Intel/polite-guard"
+  - slug: promptmap
+    display_name: "promptmap"
+    type: software
+    org: utkusen
+    github: "utkusen/promptmap"
+  - slug: skillspector
+    display_name: "SkillSpector"
+    type: software
+    org: nvidia
+    github: "NVIDIA/SkillSpector"
+    homepage: "https://docs.nvidia.com/skills/scanning-agent-skills"
+  - slug: stable-diffusion-safety-checker
+    display_name: "stable-diffusion-safety-checker"
+    type: model
+    org: compvis
+    huggingface_model: "CompVis/stable-diffusion-safety-checker"
+  - slug: superagent
+    display_name: "superagent"
+    type: software
+    org: superagent-ai
+    github: "superagent-ai/superagent"
+    homepage: "https://superagent.sh"
+  - slug: text-moderation
+    display_name: "Text-Moderation"
+    type: model
+    org: koalaai
+    huggingface_model: "KoalaAI/Text-Moderation"
+  - slug: valqore
+    display_name: "valqore"
+    type: software
+    org: valqore
+    github: "valqore/valqore"
+    homepage: "https://www.valqore.io"
