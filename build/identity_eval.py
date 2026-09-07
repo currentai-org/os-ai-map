@@ -155,7 +155,11 @@ recall read 1.000 and mean nothing:
   computed over exactly the pairs a declared handle could bridge, so recoverability is defined
   by the same route the graph emits on. That makes it a REGRESSION INVARIANT, not a coverage
   target: a miss is the resolver failing to use evidence it already has, which is a bug rather
-  than a curation gap. `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
+  than a curation gap -- PROVIDED the resolver has actually seen that evidence. It has not
+  between a mid-week registry merge and the following Sunday's identity rebuild, and in that
+  window this invariant fails without a defect behind it. `FLOOR_NOTES['org']` carries the
+  two-table check that tells the cases apart; the edge counts alone do not.
+  `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
 - **coverage = have we given it enough evidence.** That is `org_handle_coverage`, per route:
@@ -250,7 +254,10 @@ them apart:
   `registry.tail_products` until the weekly publish lands, so the scheduled Monday run can go
   red on precision for an edit that is already correct. The fix is a republish, not a graph
   change -- diff `sources/registry/*.yaml` against the published table before reading it as a
-  defect.
+  defect. **Two tables can be behind, not one, and this note used to name only the first.** The
+  registry republishes on merge; the IDENTITY models rebuild Sunday. On 2026-09-07 the registry
+  was current and identity was not, so diffing the repo against the published registry said
+  "no lag" while recall sat at 0.529 -- the diff has to reach the identity edge table too.
 - **A stale fixture.** The committed pass fixture carries the corpus's tail rows, so the same
   edit makes the PR-time fixture run fail too. `--write-fixture` regenerates that block, and
   `test_the_pass_fixture_tail_rows_match_the_corpus` fails first, naming the fixture, so the
@@ -353,6 +360,23 @@ MIN_TRUTH = 20
 # alone cannot supply: which failures are not regressions. See the module docstring's
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
+    "org": (
+        "part of this relation's truth is TAIL-derived, and the pipeline is a staircase: the\n"
+        "  identity dataset rebuilds SUNDAY, the registry republishes when a batch MERGES, and this\n"
+        "  eval runs Monday 07:30 UTC. So a registry batch merged mid-week leaves truth (the repo,\n"
+        "  via the published registry) ahead of the edges (the identity models, still on Sunday's\n"
+        "  inputs) until the next Sunday rebuild -- with no resolver defect involved.\n"
+        "  DO NOT infer that from the edge counts. `n_emitted` holding steady while `n_truth` grows\n"
+        "  is equally consistent with a resolver that saw the new inputs and emitted nothing, so it\n"
+        "  discriminates nothing. Compare the two TABLES for the same artifact_kind instead:\n"
+        "    SELECT artifact_kind, COUNT(*) FROM currentai.registry.tail_products  GROUP BY 1\n"
+        "    SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges GROUP BY 1\n"
+        "  Registry ahead of identity means the layer trails and Sunday clears it. The two agreeing\n"
+        "  while recall is still short is a genuine miss -- what the failure line above says.\n"
+        "  Worked example, 2026-09-07: merging 67 registry rows took org recall 1.000 -> 0.980. The\n"
+        "  registry was already CURRENT (51 homepage rows, matching the repo); identity still held\n"
+        "  27. Registry lag was the wrong diagnosis; the identity layer was the stale half."
+    ),
     "membership_non_scoring": (
         "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
         "  missing edge is a 1/n swing -- sensitive while n is small, weaker as the tail grows\n"
