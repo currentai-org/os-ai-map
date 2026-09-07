@@ -155,7 +155,13 @@ recall read 1.000 and mean nothing:
   computed over exactly the pairs a declared handle could bridge, so recoverability is defined
   by the same route the graph emits on. That makes it a REGRESSION INVARIANT, not a coverage
   target: a miss is the resolver failing to use evidence it already has, which is a bug rather
-  than a curation gap. `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
+  than a curation gap -- PROVIDED the resolver has actually seen that evidence, which between a
+  mid-week registry merge and the next identity rebuild it may not have. In that window a
+  failure here can have no defect behind it, so a failure is not self-interpreting.
+  `FLOOR_NOTES['org']` carries the check that settles which case it is -- the input's replacement
+  time against the consumer's last run, across a lineage edge -- plus the three count- and
+  timestamp-based arguments that do not settle it, and why each fails.
+  `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
 - **coverage = have we given it enough evidence.** That is `org_handle_coverage`, per route:
@@ -250,7 +256,13 @@ them apart:
   `registry.tail_products` until the weekly publish lands, so the scheduled Monday run can go
   red on precision for an edit that is already correct. The fix is a republish, not a graph
   change -- diff `sources/registry/*.yaml` against the published table before reading it as a
-  defect.
+  defect. **More than one table can be behind, and this note used to name only the first.** The
+  registry republishes on merge; the identity models rebuild on their own schedule. On
+  2026-09-07 diffing the repo against the published registry said "no lag" -- the registry was
+  current -- while recall sat at 0.529, so that diff alone did not locate the problem. It has to
+  reach the identity edge table too, filtered to `product_tier = 'tail'` or it compares against a
+  table that is mostly head declarations. See `FLOOR_NOTES['org']` for why neither comparison
+  settles a cause, and what would.
 - **A stale fixture.** The committed pass fixture carries the corpus's tail rows, so the same
   edit makes the PR-time fixture run fail too. `--write-fixture` regenerates that block, and
   `test_the_pass_fixture_tail_rows_match_the_corpus` fails first, naming the fixture, so the
@@ -353,6 +365,56 @@ MIN_TRUTH = 20
 # alone cannot supply: which failures are not regressions. See the module docstring's
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
+    "org": (
+        "part of this relation's truth is TAIL-derived, and NOTHING WIRES THE REGISTRY TO THE\n"
+        "  IDENTITY LAYER. The `registry` dataset is a CI-pushed STATIC_MODEL with no cron: a merge\n"
+        "  replaces registry.tail_products within minutes. The `identity` dataset is a USER_MODEL on\n"
+        "  `30 5 * * 0` -- Sunday 05:30 UTC -- and the registry push does not wake it. So a mid-week\n"
+        "  merge leaves truth ahead of the edges until the next weekly run -- nearly seven days if it\n"
+        "  lands just after one -- with no resolver defect behind\n"
+        "  it, and the failure line above names only one of the possible causes.\n"
+        "  THE CHECK THAT SETTLES IT is ordering across a lineage edge, which needs nothing the\n"
+        "  platform withholds:\n"
+        "    1. when the input was replaced -- MAX(_dlt_load_id) on the registry's tail_products\n"
+        "       table (in the currentai catalog; a unix timestamp, and worth corroborating against\n"
+        "       the registry dataset's run records rather than trusting the column alone). Written\n"
+        "       unqualified on purpose: a `FROM currentai.<schema>.<table>` inside a string in this\n"
+        "       module is read by build/assets.py as a real dependency, and an example query here\n"
+        "       invented a tail_products read that test_read_by_matches_the_derived_graph then\n"
+        "       failed on.\n"
+        "    2. when the consumer last ran -- the identity dataset's last_run_at, on the platform\n"
+        "    3. that the consumer reads that input -- lineage: membership_edges depends on\n"
+        "       registry.{tail_products,products,product_artifacts,adoption_routes} and\n"
+        "       identity.candidates\n"
+        "  A last run BEFORE the input was replaced means the edges cannot reflect it -- for outputs\n"
+        "  MATERIALIZED by those runs. A view evaluated at query time, or a second writer, would not\n"
+        "  be covered by this argument; confirm the model is materialized before leaning on it.\n"
+        "  Subject to that, it holds\n"
+        "  without knowing which revision the run consumed -- just as well, since a run record\n"
+        "  carries no such field (metadata is empty on every identity run).\n"
+        "  Three arguments do NOT settle it. All three were tried on 2026-09-07 and all are unsound,\n"
+        "  recorded here so they are not rediscovered:\n"
+        "    - `n_emitted` steady while `n_truth` grows. Equally consistent with a resolver that\n"
+        "      read the new inputs and emitted nothing.\n"
+        "    - registry row counts ahead of identity row counts. Same ambiguity; a replacement can\n"
+        "      preserve a count and unrelated edges can offset missing ones. Worth running as a\n"
+        "      cheap first look, WITH the tier filter or you compare tail rows against a table that\n"
+        "      is mostly head:\n"
+        "        SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges\n"
+        "          WHERE product_tier = 'tail' GROUP BY 1\n"
+        "    - `digest.first_seen`. digest.sql calls it a SNAPSHOT OBSERVATION TIME, derived from\n"
+        "      p.last_observed_at -- when an artifact was observed, not when the layer ran.\n"
+        "  And this relation depends on more than membership: org_edges reads\n"
+        "  currentai.identity.{artifact_nodes,candidates,digest} and\n"
+        "  currentai.registry.{org_handles,organizations}. Any can be the stale one.\n"
+        "  Worked example, 2026-09-07. Merging 67 registry rows took org recall 1.000 -> 0.980 and\n"
+        "  membership_non_scoring to 0.529. Identity last ran 2026-09-06 05:30 UTC (7 models, all\n"
+        "  SUCCESS; no failed run in 53); registry.tail_products was wholly replaced 2026-09-07\n"
+        "  17:02 UTC; no identity run since. So the layer has not recomputed since the replacement,\n"
+        "  and resolver correctness on the added rows remains UNTESTED. Ordering does not establish\n"
+        "  that recomputing would restore recall, nor rule out a resolver defect alongside the\n"
+        "  staleness -- only the next successful run answers that."
+    ),
     "membership_non_scoring": (
         "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
         "  missing edge is a 1/n swing -- sensitive while n is small, weaker as the tail grows\n"
