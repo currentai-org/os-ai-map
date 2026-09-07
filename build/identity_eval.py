@@ -236,10 +236,14 @@ now bites is the point of counting the truth, not a reason to raise `MIN_TRUTH`.
 
 ## `membership_non_scoring` has no headroom, so read its failures twice
 
-Its truth set is the tail's homepage declarations and nothing else -- 27 today. One wrong or
-missing edge is a ~3.7% swing, which is already more than the 0.98 precision floor allows. Two
-things that are not regressions land as a failure on that row, and `FLOOR_NOTES` prints both
-next to it so a log alone is enough to tell them apart:
+Its truth set is the tail's homepage declarations and nothing else. **The floor's sensitivity
+scales with that set's size, so it weakens as the tail grows**: one wrong or missing edge is a
+1/n swing, which breached the 0.98 precision floor on its own while n was 27 and no longer does
+past 50 -- at n=51 a single bad edge scores 0.9804 and passes, and n=200 tolerates four. Read a
+green row on this relation as "no more than floor(n * 0.02) bad edges", not as "none". Raising
+the floor is a rubric change and belongs to a human. Two things that are not regressions land as
+a failure on that row, and `FLOOR_NOTES` prints both next to it so a log alone is enough to tell
+them apart:
 
 - **Publish lag.** Truth is the repo; the edges are the warehouse. A tail homepage row edited or
   deleted in `sources/registry/*.yaml` is still emitted from the last published
