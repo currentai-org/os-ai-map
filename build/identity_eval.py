@@ -158,9 +158,9 @@ recall read 1.000 and mean nothing:
   than a curation gap -- PROVIDED the resolver has actually seen that evidence, which between a
   mid-week registry merge and the next identity rebuild it may not have. In that window a
   failure here can have no defect behind it, so a failure is not self-interpreting.
-  `FLOOR_NOTES['org']` records which checks narrow the question, which are dead ends and why, and
-  what would actually settle it -- the identity dataset's run history, which is not reachable
-  from the warehouse tables this module reads.
+  `FLOOR_NOTES['org']` carries the check that settles which case it is -- the input's replacement
+  time against the consumer's last run, across a lineage edge -- plus the three count- and
+  timestamp-based arguments that do not settle it, and why each fails.
   `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
@@ -366,37 +366,44 @@ MIN_TRUTH = 20
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
     "org": (
-        "part of this relation's truth is TAIL-derived, and the pipeline is a staircase: the\n"
-        "  identity dataset rebuilds on its own schedule, the registry republishes when a batch\n"
-        "  MERGES, and this eval runs Monday 07:30 UTC. So a mid-week registry merge can leave\n"
-        "  truth ahead of the edges with no resolver defect behind it. The failure line above\n"
-        "  describes only one of the possible causes, and it is not self-interpreting.\n"
-        "  WHAT THIS NOTE CANNOT DO is tell you which cause it is. That was attempted three ways\n"
-        "  on 2026-09-07 and all three were unsound, so they are recorded here as dead ends rather\n"
-        "  than left for someone to rediscover:\n"
+        "part of this relation's truth is TAIL-derived, and NOTHING WIRES THE REGISTRY TO THE\n"
+        "  IDENTITY LAYER. The `registry` dataset is a CI-pushed STATIC_MODEL with no cron: a merge\n"
+        "  replaces registry.tail_products within minutes. The `identity` dataset is a USER_MODEL on\n"
+        "  `30 5 * * 0` -- Sunday 05:30 UTC -- and the registry push does not wake it. So a mid-week\n"
+        "  merge leaves truth ahead of the edges for up to six days with no resolver defect behind\n"
+        "  it, and the failure line above names only one of the possible causes.\n"
+        "  THE CHECK THAT SETTLES IT is ordering across a lineage edge, which needs nothing the\n"
+        "  platform withholds:\n"
+        "    1. when the input was replaced -- SELECT MAX(_dlt_load_id) FROM\n"
+        "       currentai.registry.tail_products (a unix timestamp; corroborate it against the\n"
+        "       registry dataset's run records rather than trusting the column alone)\n"
+        "    2. when the consumer last ran -- the identity dataset's last_run_at, on the platform\n"
+        "    3. that the consumer reads that input -- lineage: membership_edges depends on\n"
+        "       registry.{tail_products,products,product_artifacts,adoption_routes} and\n"
+        "       identity.candidates\n"
+        "  A last run BEFORE the input was replaced means the edges cannot reflect it. That holds\n"
+        "  without knowing which revision the run consumed -- just as well, since a run record\n"
+        "  carries no such field (metadata is empty on every identity run).\n"
+        "  Three arguments do NOT settle it. All three were tried on 2026-09-07 and all are unsound,\n"
+        "  recorded here so they are not rediscovered:\n"
         "    - `n_emitted` steady while `n_truth` grows. Equally consistent with a resolver that\n"
         "      read the new inputs and emitted nothing.\n"
-        "    - registry row counts ahead of identity row counts. Same ambiguity, plus a replacement\n"
-        "      can preserve a count and unrelated edges can offset missing ones.\n"
-        "    - digest timestamps. `first_seen` is a snapshot OBSERVATION time (see digest.sql), not\n"
-        "      an execution time, so it does not establish when the layer last ran or what it read.\n"
-        "  WHAT NARROWS IT, cheaply, is comparing the same population on both sides -- note the\n"
-        "  tier filter, without which you compare tail rows against a table that is mostly head:\n"
-        "    SELECT artifact_kind, COUNT(*) FROM currentai.registry.tail_products GROUP BY 1\n"
-        "    SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges\n"
-        "      WHERE product_tier = 'tail' GROUP BY 1\n"
-        "  A gap there is worth pursuing and agreement makes a trailing layer less likely for that\n"
-        "  kind. Neither outcome is a diagnosis.\n"
-        "  WHAT WOULD SETTLE IT is the identity dataset's run history on the platform -- whether\n"
-        "  its last run succeeded and which registry revision it consumed. That is not in the\n"
-        "  warehouse tables this module can reach; it needs the platform API.\n"
+        "    - registry row counts ahead of identity row counts. Same ambiguity; a replacement can\n"
+        "      preserve a count and unrelated edges can offset missing ones. Worth running as a\n"
+        "      cheap first look, WITH the tier filter or you compare tail rows against a table that\n"
+        "      is mostly head:\n"
+        "        SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges\n"
+        "          WHERE product_tier = 'tail' GROUP BY 1\n"
+        "    - `digest.first_seen`. digest.sql calls it a SNAPSHOT OBSERVATION TIME, derived from\n"
+        "      p.last_observed_at -- when an artifact was observed, not when the layer ran.\n"
         "  And this relation depends on more than membership: org_edges reads\n"
         "  currentai.identity.{artifact_nodes,candidates,digest} and\n"
-        "  currentai.registry.{org_handles,organizations}. Any of those can be the stale one, so\n"
-        "  clearing membership does not clear the relation.\n"
-        "  Observed on 2026-09-07, without a cause attached: merging 67 registry rows took org\n"
-        "  recall 1.000 -> 0.980, with registry at 51 tail homepage rows against identity's 27.\n"
-        "  The registry side was verified current against the repo. Beyond that, unresolved."
+        "  currentai.registry.{org_handles,organizations}. Any can be the stale one.\n"
+        "  Worked example, 2026-09-07. Merging 67 registry rows took org recall 1.000 -> 0.980 and\n"
+        "  membership_non_scoring to 0.529. Identity last ran 2026-09-06 05:30 UTC (7 models, all\n"
+        "  SUCCESS; no failed run in 53); registry.tail_products was wholly replaced 2026-09-07\n"
+        "  17:02 UTC; no identity run since. Stale layer, not a defect -- and no evidence either way\n"
+        "  about resolver correctness on those rows, because it has not been asked yet."
     ),
     "membership_non_scoring": (
         "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
