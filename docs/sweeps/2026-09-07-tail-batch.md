@@ -4,6 +4,17 @@ Machine-generated review sheet for the weekly candidate sweep (`discover-candida
 label `tail-batch`. Nothing here is scored: every row carries identity and artifacts only.
 A human accepts or rejects this batch; automation opened it and does not merge it.
 
+**Fourth revision.** One correction a third review asked for, and it changed the batch rather than
+its prose. A review found that the duplicate table classified `mlabonne/llm-datasets` and
+`poloclub/llm-landscape` as releases of `llm` with nothing declared to support either fold, and
+asked for the 18 `llm` folds to be audited. Auditing the whole class found 300 folds of that shape,
+not 18. Every fold in the batch is now re-audited against the repo's own declarations
+(**What a fold has to rest on**); the 300 that rested on a folded name match, a shared domain or a
+sentence about what a repository is are **un-folded**, held as unique candidates with the reason
+each fold was withdrawn, and all five counts are recomputed rather than adjusted:
+2579 = 739 + 1840, and 1840 = 67 + 1773. `accepted` is unchanged at 67, because withdrawing a fold
+can only ever move a signal to the parked side.
+
 **Third revision.** Two corrections a second review asked for are folded in, and both changed the
 batch rather than its prose:
 
@@ -19,7 +30,7 @@ batch rather than its prose:
    queries, predeclared in a manifest before the first request was issued. Recognition is gone as
    an acceptance reason; acceptance is the predicate below and nothing else.
 
-See **Revisions** at the end for all three revisions in one table.
+See **Revisions** at the end for all four revisions in one table.
 
 ## Window and scope
 
@@ -41,13 +52,19 @@ See **Revisions** at the end for all three revisions in one table.
 | count | value |
 |---|---|
 | `raw_signals` | 2579 |
-| `duplicate_signals` | 1039 |
-| `unique_candidates` | 1540 |
+| `duplicate_signals` | 739 |
+| `unique_candidates` | 1840 |
 | `accepted` | 67 |
-| `parked` | 1473 |
+| `parked` | 1773 |
 
-- `raw_signals = duplicate_signals + unique_candidates` → 2579 = 1039 + 1540 ✓
-- `unique_candidates = accepted + parked` → 1540 = 67 + 1473 ✓
+- `raw_signals = duplicate_signals + unique_candidates` → 2579 = 739 + 1840 ✓
+- `unique_candidates = accepted + parked` → 1840 = 67 + 1773 ✓
+
+Three of the five moved in this revision. 300 signals the third revision folded onto a product on
+a name match no declaration supports are un-folded: they leave `duplicate_signals` (1039 → 739),
+enter `unique_candidates` (1540 → 1840), and are held in `parked` (1473 → 1773) with the reason
+each fold was withdrawn. `raw_signals` cannot move — nothing was re-fetched — and `accepted` does
+not move, because withdrawing a fold cannot admit a row. See **What a fold has to rest on**.
 
 One raw signal is one (query, item) occurrence — the grain the two equations are written at, and
 the same grain the second revision used. 2579 occurrences came back from 62 queries (46 in the first pass, 16 in the second). A repository returned by
@@ -56,9 +73,9 @@ cutoff status, by contrast, is a property of the signal and not of the occurrenc
 the cutoff when it clears the floor of any query that returned it.
 
 Each accepted signal maps to exactly one emitted row: 67 accepted, 67 rows. All
-1473 parked candidates are listed individually below — 288 with a reason of
-their own, 1185 with the retrieval floor that excluded them — and all 1039
-duplicates are listed with what they folded onto.
+1773 parked candidates are listed individually below — 288 with a reason of their own, 1185 with
+the retrieval floor that excluded them, and 300 with the fold this revision withdrew — and all
+739 remaining duplicates are listed with the declaration each one rests on.
 
 Where the rows come from, against the second revision: 43 of the 67 were emitted then too (their
 identity fields are re-derived, so 36 of those 43 changed a slug, a display_name or an org), 22
@@ -566,27 +583,57 @@ words not to invent a plausible artifact for a candidate that has none. What a l
 look for: a vendor-account SDK repository that is genuinely the product, a package the board
 publishes, or a datasheet DOI. The question underneath it is for a person — see **Escalations**.
 
-## Mirrors, derivatives and format redistributions, counted as duplicates
+## What a fold has to rest on
 
-Signals that are the same product as another signal or an existing product, folded on the
-duplicate side of the reconciliation rather than parked. The first seven were settled in the
-second revision; the eighth is folded on a mechanical predicate (same owner login, name equal to
-another signal's name plus a distribution-format suffix, and the repo declares that format in its
-own `tags`), with the shorter name — the base-weights repo — as the representative of the pair.
+A duplicate is a claim about identity, and the reconciliation is only as good as that claim. A
+wrong fold does not merely mislabel one row: it removes a candidate from `unique_candidates` and
+hides it behind arithmetic that still balances. So every fold in this batch has been re-audited
+against the repo's own files, and one is kept only when it rests on a declaration or on a
+byte-level observation:
+
+| fold | what it rests on | rows |
+|---|---|---|
+| `repeats signal X` | the identifier is byte-identical to another occurrence of the same signal. No identity judgment is involved. | 463 |
+| `head product P`, `tail row P` | the identifier is a **declared artifact** of `sources/products/P.yaml` or of a row already in `sources/registry/*.yaml`. Checked identifier by identifier against the declaration. | 88 |
+| `resolution ledger: <verdict>` | the identifier appears in `sources/resolution_ledger.yaml` under a `product_equivalence` verdict in `NOT_A_NEW_PRODUCT`. | 7 |
+| `release or SKU of P` | **both** conditions: `sources/model_families.yaml` declares the family `P-*`, and the signal's owner login is a handle `sources/org_handles.yaml` declares for an organization owning `P`'s declared artifacts. A first-party release inside a declared family. | 175 |
+| a distribution-format redistribution | same owner login, name equal to another signal's name plus a format suffix, and the repo declares that format in its own `tags`. | 1 |
+| a second or third path tried for one hardware signal | two URLs were probes in one lookup for one physical product, not two entities. | 5 |
+
+**A folded name match is not evidence of identity.** `discover-candidates` already says so, in the
+identity-digest section: an item whose only evidence is a folded name match is parked, not
+proposed. The same discipline has to bind the sweep's own dedup, and in the third revision it did
+not: 300 signals were folded onto a product because the product's name appeared in theirs.
+`mlabonne/llm-datasets` and `poloclub/llm-landscape` were read as releases of `llm`, which is
+Simon Willison's Datasette CLI (`simonw/llm`); `meta-llama/Prompt-Guard-86M` was read as a release
+of `llama-prompt-guard`, which declares `meta-llama/Llama-Prompt-Guard-2-86M`, a different model;
+`nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` was read as a SKU of `nemotron`, which declares the 30B
+Nano and not the 4B. All 300 are un-folded in **Parked — a withdrawn fold**.
+
+**Withdrawing a fold cannot admit a row.** It moves a signal from the duplicate side of the
+reconciliation to the unique side and records a park reason there, which the acceptance predicate
+reads through `no_recorded_park_reason` — the one judgment-shaped clause, and the one that can only
+ever remove a candidate. This is a dedup rule, not a legitimacy rule: it says nothing about whether
+a candidate is a real product, and it cannot reject one. It only refuses to assert an identity the
+repo has not declared.
+
+## Format redistributions, counted as duplicates
+
+One signal is folded on the duplicate side as a redistribution rather than parked, on a
+mechanical predicate: same owner login, name equal to another signal's name plus a
+distribution-format suffix, and the repo declares that format in its own `tags`. The shorter name
+— the base-weights repo — is the representative of the pair.
 
 | signal | source URL | fetched | folds onto |
 |---|---|---|---|
-| `autogluon/chronos-2` | https://huggingface.co/autogluon/chronos-2 | 2026-09-07 | mirror of the signal amazon/chronos-2 under a second owner (self-dedup) |
-| `autogluon/chronos-bolt-small` | https://huggingface.co/autogluon/chronos-bolt-small | 2026-09-07 | mirror of the signal amazon/chronos-bolt-small under a second owner (self-dedup) |
-| `argmaxinc/whisperkit-coreml` | https://huggingface.co/argmaxinc/whisperkit-coreml | 2026-09-07 | Core ML conversion of the signal openai/whisper-large-v3, not a distinct model (self-dedup) |
-| `huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF` | https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF | 2026-09-07 | abliterated GGUF redistribution of the signal Qwen/Qwen3.8-27B, which folds onto head product qwen |
-| `GuardrailsAI/prompt-saturation-attack-detector` | https://huggingface.co/GuardrailsAI/prompt-saturation-attack-detector | 2026-09-07 | component model published by the org behind head product guardrails-ai; SKU of that product |
-| `nod-ai/AMD-SHARK-Studio` | https://github.com/nod-ai/AMD-SHARK-Studio | 2026-09-07 | web UI over SHARK+IREE; SKU of head product iree |
-| `nunchux-ai/ComfyUI-nunchaku` | https://github.com/nunchux-ai/ComfyUI-nunchaku | 2026-09-07 | ComfyUI plugin surface of nunchaku, which this batch emits as its own row (self-dedup) |
 | `LiquidAI/LFM2.5-2.6B-GGUF` | https://huggingface.co/LiquidAI/LFM2.5-2.6B-GGUF | 2026-09-07 | distribution-format redistribution of the signal LiquidAI/LFM2.5-2.6B: same owner login, name is that name plus `-GGUF`, and the repo declares tag `gguf`. Folded onto the shorter name (the base-weights repo), which is the representative of the pair |
 
-Three folds the second revision made are **removed** in this one, because they were product-family
-readings rather than observations: `FacebookAI/roberta-large`, `google-t5/t5-base` and
+The seven other folds this section carried through the second and third revisions are
+**removed** in this one. Every one of them rested on a sentence about what a repository *is* — a
+mirror under a second owner, a Core ML conversion, an abliterated GGUF, a component model, a web
+UI, a plugin surface — and not on a declaration, so each is un-folded into
+**Parked — a withdrawn fold** as class N5. Three folds the second revision made were removed in
+the third for the same kind of reason: `FacebookAI/roberta-large`, `google-t5/t5-base` and
 `openai-community/gpt2-large` are each resolved on their own and emitted at the identity they
 declare. Two lookalikes stay parked because the evidence does not settle them
 (`prism-ml/*Bonsai*`, `distilbert/distilgpt2`).
@@ -2093,49 +2140,43 @@ not is a reason to keep an exception mechanism.
 | `zjunlp/SafeEdit-Safety-Classifier` | https://huggingface.co/zjunlp/SafeEdit-Safety-Classifier | 2026-09-07 | `hf_safety_search` | fewer than 5,000 trailing-30-day downloads (category-scoped search floor) |
 | `Zyphra/Zamba2-1.2B-instruct` | https://huggingface.co/Zyphra/Zamba2-1.2B-instruct | 2026-09-07 | `hf_instruct_search` | fewer than 1,000,000 trailing-30-day downloads (ranked-listing floor) |
 
-## Duplicate mappings (1039)
+## Duplicate mappings (739)
 
 Every signal counted as a duplicate, with what it folded onto. This is the mapping behind
 `raw_signals = duplicate_signals + unique_candidates`; the reconciliation can be recomputed from
-this table and the two parked tables above.
+this table and the three parked tables above. Every row here rests on one of the five kinds of
+evidence in **What a fold has to rest on** — 463 byte-identical repeats, 88 declared artifacts,
+7 resolution-ledger entries, 175 declared first-party family releases, 1 declared-tag format
+redistribution and 5 retried paths for one hardware lookup. The 300 rows the third revision
+carried on a folded name match are not here; they are in **Parked — a withdrawn fold**.
 
 | signal | source URL | fetched | returned by | folds onto |
 |---|---|---|---|---|
 | `666DZY666/micronet` | https://github.com/666DZY666/micronet | 2026-09-07 | `comp_t_quant`, `B_comp_tensorrt` | repeats signal 666DZY666/micronet |
-| `aaron-xichen/pytorch-playground` | https://github.com/aaron-xichen/pytorch-playground | 2026-09-07 | `comp_t_quant` | release or SKU of pytorch |
 | `Adlik/Adlik` | https://github.com/Adlik/Adlik | 2026-09-07 | `comp_t_tensorcompiler`, `B_comp_engine` | repeats signal Adlik/Adlik |
 | `Agent-Threat-Rule/agent-threat-rules` | https://github.com/Agent-Threat-Rule/agent-threat-rules | 2026-09-07 | `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal Agent-Threat-Rule/agent-threat-rules |
 | `agentanywhere/shuddhi` | https://github.com/agentanywhere/shuddhi | 2026-09-07 | `dpt_dedup`, `dpt_q_dedup` | repeats signal agentanywhere/shuddhi |
 | `agentcontrol/agent-control` | https://github.com/agentcontrol/agent-control | 2026-09-07 | `safe_t_guardrails`, `safe_t_aisafety` | repeats signal agentcontrol/agent-control |
-| `ahmad-alismail/LLM_based_Synthetic_Data_Generation` | https://github.com/ahmad-alismail/LLM_based_Synthetic_Data_Generation | 2026-09-07 | `dpt_synth` | release or SKU of llm |
 | `akto-api-security/akto` | https://github.com/akto-api-security/akto | 2026-09-07 | `safe_t_guardrails`, `safe_t_redteam`, `B_safe_aisec` | repeats signal akto-api-security/akto |
 | `akto-api-security/akto` | https://github.com/akto-api-security/akto | 2026-09-07 | `safe_t_guardrails`, `safe_t_redteam`, `B_safe_aisec` | repeats signal akto-api-security/akto |
 | `alibaba/BladeDISC` | https://github.com/alibaba/BladeDISC | 2026-09-07 | `comp_t_mlir`, `comp_t_tensorcompiler` | repeats signal alibaba/BladeDISC |
-| `AllisonDing/LLM-data-processing-agentic-skills` | https://github.com/AllisonDing/LLM-data-processing-agentic-skills | 2026-09-07 | `dpt_q_curator` | release or SKU of llm |
 | `apache/tvm` | https://github.com/apache/tvm | 2026-09-07 | `comp_t_tensorcompiler`, `B_comp_tvm` | head product apache-tvm |
 | `apache/tvm` | https://github.com/apache/tvm | 2026-09-07 | `comp_t_tensorcompiler`, `B_comp_tvm` | repeats signal apache/tvm |
-| `ARahim3/mlx-dspark` | https://github.com/ARahim3/mlx-dspark | 2026-09-07 | `B_comp_engine` | release or SKU of mlx |
 | `arcjet/arcjet-js` | https://github.com/arcjet/arcjet-js | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_agentsec` | repeats signal arcjet/arcjet-js |
 | `argilla-io/distilabel` | https://github.com/argilla-io/distilabel | 2026-09-07 | `dpt_t_synthetic` | head product distilabel |
-| `arnabroy734/LLM_jailbreak_shield` | https://github.com/arnabroy734/LLM_jailbreak_shield | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm |
 | `asamassekou10/ship-safe` | https://github.com/asamassekou10/ship-safe | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal asamassekou10/ship-safe |
 | `asamassekou10/ship-safe` | https://github.com/asamassekou10/ship-safe | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal asamassekou10/ship-safe |
-| `backblaze-b2-samples/nemo-curator-training-data` | https://github.com/backblaze-b2-samples/nemo-curator-training-data | 2026-09-07 | `dpt_q_curator` | release or SKU of nemo-curator |
 | `bespokelabsai/curator` | https://github.com/bespokelabsai/curator | 2026-09-07 | `dpt_t_synthetic`, `dpt_q_curator` | repeats signal bespokelabsai/curator |
 | `bitsandbytes-foundation/bitsandbytes` | https://github.com/bitsandbytes-foundation/bitsandbytes | 2026-09-07 | `comp_t_quant` | head product bitsandbytes |
-| `buildship-ai/LLM-Web-Crawler` | https://github.com/buildship-ai/LLM-Web-Crawler | 2026-09-07 | `dpt_t_webscraping` | release or SKU of llm |
 | `bytedance/Dolphin` | https://github.com/bytedance/Dolphin | 2026-09-07 | `B_dpt_ocrpdf` | resolution ledger: excluded_boundary |
 | `CatchTheTornado/text-extract-api` | https://github.com/CatchTheTornado/text-extract-api | 2026-09-07 | `dpt_q_pdf`, `B_dpt_ocrpdf`, `B_safe_pii` | repeats signal CatchTheTornado/text-extract-api |
 | `CatchTheTornado/text-extract-api` | https://github.com/CatchTheTornado/text-extract-api | 2026-09-07 | `dpt_q_pdf`, `B_dpt_ocrpdf`, `B_safe_pii` | repeats signal CatchTheTornado/text-extract-api |
 | `CHATS-lab/verbalized-sampling` | https://github.com/CHATS-lab/verbalized-sampling | 2026-09-07 | `dpt_synth`, `dpt_t_synthetic` | repeats signal CHATS-lab/verbalized-sampling |
-| `chawins/llm-sp` | https://github.com/chawins/llm-sp | 2026-09-07 | `safe_t_llmsecurity` | release or SKU of llm |
 | `chrisliu298/awesome-llm-unlearning` | https://github.com/chrisliu298/awesome-llm-unlearning | 2026-09-07 | `safe_t_aisafety`, `B_safe_llmsafety` | repeats signal chrisliu298/awesome-llm-unlearning |
 | `cleanlab/cleanlab` | https://github.com/cleanlab/cleanlab | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal cleanlab/cleanlab |
 | `cleanlab/cleanlab-studio` | https://github.com/cleanlab/cleanlab-studio | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal cleanlab/cleanlab-studio |
 | `coderonion/awesome-cuda-and-hpc` | https://github.com/coderonion/awesome-cuda-and-hpc | 2026-09-07 | `comp_t_mlir`, `comp_t_triton`, `B_comp_tvm` | repeats signal coderonion/awesome-cuda-and-hpc |
 | `coderonion/awesome-cuda-and-hpc` | https://github.com/coderonion/awesome-cuda-and-hpc | 2026-09-07 | `comp_t_mlir`, `comp_t_triton`, `B_comp_tvm` | repeats signal coderonion/awesome-cuda-and-hpc |
-| `Colin6618/flashinfer-performance-benchmarks` | https://github.com/Colin6618/flashinfer-performance-benchmarks | 2026-09-07 | `comp_q_kernel` | release or SKU of flashinfer |
-| `CollieAi/llm-firewall` | https://github.com/CollieAi/llm-firewall | 2026-09-07 | `safe_t_moderation` | release or SKU of llm |
 | `confident-ai/deepteam` | https://github.com/confident-ai/deepteam | 2026-09-07 | `B_safe_llmsafety` | head product deepteam |
 | `cvs-health/uqlm` | https://github.com/cvs-health/uqlm | 2026-09-07 | `safe_t_aisafety`, `B_safe_llmsafety` | repeats signal cvs-health/uqlm |
 | `CyberStrikeus/CyberStrike` | https://github.com/CyberStrikeus/CyberStrike | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_redteam`, `B_safe_aisec` | repeats signal CyberStrikeus/CyberStrike |
@@ -2143,52 +2184,34 @@ this table and the two parked tables above.
 | `daochenzha/data-centric-AI` | https://github.com/daochenzha/data-centric-AI | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal daochenzha/data-centric-AI |
 | `data-privacy-stack/presidio` | https://github.com/data-privacy-stack/presidio | 2026-09-07 | `safe_t_guardrails`, `B_safe_pii` | repeats signal data-privacy-stack/presidio |
 | `datajuicer/data-juicer` | https://github.com/datajuicer/data-juicer | 2026-09-07 | `dpt_t_synthetic` | head product data-juicer |
-| `datawhalechina/llm-algo-leetcode` | https://github.com/datawhalechina/llm-algo-leetcode | 2026-09-07 | `comp_t_triton` | release or SKU of llm |
 | `deadbits/vigil-llm` | https://github.com/deadbits/vigil-llm | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection` | repeats signal deadbits/vigil-llm |
-| `dezoito/markitdown-api` | https://github.com/dezoito/markitdown-api | 2026-09-07 | `dpt_q_pdf` | release or SKU of markitdown |
 | `dphnAI/sonar` | https://github.com/dphnAI/sonar | 2026-09-07 | `B_comp_engine` | head product sonar |
 | `duncatzat/vigils` | https://github.com/duncatzat/vigils | 2026-09-07 | `B_safe_pii`, `B_safe_agentsec` | repeats signal duncatzat/vigils |
 | `duoan/mega-data-factory` | https://github.com/duoan/mega-data-factory | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal duoan/mega-data-factory |
 | `ethz-spylab/agentdojo` | https://github.com/ethz-spylab/agentdojo | 2026-09-07 | `safe_t_promptinjection` | head product agentdojo |
 | `evidentlyai/evidently` | https://github.com/evidentlyai/evidently | 2026-09-07 | `dpt_t_dataquality` | head product evidently |
-| `facebookresearch/synth_gen` | https://github.com/facebookresearch/synth_gen | 2026-09-07 | `dpt_synth` | release or SKU of synth |
 | `faiyazabdullah/JailbreakTracer` | https://github.com/faiyazabdullah/JailbreakTracer | 2026-09-07 | `dpt_synth`, `safe_q_jailbreak` | repeats signal faiyazabdullah/JailbreakTracer |
-| `FantingHeish/LLM-Inference-System-GPU-Oriented-Serving-Architecture-` | https://github.com/FantingHeish/LLM-Inference-System-GPU-Oriented-Serving-Architecture- | 2026-09-07 | `comp_q_kernel` | release or SKU of llm |
 | `FareedKhan-dev/kimi-k3-in-c` | https://github.com/FareedKhan-dev/kimi-k3-in-c | 2026-09-07 | `comp_t_quant`, `B_comp_engine` | repeats signal FareedKhan-dev/kimi-k3-in-c |
 | `feast-dev/feast` | https://github.com/feast-dev/feast | 2026-09-07 | `dpt_t_dataquality` | head product feast |
 | `FedML-AI/FedML` | https://github.com/FedML-AI/FedML | 2026-09-07 | `edge_t_edgeai`, `B_comp_engine` | repeats signal FedML-AI/FedML |
 | `firecrawl/firecrawl` | https://github.com/firecrawl/firecrawl | 2026-09-07 | `dpt_t_webscraping` | head product firecrawl |
-| `firecrawl/firecrawl-app-examples` | https://github.com/firecrawl/firecrawl-app-examples | 2026-09-07 | `dpt_t_webscraping` | release or SKU of firecrawl |
-| `FlorianBruniaux/claude-code-ultimate-guide` | https://github.com/FlorianBruniaux/claude-code-ultimate-guide | 2026-09-07 | `B_safe_aisec` | release or SKU of claude-code |
 | `getagentseal/agentseal` | https://github.com/getagentseal/agentseal | 2026-09-07 | `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal getagentseal/agentseal |
 | `Giskard-AI/giskard-oss` | https://github.com/Giskard-AI/giskard-oss | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_aisec` | head product giskard |
 | `Giskard-AI/giskard-oss` | https://github.com/Giskard-AI/giskard-oss | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_aisec` | repeats signal Giskard-AI/giskard-oss |
 | `google-ai-edge/LiteRT-LM` | https://github.com/google-ai-edge/LiteRT-LM | 2026-09-07 | `edge_t_edgeai` | head product litert-lm |
 | `GrayboxTech/weightslab` | https://github.com/GrayboxTech/weightslab | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal GrayboxTech/weightslab |
-| `group-k11/LLM-Firewall-Prompt-Injection-Detection-System` | https://github.com/group-k11/LLM-Firewall-Prompt-Injection-Detection-System | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm |
 | `hashgraph-online/hol-guard` | https://github.com/hashgraph-online/hol-guard | 2026-09-07 | `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal hashgraph-online/hol-guard |
 | `hiyouga/LlamaFactory` | https://github.com/hiyouga/LlamaFactory | 2026-09-07 | `comp_t_quant` | head product llama-factory |
 | `HKUSTDial/flash-sparse-attention` | https://github.com/HKUSTDial/flash-sparse-attention | 2026-09-07 | `comp_t_triton` | head product flash-sparse-attention |
 | `huggingface/optimum` | https://github.com/huggingface/optimum | 2026-09-07 | `comp_t_quant` | head product optimum |
-| `hunglc007/tensorflow-yolov4-tflite` | https://github.com/hunglc007/tensorflow-yolov4-tflite | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorflow |
 | `ifixai-ai/iFixAi` | https://github.com/ifixai-ai/iFixAi | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `safe_t_aisafety` | repeats signal ifixai-ai/iFixAi |
 | `ifixai-ai/iFixAi` | https://github.com/ifixai-ai/iFixAi | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `safe_t_aisafety` | repeats signal ifixai-ai/iFixAi |
 | `intel/neural-compressor` | https://github.com/intel/neural-compressor | 2026-09-07 | `comp_t_quant` | head product intel-neural-compressor |
 | `iree-org/iree` | https://github.com/iree-org/iree | 2026-09-07 | `comp_t_mlir` | head product iree |
-| `jackhhao/llm-warden` | https://github.com/jackhhao/llm-warden | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm |
-| `Jerry2423/Triton-Attention-Kernels` | https://github.com/Jerry2423/Triton-Attention-Kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of triton |
-| `JJCKA/MarkItDown-GUI` | https://github.com/JJCKA/MarkItDown-GUI | 2026-09-07 | `dpt_q_pdf` | release or SKU of markitdown |
-| `jrajath94/triton-inference-kernels` | https://github.com/jrajath94/triton-inference-kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of triton |
-| `kenflab/LLM-scCurator` | https://github.com/kenflab/LLM-scCurator | 2026-09-07 | `dpt_q_curator` | release or SKU of llm |
 | `kenryu42/cc-safety-net` | https://github.com/kenryu42/cc-safety-net | 2026-09-07 | `safe_t_guardrails`, `safe_t_aisafety` | repeats signal kenryu42/cc-safety-net |
 | `KeygraphHQ/shannon` | https://github.com/KeygraphHQ/shannon | 2026-09-07 | `safe_t_redteam`, `B_safe_aisec` | repeats signal KeygraphHQ/shannon |
 | `KeyValueSoftwareSystems/agent-opfor` | https://github.com/KeyValueSoftwareSystems/agent-opfor | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection` | repeats signal KeyValueSoftwareSystems/agent-opfor |
-| `KrakowiakK/vllm-apple` | https://github.com/KrakowiakK/vllm-apple | 2026-09-07 | `comp_q_kernel` | release or SKU of vllm |
-| `Krusty84/triton-ascend-agent-dev-kit` | https://github.com/Krusty84/triton-ascend-agent-dev-kit | 2026-09-07 | `edge_t_npu` | release or SKU of triton |
-| `lastSoln/llm-training-data-pipeline` | https://github.com/lastSoln/llm-training-data-pipeline | 2026-09-07 | `dpt_dedup` | release or SKU of llm |
-| `laugh12321/TensorRT-YOLO` | https://github.com/laugh12321/TensorRT-YOLO | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorrt |
 | `lemonade-sdk/lemonade` | https://github.com/lemonade-sdk/lemonade | 2026-09-07 | `edge_t_npu` | head product lemonade |
-| `lennyerik/crawl4ai-proxy` | https://github.com/lennyerik/crawl4ai-proxy | 2026-09-07 | `dpt_t_webscraping` | release or SKU of crawl4ai |
 | `Lexsi-Labs/CuratorKIT` | https://github.com/Lexsi-Labs/CuratorKIT | 2026-09-07 | `dpt_synth`, `dpt_q_curator` | repeats signal Lexsi-Labs/CuratorKIT |
 | `linkedin/Liger-Kernel` | https://github.com/linkedin/Liger-Kernel | 2026-09-07 | `comp_t_triton` | head product liger-kernel |
 | `llmware-ai/llmware` | https://github.com/llmware-ai/llmware | 2026-09-07 | `comp_t_onnx` | resolution ledger: excluded_boundary |
@@ -2196,24 +2219,16 @@ this table and the two parked tables above.
 | `luckyPipewrench/pipelock` | https://github.com/luckyPipewrench/pipelock | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal luckyPipewrench/pipelock |
 | `magpie-align/magpie` | https://github.com/magpie-align/magpie | 2026-09-07 | `dpt_synth`, `dpt_t_synthetic`, `B_dpt_datasetllm` | repeats signal magpie-align/magpie |
 | `magpie-align/magpie` | https://github.com/magpie-align/magpie | 2026-09-07 | `dpt_synth`, `dpt_t_synthetic`, `B_dpt_datasetllm` | repeats signal magpie-align/magpie |
-| `MaitreChen/openvino-lenet-sample` | https://github.com/MaitreChen/openvino-lenet-sample | 2026-09-07 | `B_comp_modelopt` | release or SKU of openvino |
-| `manishklach/mlx-metal-kernels` | https://github.com/manishklach/mlx-metal-kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of mlx |
-| `matank001/cursor-security-rules` | https://github.com/matank001/cursor-security-rules | 2026-09-07 | `B_safe_agentsec` | release or SKU of cursor |
 | `maziyarpanahi/openmed` | https://github.com/maziyarpanahi/openmed | 2026-09-07 | `B_safe_pii` | resolution ledger: excluded_boundary |
 | `MegEngine/MegCC` | https://github.com/MegEngine/MegCC | 2026-09-07 | `comp_t_mlir`, `comp_t_tensorcompiler` | repeats signal MegEngine/MegCC |
 | `Megvii-BaseDetection/YOLOX` | https://github.com/Megvii-BaseDetection/YOLOX | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | repeats signal Megvii-BaseDetection/YOLOX |
 | `microsoft/onnxruntime` | https://github.com/microsoft/onnxruntime | 2026-09-07 | `comp_t_onnx` | head product onnx-runtime |
 | `MigoXLab/awesome-data-quality` | https://github.com/MigoXLab/awesome-data-quality | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal MigoXLab/awesome-data-quality |
-| `mlabonne/llm-datasets` | https://github.com/mlabonne/llm-datasets | 2026-09-07 | `B_dpt_datasetllm` | release or SKU of llm |
 | `mlc-ai/mlc-llm` | https://github.com/mlc-ai/mlc-llm | 2026-09-07 | `B_comp_tvm` | head product mlc-llm |
 | `msoedov/agentic_security` | https://github.com/msoedov/agentic_security | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_agentsec` | repeats signal msoedov/agentic_security |
-| `navyavelicheti10/LLM_Firewall` | https://github.com/navyavelicheti10/LLM_Firewall | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm |
-| `nihui/ncnn-small-board` | https://github.com/nihui/ncnn-small-board | 2026-09-07 | `edge_t_sbc` | release or SKU of ncnn |
-| `nod-ai/AMD-SHARK-Studio` | https://github.com/nod-ai/AMD-SHARK-Studio | 2026-09-07 | `comp_t_mlir` | web UI over SHARK+IREE; SKU of head product iree |
 | `nolabs-ai/nono` | https://github.com/nolabs-ai/nono | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_aisec`, `B_safe_agentsec` | head product nono |
 | `nolabs-ai/nono` | https://github.com/nolabs-ai/nono | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal nolabs-ai/nono |
 | `nolabs-ai/nono` | https://github.com/nolabs-ai/nono | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal nolabs-ai/nono |
-| `nunchux-ai/ComfyUI-nunchaku` | https://github.com/nunchux-ai/ComfyUI-nunchaku | 2026-09-07 | `comp_t_quant` | ComfyUI plugin surface of nunchaku, which this batch emits as its own row (self-dedup) |
 | `NVIDIA-NeMo/Curator` | https://github.com/NVIDIA-NeMo/Curator | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dedup`, `dpt_q_curator` | head product nemo-curator |
 | `NVIDIA-NeMo/Curator` | https://github.com/NVIDIA-NeMo/Curator | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dedup`, `dpt_q_curator` | repeats signal NVIDIA-NeMo/Curator |
 | `NVIDIA-NeMo/Curator` | https://github.com/NVIDIA-NeMo/Curator | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dedup`, `dpt_q_curator` | repeats signal NVIDIA-NeMo/Curator |
@@ -2232,13 +2247,9 @@ this table and the two parked tables above.
 | `onnx/onnx` | https://github.com/onnx/onnx | 2026-09-07 | `comp_t_onnx` | head product onnx |
 | `opendatalab/MinerU` | https://github.com/opendatalab/MinerU | 2026-09-07 | `B_dpt_ocrpdf` | head product mineru |
 | `opendataloader-project/opendataloader-pdf` | https://github.com/opendataloader-project/opendataloader-pdf | 2026-09-07 | `B_dpt_ocrpdf` | tail row opendataloader-pdf |
-| `OriginalByteMe/langfuse-dataset-curator` | https://github.com/OriginalByteMe/langfuse-dataset-curator | 2026-09-07 | `dpt_q_curator` | release or SKU of langfuse |
-| `PaddlePaddle/Paddle.js` | https://github.com/PaddlePaddle/Paddle.js | 2026-09-07 | `B_comp_engine` | release or SKU of paddle |
 | `Pantheon-Security/medusa` | https://github.com/Pantheon-Security/medusa | 2026-09-07 | `safe_t_llmsecurity`, `B_safe_agentsec` | repeats signal Pantheon-Security/medusa |
 | `pathwaycom/llm-app` | https://github.com/pathwaycom/llm-app | 2026-09-07 | `safe_t_llmsecurity` | resolution ledger: excluded_boundary |
 | `pegasi-ai/reins` | https://github.com/pegasi-ai/reins | 2026-09-07 | `safe_t_aisafety`, `B_safe_agentsec` | repeats signal pegasi-ai/reins |
-| `poloclub/llm-landscape` | https://github.com/poloclub/llm-landscape | 2026-09-07 | `B_safe_llmsafety` | release or SKU of llm |
-| `Prachi-kushwaha/Triton-guide` | https://github.com/Prachi-kushwaha/Triton-guide | 2026-09-07 | `comp_t_cuda` | release or SKU of triton |
 | `PrismorSec/prismor` | https://github.com/PrismorSec/prismor | 2026-09-07 | `safe_t_promptinjection`, `safe_t_aisafety`, `B_safe_agentsec` | repeats signal PrismorSec/prismor |
 | `PrismorSec/prismor` | https://github.com/PrismorSec/prismor | 2026-09-07 | `safe_t_promptinjection`, `safe_t_aisafety`, `B_safe_agentsec` | repeats signal PrismorSec/prismor |
 | `promptfoo/promptfoo` | https://github.com/promptfoo/promptfoo | 2026-09-07 | `safe_t_redteam` | head product promptfoo |
@@ -2250,21 +2261,15 @@ this table and the two parked tables above.
 | `qualcomm/aimet` | https://github.com/qualcomm/aimet | 2026-09-07 | `comp_t_quant` | head product aimet |
 | `RapidAI/RapidOCR` | https://github.com/RapidAI/RapidOCR | 2026-09-07 | `B_comp_tensorrt` | resolution ledger: excluded_boundary |
 | `Renumics/awesome-open-data-centric-ai` | https://github.com/Renumics/awesome-open-data-centric-ai | 2026-09-07 | `dpt_t_synthetic`, `dpt_t_datacentric` | repeats signal Renumics/awesome-open-data-centric-ai |
-| `RightNow-AI/inkling-turbo` | https://github.com/RightNow-AI/inkling-turbo | 2026-09-07 | `comp_q_kernel` | release or SKU of inkling |
-| `rkinas/triton-resources` | https://github.com/rkinas/triton-resources | 2026-09-07 | `comp_t_triton` | release or SKU of triton |
 | `run-llama/liteparse` | https://github.com/run-llama/liteparse | 2026-09-07 | `B_dpt_ocrpdf` | tail row liteparse |
 | `SantanderAI/autoguardrails` | https://github.com/SantanderAI/autoguardrails | 2026-09-07 | `safe_t_moderation`, `B_safe_llmsafety` | repeats signal SantanderAI/autoguardrails |
 | `secureagentics/Adrian` | https://github.com/secureagentics/Adrian | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal secureagentics/Adrian |
 | `secureagentics/Adrian` | https://github.com/secureagentics/Adrian | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal secureagentics/Adrian |
-| `shouxieai/tensorRT_Pro` | https://github.com/shouxieai/tensorRT_Pro | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorrt |
 | `sipeed/MaixPy` | https://github.com/sipeed/MaixPy | 2026-09-07 | `edge_t_edgeai` | head product sipeed-maixcam |
-| `SiriusNEO/Triton-Puzzles-Lite` | https://github.com/SiriusNEO/Triton-Puzzles-Lite | 2026-09-07 | `comp_t_triton` | release or SKU of triton |
 | `splx-ai/agentic-radar` | https://github.com/splx-ai/agentic-radar | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_redteam` | repeats signal splx-ai/agentic-radar |
 | `SponsioLabs/Sponsio` | https://github.com/SponsioLabs/Sponsio | 2026-09-07 | `safe_t_guardrails`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal SponsioLabs/Sponsio |
 | `SponsioLabs/Sponsio` | https://github.com/SponsioLabs/Sponsio | 2026-09-07 | `safe_t_guardrails`, `safe_t_promptinjection`, `B_safe_agentsec` | repeats signal SponsioLabs/Sponsio |
-| `stephenleo/llm-structured-output-benchmarks` | https://github.com/stephenleo/llm-structured-output-benchmarks | 2026-09-07 | `dpt_synth` | release or SKU of llm |
 | `superagent-ai/superagent` | https://github.com/superagent-ai/superagent | 2026-09-07 | `safe_t_guardrails`, `safe_t_promptinjection` | repeats signal superagent-ai/superagent |
-| `susmitsingh01/triton-llm-kernels-lab` | https://github.com/susmitsingh01/triton-llm-kernels-lab | 2026-09-07 | `comp_q_kernel` | release or SKU of triton |
 | `Tencent/AI-Infra-Guard` | https://github.com/Tencent/AI-Infra-Guard | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `safe_t_aisafety`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal Tencent/AI-Infra-Guard |
 | `Tencent/AI-Infra-Guard` | https://github.com/Tencent/AI-Infra-Guard | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `safe_t_aisafety`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal Tencent/AI-Infra-Guard |
 | `Tencent/AI-Infra-Guard` | https://github.com/Tencent/AI-Infra-Guard | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `safe_t_aisafety`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal Tencent/AI-Infra-Guard |
@@ -2274,10 +2279,8 @@ this table and the two parked tables above.
 | `tg12/gpt_jailbreak_status` | https://github.com/tg12/gpt_jailbreak_status | 2026-09-07 | `safe_t_promptinjection`, `safe_t_aisafety` | repeats signal tg12/gpt_jailbreak_status |
 | `thu-ml/SageAttention` | https://github.com/thu-ml/SageAttention | 2026-09-07 | `comp_t_quant`, `comp_t_triton` | head product sageattention |
 | `thu-ml/SageAttention` | https://github.com/thu-ml/SageAttention | 2026-09-07 | `comp_t_quant`, `comp_t_triton` | repeats signal thu-ml/SageAttention |
-| `Tianxiaomo/pytorch-YOLOv4` | https://github.com/Tianxiaomo/pytorch-YOLOv4 | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | release or SKU of pytorch |
 | `Tianxiaomo/pytorch-YOLOv4` | https://github.com/Tianxiaomo/pytorch-YOLOv4 | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | repeats signal Tianxiaomo/pytorch-YOLOv4 |
 | `TingsongYu/PyTorch-Tutorial-2nd` | https://github.com/TingsongYu/PyTorch-Tutorial-2nd | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | repeats signal TingsongYu/PyTorch-Tutorial-2nd |
-| `tkarim45/llm-red-teaming-framework` | https://github.com/tkarim45/llm-red-teaming-framework | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm |
 | `toby-bridges/api-relay-audit` | https://github.com/toby-bridges/api-relay-audit | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection` | repeats signal toby-bridges/api-relay-audit |
 | `uber/ADR` | https://github.com/uber/ADR | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal uber/ADR |
 | `uber/ADR` | https://github.com/uber/ADR | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_promptinjection`, `B_safe_aisec`, `B_safe_agentsec` | repeats signal uber/ADR |
@@ -2285,7 +2288,6 @@ this table and the two parked tables above.
 | `ultralytics/yolov3` | https://github.com/ultralytics/yolov3 | 2026-09-07 | `comp_t_onnx`, `edge_t_edgeai`, `B_comp_tensorrt` | repeats signal ultralytics/yolov3 |
 | `ultralytics/yolov3` | https://github.com/ultralytics/yolov3 | 2026-09-07 | `comp_t_onnx`, `edge_t_edgeai`, `B_comp_tensorrt` | repeats signal ultralytics/yolov3 |
 | `ultralytics/yolov5` | https://github.com/ultralytics/yolov5 | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | repeats signal ultralytics/yolov5 |
-| `umitkacar/onnx-tensorrt-optimization` | https://github.com/umitkacar/onnx-tensorrt-optimization | 2026-09-07 | `B_comp_modelopt` | release or SKU of onnx |
 | `usestrix/strix` | https://github.com/usestrix/strix | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_redteam`, `B_safe_aisec` | resolution ledger: excluded_boundary |
 | `usestrix/strix` | https://github.com/usestrix/strix | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_redteam`, `B_safe_aisec` | repeats signal usestrix/strix |
 | `usestrix/strix` | https://github.com/usestrix/strix | 2026-09-07 | `safe_t_llmsecurity`, `safe_t_redteam`, `B_safe_aisec` | repeats signal usestrix/strix |
@@ -2293,69 +2295,37 @@ this table and the two parked tables above.
 | `visual-layer/fastdup` | https://github.com/visual-layer/fastdup | 2026-09-07 | `dpt_t_datacentric`, `B_dpt_augment` | repeats signal visual-layer/fastdup |
 | `vllm-project/llm-compressor` | https://github.com/vllm-project/llm-compressor | 2026-09-07 | `comp_t_quant` | head product llm-compressor |
 | `voxel51/fiftyone` | https://github.com/voxel51/fiftyone | 2026-09-07 | `dpt_t_datacentric`, `dpt_t_dataquality` | repeats signal voxel51/fiftyone |
-| `vstorm-co/pydantic-ai-shields` | https://github.com/vstorm-co/pydantic-ai-shields | 2026-09-07 | `safe_t_moderation` | release or SKU of pydantic-ai |
 | `whylabs/whylogs` | https://github.com/whylabs/whylogs | 2026-09-07 | `dpt_t_dataquality` | head product whylabs |
-| `XianghaoKong/llm-serving-systems-lab` | https://github.com/XianghaoKong/llm-serving-systems-lab | 2026-09-07 | `comp_q_kernel` | release or SKU of llm |
 | `Xilinx/mlir-aie` | https://github.com/Xilinx/mlir-aie | 2026-09-07 | `comp_t_mlir`, `edge_t_npu` | repeats signal Xilinx/mlir-aie |
 | `xlite-dev/lite.ai.toolkit` | https://github.com/xlite-dev/lite.ai.toolkit | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | repeats signal xlite-dev/lite.ai.toolkit |
 | `xLLM-AI/xllm` | https://github.com/xLLM-AI/xllm | 2026-09-07 | `B_comp_engine` | head product xllm |
 | `yusufkaraaslan/Skill_Seekers` | https://github.com/yusufkaraaslan/Skill_Seekers | 2026-09-07 | `B_dpt_ocrpdf` | resolution ledger: excluded_boundary |
-| `ZaxbyHub/opencode-swarm` | https://github.com/ZaxbyHub/opencode-swarm | 2026-09-07 | `safe_t_guardrails` | release or SKU of opencode |
 | `zengxiao-he/tessera` | https://github.com/zengxiao-he/tessera | 2026-09-07 | `comp_t_triton`, `B_comp_engine` | repeats signal zengxiao-he/tessera |
 | `01-ai/Yi-34B` | https://huggingface.co/01-ai/Yi-34B | 2026-09-07 | `hf_textgen_likes` | release or SKU of yi |
-| `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen |
 | `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal 0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF |
 | `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal 0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF |
 | `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal 0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF |
-| `agentionai/Qwen3.8-Flash-Next-AP-GGUF` | https://huggingface.co/agentionai/Qwen3.8-Flash-Next-AP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `agentionai/Qwen3.8-Flash-Next-ROCmFP4-FAST-imatrix-GGUF` | https://huggingface.co/agentionai/Qwen3.8-Flash-Next-ROCmFP4-FAST-imatrix-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `ai-safety-institute/Qwen3.6-27B-gender_secret_female-merged` | https://huggingface.co/ai-safety-institute/Qwen3.6-27B-gender_secret_female-merged | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
 | `airesearch/wangchanberta-base-att-spm-uncased` | https://huggingface.co/airesearch/wangchanberta-base-att-spm-uncased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal airesearch/wangchanberta-base-att-spm-uncased |
 | `albert/albert-base-v2` | https://huggingface.co/albert/albert-base-v2 | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal albert/albert-base-v2 |
-| `alibaba-pai/MiniMax-H3-Acc-LoRAs` | https://huggingface.co/alibaba-pai/MiniMax-H3-Acc-LoRAs | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `allenai/Llama-3.1-Tulu-3-8B-SFT-no-safety-data` | https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B-SFT-no-safety-data | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
 | `allenai/OLMo-2-0425-1B` | https://huggingface.co/allenai/OLMo-2-0425-1B | 2026-09-07 | `hf_textgen_downloads` | release or SKU of olmo |
 | `allenai/Olmo-3-7B-Instruct` | https://huggingface.co/allenai/Olmo-3-7B-Instruct | 2026-09-07 | `hf_instruct_search` | head product olmo-instruct |
 | `almanach/camembert-base` | https://huggingface.co/almanach/camembert-base | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal almanach/camembert-base |
-| `alpindale/Llama-Guard-3-1B` | https://huggingface.co/alpindale/Llama-Guard-3-1B | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
 | `answerdotai/ModernBERT-base` | https://huggingface.co/answerdotai/ModernBERT-base | 2026-09-07 | `hf_all_downloads`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal answerdotai/ModernBERT-base |
 | `answerdotai/ModernBERT-base` | https://huggingface.co/answerdotai/ModernBERT-base | 2026-09-07 | `hf_all_downloads`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal answerdotai/ModernBERT-base |
 | `answerdotai/ModernBERT-large` | https://huggingface.co/answerdotai/ModernBERT-large | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal answerdotai/ModernBERT-large |
-| `antirez/deepseek-v4-gguf` | https://huggingface.co/antirez/deepseek-v4-gguf | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of deepseek |
 | `antirez/deepseek-v4-gguf` | https://huggingface.co/antirez/deepseek-v4-gguf | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal antirez/deepseek-v4-gguf |
 | `apple/OpenELM-1_1B-Instruct` | https://huggingface.co/apple/OpenELM-1_1B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | repeats signal apple/OpenELM-1_1B-Instruct |
-| `argmaxinc/whisperkit-coreml` | https://huggingface.co/argmaxinc/whisperkit-coreml | 2026-09-07 | `hf_all_downloads` | Core ML conversion of the signal openai/whisper-large-v3, not a distinct model (self-dedup) |
-| `AtomicChat/Qwen3.8-Flash-Next-GGUF` | https://huggingface.co/AtomicChat/Qwen3.8-Flash-Next-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `aubmindlab/bert-base-arabertv02` | https://huggingface.co/aubmindlab/bert-base-arabertv02 | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal aubmindlab/bert-base-arabertv02 |
-| `autogluon/chronos-2` | https://huggingface.co/autogluon/chronos-2 | 2026-09-07 | `hf_all_downloads` | mirror of the signal amazon/chronos-2 under a second owner (self-dedup) |
-| `autogluon/chronos-bolt-small` | https://huggingface.co/autogluon/chronos-bolt-small | 2026-09-07 | `hf_all_downloads` | mirror of the signal amazon/chronos-bolt-small under a second owner (self-dedup) |
-| `bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF` | https://huggingface.co/bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of deepseek |
-| `bartowski/Qwen2.5-7B-Instruct-GGUF` | https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `baseten/Llama-3.2-3B-Instruct-pythonic` | https://huggingface.co/baseten/Llama-3.2-3B-Instruct-pythonic | 2026-09-07 | `hf_base_search` | release or SKU of llama |
 | `BreezeBlue/Breeze-TTS-2` | https://huggingface.co/BreezeBlue/Breeze-TTS-2 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal BreezeBlue/Breeze-TTS-2 |
 | `ByteDance-Seed/Seed-OSS-36B-Base` | https://huggingface.co/ByteDance-Seed/Seed-OSS-36B-Base | 2026-09-07 | `hf_base_search` | head product seed-oss |
 | `ByteDance/Ouro-1.4B` | https://huggingface.co/ByteDance/Ouro-1.4B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal ByteDance/Ouro-1.4B |
-| `casperhansen/llama-3-8b-instruct-awq` | https://huggingface.co/casperhansen/llama-3-8b-instruct-awq | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
-| `casperhansen/llama-3.3-70b-instruct-awq` | https://huggingface.co/casperhansen/llama-3.3-70b-instruct-awq | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
 | `chandar-lab/NeoBERT` | https://huggingface.co/chandar-lab/NeoBERT | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal chandar-lab/NeoBERT |
 | `CohereLabs/c4ai-command-r-plus` | https://huggingface.co/CohereLabs/c4ai-command-r-plus | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal CohereLabs/c4ai-command-r-plus |
 | `CohereLabs/c4ai-command-r-v01` | https://huggingface.co/CohereLabs/c4ai-command-r-v01 | 2026-09-07 | `hf_textgen_likes` | head product command-r |
 | `cointegrated/rubert-tiny2` | https://huggingface.co/cointegrated/rubert-tiny2 | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal cointegrated/rubert-tiny2 |
-| `Comfy-Org/MiniMax-H3` | https://huggingface.co/Comfy-Org/MiniMax-H3 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | release or SKU of minimax |
 | `Comfy-Org/MiniMax-H3` | https://huggingface.co/Comfy-Org/MiniMax-H3 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | repeats signal Comfy-Org/MiniMax-H3 |
-| `contemmcm/qwen2.5-vl-3b-bluesky-moderation` | https://huggingface.co/contemmcm/qwen2.5-vl-3b-bluesky-moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen |
-| `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit` | https://huggingface.co/cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of gemma |
-| `cyankiwi/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit` | https://huggingface.co/cyankiwi/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `cyankiwi/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit` | https://huggingface.co/cyankiwi/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `Cyronius/Qwen3.8-Flash-Next-131B-A6B-GGUF` | https://huggingface.co/Cyronius/Qwen3.8-Flash-Next-131B-A6B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF` | https://huggingface.co/DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
-| `DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF` | https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NM-DAU` | https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NM-DAU | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
 | `dccuchile/bert-base-spanish-wwm-uncased` | https://huggingface.co/dccuchile/bert-base-spanish-wwm-uncased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal dccuchile/bert-base-spanish-wwm-uncased |
-| `dealignai/Gemma-4-31B-JANG_4M-CRACK` | https://huggingface.co/dealignai/Gemma-4-31B-JANG_4M-CRACK | 2026-09-07 | `B_hf_conv_likes` | release or SKU of gemma |
-| `dealignai/GLM-5.3-CYBERSECURITY-FP8` | https://huggingface.co/dealignai/GLM-5.3-CYBERSECURITY-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm |
 | `dealignai/GLM-5.3-CYBERSECURITY-FP8` | https://huggingface.co/dealignai/GLM-5.3-CYBERSECURITY-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal dealignai/GLM-5.3-CYBERSECURITY-FP8 |
-| `dealignai/GLM-5.3-UNCENSORED-FP8` | https://huggingface.co/dealignai/GLM-5.3-UNCENSORED-FP8 | 2026-09-07 | `hf_textgen_trending` | release or SKU of glm |
 | `deepseek-ai/deepseek-coder-1.3b-base` | https://huggingface.co/deepseek-ai/deepseek-coder-1.3b-base | 2026-09-07 | `hf_base_search` | release or SKU of deepseek |
 | `deepseek-ai/deepseek-coder-6.7b-base` | https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-base | 2026-09-07 | `hf_base_search` | release or SKU of deepseek |
 | `deepseek-ai/deepseek-coder-6.7b-instruct` | https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of deepseek |
@@ -2401,7 +2371,6 @@ this table and the two parked tables above.
 | `deepseek-ai/DeepSeek-V4-Pro` | https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | head product deepseek |
 | `deepseek-ai/DeepSeek-V4-Pro` | https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal deepseek-ai/DeepSeek-V4-Pro |
 | `deepseek-ai/DeepSeek-V4-Pro` | https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal deepseek-ai/DeepSeek-V4-Pro |
-| `DevQuasar-11/ibm-granite.granite-guardian-3.1-2b-GGUF` | https://huggingface.co/DevQuasar-11/ibm-granite.granite-guardian-3.1-2b-GGUF | 2026-09-07 | `hf_guard_search` | third-party GGUF of head product granite-guardian |
 | `distilbert/distilbert-base-cased` | https://huggingface.co/distilbert/distilbert-base-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal distilbert/distilbert-base-cased |
 | `distilbert/distilbert-base-multilingual-cased` | https://huggingface.co/distilbert/distilbert-base-multilingual-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal distilbert/distilbert-base-multilingual-cased |
 | `distilbert/distilbert-base-uncased` | https://huggingface.co/distilbert/distilbert-base-uncased | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal distilbert/distilbert-base-uncased |
@@ -2413,14 +2382,8 @@ this table and the two parked tables above.
 | `dphn/dolphin-2.5-mixtral-8x7b` | https://huggingface.co/dphn/dolphin-2.5-mixtral-8x7b | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal dphn/dolphin-2.5-mixtral-8x7b |
 | `dphn/dolphin-2.9.1-yi-1.5-34b` | https://huggingface.co/dphn/dolphin-2.9.1-yi-1.5-34b | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal dphn/dolphin-2.9.1-yi-1.5-34b |
 | `dphn/dolphin-2.9.1-yi-1.5-34b` | https://huggingface.co/dphn/dolphin-2.9.1-yi-1.5-34b | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal dphn/dolphin-2.9.1-yi-1.5-34b |
-| `eaddario/Llama-Guard-3-8B-GGUF` | https://huggingface.co/eaddario/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `EleutherAI/pythia-160m` | https://huggingface.co/EleutherAI/pythia-160m | 2026-09-07 | `hf_textgen_downloads` | release or SKU of pythia |
 | `emilyalsentzer/Bio_ClinicalBERT` | https://huggingface.co/emilyalsentzer/Bio_ClinicalBERT | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal emilyalsentzer/Bio_ClinicalBERT |
-| `empero-ai/Qwen3.8-2B-Distill-GGUF` | https://huggingface.co/empero-ai/Qwen3.8-2B-Distill-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `empero-ai/Qwen3.8-9B-Distill` | https://huggingface.co/empero-ai/Qwen3.8-9B-Distill | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `empero-ai/Qwen3.8-9B-Distill-GGUF` | https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF` | https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF |
-| `esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF` | https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `facebook/esm2_t33_650M_UR50D` | https://huggingface.co/facebook/esm2_t33_650M_UR50D | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal facebook/esm2_t33_650M_UR50D |
 | `facebook/opt-125m` | https://huggingface.co/facebook/opt-125m | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads` | repeats signal facebook/opt-125m |
 | `FacebookAI/roberta-base` | https://huggingface.co/FacebookAI/roberta-base | 2026-09-07 | `hf_all_downloads`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal FacebookAI/roberta-base |
@@ -2432,8 +2395,6 @@ this table and the two parked tables above.
 | `FacebookAI/xlm-roberta-large` | https://huggingface.co/FacebookAI/xlm-roberta-large | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal FacebookAI/xlm-roberta-large |
 | `farbodtavakkoli/OTel-2.0-LLM-31B-IT` | https://huggingface.co/farbodtavakkoli/OTel-2.0-LLM-31B-IT | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal farbodtavakkoli/OTel-2.0-LLM-31B-IT |
 | `farbodtavakkoli/OTel-2.0-LLM-31B-IT` | https://huggingface.co/farbodtavakkoli/OTel-2.0-LLM-31B-IT | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal farbodtavakkoli/OTel-2.0-LLM-31B-IT |
-| `froggeric/Qwen-Fixed-Chat-Templates` | https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `GaleneAI/llama-3.1-nemoguard-8b-content-safety-merged-NVFP4` | https://huggingface.co/GaleneAI/llama-3.1-nemoguard-8b-content-safety-merged-NVFP4 | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
 | `google-bert/bert-base-cased` | https://huggingface.co/google-bert/bert-base-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal google-bert/bert-base-cased |
 | `google-bert/bert-base-chinese` | https://huggingface.co/google-bert/bert-base-chinese | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal google-bert/bert-base-chinese |
 | `google-bert/bert-base-german-cased` | https://huggingface.co/google-bert/bert-base-german-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal google-bert/bert-base-german-cased |
@@ -2464,118 +2425,39 @@ this table and the two parked tables above.
 | `google/gemma-7b` | https://huggingface.co/google/gemma-7b | 2026-09-07 | `hf_textgen_likes` | release or SKU of gemma |
 | `google/gemma-7b-it` | https://huggingface.co/google/gemma-7b-it | 2026-09-07 | `hf_textgen_likes` | release or SKU of gemma |
 | `google/muril-base-cased` | https://huggingface.co/google/muril-base-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal google/muril-base-cased |
-| `gravitee-io/Llama-Prompt-Guard-2-22M-onnx` | https://huggingface.co/gravitee-io/Llama-Prompt-Guard-2-22M-onnx | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `gravitee-io/Llama-Prompt-Guard-2-86M-onnx` | https://huggingface.co/gravitee-io/Llama-Prompt-Guard-2-86M-onnx | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `GuardrailsAI/prompt-saturation-attack-detector` | https://huggingface.co/GuardrailsAI/prompt-saturation-attack-detector | 2026-09-07 | `hf_guard_search` | component model published by the org behind head product guardrails-ai; SKU of that product |
-| `HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_dl` | release or SKU of gemma |
-| `HauhauCS/Qwen3.5-35B-A3B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.5-35B-A3B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
-| `HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
-| `HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_dl`, `B_hf_conv_likes` | release or SKU of qwen |
 | `HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive |
-| `HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF` | https://huggingface.co/HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen |
 | `HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF` | https://huggingface.co/HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | repeats signal HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF |
-| `helloworldzzr/Qwen3-VL-2B-Video-Moderation-LoRA` | https://huggingface.co/helloworldzzr/Qwen3-VL-2B-Video-Moderation-LoRA | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen |
 | `hfl/chinese-bert-wwm` | https://huggingface.co/hfl/chinese-bert-wwm | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal hfl/chinese-bert-wwm |
 | `hfl/chinese-macbert-large` | https://huggingface.co/hfl/chinese-macbert-large | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal hfl/chinese-macbert-large |
-| `HoangCuongNguyen/gemma-2-9b-safety-ra-sft` | https://huggingface.co/HoangCuongNguyen/gemma-2-9b-safety-ra-sft | 2026-09-07 | `hf_safety_search` | release or SKU of gemma |
-| `HoangCuongNguyen/gemma-2-9b-safetysft` | https://huggingface.co/HoangCuongNguyen/gemma-2-9b-safetysft | 2026-09-07 | `hf_safety_search` | release or SKU of gemma |
-| `HoangCuongNguyen/qwen3-8b-safety-ra-sft` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safety-ra-sft | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `HoangCuongNguyen/qwen3-8b-safetyorpo` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safetyorpo | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `HoangCuongNguyen/qwen3-8b-safetysft` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safetysft | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
 | `HooshvareLab/bert-base-parsbert-uncased` | https://huggingface.co/HooshvareLab/bert-base-parsbert-uncased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal HooshvareLab/bert-base-parsbert-uncased |
-| `HuggingFaceH4/zephyr-7b-alpha` | https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha | 2026-09-07 | `hf_textgen_likes` | release or SKU of zephyr |
 | `HuggingFaceH4/zephyr-7b-beta` | https://huggingface.co/HuggingFaceH4/zephyr-7b-beta | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | head product zephyr |
 | `HuggingFaceH4/zephyr-7b-beta` | https://huggingface.co/HuggingFaceH4/zephyr-7b-beta | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal HuggingFaceH4/zephyr-7b-beta |
-| `HuggingFaceTB/SmolLM2-1.7B-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm |
-| `HuggingFaceTB/SmolLM2-135M` | https://huggingface.co/HuggingFaceTB/SmolLM2-135M | 2026-09-07 | `hf_textgen_downloads` | release or SKU of smollm |
-| `HuggingFaceTB/SmolLM2-135M-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | release or SKU of smollm |
 | `HuggingFaceTB/SmolLM2-135M-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | repeats signal HuggingFaceTB/SmolLM2-135M-Instruct |
-| `HuggingFaceTB/SmolLM2-360M-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm |
 | `HuggingFaceTB/SmolLM3-3B` | https://huggingface.co/HuggingFaceTB/SmolLM3-3B | 2026-09-07 | `hf_textgen_trending` | head product smollm |
-| `HuggingFaceTB/SmolLM3-3B-Base` | https://huggingface.co/HuggingFaceTB/SmolLM3-3B-Base | 2026-09-07 | `hf_base_search` | release or SKU of smollm |
-| `huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF` | https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | abliterated GGUF redistribution of the signal Qwen/Qwen3.8-27B, which folds onto head product qwen |
 | `huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF` | https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | repeats signal huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF |
-| `humarin/chatgpt_paraphraser_on_T5_base` | https://huggingface.co/humarin/chatgpt_paraphraser_on_T5_base | 2026-09-07 | `hf_base_search` | release or SKU of chatgpt |
-| `ibm-granite/granite-3.0-1b-a400m-base` | https://huggingface.co/ibm-granite/granite-3.0-1b-a400m-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-3.0-8b-base` | https://huggingface.co/ibm-granite/granite-3.0-8b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-3.1-1b-a400m-base` | https://huggingface.co/ibm-granite/granite-3.1-1b-a400m-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-3b-code-base-2k` | https://huggingface.co/ibm-granite/granite-3b-code-base-2k | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-4.0-1b-base` | https://huggingface.co/ibm-granite/granite-4.0-1b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-4.1-3b-base` | https://huggingface.co/ibm-granite/granite-4.1-3b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-4.1-8b-base` | https://huggingface.co/ibm-granite/granite-4.1-8b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite |
-| `ibm-granite/granite-4.2-30b` | https://huggingface.co/ibm-granite/granite-4.2-30b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite |
-| `ibm-granite/granite-4.2-3b` | https://huggingface.co/ibm-granite/granite-4.2-3b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite |
-| `ibm-granite/granite-4.2-8b` | https://huggingface.co/ibm-granite/granite-4.2-8b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite |
-| `ibm-granite/granite-docling-258M` | https://huggingface.co/ibm-granite/granite-docling-258M | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of granite |
 | `ibm-granite/granite-docling-258M` | https://huggingface.co/ibm-granite/granite-docling-258M | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal ibm-granite/granite-docling-258M |
-| `ibm-granite/granite-embedding-small-english-r2` | https://huggingface.co/ibm-granite/granite-embedding-small-english-r2 | 2026-09-07 | `hf_all_downloads` | release or SKU of granite |
-| `ibm-granite/granite-guardian-3.0-2b` | https://huggingface.co/ibm-granite/granite-guardian-3.0-2b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.0-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.0-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.1-2b` | https://huggingface.co/ibm-granite/granite-guardian-3.1-2b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.1-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.1-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.2-3b-a800m` | https://huggingface.co/ibm-granite/granite-guardian-3.2-3b-a800m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
 | `ibm-granite/granite-guardian-3.2-5b` | https://huggingface.co/ibm-granite/granite-guardian-3.2-5b | 2026-09-07 | `hf_guard_search` | head product granite-guardian |
-| `ibm-granite/granite-guardian-3.2-8b-factuality-detection` | https://huggingface.co/ibm-granite/granite-guardian-3.2-8b-factuality-detection | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.3-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.3-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-3.3-8b-GGUF` | https://huggingface.co/ibm-granite/granite-guardian-3.3-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-4.1-8b` | https://huggingface.co/ibm-granite/granite-guardian-4.1-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-4.1-8b-GGUF` | https://huggingface.co/ibm-granite/granite-guardian-4.1-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-hap-125m` | https://huggingface.co/ibm-granite/granite-guardian-hap-125m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `ibm-granite/granite-guardian-hap-38m` | https://huggingface.co/ibm-granite/granite-guardian-hap-38m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `IFM/K2-Horizon-0.9B` | https://huggingface.co/IFM/K2-Horizon-0.9B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 |
 | `IFM/K2-Horizon-0.9B` | https://huggingface.co/IFM/K2-Horizon-0.9B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal IFM/K2-Horizon-0.9B |
-| `IFM/K2-Horizon-3.7B` | https://huggingface.co/IFM/K2-Horizon-3.7B | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 |
-| `IFM/K2-Horizon-3.7B-GGUF` | https://huggingface.co/IFM/K2-Horizon-3.7B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 |
-| `IFM/K2-Horizon-32B` | https://huggingface.co/IFM/K2-Horizon-32B | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 |
-| `IFM/K2-Horizon-375B-A23B` | https://huggingface.co/IFM/K2-Horizon-375B-A23B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 |
 | `IFM/K2-Horizon-375B-A23B` | https://huggingface.co/IFM/K2-Horizon-375B-A23B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal IFM/K2-Horizon-375B-A23B |
-| `IFM/K2-Horizon-7B` | https://huggingface.co/IFM/K2-Horizon-7B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 |
 | `IFM/K2-Horizon-7B` | https://huggingface.co/IFM/K2-Horizon-7B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal IFM/K2-Horizon-7B |
-| `IFM/K2-Horizon-7B-GGUF` | https://huggingface.co/IFM/K2-Horizon-7B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 |
-| `IFM/K2-Horizon-7B-Uno` | https://huggingface.co/IFM/K2-Horizon-7B-Uno | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 |
-| `IFM/K2-Horizon-MoVA-36B-A4B` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 |
 | `IFM/K2-Horizon-MoVA-36B-A4B` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal IFM/K2-Horizon-MoVA-36B-A4B |
-| `IFM/K2-Horizon-MoVA-36B-A4B-GGUF` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 |
 | `IFM/K2-Horizon-MoVA-36B-A4B-GGUF` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal IFM/K2-Horizon-MoVA-36B-A4B-GGUF |
 | `inclusionAI/Ling-3.0-flash-Fin` | https://huggingface.co/inclusionAI/Ling-3.0-flash-Fin | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal inclusionAI/Ling-3.0-flash-Fin |
 | `inclusionAI/Ling-3.0-tiny` | https://huggingface.co/inclusionAI/Ling-3.0-tiny | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal inclusionAI/Ling-3.0-tiny |
-| `incoai/GLM-5.3-Flash-DFlash2` | https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of glm |
-| `incoai/Qwen3.8-27B-DFlash2` | https://huggingface.co/incoai/Qwen3.8-27B-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `internlm/internlm2-base-20b` | https://huggingface.co/internlm/internlm2-base-20b | 2026-09-07 | `hf_base_search` | release or SKU of internlm |
 | `internlm/internlm2-base-7b` | https://huggingface.co/internlm/internlm2-base-7b | 2026-09-07 | `hf_base_search` | release or SKU of internlm |
-| `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | https://huggingface.co/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `Jab1718/qwen3.8-flash-coder-85gb-bf16` | https://huggingface.co/Jab1718/qwen3.8-flash-coder-85gb-bf16 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `jackaduma/SecBERT` | https://huggingface.co/jackaduma/SecBERT | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal jackaduma/SecBERT |
-| `Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled` | https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
 | `Jackrong/Qwopus3.8-27B-Flash-GGUF` | https://huggingface.co/Jackrong/Qwopus3.8-27B-Flash-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal Jackrong/Qwopus3.8-27B-Flash-GGUF |
-| `janhq/Jan-v3-4B-base-instruct-gguf` | https://huggingface.co/janhq/Jan-v3-4B-base-instruct-gguf | 2026-09-07 | `hf_base_search` | release or SKU of jan |
 | `jhu-clsp/mmBERT-base` | https://huggingface.co/jhu-clsp/mmBERT-base | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal jhu-clsp/mmBERT-base |
 | `jinaai/jina-embeddings-v2-base-code` | https://huggingface.co/jinaai/jina-embeddings-v2-base-code | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal jinaai/jina-embeddings-v2-base-code |
-| `JonathanColetti/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen |
 | `JonathanColetti/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal JonathanColetti/Qwen3.8-27B-Uncensored-GGUF |
 | `JonathanColetti/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal JonathanColetti/Qwen3.8-27B-Uncensored-GGUF |
 | `JonathanColetti/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal JonathanColetti/Qwen3.8-27B-Uncensored-GGUF |
-| `Kijai/MiniMax-H3-experimental` | https://huggingface.co/Kijai/MiniMax-H3-experimental | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `kmseong/llama2_7b-chat-Safety-FT-lr5e-5` | https://huggingface.co/kmseong/llama2_7b-chat-Safety-FT-lr5e-5 | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
-| `LaaP-ai/qwen-base-invoicev1.01-1.5B` | https://huggingface.co/LaaP-ai/qwen-base-invoicev1.01-1.5B | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
 | `law-ai/InLegalBERT` | https://huggingface.co/law-ai/InLegalBERT | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal law-ai/InLegalBERT |
-| `legraphista/glm-4-9b-chat-IMat-GGUF` | https://huggingface.co/legraphista/glm-4-9b-chat-IMat-GGUF | 2026-09-07 | `hf_textgen_downloads` | release or SKU of glm |
-| `legraphista/Llama-Guard-3-8B-IMat-GGUF` | https://huggingface.co/legraphista/Llama-Guard-3-8B-IMat-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `lightx2v/Minimax-h3-Turbo` | https://huggingface.co/lightx2v/Minimax-h3-Turbo | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
 | `LiquidAI/LFM2.5-2.6B-GGUF` | https://huggingface.co/LiquidAI/LFM2.5-2.6B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending` | distribution-format redistribution of the signal LiquidAI/LFM2.5-2.6B: same owner login, name is that name plus `-GGUF`, and the repo declares tag `gguf`. Folded onto the shorter name (the base-weights repo), which is the representative of the pair |
 | `LiquidAI/LFM2.5-2.6B-GGUF` | https://huggingface.co/LiquidAI/LFM2.5-2.6B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending` | repeats signal LiquidAI/LFM2.5-2.6B-GGUF |
-| `lmstudio-community/Qwen3.8-27B-GGUF` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-GGUF | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `lmstudio-community/Qwen3.8-27B-MLX-4bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-4bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `lmstudio-community/Qwen3.8-27B-MLX-5bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-5bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `lmstudio-community/Qwen3.8-27B-MLX-6bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-6bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `lmstudio-community/Qwen3.8-27B-MLX-8bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-8bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `macadeliccc/gemma-2b-openai-content-moderation` | https://huggingface.co/macadeliccc/gemma-2b-openai-content-moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of gemma |
 | `marin-community/marin-8b-base` | https://huggingface.co/marin-community/marin-8b-base | 2026-09-07 | `hf_base_search` | head product marin |
-| `MATLOWAI/minimax-h3-fused-turbo-int8-convrot` | https://huggingface.co/MATLOWAI/minimax-h3-fused-turbo-int8-convrot | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
 | `mattshumer/Reflection-Llama-3.1-70B` | https://huggingface.co/mattshumer/Reflection-Llama-3.1-70B | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal mattshumer/Reflection-Llama-3.1-70B |
-| `MaziyarPanahi/Qwen3-4B-Instruct-2507-GGUF` | https://huggingface.co/MaziyarPanahi/Qwen3-4B-Instruct-2507-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `MergeBench/Llama-3.2-3B_safety` | https://huggingface.co/MergeBench/Llama-3.2-3B_safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
-| `Merlin-Research/Qwen3.5-4B-Safety-Thinking` | https://huggingface.co/Merlin-Research/Qwen3.5-4B-Safety-Thinking | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
 | `meta-llama/Llama-2-13b-chat-hf` | https://huggingface.co/meta-llama/Llama-2-13b-chat-hf | 2026-09-07 | `hf_textgen_likes` | release or SKU of llama |
 | `meta-llama/Llama-2-70b-chat-hf` | https://huggingface.co/meta-llama/Llama-2-70b-chat-hf | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of llama |
 | `meta-llama/Llama-2-70b-chat-hf` | https://huggingface.co/meta-llama/Llama-2-70b-chat-hf | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal meta-llama/Llama-2-70b-chat-hf |
@@ -2620,15 +2502,12 @@ this table and the two parked tables above.
 | `meta-llama/Llama-Prompt-Guard-2-22M` | https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-22M | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
 | `meta-llama/Llama-Prompt-Guard-2-86M` | https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M | 2026-09-07 | `hf_guard_search` | head product llama-prompt-guard |
 | `meta-llama/Meta-Llama-3-70B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal meta-llama/Meta-Llama-3-70B-Instruct |
-| `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | SKU of head product llama-instruct (llama-* family) |
 | `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal meta-llama/Meta-Llama-3-8B-Instruct |
 | `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal meta-llama/Meta-Llama-3-8B-Instruct |
 | `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal meta-llama/Meta-Llama-3-8B-Instruct |
 | `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal meta-llama/Meta-Llama-3-8B-Instruct |
-| `meta-llama/Prompt-Guard-86M` | https://huggingface.co/meta-llama/Prompt-Guard-86M | 2026-09-07 | `hf_all_downloads`, `hf_guard_search` | release of head product llama-prompt-guard |
 | `meta-llama/Prompt-Guard-86M` | https://huggingface.co/meta-llama/Prompt-Guard-86M | 2026-09-07 | `hf_all_downloads`, `hf_guard_search` | repeats signal meta-llama/Prompt-Guard-86M |
 | `meta-models/Muse-Glimmer-30B` | https://huggingface.co/meta-models/Muse-Glimmer-30B | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal meta-models/Muse-Glimmer-30B |
-| `Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw` | https://huggingface.co/Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of qwen |
 | `Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw` | https://huggingface.co/Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw |
 | `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract` | https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract |
 | `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext` | https://huggingface.co/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext |
@@ -2676,8 +2555,6 @@ this table and the two parked tables above.
 | `mistralai/Mistral-7B-Instruct-v0.2` | https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal mistralai/Mistral-7B-Instruct-v0.2 |
 | `mistralai/Mistral-7B-Instruct-v0.2` | https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal mistralai/Mistral-7B-Instruct-v0.2 |
 | `mistralai/Mistral-7B-Instruct-v0.2` | https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_instruct_search`, `B_hf_conv_likes` | repeats signal mistralai/Mistral-7B-Instruct-v0.2 |
-| `mlx-community/Llama-3.1-8B-Instruct-4bit` | https://huggingface.co/mlx-community/Llama-3.1-8B-Instruct-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
-| `mlx-community/Qwen2.5-Coder-7B-Instruct-4bit` | https://huggingface.co/mlx-community/Qwen2.5-Coder-7B-Instruct-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
 | `moonshotai/Kimi-K2-Base` | https://huggingface.co/moonshotai/Kimi-K2-Base | 2026-09-07 | `hf_base_search` | release or SKU of kimi |
 | `moonshotai/Kimi-K2-Instruct` | https://huggingface.co/moonshotai/Kimi-K2-Instruct | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of kimi |
 | `moonshotai/Kimi-K2-Instruct` | https://huggingface.co/moonshotai/Kimi-K2-Instruct | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal moonshotai/Kimi-K2-Instruct |
@@ -2690,58 +2567,15 @@ this table and the two parked tables above.
 | `moonshotai/Kimi-K3` | https://huggingface.co/moonshotai/Kimi-K3 | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal moonshotai/Kimi-K3 |
 | `moonshotai/Kimi-K3` | https://huggingface.co/moonshotai/Kimi-K3 | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal moonshotai/Kimi-K3 |
 | `moonshotai/Kimi-Linear-48B-A3B-Instruct` | https://huggingface.co/moonshotai/Kimi-Linear-48B-A3B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of kimi |
-| `mradermacher/ernie-4.5-0.3b-aegis-safety-lora-GGUF` | https://huggingface.co/mradermacher/ernie-4.5-0.3b-aegis-safety-lora-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of ernie |
-| `mradermacher/gemma-4-12B-it-Guardpoint-GGUF` | https://huggingface.co/mradermacher/gemma-4-12B-it-Guardpoint-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma |
-| `mradermacher/gemma-4-12B-it-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gemma-4-12B-it-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma |
-| `mradermacher/gemma-4-31B-it-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gemma-4-31B-it-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma |
-| `mradermacher/Gemma-SEA-Guard-12B-2602-i1-GGUF` | https://huggingface.co/mradermacher/Gemma-SEA-Guard-12B-2602-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma |
-| `mradermacher/gpt-oss-20b-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gpt-oss-20b-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gpt-oss |
-| `mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-GGUF` | https://huggingface.co/mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of granite |
-| `mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-i1-GGUF` | https://huggingface.co/mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of granite |
-| `mradermacher/granite-guardian-3.1-8b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.1-8b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `mradermacher/granite-guardian-3.2-5b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.2-5b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `mradermacher/granite-guardian-3.3-8b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.3-8b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `mradermacher/Llama-3.1-Nemotron-Safety-Guard-8B-v3-GGUF` | https://huggingface.co/mradermacher/Llama-3.1-Nemotron-Safety-Guard-8B-v3-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
-| `mradermacher/Llama-3.1-Tulu-3-8B-SFT-no-safety-data-i1-GGUF` | https://huggingface.co/mradermacher/Llama-3.1-Tulu-3-8B-SFT-no-safety-data-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
-| `mradermacher/Llama-Guard-3-8B-GGUF` | https://huggingface.co/mradermacher/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `mradermacher/Llama-Guard-3-8B-i1-GGUF` | https://huggingface.co/mradermacher/Llama-Guard-3-8B-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `mradermacher/Nemotron-3-Content-Safety-GGUF` | https://huggingface.co/mradermacher/Nemotron-3-Content-Safety-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron |
-| `mradermacher/Nemotron-3.5-Content-Safety-GGUF` | https://huggingface.co/mradermacher/Nemotron-3.5-Content-Safety-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron |
-| `mradermacher/Qwen3-14B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-14B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen |
-| `mradermacher/Qwen3-32B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-32B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen |
-| `mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-GGUF` | https://huggingface.co/mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `mradermacher/Qwen3.5-27B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-27B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen |
-| `mradermacher/Qwen3.5-4B-Safety-Thinking-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-4B-Safety-Thinking-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `mradermacher/Qwen3.5-4B-Safety-Thinking-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-4B-Safety-Thinking-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `mrutkows/granite-guardian-4.1-8b-GGUF` | https://huggingface.co/mrutkows/granite-guardian-4.1-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `Mungert/granite-guardian-3.2-3b-a800m-GGUF` | https://huggingface.co/Mungert/granite-guardian-3.2-3b-a800m-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
-| `Mungert/granite-guardian-3.2-5b-GGUF` | https://huggingface.co/Mungert/granite-guardian-3.2-5b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian |
 | `Nanbeige/Nanbeige4.2-3B` | https://huggingface.co/Nanbeige/Nanbeige4.2-3B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal Nanbeige/Nanbeige4.2-3B |
-| `NeelRajani/Qwen3-0.6B-Base_SFT-safety100_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety100_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `NeelRajani/Qwen3-0.6B-Base_SFT-safety25_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety25_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `NeelRajani/Qwen3-0.6B-Base_SFT-safety50_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety50_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `NeelRajani/Qwen3-0.6B-Base_SFT-safety75_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety75_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `NeelRajani/Qwen3-0.6B-Base_SFT_safety_v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT_safety_v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
 | `neuralmind/bert-base-portuguese-cased` | https://huggingface.co/neuralmind/bert-base-portuguese-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal neuralmind/bert-base-portuguese-cased |
 | `neuralmind/bert-large-portuguese-cased` | https://huggingface.co/neuralmind/bert-large-portuguese-cased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal neuralmind/bert-large-portuguese-cased |
-| `nghuyong/ernie-3.0-base-zh` | https://huggingface.co/nghuyong/ernie-3.0-base-zh | 2026-09-07 | `B_hf_fillmask_likes` | release or SKU of ernie |
 | `nlpaueb/legal-bert-base-uncased` | https://huggingface.co/nlpaueb/legal-bert-base-uncased | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal nlpaueb/legal-bert-base-uncased |
-| `nm-testing/SmolLM-1.7B-Instruct-quantized.w4a16` | https://huggingface.co/nm-testing/SmolLM-1.7B-Instruct-quantized.w4a16 | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm |
-| `nooruiit-864/qwen2.5-1.5b-base-ai-safety-domain-lora` | https://huggingface.co/nooruiit-864/qwen2.5-1.5b-base-ai-safety-domain-lora | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `Null-Guard/Qwen3-0.6B-Uncensored-GGUF` | https://huggingface.co/Null-Guard/Qwen3-0.6B-Uncensored-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen |
-| `Null-Guard/Qwen3.5-0.8B-Uncensored-GGUF` | https://huggingface.co/Null-Guard/Qwen3.5-0.8B-Uncensored-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen |
 | `nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0` | https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0 | 2026-09-07 | `hf_safety_search` | head product aegis-guard |
-| `nvidia/DeepSeek-V4-Flash-0731-NVFP4` | https://huggingface.co/nvidia/DeepSeek-V4-Flash-0731-NVFP4 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of deepseek |
 | `nvidia/DeepSeek-V4-Flash-0731-NVFP4` | https://huggingface.co/nvidia/DeepSeek-V4-Flash-0731-NVFP4 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal nvidia/DeepSeek-V4-Flash-0731-NVFP4 |
-| `nvidia/Gemma-4-26B-A4B-NVFP4` | https://huggingface.co/nvidia/Gemma-4-26B-A4B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of gemma |
 | `nvidia/Gemma-4-26B-A4B-NVFP4` | https://huggingface.co/nvidia/Gemma-4-26B-A4B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal nvidia/Gemma-4-26B-A4B-NVFP4 |
-| `nvidia/Gemma-4-31B-IT-NVFP4` | https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of gemma |
 | `nvidia/Gemma-4-31B-IT-NVFP4` | https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal nvidia/Gemma-4-31B-IT-NVFP4 |
-| `nvidia/llama-3.1-nemoguard-8b-content-safety` | https://huggingface.co/nvidia/llama-3.1-nemoguard-8b-content-safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
-| `nvidia/Llama-3.1-Nemotron-70B-Instruct-HF` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-70B-Instruct-HF | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of llama |
 | `nvidia/Llama-3.1-Nemotron-70B-Instruct-HF` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-70B-Instruct-HF | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal nvidia/Llama-3.1-Nemotron-70B-Instruct-HF |
-| `nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3 | 2026-09-07 | `hf_guard_search`, `hf_safety_search` | release or SKU of llama |
 | `nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3 | 2026-09-07 | `hf_guard_search`, `hf_safety_search` | repeats signal nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3 |
 | `nvidia/Nemotron-3-Content-Safety` | https://huggingface.co/nvidia/Nemotron-3-Content-Safety | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron |
 | `nvidia/Nemotron-3.5-Content-Safety` | https://huggingface.co/nvidia/Nemotron-3.5-Content-Safety | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron |
@@ -2749,22 +2583,14 @@ this table and the two parked tables above.
 | `nvidia/Nemotron-H-56B-Base-8K` | https://huggingface.co/nvidia/Nemotron-H-56B-Base-8K | 2026-09-07 | `hf_base_search` | release or SKU of nemotron |
 | `nvidia/Nemotron-H-8B-Base-8K` | https://huggingface.co/nvidia/Nemotron-H-8B-Base-8K | 2026-09-07 | `hf_base_search` | release or SKU of nemotron |
 | `nvidia/Nemotron-Labs-Diffusion-8B-Base` | https://huggingface.co/nvidia/Nemotron-Labs-Diffusion-8B-Base | 2026-09-07 | `hf_base_search` | release or SKU of nemotron |
-| `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | SKU of head product nemotron |
 | `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 |
 | `nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16 | 2026-09-07 | `hf_textgen_downloads` | head product nemotron |
-| `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending` | SKU of head product nemotron |
 | `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending` | repeats signal nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 |
-| `nvidia/Qwen3.5-122B-A10B-NVFP4` | https://huggingface.co/nvidia/Qwen3.5-122B-A10B-NVFP4 | 2026-09-07 | `hf_textgen_downloads` | release or SKU of qwen |
-| `nvidia/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | release or SKU of qwen |
 | `nvidia/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal nvidia/Qwen3.6-35B-A3B-NVFP4 |
 | `nvidia/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal nvidia/Qwen3.6-35B-A3B-NVFP4 |
-| `nvidia/Qwen3.8-Flash-Next-NVFP4` | https://huggingface.co/nvidia/Qwen3.8-Flash-Next-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `OBLITERATUS/Ornith-1.5-9B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Ornith-1.5-9B-OBLITERATED | 2026-09-07 | `hf_textgen_trending` | release or SKU of ornith |
-| `OBLITERATUS/Qwen3.8-27B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_trending` | release or SKU of qwen |
 | `OBLITERATUS/Qwen3.8-27B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_trending` | repeats signal OBLITERATUS/Qwen3.8-27B-OBLITERATED |
 | `OBLITERATUS/Qwen3.8-27B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_trending` | repeats signal OBLITERATUS/Qwen3.8-27B-OBLITERATED |
 | `OBLITERATUS/Qwen3.8-27B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_trending` | repeats signal OBLITERATUS/Qwen3.8-27B-OBLITERATED |
-| `oneonlee/llama-3.1-nemoguard-8b-content-safety-merged` | https://huggingface.co/oneonlee/llama-3.1-nemoguard-8b-content-safety-merged | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
 | `openai-community/gpt2` | https://huggingface.co/openai-community/gpt2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `hf_all_trending` | repeats signal openai-community/gpt2 |
 | `openai-community/gpt2` | https://huggingface.co/openai-community/gpt2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `hf_all_trending` | repeats signal openai-community/gpt2 |
 | `openai-community/gpt2` | https://huggingface.co/openai-community/gpt2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `hf_all_trending` | repeats signal openai-community/gpt2 |
@@ -2782,58 +2608,28 @@ this table and the two parked tables above.
 | `openai/gpt-oss-20b` | https://huggingface.co/openai/gpt-oss-20b | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal openai/gpt-oss-20b |
 | `openai/gpt-oss-20b` | https://huggingface.co/openai/gpt-oss-20b | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal openai/gpt-oss-20b |
 | `openai/gpt-oss-20b` | https://huggingface.co/openai/gpt-oss-20b | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_downloads`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal openai/gpt-oss-20b |
-| `openbmb/MiniCPM-Llama3-V-2_5` | https://huggingface.co/openbmb/MiniCPM-Llama3-V-2_5 | 2026-09-07 | `B_hf_conv_likes` | release or SKU of minicpm |
 | `openbmb/MiniCPM5-1B` | https://huggingface.co/openbmb/MiniCPM5-1B | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending` | head product minicpm |
 | `openbmb/MiniCPM5-1B` | https://huggingface.co/openbmb/MiniCPM5-1B | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending` | repeats signal openbmb/MiniCPM5-1B |
-| `openbmb/MiniCPM5-1B-Base` | https://huggingface.co/openbmb/MiniCPM5-1B-Base | 2026-09-07 | `hf_base_search` | release or SKU of minicpm |
-| `orcarouter/DeepSeek-V4-Flash-Vision-Uncensored` | https://huggingface.co/orcarouter/DeepSeek-V4-Flash-Vision-Uncensored | 2026-09-07 | `hf_textgen_trending` | release or SKU of deepseek |
-| `orcarouter/DeepSeek-V4-Flash-Vision-Uncensored-GGUF` | https://huggingface.co/orcarouter/DeepSeek-V4-Flash-Vision-Uncensored-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of deepseek |
-| `orcarouter/GLM-5.3-Flash-Uncensored-FP8` | https://huggingface.co/orcarouter/GLM-5.3-Flash-Uncensored-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm |
 | `orcarouter/GLM-5.3-Flash-Uncensored-FP8` | https://huggingface.co/orcarouter/GLM-5.3-Flash-Uncensored-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal orcarouter/GLM-5.3-Flash-Uncensored-FP8 |
-| `orcarouter/GLM-5.3-Flash-Uncensored-NVFP4` | https://huggingface.co/orcarouter/GLM-5.3-Flash-Uncensored-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of glm |
-| `orcarouter/Qwen3.8-27B-Uncensored` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `orcarouter/Qwen3.8-27B-Uncensored-FP8` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-FP8 | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | release or SKU of qwen |
 | `orcarouter/Qwen3.8-27B-Uncensored-FP8` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-FP8 | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal orcarouter/Qwen3.8-27B-Uncensored-FP8 |
-| `orcarouter/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `orcarouter/Qwen3.8-27B-Uncensored-MLX` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-MLX | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | release or SKU of qwen |
 | `orcarouter/Qwen3.8-27B-Uncensored-MLX` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-MLX | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal orcarouter/Qwen3.8-27B-Uncensored-MLX |
-| `orcarouter/Qwen3.8-Flash-Next-Uncensored-GGUF` | https://huggingface.co/orcarouter/Qwen3.8-Flash-Next-Uncensored-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `Orion-zhen/Qwen2.5-Coder-7B-Instruct-AWQ` | https://huggingface.co/Orion-zhen/Qwen2.5-Coder-7B-Instruct-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `ornith-ai/Ornith-1.0-35B` | https://huggingface.co/ornith-ai/Ornith-1.0-35B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.0-35B` | https://huggingface.co/ornith-ai/Ornith-1.0-35B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.0-35B |
-| `ornith-ai/Ornith-1.0-35B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-35B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.0-35B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-35B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.0-35B-GGUF |
-| `ornith-ai/Ornith-1.0-9B` | https://huggingface.co/ornith-ai/Ornith-1.0-9B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.0-9B` | https://huggingface.co/ornith-ai/Ornith-1.0-9B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.0-9B |
-| `ornith-ai/Ornith-1.0-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.0-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.0-9B-GGUF |
 | `ornith-ai/Ornith-1.0-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.0-9B-GGUF |
-| `ornith-ai/Ornith-1.5-35B-A3B` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.5-35B-A3B` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal ornith-ai/Ornith-1.5-35B-A3B |
-| `ornith-ai/Ornith-1.5-35B-A3B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.5-35B-A3B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.5-35B-A3B-GGUF |
 | `ornith-ai/Ornith-1.5-35B-A3B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.5-35B-A3B-GGUF |
-| `ornith-ai/Ornith-1.5-9B` | https://huggingface.co/ornith-ai/Ornith-1.5-9B | 2026-09-07 | `hf_textgen_trending` | release or SKU of ornith |
-| `ornith-ai/Ornith-1.5-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of ornith |
 | `ornith-ai/Ornith-1.5-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.5-9B-GGUF |
 | `ornith-ai/Ornith-1.5-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.5-9B-GGUF |
 | `ornith-ai/Ornith-1.5-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | repeats signal ornith-ai/Ornith-1.5-9B-GGUF |
-| `outsourc-e/Qwen3.8-27B-Unleashed-GGUF` | https://huggingface.co/outsourc-e/Qwen3.8-27B-Unleashed-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `pipecat-ai/phonellm-alpha-1` | https://huggingface.co/pipecat-ai/phonellm-alpha-1 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal pipecat-ai/phonellm-alpha-1 |
-| `Playtime-AI/Minimax_H3-Sydney_Sweeney` | https://huggingface.co/Playtime-AI/Minimax_H3-Sydney_Sweeney | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `princeton-nlp/Llama-3-8B-ProLong-64k-Base` | https://huggingface.co/princeton-nlp/Llama-3-8B-ProLong-64k-Base | 2026-09-07 | `hf_base_search` | release or SKU of llama |
 | `prism-ml/Ternary-Bonsai-27B-gguf` | https://huggingface.co/prism-ml/Ternary-Bonsai-27B-gguf | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal prism-ml/Ternary-Bonsai-27B-gguf |
 | `prism-ml/Ternary-Bonsai-27B-gguf` | https://huggingface.co/prism-ml/Ternary-Bonsai-27B-gguf | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal prism-ml/Ternary-Bonsai-27B-gguf |
-| `prithivMLmods/MiniMax-H3-Facial-Realism-CloseUp` | https://huggingface.co/prithivMLmods/MiniMax-H3-Facial-Realism-CloseUp | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `project-free-llama/Llama-Prompt-Guard-2-86M` | https://huggingface.co/project-free-llama/Llama-Prompt-Guard-2-86M | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
 | `pyannote/speaker-diarization-3.1` | https://huggingface.co/pyannote/speaker-diarization-3.1 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | repeats signal pyannote/speaker-diarization-3.1 |
 | `pyannote/speaker-diarization-community-1` | https://huggingface.co/pyannote/speaker-diarization-community-1 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | repeats signal pyannote/speaker-diarization-community-1 |
-| `QuantFactory/Llama-Guard-3-1B-GGUF` | https://huggingface.co/QuantFactory/Llama-Guard-3-1B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `QuantFactory/Llama-Guard-3-8B-GGUF` | https://huggingface.co/QuantFactory/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` | https://huggingface.co/QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ` | https://huggingface.co/QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | release or SKU of qwen |
 | `QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ` | https://huggingface.co/QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | repeats signal QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ |
-| `QUASAR-QAT/Qwen3.8-27B-QUASAR-NVFP4` | https://huggingface.co/QUASAR-QAT/Qwen3.8-27B-QUASAR-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
 | `Qwen/Qwen-72B` | https://huggingface.co/Qwen/Qwen-72B | 2026-09-07 | `hf_textgen_downloads` | release or SKU of qwen |
 | `Qwen/Qwen-Drive-1.0-4B` | https://huggingface.co/Qwen/Qwen-Drive-1.0-4B | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
 | `Qwen/Qwen2-0.5B-Instruct` | https://huggingface.co/Qwen/Qwen2-0.5B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
@@ -3019,11 +2815,6 @@ this table and the two parked tables above.
 | `Qwen/Qwen3.8-Flash-Next` | https://huggingface.co/Qwen/Qwen3.8-Flash-Next | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal Qwen/Qwen3.8-Flash-Next |
 | `Qwen/QwQ-32B` | https://huggingface.co/Qwen/QwQ-32B | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal Qwen/QwQ-32B |
 | `Qwen/QwQ-32B-Preview` | https://huggingface.co/Qwen/QwQ-32B-Preview | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal Qwen/QwQ-32B-Preview |
-| `RadixArk/Kimi-K3-DSpark` | https://huggingface.co/RadixArk/Kimi-K3-DSpark | 2026-09-07 | `hf_textgen_downloads` | release or SKU of kimi |
-| `RadixArk/Qwen3.8-27B-NVFP4` | https://huggingface.co/RadixArk/Qwen3.8-27B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `RedHatAI/Llama-3.2-1B-Instruct-FP8-dynamic` | https://huggingface.co/RedHatAI/Llama-3.2-1B-Instruct-FP8-dynamic | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
-| `RedHatAI/Llama-Guard-4-12B-quantized.w4a16` | https://huggingface.co/RedHatAI/Llama-Guard-4-12B-quantized.w4a16 | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `Ryn1998/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/Ryn1998/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `sbintuitions/modernbert-ja-130m` | https://huggingface.co/sbintuitions/modernbert-ja-130m | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal sbintuitions/modernbert-ja-130m |
 | `sentence-transformers/all-MiniLM-L6-v2` | https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | repeats signal sentence-transformers/all-MiniLM-L6-v2 |
 | `sentence-transformers/all-mpnet-base-v2` | https://huggingface.co/sentence-transformers/all-mpnet-base-v2 | 2026-09-07 | `hf_all_downloads`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal sentence-transformers/all-mpnet-base-v2 |
@@ -3033,13 +2824,7 @@ this table and the two parked tables above.
 | `seyonec/ChemBERTa-zinc-base-v1` | https://huggingface.co/seyonec/ChemBERTa-zinc-base-v1 | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal seyonec/ChemBERTa-zinc-base-v1 |
 | `shibing624/macbert4csc-base-chinese` | https://huggingface.co/shibing624/macbert4csc-base-chinese | 2026-09-07 | `hf_base_search`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal shibing624/macbert4csc-base-chinese |
 | `shibing624/macbert4csc-base-chinese` | https://huggingface.co/shibing624/macbert4csc-base-chinese | 2026-09-07 | `hf_base_search`, `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal shibing624/macbert4csc-base-chinese |
-| `smhfacct/Minimax-H3-fl2va-ref2va-hybrid-models` | https://huggingface.co/smhfacct/Minimax-H3-fl2va-ref2va-hybrid-models | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `solidrust/Mistral-7B-Instruct-v0.3-AWQ` | https://huggingface.co/solidrust/Mistral-7B-Instruct-v0.3-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of mistral-7b-instruct |
-| `speach1sdef178/MiniMax-H3-Semantic-Bridge` | https://huggingface.co/speach1sdef178/MiniMax-H3-Semantic-Bridge | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `swiss-ai/Apertus-8B-Instruct-2509` | https://huggingface.co/swiss-ai/Apertus-8B-Instruct-2509 | 2026-09-07 | `hf_instruct_search` | release or SKU of apertus |
 | `tencent/Hy4-preview` | https://huggingface.co/tencent/Hy4-preview | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal tencent/Hy4-preview |
-| `ThakiCloud/Qwen3.8-27B-Human-KO-Safety` | https://huggingface.co/ThakiCloud/Qwen3.8-27B-Human-KO-Safety | 2026-09-07 | `hf_safety_search` | release or SKU of qwen |
-| `theblackcat102/llama-3.2-1b-instruct-allenai_wildguard_safety` | https://huggingface.co/theblackcat102/llama-3.2-1b-instruct-allenai_wildguard_safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama |
 | `thinkingmachines/Inkling` | https://huggingface.co/thinkingmachines/Inkling | 2026-09-07 | `B_hf_conv_likes` | head product inkling |
 | `tiiuae/falcon-180B` | https://huggingface.co/tiiuae/falcon-180B | 2026-09-07 | `hf_textgen_likes` | release or SKU of falcon |
 | `tiiuae/falcon-40b` | https://huggingface.co/tiiuae/falcon-40b | 2026-09-07 | `hf_textgen_likes` | release or SKU of falcon |
@@ -3057,53 +2842,24 @@ this table and the two parked tables above.
 | `trl-internal-testing/tiny-Qwen2ForCausalLM-2.5` | https://huggingface.co/trl-internal-testing/tiny-Qwen2ForCausalLM-2.5 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal trl-internal-testing/tiny-Qwen2ForCausalLM-2.5 |
 | `trl-internal-testing/tiny-Qwen2ForCausalLM-2.5` | https://huggingface.co/trl-internal-testing/tiny-Qwen2ForCausalLM-2.5 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | repeats signal trl-internal-testing/tiny-Qwen2ForCausalLM-2.5 |
 | `trl-internal-testing/tiny-Qwen3ForCausalLM` | https://huggingface.co/trl-internal-testing/tiny-Qwen3ForCausalLM | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | repeats signal trl-internal-testing/tiny-Qwen3ForCausalLM |
-| `unsloth/DeepSeek-R1-GGUF` | https://huggingface.co/unsloth/DeepSeek-R1-GGUF | 2026-09-07 | `hf_textgen_likes` | release or SKU of deepseek |
-| `unsloth/DeepSeek-V4-Flash-Vision-Exp-GGUF` | https://huggingface.co/unsloth/DeepSeek-V4-Flash-Vision-Exp-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of deepseek |
-| `unsloth/GLM-5.3-Flash-GGUF` | https://huggingface.co/unsloth/GLM-5.3-Flash-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm |
 | `unsloth/GLM-5.3-Flash-GGUF` | https://huggingface.co/unsloth/GLM-5.3-Flash-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal unsloth/GLM-5.3-Flash-GGUF |
-| `unsloth/Llama-3.2-1B-Instruct` | https://huggingface.co/unsloth/Llama-3.2-1B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
-| `unsloth/Llama-3.2-3B-Instruct-GGUF` | https://huggingface.co/unsloth/Llama-3.2-3B-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of llama |
-| `unsloth/Qwen2.5-7B-Instruct` | https://huggingface.co/unsloth/Qwen2.5-7B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen |
-| `unsloth/Qwen3-0.6B-Base` | https://huggingface.co/unsloth/Qwen3-0.6B-Base | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
-| `unsloth/Qwen3-1.7B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-1.7B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
-| `unsloth/Qwen3-4B-Base` | https://huggingface.co/unsloth/Qwen3-4B-Base | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
-| `unsloth/Qwen3-4B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-4B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
-| `unsloth/Qwen3-8B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-8B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen |
-| `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | release or SKU of qwen |
 | `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | repeats signal unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF |
 | `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | repeats signal unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF |
 | `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | repeats signal unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF |
 | `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | repeats signal unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF |
-| `unsloth/Qwen3.5-9B-GGUF` | https://huggingface.co/unsloth/Qwen3.5-9B-GGUF | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `unsloth/Qwen3.6-27B-MTP-GGUF` | https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
-| `unsloth/Qwen3.6-27B-NVFP4` | https://huggingface.co/unsloth/Qwen3.6-27B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `unsloth/Qwen3.6-35B-A3B-GGUF` | https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen |
-| `unsloth/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/unsloth/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen |
-| `unsloth/Qwen3.8-27B-GGUF` | https://huggingface.co/unsloth/Qwen3.8-27B-GGUF | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | release or SKU of qwen |
 | `unsloth/Qwen3.8-27B-GGUF` | https://huggingface.co/unsloth/Qwen3.8-27B-GGUF | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal unsloth/Qwen3.8-27B-GGUF |
 | `unsloth/Qwen3.8-27B-GGUF` | https://huggingface.co/unsloth/Qwen3.8-27B-GGUF | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal unsloth/Qwen3.8-27B-GGUF |
 | `unsloth/Qwen3.8-27B-GGUF` | https://huggingface.co/unsloth/Qwen3.8-27B-GGUF | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal unsloth/Qwen3.8-27B-GGUF |
-| `unsloth/Qwen3.8-Flash-Next-GGUF` | https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen |
-| `VerifiedAnon/gemma-moderation-finetune` | https://huggingface.co/VerifiedAnon/gemma-moderation-finetune | 2026-09-07 | `hf_moderation_search` | release or SKU of gemma |
 | `vikhyatk/moondream2` | https://huggingface.co/vikhyatk/moondream2 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes` | repeats signal vikhyatk/moondream2 |
 | `vinai/phobert-base` | https://huggingface.co/vinai/phobert-base | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal vinai/phobert-base |
-| `VitalyProtasov/Nemotron-3.5-Content-Safety-FP8-LLM-Compressor` | https://huggingface.co/VitalyProtasov/Nemotron-3.5-Content-Safety-FP8-LLM-Compressor | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron |
-| `WarmBloodAban/Minimax-h3_Singularity` | https://huggingface.co/WarmBloodAban/Minimax-h3_Singularity | 2026-09-07 | `hf_all_trending` | release or SKU of minimax |
-| `Weni/Llama-Guard-3-8B-AWQ` | https://huggingface.co/Weni/Llama-Guard-3-8B-AWQ | 2026-09-07 | `hf_guard_search` | release or SKU of llama |
-| `wms2537/qwen3-0.6b-malaysia-moderation-cot` | https://huggingface.co/wms2537/qwen3-0.6b-malaysia-moderation-cot | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen |
-| `xai-org/grok-1` | https://huggingface.co/xai-org/grok-1 | 2026-09-07 | `hf_textgen_likes` | release or SKU of grok |
 | `XHToken/Spark-X2.5-1.7B` | https://huggingface.co/XHToken/Spark-X2.5-1.7B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal XHToken/Spark-X2.5-1.7B |
 | `XHToken/Spark-X2.5-4B` | https://huggingface.co/XHToken/Spark-X2.5-4B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal XHToken/Spark-X2.5-4B |
 | `XHToken/Spark-X2.5-4B-GGUF` | https://huggingface.co/XHToken/Spark-X2.5-4B-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | repeats signal XHToken/Spark-X2.5-4B-GGUF |
 | `yikuan8/Clinical-Longformer` | https://huggingface.co/yikuan8/Clinical-Longformer | 2026-09-07 | `B_hf_fillmask_dl`, `B_hf_fillmask_likes` | repeats signal yikuan8/Clinical-Longformer |
-| `yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | release or SKU of gemma |
 | `yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF |
 | `yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF |
-| `yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | release or SKU of gemma |
 | `yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF |
 | `yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | repeats signal yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF |
-| `z-lab/Qwen3.8-27B-DFlash2` | https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `z-lab/Qwen3.8-27B-DFlash2-GGUF` | https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
 | `zai-org/GLM-4.5` | https://huggingface.co/zai-org/GLM-4.5 | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of glm |
 | `zai-org/GLM-4.5` | https://huggingface.co/zai-org/GLM-4.5 | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | repeats signal zai-org/GLM-4.5 |
 | `zai-org/GLM-4.5-Air-Base` | https://huggingface.co/zai-org/GLM-4.5-Air-Base | 2026-09-07 | `hf_base_search` | release or SKU of glm |
@@ -3130,16 +2886,336 @@ this table and the two parked tables above.
 | `zai-org/GLM-5.3-Flash` | https://huggingface.co/zai-org/GLM-5.3-Flash | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | repeats signal zai-org/GLM-5.3-Flash |
 | `zai-org/GLM-OCR` | https://huggingface.co/zai-org/GLM-OCR | 2026-09-07 | `B_hf_conv_dl`, `B_hf_conv_likes` | release or SKU of glm |
 | `zai-org/GLM-OCR` | https://huggingface.co/zai-org/GLM-OCR | 2026-09-07 | `B_hf_conv_dl`, `B_hf_conv_likes` | repeats signal zai-org/GLM-OCR |
-| `zerodigest/Qwen3.8-27B-Uncensored-YMQ-MTP-GGUF` | https://huggingface.co/zerodigest/Qwen3.8-27B-Uncensored-YMQ-MTP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen |
-| `ZiweiLiu96/llama-3.2-3b-Content-Moderation` | https://huggingface.co/ZiweiLiu96/llama-3.2-3b-Content-Moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of llama |
-| `ZiweiLiu96/llama-3.2-3b-Content-Moderation-Q4_K_M-GGUF` | https://huggingface.co/ZiweiLiu96/llama-3.2-3b-Content-Moderation-Q4_K_M-GGUF | 2026-09-07 | `hf_moderation_search` | release or SKU of llama |
 | `www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Ora` | http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-AIpro(20T).html | 2026-09-07 | — | second path tried for the same Orange Pi AIpro signal |
 | `sima.ai/modalix/` | https://sima.ai/modalix/ | 2026-09-07 | — | second path tried for the same SiMa.ai signal |
-| `www.axelera.ai/metis-aipu` | https://www.axelera.ai/metis-aipu | 2026-09-07 | — | head product axelera-metis-aipu |
 | `www.blaize.com/products/blaize-pathfinder-p1600-embedded-som/` | https://www.blaize.com/products/blaize-pathfinder-p1600-embedded-som/ | 2026-09-07 | — | second path tried for the same Blaize signal |
-| `www.hailo.ai/products/ai-accelerators/hailo-10h-m-2-generative-ai-acce` | https://www.hailo.ai/products/ai-accelerators/hailo-10h-m-2-generative-ai-acceleration-module/ | 2026-09-07 | — | head product hailo-10h |
 | `www.orangepi.org/orangepiwiki/index.php/Orange_Pi_AIpro` | https://www.orangepi.org/orangepiwiki/index.php/Orange_Pi_AIpro | 2026-09-07 | — | third path tried for the same Orange Pi AIpro signal |
 | `www.rock-chips.com/a/en/products/RK35_Series/2024/0705/1729.html` | https://www.rock-chips.com/a/en/products/RK35_Series/2024/0705/1729.html | 2026-09-07 | — | second path tried for the same Rockchip RK3576 signal |
+
+## Parked — a withdrawn fold, un-folded from the duplicate table (300)
+
+Every signal the third revision counted as a duplicate on a fold that no declaration in this
+repo supports. Each is now a unique candidate, held for a person with the reason its fold was
+withdrawn, its source URL, its fetch date and the queries that returned it — the same provenance
+a parked candidate carries anywhere else in this sheet.
+
+None of these 300 identifiers is a declared artifact of any head product or registry row, and
+none collides with another row in this table, so each is exactly one unique candidate. None is
+emitted: every one carries the recorded park reason below, which is the acceptance predicate's
+`no_recorded_park_reason` clause — the clause that can only ever remove a candidate. Withdrawing
+a fold therefore never admits a row; it moves a signal from the duplicate side of the
+reconciliation to the unique side and holds it there.
+
+| class | withdrawn because | rows |
+|---|---|---|
+| **N1** | the name carries a family token `sources/model_families.yaml` declares for the target, but the owner login is not a handle declared for any organization owning the target's artifacts, and this pass did not read the repository's own `base_model` metadata. Third-party quantizations, GGUF redistributions, abliterations and fine-tunes. | 181 |
+| **N2** | the owner login *is* a declared handle of the target's organization, but `sources/model_families.yaml` declares no `<target>-*` family, so nothing in the repo bridges the checkpoint name to the head product. | 37 |
+| **N3** | the repository name merely contains the target's slug as a token. Neither a declared family nor a declared handle supports the fold. | 68 |
+| **N4** | the fold rested on the vendor's domain plus a path segment. `docs/reference/identity.md` is explicit that a shared homepage domain must never establish equivalence on its own. | 2 |
+| **N5** | the fold rested on a sentence about what the repository *is* — a conversion, a mirror, a plugin surface, a component model, a SKU — rather than on a declaration, and the identifier is not a declared artifact of the target. | 12 |
+
+| signal | source URL | fetched | returned by | had folded onto | why the fold is withdrawn |
+|---|---|---|---|---|---|
+| `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `0bserverx` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `aaron-xichen/pytorch-playground` | https://github.com/aaron-xichen/pytorch-playground | 2026-09-07 | `comp_t_quant` | release or SKU of pytorch | **N3** — name-match fold onto `pytorch` withdrawn: no `pytorch-*` family declared, and owner `aaron-xichen` is not a declared handle of `pytorch`'s organization |
+| `agentionai/Qwen3.8-Flash-Next-AP-GGUF` | https://huggingface.co/agentionai/Qwen3.8-Flash-Next-AP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `agentionai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `agentionai/Qwen3.8-Flash-Next-ROCmFP4-FAST-imatrix-GGUF` | https://huggingface.co/agentionai/Qwen3.8-Flash-Next-ROCmFP4-FAST-imatrix-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `agentionai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `ahmad-alismail/LLM_based_Synthetic_Data_Generation` | https://github.com/ahmad-alismail/LLM_based_Synthetic_Data_Generation | 2026-09-07 | `dpt_synth` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `ahmad-alismail` is not a declared handle of `llm`'s organization |
+| `ai-safety-institute/Qwen3.6-27B-gender_secret_female-merged` | https://huggingface.co/ai-safety-institute/Qwen3.6-27B-gender_secret_female-merged | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `ai-safety-institute` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `alibaba-pai/MiniMax-H3-Acc-LoRAs` | https://huggingface.co/alibaba-pai/MiniMax-H3-Acc-LoRAs | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `alibaba-pai` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `allenai/Llama-3.1-Tulu-3-8B-SFT-no-safety-data` | https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B-SFT-no-safety-data | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `allenai` is not a handle declared for any organization owning `llama`'s artifacts |
+| `AllisonDing/LLM-data-processing-agentic-skills` | https://github.com/AllisonDing/LLM-data-processing-agentic-skills | 2026-09-07 | `dpt_q_curator` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `AllisonDing` is not a declared handle of `llm`'s organization |
+| `alpindale/Llama-Guard-3-1B` | https://huggingface.co/alpindale/Llama-Guard-3-1B | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `alpindale` is not a handle declared for any organization owning `llama`'s artifacts |
+| `antirez/deepseek-v4-gguf` | https://huggingface.co/antirez/deepseek-v4-gguf | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `antirez` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `ARahim3/mlx-dspark` | https://github.com/ARahim3/mlx-dspark | 2026-09-07 | `B_comp_engine` | release or SKU of mlx | **N3** — name-match fold onto `mlx` withdrawn: no `mlx-*` family declared, and owner `ARahim3` is not a declared handle of `mlx`'s organization |
+| `argmaxinc/whisperkit-coreml` | https://huggingface.co/argmaxinc/whisperkit-coreml | 2026-09-07 | `hf_all_downloads` | Core ML conversion of the signal openai/whisper-large-v3, not a distinct model (self-dedup) | **N5** — stated-reading fold withdrawn: `argmaxinc/whisperkit-coreml` is not a declared artifact of `openai/whisper-large-v3`, and what the repository *is* was read from its description rather than declared anywhere |
+| `arnabroy734/LLM_jailbreak_shield` | https://github.com/arnabroy734/LLM_jailbreak_shield | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `arnabroy734` is not a declared handle of `llm`'s organization |
+| `AtomicChat/Qwen3.8-Flash-Next-GGUF` | https://huggingface.co/AtomicChat/Qwen3.8-Flash-Next-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `AtomicChat` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `autogluon/chronos-2` | https://huggingface.co/autogluon/chronos-2 | 2026-09-07 | `hf_all_downloads` | mirror of the signal amazon/chronos-2 under a second owner (self-dedup) | **N5** — stated-reading fold withdrawn: `autogluon/chronos-2` is not a declared artifact of `amazon/chronos-2`, and what the repository *is* was read from its description rather than declared anywhere |
+| `autogluon/chronos-bolt-small` | https://huggingface.co/autogluon/chronos-bolt-small | 2026-09-07 | `hf_all_downloads` | mirror of the signal amazon/chronos-bolt-small under a second owner (self-dedup) | **N5** — stated-reading fold withdrawn: `autogluon/chronos-bolt-small` is not a declared artifact of `amazon/chronos-bolt-small`, and what the repository *is* was read from its description rather than declared anywhere |
+| `backblaze-b2-samples/nemo-curator-training-data` | https://github.com/backblaze-b2-samples/nemo-curator-training-data | 2026-09-07 | `dpt_q_curator` | release or SKU of nemo-curator | **N3** — name-match fold onto `nemo-curator` withdrawn: no `nemo-curator-*` family declared, and owner `backblaze-b2-samples` is not a declared handle of `nemo-curator`'s organization |
+| `bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF` | https://huggingface.co/bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `bartowski` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `bartowski/Qwen2.5-7B-Instruct-GGUF` | https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `bartowski` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `baseten/Llama-3.2-3B-Instruct-pythonic` | https://huggingface.co/baseten/Llama-3.2-3B-Instruct-pythonic | 2026-09-07 | `hf_base_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `baseten` is not a handle declared for any organization owning `llama`'s artifacts |
+| `buildship-ai/LLM-Web-Crawler` | https://github.com/buildship-ai/LLM-Web-Crawler | 2026-09-07 | `dpt_t_webscraping` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `buildship-ai` is not a declared handle of `llm`'s organization |
+| `casperhansen/llama-3-8b-instruct-awq` | https://huggingface.co/casperhansen/llama-3-8b-instruct-awq | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `casperhansen` is not a handle declared for any organization owning `llama`'s artifacts |
+| `casperhansen/llama-3.3-70b-instruct-awq` | https://huggingface.co/casperhansen/llama-3.3-70b-instruct-awq | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `casperhansen` is not a handle declared for any organization owning `llama`'s artifacts |
+| `chawins/llm-sp` | https://github.com/chawins/llm-sp | 2026-09-07 | `safe_t_llmsecurity` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `chawins` is not a declared handle of `llm`'s organization |
+| `Colin6618/flashinfer-performance-benchmarks` | https://github.com/Colin6618/flashinfer-performance-benchmarks | 2026-09-07 | `comp_q_kernel` | release or SKU of flashinfer | **N3** — name-match fold onto `flashinfer` withdrawn: no `flashinfer-*` family declared, and owner `Colin6618` is not a declared handle of `flashinfer`'s organization |
+| `CollieAi/llm-firewall` | https://github.com/CollieAi/llm-firewall | 2026-09-07 | `safe_t_moderation` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `CollieAi` is not a declared handle of `llm`'s organization |
+| `Comfy-Org/MiniMax-H3` | https://huggingface.co/Comfy-Org/MiniMax-H3 | 2026-09-07 | `hf_all_downloads`, `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `Comfy-Org` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `contemmcm/qwen2.5-vl-3b-bluesky-moderation` | https://huggingface.co/contemmcm/qwen2.5-vl-3b-bluesky-moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `contemmcm` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit` | https://huggingface.co/cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `cyankiwi` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `cyankiwi/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit` | https://huggingface.co/cyankiwi/Qwen3-30B-A3B-Instruct-2507-AWQ-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `cyankiwi` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `cyankiwi/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit` | https://huggingface.co/cyankiwi/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `cyankiwi` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `Cyronius/Qwen3.8-Flash-Next-131B-A6B-GGUF` | https://huggingface.co/Cyronius/Qwen3.8-Flash-Next-131B-A6B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Cyronius` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `datawhalechina/llm-algo-leetcode` | https://github.com/datawhalechina/llm-algo-leetcode | 2026-09-07 | `comp_t_triton` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `datawhalechina` is not a declared handle of `llm`'s organization |
+| `DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF` | https://huggingface.co/DavidAU/Qwen3.6-27B-Fable-Fusion-711-Uncensored-Heretic-NM-DAU-NEO-MAX-MTP-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `DavidAU` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF` | https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `DavidAU` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NM-DAU` | https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NM-DAU | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `DavidAU` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `dealignai/Gemma-4-31B-JANG_4M-CRACK` | https://huggingface.co/dealignai/Gemma-4-31B-JANG_4M-CRACK | 2026-09-07 | `B_hf_conv_likes` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `dealignai` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `dealignai/GLM-5.3-CYBERSECURITY-FP8` | https://huggingface.co/dealignai/GLM-5.3-CYBERSECURITY-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `dealignai` is not a handle declared for any organization owning `glm`'s artifacts |
+| `dealignai/GLM-5.3-UNCENSORED-FP8` | https://huggingface.co/dealignai/GLM-5.3-UNCENSORED-FP8 | 2026-09-07 | `hf_textgen_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `dealignai` is not a handle declared for any organization owning `glm`'s artifacts |
+| `DevQuasar-11/ibm-granite.granite-guardian-3.1-2b-GGUF` | https://huggingface.co/DevQuasar-11/ibm-granite.granite-guardian-3.1-2b-GGUF | 2026-09-07 | `hf_guard_search` | third-party GGUF of head product granite-guardian | **N5** — stated-reading fold withdrawn: `DevQuasar-11/ibm-granite.granite-guardian-3.1-2b-GGUF` is not a declared artifact of `granite-guardian`, and what the repository *is* was read from its description rather than declared anywhere |
+| `dezoito/markitdown-api` | https://github.com/dezoito/markitdown-api | 2026-09-07 | `dpt_q_pdf` | release or SKU of markitdown | **N3** — name-match fold onto `markitdown` withdrawn: no `markitdown-*` family declared, and owner `dezoito` is not a declared handle of `markitdown`'s organization |
+| `eaddario/Llama-Guard-3-8B-GGUF` | https://huggingface.co/eaddario/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `eaddario` is not a handle declared for any organization owning `llama`'s artifacts |
+| `EleutherAI/pythia-160m` | https://huggingface.co/EleutherAI/pythia-160m | 2026-09-07 | `hf_textgen_downloads` | release or SKU of pythia | **N2** — name-match fold onto `pythia` withdrawn: `sources/model_families.yaml` declares no `pythia-*` family |
+| `empero-ai/Qwen3.8-2B-Distill-GGUF` | https://huggingface.co/empero-ai/Qwen3.8-2B-Distill-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `empero-ai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `empero-ai/Qwen3.8-9B-Distill` | https://huggingface.co/empero-ai/Qwen3.8-9B-Distill | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `empero-ai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `empero-ai/Qwen3.8-9B-Distill-GGUF` | https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `empero-ai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF` | https://huggingface.co/esatapedico/Qwen3.8-27B-NVFP4-MTP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `esatapedico` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `facebookresearch/synth_gen` | https://github.com/facebookresearch/synth_gen | 2026-09-07 | `dpt_synth` | release or SKU of synth | **N3** — name-match fold onto `synth` withdrawn: no `synth-*` family declared, and owner `facebookresearch` is not a declared handle of `synth`'s organization |
+| `FantingHeish/LLM-Inference-System-GPU-Oriented-Serving-Architecture-` | https://github.com/FantingHeish/LLM-Inference-System-GPU-Oriented-Serving-Architecture- | 2026-09-07 | `comp_q_kernel` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `FantingHeish` is not a declared handle of `llm`'s organization |
+| `firecrawl/firecrawl-app-examples` | https://github.com/firecrawl/firecrawl-app-examples | 2026-09-07 | `dpt_t_webscraping` | release or SKU of firecrawl | **N2** — name-match fold onto `firecrawl` withdrawn: `sources/model_families.yaml` declares no `firecrawl-*` family |
+| `FlorianBruniaux/claude-code-ultimate-guide` | https://github.com/FlorianBruniaux/claude-code-ultimate-guide | 2026-09-07 | `B_safe_aisec` | release or SKU of claude-code | **N3** — name-match fold onto `claude-code` withdrawn: no `claude-code-*` family declared, and owner `FlorianBruniaux` is not a declared handle of `claude-code`'s organization |
+| `froggeric/Qwen-Fixed-Chat-Templates` | https://huggingface.co/froggeric/Qwen-Fixed-Chat-Templates | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `froggeric` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `GaleneAI/llama-3.1-nemoguard-8b-content-safety-merged-NVFP4` | https://huggingface.co/GaleneAI/llama-3.1-nemoguard-8b-content-safety-merged-NVFP4 | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `GaleneAI` is not a handle declared for any organization owning `llama`'s artifacts |
+| `gravitee-io/Llama-Prompt-Guard-2-22M-onnx` | https://huggingface.co/gravitee-io/Llama-Prompt-Guard-2-22M-onnx | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `gravitee-io` is not a handle declared for any organization owning `llama`'s artifacts |
+| `gravitee-io/Llama-Prompt-Guard-2-86M-onnx` | https://huggingface.co/gravitee-io/Llama-Prompt-Guard-2-86M-onnx | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `gravitee-io` is not a handle declared for any organization owning `llama`'s artifacts |
+| `group-k11/LLM-Firewall-Prompt-Injection-Detection-System` | https://github.com/group-k11/LLM-Firewall-Prompt-Injection-Detection-System | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `group-k11` is not a declared handle of `llm`'s organization |
+| `GuardrailsAI/prompt-saturation-attack-detector` | https://huggingface.co/GuardrailsAI/prompt-saturation-attack-detector | 2026-09-07 | `hf_guard_search` | component model published by the org behind head product guardrails-ai; SKU of that product | **N5** — stated-reading fold withdrawn: `GuardrailsAI/prompt-saturation-attack-detector` is not a declared artifact of `guardrails-ai`, and what the repository *is* was read from its description rather than declared anywhere |
+| `HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_dl` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `HauhauCS` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `HauhauCS/Qwen3.5-35B-A3B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.5-35B-A3B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HauhauCS` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HauhauCS` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive` | https://huggingface.co/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive | 2026-09-07 | `B_hf_conv_dl`, `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HauhauCS` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF` | https://huggingface.co/HauhauCS/Qwen3.8-27B-Uncensored-HauhauCS-Aggressive-MTP-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HauhauCS` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `helloworldzzr/Qwen3-VL-2B-Video-Moderation-LoRA` | https://huggingface.co/helloworldzzr/Qwen3-VL-2B-Video-Moderation-LoRA | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `helloworldzzr` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HoangCuongNguyen/gemma-2-9b-safety-ra-sft` | https://huggingface.co/HoangCuongNguyen/gemma-2-9b-safety-ra-sft | 2026-09-07 | `hf_safety_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `HoangCuongNguyen` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `HoangCuongNguyen/gemma-2-9b-safetysft` | https://huggingface.co/HoangCuongNguyen/gemma-2-9b-safetysft | 2026-09-07 | `hf_safety_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `HoangCuongNguyen` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `HoangCuongNguyen/qwen3-8b-safety-ra-sft` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safety-ra-sft | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HoangCuongNguyen` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HoangCuongNguyen/qwen3-8b-safetyorpo` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safetyorpo | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HoangCuongNguyen` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HoangCuongNguyen/qwen3-8b-safetysft` | https://huggingface.co/HoangCuongNguyen/qwen3-8b-safetysft | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `HoangCuongNguyen` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `HuggingFaceH4/zephyr-7b-alpha` | https://huggingface.co/HuggingFaceH4/zephyr-7b-alpha | 2026-09-07 | `hf_textgen_likes` | release or SKU of zephyr | **N2** — name-match fold onto `zephyr` withdrawn: `sources/model_families.yaml` declares no `zephyr-*` family |
+| `HuggingFaceTB/SmolLM2-1.7B-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm | **N2** — name-match fold onto `smollm` withdrawn: `sources/model_families.yaml` declares no `smollm-*` family |
+| `HuggingFaceTB/SmolLM2-135M` | https://huggingface.co/HuggingFaceTB/SmolLM2-135M | 2026-09-07 | `hf_textgen_downloads` | release or SKU of smollm | **N2** — name-match fold onto `smollm` withdrawn: `sources/model_families.yaml` declares no `smollm-*` family |
+| `HuggingFaceTB/SmolLM2-135M-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | release or SKU of smollm | **N2** — name-match fold onto `smollm` withdrawn: `sources/model_families.yaml` declares no `smollm-*` family |
+| `HuggingFaceTB/SmolLM2-360M-Instruct` | https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm | **N2** — name-match fold onto `smollm` withdrawn: `sources/model_families.yaml` declares no `smollm-*` family |
+| `HuggingFaceTB/SmolLM3-3B-Base` | https://huggingface.co/HuggingFaceTB/SmolLM3-3B-Base | 2026-09-07 | `hf_base_search` | release or SKU of smollm | **N2** — name-match fold onto `smollm` withdrawn: `sources/model_families.yaml` declares no `smollm-*` family |
+| `huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF` | https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF | 2026-09-07 | `hf_all_trending`, `B_hf_conv_dl` | abliterated GGUF redistribution of the signal Qwen/Qwen3.8-27B, which folds onto head product qwen | **N5** — stated-reading fold withdrawn: `huihui-ai/Huihui-Qwen3.8-27B-abliterated-GGUF` is not a declared artifact of `Qwen/Qwen3.8-27B`, and what the repository *is* was read from its description rather than declared anywhere |
+| `humarin/chatgpt_paraphraser_on_T5_base` | https://huggingface.co/humarin/chatgpt_paraphraser_on_T5_base | 2026-09-07 | `hf_base_search` | release or SKU of chatgpt | **N3** — name-match fold onto `chatgpt` withdrawn: no `chatgpt-*` family declared, and owner `humarin` is not a declared handle of `chatgpt`'s organization |
+| `hunglc007/tensorflow-yolov4-tflite` | https://github.com/hunglc007/tensorflow-yolov4-tflite | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorflow | **N3** — name-match fold onto `tensorflow` withdrawn: no `tensorflow-*` family declared, and owner `hunglc007` is not a declared handle of `tensorflow`'s organization |
+| `ibm-granite/granite-3.0-1b-a400m-base` | https://huggingface.co/ibm-granite/granite-3.0-1b-a400m-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-3.0-8b-base` | https://huggingface.co/ibm-granite/granite-3.0-8b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-3.1-1b-a400m-base` | https://huggingface.co/ibm-granite/granite-3.1-1b-a400m-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-3b-code-base-2k` | https://huggingface.co/ibm-granite/granite-3b-code-base-2k | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.0-1b-base` | https://huggingface.co/ibm-granite/granite-4.0-1b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.1-3b-base` | https://huggingface.co/ibm-granite/granite-4.1-3b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.1-8b-base` | https://huggingface.co/ibm-granite/granite-4.1-8b-base | 2026-09-07 | `hf_base_search` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.2-30b` | https://huggingface.co/ibm-granite/granite-4.2-30b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.2-3b` | https://huggingface.co/ibm-granite/granite-4.2-3b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-4.2-8b` | https://huggingface.co/ibm-granite/granite-4.2-8b | 2026-09-07 | `hf_textgen_trending` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-docling-258M` | https://huggingface.co/ibm-granite/granite-docling-258M | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-embedding-small-english-r2` | https://huggingface.co/ibm-granite/granite-embedding-small-english-r2 | 2026-09-07 | `hf_all_downloads` | release or SKU of granite | **N2** — name-match fold onto `granite` withdrawn: `sources/model_families.yaml` declares no `granite-*` family |
+| `ibm-granite/granite-guardian-3.0-2b` | https://huggingface.co/ibm-granite/granite-guardian-3.0-2b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.0-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.0-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.1-2b` | https://huggingface.co/ibm-granite/granite-guardian-3.1-2b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.1-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.1-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.2-3b-a800m` | https://huggingface.co/ibm-granite/granite-guardian-3.2-3b-a800m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.2-8b-factuality-detection` | https://huggingface.co/ibm-granite/granite-guardian-3.2-8b-factuality-detection | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.3-8b` | https://huggingface.co/ibm-granite/granite-guardian-3.3-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-3.3-8b-GGUF` | https://huggingface.co/ibm-granite/granite-guardian-3.3-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-4.1-8b` | https://huggingface.co/ibm-granite/granite-guardian-4.1-8b | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-4.1-8b-GGUF` | https://huggingface.co/ibm-granite/granite-guardian-4.1-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-hap-125m` | https://huggingface.co/ibm-granite/granite-guardian-hap-125m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `ibm-granite/granite-guardian-hap-38m` | https://huggingface.co/ibm-granite/granite-guardian-hap-38m | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N2** — name-match fold onto `granite-guardian` withdrawn: `sources/model_families.yaml` declares no `granite-guardian-*` family |
+| `IFM/K2-Horizon-0.9B` | https://huggingface.co/IFM/K2-Horizon-0.9B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-3.7B` | https://huggingface.co/IFM/K2-Horizon-3.7B | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-3.7B-GGUF` | https://huggingface.co/IFM/K2-Horizon-3.7B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-32B` | https://huggingface.co/IFM/K2-Horizon-32B | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-375B-A23B` | https://huggingface.co/IFM/K2-Horizon-375B-A23B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-7B` | https://huggingface.co/IFM/K2-Horizon-7B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-7B-GGUF` | https://huggingface.co/IFM/K2-Horizon-7B-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-7B-Uno` | https://huggingface.co/IFM/K2-Horizon-7B-Uno | 2026-09-07 | `hf_textgen_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-MoVA-36B-A4B` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `IFM/K2-Horizon-MoVA-36B-A4B-GGUF` | https://huggingface.co/IFM/K2-Horizon-MoVA-36B-A4B-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of k2 | **N1** — name-match fold onto `k2` withdrawn: owner `IFM` is not a handle declared for any organization owning `k2`'s artifacts |
+| `incoai/GLM-5.3-Flash-DFlash2` | https://huggingface.co/incoai/GLM-5.3-Flash-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `incoai` is not a handle declared for any organization owning `glm`'s artifacts |
+| `incoai/Qwen3.8-27B-DFlash2` | https://huggingface.co/incoai/Qwen3.8-27B-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `incoai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF` | https://huggingface.co/ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `ISTA-DASLab` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `Jab1718/qwen3.8-flash-coder-85gb-bf16` | https://huggingface.co/Jab1718/qwen3.8-flash-coder-85gb-bf16 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Jab1718` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `jackhhao/llm-warden` | https://github.com/jackhhao/llm-warden | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `jackhhao` is not a declared handle of `llm`'s organization |
+| `Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled` | https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Jackrong` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `janhq/Jan-v3-4B-base-instruct-gguf` | https://huggingface.co/janhq/Jan-v3-4B-base-instruct-gguf | 2026-09-07 | `hf_base_search` | release or SKU of jan | **N2** — name-match fold onto `jan` withdrawn: `sources/model_families.yaml` declares no `jan-*` family |
+| `Jerry2423/Triton-Attention-Kernels` | https://github.com/Jerry2423/Triton-Attention-Kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `Jerry2423` is not a declared handle of `triton`'s organization |
+| `JJCKA/MarkItDown-GUI` | https://github.com/JJCKA/MarkItDown-GUI | 2026-09-07 | `dpt_q_pdf` | release or SKU of markitdown | **N3** — name-match fold onto `markitdown` withdrawn: no `markitdown-*` family declared, and owner `JJCKA` is not a declared handle of `markitdown`'s organization |
+| `JonathanColetti/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/JonathanColetti/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `JonathanColetti` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `jrajath94/triton-inference-kernels` | https://github.com/jrajath94/triton-inference-kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `jrajath94` is not a declared handle of `triton`'s organization |
+| `kenflab/LLM-scCurator` | https://github.com/kenflab/LLM-scCurator | 2026-09-07 | `dpt_q_curator` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `kenflab` is not a declared handle of `llm`'s organization |
+| `Kijai/MiniMax-H3-experimental` | https://huggingface.co/Kijai/MiniMax-H3-experimental | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `Kijai` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `kmseong/llama2_7b-chat-Safety-FT-lr5e-5` | https://huggingface.co/kmseong/llama2_7b-chat-Safety-FT-lr5e-5 | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `kmseong` is not a handle declared for any organization owning `llama`'s artifacts |
+| `KrakowiakK/vllm-apple` | https://github.com/KrakowiakK/vllm-apple | 2026-09-07 | `comp_q_kernel` | release or SKU of vllm | **N3** — name-match fold onto `vllm` withdrawn: no `vllm-*` family declared, and owner `KrakowiakK` is not a declared handle of `vllm`'s organization |
+| `Krusty84/triton-ascend-agent-dev-kit` | https://github.com/Krusty84/triton-ascend-agent-dev-kit | 2026-09-07 | `edge_t_npu` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `Krusty84` is not a declared handle of `triton`'s organization |
+| `LaaP-ai/qwen-base-invoicev1.01-1.5B` | https://huggingface.co/LaaP-ai/qwen-base-invoicev1.01-1.5B | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `LaaP-ai` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `lastSoln/llm-training-data-pipeline` | https://github.com/lastSoln/llm-training-data-pipeline | 2026-09-07 | `dpt_dedup` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `lastSoln` is not a declared handle of `llm`'s organization |
+| `laugh12321/TensorRT-YOLO` | https://github.com/laugh12321/TensorRT-YOLO | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorrt | **N3** — name-match fold onto `tensorrt` withdrawn: no `tensorrt-*` family declared, and owner `laugh12321` is not a declared handle of `tensorrt`'s organization |
+| `legraphista/glm-4-9b-chat-IMat-GGUF` | https://huggingface.co/legraphista/glm-4-9b-chat-IMat-GGUF | 2026-09-07 | `hf_textgen_downloads` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `legraphista` is not a handle declared for any organization owning `glm`'s artifacts |
+| `legraphista/Llama-Guard-3-8B-IMat-GGUF` | https://huggingface.co/legraphista/Llama-Guard-3-8B-IMat-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `legraphista` is not a handle declared for any organization owning `llama`'s artifacts |
+| `lennyerik/crawl4ai-proxy` | https://github.com/lennyerik/crawl4ai-proxy | 2026-09-07 | `dpt_t_webscraping` | release or SKU of crawl4ai | **N3** — name-match fold onto `crawl4ai` withdrawn: no `crawl4ai-*` family declared, and owner `lennyerik` is not a declared handle of `crawl4ai`'s organization |
+| `lightx2v/Minimax-h3-Turbo` | https://huggingface.co/lightx2v/Minimax-h3-Turbo | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `lightx2v` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `lmstudio-community/Qwen3.8-27B-GGUF` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-GGUF | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `lmstudio-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `lmstudio-community/Qwen3.8-27B-MLX-4bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-4bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `lmstudio-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `lmstudio-community/Qwen3.8-27B-MLX-5bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-5bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `lmstudio-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `lmstudio-community/Qwen3.8-27B-MLX-6bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-6bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `lmstudio-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `lmstudio-community/Qwen3.8-27B-MLX-8bit` | https://huggingface.co/lmstudio-community/Qwen3.8-27B-MLX-8bit | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `lmstudio-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `macadeliccc/gemma-2b-openai-content-moderation` | https://huggingface.co/macadeliccc/gemma-2b-openai-content-moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `macadeliccc` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `MaitreChen/openvino-lenet-sample` | https://github.com/MaitreChen/openvino-lenet-sample | 2026-09-07 | `B_comp_modelopt` | release or SKU of openvino | **N3** — name-match fold onto `openvino` withdrawn: no `openvino-*` family declared, and owner `MaitreChen` is not a declared handle of `openvino`'s organization |
+| `manishklach/mlx-metal-kernels` | https://github.com/manishklach/mlx-metal-kernels | 2026-09-07 | `comp_q_kernel` | release or SKU of mlx | **N3** — name-match fold onto `mlx` withdrawn: no `mlx-*` family declared, and owner `manishklach` is not a declared handle of `mlx`'s organization |
+| `matank001/cursor-security-rules` | https://github.com/matank001/cursor-security-rules | 2026-09-07 | `B_safe_agentsec` | release or SKU of cursor | **N3** — name-match fold onto `cursor` withdrawn: no `cursor-*` family declared, and owner `matank001` is not a declared handle of `cursor`'s organization |
+| `MATLOWAI/minimax-h3-fused-turbo-int8-convrot` | https://huggingface.co/MATLOWAI/minimax-h3-fused-turbo-int8-convrot | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `MATLOWAI` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `MaziyarPanahi/Qwen3-4B-Instruct-2507-GGUF` | https://huggingface.co/MaziyarPanahi/Qwen3-4B-Instruct-2507-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `MaziyarPanahi` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `MergeBench/Llama-3.2-3B_safety` | https://huggingface.co/MergeBench/Llama-3.2-3B_safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `MergeBench` is not a handle declared for any organization owning `llama`'s artifacts |
+| `Merlin-Research/Qwen3.5-4B-Safety-Thinking` | https://huggingface.co/Merlin-Research/Qwen3.5-4B-Safety-Thinking | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Merlin-Research` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `meta-llama/Meta-Llama-3-8B-Instruct` | https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_instruct_search`, `B_hf_conv_likes` | SKU of head product llama-instruct (llama-* family) | **N5** — stated-reading fold withdrawn: `meta-llama/Meta-Llama-3-8B-Instruct` is not a declared artifact of `llama-instruct`, and what the repository *is* was read from its description rather than declared anywhere |
+| `meta-llama/Prompt-Guard-86M` | https://huggingface.co/meta-llama/Prompt-Guard-86M | 2026-09-07 | `hf_all_downloads`, `hf_guard_search` | release of head product llama-prompt-guard | **N5** — stated-reading fold withdrawn: `meta-llama/Prompt-Guard-86M` is not a declared artifact of `llama-prompt-guard`, and what the repository *is* was read from its description rather than declared anywhere |
+| `Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw` | https://huggingface.co/Mia-AiLab/Qwen3.8-27B-EXL3-3.5bpw | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Mia-AiLab` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mlabonne/llm-datasets` | https://github.com/mlabonne/llm-datasets | 2026-09-07 | `B_dpt_datasetllm` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `mlabonne` is not a declared handle of `llm`'s organization |
+| `mlx-community/Llama-3.1-8B-Instruct-4bit` | https://huggingface.co/mlx-community/Llama-3.1-8B-Instruct-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `mlx-community` is not a handle declared for any organization owning `llama`'s artifacts |
+| `mlx-community/Qwen2.5-Coder-7B-Instruct-4bit` | https://huggingface.co/mlx-community/Qwen2.5-Coder-7B-Instruct-4bit | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mlx-community` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/ernie-4.5-0.3b-aegis-safety-lora-GGUF` | https://huggingface.co/mradermacher/ernie-4.5-0.3b-aegis-safety-lora-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of ernie | **N1** — name-match fold onto `ernie` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `ernie`'s artifacts |
+| `mradermacher/gemma-4-12B-it-Guardpoint-GGUF` | https://huggingface.co/mradermacher/gemma-4-12B-it-Guardpoint-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `mradermacher/gemma-4-12B-it-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gemma-4-12B-it-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `mradermacher/gemma-4-31B-it-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gemma-4-31B-it-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `mradermacher/Gemma-SEA-Guard-12B-2602-i1-GGUF` | https://huggingface.co/mradermacher/Gemma-SEA-Guard-12B-2602-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `mradermacher/gpt-oss-20b-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/gpt-oss-20b-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of gpt-oss | **N3** — name-match fold onto `gpt-oss` withdrawn: no `gpt-oss-*` family declared, and owner `mradermacher` is not a declared handle of `gpt-oss`'s organization |
+| `mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-GGUF` | https://huggingface.co/mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of granite | **N3** — name-match fold onto `granite` withdrawn: no `granite-*` family declared, and owner `mradermacher` is not a declared handle of `granite`'s organization |
+| `mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-i1-GGUF` | https://huggingface.co/mradermacher/granite-3.3-2b-instruct-heretic-safety-defiltered-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of granite | **N3** — name-match fold onto `granite` withdrawn: no `granite-*` family declared, and owner `mradermacher` is not a declared handle of `granite`'s organization |
+| `mradermacher/granite-guardian-3.1-8b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.1-8b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `mradermacher` is not a declared handle of `granite-guardian`'s organization |
+| `mradermacher/granite-guardian-3.2-5b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.2-5b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `mradermacher` is not a declared handle of `granite-guardian`'s organization |
+| `mradermacher/granite-guardian-3.3-8b-i1-GGUF` | https://huggingface.co/mradermacher/granite-guardian-3.3-8b-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `mradermacher` is not a declared handle of `granite-guardian`'s organization |
+| `mradermacher/Llama-3.1-Nemotron-Safety-Guard-8B-v3-GGUF` | https://huggingface.co/mradermacher/Llama-3.1-Nemotron-Safety-Guard-8B-v3-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `llama`'s artifacts |
+| `mradermacher/Llama-3.1-Tulu-3-8B-SFT-no-safety-data-i1-GGUF` | https://huggingface.co/mradermacher/Llama-3.1-Tulu-3-8B-SFT-no-safety-data-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `llama`'s artifacts |
+| `mradermacher/Llama-Guard-3-8B-GGUF` | https://huggingface.co/mradermacher/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `llama`'s artifacts |
+| `mradermacher/Llama-Guard-3-8B-i1-GGUF` | https://huggingface.co/mradermacher/Llama-Guard-3-8B-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `llama`'s artifacts |
+| `mradermacher/Nemotron-3-Content-Safety-GGUF` | https://huggingface.co/mradermacher/Nemotron-3-Content-Safety-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron | **N1** — name-match fold onto `nemotron` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `nemotron`'s artifacts |
+| `mradermacher/Nemotron-3.5-Content-Safety-GGUF` | https://huggingface.co/mradermacher/Nemotron-3.5-Content-Safety-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron | **N1** — name-match fold onto `nemotron` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `nemotron`'s artifacts |
+| `mradermacher/Qwen3-14B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-14B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3-32B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-32B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-GGUF` | https://huggingface.co/mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3-VL-8B-SafetyGRPO-ablation-120-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3.5-27B-Guardpoint-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-27B-Guardpoint-i1-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3.5-4B-Safety-Thinking-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-4B-Safety-Thinking-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mradermacher/Qwen3.5-4B-Safety-Thinking-i1-GGUF` | https://huggingface.co/mradermacher/Qwen3.5-4B-Safety-Thinking-i1-GGUF | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `mradermacher` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `mrutkows/granite-guardian-4.1-8b-GGUF` | https://huggingface.co/mrutkows/granite-guardian-4.1-8b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `mrutkows` is not a declared handle of `granite-guardian`'s organization |
+| `Mungert/granite-guardian-3.2-3b-a800m-GGUF` | https://huggingface.co/Mungert/granite-guardian-3.2-3b-a800m-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `Mungert` is not a declared handle of `granite-guardian`'s organization |
+| `Mungert/granite-guardian-3.2-5b-GGUF` | https://huggingface.co/Mungert/granite-guardian-3.2-5b-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of granite-guardian | **N3** — name-match fold onto `granite-guardian` withdrawn: no `granite-guardian-*` family declared, and owner `Mungert` is not a declared handle of `granite-guardian`'s organization |
+| `navyavelicheti10/LLM_Firewall` | https://github.com/navyavelicheti10/LLM_Firewall | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `navyavelicheti10` is not a declared handle of `llm`'s organization |
+| `NeelRajani/Qwen3-0.6B-Base_SFT-safety100_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety100_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `NeelRajani` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `NeelRajani/Qwen3-0.6B-Base_SFT-safety25_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety25_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `NeelRajani` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `NeelRajani/Qwen3-0.6B-Base_SFT-safety50_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety50_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `NeelRajani` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `NeelRajani/Qwen3-0.6B-Base_SFT-safety75_ADV-pku-v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT-safety75_ADV-pku-v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `NeelRajani` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `NeelRajani/Qwen3-0.6B-Base_SFT_safety_v00.01` | https://huggingface.co/NeelRajani/Qwen3-0.6B-Base_SFT_safety_v00.01 | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `NeelRajani` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `nghuyong/ernie-3.0-base-zh` | https://huggingface.co/nghuyong/ernie-3.0-base-zh | 2026-09-07 | `B_hf_fillmask_likes` | release or SKU of ernie | **N1** — name-match fold onto `ernie` withdrawn: owner `nghuyong` is not a handle declared for any organization owning `ernie`'s artifacts |
+| `nihui/ncnn-small-board` | https://github.com/nihui/ncnn-small-board | 2026-09-07 | `edge_t_sbc` | release or SKU of ncnn | **N3** — name-match fold onto `ncnn` withdrawn: no `ncnn-*` family declared, and owner `nihui` is not a declared handle of `ncnn`'s organization |
+| `nm-testing/SmolLM-1.7B-Instruct-quantized.w4a16` | https://huggingface.co/nm-testing/SmolLM-1.7B-Instruct-quantized.w4a16 | 2026-09-07 | `hf_instruct_search` | release or SKU of smollm | **N3** — name-match fold onto `smollm` withdrawn: no `smollm-*` family declared, and owner `nm-testing` is not a declared handle of `smollm`'s organization |
+| `nod-ai/AMD-SHARK-Studio` | https://github.com/nod-ai/AMD-SHARK-Studio | 2026-09-07 | `comp_t_mlir` | web UI over SHARK+IREE; SKU of head product iree | **N5** — stated-reading fold withdrawn: `nod-ai/AMD-SHARK-Studio` is not a declared artifact of `iree`, and what the repository *is* was read from its description rather than declared anywhere |
+| `nooruiit-864/qwen2.5-1.5b-base-ai-safety-domain-lora` | https://huggingface.co/nooruiit-864/qwen2.5-1.5b-base-ai-safety-domain-lora | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `nooruiit-864` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `Null-Guard/Qwen3-0.6B-Uncensored-GGUF` | https://huggingface.co/Null-Guard/Qwen3-0.6B-Uncensored-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Null-Guard` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `Null-Guard/Qwen3.5-0.8B-Uncensored-GGUF` | https://huggingface.co/Null-Guard/Qwen3.5-0.8B-Uncensored-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Null-Guard` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `nunchux-ai/ComfyUI-nunchaku` | https://github.com/nunchux-ai/ComfyUI-nunchaku | 2026-09-07 | `comp_t_quant` | ComfyUI plugin surface of nunchaku, which this batch emits as its own row (self-dedup) | **N5** — stated-reading fold withdrawn: `nunchux-ai/ComfyUI-nunchaku` is not a declared artifact of `nunchaku`, and what the repository *is* was read from its description rather than declared anywhere |
+| `nvidia/DeepSeek-V4-Flash-0731-NVFP4` | https://huggingface.co/nvidia/DeepSeek-V4-Flash-0731-NVFP4 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `nvidia` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `nvidia/Gemma-4-26B-A4B-NVFP4` | https://huggingface.co/nvidia/Gemma-4-26B-A4B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `nvidia` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `nvidia/Gemma-4-31B-IT-NVFP4` | https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `nvidia` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `nvidia/llama-3.1-nemoguard-8b-content-safety` | https://huggingface.co/nvidia/llama-3.1-nemoguard-8b-content-safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `nvidia` is not a handle declared for any organization owning `llama`'s artifacts |
+| `nvidia/Llama-3.1-Nemotron-70B-Instruct-HF` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-70B-Instruct-HF | 2026-09-07 | `hf_textgen_likes`, `B_hf_conv_likes` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `nvidia` is not a handle declared for any organization owning `llama`'s artifacts |
+| `nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3` | https://huggingface.co/nvidia/Llama-3.1-Nemotron-Safety-Guard-8B-v3 | 2026-09-07 | `hf_guard_search`, `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `nvidia` is not a handle declared for any organization owning `llama`'s artifacts |
+| `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16 | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | SKU of head product nemotron | **N5** — stated-reading fold withdrawn: `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` is not a declared artifact of `nemotron`, and what the repository *is* was read from its description rather than declared anywhere |
+| `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` | https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending` | SKU of head product nemotron | **N5** — stated-reading fold withdrawn: `nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4` is not a declared artifact of `nemotron`, and what the repository *is* was read from its description rather than declared anywhere |
+| `nvidia/Qwen3.5-122B-A10B-NVFP4` | https://huggingface.co/nvidia/Qwen3.5-122B-A10B-NVFP4 | 2026-09-07 | `hf_textgen_downloads` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `nvidia` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `nvidia/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/nvidia/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `nvidia` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `nvidia/Qwen3.8-Flash-Next-NVFP4` | https://huggingface.co/nvidia/Qwen3.8-Flash-Next-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `nvidia` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `OBLITERATUS/Ornith-1.5-9B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Ornith-1.5-9B-OBLITERATED | 2026-09-07 | `hf_textgen_trending` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `OBLITERATUS` is not a declared handle of `ornith`'s organization |
+| `OBLITERATUS/Qwen3.8-27B-OBLITERATED` | https://huggingface.co/OBLITERATUS/Qwen3.8-27B-OBLITERATED | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_likes`, `hf_textgen_trending`, `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `OBLITERATUS` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `oneonlee/llama-3.1-nemoguard-8b-content-safety-merged` | https://huggingface.co/oneonlee/llama-3.1-nemoguard-8b-content-safety-merged | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `oneonlee` is not a handle declared for any organization owning `llama`'s artifacts |
+| `openbmb/MiniCPM-Llama3-V-2_5` | https://huggingface.co/openbmb/MiniCPM-Llama3-V-2_5 | 2026-09-07 | `B_hf_conv_likes` | release or SKU of minicpm | **N2** — name-match fold onto `minicpm` withdrawn: `sources/model_families.yaml` declares no `minicpm-*` family |
+| `openbmb/MiniCPM5-1B-Base` | https://huggingface.co/openbmb/MiniCPM5-1B-Base | 2026-09-07 | `hf_base_search` | release or SKU of minicpm | **N2** — name-match fold onto `minicpm` withdrawn: `sources/model_families.yaml` declares no `minicpm-*` family |
+| `orcarouter/DeepSeek-V4-Flash-Vision-Uncensored` | https://huggingface.co/orcarouter/DeepSeek-V4-Flash-Vision-Uncensored | 2026-09-07 | `hf_textgen_trending` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `orcarouter/DeepSeek-V4-Flash-Vision-Uncensored-GGUF` | https://huggingface.co/orcarouter/DeepSeek-V4-Flash-Vision-Uncensored-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `orcarouter/GLM-5.3-Flash-Uncensored-FP8` | https://huggingface.co/orcarouter/GLM-5.3-Flash-Uncensored-FP8 | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `glm`'s artifacts |
+| `orcarouter/GLM-5.3-Flash-Uncensored-NVFP4` | https://huggingface.co/orcarouter/GLM-5.3-Flash-Uncensored-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `glm`'s artifacts |
+| `orcarouter/Qwen3.8-27B-Uncensored` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `orcarouter/Qwen3.8-27B-Uncensored-FP8` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-FP8 | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `orcarouter/Qwen3.8-27B-Uncensored-GGUF` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `orcarouter/Qwen3.8-27B-Uncensored-MLX` | https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-MLX | 2026-09-07 | `hf_all_trending`, `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `orcarouter/Qwen3.8-Flash-Next-Uncensored-GGUF` | https://huggingface.co/orcarouter/Qwen3.8-Flash-Next-Uncensored-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `orcarouter` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `OriginalByteMe/langfuse-dataset-curator` | https://github.com/OriginalByteMe/langfuse-dataset-curator | 2026-09-07 | `dpt_q_curator` | release or SKU of langfuse | **N3** — name-match fold onto `langfuse` withdrawn: no `langfuse-*` family declared, and owner `OriginalByteMe` is not a declared handle of `langfuse`'s organization |
+| `Orion-zhen/Qwen2.5-Coder-7B-Instruct-AWQ` | https://huggingface.co/Orion-zhen/Qwen2.5-Coder-7B-Instruct-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Orion-zhen` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `ornith-ai/Ornith-1.0-35B` | https://huggingface.co/ornith-ai/Ornith-1.0-35B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.0-35B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-35B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.0-9B` | https://huggingface.co/ornith-ai/Ornith-1.0-9B | 2026-09-07 | `hf_textgen_downloads`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.0-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.0-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_all_downloads`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.5-35B-A3B` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.5-35B-A3B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-35B-A3B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.5-9B` | https://huggingface.co/ornith-ai/Ornith-1.5-9B | 2026-09-07 | `hf_textgen_trending` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `ornith-ai/Ornith-1.5-9B-GGUF` | https://huggingface.co/ornith-ai/Ornith-1.5-9B-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_trending`, `B_hf_conv_dl` | release or SKU of ornith | **N3** — name-match fold onto `ornith` withdrawn: no `ornith-*` family declared, and owner `ornith-ai` is not a declared handle of `ornith`'s organization |
+| `outsourc-e/Qwen3.8-27B-Unleashed-GGUF` | https://huggingface.co/outsourc-e/Qwen3.8-27B-Unleashed-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `outsourc-e` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `PaddlePaddle/Paddle.js` | https://github.com/PaddlePaddle/Paddle.js | 2026-09-07 | `B_comp_engine` | release or SKU of paddle | **N2** — name-match fold onto `paddle` withdrawn: `sources/model_families.yaml` declares no `paddle-*` family |
+| `Playtime-AI/Minimax_H3-Sydney_Sweeney` | https://huggingface.co/Playtime-AI/Minimax_H3-Sydney_Sweeney | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `Playtime-AI` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `poloclub/llm-landscape` | https://github.com/poloclub/llm-landscape | 2026-09-07 | `B_safe_llmsafety` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `poloclub` is not a declared handle of `llm`'s organization |
+| `Prachi-kushwaha/Triton-guide` | https://github.com/Prachi-kushwaha/Triton-guide | 2026-09-07 | `comp_t_cuda` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `Prachi-kushwaha` is not a declared handle of `triton`'s organization |
+| `princeton-nlp/Llama-3-8B-ProLong-64k-Base` | https://huggingface.co/princeton-nlp/Llama-3-8B-ProLong-64k-Base | 2026-09-07 | `hf_base_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `princeton-nlp` is not a handle declared for any organization owning `llama`'s artifacts |
+| `prithivMLmods/MiniMax-H3-Facial-Realism-CloseUp` | https://huggingface.co/prithivMLmods/MiniMax-H3-Facial-Realism-CloseUp | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `prithivMLmods` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `project-free-llama/Llama-Prompt-Guard-2-86M` | https://huggingface.co/project-free-llama/Llama-Prompt-Guard-2-86M | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `project-free-llama` is not a handle declared for any organization owning `llama`'s artifacts |
+| `QuantFactory/Llama-Guard-3-1B-GGUF` | https://huggingface.co/QuantFactory/Llama-Guard-3-1B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `QuantFactory` is not a handle declared for any organization owning `llama`'s artifacts |
+| `QuantFactory/Llama-Guard-3-8B-GGUF` | https://huggingface.co/QuantFactory/Llama-Guard-3-8B-GGUF | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `QuantFactory` is not a handle declared for any organization owning `llama`'s artifacts |
+| `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` | https://huggingface.co/QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `QuantTrio` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ` | https://huggingface.co/QuantTrio/Qwen3-VL-30B-A3B-Instruct-AWQ | 2026-09-07 | `hf_textgen_downloads`, `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `QuantTrio` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `QUASAR-QAT/Qwen3.8-27B-QUASAR-NVFP4` | https://huggingface.co/QUASAR-QAT/Qwen3.8-27B-QUASAR-NVFP4 | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `QUASAR-QAT` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `RadixArk/Kimi-K3-DSpark` | https://huggingface.co/RadixArk/Kimi-K3-DSpark | 2026-09-07 | `hf_textgen_downloads` | release or SKU of kimi | **N1** — name-match fold onto `kimi` withdrawn: owner `RadixArk` is not a handle declared for any organization owning `kimi`'s artifacts |
+| `RadixArk/Qwen3.8-27B-NVFP4` | https://huggingface.co/RadixArk/Qwen3.8-27B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `RadixArk` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `RedHatAI/Llama-3.2-1B-Instruct-FP8-dynamic` | https://huggingface.co/RedHatAI/Llama-3.2-1B-Instruct-FP8-dynamic | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `RedHatAI` is not a handle declared for any organization owning `llama`'s artifacts |
+| `RedHatAI/Llama-Guard-4-12B-quantized.w4a16` | https://huggingface.co/RedHatAI/Llama-Guard-4-12B-quantized.w4a16 | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `RedHatAI` is not a handle declared for any organization owning `llama`'s artifacts |
+| `RightNow-AI/inkling-turbo` | https://github.com/RightNow-AI/inkling-turbo | 2026-09-07 | `comp_q_kernel` | release or SKU of inkling | **N3** — name-match fold onto `inkling` withdrawn: no `inkling-*` family declared, and owner `RightNow-AI` is not a declared handle of `inkling`'s organization |
+| `rkinas/triton-resources` | https://github.com/rkinas/triton-resources | 2026-09-07 | `comp_t_triton` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `rkinas` is not a declared handle of `triton`'s organization |
+| `Ryn1998/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` | https://huggingface.co/Ryn1998/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `Ryn1998` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `shouxieai/tensorRT_Pro` | https://github.com/shouxieai/tensorRT_Pro | 2026-09-07 | `B_comp_tensorrt` | release or SKU of tensorrt | **N3** — name-match fold onto `tensorrt` withdrawn: no `tensorrt-*` family declared, and owner `shouxieai` is not a declared handle of `tensorrt`'s organization |
+| `SiriusNEO/Triton-Puzzles-Lite` | https://github.com/SiriusNEO/Triton-Puzzles-Lite | 2026-09-07 | `comp_t_triton` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `SiriusNEO` is not a declared handle of `triton`'s organization |
+| `smhfacct/Minimax-H3-fl2va-ref2va-hybrid-models` | https://huggingface.co/smhfacct/Minimax-H3-fl2va-ref2va-hybrid-models | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `smhfacct` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `solidrust/Mistral-7B-Instruct-v0.3-AWQ` | https://huggingface.co/solidrust/Mistral-7B-Instruct-v0.3-AWQ | 2026-09-07 | `hf_instruct_search` | release or SKU of mistral-7b-instruct | **N1** — name-match fold onto `mistral-7b-instruct` withdrawn: owner `solidrust` is not a handle declared for any organization owning `mistral-7b-instruct`'s artifacts |
+| `speach1sdef178/MiniMax-H3-Semantic-Bridge` | https://huggingface.co/speach1sdef178/MiniMax-H3-Semantic-Bridge | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `speach1sdef178` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `stephenleo/llm-structured-output-benchmarks` | https://github.com/stephenleo/llm-structured-output-benchmarks | 2026-09-07 | `dpt_synth` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `stephenleo` is not a declared handle of `llm`'s organization |
+| `susmitsingh01/triton-llm-kernels-lab` | https://github.com/susmitsingh01/triton-llm-kernels-lab | 2026-09-07 | `comp_q_kernel` | release or SKU of triton | **N3** — name-match fold onto `triton` withdrawn: no `triton-*` family declared, and owner `susmitsingh01` is not a declared handle of `triton`'s organization |
+| `swiss-ai/Apertus-8B-Instruct-2509` | https://huggingface.co/swiss-ai/Apertus-8B-Instruct-2509 | 2026-09-07 | `hf_instruct_search` | release or SKU of apertus | **N2** — name-match fold onto `apertus` withdrawn: `sources/model_families.yaml` declares no `apertus-*` family |
+| `ThakiCloud/Qwen3.8-27B-Human-KO-Safety` | https://huggingface.co/ThakiCloud/Qwen3.8-27B-Human-KO-Safety | 2026-09-07 | `hf_safety_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `ThakiCloud` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `theblackcat102/llama-3.2-1b-instruct-allenai_wildguard_safety` | https://huggingface.co/theblackcat102/llama-3.2-1b-instruct-allenai_wildguard_safety | 2026-09-07 | `hf_safety_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `theblackcat102` is not a handle declared for any organization owning `llama`'s artifacts |
+| `Tianxiaomo/pytorch-YOLOv4` | https://github.com/Tianxiaomo/pytorch-YOLOv4 | 2026-09-07 | `comp_t_onnx`, `B_comp_tensorrt` | release or SKU of pytorch | **N3** — name-match fold onto `pytorch` withdrawn: no `pytorch-*` family declared, and owner `Tianxiaomo` is not a declared handle of `pytorch`'s organization |
+| `tkarim45/llm-red-teaming-framework` | https://github.com/tkarim45/llm-red-teaming-framework | 2026-09-07 | `safe_q_jailbreak` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `tkarim45` is not a declared handle of `llm`'s organization |
+| `umitkacar/onnx-tensorrt-optimization` | https://github.com/umitkacar/onnx-tensorrt-optimization | 2026-09-07 | `B_comp_modelopt` | release or SKU of onnx | **N3** — name-match fold onto `onnx` withdrawn: no `onnx-*` family declared, and owner `umitkacar` is not a declared handle of `onnx`'s organization |
+| `unsloth/DeepSeek-R1-GGUF` | https://huggingface.co/unsloth/DeepSeek-R1-GGUF | 2026-09-07 | `hf_textgen_likes` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `unsloth` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `unsloth/DeepSeek-V4-Flash-Vision-Exp-GGUF` | https://huggingface.co/unsloth/DeepSeek-V4-Flash-Vision-Exp-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of deepseek | **N1** — name-match fold onto `deepseek` withdrawn: owner `unsloth` is not a handle declared for any organization owning `deepseek`'s artifacts |
+| `unsloth/GLM-5.3-Flash-GGUF` | https://huggingface.co/unsloth/GLM-5.3-Flash-GGUF | 2026-09-07 | `hf_textgen_trending`, `hf_all_trending` | release or SKU of glm | **N1** — name-match fold onto `glm` withdrawn: owner `unsloth` is not a handle declared for any organization owning `glm`'s artifacts |
+| `unsloth/Llama-3.2-1B-Instruct` | https://huggingface.co/unsloth/Llama-3.2-1B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `unsloth` is not a handle declared for any organization owning `llama`'s artifacts |
+| `unsloth/Llama-3.2-3B-Instruct-GGUF` | https://huggingface.co/unsloth/Llama-3.2-3B-Instruct-GGUF | 2026-09-07 | `hf_instruct_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `unsloth` is not a handle declared for any organization owning `llama`'s artifacts |
+| `unsloth/Qwen2.5-7B-Instruct` | https://huggingface.co/unsloth/Qwen2.5-7B-Instruct | 2026-09-07 | `hf_instruct_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-0.6B-Base` | https://huggingface.co/unsloth/Qwen3-0.6B-Base | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-1.7B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-1.7B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-4B-Base` | https://huggingface.co/unsloth/Qwen3-4B-Base | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-4B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-4B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-8B-Base-unsloth-bnb-4bit` | https://huggingface.co/unsloth/Qwen3-8B-Base-unsloth-bnb-4bit | 2026-09-07 | `hf_base_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF` | https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF | 2026-09-07 | `hf_textgen_downloads`, `hf_textgen_trending`, `hf_all_downloads`, `hf_instruct_search`, `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.5-9B-GGUF` | https://huggingface.co/unsloth/Qwen3.5-9B-GGUF | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.6-27B-MTP-GGUF` | https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.6-27B-NVFP4` | https://huggingface.co/unsloth/Qwen3.6-27B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.6-35B-A3B-GGUF` | https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF | 2026-09-07 | `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.6-35B-A3B-NVFP4` | https://huggingface.co/unsloth/Qwen3.6-35B-A3B-NVFP4 | 2026-09-07 | `B_hf_conv_dl` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.8-27B-GGUF` | https://huggingface.co/unsloth/Qwen3.8-27B-GGUF | 2026-09-07 | `hf_all_downloads`, `hf_all_trending`, `B_hf_conv_dl`, `B_hf_conv_likes` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `unsloth/Qwen3.8-Flash-Next-GGUF` | https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF | 2026-09-07 | `hf_all_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `unsloth` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `VerifiedAnon/gemma-moderation-finetune` | https://huggingface.co/VerifiedAnon/gemma-moderation-finetune | 2026-09-07 | `hf_moderation_search` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `VerifiedAnon` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `VitalyProtasov/Nemotron-3.5-Content-Safety-FP8-LLM-Compressor` | https://huggingface.co/VitalyProtasov/Nemotron-3.5-Content-Safety-FP8-LLM-Compressor | 2026-09-07 | `hf_safety_search` | release or SKU of nemotron | **N1** — name-match fold onto `nemotron` withdrawn: owner `VitalyProtasov` is not a handle declared for any organization owning `nemotron`'s artifacts |
+| `vstorm-co/pydantic-ai-shields` | https://github.com/vstorm-co/pydantic-ai-shields | 2026-09-07 | `safe_t_moderation` | release or SKU of pydantic-ai | **N3** — name-match fold onto `pydantic-ai` withdrawn: no `pydantic-ai-*` family declared, and owner `vstorm-co` is not a declared handle of `pydantic-ai`'s organization |
+| `WarmBloodAban/Minimax-h3_Singularity` | https://huggingface.co/WarmBloodAban/Minimax-h3_Singularity | 2026-09-07 | `hf_all_trending` | release or SKU of minimax | **N1** — name-match fold onto `minimax` withdrawn: owner `WarmBloodAban` is not a handle declared for any organization owning `minimax`'s artifacts |
+| `Weni/Llama-Guard-3-8B-AWQ` | https://huggingface.co/Weni/Llama-Guard-3-8B-AWQ | 2026-09-07 | `hf_guard_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `Weni` is not a handle declared for any organization owning `llama`'s artifacts |
+| `wms2537/qwen3-0.6b-malaysia-moderation-cot` | https://huggingface.co/wms2537/qwen3-0.6b-malaysia-moderation-cot | 2026-09-07 | `hf_moderation_search` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `wms2537` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `www.axelera.ai/metis-aipu` | https://www.axelera.ai/metis-aipu | 2026-09-07 | — | head product axelera-metis-aipu | **N4** — fold onto `axelera-metis-aipu` withdrawn: it rests on the vendor domain plus a path segment. `sources/org_handles.yaml` declares no `homepage_domain` handle for the vendor and `axelera-metis-aipu` declares no `homepage` artifact |
+| `www.hailo.ai/products/ai-accelerators/hailo-10h-m-2-generative-ai-acce` | https://www.hailo.ai/products/ai-accelerators/hailo-10h-m-2-generative-ai-acceleration-module/ | 2026-09-07 | — | head product hailo-10h | **N4** — fold onto `hailo-10h` withdrawn: it rests on the vendor domain plus a path segment. `sources/org_handles.yaml` declares no `homepage_domain` handle for the vendor and `hailo-10h` declares no `homepage` artifact |
+| `xai-org/grok-1` | https://huggingface.co/xai-org/grok-1 | 2026-09-07 | `hf_textgen_likes` | release or SKU of grok | **N1** — name-match fold onto `grok` withdrawn: owner `xai-org` is not a handle declared for any organization owning `grok`'s artifacts |
+| `XianghaoKong/llm-serving-systems-lab` | https://github.com/XianghaoKong/llm-serving-systems-lab | 2026-09-07 | `comp_q_kernel` | release or SKU of llm | **N3** — name-match fold onto `llm` withdrawn: no `llm-*` family declared, and owner `XianghaoKong` is not a declared handle of `llm`'s organization |
+| `yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-agentic-fable5-composer2.5-v2-3.5x-tau2-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `yuxinlu1` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF` | https://huggingface.co/yuxinlu1/gemma-4-12B-coder-fable5-composer2.5-v1-GGUF | 2026-09-07 | `hf_textgen_likes`, `hf_textgen_trending`, `B_hf_conv_likes` | release or SKU of gemma | **N1** — name-match fold onto `gemma` withdrawn: owner `yuxinlu1` is not a handle declared for any organization owning `gemma`'s artifacts |
+| `z-lab/Qwen3.8-27B-DFlash2` | https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2 | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `z-lab` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `z-lab/Qwen3.8-27B-DFlash2-GGUF` | https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `z-lab` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `ZaxbyHub/opencode-swarm` | https://github.com/ZaxbyHub/opencode-swarm | 2026-09-07 | `safe_t_guardrails` | release or SKU of opencode | **N3** — name-match fold onto `opencode` withdrawn: no `opencode-*` family declared, and owner `ZaxbyHub` is not a declared handle of `opencode`'s organization |
+| `zerodigest/Qwen3.8-27B-Uncensored-YMQ-MTP-GGUF` | https://huggingface.co/zerodigest/Qwen3.8-27B-Uncensored-YMQ-MTP-GGUF | 2026-09-07 | `hf_textgen_trending` | release or SKU of qwen | **N1** — name-match fold onto `qwen` withdrawn: owner `zerodigest` is not a handle declared for any organization owning `qwen`'s artifacts |
+| `ZiweiLiu96/llama-3.2-3b-Content-Moderation` | https://huggingface.co/ZiweiLiu96/llama-3.2-3b-Content-Moderation | 2026-09-07 | `hf_moderation_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `ZiweiLiu96` is not a handle declared for any organization owning `llama`'s artifacts |
+| `ZiweiLiu96/llama-3.2-3b-Content-Moderation-Q4_K_M-GGUF` | https://huggingface.co/ZiweiLiu96/llama-3.2-3b-Content-Moderation-Q4_K_M-GGUF | 2026-09-07 | `hf_moderation_search` | release or SKU of llama | **N1** — name-match fold onto `llama` withdrawn: owner `ZiweiLiu96` is not a handle declared for any organization owning `llama`'s artifacts |
 
 ## Escalations for a person
 
@@ -3190,7 +3266,31 @@ this table and the two parked tables above.
     in `tests/`, out of scope for a `tail-batch` diff, and the in-scope alternative — dropping 24
     declared homepages — would suppress observed evidence to satisfy a test. Someone has to make
     that change on `main`.
-11. **55 of the 67 rows name an organization with no record in
+11. **Seven model families this sweep saw releases of are not declared in
+   `sources/model_families.yaml`.** 37 signals are first-party releases — the owner login *is* a
+   declared handle of the organization owning the head product's artifacts — folded onto that
+   product on the checkpoint name alone, with no `<product>-*` family to bridge them. The
+   families are `granite-*` and `granite-guardian-*` (`ibm-granite`, 27 signals), `smollm-*`
+   (`HuggingFaceTB`, 5), `minicpm-*` (`openbmb`, 2), and one each for `pythia-*` (`EleutherAI`),
+   `zephyr-*` (`HuggingFaceH4`) and `apertus-*` (`swiss-ai`). Declaring a family bridge is an
+   editorial act recorded on `main`, not something a `tail-batch` diff may write, so all 37 are
+   parked as class N2 and come back folded once the bridges exist. Two more shapes want the same
+   treatment and are not families: `firecrawl/firecrawl-app-examples` and `PaddlePaddle/Paddle.js`
+   are first-party sibling repositories, and whether a sibling repo is a SKU of the product or its
+   own product is a question the sweep cannot settle.
+
+12. **181 third-party derivatives need a base-model declaration, or a `base_model` read.** GGUF
+   quantizations, abliterations, uncensored merges and fine-tunes whose names carry a declared
+   family token but whose owner is not the family's organization. They are almost certainly not
+   new products; nothing in this repo says what they *are* derivatives of, and this pass did not
+   read Hugging Face's own `base_model` field. Either the sweep starts reading `base_model` and
+   folds on it, or a person rules on them. Three of the 181 have the exact shape the declared
+   format-redistribution predicate covers
+   (`ibm-granite/granite-guardian-3.3-8b-GGUF`, `ibm-granite/granite-guardian-4.1-8b-GGUF`,
+   `janhq/Jan-v3-4B-base-instruct-gguf`) but the predicate needs the repo's own `tags`, which this
+   pass did not read for them; asserting the tag unread would be the same error in a new place.
+
+13. **55 of the 67 rows name an organization with no record in
    `sources/organizations/`** (45 distinct org slugs) — `answerdotai`,
    `bespokelabsai`, `facebookai`, `emilyalsentzer` and
    the rest. On 59 of the 67 rows the owner login is not a declared handle for
@@ -3199,6 +3299,19 @@ this table and the two parked tables above.
    what repairs the coverage baseline named under **Gates**.
 
 ## Gates
+
+All three re-run at the fourth revision. The registry files are byte-identical to the third
+revision — the correction moved 300 signals between tables in this sheet and emitted no row — so
+`validate`, `check_corpus_diff` and the test suite return exactly what they did then, and the
+identity-eval failure count is unchanged rather than merely assumed unchanged.
+
+- **The reconciliation is recounted from the tables, not carried forward.** Reading the four
+  tables in this file back: 739 duplicate rows, and 288 + 1185 + 300 = 1773 parked rows against 67
+  emitted rows. `739 + (67 + 1773) = 2579` = `raw_signals`, and `67 + 1773 = 1840` =
+  `unique_candidates`. The fold-class tally inside the duplicate table also reconciles against
+  **What a fold has to rest on**: 463 repeats + 88 declared artifacts + 7 ledger entries + 175
+  declared first-party family releases + 1 declared-tag redistribution + 5 retried hardware paths
+  = 739.
 
 - `uv run python -m build.validate` → `0 error(s), 2 warning(s)` (both warnings pre-existing
   `model_families` pattern-overlap notices, byte-identical on `main`).
@@ -3218,7 +3331,7 @@ this table and the two parked tables above.
   untouched-product row changes: none
   ```
 
-- `uv run pytest -q` → **6 failed, 1827 passed, 1 skipped in 657s**. All six failures are in
+- `uv run pytest -q` → **6 failed, 1827 passed, 1 skipped in 657s**; `pytest tests/test_identity_eval.py -q` re-run at this revision → **6 failed, 131 passed**, the same six. All six failures are in
   `tests/test_identity_eval.py` (6 failed, 131 passed when that file is run alone); all 137 of
   its tests pass on `main`, verified in a scratch worktree at 9df82a12, so the batch causes them
   and they are not pre-existing. Five repair only by editing a corpus-wide generated fixture:
@@ -3272,4 +3385,7 @@ this table and the two parked tables above.
 | 3 | No emitted field may be an LLM-authored identity assignment | Every field is now produced by the derivation table above. The hand-made organization mappings (`answerdotai` → `answer-ai`, `bespokelabsai` → `bespoke-labs`, `google-bert` → `google`, `facebookai` → `meta`, and ten more; `data-prep-kit` → `ibm` went with its row) are gone: `org` is the declared handle or the slugified login. The three hand-made product-family folds are un-folded and each checkpoint is emitted at its declared identity. |
 | 3 | Recognition is not an acceptance predicate | The nine sub-floor exceptions are parked with the floor that excluded them. Acceptance is the predicate in **How a candidate becomes a row**, whose only judgment-shaped clause can remove a candidate and never admit one. |
 | 3 | Replenish through another documented retrieval pass | 16 more queries at the same cutoffs, predeclared in a manifest before the first request; 2579 raw signals, 67 rows across five categories. One manifest floor was corrected upward to match the first pass's convention for the same query shape, and the correction is disclosed above. |
+| 4 | A fold has to rest on a declaration, not on a name match | Every fold re-audited against `sources/products/`, `sources/registry/`, `sources/model_families.yaml`, `sources/org_handles.yaml` and `sources/resolution_ledger.yaml`. 300 folds withdrawn — 286 name matches, 2 domain-and-path matches, 12 stated readings — and each un-folded signal is held in **Parked — a withdrawn fold** with its provenance and the reason. 739 duplicates remain, each naming the declaration behind it. |
+| 4 | All five counts recomputed, not adjusted | `duplicate_signals` 1039 → 739, `unique_candidates` 1540 → 1840, `parked` 1473 → 1773. `raw_signals` 2579 and `accepted` 67 unchanged: a withdrawn fold moves a signal between the two sides of the first equation and always lands on the parked side of the second. |
+| 4 | Seven mirror and derivative folds settled by reading, not observing | The mirrors-and-derivatives table drops to one row, the format redistribution whose predicate is mechanical and whose format tag was read. The other seven — two `chronos` mirrors, a Core ML conversion, an abliterated GGUF, a component model, a web UI and a plugin surface — are un-folded as class N5. |
 
