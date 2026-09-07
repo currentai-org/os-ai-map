@@ -83,24 +83,30 @@
 # primitives) - it has no primary tie to trained-model or tensor-program optimization; it solves
 # linear systems for FEM/CFD-style simulation more than it serves AI workloads. Kept out on the same
 # general-purpose-adjacent reasoning round 1 used against redis and tidb.
+# Appended 2026-09-07 (weekly tail batch). Sources: GitHub repository search, eight queries (six
+# topic-scoped: mlir, quantization, compiler+deep-learning, cuda+kernel, onnx, triton; two
+# free-text), sorted by stars, top 30 each, floor 1,000 all-time stars and a push no older than
+# 2025-09-07. Executed 2026-09-07.
 #
-# Swept 2026-09-07 (weekly tail batch), appended to the rows above. Category re-swept because the map
-# still reads it at maturity stage 3. Sources: GitHub repository search, eight queries (topic:mlir,
-# topic:quantization, topic:compiler+deep-learning, topic:cuda+kernel, topic:onnx, topic:triton, plus
-# two free-text). Predeclared retrieval cutoff: sort by stars, top 30 per query, floor 1,000 all-time
-# stars and a push no older than 2025-09-07, executed 2026-09-07.
+# How the fields on these rows were produced, in full: the primary identifier and `type` come
+# verbatim from the API response of the query that returned the signal; `display_name` and `org`
+# transcribe the declared repository or model name and the declared owner login under the
+# normalization tabulated in the batch summary; `category` is the category declared for that query
+# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
+# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
+# the summary with that reason, and every emitted row carries an identifier that is not a URL.
 #
-# Boundary applied on the same reasoning the three rows above record: model zoos (onnx/models,
-# PINTO_model_zoo), visualizers (netron), complete runtimes (CTranslate2, faster-whisper,
-# sherpa-onnx, lucebox) and general frameworks (burn, SynapseML) are parked rather than stretched.
-# Two are parked as open boundary questions rather than decided here: EnzymeAD/Enzyme, an
-# automatic-differentiation compiler pass, and llvm/circt, a hardware-EDA compiler. Zaneham/Booth is
-# parked as an implausible signal with the number stated - 1,737 stars on a single-owner repository
-# seven months old claiming a full CUDA, Triton and HIP compiler.
+# Parked rather than stretched to fit: model zoos and converted-weight collections, general ML and
+# tensor frameworks, and runtimes. Two boundary questions are escalated in the summary rather than
+# decided here: EnzymeAD/Enzyme, an automatic-differentiation compiler pass, and llvm/circt, a
+# hardware-EDA compiler. Zaneham/Booth is parked as an implausible signal with the number stated -
+# 1,737 stars on a single-owner repository seven months old claiming a full CUDA, Triton and HIP
+# compiler.
 #
-# pytorch/xla is emitted as `pytorch-xla`, not `xla`: head product `xla` is the OpenXLA compiler and
-# this is the PyTorch bridge to it. Counts, parked candidates with reasons, source URLs and fetch
-# dates: docs/sweeps/2026-09-07-tail-batch.md.
+# pytorch/xla is emitted as `pytorch-xla`, not `xla`: the declared slug normalization prefixes the
+# owner when the repository name collides with a slug already in the corpus, and head product `xla`
+# is the OpenXLA compiler. Counts, parked candidates with reasons, source URLs, fetch dates and
+# duplicate mappings: docs/sweeps/2026-09-07-tail-batch.md.
 category: compilers
 products:
   - slug: nccl

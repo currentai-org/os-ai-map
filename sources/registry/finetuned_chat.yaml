@@ -1,15 +1,33 @@
-# Swept 2026-09-07 (weekly tail batch), same Hugging Face pass as base_pretrained; see that file's
-# header for the query set and the predeclared retrieval cutoff.
+# Swept 2026-09-07 (weekly tail batch). Category selected because the map reads it at maturity
+# stage 3 with an `openness` gap.
 #
-# Only two rows. Nearly every instruction-tuned candidate the ranked queries returned is a release
-# or a third-party redistribution of a family the map already carries - Qwen, GLM, DeepSeek, Gemma,
-# Llama, Kimi, MiniMax, Nemotron, SmolLM, MiniCPM, Apertus, Ornith - and folds to a duplicate under
-# the release-suffix rule rather than a candidate. The abliterated, uncensored and GGUF re-uploads
-# that rank alongside them are parked as third-party derivatives.
+# Sources: the same ten Hugging Face model queries as base_pretrained and safeguards, top 100 each,
+# executed 2026-09-07. Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads on the
+# ranked queries. EXAONE sits below that floor (373,508) and is accepted anyway, because the cutoff
+# bounds retrieval and never rejects a product the sweep recognized.
 #
-# Counts, parked candidates with reasons, source URLs and fetch dates: docs/sweeps/2026-09-07-tail-batch.md.
+# How the fields on these rows were produced, in full: the primary identifier and `type` come
+# verbatim from the API response of the query that returned the signal; `display_name` and `org`
+# transcribe the declared repository or model name and the declared owner login under the
+# normalization tabulated in the batch summary; `category` is the category declared for that query
+# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
+# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
+# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+#
+# Category comes from the model's own declared metadata: each row below declares the
+# `conversational` tag, which is what names this category rather than base_pretrained. Nearly every
+# other instruct-tuned model the ranked queries returned folds onto a family already on the map
+# under sources/model_families.yaml, which is why this file is short.
+#
+# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
+# docs/sweeps/2026-09-07-tail-batch.md.
 category: finetuned_chat
 products:
+  - slug: lfm2
+    display_name: Liquid LFM2
+    type: model
+    org: liquid-ai
+    huggingface_model: LiquidAI/LFM2.5-2.6B
   - slug: dolphin
     display_name: Dolphin
     type: model

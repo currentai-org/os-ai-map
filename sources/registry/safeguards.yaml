@@ -7,14 +7,24 @@
 # cutoff: GitHub top 30 per query, floor 1,000 stars and a push no older than 2025-09-07; Hugging
 # Face top 100 per query, floor 5,000 trailing-30-day downloads. Executed 2026-09-07.
 #
-# Boundary applied: the category is tools that detect, filter or constrain unsafe model inputs,
-# outputs or actions, plus AI red-teaming. Twelve general offensive-security and penetration-testing
-# projects (sliver, dirsearch, afrog, BlackArch and the rest) were parked, as were LLM gateways
-# (bifrost, llmgateway, semantic-router) and evaluation/observability platforms. Guard models that
-# fold onto an existing head product (Llama Guard releases, Granite Guardian releases, NVIDIA's
-# Nemotron content-safety line) are duplicates, not candidates.
+# How the fields on these rows were produced, in full: the primary identifier and `type` come
+# verbatim from the API response of the query that returned the signal; `display_name` and `org`
+# transcribe the declared repository or model name and the declared owner login under the
+# normalization tabulated in the batch summary; `category` is the category declared for that query
+# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
+# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
+# the summary with that reason, and every emitted row carries an identifier that is not a URL.
 #
-# Counts, parked candidates with reasons, source URLs and fetch dates: docs/sweeps/2026-09-07-tail-batch.md.
+# Parked rather than stretched to fit: twelve general offensive-security and penetration-testing
+# projects (sliver, dirsearch, afrog, BlackArch and the rest), LLM gateways (bifrost, llmgateway,
+# semantic-router), evaluation and observability platforms, microsoft/presidio (a general-purpose PII
+# framework, parked because only an editorial argument brings it inside the category) and
+# Falconsai/nsfw_image_detection (an image classifier from a ranked query with no declared category).
+# Guard models that fold onto an existing head product (Llama Guard releases, Granite Guardian
+# releases, NVIDIA's Nemotron content-safety line) are duplicates, not candidates.
+#
+# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
+# docs/sweeps/2026-09-07-tail-batch.md.
 category: safeguards
 products:
   - slug: skillspector
@@ -22,11 +32,6 @@ products:
     type: software
     org: nvidia
     github: NVIDIA/SkillSpector
-  - slug: presidio
-    display_name: Presidio
-    type: software
-    org: data-privacy-stack
-    github: data-privacy-stack/presidio
   - slug: superagent
     display_name: Superagent
     type: software
@@ -81,11 +86,6 @@ products:
     type: model
     org: compvis
     huggingface_model: CompVis/stable-diffusion-safety-checker
-  - slug: nsfw-image-detection
-    display_name: NSFW Image Detection
-    type: model
-    org: falconsai
-    huggingface_model: Falconsai/nsfw_image_detection
   - slug: ncii-guard
     display_name: NCII Guard
     type: model

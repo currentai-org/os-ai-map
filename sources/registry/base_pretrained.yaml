@@ -4,26 +4,42 @@
 # Sources: Hugging Face model API, seven ranked queries (text-generation by downloads, by likes and
 # by trending score; all models by downloads and by trending score; `base` and `instruct` searches),
 # top 100 each. Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads, executed
-# 2026-09-07. Sub-floor rows were returned but not triaged individually; gpt-j and lfm2 are accepted
-# below despite sitting under the floor, because the cutoff bounds retrieval and never rejects a
-# product the sweep recognized.
+# 2026-09-07. Sub-floor rows were returned but not triaged individually; gpt-j is accepted below
+# despite sitting under the floor, because the cutoff bounds retrieval and never rejects a product
+# the sweep recognized.
+#
+# How the fields on these rows were produced, in full: the primary identifier and `type` come
+# verbatim from the API response of the query that returned the signal; `display_name` and `org`
+# transcribe the declared repository or model name and the declared owner login under the
+# normalization tabulated in the batch summary; `category` is the category declared for that query
+# (GitHub) or named by the declared-metadata rule (Hugging Face). No field on a row below rests on
+# an editorial reading. A candidate whose category or acceptance would have needed one is parked in
+# the summary with that reason, and every emitted row carries an identifier that is not a URL.
+#
+# For a model the ranked queries carry no declared category, so the category comes from the model's
+# own declared metadata: `conversational` in the declared tags names finetuned_chat, and a declared
+# language-model pipeline_tag (fill-mask, text-generation, text2text-generation, translation,
+# summarization) without it names base_pretrained. A model declaring neither is parked -
+# google/electra-base-discriminator declares no pipeline_tag at all and is parked for that reason,
+# and LiquidAI/LFM2.5-2.6B declares `conversational`, so it is emitted in finetuned_chat.yaml
+# instead of here. The rule and its application to each row are tabulated in the batch summary.
 #
 # What this pass found is that the map's model rosters are organized as families, and the ranked
 # Hugging Face queries are dominated by releases of families already on the map - 411 of the raw
-# signals fold onto an existing family or head product under sources/model_families.yaml and the
-# release-suffix rule in docs/reference/identity.md. What is genuinely missing is the encoder and
-# early-decoder generation the map never recorded: BERT, RoBERTa, XLM-RoBERTa, T5, ELECTRA, DeBERTa,
+# signals fold onto an existing family under sources/model_families.yaml or the release-suffix rule
+# in docs/reference/identity.md, and 77 more resolve to a head product directly. What is genuinely
+# missing is the encoder and early-decoder generation the map never recorded: BERT, RoBERTa, XLM-RoBERTa, T5, DeBERTa,
 # ModernBERT, DistilBERT, GPT-2, GPT-J and OPT, all of them still drawing tens of millions of
-# downloads a month, plus three recent lines (OpenELM, PowerMoE, Liquid LFM2).
+# downloads a month, plus two recent lines (OpenELM, PowerMoE).
 #
 # Escalated rather than emitted: the ranked queries also surfaced large, heavily used populations the
-# taxonomy has no category for - text embedding and reranking models (18 candidates), speech and
-# audio models (13), vision and vision-language backbones (9), generative image/video models (5) and
-# time-series forecasters (5). Every one is parked in the batch summary against a category-proposal
-# issue. This is the largest coverage gap the sweep found and it is a governance question, not a
-# data one.
+# taxonomy has no category for - text embedding and reranking models, speech and audio models,
+# vision and vision-language backbones, generative image/video models and time-series forecasters.
+# Every one is parked in the batch summary against a category-proposal issue. This is the largest
+# coverage gap the sweep found and it is a governance question, not a data one.
 #
-# Counts, parked candidates with reasons, source URLs and fetch dates: docs/sweeps/2026-09-07-tail-batch.md.
+# Counts, parked candidates with reasons, source URLs, fetch dates and duplicate mappings:
+# docs/sweeps/2026-09-07-tail-batch.md.
 category: base_pretrained
 products:
   - slug: bert
@@ -46,11 +62,6 @@ products:
     type: model
     org: google
     huggingface_model: google-t5/t5-small
-  - slug: electra
-    display_name: ELECTRA
-    type: model
-    org: google
-    huggingface_model: google/electra-base-discriminator
   - slug: deberta
     display_name: DeBERTa
     type: model
@@ -86,11 +97,6 @@ products:
     type: model
     org: ibm
     huggingface_model: ibm-research/PowerMoE-3b
-  - slug: lfm2
-    display_name: Liquid LFM2
-    type: model
-    org: liquid-ai
-    huggingface_model: LiquidAI/LFM2.5-2.6B
   - slug: gpt-j
     display_name: GPT-J
     type: model
