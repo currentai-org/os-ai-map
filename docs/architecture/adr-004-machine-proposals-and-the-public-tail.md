@@ -26,10 +26,21 @@ budget; and if the observed tier is hidden, the map cannot show coverage at all.
 3. **Corpus-wide generated fixtures are regenerated only after canonical state changes on
    `main`, and never appear in proposal PRs.** `tests/goldens/corpus.json` joins
    `build/notebook_data.json` under `regenerate.yml` and `generated-files-guard`.
+   It follows that **a gate whose only repair is a corpus-wide fixture edit does not block a
+   proposal PR.** Such gates — identity membership fixtures and committed coverage baselines
+   among them — bind on `main`, where the fixtures are regenerated, not on the proposals that
+   cannot touch them. A proposal PR failing *only* those gates is complete; a reviewer records
+   the failure and merges on the sheet. This is not an exception granted per batch. Two rules
+   otherwise contradict each other, and a proposal caught between them stalls with its work
+   finished and unmergeable.
 4. **No tail field depends on an LLM judgment.** An agent may orchestrate serialization and
    PR creation without being epistemically involved in the result.
 
 ## Consequences
+
+A registry-only batch is no longer blocked by identity gates it is forbidden to repair.
+Those gates still protect the corpus from silent drift, but they do it where the drift can
+happen — on `main` — rather than on a proposal that adds only registry rows.
 
 Two independent product PRs merge back to back with no fixture repair. The intentional
 change gate moves from digest pins to the per-PR semantic diff. Review effort is spent on
