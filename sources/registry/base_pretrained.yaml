@@ -1,0 +1,98 @@
+# Swept 2026-09-07 (weekly tail batch). Category selected because the map reads it at maturity
+# stage 3 with `adoption` and `openness` gaps.
+#
+# Sources: Hugging Face model API, seven ranked queries (text-generation by downloads, by likes and
+# by trending score; all models by downloads and by trending score; `base` and `instruct` searches),
+# top 100 each. Predeclared retrieval cutoff: 1,000,000 trailing-30-day downloads, executed
+# 2026-09-07. Sub-floor rows were returned but not triaged individually; gpt-j and lfm2 are accepted
+# below despite sitting under the floor, because the cutoff bounds retrieval and never rejects a
+# product the sweep recognized.
+#
+# What this pass found is that the map's model rosters are organized as families, and the ranked
+# Hugging Face queries are dominated by releases of families already on the map - 411 of the raw
+# signals fold onto an existing family or head product under sources/model_families.yaml and the
+# release-suffix rule in docs/reference/identity.md. What is genuinely missing is the encoder and
+# early-decoder generation the map never recorded: BERT, RoBERTa, XLM-RoBERTa, T5, ELECTRA, DeBERTa,
+# ModernBERT, DistilBERT, GPT-2, GPT-J and OPT, all of them still drawing tens of millions of
+# downloads a month, plus three recent lines (OpenELM, PowerMoE, Liquid LFM2).
+#
+# Escalated rather than emitted: the ranked queries also surfaced large, heavily used populations the
+# taxonomy has no category for - text embedding and reranking models (18 candidates), speech and
+# audio models (13), vision and vision-language backbones (9), generative image/video models (5) and
+# time-series forecasters (5). Every one is parked in the batch summary against a category-proposal
+# issue. This is the largest coverage gap the sweep found and it is a governance question, not a
+# data one.
+#
+# Counts, parked candidates with reasons, source URLs and fetch dates: docs/sweeps/2026-09-07-tail-batch.md.
+category: base_pretrained
+products:
+  - slug: bert
+    display_name: BERT
+    type: model
+    org: google
+    huggingface_model: google-bert/bert-base-uncased
+  - slug: roberta
+    display_name: RoBERTa
+    type: model
+    org: meta
+    huggingface_model: FacebookAI/roberta-base
+  - slug: xlm-roberta
+    display_name: XLM-RoBERTa
+    type: model
+    org: meta
+    huggingface_model: FacebookAI/xlm-roberta-base
+  - slug: t5
+    display_name: T5
+    type: model
+    org: google
+    huggingface_model: google-t5/t5-small
+  - slug: electra
+    display_name: ELECTRA
+    type: model
+    org: google
+    huggingface_model: google/electra-base-discriminator
+  - slug: deberta
+    display_name: DeBERTa
+    type: model
+    org: microsoft
+    huggingface_model: microsoft/mdeberta-v3-base
+  - slug: modernbert
+    display_name: ModernBERT
+    type: model
+    org: answer-ai
+    huggingface_model: answerdotai/ModernBERT-base
+  - slug: distilbert
+    display_name: DistilBERT
+    type: model
+    org: hugging-face
+    huggingface_model: distilbert/distilbert-base-uncased
+  - slug: gpt-2
+    display_name: GPT-2
+    type: model
+    org: openai
+    huggingface_model: openai-community/gpt2
+  - slug: opt
+    display_name: OPT
+    type: model
+    org: meta
+    huggingface_model: facebook/opt-125m
+  - slug: openelm
+    display_name: OpenELM
+    type: model
+    org: apple
+    huggingface_model: apple/OpenELM-1_1B-Instruct
+  - slug: powermoe
+    display_name: PowerMoE
+    type: model
+    org: ibm
+    huggingface_model: ibm-research/PowerMoE-3b
+  - slug: lfm2
+    display_name: Liquid LFM2
+    type: model
+    org: liquid-ai
+    huggingface_model: LiquidAI/LFM2.5-2.6B
+  - slug: gpt-j
+    display_name: GPT-J
+    type: model
+    org: eleutherai
+    huggingface_model: EleutherAI/gpt-j-6b

@@ -83,6 +83,24 @@
 # primitives) - it has no primary tie to trained-model or tensor-program optimization; it solves
 # linear systems for FEM/CFD-style simulation more than it serves AI workloads. Kept out on the same
 # general-purpose-adjacent reasoning round 1 used against redis and tidb.
+#
+# Swept 2026-09-07 (weekly tail batch), appended to the rows above. Category re-swept because the map
+# still reads it at maturity stage 3. Sources: GitHub repository search, eight queries (topic:mlir,
+# topic:quantization, topic:compiler+deep-learning, topic:cuda+kernel, topic:onnx, topic:triton, plus
+# two free-text). Predeclared retrieval cutoff: sort by stars, top 30 per query, floor 1,000 all-time
+# stars and a push no older than 2025-09-07, executed 2026-09-07.
+#
+# Boundary applied on the same reasoning the three rows above record: model zoos (onnx/models,
+# PINTO_model_zoo), visualizers (netron), complete runtimes (CTranslate2, faster-whisper,
+# sherpa-onnx, lucebox) and general frameworks (burn, SynapseML) are parked rather than stretched.
+# Two are parked as open boundary questions rather than decided here: EnzymeAD/Enzyme, an
+# automatic-differentiation compiler pass, and llvm/circt, a hardware-EDA compiler. Zaneham/Booth is
+# parked as an implausible signal with the number stated - 1,737 stars on a single-owner repository
+# seven months old claiming a full CUDA, Triton and HIP compiler.
+#
+# pytorch/xla is emitted as `pytorch-xla`, not `xla`: head product `xla` is the OpenXLA compiler and
+# this is the PyTorch bridge to it. Counts, parked candidates with reasons, source URLs and fetch
+# dates: docs/sweeps/2026-09-07-tail-batch.md.
 category: compilers
 products:
   - slug: nccl
@@ -102,3 +120,41 @@ products:
     org: amd
     github: ROCm/rocALUTION
     homepage: https://rocm.docs.amd.com/projects/rocALUTION/en/latest/
+  - slug: torch-mlir
+    display_name: Torch-MLIR
+    type: software
+    org: llvm
+    github: llvm/torch-mlir
+  - slug: nunchaku
+    display_name: Nunchaku
+    type: software
+    org: nunchux-ai
+    github: nunchux-ai/nunchaku
+    homepage: https://nunchux.ai
+  - slug: kernl
+    display_name: Kernl
+    type: software
+    org: els-rd
+    github: ELS-RD/kernl
+    homepage: http://www.kernl.ai
+  - slug: flaggems
+    display_name: FlagGems
+    type: software
+    org: flagos-ai
+    github: flagos-ai/FlagGems
+  - slug: autokernel
+    display_name: AutoKernel
+    type: software
+    org: rightnow-ai
+    github: RightNow-AI/autokernel
+  - slug: intel-extension-for-pytorch
+    display_name: Intel Extension for PyTorch
+    type: software
+    org: intel
+    github: intel/intel-extension-for-pytorch
+  - slug: pytorch-xla
+    display_name: PyTorch/XLA
+    type: software
+    org: pytorch-foundation
+    github: pytorch/xla
+    homepage: https://pytorch.org/xla
