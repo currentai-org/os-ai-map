@@ -354,8 +354,11 @@ MIN_TRUTH = 20
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
     "membership_non_scoring": (
-        "this relation's entire truth set is the tail's homepage declarations (27 today), so a\n"
-        "  SINGLE wrong or missing edge is a ~3.7% swing -- there is no headroom by construction.\n"
+        "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
+        "  missing edge is a 1/n swing -- sensitive while n is small, weaker as the tail grows\n"
+        "  (one bad edge breached the 0.98 precision floor at n=27 and no longer does past 50).\n"
+        "  A publish lag trips RECALL, and trips it hard: a batch adding k homepage\n"
+        "  declarations holds recall at (n-k)/n until the weekly publish lands.\n"
         "  Two non-regressions look like this failure. (1) A tail homepage row edited in the repo\n"
         "  is still emitted by the warehouse until the weekly registry publish lands, so a red\n"
         "  scheduled run soon after such an edit means republish, not regression -- check\n"
