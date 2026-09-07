@@ -155,7 +155,11 @@ recall read 1.000 and mean nothing:
   computed over exactly the pairs a declared handle could bridge, so recoverability is defined
   by the same route the graph emits on. That makes it a REGRESSION INVARIANT, not a coverage
   target: a miss is the resolver failing to use evidence it already has, which is a bug rather
-  than a curation gap. `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
+  than a curation gap. **One caveat the invariant does not currently model:** part of `org`'s
+  truth is tail-derived, and truth is the repo while the edges are the warehouse -- so a registry
+  batch depresses this recall the moment it merges and until the weekly publish lands, with no
+  resolver defect involved. Until that is modelled, read a failure here against `n_emitted`:
+  unchanged while `n_truth` grew means lag, not regression. `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
 - **coverage = have we given it enough evidence.** That is `org_handle_coverage`, per route:
@@ -353,6 +357,18 @@ MIN_TRUTH = 20
 # alone cannot supply: which failures are not regressions. See the module docstring's
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
+    "org": (
+        "part of this relation's truth is TAIL-derived, so a publish lag depresses its recall the\n"
+        "  same way it depresses membership_non_scoring -- despite the failure line calling a miss a\n"
+        "  resolver bug. Truth is the repo; the edges are the warehouse. A registry batch adds org\n"
+        "  pairs the moment it merges, and none of them can be recovered until the weekly publish\n"
+        "  lands, so recall drops to (n-k)/n with k the new tail pairs. Worked example: merging 67\n"
+        "  registry rows on 2026-09-07 took org recall from 1.000 (446/446) to 0.980 (446/455) with\n"
+        "  n_emitted UNCHANGED at 3089 -- the warehouse side had not moved at all.\n"
+        "  So before reading this as a resolver defect: compare n_emitted against the previous run.\n"
+        "  Unchanged n_emitted with grown n_truth is a lag, and it clears itself at the next publish.\n"
+        "  A genuine miss shows n_emitted moving while recovery does not."
+    ),
     "membership_non_scoring": (
         "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
         "  missing edge is a 1/n swing -- sensitive while n is small, weaker as the tail grows\n"
