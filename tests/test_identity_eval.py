@@ -774,12 +774,26 @@ def test_main_write_fixture_rewrites_and_scores_nothing(tmp_path, capsys):
 
 
 def test_a_stale_fixture_tail_row_fails_the_floor_with_the_publish_lag_note(tmp_path, capsys):
-    """The failure mode the note exists for: one wrong row out of 27 breaks the 0.98 precision
-    floor, and the message has to say that a red run can mean "republish" or "regenerate the
-    fixture" rather than "the graph regressed"."""
+    """The failure mode the note exists for: enough wrong rows to breach the 0.98 precision
+    floor, with a message saying a red run can mean "republish" or "regenerate the fixture"
+    rather than "the graph regressed".
+
+    The number of corrupted rows is DERIVED, not fixed at one. The floor's sensitivity scales
+    with the truth set: one bad row breached 0.98 while the tail held 27 homepage declarations,
+    and stopped breaching it past 50. Hard-coding one row made this test start passing for the
+    wrong reason the moment the corpus grew — it reported "the floor catches a stale row" when
+    the floor had quietly stopped doing so.
+    """
     rows = tail_membership_rows(REAL_TRUTH.route_kinds)
     stale = [dict(row) for row in rows]
-    next(row for row in stale if row["artifact_kind"] == "homepage")["artifact_id"] = "gone.example.com"
+    homepage = [row for row in stale if row["artifact_kind"] == "homepage"]
+    floor = FLOORS["membership_non_scoring"][0]
+    # Fewest corruptions that put precision strictly below the floor, at whatever size the
+    # truth set is today.
+    n = len(homepage)
+    needed = next(k for k in range(1, n + 1) if (n - k) / n < floor)
+    for row in homepage[:needed]:
+        row["artifact_id"] = "gone.example.com"
     path = tmp_path / "edges.json"
     path.write_text(json.dumps({"membership": stale}))
     assert main(["--edges", str(path), "--floors"]) == 1

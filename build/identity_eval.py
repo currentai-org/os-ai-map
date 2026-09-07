@@ -236,10 +236,14 @@ now bites is the point of counting the truth, not a reason to raise `MIN_TRUTH`.
 
 ## `membership_non_scoring` has no headroom, so read its failures twice
 
-Its truth set is the tail's homepage declarations and nothing else -- 27 today. One wrong or
-missing edge is a ~3.7% swing, which is already more than the 0.98 precision floor allows. Two
-things that are not regressions land as a failure on that row, and `FLOOR_NOTES` prints both
-next to it so a log alone is enough to tell them apart:
+Its truth set is the tail's homepage declarations and nothing else. **The floor's sensitivity
+scales with that set's size, so it weakens as the tail grows**: one wrong or missing edge is a
+1/n swing, which breached the 0.98 precision floor on its own while n was 27 and no longer does
+past 50 -- at n=51 a single bad edge scores 0.9804 and passes, and n=200 tolerates four. Read a
+green row on this relation as "no more than floor(n * 0.02) bad edges", not as "none". Raising
+the floor is a rubric change and belongs to a human. Two things that are not regressions land as
+a failure on that row, and `FLOOR_NOTES` prints both next to it so a log alone is enough to tell
+them apart:
 
 - **Publish lag.** Truth is the repo; the edges are the warehouse. A tail homepage row edited or
   deleted in `sources/registry/*.yaml` is still emitted from the last published
@@ -350,8 +354,11 @@ MIN_TRUTH = 20
 # "membership_non_scoring has no headroom" section for the arithmetic.
 FLOOR_NOTES: dict[str, str] = {
     "membership_non_scoring": (
-        "this relation's entire truth set is the tail's homepage declarations (27 today), so a\n"
-        "  SINGLE wrong or missing edge is a ~3.7% swing -- there is no headroom by construction.\n"
+        "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
+        "  missing edge is a 1/n swing -- sensitive while n is small, weaker as the tail grows\n"
+        "  (one bad edge breached the 0.98 precision floor at n=27 and no longer does past 50).\n"
+        "  A publish lag trips RECALL, and trips it hard: a batch adding k homepage\n"
+        "  declarations holds recall at (n-k)/n until the weekly publish lands.\n"
         "  Two non-regressions look like this failure. (1) A tail homepage row edited in the repo\n"
         "  is still emitted by the warehouse until the weekly registry publish lands, so a red\n"
         "  scheduled run soon after such an edit means republish, not regression -- check\n"
