@@ -158,8 +158,8 @@ recall read 1.000 and mean nothing:
   than a curation gap -- PROVIDED the resolver has actually seen that evidence, which between a
   mid-week registry merge and the next identity rebuild it may not have. In that window a
   failure here can have no defect behind it, so a failure is not self-interpreting.
-  `FLOOR_NOTES['org']` carries what to check, and says which of those checks narrow the question
-  rather than answering it; the edge counts answer nothing on their own.
+  `FLOOR_NOTES['org']` carries the provenance query that settles which case it is, and marks the
+  count comparisons as narrowing rather than deciding; the edge counts decide nothing alone.
   `RECALL_INVARIANTS` pins it at >= 0.99 for `org`, it still exits 1 on
   failure under `--floors`, and the table labels that row `recall invariant` rather than
   `recall floor` so nobody reads a 1.000 as coverage.
@@ -365,30 +365,34 @@ MIN_TRUTH = 20
 FLOOR_NOTES: dict[str, str] = {
     "org": (
         "part of this relation's truth is TAIL-derived, and the pipeline is a staircase: the\n"
-        "  identity dataset rebuilds on its own schedule (Sunday), the registry republishes when a\n"
-        "  batch MERGES, and this eval runs Monday 07:30 UTC. So a mid-week registry merge CAN\n"
-        "  leave truth ahead of the edges with no resolver defect behind it. That is a hypothesis\n"
-        "  to test, not a conclusion to draw from this failure.\n"
-        "  Two things do NOT establish it. `n_emitted` holding steady while `n_truth` grows is\n"
-        "  equally consistent with a resolver that read the new inputs and emitted nothing. Nor do\n"
-        "  row counts settle it: a replacement can preserve a count, and unrelated edges can offset\n"
-        "  missing ones.\n"
-        "  What counts CAN do is narrow it. Compare the same population on both sides -- note the\n"
-        "  tier filter, without which you compare tail rows against a table that is mostly head:\n"
+        "  identity dataset rebuilds on its own schedule, the registry republishes when a batch\n"
+        "  MERGES, and this eval runs Monday 07:30 UTC. So a mid-week registry merge can leave\n"
+        "  truth ahead of the edges with no resolver defect behind it.\n"
+        "  THE CHECK THAT DECIDES IT is provenance, not counts -- when did the identity layer last\n"
+        "  run, and could it have seen the rows in question:\n"
+        "    SELECT MAX(sweep_week), MAX(first_seen) FROM currentai.identity.digest\n"
+        "  An identity run that predates the batch's merge cannot have consumed it, and that is\n"
+        "  settled rather than inferred. A run that postdates the merge means the resolver did see\n"
+        "  the rows, and a shortfall is then the defect the failure line describes.\n"
+        "  Counts only narrow it, and two count arguments prove nothing at all. `n_emitted` holding\n"
+        "  steady while `n_truth` grows is equally consistent with a resolver that read the new\n"
+        "  inputs and emitted nothing. Row totals can be preserved by a replacement, and unrelated\n"
+        "  edges can offset missing ones. Used only as a cheap first look, compare the same\n"
+        "  population on both sides -- note the tier filter, without which you compare tail rows\n"
+        "  against a table that is mostly head:\n"
         "    SELECT artifact_kind, COUNT(*) FROM currentai.registry.tail_products GROUP BY 1\n"
         "    SELECT artifact_kind, COUNT(*) FROM currentai.identity.membership_edges\n"
         "      WHERE product_tier = 'tail' GROUP BY 1\n"
-        "  Registry ahead of identity is CONSISTENT with a trailing layer and worth pursuing;\n"
-        "  agreement makes a trailing layer unlikely for that kind and points back at the resolver.\n"
-        "  Neither is proof. What decides it is run provenance: did the identity dataset's last run\n"
-        "  succeed, and which registry revision did it consume.\n"
         "  And this relation depends on more than membership: org_edges reads\n"
         "  currentai.identity.{artifact_nodes,candidates,digest} and\n"
         "  currentai.registry.{org_handles,organizations}. Any of those can be the stale one, so\n"
-        "  checking membership alone does not clear the relation.\n"
-        "  Worked example, 2026-09-07: merging 67 registry rows took org recall 1.000 -> 0.980 while\n"
-        "  the registry was already current (51 tail homepage rows, matching the repo) and identity\n"
-        "  held 27. Registry lag was the wrong first guess; the identity side was the one behind."
+        "  clearing membership does not clear the relation.\n"
+        "  Worked example, 2026-09-07. Merging 67 registry rows took org recall 1.000 -> 0.980.\n"
+        "  Counts said registry 51 tail homepage rows against identity's 27 -- suggestive only.\n"
+        "  Provenance settled it: the digest's latest run was 2026-09-06 01:30 UTC against a merge\n"
+        "  at 2026-09-07 17:00 UTC, so the layer had not seen those rows. Two earlier diagnoses of\n"
+        "  this same failure -- registry publish lag, then a resolver miss -- were both reached\n"
+        "  from counts and both wrong."
     ),
     "membership_non_scoring": (
         "this relation's entire truth set is the tail's homepage declarations, so one wrong or\n"
