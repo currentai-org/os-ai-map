@@ -320,6 +320,32 @@ def test_an_acyclic_anchor_chain_is_not_a_cycle():
     assert check(data, CATS) == []
 
 
+def test_a_tail_feeding_a_ring_is_not_reported_as_part_of_it():
+    """The slice that drops the tail only runs at a positive offset, which needs care to reach.
+
+    `d -> a -> b -> a` does not exercise it: the walk is entered in sorted order, so it starts
+    at `a`, already inside the ring, and the offset is zero. `a -> c -> b -> c` does — the walk
+    enters at the tail `a`, finds `c` at index 1, and must drop `a` before rotating the ring to
+    its smallest slug. Breaking the slice leaves every other test in this file passing.
+    """
+    data = scores(
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "c", "relation": "at"},
+        c={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "at"},
+        b={"score": 3, "basis": "feature_matrix", "relative_to": "c", "relation": "at"},
+    )
+    assert comparison_cycles(data) == [["b", "c"]]
+
+
+def test_two_disjoint_rings_are_both_reported():
+    data = scores(
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "at"},
+        b={"score": 3, "basis": "feature_matrix", "relative_to": "a", "relation": "at"},
+        x={"score": 3, "basis": "feature_matrix", "relative_to": "y", "relation": "at"},
+        y={"score": 3, "basis": "feature_matrix", "relative_to": "x", "relation": "at"},
+    )
+    assert comparison_cycles(data) == [["a", "b"], ["x", "y"]]
+
+
 def test_a_self_reference_is_not_double_reported_as_a_cycle():
     """The self edge is check()'s to reject; it is excluded from the graph, not counted twice."""
     data = scores(a={"score": 4, "basis": "feature_matrix", "relative_to": "a", "relation": "at"})
