@@ -82,7 +82,7 @@ capability:
 Recording the comparison converts an unfalsifiable claim into a falsifiable one — the same
 move `establishes` made for openness. It does **not** make capability derivable from evidence,
 and it does not verify that the comparison is right; it makes the comparison checkable.
-`build/check_capability.py` then asks the three questions a recorded comparison makes
+`build/check_capability.py` then asks the questions a recorded comparison makes
 answerable and a sentence never did:
 
 1. **Consistency.** If a product records `relative_to: megatron-lm, relation: one_below`, its
@@ -97,6 +97,12 @@ answerable and a sentence never did:
    invariant applied to a different dependency: a date is only as good as the least recently
    confirmed thing underneath it. Unless the edge carries an attestation of its own — see
    below.
+4. **No cycles.** Consistency reads each edge alone, so a reciprocal pair — `X one_below Y`
+   written alongside `Y one_above X` — satisfies the arithmetic on both while being circular:
+   each score's justification is the other's, and neither rests on a read made outside the
+   pair. A ring of any length is the same defect, the reciprocal pair its shortest case, so the
+   gate walks the `relative_to` graph and rejects a cycle before the graph grows enough to hide
+   one.
 
 The gate ratchets like the others — it covers the products that record a comparison and does
 not block the ones that do not.

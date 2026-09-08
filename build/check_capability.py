@@ -19,7 +19,7 @@ noticed when the product it referred to moved.
 `relative_to` and `relation` record it. This module then asks the three questions that a
 recorded comparison makes answerable and a sentence never did.
 
-## The three checks
+## The checks
 
 **Consistency.** If a product records `relative_to: megatron-lm, relation: one_below`, then its
 score must be exactly one below Megatron-LM's. This is the direct analogue of the
@@ -31,6 +31,12 @@ arithmetic over two integers is the whole rule.
 category. A cross-category comparison is not obviously wrong, but it is never what the notes
 are doing, and allowing it silently would let the anchor graph sprawl into a ranking of the
 whole map.
+
+**No cycles.** The arithmetic check reads each edge alone, so a reciprocal pair — X `one_below`
+Y written alongside Y `one_above` X — satisfies both equations while being circular: each
+score's justification is the other's. A ring of any length is the same defect, the reciprocal
+pair its shortest case, so `check` walks the `relative_to` graph and rejects a cycle before the
+graph grows enough to hide one.
 
 **Transitive freshness.** A confirmation of a derived band cannot be more recent than the
 confirmation of the band it derives from. If Megatron-LM's capability was last confirmed in
@@ -184,7 +190,54 @@ def check(scores: dict, owner: dict) -> list[str]:
                 f"{slug}:capability: claims last_verified {claimed}, but {target} was last "
                 f"confirmed {anchor_date}. The comparison was not re-derived"
             )
+
+    for cycle in comparison_cycles(scores):
+        ring = " -> ".join(cycle + [cycle[0]])
+        problems.append(
+            f"{cycle[0]}:capability: comparison cycle {ring}. Each band in the ring is placed "
+            f"against another in it, so none rests on a judgment made outside it"
+        )
     return problems
+
+
+def comparison_cycles(scores: dict) -> list[list[str]]:
+    """Every directed cycle in the `relative_to` graph, each as a list of slugs.
+
+    `check` verifies each edge's arithmetic in isolation, so a reciprocal pair -- X `one_below`
+    Y written alongside Y `one_above` X -- satisfies both equations while being circular: each
+    score's justification is the other's, and neither rests on a read made outside the pair. A
+    cycle of any length is the same defect; the reciprocal pair is only its shortest case.
+
+    `relative_to` is single-valued, so the graph is functional -- every node has at most one
+    successor -- and a walk forward from any node runs into either a dead end or a cycle. Edges
+    `check` already rejects (a self-reference, a target off the map) are left out, so the only
+    thing reported here is a genuine ring. Each ring is returned once, rotated to start at its
+    smallest slug so it reads identically however it was entered.
+    """
+    successor: dict[str, str] = {}
+    for slug, doc in scores.items():
+        target = (doc.get("capability") or {}).get("relative_to")
+        if target and target != slug and target in scores:
+            successor[slug] = target
+
+    cycles: list[list[str]] = []
+    resolved: set[str] = set()
+    for start in sorted(successor):
+        if start in resolved:
+            continue
+        path: list[str] = []
+        seen: dict[str, int] = {}
+        node = start
+        while node in successor and node not in seen and node not in resolved:
+            seen[node] = len(path)
+            path.append(node)
+            node = successor[node]
+        if node in seen:  # the walk closed back onto itself: the tail before it is not part
+            cycle = path[seen[node]:]
+            pivot = cycle.index(min(cycle))
+            cycles.append(cycle[pivot:] + cycle[:pivot])
+        resolved.update(path)
+    return sorted(cycles, key=lambda ring: ring[0])
 
 
 def _attestation_problems(
