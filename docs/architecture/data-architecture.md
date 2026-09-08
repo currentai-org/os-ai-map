@@ -410,7 +410,7 @@ The following do not belong in `catalog` long term:
 - repo-derived bridges presented as external inventory;
 - frozen historical tables without an explicit historical label.
 
-`currentai.catalog.stack_map` must be classified and migrated. Its curated identity and membership fields belong in `registry`; any compatibility output required by `scores.stack_contributors` should become an explicitly named compatibility view with a documented deprecation plan.
+ADR-003 settled `currentai.catalog.stack_map`, which this section previously said must still be classified and migrated. It was externalized: removed from this repo's inventory, its producer archived, and the deployed table left frozen under platform ownership at its last publish. Its only reader, `scores.stack_contributors`, was externalized with it, so the compatibility view this section once called for has nothing left to serve. The curated identity and membership fields it carried live in `registry`. Nothing in this repo migrates it now, and a doc that asks someone to is asking them to redo ADR-003.
 
 ### 4.3 `currentai.observations`
 
