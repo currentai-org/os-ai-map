@@ -336,7 +336,7 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 
 - `docs/operations/deploy-models.md`: revise, release, and run the warehouse models — and the
   truth about the scoring-chain schedule (declared but not firing; recompute is manual).
-- `docs/operations/refresh-data.md`: run fetchers and reload static models.
+- `docs/operations/refresh-data.md`: load a fetched CSV as a static model, and why the catalog fetchers and the weekly `refresh-data` workflow that ran them are gone.
 - `docs/operations/publish-map.md`: serialize, render, upload, and publish the live notebook to
   `/currentai/ai-stack-map` (id `7b29bf47`).
 - `docs/operations/artifact-state-rename.md`: the Phase 2 coordinated rename of the source

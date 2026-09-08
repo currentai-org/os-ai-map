@@ -16,6 +16,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Removed
+
+- The `refresh-data` workflow and its weekly cron. Both fetchers it ran were deleted when ADR-003 externalized the `catalog.*` tables, so every scheduled run since had failed ([#509](https://github.com/currentai-org/os-ai-map/issues/509)).
+
 ## [0.3.0] - 2026-09-05
 
 Moved discovery off hand curation, and built the identity graph and Postgres serving layer
