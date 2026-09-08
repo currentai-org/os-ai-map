@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-from build.check_capability import candidates, check, stale_attestations
+from build.check_capability import candidates, check, comparison_cycles, stale_attestations
 
 CATS = {"a": "cat", "b": "cat", "c": "cat", "far": "other"}
 
@@ -281,6 +281,77 @@ def test_a_missing_target_is_caught():
 def test_a_self_reference_is_caught():
     data = scores(a={"score": 4, "basis": "feature_matrix", "relative_to": "a", "relation": "at"})
     assert "points at itself" in check(data, CATS)[0]
+
+
+# --- the comparison graph must be acyclic (#442) ---------------------------------------------
+#
+# The arithmetic check reads each edge alone, so a reciprocal pair passes it while being
+# circular. A ring of any length is the same defect; these pin that check walks the graph.
+
+
+def test_a_reciprocal_pair_is_a_cycle_even_when_the_arithmetic_holds():
+    """X one_below Y and Y one_above X satisfy both equations, so only the cycle check sees it."""
+    data = scores(
+        a={"score": 4, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below"},
+        b={"score": 5, "basis": "feature_matrix", "relative_to": "a", "relation": "one_above"},
+    )
+    problems = check(data, CATS)
+    assert len(problems) == 1
+    assert "comparison cycle a -> b -> a" in problems[0]
+
+
+def test_comparison_cycles_finds_a_longer_ring_once_rotated_to_its_smallest_slug():
+    data = scores(
+        b={"score": 3, "basis": "feature_matrix", "relative_to": "c", "relation": "at"},
+        c={"score": 3, "basis": "feature_matrix", "relative_to": "a", "relation": "at"},
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "at"},
+    )
+    assert comparison_cycles(data) == [["a", "b", "c"]]
+
+
+def test_an_acyclic_anchor_chain_is_not_a_cycle():
+    """a -> b -> c with c an unanchored root is the normal shape and must stay clean."""
+    data = scores(
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "one_below"},
+        b={"score": 4, "basis": "feature_matrix", "relative_to": "c", "relation": "one_below"},
+        c={"score": 5, "basis": "feature_matrix"},
+    )
+    assert comparison_cycles(data) == []
+    assert check(data, CATS) == []
+
+
+def test_a_tail_feeding_a_ring_is_not_reported_as_part_of_it():
+    """The slice that drops the tail only runs at a positive offset, which needs care to reach.
+
+    `d -> a -> b -> a` does not exercise it: the walk is entered in sorted order, so it starts
+    at `a`, already inside the ring, and the offset is zero. `a -> c -> b -> c` does — the walk
+    enters at the tail `a`, finds `c` at index 1, and must drop `a` before rotating the ring to
+    its smallest slug. Breaking the slice leaves every other test in this file passing.
+    """
+    data = scores(
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "c", "relation": "at"},
+        c={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "at"},
+        b={"score": 3, "basis": "feature_matrix", "relative_to": "c", "relation": "at"},
+    )
+    assert comparison_cycles(data) == [["b", "c"]]
+
+
+def test_two_disjoint_rings_are_both_reported():
+    data = scores(
+        a={"score": 3, "basis": "feature_matrix", "relative_to": "b", "relation": "at"},
+        b={"score": 3, "basis": "feature_matrix", "relative_to": "a", "relation": "at"},
+        x={"score": 3, "basis": "feature_matrix", "relative_to": "y", "relation": "at"},
+        y={"score": 3, "basis": "feature_matrix", "relative_to": "x", "relation": "at"},
+    )
+    assert comparison_cycles(data) == [["a", "b"], ["x", "y"]]
+
+
+def test_a_self_reference_is_not_double_reported_as_a_cycle():
+    """The self edge is check()'s to reject; it is excluded from the graph, not counted twice."""
+    data = scores(a={"score": 4, "basis": "feature_matrix", "relative_to": "a", "relation": "at"})
+    problems = check(data, CATS)
+    assert len(problems) == 1
+    assert "points at itself" in problems[0]
 
 
 def test_half_a_comparison_is_caught_here_too():
