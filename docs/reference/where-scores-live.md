@@ -290,7 +290,7 @@ Four things carry columns named like ours and answer a different question.
 |---|---|---|
 | `currentai.stack_map.product_scores` | The **v1 hand-scored upload**: `adoption_level`, `capability_score`, `capability_value`, `combined_score` per product | **Frozen.** 282 products, 11 categories, newest `last_verified` 2026-05-29, keyed on `product_name` rather than slug. **No deployed model reads it.** |
 | `currentai.catalog.stack_map` | The repo→warehouse taxonomy bridge, carrying `adoption`, `capability`, `maturity` per product | **Externalized and frozen (ADR-003).** Out of the Gap Map's data system; removed from this repo's inventory and its producer archived, frozen under platform ownership at its last publish. Its former reader `scores.stack_contributors` was externalized with it. Not a repo-maintained table. |
-| `currentai.catalog.osai_gap_map` | The **external** OSAI gap map: `ease_of_adoption`, `maturity`, `overall_score` | A different organisation's taxonomy and scale. Not our products, not our axes. |
+| `currentai.catalog.osai_gap_map` | The **external** OSAI gap map: `ease_of_adoption`, `maturity`, `overall_score` | **Externalized and frozen (ADR-003).** A different organisation's taxonomy and scale — not our products, not our axes — and no longer repo-maintained, so it is frozen at its last publish as well as being the wrong scale to compare against. |
 | `currentai.ai_demand_curve.*` | `capability_score`, `adoption_level` against **OpenRouter/LMArena models** | Keyed to model names from a leaderboard, not to gap-map product slugs. |
 
 `currentai.stack_map.category_scores` and `.gap` are the same v1 freeze at category grain.

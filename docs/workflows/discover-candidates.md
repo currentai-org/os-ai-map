@@ -43,7 +43,9 @@ head products use `promote-category`; to re-verify what is already published use
   and code that assumed the scalar form is what broke `build_stack_map`. `category_statuses()`
   and `arc_categories()` own that normalization.
 - A time window, so the sweep is reproducible and the next one knows where to start.
-- Warehouse access for the discovery pool (`currentai.entities.repos`), if available. This is
+- Warehouse access for the discovery pool (`currentai.entities.repos`, frozen), if available.
+  ADR-003 externalized the table and it stopped advancing at its last publish, so it will not
+  surface a repository created since then; treat a miss as a stale pool, not an empty world. This is
   the long-tail *discovery* set, not the accepted Gap Map: a repository appearing there may be
   exactly what this workflow should emit. Use it to consolidate multiple signals into one
   entity, recover a canonical repository identity, and enrich a candidate — **presence in the

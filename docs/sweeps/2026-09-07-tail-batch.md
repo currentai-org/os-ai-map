@@ -42,7 +42,8 @@ See **Revisions** at the end for all four revisions in one table.
   row here is promoted later through `add-product`, not `promote-category`.
 - **Categories that emit rows:** five. `edge_hardware` was swept and emits nothing — see
   **`edge_hardware`: swept, nothing emitted**.
-- **Not reached:** the warehouse discovery pool (`currentai.entities.repos`). No `OSO_API_KEY` in
+- **Not reached:** the warehouse discovery pool (`currentai.entities.repos`, externalized under
+  ADR-003 and frozen at its last publish). No `OSO_API_KEY` in
   this environment, so the pool was unreachable — reported as a gap, not filled with a guess. It is
   an enrichment and consolidation step, never a rejection step, so its absence does not invalidate
   the dedup below; it does mean multi-signal consolidation rested on self-dedup alone.

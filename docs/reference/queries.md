@@ -23,27 +23,40 @@ down that read them are historical.
 
 `oso.*` tables are public and can be queried with any valid key.
 
-## Starting points
+## Worked examples (externalized datasets)
 
-**For notebook queries:** use `scores.repos_summary` (a pre-computed snapshot):
+Every example below reads a dataset ADR-003 externalized. They still run. What they return
+stopped advancing at that table's last publish, so a result set that looks current is not,
+and nothing in the query itself says so. Each example carries the warning as a SQL comment,
+which is the only part of this page that survives a copy into your client.
+
+For a table this repo still maintains, start at `registry`, `observations` or `evaluation`.
+
+**Repo-level snapshot,** `scores.repos_summary`:
 ```sql
+-- FROZEN (ADR-003): scores.repos_summary has no producer in this repo and stopped
+-- advancing at its last publish. Results are historical.
 SELECT * FROM currentai.scores.repos_summary WHERE country = 'France' ORDER BY stars DESC
 ```
 
-**For project-level data:** use `scores.project_summary`:
+**Project-level data,** `scores.project_summary`:
 ```sql
+-- FROZEN (ADR-003): historical, no longer refreshed.
 SELECT * FROM currentai.scores.project_summary ORDER BY total_stars DESC LIMIT 20
 ```
 
-**For time-series:** use `metrics.daily` (long format):
+**Time-series,** `metrics.daily` (long format). The series ends at the freeze date, so do not
+read its last point as today:
 ```sql
+-- FROZEN (ADR-003): the series stops at the last publish, it does not run to today.
 SELECT day, value FROM currentai.metrics.daily
 WHERE repo = 'pytorch/pytorch' AND metric = 'stars'
 ORDER BY day
 ```
 
-**For raw events:** use `events.github_events`:
+**Raw events,** `events.github_events`:
 ```sql
+-- FROZEN (ADR-003): no events after the last publish, so counts are a closed window.
 SELECT event_type, COUNT(*) FROM currentai.events.github_events
 WHERE repo = 'pytorch/pytorch' GROUP BY event_type
 ```
@@ -58,7 +71,13 @@ WHERE repo = 'pytorch/pytorch' GROUP BY event_type
 
 ## Join patterns
 
+The `entities`, `metrics` and `scores` joins below all read externalized tables. They are
+kept because the join shapes are still the right ones, not because the data is current.
+
 ```sql
+-- FROZEN (ADR-003): every entities/metrics/scores table in this block is frozen at its
+-- last publish. The join shapes hold; the rows do not advance.
+
 -- Repo → project
 SELECT r.repo, r.project_slug, p.display_name, p.location
 FROM currentai.entities.repos r
@@ -74,7 +93,8 @@ SELECT m.model_id, m.url, m.benchmark_avg
 FROM currentai.entities.models m
 WHERE m.project_slug = 'pytorch'
 
--- Monthly dev counts by category (from metrics.daily)
+-- Monthly dev counts by category (from metrics.daily). The last month is the freeze
+-- month, not the current one.
 SELECT r.category, DATE_TRUNC('month', m.day) AS month,
   MAX(CASE WHEN m.metric = 'contributors' THEN CAST(m.value AS INTEGER) END) AS devs
 FROM currentai.metrics.daily m
@@ -93,7 +113,7 @@ GROUP BY pc.collection_name, c.display_name
 
 ## Join and dedupe caveats
 
-- `scores.repos_summary` and `entities.repos` are already deduped by `LOWER(repo)`. No `ROW_NUMBER()` needed.
+- `scores.repos_summary` and `entities.repos` (both frozen) are already deduped by `LOWER(repo)`. No `ROW_NUMBER()` needed.
 - `signal_goodailist.repo_catalog` is the GoodAI roster. It replaces the retired
   `catalog.goodailist_repos` static model; deduplicate by `LOWER(repo)` when querying it
   directly.
@@ -103,7 +123,7 @@ GROUP BY pc.collection_name, c.display_name
 ## Gap semantics
 
 - Coverage/ingestion gaps (missing orgs/repos) are tracked in GitHub issues.
-- `scores.ossd_coverage` = per-org oss-directory match rates.
+- `scores.ossd_coverage` = per-org oss-directory match rates, frozen at its last publish.
 
 ## Pointers
 
