@@ -1,0 +1,44 @@
+# Products withdrawn from the map, and why each carries no alias.
+#
+# A rename leaves an alias on the product that replaced it, and `build/check_retirement.py`
+# reads that alias map to tell a deliberate rename from a product that silently vanished.
+# A withdrawal has no successor to alias onto, so it needs its own record: this file is the
+# acknowledgement that a slug left the corpus on purpose, and the place the reason is kept
+# once the product and score files are gone.
+#
+# Normative definition, and what is required of an entry: docs/reference/identity.md,
+# "Withdrawal: a product that ends with no successor". Shape: docs/schemas/withdrawals.schema.json.
+version: 1
+withdrawals:
+- slug: perspective-api
+  display_name: Perspective API
+  type: software
+  organization: jigsaw
+  category: safeguards
+  withdrawn_on: '2026-09-08'
+  decided_in: '#262'
+  alias: null
+  alias_reason: >-
+    Jigsaw is ending the service outright and offers no migration path, so there is no product
+    to redirect to. An alias onto an unrelated moderation product would tell a reader that
+    Perspective became that product, which is false.
+  reason: >-
+    The service is out of operation after 31 December 2026. New usage and quota requests closed
+    in February 2026, and the reason Jigsaw gives is that AI capabilities have evolved and demand
+    for a standalone tool in this area has fallen. A map that keeps recommending it is recommending
+    something that stops working, and the sunset was visible only to a reader who opened the note.
+  last_scores:
+    openness: 1
+    adoption: 4
+    capability: 3
+  evidence:
+  - url: https://perspectiveapi.com/
+    shows: >-
+      Site leads with "Important Notice - Perspective API is sunsetting and service is officially
+      ending after 2026", with "The service will remain active until December 31, 2026" and no
+      migration support offered.
+    accessed: '2026-08-13'
+  removed_files:
+  - sources/products/perspective-api.yaml
+  - sources/scores/perspective-api.yaml
+  - sources/organizations/jigsaw.yaml

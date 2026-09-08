@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "withdrawals",
+  "description": "sources/withdrawals.yaml - every product that left the corpus with no successor to alias onto. A rename is carried by an `aliases` entry on the product that replaced it; a withdrawal has nothing to point at, so the acknowledgement lives here instead. One entry is a person's ruling that a slug may stop being served, and the record of what was removed once the product and score files are gone. Normative prose, including what makes a withdrawal the right call rather than a rename or a re-score, is docs/reference/identity.md under 'Withdrawal: a product that ends with no successor'.",
+  "type": "object",
+  "required": ["version", "withdrawals"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"type": "integer", "const": 1},
+    "withdrawals": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/withdrawal"}
+    }
+  },
+  "$defs": {
+    "withdrawal": {
+      "type": "object",
+      "required": ["slug", "display_name", "withdrawn_on", "decided_in", "alias", "alias_reason", "reason", "evidence"],
+      "additionalProperties": false,
+      "properties": {
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "The slug that left sources/products/. It stays reserved: reusing it would serve a different product at a URL a reader last saw this one on."
+        },
+        "display_name": {"type": "string"},
+        "type": {"type": "string", "description": "The product type the record carried, kept so the withdrawal can be read without git archaeology."},
+        "organization": {"type": "string", "description": "The org slug that owned it. If the withdrawal empties that org's roster, the org file goes too, and is named in removed_files."},
+        "category": {"type": "string", "description": "The category roster it left."},
+        "withdrawn_on": {"type": "string", "format": "date"},
+        "decided_in": {"type": "string", "description": "The issue or pull request carrying the person's ruling. A withdrawal is never mechanical."},
+        "alias": {
+          "type": "null",
+          "description": "Always null, and required rather than omitted. A withdrawal with an alias target is a rename, and belongs in the replacing product's `aliases` array instead. Making the field explicit is what stops the two being confused."
+        },
+        "alias_reason": {"type": "string", "description": "Why no redirect is the honest answer here - what a reader holding an old link would be told if one existed, and why that would be wrong."},
+        "reason": {"type": "string", "description": "Why the product left the map, in terms a reader who never saw it can follow."},
+        "last_scores": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "openness": {"type": "integer"},
+            "adoption": {"type": "integer"},
+            "capability": {"type": "integer"}
+          },
+          "description": "The final published scores, so a later reader can see what the map used to say without reconstructing the deleted score file."
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["url", "shows", "accessed"],
+            "additionalProperties": false,
+            "properties": {
+              "url": {"type": "string"},
+              "shows": {"type": "string"},
+              "accessed": {"type": "string", "format": "date"}
+            }
+          },
+          "description": "What established that the product is ending. Same burden as any other claim on the map: a withdrawal removes a record, so it needs evidence at least as good as the one that created it."
+        },
+        "removed_files": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "The files this withdrawal deleted, so the git commit that removed them can be found from the record rather than from a date."
+        }
+      }
+    }
+  }
+}

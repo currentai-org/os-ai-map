@@ -73,6 +73,77 @@ is the other, and its target sits beside a still-live `github-copilot`.
 The rule: an alias is a promise to anyone holding an old link. Where no such link could exist,
 make no promise, and leave the slug free to be reused.
 
+## Withdrawal: a product that ends with no successor
+
+A rename keeps the product and changes what it is called, and the alias is what keeps old links
+working. A **withdrawal** is the other case: the product itself stops existing, and nothing takes
+its place. Retirement in this repo had only ever meant the first one, so the second had no
+mechanism at all - `build/check_retirement.py` asks every slug leaving the payload for an alias,
+and a withdrawn product has nothing to give it.
+
+`perspective-api` is the case that forced the question and the one the rule was written on.
+Jigsaw's toxicity API is out of service after 31 December 2026, new quota requests closed in
+February 2026, and no migration path is offered. Issue #262 proposed an optional `end_of_life:`
+date so the map could carry a live-but-ending product and let a consumer surface the date. **That
+was declined on 2026-09-08.** A date field would have added a third product state that every
+consumer has to learn, and it would have kept a service the map cannot recommend on the map, in a
+category whose whole job is to say what a builder should reach for. A product a reader should not
+adopt does not belong on a map of what to adopt.
+
+So the states stay at two, and a product that is ending leaves once ending is certain rather than
+on the day it stops.
+
+### What a withdrawal does
+
+1. **Record it in `sources/withdrawals.yaml` first.** The entry carries the slug, the org and
+   category it left, the date, the issue or PR carrying the ruling, the final scores, the evidence
+   that the product is ending, and an explicit `alias: null` with the reason no redirect is
+   honest. Shape in `docs/schemas/withdrawals.schema.json`.
+2. **Delete `sources/products/<slug>.yaml` and `sources/scores/<slug>.yaml`,** and remove the slug
+   from its category roster and its org roster. Keeping the files while unrostering them is not an
+   option: `build/validate.py` requires every product to sit in exactly one category roster and
+   exactly one org roster, and it is right to - a product file nothing rosters is invisible to
+   every count and every gate, which is a worse record than no file. The withdrawal entry is the
+   record, and the deleted content stays in git history under the commit `removed_files` names.
+3. **Delete the organization too if the withdrawal empties its roster,** along with its rows in
+   `sources/org_handles.yaml`. `jigsaw` owned only `perspective-api`.
+4. **Leave the slug reserved.** Nothing enforces this yet; the withdrawal entry is what a future
+   contributor should find when a candidate wants the same name. Serving a different product at a
+   URL a reader last saw this one on is the failure that made slugs immutable in the first place.
+5. **Write nothing into `aliases`.** A withdrawal with an alias target is a rename that has not
+   admitted what it is, and it belongs in the replacing product's `aliases` array instead.
+
+### Two gates do not know about this yet
+
+Nothing in the repo could delete a product before this, and two gates encode that. Neither has any
+reading of `sources/withdrawals.yaml`, so `perspective-api` trips both today. Both need the same
+one change - accept a path or slug that a withdrawal entry accounts for, and keep failing
+everything else - and until they have it, a withdrawal cannot be told apart from a deletion nobody
+recorded, which is the whole reason the acknowledgement is a file rather than a sentence in a pull
+request.
+
+**`build/check_retirement.py`** fails a slug that leaves the payload without an alias. That is the
+right question for a rename and the wrong one for a withdrawal, which has nothing to alias onto. It
+should pass a slug carried by a withdrawal entry, and keep failing every other slug that
+disappears.
+
+**`tests/test_assets_inventory.py::test_externalization_receipt_is_honest`** requires every file
+deleted under `sources/` since the ADR-003 base commit to be archived in
+`warehouse/audits/externalization.json`. That is ADR-003's no-orphan check on externalized
+warehouse tables, and `sources/` is in `EXTERNALIZED_FILE_PREFIXES` for exactly one file -
+`sources/foundation_model_repos.yaml`, the only externalized asset whose source lived there. The
+prefix is doing far more than it was written to do: as it stands it makes every file under
+`sources/` undeletable, which is why the map has never retired a product. Either narrow the prefix
+to that one path, or let a withdrawal entry account for the files it names in `removed_files`. A
+receipt entry is not the answer - these are not externalized tables, and writing them in as if they
+were would make the receipt say something false.
+
+Two related cases are deliberately **not** withdrawals, and both stay on the map.
+`google-coral-dev-board` is wound down rather than withdrawn, with most of its repositories
+archived and its retail listings discontinued; `gpt4all` has simply not been pushed to in over a
+year. Neither vendor has said the product is ending, and inferring a withdrawal from quiet is a
+different and much weaker claim than reading one off the vendor's own notice.
+
 ## When one slug covers several releases
 
 Collapsing releases into a tier means one score describes several things. The combine rules:
@@ -433,3 +504,5 @@ eval prints them next to the failing row.
   domains an organization publishes under
 - `sources/model_families.yaml`, `docs/schemas/model_families.schema.json` — which release
   patterns bridge to which tier-level product
+- `sources/withdrawals.yaml`, `docs/schemas/withdrawals.schema.json` — the products that left
+  the map with no successor, and why each carries no alias

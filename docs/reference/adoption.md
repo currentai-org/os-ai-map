@@ -65,7 +65,7 @@ Four shapes recur, and they are worth telling apart:
 | a parent platform's reach, the product being a feature inside something larger | `azure-ai-foundry-observability` bands Microsoft Foundry |
 | a real count of the product that is not a current active one | `v0`'s 4M+ cumulative users; `codex-cli`'s **weekly** actives against a monthly scale |
 | a proxy of another kind entirely | `claude-code`'s ~$2.5B run-rate; `openhands`'s 83.9k stars |
-| nothing, where the note cites a figure only to reject it | `perspective-api` — Jigsaw has never published one |
+| nothing, where the note cites a figure only to reject it | `snorkel-flow` — a withdrawn $1.3B valuation was never an adoption figure |
 
 **Why a field and not better prose.** The prose was already good. Every one of the 19
 parent-platform records described its own substitution in its note, several in capitals
