@@ -137,6 +137,13 @@ receipt's own rule is untouched for everything else.
 
 `tests/test_withdrawals.py` pins all three, positive and negative.
 
+A withdrawal therefore cannot be a data file on its own. Both of the gates above are code, and
+both refuse the shapes a data-only retirement is limited to: `build/validate.py` fails an
+unrostered product file (`product 'perspective-api': must appear in exactly one category roster
+(found in 0)`), and `build/assets.py` fails the deletion that unrostering forces instead. Adding a
+withdrawal without the readers leaves a paragraph the build cannot act on, which is what the first
+attempt at this section was.
+
 Two related cases are deliberately **not** withdrawals, and both stay on the map.
 `google-coral-dev-board` is wound down rather than withdrawn, with most of its repositories
 archived and its retail listings discontinued; `gpt4all` has simply not been pushed to in over a
