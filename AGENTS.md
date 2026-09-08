@@ -146,8 +146,10 @@ registry, plus the single `sources/taxonomy.yaml` manifest:
   business logic. Open artifacts are declared as typed top-level arrays of `{url: ...}`
   objects: `github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`,
   `huggingface_dataset`, `arxiv`. Only keys with entries are included; `product.schema.json`
-  is the authoritative list. Four further optional keys are not artifacts and are documented
-  in the schema: `aliases`, `lineage`, `version_in_identity`, `artifact_exceptions`. Optional
+  is the authoritative list. Five further optional keys are not artifacts and are documented
+  in the schema: `aliases`, `lineage`, `version_in_identity`, `artifact_exceptions`,
+  `end_of_life` (a declared sunset date for a product that still works; it moves no score and
+  no category stage -- docs/reference/identity.md). Optional
   `comments` is a free-text string for provenance and scoring notes (version, license, last
   release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.

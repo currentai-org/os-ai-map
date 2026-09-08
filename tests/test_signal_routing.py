@@ -31,6 +31,10 @@ ROOT = Path(__file__).resolve().parents[1]
 # `artifact_exceptions` is the subtle one: it is an annotation ABOUT artifacts (why
 # `pymilvus`'s downloads stand in for the Milvus server, why distilabel's PyPI metadata names
 # a dead org), not an artifact itself.
+#
+# `end_of_life` is a declared date and its citation. Nothing about it is countable, and that is
+# the point: the day a service stops is announced on a page, never emitted by a registry, so
+# there is no source to route it to and no signal it could ever become.
 METADATA_KEYS = {
     "name",
     "display_name",
@@ -41,6 +45,7 @@ METADATA_KEYS = {
     "lineage",
     "version_in_identity",
     "artifact_exceptions",
+    "end_of_life",
 }
 
 

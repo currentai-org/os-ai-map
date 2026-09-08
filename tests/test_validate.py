@@ -859,3 +859,51 @@ def test_load_sources_tolerates_a_tree_with_no_model_families_or_org_handles_fil
     real = load_sources(ROOT)
     assert real["model_families"]["families"], "the real corpus must not load as empty"
     assert real["org_handles"]["handles"], "the real corpus must not load as empty"
+
+
+def _ending(slug="llama"):
+    """The fixture with one product declared end-of-life, live and stopping on a date."""
+    d = _fixture()
+    d["products"][slug]["end_of_life"] = {
+        "date": "2026-12-31",
+        "source": "https://example.com/sunset",
+        "shows": "the service will remain active until December 31, 2026",
+        "accessed": "2026-08-13",
+    }
+    return d
+
+
+def test_an_ending_product_still_satisfies_the_roster_and_organization_gates():
+    """The point of the field, stated as a test.
+
+    Retiring a product means deleting it, and the gates refuse that: a product must appear in
+    exactly one category roster and exactly one org roster, and every org roster slug must
+    resolve to a product file — with a single-product org, retirement takes the organization
+    too. `end_of_life` is the state that keeps all of it, so the ending product stays rostered,
+    stays owned, and stays scored. If this ever fails, the field has become a second retirement
+    mechanism rather than an alternative to one.
+    """
+    assert validate_sources(_ending()) == []
+
+
+def test_end_of_life_needs_a_source_for_its_date():
+    """A date nobody can check is the one thing this field must not be able to say."""
+    d = _ending()
+    del d["products"]["llama"]["end_of_life"]["source"]
+    assert any("schema" in e and "source" in e for e in validate_sources(d))
+
+
+def test_end_of_life_rejects_a_bare_date():
+    """`end_of_life: 2026-12-31` reads naturally and carries no citation, so it is refused.
+
+    It is also what a curator writes first, and YAML parses an unquoted date to a
+    `datetime.date` rather than a string, so both spellings of the shortcut fail here.
+    """
+    for value in ("2026-12-31", __import__("datetime").date(2026, 12, 31)):
+        d = _ending()
+        d["products"]["llama"]["end_of_life"] = value
+        assert [e for e in validate_sources(d) if "schema" in e]
+
+
+def test_a_product_with_no_end_of_life_is_unaffected():
+    assert not [e for e in validate_sources(_fixture()) if "end_of_life" in e]
