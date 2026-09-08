@@ -200,6 +200,14 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
         "declaration_version_id for every future handle correction, matching the "
         "resolution_ledger.yaml precedent above."
     ),
+    "withdrawals.yaml": (
+        "a ruling record of what LEFT the corpus, not a declaration of what is in it. The "
+        "products it names have no product or score file left to declare anything, so an "
+        "entry adds nothing a declaration_version_id keys on -- the removal itself already "
+        "changed the digest, by removing those files. Folding the acknowledgement in on top "
+        "would re-key every declaration whenever somebody wrote down a reason, which is the "
+        "same cost the resolution_ledger.yaml precedent above declines to pay."
+    ),
 }
 
 

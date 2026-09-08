@@ -107,36 +107,35 @@ on the day it stops.
    record, and the deleted content stays in git history under the commit `removed_files` names.
 3. **Delete the organization too if the withdrawal empties its roster,** along with its rows in
    `sources/org_handles.yaml`. `jigsaw` owned only `perspective-api`.
-4. **Leave the slug reserved.** Nothing enforces this yet; the withdrawal entry is what a future
-   contributor should find when a candidate wants the same name. Serving a different product at a
-   URL a reader last saw this one on is the failure that made slugs immutable in the first place.
+4. **Leave the slug reserved.** `build/validate.py` refuses a withdrawal whose slug has a live
+   product file, so reusing the name fails the build until somebody deletes the withdrawal entry
+   and says why in the diff. Serving a different product at a URL a reader last saw this one on is
+   the failure that made slugs immutable in the first place.
 5. **Write nothing into `aliases`.** A withdrawal with an alias target is a rename that has not
    admitted what it is, and it belongs in the replacing product's `aliases` array instead.
 
-### Two gates do not know about this yet
+### What enforces it
 
-Nothing in the repo could delete a product before this, and two gates encode that. Neither has any
-reading of `sources/withdrawals.yaml`, so `perspective-api` trips both today. Both need the same
-one change - accept a path or slug that a withdrawal entry accounts for, and keep failing
-everything else - and until they have it, a withdrawal cannot be told apart from a deletion nobody
-recorded, which is the whole reason the acknowledgement is a file rather than a sentence in a pull
-request.
+`sources/withdrawals.yaml` is read by `build/withdrawals.py`, and three gates ask it whether a
+slug's absence is accounted for. Each keeps failing everything the record does not cover, which is
+the point - a mechanism that passes a withdrawal by passing every deletion has distinguished
+nothing.
 
-**`build/check_retirement.py`** fails a slug that leaves the payload without an alias. That is the
-right question for a rename and the wrong one for a withdrawal, which has nothing to alias onto. It
-should pass a slug carried by a withdrawal entry, and keep failing every other slug that
-disappears.
+| gate | what it asks | what still fails |
+|---|---|---|
+| `build/validate.py` | Is the entry true of this tree - no product file, no score file, no roster line, no alias claiming the slug, and every path in `removed_files` really gone? | An entry for a product that never left, or one carrying an alias target |
+| `build/check_retirement.py` | A slug fell out of the payload. Is it aliased, or withdrawn? | A slug that is neither, which is a deletion nobody recorded |
+| `build/assets.py` | A file under `sources/` was deleted since the ADR-003 base commit. Does a withdrawal name it in `removed_files`? | Any other deleted file, which must still be archived in the externalization receipt |
 
-**`tests/test_assets_inventory.py::test_externalization_receipt_is_honest`** requires every file
-deleted under `sources/` since the ADR-003 base commit to be archived in
-`warehouse/audits/externalization.json`. That is ADR-003's no-orphan check on externalized
-warehouse tables, and `sources/` is in `EXTERNALIZED_FILE_PREFIXES` for exactly one file -
-`sources/foundation_model_repos.yaml`, the only externalized asset whose source lived there. The
-prefix is doing far more than it was written to do: as it stands it makes every file under
-`sources/` undeletable, which is why the map has never retired a product. Either narrow the prefix
-to that one path, or let a withdrawal entry account for the files it names in `removed_files`. A
-receipt entry is not the answer - these are not externalized tables, and writing them in as if they
-were would make the receipt say something false.
+The third one is why the map had never retired a product. `sources/` is in
+`EXTERNALIZED_FILE_PREFIXES` for exactly one externalized asset
+(`sources/foundation_model_repos.yaml`), but the prefix applies to the whole tree, so every product, score and organization file inherited
+ADR-003's rule that a deleted file must be archived in `warehouse/audits/externalization.json`.
+Archiving a product file there is not the fix: these are not externalized warehouse tables, and the
+receipt would say something false. The withdrawal record accounts for them instead, and the
+receipt's own rule is untouched for everything else.
+
+`tests/test_withdrawals.py` pins all three, positive and negative.
 
 Two related cases are deliberately **not** withdrawals, and both stay on the map.
 `google-coral-dev-board` is wound down rather than withdrawn, with most of its repositories

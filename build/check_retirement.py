@@ -39,6 +39,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from build.withdrawals import withdrawn_slugs
+
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD = "build/notebook_data.json"
 
@@ -123,6 +125,16 @@ def _product_rows(payload: dict, label: str) -> list[dict]:
     return rows
 
 
+def unrouted_slugs(gone, aliases, withdrawn) -> list[str]:
+    """The departed slugs nothing accounts for -- neither an alias nor a withdrawal.
+
+    Pulled out of ``main`` so the rule can be exercised without a payload and a git history:
+    it is the whole judgment this gate makes, and it was previously reachable only by
+    building two committed payloads.
+    """
+    return sorted(s for s in gone if s not in aliases and s not in withdrawn)
+
+
 def main() -> int:
     new = json.loads((ROOT / PAYLOAD).read_text())
     try:
@@ -179,14 +191,28 @@ def main() -> int:
     new_slugs = {r["slug"] for r in new_rows}
     previous_slugs = {r["slug"] for r in previous_slugged}
     gone = previous_slugs - new_slugs
-    unrouted = sorted(s for s in gone if s not in product_aliases)
+    # A slug leaves for one of two reasons, and this is the only place that can tell them
+    # apart. Something replaced it -- then it is an alias, and the old link still resolves.
+    # Or nothing did -- then it is a withdrawal, `sources/withdrawals.yaml` carries the
+    # ruling and the reason no redirect is honest, and the link is meant to stop resolving.
+    # Everything else is a deletion nobody recorded, and still fails here. The withdrawal
+    # entry is checked for real in build/validate.py, which refuses one whose product is
+    # still live, so a slug cannot buy a pass here by being named in a file.
+    withdrawn = withdrawn_slugs(ROOT)
+    unrouted = unrouted_slugs(gone, product_aliases, withdrawn)
     if unrouted:
-        print("check_retirement: these slugs left the payload with no alias, so their pages "
-              "would 404:\n  " + "\n  ".join(unrouted), file=sys.stderr)
-        print("Record each as an alias on the product that replaced it, or acknowledge",
-              file=sys.stderr)
+        print("check_retirement: these slugs left the payload with no alias and no "
+              "withdrawal, so their pages would 404 with nothing said about why:\n  "
+              + "\n  ".join(unrouted), file=sys.stderr)
+        print("Record each as an alias on the product that replaced it, or -- if nothing "
+              "replaced it -- as an entry in sources/withdrawals.yaml (see "
+              "docs/reference/identity.md).", file=sys.stderr)
         return 1
-    print(f"check_retirement: {len(gone)} retired, all routed")
+    withdrawn_gone = sorted(gone & withdrawn)
+    routed = len(gone) - len(withdrawn_gone)
+    print(f"check_retirement: {routed} retired and routed to a successor, "
+          f"{len(withdrawn_gone)} withdrawn with no successor"
+          + (f" ({', '.join(withdrawn_gone)})" if withdrawn_gone else ""))
     return 0
 
 

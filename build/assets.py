@@ -23,6 +23,8 @@ from pathlib import Path
 
 import yaml
 
+from build.withdrawals import removed_files as withdrawn_files
+
 ROOT = Path(__file__).resolve().parent.parent
 
 NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases", "identity"}
@@ -862,9 +864,21 @@ def externalization_receipt_violations() -> list[str]:
                 problems.append(f"{t}: disposition 'transferred' must name destination.repository + commit")
 
     # -- completeness: every deleted externalized file is archived ------------------
+    # `sources/` is in EXTERNALIZED_FILE_PREFIXES for exactly one externalized asset
+    # (sources/foundation_model_repos.yaml), but the prefix applies to the whole tree, so
+    # this check also sees every product, score and organization file. That is why the map
+    # had never retired a product: any deletion under sources/ had to be archived in an
+    # externalization receipt, and a product file is not an externalized warehouse table --
+    # writing one in would make the receipt say something false.
+    #
+    # A withdrawal is the other way a file under sources/ legitimately disappears. It names
+    # the files it deleted in `removed_files`, build/validate.py refuses an entry whose
+    # product is still live or whose named file still exists, and that record accounts for
+    # those paths here. Every other deletion still has to be archived.
     base_files = _tree_files_at_commit(base, EXTERNALIZED_FILE_PREFIXES)
     deleted = {p for p in base_files if not (ROOT / p).exists()}
-    for p in sorted(deleted - archived_all):
+    accounted = archived_all | withdrawn_files()
+    for p in sorted(deleted - accounted):
         problems.append(f"{p}: deleted since the base commit but not archived in any receipt entry")
 
     # -- append-only: prior entries survive unchanged ------------------------------

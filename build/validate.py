@@ -13,6 +13,7 @@ from build.vocabulary import axes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
 from build.taxonomy import category_entry, category_statuses
+from build.withdrawals import problems as withdrawal_problems
 
 # Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
 _SCHEMA_FOR_DIR = {
@@ -24,7 +25,7 @@ _SCHEMA_FOR_DIR = {
 # taxonomy.yaml, model_families.yaml and org_handles.yaml are single files, not directories,
 # so they are schema-checked separately below rather than through _SCHEMA_FOR_DIR. Listed
 # here so _load_schemas picks them up.
-_EXTRA_SCHEMAS = ("taxonomy", "model_families", "org_handles")
+_EXTRA_SCHEMAS = ("taxonomy", "model_families", "org_handles", "withdrawals")
 
 
 def _load_schemas(root: Path) -> dict:
@@ -103,6 +104,11 @@ def load_sources(root: Path) -> dict:
         ),
         "org_handles": _load_optional_yaml(
             root / "sources" / "org_handles.yaml", {"version": 1, "handles": []}
+        ),
+        # A tree from before the withdrawal mechanism existed carries no file, and that is
+        # not malformed -- it is a tree in which nothing had been withdrawn.
+        "withdrawals": _load_optional_yaml(
+            root / "sources" / "withdrawals.yaml", {"version": 1, "withdrawals": []}
         ),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
@@ -726,6 +732,30 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         except jsonschema.ValidationError as e:
             label = entry.get("repo") or (entry.get("artifact") or {}).get("id") or f"entry {i}"
             errors.append(f"resolution_ledger.yaml: {label}: schema: {e.message}")
+
+    # --- withdrawals: the other way a slug may leave -------------------------------
+    # An alias is how a slug leaves when something replaced it. A withdrawal is how it
+    # leaves when nothing did, and `sources/withdrawals.yaml` is the acknowledgement that
+    # makes the difference machine-readable -- see build/withdrawals.py for who reads it.
+    # Checked here rather than in its own gate so the same run that proves the corpus is
+    # coherent proves the withdrawal record is true of it: an entry whose product file is
+    # still on disk would otherwise hand check_retirement a pass for a live slug.
+    withdrawals_doc = data.get("withdrawals") or {"version": 1, "withdrawals": []}
+    try:
+        jsonschema.validate(withdrawals_doc, schemas["withdrawals"])
+    except jsonschema.ValidationError as e:
+        errors.append(f"sources/withdrawals.yaml: schema: {e.message}")
+    else:
+        errors.extend(
+            withdrawal_problems(
+                withdrawals_doc,
+                products=prods,
+                scores=scores,
+                categories=cats,
+                organizations=orgs,
+                aliases=claimed,
+            )
+        )
 
     return errors
 
