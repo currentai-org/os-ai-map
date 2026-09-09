@@ -49,6 +49,38 @@
       "type": "string",
       "description": "The other hand-authored prose field, and a footnote rather than a second description: how we know what the entry says. In practice the verification line, plus the occasional note about a judgment call or an evidence gap. Also published copy \u2014 build/serialize.py renames it to `version_note` in the payload and the front end renders it under `description` in smaller type \u2014 so a fact stated in both fields is read twice. The test for which field a sentence belongs in, the canonical `Verified <YYYY-MM-DD> via <source>.` form, and why the license must not be restated here are all in docs/reference/product-copy.md. Its verification line is editorial provenance for the PROSE and is not a score's `last_verified`: writing one earns nothing on any axis, and the two mechanisms are kept apart deliberately (docs/reference/evidence-and-freshness.md). 464 of 472 products carry one on 2026-08-08."
     },
+    "end_of_life": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "date",
+        "source",
+        "shows"
+      ],
+      "description": "The date this product stops working, declared for a product that is still live. It exists because the schema otherwise offers two states and neither is honest about a service in its final months: scored normally, which recommends something that stops in December with the sunset visible only to a reader of the prose, or retired, which is implemented as aliasing a dead slug onto the product that replaced it and so assumes a successor a withdrawal does not have. Perspective API is the first case (#262). WHAT IT CHANGES: nothing that is computed. The product keeps its slug, stays in exactly one category roster and one org roster, keeps its scores, and counts toward its category's stage and gaps exactly as it did before - which is what makes declaring one cheap, and is the whole difference from retirement. build/serialize.py emits `date` and `source` into the payload row so the front end can render the fact; build/check_payload.py gates the shape. Where a sunset has actually moved usage, that belongs in the adoption LEVEL with a source a reader can audit, not in a penalty this field applies behind the scenes: a date that quietly deducted maturity would double-count with an honest re-score, and would move a category's stage on a calendar tick with no evidence change and no human act. Nothing fires when the date passes either - it is a curation trigger, not a transition. docs/reference/identity.md carries the rule and what a curator does on the day.",
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "The last day the product works, as the announcement states it, ISO 8601. The day service stops rather than the day it was announced: a reader asks how long they have. Quoted in YAML, because an unquoted date parses to a `datetime.date` and fails this string type - the same reason every `accessed` and `last_verified` in sources/ is quoted. Pattern-checked rather than `format: date`, since jsonschema's draft-07 validator ignores `format` unless a format checker is passed and build/validate.py passes none, so a `format` here would assert a check nobody runs."
+        },
+        "source": {
+          "type": "string",
+          "pattern": "^https?://",
+          "description": "The page that announces the end, http(s) only. Required, on the same principle as a score's citation: an end-of-life date is a claim about a product's future and the least checkable thing on the record, so it ships with the document it came from or not at all. Emitted into the payload beside the date, so the front end can link the reader at the announcement instead of asking them to take the map's word for it."
+        },
+        "shows": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the source actually says, quoted from the page that was read - the same job `shows` does on a score's sources[] entry. It is what lets somebody check the date without trusting the curator, and it is the field that catches the common error: a page saying support ends and a page saying the service is switched off are different dates, and a paraphrase loses the difference. Stays in the repo; the payload carries the date and the link, not the quote."
+        },
+        "accessed": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "When the source was read, ISO 8601. Optional, and editorial provenance for THIS fact only: it is not a score's `last_verified` and earns nothing on any axis (docs/reference/evidence-and-freshness.md). Worth writing, because a sunset notice is a page that gets edited - dates move and get withdrawn."
+        }
+      }
+    },
     "github": {
       "type": "array",
       "items": {

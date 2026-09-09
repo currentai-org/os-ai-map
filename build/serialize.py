@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
                      "openness", "adoption", "capability", "overall_score", "tier",
-                     "maturity", "mature",
+                     "maturity", "mature", "end_of_life",
                      "freshness", "version_note", "lineage"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
@@ -320,6 +320,20 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     row["mature"] = (
         m is not None and m >= _MATURE_MIN and openness["bucket"] == "open"
     )
+    # A declared end-of-life date: the product still works and stops on that day. Emitted as
+    # the date and the announcement link, so a consumer can say the product is ending and point
+    # at who said so; the `shows` quote stays in sources/ because the payload is not the audit
+    # trail. It is deliberately inert in every number above it -- the openness, adoption and
+    # capability blocks, `overall_score`, `tier`, `mature` and the category stage all read the
+    # same as they did before the field was declared. A date that moved a score would move a
+    # category's stage with no evidence change and no curator acting; where a sunset has really
+    # moved usage, that belongs in the adoption LEVEL with a source. Nothing here compares the
+    # date to today either: the payload carries what was declared, and whether that day has
+    # passed is the reader's arithmetic, not a value that silently changes overnight.
+    # See docs/reference/identity.md.
+    eol = prod.get("end_of_life")
+    if eol:
+        row["end_of_life"] = {"date": eol["date"], "source": eol["source"]}
     # Bridge: the source field is now `comments` (a string), but the payload key
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):

@@ -88,6 +88,30 @@ def _require_dict(payload: dict, key: str) -> dict:
     return value
 
 
+def _check_end_of_life(slug: str, eol: object) -> None:
+    """Gate the shape of a declared end-of-life record.
+
+    The field says a product still works and stops on a stated day, and the payload is where a
+    reader meets that claim. A row carrying `end_of_life` that the app cannot read -- a bare
+    string where the object belongs, a date in some other notation, a source that is not a
+    link -- would render as nothing at all, which is the one outcome worse than never declaring
+    it: the map would look like it had checked and found no sunset. So an unreadable record
+    fails here rather than being skipped.
+    """
+    if not isinstance(eol, dict):
+        raise PayloadError(
+            f"{slug!r} has an end_of_life that is not an object (got {type(eol).__name__})"
+        )
+    date = eol.get("date")
+    if not is_iso_date(date):
+        raise PayloadError(f"{slug!r} has an end_of_life date that is not ISO 8601: {date!r}")
+    source = eol.get("source")
+    if not isinstance(source, str) or not source.startswith(("http://", "https://")):
+        raise PayloadError(
+            f"{slug!r} declares an end_of_life with no usable source URL: {source!r}"
+        )
+
+
 def check(payload: dict) -> None:
     if not isinstance(payload, dict):
         raise PayloadError(f"payload is not an object (got {type(payload).__name__})")
@@ -138,6 +162,8 @@ def check(payload: dict) -> None:
                 or fresh.get("basis") not in _FRESHNESS_BASES):
             raise PayloadError(f"{slug!r} has no usable freshness record")
         _check_freshness_caveats(slug, fresh)
+        if "end_of_life" in row:
+            _check_end_of_life(slug, row["end_of_life"])
 
     dates = {row["freshness"]["date"] for row in rows}
     if len(dates) <= 1:

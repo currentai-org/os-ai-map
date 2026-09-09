@@ -155,3 +155,38 @@ def test_fails_when_org_slug_is_missing_entirely():
     p = _ok(); del p["categories"]["c"]["products"][0]["org_slug"]
     with pytest.raises(PayloadError, match="missing organization"):
         check(p)
+
+
+def _ending():
+    p = _ok()
+    p["categories"]["c"]["products"][0]["end_of_life"] = {
+        "date": "2026-12-31", "source": "https://example.com/sunset"}
+    return p
+
+
+def test_passes_a_well_formed_end_of_life_row():
+    check(_ending())
+
+
+def test_fails_an_end_of_life_that_is_not_an_object():
+    """A bare date is the shortcut a curator reaches for, and the app cannot render it."""
+    p = _ending(); p["categories"]["c"]["products"][0]["end_of_life"] = "2026-12-31"
+    with pytest.raises(PayloadError, match="not an object"):
+        check(p)
+
+
+def test_fails_an_end_of_life_date_in_another_notation():
+    p = _ending(); p["categories"]["c"]["products"][0]["end_of_life"]["date"] = "31/12/2026"
+    with pytest.raises(PayloadError, match="ISO 8601"):
+        check(p)
+
+
+def test_fails_an_end_of_life_with_no_usable_source():
+    """The claim reaches the reader; the link that backs it has to reach them too."""
+    p = _ending(); p["categories"]["c"]["products"][0]["end_of_life"]["source"] = "perspectiveapi.com"
+    with pytest.raises(PayloadError, match="no usable source"):
+        check(p)
+
+
+def test_a_row_with_no_end_of_life_is_unaffected():
+    check(_ok())

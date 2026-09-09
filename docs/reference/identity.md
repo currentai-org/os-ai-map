@@ -73,6 +73,77 @@ is the other, and its target sits beside a still-live `github-copilot`.
 The rule: an alias is a promise to anyone holding an old link. Where no such link could exist,
 make no promise, and leave the slug free to be reused.
 
+## A product that is ending
+
+Between live and retired there is a third state: the product still works, still has users, and
+stops on a date somebody has announced. Retirement does not fit it. Retirement here is
+implemented as aliasing a dead slug onto the product that replaced it, and a withdrawal has no
+successor to point at, so the mechanism has nothing to attach to. Dropping the record instead is
+not available either: the gates require a product in exactly one category roster and exactly one
+org roster, and a single-product organization goes with it.
+
+So the product keeps its record and declares the date:
+
+```yaml
+end_of_life:
+  date: '2026-12-31'
+  source: https://perspectiveapi.com/
+  shows: "'Perspective API is sunsetting and service is officially ending after 2026',
+    with 'The service will remain active until December 31, 2026'"
+  accessed: '2026-08-13'
+```
+
+`date` is the day service stops, not the day it was announced, because the reader's question is
+how long they have. `source` and `shows` are required for the same reason a score's citation is:
+an end-of-life date is the least checkable claim on the record, and a page saying support ends is
+a different date from a page saying the service is switched off.
+
+### What it changes, and what it does not
+
+**Identity is untouched.** The slug stays live, the product stays in exactly one category roster
+and one org roster, its organization stays resolvable, and its score files stay where they are.
+That is the whole difference from retirement, and it is what makes declaring one cheap.
+
+**No number moves.** Openness, adoption and capability read the same. So do the derived
+`overall_score`, `tier` and `mature`, and so does the category's stage and its gaps: an
+end-of-life product counts toward its category exactly as it did the day before the field was
+added.
+
+That is a deliberate rule and not an artifact of the first case. `perspective-api` is
+`openness.class: closed` and the stage computation is strict open-only, so it was inert either
+way — recomputing `safeguards` with the row removed returns the same Stage 3 and the same
+`adoption` gap. The rule has to hold for the case that is not inert, a fully open product at 4.5
+that stops in three months, and for that case the argument is:
+
+- A stage is a **count of what exists now**. Excluding an ending product would drop a category a
+  rung on a calendar tick, with no evidence change and nobody deciding anything. Promotion in
+  this repo is a human act; demotion is not allowed to be cheaper than promotion.
+- Where a sunset has genuinely moved usage, that belongs in the **adoption level**, written by a
+  curator with a source a reader can audit. A penalty applied by the schema would double-count
+  with an honest re-score and would be invisible in the numbers it changed.
+- The reader is better served by the fact than by an arithmetic gesture. "This category's leading
+  open option stops in December" is a sentence the map can print. A silently lowered stage is not.
+
+**Nothing happens when the date passes.** Nothing in the build compares `end_of_life.date` to
+today's date. `build/serialize.py` copies the declared date onto the product row, the gates read
+it as a declared fact, and no arithmetic anywhere consults the calendar, so a record whose date
+has gone by serializes, validates and scores exactly as it did the day before. What a curator
+should then do with such a record -- keep it with a past date, retire the slug through the alias
+mechanism, or something else -- is deliberately not settled here. It is a curation policy, it
+needs a decision from a maintainer rather than a default set by the change that added the field,
+and it belongs on its own issue. Until that issue is settled, a past date is a fact on the record
+and nothing more; do not read this section as permission to leave one there indefinitely.
+
+### What a consumer sees
+
+`build/serialize.py` emits `date` and `source` onto the product row in the payload, so a consumer
+can say the product is ending and link the announcement. The `shows` quote stays in `sources/`:
+the payload carries the claim, the repo carries the audit trail. `build/check_payload.py` fails
+on a row whose `end_of_life` it cannot read, because a malformed record renders as nothing and
+would leave the map looking as though it had checked and found no sunset. Rendering it is the
+front end's side of the contract, and until `aipotluck.org` reads the key, the fact reaches a
+reader only through the prose fields.
+
 ## When one slug covers several releases
 
 Collapsing releases into a tier means one score describes several things. The combine rules:
@@ -423,7 +494,7 @@ eval prints them next to the failing row.
 - `docs/reference/openness.md` — the ladders, and the multi-SKU rule the rubric applies
 - `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description
-- `docs/schemas/product.schema.json` — `aliases` and `version_in_identity`
+- `docs/schemas/product.schema.json` — `aliases`, `version_in_identity` and `end_of_life`
 - `docs/reference/adoption.md` — the instruments a declared artifact routes to, and the
   precedence order `select_route` applies
 - `sources/resolution_ledger.yaml` — where a rejected or reassigned identity is recorded, so

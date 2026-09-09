@@ -681,3 +681,66 @@ def test_a_built_payload_never_carries_an_undescribed_gap():
     for cid in payload["order"]:
         for gap in payload["categories"][cid]["gaps"]:
             assert gap in described, f"category {cid} carries undescribed gap {gap!r}"
+
+
+def _ending_sources():
+    s = _sources()
+    s["products"]["llama-4"]["end_of_life"] = {
+        "date": "2026-12-31",
+        "source": "https://example.com/sunset",
+        "shows": "the service will remain active until December 31, 2026",
+        "accessed": "2026-08-13",
+    }
+    return s
+
+
+def test_end_of_life_reaches_the_payload_with_its_source():
+    """The reader meets this fact in the payload, not in the YAML.
+
+    The date alone would be an unciteable claim on the one field that most needs a citation, so
+    the announcement link ships with it. The `shows` quote does not: the payload carries the
+    claim, sources/ carries the audit trail.
+    """
+    row = build_payload(_ending_sources(), frozen_long_tail={}, generated="2026-06-10"
+                        )["categories"]["base_pretrained"]["products"][0]
+    assert row["end_of_life"] == {"date": "2026-12-31",
+                                  "source": "https://example.com/sunset"}
+    assert "shows" not in row["end_of_life"]
+
+
+def test_a_product_with_no_end_of_life_carries_no_key():
+    row = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10"
+                        )["categories"]["base_pretrained"]["products"][0]
+    assert "end_of_life" not in row
+
+
+def test_ending_moves_no_score_and_no_stage():
+    """The rule the field is worth having: declaring one changes nothing that is computed.
+
+    A stage is a count of what exists now, so dropping an ending product out of it would move a
+    category on a calendar tick with no evidence change and no curator acting. Where a sunset has
+    really moved usage, that is an adoption level a reader can audit. Asserted on the whole row
+    rather than on the score alone, so a future penalty applied to `tier` or `mature` fails here
+    too.
+    """
+    plain = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    ending = build_payload(_ending_sources(), frozen_long_tail={}, generated="2026-06-10")
+    before = plain["categories"]["base_pretrained"]
+    after = ending["categories"]["base_pretrained"]
+    assert after["stage"] == before["stage"] and after["gaps"] == before["gaps"]
+    assert {k: v for k, v in after["products"][0].items() if k != "end_of_life"} \
+        == before["products"][0]
+
+
+def test_ending_is_declared_rather_than_derived_from_today():
+    """A date already past serializes the same as one in the future.
+
+    Nothing compares the date to the clock, so the payload cannot change overnight for a product
+    nobody touched, and no stage can move on the day a service stops.
+    """
+    s = _ending_sources()
+    s["products"]["llama-4"]["end_of_life"]["date"] = "2019-01-01"
+    row = build_payload(s, frozen_long_tail={}, generated="2026-06-10"
+                        )["categories"]["base_pretrained"]["products"][0]
+    assert row["end_of_life"]["date"] == "2019-01-01"
+    assert row["mature"] is False and row["maturity"] == 4.0
