@@ -5,7 +5,10 @@ openness:
   components:
     license:
     - name: Modular-Community-License
-      detail: non-OSI, per-device licensing and a limited redistribution grant, governs MAX/Mojo usage+distribution
+      detail: non-OSI; revised 2026-08-18, dropping the prior eight-device cap outside x86/ARM/NVIDIA-PTX;
+        now requires redistribution of Derivative Works/Applications in object code form only, bars using
+        MAX as AI training/fine-tuning data to build a reimplementation of or substitute for MAX, and requires
+        a Powered-by-Modular credit for commercial hosted/managed AI services
     repo-license:
     - name: Apache-2.0-WITH-LLVM-exception
       detail: the source in modular/modular
@@ -15,19 +18,21 @@ openness:
     commercial-tier:
       value: Modular enterprise/managed deployment
   confidence: high
-  note: A large public codebase whose own LICENSE file is Apache-2.0 with LLVM Exceptions, but the GitHub
-    repository page states that "Modular, MAX and Mojo usage and distribution are licensed under the Modular
-    Community License", which is not OSI approved. That license splits capacity by device architecture,
-    with no cap on x86, ARM or NVIDIA PTX devices but an eight-device cap on any other accelerator type;
-    it grants only "a limited right to redistribute certain components of the SDK"; and while the community
-    variant is "provided free of charge", Modular "may at any time change its provision" with only commercially
-    reasonable notice. The source is therefore readable but not unconditionally runnable or redistributable
-    at scale, which makes this source-available rather than open source despite the product being marketed
-    as open.
+  note: MAX/Mojo usage and distribution are governed by the non-OSI Modular Community License rather than
+    the Apache-2.0-WITH-LLVM-exception text that covers the repository itself. The license permits free
+    production use with no cap on device count, but requires any redistributed Derivative Work or Application
+    to ship in object code form only, bars using MAX as training or fine-tuning data to build a system that
+    reimplements or substitutes for MAX, and requires a "Powered by Modular" credit for commercial hosted
+    or managed AI services built on it. The source is therefore readable and freely runnable but not unconditionally
+    redistributable, which keeps this source-available rather than open source despite the product being
+    marketed as open.
   last_verified: '2026-08-09'
-  raw: license:Modular-Community-License(non-OSI, per-device licensing and a limited redistribution grant,
-    governs MAX/Mojo usage+distribution);repo-license:Apache-2.0-WITH-LLVM-exception(the source in modular/modular);source:public(~450k
-    LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed deployment
+  raw: license:Modular-Community-License(non-OSI; revised 2026-08-18, dropping the prior eight-device cap
+    outside x86/ARM/NVIDIA-PTX; now requires redistribution of Derivative Works/Applications in object code
+    form only, bars using MAX as AI training/fine-tuning data to build a reimplementation of or substitute
+    for MAX, and requires a Powered-by-Modular credit for commercial hosted/managed AI services);repo-license:Apache-2.0-WITH-LLVM-exception(the
+    source in modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular
+    enterprise/managed deployment
   sources:
   - url: https://github.com/modular/modular
     shows: Modular, MAX and Mojo usage and distribution are licensed under the Modular Community License
@@ -37,20 +42,22 @@ openness:
     http_status: 200
     content_sha256: c6d520730b91071a7a1131be8b213ccd2319d46968bb99df11bed182db751dc7
   - url: https://www.modular.com/legal/community
-    shows: Modular grants a limited right to redistribute certain components of the SDK as part of Licensee's
-      Applications, subject to conditions and Distribution Requirements specified in the SDK documentation.
-    accessed: '2026-08-09'
+    shows: 'The old license capped free production use at eight accelerators outside x86, ARM and NVIDIA.
+      Both requirements are now gone. You shall not use MAX, or any portion of it, as training data, fine-tuning
+      data, or input to any AI system in order to produce software that reimplements or substitutes for
+      MAX. Last Modified: August 18, 2026.'
+    accessed: '2026-09-09'
     establishes:
     - license
     http_status: 200
-    content_sha256: 2125e9ed0d988853e9701f018433c0648daf178882b93fb24304e5f0a1237a8c
+    content_sha256: 432ed521e8c18a9f274fc3d3b9debb57cd8d3d6d5e0ecf24f29e39bbef911e91
   - url: https://raw.githubusercontent.com/modular/modular/main/LICENSE
     shows: 'The MAX repository is licensed under the Apache License v2.0 with LLVM Exceptions:'
-    accessed: '2026-08-09'
+    accessed: '2026-09-09'
     establishes:
     - license
     http_status: 200
-    content_sha256: b9ec095b4c52f3564cef5a7d720d4eafd0589fbb760a578d8c020f97a2fc4ae4
+    content_sha256: 077ecef8fc610215df3319c555c2fa1b4d28df60ee67a72946b9338cbc90a8a0
 adoption:
   level: 3
   reach: '>10K stars'
