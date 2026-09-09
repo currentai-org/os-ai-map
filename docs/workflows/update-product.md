@@ -80,7 +80,8 @@ end_of_life:
 Nothing else changes. The product stays on its category and org rosters and keeps its scores, and
 the date moves no score and no category stage — if the sunset has actually moved usage, that is
 the axis route below, written as an adoption level with a source. Nothing fires when the date
-passes either; re-read the source then and decide whether to keep the record or retire the slug.
+passes either — no gate compares the date to today — and what a curator should do with a record
+whose date has gone by is deliberately left open, not settled by this field.
 The rule is [`../reference/identity.md`](../reference/identity.md). Validate:
 ```bash
 uv run python -m build.validate

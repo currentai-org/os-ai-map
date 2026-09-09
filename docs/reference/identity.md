@@ -124,13 +124,15 @@ that stops in three months, and for that case the argument is:
 - The reader is better served by the fact than by an arithmetic gesture. "This category's leading
   open option stops in December" is a sentence the map can print. A silently lowered stage is not.
 
-**Nothing happens when the date passes.** No automatic retirement, no change in the payload, no
-gate that turns red overnight; an ending product does not become a different kind of record by
-being left alone. The date passing is a curation trigger. On or after it, a curator re-reads the
-source and either keeps the record with a past date, which is honest and still linkable, or
-retires the slug through the alias mechanism if something has actually replaced it. If a sweep is
-ever wanted for dates that have gone by, it belongs with the verification queue, alongside the
-other work that a curator picks up, and not in a build gate.
+**Nothing happens when the date passes.** Nothing in the build compares `end_of_life.date` to
+today's date. `build/serialize.py` copies the declared date onto the product row, the gates read
+it as a declared fact, and no arithmetic anywhere consults the calendar, so a record whose date
+has gone by serializes, validates and scores exactly as it did the day before. What a curator
+should then do with such a record -- keep it with a past date, retire the slug through the alias
+mechanism, or something else -- is deliberately not settled here. It is a curation policy, it
+needs a decision from a maintainer rather than a default set by the change that added the field,
+and it belongs on its own issue. Until that issue is settled, a past date is a fact on the record
+and nothing more; do not read this section as permission to leave one there indefinitely.
 
 ### What a consumer sees
 
