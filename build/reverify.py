@@ -102,8 +102,11 @@ def oldest_products(root: Path, limit: int) -> list[tuple[date, str]]:
 class ProductResult:
     slug: str
     stamped: list[str] = field(default_factory=list)
-    # axis -> url -> the fetch record that confirmed it (http_status, content_sha256, ...)
-    reconfirmed: dict[str, dict[str, dict]] = field(default_factory=dict)
+    # axis -> the source's position in that axis's `sources` list -> the fetch record that
+    # confirmed it (http_status, content_sha256, ...). Keyed by position and not by URL:
+    # two entries may cite one page for different dimensions, and keying by URL collapsed
+    # them into a single record that `apply` then wrote to whichever came first (#527).
+    reconfirmed: dict[str, dict[int, dict]] = field(default_factory=dict)
     reconfirmed_by_shows: list[tuple[str, str]] = field(default_factory=list)
     reconfirmed_by_spdx: list[tuple[str, str]] = field(default_factory=list)
     drifted: list[tuple[str, str]] = field(default_factory=list)
@@ -143,9 +146,14 @@ def _openness_dimensions(root: Path, slug: str, block: dict) -> dict[str, str]:
 
 
 def plan_product(root: Path, slug: str, score: dict, axes: tuple[str, ...]
-                 ) -> dict[str, dict[str, list[dict]]]:
-    """axis -> dimension -> digested sources that establish it."""
-    plan: dict[str, dict[str, list[dict]]] = {}
+                 ) -> dict[str, dict[str, list[tuple[int, dict]]]]:
+    """axis -> dimension -> digested sources that establish it, each with its position.
+
+    The position is the source's ordinal in the axis's `sources` list, and it is carried
+    from here rather than recovered later because it is the only thing that distinguishes
+    two entries citing one URL (#527). A URL does not identify an entry; an ordinal does.
+    """
+    plan: dict[str, dict[str, list[tuple[int, dict]]]] = {}
     for axis in axes:
         block = score.get(axis)
         if not isinstance(block, dict) or not block.get("last_verified"):
@@ -154,19 +162,19 @@ def plan_product(root: Path, slug: str, score: dict, axes: tuple[str, ...]
             required = _openness_dimensions(root, slug, block)  # name -> recorded key
         else:
             required = {axis: axis}
-        dims: dict[str, list[dict]] = {name: [] for name in required}
+        dims: dict[str, list[tuple[int, dict]]] = {name: [] for name in required}
         # A source may name either the dimension or the recorded key that answers it
         # (`establishes: [post-training-data]` is more precise than `[data]`) — the same
         # either-or the invariant gate itself accepts.
         aliases = {key: name for name, key in required.items() if key != name}
-        for src in block.get("sources") or []:
+        for position, src in enumerate(block.get("sources") or []):
             if not src.get("content_sha256"):
                 continue
             targets = src.get("establishes") if axis == "openness" else [axis]
             for d in targets or []:
                 name = d if d in dims else aliases.get(d)
                 if name:
-                    dims[name].append(src)
+                    dims[name].append((position, src))
         plan[axis] = dims
     return plan
 
@@ -247,13 +255,16 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
         recorded_license = components_map.get(license_key, "") if license_key else ""
 
         ok = True
-        confirmed: dict[str, dict] = {}
+        # Keyed by position, so two entries citing one URL stay two confirmations. The
+        # fetch cache stays keyed by URL — fetching one page once is correct, and it is
+        # only the write-back that has to know which citation it belongs to.
+        confirmed: dict[int, dict] = {}
         for dim, sources in dims.items():
             if not sources:
                 result.skipped.append((axis, f"{dim} has no digested establishing source"))
                 ok = False
                 continue
-            for src in sources:
+            for position, src in sources:
                 url = src["url"]
                 if url not in cache:
                     cache[url] = fetch(url, body_dir=body_dir)
@@ -265,14 +276,14 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
                     ok = False
                     continue
                 if got["content_sha256"] == src["content_sha256"]:
-                    confirmed[url] = got
+                    confirmed[position] = got
                     continue
                 if dim == "license" and _spdx_confirms(url, got, recorded_license):
-                    confirmed[url] = got
+                    confirmed[position] = got
                     result.reconfirmed_by_spdx.append((axis, url))
                     continue
                 if _shows_confirms(src, got):
-                    confirmed[url] = got
+                    confirmed[position] = got
                     result.reconfirmed_by_shows.append((axis, url))
                     continue
                 result.drifted.append((axis, url))
@@ -286,13 +297,17 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
 def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
     path = root / "sources" / "scores" / f"{slug}.yaml"
     text = path.read_text()
+    score = _score(root, slug)
     for axis in result.stamped:
-        for url, fetched in result.reconfirmed[axis].items():
-            text = components.set_source(text, axis, url, {
+        entries = (score.get(axis) or {}).get("sources") or []
+        for position, fetched in sorted(result.reconfirmed[axis].items()):
+            # `url` is passed alongside the position so `set_source` can refuse a pair that
+            # disagrees, rather than trusting an ordinal computed against an earlier parse.
+            text = components.set_source(text, axis, entries[position]["url"], {
                 "accessed": today.isoformat(),
                 "http_status": fetched["http_status"],
                 "content_sha256": fetched["content_sha256"],
-            })
+            }, index=position)
         text = components.put_field(text, today.isoformat(), axis=axis, key="last_verified", before="sources")
     if text != path.read_text():
         path.write_text(text)

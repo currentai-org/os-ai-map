@@ -245,3 +245,56 @@ def test_noassertion_spdx_does_not_confirm(tmp_path):
     result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
     assert result.stamped == []
     assert result.drifted == [("openness", "https://api.github.com/repos/o/r/license")]
+
+
+# --- #527: one URL cited twice must not collapse into one confirmation ------------------
+
+def test_both_entries_citing_one_url_are_re_dated(tmp_path):
+    """The compar-ia shape. Two digested entries cite the same README for different
+    dimensions; `confirmed` was keyed by URL, so they collapsed into one record and `apply`
+    wrote it to whichever came first. The entry establishing `source` kept its old date and
+    the axis was stamped anyway."""
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/README", "b" * 64, ["core-gated"]),
+        _src("https://a/README", "b" * 64, ["source", "core-gated"]),
+    ], dims=("license", "source", "core-gated"),
+        recipe={"openness": {"dimensions": {"source": {"reads": ["source"]},
+                                            "core-gated": {"reads": ["core-gated"]}}}})
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    assert result.stamped == ["openness"]
+    reverify.apply(root, "p", result, date(2026, 9, 9))
+
+    entries = yaml.safe_load((root / "sources/scores/p.yaml").read_text())["openness"]["sources"]
+    assert [e["accessed"] for e in entries] == ["2026-09-09"] * 3, (
+        "every confirmed entry takes the new date, including both citations of one URL")
+
+
+def test_a_stamped_axis_satisfies_the_invariant_gate(tmp_path):
+    """The end-to-end form of the same bug: whatever `reverify` stamps, the gate that runs
+    straight after it in the workflow must accept. This is the assertion the 2026-09-08
+    scheduled run failed."""
+    from build.check_verification import invariant
+
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/README", "b" * 64, ["core-gated"]),
+        _src("https://a/README", "b" * 64, ["source", "core-gated"]),
+    ], dims=("license", "source", "core-gated"),
+        recipe={"openness": {"dimensions": {"source": {"reads": ["source"]},
+                                            "core-gated": {"reads": ["core-gated"]}}}})
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    reverify.apply(root, "p", result, date(2026, 9, 9))
+
+    owner, recipes, product_types = reverify._recipe_context(str(root))
+    scores = {"p": yaml.safe_load((root / "sources/scores/p.yaml").read_text())}
+    categories = {p.stem: yaml.safe_load(p.read_text())
+                  for p in sorted((root / "sources/categories").glob("*.yaml"))}
+    problems = invariant(scores, categories, recipes, product_types)
+    # `_corpus` gives adoption and capability a date and no sources at all, which the
+    # invariant rightly objects to; this test is about the axis reverify actually wrote.
+    assert [p for p in problems if ":openness:" in p] == []

@@ -627,3 +627,96 @@ def test_components_string_recomposes_a_mapping_with_no_raw_sibling():
         },
     }
     assert components_string(openness) == "weights:open(on HF);license:MIT"
+
+
+# --- #527: a duplicated URL must not silently address the first entry ------------------
+
+_DUPLICATE_AXIS = """product: p
+openness:
+  score: 5
+  class: open_source
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://a/README
+    shows: the hosted tier
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: aaaa
+    establishes:
+    - core-gated
+  - url: https://a/README
+    shows: the install path
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bbbb
+    establishes:
+    - source
+    - core-gated
+"""
+
+
+def test_set_source_refuses_an_ambiguous_url():
+    """Two entries cite one page for different dimensions — legal, and 55 (product, axis)
+    pairs in the corpus do it. Addressing by URL alone cannot say which one is meant, and
+    the old `next(...)` silently picked the first. #527: a write that cannot name its
+    target must fail rather than land somewhere plausible."""
+    from build.components import set_source
+
+    with pytest.raises(ValueError, match="ambiguous"):
+        set_source(_DUPLICATE_AXIS, "openness", "https://a/README", {"accessed": "2026-09-09"})
+
+
+def test_set_source_addresses_the_named_entry_when_a_url_repeats():
+    from build.components import set_source
+
+    out = set_source(_DUPLICATE_AXIS, "openness", "https://a/README",
+                     {"accessed": "2026-09-09"}, index=1)
+    entries = yaml.safe_load(out)["openness"]["sources"]
+    assert entries[0]["accessed"] == "2026-08-11", "the untargeted duplicate must not move"
+    assert entries[1]["accessed"] == "2026-09-09"
+    assert entries[1]["establishes"] == ["source", "core-gated"]
+
+
+def test_set_source_rejects_an_index_that_cites_a_different_url():
+    """The index and the URL must agree, so a caller that computed one against a stale
+    parse cannot write a fetch record onto an unrelated citation."""
+    from build.components import set_source
+
+    with pytest.raises(ValueError, match="cites"):
+        set_source(_DUPLICATE_AXIS, "openness", "https://a/LICENSE",
+                   {"accessed": "2026-09-09"}, index=0)
+
+
+_PREFIX_AXIS = """product: p
+openness:
+  score: 5
+  class: open_source
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://a/faq.md
+    shows: the old path
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: aaaa
+    establishes:
+    - core-gated
+  - url: https://a/faq
+    shows: the live path
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bbbb
+    establishes:
+    - source
+"""
+
+
+def test_set_source_does_not_match_a_url_that_is_a_prefix_of_another():
+    """`_source_span` tested `url in block`, so the shorter of two related URLs matched the
+    longer one's entry first. Real shape: openpipe cited `.../faq.md` and the live page is
+    `.../faq`."""
+    from build.components import set_source
+
+    out = set_source(_PREFIX_AXIS, "openness", "https://a/faq", {"accessed": "2026-09-09"})
+    entries = yaml.safe_load(out)["openness"]["sources"]
+    assert entries[0]["accessed"] == "2026-08-11", "the .md entry must not move"
+    assert entries[1]["accessed"] == "2026-09-09"

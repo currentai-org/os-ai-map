@@ -376,8 +376,16 @@ def render_source(entry: dict, width: int = WIDTH) -> list[str]:
     return [f"{SOURCE_INDENT}{line}\n" if line.strip() else "\n" for line in dumped.splitlines()]
 
 
-def _source_span(lines: list[str], bounds: tuple[int, int], url: str) -> tuple[int, int]:
-    """The line span of the `sources:` entry citing `url`, within an axis block."""
+def _source_span(lines: list[str], bounds: tuple[int, int], position: int) -> tuple[int, int]:
+    """The line span of the `sources:` entry at `position`, within an axis block.
+
+    Addressed by ordinal rather than by URL, and that is the point (#527). The text items
+    here and the entries PyYAML parses out of the same block are the same sequence in the
+    same order, so an ordinal names one entry in both. Matching on the URL could not: it
+    tested `url in block`, which picks the first entry whose text merely CONTAINS the
+    string, so a duplicated citation resolved to its first occurrence and a URL that is a
+    prefix of another (`.../faq` inside `.../faq.md`) resolved to the wrong entry entirely.
+    """
     start, end = bounds
     anchor = find_key(lines, bounds, "sources")
     if anchor is None:
@@ -391,31 +399,53 @@ def _source_span(lines: list[str], bounds: tuple[int, int], url: str) -> tuple[i
     if not items:
         raise ValueError("sources list has no entries at the expected indent")
 
-    for n, first in enumerate(items):
-        last = items[n + 1] if n + 1 < len(items) else end
-        block = "".join(lines[first:last])
-        if url in block:
-            return first, last
-    raise ValueError(f"no source entry citing {url!r}")
+    if not 0 <= position < len(items):
+        raise ValueError(f"no source entry at position {position}; the axis has {len(items)}")
+    first = items[position]
+    last = items[position + 1] if position + 1 < len(items) else end
+    return first, last
 
 
-def set_source(text: str, axis: str, url: str, updates: dict) -> str:
+def set_source(text: str, axis: str, url: str, updates: dict, index: int | None = None) -> str:
     """Return `text` with the `axis` source citing `url` updated by `updates`.
 
     Keys already on the entry are replaced in place; new keys are appended in the order
     given. The entry is re-rendered whole and the document is reparsed and compared against
     the expected result, so an edit that lands in a neighboring entry or breaks a folded
     scalar raises instead of being written.
+
+    `index` names WHICH entry when a URL is cited more than once, which is legal and common
+    — two entries citing one page for different dimensions, 55 (product, axis) pairs in the
+    corpus. Without it this resolved a duplicate to its first occurrence and wrote there
+    silently, so a caller that had confirmed the second entry stamped the first: the
+    confirmed entry kept its stale date, the axis was dated anyway, and
+    `check_verification`'s invariant rejected the result (#527). An ambiguous URL with no
+    `index` now raises rather than guessing. `index` and `url` must agree, so an ordinal
+    computed against a stale parse cannot land a fetch record on an unrelated citation.
     """
+    before_doc = yaml.safe_load(text)
+    entries = before_doc[axis]["sources"]
+    matches = [i for i, e in enumerate(entries) if e.get("url") == url]
+    if index is None:
+        if not matches:
+            raise ValueError(f"no source entry citing {url!r}")
+        if len(matches) > 1:
+            raise ValueError(
+                f"ambiguous: {axis} cites {url!r} at positions {matches}; pass index= to say which"
+            )
+        index = matches[0]
+    elif index not in matches:
+        cited = entries[index].get("url") if 0 <= index < len(entries) else None
+        raise ValueError(
+            f"{axis} source at position {index} cites {cited!r}, not {url!r}"
+        )
+
     lines = text.splitlines(keepends=True)
     bounds = block_bounds(lines, axis)
     if bounds is None:
         raise ValueError(f"no top-level {axis!r} block")
-    first, last = _source_span(lines, bounds, url)
+    first, last = _source_span(lines, bounds, index)
 
-    before_doc = yaml.safe_load(text)
-    entries = before_doc[axis]["sources"]
-    index = next(i for i, e in enumerate(entries) if e.get("url") == url)
     entry = dict(entries[index])
     entry.update(updates)
 
