@@ -1,0 +1,62 @@
+product: alphagenome
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights: {value: open, detail: gated downloadable checkpoint files}
+    data: {value: closed, detail: training corpus not released}
+    code: {value: partial, detail: 'Apache-2.0 API client, examples, and notebook; no training pipeline'}
+    license:
+    - {name: AlphaGenome-Model-Terms, detail: non-commercial use only}
+  raw: weights:open(gated downloadable checkpoint files);data:closed(training corpus not released);code:partial(Apache-2.0 API client, examples, and notebook; no training pipeline);license:AlphaGenome-Model-Terms(non-commercial use only)
+  confidence: high
+  note: The checkpoint is now downloadable after accepting terms, correcting the original API-only roster claim, but the terms prohibit commercial use and therefore cap the score at restricted.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/google/alphagenome-all-folds
+    shows: 'gated: auto; private: false; license_name: alphagenome; checkpoint metadata, manifests, and weight shards present; gate says non-commercial use only.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f4c011a13bc12cd2b0a0b7fec2edb281a7f036dd18b5ca11b8524f68cc8cca8b
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md
+    shows: Repository supplies an Apache-2.0 API client and examples, describes hosted predictions and Atlas, and publishes no pretraining code or corpus.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b897f19e9c93864d3f3fa76b432fcaaf1d1615e219f4145c0051013f013b9453
+    establishes: [data, code]
+  - url: https://deepmind.google.com/science/alphagenome/model-terms
+    shows: AlphaGenome model terms govern the downloadable model and limit the grant to non-commercial use.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: a200380ffe405b41debc6e8ade3ec7a3de1df6ee1eb7e22c9872c5fa06560cc4
+    establishes: [license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The gated Hub endpoint reports zero downloads, so 2,080 GitHub stars are used as the last-resort signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/google-deepmind/alphagenome
+    shows: 'stargazers_count: 2080; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2f18f112d784520176179727f253ed7105c443868e26df3eeba465ac17e74a6d
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Multiple genomic assay outputs and one-million-base to single-base resolution; no adaptation or generative-design pathway.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two explicit attributes place AlphaGenome one rung below Prithvi-EO; a broad prediction surface is not treated as model adaptation.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/alphagenome/main/README.md
+    shows: Documents gene-expression, splicing, chromatin, and contact-map output modalities over sequences up to one million bases, mostly at single-base resolution.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b897f19e9c93864d3f3fa76b432fcaaf1d1615e219f4145c0051013f013b9453

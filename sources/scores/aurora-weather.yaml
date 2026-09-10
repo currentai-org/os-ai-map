@@ -1,0 +1,56 @@
+product: aurora-weather
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: MIT ungated checkpoints}
+    data: {value: documented-not-released, detail: 'public ERA5, CMIP6, HRES, and GFS sources enumerated; training mixture not released'}
+    code: {value: partial, detail: model and inference implementation without pretraining pipeline}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: license:MIT(OSI);weights:open(MIT ungated checkpoints);data:documented-not-released(public ERA5, CMIP6, HRES, and GFS sources enumerated; training mixture not released);code:partial(model and inference implementation without pretraining pipeline)
+  confidence: high
+  note: Aurora releases the multi-task checkpoint family and describes the public training sources, but not the pipeline that produced the pretrained base.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/aurora/main/README.md
+    shows: Lists four specialized forecast versions, links all training datasets, and documents loading released checkpoints; no pretraining procedure is provided.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 73535361d411738555fba1054f88e97aed8a746b6174391e0feb11db08c04c92
+    establishes: [data, code]
+  - url: https://huggingface.co/api/models/microsoft/aurora
+    shows: 'license: mit; gated: false; checkpoint files for weather, air pollution, ocean waves, and cyclone tracking.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 96443cd76169f1e0833f29fd6c4eaa17f3780aaa4edf142335a2bfc6ed31dccd
+    establishes: [weights, license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The Hub reports zero downloads, so 1,014 GitHub stars are used as a last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/microsoft/aurora
+    shows: 'stargazers_count: 1014; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 0bf344317215b707d49b8e34bab54fd70ca495052c52c78889c5623a01767e60
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Adaptable base, forecast generation, and medium/high-resolution span; inputs vary by dataset rather than one documented multi-instrument interface.
+  relative_to: terramind
+  relation: one_below
+  confidence: high
+  note: Three explicit attributes place Aurora one rung below TerraMind without counting a list of specialized task names as a fourth attribute.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/aurora/main/README.md
+    shows: Describes adaptation with limited task data, predictive outputs, and separate medium- and high-resolution weather versions.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 73535361d411738555fba1054f88e97aed8a746b6174391e0feb11db08c04c92

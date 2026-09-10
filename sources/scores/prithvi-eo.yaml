@@ -1,0 +1,50 @@
+product: prithvi-eo
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoint}
+    data: {value: documented-not-released, detail: 4.2M HLS V2 samples and six bands described; sampled pretraining corpus not released}
+    code: {value: partial, detail: 'inference and downstream fine-tuning code, not the pretraining pipeline'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint);data:documented-not-released(4.2M HLS V2 samples and six bands described; sampled pretraining corpus not released);code:partial(inference and downstream fine-tuning code, not the pretraining pipeline)
+  confidence: high
+  note: The weights are permissively licensed and the training inputs are described, but the repository starts at inference and downstream fine-tuning rather than reproducing pretraining.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ibm-nasa-geospatial/Prithvi-EO-2.0-600M/raw/main/README.md
+    shows: The card identifies Apache-2.0 weights, 4.2M HLS V2 training samples with six bands, six released model variants, and TerraTorch fine-tuning examples.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 12f9ab36f5be76a6c88abd0bdc091c93daa1eaf0d020ad043baa59273c6a8f01
+    establishes: [weights, data, code, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 1,899 downloads in the trailing 30 days for the declared 600M checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-nasa-geospatial/Prithvi-EO-2.0-600M
+    shows: 'downloads: 1899; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4fd547e71cd7b04e86fbf84a63fdff58de91ae3b6d7933d9d2fbb920b40178b9
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Adaptation pathway, Landsat-Sentinel input, and demonstrated multi-resolution transfer; no scientific-output generation.
+  relative_to: terramind
+  relation: one_below
+  confidence: high
+  note: Three of four attributes place it one rung below TerraMind; masked pretraining reconstruction does not by itself count as a scientifically meaningful generative output.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/Prithvi-EO-2.0/main/README.md
+    shows: Documents HLS satellite time series, TerraTorch configurations and notebooks for downstream tasks, and evaluation from 0.1 m to 15 m resolution.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f13bf62e35eac8890f88d3d5b42f96738f3d7cac9b2319207e6757b4fb07d616

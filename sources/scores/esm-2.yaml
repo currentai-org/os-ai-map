@@ -1,0 +1,56 @@
+product: esm-2
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: 'MIT ungated PyTorch, TensorFlow, and safetensors files'}
+    data: {value: closed, detail: card points to the paper rather than releasing the pretraining corpus}
+    code: {value: partial, detail: inference and fine-tuning integrations without pretraining pipeline}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: weights:open(MIT ungated PyTorch, TensorFlow, and safetensors files);data:closed(card points to the paper rather than releasing the pretraining corpus);code:partial(inference and fine-tuning integrations without pretraining pipeline);license:MIT(OSI)
+  confidence: high
+  note: ESM-2 is an openly licensed and widely mirrored checkpoint family, but neither the training corpus nor a reproducible pretraining pipeline ships with this release.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/esm2_t33_650M_UR50D
+    shows: 'license: mit; gated: false; private: false; model.safetensors, pytorch_model.bin, and tf_model.h5 present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 157ff02b4a3e12e669c55f8531244525b71b536b3824b8971a163c9df9075ad6
+    establishes: [weights, license]
+  - url: https://huggingface.co/facebook/esm2_t33_650M_UR50D/raw/main/README.md
+    shows: Describes masked protein-language pretraining, points training-data detail to the paper, and links downstream fine-tuning notebooks rather than pretraining code.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de
+    establishes: [data, code]
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 1,274,116 downloads in the trailing 30 days for the declared 650M checkpoint alone.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/esm2_t33_650M_UR50D
+    shows: 'downloads: 1274116.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 157ff02b4a3e12e669c55f8531244525b71b536b3824b8971a163c9df9075ad6
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Explicit fine-tuning pathway; the release does not document multi-instrument input, scientific generation, or multi-scale operation.
+  relative_to: prithvi-eo
+  relation: two_below
+  confidence: high
+  note: One readable attribute puts ESM-2 two rungs below Prithvi-EO; broad downstream applicability is not converted into extra features.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/facebook/esm2_t33_650M_UR50D/raw/main/README.md
+    shows: Calls ESM-2 suitable for fine-tuning across protein-sequence tasks and links PyTorch and TensorFlow fine-tuning notebooks.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de

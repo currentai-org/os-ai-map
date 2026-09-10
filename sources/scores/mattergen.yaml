@@ -1,0 +1,56 @@
+product: mattergen
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: MIT ungated base and property-conditioned checkpoints}
+    data: {value: open, detail: MP-20 and Alex-MP-20 training releases with preprocessing instructions}
+    code: {value: open, detail: 'full preprocessing, training, fine-tuning, generation, and evaluation pipeline'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: weights:open(MIT ungated base and property-conditioned checkpoints);data:open(MP-20 and Alex-MP-20 training releases with preprocessing instructions);code:open(full preprocessing, training, fine-tuning, generation, and evaluation pipeline);license:MIT(OSI)
+  confidence: high
+  note: MatterGen publishes the weights, training datasets, and end-to-end code required to train and adapt the model, reaching the full open-source rung.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/mattergen/main/README.md
+    shows: Provides base and fine-tuned checkpoints, downloadable MP-20 and Alex-MP-20 data, preprocessing, training, fine-tuning, generation, and evaluation commands.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e
+    establishes: [data, code]
+  - url: https://huggingface.co/api/models/microsoft/mattergen
+    shows: 'license: mit; gated: false; private: false; base and property-conditioned checkpoints plus data-release files present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: d5dd15d8d3562c6f446891119d5694169a6020a6d4fe9150ff604e8dfef1f4ca
+    establishes: [weights, license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The Hub reports zero downloads, so 1,817 GitHub stars are used as a last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/microsoft/mattergen
+    shows: 'stargazers_count: 1817; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 31345bc4980a164ddd76ba37f89a2cec7522ecb07eace5f496d5d57d840e0aa4
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Fine-tuning on arbitrary property data and unconditional or property-conditioned crystal generation; one structure modality and scale.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes place MatterGen one rung below Prithvi-EO; its unusually complete open pipeline affects openness, not capability.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/mattergen/main/README.md
+    shows: Documents unconditional and multi-property-conditioned crystal generation plus fine-tuning on built-in or user-supplied property data.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4a0f0213ad5458046ef8ee59b86a1050a8adb1f0876c146712fdb9efd71a3e5e

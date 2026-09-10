@@ -1,6 +1,8 @@
 name: scientific_ai_models
 display_name: Scientific AI models
 description: Models trained on instrument, measurement, or scientific-simulation data rather than human-authored text, images, or speech.
+strapline: Downloadable weights are the norm here and complete releases are rare. Only a handful
+  publish the training corpus and the code that consumed it alongside the weights.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -9,10 +11,10 @@ scoring_recipe:
   version: 1
   extends: pretrained
   derived_from:
-    method: shared from-scratch openness ladder; capability instrument declared prospectively pending a scored roster
+    method: shared from-scratch openness ladder; capability feature count calibrated on the first promoted cohort
     inherited_from: base_pretrained
-    scores_reproduced: 0
-    scores_total: 0
+    scores_reproduced: 10
+    scores_total: 10
     verified_on: '2026-09-10'
     checker: build/check_rubric.py
 
@@ -60,25 +62,43 @@ scoring_recipe:
     anchor:
       primary: documented scientific adaptation surface
       machine_signal: none — requires research
-    bands: null
-    bands_status: >
-      NOT YET CALIBRATED. Capability remains hand-authored from primary evidence while the
-      preliminary roster is promoted. Fit category-level rungs only after the scored roster
-      is large enough to test readability and distribution; until then no layer-2 scorer may
-      write capability.
+    bands:
+    - {level: 1, attributes: 0}
+    - {level: 2, attributes: 1}
+    - {level: 3, attributes: 2}
+    - {level: 4, attributes: 3}
+    - {level: 5, attributes: 4}
+    note: >
+      Count only attributes stated directly by a primary product source. A long task list is
+      not an adaptation pathway, several variables from one data system are not multiple
+      instruments, masked reconstruction is not a scientifically meaningful generated output,
+      and parameter sizes are not scientific scales. TerraMind is the top anchor. The first
+      cohort distributes 1/3/4/2 products across levels 2/3/4/5, so no two adjacent rungs hold
+      more than 70 percent of the roster.
 
   confidence_rule:
     high: a primary source states the fact directly or publishes the measured result
     medium: a proxy or publisher summary supports the judgment without a direct measurement
     low: inferred from indirect evidence, or the source is older than 90 days
 
-products: []
+products:
+- prithvi-eo
+- terramind
+- clay
+- aurora-weather
+- prithvi-wxc
+- surya-heliophysics
+- esm-2
+- evo-2
+- alphagenome
+- mattergen
 comments: >
   Proposed in issue #533. The boundary is the data, not whether the product is a reusable
   backbone: task models, simulators, generative design tools, and forecast services belong when
   they learn from instrument, measurement, or scientific-simulation output. General-purpose
   text, natural-image, speech, and video models stay in neighboring categories; software
   harnesses such as PhysicsNeMo, Earth-2 Studio, and anemoi-core are not model products. The
-  preliminary roster is identity-only until promotion verifies each candidate against primary
-  sources. Capability uses a feature-matrix judgment while bands remain deliberately
-  uncalibrated.
+  remaining registry roster is identity-only until promotion verifies each candidate against
+  primary sources. The first ten products were promoted on 2026-09-10. Capability counts four
+  evidence-backed attributes rather than downstream task names, which keeps documentation style
+  from masquerading as model breadth.
