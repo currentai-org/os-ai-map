@@ -121,9 +121,11 @@ The pytest line is not optional on the identity and membership routes. Handle co
 ratchet over orgs-with-a-handle / orgs-with-artifacts, per platform, so **adding an artifact of a
 kind its org has no handle for** — a first `huggingface_model` on a product whose org is
 GitHub-only, say — raises the denominator alone and fails
-`tests/test_identity_eval.py`. **Moving a product to a different org** can do it from the other
-side, by leaving the old org's last artifact of a kind behind. Neither shows up in `validate` or
-`check_artifacts`; both are fixed by a row in `sources/org_handles.yaml`, per
+`tests/test_identity_eval.py`. **Moving a product to a different org** changes which org must be
+covered on every route its artifacts use: the destination needs matching handles, and removing
+the source org's last artifact on a route can also lower the ratio when that org was covered.
+Neither shows up in `validate` or `check_artifacts`; add any missing destination handles in
+`sources/org_handles.yaml`, per
 [`add-product.md`](add-product.md#files-this-changes).
 
 ## Files this changes
