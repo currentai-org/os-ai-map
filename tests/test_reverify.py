@@ -2,6 +2,7 @@ import json
 from datetime import date
 from pathlib import Path
 
+import pytest
 import yaml
 
 from build import reverify
@@ -288,6 +289,8 @@ def test_a_stamped_axis_satisfies_the_invariant_gate(tmp_path):
     fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
                               "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
     result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    # Without this the test would also pass by stamping nothing at all.
+    assert result.stamped == ["openness"]
     reverify.apply(root, "p", result, date(2026, 9, 9))
 
     owner, recipes, product_types = reverify._recipe_context(str(root))
@@ -298,3 +301,31 @@ def test_a_stamped_axis_satisfies_the_invariant_gate(tmp_path):
     # `_corpus` gives adoption and capability a date and no sources at all, which the
     # invariant rightly objects to; this test is about the axis reverify actually wrote.
     assert [p for p in problems if ":openness:" in p] == []
+
+
+def test_apply_refuses_a_confirmation_whose_citation_changed_underneath_it(tmp_path):
+    """The ordinal is only safe while the file it was computed against still says the same
+    thing. `apply` used to recover the URL from a fresh parse at the same position, so its
+    index/url agreement check compared that parse against itself and could never fire — a
+    confirmation fetched for one page would be stamped onto whatever now occupies the slot,
+    carrying the wrong digest with it."""
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/OLD", "b" * 64, ["source"]),
+    ], recipe=_SOURCE_RECIPE)
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    assert result.stamped == ["openness"]
+
+    # The citation at the confirmed position is replaced before the write lands.
+    path = root / "sources/scores/p.yaml"
+    data = yaml.safe_load(path.read_text())
+    data["openness"]["sources"][1]["url"] = "https://a/NEW"
+    path.write_text(yaml.safe_dump(data, sort_keys=False, width=100))
+
+    with pytest.raises(ValueError, match="cites"):
+        reverify.apply(root, "p", result, date(2026, 9, 9))
+    after = yaml.safe_load(path.read_text())
+    assert after["openness"]["last_verified"] == "2026-08-13", "nothing is stamped on a refusal"
+    assert after["openness"]["sources"][1]["content_sha256"] == "b" * 64

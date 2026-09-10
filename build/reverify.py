@@ -98,15 +98,30 @@ def oldest_products(root: Path, limit: int) -> list[tuple[date, str]]:
     return ranked[:limit]
 
 
+@dataclass(frozen=True)
+class Confirmation:
+    """One re-read citation: the URL as it read at confirmation time, and the fetch record.
+
+    The URL is captured HERE rather than recovered at write time. `apply` used to read it
+    back out of a fresh parse at the same position, which made `set_source`'s index/url
+    agreement check compare that parse against itself — it could never fire, and a
+    confirmation would be stamped onto whatever now occupied the slot, carrying the wrong
+    digest. Holding the URL from the moment of confirmation is what lets that check mean
+    something.
+    """
+    url: str
+    fetched: dict
+
+
 @dataclass
 class ProductResult:
     slug: str
     stamped: list[str] = field(default_factory=list)
-    # axis -> the source's position in that axis's `sources` list -> the fetch record that
-    # confirmed it (http_status, content_sha256, ...). Keyed by position and not by URL:
-    # two entries may cite one page for different dimensions, and keying by URL collapsed
-    # them into a single record that `apply` then wrote to whichever came first (#527).
-    reconfirmed: dict[str, dict[int, dict]] = field(default_factory=dict)
+    # axis -> the source's position in that axis's `sources` list -> the Confirmation for
+    # it. Keyed by position and not by URL: two entries may cite one page for different
+    # dimensions, and keying by URL collapsed them into a single record that `apply` then
+    # wrote to whichever came first (#527).
+    reconfirmed: dict[str, dict[int, Confirmation]] = field(default_factory=dict)
     reconfirmed_by_shows: list[tuple[str, str]] = field(default_factory=list)
     reconfirmed_by_spdx: list[tuple[str, str]] = field(default_factory=list)
     drifted: list[tuple[str, str]] = field(default_factory=list)
@@ -258,7 +273,7 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
         # Keyed by position, so two entries citing one URL stay two confirmations. The
         # fetch cache stays keyed by URL — fetching one page once is correct, and it is
         # only the write-back that has to know which citation it belongs to.
-        confirmed: dict[int, dict] = {}
+        confirmed: dict[int, Confirmation] = {}
         for dim, sources in dims.items():
             if not sources:
                 result.skipped.append((axis, f"{dim} has no digested establishing source"))
@@ -276,14 +291,14 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
                     ok = False
                     continue
                 if got["content_sha256"] == src["content_sha256"]:
-                    confirmed[position] = got
+                    confirmed[position] = Confirmation(url, got)
                     continue
                 if dim == "license" and _spdx_confirms(url, got, recorded_license):
-                    confirmed[position] = got
+                    confirmed[position] = Confirmation(url, got)
                     result.reconfirmed_by_spdx.append((axis, url))
                     continue
                 if _shows_confirms(src, got):
-                    confirmed[position] = got
+                    confirmed[position] = Confirmation(url, got)
                     result.reconfirmed_by_shows.append((axis, url))
                     continue
                 result.drifted.append((axis, url))
@@ -297,16 +312,15 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
 def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
     path = root / "sources" / "scores" / f"{slug}.yaml"
     text = path.read_text()
-    score = _score(root, slug)
     for axis in result.stamped:
-        entries = (score.get(axis) or {}).get("sources") or []
-        for position, fetched in sorted(result.reconfirmed[axis].items()):
-            # `url` is passed alongside the position so `set_source` can refuse a pair that
-            # disagrees, rather than trusting an ordinal computed against an earlier parse.
-            text = components.set_source(text, axis, entries[position]["url"], {
+        for position, confirmation in sorted(result.reconfirmed[axis].items()):
+            # The URL comes from the confirmation, not from a re-read of the file, so
+            # `set_source` compares what was confirmed against what is there now and
+            # refuses when the citation at that position has changed underneath us.
+            text = components.set_source(text, axis, confirmation.url, {
                 "accessed": today.isoformat(),
-                "http_status": fetched["http_status"],
-                "content_sha256": fetched["content_sha256"],
+                "http_status": confirmation.fetched["http_status"],
+                "content_sha256": confirmation.fetched["content_sha256"],
             }, index=position)
         text = components.put_field(text, today.isoformat(), axis=axis, key="last_verified", before="sources")
     if text != path.read_text():
