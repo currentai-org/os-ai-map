@@ -18712,6 +18712,132 @@
             "basis": "verified"
           },
           "version_note": "Formerly ScandEval; the legacy scandeval package still draws about 2.2K downloads a month, and even summed with euroeval's the product stays under 10K, so the rename does not move the band. Verified 2026-09-01 via the EuroEval/EuroEval repository, its license endpoint, its README, euroeval.com, the PyPI JSON backlink and pypistats."
+        },
+        {
+          "slug": "languagebench",
+          "product": "languagebench",
+          "org_slug": "fair-forward",
+          "org": "FAIR Forward / Datenlabor BMZ (GIZ)",
+          "type": "software",
+          "description": "Auto-updating multilingual leaderboard and evaluation harness that tracks how well frontier language models perform in the world's languages, with a deliberate focus on low-resource ones. It runs seven tasks — translation both directions, classification, MMLU, ARC, TruthfulQA and MGSM — over a curated list of about forty hosted models via OpenRouter, drawing on FLORES+, Global-MMLU, AfriMMLU, AfriMGSM and Uhura-TruthfulQA and machine-translating the English-only sets where no native version exists. Results publish to a Hugging Face Space with a global proficiency map, and to two Hugging Face datasets holding the aggregated and per-sample tables.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(GitHub);core-gated:ungated;no feature-gated core",
+            "confidence": "high",
+            "note": "MIT and fully public. The LICENSE body is the stock MIT text (copyright 2025 Datenlabor BMZ & GIZ & DFKI) with no appended terms. The evaluation pipeline, the FastAPI backend and the React frontend all ship in the one repository and the Hugging Face Space builds from it; the result tables publish as open datasets. No pricing, paid tier or license key appears anywhere in the repo.",
+            "last_verified": "2026-09-10",
+            "sources": [
+              {
+                "url": "https://api.github.com/repos/datenlabor-bmz/evals-for-every-language/license",
+                "shows": "GitHub's license endpoint reports spdx_id MIT and returns the stock MIT text (Copyright (c) 2025 Datenlabor BMZ & GIZ & DFKI) with no appended terms",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "8ffc3bb9e2c92ceff6b8ff13ce6009ab4ae5d1b6ff6efd85f08fa9c1d7ae431f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datenlabor-bmz/evals-for-every-language/main/README.md",
+                "shows": "README documents the whole product from the one repo — `uv run evals/main.py` to evaluate, `uv run evals/backend.py` plus the npm frontend to explore, and results/ committed in the tree — with no pricing, paid tier or license key",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "9919858cabea8c7fe73d8d78c1aac9b755b957aec8bac8f44cb6222eb372058e",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "banded_quantity": "trailing-30-day downloads of the two published result datasets, 57 + 45 = 102",
+            "note": "There is no installable package — the product is a hosted leaderboard plus the pipeline behind it — so the measurable artifacts are the two Hugging Face result datasets the README names as the programmatic access path. They draw 102 downloads between them in the trailing 30 days, which bands at level 1. The other visible counts corroborate the band rather than move it: 21 GitHub stars and 2 forks on the repository, 26 likes on the Space.",
+            "last_verified": "2026-09-10",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/fair-forward/evals-for-every-language-results",
+                "shows": "downloads = 57 in the trailing 30 days on the aggregated results dataset",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "dd2cbe427f6af2eed89c9b4cfa7899949d4e66f63d5469b8c17cd8fcc07707d9"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/fair-forward/evals-for-every-language-results-detailed",
+                "shows": "downloads = 45 in the trailing 30 days on the per-sample results dataset",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "55ee1f21c165386184a3f708be960327724d46b07459dda1e142d34714f73a97"
+              },
+              {
+                "url": "https://api.github.com/repos/datenlabor-bmz/evals-for-every-language",
+                "shows": "21 stars, 2 forks, last push 2026-07-28",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "1d4bd8d8bfc5ff06791e5cff969ab992dcc7e47b3bee65981dc07f03503b6b0e"
+              },
+              {
+                "url": "https://huggingface.co/api/spaces/fair-forward/languagebench",
+                "shows": "likes = 26, runtime stage RUNNING, and four resolved domains including datenlabor-bmz-ai-language-monitor.hf.space and fair-forward-languagebench.hf.space",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "96f856f560575e8705f127e8069c85d4fa6a44819e2b2b67ee71dc9fcfe7d234"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "seven tasks (translation from and to, classification, MMLU, ARC, TruthfulQA, MGSM) over ~42 curated hosted models via OpenRouter, across up to 200 languages with a 1000-language ceiling in the config; aggregated and per-sample results published as open datasets with bootstrap confidence intervals, plus a public dashboard and global proficiency map",
+            "relative_to": "euroeval",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "The widest language coverage of any harness in the category — up to 200 languages against EuroEval's 30+ — bought by a narrow task surface. Seven borrowed benchmarks at ten samples each, hosted API models only through a single router, no locally-run weights and no installable package, against EuroEval's encoders, decoders and encoder-decoders and its own reproducible dataset-creation scripts. Deep on one axis and thin on the rest in each direction, so level with EuroEval rather than a rung apart, and below the general-purpose harnesses at 4.",
+            "comparison": {
+              "last_attested": "2026-09-10",
+              "sources": [
+                {
+                  "url": "https://euroeval.com",
+                  "shows": "\"EuroEval is a language-model benchmarking framework that supports evaluating all types of language models (encoders, decoders, encoder-decoders, base models, and instruction-tuned models) across 30+ European languages\" — the model-class breadth EuroEval trades for languagebench's language reach, which is what makes the two level rather than a rung apart.",
+                  "accessed": "2026-09-10",
+                  "http_status": 200,
+                  "content_sha256": "8a3a709a111bcbcfe28202d1220528bf757211e76678933012441e3f0d7c7d0f"
+                }
+              ]
+            },
+            "last_verified": "2026-09-10",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2507.08538",
+                "shows": "\"a comprehensive multilingual benchmark that systematically assesses LLM performance across up to 200 languages, with a particular focus on low-resource languages\"; aggregates translation, question answering, math and reasoning over FLORES+, MMLU, GSM8K, TruthfulQA and ARC; \"an open-source, auto-updating leaderboard and dashboard\"; a global proficiency map and trends over time",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "25293858f9c8a52b0e05900e3e92e8bd172f3d9f0f248d9cb5d7c608ab76dfa7"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datenlabor-bmz/evals-for-every-language/main/notes/system-architecture-diagram.md",
+                "shows": "seven task functions (translation_from/to with BLEU+ChrF, classification, mmlu, arc, truthfulqa, mgsm), a static curated list of ~42 models filtered to a default top 40 through OpenRouter, languages sorted by speaker count with a 1000-language default ceiling, 10 samples per model x language x task, and bootstrap confidence intervals on the aggregate",
+                "accessed": "2026-09-10",
+                "http_status": 200,
+                "content_sha256": "f0f40091ceb94474df1061be71853de54f4e7af5e2642366e1d128e0b3249ae0"
+              }
+            ]
+          },
+          "overall_score": 2.0,
+          "tier": null,
+          "maturity": 2.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-10",
+            "basis": "verified"
+          },
+          "version_note": "Named the AI Language Proficiency Monitor in the 2025 paper and renamed languagebench since; the repository keeps the older evals-for-every-language name and the Space resolves under both. Built by the BMZ Data Lab with GIZ's FAIR Forward programme and DFKI. Verified 2026-09-10 via the repository, its license endpoint, the README, the Hugging Face Space and dataset APIs, and the arXiv abstract."
         }
       ]
     },
@@ -62727,6 +62853,19 @@
         "ragas"
       ]
     },
+    "fair-forward": {
+      "slug": "fair-forward",
+      "display_name": "FAIR Forward / Datenlabor BMZ (GIZ)",
+      "type": "government",
+      "homepage": "https://www.bmz-digital.global/en/overview-of-initiatives/fair-forward/",
+      "github": [
+        "https://github.com/datenlabor-bmz"
+      ],
+      "country": "",
+      "products": [
+        "languagebench"
+      ]
+    },
     "feast-dev": {
       "slug": "feast-dev",
       "display_name": "Feast project",
@@ -66096,7 +66235,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 616,
+  "n_total": 617,
   "generated": "2026-09-10",
   "version": "0.3.0",
   "released": "2026-09-05",
@@ -66109,8 +66248,8 @@
       "total": 24626,
       "overlap": 309,
       "universe": 24856,
-      "scored": 616,
-      "scored_outside": 307,
+      "scored": 617,
+      "scored_outside": 308,
       "uncategorized": 24317
     },
     "top": [
