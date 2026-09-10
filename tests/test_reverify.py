@@ -324,8 +324,10 @@ def test_apply_refuses_a_confirmation_whose_citation_changed_underneath_it(tmp_p
     data["openness"]["sources"][1]["url"] = "https://a/NEW"
     path.write_text(yaml.safe_dump(data, sort_keys=False, width=100))
 
+    before = path.read_text()
     with pytest.raises(ValueError, match="cites"):
         reverify.apply(root, "p", result, date(2026, 9, 9))
-    after = yaml.safe_load(path.read_text())
-    assert after["openness"]["last_verified"] == "2026-08-13", "nothing is stamped on a refusal"
-    assert after["openness"]["sources"][1]["content_sha256"] == "b" * 64
+    # The refusal comes before the single write_text, and an earlier entry in the same
+    # loop was already edited in memory, so the whole file has to be byte-identical —
+    # not merely unstamped.
+    assert path.read_text() == before
