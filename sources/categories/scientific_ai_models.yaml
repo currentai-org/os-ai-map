@@ -11,10 +11,14 @@ scoring_recipe:
   version: 1
   extends: pretrained
   derived_from:
-    method: shared from-scratch openness ladder; capability feature count calibrated on the first promoted cohort
+    method: >-
+      Shared from-scratch openness ladder, inherited. The capability feature count was
+      calibrated on the first ten promoted products and then applied unchanged to the
+      remaining twenty-four; the wording was not revised after seeing them, so the whole
+      34-product roster is the derivation set rather than the original ten.
     inherited_from: base_pretrained
-    scores_reproduced: 10
-    scores_total: 10
+    scores_reproduced: 34
+    scores_total: 34
     verified_on: '2026-09-10'
     checker: build/check_rubric.py
 
@@ -72,9 +76,16 @@ scoring_recipe:
       Count only attributes stated directly by a primary product source. A long task list is
       not an adaptation pathway, several variables from one data system are not multiple
       instruments, masked reconstruction is not a scientifically meaningful generated output,
-      and parameter sizes are not scientific scales. TerraMind is the top anchor. The first
-      cohort distributes 1/3/4/2 products across levels 2/3/4/5, so no two adjacent rungs hold
-      more than 70 percent of the roster.
+      and parameter sizes are not scientific scales. TerraMind is the top anchor.
+
+      Distribution over the full 34: 2/12/11/7/2 across levels 1/2/3/4/5, or 6/35/32/21/6
+      percent. Five rungs are all occupied and the top and bottom are genuinely rare, but
+      level 2 holds 35 percent, marginally over the one-third ceiling docs/reference/capability.md
+      sets for a discriminating rung. It is not one attribute piling up: the twelve are split
+      across all four, seven reaching level 2 on an adaptation pathway alone and the rest on a
+      lone multi-instrument, multi-scale or generative claim. Splitting them needs a fifth
+      attribute or a weighting, which is a rubric edit rather than a re-score, and no product
+      was moved to improve the shape.
 
   confidence_rule:
     high: a primary source states the fact directly or publishes the measured result
@@ -92,13 +103,37 @@ products:
 - evo-2
 - alphagenome
 - mattergen
+- granite-geospatial
+- dofa
+- presto
+- alphaearth-foundations
+- weathernext
+- climax
+- neuralgcm
+- aifs
+- pangu-weather
+- nasa-ibm-lunar-foundation-model
+- esm-3
+- alphafold
+- openfold
+- boltz
+- chai
+- rfdiffusion
+- geneformer
+- scgpt
+- uce
+- mattersim
+- uma
+- mace
+- orb
+- gnome
 comments: >
   Proposed in issue #533. The boundary is the data, not whether the product is a reusable
   backbone: task models, simulators, generative design tools, and forecast services belong when
   they learn from instrument, measurement, or scientific-simulation output. General-purpose
   text, natural-image, speech, and video models stay in neighboring categories; software
   harnesses such as PhysicsNeMo, Earth-2 Studio, and anemoi-core are not model products. The
-  remaining registry roster is identity-only until promotion verifies each candidate against
-  primary sources. The first ten products were promoted on 2026-09-10. Capability counts four
+  registry roster is now empty: all 34 candidates were promoted on 2026-09-10 and verified
+  against primary sources. Capability counts four
   evidence-backed attributes rather than downstream task names, which keeps documentation style
   from masquerading as model breadth.

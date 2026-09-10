@@ -84,7 +84,32 @@ openness:
           discriminating against a field of endeavor. Settled in issue #117, which was
           opened because the same OpenRAIL family had been scored 3 in one category and
           4 in another.
-        examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License, CDLA-Permissive-2.0]
+        # The Creative Commons attribution family was added on 2026-09-10, when the
+        # scientific_ai_models promotion turned up three weight releases governed by it and
+        # the tier could not name any of them. `software.yaml` already made this ruling for
+        # CC-BY-4.0 on 2026-08-12 and the reasoning carries: OSI approves software licenses
+        # and has never approved a Creative Commons content license — CC-BY's own deed warns
+        # it is "not recommended for software" — so it is not `osi`; and attribution is all
+        # it asks, capping neither who may use the weights nor at what scale, which is this
+        # tier's definition stated directly. CC-BY-SA-4.0 joins it: share-alike binds
+        # whoever redistributes, and this ladder's `osi` tier already says in its own words
+        # that a copyleft obligation "does not cap who may use the software or at what
+        # scale". Share-alike is that obligation on a non-OSI license, so it lands here
+        # rather than a tier down.
+        #
+        # Measured before adding, as the tier below requires: NO base_pretrained product
+        # records a CC license of any kind, so this moves none of that category's 32 scores.
+        # The fifteen CC records elsewhere on the map are corpora scored by `dataset.yaml`,
+        # which keeps its own tier list. The addition moves exactly the three products it
+        # was ruled for — weathernext, neuralgcm and dofa.
+        #
+        # `FAIR-Chemistry-License-v1` (2026-09-10, for `uma`) is the #117 ruling applied
+        # again rather than a new one. It grants royalty-free commercial use and asks only
+        # for conduct — an acceptable-use policy — plus registration at the download gate. A
+        # gate is friction, not a cap on who may use the weights or at what scale, so this is
+        # the attribution tier and not `use_bounded`, which is reserved for a real ceiling.
+        examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License, CDLA-Permissive-2.0,
+          CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1]
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
@@ -102,7 +127,21 @@ openness:
         definition: >
           Weights are published and commercial use is prohibited, or reserved to the vendor.
           The 3/2 boundary asks one question: does the licence permit commercial use at all?
-        examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC, AlphaGenome-Model-Terms]
+        # `CC-BY-NC-SA-4.0` is the spelled-out sibling of the `CC-BY-NC` already here, added
+        # 2026-09-10 for pangu-weather, whose README grants exactly that and states outright
+        # that "commercial use of these models is forbidden". Same tier, same reason: the
+        # NC clause answers this tier's one question.
+        # Two more vendor terms added 2026-09-10, both the same shape as AlphaGenome's and
+        # both answering this tier's one question with a no. `ASL` reaches the ladder as the
+        # restrictive half of `mace`'s compound — MIT covers the code and three checkpoints,
+        # ASL covers four more and its own text says it "is not an open-source licence
+        # because it does not allow commercial use" — so multi_sku_rule resolves the line
+        # here on the most restrictive DISTRIBUTED SKU.
+        # `AlphaFold-3-Model-Parameters-Terms-of-Use` governs the current tier of the
+        # AlphaFold line: parameters only if received directly from Google, non-commercial.
+        # AlphaFold 2's CC-BY-4.0 parameters are the older SKU and do not lift the line.
+        examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC, CC-BY-NC-SA-4.0, AlphaGenome-Model-Terms,
+          ASL, AlphaFold-3-Model-Parameters-Terms-of-Use]
       proprietary:
         definition: No public license; weights not distributed.
     multi_sku_rule: >

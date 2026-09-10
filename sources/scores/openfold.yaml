@@ -1,0 +1,84 @@
+product: openfold
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: "Apache-2.0 OpenFold3 checkpoints behind an auto-approved form, and OpenFold's own AlphaFold 2-reproduction parameters fetched by repository scripts"}
+    data: {value: open, detail: 'OpenProteinSet, some 400,000 MSAs and PDB70 template hit files, on the AWS Registry of Open Data'}
+    code: {value: open, detail: 'train_openfold.py plus a documented end-to-end training guide, not inference alone'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 OpenFold3 checkpoints behind an auto-approved form, and OpenFold's own AlphaFold 2-reproduction parameters fetched by repository scripts);data:open(OpenProteinSet, some 400,000 MSAs and PDB70 template hit files, on the AWS Registry of Open Data);code:open(train_openfold.py plus a documented end-to-end training guide, not inference alone);license:Apache-2.0(OSI)
+  confidence: high
+  note: The reason OpenFold exists is the reason it reaches the top rung - it was built to be retrained, and the corpus, the pipeline and the resulting weights all shipped under one OSI license. The CC-BY-4.0 note in the repository covers DeepMind's parameters, which OpenFold can also load; it does not govern OpenFold's own release.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/OpenFold/OpenFold3
+    shows: 'license: apache-2.0; private: false; gated: auto with the prompt "The OpenFold3-preview model is released under Apache 2.0 license. You will automatically get access to the model after answering the following simple questions"; four checkpoints/*.pt files present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 31dba81c96ff1173d4ab532a1750a47a015aeaecde1fecb203715e602a14257e
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/aqlaboratory/openfold/main/docs/source/original_readme.md
+    shows: '"We''ve publicly released model weights and our training data - some 400,000 MSAs and PDB70 template hit files - under a permissive license. Model weights are available via scripts in this repository while the MSAs are hosted by the Registry of Open Data on AWS."'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f
+    establishes: [weights, data]
+  - url: https://registry.opendata.aws/openfold/
+    shows: OpenProteinSet listed on the Registry of Open Data on AWS as a public dataset, cited as OpenFold's training data.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6040d8111ded79d669feab83b0a23f6146dd380aa2b0b2ff39ac775bbba963d4
+    establishes: [data]
+  - url: https://openfold.readthedocs.io/en/latest/Training_OpenFold.html
+    shows: A training guide covering how to train an OpenFold model from the RODA dataset and how to fine-tune it, alongside a separate page on setting up the PDB training set.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 46cc7e7906b12250665a83154d0890449f27c776a12d2249652e55fedb02ddb7
+    establishes: [code]
+  - url: https://raw.githubusercontent.com/aqlaboratory/openfold/main/LICENSE
+    shows: Apache License Version 2.0 body, matching the license the GitHub API reports for the repository.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 7a77a0f9b49715d3b124b39607c53c5df8795d26f7aae08b12e6dbb9b1ec1a40
+    establishes: [license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The gated OpenFold3 endpoint reports zero downloads, which measures the gate rather than the reach, so 3,423 GitHub stars are used as the last-resort signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/aqlaboratory/openfold
+    shows: 'stargazers_count: 3423; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 8e9d016ed74dc1ec3f6fe3d90094e6f3efc6c2008c2c10a5c0c590b2b63415d5
+  - url: https://huggingface.co/api/models/OpenFold/OpenFold3
+    shows: 'downloads: 0 against likes: 44, on a gated: auto repository.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 31dba81c96ff1173d4ab532a1750a47a015aeaecde1fecb203715e602a14257e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A published training and fine-tuning pathway, and sequence with MSA and template inputs; the model predicts structure rather than designing it, at one scale.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes, and the adaptation one is the whole point of the project - the README's first line is that this is a trainable reproduction, and the docs carry a training guide rather than a fine-tuning notebook bolted onto an inference release.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/aqlaboratory/openfold/main/README.md
+    shows: '"A faithful but trainable PyTorch reproduction of DeepMind''s AlphaFold 2", with docs carrying instructions for installation and model inference and training.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 985b6dc09144ea14378dd2c543b288e8d2a05cb342a77cbc56b7a39c5170f638
+  - url: https://raw.githubusercontent.com/aqlaboratory/openfold/main/docs/source/original_readme.md
+    shows: Training data is MSAs and PDB70 template hit files alongside sequence; the repository ships train_openfold.py beside run_pretrained_openfold.py.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f

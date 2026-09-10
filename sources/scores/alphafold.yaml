@@ -1,0 +1,67 @@
+product: alphafold
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights: {value: open, detail: 'AlphaFold 3 parameters at a published URL but only if received directly from Google; AlphaFold 2 parameters freely downloadable'}
+    data: {value: closed, detail: training corpus not released in either generation}
+    code: {value: partial, detail: 'Apache-2.0 inference pipeline in both repositories; no training code'}
+    license:
+    - {name: AlphaFold-3-Model-Parameters-Terms-of-Use, detail: 'non-commercial use only; the resolved tier for the line, AlphaFold 2 parameters being CC-BY-4.0'}
+  raw: weights:open(AlphaFold 3 parameters at a published URL but only if received directly from Google; AlphaFold 2 parameters freely downloadable);data:closed(training corpus not released in either generation);code:partial(Apache-2.0 inference pipeline in both repositories; no training code);license:AlphaFold-3-Model-Parameters-Terms-of-Use(non-commercial use only; the resolved tier for the line, AlphaFold 2 parameters being CC-BY-4.0)
+  confidence: high
+  note: The line ships two generations under two parameter licenses, and the multi-SKU rule resolves it on the distributed set. AlphaFold 2's parameters are CC-BY-4.0, which alone would not cap anything; AlphaFold 3's are also distributed, and their terms forbid commercial use and require that you receive them directly from Google. The most restrictive distributed license governs, so the current tier decides the score and the line sits at restricted. Scoring the line at AlphaFold 2 would be scoring a superseded product.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md
+    shows: '"You may only use AlphaFold 3 model parameters if received directly from Google"; parameters download from storage.googleapis.com/alphafold3/af3.bin.zst subject to separate terms; source code is Apache-2.0; the package "provides an implementation of the inference pipeline".'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: cc16ba436ea8a967c764ac034a655d632b4c1ef8b4065868b8d07914c7cb88be
+    establishes: [weights, code, license]
+  - url: https://raw.githubusercontent.com/google-deepmind/alphafold3/main/WEIGHTS_TERMS_OF_USE.md
+    shows: The grant covers "non-commercial use by, or on behalf of, non-commercial organizations", provided "you are not a commercial organisation or acting on behalf of a commercial organisation", and excludes commercial activities including research on behalf of commercial organizations.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 41adf62ff5eabc58831c828793988537948663c139f8b87d8d413851b150b6e5
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/google-deepmind/alphafold/main/README.md
+    shows: '"The AlphaFold parameters are made available under the terms of the Creative Commons Attribution 4.0 International (CC BY 4.0) license"; the repository publishes inference only and points training data detail at the paper.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 39a82c6f8ecfaf16872275167e98ff00109321f8de150edf5212dc9ed36f3763
+    establishes: [license, data]
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: medium
+  note: No Hugging Face artifact and no published download count for either parameter set, so stars are the last-resort signal. The declared repository carries 14,844; the AlphaFold 3 repository that now holds the shipping tier carries 8,538, and neither number is a usage measure.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/google-deepmind/alphafold
+    shows: 'stargazers_count: 14844; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2c5172d683b9c1ebc4aa56a1bae9914297a189adc7d836c1772d0721a01f9929
+  - url: https://api.github.com/repos/google-deepmind/alphafold3
+    shows: 'stargazers_count: 8538; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: da06cd4662beab7ee5a1b190a363387642c60e9c97def038eae0c967b7fb3005
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Sequence together with genetic-search and template inputs; no adaptation pathway, no design surface, and one scale.
+  relative_to: prithvi-eo
+  relation: two_below
+  confidence: high
+  note: One readable attribute. The breadth people associate with AlphaFold 3 is breadth of entity types in a single prediction task, and the category's note is explicit that a long task list is not an adaptation pathway - the repository ships inference only, and the model predicts a fixed target rather than designing anything.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/alphafold3/main/README.md
+    shows: Data pipeline runs genetic and template search alongside the input sequences; the package implements the inference pipeline only, with no training or fine-tuning entry point.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: cc16ba436ea8a967c764ac034a655d632b4c1ef8b4065868b8d07914c7cb88be

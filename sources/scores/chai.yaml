@@ -1,0 +1,62 @@
+product: chai
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: "downloaded automatically by the chai-lab package and covered by the repository's Apache-2.0 grant"}
+    data: {value: closed, detail: 'training data not released; the technical report is the only account of it'}
+    code: {value: partial, detail: 'inference CLI and feature-context API; no training pipeline'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(downloaded automatically by the chai-lab package and covered by the repository's Apache-2.0 grant);data:closed(training data not released; the technical report is the only account of it);code:partial(inference CLI and feature-context API; no training pipeline);license:Apache-2.0(OSI)
+  confidence: high
+  note: The repository license is Apache-2.0, which on its own would say nothing about the weights, and the check that matters here is that the README extends the same grant to them in as many words. Chai-1 is therefore commercially usable weights on a closed corpus, which is the category's centre of gravity.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/README.md
+    shows: '"Chai-1 is released under an Apache 2.0 License (both code and model weights), which means it can be used for both academic and commerical purposes, including for drug discovery"; weights are downloaded automatically into the package directory; the package runs inference only.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f
+    establishes: [weights, code, license]
+  - url: https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/LICENSE
+    shows: Apache License Version 2.0 body, Copyright 2024 Chai Discovery.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 511edf51c5c6f47bae9ae19c59d98666a682e0ccc98e90c2de2a9a897c44c003
+    establishes: [license]
+  - url: https://api.github.com/repos/chaidiscovery/chai-lab
+    shows: 'license spdx_id: Apache-2.0; archived: false; fork: false; no training entry point in the published surface.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 93d6b0291a77e40b714869a4ab842b209248749ee3b5d75faaf56e0cffd9b59d
+    establishes: [data]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: Weights ship through the package rather than the Hub, so there is no download count to band; 1,993 GitHub stars are the last-resort signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/chaidiscovery/chai-lab
+    shows: 'stargazers_count: 1993; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 93d6b0291a77e40b714869a4ab842b209248749ee3b5d75faaf56e0cffd9b59d
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Sequence with optional MSAs, templates, embeddings and experimental restraints as inputs; no adaptation pathway, no design surface, one scale.
+  relative_to: prithvi-eo
+  relation: two_below
+  confidence: high
+  note: One attribute. Restraints are the genuinely distinctive input here and they count toward the same one - they widen what can be fed in, not what the model can be turned into, and the five sample predictions the CLI emits are samples of a prediction rather than generated designs.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/chaidiscovery/chai-lab/main/README.md
+    shows: MSAs, templates, embeddings, covalent bonds and inter-chain restraints are all documented inputs; "Chai-1 uniquely offers the ability to fold complexes with user-specified restraints"; no fine-tuning or training documentation.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f

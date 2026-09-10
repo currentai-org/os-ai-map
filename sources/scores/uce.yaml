@@ -1,0 +1,65 @@
+product: uce
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: 'ungated 4-layer and 33-layer checkpoints, fetched by the evaluation script or from Figshare'}
+    data: {value: documented-not-released, detail: the paper describes the 36-million-cell Integrated Mega-scale Atlas corpus while the repository links processed paper datasets rather than the pretraining corpus}
+    code: {value: partial, detail: 'embedding and evaluation script only; no pretraining pipeline'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: weights:open(ungated 4-layer and 33-layer checkpoints, fetched by the evaluation script or from Figshare);data:documented-not-released(the paper describes the 36-million-cell Integrated Mega-scale Atlas corpus while the repository links processed paper datasets rather than the pretraining corpus);code:partial(embedding and evaluation script only; no pretraining pipeline);license:MIT(OSI)
+  confidence: high
+  note: The checkpoints are freely downloadable under MIT, and the corpus is described in the paper, but the repository ships only the code needed to embed a dataset, so the full-pipeline rungs are out of reach.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/snap-stanford/UCE/main/README.md
+    shows: Documents automatic download of the pretrained 4-layer model and a Figshare link for the 33-layer model, exposes only eval_single_anndata.py, and links processed paper datasets rather than the training corpus.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4454680cbe611ede29c2d19da3a000d874ec145ca3f36be9659545c0e5015101
+    establishes: [weights, code]
+  - url: https://www.nature.com/articles/s41586-026-10689-z
+    shows: Describes self-supervised training on a large corpus of cell data and the resulting Integrated Mega-scale Atlas of 36 million cells from hundreds of experiments, dozens of tissues, and eight species.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f5fc0a2789728c2f2b2079292dfe514b3161de9c28b4c6c2852fb42cb98bc94a
+    establishes: [data]
+  - url: https://raw.githubusercontent.com/snap-stanford/UCE/main/LICENSE
+    shows: MIT License body covering the repository and the released model files, read directly rather than from the license endpoint.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: bf068012efcf3a796af03889d4214df435bc1220ac97981c77a14f14c5070cde
+    establishes: [license]
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: No Hugging Face or package artifact is declared, so 338 GitHub stars are the last-resort signal; checkpoints are served from the authors' own hosting and from Figshare, neither of which reports a download count.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/snap-stanford/UCE
+    shows: 'stargazers_count: 338; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 360aa5c26c94e3c6d4a3d5bc9fd1de246fbb51b1bfda97df731a0f9e2708b022
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: None of the four attributes is established; the paper states that new cells are embedded with no data labelling, model training, or fine-tuning.
+  confidence: high
+  note: The absent adaptation pathway is a positive claim by the publisher rather than a gap in the evidence. The model emits embeddings rather than generated outputs, takes one transcriptomic modality, and operates at one scale; embedding cells from many species is coverage, not a second instrument.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://www.nature.com/articles/s41586-026-10689-z
+    shows: States that UCE's universality means new cells can be embedded with no data labelling, model training or fine-tuning, and describes the output as a unified biological latent space.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f5fc0a2789728c2f2b2079292dfe514b3161de9c28b4c6c2852fb42cb98bc94a
+  - url: https://raw.githubusercontent.com/snap-stanford/UCE/main/README.md
+    shows: Exposes a single embedding script whose output is UCE embeddings added to the input AnnData, with no training, fine-tuning, or generation entry point.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4454680cbe611ede29c2d19da3a000d874ec145ca3f36be9659545c0e5015101

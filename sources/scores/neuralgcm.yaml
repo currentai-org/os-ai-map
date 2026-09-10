@@ -1,0 +1,73 @@
+product: neuralgcm
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket}
+    data: {value: documented-not-released, detail: 'ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released'}
+    code: {value: partial, detail: 'supported inference API and regridding utilities; training exists only as pseudo-code in reference_code'}
+    license:
+    - {name: CC-BY-SA-4.0, detail: permissive non-OSI}
+  raw: license:CC-BY-SA-4.0(permissive non-OSI);weights:open(CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket);data:documented-not-released(ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released);code:partial(supported inference API and regridding utilities; training exists only as pseudo-code in reference_code)
+  confidence: high
+  note: Apache-2.0 governs the code but the trained weights carry CC-BY-SA-4.0, which is the license that counts here - permissive, share-alike, and not OSI-approved. The project says plainly that it does not yet support training or fine-tuning.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/neuralgcm/neuralgcm/main/README.md
+    shows: 'States the split license: code under Apache License 2.0, trained model weights under Creative Commons Attribution-ShareAlike 4.0 International.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 0e0c6f4e585ad1ff0e1735aa89cdbbff9152fd345e73c42eedad5bc619b72586
+    establishes: [license]
+  - url: https://neuralgcm.readthedocs.io/en/latest/
+    shows: '"Pseudo-code for training NeuralGCM models can be found in the reference_code subdirectory", the documentation "focuses mostly on our API for inference", and the team notes it would like to support training, modifying and fine-tuning but the present codebase makes it trickier than it needs to be.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 0ae8a5428933cc6be49fb1aeea9d3755593728d866344744cc25c236672bb741
+    establishes: [code]
+  - url: https://neuralgcm.readthedocs.io/en/latest/data_preparation.html
+    shows: Specifies the ERA5 pressure levels, input/output variables and sea-surface forcings the models take, and uses the ARCO-ERA5 Zarr copy of ERA5 as the worked example; no training corpus is distributed.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 496c591aca645eac0d16ad231ea1514477aaf66d167c00c1a90cd64de83e72f1
+    establishes: [data]
+  - url: https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html
+    shows: 'Loads checkpoints from gs://neuralgcm/models with an anonymous token, offering v1/deterministic_0_7_deg.pkl, v1/deterministic_1_4_deg.pkl, v1/deterministic_2_8_deg.pkl and v1/stochastic_1_4_deg.pkl.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f
+    establishes: [weights]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: Checkpoints are distributed from a Cloud bucket with no download count, so 1,014 GitHub stars are the last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/neuralgcm/neuralgcm
+    shows: 'stargazers_count: 1014; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f7c6e192ef720724234035a1386fa88f35cacba7d0614ce06576204a4f98f274
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Stochastic atmospheric simulation, and checkpoints at three horizontal resolutions for both forecasts and long integrations; no supported adaptation path and one ERA5 input system.
+  relative_to: aurora-weather
+  relation: one_below
+  confidence: high
+  note: Two attributes. Adaptation is explicitly uncounted because the documentation says training and fine-tuning are not supported and ship only as pseudo-code; the checkpoint-modification recipe changes outputs, not learned parameters.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://neuralgcm.readthedocs.io/en/latest/checkpoint_modifications.html
+    shows: Distributes deterministic checkpoints at 0.7, 1.4 and 2.8 degrees plus a stochastic 1.4-degree model, and discusses long integrations and the stability of the simulated global mean surface pressure.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f
+  - url: https://neuralgcm.readthedocs.io/en/latest/
+    shows: Describes NeuralGCM as a hybrid ML and physics atmospheric model for weather and climate simulation built on the Dinosaur dynamical core, and states that training and fine-tuning are not supported by the released codebase.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 0ae8a5428933cc6be49fb1aeea9d3755593728d866344744cc25c236672bb741

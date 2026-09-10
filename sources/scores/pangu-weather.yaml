@@ -1,0 +1,54 @@
+product: pangu-weather
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights: {value: open, detail: 'four ungated ONNX checkpoints on Google Drive and Baidu Netdisk, roughly 1.1GB each'}
+    data: {value: documented-not-released, detail: 'ERA5 over 39 years, about 60TB, with the lite variant''s 2007-2017 subset spelled out; no data or download scripts ship'}
+    code: {value: partial, detail: 'CPU, GPU and iterative inference scripts plus algorithm pseudocode; the training run is described in prose only'}
+    license:
+    - {name: CC-BY-NC-SA-4.0, detail: non-commercial use only}
+  raw: license:CC-BY-NC-SA-4.0(non-commercial use only);weights:open(four ungated ONNX checkpoints on Google Drive and Baidu Netdisk, roughly 1.1GB each);data:documented-not-released(ERA5 over 39 years, about 60TB, with the lite variant's 2007-2017 subset spelled out; no data or download scripts ship);code:partial(CPU, GPU and iterative inference scripts plus algorithm pseudocode; the training run is described in prose only)
+  confidence: high
+  note: The repository declares no license file and GitHub's license endpoint returns 404, so it would be wrong to read the code as permissive. The only grant is the README's, and it puts the trained parameters under CC BY-NC-SA 4.0 and forbids commercial use, which caps the score at restricted whatever else was published.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md
+    shows: '"The trained parameters of Pangu-Weather were made available under the terms of the BY-NC-SA 4.0 license" and "The commercial use of these models is forbidden"; links four downloadable ONNX checkpoints; states training needs about 60TB of ERA5 and 3000 V100 GPU-days per model; and ships inference_cpu.py, inference_gpu.py, inference_iterative.py and pseudocode.py.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1
+    establishes: [weights, data, code, license]
+  - url: https://api.github.com/repos/198808xc/Pangu-Weather/license
+    shows: 'HTTP 404, "Not Found" - the repository carries no LICENSE file, so no repository-level grant exists to fall back on.'
+    accessed: '2026-09-10'
+    http_status: 404
+    content_sha256: e80d8bd80b672a912a514abede3950704d7e2e93c561917510b5150e5889971a
+    establishes: [license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: Weights are hosted on Google Drive and Baidu Netdisk with no download count, so 1,395 GitHub stars are the last-resort reach signal; the repository was last pushed in January 2024.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/198808xc/Pangu-Weather
+    shows: 'stargazers_count: 1395; archived: false; fork: false; pushed_at: 2024-01-12.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 62aa759fc4ab43954f617468cc721e567df5a2f801a81ce7437dd4e57b30671b
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Four checkpoints spanning 1-, 3-, 6- and 24-hour lead times that chain into longer forecasts; deterministic outputs, one input system, and no released adaptation path.
+  confidence: high
+  note: One attribute, the temporal-scale span. Pseudocode is not an adaptation pathway, ERA5 and ECMWF HRES initial fields are one data system, and a deterministic forecast is a fixed target rather than a generated output.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/198808xc/Pangu-Weather/master/README.md
+    shows: Publishes 1-hour, 3-hour, 6-hour and 24-hour models and an iterative script that combines them into a week of forecasts; supports ERA5 and ECMWF initial fields only; and provides pseudocode rather than training code.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b21aeee735b3196efd1334fc7f34caa0a5fb1e549d06d7ae3738db7b237a19a1

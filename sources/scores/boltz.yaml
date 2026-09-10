@@ -1,0 +1,67 @@
+product: boltz
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: 'MIT weights downloaded by the boltz package, covering Boltz-1 and Boltz-2'}
+    data: {value: open, detail: 'pre-processed RCSB and OpenFold structures and MSAs published for download, with instructions for reprocessing raw data'}
+    code: {value: open, detail: 'training script and structure and confidence model configs under scripts/train, alongside a training guide'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: weights:open(MIT weights downloaded by the boltz package, covering Boltz-1 and Boltz-2);data:open(pre-processed RCSB and OpenFold structures and MSAs published for download, with instructions for reprocessing raw data);code:open(training script and structure and confidence model configs under scripts/train, alongside a training guide);license:MIT(OSI)
+  confidence: high
+  note: Boltz reaches the top rung on the strength of the Boltz-1 release, where the corpus, the preprocessing pipeline, the training configs and MIT weights all shipped together. The Boltz-2 equivalents are marked coming soon and have not landed, so the pipeline a reader can actually run trails the model they would want to train; the license and the weights, which is what the rung turns on, cover both.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md
+    shows: '"All the code and weights are provided under MIT license, making them freely available for both academic and commercial uses"; a Training section pointing at docs/training.md for retraining.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/LICENSE
+    shows: MIT License body, Copyright (c) 2024 Jeremy Wohlwend, Gabriele Corso, Saro Passaro.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f0667fd5e66c51e1ba8ddaa0249c6d7225b30037e02c45782d8f2c2943ac2617
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md
+    shows: Download links for the pre-processed RCSB and OpenFold structures and MSAs and the ligand symmetry file, instructions for reprocessing raw data, and template training configs for the structure and confidence models under scripts/train/configs; Boltz-2 training information is marked coming soon.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c
+    establishes: [data, code]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: No Hugging Face artifact - the weights are fetched by the package rather than served from the Hub - so 4,202 GitHub stars are the last-resort signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/jwohlwend/boltz
+    shows: 'stargazers_count: 4202; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 7502ca561e5728327b220861833669513a585a8c763ee5a5715f526d4327b691
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A published retraining pathway, and sequence with MSA inputs and ligand specifications; structure and affinity are both predictions of fixed targets at one scale.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes. Adding binding affinity to structure prediction widens what Boltz-2 outputs without adding a scale or a design surface, so the second head is not a third attribute.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md
+    shows: Inference takes a YAML specification of the biomolecules with an optional MSA server; the Training section documents retraining, and the affinity outputs are predicted values rather than generated molecules.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2
+  - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/docs/training.md
+    shows: '"To run training, you will need to download a few pre-processed datasets", covering both structures and MSAs, with configuration templates for the structure and confidence models.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c

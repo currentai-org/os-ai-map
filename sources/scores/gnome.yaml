@@ -1,0 +1,48 @@
+product: gnome
+openness:
+  score: 1
+  class: closed
+  components:
+    weights: {value: closed, detail: model definitions and architecture configuration only; no trained checkpoint is distributed}
+    data: {value: open, detail: 'the GNoME database of over 520,000 discovered structures is downloadable under CC BY-NC 4.0'}
+    code: {value: partial, detail: 'Apache-2.0 model definitions and exploration Colabs; training colabs and configs are listed as upcoming'}
+    license:
+    - {name: proprietary, detail: 'no weights are distributed, so no weights licence exists; Apache-2.0 covers the code and CC BY-NC 4.0 the database'}
+  raw: weights:closed(model definitions and architecture configuration only; no trained checkpoint is distributed);data:open(the GNoME database of over 520,000 discovered structures is downloadable under CC BY-NC 4.0);code:partial(Apache-2.0 model definitions and exploration Colabs; training colabs and configs are listed as upcoming);license:proprietary(no weights are distributed, so no weights licence exists; Apache-2.0 covers the code and CC BY-NC 4.0 the database)
+  confidence: high
+  note: The Apache-2.0 repository label is a code licence, not a weights licence. What GNoME released is the discovered-materials database and the architectures behind it; there is no downloadable trained model, so the first rung of the ladder applies whatever else was published.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/materials_discovery/main/README.md
+    shows: Offers the dataset and Colab notebooks for download, says the repository provides model definitions for the GNoME and NequIP architectures with basic configuration parameters, lists model training colabs and configs as upcoming, and splits the licence between Apache-2.0 for code and CC BY-NC 4.0 for the database.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 67699d0d7928b23009b804b95dbfd7cd024487e3a6a76fff41b5bb3c2f468c21
+    establishes: [weights, data, code, license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: No Hugging Face or package artifact exists — nothing is distributed to band — so 1,235 GitHub stars are the last-resort signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/google-deepmind/materials_discovery
+    shows: 'stargazers_count: 1235; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 544aab058f3744ae147173c573180d854a48b13a0da987f0e4efc0de99a2a749
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: None of the four attributes is established; the repository publishes architectures and discovered structures rather than a runnable adaptation, generation, multi-instrument, or multi-scale surface.
+  confidence: high
+  note: Nothing here can be adapted, because no trained model ships and the training colabs are still upcoming. Discovery in the paper came from a substitution-and-filter pipeline around the model rather than from the model generating structures, so the generative attribute is not counted.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/materials_discovery/main/README.md
+    shows: Describes GNoME as a simple message-passing architecture trained to predict energies, provides model definitions and exploration Colabs only, and lists model training colabs and configs as upcoming.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 67699d0d7928b23009b804b95dbfd7cd024487e3a6a76fff41b5bb3c2f468c21

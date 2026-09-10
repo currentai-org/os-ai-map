@@ -1,0 +1,62 @@
+product: granite-geospatial
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoint files}
+    data: {value: documented-not-released, detail: 'HLS L30 and GEDI L4A sources and the leaf-on compositing method described, assembled training set not published'}
+    code: {value: partial, detail: 'getting-started and few-shot notebooks over TerraTorch, no pretraining or fine-tuning pipeline'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint files);data:documented-not-released(HLS L30 and GEDI L4A sources and the leaf-on compositing method described, assembled training set not published);code:partial(getting-started and few-shot notebooks over TerraTorch, no pretraining or fine-tuning pipeline)
+  confidence: high
+  note: The checkpoint and its configuration are published under Apache-2.0 and the card names its NASA source products in detail, but the model repository is archived notebooks and the assembled corpus never shipped.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md
+    shows: Apache-2.0 card stating that the weights and the configuration file that defines them are made available, naming HLS L30 and GEDI L4A as the training data with the cloud-free compositing method, and pointing to getting-started notebooks rather than training code.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00
+    establishes: [weights, data, code, license]
+  - url: https://huggingface.co/api/models/ibm-granite/granite-geospatial-biomass
+    shows: 'gated: false; private: false; license apache-2.0; biomass_model.ckpt, biomass_model_lightning.ckpt, and config.yaml present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b8ff20c87dc345ac77f90678752915d99f4944003c8a0779568e7b3095ce7819
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/ibm-granite/granite-geospatial-biomass/main/README.md
+    shows: Describes the repository as public notebooks and utilities for working with the fine-tuned model, with no training or fine-tuning pipeline.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 126cae16fbbb0cda4b7d375cffa900731bed87770c7521e91fe8f4c80fbebe12
+    establishes: [code]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 127 downloads in the trailing 30 days for the declared biomass checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-granite/granite-geospatial-biomass
+    shows: 'downloads: 127; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b8ff20c87dc345ac77f90678752915d99f4944003c8a0779568e7b3095ce7819
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Fine-tunable through TerraTorch with a documented few-shot workflow; one optical input product, a single regression output, and one spatial scale.
+  relative_to: prithvi-eo
+  relation: two_below
+  confidence: high
+  note: Only the adaptation pathway is stated directly. HLS is one harmonized data product rather than several instruments, the GEDI lidar is a label source rather than an input, the masked-reconstruction pretraining task does not count as generative, and no second scale is specified.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md
+    shows: Documents TerraTorch inference from a released config plus notebooks walking zero-shot and few-shot fine-tuning, with HLS L30 optical imagery as the only model input and above-ground biomass regression as the only output.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00

@@ -1,0 +1,71 @@
+product: uma
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: 'manually gated but downloadable uma-s and uma-m checkpoint files'}
+    data: {value: open, detail: 'OMol25, OMat24, OC20, ODAC23, and OMC25 training datasets published alongside the model'}
+    code: {value: partial, detail: 'MIT fairchem inference, calculator, and large-scale simulation library; no pretraining recipe published'}
+    license:
+    - {name: FAIR-Chemistry-License-v1, detail: 'royalty-free commercial use with an acceptable-use policy and gated registration'}
+  raw: weights:open(manually gated but downloadable uma-s and uma-m checkpoint files);data:open(OMol25, OMat24, OC20, ODAC23, and OMC25 training datasets published alongside the model);code:partial(MIT fairchem inference, calculator, and large-scale simulation library; no pretraining recipe published);license:FAIR-Chemistry-License-v1(royalty-free commercial use with an acceptable-use policy and gated registration)
+  confidence: high
+  note: Gating and an acceptable-use policy are identity and conduct conditions rather than a commercial ceiling, so the licence does not push UMA below the open-weights centre of gravity. What holds it there is the missing pretraining recipe, not the gate; the five training datasets are themselves published.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/UMA
+    shows: 'gated: manual; private: false; license: other under the FAIR Chemistry License v1 with a full-legal-name registration prompt; checkpoints/uma-s-1p2.pt, uma-s-1p2p1.pt, and uma-m-1p1.pt present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 774114cf81953f1f4ec2928e48353f1ba2cbcabca2db6c9dd4fb970cb61ac207
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md
+    shows: Names the five DFT training datasets behind the tasks — OMol25, OMC25, OMat24, OC20, and ODAC23, plus OC25 and OC22 in UMA-1.2 — each with a published reference.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 072f4d1e77358dfd7ad3e1d5c97318a6b4848c566510c5b5b2db26b09d839c62
+    establishes: [data]
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/LICENSE.md
+    shows: MIT License body for the fairchem library, read directly because the license endpoint reports NOASSERTION; the README adds that model and checkpoint licenses vary by application area.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 3e10827938aae9e591647722c830065a95b3af2721f0d7f02f373869b40fe81d
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/README.md
+    shows: Documents installation, pretrained-model instantiation, ASE calculators, molecular dynamics, and multi-GPU and LAMMPS interfaces, with no pretraining or fine-tuning recipe.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5e8a5edbd2035bb65d1e440e586d20aa238a8f91b9515f59a9ed82a6cc499068
+    establishes: [code]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: 83 downloads in the trailing 30 days for the declared Hub repository. Manual gating suppresses the count, and most users reach the weights through the fairchem-core PyPI package, which is not banded here.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/UMA
+    shows: 'downloads: 83; likes: 374; gated: manual.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 774114cf81953f1f4ec2928e48353f1ba2cbcabca2db6c9dd4fb970cb61ac207
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: One model consuming five distinct DFT levels of theory, selected at inference by a task embedding; no documented adaptation path, no generation, one scale.
+  confidence: high
+  note: One attribute. The five tasks are separate data systems with different functionals and pseudopotentials rather than variables of one, which is what makes this multi-instrument. The publisher's headline claim is that no fine-tuning is needed, and no fine-tuning recipe is documented, so the adaptation attribute is not counted.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md
+    shows: States UMA is trained on five different DFT datasets with different levels of theory, learns a per-task embedding, and requires the user to select a task at inference; tabulates the functional and pseudopotentials for each.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 072f4d1e77358dfd7ad3e1d5c97318a6b4848c566510c5b5b2db26b09d839c62
+  - url: https://arxiv.org/abs/2506.23971
+    shows: Describes training on half a billion 3D atomic structures compiled across multiple chemical domains and reports that a single model without any fine-tuning matches or beats specialized models.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b61d36f1da79d58e1d8a0919a1fdddf7528a484cbdbd36758d2ee27b950520c7
