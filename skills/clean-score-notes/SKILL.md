@@ -138,9 +138,12 @@ Three hazards the sweep hit, all of which cost a repair and none of which was ob
   sentence-initial markers, and audit by re-reading what survived, not by checking the cut point.
 - **A verb list is not a rule.** `Re-derived` was not in the marker set and survived 23 times
   until an agent noticed. The guard now matches the shape of the thing, not a vocabulary.
-- **`set_source` addresses by URL and takes the first match.** An axis citing the same URL twice
-  has an unreachable second entry, and the reparse assertion still passes because the expected
-  document is built from that same first index. Address by index where a URL repeats.
+- **`set_source` needs an `index=` where a URL repeats.** An axis citing the same URL twice
+  cannot be addressed by URL alone. This used to take the first match silently, and the reparse
+  assertion did not catch it because the expected document was built from that same first index —
+  which is how #527 dated an axis on a citation it had not re-read. It now raises on an ambiguous
+  URL instead of guessing, and `index` and `url` must agree, so the failure is loud. Pass the
+  entry's ordinal in the axis's `sources` list.
 
 ## Validation
 

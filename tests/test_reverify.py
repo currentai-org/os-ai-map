@@ -2,6 +2,7 @@ import json
 from datetime import date
 from pathlib import Path
 
+import pytest
 import yaml
 
 from build import reverify
@@ -245,3 +246,88 @@ def test_noassertion_spdx_does_not_confirm(tmp_path):
     result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
     assert result.stamped == []
     assert result.drifted == [("openness", "https://api.github.com/repos/o/r/license")]
+
+
+# --- #527: one URL cited twice must not collapse into one confirmation ------------------
+
+def test_both_entries_citing_one_url_are_re_dated(tmp_path):
+    """The compar-ia shape. Two digested entries cite the same README for different
+    dimensions; `confirmed` was keyed by URL, so they collapsed into one record and `apply`
+    wrote it to whichever came first. The entry establishing `source` kept its old date and
+    the axis was stamped anyway."""
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/README", "b" * 64, ["core-gated"]),
+        _src("https://a/README", "b" * 64, ["source", "core-gated"]),
+    ], dims=("license", "source", "core-gated"),
+        recipe={"openness": {"dimensions": {"source": {"reads": ["source"]},
+                                            "core-gated": {"reads": ["core-gated"]}}}})
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    assert result.stamped == ["openness"]
+    reverify.apply(root, "p", result, date(2026, 9, 9))
+
+    entries = yaml.safe_load((root / "sources/scores/p.yaml").read_text())["openness"]["sources"]
+    assert [e["accessed"] for e in entries] == ["2026-09-09"] * 3, (
+        "every confirmed entry takes the new date, including both citations of one URL")
+
+
+def test_a_stamped_axis_satisfies_the_invariant_gate(tmp_path):
+    """The end-to-end form of the same bug: whatever `reverify` stamps, the gate that runs
+    straight after it in the workflow must accept. This is the assertion the 2026-09-08
+    scheduled run failed."""
+    from build.check_verification import invariant
+
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/README", "b" * 64, ["core-gated"]),
+        _src("https://a/README", "b" * 64, ["source", "core-gated"]),
+    ], dims=("license", "source", "core-gated"),
+        recipe={"openness": {"dimensions": {"source": {"reads": ["source"]},
+                                            "core-gated": {"reads": ["core-gated"]}}}})
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    # Without this the test would also pass by stamping nothing at all.
+    assert result.stamped == ["openness"]
+    reverify.apply(root, "p", result, date(2026, 9, 9))
+
+    owner, recipes, product_types = reverify._recipe_context(str(root))
+    scores = {"p": yaml.safe_load((root / "sources/scores/p.yaml").read_text())}
+    categories = {p.stem: yaml.safe_load(p.read_text())
+                  for p in sorted((root / "sources/categories").glob("*.yaml"))}
+    problems = invariant(scores, categories, recipes, product_types)
+    # `_corpus` gives adoption and capability a date and no sources at all, which the
+    # invariant rightly objects to; this test is about the axis reverify actually wrote.
+    assert [p for p in problems if ":openness:" in p] == []
+
+
+def test_apply_refuses_a_confirmation_whose_citation_changed_underneath_it(tmp_path):
+    """The ordinal is only safe while the file it was computed against still says the same
+    thing. `apply` used to recover the URL from a fresh parse at the same position, so its
+    index/url agreement check compared that parse against itself and could never fire — a
+    confirmation fetched for one page would be stamped onto whatever now occupies the slot,
+    carrying the wrong digest with it."""
+    root = _score_with_sources(tmp_path, [
+        _src("https://a/LICENSE", "a" * 64, ["license"]),
+        _src("https://a/OLD", "b" * 64, ["source"]),
+    ], recipe=_SOURCE_RECIPE)
+    fake = lambda url, **kw: {"url": url, "http_status": 200,  # noqa: E731
+                              "content_sha256": "a" * 64 if url.endswith("LICENSE") else "b" * 64}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 9), axes=("openness",), fetch=fake)
+    assert result.stamped == ["openness"]
+
+    # The citation at the confirmed position is replaced before the write lands.
+    path = root / "sources/scores/p.yaml"
+    data = yaml.safe_load(path.read_text())
+    data["openness"]["sources"][1]["url"] = "https://a/NEW"
+    path.write_text(yaml.safe_dump(data, sort_keys=False, width=100))
+
+    before = path.read_text()
+    with pytest.raises(ValueError, match="cites"):
+        reverify.apply(root, "p", result, date(2026, 9, 9))
+    # The refusal comes before the single write_text, and an earlier entry in the same
+    # loop was already edited in memory, so the whole file has to be byte-identical —
+    # not merely unstamped.
+    assert path.read_text() == before
