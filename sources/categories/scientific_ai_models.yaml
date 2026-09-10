@@ -1,0 +1,84 @@
+name: scientific_ai_models
+display_name: Scientific AI models
+description: Models trained on instrument, measurement, or scientific-simulation data rather than human-authored text, images, or speech.
+weights:
+  adopt: 0.3
+  cap: 0.7
+
+scoring_recipe:
+  version: 1
+  extends: pretrained
+  derived_from:
+    method: shared from-scratch openness ladder; capability instrument declared prospectively pending a scored roster
+    inherited_from: base_pretrained
+    scores_reproduced: 0
+    scores_total: 0
+    verified_on: '2026-09-10'
+    checker: build/check_rubric.py
+
+  adoption:
+    signal_preference:
+    - signal_type: usage_volume
+      source: Hugging Face downloads, summed across the product line's shipped checkpoints
+      machine_signal: signal_huggingface.hub_state
+    - signal_type: active_users
+      source: vendor-disclosed active users or installations
+    - signal_type: reported_traction
+      source: >
+        Credible vendor or third-party reach where no governed artifact count exists.
+        Directional only; set confidence to medium at best.
+    - signal_type: stars_fallback
+      source: GitHub stars, last resort
+      machine_signal: signal_github.repo_state
+    bands:
+    - {level: 1, reach: <10K}
+    - {level: 2, reach: 10K-100K}
+    - {level: 3, reach: 100K-1M}
+    - {level: 4, reach: 1M-10M}
+    - {level: 5, reach: '>10M'}
+    reach_is_monthly: true
+    note: >
+      The numeric bands match the existing model and software scales. Issue #536 tracks
+      routing a model to the channel that actually distributes it, including PyPI and Zenodo;
+      this category does not settle that corpus-wide methodology question.
+
+  capability:
+    basis: feature_matrix
+    attributes:
+      adaptation_pathway:
+        question: Does the publisher document a concrete way to adapt or fine-tune the model?
+        evidence: Training or fine-tuning code, configuration, notebook, or documented API.
+      multi_instrument:
+        question: Does one model accept measurements from more than one instrument or modality?
+        evidence: The publisher's input specification or model documentation.
+      generative:
+        question: Can the model generate or simulate scientifically meaningful outputs rather than only predict a fixed target?
+        evidence: The publisher's task definition and documented output surface.
+      multi_scale:
+        question: Does one model operate across more than one spatial, temporal, molecular, or resolution scale?
+        evidence: The publisher's input, checkpoint, or evaluation specification.
+    anchor:
+      primary: documented scientific adaptation surface
+      machine_signal: none — requires research
+    bands: null
+    bands_status: >
+      NOT YET CALIBRATED. Capability remains hand-authored from primary evidence while the
+      preliminary roster is promoted. Fit category-level rungs only after the scored roster
+      is large enough to test readability and distribution; until then no layer-2 scorer may
+      write capability.
+
+  confidence_rule:
+    high: a primary source states the fact directly or publishes the measured result
+    medium: a proxy or publisher summary supports the judgment without a direct measurement
+    low: inferred from indirect evidence, or the source is older than 90 days
+
+products: []
+comments: >
+  Proposed in issue #533. The boundary is the data, not whether the product is a reusable
+  backbone: task models, simulators, generative design tools, and forecast services belong when
+  they learn from instrument, measurement, or scientific-simulation output. General-purpose
+  text, natural-image, speech, and video models stay in neighboring categories; software
+  harnesses such as PhysicsNeMo, Earth-2 Studio, and anemoi-core are not model products. The
+  preliminary roster is identity-only until promotion verifies each candidate against primary
+  sources. Capability uses a feature-matrix judgment while bands remain deliberately
+  uncalibrated.
