@@ -45,7 +45,11 @@ MARKETING = re.compile(
     r"the fastest|fastest way|fastest.growing"
     r"|de facto|de-facto"
     r"|growing rapidly|rapidly growing"
-    r"|industry.standard|best.in.class|world.class|gold standard"
+    # `world.class` carries a trailing \b that its neighbours must not: without it the
+    # alternative matches inside "Dynamic World classes", Google's land-cover product and
+    # a legitimate input modality for remote-sensing models (`presto`). A blanket trailing
+    # \b would break `game.chang`, which has to keep matching "game-changing".
+    r"|industry.standard|best.in.class|world.class\b|gold standard"
     r"|the leading|most popular|most ubiquitous|most widely cited"
     r"|cutting.edge|state.of.the.art"
     r"|seamless|effortless|revolutionary|game.chang|unmatched"
