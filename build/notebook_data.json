@@ -8317,40 +8317,40 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:Modular-Community-License(non-OSI, per-device licensing and a limited redistribution grant, governs MAX/Mojo usage+distribution);repo-license:Apache-2.0-WITH-LLVM-exception(the source in modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed deployment",
+            "components": "license:Modular-Community-License(non-OSI; revised 2026-08-18, dropping the prior eight-device cap outside x86/ARM/NVIDIA-PTX; now requires redistribution of Derivative Works/Applications in object code form only, bars using MAX as AI training/fine-tuning data to build a reimplementation of or substitute for MAX, and requires a Powered-by-Modular credit for commercial hosted/managed AI services);repo-license:Apache-2.0-WITH-LLVM-exception(the source in modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed deployment",
             "confidence": "high",
-            "note": "A large public codebase whose own LICENSE file is Apache-2.0 with LLVM Exceptions, but the GitHub repository page states that \"Modular, MAX and Mojo usage and distribution are licensed under the Modular Community License\", which is not OSI approved. That license splits capacity by device architecture, with no cap on x86, ARM or NVIDIA PTX devices but an eight-device cap on any other accelerator type; it grants only \"a limited right to redistribute certain components of the SDK\"; and while the community variant is \"provided free of charge\", Modular \"may at any time change its provision\" with only commercially reasonable notice. The source is therefore readable but not unconditionally runnable or redistributable at scale, which makes this source-available rather than open source despite the product being marketed as open.",
-            "last_verified": "2026-08-09",
+            "note": "MAX/Mojo usage and distribution are governed by the non-OSI Modular Community License rather than the Apache-2.0-WITH-LLVM-exception text that covers the repository itself. The license permits free production use with no cap on device count, but requires any redistributed Derivative Work or Application to ship in object code form only, bars using MAX as training or fine-tuning data to build a system that reimplements or substitutes for MAX, and requires a \"Powered by Modular\" credit for commercial hosted or managed AI services built on it. The source is therefore readable and freely runnable but not unconditionally redistributable, which keeps this source-available rather than open source despite the product being marketed as open.",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/modular/modular",
-                "shows": "Modular, MAX and Mojo usage and distribution are licensed under the Modular Community License",
-                "accessed": "2026-08-09",
+                "shows": "MAX usage and distribution are licensed under the Modular Community License, and the repository's own code is licensed under the Apache License v2.0 with LLVM Exceptions. The line recorded on 2026-08-09 named Modular and Mojo alongside MAX; it now names MAX only, and points at the same license.",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "c6d520730b91071a7a1131be8b213ccd2319d46968bb99df11bed182db751dc7"
+                "content_sha256": "d6ddea42a98ae15d94596f02bb77a7408273542f5e43546aea18c8ee632878d2"
               },
               {
                 "url": "https://www.modular.com/legal/community",
-                "shows": "Modular grants a limited right to redistribute certain components of the SDK as part of Licensee's Applications, subject to conditions and Distribution Requirements specified in the SDK documentation.",
-                "accessed": "2026-08-09",
+                "shows": "The old license capped free production use at eight accelerators outside x86, ARM and NVIDIA. Both requirements are now gone. You shall not use MAX, or any portion of it, as training data, fine-tuning data, or input to any AI system in order to produce software that reimplements or substitutes for MAX. Last Modified: August 18, 2026.",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "2125e9ed0d988853e9701f018433c0648daf178882b93fb24304e5f0a1237a8c"
+                "content_sha256": "432ed521e8c18a9f274fc3d3b9debb57cd8d3d6d5e0ecf24f29e39bbef911e91"
               },
               {
                 "url": "https://raw.githubusercontent.com/modular/modular/main/LICENSE",
                 "shows": "The MAX repository is licensed under the Apache License v2.0 with LLVM Exceptions:",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "b9ec095b4c52f3564cef5a7d720d4eafd0589fbb760a578d8c020f97a2fc4ae4"
+                "content_sha256": "077ecef8fc610215df3319c555c2fa1b4d28df60ee67a72946b9338cbc90a8a0"
               }
             ],
             "bucket": "open-ish"
@@ -8402,7 +8402,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The repository source and MAX/Mojo usage carry different licenses; the openness score follows the usage terms rather than the repository file. Verified 2026-08-09 via GitHub and the Modular Community License page."
         },
@@ -8513,22 +8514,22 @@
             "components": "engine:proprietary(WSE wafer-scale stack);source:closed;access:managed-cloud-API-only;license:Proprietary",
             "confidence": "high",
             "note": "Proprietary cloud inference on custom wafer-scale hardware, reachable only through an API. The inference page offers managed API access with no source or weights release, and the Inference Terms and Conditions grant nothing more than a non-exclusive, limited, non-transferable and non-sublicensable right to access the hosted services.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://www.cerebras.ai/inference",
                 "shows": "Cerebras Inference is a hosted cloud service (tiers: Free Trial with \"Get API Key\", Developer pay-per-token, Enterprise), with \"OpenAI API compatibility\" advertised as the integration path; a full-text read of the page finds no source repository, no downloadable weights and no self-hostable implementation - the Enterprise tier's \"custom model weights\" refers to customer-supplied weights served on Cerebras hardware, not a weights release.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "9a05b0d50b9143eec65f3870509a93ff64b9959d1c4e7ddbc98540d8c222240e"
+                "content_sha256": "3c242316b98542e31eae33d1588df40229c3e599016cf3a33b8f0ec32f8eaf36"
               },
               {
                 "url": "https://d7umqicpi7263.cloudfront.net/eula/4rCqa7snChhObjYFAYH325D2kcqkCRpGXBZYsSMc3mg",
                 "shows": "we hereby grant to you or your Named Users a non-exclusive, limited, non-transferable, non-sublicensable right to access and use the Services, solely for your or their internal business purposes",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license"
                 ],
@@ -8586,7 +8587,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via the Cerebras inference page, the Cerebras chip page, and the Cerebras Inference Terms and Conditions."
         },
@@ -8603,18 +8605,18 @@
             "components": "engine:proprietary(FireAttention kernels);source:closed;access:managed-cloud-API-only;license:Proprietary",
             "confidence": "high",
             "note": "A proprietary inference engine built on Fireworks' own FireAttention kernels and offered only as a managed cloud service. The fireworks.ai homepage carries no self-host, on-premises, VPC or BYOC option and no repository link anywhere on the page, and no LICENSE or license grant is published for the engine, so there is no source to run yourself and nothing to license.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://fireworks.ai/",
                 "shows": "the site markets Fireworks purely as a hosted API/pricing product (serverless and on-demand tiers, /pricing links); no self-host, on-prem, VPC, BYOC, or GitHub/source-repo link appears anywhere on the page",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "source",
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "fb2b63596a1d37e0698d82968f712fa5a2e8421785b76b6302634a2cef3b552e"
+                "content_sha256": "22f8ae5a999a4513a05979c9f991a619046076d873026d9e02f5507b3dd8228b"
               }
             ],
             "bucket": "closed"
@@ -8675,7 +8677,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via the Fireworks homepage, team page, and FireAttention V3 blog post."
         },
@@ -8791,28 +8793,28 @@
             "components": "license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron and NKI samples do ship as source);runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only",
             "confidence": "high",
             "note": "Source-available rather than closed or open. Neuron is not a managed service, since the SDK installs and runs on the customer's own EC2 instance, but it installs from proprietary packages and the headline inference path is not published. The aws-neuron-sdk repository is a documentation and issue-tracker repo whose compiler and neuron-runtime directories hold documentation rather than code, and AWS's own open-source catalog lists six public repositories with neither the Neuron Runtime nor the Neuron Compiler among them. What does ship as source is the GPL-2.0 Linux kernel driver, the NKI kernel library, the Apache-2.0 vLLM-for-Neuron integration and the MIT-0 samples, real open components arranged around a closed core.",
-            "last_verified": "2026-08-11",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/oss/index.html",
                 "shows": "AWS Neuron provides open source code and samples for some of its components, libraries, and tools under the Apache 2.0 license, and lists the public repositories open to contribution. The URL redirects to /about-neuron/oss/index.html, where the catalog lists exactly six public repositories -- TorchNeuron PyTorch Extension, Neuron Agentic Development, Neuron Explorer CDK, Neuron Kernel Library, vLLM for Neuron, NKI Samples -- and neither the Neuron Runtime nor the Neuron Compiler appears among them.",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license",
                   "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "902920d0c593e68d7657bfd7a70c2a1252a5b4cdb1b8363eefd478d8b547f8c7"
+                "content_sha256": "2665575807c9796d2b0148d1a110affc7564661f909e62f44ab5ff8fa70d80fa"
               },
               {
                 "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html",
                 "shows": "Neuron Compiler and Neuron Runtime entries in the 'AWS Neuron Core Components' list carry no 'Open Source' bullet, unlike the Native PyTorch entry ('Open Source : Released as an open source package on GitHub under Apache 2.0') and the vLLM entry ('Open Source : Source code released under the vLLM project organization with source code on GitHub').",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "90da4eb80e63d2f5c59c07687ca155346e84934ec7ae17861aada8ecb7d66b0b"
+                "content_sha256": "07c159af8b3533ba444234d20c11eeeebebdb44db626d9df1e89d1778539320d"
               },
               {
                 "url": "https://github.com/aws-neuron/aws-neuron-sdk",
@@ -8838,7 +8840,7 @@
               {
                 "url": "https://raw.githubusercontent.com/aws-neuron/aws-neuron-driver/master/LICENSE",
                 "shows": "GNU GENERAL PUBLIC LICENSE Version 2, June 1991",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license"
                 ],
@@ -8899,7 +8901,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via the AWS Neuron documentation, the aws-neuron-sdk and aws-neuron-driver GitHub repos, and the AWS Neuron product page."
         },
@@ -8916,18 +8918,18 @@
             "components": "source:closed;license:proprietary;runtime:Pathways(Google-internal distributed runtime, not open sourced);hardware-lock:Google TPU-only;managed:Google Cloud/GKE;note:JetStream(separate, Apache-2.0 OSS) is the open serving frontend but the scored product is the proprietary Pathways/TPU runtime",
             "confidence": "high",
             "note": "The named product (Pathways / TPU Runtime managed inference) is proprietary, TPU-locked, and cloud-delivered. JetStream (open) is a distinct artifact and not what this SKU is; scored closed.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu",
                 "shows": "Available for the first time for Google Cloud customers, Google's Pathways runtime is now integrated into JetStream, enabling multi-host inference and disaggregated serving",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "source",
                   "license"
                 ],
                 "http_status": 200,
-                "content_sha256": "c21814ce1f3a4410ec55e9c89c47a6c08660189070eb9adf144ebc591301a5e0"
+                "content_sha256": "6eecf7efc1791309b08bf57945c9ccc0d65eae7f5ac41493856719221ed5c8fa"
               }
             ],
             "bucket": "closed"
@@ -8972,7 +8974,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via the Google Cloud AI Hypercomputer inference blog post and the TPU7x (Ironwood) documentation."
         },
@@ -8989,19 +8992,19 @@
             "components": "source:closed;license:proprietary(Apple system framework, ships compiled with the OS/SDK, no published source);self-host:no",
             "confidence": "high",
             "note": "Core ML has no repository. Apple's own documentation describes it purely as an API surface, MLModel and the rest, that an app calls into; there is no source tree to self-host or fork. Whether any feature is held back behind a paid tier does not arise here, because that question only applies where the source is published at all.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://developer.apple.com/tutorials/data/documentation/coreml.md",
                 "shows": "Use Core ML to integrate machine learning models into your app... Copyright &copy; 2026 Apple Inc. All rights reserved.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "source",
                   "license",
                   "self-host"
                 ],
                 "http_status": 200,
-                "content_sha256": "a2aa644242309dfefa82b7e0c4b739e5a086622f7d5e395f31e30f48e7948f25"
+                "content_sha256": "57f6a98f5ea52d5298a3a4739917ba120385b679dd718fce10bece7d803f64fb"
               }
             ],
             "bucket": "closed"
@@ -9063,7 +9066,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via Apple's Core ML documentation, the MLModel availability list, and the coremltools optimization guide."
         },
@@ -9080,18 +9084,18 @@
             "components": "license:proprietary;source:closed(managed cloud API, the EULA states Customer has no right to obtain a copy of the underlying computer code for any Service);software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API",
             "confidence": "high",
             "note": "Proprietary managed cloud inference on SambaNova's own RDU silicon, with no open-source software disclosed. The Cloud EULA grants only a limited license to use the software embodied in the service and states that the customer has no right to obtain a copy of the underlying computer code, so there is no self-hostable implementation at all, which settles the score on source alone.",
-            "last_verified": "2026-08-11",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://sambanova.ai/cloud-end-user-license-agreement",
                 "shows": "SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during the Term to use the software embodied in the Service. The same agreement states: \"Customer acknowledges that the Service is offered as an online, hosted solution, and that Customer has no right to obtain a copy of the underlying computer code for any Service\", and forbids Customer to \"reverse engineer, disassemble or decompile any Service or otherwise seek to obtain the source code of any software included in the Service\".",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "establishes": [
                   "license",
                   "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "e5ad2763b15c5889d1af8381c7ccbf990b5c1f885040850e9a715666820adf1f"
+                "content_sha256": "5f643fddbdfaca248006930d6fc6a14608d048da4ae41a1a8845056f956b2874"
               },
               {
                 "url": "https://sambanova.ai/blog/sn40l-chip-best-inference-solution",
@@ -9159,7 +9163,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-11"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The SambaNova Cloud API reference URL cited previously now 404s, so the OpenAI-compatible endpoint claim carries over from the prior read rather than a fresh one. Verified 2026-08-09 via the SN40L architecture blog and the SambaCloud Terms of Service."
         },
@@ -11775,7 +11779,7 @@
             "components": "license:Apache-2.0(OSI);source:public(huggingface/trl);governance:Hugging Face;no feature-gated core;managed-tier:none;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0 throughout, an OSI license, with the full source public. There is no proprietary core and no paid managed-training service that withholds features from the published package.",
-            "last_verified": "2026-08-08",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/huggingface/trl/blob/main/LICENSE",
@@ -11800,9 +11804,9 @@
               {
                 "url": "https://raw.githubusercontent.com/huggingface/trl/main/README.md",
                 "shows": "Installation section gives three routes to the running product from the published repo: \"pip install trl\", \"pip install git+https://github.com/huggingface/trl.git\", and \"git clone https://github.com/huggingface/trl.git; cd trl/; pip install -e .[dev]\". Highlights name SFTTrainer, GRPOTrainer, DPOTrainer and KTOTrainer, Accelerate scaling \"from single GPU to multi-node clusters\" via DDP and DeepSpeed, and PEFT LoRA/QLoRA. The CLI section shows \"trl sft\", \"trl dpo\", \"trl kto\" invocations. The file offers no paid, premium or enterprise edition and names no feature that the published source cannot build.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c",
+                "content_sha256": "d7b1e655dccd929d91654bf4b580dc4e20877dd117130fd37f4be9f88315d11c",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -11823,9 +11827,9 @@
               {
                 "url": "https://huggingface.co/docs/trl/index",
                 "shows": "The \"Taxonomy\" section prints the complete trainer set of the installed library - online: GRPOTrainer, RLOOTrainer, OnlineDPOTrainer, NashMDTrainer, PPOTrainer, XPOTrainer; reward modeling: RewardTrainer, PRMTrainer; offline: SFTTrainer, DPOTrainer, KTOTrainer, BCOTrainer, CPOTrainer, ORPOTrainer; knowledge distillation: GKDTrainer, MiniLLMTrainer. The only per-trainer markers are the legend's own two (vLLM support and experimental); no trainer is marked as belonging to a paid or hosted tier.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04",
+                "content_sha256": "e59178096ee4fe5636d9d87875c59f6c7e7c3c35c1193f09cb2c917776c87d66",
                 "establishes": [
                   "core-gated"
                 ]
@@ -11843,9 +11847,9 @@
               {
                 "url": "https://pypi.org/project/trl/",
                 "shows": "Package page for trl. \"License expression: Apache-2.0\" with a link to the SPDX License List; Author: Leandro von Werra; \"Requires Python >=3.10\"; \"Provides Extra: bco, deepspeed, kernels, liger, peft, quality, quantization, scikit, test, vllm, vlm, math\" - no commercial or enterprise extra. Confirms the distributed wheel carries the same Apache-2.0 terms as the repository.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "2d152a4077be4ccea1add5206bc05407aa7c8c00aaac74a680e96b38a88d230b",
+                "content_sha256": "7264ed96b3ccc9c496ba09e7c213c1944ecad1cdbf20e94acc76f101b5563944",
                 "establishes": [
                   "license",
                   "core-gated"
@@ -11908,7 +11912,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-08",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The documented trainer taxonomy marks PPO, ORPO, CPO, BCO, online DPO, and the two distillation trainers experimental, so the method list is not uniformly stable API. Verified 2026-08-08 via the TRL documentation index and the repository README."
         },
@@ -11925,12 +11930,12 @@
             "components": "license:Apache-2.0(OSI);source:public(huggingface/peft);governance:Hugging Face;no feature-gated core;managed-tier:none;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0, an OSI license, with the full source public and no proprietary tier.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/huggingface/peft/main/LICENSE",
                 "shows": "Full unmodified Apache License, Version 2.0 text, opening \"Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/\" and \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\", closing with the standard APPENDIX carrying the unfilled template placeholder \"Copyright [yyyy] [name of copyright owner]\". No added use restriction or field-of-use clause.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
@@ -11951,9 +11956,9 @@
               {
                 "url": "https://raw.githubusercontent.com/huggingface/peft/main/setup.py",
                 "shows": "setup() declares name=\"peft\", license=\"Apache\", license_files=[\"LICENSE\"], and classifiers including \"License :: OSI Approved :: Apache Software License\". extras_require is limited to quality, docs_specific, dev and test — no commercial or enterprise extra — and package_dir/packages point at the same src/peft tree the repo ships, so the installable package builds from the published source with nothing withheld.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "a042e8c17b9adb7dffc77ff5c3656d3fd4be909efc4051f9b26b4d1e788e4499",
+                "content_sha256": "120f5a6298d07008c7f2afa715c9c743a365f4fdd7998c487ec7144eb70eff8b",
                 "establishes": [
                   "source",
                   "core-gated",
@@ -11963,9 +11968,9 @@
               {
                 "url": "https://pypi.org/project/peft/",
                 "shows": "Project page headed \"peft 0.20.0\". Sidebar License reads \"Apache Software License (Apache)\" and the classifier list carries \"License :: OSI Approved :: Apache Software License\". Provides Extra lists exactly dev, docs-specific, quality and test, matching setup.py — no paid or enterprise extra on the distributed wheel.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "b66f68f5674868238a74e6642a97d7dd76e20a8276807163e0ae8b7373094649",
+                "content_sha256": "9d3747d8ff721b9267aaaa6e99d2f961d6a74f05e2a139ef482a088fe7d5b776",
                 "establishes": [
                   "license",
                   "source",
@@ -12046,7 +12051,8 @@
           "mature": true,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via GitHub, the LICENSE body, and Hugging Face's pricing page."
         },
@@ -12175,14 +12181,14 @@
             "components": "license:Apache-2.0(OSI);source:public(hiyouga/LLaMA-Factory);CLI+WebUI;no proprietary managed tier;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0, an OSI license, with the full source public including the web UI, and no features held back for a paid tier.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/hiyouga/LLaMA-Factory",
                 "shows": "Redirects (301) to the renamed repository https://github.com/hiyouga/LlamaFactory (same owner, repo id 646410686, created 2023-05-28). The rendered README states \"This repository is licensed under the Apache-2.0 License.\" The top-level tree is .ai, .claude, .github, assets, data, docker, docs, examples, requirements, scripts, src, tests, tests_v1 plus root files including LICENSE — no enterprise, commercial, or paid-tier directory, and src/ ships the whole toolkit including the CLI and the Gradio-based LLaMA Board web UI. Not archived; sidebar reports 73,920 stars and 9,042 forks.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "6690b0c0b14f2033ab166b89342897e91fd52f720d945cb749eed4d379cd2372",
+                "content_sha256": "ec7f02b41b3c7d207a6e101d566cd4d9c55491913aa168fc4e7599bf438686a0",
                 "establishes": [
                   "source",
                   "core-gated",
@@ -12202,9 +12208,9 @@
               {
                 "url": "https://pypi.org/project/llamafactory/",
                 "shows": "Project page for \"llamafactory 0.9.5\" lists License expression Apache-2.0 and points Homepage/Repository at https://github.com/hiyouga/LLaMA-Factory, confirming the published package matches the GitHub source.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "17044c75d12ed3347a758be87c4faee6fa9eb327c6eecf98abdf4fb29982fd67",
+                "content_sha256": "b677902b11a7b117b9261542b75356642d7338489b53ada3aab7a22ae5b5031b",
                 "establishes": [
                   "license",
                   "source"
@@ -12276,7 +12282,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
         },
@@ -12490,12 +12497,12 @@
             "components": "license:Apache-2.0(OSI);source:public(OpenRLHF/OpenRLHF);no managed tier;built on Ray+vLLM+DeepSpeed;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0, an OSI license, with the full source public and no proprietary tier. The license text, the README and the repository page all agree, and nothing is held back from the published code.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/LICENSE",
                 "shows": "The unmodified Apache License, Version 2.0 template -- opens \"Apache License\" / \"Version 2.0, January 2004\" and the standard TERMS AND CONDITIONS, ending with the generic placeholder \"Copyright [yyyy] [name of copyright owner]\" rather than a custom notice. No altered terms, no NOASSERTION trap.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
                 "establishes": [
@@ -12505,9 +12512,9 @@
               {
                 "url": "https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md",
                 "shows": "The Installation section gives \"pip install openrlhf\" and, for the source route, \"git clone https://github.com/OpenRLHF/OpenRLHF.git\" followed by \"pip install -e .\" -- the thing you run builds from this repo. No enterprise, pricing, hosted-service, or paid-tier section appears anywhere in the file.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553",
+                "content_sha256": "aabe426d4df1487dd525f983bec5f46958ff27733c67713818a28091984681c0",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -12574,7 +12581,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-31"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
         },
@@ -12710,7 +12717,7 @@
             "components": "license:Apache-2.0(OSI);source:public;maintainer:ModelScope(Alibaba);no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0, an OSI license, with the full source of the training and deployment framework public and nothing held back for a paid tier.",
-            "last_verified": "2026-08-08",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/modelscope/ms-swift",
@@ -12728,7 +12735,7 @@
               {
                 "url": "https://raw.githubusercontent.com/modelscope/ms-swift/main/LICENSE",
                 "shows": "11,357 bytes of unmodified Apache License 2.0 text: opens 'Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/' and closes with the stock appendix carrying the unfilled placeholder 'Copyright [yyyy] [name of copyright owner]'. No custom copyright line, no added use restriction, no field-of-use rider, so the OSI call is clean rather than resting on the GitHub classifier.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
@@ -12738,9 +12745,9 @@
               {
                 "url": "https://swift.readthedocs.io/en/latest/",
                 "shows": "Full public documentation table of contents: Get Started (SWIFT Installation with 'Source Code Installation', Quick Start, Web-UI); Instruction (Command Line Parameters, Pre-training and Fine-tuning, GRPO, Knowledge Distillation, RLHF, Inference and Deployment, Sampling, Evaluation, Export and Push, Ray Support, Reinforced Fine-Tuning, Agent Support, Supported Models and Datasets, Using Tuners, FAQ); Megatron-SWIFT; Customization; Best Practices. A case-insensitive scan of the rendered page returns zero occurrences of 'enterprise', 'premium', 'pricing', 'commercial' or 'paid' - every documented capability is documented for the open package, with no tier withheld.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "09f09e9f63d747c73cb01ef7418fab1cf96f7d74387296df4c657bb6ce5d3e1d",
+                "content_sha256": "97088f05cf582e1fba7c8079029d7f02817b26ba7adbe07a9ae3364493f103af",
                 "establishes": [
                   "core_gated",
                   "core-gated"
@@ -12749,9 +12756,9 @@
               {
                 "url": "https://pypi.org/project/ms-swift/",
                 "shows": "Project page for 'ms-swift 4.4.2', summary 'Swift: Scalable lightWeight Infrastructure for Fine-Tuning', author 'DAMO ModelScope teams'. Meta block gives License: 'Apache Software License (Apache License 2.0)' and the Classifiers block lists 'License :: OSI Approved :: Apache Software License'. The rendered long description is the repository README verbatim (same Table of Contents, same License section linking modelscope/ms-swift/blob/master/LICENSE), so the distributed package is the same framework the repo publishes.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "a088fd583b6ec4c03542963e6955fe7c343c0f8b1b66113458de41e658e961a9",
+                "content_sha256": "f8998adcabbbaf4a302888e43f51f1e7acdb42572fd473fcfad962f150f6d1a2",
                 "establishes": [
                   "license",
                   "source"
@@ -12810,7 +12817,7 @@
           "freshness": {
             "date": "2026-08-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The repository's About blurb still says 300+ multimodal models while the README says 400+, and the maintainer is named as the ModelScope community on GitHub and the DAMO ModelScope team on PyPI. Verified 2026-08-08 via the ms-swift README, the PyPI project page, and the LICENSE body."
         },
@@ -12925,14 +12932,14 @@
             "components": "license:Apache-2.0(OSI);source:public;maintainer:NVIDIA;no feature-gated core (NVIDIA-GPU oriented, not a license restriction);core-gated:ungated",
             "confidence": "high",
             "note": "Apache-2.0, an OSI license, with the full source public and no enterprise or paid directory anywhere in the repository. NVIDIA's separate NeMo Customizer microservice, part of NeMo Microservices, withholds nothing from the published code. The project is oriented to NVIDIA GPUs, but that is a hardware practicality rather than a license restriction.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA-NeMo/RL",
-                "shows": "README opens \"NeMo RL is an open-source post-training library under the NVIDIA NeMo Framework, designed to streamline and scale reinforcement learning methods for multimodal models (LLMs, VLMs etc.)\" and its Bare-Metal Quick Start documents \"git clone git@github.com:NVIDIA-NeMo/RL.git\" as an alternative to the NGC container, so the thing you run builds from the published source. The file tree lists 30 top-level items - directories .agents/contributor-skills, .claude, .github, 3rdparty, docker, docs, examples, infra, nemo_rl, research, skills, tests, tools, plus files including LICENSE, README.md, CONTRIBUTING.md, pyproject.toml and uv.lock - with no enterprise, commercial or paid-edition directory. The repo's license badge reads \"Apache-2.0 license\" and GitHub's own license classifier records spdxId \"Apache-2.0\".",
-                "accessed": "2026-08-09",
+                "shows": "README states \"NeMo RL is licensed under the Apache License 2.0\" and describes the library as the re-architected repo of NeMo Aligner. Embedded repo JSON reads \"isPrivate\":false and \"spdxId\":\"Apache-2.0\". The Bare-Metal Quick Start runs `uv run python examples/run_grpo.py` with no key, account or license step. The opening sentence recorded on 2026-08-09 is no longer on the page; the README was rewritten.",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "48c6b50635105e2e5b8e806fa38dd4a4b230fb21d4cd4da8c97df45bbcae76a6",
+                "content_sha256": "309a48a8f36f5472e39c427312566a357241bd496230d8c98be0c7c42d5f198c",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -12941,7 +12948,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/RL/main/LICENSE",
                 "shows": "The fetched body is the unmodified Apache License, Version 2.0 text end to end - Sections 1 through 9 plus the appendix template with its placeholder \"Copyright [yyyy] [name of copyright owner]\" line still unfilled - an OSI-approved grant of a perpetual, worldwide, royalty-free copyright and patent license with no restriction on who may use the software or at what scale, only the Section 4 attribution/change-notice/NOTICE obligations.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
                 "establishes": [
@@ -12951,9 +12958,9 @@
               {
                 "url": "https://developer.nvidia.com/nemo-customizer",
                 "shows": "The URL redirects to docs.nvidia.com/nemo/microservices/latest/customizer/index.html, NVIDIA's documentation for \"NeMo Customizer\" under the separate NeMo Microservices platform; its own banner points to a distinct GitHub repo, \"NVIDIA-NeMo/nemo-platform\", not NVIDIA-NeMo/RL. A case-insensitive search of the saved 85,344-byte body for 'nemo-rl' or 'nemo rl' returns 0 matches for each. Nothing on the page describes a feature withheld from the nemo-rl repository; Customizer reads as a separately branded managed microservice rather than a paid tier of nemo-rl.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "86a985f481a8302d947312317e2864fb484afec3c597079d2d889bbe8ef54e5c",
+                "content_sha256": "85599210d3bd084661f4ac6f24ea704431a1ada6fd917d4e5cd73a8086c55478",
                 "establishes": [
                   "core-gated"
                 ]
@@ -13008,7 +13015,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The nemo-rl package on PyPI is a placeholder that points back to GitHub; the library ships from source or NVIDIA's NGC container. Verified 2026-08-09 via GitHub, the LICENSE body, and PyPI."
         },
@@ -13025,14 +13033,14 @@
             "components": "source:closed;training-code:closed;runs-on:OpenAI-platform-only;license:Proprietary(paid API service)",
             "confidence": "high",
             "note": "Proprietary managed fine-tuning service, no source, runs only on OpenAI's platform against OpenAI's closed models.",
-            "last_verified": "2026-08-08",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://openai.com/policies/services-agreement/",
                 "shows": "Section 9.1 Reservation of Rights: \"Customer obtains only a limited right to use the Services, and no ownership rights are transferred to Customer or its End Users under this Agreement.\" The use restrictions bar Customer from \"Reverse Engineer any aspect of the Services or the systems used to provide the Services\", and the definition of Reverse Engineer covers any attempt to \"otherwise attempt to discover the source code or underlying components of the Services\". The Fees section requires Customer to pay \"the applicable Fees in the currency and pursuant to the payment terms on the Order Form\", and the Permitted Exception definition reaches \"fine tune or customize models provided as part of OpenAI\"'s fine-tuning or other Services set forth on the Pricing Page, which ties this Agreement to this product specifically. Header: Updated December 1, 2025; Effective January 1, 2026.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "d0341c61e95035c0ade81d17e152d9d7fea04de7e5cdf62c2b6d2f22bc617cc3",
+                "content_sha256": "d1bca781cd491305648e227098ae89a0402d082bc87fe9ec80c454781e6d93cd",
                 "establishes": [
                   "source",
                   "license"
@@ -13041,9 +13049,9 @@
               {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
                 "shows": "The fine-tuning workflow is entirely OpenAI-hosted: \"Collect a dataset of examples to use as training data\", \"Upload that dataset to OpenAI, formatted in JSONL\", then create a job — and \"you can create fine-tuned models either in the\" dashboard \"or\" \"with the API\". No repository, package, or self-hostable runtime is offered anywhere on the page. It also points at the pricing page for \"how fine-tuned model training and usage are billed\", and carries the banner \"OpenAI is winding down the fine-tuning platform\" with the platform \"no longer\\naccessible to new users\".",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c",
+                "content_sha256": "a7662d40e16c2578b738ef6693d2d8c0bec785d291a4f45324075bcadc7e6fb1",
                 "establishes": [
                   "source"
                 ]
@@ -13120,7 +13128,7 @@
           "freshness": {
             "date": "2026-08-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Openness was read from the OpenAI Services Agreement, since the service publishes no repository or license file. No usage figure for the fine-tuning API alone is published, so adoption abstains. Verified 2026-08-08 via the OpenAI model optimization guide, the API deprecations page, and the OpenAI Services Agreement."
         },
@@ -13137,12 +13145,12 @@
             "components": "source:closed;training-code:closed;runs-on:AWS-Bedrock-only;license:Proprietary(managed AWS service, token+storage billed)",
             "confidence": "high",
             "note": "Proprietary managed customization service inside AWS Bedrock, no source, runs only on AWS against Bedrock-hosted foundation models.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
                 "shows": "Lists supervised fine-tuning, reinforcement fine-tuning, and distillation as the three customization methods, delivered entirely inside Bedrock via console/API with no repository, download, or self-hostable engine referenced anywhere on the page. A billing note states training is charged by tokens processed \"and model storage charged per month per model,\" a metered AWS commercial arrangement rather than any code license -- consistent with the recorded source:closed and license:Proprietary components.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "d28a9ace3f45102bd7662c308714aad4c83ed189053eb47ada74fe4e1f1261dc",
                 "establishes": [
@@ -13196,7 +13204,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "AWS states Bedrock is the only fully managed service that can fine-tune Claude models; that is the vendor's own claim, not an independent check. Verified 2026-08-09 via the AWS Bedrock model-customization documentation and AWS's Claude 3 Haiku fine-tuning GA announcement."
         },
@@ -13302,14 +13310,14 @@
             "components": "source:closed;training-code:closed;runs-on:Databricks-workspace-only(AWS regions);license:Proprietary(managed service); base-weights:Llama-Community-License(non-OSI)",
             "confidence": "high",
             "note": "A proprietary managed fine-tuning service that runs only inside a Databricks workspace, with no source published. Databricks' separate LLM Foundry and Composer libraries are open source, but they are not this product.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/",
                 "shows": "Foundation Model Fine-tuning requires a Databricks workspace in AWS us-east-1 or us-west-2 and is used only through the databricks_genai SDK or its UI; the page publishes no repository or self-hosted build of the training engine, and the only license text on the page covers the base Llama models being fine-tuned, not the service itself.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69",
+                "content_sha256": "2090db4cb547f9506321579ca9ab523ac1f39ff8cd7c9366aa8b55f84030811f",
                 "establishes": [
                   "source",
                   "license"
@@ -13318,9 +13326,9 @@
               {
                 "url": "https://www.databricks.com/product/machine-learning/mosaic-ai-training",
                 "shows": "Databricks markets this capability as Databricks Model Training, describing it only as a way to fine-tune an open source LLM on Databricks; the page offers no download, repository, or self-host option for the training service itself, and never uses the name Mosaic AI Model Training.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "10de73484f9cfb01a62773d4532c43b6bd55fec51f800d6e0e252884e89451f8"
+                "content_sha256": "45618187bdc6f853b10d61373f983331f20b250f2116bf499fd6e65c3e196b16"
               }
             ],
             "bucket": "closed"
@@ -13372,7 +13380,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Databricks' own pages call this capability Foundation Model Fine-tuning, part of Databricks Model Training; neither page uses the name Mosaic AI Model Training. Verified 2026-08-09 via the Databricks Foundation Model Fine-tuning docs page and the Databricks Model Training product page."
         },
@@ -13389,14 +13398,14 @@
             "components": "source:closed;training-code:closed;runs-on:Azure-AI-Foundry-only;license:Proprietary(managed Azure service)",
             "confidence": "high",
             "note": "A proprietary managed fine-tuning service inside Microsoft Foundry, with no source published. It runs only on Azure, and tunes both closed OpenAI models, which are generally available, and open-weight models in preview: Ministral, Qwen, Llama and gpt-oss.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning",
                 "shows": "Supported-models table lists gpt-4o-mini as SFT-only; gpt-4o and the gpt-4.1/mini/nano trio as SFT+DPO; o4-mini and gpt-5 as RFT (gpt-5's RFT access gated by invitation); and public-preview SFT for Ministral-3B, Qwen-32B, Llama-3.3-70B-Instruct, and gpt-oss-20b. Fine-tuning runs only inside a Foundry project resource under the Foundry Owner/User RBAC roles; no repository or self-host path is offered anywhere on the page.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "299941b4f8958f2df22b9939dffabd5315ba61982f4189e335cd55037150aed0",
+                "content_sha256": "d9d1a193181d07555955dfc31b82a37accdc8eee6ff0779058af4d105b5bc998",
                 "establishes": [
                   "source"
                 ]
@@ -13404,9 +13413,9 @@
               {
                 "url": "https://www.microsoft.com/licensing/terms/product/ForOnlineServices/all",
                 "shows": "Defines \"Covered Product\" as \"any Azure OpenAI model in Microsoft Foundry Models or any Copilot (excluding free Previews), in either case, that is available for a fee through Microsoft volume licensing or used with a paid subscription to an Online Service,\" and bars use of the Online Service \"to reverse engineer any Online Service or exfiltrate the weights of any AI models or otherwise discover any underlying components, algorithms or systems included in the Online Service.\"",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "7009d7993a4925680aaf5c08590d650b791741302a9173c1fad5dfb55c41ce68",
+                "content_sha256": "b880b97ba03a93945638ebf01922fe5c93fc6b67cb7d5bf6dd577b7dd28a96e4",
                 "establishes": [
                   "source",
                   "license"
@@ -13415,9 +13424,9 @@
               {
                 "url": "https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy",
                 "shows": "\"Your fine-tuned Models sold by Azure are available exclusively for your use.\" \"Foundry is an Azure service; Microsoft hosts the Models sold by Azure in Microsoft's Azure environment and Models sold by Azure do NOT interact with any services operated by providers of Models sold by Azure, for example, OpenAI.\" Fine-tuned models (\"base or fine-tuned\") are deployed in the customer's Foundry resource and pass through the same real-time content-filtering pipeline as base models.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "c1552f07f06a310141482c57514cb19e6afacc5a96723397567fc608cc19c51b",
+                "content_sha256": "5a7b92f588066cf19a6f4de293235340123d3e5d9579030074047f27330e779b",
                 "establishes": [
                   "source"
                 ]
@@ -13465,7 +13474,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Openness was read from Microsoft's Product Terms, since the service publishes no license file; its reverse-engineering/weight-exfiltration restriction covers Foundry Models generally, not fine-tuning specifically. No usage figure for the feature alone is published, so adoption abstains. Verified 2026-08-09 via the Microsoft Foundry fine-tuning documentation, the Azure OpenAI data-privacy page, and Microsoft's Product Terms."
         },
@@ -13584,14 +13594,14 @@
             "components": "source:closed;training-pipeline:closed;runs-on:Fireworks-cloud-only;license:Proprietary(managed service); base-weights:open-models(varies)",
             "confidence": "high",
             "note": "The managed fine-tuning service and its training pipeline are proprietary and run only on Fireworks' cloud, with no source published. Fireworks does publish an open-source reinforcement-fine-tuning toolkit, reward-kit, but it has not been confirmed as part of this product.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://docs.fireworks.ai/fine-tuning/fine-tuning-models",
                 "shows": "The docs describe SFT, DPO/ORPO, and reinforcement fine-tuning jobs run via Fireworks' own dashboard, CLI (firectl), and API, with the tuned LoRA model deployed to an on-demand (dedicated) deployment, \"the only supported method for serving fine-tuned models\"; no self-hosting or downloadable engine is described anywhere on the page.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "c4483c16da58f2730d440ad77a90766717888b7cf86a71fa584dbd437086d189",
+                "content_sha256": "2efb41784da91c73e3a2f4373c8dd811fb5701b77897a7022a6d3f5408a8c35a",
                 "establishes": [
                   "source",
                   "license"
@@ -13648,7 +13658,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "No usage figure specific to the fine-tuning feature is published, so adoption abstains. Verified 2026-08-09 via the Fireworks fine-tuning, model catalog, LoRA-deployment, and LoRA-performance documentation."
         },
@@ -13665,14 +13675,14 @@
             "components": "source:closed;training-pipeline:closed;runs-on:La-Plateforme-only;license:Proprietary(managed service, per-token + storage pricing); base-weights:Mistral-models(open-weight variants exist)",
             "confidence": "high",
             "note": "The hosted FT API on Mistral's Studio platform (formerly branded La Plateforme) is a proprietary managed service (LoRA adapters under the hood); no source for the service. Mistral separately ships an OSS mistral-finetune SDK for self-hosting, but that is a distinct product from this managed API. Mistral's own docs file the service under 'Deprecated features > Fine-tuning API (legacy)' with a banner reading 'This feature is deprecated and is no longer actively supported', and the current API pricing catalog lists ongoing training/storage billing only for the Classifier API tier, with no separate catalog entry for general text/vision SFT. Openness is unaffected either way: still a closed, proprietary managed offering with no self-hostable implementation.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://mistral.ai/news/customization",
                 "shows": "States it will 'leverage our proprietary fine-tuning techniques with our managed fine-tuning services' for the serverless offering, and separately introduces the open source mistral-finetune SDK as the self-hosted alternative; no repository is offered for the managed service itself.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "288945c654271839acbc3217390db1073d34f311e2011de790b68ddf6a5e6ffe",
+                "content_sha256": "dc20d2350a0df21f5836d17a07cc1d65417ebe0c433a7427ddab1555a4dbad78",
                 "establishes": [
                   "source",
                   "license"
@@ -13681,9 +13691,9 @@
               {
                 "url": "https://docs.mistral.ai/resources/deprecated/finetuning",
                 "shows": "Nav files this page under 'Deprecated features' as 'Fine-tuning API (legacy)'; the page banner reads 'This feature is deprecated and is no longer actively supported.' Describes the service as 'Text and vision general fine-tuning via SFT' plus 'Classifier Factory', billed with 'a minimum fee per fine-tuning job of $4' and a monthly storage fee; no repository or self-hosted build path is offered for this managed feature.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "b1166812b92559c26498d033ad4e41a700f20c88c2c7fa0cc030ed289467601a",
+                "content_sha256": "e2a41b8775e07d3e87363c78d2a12467efd488ac86432d389db626ff3030256c",
                 "establishes": [
                   "source"
                 ]
@@ -13691,9 +13701,9 @@
               {
                 "url": "https://mistral.ai/pricing/api/",
                 "shows": "Its 'Browse our APIs' catalog lists 'Classifier API model 3B' and 'Classifier API model 8B' fine-tuning, each billed 'minimum fee per fine-tuning job of $4' plus a per-token training cost and a monthly per-model storage cost; this is Mistral's own commercial price list, not a license grant, and no separate catalog entry prices general text/vision SFT.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "5f93d1336cc0aaa088e83186586a9cdc65db7afc33f987dca406bef88f9f4f61",
+                "content_sha256": "525ee21610a0e06a615fdb9900f0cf71bd64b8e0e8ee6486185814d9dbe3439a",
                 "establishes": [
                   "license"
                 ]
@@ -13701,9 +13711,9 @@
               {
                 "url": "https://legal.mistral.ai/terms",
                 "shows": "Indexes Mistral's legal documents, listing a 'Commercial Terms of Service' for commercial/API customers and a 'License Notice' for everyone; no open source license is offered for the hosted platform itself, consistent with a proprietary managed service.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "57268162219e6b09fdbbd9aafda9aa05a23d09508a4e8ef27738295edb3f1e8e",
+                "content_sha256": "b823de94676a89cd76cd79184442753bc2147b42c661870a8d9b0cc8ec8d6ae8",
                 "establishes": [
                   "license"
                 ]
@@ -13759,7 +13769,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The deprecated label is a docs classification, not evidence the API is retired: pricing still bills training and storage for the Classifier API tier. Verified 2026-08-09 via Mistral's deprecated fine-tuning guide, the Studio product page, and the API pricing page."
         },
@@ -13776,12 +13786,12 @@
             "components": "core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX and Ludwig are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source multi-LoRA serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts",
             "confidence": "high",
             "note": "Predibase's founders created and still maintain the open-source LoRAX multi-LoRA serving stack and Ludwig, but the product scored here is the fine-tuning and reinforcement-fine-tuning platform, and that is proprietary managed SaaS running on Predibase's own cloud or inside a customer VPC. The open source sits at the serving and declarative-ML edges: an open periphery around a closed core, rather than an open core with paid extras on top. Because public repositories exist while the runtime itself does not ship, the platform counts as source-available rather than open source.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://pypi.org/pypi/predibase/json",
                 "shows": "The JSON API's info object records license: null, classifiers: [], summary: null, and home_page: null for the predibase package (version 2025.10.3) on PyPI — no license or project metadata is declared for the published client library.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "59ba77191fa40bc9732a986a8a93a6bc3b10004fdb3905b05a06b45f8857b57c",
                 "establishes": [
@@ -13791,7 +13801,7 @@
               {
                 "url": "https://files.pythonhosted.org/packages/f2/f0/6fb3406af8891fe08b8e5d3b325c39050f7616054bf0a73496277701356a/predibase-2025.10.3.tar.gz",
                 "shows": "Extracted with Python's tarfile (106 members). README.md opens \"## Predibase Python SDK\"; PKG-INFO records \"License: UNKNOWN\"; no LICENSE file exists anywhere in the archive; setup.py registers only a console-script entry point (pbase=predibase.cli:main) and no license classifier. A case-insensitive grep of every decoded file for \"vpc\" found exactly one hit, in predibase/resources/datasets.py: \":param region: (str) Optional region to upload to. Only relevant for VPC customers with multiple dataplanes.\" This corrects a prior run's claim that the sdist contains no VPC reference.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "cab2382bf03e9ff95f6a89bcf8b47f504ab9fb0b7a977fc15f61a46e220b970f",
                 "establishes": [
@@ -13802,9 +13812,9 @@
               {
                 "url": "https://web.archive.org/web/20260107043258/https://docs.predibase.com/",
                 "shows": "The \"Additional Capabilities\" list states \"SaaS or VPC deployment options: Deploy in our cloud or yours\" and \"UI and SDK: Deploy, fine-tune, and prompt via our UI or Python SDK\" — access is through a hosted UI/SDK and a deployment-location choice, not a self-hostable code drop of the platform itself.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "f7e12c9270a491070634021213b52c22d48f33e4d579dc8dbd27c2e0ed554713",
+                "content_sha256": "ff21402082967be36d513f094a91fc0a71cd75590de2bc983ccadc1ea43162fe",
                 "establishes": [
                   "source"
                 ]
@@ -13869,7 +13879,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Predibase's own pages return HTTP 403 and predibase.com now redirects to Rubrik's Agent Cloud page, so the descriptive facts here rest on archived captures rather than live vendor documentation. Verified 2026-08-09 via web.archive.org captures of predibase.com and docs.predibase.com, PyPI, and GitHub."
         },
@@ -13886,14 +13897,14 @@
             "components": "license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:ungated(ART FAQ commits to maintaining ART as a full-featured open source project and calls the hosted ART backend optional, for users who do not want to manage GPU infrastructure; no ART feature is withheld from the self-hostable LocalBackend)",
             "confidence": "high",
             "note": "Apache-2.0 with the full source public and nothing withheld from it: no enterprise directory, no closed package the open one depends on, no license key. The ART FAQ commits to \"maintaining ART as a full-featured open source project\" and calls the hosted backend \"an optional hosted ART backend for users who don't want to manage GPU infrastructure on their own\", and the docs describe a fully self-hostable LocalBackend beside it. OpenPipe's hosted training and serving SaaS is a separate product sold alongside the open core, which does not count as gating on this scale. Some vendored code carries LGPL-3.0.",
-            "last_verified": "2026-08-11",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/OpenPipe/ART",
                 "shows": "Repo metadata reads `\"isPrivate\":false`, `\"isArchived\":false`, `\"visibilityLabel\":\"Public\"`, and `\"license\":{\"spdxId\":\"Apache-2.0\",\"name\":\"Apache License 2.0\"}`.",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "96b2f051e8dcd461059aba162185eed44731254e885863af4d99b1e919fec4ac",
+                "content_sha256": "e33ec13c491d43405845cd37a72a2d3a675400d351377c840c421da9aa49f790",
                 "establishes": [
                   "source"
                 ]
@@ -13901,7 +13912,7 @@
               {
                 "url": "https://raw.githubusercontent.com/OpenPipe/ART/main/LICENSE",
                 "shows": "Full Apache License 2.0 text; appendix reads \"Copyright 2025, OpenPipe, Inc.\" followed by an \"Additional License Notice\" stating the distribution \"includes a small portion of code adapted from a third-party project licensed under the GNU Lesser General Public License v3.0.\"",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "d39185043a0ec089a0e5f88350f1f3eec10fbb34578e04aca3e2dab5b3a5f6cb",
                 "establishes": [
@@ -13911,7 +13922,7 @@
               {
                 "url": "https://raw.githubusercontent.com/OpenPipe/ART/main/README.md",
                 "shows": "\"Train from anywhere. Run the ART client on your laptop and let the ART server kick off an ephemeral GPU-enabled environment, or run on a local GPU.\" Install is `pip install openpipe-art`.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "0e7d753fd7000e43b8ffe459265056c81ef9dce90b1a7d2d9759d14d48821e37",
                 "establishes": [
@@ -13919,21 +13930,21 @@
                 ]
               },
               {
-                "url": "https://art.openpipe.ai/getting-started/faq.md",
+                "url": "https://art.openpipe.ai/getting-started/faq",
                 "shows": "ART FAQ states \"We are committed to maintaining ART as a full-featured open source project\" and \"We've included an open-source ART backend\". On the hosted option it says \"We will also deploy an optional hosted ART backend for users who don't want to manage GPU infrastructure on their own.\" The FAQ names no paid OpenPipe plan and no feature paywall.",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "41cdd194495331be3b7cdfe7b778531da1f753f35c2bd46466ee36a1b7a878f4",
+                "content_sha256": "8811e0462064b5509e97906e22051dae61d71e6279d606374f4b4adedf59b194",
                 "establishes": [
                   "core-gated"
                 ]
               },
               {
-                "url": "https://art.openpipe.ai/fundamentals/art-backend.md",
+                "url": "https://art.openpipe.ai/fundamentals/art-backend",
                 "shows": "Documents two interchangeable backend classes on the same client code: ServerlessBackend \"train remotely on autoscaling GPUs\" and LocalBackend \"run your agent and training code on the same machine\" — no capability described as exclusive to either.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "495c01b3bd7a55525bad50d8206a472024b02e6f2130ff644a0b42638f3eeb57",
+                "content_sha256": "87bf8e923078270f7fa5410a55f86d56c8fea2f5d902158ebef78ea88cbada03",
                 "establishes": [
                   "core-gated"
                 ]
@@ -13984,7 +13995,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Scored on ART, the library, not OpenPipe's wider platform surface. Whether the hosted backend gates any ART functionality is the open question behind the openness read, and today's sources do not settle it. Verified 2026-08-09 via GitHub and the ART documentation."
         },
@@ -14108,14 +14119,14 @@
             "components": "license:proprietary(Anyscale-platform-only);source:closed(managed SaaS platform, Terms of Service deliver Platform Services in object code format only and no Anyscale-authored fine-tuning implementation is published);built-on:Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated",
             "confidence": "high",
             "note": "LLMForge, Anyscale's own fine-tuning library, has been retired and is absent from current docs; the fine-tuning capability itself continues, now orchestrating open frameworks such as LLaMA-Factory, SkyRL and Ray Train. The platform stays closed either way. Anyscale's terms of service define it as proprietary SaaS delivered in object code only, and no Anyscale-authored fine-tuning implementation is published, so openness follows the platform rather than the open frameworks running underneath it.",
-            "last_verified": "2026-08-11",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://www.anyscale.com/terms",
                 "shows": "Terms of Service defines the delivered product, \"Platform Services\", as Anyscale's own proprietary software-as-a-service platform, made available to customers in object code format only, with its associated SDKs and APIs likewise object-code-only.",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "9b1833a32ad3ed28518e64d1f74919884928df9c1f5d082c4bfc02a99ba3d135",
+                "content_sha256": "3546920927636489041dd6007b8d5bf97350cfe11eb2166d7701cfb52bc7fc8f",
                 "establishes": [
                   "source",
                   "license"
@@ -14124,9 +14135,9 @@
               {
                 "url": "https://docs.anyscale.com/llm/fine-tuning",
                 "shows": "Describes Anyscale's current LLM post-training capability as delivered through the managed console orchestrating open frameworks on Ray clusters: the page states \"Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train\", names no Anyscale-authored library, and points at the Anyscale console for every workflow. A full-text search of the fetched page for \"LLMForge\" finds zero occurrences, where the score's prior evidence cited that library by name. No self-hostable Anyscale fine-tuning implementation is offered.",
-                "accessed": "2026-08-11",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "b9de20e4993be9e071e8d2e8a5e545aa6aac1155c22a0783f914ba0953d89f31",
+                "content_sha256": "67054a8fa7152440df14c1f46760d22627efa083a0eeb9516424c8628962ba68",
                 "establishes": [
                   "source"
                 ]
@@ -14177,7 +14188,7 @@
           "freshness": {
             "date": "2026-08-09",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The score was recorded against LLMForge, Anyscale's own library, which current docs no longer mention; whether the platform's openness basis moved with it is a score question, not a prose one. Verified 2026-08-09 via the Anyscale fine-tuning documentation and the Terms of Service."
         },
@@ -14194,14 +14205,14 @@
             "components": "license:Proprietary;service:fully-managed-proprietary(in-Snowflake);source:closed;method:PEFT(LoRA-class, not specified);base-models:fixed allowlist;access:Snowflake-account+credits;data:user-data stays in account but engine closed",
             "confidence": "high",
             "note": "A fully managed, proprietary fine-tuning feature inside Snowflake, with no source published and no way to self-host.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning",
                 "shows": "Cortex Fine-tuning is a fully managed service that runs entirely inside Snowflake via the FINETUNE SQL function or the Snowsight AI Studio wizard; the page names no published repository, no self-host option, and no license terms for the underlying engine, and exposes only a fixed allowlist of six base models (llama3-8b, llama3-70b, llama3.1-8b, llama3.1-70b, mistral-7b, mixtral-8x7b) through the managed API.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "3f3f837986ab91b882fc1ffb0b7bae9607b99f4ef906fef09f8e61831cb71944",
+                "content_sha256": "54cf815ae91b24936b980dd2a8e3495b501156df4387e84a7b24a5c8ee78997a",
                 "establishes": [
                   "source",
                   "license"
@@ -14250,7 +14261,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Verified 2026-08-09 via the Snowflake Cortex Fine-tuning documentation."
         },
@@ -14267,14 +14279,14 @@
             "components": "license:MIT(OSI);source:public;scope:async RL-environments framework + trajectory API; trainer-integrations:Axolotl/Tinker; no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "MIT-licensed, an OSI license, with the source public and no managed or closed core. It sits in this category as the RL-training-environment layer beneath RLHF, RLAIF and GRPO training runs.",
-            "last_verified": "2026-08-08",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://github.com/NousResearch/atropos",
                 "shows": "Repo page carries the label \"Public archive\" and the banner \"This repository was archived by the owner on Jul 4, 2026. It is now read-only.\" Embedded repo JSON reads \"isPrivate\":false and \"isArchived\":true alongside \"license\":{\"spdxId\":\"MIT\",\"name\":\"MIT License\"}. The rendered README says \"Atropos is an environment microservice framework for async RL with LLMs.\" and its Navigating the Repo table lists the product's own parts in-repo: atroposlib/ (\"Core library containing base classes and utilities\"), environments/ (\"Collection of ready-to-use RL environments\"), example_trainer/ (\"Example training scripts and configurations\"); installation is \"pip install atroposlib\" or an editable install of the same tree. So the published repo is the runnable product: source public. For core-gated I extracted the rendered README text out of the saved body (21,019 characters) and searched it for enterprise, pricing, paid, commercial, subscription, premium, cloud tier, license key, sign up, contact sales and managed: zero hits on all of them except one occurrence of \"managed\", which is the ManagedServer class documentation link. Nothing in the repo is withheld for a paid tier.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0",
+                "content_sha256": "02cd7ceceff0da04e5397ffb3fb50cae32e918cad3ef4116ea306edae0697999",
                 "establishes": [
                   "source",
                   "core-gated"
@@ -14283,7 +14295,7 @@
               {
                 "url": "https://raw.githubusercontent.com/NousResearch/atropos/main/LICENSE",
                 "shows": "The LICENSE body in full, 1,070 bytes. It opens \"MIT License\", carries \"Copyright (c) 2026 Nous Research\", and grants permission to deal in the software \"without restriction\" including use, copy, modify, merge, publish, distribute, sublicense and sell, subject only to the notice-retention condition and the standard warranty disclaimer. No field-of-use, non-commercial, competition or delayed-conversion clause anywhere in the text, so the recorded license:MIT(OSI) holds and resolves to the osi tier.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
                 "content_sha256": "5f79d321c17de8ef6e5f34967dc5b484afebeeefd87180890d9741941f6b815f",
                 "establishes": [
@@ -14293,9 +14305,9 @@
               {
                 "url": "https://api.github.com/repos/NousResearch/atropos",
                 "shows": "Repository JSON: \"private\": false, \"visibility\": \"public\", \"archived\": true, \"disabled\": false, \"spdx_id\": \"MIT\", \"pushed_at\": \"2026-07-04T17:39:01Z\", \"open_issues_count\": 0, default_branch main, created 2025-04-29. Corroborates the landing page on both the public-source and the MIT reading, and independently confirms the archived flag the warehouse GitHub signal reported.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "1c191b13b5eab265c817b7f7577e9f3ac68287272887a11d87331577ac3c2eae",
+                "content_sha256": "d406dcf9473d33eead16357679274090c8bd639a9feebacb357cb066f3482355",
                 "establishes": [
                   "source",
                   "license"
@@ -14304,9 +14316,9 @@
               {
                 "url": "https://portal.nousresearch.com/",
                 "shows": "The vendor's paid surface, and the pricing page the software ladder says core_gated needs. It sells a Nous Portal subscription built around the Hermes agent: nav sections Overview, Hermes Cloud, Models, Plans, Resources, a Pricing heading, and copy about hosted tools that \"come bundled with your subscription\" and \"bills to the same credits as your models\". The string atropos (case-insensitive) does not occur anywhere in the saved body of 647,329 bytes, searched over the raw HTML rather than the rendered text so that script-embedded payloads were included. Nothing from the Atropos repo is sold as, or withheld for, a Portal tier: core-gated ungated.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "abba81f624cb0027409ba3a378b8713556e4fb841a1f7c622849a6694177fdd2",
+                "content_sha256": "247e9ec7893540727933707b9a263229ccb455b255017c53ae95feb873e4c067",
                 "establishes": [
                   "core-gated"
                 ]
@@ -14314,9 +14326,9 @@
               {
                 "url": "https://nousresearch.com/",
                 "shows": "Vendor home page. The product nav is Hermes Agent, Nous Portal, Psyche, Hermes 4, Chat, Simulators, Releases, Careers, Shop, Blog. Searching the raw saved body of 76,131 bytes case-insensitively for atropos, pricing, enterprise, subscri and plan returns zero hits for every one of them, so Atropos is not a commercial offering of this vendor at all and there is no tier for a feature to be withheld into.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "ba7e0b0487374eb5b05e7cbff12170e45acfca961fe7242e3ed1eb09d870713c",
+                "content_sha256": "fabc75734d8c37108f1c91a18d9531211e8610418ae2fc435f2e92b19e7635cf",
                 "establishes": [
                   "core-gated"
                 ]
@@ -14385,7 +14397,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-08",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "Scored as the RL-environment and orchestration layer that feeds a fine-tuning trainer rather than as a trainer itself, which is the judgment behind its place in this category. Verified 2026-08-08 via the GitHub repository and the PyPI record for atroposlib."
         },
@@ -14402,14 +14415,14 @@
             "components": "license:Proprietary;source:closed;engine:closed(hosted distributed-training service on TML infra);cookbook:open(Apache-2.0, thinking-machines-lab/tinker-cookbook);api:public-but-proprietary(forward_backward/optim_step/sample/save_state);method:LoRA(+RL via sample);access:paid+account-gated",
             "confidence": "high",
             "note": "The core training service is a proprietary hosted API, and only the example cookbook is OSI-licensed, so the product is closed. It is not open core either, because no self-hostable engine exists to be the core.",
-            "last_verified": "2026-08-09",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://thinkingmachines.ai/tinker/",
                 "shows": "Describes Tinker as \"a training API for researchers\" where users \"Control every aspect of model training and fine-tuning while we handle the infrastructure.\" Offers sign-up/sign-in, docs, and per-token/per-GB-month pricing; no self-host or download path exists for the training engine itself, only a link out to the separate tinker-cookbook example repo.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305",
+                "content_sha256": "741db4e43b5097bce325bd44f4fdcc80c9cc70fd4cbb4f5fc020e7f1398c8693",
                 "establishes": [
                   "source"
                 ]
@@ -14417,9 +14430,9 @@
               {
                 "url": "https://thinkingmachines.ai/legal/terms/",
                 "shows": "The Service Terms of Use (last updated January 10, 2026) grants Authorized Users \"a non-exclusive, limited, non-transferable, non-sublicensable, worldwide right to access and use the Services\" - a proprietary terms-of-use grant over the hosted platform, not an open-source license to the underlying engine.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "1ed8d08b0c2663245d0bd450bafd867a161348e2b484bcf4b97276805e3c173c",
+                "content_sha256": "cb5b53afb27b688ab5486be02ece6cbaf749ad99843c3243b38fce772ef26ecd",
                 "establishes": [
                   "license"
                 ]
@@ -14494,7 +14507,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "The supported-model roster changes often (Llama was dropped in June 2026), so the linked product page is the current list rather than this entry. Verified 2026-08-09 via the Tinker product page, the Service Terms of Use, and Thinking Machines' news archive."
         },
@@ -14511,14 +14525,14 @@
             "components": "license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;core-gated:ungated;restriction:attribution/change-notice only",
             "confidence": "high",
             "note": "BSD-3-Clause for NVIDIA's own code and Apache-2.0 or MIT for vendored components, all OSI licenses, with the full source public. The only obligations are attribution and a notice of changes, and no functionality is held back for a paid tier.",
-            "last_verified": "2026-08-08",
+            "last_verified": "2026-09-09",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/LICENSE",
                 "shows": "Opens \"The following applies to all files unless otherwise noted:\" followed by a 2019-2025 NVIDIA CORPORATION copyright and the three BSD-3-Clause conditions — retain the copyright notice in source, reproduce it in binary distributions, and \"Neither the name of NVIDIA CORPORATION nor the names of its\" contributors may be used to endorse derived products. Below that, section headers grant vendored code separate terms: \"-- LICENSE FOR Facebook, huggingface, Google Research, LLaVA, Mamba, TinyZero and vLLM code  --\" under the Apache License Version 2.0, whose clause 4(b) requires modified files to carry notices \"stating that You changed the files\", plus two MIT License sections (one for Facebook/Meta/Microsoft/OpenGVLab-InternVL/Triton/DeepSeek, one for Thinking Machines Lab). BSD-3-Clause for the NVIDIA core with Apache-2.0 and MIT vendored components, all OSI, and the only obligations are attribution, no-endorsement and change notices.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "39f1df137a306d31698db206063f462b69c19e536f012db09a66997ad2cb96f0",
+                "content_sha256": "9d70d3ebc699d4c78ebe3f78dfb94b6dbae3529aea3dbc912e65e34a9f17667e",
                 "establishes": [
                   "license"
                 ]
@@ -14537,9 +14551,9 @@
               {
                 "url": "https://pypi.org/project/megatron-core/",
                 "shows": "Project page headed \"megatron-core 0.18.2\", Author/Maintainer \"NVIDIA\", License \"BSD License (Apache 2.0)\", classifier \"OSI Approved :: BSD License\", Released \"Jul 21, 2026\", Requires Python >=3.12, 5 maintainers. The Provides-Extra list is training, mlm, dev, lts, te, ssm — pip extras, not tiers. The library is published to a public index under an OSI license, which is what makes source:public true for the artifact people actually install.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "9f5d5b4bb57bd07e543981ca1c10b96873253a595e509647c64804f9e6cd0f5e",
+                "content_sha256": "fae544623ce42084947ad6064db7160be84d176b1f8c0ea54ab2a1efd47c0167",
                 "establishes": [
                   "source",
                   "license"
@@ -14559,9 +14573,9 @@
               {
                 "url": "https://developer.nvidia.com/megatron-core",
                 "shows": "Redirects to developer.nvidia.com/cuda/cuda-x-libraries/megatron-core. NVIDIA's own product page presents a single library — \"NVIDIA Megatron Core is a composable training library for large-scale generative AI\" — with exactly two calls to action, \"Go to GitHub\" and \"Get Started\", and no purchase, subscription, enterprise-edition or contact-sales path anywhere on it. Every feature block (parallelism techniques, customizable building blocks, scalability and training resiliency, MoE, hybrid models, multimodal training) links into the public repository or the public API documentation, and the page describes Megatron-LM as an open-source training reference framework for exploring Megatron Core. The vendor's own marketing withholds nothing from the published source.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "f68c234747aa1592c8a3ea87a5f0643c417b792777f8cc92cf9beadf4a9fc24b",
+                "content_sha256": "4a778253f1f7740c73076ffe6a787bd43a0236160b142f068ea0f6a829ccee0c",
                 "establishes": [
                   "core-gated"
                 ]
@@ -14569,9 +14583,9 @@
               {
                 "url": "https://www.nvidia.com/en-us/data-center/products/ai-enterprise/",
                 "shows": "NVIDIA's paid-suite page, read as the pricing-page half of the core-gated question. It describes AI Enterprise as bringing together \"microservices, frameworks, and libraries for AI development with advanced GPU orchestration and infrastructure management in a fully supported, production-ready, commercial software suite\" whose pitch is to \"Deploy leading open source tools and AI models with confidence\" — support and packaging around open source rather than functionality withheld from it. A case-insensitive grep for 'megatron' over the saved 675KB body returns 0 matches, so NVIDIA's commercial suite does not claim any Megatron capability of its own. Under the ladder's openpcc rule, a hosted or supported offering alongside an ungated core is not gating.",
-                "accessed": "2026-08-08",
+                "accessed": "2026-09-09",
                 "http_status": 200,
-                "content_sha256": "e54e670f8159b9ce95e434b194a01e4205e07ff628a434706b45e18d77ddb54e",
+                "content_sha256": "17fe5f13624cb6d19081ae7d669e1087c31a078518f8b4b52c1e6f23cb7751c6",
                 "establishes": [
                   "core-gated"
                 ]
@@ -14648,7 +14662,7 @@
           "freshness": {
             "date": "2026-08-08",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
+            "latest_axis_confirmation": "2026-09-09"
           },
           "version_note": "This entry covers both components shipped from the NVIDIA/Megatron-LM repository, and the scores are read against that repository rather than the Megatron Core package alone. Verified 2026-08-08 via the NVIDIA/Megatron-LM README and the Megatron Core developer documentation."
         },
@@ -66083,7 +66097,7 @@
     }
   },
   "n_total": 616,
-  "generated": "2026-09-09",
+  "generated": "2026-09-10",
   "version": "0.3.0",
   "released": "2026-09-05",
   "contract": 1,
