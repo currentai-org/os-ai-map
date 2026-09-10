@@ -1,16 +1,24 @@
 product: aifs
 openness:
-  score: 4
+  score: 3
   class: open_weights
   components:
     weights: {value: open, detail: CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt}
     data: {value: documented-not-released, detail: 'ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed'}
-    code: {value: open, detail: 'config_pretraining.yaml and config_finetuning.yaml shipped beside the checkpoint, with pinned Anemoi training, models and graphs versions and the commands that run both stages'}
+    code: {value: partial, detail: 'config_pretraining.yaml and config_finetuning.yaml ship beside the checkpoint with pinned Anemoi versions and both stage commands, but no data-preparation recipe - the commands begin DATASETS_PATH=??????? and no anemoi-datasets build ships'}
     license:
     - {name: CC-BY-4.0, detail: permissive non-OSI}
-  raw: license:CC-BY-4.0(permissive non-OSI);weights:open(CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt);data:documented-not-released(ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed);code:open(config_pretraining.yaml and config_finetuning.yaml shipped beside the checkpoint, with pinned Anemoi training, models and graphs versions and the commands that run both stages)
+  raw: license:CC-BY-4.0(permissive non-OSI);weights:open(CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt);data:documented-not-released(ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed);code:partial(both training-stage configs with pinned Anemoi versions ship, but no data-preparation recipe - DATASETS_PATH is left unfilled)
   confidence: high
-  note: ECMWF publishes the recipe that produced this checkpoint - both training configs, pinned Anemoi versions, learning-rate schedules and step counts - which is the rung above the category's open-weights center. The corpus is described in full but stays behind ECMWF's own data policy.
+  note: >-
+    ECMWF publishes both training-stage configs beside the checkpoint - pinned Anemoi versions,
+    learning-rate schedules, step counts and the commands that run them - which is more than
+    most of the category ships. It is recorded as partial rather than open because the rubric's
+    `open` asks for data prep, training recipe and configs, and the data-preparation half does
+    not ship: both commands begin `export DATASETS_PATH=???????` with no anemoi-datasets build
+    to fill it. Against the category's other `open` records - presto's end-to-end
+    data-generation pipeline, mattergen's full preprocessing-to-evaluation pipeline - two YAMLs
+    and a pinned third-party trainer do not reach the same bar.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md

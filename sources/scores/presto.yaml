@@ -4,17 +4,17 @@ openness:
   class: open_source
   components:
     weights: {value: open, detail: data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper}
-    data: {value: open, detail: 'Earth Engine generation scripts, tile metadata, a sample shard, and public webdataset tars'}
+    data: {value: open, detail: 'scripts/generate_data.py rebuilds the corpus end to end from Earth Engine, with the tile list, tile statistics and a sample shard shipped in the repository'}
     code: {value: open, detail: 'self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline'}
     license:
     - {name: MIT, detail: OSI}
-  raw: license:MIT(OSI);weights:open(data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper);data:open(Earth Engine generation scripts, tile metadata, a sample shard, and public webdataset tars);code:open(self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline)
+  raw: license:MIT(OSI);weights:open(data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper);data:open(scripts/generate_data.py rebuilds the corpus end to end from Earth Engine, with the tile list, tile statistics and a sample shard shipped in the repository);code:open(self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline)
   confidence: high
   note: The weights, the self-supervised pretraining script, and the pipeline that rebuilds the corpus all ship under a plain MIT license with no added attribution or use clause, which is the ladder's top rung.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/nasaharvest/presto/main/README.md
-    shows: Documents Presto.load_pretrained() reading the state dict from data/default_models.pt, a train.py self-supervised training entry point with a runnable local command, and scripts/generate_data.py generating the training tars from Earth Engine exports, with the resulting webdataset shards readable from a public gs:// bucket.
+    shows: Documents Presto.load_pretrained() reading the state dict from data/default_models.pt, a train.py self-supervised training entry point with a runnable local command, and scripts/generate_data.py generating the training tars from Earth Engine exports, reading the resulting webdataset shards through an authenticated `pipe:gcloud storage cat`. The bucket is not anonymously readable — the object returns 403 and listing returns 401 — so the data dimension rests on the reconstruction scripts rather than on a public download.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836

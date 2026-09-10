@@ -22,6 +22,31 @@ scoring_recipe:
     verified_on: '2026-09-10'
     checker: build/check_rubric.py
 
+  # FIVE SHARED-LADDER TIER ADDITIONS MADE DURING THIS PROMOTION - MAINTAINER SIGN-OFF NEEDED.
+  #
+  # docs/workflows/promote-category.md step 7 says a license the shared tier does not name should
+  # leave the product DEFERRED with a substantive reason, because extending a shared tier reaches
+  # every category that inherits it and is a maintainer's ruling rather than part of a promotion.
+  # That is not what happened. Five names were added to sources/rubrics/pretrained.yaml so the
+  # walk would score rather than abstain:
+  #
+  #   CC-BY-4.0, CC-BY-SA-4.0     -> permissive_non_osi   (dofa, weathernext, neuralgcm)
+  #   FAIR-Chemistry-License-v1   -> permissive_non_osi   (uma)
+  #   ASL                         -> commercial_forbidden (mace)
+  #   AlphaFold-3-Model-...-Use   -> commercial_forbidden (alphafold)
+  #
+  # Each cites a ruling the ladder already contains, and the blast radius was measured before the
+  # edit: no base_pretrained product records any of these names, and all 32 of its scores
+  # reproduce unchanged. But the measurement is not the point - whose call it is, is. A reviewer
+  # should either sign these off as rulings or ask for them to be reverted, in which case the
+  # seven products above return to scoring_recipe.deferred and close when the ruling lands.
+  #
+  # One rubric self-contradiction surfaced while making the uma call and is NOT resolved here:
+  # permissive_non_osi's definition says an acceptable-use policy "caps neither commerce nor
+  # reach", while use_bounded's definition lists "or an acceptable-use policy" as a bound. Issue
+  # #117 governs and permissive_non_osi is the reading applied, but every future AUP-licensed
+  # weight release will re-litigate it until the two definitions agree.
+
   adoption:
     signal_preference:
     - signal_type: usage_volume
@@ -76,16 +101,31 @@ scoring_recipe:
       Count only attributes stated directly by a primary product source. A long task list is
       not an adaptation pathway, several variables from one data system are not multiple
       instruments, masked reconstruction is not a scientifically meaningful generated output,
-      and parameter sizes are not scientific scales. TerraMind is the top anchor.
+      and parameter sizes are not scientific scales.
 
-      Distribution over the full 34: 2/12/11/7/2 across levels 1/2/3/4/5, or 6/35/32/21/6
-      percent. Five rungs are all occupied and the top and bottom are genuinely rare, but
-      level 2 holds 35 percent, marginally over the one-third ceiling docs/reference/capability.md
-      sets for a discriminating rung. It is not one attribute piling up: the twelve are split
-      across all four, seven reaching level 2 on an adaptation pathway alone and the rest on a
-      lone multi-instrument, multi-scale or generative claim. Splitting them needs a fifth
-      attribute or a weighting, which is a rubric edit rather than a re-score, and no product
-      was moved to improve the shape.
+      Three rulings settle the close calls, and they are rules rather than habits.
+      (a) A resolution span counts as multi_scale even where the smaller member is motivated by
+      compute, so weathernext's 0.25-degree and 1-degree Mini count the way neuralgcm's
+      0.7/1.4/2.8-degree checkpoints do; a parameter count alone still does not.
+      (b) An adaptation pathway must be executable, not merely described: weathernext's notebook
+      reaches a gradient step and counts, while neuralgcm's shipped training configs do not,
+      because their entry point imports an unpublished package and cannot run.
+      (c) A single checkpoint carrying heads over several data systems is multi_instrument, which
+      is why uma and mace-mh both count and a family of one-checkpoint-per-domain does not.
+
+      Distribution over the full 34 after adversarial re-verification: 2/10/13/7/2 across levels
+      1/2/3/4/5, or 6/29/38/21/6 percent. Level 3 holds 38 percent, over the one-third ceiling
+      docs/reference/capability.md sets for a discriminating rung, and the earlier reading of
+      this note recorded 35 percent on level 2 before re-verification moved four products.
+      That drift is the point: the shape follows the evidence, and no product was ever moved to
+      improve it. The ceiling is unlikely to be reachable by rewording, because the instrument is
+      a count of four independent booleans and the middle of that range is structurally the
+      fattest. Closing it needs a fifth attribute or a weighting, which is a rubric edit and a
+      maintainer's call.
+
+      Bands are placed by the attribute count, which is deterministic from the recorded value, so
+      relative_to is recorded where a peer corroborates the placement rather than as the
+      instrument itself. TerraMind is the top anchor.
 
   confidence_rule:
     high: a primary source states the fact directly or publishes the measured result

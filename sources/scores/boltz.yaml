@@ -36,7 +36,7 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: No Hugging Face artifact - the weights are fetched by the package rather than served from the Hub - so 4,202 GitHub stars are the last-resort signal.
+  note: boltz-community/boltz-1 and boltz-community/boltz-2 are the Hub repositories the package resolves weights from, but both report zero downloads because src/boltz/main.py fetches resolve/main/*.ckpt directly rather than through the Hub API, so the counter measures the API path and not the reach. 4,202 GitHub stars are the last-resort signal, on the same footing as aurora-weather and openfold.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/jwohlwend/boltz
@@ -44,6 +44,11 @@ adoption:
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 7502ca561e5728327b220861833669513a585a8c763ee5a5715f526d4327b691
+  - url: https://huggingface.co/api/models/boltz-community/boltz-2
+    shows: 'downloads: 0; likes: 16; gated: false; license mit — the Hub artifact exists and reports zero, which is what puts this band on stars rather than on usage_volume.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1ae227a0a2f6e1f0e8d1ee4f87f8dbb6ffc04020ccfd930dadd95c78dac83c90
 capability:
   score: 3
   basis: feature_matrix

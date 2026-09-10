@@ -8,7 +8,7 @@ openness:
     code: {value: open, detail: 'full data preprocessing, distributed training, and fine-tuning pipeline'}
     license:
     - {name: MIT, detail: 'code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints'}
-    - {name: ASL, detail: 'MACE-OMAT-0, MACE-MATPES, MACE-OMOL-0, and MACE-MH checkpoints; academic non-commercial only'}
+    - {name: ASL, detail: 'MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only'}
   raw: weights:open(ungated foundation checkpoints published as GitHub release assets);data:open(MPTrj, sAlex, OMat, MATPES, and OMol training datasets publicly released);code:open(full data preprocessing, distributed training, and fine-tuning pipeline);license:MIT(code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints)+ASL(MACE-OMAT-0, MACE-MATPES, MACE-OMOL-0, and MACE-MH checkpoints; academic non-commercial only)
   confidence: high
   note: 'MACE is otherwise the most complete release in this cohort: open corpus, open pretraining pipeline, open weights. The multi-SKU rule resolves it on the most restrictive licence among the checkpoints actually distributed, and the newer foundation models ship under the Academic Software Licence, which says of itself that it is not an open-source licence because it does not allow commercial use. Publishing the corpus does not buy that permission back, so the score caps at restricted.'
@@ -33,25 +33,37 @@ openness:
     content_sha256: 54a623a4bba6833807aad02bc24ad85bbda97826274595559bc112b7b5abbf43
     establishes: [license]
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: medium
-  note: No Hugging Face artifact is declared, so 1,345 GitHub stars are the last-resort signal. Weights are served as GitHub release assets and pulled through the mace-torch PyPI package; neither channel is banded here.
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of mace-torch, the declared package that fetches the foundation checkpoints
+  note: >-
+    Re-banded off stars. mace-torch is a declared artifact, and sources/signal_routing.yaml sets
+    the precedence pypi > huggingface > stars, so an authoritative usage route exists and the
+    record may not fall through to a star count. 113,484 downloads in the trailing 30 days puts
+    it at level 3, one above the 1,345 stars it used to carry. Four first-party Hugging Face
+    repositories also exist under mace-foundations and all report zero downloads, so the Hub
+    route is present but empty; PyPI outranks it either way.
   last_verified: '2026-09-10'
   sources:
+  - url: https://pypistats.org/api/packages/mace-torch/recent
+    shows: 'last_month = 113,484 downloads of the mace-torch package.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: c162a59c03003d608748b8c6e2e29ac694759b86d51afd5273408a42efdbe469
   - url: https://api.github.com/repos/ACEsuit/mace
-    shows: 'stargazers_count: 1345; archived: false; fork: false.'
+    shows: 'stargazers_count: 1345; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 4b4d72fa321af43d7543c1b26aa0dd9d127a89d05b44f580c870140b2f5afcc6
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: A documented finetuning path from any foundation checkpoint onto a new dataset; one atomistic modality, no generation, one scale.
+  value: A documented finetuning path from any foundation checkpoint onto a new dataset, and in MACE-MH a single checkpoint carrying task heads across several DFT levels of theory; no generation, one scale.
   confidence: high
-  note: One attribute. The checkpoints cover different chemical domains, but each is a separate model rather than one model accepting several instruments, and small, medium and large are sizes.
+  note: Two attributes. Most of the family is one checkpoint per domain, and small, medium and large are sizes rather than scales - but MACE-MH is a single distributed checkpoint whose card claims "unified cross-domain capability spanning inorganic crystals, molecular systems, surface chemistry, and reactive organic chemistry with a single model" over heads for OMAT PBE, OMOL, OC20, SPICE, RGD1, MPTraj and MatPES. That is the same fact pattern the category credits UMA for, so it is credited here too.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/ACEsuit/mace/main/README.md

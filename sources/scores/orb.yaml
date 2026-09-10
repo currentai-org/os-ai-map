@@ -32,15 +32,25 @@ openness:
     content_sha256: ae89c659da81fa5cf80f03e1fe25fc7c6fac7db0b66d80592562537a614e0dbb
     establishes: [license]
 adoption:
-  level: 1
-  reach: <1K stars
-  signal_type: stars_fallback
-  confidence: medium
-  note: No Hugging Face artifact is declared, so 616 GitHub stars are the last-resort signal; the orb-models PyPI package is the channel that fetches the weights and is not banded here.
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of orb-models, the declared package that fetches the pretrained checkpoints
+  note: >-
+    Re-banded off stars. orb-models is a declared artifact, and sources/signal_routing.yaml sets
+    the precedence pypi > huggingface > stars, so an authoritative usage route exists and the
+    record may not fall through to a star count. 12,043 downloads in the trailing 30 days puts
+    it at level 2, one above the 616 stars it used to carry.
   last_verified: '2026-09-10'
   sources:
+  - url: https://pypistats.org/api/packages/orb-models/recent
+    shows: 'last_month = 12,043 downloads of the orb-models package.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6a4503cfe4bc1bebf4576659c130b0758858c8e1f5a906c8b929243e3b8a43d7
   - url: https://api.github.com/repos/orbital-materials/orb-models
-    shows: 'stargazers_count: 616; archived: false; fork: false.'
+    shows: 'stargazers_count: 616; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 1d82207d41e47baf9d3ad0dcee505a15567a9049dc19b1bf8331887b1e46710b

@@ -1,18 +1,24 @@
 product: uma
 openness:
-  score: 3
+  score: 4
   class: open_weights
   components:
     weights: {value: open, detail: 'manually gated but downloadable uma-s and uma-m checkpoint files'}
     data: {value: open, detail: 'OMol25, OMat24, OC20, ODAC23, and OMC25 training datasets published alongside the model'}
-    code: {value: partial, detail: 'MIT fairchem inference, calculator, and large-scale simulation library; no pretraining recipe published'}
+    code: {value: open, detail: 'configs/uma/training_release ships uma_sm_direct_pretrain.yaml and uma_md_direct_pretrain.yaml with their backbone, dataset, tasks and element_refs configs, driven by the fairchem CLI, alongside the MIT inference and calculator library'}
     license:
     - {name: FAIR-Chemistry-License-v1, detail: 'royalty-free commercial use with an acceptable-use policy and gated registration'}
-  raw: weights:open(manually gated but downloadable uma-s and uma-m checkpoint files);data:open(OMol25, OMat24, OC20, ODAC23, and OMC25 training datasets published alongside the model);code:partial(MIT fairchem inference, calculator, and large-scale simulation library; no pretraining recipe published);license:FAIR-Chemistry-License-v1(royalty-free commercial use with an acceptable-use policy and gated registration)
+  raw: weights:open(manually gated but downloadable uma-s and uma-m checkpoint files);data:open(OMol25, OMat24, OC20, ODAC23, and OMC25 training datasets published alongside the model);code:open(configs/uma/training_release ships the small and medium pretraining configs with their backbone, dataset and task configs, driven by the fairchem CLI);license:FAIR-Chemistry-License-v1(royalty-free commercial use with an acceptable-use policy and gated registration)
   confidence: high
   note: Gating and an acceptable-use policy are identity and conduct conditions rather than a commercial ceiling, so the licence does not push UMA below the open-weights centre of gravity. What holds it there is the missing pretraining recipe, not the gate; the five training datasets are themselves published.
   last_verified: '2026-09-10'
   sources:
+  - url: https://api.github.com/repos/facebookresearch/fairchem/contents/configs/uma/training_release
+    shows: Lists uma_sm_direct_pretrain.yaml and uma_md_direct_pretrain.yaml beside uma_sm_conserve_finetune.yaml and uma_md_conserve_finetune.yaml, with backbone, dataset, tasks, element_refs and cluster config directories - the published pretraining recipe, not just inference code.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 789ca6b63aaa2462088121d372fbc5de2d479fa57d49b00896d38f6a7b2e1e43
+    establishes: [code]
   - url: https://huggingface.co/api/models/facebook/UMA
     shows: 'gated: manual; private: false; license: other under the FAIR Chemistry License v1 with a full-legal-name registration prompt; checkpoints/uma-s-1p2.pt, uma-s-1p2p1.pt, and uma-m-1p1.pt present.'
     accessed: '2026-09-10'
@@ -42,7 +48,14 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: medium
-  note: 83 downloads in the trailing 30 days for the declared Hub repository. Manual gating suppresses the count, and most users reach the weights through the fairchem-core PyPI package, which is not banded here.
+  note: >-
+    83 downloads in the trailing 30 days for the declared Hub repository, with manual gating
+    suppressing the count. fairchem-core is also declared and draws far more, but it is not
+    banded here for a reason rather than by omission: the package is the library that serves
+    every fairchem model, so its download population is not UMA's population, and
+    docs/reference/adoption.md requires a package to be the product's own primary channel before
+    it may band the head product. The Hub repository is UMA's own channel; the gate is what
+    suppresses it.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/facebook/UMA
@@ -51,12 +64,12 @@ adoption:
     http_status: 200
     content_sha256: 774114cf81953f1f4ec2928e48353f1ba2cbcabca2db6c9dd4fb970cb61ac207
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: One model consuming five distinct DFT levels of theory, selected at inference by a task embedding; no documented adaptation path, no generation, one scale.
+  value: One model consuming five distinct DFT levels of theory, selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation, one scale.
   confidence: high
-  note: One attribute. The five tasks are separate data systems with different functionals and pseudopotentials rather than variables of one, which is what makes this multi-instrument. The publisher's headline claim is that no fine-tuning is needed, and no fine-tuning recipe is documented, so the adaptation attribute is not counted.
+  note: Two attributes. The five tasks are separate data systems with different functionals and pseudopotentials rather than variables of one, which is what makes this multi-instrument. Adaptation is documented directly - docs/core/common_tasks/fine_tuning.md is a first-party UMA fine-tuning page shipping create_uma_finetune_dataset.py and a templated fine-tuning config, and configs/uma/training_release carries the conserve_finetune YAMLs beside it. The publisher's headline claim is that no fine-tuning is needed, and no fine-tuning recipe is documented, so the adaptation attribute is not counted.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md

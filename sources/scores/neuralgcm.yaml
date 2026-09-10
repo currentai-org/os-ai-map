@@ -5,12 +5,19 @@ openness:
   components:
     weights: {value: open, detail: CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket}
     data: {value: documented-not-released, detail: 'ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released'}
-    code: {value: partial, detail: 'supported inference API and regridding utilities; training exists only as pseudo-code in reference_code'}
+    code: {value: partial, detail: 'inference API, regridding utilities, and reference_code carrying per-checkpoint training configs and loss code, but its entry point imports google_proprietary_code, a package that is not published, so the training path cannot run'}
     license:
     - {name: CC-BY-SA-4.0, detail: permissive non-OSI}
-  raw: license:CC-BY-SA-4.0(permissive non-OSI);weights:open(CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket);data:documented-not-released(ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released);code:partial(supported inference API and regridding utilities; training exists only as pseudo-code in reference_code)
+  raw: license:CC-BY-SA-4.0(permissive non-OSI);weights:open(CC-BY-SA-4.0 checkpoints on an anonymously readable Google Cloud bucket);data:documented-not-released(ERA5 inputs, forcings and pressure levels specified with ARCO-ERA5 named as the source; the training corpus is not released);code:partial(supported inference API and regridding utilities; reference_code training entry point imports an unpublished google_proprietary_code package so the path cannot run)
   confidence: high
-  note: Apache-2.0 governs the code but the trained weights carry CC-BY-SA-4.0, which is the license that counts here - permissive, share-alike, and not OSI-approved. The project says plainly that it does not yet support training or fine-tuning.
+  note: >-
+    Apache-2.0 governs the code but the trained weights carry CC-BY-SA-4.0, which is the license
+    that counts here - permissive, share-alike, and not OSI-approved. `code` is partial for a
+    concrete reason rather than the docs' hedge: reference_code ships the per-checkpoint .gin
+    training configs, train_utils.py and the loss code, but experiment.py imports
+    google_proprietary_code, which is not published, so the training path cannot be executed. The
+    docs say the maintainers "would love to support training, modifying and fine-tuning" and are
+    refactoring to make it easier - not that it is unsupported.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/neuralgcm/neuralgcm/main/README.md
@@ -38,15 +45,28 @@ openness:
     content_sha256: a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f
     establishes: [weights]
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: medium
-  note: Checkpoints are distributed from a Cloud bucket with no download count, so 1,014 GitHub stars are the last-resort reach signal.
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of the neuralgcm package, the install path the project's own documentation uses
+  note: >-
+    Re-banded off stars. The record previously said no download count existed; one does. The
+    project's quickstart installs with `pip install -q -U neuralgcm gcsfs`, which makes PyPI
+    provably the product's own channel and its primary one - the two conditions
+    docs/reference/adoption.md sets before a package may band a head product. 8,480 downloads
+    in the trailing 30 days puts it at level 1, one below the 1,014 GitHub stars it used to
+    carry, and adoption.md is explicit that a stars_fallback band re-bands the moment a
+    download signal exists.
   last_verified: '2026-09-10'
   sources:
+  - url: https://pypistats.org/api/packages/neuralgcm/recent
+    shows: 'last_month = 8,480 downloads of the neuralgcm package.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 40bf825fbdccb28528f13679323c0c79f4d271d30abe2534d3aee2660b28c211
   - url: https://api.github.com/repos/neuralgcm/neuralgcm
-    shows: 'stargazers_count: 1014; archived: false; fork: false.'
+    shows: 'stargazers_count: 1014; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: f7c6e192ef720724234035a1386fa88f35cacba7d0614ce06576204a4f98f274
@@ -67,7 +87,7 @@ capability:
     http_status: 200
     content_sha256: a6587962121a1f31e86e25d41c1ee39885867c112aaf515a955a11292e27256f
   - url: https://neuralgcm.readthedocs.io/en/latest/
-    shows: Describes NeuralGCM as a hybrid ML and physics atmospheric model for weather and climate simulation built on the Dinosaur dynamical core, and states that training and fine-tuning are not supported by the released codebase.
+    shows: Describes NeuralGCM as a hybrid ML and physics atmospheric model for weather and climate simulation built on the Dinosaur dynamical core, and says the maintainers "would love to support training, modifying and fine-tuning NeuralGCM models" but that the Haiku and Gin codebase makes it "much trickier than it needs to be", with pseudo-code for training in reference_code.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 0ae8a5428933cc6be49fb1aeea9d3755593728d866344744cc25c236672bb741
