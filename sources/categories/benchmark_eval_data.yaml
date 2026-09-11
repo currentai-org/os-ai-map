@@ -104,6 +104,42 @@ scoring_recipe:
           items over time?
         evidence: A held-out or private split, a documented rotation or version cadence, or a
           canary string on the published artifact.
+        instrument:
+          name: Hugging Face training-dataset tag count
+          url_pattern: https://huggingface.co/api/models?filter=dataset:<owner>/<name>&limit=1000&full=false
+          read: The length of the returned array, which is how many models on the Hub declare
+            this corpus as a training dataset.
+          measured_on: '2026-09-11'
+          readings:
+            livebench: 0
+            terminal-bench: 0
+            gaia: 5
+            humanitys-last-exam: 11
+            mt-bench: 1
+            swe-bench-verified: 13
+            humaneval: 29
+            mmlu-pro: 30
+            mmlu: 327
+            gsm8k: 834
+          note: >-
+            A countable, re-derivable input to this dimension, added 2026-09-11 after the #319
+            calibration slice. Read the API, never the rendered dataset page: the two disagree
+            (834 against 1,109 for openai/gsm8k), and the page is browser-rendered, so its
+            number cannot be re-fetched to a stable digest. Cite the API figure and record the
+            discrepancy where it matters.
+
+            THE SIGNAL IS ASYMMETRIC, and that is the whole of how to use it. A high count is
+            strong evidence that a benchmark has been trained on. A low count establishes
+            nothing at all, because a corpus can reach a pretraining mix without any model ever
+            tagging it here. `humaneval` is the proof: 29 models declare it, and it is
+            known-saturated on every other reading. So this instrument may move a band DOWN and
+            may never move one UP, and it never overrides a read of the primary sources. It is
+            the same rule as a transient fetch not being evidence of absence.
+
+            It is also one input to one of four dimensions rather than a rung on its own.
+            `mt-bench` sits at 1 with a capability of 4: it is marked down for LLM-as-judge
+            scoring and an 80-question set, which is a fact about its design and not about
+            contamination. A count cannot place a band by itself.
       checkable_scoring:
         question: Is an answer graded against ground truth or executed tests rather than by a
           judge model?

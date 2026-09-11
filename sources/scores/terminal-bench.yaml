@@ -103,7 +103,9 @@ capability:
     how LiveBench holds the same rung. It differs from LiveBench in where the protection comes from: the
     tasks and their reference solutions are published in full, so turnover is the only thing holding contamination
     off. The band is read off the versioned dataset names, not off the live leaderboard, which renders its
-    rows in the browser.'
+    rows in the browser. No model on the Hub declares the 2.0 corpus as a training dataset, which is consistent
+    with the band; a count of zero corroborates and cannot establish it, since a benchmark can reach a pretraining
+    corpus untagged.'
   last_verified: '2026-09-11'
   sources:
   - url: https://arxiv.org/abs/2601.11868
@@ -123,3 +125,9 @@ capability:
     accessed: '2026-09-11'
     http_status: 200
     content_sha256: c4b77ef934ae210f3c712e7bab30f460ff35e125aa83affc30c9e7dd6317cdf1
+  - url: https://huggingface.co/api/models?filter=dataset:harborframework/terminal-bench-2.0&limit=1000&full=false
+    shows: 'an empty array: no model on the Hub declares harborframework/terminal-bench-2.0 as a training
+      dataset'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
