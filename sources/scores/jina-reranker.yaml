@@ -3,22 +3,31 @@ openness:
   score: 2
   class: restricted
   components:
-    weights: {value: open, detail: ungated safetensors on the Hub for v1 through v3.5}
-    data: {value: closed, detail: no training data or construction scripts released}
-    code: {value: partial, detail: remote inference code shipped with the card; no training pipeline and
-        no model repository}
+    weights:
+      value: open
+      detail: ungated safetensors on the Hub for v1 through v3.5
+    data:
+      value: closed
+      detail: no training data or construction scripts released
+    code:
+      value: partial
+      detail: remote inference code shipped with the card; no training pipeline and no model repository
     license:
-    - {name: Apache-2.0, detail: 'OSI, and only the superseded v1-turbo-en and v1-tiny-en'}
-    - {name: CC-BY-NC-4.0, detail: 'non-commercial; governs v2, v3, v3.5 and m0'}
+    - name: Apache-2.0
+      detail: OSI, and only the superseded v1-turbo-en and v1-tiny-en
+    - name: CC-BY-NC-4.0
+      detail: non-commercial; governs v2, v3 and v3.5
   raw: weights:open(ungated safetensors on the Hub for v1 through v3.5);data:closed(no training data or
     construction scripts released);code:partial(remote inference code shipped with the card; no training
-    pipeline and no model repository);license:Apache-2.0(OSI, and only the superseded v1-turbo-en and
-    v1-tiny-en)+CC-BY-NC-4.0(non-commercial; governs v2, v3, v3.5 and m0)
+    pipeline and no model repository);license:Apache-2.0(OSI, and only the superseded v1-turbo-en and v1-tiny-en)+CC-BY-NC-4.0(non-commercial;
+    governs v2, v3 and v3.5)
   confidence: high
   note: The current SKUs are licensed CC-BY-NC-4.0 and the superseded v1-turbo-en and v1-tiny-en are Apache-2.0,
     so the compound resolves on the non-commercial half. commercial_forbidden asks one question - does the
     licence permit commercial use at all - and the card answers no, saying commercial use beyond AWS and
-    Azure requires contacting sales.
+    Azure requires contacting sales. The m0 multimodal reranker is excluded from this record on every axis
+    under the category's vision-language rule; it reads cc-by-nc-4.0 as well, so its exclusion moves nothing
+    here.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
@@ -42,8 +51,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: About 2.4M downloads in the trailing 30 days across the line - v2-base-multilingual 1.16M, v3
-    780K, m0 379K, v3.5 32K, plus the two v1 checkpoints. The v2 and v3 figures alone clear the 1M band.
+  note: About 2.0M downloads in the trailing 30 days across the text line - v2-base-multilingual 1.16M,
+    v3 780K, v3.5 32K, plus the two v1 checkpoints. The v2 and v3 figures alone clear the 1M band. The m0
+    multimodal reranker is excluded under the category's rule that a vision-language line is a separate
+    product from the text line; counting its 379K gives about 2.4M and the same band.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual', shows: 'downloads:
