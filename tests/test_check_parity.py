@@ -231,7 +231,18 @@ def test_local_scores_matches_check_rubrics_split():
     # owner ruled the two names onto the tier. Each was the first product on the map to record
     # its license, so the ruling moved no existing score; the measurement is in software.yaml
     # beside the names.
-    assert len(deferred) == 5
+    #
+    # 5 -> 9 on 2026-09-11, the embeddings_retrieval promotion: 35 products in and FOUR added to
+    # the deferral count, which every promotion before this one avoided. The difference is
+    # deliberate rather than a regression. Those promotions closed their unnamed licenses the same
+    # day by ruling the names onto a tier; docs/workflows/promote-category.md step 7 says a
+    # promotion may not do that, because extending a shared tier reaches every inheriting category
+    # and is a maintainer's call. So the four sit deferred with the reading that would apply
+    # recorded beside each: OpenMDW-1.1 (nemotron-embed, nemotron-rerank), CC-BY-NC-4.0
+    # (jina-reranker, jina-embeddings) and Qwen-Research-License (jina-embeddings). Three names,
+    # four products. check_recipe reports each stale the moment a ruling lands, which is how they
+    # close - and when they do, this number returns to 5.
+    assert len(deferred) == 9
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

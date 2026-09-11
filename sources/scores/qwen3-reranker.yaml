@@ -5,13 +5,10 @@ openness:
   components:
     weights: {value: open, detail: Apache-2.0 ungated safetensors across the text and VL checkpoints}
     data: {value: closed, detail: no training corpus or data-construction scripts released}
-    code: {value: open, detail: the Qwen3-Embedding repository ships training code and instructions as
-        well as evaluation}
+    code: {value: partial, detail: 'the Qwen3-Embedding repository''s docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline'}
     license:
     - {name: Apache-2.0, detail: OSI}
-  raw: weights:open(Apache-2.0 ungated safetensors across the text and VL checkpoints);data:closed(no
-    training corpus or data-construction scripts released);code:open(the Qwen3-Embedding repository ships
-    training code and instructions as well as evaluation);license:Apache-2.0(OSI)
+  raw: weights:open(Apache-2.0 ungated safetensors across the text and VL checkpoints);data:closed(no training corpus or data-construction scripts released);code:partial(the Qwen3-Embedding repository's docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline);license:Apache-2.0(OSI)
   confidence: high
   note: Apache-2.0 weights and a repository that ships training docs, but no training corpus and no data-construction
     scripts, so the ladder lands on its open-weights centre of gravity rather than on a data rung.
@@ -43,9 +40,13 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: About 5.7M downloads in the trailing 30 days summed across the five first-party checkpoints -
-    Reranker-4B 2.5M, VL-Reranker-2B 1.7M, Reranker-0.6B 1.2M, Reranker-8B 121K, VL-Reranker-8B 30K. Community
-    seq-cls conversions, GGUF and AWQ re-publishers are excluded.
+  note: >-
+    3,765,905 downloads in the trailing 30 days across the three text reranker checkpoints -
+    Reranker-4B, Reranker-0.6B and Reranker-8B. The Qwen3-VL-Reranker checkpoints are excluded and
+    are not counted anywhere on the map, which is the same rule qwen3-embedding applies to
+    Qwen3-VL-Embedding: a vision-language line is a separate product from the text line, for a
+    vendor's reranker and its embedder alike. Counting them would give 5,720,864 and the same
+    band. Community seq-cls conversions, GGUF and AWQ re-publishers are excluded.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/api/models/Qwen/Qwen3-Reranker-4B', shows: 'downloads: 2546793; gated:

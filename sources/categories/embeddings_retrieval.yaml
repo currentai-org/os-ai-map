@@ -128,6 +128,31 @@ scoring_recipe:
       1 - minimal. A small or demonstration checkpoint, or a model publishing no retrieval
       evaluation at all.
 
+      Six rules, added on 2026-09-11 after adversarial review found the same evidence banded
+      differently by researchers who each saw only part of the roster.
+
+      (a) Same instrument, same rung order. Two products read off the SAME table must be banded in
+      that table's order. Before banding, list every product in this category that appears in the
+      table you are reading - these tables carry ten to fifteen rows, so it is a grep, not
+      research. This rule exists because mxbai-embed, e5, gte and nomic-embed were banded 2/3/4/3
+      off one table on which their retrieval scores are 54.39, 52.47, 55.33 and 53.01 - the second
+      best of the four sat at the lowest rung.
+      (b) Name the split, not the family. "MTEB" is four instruments here - v1 English (56 tasks),
+      v2 English (41), MMTEB multilingual v2, and retrieval-only - and "BEIR" is two, an embedder's
+      first-stage and a reranker's reranked. basis_detail must give the split and the task count,
+      and a band may only be spaced against a peer carrying the same split.
+      (c) A rung gap is spaced on one instrument. 4.4 points of MMTEB and 4.4 points of BEIR are
+      not the same distance. State the sub-ladder and its step.
+      (d) relative_to requires a shared measurement, not just a shared category. If no single
+      number reports both products, pick a nearer peer or leave the band unplaced and say so. An
+      `at` edge whose only shared source records a margin between the two products is invalid.
+      (e) A vendor's own document cannot lift that vendor's band above a peer measured by a third
+      party. It can support a band and it can be cited against that vendor's competitors.
+      (f) A checkpoint is billed to exactly one product, and the split runs through the artifact
+      declarations as well as the download sum. A vision-language line is a separate product from
+      the text line, for a vendor's embedder and its reranker alike - Qwen and NVIDIA each answered
+      that both ways before this rule was written.
+
       A band placed by comparison records relative_to and relation so check_capability can check
       the arithmetic. basis_detail names the instrument for THAT product - MMTEB v2, BEIR,
       NDCG@10 on a named corpus, ViDoRe - never one instrument borrowed across a cluster.

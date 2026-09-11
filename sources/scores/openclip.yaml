@@ -5,11 +5,10 @@ openness:
   components:
     weights:
       value: open
-      detail: 56 ungated MIT-licensed laion/CLIP-* checkpoints on the Hub
+      detail: '56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none'
     data:
       value: open
-      detail: LAION-2B English, published as laion/relaion2B-en-research-safe behind an auto-accept gate;
-        the original laion/laion2B-en name redirects there
+      detail: 'the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate'
     code:
       value: open
       detail: open_clip ships the full contrastive pretraining pipeline - data loading, training loop,
@@ -17,10 +16,7 @@ openness:
     license:
     - name: MIT
       detail: OSI
-  raw: weights:open(56 ungated MIT-licensed laion/CLIP-* checkpoints on the Hub);data:open(LAION-2B English,
-    published as laion/relaion2B-en-research-safe behind an auto-accept gate; the original laion/laion2B-en
-    name redirects there);code:open(open_clip ships the full contrastive pretraining pipeline - data loading,
-    training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)
+  raw: weights:open(56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none);data:open(the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate);code:open(open_clip ships the full contrastive pretraining pipeline - data loading, training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)
   confidence: high
   note: 'The top rung, and the clearest case for it in this set: the corpus, the code that consumed it
     and an OSI licence over the weights. The one wrinkle is that the corpus these checkpoints were actually
@@ -28,6 +24,13 @@ openness:
     is auto-gated - a click-through, not an approval, so it is still released rather than merely documented.'
   last_verified: '2026-09-11'
   sources:
+  - url: https://huggingface.co/api/datasets/mlfoundations/datacomp_1b
+    shows: 'gated: false; license cc-by-4.0 - DataComp-1B, the corpus behind the DataComp.XL checkpoints, is published and ungated. This is the firmer footing for data:open than the LAION-2B path, whose original name now redirects to a re-filtered successor behind a gate.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cc30a55ea4235761d23e48e7a3bbe3fb38922f9d0ad5ad425f05b4da37645cbd
+    establishes:
+    - data
   - url: https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/raw/main/README.md
     shows: '`license: mit`; ''A CLIP ViT-H/14 model trained with the LAION-2B English subset of LAION-5B
       ... using OpenCLIP''; a Training Data section naming the 2-billion-sample English subset.'
@@ -67,11 +70,12 @@ adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
+  banded_quantity: trailing-30-day downloads summed across the 56 laion/CLIP-* checkpoints in the LAION account, which is wider than the single flagship repo this product declares as an artifact
   confidence: medium
   note: 10,909,706 downloads in the trailing 30 days across the 56 laion CLIP repos (ViT-L-14-laion2B
     3,950,302; ViT-B-32-laion2B 3,805,524; convnext_base_w 1,386,613). Confidence is medium rather than
     high only because the figure sits a few per cent above the 10M band edge and moves week to week; the
-    warehouse sweep of 2026-09-06 put it at 10,485,793, on the same side of the line. The timm and apple
+    warehouse sweep put it at 10,485,793, on the same side of the line. The timm and apple
     re-hosts of OpenCLIP checkpoints are excluded as mirrors, so this is if anything an undercount.
   last_verified: '2026-09-11'
   sources:
