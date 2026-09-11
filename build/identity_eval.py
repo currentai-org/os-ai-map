@@ -1113,6 +1113,18 @@ def coverage_stale(
     return failures
 
 
+def _pin_lowered(now: tuple[int, int], prior: tuple[int, int]) -> bool:
+    """Is the pin `now` strictly below the pin `prior`? Cross-multiplied like
+    `_below_baseline`, but this compares two PINS, not live coverage to a pin, so a
+    denominator of 0 on either side is read as the ratio 0 it pins rather than as "no orgs
+    to cover". Without that, rewriting 211/328 to 0/0 would pass vacuously, and a re-pin
+    after every eligible org was removed could erase positive coverage unexplained.
+    """
+    now_n, now_d = now if now[1] else (0, 1)
+    prior_n, prior_d = prior if prior[1] else (0, 1)
+    return now_n * prior_d < prior_n * now_d
+
+
 def coverage_lowered(
     current: dict[str, tuple[int, int]],
     before: dict[str, tuple[int, int]],
@@ -1124,8 +1136,9 @@ def coverage_lowered(
     A route's pin may go down only with a `lowered_because` that is new or changed in this
     PR; one inherited verbatim from the merge base explained an earlier lowering and excuses
     nothing now. A pin that vanished (the route was in `before`, not in `current`) is a
-    lowering to nothing. A fresh `lowered_because` with no route lowered is stale and is
-    reported too: an explanation that explains nothing is how a guard rots.
+    lowering to nothing, and so is a pin rewritten to `0/0` (see `_pin_lowered`). A fresh
+    `lowered_because` with no route lowered is stale and is reported too: an explanation
+    that explains nothing is how a guard rots.
     """
     lowered: list[str] = []
     for route, _label in ORG_ROUTE_LABELS:
@@ -1135,7 +1148,7 @@ def coverage_lowered(
         now = current.get(route)
         if now is None:
             lowered.append(f"{route}: pinned {prior[0]}/{prior[1]} at the merge base, unpinned now")
-        elif _below_baseline(now, prior):
+        elif _pin_lowered(now, prior):
             lowered.append(f"{route}: pin lowered from {prior[0]}/{prior[1]} to {now[0]}/{now[1]}")
     fresh_note = lowered_because is not None and lowered_because != before_lowered_because
     if lowered and not fresh_note:

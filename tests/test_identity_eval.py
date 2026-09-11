@@ -1240,6 +1240,22 @@ def test_coverage_lowered_treats_a_vanished_pin_as_lowered():
     assert findings[0] == "github: pinned 2/4 at the merge base, unpinned now"
 
 
+def test_coverage_lowered_reads_a_zero_denominator_pin_as_zero():
+    # Regression: 211/328 -> 0/0 used to pass vacuously because the live-coverage comparator
+    # treats an empty denominator as "no orgs to cover". A pin is not live coverage.
+    before = {"github": (211, 328)}
+    findings = coverage_lowered({"github": (0, 0)}, before, None)
+    assert findings[0] == "github: pin lowered from 211/328 to 0/0"
+    assert len(findings) == 2
+    assert coverage_lowered({"github": (0, 0)}, before, "every eligible org was removed") == []
+    # a zero pin at the merge base is ratio 0: nothing goes below it, and 0/0 -> 0/0 is unchanged
+    assert coverage_lowered({"github": (0, 0)}, {"github": (0, 0)}, None) == []
+    assert coverage_lowered({"github": (0, 5)}, {"github": (0, 0)}, None) == []
+    assert coverage_lowered({"github": (3, 5)}, {"github": (0, 0)}, None) == []
+    # 0/0 -> positive with a fresh note is a stale note, same as any other non-lowering
+    assert coverage_lowered({"github": (3, 5)}, {"github": (0, 0)}, "why", None)
+
+
 def test_coverage_lowered_compares_ratios_and_passes_a_raise():
     before = {"github": (2, 4)}
     assert coverage_lowered({"github": (1, 2)}, before, None) == []  # same ratio
