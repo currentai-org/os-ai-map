@@ -577,7 +577,7 @@ Three questions settle it, and all three are answerable from the package's own J
    14,334 stars is the same tell inverted.
 
 `build/check_package_channel.py` asks the same three questions of every `stars_fallback` record,
-for each package or image the product's own README installs, and only reports: identity (a URL
+for each package or image the product's own README, or an install page it links to, installs, and only reports: identity (a URL
 naming the declared `owner/repo` in full, never an owner-name match), role (quoted from the
 package's own summary), and instrument quality (monthly or cumulative, from which window). It reads
 the existing `adoption.note` first and surfaces a sentence that already names the package as a prior

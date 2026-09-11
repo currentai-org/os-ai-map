@@ -9,8 +9,10 @@ whether a stars record was leaving a measured figure on the table; this does, an
 ## What it does
 
 For every score whose `adoption.signal_type` is `stars_fallback`, read the product's own install
-instructions from the README of its declared `github` artifact, take the package and image names
-those instructions install, and for each one answer three questions SEPARATELY:
+instructions: the README of its declared `github` artifact AND the in-repo documents that README
+links to under an install-shaped name (`tensorflow_serving/g3doc/setup.md` behind "Install
+Tensorflow Serving without Docker"). Take the package and image names those instructions install,
+and for each one answer three questions SEPARATELY:
 
 1. **Identity** - does this package belong to this project? `strong` when a URL in the package's
    own metadata names the declared `owner/repo` in full. `weak` when only the homepage, another
@@ -68,10 +70,26 @@ you are about to replace is the cheapest kind to honour and the easiest to destr
   product's own names, so `pip install vllm` on the vllm record still yields vllm. The list is a
   stop-list for names that have caused a misattribution or plainly would, not an attempt to know
   every package on PyPI; a dependency it misses reaches the identity question and grades `none`.
+- **Prose is not an install line; HTML `<pre>` blocks are.** Only fenced blocks, indented blocks,
+  inline backtick spans and `<pre>...</pre>` blocks are read (Google's g3doc pages wrap terminals
+  in `<pre>`). See `code_segments`.
 - **Local paths, VCS URLs and flag values are not packages.** `-e human-eval`,
   `git+https://...`, `.` and `./sdk` are skipped, as is the value after `-r`/`--index-url`.
 - **Registries with no download API are named, not measured.** `ghcr.io`, `quay.io`, `nvcr.io`
-  and friends are reported with `no figure - <registry> publishes no pull count`.
+  and friends are reported with `no figure - <registry> publishes no pull count`. OS package
+  managers (`apt-get install tensorflow-model-server`) are not extracted at all: there is no
+  download figure to fetch, so there is nothing to report against the star count.
+- **Linked install docs are followed one level, in-repo only, at most MAX_LINKED_DOCS.** The
+  canonical case lives here: tensorflow/serving's README has the `docker pull` and NOT the
+  `pip install tensorflow-serving-api`, which sits in `g3doc/setup.md` behind an "Install ..."
+  link. A README-only read misses the 4.6M-a-month channel outright. So relative Markdown links
+  whose text or path says install, setup, getting started, quickstart, docker, deploy, download or
+  usage are fetched from the same repository and read as install instructions, with the document
+  named in `found in:`. Links inside a linked document are NOT followed (the wiki-crawl trap),
+  external URLs are not fetched (the docs site is not the repository's own instructions), and a
+  linked document that answers non-200 is listed as unread the way a README is. A repository that
+  keeps its install page somewhere the README does not link is still a miss; the report says
+  which documents it read so a reader knows what was not.
 - **A retrievable figure is not automatically the better instrument.** `uzu` on PyPI resolves to
   the right repository and drew 788 downloads a month against a Rust-primary distribution. The
   check prints the figure and the role; it does not compare it with the star count or call it a
@@ -96,6 +114,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 import re
 import sys
 import time
@@ -188,8 +207,23 @@ _FLAG_WITH_VALUE = frozenset({
     "--constraint", "-t", "--target", "-p", "--publish", "-v", "--volume", "--env", "--name",
     "--network", "-w", "--workdir", "--gpus", "--shm-size", "--mount", "--platform",
     "--entrypoint", "-u", "--user", "--env-file", "--add-host", "--memory", "--cpus",
+    "--version", "--vers", "--git", "--branch", "--tag", "--rev", "--path", "--features",
+    "--registry", "--root",
 })
+# A code line whose first non-blank character is `#` is a comment, not a command: scgpt's
+# "# As of 2023.09, pip install may not run with new versions of the google orbax package ..."
+# yielded `may`, `not`, `run` and eighteen more as PyPI candidates before this was skipped.
+_COMMENT_LINE = re.compile(r"^\s*#")
 _GITHUB_PATH = re.compile(r"github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)", re.I)
+# `[text](target)` with an optional `#anchor`; images (`![...]`) are excluded by the lookbehind.
+_MD_LINK = re.compile(r"(?<!!)\[([^\]]*)\]\(\s*<?([^)\s>#]+)(?:#[^)]*)?>?\s*\)")
+# A link is worth following when its TEXT or PATH says it is about installing. `docker` is on the
+# list because "Install ... using Docker" pages carry the `docker pull`; `usage` because small
+# projects put the install line on their usage page.
+_INSTALL_LINK = re.compile(r"install|setup|set-up|getting[-_ ]?started|quick[-_ ]?start|docker|deploy|download|usage", re.I)
+_LINKED_DOC_SUFFIXES = (".md", ".markdown", ".rst", ".txt")
+MAX_LINKED_DOCS = 6
+README_NAMES = ("README.md", "README.rst", "README", "readme.md")
 
 
 @dataclass(frozen=True)
@@ -294,7 +328,10 @@ def _strip_version(token: str) -> str:
 
 
 def _tokens(rest: str) -> list[str]:
-    rest = re.split(r"(?:&&|\|\||;|#|\\$)", rest, maxsplit=1)[0]
+    """The words of ONE command: cut at a pipe, a chained command, a comment or a subshell.
+    `cargo install cargo-pgrx --version $(cargo metadata --format-version 1 | jq ...)` yielded
+    `metadata`, `1` and `jq` as crates before the subshell cut was added."""
+    rest = re.split(r"(?:&&|\|\||\||;|#|\$\(|`|\\$)", rest, maxsplit=1)[0]
     return rest.replace("\\", " ").split()
 
 
@@ -370,16 +407,30 @@ def own_names(product: dict) -> set[str]:
 
 _FENCE = re.compile(r"^\s*(```|~~~)")
 _INLINE_CODE = re.compile(r"`([^`\n]+)`")
+_PRE_OPEN = re.compile(r"<pre\b", re.I)
+_PRE_CLOSE = re.compile(r"</pre>", re.I)
+_HTML_TAG = re.compile(r"<[^>]+>")
 
 
 def code_segments(readme: str) -> list[str]:
-    """The parts of a README that are code: fenced-block lines, indented-block lines and inline
-    spans. Install instructions live there. Prose is skipped on purpose: "run `pip install
-    tensorlake` for the Python SDK, install the CLI with ..." read as a command yields `for`,
-    `the` and `install` as packages, and `first` is a real PyPI package at 665K downloads."""
+    """The parts of a README that are code: fenced-block lines, indented-block lines, inline
+    spans and `<pre>...</pre>` blocks (g3doc pages wrap their terminals in `<pre><code>`). Install
+    instructions live there. Prose is skipped on purpose: "run `pip install tensorlake` for the
+    Python SDK, install the CLI with ..." read as a command yields `for`, `the` and `install` as
+    packages, and `first` is a real PyPI package at 665K downloads."""
     out: list[str] = []
     fence = None
+    in_pre = False
     for line in readme.splitlines():
+        if in_pre:
+            out.append(_HTML_TAG.sub(" ", line))
+            if _PRE_CLOSE.search(line):
+                in_pre = False
+            continue
+        if _PRE_OPEN.search(line):
+            in_pre = not _PRE_CLOSE.search(line)
+            out.append(_HTML_TAG.sub(" ", line))
+            continue
         match = _FENCE.match(line)
         if match:
             fence = None if fence == match.group(1) else (match.group(1) if fence is None else fence)
@@ -393,8 +444,9 @@ def code_segments(readme: str) -> list[str]:
     return out
 
 
-def extract_candidates(readme: str, product: dict) -> list[Candidate]:
-    """Package and image names the product's own install instructions install."""
+def extract_candidates(readme: str, product: dict, document: str = "") -> list[Candidate]:
+    """Package and image names the product's own install instructions install. `document` is
+    the in-repo path the text came from and is carried into `found in:` so a reader can open it."""
     own = own_names(product)
     seen: set[tuple[str, str]] = set()
     out: list[Candidate] = []
@@ -404,9 +456,12 @@ def extract_candidates(readme: str, product: dict) -> list[Candidate]:
         if not name or (kind, name) in seen:
             return
         seen.add((kind, name))
-        out.append(Candidate(kind, name, line.strip()[:120]))
+        origin = line.strip()[:120]
+        out.append(Candidate(kind, name, f"{origin}  [{document}]" if document else origin))
 
     for line in code_segments(readme):
+        if _COMMENT_LINE.match(line):
+            continue
         for regex, kind, scoped in ((_PIP, "pypi", False), (_NPM, "npm", True), (_CARGO, "crates", False)):
             match = regex.search(line)
             if not match:
@@ -694,31 +749,79 @@ def recommend(candidate: Candidate, ownership: str, role: str, figure: str, tran
 
 
 def readme_text(product: dict) -> tuple[str | None, str]:
-    """(README body, status line) for the first declared github artifact."""
+    """(README body, `path` or status line) for the first declared github artifact."""
     repos = declared_repos(product)
     if not repos:
         return None, "no github artifact declared"
     owner, repo = repos[0]
     last = "not fetched"
-    for filename in ("README.md", "README.rst", "README", "readme.md"):
+    for filename in README_NAMES:
         url = f"https://raw.githubusercontent.com/{owner}/{repo}/HEAD/{filename}"
         status, body, transient = fetch_text(url)
         if body is not None:
-            return body, f"{owner}/{repo}/{filename}"
+            return body, filename
         last = _no_figure(status, transient).replace("no figure - ", "")
         if transient:
             break
     return None, f"README of {owner}/{repo}: {last}"
 
 
-def assess(slug: str, product: dict, score: dict, readme: str | None) -> list[Finding]:
+def install_doc_links(readme: str, readme_path: str = "README.md") -> list[str]:
+    """In-repo paths the README links to under an install-shaped name, in README order, capped
+    at MAX_LINKED_DOCS. Relative links only: an absolute URL is the docs site or someone else's
+    repository, not this repository's own instructions. Resolved against the README's directory
+    so `docs/install.md` from a root README and `../setup.md` from a nested one both land."""
+    base = posixpath.dirname(readme_path)
+    out: list[str] = []
+    for text, target in _MD_LINK.findall(readme):
+        if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("//"):
+            continue
+        if not target.lower().endswith(_LINKED_DOC_SUFFIXES):
+            continue
+        if not (_INSTALL_LINK.search(text) or _INSTALL_LINK.search(target)):
+            continue
+        path = posixpath.normpath(posixpath.join(base, target.lstrip("/")))
+        if path.startswith("..") or path in out or path == readme_path:
+            continue
+        out.append(path)
+        if len(out) == MAX_LINKED_DOCS:
+            break
+    return out
+
+
+def install_docs(product: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """([(in-repo path, body)], [what could not be read]) - the README first, then the install
+    documents it links to, one level down and never outside the repository."""
+    repos = declared_repos(product)
+    readme, where = readme_text(product)
+    if readme is None:
+        return [], [where]
+    owner, repo = repos[0]
+    docs = [(where, readme)]
+    unread: list[str] = []
+    for path in install_doc_links(readme, where):
+        url = f"https://raw.githubusercontent.com/{owner}/{repo}/HEAD/{quote(path)}"
+        status, body, transient = fetch_text(url)
+        if body is None:
+            unread.append(f"linked {path}: {_no_figure(status, transient).replace('no figure - ', '')}")
+            continue
+        docs.append((path, body))
+    return docs, unread
+
+
+def assess(slug: str, product: dict, score: dict,
+           docs: str | list[tuple[str, str]] | None) -> list[Finding]:
+    """`docs` is the list `install_docs` returns; a bare string is read as a README on its own."""
+    if isinstance(docs, str):
+        docs = [("", docs)]
     adoption = score.get("adoption") or {}
     candidates = declared_candidates(product)
     seen = {(c.kind, c.name) for c in candidates}
-    for candidate in extract_candidates(readme or "", product):
-        if (candidate.kind, candidate.name) not in seen:
-            seen.add((candidate.kind, candidate.name))
-            candidates.append(candidate)
+    for path, body in docs or []:
+        for candidate in extract_candidates(body, product, document=path):
+            if (candidate.kind, candidate.name) not in seen:
+                seen.add((candidate.kind, candidate.name))
+                candidates.append(candidate)
 
     findings: list[Finding] = []
     for candidate in candidates:
@@ -788,10 +891,9 @@ def main(argv: list[str] | None = None) -> int:
     findings: list[Finding] = []
     unread: list[str] = []
     for slug, product, score in records:
-        readme, where = readme_text(product)
-        if readme is None:
-            unread.append(f"{slug}: {where}")
-        findings.extend(assess(slug, product, score, readme))
+        docs, problems = install_docs(product)
+        unread.extend(f"{slug}: {problem}" for problem in problems)
+        findings.extend(assess(slug, product, score, docs))
 
     fresh = [f for f in findings if f.prior_judgment is None]
     prior = [f for f in findings if f.prior_judgment is not None]
@@ -801,7 +903,8 @@ def main(argv: list[str] | None = None) -> int:
         print()
         print("\n".join(finding.lines()))
     if unread:
-        print(f"\n{len(unread)} record(s) whose README could not be read (declared packages still checked):")
+        print(f"\n{len(unread)} README or linked install document(s) that could not be read "
+              "(the rest of the record was still checked):")
         for line in unread:
             print(f"  ~ {line}")
     print("\nReport-only. Nothing above is a band. Identity, role and instrument are three separate")

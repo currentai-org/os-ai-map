@@ -130,6 +130,24 @@ def test_flags_versions_extras_paths_and_vcs_are_not_packages():
     assert names == [("pypi", "uzu")]
 
 
+def test_a_comment_line_inside_a_code_block_is_not_a_command():
+    """scgpt's README, verbatim: the full run produced `may`, `not`, `run`, `with` ... as PyPI
+    candidates from this comment, and `may` has 306 downloads a month."""
+    readme = ("```bash\n"
+              "pip install scgpt \"flash-attn<1.0.5\"  # optional, recommended\n"
+              "# As of 2023.09, pip install may not run with new versions of the google orbax package, "
+              "if you encounter related issues, please use the following command instead:\n"
+              "# pip install scgpt \"flash-attn<1.0.5\" \"orbax<0.1.8\"\n```\n")
+    assert [(c.kind, c.name) for c in extract_candidates(readme, _product("scgpt", "bowang-lab/scGPT"))] == [("pypi", "scgpt")]
+
+
+def test_a_subshell_and_a_pipe_after_the_package_are_cut():
+    """pgvectorscale's README, verbatim: `metadata`, `1` and `jq` were reported as crates."""
+    line = ("```\ncargo install --locked cargo-pgrx --version $(cargo metadata --format-version 1 | "
+            "jq -r '.packages[] | select(.name == \"pgrx\") | .version')\n```\n")
+    assert [(c.kind, c.name) for c in extract_candidates(line, _product("pgvectorscale", "timescale/pgvectorscale"))] == [("crates", "cargo-pgrx")]
+
+
 def test_docker_run_and_pull_yield_the_image_without_its_tag():
     product = _product("typesense", "typesense/typesense")
     names = [(c.kind, c.name) for c in extract_candidates(_fixture("readme_typesense.md"), product)]
@@ -242,15 +260,71 @@ def test_a_product_that_is_itself_an_sdk_is_not_called_a_client():
 # Instrument: monthly, cumulative, or nothing; a 429 is never a zero.
 
 
-def test_tensorflow_serving_api_reports_the_monthly_figure_and_all_three_questions(registry):
-    """The canonical case, with a note that has NOT yet recorded a judgment: identity weak,
-    role CLIENT/SDK, 4.6M monthly, and a recommendation that is REVIEW rather than re-band."""
+RAW_TFS = "https://raw.githubusercontent.com/tensorflow/serving/HEAD/"
+
+
+def _tensorflow_serving_repo(registry, *, setup_status=200) -> dict:
+    """The real tensorflow/serving layout as of 2026-09-11: the README has the `docker pull` and
+    NO pip line; `pip install tensorflow-serving-api` lives in `tensorflow_serving/g3doc/setup.md`
+    behind the README's "Install Tensorflow Serving without Docker" link. Two other linked docs
+    answer 404 here so the reader's handling of an unreadable linked page is exercised too."""
+    registry[RAW_TFS + "README.md"] = (200, _fixture("readme_tensorflow-serving.md"), False)
+    registry[RAW_TFS + "tensorflow_serving/g3doc/docker.md"] = (200, _fixture("tensorflow-serving_g3doc_docker.md"), False)
+    setup = (200, _fixture("tensorflow-serving_g3doc_setup.md"), False) if setup_status == 200 else (setup_status, None, False)
+    registry[RAW_TFS + "tensorflow_serving/g3doc/setup.md"] = setup
+    registry[RAW_TFS + "tensorflow_serving/g3doc/building_with_docker.md"] = (404, None, False)
+    registry[RAW_TFS + "tensorflow_serving/g3doc/serving_kubernetes.md"] = (404, None, False)
+    return _product("tensorflow-serving", "tensorflow/serving", "TensorFlow Serving is a serving system.")
+
+
+def test_the_real_tensorflow_serving_readme_alone_does_not_name_the_pip_channel():
+    """The round-1 omission, pinned: read only the root README and the 4.6M-a-month package is
+    never a candidate. Whatever follows must find it somewhere else."""
+    product = _product("tensorflow-serving", "tensorflow/serving")
+    found = {(c.kind, c.name) for c in extract_candidates(_fixture("readme_tensorflow-serving.md"), product)}
+    assert found == {("docker", "tensorflow/serving")}
+
+
+def test_install_links_are_taken_from_the_real_readme_in_order_and_nothing_else():
+    """Relative install-shaped links only: the tutorial, architecture, REST API and CONTRIBUTING
+    pages are not install instructions, and tensorflow.org / github.com/tensorflow/tensorflow
+    links are not this repository's own."""
+    links = cpc.install_doc_links(_fixture("readme_tensorflow-serving.md"), "README.md")
+    assert links == [
+        "tensorflow_serving/g3doc/docker.md",
+        "tensorflow_serving/g3doc/setup.md",
+        "tensorflow_serving/g3doc/building_with_docker.md",
+        "tensorflow_serving/g3doc/serving_kubernetes.md",
+    ]
+
+
+def test_install_links_resolve_against_the_readme_directory_and_stay_in_repo():
+    readme = ("[Install](../INSTALL.md) [Setup](./docs/setup.md) [Quick start](docs/quickstart.rst#run) "
+              "[Escape](../../etc/passwd.md) [Site](https://example.com/install.md) "
+              "[Proto](//cdn.example.com/install.md) [Image](install.png) ![install](docs/install.md) "
+              "[Self](README.md)")
+    assert cpc.install_doc_links(readme, "docs/README.md") == ["INSTALL.md", "docs/docs/setup.md", "docs/docs/quickstart.rst"]
+    many = "\n".join(f"[Install {i}](docs/install{i}.md)" for i in range(10))
+    assert len(cpc.install_doc_links(many)) == cpc.MAX_LINKED_DOCS
+
+
+def test_tensorflow_serving_api_is_found_in_the_linked_setup_doc_and_answers_all_three_questions(registry):
+    """The canonical case against the repository's REAL structure, with a note that has NOT yet
+    recorded a judgment: the pip channel is discovered through the linked setup page, `found in:`
+    names that page, identity weak, role CLIENT/SDK, 4.6M monthly, recommendation REVIEW rather
+    than re-band. The two 404 linked docs are listed as unread and stop nothing."""
+    product = _tensorflow_serving_repo(registry)
     registry.update(_pypi("tensorflow-serving-api", last_month=4627937))
     registry.update(_docker("tensorflow", "serving"))
-    product = _product("tensorflow-serving", "tensorflow/serving", "TensorFlow Serving is a serving system.")
-    findings = assess("tensorflow-serving", product, _score("6,360 GitHub stars, level 2."),
-                      _fixture("readme_tensorflow-serving-api.md"))
+
+    docs, unread = cpc.install_docs(product)
+    assert [path for path, _ in docs] == ["README.md", "tensorflow_serving/g3doc/docker.md", "tensorflow_serving/g3doc/setup.md"]
+    assert unread == ["linked tensorflow_serving/g3doc/building_with_docker.md: HTTP 404",
+                      "linked tensorflow_serving/g3doc/serving_kubernetes.md: HTTP 404"]
+
+    findings = assess("tensorflow-serving", product, _score("6,360 GitHub stars, level 2."), docs)
     finding = _by_name(findings, "pypi", "tensorflow-serving-api")
+    assert finding.candidate.origin == "pip install tensorflow-serving-api  [tensorflow_serving/g3doc/setup.md]"
     assert finding.prior_judgment is None
     assert finding.ownership == "weak"
     assert finding.role == "CLIENT/SDK" and "TensorFlow Serving Python API" in finding.role_quote
@@ -258,10 +332,58 @@ def test_tensorflow_serving_api_reports_the_monthly_figure_and_all_three_questio
     assert finding.recommendation.startswith("REVIEW")
     assert "band" not in finding.recommendation.lower().replace("do not auto-route", "")
     text = "\n".join(finding.lines())
-    for label in ("ownership:", "role:", "figure:", "recommendation:"):
+    for label in ("ownership:", "role:", "figure:", "recommendation:", "found in:"):
         assert label in text
     image = _by_name(findings, "docker", "tensorflow/serving")
+    assert image.candidate.origin == "docker pull tensorflow/serving  [README.md]", "first sighting wins; the linked page is a repeat"
     assert "CUMULATIVE" in image.figure and image.recommendation.startswith("CORROBORATION ONLY")
+
+
+def test_the_real_tensorflow_serving_note_is_honoured_for_the_channel_found_two_hops_away(registry):
+    """The prior-judgment read has to fire for a candidate that came from a linked doc, or the
+    recorded judgment on tensorflow-serving-api is exactly what a re-run would trample."""
+    product = _tensorflow_serving_repo(registry)
+    note = ("6,360 GitHub stars. Two larger figures exist and neither is this product's. The `tensorflow-serving-api` package "
+            "draws 4,627,937 downloads in the trailing 30 days, but its own summary is \"TensorFlow Serving Python API\" - it "
+            "is the client library for a running server. The `tensorflow/serving` container image has 80,659,067 cumulative pulls.")
+    docs, _unread = cpc.install_docs(product)
+    findings = assess("tensorflow-serving", product, _score(note), docs)
+    assert all(f.prior_judgment is not None for f in findings), [(f.candidate.name, f.prior_judgment) for f in findings]
+    assert "[tensorflow_serving/g3doc/setup.md]" in _by_name(findings, "pypi", "tensorflow-serving-api").candidate.origin
+
+
+def test_links_inside_a_linked_doc_are_not_followed(registry):
+    """One level only. setup.md links to docker.md and building_with_docker.md; had the reader
+    recursed, the unmapped URLs would fail this test through the no-network guard."""
+    registry[RAW_TFS + "README.md"] = (200, "[Install](tensorflow_serving/g3doc/setup.md)\n", False)
+    registry[RAW_TFS + "tensorflow_serving/g3doc/setup.md"] = (200, _fixture("tensorflow-serving_g3doc_setup.md"), False)
+    docs, unread = cpc.install_docs(_product("tensorflow-serving", "tensorflow/serving"))
+    assert [path for path, _ in docs] == ["README.md", "tensorflow_serving/g3doc/setup.md"] and unread == []
+
+
+def test_a_transient_linked_doc_is_reported_and_never_read_as_empty(registry):
+    product = _tensorflow_serving_repo(registry, setup_status=429)
+    registry[RAW_TFS + "tensorflow_serving/g3doc/setup.md"] = (429, None, True)
+    docs, unread = cpc.install_docs(product)
+    assert [path for path, _ in docs] == ["README.md", "tensorflow_serving/g3doc/docker.md"]
+    assert any(line.startswith("linked tensorflow_serving/g3doc/setup.md: HTTP 429 (transient") for line in unread)
+
+
+def test_an_unreadable_readme_reads_no_linked_docs_and_says_so(registry):
+    registry[RAW_TFS + "README.md"] = (429, None, True)
+    docs, unread = cpc.install_docs(_product("tensorflow-serving", "tensorflow/serving"))
+    assert docs == [] and unread == ["README of tensorflow/serving: HTTP 429 (transient; says nothing about whether a figure exists; never a zero)"]
+
+
+def test_html_pre_blocks_are_read_as_code():
+    """g3doc's docker.md wraps its terminal in `<pre><code class="devsite-terminal">`; the image
+    in that block is a candidate, and the tags are not."""
+    product = _product("tensorflow-serving", "tensorflow/serving")
+    head = _fixture("tensorflow-serving_g3doc_docker.md").split("## Install Docker")[0]
+    assert "```" not in head, "the fixture's first block is HTML, not a fence"
+    found = extract_candidates(head, product)
+    assert [(c.kind, c.name) for c in found] == [("docker", "tensorflow/serving")]
+    assert "<code" not in found[0].origin
 
 
 def test_a_429_from_pypistats_is_no_figure_and_never_a_zero(registry):
