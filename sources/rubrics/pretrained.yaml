@@ -1,0 +1,179 @@
+# Shared openness ladder for FROM-SCRATCH PRETRAINED MODEL categories.
+#
+# Inherited via `scoring_recipe: {extends: pretrained}`. See build/rubrics.py for the merge
+# rules and why a ladder is shared rather than copied per category.
+#
+# A model pretrained from scratch asks a different set of questions from a tune. The tune's
+# ladder in `model.yaml` asks what the TUNER released - the SFT/DPO/RL mixture and the
+# post-training recipe - because the corpus underneath belongs to somebody else's model.
+# Here the corpus IS the product's own, so the questions are the pretraining corpus, the
+# pretraining pipeline, and the intermediate checkpoints. `model.yaml` says as much in its
+# own header, and names this difference as the reason base_pretrained did not extend it.
+#
+# Lifted verbatim out of `base_pretrained` on 2026-09-10, where it had been declared inline
+# since it was reverse-engineered from that category's hand-authored scores. Nothing in the
+# ladder changed in the move: all 32 base_pretrained scores reproduce before and after, which
+# is the check this extraction owes and `build/check_rubric.py` is what proves it. It was
+# extracted because a second category needs the same questions (issue #533), and copying
+# it would have drifted the way the two model ladders drifted before `extends` existed.
+#
+# `adoption`, `capability` and `confidence_rule` deliberately did NOT come along. Those are
+# per-category by nature: base_pretrained bands adoption on summed Hugging Face downloads
+# across a family's SKUs and anchors capability on the Artificial Analysis index, and neither
+# instrument travels to a category of scientific models. Only the openness questions are
+# shared, because only they are the same questions.
+openness:
+  # Four dimensions were asked of all 47 products; checkpoints of 6. These are
+  # the questions, taken from what the category has actually been scoring.
+  dimensions:
+    weights:
+      question: Are the trained model weights downloadable and runnable locally?
+      values: [open, closed, pending]
+      evidence:
+      - Hugging Face model repo with downloadable weight files (safetensors/GGUF)
+      - vendor download page or torrent for weights outside the Hub
+      - '`pending` only where a release is announced with a date but not yet shipped'
+      machine_signal: signal_huggingface.hub_state (gated, private, files)
+    data:
+      question: Is the pretraining corpus released, or reconstructible from released scripts?
+      values: [open, documented-not-released, closed]
+      evidence:
+      - a released dataset, or scripts that reconstruct the corpus end to end
+      - '`documented-not-released` where composition is fully described but no
+        data or scripts ship'
+      - a data card describing sources is NOT sufficient for `open`
+      machine_signal: none — requires research
+    code:
+      question: Is the training pipeline released, not just inference code?
+      values: [open, partial, closed]
+      evidence:
+      - '`open`: full pretraining pipeline (data prep, training recipe, configs)'
+      - '`partial`: inference or fine-tuning code only, which is the common case'
+      - '`closed`: no code, or evaluation harness only'
+      machine_signal: partial — repo presence from signal_github.repo_state
+    checkpoints:
+      question: Are intermediate training checkpoints published?
+      values: [open, not-released]
+      optional: true
+      note: Scored for only 6 of 47. Absence is not evidence of `not-released`.
+      evidence:
+      - intermediate checkpoints on HF branches or a public mirror
+      machine_signal: none — requires research
+
+  # The discriminator that decides restricted vs open_weights. OSI approval
+  # alone is too blunt: several non-OSI licenses are permissive in substance.
+  # The line is whether the license restricts USE, not whether OSI blessed it.
+  license_tier:
+    # Declaration order below IS restrictiveness order, least restrictive first.
+    # `multi_sku_rule` resolves a family to the most restrictive tier among its
+    # distributed SKUs, which is meaningless without an ordering. Declared here
+    # and emitted as `tier_rank` by build/serialize_rubric.py so the scorer reads
+    # the order rather than inferring it from how the YAML happens to be written.
+    ordered_by: restrictiveness_ascending
+    values:
+      osi:
+        definition: OSI-approved license
+        examples: [Apache-2.0, MIT, BSD-3-Clause]
+      permissive_non_osi:
+        definition: >
+          Not OSI-approved, but imposes no restriction on WHO may use the artifact or
+          AT WHAT SCALE. Attribution, naming and CONDUCT requirements belong here: an
+          acceptable-use policy forbidding military, illegal or discriminatory use caps
+          neither commerce nor reach, so it sits beside attribution rather than beside a
+          monthly-active-user ceiling. Non-OSI by construction, since the OSD forbids
+          discriminating against a field of endeavor. Settled in issue #117, which was
+          opened because the same OpenRAIL family had been scored 3 in one category and
+          4 in another.
+        examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License]
+      use_bounded:
+        definition: >
+          Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
+          annual revenue ceiling, or an acceptable-use policy. Almost every user is inside
+          the bound and may use the model commercially without asking. Was `use_restricted`
+          and capped at 2 before the universal license scale; see sources/rubrics/model.yaml
+          for why the cap moved and why the tier was renamed alongside it.
+        # `InternLM-Free-Commercial-License` is the bound written as a process rather than
+        # a number: commercial use costs nothing and is granted on an application form.
+        # It reaches the ladder as the second half of `internlm`'s compound license, which
+        # was invisible until compounds resolved on both halves.
+        examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement,
+          InternLM-Free-Commercial-License]
+      commercial_forbidden:
+        definition: >
+          Weights are published and commercial use is prohibited, or reserved to the vendor.
+          The 3/2 boundary asks one question: does the licence permit commercial use at all?
+        examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC]
+      proprietary:
+        definition: No public license; weights not distributed.
+    multi_sku_rule: >
+      Where a family ships SKUs under different licenses, the most restrictive
+      license among the SKUs WHOSE WEIGHTS ARE ACTUALLY DISTRIBUTED governs.
+      API-only and hosted-only tiers are excluded: they are a different product
+      surface, and this axis scores the artifact you can download. That
+      distinction is what separates the two families previously both recorded
+      as `mixed` — Qwen 2.5 distributes 3B/72B under the Qwen License, which
+      caps the family at use_bounded, while Qwen 3's restrictive Plus/Max
+      tiers are never distributed at all, leaving the distributed set Apache.
+      Per-SKU licenses come from signal_huggingface.hub_state, so this is
+      derivable rather than judged.
+    normalization:
+    - 'compound `code X + model Y`: the MODEL license governs, since it is the
+      one attached to the weights'
+    - 'prefix `assumed-`: same tier as the license named, but confidence drops
+      to medium until the release confirms it'
+    never_use:
+      mixed: >
+        Records that SKUs differ without recording the outcome, so the score
+        cannot be reproduced from the evidence. Apply multi_sku_rule and store
+        the resolved tier instead.
+      unknown: Research it or leave the product unscored.
+
+  # Ordered rules, first match wins.
+  formula:
+  - when: {weights: closed}
+    then: {score: 1, class: closed}
+    because: >-
+      No downloadable weights, so there is no artifact for the license or the corpus to be
+      open about. Checked ahead of every license rung: an OSI license on a model nobody can
+      run is not worth a point.
+  - when: {license_tier: proprietary}
+    then: {score: 1, class: closed}
+    because: >-
+      No public license means no permission to rely on, whatever else was published.
+  - when: {license_tier: commercial_forbidden}
+    then: {score: 2, class: restricted}
+    because: >-
+      Open weights you may not use commercially. Downloadable is not the same as usable, and
+      this rung sits ahead of the data and code rungs deliberately: publishing the
+      pretraining corpus does not buy back the right to use the model.
+  - when: {license_tier: use_bounded}
+    then: {score: 3, class: open_weights}
+    because: >-
+      A commercial cap almost nobody meets. Level with the open-weights centre of gravity
+      rather than below it: for practically every user the model behaves like open weights
+      with a closed corpus. Short of 4, because the bound is real and the licence is not OSI.
+  - when: {data: open, code: open, license_tier: osi}
+    then: {score: 5, class: open_source}
+    because: >-
+      The pretraining corpus, the code that consumed it, and an OSI license over the
+      weights. Pythia and the OLMo family are what this rung was written for.
+  - when: {data: open, code: open}
+    then: {score: 4, class: open_weights}
+    because: >-
+      Full pipeline but a non-OSI license caps the score at 4. MOF would call this
+      source-available rather than open, so it must not reach the `open` bucket; see
+      docs/reference/openness.md.
+  - when: {data: documented-not-released, code: open}
+    then: {score: 4, class: open_weights}
+    because: >-
+      A corpus described in enough detail to audit the mixture, and the code to rebuild
+      against it, but the corpus itself withheld. Level with a non-OSI full release rather
+      than below it, because a reader can check the claims either way. `finetuned_chat`
+      deliberately omits this rung - no tune there pairs a described mixture with an open
+      pipeline, and a rule that cannot fire is a place for a later edit to hide.
+  - otherwise: {score: 3, class: open_weights}
+    because: >-
+      The category's center of gravity - open weights, closed data. A fallthrough rather
+      than a rule because it is what remains once the cases above are spent, and it lands
+      in the open-ish bucket so unrecorded evidence never counts as open.
+
