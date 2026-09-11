@@ -79,15 +79,22 @@ def test_capability_gap_when_nothing_mature_and_weak():
     assert "capability" in sg["gaps"]
 
 
-def test_stage_1_to_3_carries_no_driver_gap_when_axes_clear_but_blend_misses_bar():
+def test_axes_clearing_their_cutoffs_still_names_the_axis_never_topped():
     # benchmark_eval_data's shape: fully-open products at adoption 4 with a null capability,
-    # so the blend is adoption alone and tops out at 4.0 — under the maturity bar, yet neither
-    # axis is below its cutoff. Adoption is NOT short (it clears 4), and capability is unmeasured,
-    # not deficient — so no driver gap fires. Labelling this `adoption` would be a knowingly
-    # false shortfall; the stage number already says the category is below the leading bar.
+    # so the blend is adoption alone and tops out at 4.0, under the maturity bar while neither
+    # axis is below its cutoff.
+    #
+    # This used to assert no gap at all, on the reasoning that adoption clears 4 so calling it
+    # short would be a knowingly false label. That reasoning answered the per-product question.
+    # The category-level one is different and has an honest answer: graded on adoption alone,
+    # this category needs an adoption 5 to reach maturity and has never had one. `adoption` is
+    # what is missing, and saying so beats the silence a reader used to get.
+    #
+    # Capability stays unnamed here, and that part of the old reasoning still holds: no fully-open
+    # product records the axis at all, so it is unmeasured rather than deficient.
     rows = [_p("open_source", 4, None) for _ in range(3)]
     sg = _stage_and_gaps(rows, {"adopt": 0.6, "cap": 0.4})
-    assert sg["num"] == 3 and sg["gaps"] == []
+    assert sg["num"] == 3 and sg["gaps"] == ["adoption"]
 
 
 def test_stage_uses_rounded_maturity_not_float_noise():
@@ -744,3 +751,71 @@ def test_ending_is_declared_rather_than_derived_from_today():
                         )["categories"]["base_pretrained"]["products"][0]
     assert row["end_of_life"]["date"] == "2019-01-01"
     assert row["mature"] is False and row["maturity"] == 4.0
+
+
+# --- the dead zone: a category whose best fully-open option clears both cutoffs ------------
+
+def test_the_dead_zone_no_longer_leaves_a_category_without_a_gap():
+    """The `compilers` shape. Its best fully-open product is 4/4: both axes clear their
+    cutoffs of 4, so no driver gap can honestly fire off that product, yet 4.0 misses the
+    4.5 maturity bar. The category reported a stage with no gaps at all, which tells a
+    reader nothing about what is missing.
+
+    32 fully-open products across 13 categories sit at exactly 4/4, so this is a structural
+    dead zone rather than one category's accident."""
+    rows = [_p("open_source", 4, 4)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] in (1, 2, 3)
+    assert sg["gaps"], "this shape must say what is missing"
+
+
+def test_the_fallback_names_the_axis_no_open_product_has_topped():
+    """When the best-blended product yields no driver gap, the honest question is not what
+    holds that product back but what the open ecosystem has never reached. compilers has
+    three fully-open products at capability 5 (apache-tvm, iree, xla) and none at adoption
+    5 across 44 products, so the gap is `adoption`: the capability exists in the open, it
+    has not been adopted."""
+    rows = [_p("open_source", 4, 4), _p("open_source", 2, 5)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["gaps"] == ["adoption"]
+
+
+def test_the_fallback_fires_both_when_neither_axis_has_been_topped():
+    rows = [_p("open_source", 4, 4)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["gaps"] == ["capability", "adoption"]
+
+
+def test_the_fallback_does_not_displace_a_real_driver_gap():
+    """It runs only where the per-product drivers are silent. A category whose best option
+    is genuinely weak on an axis still reports that, unchanged."""
+    sg = _stage_and_gaps([_p("open_source", 3, 3)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["gaps"] == ["capability", "adoption"]
+    rows = [_p("open_hardware", 4, 3), _p("open_weights", 5, 5), _p("closed", 5, 5)]
+    sg2 = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert "capability" in sg2["gaps"] and "adoption" not in sg2["gaps"]
+
+
+def test_topping_both_axes_in_different_products_still_reports_nothing():
+    """The deliberate exception, and the reason the test above is not named "never silent".
+    One product tops capability, another tops adoption, and neither is mature. The parts
+    exist and nobody has assembled them, which this vocabulary cannot name — so it says
+    nothing rather than inventing a shortfall. Exists today in training_synthetic_datasets,
+    finetuning_code, inference_code and storage, all at Stage 4 or 5, so none reaches here."""
+    # The best product must clear both cutoffs for the fallback to run at all, so the two
+    # axis-toppers have to sit below it on the blend: one is adoption 1 / capability 5, the
+    # other adoption 5 / capability 1, and 4/4 outranks both.
+    rows = [_p("open_source", 4, 4), _p("open_source", 1, 5), _p("open_source", 5, 1)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] in (1, 2, 3)
+    assert sg["gaps"] == []
+
+
+def test_a_fully_open_product_with_no_adoption_still_counts_toward_the_axis_maximum():
+    """It is excluded from the stage arithmetic, since maturity is anchored on adoption. Its
+    recorded capability is still a fact about what the open ecosystem has reached, and
+    dropping it reported "nobody topped capability" because the product that did had no
+    adoption band."""
+    rows = [_p("open_source", 4, 4), _p("open_source", None, 5)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["gaps"] == ["adoption"], "capability 5 is recorded, so only adoption is unreached"

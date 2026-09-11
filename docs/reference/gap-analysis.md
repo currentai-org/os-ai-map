@@ -265,16 +265,32 @@ That rule checked openness first, which is why `capability` was unreachable and 
 appeared: `edge_hardware`'s only fully-open board is genuinely underpowered, and the category
 reported an openness gap instead, so nobody reading the map could see it.
 
-**A category at Stages 1–3 can carry no driver gap, and that is allowed.** If both measured axes
-clear their cutoffs and the blend still misses 4.5, neither driver fires and the category carries
-only whatever `openness` applies — possibly nothing. The stage number already says the category
-has not reached the leading-product threshold; inventing an adoption or capability shortfall where
-the axis clears its cutoff would be a knowingly false label. `benchmark_eval_data` is the case:
-its fully-open benchmarks are adoption 4 with a **null capability**, so
-the blend is adoption alone and tops out at 4.0 — adoption is not short, capability is simply
-unmeasured. The fix is to score capability for evaluation sets — the axis is already applied to
-some of that category's products — which is filed separately. If unmeasured axes become common
-enough to name, add a gap for that state deliberately rather than reusing an inaccurate one.
+**A driver gap says its axis is short for the category, and that is true in two ways.** The
+per-product reading above is the first: the best fully-open product is below the axis cutoff. The
+second fires only when the first is silent — **no fully-open product in the category has reached
+the top of that axis at all.**
+
+The second clause exists because the first could leave a category saying nothing. The cutoffs are
+4 and the maturity bar is 4.5, so a product must reach 5 on an axis to be mature, and one sitting
+at exactly 4 and 4 clears both cutoffs while missing the bar. 32 fully-open products across 12
+categories sit there. Where such a product is its category's best, the category reported a stage
+and no gaps, and a reader was told nothing about what was missing. `compilers` is the case: its
+best fully-open option is `coremltools` at 4/4, while `apache-tvm`, `iree` and `xla` reach
+capability 5 and, across 44 products, **nothing reaches adoption 5**. The capability exists in the
+open and has not been adopted, so the category reports `adoption`.
+
+This widens the contract set in #318, which read the drivers off the best product alone. It is a
+widening rather than a new gap type because both readings answer the question a reader is actually
+asking — which axis is holding this category back — and a seventh chip would buy precision at the
+cost of a vocabulary nobody asked to learn.
+
+**Two states still carry no driver gap, deliberately.** An axis that **no** fully-open product
+records is unmeasured rather than deficient, and is never named: a category graded on adoption
+alone must not be told it has a capability shortfall. And a category that has topped both axes,
+but never in the same product, reports nothing — the parts exist and nobody has assembled them,
+which is a real state this vocabulary cannot yet name. That shape exists today in
+`training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
+at Stage 4 or 5, so none currently reaches this branch.
 
 ### Declaring the disclosure gap
 

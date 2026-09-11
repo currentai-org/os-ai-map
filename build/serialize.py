@@ -41,6 +41,7 @@ _ADOPTED_MIN = 4           # raw adoption below which an open option is "not ado
 # 5. Scored across all openness buckets -- the tier
 # describes the product -- while `mature` gates the same 4.5 bar on the fully-open bucket,
 # because only fully-open products advance a category's stage.
+_AXIS_TOP = 5              # a raw axis value the open ecosystem has "topped"
 _LEADING_MIN = _MATURE_MIN     # 4.5
 _STRONG_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
@@ -127,6 +128,47 @@ def _maturity_score(row: dict, w: dict) -> float | None:
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
 
 
+def _unreached_axes(fully_open: list[dict]) -> list[str]:
+    """The gap(s) for a category whose best fully-open option clears both cutoffs and still
+    misses the maturity bar.
+
+    The per-product drivers ask what holds the BEST BLENDED product back. Where that product
+    clears both cutoffs the honest answer is "nothing, on its own axes" — `compilers` sits at
+    4 and 4, which clears both and blends to 4.0 against a 4.5 bar. Asserting a shortfall
+    there would be a knowingly false label, so the engine said nothing at all, and a reader
+    got a stage with no explanation.
+
+    So ask the category-level question instead: which axis has the open ecosystem never
+    topped? compilers has three fully-open products at capability 5 (apache-tvm, iree, xla)
+    and, across 44 products, none at adoption 5. The capability exists in the open; it has
+    not been adopted. That is `adoption`, and it is a fact about the category rather than an
+    inference about one product.
+
+    An axis no fully-open product records at all is UNMEASURED, not deficient, and yields no
+    gap: a category scored on adoption alone must not be told it has a capability shortfall.
+    A category where both axes are topped, but never in the same product, still reports
+    nothing — the parts exist and nobody has assembled them, which is a real state this
+    vocabulary cannot yet name.
+
+    The population here is every FULLY-OPEN product, not the ones carrying a maturity score.
+    A product with no adoption is excluded from the stage arithmetic - we cannot judge what we
+    cannot measure - but its recorded capability is still a fact about what the open ecosystem
+    has reached, and dropping it would report "nobody topped capability" because the product
+    that did lacks an adoption band.
+
+    32 fully-open products across 12 categories sit at exactly 4/4, so the dead zone this
+    covers is structural. Today it leaves exactly one category silent.
+    """
+    gaps: list[str] = []
+    for name, block, key in (("capability", "capability", "score"),
+                             ("adoption", "adoption", "level")):
+        recorded = [v for r in fully_open
+                    if (v := ((r.get(block) or {}).get(key))) is not None]
+        if recorded and max(recorded) < _AXIS_TOP:
+            gaps.append(name)
+    return gaps
+
+
 def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -> dict:
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
@@ -174,13 +216,22 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
         # there is no longer a one-diagnostic-per-category rule, which is what kept
         # `capability` unreachable behind `openness` and hid the edge_hardware case.
         #
-        # A driver gap fires only when its axis is measured and below its cutoff. If both
-        # measured axes clear their cutoffs yet the blend still misses the bar (adoption 4
-        # with a null capability blends to 4.0, which is benchmark_eval_data's shape), the
-        # category carries no driver gap: the stage number already says it has not reached the
-        # leading-product threshold, and asserting an adoption shortfall where adoption clears
-        # its cutoff would be a knowingly false label. When measurement gaps like this become
-        # common enough to name, introduce a gap for them deliberately.
+        # A driver gap says its axis is SHORT FOR THE CATEGORY, and that is true in two ways.
+        # The best fully-open product is below the axis cutoff -- the per-product reading -- or
+        # no fully-open product has reached the top of the axis at all, which `_unreached_axes`
+        # answers when the per-product reading is silent.
+        #
+        # The second clause is a widening of the contract #318 set, made deliberately. That
+        # contract read the drivers off the best product alone, so a category whose best option
+        # sat at exactly 4 and 4 cleared both cutoffs, missed the 4.5 bar and reported NOTHING.
+        # The old comment here argued that naming an axis there would be a knowingly false
+        # label, and on the per-product reading it would be. The category-level claim is a
+        # different and checkable one: compilers has three fully-open products at capability 5
+        # and, across 44 products, none at adoption 5.
+        #
+        # Both readings answer the same question a reader is asking -- which axis is holding
+        # this category back -- so they share a label rather than minting a seventh gap type.
+        # docs/reference/gap-analysis.md carries the contract in full.
         best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
         cap = ((best or {}).get("capability") or {}).get("score")
         adopt = ((best or {}).get("adoption") or {}).get("level")
@@ -189,6 +240,8 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
             gaps.append("capability")
         if adopt is not None and adopt < _ADOPTED_MIN:
             gaps.append("adoption")
+        if not gaps:
+            gaps = _unreached_axes([r for r, b, _ in enr if b == "open"])
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
 
