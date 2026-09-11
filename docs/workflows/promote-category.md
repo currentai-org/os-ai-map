@@ -25,8 +25,10 @@ Per promoted product, five concerns:
 4. `sources/organizations/<org>.yaml` - the org roster, created if the org is new.
 5. `sources/registry/<cat>.yaml` - the row comes **out**.
 
-Plus, once per category: the category's `strapline`, its `scoring_recipe.derived_from` counts, and
-`sources/taxonomy.yaml` when the status flips. A product moved in from another category also
+Plus, once per category: the category's `strapline` and `sources/taxonomy.yaml` when the status
+flips. Do NOT write reproduction counts into `scoring_recipe.derived_from` — `build/check_rubric.py`
+computes them on every run and `build/check_recipe.py` fails a category that stores them. Set
+`verified_on` only when a person has actually re-checked the ladder against the hand-authored scores. A product moved in from another category also
 touches that category's roster and its own capability band.
 
 ## Procedure
