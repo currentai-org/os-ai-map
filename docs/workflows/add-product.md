@@ -86,6 +86,21 @@ workflow that clears its row, so this is the only place it happens.
    thing a batch disturbs: category straplines.
 
 ## Validation
+
+**Run `uv run python -m build.preflight` and read what it says.** It executes what CI's
+`validate` workflow executes — all fifteen locally-runnable steps — and *accounts for the three
+it cannot*, so there is no hand-copied gate list here to drift out of step with
+`.github/workflows/validate.yml`. `--skip-tests` drops the pytest step and finishes in about
+seventy seconds; run it without the flag once before you push.
+
+It exists because a hand-assembled loop of `validate` + `check_recipe` + `check_rubric` +
+`check_verification` + `pytest` looks complete and is not: it misses `check_components`,
+`check_adoption --strict`, `check_instrument`, `check_routing`, `check_payload`,
+`check_retirement`, the goldens check and the serializer dry-runs. Read `build/preflight.py`'s
+own docstring for the promotion that discovered this the expensive way.
+
+The individual gates below are what preflight runs, listed so a failure can be re-run alone:
+
 ```bash
 uv run python -m build.validate            # must print 0 error(s)
 uv run python -m build.check_recipe        # the ladder accepts the new score

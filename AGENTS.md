@@ -355,6 +355,14 @@ normative `docs/reference/evidence-and-freshness.md`.
 
 ## Testing
 
+- **Before you push, run `uv run python -m build.preflight`.** It executes every step CI's
+  `validate` workflow executes and accounts for the three it cannot run locally, so it does not
+  drift the way a hand-copied gate list does. `--skip-tests` drops pytest and finishes in about
+  seventy seconds, which is the loop to use while iterating. Assembling your own subset of
+  `build.check_*` calls looks equivalent and is not: it silently omits `check_components`,
+  `check_adoption --strict`, `check_instrument`, `check_routing`, `check_payload`,
+  `check_retirement`, the goldens check and the serializer dry-runs. `build/preflight.py`'s
+  docstring records the promotion that learned this by shipping a failure to CI.
 - Fast local loop: `uv run pytest -q -n auto -m "not serial"`. `-n auto` runs the suite across
   local cores via `pytest-xdist`; `not serial` skips the handful of tests that mutate the real
   working tree and would collide with a concurrent worker (run those separately with
