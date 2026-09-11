@@ -113,8 +113,20 @@ uv run python -m build.check_artifacts     # identity / artifacts changed
 uv run python -m build.check_retirement    # a retirement alias was recorded
 uv run python -m build.check_payload       # an end-of-life date was declared
 uv run python -m build.check_verification  # an axis was re-dated
+uv run pytest -q                           # org membership or artifacts changed
 ```
 Never commit `build/notebook_data.json` or `notebooks/` (bot-owned).
+
+The pytest line is not optional on the identity and membership routes. Handle coverage is a
+ratchet over orgs-with-a-handle / orgs-with-artifacts, per platform, so **adding an artifact of a
+kind its org has no handle for** — a first `huggingface_model` on a product whose org is
+GitHub-only, say — raises the denominator alone and fails
+`tests/test_identity_eval.py`. **Moving a product to a different org** changes which org must be
+covered on every route its artifacts use: the destination needs matching handles, and removing
+the source org's last artifact on a route can also lower the ratio when that org was covered.
+Neither shows up in `validate` or `check_artifacts`; add any missing destination handles in
+`sources/org_handles.yaml`, per
+[`add-product.md`](add-product.md#files-this-changes).
 
 ## Files this changes
 Whichever the route above names — never the generated `build/notebook_data.json` or `notebooks/`.

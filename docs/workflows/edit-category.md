@@ -52,8 +52,19 @@ here and not next door — is prose: put it in the category's `comments`, and in
 ## Validation
 ```bash
 uv run python -m build.validate            # must print 0 error(s)
+uv run pytest -q                           # the identity ratchets live here, not in the gate
 ```
 Then serialize and render locally to preview; do not commit the generated notebook or payload.
+
+`validate` alone is not enough the moment a **seed roster** is involved. A registry row names
+its org directly, so it feeds org truth exactly as a head product's artifacts do. Seeding a
+candidate from a new org, or adding the first artifact on a route its existing org has no handle
+for, raises a handle-coverage denominator with nothing to match it. That drops the ratio below
+its pinned baseline and fails
+`tests/test_identity_eval.py`, which `validate` does not run. Register the org's accounts in
+`sources/org_handles.yaml` in the same PR — see the note in
+[`add-product.md`](add-product.md#files-this-changes) for the shape and for
+`build.propose_org_handles`.
 
 ## Expected PR contents
 The category file, plus `taxonomy.yaml` if you created or regrouped a category, and an optional
