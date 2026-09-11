@@ -1499,6 +1499,20 @@ def test_a_malformed_baseline_raises_rather_than_defaulting_to_empty(tmp_path, b
         load_coverage_baseline(path)
 
 
+def test_a_baseline_missing_a_route_exits_two_from_main(tmp_path, monkeypatch, capsys):
+    """The scoring path refuses a baseline that pins some routes and not others: both live
+    gates skip an unpinned route, so a deleted pin would otherwise pass the weekly run forever.
+    A missing FILE stays lenient (no ratchet at all); a file with a hole does not."""
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text('{"github": [1, 2]}')
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 2
+    out = capsys.readouterr().out
+    assert "pins no value for huggingface, homepage_domain" in out
+
+
 def test_a_malformed_baseline_exits_two_from_main(tmp_path, monkeypatch, capsys):
     baseline = tmp_path / "baseline.json"
     baseline.write_text('{"gitlab": [1, 2]}')

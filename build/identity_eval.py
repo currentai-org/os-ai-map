@@ -2038,6 +2038,18 @@ def main(argv: list[str] | None = None) -> int:
     except CoverageBaselineInvalid as exc:
         print(f"[FAIL] {exc}")
         return 2
+    # A baseline file that pins some routes and not others is not a partial ratchet, it is a
+    # switched-off one: both live gates skip an unpinned route, so a deleted pin would pass
+    # here forever. The pytest gate requires every route in the committed file; the scoring
+    # path refuses the same shape so the weekly run cannot report green on a route it never
+    # checked. A missing file (no ratchet at all, an older tree) is still the lenient case.
+    unpinned = [route for route, _label in ORG_ROUTE_LABELS if route not in baseline] if baseline else []
+    if unpinned:
+        print(
+            f"[FAIL] {_repo_path(COVERAGE_BASELINE_PATH)} pins no value for {', '.join(unpinned)}; "
+            f"every route must be pinned (0/0 if need be) or the ratchet is off for it"
+        )
+        return 2
     print("")
     for line in coverage_lines(coverage, baseline):
         print(line)
