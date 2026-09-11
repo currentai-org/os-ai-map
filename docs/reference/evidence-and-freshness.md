@@ -476,6 +476,21 @@ and checks whether a cited page says what it was recorded as saying. Three were 
 2026-08-13 by padding truncated prefixes out to 64 characters, which is why this is stated here
 rather than assumed. `docs/workflows/refresh-category.md` carries the command that produces one.
 
+### Which arXiv URL to cite
+
+An arXiv abstract page carries the title, the authors, the abstract and the submission history.
+Tables, figures and appendices are not on it. So cite `https://arxiv.org/pdf/<id>` whenever the
+claim rests on something in the body, and `https://arxiv.org/abs/<id>` only for what the abstract
+page itself carries: the abstract's own wording, the authorship, a withdrawal notice. Do not cite
+`https://arxiv.org/html/<id>vN`, which does not exist for older papers and whose version suffix
+goes stale.
+
+A digest over a PDF is a digest over a binary, so reading one back means `pdftotext` first. That
+cost is why the convention was not free, and it is the smaller cost: twelve sources cited an
+abstract page for a table or a figure a reader could not find there (#263), and a claim whose
+cited page cannot carry it is unfalsifiable as recorded. `build/check_citations.py` gates it, on
+the record's own words rather than on a fetch, so it is free and runs per pull request.
+
 ## The gates, and why they ratchet
 
 Every failure mode this project has actually hit gets a mechanism, not a note. Cheap ones
@@ -488,6 +503,7 @@ gate every PR. The ones needing the network run periodically.
 | producible-pairs | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
+| citations | an arXiv `/abs` cited for a claim only the paper body carries | `build/check_citations.py`, on the record's own locator | free |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
 | age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45`, scheduled weekly | free, weekly |
 

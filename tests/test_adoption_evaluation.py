@@ -45,7 +45,10 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # Moved on 2026-09-11 by the embeddings_retrieval promotion. MEASUREMENT_COUNT is unchanged at
 # 377 - the new products carry no observation in the pinned snapshot, so no row was added - but
 # the recorded bands they contribute change the content the digest covers.
-MEASUREMENTS_DIGEST = "4df6f5d9b71ee7ab04d940168a2343ae9de38662160f623e14991d9ec57931d0"
+# Moved again on 2026-09-11 by the agenta recategorization (#302): the product left
+# telemetry_observability for orchestration_agents, and `category_slug` is one of the columns
+# this digest covers. Same 377 rows, same band, one row's category.
+MEASUREMENTS_DIGEST = "5e27bfeb2652c6e9c187bcb86506503d2e3f6a4840cbdba8b19e5919e8d8bf31"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
