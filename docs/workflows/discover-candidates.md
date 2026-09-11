@@ -328,7 +328,11 @@ membership, org, artifact identity) for readability, but each item shows its glo
 cross-section order is still visible, and a "Top 5 this week" list at the top names the five
 highest-ranked items regardless of section. Each item carries a pre-filled `resolution_ledger.yaml`
 entry Carl can edit and paste in once he has decided, and its evidence renders as linked bullets
-(`<url> | <excerpt>` from the table becomes `[excerpt](url)`) rather than bare method names.
+(`<url> | <excerpt>` from the table becomes `[excerpt](url)`) rather than bare method names. The one
+item that is not a review question is a ranked item at confidence 1.0 whose name and graph agree:
+`build/identity_adopt.py` writes its entry itself, the digest lists it in an "Auto-adopted" section
+above the review sections, and the workflow opens a pull request carrying the file (see
+`docs/reference/identity.md`, "Proposing handles").
 
 An item whose only evidence is a folded name match is `parked`, not shown as a reviewable item —
 it comes back once its evidence gets stronger (a new backlink, a new artifact), at which point it

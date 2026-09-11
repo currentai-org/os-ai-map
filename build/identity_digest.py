@@ -81,6 +81,27 @@ Every YAML block validates against its schema (see `tests/test_identity_digest.p
 whose `relation` is none of the four above raises in `render()`, before the cap is even
 applied -- an unrecognized relation must never silently rank, consume a cap slot, and vanish.
 
+## Auto-adoption at confidence 1.0
+
+One class of item is not a review question (ruling 2026-09-08): a ranked item at confidence
+1.0 whose name agrees and whose graph agrees. `build/identity_adopt.py` defines both tests per
+relation, checks the destination file, and appends the confirm-direction entry -- the same
+dict the paste block above would carry, with `decided_in` naming this digest issue and a
+`note` starting with `build.resolution.AUTO_ADOPT_NOTE_PREFIX` so the eval can exclude it.
+`render()` takes the resulting report as `adoption` and:
+
+- lists the adopted items (written now, or already recorded by a person) in their own
+  "Auto-adopted" section above the review sections, with no YAML block to paste;
+- drops them from the Top 5 and the relation sections, so the review queue is what is left;
+- keeps a 1.0 item the adopt leg HELD (a disagreeing prior ruling, a handle another org
+  claims) in its relation section as an ordinary review item, with the reason on a line.
+
+Everything below 1.0 renders exactly as before. Called without `adoption` (the tests, a
+one-off render), `render()` emits no auto-adopt section and treats every ranked item as a
+review item. The workflow renders twice: once to create or update the issue and learn its
+number, then again after adopting with `--adopt --decided-in '#<number>'`, and opens a pull
+request carrying the two files when anything was written.
+
 ## Evidence rendering
 
 Each `evidence` element is `<url> | <excerpt>` -- a link a reviewer can open and a phrase
@@ -109,6 +130,10 @@ CLI:
     uv run python -m build.identity_digest --week 2026-36 --out /tmp/digest.md
     uv run python -m build.identity_digest --week 2026-36 --rows fixture.json --out /tmp/digest.md
     uv run python -m build.identity_digest --week 2026-36 --out /tmp/digest.md --allow-unprovisioned
+    uv run python -m build.identity_digest --week 2026-36 --rows rows.json --out /tmp/digest.md \\
+        --adopt --decided-in '#512' --adopt-report /tmp/adopt.json
+    uv run python -m build.identity_digest --week 2026-36 --rows rows.json --out /tmp/digest.md \\
+        --adopt --adopt-dry-run --decided-in '#512'
 """
 
 from __future__ import annotations
@@ -298,7 +323,7 @@ def _org_handle_entry(row: dict) -> dict:
     return {"org": org_slug, "platform": platform, "handle": handle, "note": note}
 
 
-def _render_item(row: dict, decided_on: date) -> list[str]:
+def _render_item(row: dict, decided_on: date, held_reason: str | None = None) -> list[str]:
     left_kind, left_id = _pair(row.get("left"))
     right_kind, right_id = _pair(row.get("right"))
     methods = _as_list(row.get("method"))
@@ -338,6 +363,11 @@ def _render_item(row: dict, decided_on: date) -> list[str]:
                 f"- Resurfaced reason: {reason} (not a current reason -- the vocabulary is "
                 f"{', '.join(RESURFACED_REASONS)}; age-based resurfacing is disabled)"
             )
+    if held_reason:
+        # A confidence-1.0 item the adopt leg refused to write: the destination file already
+        # answers the question differently, or the handle belongs to another org. A person
+        # decides; nothing is overturned by code.
+        lines.append(f"- Auto-adopt held: {held_reason}")
     lines.append("")
 
     if relation == "artifact_identity":
@@ -386,8 +416,46 @@ def _resolved_this_week(monday: date, sunday: date) -> int:
     return count
 
 
-def render(rows: list[dict], week: str, resolved_count: int | None = None) -> str:
+def _render_adopted(adoption) -> list[str]:
+    """The "Auto-adopted" section: what the adopt leg wrote or found already recorded, listed
+    without a paste block. Sits above the review sections so a reader sees it first."""
+    adopted = list(adoption.written) + list(adoption.already_recorded)
+    adopted.sort(key=lambda d: d.row.get("rank") or 0)
+    lines = [f"### Auto-adopted ({len(adopted)} item{'s' if len(adopted) != 1 else ''})", ""]
+    lines.append(
+        "_Confidence 1.0, name agrees, graph agrees (ruling 2026-09-08): adopted without a tick. "
+        "Written entries carry `decided_in` naming this issue and a `note` starting with "
+        f"`{resolution.AUTO_ADOPT_NOTE_PREFIX}`; the eval does not score the graph against them._"
+    )
+    lines.append("")
+    if not adopted:
+        lines.append("_No item met the auto-adopt rule this week._")
+        lines.append("")
+        return lines
+    for d in adopted:
+        row = d.row
+        left_kind, left_id = _pair(row.get("left"))
+        right_kind, right_id = _pair(row.get("right"))
+        head = (
+            f"- #{row.get('rank')} `{row.get('item_id')}` -- "
+            f"`{left_kind}:{left_id}` → `{right_kind}:{right_id}`: "
+        )
+        if d.outcome == "written":
+            verb = "planned for" if adoption.dry_run else "written to"
+            lines.append(f"{head}{verb} `{d.target}` ({d.reason}).")
+        else:
+            lines.append(f"{head}already recorded in `{d.target}` ({d.reason}); nothing written.")
+    lines.append("")
+    return lines
+
+
+def render(rows: list[dict], week: str, resolved_count: int | None = None, adoption=None) -> str:
     """The digest issue body for `week` (`"YYYY-WW"`), rendered from `rows`.
+
+    `adoption` is a `build.identity_adopt.AdoptReport` (or `None`). When given, its written
+    and already-recorded items render in an "Auto-adopted" section above the review sections
+    and leave the Top 5 and the relation sections; its held items stay as review items with the
+    reason on a line. See the module docstring, "Auto-adoption at confidence 1.0".
 
     Ranking is `udms/identity_digest.sql`'s job, not this module's: `render()` orders items by
     the table's own `rank` column (ascending, `NULL` excluded) and never re-sorts them by any
@@ -430,6 +498,11 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         )
     capped = ranked_rows[:CAP]
 
+    adopted_ids: set[str] = adoption.adopted_item_ids() if adoption is not None else set()
+    held_reasons: dict[str, str] = adoption.conflict_reasons() if adoption is not None else {}
+    # The review queue is the capped set minus what was adopted; a held 1.0 item stays in it.
+    review = [r for r in capped if r.get("item_id") not in adopted_ids]
+
     parked_by_relation: dict[str, int] = {}
     pool_total = 0
     for row in rows:
@@ -444,8 +517,8 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
 
     lines.append("### Top 5 this week")
     lines.append("")
-    if capped:
-        for row in capped[:5]:
+    if review:
+        for row in review[:5]:
             left_kind, left_id = _pair(row.get("left"))
             right_kind, right_id = _pair(row.get("right"))
             lines.append(
@@ -457,8 +530,11 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         lines.append("_No ranked items this week._")
     lines.append("")
 
+    if adoption is not None:
+        lines.extend(_render_adopted(adoption))
+
     for relation in RELATION_ORDER:
-        items = [r for r in capped if r.get("relation") == relation]
+        items = [r for r in review if r.get("relation") == relation]
         label = RELATION_LABELS[relation]
         lines.append(f"### {label} ({len(items)} item{'s' if len(items) != 1 else ''})")
         lines.append("")
@@ -473,7 +549,7 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
                 lines.append("_No active items this week._")
             lines.append("")
         for row in items:
-            lines.extend(_render_item(row, monday))
+            lines.extend(_render_item(row, monday, held_reasons.get(row.get("item_id"))))
         parked_n = parked_by_relation.get(relation, 0)
         lines.append(f"Parked: {parked_n} (name-match only; resurfaces when stronger evidence appears)")
         lines.append("")
@@ -491,7 +567,7 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         and (_d := _row_date(r["first_seen"])) is not None and monday <= _d <= sunday
     )
     ranked_by_relation = {
-        relation: len([r for r in capped if r.get("relation") == relation])
+        relation: len([r for r in review if r.get("relation") == relation])
         for relation in RELATION_ORDER
     }
 
@@ -508,6 +584,11 @@ def render(rows: list[dict], week: str, resolved_count: int | None = None) -> st
         + ", ".join(f"{RELATION_LABELS[r]} {ranked_by_relation[r]}" for r in RELATION_ORDER)
     )
     lines.append(f"- Overflow this week (ranked below the cap, not reviewed): {pool_total}")
+    if adoption is not None:
+        lines.append(
+            f"- Auto-adopted this week: {len(adoption.written)} written, "
+            f"{len(adoption.already_recorded)} already recorded, {len(adoption.conflicts)} held"
+        )
     lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
@@ -606,7 +687,37 @@ def main(argv: list[str] | None = None) -> int:
             "warehouse/dependencies.yaml contracts the table with a mirror block."
         ),
     )
+    parser.add_argument(
+        "--dump-rows", type=Path,
+        help="also write the rows read (from the warehouse or --rows) to this JSON path, so a "
+             "second pass with --adopt renders the same snapshot",
+    )
+    parser.add_argument(
+        "--adopt", action="store_true",
+        help="auto-adopt confidence-1.0 items whose name and graph agree (build.identity_adopt): "
+             "append their entries to sources/resolution_ledger.yaml / sources/org_handles.yaml "
+             "and render them in their own section. Requires --decided-in.",
+    )
+    parser.add_argument(
+        "--adopt-dry-run", action="store_true",
+        help="with --adopt: classify and render, but write nothing to the two files",
+    )
+    parser.add_argument(
+        "--decided-in",
+        help="the digest issue reference written as decided_in on adopted entries, e.g. '#512'",
+    )
+    parser.add_argument(
+        "--decided-on", type=lambda s: date.fromisoformat(s),
+        help="decided_on for adopted ledger entries (default: today, UTC)",
+    )
+    parser.add_argument(
+        "--adopt-report", type=Path,
+        help="with --adopt: write the adoption report (written / already recorded / held) as JSON",
+    )
     args = parser.parse_args(argv)
+
+    if args.adopt and not args.decided_in:
+        parser.error("--adopt requires --decided-in '#<digest issue number>'")
 
     if args.rows:
         rows = load_rows_from_file(args.rows)
@@ -631,12 +742,45 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[FAIL] {exc}")
             return 2
 
+    if args.dump_rows:
+        args.dump_rows.write_text(json.dumps(rows, indent=2, default=_jsonable) + "\n")
+
+    adoption = None
+    if args.adopt:
+        # Imported here, not at the top: identity_adopt imports this module's entry builders.
+        from build import identity_adopt
+
+        adoption = identity_adopt.adopt(
+            rows,
+            decided_in=args.decided_in,
+            decided_on=args.decided_on,
+            write=not args.adopt_dry_run,
+        )
+        if args.adopt_report:
+            args.adopt_report.write_text(json.dumps(adoption.to_json(), indent=2) + "\n")
+        print(
+            f"auto-adopt{' (dry run)' if adoption.dry_run else ''}: {len(adoption.written)} "
+            f"written, {len(adoption.already_recorded)} already recorded, "
+            f"{len(adoption.conflicts)} held"
+        )
+
     monday, sunday = _week_bounds(args.week)
     resolved_count = _resolved_this_week(monday, sunday)
-    body = render(rows, args.week, resolved_count=resolved_count)
+    body = render(rows, args.week, resolved_count=resolved_count, adoption=adoption)
     args.out.write_text(body)
     print(f"wrote {args.out} ({len(rows)} row(s))")
     return 0
+
+
+def _jsonable(value):
+    """`json.dumps` default for warehouse rows: pandas Timestamps, numpy arrays and Trino ROWs
+    arrive as objects the stdlib cannot serialize. Arrays become lists; everything else its
+    string form, which `_row_date` and `_pair` already accept on the way back in."""
+    if hasattr(value, "tolist"):
+        return value.tolist()
+    if hasattr(value, "isoformat"):
+        return value.isoformat(sep=" ") if hasattr(value, "hour") else value.isoformat()
+    return str(value)
 
 
 if __name__ == "__main__":

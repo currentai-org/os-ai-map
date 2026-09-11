@@ -411,10 +411,25 @@ already-declared handle — is listed as a conflict instead of guessed at.
 The output is a markdown checklist plus a fenced YAML block of ready-to-paste entries, run
 through review once as a GitHub issue rather than seeded silently. Ticking a box and pasting the
 matching entry into `sources/org_handles.yaml` in a PR is what persists a handle; an unticked
-proposal is simply not adopted. `--check-graph` cross-checks each proposal against
-`currentai.identity.org_edges`, marking one "graph agrees" when the deployed identity graph
-already infers the same `(namespace, org)` pair at confidence ≥0.8 via its own `hf_namespace`
-method — corroboration, not a substitute for the human tick.
+proposal is simply not adopted, and a proposal a reviewer held is proposed again on the next run,
+because nothing records a "reviewed, not adopted" disposition yet. `--check-graph` cross-checks
+each proposal against `currentai.identity.org_edges`, marking one "graph agrees" when the deployed
+identity graph already infers the same `(namespace, org)` pair at confidence ≥0.8 via its own
+`hf_namespace` method — corroboration, not a substitute for the human tick.
+
+**The one exception to the tick is the weekly digest's auto-adopt rule.** A ranked digest item at
+confidence 1.0 whose name agrees *and* whose graph agrees is adopted by `build/identity_adopt.py`
+without a human tick (ruling 2026-09-08); everything below 1.0, and any 1.0 item that fails either
+test, stays a review item. For an `org` item, name agreement means the account handle agrees with
+the org slug or a handle the org already declares (the same `name_agrees` test the proposer's
+checklist column uses), and graph agreement means the graph's own `org_handles: <org> …` evidence
+names that org. For an `equivalence` or `membership` item, name agreement means the artifact's name
+segment equals the product slug, and graph agreement means the 1.0 rests on an authoritative method
+(`resolution_ledger` or `declared`) rather than on arithmetic alone. An adopted entry is appended to
+the file that records its relation with `decided_in` naming the digest issue and a `note` starting
+with `digest auto-adopt (confidence 1.0):`; a bot opens the pull request and a person merges it.
+`build/identity_eval.py` excludes entries carrying that prefix from truth, so the graph is never
+scored against rulings it wrote itself.
 
 ### Model families bridge a release name to a tier-level slug
 
@@ -470,8 +485,14 @@ one changes nothing.
 
 Two repo-side readers grade the deployed graph. `build/identity_eval.py` replays the four edge
 tables against prior human decisions; `build/identity_digest.py` renders `identity.digest` into the
-weekly review digest. Both are audit roots, which is what puts the dataset inside the repo's
-governed dependency closure.
+weekly review digest, and, through `build/identity_adopt.py`, writes the confirm-direction entry
+for any ranked item at confidence 1.0 whose name and graph agree (see "Proposing handles" for the
+two tests) into `sources/resolution_ledger.yaml` or `sources/org_handles.yaml`, listing it in the
+digest's own "Auto-adopted" section rather than as a review item. Because a 1.0 equivalence rests
+on a ledger ruling, the adopt leg checks the destination first: an item the file already answers
+the same way is reported as already recorded and nothing is written, and one it answers differently
+is held for review, never overturned. Both readers are audit roots, which is what puts the dataset
+inside the repo's governed dependency closure.
 
 The eval's truth is every declaration, both tiers. A `sources/registry/*.yaml` tail row states that
 an artifact is a product's and names the org that owns it, which is the same kind of decision a

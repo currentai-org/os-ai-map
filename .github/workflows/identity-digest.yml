@@ -11,6 +11,13 @@ name: identity-digest
 # carries a mirror-bound dependency contract in warehouse/dependencies.yaml, so a missing
 # table is a real failure again and is reported as one (exit 2). The flag would be refused
 # anyway -- build.identity_digest.main rejects it once that contract exists.
+#
+# Auto-adoption (ruling 2026-09-08): a ranked item at confidence 1.0 whose name and graph agree
+# is written to the file that records its relation instead of waiting for a tick -- see
+# build/identity_adopt.py for the two tests. Sequence matters: render, create or update the
+# issue, read its number, adopt with decided_in naming it, re-render so the issue lists what was
+# adopted, then open a pull request carrying the two files. Bots open PRs and humans merge
+# them; nothing here pushes to main. No PR is opened when nothing was written.
 
 on:
   schedule:
@@ -19,12 +26,20 @@ on:
 
 permissions:
   issues: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: identity-digest
+  cancel-in-progress: false
 
 jobs:
   identity-digest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -41,7 +56,9 @@ jobs:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
         run: |
           set +e
-          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md)
+          # --dump-rows keeps the snapshot the adopt pass below re-renders from, so the two
+          # passes cannot disagree about which rows were ranked.
+          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md --dump-rows digest-rows.json)
           STATUS=$?
           echo "$OUTPUT"
           if [ $STATUS -ne 0 ]; then
@@ -54,6 +71,7 @@ jobs:
           fi
 
       - name: Open or update the digest issue
+        id: issue
         if: steps.render.outputs.skipped != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,6 +87,70 @@ jobs:
           if [ -n "$EXISTING" ]; then
             gh issue edit "$EXISTING" -R "$GITHUB_REPOSITORY" --body-file digest.md
             gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY" 2>/dev/null || true
+            NUMBER="$EXISTING"
           else
-            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md
+            URL=$(gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md)
+            NUMBER="${URL##*/}"
           fi
+          echo "number=$NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Adopt confidence-1.0 items and re-render
+        id: adopt
+        if: steps.render.outputs.skipped != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" \
+            --rows digest-rows.json --out digest.md \
+            --adopt --decided-in "#$NUMBER" --adopt-report adopt-report.json
+          gh issue edit "$NUMBER" -R "$GITHUB_REPOSITORY" --body-file digest.md
+          WRITTEN=$(uv run python -c 'import json; print(len(json.load(open("adopt-report.json"))["written"]))')
+          echo "written=$WRITTEN" >> "$GITHUB_OUTPUT"
+
+      - name: Gates on the adopted entries
+        if: steps.adopt.outputs.written != '0' && steps.render.outputs.skipped != 'true'
+        run: uv run python -m build.validate
+
+      - name: Open the adoption PR
+        if: steps.adopt.outputs.written != '0' && steps.render.outputs.skipped != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+          WEEK: ${{ steps.week.outputs.week }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          if [ -z "$(git status --porcelain sources/resolution_ledger.yaml sources/org_handles.yaml)" ]; then
+            echo "Nothing adopted; no PR."
+            exit 0
+          fi
+          BRANCH="digest-adopt/$WEEK"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add sources/resolution_ledger.yaml sources/org_handles.yaml
+          git commit -m "chore(identity): adopt confidence-1.0 digest items from #$NUMBER"
+          git push -u origin "$BRANCH"
+          {
+            echo "Confidence-1.0 items from the identity digest #$NUMBER whose name and graph agree, adopted without a tick (ruling 2026-09-08). Each entry's \`decided_in\` names the digest issue and its \`note\` carries the auto-adopt prefix, so \`build/identity_eval.py\` leaves it out of truth. See \`build/identity_adopt.py\` for the two tests."
+            echo
+            uv run python - <<'PY'
+          import json
+          r = json.load(open("adopt-report.json"))
+          for d in r["written"]:
+              print(f'- #{d["rank"]} `{d["item_id"]}` -> `{d["target"]}` ({d["reason"]})')
+              for e in d["evidence"]:
+                  url, _, excerpt = e.partition(" | ")
+                  print(f'  - [{excerpt or url}]({url})' if excerpt else f'  - {url}')
+          if r["already_recorded"]:
+              print()
+              print("Already recorded by a person, nothing written:")
+              for d in r["already_recorded"]:
+                  print(f'- #{d["rank"]} `{d["item_id"]}` ({d["reason"]})')
+          if r["conflicts"]:
+              print()
+              print("Held for review in the digest (prior ruling disagrees):")
+              for d in r["conflicts"]:
+                  print(f'- #{d["rank"]} `{d["item_id"]}` ({d["reason"]})')
+          PY
+          } > pr-body.md
+          gh pr create --title "chore(identity): adopt confidence-1.0 digest items ($WEEK)" --body-file pr-body.md --label sentinel

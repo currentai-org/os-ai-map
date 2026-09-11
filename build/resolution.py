@@ -44,6 +44,23 @@ EQUIVALENCE_VERDICTS = NOT_A_NEW_PRODUCT | {"unresolved"}
 MEMBERSHIP_VERDICTS = frozenset({"member_of", "not_member_of"})
 VERDICTS = EQUIVALENCE_VERDICTS | MEMBERSHIP_VERDICTS
 
+#: Prefix of the `note` on an entry the weekly digest wrote on its own (`build/identity_adopt.py`)
+#: rather than a person: a confidence-1.0 item whose name and graph agreed (ruling 2026-09-08).
+#: Shared with `sources/org_handles.yaml`, which has the same optional `note` field. A fixed
+#: prefix rather than a schema field, because both files publish to warehouse tables
+#: (`registry.resolution_ledger`, `registry.org_handles`) whose static schema cannot grow a
+#: column without a delete-and-recreate. `build/identity_eval.py` excludes every entry carrying
+#: it from the truth it replays the graph against -- an auto-adopted entry is the graph's own
+#: output, and a guard whose two sides come from one source guards nothing.
+AUTO_ADOPT_NOTE_PREFIX = "digest auto-adopt (confidence 1.0):"
+
+
+def is_auto_adopted(entry: Mapping) -> bool:
+    """Whether a ledger or org-handle entry was written by the digest's auto-adopt leg rather
+    than ruled by a person. Reads the `note` prefix only; a hand ruling never starts with it."""
+    note = entry.get("note") if isinstance(entry, Mapping) else None
+    return isinstance(note, str) and note.startswith(AUTO_ADOPT_NOTE_PREFIX)
+
 Key = tuple[str, str]
 #: The full ledger key: `(artifact, relation)` for `product_equivalence`, `(artifact, relation,
 #: resolves_to)` for `product_membership`. Membership is a relation between an artifact and a
