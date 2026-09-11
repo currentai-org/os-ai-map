@@ -1135,11 +1135,15 @@ def coverage_lowered(
 
     A route's pin may go down only with a `lowered_because` that is new or changed in this
     PR; one inherited verbatim from the merge base explained an earlier lowering and excuses
-    nothing now. A pin that vanished (the route was in `before`, not in `current`) is a
-    lowering to nothing, and so is a pin rewritten to `0/0` (see `_pin_lowered`). A fresh
-    `lowered_because` with no route lowered is stale and is reported too: an explanation
-    that explains nothing is how a guard rots.
+    nothing now. A pin rewritten to `0/0` is a lowering (see `_pin_lowered`). A pin that
+    VANISHED (the route was in `before`, not in `current`) is not a lowering that a note can
+    excuse: an unpinned route is skipped by both live-coverage gates, so an explained deletion
+    would switch the ratchet off for that route and every later PR would inherit the silence.
+    Lower it, to `0/0` if need be, and keep the key. A fresh `lowered_because` with no route
+    lowered is stale and is reported too: an explanation that explains nothing is how a guard
+    rots.
     """
+    vanished: list[str] = []
     lowered: list[str] = []
     for route, _label in ORG_ROUTE_LABELS:
         prior = before.get(route)
@@ -1147,10 +1151,19 @@ def coverage_lowered(
             continue
         now = current.get(route)
         if now is None:
-            lowered.append(f"{route}: pinned {prior[0]}/{prior[1]} at the merge base, unpinned now")
+            vanished.append(
+                f"{route}: pinned {prior[0]}/{prior[1]} at the merge base, unpinned now -- a route "
+                f"may be lowered with a {LOWERED_BECAUSE_KEY!r}, never unpinned; pin it (0/0 if need be)"
+            )
         elif _pin_lowered(now, prior):
             lowered.append(f"{route}: pin lowered from {prior[0]}/{prior[1]} to {now[0]}/{now[1]}")
     fresh_note = lowered_because is not None and lowered_because != before_lowered_because
+    if vanished:
+        needs_note = lowered and not fresh_note
+        return vanished + lowered + (
+            [f"a pin may only go down with a {LOWERED_BECAUSE_KEY!r} written or changed in this PR"]
+            if needs_note else []
+        )
     if lowered and not fresh_note:
         return lowered + [
             f"a pin may only go down with a {LOWERED_BECAUSE_KEY!r} written or changed in this PR"

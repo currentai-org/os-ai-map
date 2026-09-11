@@ -1235,9 +1235,18 @@ def test_a_fresh_explanation_with_nothing_lowered_is_stale():
     assert coverage_lowered({"github": (3, 4)}, before, "old reason", "old reason") == []
 
 
-def test_coverage_lowered_treats_a_vanished_pin_as_lowered():
-    findings = coverage_lowered({}, {"github": (2, 4)}, None)
-    assert findings[0] == "github: pinned 2/4 at the merge base, unpinned now"
+def test_coverage_lowered_never_excuses_a_vanished_pin():
+    """Deleting a route's pin would switch both live gates off for that route, and every later
+    PR would inherit the silence because the merge-base pin is then already absent. So a
+    vanished pin fails with or without a fresh explanation; the remedy is to pin it, to 0/0
+    if need be, and explain the lowering."""
+    without = coverage_lowered({}, {"github": (2, 4)}, None)
+    assert without[0].startswith("github: pinned 2/4 at the merge base, unpinned now")
+    assert "never unpinned" in without[0]
+    with_fresh_note = coverage_lowered({}, {"github": (2, 4)}, "route retired", None)
+    assert with_fresh_note == without
+    # Pinning it to 0/0 with a fresh explanation is the sanctioned path.
+    assert coverage_lowered({"github": (0, 0)}, {"github": (2, 4)}, "route retired", None) == []
 
 
 def test_coverage_lowered_reads_a_zero_denominator_pin_as_zero():
