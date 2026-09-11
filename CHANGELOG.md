@@ -35,6 +35,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   ([#537](https://github.com/currentai-org/os-ai-map/pull/537)).
 - `languagebench` (`fair-forward/evals-for-every-language`) to `evaluation_code`, with the
   `fair-forward` organization ([#531](https://github.com/currentai-org/os-ai-map/pull/531)).
+- An `end_of_life` field on the product schema, and `perspective-api` declared ending. The map had
+  two states for a product and neither was honest about a service with an announced shutdown date;
+  the date and its source serialize onto the product row, and `check_payload` gates the shape.
+  Nothing in the build compares the date to today, so an expired product is not yet treated
+  differently — the post-expiry policy is deferred
+  ([#524](https://github.com/currentai-org/os-ai-map/pull/524)).
+- A comparison-cycle check in `check_capability`. The arithmetic check read each `relative_to` edge
+  in isolation, so a cycle of edges could be individually valid and collectively unresolvable
+  ([#516](https://github.com/currentai-org/os-ai-map/pull/516)).
 
 ### Changed
 
@@ -51,6 +60,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   runs each CI step locally and accounts for the three it cannot. It already existed and was
   undiscoverable, which is what `docs/operations/postmortem-2026-09-10-scientific-ai-models.md` was
   written about ([#539](https://github.com/currentai-org/os-ai-map/pull/539)).
+- `perplexica` renamed to Vane, and `composable-kernel` re-declared, on the identity rulings of
+  2026-09-08 ([#523](https://github.com/currentai-org/os-ai-map/pull/523)).
 
 ### Fixed
 
@@ -61,6 +72,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 - `edit-category` and `update-product` name the pytest gate, which neither did — a category or
   product edit can break a pinned test without failing any `build.*` check
   ([#534](https://github.com/currentai-org/os-ai-map/pull/534)).
+- `reverify` addresses a source entry by position rather than by URL, so an axis citing one page
+  twice under different `establishes` lists — legal, and 55 (product, axis) pairs do it — can no
+  longer have a confirmation stamped onto the wrong citation. That defect is why the reverify
+  workflow had a single run in its history and it failed
+  ([#528](https://github.com/currentai-org/os-ai-map/pull/528)).
 
 ### Removed
 
