@@ -576,6 +576,14 @@ Three questions settle it, and all three are answerable from the package's own J
    orders of magnitude is being measured through its client. `juicefs` at 169 downloads against
    14,334 stars is the same tell inverted.
 
+`build/check_package_channel.py` asks the same three questions of every `stars_fallback` record,
+for each package or image the product's own README installs, and only reports: identity (a URL
+naming the declared `owner/repo` in full, never an owner-name match), role (quoted from the
+package's own summary), and instrument quality (monthly or cumulative, from which window). It reads
+the existing `adoption.note` first and surfaces a sentence that already names the package as a prior
+judgment rather than a fresh finding. It fetches, so it is not in `validate.yml`; run it by hand
+before an adoption sweep.
+
 Where the package turns out to be a client, the server usually has no countable channel at all, so
 the honest outcome is `stars_fallback` and its cap of 3 - understating a widely deployed system,
 and saying so in the note. A large share of `storage`'s bands are there for this reason,
