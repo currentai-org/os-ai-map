@@ -1,8 +1,8 @@
 name: embeddings_retrieval
 display_name: Embeddings & retrieval models
 description: Models whose headline output is a vector representation or a relevance score consumed by a retrieval system, rather than a chat completion.
-strapline: Weights download for 28 of 35 products and the top of the MMTEB table is MIT-licensed, which
-  inverts the story the other model rows tell. What stays closed here is the commercial API tier.
+strapline: Weights download for 28 of 35 products, and the strongest MMTEB result any publisher has
+  claimed here came with an MIT licence. What stays closed is the commercial API tier.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -12,9 +12,16 @@ scoring_recipe:
   extends: pretrained
   derived_from:
     method: >-
-      Shared from-scratch openness ladder, inherited. These are models trained from scratch on a
-      retrieval objective, so the ladder's questions - are the weights downloadable, is the
-      training corpus released, does the training pipeline ship - are the right ones unchanged.
+      Shared pretrained openness ladder, inherited. Its questions - are the weights downloadable,
+      is the training corpus released, does the training pipeline ship - are the right ones here
+      unchanged, but the stage they ask about is not always a from-scratch pretraining run. Many
+      products in this row are retrieval-stage training over an existing backbone: all-minilm
+      distils a Microsoft MiniLM encoder whose own pretraining is not part of the release, and
+      colpali trains retrieval heads on PaliGemma and Qwen bases. `data` and `code` are therefore
+      scored on the RETRIEVAL training stage the publisher released, and a record whose backbone
+      pretraining is somebody else's says so in its component detail. Reading a 5 here as
+      "the whole model is reproducible" would be wrong; it means the retrieval training that
+      makes this a retrieval model is.
     inherited_from: base_pretrained
     verified_on: '2026-09-11'
     checker: build/check_rubric.py
