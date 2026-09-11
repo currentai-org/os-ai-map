@@ -39,7 +39,7 @@
           "arxiv": {"type": "string", "minLength": 1},
           "huggingface_model": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
           "huggingface_dataset": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
-          "homepage": {"type": "string", "format": "uri"}
+          "homepage": {"type": "string", "pattern": "^https?://[^/\\s]+\\.[^/\\s]+", "description": "URL convention (#525): `pattern` requires an http(s) scheme and a dotted host, so the bare string `https://` fails here rather than shipping as a link nobody can follow. `pattern` and not `format: uri`, because build/validate.py calls jsonschema.validate with no format checker and a `format` would assert a check nobody runs. Measured 2026-09-11: 5,635 http(s) strings across products, organizations, scores and registry, 0 rejected."}
         }
       }
     }
