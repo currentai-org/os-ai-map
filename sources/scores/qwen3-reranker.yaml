@@ -3,12 +3,12 @@ openness:
   score: 3
   class: open_weights
   components:
-    weights: {value: open, detail: Apache-2.0 ungated safetensors across the text and VL checkpoints}
+    weights: {value: open, detail: Apache-2.0 ungated safetensors across the three text cross-encoder checkpoints}
     data: {value: closed, detail: no training corpus or data-construction scripts released}
     code: {value: partial, detail: 'the Qwen3-Embedding repository''s docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline'}
     license:
     - {name: Apache-2.0, detail: OSI}
-  raw: weights:open(Apache-2.0 ungated safetensors across the text and VL checkpoints);data:closed(no training corpus or data-construction scripts released);code:partial(the Qwen3-Embedding repository's docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline);license:Apache-2.0(OSI)
+  raw: weights:open(Apache-2.0 ungated safetensors across the three text cross-encoder checkpoints);data:closed(no training corpus or data-construction scripts released);code:partial(the Qwen3-Embedding repository's docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline);license:Apache-2.0(OSI)
   confidence: high
   note: Apache-2.0 weights and a repository that ships training docs, but no training corpus and no data-construction
     scripts, so the ladder lands on its open-weights centre of gravity rather than on a data rung.
@@ -61,8 +61,9 @@ capability:
     for the text line
   relative_to: harrier-oss
   relation: one_below
-  value: Qwen3-VL-Reranker-8B reports 79.2 MMEB-v2 retrieval average, 74.9 MMTEB retrieval, 83.6 JinaVDR
-    and 66.7 ViDoRe v3; Qwen3-Reranker-4B reports 61.16 BEIR nDCG@10. 100+ languages, 32K context, instruction-aware.
+  value: Qwen3-Reranker-4B reports 61.16 BEIR nDCG@10 across the text cross-encoders, over 100 languages
+    at 32K context with an instruction-aware interface. The Qwen3-VL-Reranker results are excluded with
+    the VL line itself.
   confidence: high
   note: 'Rung 4, competitive frontier: current generation, multilingual, long-context and strong on published
     retrieval numbers across both text and visual-document tasks. Held below the category anchor rather
