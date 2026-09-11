@@ -75,6 +75,14 @@ workflow that clears its row, so this is the only place it happens.
    source its capability axis cites, in which case it has been re-derived and may be dated.
    `uv run python -m build.check_refetch --product <peer>` first is cheap triage: where everything
    reproduces, the peer's recorded values are known unchanged and the read is a formality.
+   That promotion carries one further condition, because a peer can be a dependent itself (#443).
+   A peer may take the promoted `last_verified` only if it records no `relative_to`/`relation` at
+   all, or its own edge carries a `comparison` block whose `last_attested` is on or after the date
+   being claimed, or its own root's capability `last_verified` is already on or after that date.
+   The test is on the edge fields, not on whether a `comparison` key is present: `verl` at
+   `megatron-lm` and `pytorch` at `tensorflow` both carry bare edges, and re-dating either made it
+   outrun its own root, which `check_capability` rejected. The middle clause severs the chain rather
+   than pushing the obligation upstream, so the rule does not recurse.
 6. **Update both rosters** (category and org), and the org file if the org is new — and with it
    `sources/org_handles.yaml`, per the note above. A slug
    appears in exactly one of each. **If the product came from a registry row, delete that row

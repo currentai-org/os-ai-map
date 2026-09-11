@@ -107,6 +107,15 @@ jobs:
       # one teaches everybody to ignore it.
       - name: Routing table structure
         run: uv run python -m build.check_routing
+
+      # An arXiv abstract page carries the abstract and the submission history, so a source that
+      # cites /abs for a table or a figure records a claim the cited page cannot support (#263).
+      # Fails on a citation whose own `shows` places the claim in the body; the numeric /abs
+      # citations that may simply be quoting the abstract are reported by --candidates and do
+      # not fail. See docs/reference/evidence-and-freshness.md.
+      - name: Citations gate (an arXiv /abs cited for a claim only the body carries)
+        run: uv run python -m build.check_citations
+
       # How stale is every axis, per category. Informational on purpose: no --max-age-days, so
       # it prints and cannot fail. The gate at 45 days (temporary) is `.github/workflows/freshness.yml`,
       # weekly, and it is the one gate here that must not run per PR — it fails on the passage

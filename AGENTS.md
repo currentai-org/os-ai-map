@@ -95,7 +95,8 @@ Gates              check_*, one module per question. Four families:
                      scoring    check_rubric, check_recipe, check_capability, check_adoption,
                                 check_instrument, check_components,
                                 check_channel_authority
-                     evidence   check_verification, check_freshness, check_refetch
+                     evidence   check_verification, check_freshness, check_refetch,
+                                check_citations
                      payload    check_payload, check_retirement, check_parity
                      coverage   check_routing, check_artifacts
                    `check_verification` runs several sub-gates and its exit covers all of

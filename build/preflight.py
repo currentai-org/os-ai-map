@@ -62,6 +62,7 @@ PLAN: dict[str, tuple[str, str]] = {
     "Adoption gate (every band exists on its instrument's scale)": (RUN, ""),
     "Instrument gate (every signal_type claim has what it needs to be falsifiable)": (RUN, ""),
     "Routing table structure": (RUN, ""),
+    "Citations gate (an arXiv /abs cited for a claim only the body carries)": (RUN, ""),
     "Freshness report (informational, does not gate)": (RUN, ""),
     "Serialize dry-run": (RUN, ""),
     "Retirement gate (a removed slug carries a redirect alias)": (RUN, ""),
