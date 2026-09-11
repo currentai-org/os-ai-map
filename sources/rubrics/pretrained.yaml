@@ -63,6 +63,22 @@ openness:
   # The discriminator that decides restricted vs open_weights. OSI approval
   # alone is too blunt: several non-OSI licenses are permissive in substance.
   # The line is whether the license restricts USE, not whether OSI blessed it.
+  # MAINTAINER RULING, 2026-09-11. Six license names were added to the tiers below during the
+  # scientific_ai_models promotion, which docs/workflows/promote-category.md step 7 says a
+  # promotion may not do — extending a shared tier reaches every inheriting category and is a
+  # maintainer's call. The call was delegated to an external reviewer and made:
+  #
+  #   CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1  -> permissive_non_osi
+  #   CC-BY-NC-SA-4.0, ASL, AlphaFold-3-Model-...-of-Use  -> commercial_forbidden
+  #
+  # All six upheld, on the tiers' own definitions: attribution and share-alike bind
+  # redistribution rather than capping who may use the weights or at what scale, and the other
+  # three exclude commercial use outright. The one contested call was FAIR-Chemistry-License-v1,
+  # resolved by correcting `use_bounded` rather than by moving the licence — see that tier.
+  #
+  # Measured before the additions and again after: no base_pretrained product records any of
+  # the six names and all 32 of its scores reproduce unchanged, so the blast radius outside
+  # scientific_ai_models is nil.
   license_tier:
     # Declaration order below IS restrictiveness order, least restrictive first.
     # `multi_sku_rule` resolves a family to the most restrictive tier among its
@@ -116,10 +132,27 @@ openness:
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
-          annual revenue ceiling, or an acceptable-use policy. Almost every user is inside
-          the bound and may use the model commercially without asking. Was `use_restricted`
-          and capped at 2 before the universal license scale; see sources/rubrics/model.yaml
-          for why the cap moved and why the tier was renamed alongside it.
+          annual revenue ceiling, or a requirement to ask before using the model
+          commercially. Almost every user is inside the bound and may use the model
+          commercially without asking. Was `use_restricted` and capped at 2 before the
+          universal license scale; see sources/rubrics/model.yaml for why the cap moved and
+          why the tier was renamed alongside it.
+        # This definition read "or an acceptable-use policy" until 2026-09-11, which
+        # contradicted permissive_non_osi's definition a few lines above — that tier says in
+        # its own words that an AUP "caps neither commerce nor reach". The same licence
+        # therefore satisfied both tiers, and they give different scores: FAIR-Chemistry-
+        # License-v1 puts `uma` at 4 through permissive_non_osi and at 3 through use_bounded.
+        # Nothing had forced the choice before, because every other AUP-licensed product on
+        # the map reaches 3 down either route. Ruled on the maintainer's behalf: conduct
+        # restrictions alone belong in permissive_non_osi, and this tier describes scale
+        # ceilings or a requirement to ask permission. The clause is removed here rather than
+        # from permissive_non_osi, so issue #117's reading stands. Issue #538 carries the
+        # finding and notes that sources/rubrics/model.yaml still has the original wording;
+        # that ladder was not reviewed and is not changed by this ruling.
+        #
+        # No example moves. This tier decides by the names in its `examples` list and none of
+        # them is an AUP-only licence, so the correction changes no score: base_pretrained
+        # reproduces 32/32 before and after.
         # `InternLM-Free-Commercial-License` is the bound written as a process rather than
         # a number: commercial use costs nothing and is granted on an application form.
         # It reaches the ladder as the second half of `internlm`'s compound license, which
