@@ -1,0 +1,17 @@
+name: e5
+display_name: E5
+type: model
+description: E5 embeds queries and passages for retrieval, trained by contrastive pre-training on weakly supervised text pairs
+  and then on labelled retrieval data. The multilingual checkpoints initialize from XLM-RoBERTa and cover 100 languages at
+  a 512-token limit, while e5-mistral-7b-instruct is a decoder-based, instruction-conditioned variant with a longer context.
+  Every input carries an explicit "query:" or "passage:" prefix. A Microsoft Research team publishes the weights under the
+  intfloat account.
+github:
+- url: https://github.com/microsoft/unilm
+huggingface_model:
+- url: https://huggingface.co/intfloat/multilingual-e5-large
+- url: https://huggingface.co/intfloat/multilingual-e5-small
+- url: https://huggingface.co/intfloat/e5-mistral-7b-instruct
+comments: The declared repository is the microsoft/unilm monorepo, whose e5 subtree carries the project; it holds evaluation
+  scripts rather than a training pipeline. Verified 2026-09-11 via the Hugging Face model cards, the Hub API and that subtree
+  README.

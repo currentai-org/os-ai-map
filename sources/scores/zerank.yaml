@@ -1,0 +1,79 @@
+product: zerank
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: 'Apache-2.0 ungated safetensors for zerank-1, zerank-1-small and zerank-2'}
+    data: {value: closed, detail: the Elo-based relevance pipeline is described in arXiv 2509.12541; no
+        data or scripts released}
+    code: {value: closed, detail: no training or model repository; inference runs on stock sentence-transformers}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated safetensors for zerank-1, zerank-1-small and zerank-2);data:closed(the
+    Elo-based relevance pipeline is described in arXiv 2509.12541; no data or scripts released);code:closed(no
+    training or model repository; inference runs on stock sentence-transformers);license:Apache-2.0(OSI)
+  confidence: high
+  note: Both claims that came with this product were checked rather than assumed, and both hold. The zerank-2
+    card states Apache-2.0 in its front matter, its Model Details table and a closing License section;
+    ZeroEntropy own announcement records the Notion acquisition and says all its models are now fully
+    open source under Apache 2.0. No corpus and no code, so an OSI licence over downloadable weights lands
+    on the open-weights fallthrough.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/zeroentropy/zerank-2-reranker/raw/main/README.md
+    shows: 'Front matter reads license: apache-2.0, base_model Qwen/Qwen3-4B; the Model Details table
+      records License Apache-2.0 and the closing License section repeats it. Training is described as
+      a multi-stage Elo-rating pipeline with a link to arXiv 2509.12541; no corpus or training code is
+      offered.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a296c356d2484632efcefb3d4e447d609e81174b8c9a325ab6398d871d242013
+    establishes: [weights, data, code, license]
+  - url: https://huggingface.co/zeroentropy/zerank-1-reranker/raw/main/README.md
+    shows: 'Front matter for zerank-1 also reads license: apache-2.0, confirming the terms are consistent
+      across the distributed SKUs rather than new with zerank-2.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f7686a5b5335b7b4cca1fbc456724cf8e9cf98afdea39f7828d0ef0eaead9877
+    establishes: [license, weights]
+  - url: https://zeroentropy.dev/articles/zeroentropy-is-joining-notion/
+    shows: 'ZeroEntropy announcement dated 2026-07-24: "ZeroEntropy has been acquired by Notion", "All
+      of our models are now fully open-source under Apache 2.0", and all ZeroEntropy products remain supported
+      until September 4th, 2026 after which they are sunset.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1d9c4229b8445eb45de746927b94c90706d7a5c03ecaf51999b9c0eb5c51cbca
+    establishes: [license]
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: About 657K downloads in the trailing 30 days across the line, almost all of it zerank-2 at 645K,
+    with zerank-1-small at 15K and zerank-1 at 1.2K. Squarely inside the 100K-1M band on zerank-2 alone.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/zeroentropy/zerank-2-reranker', shows: 'downloads: 644922;
+      gated: false; private: false; license apache-2.0 for zeroentropy/zerank-2-reranker.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: a3789df9dca3486740d0a5ed0bfa009ea50cd63e448361aabfa9382cdc08d792}
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: NDCG@10 over a seven-domain evaluation reranking the top 100 candidates retrieved by OpenAI
+    text-embedding-3-small
+  relative_to: jina-reranker
+  relation: at
+  value: 0.6714 average NDCG@10 across web, conversational, STEM, code, legal, biomedical and finance,
+    against 0.5847 for Cohere rerank-3.5 and 0.5999 for Gemini 2.5 Flash listwise.
+  confidence: medium
+  note: Rung 4, competitive frontier - a current 4B model beating the named proprietary rerankers on the
+    publisher own seven-domain suite. Level with jina-reranker, which is the other 2025-26 frontier line
+    here. Confidence is medium rather than high because the instrument is a vendor-constructed domain
+    suite with no public leaderboard behind it, unlike BEIR or MMTEB.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/zeroentropy/zerank-2-reranker/raw/main/README.md', shows: 'Evaluations
+      table gives zerank-2 an average NDCG@10 of 0.6714 across seven domains against 0.6456 for zerank-1,
+      0.5999 for Gemini 2.5 Flash listwise, 0.5847 for Cohere rerank-3.5 and 0.4509 for the OpenAI embedding
+      retriever alone; 4B parameters, 32,768-token context.', accessed: '2026-09-11', http_status: 200,
+    content_sha256: a296c356d2484632efcefb3d4e447d609e81174b8c9a325ab6398d871d242013}

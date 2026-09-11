@@ -1,0 +1,102 @@
+product: mxbai-embed
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: four ungated Apache-2.0 checkpoints
+    data:
+      value: closed
+      detail: training data not published; the card asserts only no MTEB overlap
+    code:
+      value: partial
+      detail: inference, Matryoshka truncation and binary-quantization snippets on the card
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  governing_release: mxbai-embed-large-v1
+  note: 'Apache-2.0 and ungated on every checkpoint in the line. The corpus is the gap: the card''s only claim
+    about training data is that it does not overlap MTEB, which is a statement about evaluation hygiene rather
+    than a description of the mixture, and no dataset or training code ships. Open weights, closed data, the ladder''s
+    fallthrough rung.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1/raw/main/README.md
+    shows: The card documents sentence-transformers and transformers usage plus binary and Matryoshka quantization,
+      and says of training data only that the model was trained with no overlap of the MTEB data; no corpus or
+      training pipeline is named.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1e229c497c2a21e1e3bf1942b3eb55af61305e74667e2a2afd3584e86ca9f485
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-large-v1
+    shows: 'gated: false; private: false; cardData license apache-2.0.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5f1d8d511808a1e86151957efbb1a0471d5c8297efb373511aaf80dc9ace935b
+    establishes:
+    - weights
+    - license
+  raw: weights:open(four ungated Apache-2.0 checkpoints);data:closed(training data not published; the card asserts
+    only no MTEB overlap);code:partial(inference, Matryoshka truncation and binary-quantization snippets on the
+    card);license:Apache-2.0(OSI)
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '3,113,938 downloads in the trailing 30 days across the four embed checkpoints - 2,807,219 for mxbai-embed-large-v1,
+    168,988 for the 2D-Matryoshka variant, 113,162 for the deepset German model and 24,569 for xsmall. Worth reading
+    against the capability band: this is a 2024 English model still pulling millions of downloads a month, which
+    is what an entrenched default looks like after the frontier has moved past it. Mixedbread''s rerank and colbert
+    lines add roughly another 800k and are excluded as separate products.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-large-v1
+    shows: 'downloads: 2807219; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5f1d8d511808a1e86151957efbb1a0471d5c8297efb373511aaf80dc9ace935b
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-2d-large-v1
+    shows: 'downloads: 168988; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4f07ec439995dabfefb7105c8e7dc7a28eb8f59f16563ca14808ec732b76bdb4
+  - url: https://huggingface.co/api/models/mixedbread-ai/deepset-mxbai-embed-de-large-v1
+    shows: 'downloads: 113162; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a913671d9dc683daae71ac2e8581f16d4b285fa1a1fd09e37bb966340e12682b
+  - url: https://huggingface.co/api/models/mixedbread-ai/mxbai-embed-xsmall-v1
+    shows: 'downloads: 24569; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 30e298333ea42de750cb54ef11f2079225b0697f2d64a08317cfa81f8c609b90
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: MTEB v1 English, average over 56 datasets
+  value: 64.68 average over the 56 MTEB datasets for mxbai-embed-large-v1, state of the art for BERT-large-sized
+    models as of March 2024.
+  confidence: high
+  relative_to: granite-embedding
+  relation: one_below
+  note: 'Rung 2, narrow and dated - the rung''s two conditions both hold rather than one. The line is English-only
+    with a 512-token window, and its published number is an MTEB v1 average from March 2024 that has not been
+    refreshed against v2, so it cannot be compared with the anchor on the same instrument at all. Placed one below
+    granite-embedding rather than against Harrier-OSS: Granite R2 is the nearest peer that is also a compact bi-encoder
+    with published numbers, and it is a generation newer with sixteen times the context. Still useful, and the
+    download figures say people use it, but the evidence for the band is a two-year-old leaderboard.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/mixedbread-ai/mxbai-embed-large-v1/raw/main/README.md
+    shows: 'Evaluation section: 64.68 average across 56 MTEB datasets, ahead of bge-large-en-v1.5 at 64.23, described
+      as SOTA for BERT-large sized models as of March 2024, with the card noting known limitations to be fixed
+      in v2.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1e229c497c2a21e1e3bf1942b3eb55af61305e74667e2a2afd3584e86ca9f485

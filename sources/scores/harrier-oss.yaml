@@ -1,0 +1,107 @@
+product: harrier-oss
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: three ungated MIT safetensors checkpoints
+    data:
+      value: closed
+      detail: over 2B weakly-supervised pairs plus GPT-5 synthetic data, described but not released
+    code:
+      value: partial
+      detail: inference usage and MTEB evaluation prompts only
+    license:
+    - name: MIT
+      detail: OSI
+  confidence: high
+  governing_release: harrier-oss-v1
+  note: An OSI license over ungated weights, with the corpus behind them only narrated. Microsoft describes the
+    pipeline that built the training mixture and the synthetic generation step in prose, and ships neither the
+    data nor the code that produced it, so the family lands on the ladder's open-weights center of gravity rather
+    than a rung above it.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: 'license: mit in the card front matter; three downloadable checkpoints listed; training described as
+      contrastive learning on a large-scale multilingual mixture with distillation, naming no dataset and no training
+      code; usage snippets and an evaluation-prompt file only.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-27b
+    shows: 'gated: false; private: false; disabled: false; cardData license mit; sharded safetensors weight files
+      present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f629f2b545e0fe92041bacc079ab433bfba41fad9061904feef85937f5f368e7
+    establishes:
+    - weights
+  - url: https://blogs.bing.com/search/April-2026/Microsoft-Open-Sources-Industry-Leading-Embedding-Model
+    shows: Microsoft describes a data pipeline producing more than 2 billion weakly-supervised examples and over
+      10 million high-quality fine-tuning examples, with GPT-5 used to synthesize multilingual pairs; none of
+      it is offered for download.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 97732e59fdd3d9d80c594ac5ddc6d401e0d5191e548c6e26f09421a52c0bdb36
+    establishes:
+    - data
+  raw: weights:open(three ungated MIT safetensors checkpoints);data:closed(over 2B weakly-supervised pairs plus
+    GPT-5 synthetic data, described but not released);code:partial(inference usage and MTEB evaluation prompts
+    only);license:MIT(OSI)
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '765,547 downloads in the trailing 30 days summed across the three shipped checkpoints - 515,530 for the
+    270m, 243,108 for the 0.6b and 6,909 for the 27b. The split is the shape this category expects: the small
+    on-device sizes carry the volume, and the flagship that tops the benchmark needs serious hardware and is pulled
+    two orders of magnitude less often.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-270m
+    shows: 'downloads: 515530; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: bde216662f276ee37de4557b20458f522b95dab939c8ddf5830b5c306df1b490
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-0.6b
+    shows: 'downloads: 243108; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: dac7e258e761bece892fc6beb688c201eac8a9139026a032f5dda5b2bd0b2db5
+  - url: https://huggingface.co/api/models/microsoft/harrier-oss-v1-27b
+    shows: 'downloads: 6909; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f629f2b545e0fe92041bacc079ab433bfba41fad9061904feef85937f5f368e7
+capability:
+  score: 5
+  basis: benchmark
+  basis_detail: Multilingual MTEB v2 (MMTEB), mean over tasks
+  value: 74.3 on Multilingual MTEB v2 for harrier-oss-v1-27b; 69.0 for the 0.6b and 66.5 for the 270m.
+  confidence: high
+  note: The category anchor at rung 5. The 27B checkpoint sits at the top of the public MMTEB v2 table - Microsoft
+    reports 74.3 and first place as of 6 April 2026 - across 100+ languages at a 32k context, and the figure is
+    printed on the model card as well as in the announcement rather than read off a leaderboard screenshot. Every
+    other product in this category is placed against it.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/microsoft/harrier-oss-v1-27b/raw/main/README.md
+    shows: Model table gives MTEB v2 scores of 66.5 (270m), 69.0 (0.6b) and 74.3 (27b) at 32,768 max tokens each,
+      and states the models achieve state-of-the-art results on Multilingual MTEB v2 as of the release date.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6c42cc4b3926576c61b804ec9592d25bf0576243d421aee656c4d31eef58d110
+  - url: https://blogs.bing.com/search/April-2026/Microsoft-Open-Sources-Industry-Leading-Embedding-Model
+    shows: Harrier is described as ranking 1st on the multilingual MTEB-v2 benchmark as of April 6, 2026, supporting
+      more than 100 languages with a 32k context window.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 97732e59fdd3d9d80c594ac5ddc6d401e0d5191e548c6e26f09421a52c0bdb36

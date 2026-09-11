@@ -1,0 +1,75 @@
+product: nemotron-rerank
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: ungated safetensors for the text and VL rerankers}
+    data: {value: closed, detail: 800k samples from an unnamed blend of commercially licensed public QA
+        datasets; nothing released}
+    code: {value: partial, detail: card usage and NIM deployment only; no training pipeline}
+    license:
+    - {name: OpenMDW-1.1, detail: the governing licence named in the card}
+    - {name: Llama-3.2-Community, detail: named as additional information; built with Llama}
+  raw: weights:open(ungated safetensors for the text and VL rerankers);data:closed(800k samples from an
+    unnamed blend of commercially licensed public QA datasets; nothing released);code:partial(card usage
+    and NIM deployment only; no training pipeline);license:OpenMDW-1.1(the governing licence named in
+    the card)+Llama-3.2-Community(named as additional information; built with Llama)
+  confidence: medium
+  note: 'THE LADDER ABSTAINS HERE and the score below is hand-placed, not computed. The Hub licence field
+    reads `other`; the card resolves it to the OpenMDW License Agreement v1.1 with the Llama 3.2 Community
+    License as additional information, and sources/rubrics/pretrained.yaml names neither. Recorded at
+    3/open_weights on the tiers own definitions: OpenMDW-1.1 imposes no cap on who may use the weights
+    or at what scale, and the Llama 3.2 Community License carries the same 700M monthly-active-user bound
+    as the Llama-3.1-Community licence the ladder already places at use_bounded, which is the more restrictive
+    of the two and the one that decides. Adding either name to the shared ladder is a maintainer ruling
+    and was deliberately not taken here. Confidence is medium because the score rests on that unresolved
+    licence pair.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/nvidia/llama-nemotron-rerank-1b-v2/raw/main/README.md
+    shows: 'Front matter reads license: other, license_name: openmdw-1.1, license_link https://openmdw.ai/license/1-1/.
+      The License/Terms of use section says use is governed by the OpenMDW License Agreement version 1.1,
+      with Additional Information: Llama 3.2 Community Model License Agreement; Built with Llama. The
+      card states the model is ready for commercial use, describes a fine-tune of meta-llama/Llama-3.2-1B,
+      and records training on 800k samples from an unnamed blend of public QA datasets chosen for commercial
+      licensing.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 9fe5f8cc81752d94a008dd4346e2b4e3919800f4322625887983105b09ac4f56
+    establishes: [weights, data, code, license]
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: About 1.08M downloads in the trailing 30 days - 1.10M for llama-nemotron-rerank-1b-v2 as measured
+    at the API and 26K for the vision-language sibling. Just over the 1M threshold, and on the text model
+    alone.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/nvidia/llama-nemotron-rerank-1b-v2', shows: 'downloads: 1097075;
+      gated: false; private: false for nvidia/llama-nemotron-rerank-1b-v2.', accessed: '2026-09-11', http_status: 200,
+    content_sha256: bb852cb77a3ff6d64f2b39a9a10bbbee8b59b475ca6846370f1b6c3cee52378f}
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Recall@5 on BEIR NQ, HotpotQA, FiQA and TechQA as the second stage behind llama-nemotron-embed-1b-v2,
+    with MIRACL, MLQA and MLDR for the multilingual and long-document claims
+  relative_to: qwen3-reranker
+  relation: one_below
+  value: 73.64% average Recall@5 on the four-dataset QA suite as a reranking stage, 65.80% on multilingual
+    MIRACL; 26 languages, 8,192-token documents, 1B parameters.
+  confidence: medium
+  note: 'Rung 3, solid workhorse: credible published numbers, real multilingual and long-document coverage,
+    and a production NIM path, but the evaluation is a pipeline Recall@5 rather than a standalone retrieval-quality
+    figure comparable to the frontier, and NVIDIA own table puts the older nv-rerankQA-mistral-4b-v3 pipeline
+    ahead of it at 75.45%. One rung below qwen3-reranker, which publishes frontier BEIR and MMTEB numbers on the
+    instruments this category treats as primary. Confidence is medium because no public leaderboard carries
+    this model.'
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/nvidia/llama-nemotron-rerank-1b-v2/raw/main/README.md', shows: 'Evaluation
+      tables report llama-nemotron-embed-1b-v2 + llama-nemotron-rerank-1b-v2 at 73.64% average Recall@5
+      on NQ, HotpotQA, FiQA and TechQA against 75.45% for nv-embedqa-e5-v5 + nv-rerankQA-mistral-4b-v3,
+      and 65.80% on MIRACL multilingual; the overview states support for 8192-token documents and evaluation
+      on 26 languages.', accessed: '2026-09-11', http_status: 200, content_sha256: 9fe5f8cc81752d94a008dd4346e2b4e3919800f4322625887983105b09ac4f56}

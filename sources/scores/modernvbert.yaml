@@ -1,0 +1,113 @@
+product: modernvbert
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: ungated MIT checkpoints on the ModernVBERT org - colmodernvbert, bimodernvbert, modernvbert-embed
+        and the base model
+    data:
+      value: open
+      detail: the paper states models, code and data are released, and the org publishes the NatCap modality-alignment
+        corpus alongside the public document-retrieval sets it trains on
+    code:
+      value: open
+      detail: the card releases the training codebase under MIT, and the paper releases intermediate checkpoints
+        with it
+    checkpoints:
+      value: open
+      detail: ModernVBERT/ablation_checkpoints, the intermediate and ablation runs behind the paper
+    license:
+    - name: MIT
+      detail: OSI
+  raw: weights:open(ungated MIT checkpoints on the ModernVBERT org - colmodernvbert, bimodernvbert, modernvbert-embed
+    and the base model);data:open(the paper states models, code and data are released, and the org publishes
+    the NatCap modality-alignment corpus alongside the public document-retrieval sets it trains on);code:open(the
+    card releases the training codebase under MIT, and the paper releases intermediate checkpoints with
+    it);checkpoints:open(ModernVBERT/ablation_checkpoints, the intermediate and ablation runs behind the
+    paper);license:MIT(OSI)
+  confidence: high
+  note: 'An unusually complete release for a 2025 retriever: MIT over architecture, weights and the training
+    codebase in one sentence of the card, the data published in the same org, and the intermediate checkpoints
+    kept rather than discarded. The corpus is the softest of the four - it is a mixture of public sets
+    plus the released NatCap rather than one named published corpus - but nothing in it is withheld.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/ModernVBERT/colmodernvbert/raw/main/README.md
+    shows: '`license: mit` front matter and ''We release the ModernVBERT model architectures, model weights,
+      and training codebase under the MIT license.''; lists ColModernVBERT, BiModernVBERT, ModernVBERT-embed
+      and the base model.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 9973f70143ba9dc32632ab04ce15795df218266d53a8d1918fded65477f32bb4
+    establishes:
+    - weights
+    - code
+    - license
+  - url: https://arxiv.org/abs/2510.01149
+    shows: '''Models, code and data are available at this https URL.'''
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5705b8a205914ed3f8ce5e6b1e120323bbe2f05c9c920bfcdb1e3d141fabde30
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets?author=ModernVBERT&limit=50
+    shows: the org publishes ModernVBERT/natcap and ModernVBERT/toy-colpali-train-set as public datasets.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ca17f7de13e1518593abb2bd7c0f5362ae26e39cb35a5e825bbee7944b1efcdc
+    establishes:
+    - data
+  - url: https://huggingface.co/api/models?author=ModernVBERT&limit=50
+    shows: 'seven public repos including ModernVBERT/ablation_checkpoints; `gated: false` throughout.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ab6369631e167b083974522dfec2f89d1e9e6ec3b4d8a84d7bf6de98dd8d4076
+    establishes:
+    - weights
+    - checkpoints
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 132,434 downloads in the trailing 30 days for ColModernVBERT, which is effectively the whole family
+    - the bi-encoder, base and ablation repos draw single digits. The warehouse sweep of 2026-09-06 recorded
+    248,469 over its own window; both readings sit inside the same band.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/ModernVBERT/colmodernvbert
+    shows: '`downloads` (trailing 30 days) = 132434; `gated: false`; `private: false`.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 129cbe91afbf1d21ada5a006ebd320d35f4ce7f7af0dd8763f626d3b7bf042ab
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: ViDoRe v1 and ViDoRe v2 (English) visual document retrieval, nDCG@5
+  value: 81.2 on ViDoRe v1 and 56.0 on ViDoRe v2 English, a 68.6 average, at 250M parameters - level with
+    the original 2.92B ColPali and far ahead of every other sub-1B entry, but roughly seven points of
+    average below the ColQwen tier.
+  relative_to: colpali
+  relation: one_below
+  confidence: high
+  note: 'Rung 3 is the narrow-scope reading, not the dated one: this is a 2025 model whose published numbers
+    are credible and whose sub-1B efficiency is genuinely leading, but the scope is English-only at 250M
+    and the absolute retrieval quality is a tier below the frontier on the same table.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://arxiv.org/html/2510.01149v1
+    shows: 'Table 3, ViDoRe Leaderboard, nDCG@5: ColModernVBERT (ours) 0.25B 81.2 / 56.0 / 68.6 at .032s
+      CPU query latency; ColPali 2.92B 81.6 / 56.8 / 69.2; ColQwen2.5 3.75B 89.5 / 61.5 / 75.5; ColFlor
+      0.17B 68.8 / 43.0 / 55.9.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3a1a414eba86904dddfcbd9109535a0a6081d39ed91915a3bb82d3475f8c943d
+  - url: https://arxiv.org/abs/2510.01149
+    shows: '''a compact 250M-parameter vision-language encoder that outperforms recent models up to 10
+      times larger when fine-tuned on document retrieval tasks''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5705b8a205914ed3f8ce5e6b1e120323bbe2f05c9c920bfcdb1e3d141fabde30

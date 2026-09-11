@@ -1,0 +1,116 @@
+product: colpali
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 45 ungated checkpoints on the vidore org, covering ColPali, ColQwen2/2.5, ColSmol and ColQwen-Omni
+    data:
+      value: open
+      detail: vidore/colpali_train_set, the 118,195-pair training set, published ungated on the Hub
+    code:
+      value: open
+      detail: colpali-engine[train] ships scripts/train/train_colbert.py and the per-model training configs
+        used for the released checkpoints
+    license:
+    - name: Gemma-License
+      detail: non-OSI, resolved most-restrictive across the distributed SKUs - the PaliGemma-backed colpali-v1.2/v1.3-hf
+        and -merged weights carry the Gemma terms
+    - name: MIT
+      detail: OSI, the ColPali adapters and, with Apache-2.0 Qwen2-VL backbones, the ColQwen SKUs
+  raw: weights:open(45 ungated checkpoints on the vidore org, covering ColPali, ColQwen2/2.5, ColSmol
+    and ColQwen-Omni);data:open(vidore/colpali_train_set, the 118,195-pair training set, published ungated
+    on the Hub);code:open(colpali-engine[train] ships scripts/train/train_colbert.py and the per-model
+    training configs used for the released checkpoints);license:Gemma-License(non-OSI, resolved most-restrictive
+    across the distributed SKUs - the PaliGemma-backed colpali-v1.2/v1.3-hf and -merged weights carry
+    the Gemma terms)+MIT(OSI, the ColPali adapters and, with Apache-2.0 Qwen2-VL backbones, the ColQwen
+    SKUs)
+  confidence: high
+  note: Data and code are as open as the ladder's top rung asks - a published training set and a real
+    training pipeline - but the licence rung fires first. Some distributed SKUs merge PaliGemma weights
+    and inherit the Gemma terms, and multi_sku_rule resolves the family on the most restrictive licence
+    actually shipped, which caps this at 3. The ColQwen line alone would reach higher.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/vidore/colpali-v1.3/raw/main/README.md
+    shows: '''ColPali''s vision language backbone model (PaliGemma) is under `gemma` license ... The adapters
+      attached to the model are under MIT license''; datasets: vidore/colpali_train_set; 127,460 query-page
+      pairs described.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: be25b990ec4e2cf8be0f2addcf1114a9231ab43ceaab36964ab9fe2d153daa98
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/vidore/colqwen2-v1.0/raw/main/README.md
+    shows: '''ColQwen2''s vision language backbone model (Qwen2-VL) is under `apache2.0` license. The
+      adapters attached to the model are under MIT license''; `license: apache-2.0` front matter.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d48ce81d88117ae59cc77a93413a7cf3f80fedf21d143366c85f625a7c48f2b3
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/vidore/colpali_train_set
+    shows: '`gated: false`, `private: false`, 118,195 train examples and a 500-row test split.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4a95f803806f65fb4bcd114bff7068e2c2fd60703e1cc77ce9a0de1e0e9a6730
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/illuin-tech/colpali/main/README.md
+    shows: '''This repository contains the code used for training and running visual document retrievers'';
+      a Training section installing `colpali-engine[train]` and launching scripts/train/train_colbert.py
+      against scripts/configs/pali/*.yaml; a licence column marking colpali-v1.x Gemma and the ColQwen/ColSmol
+      SKUs Apache 2.0.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7fee6d4bdf5771caef5a7cd5699af89ec38f116f877df154e11d60ba20fe3a31
+    establishes:
+    - code
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 1,255,462 downloads in the trailing 30 days summed across the 45 repos in the vidore org (colqwen2-v1.0
+    471,319; colqwen2.5-v0.2 328,936; colSmol-500M 314,435; the ColPali checkpoints themselves a long
+    tail behind their ColQwen successors).
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models?author=vidore&limit=100&sort=downloads&direction=-1
+    shows: 45 vidore repos with `downloads` (trailing 30 days) summing to 1,255,462.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 32365cbb57ac872e740d826e07bb2b9c9ab5c9057a4bf8227f0ba56404c074d0
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: ViDoRe v1 and ViDoRe v2 (English) visual document retrieval, nDCG@5
+  value: ColQwen2.5 scores 89.5 on ViDoRe v1 and 61.5 on ViDoRe v2 English, a 75.5 average; the original
+    PaliGemma ColPali sits at 81.6 / 56.8. Near the top of the leaderboard it defined, but behind NemoRetriever-3B
+    at 78.7 average.
+  relative_to: colbert
+  relation: one_above
+  confidence: high
+  note: 'Rung 4, competitive frontier: the reference family for the whole task, current-generation, with
+    published numbers within a few points of the leader rather than at it. Placed one above ColBERT,
+    the late-interaction retriever it descends from - ColPali carries the same MaxSim mechanism into
+    a modality where it is still the reference family, while ColBERT''s text checkpoint has been overtaken.
+    ColModernVBERT is placed one below this in turn, off the same ViDoRe table.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://arxiv.org/html/2510.01149v1
+    shows: 'Table 3, ViDoRe Leaderboard, nDCG@5: ColPali 2.92B 81.6 / 56.8 / 69.2; ColQwen2.5 3.75B 89.5
+      / 61.5 / 75.5; ColModernVBERT 0.25B 81.2 / 56.0 / 68.6; NemoRetriever-3B 91.0 / 66.3 / 78.7.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3a1a414eba86904dddfcbd9109535a0a6081d39ed91915a3bb82d3475f8c943d
+  - url: https://raw.githubusercontent.com/illuin-tech/colpali/main/README.md
+    shows: 'publisher''s own ViDoRe column: colpali 81.3, colpali-v1.3 84.8, colqwen2-v1.0 89.3, colqwen2.5-v0.2
+      89.4, colSmol-500M 82.3.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7fee6d4bdf5771caef5a7cd5699af89ec38f116f877df154e11d60ba20fe3a31

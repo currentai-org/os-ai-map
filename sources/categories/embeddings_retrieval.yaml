@@ -1,6 +1,8 @@
 name: embeddings_retrieval
 display_name: Embeddings & retrieval models
 description: Models whose headline output is a vector representation or a relevance score consumed by a retrieval system, rather than a chat completion.
+strapline: Weights download for 28 of 35 products and the top of the MMTEB table is MIT-licensed, which
+  inverts the story the other model rows tell. What stays closed here is the commercial API tier.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -16,6 +18,52 @@ scoring_recipe:
     inherited_from: base_pretrained
     verified_on: '2026-09-11'
     checker: build/check_rubric.py
+
+  # Three licence names the shared ladder does not carry. Per docs/workflows/promote-category.md
+  # step 7, extending a shared tier reaches every inheriting category and is a maintainer's
+  # ruling rather than part of a promotion - so the products are deferred here with the reading
+  # that would apply, and sources/rubrics/pretrained.yaml is untouched. check_recipe will report
+  # each deferral stale the moment a ruling lands, which is how they close.
+  deferred:
+    nemotron-embed:
+      because: >-
+        `OpenMDW-1.1` - the Linux Foundation's Open Model, Data and Weights License Agreement
+        v1.1 - governs the current Nemotron-3-Embed release and matches no name in any tier, so
+        the walk blocks at the first rung that tests one. Read in full it grants dealing in the
+        model materials without restriction under copyright, patent, database and trade-secret
+        rights, asks only that the agreement and origin notices travel with a redistribution,
+        and disclaims any restriction on outputs. That is `permissive_non_osi` by that tier's own
+        definition and would produce the 3/open_weights recorded here. The record also carries a
+        finding worth a maintainer's eye: NVIDIA's `other` tag hides three different licences
+        across the line, and the superseded `llama-embed-nemotron-8b` restricts use to
+        non-commercial research at section 3.3. This record applies the current release as
+        governing; applying multi_sku_rule across every distributed SKU instead would cap the
+        family at 2/restricted.
+    nemotron-rerank:
+      because: >-
+        The same `OpenMDW-1.1` as nemotron-embed, compounded with `Llama-3.2-Community`, which
+        the card names as additional information under "Built with Llama". Neither name is in a
+        tier. The Llama half is the same 700M-monthly-active-user bound the ladder already places
+        at `use_bounded` for `Llama-3.1-Community-License`, and the OpenMDW half reads
+        permissive, so the recorded 3/open_weights is what either reading produces. Closes with
+        the same ruling as nemotron-embed.
+    jina-embeddings:
+      because: >-
+        Three licences in one compound and two of them unnamed by the ladder. Apache-2.0 covers
+        only the superseded v1 and v2 encoders; `CC-BY-NC-4.0` governs v3 and the v5-text line and
+        matches no tier for the same spelling reason as jina-reranker; and `Qwen-Research-License`
+        governs v4, inherited from the Qwen2.5-VL-3B base it is built on, and is also unnamed. Both
+        unnamed halves are non-commercial, so `commercial_forbidden` is what either produces and
+        the recorded score follows from it. Closes with the same ruling as jina-reranker, plus a
+        name for the Qwen research licence.
+    jina-reranker:
+      because: >-
+        `CC-BY-NC-4.0` matches no tier. The ladder names `CC-BY-NC` and `CC-BY-NC-SA-4.0` but not
+        the plain 4.0 variant, which is what Jina's v2, v3 and v3.5 cards actually carry; the
+        superseded v1 SKUs are Apache-2.0, so the compound is recorded on both halves. The
+        non-commercial clause is unambiguous and puts it in `commercial_forbidden` under that
+        tier's one question, which produces the 2/restricted recorded here. This is a spelling
+        gap rather than an open question about the product, and the cheapest possible ruling.
 
   adoption:
     signal_preference:
@@ -88,7 +136,42 @@ scoring_recipe:
     medium: a proxy or publisher summary supports the judgment without a direct measurement
     low: inferred from indirect evidence, or the source is older than 90 days
 
-products: []
+products:
+- all-minilm
+- ms-marco-cross-encoder
+- bge
+- bge-reranker
+- e5
+- harrier-oss
+- nomic-embed
+- gte
+- qwen3-embedding
+- qwen3-reranker
+- arctic-embed
+- granite-embedding
+- embeddinggemma
+- siglip
+- gemini-embedding
+- mxbai-embed
+- mixedbread-rerank
+- nemotron-embed
+- nemotron-rerank
+- jina-reranker
+- zerank
+- colbert
+- colpali
+- modernvbert
+- clip
+- openai-embeddings
+- openclip
+- cohere-embed
+- voyage-embeddings
+- voyage-rerank
+- titan-embeddings
+- mistral-embed
+- cohere-rerank-api
+- jina-embeddings
+- gte-reranker
 comments: >-
   Proposed in issue #52. The boundary is the output: a vector or a relevance score consumed by a
   downstream retrieval or RAG system. Bi-encoder text embeddings, cross-encoder rerankers,

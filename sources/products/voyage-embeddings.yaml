@@ -1,0 +1,16 @@
+name: voyage-embeddings
+display_name: Voyage Embeddings
+type: model
+description: 'Voyage AI’s text embedding line, currently the Voyage 4 series: voyage-4-large, voyage-4,
+  voyage-4-lite and voyage-4-nano. All four share one embedding space, so a corpus embedded with the flagship
+  can be queried with a cheaper sibling. voyage-4-large is the first production embedding model built
+  on a mixture-of-experts architecture. Sold through Voyage’s own API and natively through the MongoDB
+  Atlas Embedding and Reranking API.'
+huggingface_model:
+- url: https://huggingface.co/voyageai/voyage-4-nano
+comments: 'The line is deliberately split: voyage-4-large, voyage-4 and voyage-4-lite are API-only, while
+  voyage-4-nano ships real safetensors weights under Apache-2.0 on the Hub. The Hub repos for the paid
+  SKUs hold tokenizer and config files only. Under the ladder’s multi_sku_rule the distributed set is
+  the nano checkpoint alone, so Apache-2.0 governs and the line does not score as closed — see the openness
+  note. Verified 2026-09-11 against the Voyage 4 launch post, the Voyage embeddings docs and the Hugging
+  Face model API.'

@@ -1,0 +1,74 @@
+product: jina-reranker
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights: {value: open, detail: ungated safetensors on the Hub for v1 through v3.5}
+    data: {value: closed, detail: no training data or construction scripts released}
+    code: {value: partial, detail: remote inference code shipped with the card; no training pipeline and
+        no model repository}
+    license:
+    - {name: Apache-2.0, detail: 'OSI, and only the superseded v1-turbo-en and v1-tiny-en'}
+    - {name: CC-BY-NC-4.0, detail: 'non-commercial; governs v2, v3, v3.5 and m0'}
+  raw: weights:open(ungated safetensors on the Hub for v1 through v3.5);data:closed(no training data or
+    construction scripts released);code:partial(remote inference code shipped with the card; no training
+    pipeline and no model repository);license:Apache-2.0(OSI, and only the superseded v1-turbo-en and
+    v1-tiny-en)+CC-BY-NC-4.0(non-commercial; governs v2, v3, v3.5 and m0)
+  confidence: high
+  note: THE LADDER ABSTAINS HERE and the score below is hand-placed, not computed. The current SKUs are
+    licensed CC-BY-NC-4.0, and the pretrained ladder names CC-BY-NC and CC-BY-NC-SA-4.0 but not CC-BY-NC-4.0,
+    so no tier resolves. Recorded at 2/restricted because the commercial_forbidden tier asks one question
+    - does the licence permit commercial use at all - and the card answers no, saying commercial use beyond
+    AWS and Azure requires contacting sales. Adding CC-BY-NC-4.0 to sources/rubrics/pretrained.yaml is
+    a maintainer ruling and was deliberately not taken here.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
+    shows: 'Front matter reads license: cc-by-nc-4.0; the License section says the model is licensed under
+      CC BY-NC 4.0 for use beyond the AWS and Azure listings and directs commercial usage inquiries to
+      contact sales. Weights are ungated, inference is via trust_remote_code with no training pipeline
+      or corpus named.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e
+    establishes: [weights, data, code, license]
+  - url: https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual
+    shows: license cc-by-nc-4.0 recorded in cardData for jinaai/jina-reranker-v2-base-multilingual, confirming
+      the non-commercial terms are not unique to v3.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2b415a0fa6987e8278dc479a3bee5a99ae4469e424ad3ab59c5fc08589677d23
+    establishes: [license]
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: About 2.4M downloads in the trailing 30 days across the line - v2-base-multilingual 1.16M, v3
+    780K, m0 379K, v3.5 32K, plus the two v1 checkpoints. The v2 and v3 figures alone clear the 1M band.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual', shows: 'downloads:
+      1155086; gated: false; private: false for jinaai/jina-reranker-v2-base-multilingual.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: 2b415a0fa6987e8278dc479a3bee5a99ae4469e424ad3ab59c5fc08589677d23}
+  - {url: 'https://huggingface.co/api/models/jinaai/jina-reranker-v3', shows: 'downloads: 780543; gated:
+      false; private: false for jinaai/jina-reranker-v3.', accessed: '2026-09-11', http_status: 200, content_sha256: d11469a35364c75192c010d93bb0dfd28bb4c6176d241cc8d212d856c8c47c0f}
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: BEIR nDCG@10, with MIRACL, MKQA and CoIR alongside it
+  relative_to: qwen3-reranker
+  relation: at
+  value: 61.94 BEIR nDCG@10 at 0.6B, plus 66.83 MIRACL, 67.92 MKQA and 70.64 CoIR; listwise over up to
+    64 documents in a 131K-token window.
+  confidence: high
+  note: 'Rung 4, competitive frontier. Level with qwen3-reranker: 61.94 BEIR against Qwen3-Reranker-4B
+    at 61.16 on the same table, at a sixth of the parameters, and multilingual with a long context in
+    both cases. Note the numbers come from the publisher own card, which is the instrument available for
+    this product and is why the comparison is drawn against a peer scored from the same table.'
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Card reports jina-reranker-v3
+      at 61.94 BEIR, 66.83 MIRACL, 67.92 MKQA and 70.64 CoIR at 0.6B parameters, in a table that also
+      lists Qwen3-Reranker-4B at 61.16 BEIR and bge-reranker-v2-m3 at 56.51; describes 64 documents within
+      a 131K context window.', accessed: '2026-09-11', http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}

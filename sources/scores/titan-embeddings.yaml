@@ -1,0 +1,109 @@
+product: titan-embeddings
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: the amazon/Titan-text-embeddings-v2 Hub repo holds README.md and config.json only; the model
+        runs solely on Bedrock as amazon.titan-embed-text-v2:0
+    data:
+      value: closed
+      detail: training corpus not released or described
+    code:
+      value: closed
+      detail: no training or inference implementation; the Bedrock runtime API and AWS SDKs only
+    license:
+    - name: proprietary
+      detail: 'AWS end-user license over a Bedrock-hosted model; the Hub card records license: other and
+        distributes nothing'
+  raw: 'weights:closed(the amazon/Titan-text-embeddings-v2 Hub repo holds README.md and config.json only;
+    the model runs solely on Bedrock as amazon.titan-embed-text-v2:0);data:closed(training corpus not
+    released or described);code:closed(no training or inference implementation; the Bedrock runtime API
+    and AWS SDKs only);license:proprietary(AWS end-user license over a Bedrock-hosted model; the Hub card
+    records license: other and distributes nothing)'
+  confidence: high
+  note: 'API-only, so the ladder''s first rule fires. The Hub repo is the trap here and is recorded deliberately:
+    amazon/Titan-text-embeddings-v2 looks like a weights release and is a model card with a config file,
+    so the license field on it governs a README rather than a checkpoint.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/amazon/Titan-text-embeddings-v2
+    shows: 'amazon/Titan-text-embeddings-v2: gated false, tags include ''license:other'', and the file
+      list is [''.gitattributes'', ''README.md'', ''config.json''] — no weight shards. Last modified 2024-04-30.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2611d499b944655448e5d922ab12bd0f39bdb8866c463ff9299938f4fddb689e
+    establishes:
+    - weights
+    - license
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
+    shows: >-
+      The Bedrock model card gives model ID amazon.titan-embed-text-v2:0, an 8K context window, a
+      2024-04-30 launch date and 'Model lifecycle: Active'. Access is through the Bedrock runtime and
+      the page offers no download. It is also the whole of Amazon's product documentation for this
+      model, and it says nothing about the corpus - the strings "training data", "training corpus",
+      "trained on" and "dataset" appear nowhere on it - which is what establishes data as closed
+      rather than merely undocumented.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e
+    establishes:
+    - weights
+    - code
+    - data
+    - license
+adoption:
+  level: 3
+  signal_type: reported_traction
+  banded_quantity: Amazon Bedrock first-party catalog presence and an Active lifecycle; the Hub card's
+    518 monthly downloads are cited only to reject them, since that repo holds no weights
+  confidence: medium
+  note: No artifact to count — the Hub card's 518 monthly downloads measure a README, not a model — and
+    no call volume published. The level rests on being a first-party model on Amazon Bedrock with its
+    own list price and an Active lifecycle, and on its role as a default embedder for Bedrock Knowledge
+    Bases. Distribution is broad but single-platform, which is why it sits below the models Microsoft
+    and Google resell as well.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
+    shows: '''Model lifecycle: Active'' with a stated EOL no sooner than 2024-04-30 and a legacy period
+      of at least six months, so AWS still sells it rather than winding it down.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e
+  - url: https://aws.amazon.com/bedrock/pricing/
+    shows: The Bedrock pricing page carries per-token list prices for both Titan Text Embeddings and Titan
+      Text Embeddings V2, so both are still generally available and billed.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 997f61dadd44687a67170875a68f0c023a9b096c1db5f1a850e8efdb688a7f4d
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: MTEB, per the 329-result model-index Amazon publishes on its own Hugging Face card, including
+    27 retrieval tasks
+  value: MTEB retrieval NDCG@10 of 70.52 on SciFact, 51.31 on ArguAna, 44.80 on FiQA2018 and 33.94 on
+    NFCorpus, across 27 retrieval tasks in Amazon’s published model-index, at an 8,000-token context and
+    1,024 default dimensions.
+  relative_to: mistral-embed
+  relation: at
+  confidence: high
+  note: 'Rung 2, narrow or dated. The evaluation is real and unusually complete for a closed model — 329
+    MTEB results published by the vendor — but it dates from the April 2024 release and nothing has replaced
+    it. Short context by 2026 standards, text-only, and two generations behind the frontier while remaining
+    useful for its niche, which is retrieval inside Bedrock. Level with mistral-embed: both are 8K-token
+    text-only models of the 2023-24 generation still sold unchanged.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/amazon/Titan-text-embeddings-v2
+    shows: The card's model-index carries 329 MTEB results, 27 of them Retrieval; NDCG@10 is 70.52 on
+      MTEB SciFact, 51.31 on MTEB ArguAna, 44.80 on MTEB FiQA2018 and 33.94 on MTEB NFCorpus.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2611d499b944655448e5d922ab12bd0f39bdb8866c463ff9299938f4fddb689e
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-amazon-titan-text-embeddings-v2.html
+    shows: 'Context window 8K tokens; the sample call sets ''dimensions'': 1024. Launch date 2024-04-30.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 32c5cf3aad2a31999bead6ec88cf0d268c3a26dc729e7bf7ea92e69088fe112e

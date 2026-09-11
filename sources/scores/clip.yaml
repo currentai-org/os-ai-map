@@ -1,0 +1,99 @@
+product: clip
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: four ungated openai/clip-vit-* repos on the Hub, plus the original checkpoints served by
+        the CLIP package
+    data:
+      value: closed
+      detail: WIT-400M; the model card states outright that OpenAI will not be releasing the dataset
+    code:
+      value: partial
+      detail: the openai/CLIP repository ships the model definition, inference and zero-shot evaluation
+        notebooks, with no training pipeline
+    license:
+    - name: MIT
+      detail: OSI, from the openai/CLIP repository LICENSE; the Hub mirrors carry no license metadata
+        field
+  raw: weights:open(four ungated openai/clip-vit-* repos on the Hub, plus the original checkpoints served
+    by the CLIP package);data:closed(WIT-400M; the model card states outright that OpenAI will not be
+    releasing the dataset);code:partial(the openai/CLIP repository ships the model definition, inference
+    and zero-shot evaluation notebooks, with no training pipeline);license:MIT(OSI, from the openai/CLIP
+    repository LICENSE; the Hub mirrors carry no license metadata field)
+  confidence: high
+  note: The category's centre of gravity, and the reason OpenCLIP exists. Weights under an OSI licence
+    that anyone can run, a corpus the publisher says explicitly it will never release, and a repository
+    that lets you use the model but not rebuild it.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/openai/clip-vit-base-patch32/raw/main/README.md
+    shows: '''The model was trained on publicly available image-caption data ... A large portion of the
+      data comes from our crawling of the internet''; ''We do not intend for this dataset to be used as
+      the basis for any commercial or deployed model and will not be releasing the dataset.'' Front matter
+      carries `tags: vision` and no license field.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 8f0e8c678e0afe5f384f3bf8a6694c1cb53c41e52f86277967b6c5354cb0f9f4
+    establishes:
+    - data
+    - weights
+  - url: https://raw.githubusercontent.com/openai/CLIP/main/README.md
+    shows: usage is `clip.load` plus encode_image / encode_text and a zero-shot prediction example; the
+      repository documents no training entry point.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f82c5c75e140532eb37a7d943921e1bdd57d740c6b40d0030985bc5b5d11d6f1
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/openai/CLIP/main/LICENSE
+    shows: '''MIT License / Copyright (c) 2021 OpenAI''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 987e63b32f6c89ff5160e429458a872ff048e6860b590a3912e938f9da8f14db
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 32,961,856 downloads in the trailing 30 days across the four openai/clip-vit-* repos (base-patch32
+    21,008,990; large-patch14 7,730,667; large-patch14-336 2,586,045; base-patch16 1,636,154). The highest
+    figure anywhere in this set, and the base-patch32 repo alone clears the top band.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models?author=openai&search=clip&limit=100&sort=downloads&direction=-1
+    shows: four openai clip repos with `downloads` (trailing 30 days) summing to 32,961,856.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2df85050776a10745513b01b658f5a563d4c411382d75b3745f8cb783c6a2efb
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: zero-shot ImageNet-1k top-1 accuracy, the instrument CLIP itself introduced
+  value: 75.5% zero-shot ImageNet-1k for ViT-L/14, the strongest checkpoint OpenAI released, on 13B samples
+    seen from WIT.
+  relative_to: openclip
+  relation: one_below
+  confidence: high
+  note: 'Rung 2 on the definition rather than on reputation: English-only, a 77-token text context, and
+    beaten on its own instrument by both the open reimplementation trained on open data and by SigLIP
+    2. Still enormously useful in its niche, which is exactly what rung 2 describes. Placed against OpenCLIP
+    because the two are measured in the same table.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/README.md
+    shows: 'model table: ''ViT-L-14-quickgelu (Original CLIP) | WIT | 224px | 13B | 75.5%'' ImageNet zero-shot
+      acc., against ViT-H-14 LAION-2B at 78.0% and ViT-bigG-14 at 80.1%.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1161fd4bd0a9c5588eab7fd6d62023a1c04a7d175b772fccb30711c422efefaf
+  - url: https://raw.githubusercontent.com/openai/CLIP/main/README.md
+    shows: '''We found CLIP matches the performance of the original ResNet50 on ImageNet "zero-shot" without
+      using any of the original 1.28M labeled examples''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f82c5c75e140532eb37a7d943921e1bdd57d740c6b40d0030985bc5b5d11d6f1

@@ -1,0 +1,100 @@
+product: colbert
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: ungated MIT safetensors and ONNX on colbert-ir/colbertv2.0
+    data:
+      value: open
+      detail: MS MARCO passage-ranking triples plus the released 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way
+    code:
+      value: open
+      detail: the repository ships the ColBERTv2-style Trainer, the indexer and the evaluation utilities,
+        not just inference
+    license:
+    - name: MIT
+      detail: OSI
+  raw: weights:open(ungated MIT safetensors and ONNX on colbert-ir/colbertv2.0);data:open(MS MARCO passage-ranking
+    triples plus the released 64-way distillation examples at colbert-ir/colbertv2.0_msmarco_64way);code:open(the
+    repository ships the ColBERTv2-style Trainer, the indexer and the evaluation utilities, not just inference);license:MIT(OSI)
+  confidence: high
+  note: 'Everything the ladder asks for is present: MIT weights on the Hub, a training corpus that is
+    a public benchmark plus a published distillation file, and a repository whose training entry point
+    is documented in the README rather than left as inference-only glue.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/colbert-ir/colbertv2.0/raw/main/README.md
+    shows: '`license: mit` in the card front matter; card describes late interaction and links the ColBERTv2
+      paper.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 44e68292037d4fac7db91b9b24ae36535ae5807eef2b323adcc83a615b91751d
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/stanford-futuredata/ColBERT/main/README.md
+    shows: '''This checkpoint has been trained on the MS MARCO Passage Ranking task''; a Data section
+      naming triples.train.small.tar.gz, collection.tar.gz and qrels; and ''Basic Training (ColBERTv1-style)''
+      plus ''Advanced Training (ColBERTv2-style)'' sections that call `colbert.Trainer` with the published
+      64-way examples.json from colbert-ir/colbertv2.0_msmarco_64way.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 40897ba2f2db6854660a62893fb299941bf54350ddaad6a4ecfdd151ef028110
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/stanford-futuredata/ColBERT/main/LICENSE
+    shows: '''MIT License / Copyright (c) 2019, 2020 Stanford Future Data Systems''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 641c1a7fc3e22f3ea8521617c690213f0d741bf95ff35eeba99b34ff2102e0ae
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 2,542,542 downloads in the trailing 30 days summed across the colbert-ir org (colbertv2.0 2,539,633;
+    colbertv1.9 2,902; the rest negligible). Third-party re-uploads such as lightonai/colbertv2.0 are
+    excluded as mirrors.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models?author=colbert-ir&limit=100&sort=downloads&direction=-1
+    shows: six colbert-ir repos with `downloads` (trailing 30 days) summing to 2,542,542; colbert-ir/colbertv2.0
+      alone at 2,539,633.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6e85533e56c0040aaa125058d0ad65475425b7d2c60f7f59f146b3e36dd3c00e
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: BEIR and LoTTE out-of-domain passage retrieval, the instruments of the ColBERTv2 paper
+    (NAACL 2022)
+  value: State of the art within and outside the training domain when published in 2022, with a 6-10x
+    smaller late-interaction index; still the default late-interaction baseline, but a generation behind
+    the current frontier and English-only.
+  relative_to: harrier-oss
+  relation: two_below
+  confidence: medium
+  note: Placed against the category's text anchor because ColBERT is the one text retriever in this cluster.
+    The paper's own claim is a 2022 state-of-the-art on BEIR and LoTTE, which is rung 3's description
+    exactly - credible published numbers on a named instrument, superseded generation. Confidence is medium
+    because the claim in reach of a primary fetch is qualitative; the per-corpus tables are in the PDF.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://arxiv.org/abs/2112.01488
+    shows: '''We evaluate ColBERTv2 across a wide range of benchmarks, establishing state-of-the-art quality
+      within and outside the training domain while reducing the space footprint of late interaction models
+      by 6--10x.'''
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e6bdea1a88618a47c65a32bf66dd725af9803c4a50298a6da229dec6d2ec6732
+  - url: https://raw.githubusercontent.com/stanford-futuredata/ColBERT/main/README.md
+    shows: links the ColBERTv2 (NAACL'22) paper and documents downloading 'our new LoTTE benchmark', the
+      out-of-domain instrument introduced with the checkpoint.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 40897ba2f2db6854660a62893fb299941bf54350ddaad6a4ecfdd151ef028110

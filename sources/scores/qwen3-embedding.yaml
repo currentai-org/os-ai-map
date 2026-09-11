@@ -1,0 +1,105 @@
+product: qwen3-embedding
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: three ungated Apache-2.0 checkpoints, 0.6B/4B/8B
+    data:
+      value: closed
+      detail: multi-stage weakly-supervised and synthetic mixture described in the paper, not released
+    code:
+      value: partial
+      detail: evaluation and inference examples in QwenLM/Qwen3-Embedding; no pretraining pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  governing_release: Qwen3-Embedding (0.6B/4B/8B)
+  note: 'Apache-2.0 across every distributed size, which is unusual for a Qwen release and means multi_sku_rule
+    has nothing restrictive to resolve to. What holds it at 3 rather than higher is the other half of the ladder:
+    the training corpus is described in the paper but not published, and the repository carries evaluation and
+    usage code rather than the pipeline that produced the checkpoints.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Embedding-8B/raw/main/README.md
+    shows: 'license: apache-2.0 in the front matter; base_model Qwen/Qwen3-8B-Base; the three embedding sizes
+      and three reranker sizes listed as downloadable; no training data or pretraining code named.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1fd6f3583d642a3319efb3eb8c22b6aa6320e6ab92263447bd84fd92615206d4
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-Embedding/main/README.md
+    shows: The product repository points at the Hugging Face and ModelScope collections, the blog, the arXiv paper
+      and the hosted API, and offers usage and evaluation material rather than a pretraining pipeline.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cb77a65d92c429684ce41c839f959d151021b9fc37a40b9dfddfdb7449790599
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-8B
+    shows: 'gated: false; private: false; cardData license apache-2.0.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c39b68dd8682214dd9f54e0a373a3c9a7bffbd4e83c3bdf1e6246ab578e286c4
+    establishes:
+    - weights
+  raw: weights:open(three ungated Apache-2.0 checkpoints, 0.6B/4B/8B);data:closed(multi-stage weakly-supervised
+    and synthetic mixture described in the paper, not released);code:partial(evaluation and inference examples
+    in QwenLM/Qwen3-Embedding; no pretraining pipeline);license:Apache-2.0(OSI)
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: '12,549,679 downloads in the trailing 30 days across the three shipped embedding checkpoints - 7,806,497
+    for the 0.6B, 2,489,577 for the 4B and 2,253,605 for the 8B. Excluded from the sum: the vendor''s own GGUF
+    conversions of the same three checkpoints (another 173k) and the separate Qwen3-VL-Embedding line, which is
+    a different product. Level 5 here is measured, not inferred.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-0.6B
+    shows: 'downloads: 7806497; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 89eab9eb03c6a72dcbc1855ad1e3011c66ac908235c69b17fb36dc0d12c5724b
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-4B
+    shows: 'downloads: 2489577; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2c084193b8e2f552e95da2ce2bab870827f2aa0e22780a04ff76a358bfb6f841
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-8B
+    shows: 'downloads: 2253605; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c39b68dd8682214dd9f54e0a373a3c9a7bffbd4e83c3bdf1e6246ab578e286c4
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: MTEB (Multilingual, v2), mean over tasks
+  value: 70.58 mean on MTEB (Multilingual, v2) for Qwen3-Embedding-8B; No.1 on that leaderboard as of 5 June 2025.
+  confidence: high
+  relative_to: harrier-oss
+  relation: one_below
+  note: Rung 4, the competitive frontier. Qwen3-Embedding-8B held first place on the multilingual MTEB leaderboard
+    at release and still posts 70.58, with 100+ languages, a 32k context and Matryoshka dimensions - everything
+    the rung asks for. It is one below Harrier-OSS because the anchor's 74.3 has since displaced it from the top
+    of the same table, not because anything about the Qwen line has weakened.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Embedding-8B/raw/main/README.md
+    shows: The card states the 8B model ranks No.1 in the MTEB multilingual leaderboard as of June 5, 2025 with
+      a score of 70.58, over 100 languages, 32k context and embedding dimensions up to 4096.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1fd6f3583d642a3319efb3eb8c22b6aa6320e6ab92263447bd84fd92615206d4
+  - url: https://huggingface.co/nvidia/llama-embed-nemotron-8b/raw/main/README.md
+    shows: A third-party MMTEB table dated 21 October 2025 places Qwen3-Embedding-8B third by Borda rank with
+      the highest mean task score in the table, 70.58 - corroborating the vendor figure from outside.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7ce9cf885737a431618894f37ac5d7a7a2921fd9a4ae7563a4c1f70984d4ab1c

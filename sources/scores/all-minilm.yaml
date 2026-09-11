@@ -1,0 +1,102 @@
+product: all-minilm
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 ungated safetensors, PyTorch, ONNX and OpenVINO files
+    data:
+      value: open
+      detail: all-MiniLM-L6-v2's 1.17B-pair corpus is a concatenation of named public datasets with per-dataset sampling weights
+        in data_config.json
+    code:
+      value: open
+      detail: train_script.py ships in the all-MiniLM-L6-v2 repository; the paraphrase-multilingual sibling ships no training
+        script
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(Apache-2.0 ungated safetensors, PyTorch, ONNX and OpenVINO files);data:open(all-MiniLM-L6-v2's 1.17B-pair
+    corpus is a concatenation of named public datasets with per-dataset sampling weights in data_config.json);code:open(train_script.py
+    ships in the all-MiniLM-L6-v2 repository; the paraphrase-multilingual sibling ships no training script);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'The headline checkpoint releases the whole contrastive run: the corpus is a list of named public datasets, the sampling
+    weights ship as data_config.json, and the training script sits beside the weights under Apache-2.0. The MLM pretraining
+    of the underlying MiniLM encoder is Microsoft''s and is not part of this release, and the multilingual sibling documents
+    its distillation without shipping the script.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2
+    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors, pytorch_model.bin, tf_model.h5, ONNX and
+      OpenVINO files, plus train_script.py and data_config.json in the repository listing.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 18e1ad26a2138f4364984e47b29b697f98ae7ddac17a0917c716f29e3e74b5e9
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/README.md
+    shows: 'Lists the training corpus dataset by dataset with pair counts totalling over 1 billion, says the sampling configuration
+      is in data_config.json, and states "The full training script is accessible in this current repository: train_script.py".'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+    shows: 'license: apache-2.0; gated: false; private: false; safetensors, ONNX and OpenVINO weights present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b345c2860907e82892a7cea7b4e8c7cbca201d7d2adce7a913772db94f1c42b0
+    establishes:
+    - weights
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 254,324,263 downloads in the trailing 30 days for all-MiniLM-L6-v2 and 46,445,846 for the paraphrase-multilingual
+    sibling. The Hugging Face universe sweep of 2026-09-06 puts the 14 shipped MiniLM checkpoints in the sentence-transformers
+    account at 310,843,911 combined. Third-party re-uploads and format conversions are excluded, and the figure is not the
+    sentence-transformers PyPI package.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2
+    shows: 'downloads: 254324263.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 18e1ad26a2138f4364984e47b29b697f98ae7ddac17a0917c716f29e3e74b5e9
+  - url: https://huggingface.co/api/models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+    shows: 'downloads: 46445846.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b345c2860907e82892a7cea7b4e8c7cbca201d7d2adce7a913772db94f1c42b0
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: no MTEB or BEIR result published on either card; placed on the card-stated 256 word-piece truncation and English-only
+    contrastive training
+  value: English-only 384-dimensional encoder truncating input at 256 word pieces; the multilingual sibling covers 50+ languages
+    at the same short context.
+  relative_to: e5
+  relation: one_below
+  confidence: high
+  note: 'Narrow and dated by the category rungs: single-language for the headline checkpoint, short-context, and a 2021 distillation
+    generation. One rung below E5, which reaches the same short context with published multilingual retrieval numbers.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/main/README.md
+    shows: States "By default, input text longer than 256 word pieces is truncated", describes English contrastive fine-tuning
+      of nreimers/MiniLM-L6-H384-uncased, and publishes no retrieval benchmark table.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0
+  - url: https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2/raw/main/README.md
+    shows: Declares 50+ language codes and a 384-dimensional sentence-similarity output, with no retrieval benchmark table.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1e98ea05b0de579fcaad3d625b62ea55647142ed674d5f5ebf1440e4bbbb6f23

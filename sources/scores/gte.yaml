@@ -1,0 +1,129 @@
+product: gte
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 ungated checkpoints across the multilingual, ModernBERT and Qwen2-based tiers
+    data:
+      value: closed
+      detail: the cards point at the mGTE paper for the training mixture and release no corpus
+    code:
+      value: partial
+      detail: a gte_embedding.py inference script ships in the model repository; no training pipeline is published
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(Apache-2.0 ungated checkpoints across the multilingual, ModernBERT and Qwen2-based tiers);data:closed(the
+    cards point at the mGTE paper for the training mixture and release no corpus);code:partial(a gte_embedding.py inference
+    script ships in the model repository; no training pipeline is published);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'The category center of gravity: an OSI license over ungated weights with the corpus and the training run kept in
+    the paper. The Qwen2-derived checkpoints carry Apache-2.0 rather than the Qwen license, so no restrictive SKU pulls the
+    family down.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-base
+    shows: 'license: apache-2.0; gated: false; private: false; downloadable checkpoint files present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 07ea7d94735290ba08c206052fa4d15036149892c231ba500020b06b3f2d63e4
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-modernbert-base
+    shows: 'license: apache-2.0; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 56a908d409ae3d618ae4d6671b0cb06732e46dbcd0c8823d6ae929c9dd99b2d1
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-Qwen2-7B-instruct
+    shows: 'license: apache-2.0; gated: false; private: false - the Qwen2-derived tier is distributed under Apache-2.0 rather
+      than the Qwen license.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 04ff251b7cd129881b8c1b4a5b304310e06bf02a8204c2a54787ff546abc850d
+    establishes:
+    - license
+  - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-base/raw/main/README.md
+    shows: Describes the training architecture and points to the mGTE paper for detail, releases no corpus, and ships scripts/gte_embedding.py
+      as inference code for dense and sparse output.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7bc40a3d4b2ae520f7c50d40d0c56fca61d13973e3f022b464f325939b7fff68
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base/raw/main/README.md
+    shows: The embedding checkpoint's own card - BEIR average 55.33, LoCo long-context and CoIR code-retrieval results at
+      8,192 tokens, and the statement that the series follows the previous GTE training scheme with ModernBERT as the base,
+      referring readers to the mGTE paper for training details.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 97d40aa325f0e6eaddf77edc7187b7bba6fd3e31a555be3b5766f015c6c27550
+    establishes:
+    - data
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: >-
+    3,743,441 downloads in the trailing 30 days across the gte EMBEDDING checkpoints in the
+    Alibaba-NLP account, led by gte-multilingual-base at 1,307,627. The two reranker checkpoints
+    are deliberately excluded: they draw a further 3,221,049 and are scored separately as
+    `gte-reranker`, so the earlier reading of this record - all 11 gte-prefixed repos at
+    6,964,490 - billed the same downloads to two products. The band is 4 either way. The
+    superseded v1 encoders under the `thenlper` account add roughly 1.99M more and are also
+    excluded, being a different publishing account.
+    The Hugging Face universe sweep of 2026-09-06 puts the 11 shipped gte checkpoints in the Alibaba-NLP account at 6,964,490
+    combined; the older thenlper encoders would add about 1.99M without crossing the band.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-modernbert-base
+    shows: 'downloads: 171930; likes: 200; license apache-2.0 - one of the embedding checkpoints the summed figure counts.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 56a908d409ae3d618ae4d6671b0cb06732e46dbcd0c8823d6ae929c9dd99b2d1
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-base
+    shows: 'downloads: 1307627.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 07ea7d94735290ba08c206052fa4d15036149892c231ba500020b06b3f2d63e4
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-Qwen2-7B-instruct
+    shows: 'downloads: 111229.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 04ff251b7cd129881b8c1b4a5b304310e06bf02a8204c2a54787ff546abc850d
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: BEIR average NDCG@10 of 55.33 for gte-modernbert-base, with LoCo long-context and CoIR code retrieval on the same card
+    90.68 and CoIR 79.99, on the reranker card
+  value: 'gte-modernbert-base: BEIR 55.33 at 8,192 tokens, with LoCo and CoIR reported on the same card; gte-multilingual-base covers 70+
+    languages at the same context.'
+  relative_to: harrier-oss
+  relation: one_below
+  confidence: high
+  note: 'Current generation on both halves of the pipeline: the highest BEIR average among the sub-1B models in the table
+    it publishes, long-context throughout, and a multilingual encoder beside the English one. Short of the leader, which
+    is measured on MMTEB rather than BEIR. The reranker half of the GTE line is scored separately as `gte-reranker`; this
+    record cites only the embedding checkpoints, after an earlier reading derived both its score and its downloads from
+    the reranker card.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Alibaba-NLP/gte-modernbert-base/raw/main/README.md
+    shows: The embedding checkpoint's own card gives gte-modernbert-base MTEB-en 64.38 and BEIR 55.33 at 8,192 maximum
+      sequence length, with LoCo long-context and CoIR code-retrieval results on the same table.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 97d40aa325f0e6eaddf77edc7187b7bba6fd3e31a555be3b5766f015c6c27550
+  - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-base/raw/main/README.md
+    shows: States support for over 70 languages, 8192-token input, elastic dense output and sparse vectors, with retrieval
+      validated on MIRACL, MLDR, MKQA, BEIR and LoCo.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7bc40a3d4b2ae520f7c50d40d0c56fca61d13973e3f022b464f325939b7fff68

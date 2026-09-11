@@ -1,0 +1,139 @@
+product: jina-embeddings
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: ungated safetensors on the Hub across the v2, v3, v4 and v5-text lines
+    data:
+      value: closed
+      detail: no training corpus or construction scripts released; the cards point at the arXiv technical reports
+    code:
+      value: partial
+      detail: trust_remote_code inference modules and ONNX/GGUF conversions ship with the repositories; no training
+        pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI, and only the older v1 and v2 encoders
+    - name: CC-BY-NC-4.0
+      detail: non-commercial; governs v3 and the v5-text line
+    - name: Qwen-Research-License
+      detail: non-commercial; governs v4, which inherits it from Qwen2.5-VL-3B
+  raw: weights:open(ungated safetensors on the Hub across the v2, v3, v4 and v5-text lines);data:closed(no training
+    corpus or construction scripts released; the cards point at the arXiv technical reports);code:partial(trust_remote_code
+    inference modules and ONNX/GGUF conversions ship with the repositories; no training pipeline);license:Apache-2.0(OSI,
+    and only the older v1 and v2 encoders)+CC-BY-NC-4.0(non-commercial; governs v3 and the v5-text line)+Qwen-Research-License(non-commercial;
+    governs v4, which inherits it from Qwen2.5-VL-3B)
+  confidence: high
+  note: 'THE LADDER ABSTAINS HERE and the score below is hand-placed, not computed, exactly as the sibling jina-reranker
+    resolved the same vendor. The current SKUs are non-commercial: v3 and the v5-text line read cc-by-nc-4.0, and
+    v4''s card retracts its original cc-by-nc-4.0 front matter in favor of the Qwen Research License it inherits from
+    Qwen2.5-VL-3B. The pretrained ladder names CC-BY-NC and CC-BY-NC-SA-4.0 but neither CC-BY-NC-4.0 nor the Qwen
+    Research License, so no tier resolves. Recorded at 2/restricted because the commercial_forbidden tier asks one
+    question - does the license permit commercial use at all - and both licenses answer no, directing commercial use
+    to a sales conversation. Adding either name to sources/rubrics/pretrained.yaml is a maintainer ruling and was
+    deliberately not taken here.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/jinaai/jina-embeddings-v3/raw/main/README.md
+    shows: 'Front matter reads license: cc-by-nc-4.0, and the License section says the model is licensed under CC
+      BY-NC 4.0 beyond the AWS and Azure listings and directs commercial usage inquiries to contact sales. Training
+      is described against the arXiv report with no corpus released; the usage sections ship inference code only,
+      via trust_remote_code and ONNX.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e573f7395798fe3d78d2e3e92da64814a6ec130494280f7b91ea8b0acb0284ed
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v3
+    shows: 'license cc-by-nc-4.0 in cardData; gated: false; private: false; model.safetensors and an onnx/ folder
+      among the files.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d3cb34bf8d8b134ccdb90938b78eb7c4cb27e7710cd659660ec432242859afc2
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/jinaai/jina-embeddings-v5-text-small/raw/main/README.md
+    shows: 'Front matter reads license: cc-by-nc-4.0 and the License section states the model is licensed under CC
+      BY-NC 4.0 with commercial use routed to sales. Training and evaluation detail is deferred to arXiv 2602.15547
+      with no corpus released, and the usage sections cover inference only.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6de95ed33265814ec833706d81764f0cc3529a417e41382f81f1dd3d59b5640a
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v5-text-small
+    shows: 'license cc-by-nc-4.0 in cardData; gated: false; private: false; task adapter safetensors present, confirming
+      the v5-text line ships on the same non-commercial terms as v3.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a39f62ca56038bacdf2b8c53858e8d4c6226cc511799df78a69c0edfdb59e17f
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/jinaai/jina-embeddings-v4/raw/main/README.md
+    shows: License section reads "This model was initially released under cc-by-nc-4.0 due to an error. The correct
+      license is the Qwen Research License, as this model is derived from Qwen-2.5-VL-3B which is governed by that
+      license."
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: bb2acfda378af37aee4260b2f37554a75d4b62871050a1d41a1d5fcf3b1c7aa3
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '5,404,087 downloads in the trailing 30 days across the 31 jina-embeddings checkpoints in the jinaai account,
+    on the Hugging Face universe sweep of 2026-09-06: v3 2,348,130, v2-small-en 932,479, v4 407,623, v2-base-code
+    398,267, v2-base-en 299,364 and the v5-text and v5-omni tiers behind them. v3 alone clears the 1M floor. The rerankers,
+    the jina-clip line, jina-code-embeddings and jina-colbert-v2 are excluded - the first belong to jina-reranker
+    and the rest are separate lines this product does not cover. Live Hub API figures a few days later read a little
+    lower (v3 2,151,116, v5-text-small 300,461, v4 324,909) and do not move the band.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v3
+    shows: 'downloads: 2151116; gated: false; private: false for jinaai/jina-embeddings-v3.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d3cb34bf8d8b134ccdb90938b78eb7c4cb27e7710cd659660ec432242859afc2
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v5-text-small
+    shows: 'downloads: 300461 for jinaai/jina-embeddings-v5-text-small.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a39f62ca56038bacdf2b8c53858e8d4c6226cc511799df78a69c0edfdb59e17f
+  - url: https://huggingface.co/api/models/jinaai/jina-embeddings-v4
+    shows: 'downloads: 324909 for jinaai/jina-embeddings-v4.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4ed659ba6fa294d15e6cddd51c11774ebb43adf3099109aaf817af69e951af38
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: MTEB English v2 and MMTEB means, as reported on the jina-embeddings-v5-text-small card
+  relative_to: harrier-oss
+  relation: one_below
+  value: 'v5-text-small: 71.7 MTEB English v2 and 67.7 MMTEB at 677M parameters, 119+ languages and a 32K context,
+    distilled from Qwen3-Embedding-4B.'
+  confidence: high
+  note: 'Rung 4, competitive frontier. Current generation, multilingual and long-context, with published numbers on
+    the same instrument as the anchor: 67.7 MMTEB against harrier-oss at 74.3, so one band below the leader rather
+    than level with it. The card''s own claim is narrower than the leaderboard - the highest MMTEB among multilingual
+    embedding models under 1B parameters - which is a frontier position in its size class rather than the top of the
+    table.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/jinaai/jina-embeddings-v5-text-small/raw/main/README.md
+    shows: Card states jina-embeddings-v5-text-small scores 71.7 average on MTEB English v2 and 67.7 on MMTEB with
+      677M parameters, the highest among multilingual embedding models under 1B, supporting 119+ languages at up to
+      32K tokens and built on Qwen3-0.6B-Base by distillation from Qwen3-Embedding-4B.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6de95ed33265814ec833706d81764f0cc3529a417e41382f81f1dd3d59b5640a

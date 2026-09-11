@@ -1,0 +1,20 @@
+name: siglip
+display_name: SigLIP
+type: model
+description: 'SigLIP replaces CLIP''s softmax contrastive loss with a pairwise sigmoid loss, which needs
+  no global view of the batch and so trains well at both very large and quite small batch sizes. SigLIP
+  2 folds captioning pretraining, self-distillation, masked prediction and online data curation into the
+  same recipe and adds multilingual coverage and native-aspect-ratio variants. The checkpoints serve two
+  audiences at once: image-text retrieval in their own right, and the default frozen vision tower for
+  a large share of current open VLMs.'
+github:
+- url: https://github.com/google-research/big_vision
+huggingface_model:
+- url: https://huggingface.co/google/siglip-so400m-patch14-384
+- url: https://huggingface.co/google/siglip2-so400m-patch16-384
+arxiv:
+- url: https://arxiv.org/abs/2502.14786
+comments: The Hub cards for SigLIP 1 were written by Hugging Face rather than by the release team, and
+  both generations put their evaluation tables in images; the numbers used here come from big_vision's
+  own SigLIP 2 checkpoint table instead. Verified 2026-09-11 via the siglip2-base and siglip-so400m model
+  cards, the big_vision README and its SigLIP 2 checkpoint README.

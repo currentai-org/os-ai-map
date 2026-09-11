@@ -1,0 +1,73 @@
+product: ms-marco-cross-encoder
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated safetensors for every checkpoint in the family}
+    data: {value: open, detail: MS MARCO Passage Ranking; the card front matter names sentence-transformers/msmarco}
+    code: {value: open, detail: SentenceTransformers ships the MS MARCO cross-encoder training scripts
+        the card links to}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated safetensors for every checkpoint in the family);data:open(MS MARCO
+    Passage Ranking; the card front matter names sentence-transformers/msmarco);code:open(SentenceTransformers
+    ships the MS MARCO cross-encoder training scripts the card links to);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'The rare case where the whole chain is public: an Apache-2.0 ungated checkpoint, a public training
+    corpus named in the card front matter, and the actual training scripts that produced it shipped in
+    the SentenceTransformers examples tree. The ladder reaches its top rung on the evidence rather than
+    on reputation.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/README.md
+    shows: 'Front matter reads license: apache-2.0 and datasets: sentence-transformers/msmarco; the body
+      says the model was trained on MS MARCO Passage Ranking and links the SBERT.net MS MARCO training
+      code.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa
+    establishes: [weights, data, code, license]
+  - url: https://raw.githubusercontent.com/UKPLab/sentence-transformers/master/examples/cross_encoder/training/ms_marco/README.md
+    shows: The cross_encoder/training/ms_marco directory of SentenceTransformers, listing training_ms_marco_bce.py,
+      training_ms_marco_cmnrl.py, training_ms_marco_listnet.py and training_ms_marco_lambda.py as the
+      scripts that train a CrossEncoder on MS MARCO.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e76a3c4b5f7c30a41b850e8e421600598080cae86ae6aa426e62d21da33a8aab
+    establishes: [code, data]
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: About 96.5M downloads in the trailing 30 days summed across the cross-encoder/ms-marco-* checkpoints,
+    of which MiniLM-L6-v2 alone is 87.5M and MiniLM-L4-v2 a further 5.7M. Either figure on its own clears
+    the >10M band; the family total is the largest of any reranker on the map.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L6-v2', shows: 'downloads:
+      87478105; gated: false; private: false; license apache-2.0 for cross-encoder/ms-marco-MiniLM-L6-v2.',
+    accessed: '2026-09-11', http_status: 200, content_sha256: 2d3be1d71693841e5df53c3c9660ae8c04c1bd0ce8262bf13b8fc7f8745bfa0b}
+  - {url: 'https://huggingface.co/api/models/cross-encoder/ms-marco-MiniLM-L4-v2', shows: 'downloads:
+      5701227; gated: false; private: false for cross-encoder/ms-marco-MiniLM-L4-v2.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: c7c75d5639ad8f68625b002d17fe771a2e70e1d902227f418df5d1ca81966760}
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: NDCG@10 on TREC Deep Learning 2019, and MRR@10 on the MS MARCO passage-reranking dev set
+  relative_to: bge-reranker
+  relation: one_below
+  value: 74.30 NDCG@10 (TREC DL 19) and 39.01 MRR@10 (MS MARCO dev) for MiniLM-L6-v2, English only, 512-token
+    inputs.
+  confidence: high
+  note: 'Rung 2, narrow or dated, read straight off the category definition: the v2 checkpoints date to
+    2022, take English only, and cap at 512 tokens. The published numbers are credible and the family
+    is still the default self-hosted reranker, but a rung is a statement about retrieval quality and scope
+    rather than about popularity. One rung below bge-reranker, which is multilingual, longer-context and a generation
+    newer.'
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/raw/main/README.md', shows: 'Performance
+      table gives cross-encoder/ms-marco-MiniLM-L6-v2 at 74.30 NDCG@10 on TREC DL 19 and 39.01 MRR@10
+      on MS MARCO dev, with the family spanning TinyBERT-L2 at 69.84 to MiniLM-L12 at 74.31; language
+      front matter is en.', accessed: '2026-09-11', http_status: 200, content_sha256: 7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa}

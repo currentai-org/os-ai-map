@@ -1,0 +1,137 @@
+product: bge
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: ungated safetensors and PyTorch checkpoints across the v1.5 encoders, bge-m3 and the reranker line
+    data:
+      value: open
+      detail: the BAAI-MTP pretraining corpus, the bge-m3-data fine-tuning set and the MLDR long-document set are all published
+    code:
+      value: open
+      detail: FlagEmbedding ships embedder and reranker fine-tuning, unified fine-tuning, evaluation and inference pipelines
+        under MIT
+    license:
+    - name: MIT
+      detail: OSI; bge-m3 and the v1.5 encoders
+    - name: Apache-2.0
+      detail: OSI; bge-reranker-v2-m3
+    - name: Gemma-License
+      detail: use_bounded; bge-multilingual-gemma2 and bge-reranker-v2.5-gemma2-lightweight
+  raw: weights:open(ungated safetensors and PyTorch checkpoints across the v1.5 encoders, bge-m3 and the reranker line);data:open(the
+    BAAI-MTP pretraining corpus, the bge-m3-data fine-tuning set and the MLDR long-document set are all published);code:open(FlagEmbedding
+    ships embedder and reranker fine-tuning, unified fine-tuning, evaluation and inference pipelines under MIT);license:MIT(OSI;
+    bge-m3 and the v1.5 encoders)+Apache-2.0(OSI; bge-reranker-v2-m3)+Gemma-License(use_bounded; bge-multilingual-gemma2 and
+    bge-reranker-v2.5-gemma2-lightweight)
+  confidence: high
+  note: Data and pipeline are as open as this ladder asks for, and the license is what caps the score. Most of the family
+    is MIT or Apache-2.0, but two distributed checkpoints inherit the Gemma terms from Gemma 2, and the multi-SKU rule resolves
+    on the most restrictive license whose weights actually ship.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/BAAI/bge-m3
+    shows: 'license: mit; gated: false; private: false; pytorch_model.bin and an ONNX export present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4735153ed2a476650086d2c7d60383431b40561afa69aef126ec258a2d141c15
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/BAAI/bge-small-en-v1.5
+    shows: 'license: mit; gated: false; private: false; model.safetensors, pytorch_model.bin and ONNX present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 53680967e61087ceb349411a01c9db21cca0f4ea653a953f9196e393ad1d0958
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/BAAI/bge-reranker-v2-m3
+    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 782446e4923d074cfc71c986a20a1464dbafff4cdcf7a6e4232e23e775dd0fd4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/BAAI/bge-multilingual-gemma2
+    shows: 'license: gemma; gated: false; private: false; a four-shard safetensors checkpoint is distributed under the Gemma
+      terms.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 50a34971de69b92514a434d290e19e1383dd808240e6443cb039357283fed5d7
+    establishes:
+    - license
+  - url: https://huggingface.co/BAAI/bge-m3/raw/main/README.md
+    shows: Links the released bge-m3-data fine-tuning set and the MLDR long-document dataset, the unified fine-tuning example,
+      and the MKQA and MLDR evaluation scripts.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0b81ccf9134e5874d620a86e6905062ea999e779c34eb1a7e65eaeb7fe00e450
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/FlagOpen/FlagEmbedding/master/README.md
+    shows: Records that "the massive training data of BGE has been released" at data.baai.ac.cn, links embedder and reranker
+      fine-tuning pipelines and a dataset directory, and states the toolkit is MIT-licensed.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 46500109787496a729e233c6a74ac5be2148a48108ad26e39e7de964dc0f5ca3
+    establishes:
+    - data
+    - code
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: >-
+    139,255,026 downloads in the trailing 30 days across the bge EMBEDDING checkpoints in the BAAI
+    account - 64,850,135 for bge-small-en-v1.5 alone and 37,891,167 for bge-m3. The reranker
+    checkpoints are deliberately excluded: they draw a further 24,937,113 and are scored
+    separately as `bge-reranker`, so counting all 24 bge-prefixed repos together, as an earlier
+    reading of this record did, would bill the same downloads to two products. The band is 5
+    either way.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/BAAI/bge-small-en-v1.5
+    shows: 'downloads: 64850135.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 53680967e61087ceb349411a01c9db21cca0f4ea653a953f9196e393ad1d0958
+  - url: https://huggingface.co/api/models/BAAI/bge-m3
+    shows: 'downloads: 37891167.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4735153ed2a476650086d2c7d60383431b40561afa69aef126ec258a2d141c15
+  - url: https://huggingface.co/api/models/BAAI/bge-reranker-v2-m3
+    shows: 'downloads: 18212308.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 782446e4923d074cfc71c986a20a1464dbafff4cdcf7a6e4232e23e775dd0fd4
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: MIRACL (4 languages) average NDCG@10 of 56.8 and BEIR (15) of 48.8 for bge-m3, in the third-party comparison
+    table on the Arctic Embed 2.0 card
+  value: 'bge-m3: 100+ languages, 8,192-token input, dense, sparse and multi-vector output in one pass; MIRACL 56.8, BEIR
+    48.8.'
+  relative_to: harrier-oss
+  relation: one_below
+  confidence: high
+  note: 'Competitive frontier rather than leader: multilingual, long-context, and the best MIRACL figure in the comparison
+    that ranks it, but its BEIR average trails the newer encoders and the family has not shipped a successor to m3.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Snowflake/snowflake-arctic-embed-l-v2.0/raw/main/README.md
+    shows: Comparison table gives bge-m3 (BAAI) BEIR (15) 48.8, MIRACL (4) 56.8, CLEF (Focused) 40.8 and CLEF (Full) 41.3,
+      all average NDCG@10.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 59952ebef3dd21ee3fe3c2f2fb1b0c37f780d7730b1f6efc11ed5086ea299945
+  - url: https://huggingface.co/BAAI/bge-m3/raw/main/README.md
+    shows: States support for more than 100 working languages and inputs up to 8192 tokens, with dense, sparse and ColBERT-style
+      multi-vector retrieval from one model.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0b81ccf9134e5874d620a86e6905062ea999e779c34eb1a7e65eaeb7fe00e450

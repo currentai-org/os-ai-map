@@ -1,0 +1,76 @@
+product: mixedbread-rerank
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated safetensors across the v1 and v2 checkpoints}
+    data: {value: closed, detail: no training data released; the GRPO and preference recipe is described
+        in arXiv 2506.03487}
+    code: {value: partial, detail: the mxbai-rerank package is inference only}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated safetensors across the v1 and v2 checkpoints);data:closed(no training
+    data released; the GRPO and preference recipe is described in arXiv 2506.03487);code:partial(the mxbai-rerank
+    package is inference only);license:Apache-2.0(OSI)
+  confidence: high
+  note: Apache-2.0 ungated weights with an inference package but no training pipeline and no corpus, which
+    is this category open-weights centre of gravity. The three-step GRPO, contrastive and preference-learning
+    recipe is described in prose and in arXiv 2506.03487 rather than shipped.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2/raw/main/README.md
+    shows: 'Front matter reads license: apache-2.0 with 100-plus language tags; the Training Details section
+      describes a three-step GRPO, contrastive learning and preference learning process and points at
+      arXiv 2506.03487 and the mixedbread blog rather than at released data or training code.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b007d71631da165ee3a702ea21401199a4607692fbafe3314b0e7422cd70512b
+    establishes: [weights, data, code, license]
+  - url: https://raw.githubusercontent.com/mixedbread-ai/mxbai-rerank/main/README.md
+    shows: The mixedbread-ai/mxbai-rerank repository README documents the pip-installable mxbai-rerank
+      inference package and the MxbaiRerankV2 class, describes the models as Apache 2.0 open source, and
+      offers no training entry point.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f86e78bc038bfaa3e60629211c2753562bda8d6d329e3be14b28f77404a87083
+    establishes: [code, license]
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: About 804K downloads in the trailing 30 days across the five mxbai-rerank checkpoints - xsmall-v1
+    631K, large-v2 102K, base-v1 43K, large-v1 31K, base-v2 28K. The mxbai-colbert and mxbai-edge-colbert
+    late-interaction models are a separate line and are not counted.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/mixedbread-ai/mxbai-rerank-xsmall-v1', shows: 'downloads:
+      630939; gated: false; private: false for mixedbread-ai/mxbai-rerank-xsmall-v1.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: 548ab6f970e0170ac3034b151850512e59d47d2c58328fb06e966b97f644bf86}
+  - {url: 'https://huggingface.co/api/models/mixedbread-ai/mxbai-rerank-large-v2', shows: 'downloads:
+      102171; gated: false; private: false for mixedbread-ai/mxbai-rerank-large-v2.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: a517936a8dbbeb966230f6558a7b3869179983df5e13458d98b92467ec23d9bd}
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: BEIR average as reported on the mxbai-rerank-v2 card, with the publisher multilingual,
+    Chinese and code-search splits alongside it
+  relative_to: jina-reranker
+  relation: one_below
+  value: 57.49 BEIR average for large-v2 (1.5B) against 55.57 for base-v2 and 49.32 for large-v1; 100-plus
+    languages, 8K-token documents, 0.89s latency on an A100.
+  confidence: medium
+  note: 'Rung 3, solid workhorse: real multilingual and code coverage and a widely used inference package,
+    but the v2 generation shipped in March 2025 and its own reported BEIR average sits below the 2025-26
+    frontier. One rung below jina-reranker, whose v3 card reports 61.94 BEIR. The two BEIR figures are not from
+    one harness - jina own table credits mxbai-rerank-large-v2 with 61.44 - which is why this is placed
+    by relation rather than by arithmetic on the two numbers, and why confidence is medium.'
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2/raw/main/README.md', shows: 'Benchmark
+      Results table gives mxbai-rerank-large-v2 57.49 BEIR average, 29.79 multilingual, 84.16 Chinese,
+      32.05 code search and 0.89s latency, against 55.57 and 49.32 BEIR for base-v2 and large-v1.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: b007d71631da165ee3a702ea21401199a4607692fbafe3314b0e7422cd70512b}
+  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Third-party table
+      on the jina-reranker-v3 card places mxbai-rerank-large-v2 at 61.44 BEIR and mxbai-rerank-base-v2
+      at 58.40, below jina-reranker-v3 at 61.94.', accessed: '2026-09-11', http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}

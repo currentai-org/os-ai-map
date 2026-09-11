@@ -1,0 +1,100 @@
+product: cohere-embed
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: embed-v4.0 is served through the Embed endpoint and cloud marketplaces; no weight files
+        are published for any SKU
+    data:
+      value: closed
+      detail: training corpus not released or described
+    code:
+      value: closed
+      detail: no training or inference implementation; client SDKs only
+    license:
+    - name: proprietary
+      detail: hosted API; the private-deployment option is a priced dedicated instance, not a license
+        over weights
+  raw: weights:closed(embed-v4.0 is served through the Embed endpoint and cloud marketplaces; no weight
+    files are published for any SKU);data:closed(training corpus not released or described);code:closed(no
+    training or inference implementation; client SDKs only);license:proprietary(hosted API; the private-deployment
+    option is a priced dedicated instance, not a license over weights)
+  confidence: high
+  note: 'API-only, so the ladder''s first rule fires. The dedicated-instance tier on the pricing page
+    is worth naming because it reads like self-hosting and is not: Cohere rents an instance running the
+    model, and nothing is downloadable.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://docs.cohere.com/docs/cohere-embed
+    shows: The Embed model table lists embed-v4.0 as the latest model with a 128k context and Matryoshka
+      dimensions '[256, 512, 1024, 1536 (default)]', reached through the Embed endpoint. No weight download,
+      Hub repo or self-hosted build is offered for it or for any v3.0 SKU.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3bc6190057e73c202a248015e5251db6dc1bd21cf347c8e77f730ed210b31109
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://cohere.com/pricing
+    shows: Prices Embed 4 as hosted usage and as dedicated instances — 'Embed 4 Small $4.00 hourly / $2,500
+      monthly per instance', 'Embed 4 Medium $5.00 / $3,250' — which is rented capacity, not a weights
+      license.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1226278b244a97d3b9725a4e551c67a1ef3733c036ec8174b2e6c1d3f9cde3af
+    establishes:
+    - license
+adoption:
+  level: 3
+  signal_type: reported_traction
+  confidence: medium
+  note: 'No artifact to count and no call volume published. The level rests on the same breadth of multi-cloud
+    distribution that places cohere-rerank-api: Cohere''s own platform, AWS SageMaker and Bedrock, and
+    Azure AI Foundry, where embed-v-4-0 is sold directly by Microsoft.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://docs.cohere.com/changelog/embed-multimodal-v4
+    shows: '''Embed v4 is available today on the Cohere Platform, AWS Sagemaker, and Azure AI Foundry.''
+      Carries no usage figure.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 28f7a873ac2686b160516e8c26f059c34ddd179be78eb0e76cc4f949867bb818
+  - url: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/concepts/models
+    shows: Azure AI Foundry's models-sold-directly-by-Azure list carries embed-v-4-0, confirming Microsoft
+      resells it.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: fe093f619b567ad03e52afa978f4c404925a1dff808ddb02b9bc9a22e85894b0
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: RTEB, all 29 datasets, as run by Voyage AI; plus Cohere’s own state-of-the-art claim for
+    Embed 4
+  value: Cohere claims state of the art on text-to-text, text-to-image and text-to-mixed-modality retrieval
+    for Embed 4, at a 128k context with unified multimodal input; Voyage’s 29-dataset RTEB run puts voyage-4-large
+    8.20% above Cohere Embed v4.
+  relative_to: openai-embeddings
+  relation: one_above
+  confidence: high
+  note: 'Rung 4, competitive frontier: current generation, multilingual, genuinely long-context at 128k,
+    and multimodal in one model. Short of 5 because the only public head-to-head number is a rival''s,
+    and it puts Embed v4 8.20% behind the RTEB leader. Cohere''s own SOTA claim is unquantified on the
+    release note.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://docs.cohere.com/changelog/embed-multimodal-v4
+    shows: '''Embed v4 achieves state of the art in the following areas: Text-to-text retrieval, Text-to-image
+      retrieval, Text-to-mixed modality retrieval (from e.g. PDFs)''; ''Context length of 128k''. No numeric
+      result is given.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 28f7a873ac2686b160516e8c26f059c34ddd179be78eb0e76cc4f949867bb818
+  - url: https://blog.voyageai.com/2026/01/15/voyage-4/
+    shows: Over all 29 RTEB datasets, voyage-4-large surpasses Cohere Embed v4 by an average of 8.20%.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c5ae9e26cda134ee099596b385d21ec49c3988e3c31a0aafecfb22f0cc9322a2
