@@ -1,0 +1,54 @@
+product: mattersim
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: MIT MatterSim-v1.0.0-1M and MatterSim-v1.0.0-5M checkpoints in the repository}
+    data: {value: closed, detail: 'the 3M and 6M-structure training sets are not released; only the test datasets ship'}
+    code: {value: partial, detail: 'inference and fine-tuning scripts; no pretraining pipeline'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: weights:open(MIT MatterSim-v1.0.0-1M and MatterSim-v1.0.0-5M checkpoints in the repository);data:closed(the 3M and 6M-structure training sets are not released; only the test datasets ship);code:partial(inference and fine-tuning scripts; no pretraining pipeline);license:MIT(OSI)
+  confidence: high
+  note: The released v1 checkpoints are MIT and locally runnable, but the training data stays inside Microsoft and the repository documents fine-tuning rather than a pretraining run.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md
+    shows: 'license: mit for the released models, training data sizes of 3M and 6M structures with no download, and released test datasets only.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7
+    establishes: [data, license]
+  - url: https://raw.githubusercontent.com/microsoft/mattersim/main/README.md
+    shows: Offers two pretrained MatterSim-v1 checkpoints from the repository's pretrained_models folder and a finetune_mattersim.py script, with no pretraining entry point.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b222a569a01bc94712f2385661cb3d6294ec8bedff7aa8ec93b902f4a1005d95
+    establishes: [weights, code]
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: No Hugging Face artifact is declared, so 594 GitHub stars are the last-resort signal; the mattersim PyPI package is the channel that actually ships the weights and is not banded here.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/microsoft/mattersim
+    shows: 'stargazers_count: 594; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f14ac1ee3b798e78746339f4e75bc28de1706fcb90baa3c89b2291e2879f0248
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A documented fine-tuning path to a desired level of theory or to direct structure-to-property prediction; one atomistic modality, no generation, one scale.
+  confidence: high
+  note: One attribute. The model card rules out generation explicitly, the temperature and pressure ranges are conditions rather than scales, and the 1M and 5M checkpoints are sizes.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/mattersim/main/MODEL_CARD.md
+    shows: States the model can be fine-tuned for atomistic simulations at a desired level of theory or for direct structure-to-property predictions, and that it does not support generation of new materials.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9f48dffafb55f0700bbc2d180ce8f7b5bc28decac1de43c3058c323a7c0dc5b7

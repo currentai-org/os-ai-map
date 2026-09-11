@@ -1,0 +1,70 @@
+product: orb
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoints loaded through the orb_models.forcefield.pretrained module}
+    data: {value: open, detail: 'MPTrj, Alexandria, OMat24, OMol25, and OPoly26 training datasets publicly released'}
+    code: {value: partial, detail: 'inference, simulation wrappers, and a finetuning script; no pretraining pipeline'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated checkpoints loaded through the orb_models.forcefield.pretrained module);data:open(MPTrj, Alexandria, OMat24, OMol25, and OPoly26 training datasets publicly released);code:partial(inference, simulation wrappers, and a finetuning script; no pretraining pipeline);license:Apache-2.0(OSI)
+  confidence: high
+  note: Orb names a released public dataset behind every checkpoint and licenses the models under Apache-2.0, but the repository ships adaptation rather than a pretraining run, which keeps it off the top rungs.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/orbital-materials/orb-models/main/README.md
+    shows: States that Orb models are licensed under the Apache License, Version 2.0, loads checkpoints from orb_models.forcefield.pretrained with no gate, and documents finetune.py and a finetuning guide but no pretraining entry point.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6ee1f8fcda191b3d4a4d1716256af566c85d279a56352d5722439e9c28210938
+    establishes: [weights, code]
+  - url: https://raw.githubusercontent.com/orbital-materials/orb-models/main/MODELS.md
+    shows: 'Names the training dataset for each released model: OMol25 and OPoly26 for OrbMol, OMat24 or MPA for v3, MPTraj and Alexandria for v2, each with a public link or reference.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1fc0af7c8c9314a40862bf5e6c1898c12ae87d6c035e0b129724743a7d4483a4
+    establishes: [data]
+  - url: https://raw.githubusercontent.com/orbital-materials/orb-models/main/LICENSE
+    shows: Apache License 2.0 body with a 2024 Orbital Materials copyright, read directly rather than from the license endpoint.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: ae89c659da81fa5cf80f03e1fe25fc7c6fac7db0b66d80592562537a614e0dbb
+    establishes: [license]
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of orb-models, the declared package that fetches the pretrained checkpoints
+  note: >-
+    Re-banded off stars. orb-models is a declared artifact, and sources/signal_routing.yaml sets
+    the precedence pypi > huggingface > stars, so an authoritative usage route exists and the
+    record may not fall through to a star count. 12,043 downloads in the trailing 30 days puts
+    it at level 2, one above the 616 stars it used to carry.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://pypistats.org/api/packages/orb-models/recent
+    shows: 'last_month = 12,043 downloads of the orb-models package.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6a4503cfe4bc1bebf4576659c130b0758858c8e1f5a906c8b929243e3b8a43d7
+  - url: https://api.github.com/repos/orbital-materials/orb-models
+    shows: 'stargazers_count: 616; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1d82207d41e47baf9d3ad0dcee505a15567a9049dc19b1bf8331887b1e46710b
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A documented finetuning script and guide for adapting any released checkpoint to a custom dataset; one atomistic modality, no generation, one scale.
+  confidence: high
+  note: One attribute. Periodic and non-periodic support is coverage rather than a second scale, the direct and conservative variants are separate checkpoints, and the models predict energies, forces and stresses rather than generating structures.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/orbital-materials/orb-models/main/README.md
+    shows: Documents finetune.py against any model in ORB_PRETRAINED_MODELS with a dedicated finetuning guide, and describes the models as calculating energies, forces and stresses of atomic systems.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6ee1f8fcda191b3d4a4d1716256af566c85d279a56352d5722439e9c28210938

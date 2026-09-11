@@ -1,0 +1,204 @@
+name: scientific_ai_models
+display_name: Scientific AI models
+description: Models trained on instrument, measurement, or scientific-simulation data rather than human-authored text, images, or speech.
+strapline: Downloadable weights are the norm here and complete releases are rare. Only a handful
+  publish the training corpus and the code that consumed it alongside the weights.
+weights:
+  adopt: 0.3
+  cap: 0.7
+
+scoring_recipe:
+  version: 1
+  extends: pretrained
+  derived_from:
+    method: >-
+      Shared from-scratch openness ladder, inherited. The capability feature count was
+      calibrated on the first ten promoted products and then applied unchanged to the
+      remaining twenty-four; the wording was not revised after seeing them, so the whole
+      34-product roster is the derivation set rather than the original ten.
+    inherited_from: base_pretrained
+    scores_reproduced: 34
+    scores_total: 34
+    verified_on: '2026-09-10'
+    checker: build/check_rubric.py
+
+  # SHARED-LADDER TIER ADDITIONS MADE DURING THIS PROMOTION - SIGNED OFF 2026-09-11.
+  #
+  # docs/workflows/promote-category.md step 7 says a license the shared tier does not name should
+  # leave the product DEFERRED with a substantive reason, because extending a shared tier reaches
+  # every category that inherits it and is a maintainer's ruling rather than part of a promotion.
+  # That is not what happened. Five names were added to sources/rubrics/pretrained.yaml so the
+  # walk would score rather than abstain:
+  #
+  #   CC-BY-4.0, CC-BY-SA-4.0     -> permissive_non_osi   (dofa, weathernext, neuralgcm)
+  #   FAIR-Chemistry-License-v1   -> permissive_non_osi   (uma)
+  #   ASL                         -> commercial_forbidden (mace)
+  #   AlphaFold-3-Model-...-Use   -> commercial_forbidden (alphafold)
+  #
+  # Each cites a ruling the ladder already contains, and the blast radius was measured before the
+  # edit: no base_pretrained product records any of these names, and all 32 of its scores
+  # reproduce unchanged. The measurement was never the point though - whose call it is, is.
+  # The call was delegated to an external reviewer and made on 2026-09-11: all six mappings
+  # upheld, and the FAIR-Chemistry contradiction resolved by correcting `use_bounded` rather
+  # than by moving the licence. The ruling is recorded at the head of `license_tier` in
+  # sources/rubrics/pretrained.yaml, which is where a later reader will look for it.
+  #
+  # One rubric self-contradiction surfaced while making the uma call and is NOT resolved here:
+  # permissive_non_osi's definition says an acceptable-use policy "caps neither commerce nor
+  # reach", while use_bounded's definition lists "or an acceptable-use policy" as a bound. Issue
+  # #117 governs and permissive_non_osi is the reading applied. Filed as issue #538, with the
+  # finding that uma is the first product where the two tiers give different answers - the other
+  # eight AUP-licensed products reach 3 down either route, so nobody had to choose before.
+  # RESOLVED for this ladder on 2026-09-11: `use_bounded` no longer lists an acceptable-use
+  # policy as a bound. sources/rubrics/model.yaml still carries the original wording and is
+  # left to #538.
+
+  adoption:
+    signal_preference:
+    - signal_type: usage_volume
+      source: Hugging Face downloads, summed across the product line's shipped checkpoints
+      machine_signal: signal_huggingface.hub_state
+    - signal_type: active_users
+      source: vendor-disclosed active users or installations
+    - signal_type: reported_traction
+      source: >
+        Credible vendor or third-party reach where no governed artifact count exists.
+        Directional only; set confidence to medium at best.
+    - signal_type: stars_fallback
+      source: GitHub stars, last resort
+      machine_signal: signal_github.repo_state
+    bands:
+    - {level: 1, reach: <10K}
+    - {level: 2, reach: 10K-100K}
+    - {level: 3, reach: 100K-1M}
+    - {level: 4, reach: 1M-10M}
+    - {level: 5, reach: '>10M'}
+    reach_is_monthly: true
+    note: >
+      The numeric bands match the existing model and software scales. Issue #536 tracks
+      routing a model to the channel that actually distributes it, including PyPI and Zenodo;
+      this category does not settle that corpus-wide methodology question.
+
+  capability:
+    basis: feature_matrix
+    attributes:
+      adaptation_pathway:
+        question: Does the publisher document a concrete way to adapt or fine-tune the model?
+        evidence: Training or fine-tuning code, configuration, notebook, or documented API.
+      multi_instrument:
+        question: Does one model accept measurements from more than one instrument or modality?
+        evidence: The publisher's input specification or model documentation.
+      generative:
+        question: Can the model generate or simulate scientifically meaningful outputs rather than only predict a fixed target?
+        evidence: The publisher's task definition and documented output surface.
+      multi_scale:
+        question: Does one model operate across more than one spatial, temporal, molecular, or resolution scale?
+        evidence: The publisher's input, checkpoint, or evaluation specification.
+    anchor:
+      primary: documented scientific adaptation surface
+      machine_signal: none — requires research
+    bands:
+    - {level: 1, attributes: 0}
+    - {level: 2, attributes: 1}
+    - {level: 3, attributes: 2}
+    - {level: 4, attributes: 3}
+    - {level: 5, attributes: 4}
+    note: >
+      Count only attributes stated directly by a primary product source. A long task list is
+      not an adaptation pathway, several variables from one data system are not multiple
+      instruments, masked reconstruction is not a scientifically meaningful generated output,
+      and parameter sizes are not scientific scales.
+
+      Six rulings settle the close calls, and they are rules rather than habits. (a) to (c) came
+      out of the promotion, (d) to (f) out of re-verification, and each is applied to the whole
+      roster rather than only to the product that prompted it.
+      (a) A resolution span counts as multi_scale even where the smaller member is motivated by
+      compute, so weathernext's 0.25-degree and 1-degree Mini count the way neuralgcm's
+      0.7/1.4/2.8-degree checkpoints do; a parameter count alone still does not.
+      (b) An adaptation pathway must be executable, not merely described: weathernext's notebook
+      reaches a gradient step and counts, while neuralgcm's shipped training configs do not,
+      because their entry point imports an unpublished package and cannot run.
+      (c) A single checkpoint carrying heads over several data systems is multi_instrument, which
+      is why uma and mace-mh both count and a family of one-checkpoint-per-domain does not.
+      (d) A deterministic forecast is prediction, not generation. Producing a future state from a
+      current one does not earn `generative`; a probabilistic or ensemble output does, which is
+      why weathernext and neuralgcm count while aifs, pangu-weather, climax, aurora, prithvi-wxc
+      and surya do not. Added on re-verification, when three of those six had been credited for
+      plain forecasting and three had been declined for it.
+      (e) A longer window at the same granularity is extent, not scale. `multi_scale` needs more
+      than one sampling resolution, which is why weathernext's 0.25 and 1 degree, neuralgcm's
+      three resolutions and lunar's 1 m and 100 m count, while evo-2's 8K-to-1M base context,
+      presto's 1-24 monthly timesteps and aifs's 13 pressure levels do not.
+      (f) `multi_instrument` asks what the model ACCEPTS. Output diversity does not earn it -
+      alphagenome takes DNA sequence and emits many assay tracks - and neither does a label
+      source, which is why granite-geospatial's GEDI lidar is excluded.
+
+      Distribution over the full 34 after two rounds of re-verification: 2/11/15/5/1 across
+      levels 1/2/3/4/5, or 6/32/44/15/3 percent. It has moved twice - 35 percent on level 2 after
+      the first pass, 38 percent on level 3 after the second, 44 percent now that rulings (d),
+      (e) and (f) were applied to the whole roster rather than to the products that prompted
+      them. Each move followed evidence, and no product has ever been moved to improve the shape.
+      TerraMind is now the only 5.
+
+      On the rung-distribution rule in docs/reference/capability.md: the worst rung here is level
+      3 at 44 percent. Measured against the rest of the map that is unremarkable: sixteen of the eighteen
+      categories put more than a third of their products on one rung and safeguards puts 21 of 26
+      on a single one, so this category remains mid-pack rather than an outlier. All five rungs
+      stay occupied, which four categories manage. The middle of a four-boolean count being the fattest is arithmetic rather than a
+      loose definition, so rewording cannot move it; a fifth attribute or a weighting could, and
+      that is a rubric edit rather than anything this roster should force.
+
+      Bands are placed by the attribute count, which is deterministic from the recorded value, so
+      relative_to is recorded where a peer corroborates the placement rather than as the
+      instrument itself. TerraMind is the top anchor.
+
+  confidence_rule:
+    high: a primary source states the fact directly or publishes the measured result
+    medium: a proxy or publisher summary supports the judgment without a direct measurement
+    low: inferred from indirect evidence, or the source is older than 90 days
+
+products:
+- prithvi-eo
+- terramind
+- clay
+- aurora-weather
+- prithvi-wxc
+- surya-heliophysics
+- esm-2
+- evo-2
+- alphagenome
+- mattergen
+- granite-geospatial
+- dofa
+- presto
+- alphaearth-foundations
+- weathernext
+- climax
+- neuralgcm
+- aifs
+- pangu-weather
+- nasa-ibm-lunar-foundation-model
+- esm-3
+- alphafold
+- openfold
+- boltz
+- chai
+- rfdiffusion
+- geneformer
+- scgpt
+- uce
+- mattersim
+- uma
+- mace
+- orb
+- gnome
+comments: >
+  Proposed in issue #533. The boundary is the data, not whether the product is a reusable
+  backbone: task models, simulators, generative design tools, and forecast services belong when
+  they learn from instrument, measurement, or scientific-simulation output. General-purpose
+  text, natural-image, speech, and video models stay in neighboring categories; software
+  harnesses such as PhysicsNeMo, Earth-2 Studio, and anemoi-core are not model products. The
+  registry roster is now empty: all 34 candidates were promoted on 2026-09-10 and verified
+  against primary sources. Capability counts four
+  evidence-backed attributes rather than downstream task names, which keeps documentation style
+  from masquerading as model breadth.

@@ -1,0 +1,50 @@
+product: weathernext
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: CC-BY-4.0 ungated .npz checkpoints on a public Google Cloud bucket}
+    data: {value: documented-not-released, detail: 'ERA5 pretraining and HRES fine-tuning data named and linked through WeatherBench2; the training mixture is not released'}
+    code: {value: partial, detail: 'rollout, tracking, loss and a single gradient step in the demo notebook, without a pretraining recipe or configs'}
+    license:
+    - {name: CC-BY-4.0, detail: permissive non-OSI}
+  raw: license:CC-BY-4.0(permissive non-OSI);weights:open(CC-BY-4.0 ungated .npz checkpoints on a public Google Cloud bucket);data:documented-not-released(ERA5 pretraining and HRES fine-tuning data named and linked through WeatherBench2; the training mixture is not released);code:partial(rollout, tracking, loss and a single gradient step in the demo notebook, without a pretraining recipe or configs)
+  confidence: high
+  note: Apache-2.0 covers the notebooks and code, but the weights fall under the README's "all other materials" clause and are therefore CC-BY-4.0, which is permissive without being OSI-approved. The demo goes as far as a gradient step, which is more than inference and short of a released pretraining pipeline.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md
+    shows: 'Lists downloadable .npz weights for WeatherNext 2, three Cyclones checkpoints and two Cyclones Mini checkpoints on the dm_graphcast Cloud bucket; names ERA5 and WeatherBench2 HRES as the training and fine-tuning data; and states that code is Apache 2.0 while "all other materials are licensed under the Creative Commons Attribution 4.0 International".'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1
+    establishes: [weights, data, code, license]
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The weights ship from a Cloud bucket rather than a governed artifact registry, so there is no download count; 7,657 GitHub stars are the last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/google-deepmind/weathernext
+    shows: 'stargazers_count: 7657; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: d660c9a0311a273a946bac351bbcd0b7049a08c43c5e661344a43dcd99e0e685
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Documented gradient step for adaptation, probabilistic forecast generation, and 0.25-degree and 1-degree checkpoints; inputs are one reanalysis and analysis system.
+  relative_to: terramind
+  relation: one_below
+  confidence: high
+  note: Three attributes place WeatherNext one rung below TerraMind. The list of model versions is not counted as breadth, and ERA5 with HRES initial conditions is one data system rather than multiple instruments.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/weathernext/main/README.md
+    shows: The demo notebook teaches computing the training loss on predictions and targets and taking a gradient step; WeatherNext 2 is the FGN joint probabilistic architecture and WeatherNext Gen is diffusion-based ensemble forecasting; checkpoints are published at 0.25-degree and, for Mini, 1-degree resolution.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9f0879fac17bda69b021bb8239241e488b91943d7c813c8727253ff9847853b1

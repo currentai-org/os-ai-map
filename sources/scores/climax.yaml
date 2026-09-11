@@ -1,0 +1,75 @@
+product: climax
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: MIT ungated checkpoints at two grid resolutions}
+    data: {value: open, detail: 'Snakemake download and regrid workflow plus preprocessing scripts reconstruct the CMIP6 pretraining corpus end to end'}
+    code: {value: open, detail: 'pretraining entry point and config alongside per-task fine-tuning configs and data preparation scripts'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: license:MIT(OSI);weights:open(MIT ungated checkpoints at two grid resolutions);data:open(Snakemake download and regrid workflow plus preprocessing scripts reconstruct the CMIP6 pretraining corpus end to end);code:open(pretraining entry point and config alongside per-task fine-tuning configs and data preparation scripts)
+  confidence: high
+  note: ClimaX is the rare complete release in this category - the corpus is rebuildable from shipped scripts rather than merely described, the pretraining run is a documented command with its config, and MIT covers both the repository and the published checkpoints.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://microsoft.github.io/ClimaX/usage/
+    shows: 'A Snakemake workflow downloads and regrids CMIP6 variables and nc2np_equally_cmip6.py preprocesses them for pretraining; pretraining runs as src/climax/pretrain/train.py --config configs/pretrain_climax.yaml; two pretrained checkpoints at 5.625deg and 1.40625deg are provided, both pretrained on all five CMIP6 datasets, and each downstream task has a fine-tuning config.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694
+    establishes: [data, code]
+  - url: https://raw.githubusercontent.com/microsoft/ClimaX/main/LICENSE
+    shows: Full MIT License text, copyright Microsoft Corporation, with no added use restriction.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes: [license]
+  - url: https://huggingface.co/api/models/tungnd/climax
+    shows: 'license: mit; gated: false; private: false; checkpoint files 5.625deg.ckpt, 1.40625deg.ckpt, vits.ckpt, vitb.ckpt and vitl.ckpt.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 536e19e2460ec7a1b0ae68939c7f922e5b6816d4b7c0150ad866629b932eb39d
+    establishes: [weights, license]
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: >-
+    The checkpoints sit under tungnd, the personal Hub namespace of Tung Nguyen, ClimaX's first
+    author, and microsoft/ClimaX's own fine-tuning commands point --model.pretrained_path at
+    those exact URLs - so it is the official release rather than a mirror, and it is declared as
+    the weights artifact. It reports zero downloads against 2.6 GB of stored files, so the
+    counter measures the API path rather than the reach, and 709 GitHub stars are the
+    last-resort signal on the aurora-weather precedent.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/microsoft/ClimaX
+    shows: 'stargazers_count: 709; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: bf6d0f0aec6edc26b57b13d266f380028577a2b4d88c1dd34154249666b9992c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Per-task fine-tuning configs, and checkpoints at two grid resolutions spanning forecasting and climate projection; deterministic targets and one variable interface.
+  relative_to: terramind
+  relation: two_below
+  confidence: high
+  note: >-
+    Two attributes. The named downstream tasks are not counted as an attribute of their own.
+    Multi-instrument is declined on what the inputs are rather than on whether a product source
+    restates the paper - three do, in configs/pretrain_climax.yaml's per-dataset dicts, in
+    arch.py's per-variable tokenization, and in the docs' "pretrained using all 5 CMIP6
+    datasets". The five are CMIP6 simulation archives, which is one simulation data system
+    under the category's rule that several variables from one data system are not several
+    instruments, and ERA5 enters at fine-tuning rather than pretraining.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://microsoft.github.io/ClimaX/usage/
+    shows: Gives fine-tuning commands and configs for global forecasting, regional forecasting, and climate projection, each loading a pretrained checkpoint, and publishes checkpoints at 5.625deg and 1.40625deg resolution.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 010040552f48292ecba679c156d0d51f8557fd355b453958a9691e44b7f30694

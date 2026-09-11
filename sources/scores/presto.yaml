@@ -1,0 +1,74 @@
+product: presto
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper}
+    data: {value: open, detail: 'scripts/generate_data.py rebuilds the corpus end to end from Earth Engine, with the tile list, tile statistics and a sample shard shipped in the repository'}
+    code: {value: open, detail: 'self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline'}
+    license:
+    - {name: MIT, detail: OSI}
+  raw: license:MIT(OSI);weights:open(data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper);data:open(scripts/generate_data.py rebuilds the corpus end to end from Earth Engine, with the tile list, tile statistics and a sample shard shipped in the repository);code:open(self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline)
+  confidence: high
+  note: The weights, the self-supervised pretraining script, and the pipeline that rebuilds the corpus all ship under a plain MIT license with no added attribution or use clause, which is the ladder's top rung.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/nasaharvest/presto/main/README.md
+    shows: Documents Presto.load_pretrained() reading the state dict from data/default_models.pt, a train.py self-supervised training entry point with a runnable local command, and scripts/generate_data.py generating the training tars from Earth Engine exports, reading the resulting webdataset shards through an authenticated `pipe:gcloud storage cat`. The bucket is not anonymously readable — the object returns 403 and listing returns 401 — so the data dimension rests on the reconstruction scripts rather than on a public download.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836
+    establishes: [weights, data, code]
+  - url: https://raw.githubusercontent.com/nasaharvest/presto/main/LICENSE
+    shows: Unmodified MIT License text, Copyright (c) 2024 Presto Authors, with no attribution or field-of-use clause added.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: be77d9965ce4fce0f874c34967c44a2a4d919035ec2299a35af15f996d5e46a6
+    establishes: [license]
+  - url: https://api.github.com/repos/nasaharvest/presto/contents/data
+    shows: Lists default_model.pt at 3.3 MB alongside dw_144_mini_shard_44.tar, dynamic_world_samples.geojson, tile_processing.txt, tile_stats.yaml, and v1_dw_tile_metadata_for_public_release.xlsx.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9f0edebd10ae3303666ef7a9020b961d46a994a769a5fdb7c1dc394f70ffe0cf
+    establishes: [weights, data]
+  - url: https://api.github.com/repos/nasaharvest/presto/contents
+    shows: Repository root carries train.py, eval.py, mosaiks.py, config, scripts, and the presto package, not inference code alone.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b0a81265ef8e6cc89a65c4853d1ed6d883df995da8a758eb242478473cb4c1db
+    establishes: [code]
+  - url: https://api.github.com/repos/nasaharvest/presto
+    shows: 'license: MIT; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f9d3a0dcb1483a4d3bd4f3983e757652df17ad8909e9cd7bfa13c2f862b07c1f
+    establishes: [license]
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The weights ship inside the repository rather than on a model hub, so no download count exists and 280 GitHub stars are used as a last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/nasaharvest/presto
+    shows: 'stargazers_count: 280; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f9d3a0dcb1483a4d3bd4f3983e757652df17ad8909e9cd7bfa13c2f862b07c1f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A construct_finetuning_model call and a downstream-task notebook for adaptation; one model ingests Sentinel-1, Sentinel-2, ERA5, SRTM, and Dynamic World inputs together.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes are stated directly. The encoder-decoder reconstructs masked inputs, which the category does not count as generative, and a variable count of monthly timesteps is one temporal scale rather than several.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/nasaharvest/presto/main/README.md
+    shows: Shows construct_finetuning_model adding a linear head for finetuning and a jupyter notebook demonstrating finetuning on different downstream tasks, and specifies the input tensor as the S1, S2, ERA5, and SRTM bands plus Dynamic World classes and latitude and longitude.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836

@@ -1,0 +1,79 @@
+product: dofa
+openness:
+  score: 4
+  class: open_weights
+  components:
+    weights: {value: open, detail: ungated CC-BY-4.0 DOFA and DOFA v2 checkpoints on Hugging Face}
+    data: {value: documented-not-released, detail: 'paper section 6 gives the composition — ~11.5M images across Sentinel-1, Sentinel-2, NAIP, Gaofen and EnMAP, with per-modality channel counts — and a download link per subset, but no assembled DOFA corpus and no script that rebuilds it end to end'}
+    code: {value: open, detail: 'pretraining entry point, masked-autoencoder engine, samplers, and launch script under pretraining/'}
+    license:
+    - {name: CC-BY-4.0, detail: 'attribution only, not OSI-approved'}
+  raw: weights:open(ungated CC-BY-4.0 DOFA and DOFA v2 checkpoints on Hugging Face);data:documented-not-released(paper section 6 gives the composition — ~11.5M images across Sentinel-1, Sentinel-2, NAIP, Gaofen and EnMAP, with per-modality channel counts — and a download link per subset, but no assembled DOFA corpus and no script that rebuilds it end to end);code:open(pretraining entry point, masked-autoencoder engine, samplers, and launch script under pretraining/);license:CC-BY-4.0(attribution only, not OSI-approved)
+  confidence: medium
+  note: 'The pretraining pipeline is public, the checkpoints are ungated, and the paper documents the corpus well enough to audit the mixture: section 6 Data availability statements names all five subsets with a download link each. That pairs a described corpus with an open pipeline, which is the rung the ladder writes for exactly this case. It is recorded as documented-not-released rather than open because the constituents are third-party datasets and nothing assembles them — no DOFA corpus is published and no script rebuilds one. The score is 4 on either reading. The repository LICENSE is MIT and covers the code; the weights the Hub distributes are CC-BY-4.0, and that is the license this axis scores.'
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/earthflow/DOFA
+    shows: 'gated: false; private: false; license cc-by-4.0; DOFA_ViT_base_e100.pth, DOFA_ViT_large_e100.pth, dofav2_vit_base_e150.pth, and dofav2_vit_large_e150.pth present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6f4c2366f317a4f7e0cf701ce760491bcb2b868703ecba92098741d5637d46fb
+    establishes: [weights, license]
+  - url: https://huggingface.co/earthflow/DOFA/raw/main/README.md
+    shows: 'Card front matter and the model details both state License: CC-BY-4.0 for the released DOFA weights.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: da6a3e09bd7afd27f7d80d71b2bfd01883bb4e0be784b5a142af7219c038bc95
+    establishes: [license]
+  - url: https://api.github.com/repos/zhu-xlab/DOFA/contents/pretraining
+    shows: Lists main_pretrain_ofa.py, engine_pretrain.py, models_base_ofa_mae.py, train_mae_all.sh, samplers, and a datasets directory holding only a loader and wavelength tables.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 61556552bac2d400dca91a2c27191d97e01bfa98ca5c449e19cf73659bdf4922
+    establishes: [code]
+  - url: https://arxiv.org/abs/2403.15356
+    shows: Abstract states that the code and pretrained weights are publicly available. It says nothing either way about the corpus, so it establishes the artifacts and not the data dimension.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f7ebf422dac91bfdf9053df9f6cb85803a1ab39ead39e514f23c433a5cfb1ff4
+    establishes: [weights, code]
+  - url: https://arxiv.org/pdf/2403.15356v3
+    shows: 'Section 4.5 — "DOFA is pretrained on a large-scale multimodal EO dataset comprising approximately 11.5 million images from five different modalities: Sentinel-1, Sentinel-2, NAIP, Gaofen, and EnMAP". Section 6 Data availability statements gives a download link per subset (SatlasPretrain for Sentinel-1 and Sentinel-2, a named Drive folder for Gaofen, hyspecnet.rsim.berlin for EnMAP).'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5a8fed90e47fa78f2a561de486e3c0270e691aeee288cffc986ac854a889d395
+    establishes: [data]
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: medium
+  note: The Hugging Face mirror reports zero downloads because the checkpoints are pulled as raw files, so 211 GitHub stars are used as a last-resort reach signal.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://api.github.com/repos/zhu-xlab/DOFA
+    shows: 'stargazers_count: 211; archived: false; fork: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: a1ff12abe676a1666fa40d3a8b5fbae8c3e6bf6b3338d5027dbe9ab52b10a2ac
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Released linear-probing and segmentation fine-tuning workflows; one checkpoint accepts five satellite sensor modalities with any channel count.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes are stated directly. The pretraining objective is masked autoencoding, which the category does not count as generative, and the sensor diversity is already counted as multiple instruments rather than a second time as multiple scales.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/zhu-xlab/DOFA/master/README.md
+    shows: Documents GeoBench classification linear probing and UPerNet segmentation fine-tuning under downstream_tasks, and shows one loaded model run over Sentinel-1 SAR, Sentinel-2, and NAIP RGB inputs with arbitrary channel counts.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4799d981e18f302d47f169e9b0978754d2ece59bb7f12e2ac7c42b17c07f792b
+  - url: https://arxiv.org/abs/2403.15356
+    shows: Describes a wavelength-conditioned dynamic hypernetwork processing inputs from five distinct satellite sensors and continual pretraining on five EO modalities.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f7ebf422dac91bfdf9053df9f6cb85803a1ab39ead39e514f23c433a5cfb1ff4

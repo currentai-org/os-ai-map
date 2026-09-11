@@ -1,0 +1,60 @@
+product: evo-2
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoint}
+    data: {value: open, detail: OpenGenome2 raw FASTA and augmented JSONL released}
+    code: {value: open, detail: Savanna training framework and Evo 2 training guidance released}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated checkpoint);data:open(OpenGenome2 raw FASTA and augmented JSONL released);code:open(Savanna training framework and Evo 2 training guidance released);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'Evo 2 releases all three parts of the from-scratch stack: permissive weights, the OpenGenome2 training corpus, and the named open training framework.'
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md
+    shows: Links downloadable checkpoints, the OpenGenome2 raw and processed training data, and the open Savanna framework under its Training and Finetuning section.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89
+    establishes: [data, code]
+  - url: https://huggingface.co/api/models/arcinstitute/evo2_7b
+    shows: 'license: apache-2.0; gated: false; private: false; evo2_7b.pt present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 64a464be50fdeff734c604ce502132405367c116bb2c66505dd54f6b6cfc5bc5
+    establishes: [weights, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 1,350 downloads in the trailing 30 days for the declared 7B checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/arcinstitute/evo2_7b
+    shows: 'downloads: 1350; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 64a464be50fdeff734c604ce502132405367c116bb2c66505dd54f6b6cfc5bc5
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: A training and fine-tuning path and genuine DNA generation; one sequence modality, and a context window that varies in extent at a fixed single-nucleotide granularity.
+  relative_to: terramind
+  relation: two_below
+  confidence: high
+  note: >-
+    Two attributes. The multi-scale credit was withdrawn under ruling (e): 8K to one million
+    bases is a longer window at the same single-nucleotide granularity, which is extent rather
+    than a second scale, and it is the same reading that declines presto's 1-24 monthly timesteps
+    and aifs's 13 pressure levels. Model-size variety is not an instrument.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/ArcInstitute/evo2/main/README.md
+    shows: Documents training and fine-tuning, prompted DNA generation, and checkpoints spanning 8K, 262K, and one-million-base contexts.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89

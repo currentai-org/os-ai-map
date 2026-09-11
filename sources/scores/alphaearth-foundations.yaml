@@ -1,0 +1,66 @@
+product: alphaearth-foundations
+openness:
+  score: 1
+  class: closed
+  components:
+    weights: {value: closed, detail: 'no checkpoint distributed, only precomputed annual embedding layers'}
+    data: {value: closed, detail: training corpus not released}
+    code: {value: closed, detail: 'no public implementation, training, or inference code'}
+    license:
+    - {name: proprietary, detail: 'no license granted over the model, the embedding layers are licensed separately under CC-BY 4.0'}
+  raw: license:proprietary(no license granted over the model, the embedding layers are licensed separately under CC-BY 4.0);weights:closed(no checkpoint distributed, only precomputed annual embedding layers);data:closed(training corpus not released);code:closed(no public implementation, training, or inference code)
+  confidence: high
+  note: Both primary sources describe releasing a dataset of embedding layers rather than the model. With no downloadable weights the ladder's first rule applies before any license question, and the CC-BY 4.0 grant on the Earth Engine collection covers the outputs, not the model that produced them.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://arxiv.org/abs/2507.22291
+    shows: Abstract states that the authors have released a dataset of global, annual, analysis-ready embedding field layers from 2017 through 2024, and offers no weights, corpus, or code.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f279d00bb71133655ef3c1a6f24886a0fff350885ae0707b5332f97d2b15f3b7
+    establishes: [weights, data, code]
+  - url: https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/
+    shows: Announcement says the team is releasing a collection of AlphaEarth Foundations' annual embeddings as the Satellite Embedding dataset in Google Earth Engine, with no mention of publishing the model.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 564682fe5d66182fab2a13d536aa24ed7ce5836d370a142b6d9abded208725a5
+    establishes: [weights, code]
+  - url: https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json
+    shows: The collection's STAC record distributes an Earth Engine ImageCollection of 64-band annual embedding images under CC-BY-4.0 with a required attribution string. It describes a dataset; nothing in it distributes the model. Cited in place of the rendered catalog page, whose body is nondeterministic.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012
+    establishes: [weights, license]
+adoption:
+  level: 1
+  signal_type: reported_traction
+  confidence: medium
+  note: No model artifact is distributed, so no download or star count exists to band and no reach word is recorded. DeepMind reports working with more than 50 organizations on the released embedding dataset, which is directional only.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/
+    shows: States that over the past year the team worked with more than 50 organizations to test the dataset on real-world applications.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 564682fe5d66182fab2a13d536aa24ed7ce5836d370a142b6d9abded208725a5
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: One model assimilates Landsat, Sentinel-1, and Sentinel-2 measurements into a shared embedding field; no published adaptation pathway, no generated scientific output, and one 10-meter annual scale.
+  relative_to: prithvi-eo
+  relation: two_below
+  confidence: high
+  note: 'Only the multi-instrument attribute is stated directly. The publisher''s own claim is that the embeddings are used without re-training, which is the opposite of a documented adaptation pathway, and an embedding is not a generated scientific output. Multi-scale is declined against the abstract''s phrase about production of maps "from local to global scales": that describes what downstream users build from the embeddings, not a model operating at more than one resolution, and the distributed collection fixes a single 10-metre annual grid.'
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://arxiv.org/abs/2507.22291
+    shows: Describes an embedding field model that assimilates spatial, temporal, and measurement contexts across multiple sources, and reports that its embeddings outperform other featurization approaches without re-training.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: f279d00bb71133655ef3c1a6f24886a0fff350885ae0707b5332f97d2b15f3b7
+  - url: https://storage.googleapis.com/earthengine-stac/catalog/GOOGLE/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL.json
+    shows: The collection's STAC record — a single 10-metre pixel size, one 64-dimensional embedding per pixel per calendar year, and the landsat-derived, sentinel1-derived and sentinel2-derived keywords. Cited in place of the rendered catalog page, whose body is nondeterministic and returned three different digests in three consecutive fetches, so it could never be re-confirmed.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1c5fb2abdcbf6d12a9b6cfecf10ccc55cbfac7d009645536d4e4828f9a14e012

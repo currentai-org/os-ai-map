@@ -1004,10 +1004,20 @@ def test_real_sources_serialize_without_errors(real_rubric):
         "compilers": 174, "storage": 160,
     }
     del _history  # narrative only; the count itself is not asserted
-    # Every published category publishes at least one evidence row, and no category is
-    # missing from the table.
-    published_categories = set(per_category("category_scoring_rules"))
-    assert set(poe) == published_categories
+    # Every PUBLISHED category with a recipe publishes at least one evidence row. A preliminary
+    # category may legitimately have an empty head roster while its candidates remain in the
+    # tail registry, and later in promotion it may publish some evidence rows before its status
+    # flips. `category_scoring_rules` includes both lifecycle states, so it is the upper bound,
+    # not the definition of "published".
+    from build.taxonomy import category_statuses
+
+    recipe_categories = set(per_category("category_scoring_rules"))
+    statuses = category_statuses(_sources["taxonomy"])
+    published_categories = {
+        slug for slug in recipe_categories if statuses.get(slug) == "published"
+    }
+    assert published_categories <= set(poe)
+    assert set(poe) <= recipe_categories
     assert all(count > 0 for count in poe.values()), poe
     # sum(poe.values()) == 3 * n_products would be the tidy invariant (one row per
     # openness dimension per product), but it does not hold today: products record a

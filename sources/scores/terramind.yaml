@@ -1,0 +1,53 @@
+product: terramind
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoint}
+    data: {value: open, detail: TerraMesh dataset published on Hugging Face}
+    code: {value: partial, detail: 'inference, generation, and fine-tuning examples without the full pretraining pipeline'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 ungated checkpoint);data:open(TerraMesh dataset published on Hugging Face);code:partial(inference, generation, and fine-tuning examples without the full pretraining pipeline)
+  confidence: high
+  note: TerraMind publishes its weights and named training dataset, but the product repository documents use and adaptation rather than an end-to-end pretraining run.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md
+    shows: Apache-2.0 card linking TerraMesh, describing 500B tokens from 9M aligned multimodal samples, and documenting generation and TerraTorch fine-tuning.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7
+    establishes: [weights, data, code, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 2,922 downloads in the trailing 30 days for the declared large checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-esa-geospatial/TerraMind-1.0-large
+    shows: 'downloads: 2922; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 52adb27ef453c92010e9d3aedb0c4e6794ee616c56b89553e1cef71dd0f09903
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Fine-tunable; six input modalities; any-to-any generation; simultaneous pixel- and token-scale processing.
+  confidence: high
+  note: TerraMind is the top anchor because one primary card directly establishes all four attributes without relying on downstream task-count prose.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ibm-esa-geospatial/TerraMind-1.0-large/raw/main/README.md
+    shows: Documents config-driven fine-tuning, six raw modalities, any-to-any generation, and a dual-scale encoder-decoder operating at pixel and token levels.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1fac187c72dfbc20c5c4588885b96ed4c1a6d3ec307e8ec6a17993e5d5b9d9d7
+  - url: https://raw.githubusercontent.com/IBM/terramind/main/README.md
+    shows: Provides fine-tuning configurations, multimodal generation notebooks, and tokenizer reconstruction examples for the released family.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 089aae5d14f5f69997eab2673d12646511767f98225f7b53479790d9687d3a68

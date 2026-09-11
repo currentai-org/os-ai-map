@@ -1,0 +1,59 @@
+product: surya-heliophysics
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 ungated checkpoint}
+    data: {value: open, detail: core SDO dataset released on Hugging Face with download tooling}
+    code: {value: partial, detail: inference and four downstream fine-tuning paths; no full pretraining pipeline}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(Apache-2.0 ungated checkpoint);data:open(core SDO dataset released on Hugging Face with download tooling);code:partial(inference and four downstream fine-tuning paths; no full pretraining pipeline);license:Apache-2.0(OSI)
+  confidence: high
+  note: Surya publishes the checkpoint and dataset, but the repository's training surface begins at downstream adaptation rather than reproducing foundation-model pretraining.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md
+    shows: Links the Apache-2.0 model and core-SDO dataset, provides data download scripts, inference, and four downstream fine-tuning examples.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873
+    establishes: [data, code]
+  - url: https://huggingface.co/api/models/nasa-ibm-ai4science/Surya-1.0
+    shows: 'license: apache-2.0; gated: false; private: false; surya.366m.v1.pt present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6bcac25f4f08857e25d3a274b180a51b56a8e5af4e2faadc92ba2c639bf14ab1
+    establishes: [weights, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 407 downloads in the trailing 30 days for the declared checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/nasa-ibm-ai4science/Surya-1.0
+    shows: 'downloads: 407; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 6bcac25f4f08857e25d3a274b180a51b56a8e5af4e2faadc92ba2c639bf14ab1
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: LoRA adaptation, AIA-HMI multi-instrument input, and explicit local/global multi-scale representation learning; a deterministic forecasting objective.
+  relative_to: terramind
+  relation: one_below
+  confidence: high
+  note: >-
+    Three attributes. Generative is declined under ruling (d) - the pretraining objective is
+    one-hour-ahead forecasting with autoregressive rollout, a deterministic future state rather
+    than a generated scientific output - which leaves TerraMind alone at the anchor rung.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/Surya/main/README.md
+    shows: Documents LoRA fine-tuning, 13 channels from AIA and HMI, two-hour forecasts, and local/global attention described as multi-scale representation learning.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5198cb46082d52645d7cd1648befe08921afac8286c831cd54d319d0fba54873

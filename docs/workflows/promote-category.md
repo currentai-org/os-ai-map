@@ -107,13 +107,37 @@ uv run python -m build.check_recipe        # the ladder accepts every recorded s
 uv run python -m build.check_rubric        # per-category reproduction, deferrals itemized
 uv run python -m build.check_verification  # producible pairs, digests, the dated-claim invariant
 uv run python -m build.check_capability    # the anchor arithmetic and same-category rule
-uv run python -m build.check_adoption      # every band against its declared instrument
+uv run python -m build.check_adoption --strict   # every band against its declared instrument
+uv run python -m build.check_components    # the components mapping recomposes to its raw string
 uv run python -m build.check_instrument    # the instrument a band claims exists for it
-uv run python -m build.check_artifacts     # artifacts still resolve; --live also checks PyPI
+uv run python -m build.check_artifacts --live   # artifacts still resolve, PyPI included
+uv run python -m build.check_channel_authority  # no stars band where a usage route exists
+uv run python -m build.check_payload
+uv run python -m build.check_retirement
+uv run python -m build.check_routing
+uv run python -m build.goldens --check     # stale fingerprint is a NOTICE, not a failure
 uv run python -m build.serialize_registry --check
+uv run python -m build.serialize_routing --check
 uv run python -m build.serialize_rubric --check
+uv run python -m build.serialize_scores --check
 uv run pytest -q
 ```
+
+That list is `.github/workflows/validate.yml`'s, not a memorable subset of it. Two of these bite
+a promotion specifically and neither is obvious:
+
+- **`check_components`** compares the structured `components` mapping against the `raw` string
+  beside it. Editing a component detail by hand changes one and not the other, and nothing else
+  in the gate list notices. This is what "edit corpus files through `build/components.py`" is
+  protecting; `build.components.format(build.check_components.recompose(components))` regenerates
+  `raw` from the mapping if they have already drifted.
+- **`check_channel_authority`** enforces `sources/signal_routing.yaml`'s precedence
+  `pypi > huggingface > stars`. Once a product declares a package, a `stars_fallback` band is a
+  violation even though `check_adoption` passes, and the leg that catches it needs `--live`.
+
+Never regenerate `tests/goldens/corpus.json`: a bot writes it on merge and
+`validate.yml` fails the PR if it appears in the diff. A stale-fingerprint notice from
+`goldens --check` is the expected state on a PR that adds products.
 
 **Budget the GitHub API.** Unauthenticated it is 60 requests an hour, and verifying one candidate
 costs three to four (repo record, license, README, sometimes a tree listing), so a

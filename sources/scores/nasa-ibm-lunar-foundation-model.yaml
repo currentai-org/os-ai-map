@@ -1,0 +1,73 @@
+product: nasa-ibm-lunar-foundation-model
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: ungated Apache-2.0 backbone checkpoint plus nine modality tokenizer checkpoints}
+    data: {value: documented-not-released, detail: 'SomBench composition given tile by tile; the published dataset repo is a sample'}
+    code: {value: partial, detail: 'TerraTorch fine-tuning integration and configs; README states pretraining code is not included'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: weights:open(ungated Apache-2.0 backbone checkpoint plus nine modality tokenizer checkpoints);data:documented-not-released(SomBench composition given tile by tile; the published dataset repo is a sample);code:partial(TerraTorch fine-tuning integration and configs; README states pretraining code is not included);license:Apache-2.0(OSI)
+  confidence: high
+  note: An unusually complete release for a government-lab model, and it still stops short of the top rungs. The corpus is described down to per-modality counts and split rules, but what ships on the Hub is a sample, and the fine-tuning repository says in one line that pretraining code is not included.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model
+    shows: 'license:apache-2.0; gated: false; private: false; backbone/checkpoint.pt and nine tokenizers/*/checkpoint.pt present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9a4d55923aabfac171bf535152d16dc36480d8be54247995907502270ce884a2
+    establishes: [weights, license]
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/LICENSE
+    shows: Apache License Version 2.0 body, contradicting the NOASSERTION the GitHub license endpoint reports.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9b00f43643ca3c0f99c0d4345ea6182735c0a1897b2e2681593012238cb70150
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/README.md
+    shows: '"Pretraining code is not included." The two packages are the vendored model package and a TerraTorch integration of datamodules, tasks, backbone wrappers and runnable fine-tuning configs.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 66c86f3cd0d3d4416edf1252aeb5ec16c3c5e0d7706823b3dd814d7834a05cc6
+    establishes: [code]
+  - url: https://huggingface.co/api/datasets/nasa-ibm-ai4science/Sombench-pretraining-data
+    shows: '"This includes a small sample from SomBench"; license cc-by-4.0; size_categories n<1K, against the 963,609 WAC and 1,000,113 NAC bundles the model card says pretraining used.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: efef3e766b9135a708861cff377cd1758be4d7033fc7555e74fc6fd8214508e6
+    establishes: [data]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Three downloads in the trailing 30 days against a card whose cited creation timestamp puts it barely over a week old, so this is a first-week number rather than a settled one.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model
+    shows: 'downloads: 3; likes: 7; createdAt 2026-09-01.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 9a4d55923aabfac171bf535152d16dc36480d8be54247995907502270ce884a2
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Documented TerraTorch fine-tuning pathway, 11 input modalities drawn from several lunar instruments, and one set of weights covering a 100x resolution gap; generation is offered only as a qualitative probe.
+  relative_to: prithvi-eo
+  relation: at
+  confidence: high
+  note: Three of the four attributes are stated outright. The fourth is refused by the publisher rather than missing - the card calls any-to-any generation a qualitative probe and says the model is not a scientific-grade generative product, which is the category's own test for what a generated output has to be.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/nasa-ibm-ai4science/NASA-IBM-Lunar-Foundation-Model/raw/main/README.md
+    shows: '11 modalities from LROC NAC, LROC WAC, SLDEM2015, Diviner, LOLA, Mini-RF, Kaguya, GRAIL and Lunar Prospector; two spatial scales at ~1 m/px and ~100 m/px in a single mixed-batch loop, "one set of weights covers both resolution families" across a 100x scale gap; downstream adaptation through TerraTorch with LoRA and full fine-tuning guidance; and "Not a scientific-grade generative product - generated fields are not calibrated predictions".'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 336363107dbec10ee9da569360fda045af8a5b04d6a61fe96ab41d54a038ef5a
+  - url: https://raw.githubusercontent.com/NASA-IMPACT/NASA-IBM-Lunar-Foundation-Model/main/README.md
+    shows: Every YAML under terratorch_integration/configs is a runnable `terratorch fit` target, grouped by downstream task.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 66c86f3cd0d3d4416edf1252aeb5ec16c3c5e0d7706823b3dd814d7834a05cc6

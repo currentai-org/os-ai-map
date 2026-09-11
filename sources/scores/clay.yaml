@@ -1,0 +1,50 @@
+product: clay
+openness:
+  score: 4
+  class: open_weights
+  components:
+    weights: {value: open, detail: Apache-2.0 checkpoint}
+    data: {value: documented-not-released, detail: source imagery and metadata schema documented; training sample not redistributed}
+    code: {value: open, detail: 'trainer, data module, configs, and model implementation released'}
+    license:
+    - {name: Apache-2.0, detail: OSI}
+  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 checkpoint);data:documented-not-released(source imagery and metadata schema documented; training sample not redistributed);code:open(trainer, data module, configs, and model implementation released)
+  confidence: high
+  note: The full training machinery is public and the corpus is documented but not redistributed, matching the ladder's documented-data plus open-code rung.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/Clay-foundation/model/main/README.md
+    shows: States that code and trained weights use Apache, and documents trainer.py, ClayDataModule, and configuration-driven training.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e
+    establishes: [weights, data, code, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 107 downloads in the trailing 30 days for the declared checkpoint.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/made-with-clay/Clay
+    shows: 'downloads: 107; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 064c94e34b50d1aeefa63298848521309146678dece7725155a58d037900081a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Trainable adaptation path and sensor-aware inputs; no documented scientific generation or cross-scale span in the primary release page.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two directly readable attributes put Clay one rung below Prithvi-EO; absent claims are not inferred from the architecture.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/Clay-foundation/model/main/README.md
+    shows: Documents a configurable training path and sensor, time, location, and band metadata consumed by the model interface.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e

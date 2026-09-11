@@ -1,0 +1,74 @@
+product: esm-3
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside}
+    data: {value: closed, detail: '2.78 billion natural proteins described by count, corpus not released'}
+    code: {value: partial, detail: 'inference, generation and tutorial code in the esm package; no pretraining pipeline'}
+    license:
+    - {name: MIT, detail: 'OSI; stated in the card body and repository LICENSE.md rather than a card license field'}
+  raw: weights:open(ungated esm3_sm_open_v1.pth with structure and function decoder weights alongside);data:closed(2.78 billion natural proteins described by count, corpus not released);code:partial(inference, generation and tutorial code in the esm package; no pretraining pipeline);license:MIT(OSI; stated in the card body and repository LICENSE.md rather than a card license field)
+  confidence: medium
+  note: The open checkpoint moved namespaces and lost its license metadata on the way - the EvolutionaryScale repo now redirects to biohub and the destination card has no license field at all. MIT is still stated, in the card body and in the repository LICENSE.md under a Chan Zuckerberg Biohub copyright, so the grant exists; confidence is medium because it is asserted in prose rather than declared on the artifact. Only the 1.4B tier is distributed; the 7B and 98B models are served through the platform API and are outside this axis.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/EvolutionaryScale/esm3-sm-open-v1
+    shows: 'Redirects to huggingface.co/api/models/biohub/esm3-sm-open-v1; gated: false; private: false; no license tag and no cardData license key; data/weights/esm3_sm_open_v1.pth, esm3_structure_decoder_v0.pth and esm3_function_decoder_v0.pth present.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5b0241044c7c476cb896e1a46e92352f2ce5807d073f4ed58d668a154b8e3381
+    establishes: [weights]
+  - url: https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md
+    shows: 'Front matter declares only language and tags, no license. The body says "This repository is under a MIT license" and links the esm repository LICENSE.md; training is described as 2.78 billion natural proteins, with no corpus released.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5
+    establishes: [license, data]
+  - url: https://raw.githubusercontent.com/Biohub/esm/main/LICENSE.md
+    shows: '"License (MIT)", Copyright 2026 Chan Zuckerberg Biohub, Inc., with the standard MIT permission grant.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: b63df9ca1dd96b3b21eec226b51b236d0bd152ac20eafc43aad46bf832b48d8a
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md
+    shows: '"These models are available under the MIT license." Code covers local inference and generation and a tutorials cookbook; the 7B and 98B tiers are reachable only through the hosted platform.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6
+    establishes: [code, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  banded_quantity: trailing-30-day Hub downloads of the one openly distributed checkpoint, biohub/esm3-sm-open-v1
+  confidence: medium
+  note: 2,772 downloads in the trailing 30 days for biohub/esm3-sm-open-v1, which is the openly distributed checkpoint and what this band covers. The larger tiers are served through the hosted Forge API and publish no artifact count, so they are outside the counted scope rather than folded into it.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/biohub/esm3-sm-open-v1
+    shows: 'downloads: 2772; likes: 330.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5b0241044c7c476cb896e1a46e92352f2ce5807d073f4ed58d668a154b8e3381
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Sequence, structure and function as three input and output tracks, and generation of new proteins from a partial prompt; no documented fine-tuning pathway and no second scale.
+  relative_to: prithvi-eo
+  relation: one_below
+  confidence: high
+  note: Two attributes read straight off the publisher's own description. The third does not follow from them - the release documents how to prompt and sample from the model, not how to adapt it, and the fine-tuning guidance in the repository is written for ESMC rather than ESM-3.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://raw.githubusercontent.com/Biohub/esm/main/_assets/ESM3_README.md
+    shows: '"able to jointly reason across three fundamental biological properties of proteins: sequence, structure, and function ... represented as tracks of discrete tokens at the input and output"; "ESM3 is a generative masked language model. You can prompt it with partial sequence, structure, and function keywords, and iteratively sample masked positions".'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6
+  - url: https://huggingface.co/biohub/esm3-sm-open-v1/raw/main/README.md
+    shows: '"a generative model capable of designing proteins conditioned on partial prompts of sequence, structure and function"; usage points to the esm repository notebooks, with no fine-tuning entry point.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 4aedacc49eff2fb6b90b926b5252076818a888884ac34d8a6701cd74421903d5

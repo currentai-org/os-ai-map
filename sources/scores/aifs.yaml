@@ -1,0 +1,62 @@
+product: aifs
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt}
+    data: {value: documented-not-released, detail: 'ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed'}
+    code: {value: partial, detail: 'config_pretraining.yaml and config_finetuning.yaml ship beside the checkpoint with pinned Anemoi versions and both stage commands, but no data-preparation recipe - the commands begin DATASETS_PATH=??????? and no anemoi-datasets build ships'}
+    license:
+    - {name: CC-BY-4.0, detail: permissive non-OSI}
+  raw: weights:open(CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt);data:documented-not-released(ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed);code:partial(config_pretraining.yaml and config_finetuning.yaml ship beside the checkpoint with pinned Anemoi versions and both stage commands, but no data-preparation recipe - the commands begin DATASETS_PATH=??????? and no anemoi-datasets build ships);license:CC-BY-4.0(permissive non-OSI)
+  confidence: high
+  note: >-
+    ECMWF publishes both training-stage configs beside the checkpoint - pinned Anemoi versions,
+    learning-rate schedules, step counts and the commands that run them - which is more than
+    most of the category ships. It is recorded as partial rather than open because the rubric's
+    `open` asks for data prep, training recipe and configs, and the data-preparation half does
+    not ship: both commands begin `export DATASETS_PATH=???????` with no anemoi-datasets build
+    to fill it. Against the category's other `open` records - presto's end-to-end
+    data-generation pipeline, mattergen's full preprocessing-to-evaluation pipeline - two YAMLs
+    and a pinned third-party trainer do not reach the same bar.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md
+    shows: '"These model weights are published under a Creative Commons Attribution 4.0 International (CC BY 4.0)" while notebooks and scripts are Apache 2.0; gives the pretraining command anemoi-training train --config-name=config_pretraining.yaml against pinned anemoi-training 0.3.1, anemoi-models 0.4.0 and anemoi-graphs 0.4.4, then the fine-tuning stage; and details pretraining on ERA5 1979-2022 followed by rollout on operational IFS analyses 2016-2022.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09
+    establishes: [data, code, license]
+  - url: https://huggingface.co/api/models/ecmwf/aifs-single-1.0
+    shows: 'license: cc-by-4.0; gated: false; private: false; siblings include aifs-single-mse-1.0.ckpt, config_pretraining.yaml and config_finetuning.yaml.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 65f6bb9a1cdac2c70a014fd247c89fdde8b4b572de28d90240a93c8b83cf7e69
+    establishes: [weights, license]
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: 365 downloads in the trailing 30 days for the declared operational checkpoint, against 53 likes.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/api/models/ecmwf/aifs-single-1.0
+    shows: 'downloads: 365; likes: 53; gated: false; private: false.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 65f6bb9a1cdac2c70a014fd247c89fdde8b4b572de28d90240a93c8b83cf7e69
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: scientific adaptation surface
+  value: Published pretraining and fine-tuning stages with their configs; a single deterministic checkpoint at one resolution over ECMWF analysis inputs.
+  confidence: high
+  note: One attribute. The MSE-trained model predicts a fixed forecast target rather than generating, thirteen pressure levels are vertical structure rather than a second scale, and ERA5 with operational IFS analyses is one data system.
+  last_verified: '2026-09-10'
+  sources:
+  - url: https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md
+    shows: Documents a two-stage Anemoi pretraining and rollout fine-tuning path with shipped configs, and specifies a single ~31 km horizontal, 13-level atmosphere component producing 6-hour forecasts.
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 2d6125cac729676e6b9a346a7dbb77279184f3dc1cc3935901a08db6fdf83b09
