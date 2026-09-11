@@ -921,22 +921,39 @@ def _registry_row(homepage):
          "type": "software", "org": "meta", "homepage": homepage}]}}
 
 
-@pytest.mark.parametrize("place,setter", [
-    ("products/llama", lambda d, v: d["products"]["llama"]["github"].__setitem__(0, {"url": v})),
-    ("products/llama", lambda d, v: d["products"]["llama"].__setitem__(
-        "end_of_life", {"date": "2026-12-31", "source": v, "shows": "shuts down"})),
-    ("organizations/meta", lambda d, v: d["organizations"]["meta"].__setitem__("homepage", v)),
-    ("organizations/meta", lambda d, v: d["organizations"]["meta"].__setitem__(
-        "github", [{"url": v}])),
-    ("scores/llama", lambda d, v: d["scores"]["llama"]["openness"]["sources"][0].__setitem__("url", v)),
-    ("registry/base_pretrained", lambda d, v: d.__setitem__("registry", _registry_row(v))),
-])
-def test_bare_scheme_url_fails_schema_and_dotted_host_passes(place, setter):
-    d = _fixture()
-    setter(d, "https://")
-    errs = validate_sources(d)
-    assert any(e.startswith(place) and "schema" in e and "https://" in e for e in errs), errs
+HOSTLESS_URLS = [
+    "https://",                 # bare scheme, the #525 case
+    "https://?a.b",             # the only dotted text is a query
+    "https://#a.b",             # ... a fragment
+    "https://user.name@",       # ... userinfo with no host after the @
+    "http://localhost",         # a host, but not a dotted one
+]
 
-    d = _fixture()
-    setter(d, "https://example.com/some/page")
-    assert [e for e in validate_sources(d) if "schema" in e] == []
+
+@pytest.mark.parametrize("place,field,setter", [
+    ("products/llama", "github[0].url",
+     lambda d, v: d["products"]["llama"]["github"].__setitem__(0, {"url": v})),
+    ("products/llama", "end_of_life.source", lambda d, v: d["products"]["llama"].__setitem__(
+        "end_of_life", {"date": "2026-12-31", "source": v, "shows": "shuts down"})),
+    ("organizations/meta", "homepage",
+     lambda d, v: d["organizations"]["meta"].__setitem__("homepage", v)),
+    ("organizations/meta", "github[0].url", lambda d, v: d["organizations"]["meta"].__setitem__(
+        "github", [{"url": v}])),
+    ("scores/llama", "openness.sources[0].url",
+     lambda d, v: d["scores"]["llama"]["openness"]["sources"][0].__setitem__("url", v)),
+    ("registry/base_pretrained", "products[0].homepage",
+     lambda d, v: d.__setitem__("registry", _registry_row(v))),
+])
+def test_hostless_url_fails_schema_naming_the_field_and_real_url_passes(place, field, setter):
+    for bad in HOSTLESS_URLS:
+        d = _fixture()
+        setter(d, bad)
+        errs = validate_sources(d)
+        expected = f"{place}: schema: {field}: {bad!r} does not match"
+        assert any(e.startswith(expected) for e in errs), (bad, errs)
+
+    for good in ["https://example.com", "https://example.com/some/page",
+                 "https://sub.example.org:8443/p?q=1#frag", "http://10.0.0.1/status"]:
+        d = _fixture()
+        setter(d, good)
+        assert [e for e in validate_sources(d) if "schema" in e] == [], good
