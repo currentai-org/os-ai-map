@@ -316,6 +316,34 @@ bundled artifact is *substitutable* — you can point LlamaFirewall at a differe
 still works. Where the published thing genuinely cannot run without the restricted component, the
 component is not a bundle but a dependency, and `core_gated` is the dimension that asks about it.
 
+### Where openness and capability rest on different SKUs, say which and why
+
+`multi_sku_rule` resolves openness on the most restrictive licence among the SKUs whose weights
+are actually distributed. Capability answers a different question — how good is the best thing
+this publisher ships — and where the strongest tier is API-only, the two axes end up measuring
+different artifacts of the same product. That is correct on both axes and invisible to a reader
+who sees only two numbers.
+
+So the record has to disclose it. Where the SKU carrying the openness score is not the SKU
+carrying the capability score, the openness note names which tier each axis reads and the
+capability note names the tier its number came from. One sentence each; the point is that a
+reader who takes the openness score as a statement about the benchmarked model is corrected by
+the record rather than by a maintainer.
+
+`voyage-embeddings` is the case the rule was settled on (2026-09-11). Openness reads
+voyage-4-nano's Apache-2.0 weights and scores 3/open_weights; capability reads the flagship's
+RTEB result and scores 4, and the flagship is API-only. Both notes now say so.
+
+It is not split into two products, and the near-miss says why. `esm-3` ships the same shape - a
+1.4B checkpoint you can download beside 7B and 98B tiers served through the Forge API - but its
+capability attributes are read off the open checkpoint's own documentation, so both axes rest on
+the same artifact and there is nothing to disclose beyond which tier that is. Splitting on SKU
+boundaries would divide both records, and every other family that ships a small open checkpoint
+beside a hosted flagship. A product is one publisher's line. The rule is disclosure, not
+division: where the axes diverge, the record says so; where they do not, it names the tier anyway
+so a reader can tell the difference.
+
+
 ### An accessory tracks the platform it completes
 
 An add-on is not a board, and asking board questions of one answers about the wrong artifact.
