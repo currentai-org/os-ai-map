@@ -41,6 +41,7 @@ _ADOPTED_MIN = 4           # raw adoption below which an open option is "not ado
 # 5. Scored across all openness buckets -- the tier
 # describes the product -- while `mature` gates the same 4.5 bar on the fully-open bucket,
 # because only fully-open products advance a category's stage.
+_AXIS_TOP = 5              # a raw axis value the open ecosystem has "topped"
 _LEADING_MIN = _MATURE_MIN     # 4.5
 _STRONG_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
@@ -127,6 +128,41 @@ def _maturity_score(row: dict, w: dict) -> float | None:
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
 
 
+def _unreached_axes(open_rows: list[tuple[dict, float]]) -> list[str]:
+    """The gap(s) for a category whose best fully-open option clears both cutoffs and still
+    misses the maturity bar.
+
+    The per-product drivers ask what holds the BEST BLENDED product back. Where that product
+    clears both cutoffs the honest answer is "nothing, on its own axes" — `compilers` sits at
+    4 and 4, which clears both and blends to 4.0 against a 4.5 bar. Asserting a shortfall
+    there would be a knowingly false label, so the engine said nothing at all, and a reader
+    got a stage with no explanation.
+
+    So ask the category-level question instead: which axis has the open ecosystem never
+    topped? compilers has three fully-open products at capability 5 (apache-tvm, iree, xla)
+    and, across 44 products, none at adoption 5. The capability exists in the open; it has
+    not been adopted. That is `adoption`, and it is a fact about the category rather than an
+    inference about one product.
+
+    An axis no fully-open product records at all is UNMEASURED, not deficient, and yields no
+    gap: a category scored on adoption alone must not be told it has a capability shortfall.
+    A category where both axes are topped, but never in the same product, still reports
+    nothing — the parts exist and nobody has assembled them, which is a real state this
+    vocabulary cannot yet name.
+
+    32 fully-open products across 13 categories sit at exactly 4/4, so the dead zone this
+    covers is structural. Today it leaves exactly one category silent.
+    """
+    gaps: list[str] = []
+    for name, block, key in (("capability", "capability", "score"),
+                             ("adoption", "adoption", "level")):
+        recorded = [v for r, _ in open_rows
+                    if (v := ((r.get(block) or {}).get(key))) is not None]
+        if recorded and max(recorded) < _AXIS_TOP:
+            gaps.append(name)
+    return gaps
+
+
 def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -> dict:
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
@@ -189,6 +225,8 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
             gaps.append("capability")
         if adopt is not None and adopt < _ADOPTED_MIN:
             gaps.append("adoption")
+        if not gaps:
+            gaps = _unreached_axes(open_rows)
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
 
