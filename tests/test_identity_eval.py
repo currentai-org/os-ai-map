@@ -1520,6 +1520,12 @@ def test_a_baseline_missing_a_route_exits_two_from_main(tmp_path, monkeypatch, c
     assert main(["--edges", str(fixture)]) == 2
     out = capsys.readouterr().out
     assert "pins no value for huggingface, homepage_domain" in out
+    # A file with every pin deleted is the same hole, not the lenient missing-file case.
+    baseline.write_text("{}")
+    assert main(["--edges", str(fixture)]) == 2
+    assert "pins no value for github, huggingface, homepage_domain" in capsys.readouterr().out
+    baseline.write_text('{"lowered_because": "all gone"}')
+    assert main(["--edges", str(fixture)]) == 2
 
 
 def test_a_malformed_baseline_exits_two_from_main(tmp_path, monkeypatch, capsys):

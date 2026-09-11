@@ -2043,7 +2043,10 @@ def main(argv: list[str] | None = None) -> int:
     # here forever. The pytest gate requires every route in the committed file; the scoring
     # path refuses the same shape so the weekly run cannot report green on a route it never
     # checked. A missing file (no ratchet at all, an older tree) is still the lenient case.
-    unpinned = [route for route, _label in ORG_ROUTE_LABELS if route not in baseline] if baseline else []
+    unpinned = (
+        [route for route, _label in ORG_ROUTE_LABELS if route not in baseline]
+        if COVERAGE_BASELINE_PATH.exists() else []  # the FILE decides, not the dict: `{}` is a file with every pin deleted
+    )
     if unpinned:
         print(
             f"[FAIL] {_repo_path(COVERAGE_BASELINE_PATH)} pins no value for {', '.join(unpinned)}; "
