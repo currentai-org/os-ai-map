@@ -90,16 +90,36 @@ adoption:
     http_status: 200
     content_sha256: 9b6d7b707119de3a7fcd84f2db430559d65ed295a09923b01b099eb27b49155f
 capability:
-  score: null
-  basis: n/a
-  value: null
-  confidence: high
-  note: A dataset is not 'capable', so this axis is left unscored, mirroring the category pattern (gsm8k).
-  last_verified: '2026-09-01'
+  score: 5
+  basis: feature_matrix
+  basis_detail: the Terminal-Bench 2.0 paper's reported frontier ceiling, read against the project's own
+    dataset versioning
+  value: 89 tasks in Terminal-Bench 2.0, each with its own environment, a human-written solution and its
+    own test suite; graded by running those tests, with no judge; the task set is versioned and replaced
+    rather than frozen, from Core v0.1.1 to the 2.0 suite the project now points new users at
+  confidence: medium
+  note: 'Top rung. Frontier agents were reported below 65% on Terminal-Bench 2.0, an answer is graded by
+    the task''s own tests rather than by a judge, and the suite is replaced version by version, which is
+    how LiveBench holds the same rung. It differs from LiveBench in where the protection comes from: the
+    tasks and their reference solutions are published in full, so turnover is the only thing holding contamination
+    off. The band is read off the versioned dataset names, not off the live leaderboard, which renders its
+    rows in the browser.'
+  last_verified: '2026-09-11'
   sources:
-  - url: https://raw.githubusercontent.com/harbor-framework/terminal-bench/main/README.md
-    shows: a task collection and how to run it; no performance, throughput or feature claim for the capability
-      axis to read
-    accessed: '2026-09-01'
+  - url: https://arxiv.org/abs/2601.11868
+    shows: '"Terminal-Bench 2.0: a carefully curated hard benchmark composed of 89 tasks in computer terminal
+      environments inspired by problems from real workflows"; "Each task features a unique environment,
+      human-written solution, and comprehensive tests for verification"; "We show that frontier models and
+      agents score less than 65% on the benchmark"'
+    accessed: '2026-09-11'
     http_status: 200
-    content_sha256: 19cd7542ab806fc5732503f2fe2d6ee7e342de549ab1acfba184060f1290b03b
+    content_sha256: 48056dd2c223c4510d39bd6d06fd8079f7c8e7575276c30430e0186483623d36
+  - url: https://raw.githubusercontent.com/laude-institute/terminal-bench/main/README.md
+    shows: each task ships "an instruction in English", "a test script to verify if the language model /
+      agent completed the task successfully" and "a reference (\"oracle\") solution that solves the task";
+      the leaderboard is pinned to a named dataset version, `--dataset-name terminal-bench-core --dataset-version
+      0.1.1`, and the standing announcement points new users at "harbor, our new framework that can be used
+      to run Terminal-Bench 2.0"
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c4b77ef934ae210f3c712e7bab30f460ff35e125aa83affc30c9e7dd6317cdf1

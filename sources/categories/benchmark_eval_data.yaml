@@ -91,6 +91,78 @@ scoring_recipe:
         rung that tests a tier, and the recorded 4 stands rather than being replaced by a
         number nobody derived. Extending the dataset ladder with a use-bounded tier is the fix
         and it is a rubric change.
+  capability:
+    basis: feature_matrix
+    question: Does this benchmark still separate frontier models?
+    dimensions:
+      headroom:
+        question: How much room is left between the best reported score and the ceiling?
+        evidence: A published frontier figure on this benchmark, or a successor's measured
+          comparison against it.
+      contamination_control:
+        question: Does the design defend its headroom, by holding answers back or by replacing
+          items over time?
+        evidence: A held-out or private split, a documented rotation or version cadence, or a
+          canary string on the published artifact.
+      checkable_scoring:
+        question: Is an answer graded against ground truth or executed tests rather than by a
+          judge model?
+        evidence: The scoring procedure as the project documents it.
+      distinct_dimension:
+        question: Does it measure something no cheaper instrument already covers?
+        evidence: What the project states it tests, read against the other benchmarks on this
+          roster.
+    anchor:
+      primary: the benchmark's own reported frontier ceiling
+      machine_signal: none - requires research. `semanticscholar` routes adoption here and
+        corroborates capability without settling it.
+    bands: null
+    bands_status: >-
+      Hand-authored against the rungs below, on embeddings_retrieval's precedent. The four
+      dimensions do not combine by counting: GAIA is a 5 on one domain and MT-Bench a 4 with
+      judge scoring and no contamination control, so an attribute count reproduces neither.
+      Headroom leads and the other three say whether it will last. The layer-2 scorer must not
+      write this axis.
+    note: >-
+      Written on 2026-09-11 under issue #319, which ruled that a benchmark's difficulty and
+      contamination resistance IS a capability and that the category could not hold both
+      positions at once - four products banded on exactly that, and 28 abstaining at the time
+      of the ruling on the grounds that a dataset is not capable. The rungs below are read off
+      the four bands that already existed rather than invented beside them.
+
+      5 - still separates frontier models AND the design defends that: answers held out or
+      the item set replaced over time, and an answer is checkable without a judge. livebench
+      (monthly rotation, judge-free, top models under 70%), gaia (300 answers private, one
+      checkable answer, 15% against 92% for humans) and humanitys-last-exam (private holdout)
+      hold this rung.
+      4 - a real discriminator on a dimension nothing cheaper reaches, with one structural
+      weakness: judge-based scoring, a small item set, or partial saturation. mt-bench is the
+      anchor - 80 multi-turn questions and an LLM judge, still the instrument for a dimension
+      multiple choice cannot reach.
+      3 - harder than the classic it replaced and still separating, but static and published
+      in full, so its headroom is being spent rather than defended.
+      2 - plateaued. Frontier scores cluster near the ceiling, its own successors say so, and
+      it survives as a reporting convention rather than as a discriminator.
+      1 - saturated, or shown not to measure what it claims: frontier accuracy is at the
+      ceiling, or published work shows the score moves on rewrites that preserve the problem.
+
+      Three rules settle the calls the rungs alone leave open, and each one came out of
+      reading the four existing bands rather than out of scoring a product.
+      (a) Saturation is a fact about the benchmark, not a caveat about it. Recording "now
+      largely saturated" in prose while abstaining on the axis is the inconsistency #319
+      names; a saturated benchmark is a 1 or a 2 and the note says why.
+      (b) Openness does not enter the band. gaia and humanitys-last-exam are gated
+      specifically to hold answers back, and that is what earns them the top rung on this
+      axis. The openness axis records the cost separately.
+      (c) Gating is not contamination control on its own. livecodebench is gated over an
+      unstated license and math under a DMCA takedown; neither withholds answers to defend a
+      score.
+
+      Distribution after the first five bands (issue #319 calibration slice): 9 of 32 scored,
+      4/2/1/1/1 across levels 5/4/3/2/1. The top rung is 44 percent of what is scored, which
+      is not yet a distribution to judge - the 23 still unscored are mostly the saturated
+      classics this rubric puts on levels 1 to 3, so re-count once they land rather than
+      rewording against a slice.
 products:
 - humaneval
 - gsm8k

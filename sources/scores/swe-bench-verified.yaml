@@ -92,18 +92,42 @@ adoption:
     http_status: 200
     content_sha256: e7239207ea1aa7e72552da32855ef449cabd79f850fb7b0060878d17a89c9254
 capability:
-  score: null
-  basis: n/a
-  value: null
+  score: 4
+  basis: feature_matrix
+  basis_detail: the dataset card's description of the 500-instance human-validated set and its unit-test
+    grading, read against the SWE-bench paper's task definition
+  value: 500 human-validated instances drawn from real GitHub issues across 12 Python repositories; graded
+    by running the pull request's FAIL_TO_PASS and PASS_TO_PASS unit tests, with no judge; a static set
+    whose gold patches and tests are published in full
   confidence: high
-  note: A dataset is not 'capable', so this axis is left unscored. SWE-bench Verified is notably contamination-resistant
-    and discriminating for coding agents, since it runs against real repository state and executable tests,
-    but that quality is noted here rather than turned into a number.
-  last_verified: '2026-08-13'
+  note: A real discriminator on a dimension nothing cheaper reaches - resolve an issue in a working repository,
+    graded by that repository's own tests - which is why frontier labs report against it. It sits a rung
+    below the contamination-resistant benchmarks because the set has been frozen since August 2024 and the
+    gold patch and tests ship with every instance, so its headroom is being spent rather than protected.
+  last_verified: '2026-09-11'
   sources:
-  - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
-    shows: a static 500-instance corpus of repo state, issue text, gold patch and tests; no performance,
-      throughput or feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/raw/main/README.md
+    shows: '"SWE-bench Verified is a subset of 500 samples from the SWE-bench test set, which have been
+      human-validated for quality"; "Evaluation is performed by unit test verification using post-PR behavior
+      as the reference solution"; the split metadata records num_examples: 500 and the schema carries `patch`
+      (the gold patch), `test_patch`, FAIL_TO_PASS and PASS_TO_PASS'
+    accessed: '2026-09-11'
     http_status: 200
-    content_sha256: 21a9ae799b810fb5b73f025632c12b0858475dabbdc756309dad62af5af1d184
+    content_sha256: 6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5
+  - url: https://arxiv.org/abs/2310.06770
+    shows: '"Resolving issues in SWE-bench frequently requires understanding and coordinating changes across
+      multiple functions, classes, and even files simultaneously, calling for models to interact with execution
+      environments, process extremely long contexts and perform complex reasoning that goes far beyond traditional
+      code generation tasks"; the problems are drawn from real GitHub issues and their pull requests across
+      12 popular Python repositories'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cd170cab3a56f891ee94070d5748d923685f2a84a91201d6336a221436fd0f9f
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
+    shows: the news entry dated Aug. 13, 2024 reads "Introducing *SWE-bench Verified*! ... A subset of 500
+      problems that real software engineers have confirmed are solvable", and the harness is containerized
+      and run as `swebench eval verified`; the most recent entry is Sep. 1, 2026 on SWE-bench Multimodal,
+      with no newer Verified release
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 06841624d7b5130dfe3cc6714642e9a8fd2a608c95c66ae0180e409f12b73aaa

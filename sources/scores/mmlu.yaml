@@ -50,18 +50,33 @@ adoption:
     http_status: 200
     content_sha256: 41596bee97cd66a4a0b9b1e19790663274f63b5b368ce20c38474bad29cc13f4
 capability:
-  score: null
-  basis: n/a
-  value: null
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'the plateau its own successor benchmark measured: MMLU-Pro''s reported accuracy drop and
+    prompt-sensitivity comparison against MMLU'
+  value: 57 subjects of four-option multiple choice, questions and answers published together; frontier
+    accuracy has plateaued, and asking the same subject range in a harder form drops accuracy by 16% to
+    33%
   confidence: high
-  note: A dataset is not capability-scored, so this axis is left unscored. MMLU is saturated and contaminated
-    - top models land between 88% and 94%, and MMLU-Pro has largely superseded it for differentiation -
-    but that is a quality caveat rather than an openness or capability deduction.
-  last_verified: '2026-08-13'
+  note: Plateaued. The MMLU-Pro paper, written to replace it, records that "as models continue to improve,
+    their performance on these benchmarks has begun to plateau, making it increasingly difficult to discern
+    differences in model capabilities", and measures how much harder the same subject range has to be asked
+    before scores separate again. MMLU survives as a reporting convention rather than as a way to tell frontier
+    models apart, which is the level-2 rung rather than an abstention.
+  last_verified: '2026-09-11'
   sources:
-  - url: https://huggingface.co/datasets/cais/mmlu
-    shows: a static multiple-choice question corpus across 57 subjects; no performance, throughput or
-      feature claim on the page for the capability axis to read
-    accessed: '2026-08-13'
+  - url: https://arxiv.org/abs/2009.03300
+    shows: '"The test covers 57 tasks including elementary mathematics, US history, computer science, law,
+      and more"; the design is a static multitask multiple-choice test, and at publication "most recent
+      models have near random-chance accuracy"'
+    accessed: '2026-09-11'
     http_status: 200
-    content_sha256: 4233dafe2e394cdd10d4b90cd96c646b455a5c9565c1f423ec02f76188e2df0b
+    content_sha256: ffb542b1cf065c035f978c04346b0fd159498856223020214a0193499c7f6460
+  - url: https://arxiv.org/abs/2406.01574
+    shows: '"as models continue to improve, their performance on these benchmarks has begun to plateau,
+      making it increasingly difficult to discern differences in model capabilities"; MMLU-Pro measures
+      "a significant drop in accuracy by 16% to 33% compared to MMLU" and is offered as "a more discriminative
+      benchmark to better track progress in the field"'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5d7cc32bd5dc2562317f2fa0bcfa6bb9806b0994eb94eb389a93b36346d32118
