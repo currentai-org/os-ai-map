@@ -1308,9 +1308,18 @@ def test_coverage_lines_flag_a_stale_pin():
     assert "STALE BASELINE 1/300" in lines[1]
 
 
+def _pinned_at_live(**overrides):
+    """A complete baseline (every route pinned at its live corpus value, so the scoring path's
+    completeness check passes) with the routes under test overridden."""
+    live = org_handle_coverage(REAL_TRUTH)
+    doc = {route: list(live[route]) for route in ORG_ROUTES.values()}
+    doc.update({k: list(v) for k, v in overrides.items()})
+    return doc
+
+
 def test_main_exits_one_when_the_corpus_has_outrun_the_pin(tmp_path, monkeypatch, capsys):
     baseline = tmp_path / "baseline.json"
-    baseline.write_text(json.dumps({"github": [0, 400]}))
+    baseline.write_text(json.dumps(_pinned_at_live(github=(0, 400))))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
     fixture.write_text('{"equivalence": []}')
@@ -1319,7 +1328,7 @@ def test_main_exits_one_when_the_corpus_has_outrun_the_pin(tmp_path, monkeypatch
     assert "[FAIL] handle coverage has outrun its pinned baseline" in out
     assert "above the pinned 0/400" in out
     assert "--write-coverage-baseline" in out and "same PR" in out
-    assert json.loads(baseline.read_text()) == {"github": [0, 400]}  # never rewritten by a run
+    assert json.loads(baseline.read_text()) == _pinned_at_live(github=(0, 400))  # never rewritten by a run
 
 
 def test_load_coverage_baseline_accepts_lowered_because_and_only_that():
@@ -1423,7 +1432,7 @@ def test_main_exits_one_when_a_route_falls_below_its_baseline(tmp_path, monkeypa
     """The ratchet holds without `--floors`: it is a fact about the corpus, not a judgment
     about the graph."""
     baseline = tmp_path / "baseline.json"
-    baseline.write_text(json.dumps({"github": [299, 299]}))
+    baseline.write_text(json.dumps(_pinned_at_live(github=(299, 299))))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
     fixture.write_text('{"equivalence": []}')
@@ -1438,7 +1447,7 @@ def test_main_exits_zero_at_the_baseline(tmp_path, monkeypatch, capsys):
     """Pinned at exactly the live ratio: neither below the pin nor far enough above it."""
     live_n, live_d = org_handle_coverage(REAL_TRUTH)["github"]
     baseline = tmp_path / "baseline.json"
-    baseline.write_text(json.dumps({"github": [live_n, live_d]}))
+    baseline.write_text(json.dumps(_pinned_at_live()))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
     fixture.write_text('{"equivalence": []}')
@@ -1468,7 +1477,7 @@ def test_the_write_coverage_baseline_flag_pins_and_scores_nothing(tmp_path, monk
 def test_the_baseline_is_never_rewritten_by_a_scoring_run(tmp_path, monkeypatch):
     """A ratchet that raises its own reference value on failure ratchets nothing."""
     baseline = tmp_path / "baseline.json"
-    pinned = {"github": [299, 299]}
+    pinned = _pinned_at_live(github=(299, 299))
     baseline.write_text(json.dumps(pinned))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
