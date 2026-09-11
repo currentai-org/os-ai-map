@@ -1,0 +1,107 @@
+product: siglip
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 44 ungated Apache-2.0 google/siglip* repos on the Hub, plus the .npz checkpoints served
+        directly from the big_vision bucket
+    data:
+      value: closed
+      detail: WebLI, a private Google web corpus; both cards name it by citation only and no part of it
+        is distributed
+    code:
+      value: partial
+      detail: big_vision ships a SigLIP trainer and a LiT/COCO demo config, but records 'code TODO' against
+        the SigLIP paper entry and publishes no WebLI pretraining config
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(44 ungated Apache-2.0 google/siglip* repos on the Hub, plus the .npz checkpoints served
+    directly from the big_vision bucket);data:closed(WebLI, a private Google web corpus; both cards name
+    it by citation only and no part of it is distributed);code:partial(big_vision ships a SigLIP trainer
+    and a LiT/COCO demo config, but records 'code TODO' against the SigLIP paper entry and publishes no
+    WebLI pretraining config);license:Apache-2.0(OSI)
+  confidence: high
+  note: Apache-2.0 weights with no gate, which is more permissive than most of Google's model releases,
+    over a corpus that is named and nothing more. big_vision gets closer to a pipeline than CLIP's repository
+    does - there is a real SigLIP trainer in it - but the entry for the SigLIP paper says 'code TODO'
+    and the config that would reproduce a WebLI run is not there, so this is partial rather than open.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/google/siglip2-base-patch16-224/raw/main/README.md
+    shows: '`license: apache-2.0`; ''SigLIP 2 is pre-trained on the WebLI dataset (Chen et al., 2023)'';
+      evaluation results supplied as an image.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 39ac3705d62af9ffa1a14675b8ccb220a75f2d81acd530e564a3b1e3dfe418d8
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/google/siglip-so400m-patch14-384/raw/main/README.md
+    shows: '`license: apache-2.0`; ''SigLIP is pre-trained on the WebLI dataset''; ''first released in
+      this repository'' pointing at google-research/big_vision.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 96a172e58539296eadb939acf544287c14e20a0a426fbbff116518c2c8024a8b
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/google-research/big_vision/main/README.md
+    shows: 'the SigLIP paper entry reads ''Resources: colab and models, code TODO''; an ''Image-text training
+      with SigLIP'' section launches big_vision.trainers.proj.image_text.siglip with the siglip_lit_coco.py
+      config.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6772eeba75c265ade38fca5693d495862f881b21110b5547bd01ee735ae20da4
+    establishes:
+    - code
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  banded_quantity: trailing-30-day downloads summed across the 44 google/siglip* repositories, which is wider than the two checkpoints this product declares
+  confidence: high
+  note: 11,451,605 downloads in the trailing 30 days across the 44 google/siglip* repos (siglip2-giant-opt-patch16-384
+    2,628,928; siglip-base-patch16-224 1,914,186; siglip2-base-patch16-224 1,546,725). The timm re-hosts
+    of the same checkpoints are excluded as mirrors.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models?author=google&search=siglip&limit=100&sort=downloads&direction=-1
+    shows: 44 google siglip repos with `downloads` (trailing 30 days) summing to 11,451,605.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5ae7b6b5fcd1621b4411c9a36a59aeb2fa9a73e9adf821d1afef356c3fc8e7bb
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: zero-shot ImageNet-1k top-1 and COCO text-to-image retrieval recall, from big_vision's
+    SigLIP 2 checkpoint table
+  value: SigLIP 2 g-opt/16 at 384px reaches 85.0 zero-shot ImageNet-1k, 56.1 COCO text-to-image and 72.8
+    COCO image-to-text; the So400m/16 tier is at 84.3 / 56.0 / 71.3.
+  confidence: high
+  note: 'Rung 4, competitive frontier: current generation, multilingual, five points of zero-shot ImageNet
+    clear of the best OpenCLIP checkpoint, and the default vision tower for much of the open VLM stack.
+    Short of 5 because the category reserves that for the acknowledged leader, and on the same big_vision
+    instrument the gap to the top of the open image-text field is narrow rather than absent. Recorded `at`
+    ColPali - a different modality but the other frontier-tier release in this cluster - because the text
+    anchor is not a comparable measurement. Placed against the rung definition rather than a peer: no single
+    measurement reports this product and a category peer together - zero-shot ImageNet against ColPali''s
+    ViDoRe - and rule (d) forbids an edge without one.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://raw.githubusercontent.com/google-research/big_vision/main/big_vision/configs/proj/image_text/README_siglip2.md
+    shows: 'checkpoint table, INet 0-shot / COCO T-I / COCO I-T: g-opt/16 384 -> 85.0 / 56.1 / 72.8; So400m/16
+      512 -> 84.3 / 56.0 / 71.3; B/16 224 -> 78.2 / 52.1 / 68.9.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3c1862c16c6c75a97278fe9556482618db1d0419997eaefd4006ec9149994eef
+  - url: https://huggingface.co/google/siglip2-base-patch16-224/raw/main/README.md
+    shows: '''SigLIP 2 models outperform their SigLIP counterparts at all model scales in core capabilities,
+      including zero-shot classification, image-text retrieval, and transfer performance''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 39ac3705d62af9ffa1a14675b8ccb220a75f2d81acd530e564a3b1e3dfe418d8

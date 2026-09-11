@@ -1,0 +1,138 @@
+product: nemotron-embed
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: ungated BF16 and NVFP4 checkpoints at 1B and 8B
+    data:
+      value: documented-not-released
+      detail: 161 dataset files over 8.5M+ points, public sources enumerated with links, synthetic generation
+        described; nothing shipped
+    code:
+      value: partial
+      detail: inference and pooling examples on the card; no training pipeline
+    license:
+    - name: OpenMDW-1.1
+      detail: Linux Foundation OpenMDW License Agreement v1.1, governing the current Nemotron-3-Embed release
+  confidence: medium
+  governing_release: Nemotron-3-Embed (1B and 8B, BF16 and NVFP4)
+  note: 'OpenMDW-1.1 is the Linux Foundation''s Open Model, Data and Weights License Agreement v1.1, and
+    the shared ladder places it at permissive_non_osi: it grants dealing in the model materials without
+    restriction under copyright, patent, database and trade-secret rights, asks only that the agreement
+    and origin notices travel with a redistribution, and explicitly disclaims any restriction on the outputs.
+    Two complications are recorded rather than resolved: the previous generation ships under different terms,
+    and llama-embed-nemotron-8b in particular is governed by an NVIDIA license whose section 3.3 restricts
+    use to non-commercial research. That SKU is a superseded release rather than part of the governing one,
+    so multi_sku_rule is not applied across the generation boundary - but anyone reaching for the 8B model
+    from October 2025 is taking a non-commercial license.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/nvidia/Nemotron-3-Embed-1B-BF16/raw/main/README.md
+    shows: 'license: other with license_name openmdw-1.1 and a link to openmdw.ai; the dataset section gives 8.5M+
+      data points across 161 dataset files, enumerates the public datasets with links, and describes the synthetic
+      generation, without offering the mixture for download; usage is inference and pooling code only.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6e811480c966ca54fca9a5cbd0e5ae60df15244bfc70bb9db155c2b92fa23f8e
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://openmdw.ai/license/1-1/
+    shows: OpenMDW-1.1 grants permission to deal in the Model Materials without restriction under copyright, patent,
+      database and trade secret rights, requires only that a redistribution retain the agreement and notices of
+      origin, terminates on a patent or copyright suit, and imposes no restriction on the use, modification or
+      sharing of outputs.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0fd659611e4d58860849fc9f41257a3810e78a05eb2378c51aeece7c36e30e06
+    establishes:
+    - license
+  - url: https://huggingface.co/nvidia/llama-embed-nemotron-8b/raw/main/LICENSE
+    shows: 'The NVIDIA License governing the previous-generation 8B checkpoint: section 3.3 states the Work and
+      any derivative works may only be used or intended for use non-commercially, meaning non-commercial research
+      purposes only, with NVIDIA itself excepted.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 117bdf66448ffde919963504bdb1c7d15a92ee2f9e4c1284fd53ffa20cfe4ba8
+  - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Embed-1B-BF16
+    shows: 'gated: false; private: false; cardData license other, license_name openmdw-1.1, license_link openmdw.ai.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 823aeeafb84c4721c89061e137eb18568e0d94953b87b61b875757aa542070c3
+    establishes:
+    - weights
+  raw: weights:open(ungated BF16 and NVFP4 checkpoints at 1B and 8B);data:documented-not-released(161 dataset
+    files over 8.5M+ points, public sources enumerated with links, synthetic generation described; nothing shipped);code:partial(inference
+    and pooling examples on the card; no training pipeline);license:OpenMDW-1.1(Linux Foundation OpenMDW License
+    Agreement v1.1, governing the current Nemotron-3-Embed release)
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '1,691,717 downloads in the trailing 30 days across the five text-embedding checkpoints of both live generations:
+    661,992 for Nemotron-3-Embed-1B-BF16, 507,552 for llama-nemotron-embed-1b-v2, 411,272 for llama-embed-nemotron-8b,
+    98,108 for Nemotron-3-Embed-8B-BF16 and 12,793 for the NVFP4 build. Adoption combines across the tier''s releases,
+    so the superseded generation counts here even though it does not govern openness. The visual-document and
+    Cosmos embedding lines are excluded as separate products.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Embed-1B-BF16
+    shows: 'downloads: 661992; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 823aeeafb84c4721c89061e137eb18568e0d94953b87b61b875757aa542070c3
+  - url: https://huggingface.co/api/models/nvidia/llama-nemotron-embed-1b-v2
+    shows: 'downloads: 507552; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c6fd7734b82e2963138bd156c5f30c20e000df8332988eb2e2d712c6810726b0
+  - url: https://huggingface.co/api/models/nvidia/llama-embed-nemotron-8b
+    shows: 'downloads: 411272; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c2b0c41060cc536bdb60f17bfdbc1d561ffc3f43dedf13f51e0c01829006ece0
+  - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Embed-8B-BF16
+    shows: 'downloads: 98108; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d0749dbbc72fda3528dcdbe0dd3f948abb4b79a86728f2f3ec061658f2d9a832
+  - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Embed-1B-NVFP4
+    shows: 'downloads: 12793; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4ca904cb35187cd68abd086c93d1bdd8f514c5b21296d4b85c07058d06bd2ab0
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: RTEB and MMTEB retrieval, average NDCG@10
+  value: 72.38 RTEB and 71.04 MMTEB retrieval for Nemotron-3-Embed-1B-BF16; the previous generation's llama-embed-nemotron-8b
+    took first place by Borda rank on MTEB (Multilingual, v2) as of 21 October 2025 at a 69.46 task mean.
+  confidence: high
+  note: 'Rung 4, the competitive frontier, and the placement rests on two generations agreeing. The current
+    1B model posts 72.38 on RTEB and 71.04 on MMTEB retrieval, and the line it replaced held the top Borda
+    rank on MMTEB v2 in October 2025 - so this is a publisher that reaches the leaderboard rather than one
+    claiming to be near it. One below Harrier-OSS rather than level with it because the instruments do not
+    line up: NVIDIA reports the retrieval split and RTEB, the anchor reports the full MMTEB v2 mean of 74.3,
+    and the two figures are not comparable. Level 5 would need the same number on the same table. Placed
+    against the rung definition rather than a peer: no single measurement reports this product and a category
+    peer together - RTEB and MMTEB-Retrieval against the anchor''s MMTEB v2 mean - and rule (d) forbids
+    an edge without one.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/nvidia/Nemotron-3-Embed-1B-BF16/raw/main/README.md
+    shows: Text retrieval table gives Nemotron-3-Embed-1B-BF16 at 72.38 RTEB, 57.74 ViDoRe-V3 text and 71.04 MMTEB
+      (Retrieval) average NDCG@10, against 61.98 / 52.54 / 59.71 for the previous-generation VL 1B model.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 6e811480c966ca54fca9a5cbd0e5ae60df15244bfc70bb9db155c2b92fa23f8e
+  - url: https://huggingface.co/nvidia/llama-embed-nemotron-8b/raw/main/README.md
+    shows: MMTEB leaderboard table for the MTEB (Multilingual, v2) split as of October 21, 2025 places llama-embed-nemotron-8b
+      first by Borda rank with 39,573 votes and a 69.46 task mean, ahead of gemini-embedding-001 and Qwen3-Embedding-8B.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7ce9cf885737a431618894f37ac5d7a7a2921fd9a4ae7563a4c1f70984d4ab1c

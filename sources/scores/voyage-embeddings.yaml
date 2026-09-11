@@ -1,0 +1,138 @@
+product: voyage-embeddings
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: voyage-4-nano ships model.safetensors on the Hub, ungated and public; voyage-4-large, voyage-4
+        and voyage-4-lite are API-only and their Hub repos carry tokenizer and config files only
+    data:
+      value: closed
+      detail: training corpus not released or described for any SKU
+    code:
+      value: closed
+      detail: no training pipeline; the nano repo ships a modeling file for inference and the paid tiers
+        ship client SDKs only
+    license:
+    - name: Apache-2.0
+      detail: governs voyage-4-nano, the only SKU whose weights are distributed; multi_sku_rule excludes
+        the API-only tiers
+  raw: weights:open(voyage-4-nano ships model.safetensors on the Hub, ungated and public; voyage-4-large,
+    voyage-4 and voyage-4-lite are API-only and their Hub repos carry tokenizer and config files only);data:closed(training
+    corpus not released or described for any SKU);code:closed(no training pipeline; the nano repo ships
+    a modeling file for inference and the paid tiers ship client SDKs only);license:Apache-2.0(governs
+    voyage-4-nano, the only SKU whose weights are distributed; multi_sku_rule excludes the API-only tiers)
+  confidence: high
+  note: 'This is the one product in the closed cluster the ladder does not put at 1, and the reason is multi_sku_rule
+    read literally. The rule resolves a family on the most restrictive license among the SKUs whose weights
+    are ACTUALLY DISTRIBUTED and excludes API-only tiers as a different product surface. Voyage distributes
+    exactly one set of weights — voyage-4-nano, ungated safetensors under Apache-2.0 — so the distributed
+    set is Apache and the first rule cannot fire. With a closed corpus and no training pipeline the walk
+    falls through to the open-weights center of gravity at 3. Read as a claim about the flagship this would
+    be wrong; read as the ladder''s own question, which is what you can download, it is right, and the note
+    is here so the difference is visible rather than buried. On the tier question raised in review: this
+    record scores one product line with four tiers, and each axis measures the line the way its own rubric
+    asks. Openness measures the artifact you can download, which the ladder''s multi_sku_rule resolves on
+    distributed SKUs and explicitly excludes API-only tiers from - so it reads voyage-4-nano''s Apache-2.0
+    weights. Capability measures what the line is reported to do, which is voyage-4-large''s published retrieval
+    quality. Adoption measures the line''s reach. Those are different tiers on purpose, and a reader should
+    not take the 3 as a claim that the flagship is downloadable; the note above says so plainly. Splitting
+    nano into its own product was the alternative and the maintainer declined it: a product is one publisher''s
+    line, and the durable fix is the disclosure rule in docs/reference/openness.md, which this note and
+    the capability note satisfy.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/voyageai/voyage-4-nano
+    shows: 'voyageai/voyage-4-nano: gated false, private false, license:apache-2.0, pipeline_tag feature-extraction,
+      and model.safetensors plus LICENSE.txt in the file list. Real downloadable weights.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b2bda890d07ef9aa8da39ffdeea72bbe2b730c7cb24f2142d4bcd9c7e41eed1b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/voyageai/voyage-4-large
+    shows: 'voyageai/voyage-4-large: gated false, but the file list is .gitattributes, README.md, config.json,
+      merges.txt, tokenizer.json, tokenizer_config.json and vocab.json — tokenizer and config only, no
+      weight shards. The flagship is API-only.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e9d941da4510d6d85100f12f63cd4fe7c7671ad8c3b8372816bac7cb1eb7dcb1
+    establishes:
+    - weights
+  - url: https://blog.voyageai.com/2026/01/15/voyage-4/
+    shows: '''voyage-4-nano. Our first open-weight model, freely available on Hugging Face under the Apache
+      2.0 license.'' The other three are announced as API models; no corpus or training pipeline is described
+      for any of them.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c5ae9e26cda134ee099596b385d21ec49c3988e3c31a0aafecfb22f0cc9322a2
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+adoption:
+  level: 3
+  signal_type: reported_traction
+  banded_quantity: MongoDB Atlas platform reach (tens of thousands of customers), plus 302,582 monthly
+    Hugging Face downloads of voyage-4-nano — one SKU of four, and the only open one — rather than a usage
+    figure for the line
+  confidence: medium
+  note: Recorded as reported traction rather than downloads because the Hub figure measures only the nano
+    SKU and would misdescribe a line whose flagship is API-only. The level rests on native distribution
+    inside MongoDB Atlas — MongoDB acquired Voyage AI and now serves these models through the Atlas Embedding
+    and Reranking API on a platform it says is trusted by tens of thousands of customers — corroborated
+    by 302,582 monthly Hub downloads on voyage-4-nano.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://www.mongodb.com/company/blog/product-release-announcements/introducing-the-embedding-and-reranking-api-on-mongodb-atlas
+    shows: '''Voyage AI''s models are now natively available on MongoDB Atlas via the new Embedding and
+      Reranking API''; the platform is ''already trusted by tens of thousands of customers, including
+      over 75% of Fortune 100 companies''. The customer figure is Atlas''s, not the models''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d7728a4aa7deabea7b3e9819f0c27414de8d347fe3c768dd75b7372db5094ab8
+  - url: https://huggingface.co/api/models/voyageai/voyage-4-nano
+    shows: voyageai/voyage-4-nano records 302,582 downloads over the trailing 30 days and 143 likes.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b2bda890d07ef9aa8da39ffdeea72bbe2b730c7cb24f2142d4bcd9c7e41eed1b
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: RTEB, the Retrieval Embedding Benchmark, all 29 datasets
+  value: voyage-4-large is the top-performing model across all 29 RTEB datasets, ahead of voyage-4 by
+    1.87%, voyage-4-lite by 4.80%, Gemini Embedding 001 by 3.87%, Cohere Embed v4 by 8.20% and OpenAI
+    v3 Large by 14.05%; first production embedding model on a mixture-of-experts architecture, at 40%
+    lower serving cost than comparable dense models.
+  relative_to: harrier-oss
+  relation: one_below
+  confidence: medium
+  note: Rung 4, competitive frontier. It leads the instrument it is measured on, but rung 5 asks for a placement
+    on a public leaderboard read at verification time and RTEB is the publisher's own benchmark, so it stops
+    one short. RTEB is the retrieval-specific benchmark rather than MTEB, and the comparison is publisher-run
+    against publisher-chosen baselines, which is why confidence is medium and not high — but the baselines
+    are the three obvious rivals rather than an in-house suite, and the shared-embedding-space and MoE claims
+    are structural rather than a score. Level with the category anchor microsoft/harrier-oss-v1-27b, which
+    leads MMTEB v2 at 74.3; the two lead different instruments, so neither is placed above the other. The
+    number is read off voyage-4-large, which is served through the API and distributes no weights, so it
+    is a different tier from the voyage-4-nano checkpoint the openness axis scores.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://blog.voyageai.com/2026/01/15/voyage-4/
+    shows: '''Overall, voyage-4-large is the top-performing model, surpassing voyage-4, voyage-4-lite,
+      Gemini Embedding 001, Cohere Embed v4, and OpenAI v3 Large by an average of 1.87%, 4.80%, 3.87%,
+      8.20%, and 14.05%, respectively'' over ''all 29 datasets in the comprehensive Retrieval Embedding
+      Benchmark (RTEB)''; ''voyage-4-large is the first production-grade embedding model that utilizes
+      a mixture-of-experts architecture ... serving costs 40% lower than comparable dense models''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c5ae9e26cda134ee099596b385d21ec49c3988e3c31a0aafecfb22f0cc9322a2
+  - url: https://docs.voyageai.com/docs/embeddings
+    shows: The Voyage embeddings docs list voyage-4-large, voyage-4 and voyage-4-lite as the current text
+      embedding models, with the voyage-3 and voyage-2 families marked as earlier.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 03bffba051e36e3d7ec54a64ca810005796dcf62f1ecf325b985619ad97e2e42

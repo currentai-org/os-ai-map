@@ -231,6 +231,18 @@ def test_local_scores_matches_check_rubrics_split():
     # owner ruled the two names onto the tier. Each was the first product on the map to record
     # its license, so the ruling moved no existing score; the measurement is in software.yaml
     # beside the names.
+    #
+    # 5 -> 9 -> 5 on 2026-09-11, both moves the same day. The embeddings_retrieval promotion
+    # brought 35 products in and added FOUR to the deferral count, which every promotion before
+    # this one had avoided. That was deliberate rather than a regression: the earlier promotions
+    # closed their unnamed licenses the same day by ruling the names onto a tier, and
+    # docs/workflows/promote-category.md step 7 says a promotion may not do that, because
+    # extending a shared tier reaches every inheriting category and is a maintainer's call. So the
+    # four sat deferred with the reading that would apply recorded beside each. The maintainer then
+    # ruled the three names - OpenMDW-1.1 onto permissive_non_osi, Llama-3.2-Community-License onto
+    # use_bounded, CC-BY-NC-4.0 onto commercial_forbidden - and all four closed, returning the
+    # count to 5. Not one recorded score moved: every product they reach had been hand-placed at
+    # exactly the value its tier computes. The measurement is in pretrained.yaml beside the names.
     assert len(deferred) == 5
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral

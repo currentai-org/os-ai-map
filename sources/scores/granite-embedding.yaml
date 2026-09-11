@@ -1,0 +1,107 @@
+product: granite-embedding
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: four ungated Apache-2.0 R2 embedding checkpoints, 47M to 311M
+    data:
+      value: closed
+      detail: permissively licensed public datasets plus select proprietary IBM data, neither enumerated nor shipped
+    code:
+      value: partial
+      detail: usage and documentation in ibm-granite/granite-embedding-models; no training pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  governing_release: granite-embedding R2
+  note: 'Apache-2.0 on every R2 checkpoint, ungated. IBM leans hard on data provenance in its own prose - permissively
+    licensed public sources, enterprise-friendly - but the claim stops short of the ladder''s test: the mixture
+    is characterized rather than enumerated, it includes proprietary IBM data, and no dataset or script ships.
+    The product repository is documentation and usage, so code is partial and the family lands at the open-weights
+    rung.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-embedding-english-r2/raw/main/README.md
+    shows: 'license: apache-2.0 in the front matter and named again under Model Details; training data described
+      as permissively licensed open-source plus select proprietary data, with no dataset listing; the repository
+      is given as ibm-granite/granite-embedding-models.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 33d4e07d3547d1a0110fddc5838986c7ffbb2f8b04573e04b75cfb0d8b19f277
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/ibm-granite/granite-embedding-models/main/README.md
+    shows: The repository introduces the collection, links the Hugging Face models and IBM documentation, and
+      states the Apache-2.0 offer; it carries no pretraining or contrastive-training pipeline.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cb4139b7ab10774b2733038f1f2230d95908382b475c317da64abb891d58b2f7
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-english-r2
+    shows: 'gated: false; private: false; cardData license apache-2.0.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a72e1e4789a1476b0a71c5bf3205181635ffd82053b580e0d5381bf16c8d7de4
+    establishes:
+    - weights
+  raw: weights:open(four ungated Apache-2.0 R2 embedding checkpoints, 47M to 311M);data:closed(permissively licensed public datasets plus select proprietary IBM data, neither enumerated nor shipped);code:partial(usage and documentation in ibm-granite/granite-embedding-models; no training pipeline);license:Apache-2.0(OSI)
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 6,764,831 downloads in the trailing 30 days across the granite-embedding R2 embedding checkpoints.
+    granite-embedding-reranker-english-r2 is excluded - every other vendor in this category has its reranker
+    scored as a separate product, and counting it here would apply a different rule to IBM. It adds about
+    24K and moves no band. The superseded R1 line is also excluded.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-small-english-r2
+    shows: 'downloads: 6324429; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1bf4198a567dff30328d2fbf5197dd7c94dda65e3dc176c608e0916a8f253341
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-311m-multilingual-r2
+    shows: 'downloads: 117691; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: fb267965e8049345e4b53c5e8431fb132b539b42cba939a06ac006e311592a4d
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-97m-multilingual-r2
+    shows: 'downloads: 99229; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5858009773963ceb37e3966c0b274bddcf2cdc32c9c2167fad1b9a63b653bef2
+  - url: https://huggingface.co/api/models/ibm-granite/granite-embedding-english-r2
+    shows: 'downloads: 52733; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a72e1e4789a1476b0a71c5bf3205181635ffd82053b580e0d5381bf16c8d7de4
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MTEB-v2 (41 tasks) and BEIR retrieval, per the R2 model card
+  value: 62.8 on MTEB-v2 (41 tasks) and 53.1 on BEIR retrieval (15) for granite-embedding-english-r2; 61.1 and
+    50.9 for the 47M small variant.
+  confidence: high
+  note: 'Rung 3, the solid workhorse. The numbers are credible and published per checkpoint, and R2 genuinely
+    leads its size class on the enterprise-shaped tasks IBM built the line for - table retrieval, long documents,
+    conversational multi-turn. But the scope is narrower than the frontier by design: the strongest checkpoint
+    is 149M and English-only at 62.8 MTEB-v2, against the anchor''s 74.3 multilingual, and the multilingual
+    R2 models are smaller still. Placed against the rung definition rather than a peer: no single measurement
+    reports this product and a category peer together - MTEB v2 English over 41 tasks against the anchor''s
+    MMTEB v2 multilingual mean - and rule (d) forbids an edge without one.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-embedding-english-r2/raw/main/README.md
+    shows: Evaluation table reports granite-embedding-english-r2 at 53.1 BEIR retrieval (15), 62.8 MTEB-v2 (41),
+      55.3 CoIR and 56.7 MTRAG, with the small-english-r2 variant at 50.9 / 61.1, and a second table showing it
+      ahead of gte-modernbert-base and snowflake-arctic-embed-m-v2.0 on the enterprise-shaped average.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 33d4e07d3547d1a0110fddc5838986c7ffbb2f8b04573e04b75cfb0d8b19f277

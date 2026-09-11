@@ -1,0 +1,117 @@
+product: gemini-embedding
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: no checkpoint distributed for gemini-embedding-2 or gemini-embedding-001; both are served
+        through the Gemini API and Vertex AI
+    data:
+      value: closed
+      detail: training corpus not released; the technical report describes a multi-task multi-stage contrastive
+        setup without shipping the mixture
+    code:
+      value: closed
+      detail: no training or inference implementation; client SDKs and a REST endpoint only
+    license:
+    - name: proprietary
+      detail: hosted API under Google’s terms; no license granted over the model
+  raw: weights:closed(no checkpoint distributed for gemini-embedding-2 or gemini-embedding-001; both are
+    served through the Gemini API and Vertex AI);data:closed(training corpus not released; the technical
+    report describes a multi-task multi-stage contrastive setup without shipping the mixture);code:closed(no
+    training or inference implementation; client SDKs and a REST endpoint only);license:proprietary(hosted
+    API under Google’s terms; no license granted over the model)
+  confidence: high
+  note: API-only across both live SKUs, so the ladder's first rule fires. The published technical report
+    is the one thing that distinguishes this from the rest of the cluster — it makes the numbers auditable
+    — but a paper is not a corpus, weights or a pipeline, and the ladder scores what ships.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://ai.google.dev/gemini-api/docs/embeddings
+    shows: '''The latest model, gemini-embedding-2, is the first multimodal'' embedding model, and ''for
+      text-only use cases, gemini-embedding-001 remains available''. Both are invoked as embedContent
+      calls against generativelanguage.googleapis.com; no download is offered.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: bc685c93484a67cf978122d0f1bcedd9d6ba0e696b7de467f4caa8db2d035f3a
+    establishes:
+    - weights
+    - code
+    - license
+  - url: https://ai.google.dev/gemini-api/docs/pricing
+    shows: The Gemini API pricing page lists Gemini Embedding 2 (gemini-embedding-2) and Gemini Embedding
+      (gemini-embedding-001) as priced hosted models, which is the only way either is sold.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 561ff59f51cbf768c870df969732dd514411fb732b7f30c172773cdaf27d37ad
+    establishes:
+    - weights
+    - license
+  - url: https://arxiv.org/abs/2605.27295
+    shows: The Gemini Embedding 2 report describes 'large-scale contrastive learning in a multi-task multi-stage
+      training setup' and releases no corpus, checkpoint or training code.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ef8326d7c824f33dc7200b2e329e85edb0a82caf63cfc066cc0ef049d80ba273
+    establishes:
+    - data
+    - code
+adoption:
+  level: 4
+  signal_type: reported_traction
+  confidence: medium
+  note: 'No artifact to count and no call volume published. The level rests on the distribution surface:
+    general availability across both the Gemini API and Vertex AI, a free tier in Google AI Studio alongside
+    paid limits, and a migration path Google enforced by deprecating embedding-001 and text-embedding-004
+    into this line. Directional, so confidence stops at medium.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/
+    shows: gemini-embedding-001 'is now generally available to developers in the Gemini API and Vertex
+      AI'; free and paid tiers are offered, and the legacy embedding-001 and text-embedding-004 models
+      were deprecated on 2025-08-14 and 2026-01-14 respectively, migrating their users onto this line.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2005f619ce67e9a13f597d6ac3b140b13530bdebe48a82ab5ea127ae3c52be41
+  - url: https://ai.google.dev/gemini-api/docs/pricing
+    shows: Both gemini-embedding-2 and gemini-embedding-001 carry list prices on the Gemini API pricing
+      page, so both are generally sold rather than previewed.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 561ff59f51cbf768c870df969732dd514411fb732b7f30c172773cdaf27d37ad
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: MTEB multilingual and MTEB Code, per the Gemini Embedding 2 technical report
+  value: gemini-embedding-2 reports 69.9 on MTEB multilingual and 84.0 on MTEB Code, plus 62.9 R@1 on
+    MSCOCO and 68.8 NDCG@10 on Vatex, surpassing gemini-embedding-001’s 68.32 on MTEB multilingual, while
+    embedding video, audio, image and text in one representation space.
+  relative_to: cohere-embed
+  relation: at
+  confidence: high
+  note: 'Rung 4, competitive frontier. The numbers are real, published and multi-instrument, and the multimodal
+    span is wider than any peer''s. It stops short of 5 on two arithmetic facts rather than a judgment:
+    69.9 on MTEB multilingual is below the category anchor''s 74.3 on MMTEB v2, and Voyage''s independent-of-Google
+    RTEB run puts voyage-4-large 3.87% above Gemini Embedding 001. The 68.32 figure the roster carried
+    is -001''s and is now the older of the two.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://arxiv.org/abs/2605.27295
+    shows: 'Abstract: ''a score of 62.9 R@1 on MSCOCO, 68.8 NDCG@10 on Vatex, 69.9 on MTEB multilingual
+      and 84.0 on MTEB Code ... surpassing the performance of specialized models''.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ef8326d7c824f33dc7200b2e329e85edb0a82caf63cfc066cc0ef049d80ba273
+  - url: https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/
+    shows: gemini-embedding-001 'has consistently held a top spot on the Massive Text Embedding Benchmark
+      (MTEB) Multilingual leaderboard'; supports over 100 languages with a 2,048-token maximum input and
+      3,072 default output dimensions.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2005f619ce67e9a13f597d6ac3b140b13530bdebe48a82ab5ea127ae3c52be41
+  - url: https://blog.voyageai.com/2026/01/15/voyage-4/
+    shows: Over all 29 RTEB datasets, voyage-4-large surpasses Gemini Embedding 001 by an average of 3.87%.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c5ae9e26cda134ee099596b385d21ec49c3988e3c31a0aafecfb22f0cc9322a2

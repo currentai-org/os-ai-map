@@ -1,0 +1,107 @@
+product: openclip
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: '56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none'
+    data:
+      value: open
+      detail: 'the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate'
+    code:
+      value: open
+      detail: open_clip ships the full contrastive pretraining pipeline - data loading, training loop,
+        distributed launch scripts and ImageNet zero-shot evaluation
+    license:
+    - name: MIT
+      detail: OSI
+  raw: weights:open(56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none);data:open(the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate);code:open(open_clip ships the full contrastive pretraining pipeline - data loading, training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)
+  confidence: high
+  note: 'The top rung, and the clearest case for it in this set: the corpus, the code that consumed it
+    and an OSI licence over the weights. The one wrinkle is that the corpus these checkpoints were actually
+    trained on was withdrawn in 2023 and the name now resolves to the re-filtered ReLAION release, which
+    is auto-gated - a click-through, not an approval, so it is still released rather than merely documented.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/datasets/mlfoundations/datacomp_1b
+    shows: 'gated: false; license cc-by-4.0 - DataComp-1B, the corpus behind the DataComp.XL checkpoints, is published and ungated. This is the firmer footing for data:open than the LAION-2B path, whose original name now redirects to a re-filtered successor behind a gate.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cc30a55ea4235761d23e48e7a3bbe3fb38922f9d0ad5ad425f05b4da37645cbd
+    establishes:
+    - data
+  - url: https://huggingface.co/laion/CLIP-ViT-H-14-laion2B-s32B-b79K/raw/main/README.md
+    shows: '`license: mit`; ''A CLIP ViT-H/14 model trained with the LAION-2B English subset of LAION-5B
+      ... using OpenCLIP''; a Training Data section naming the 2-billion-sample English subset.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 14db420f00ddf78a07194dc4cdc57977d979e0f2c34994137679046defdf6577
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/datasets/laion/relaion2B-en-research-safe
+    shows: '`id: laion/relaion2B-en-research-safe`, `gated: auto`, `private: false`, `disabled: false`
+      - and the request for laion/laion2B-en redirects here.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 40acb3297dfc34f148ed23c4180357388e33a79b66d1fd6fb66a6b0074aafbc9
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/README.md
+    shows: '''This repository is focused on training CLIP models''; documents `python -m open_clip_train.main`
+      with train-data, epochs and imagenet-val arguments, plus single-node and SLURM multi-node launch
+      recipes.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1161fd4bd0a9c5588eab7fd6d62023a1c04a7d175b772fccb30711c422efefaf
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/LICENSE
+    shows: the MIT permission grant verbatim - 'to deal in the Software without restriction' - over a
+      2012-2021 copyright by the open_clip authors.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4a5b4f13ea4792a8211a69f32d2b460b6d520e57cd23c6301e707c76a6e97a55
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  banded_quantity: trailing-30-day downloads summed across the 56 laion/CLIP-* checkpoints in the LAION account, which is wider than the single flagship repo this product declares as an artifact
+  confidence: medium
+  note: 10,909,706 downloads in the trailing 30 days across the 56 laion CLIP repos (ViT-L-14-laion2B
+    3,950,302; ViT-B-32-laion2B 3,805,524; convnext_base_w 1,386,613). Confidence is medium rather than
+    high only because the figure sits a few per cent above the 10M band edge and moves week to week; the
+    warehouse sweep put it at 10,485,793, on the same side of the line. The timm and apple
+    re-hosts of OpenCLIP checkpoints are excluded as mirrors, so this is if anything an undercount.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
+    shows: 56 laion CLIP repos with `downloads` (trailing 30 days) summing to 10,909,706.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 8dc47a8aba03c34640048aabec3fb6846c718c27defe0e7140319a8be78928c8
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: zero-shot ImageNet-1k top-1 accuracy, measured with open_clip against the same protocol
+    as OpenAI CLIP
+  value: 80.1% zero-shot ImageNet-1k for ViT-bigG-14 on LAION-2B and 78.0% for ViT-H-14, against 75.5%
+    for the best OpenAI CLIP checkpoint in the same table.
+  relative_to: siglip
+  relation: one_below
+  confidence: high
+  note: 'Rung 3, solid workhorse: real published numbers on a named instrument, ahead of the model it
+    reproduced, but a superseded generation - the LAION-2B checkpoints date from 2022-2023 and SigLIP
+    2 clears them by five points on the same measure.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/README.md
+    shows: 'model table, ImageNet zero-shot acc.: ViT-H-14 LAION-2B 32B samples 78.0%; ViT-bigG-14 LAION-2B
+      34B samples 80.1%; ViT-L-14-quickgelu (Original CLIP) WIT 13B 75.5%.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1161fd4bd0a9c5588eab7fd6d62023a1c04a7d175b772fccb30711c422efefaf

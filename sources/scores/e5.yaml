@@ -1,0 +1,110 @@
+product: e5
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: MIT ungated safetensors and PyTorch checkpoints across the English, multilingual and Mistral-based tiers
+    data:
+      value: documented-not-released
+      detail: both training stages are itemized dataset by dataset with pair counts, but the CCPairs filtering that produced
+        the mixture does not ship
+    code:
+      value: partial
+      detail: the unilm/e5 subtree publishes MTEB and BEIR evaluation scripts and the cards give inference code; no training
+        pipeline
+    license:
+    - name: MIT
+      detail: OSI
+  raw: weights:open(MIT ungated safetensors and PyTorch checkpoints across the English, multilingual and Mistral-based tiers);data:documented-not-released(both
+    training stages are itemized dataset by dataset with pair counts, but the CCPairs filtering that produced the mixture
+    does not ship);code:partial(the unilm/e5 subtree publishes MTEB and BEIR evaluation scripts and the cards give inference
+    code; no training pipeline);license:MIT(OSI)
+  confidence: high
+  note: An MIT release with an unusually well-documented corpus and no way to rebuild it. The card names every weak-supervision
+    source with its pair count, which is more than most of this category offers, but the filtering pipeline is described only
+    in the paper and the public repository stops at evaluation.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/intfloat/multilingual-e5-large
+    shows: 'license: mit; gated: false; private: false; downloadable checkpoint files present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 608bc654f556f53b5c40466d1fc393a11e08506177e27736bd951f12bfe23ee2
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/intfloat/e5-mistral-7b-instruct
+    shows: 'license: mit; gated: false; private: false; the 7B decoder checkpoint is distributed under the same MIT terms.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 56120408d3a5910b8a52317cfe38dc8fa2b7f784fd1cdfe35197f17855230615
+    establishes:
+    - license
+  - url: https://huggingface.co/intfloat/multilingual-e5-large/raw/main/README.md
+    shows: Itemizes the first-stage weak-supervision mixture - filtered mC4 1B pairs, CC News 400M, NLLB 2.4B, Wikipedia 150M,
+      filtered Reddit 800M, S2ORC 100M, StackExchange 50M, xP3 80M - without releasing the filtered corpus or the filtering
+      scripts.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7d7af14813a22388e183b0ac3276e13887c7eb644d0a13af7c6252217066e43f
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/microsoft/unilm/master/e5/README.md
+    shows: The e5 subtree documents eval_mteb_beir.sh and eval_mteb_except_retrieval.sh and a synthetic passkey dataset; it
+      publishes no training entry point.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4930b1d912bf86b69d9b8722d1382ad8678cc6c3ec9d590059df0281ca31c120
+    establishes:
+    - code
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 12,369,093 downloads in the trailing 30 days for multilingual-e5-small and 7,002,947 for multilingual-e5-large. The
+    Hugging Face universe sweep puts the 13 shipped E5 checkpoints in the intfloat account at 33,155,632 combined.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/intfloat/multilingual-e5-small
+    shows: 'downloads: 12369093.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 8c9d6646bddc5f377b52ed81418f7209de653007882077dcdacecdaa3d09778e
+  - url: https://huggingface.co/api/models/intfloat/multilingual-e5-large
+    shows: 'downloads: 7002947.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 608bc654f556f53b5c40466d1fc393a11e08506177e27736bd951f12bfe23ee2
+  - url: https://huggingface.co/api/models/intfloat/e5-mistral-7b-instruct
+    shows: 'downloads: 221159.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 56120408d3a5910b8a52317cfe38dc8fa2b7f784fd1cdfe35197f17855230615
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MTEB English average of 64.41 for multilingual-e5-large-instruct at a 514-token limit, in the MTEB-leaderboard
+    table reproduced on the gte-modernbert-base card
+  value: 'multilingual-e5-large-instruct: MTEB English average 64.41, 100 languages, 514-token maximum sequence length.'
+  relative_to: harrier-oss
+  relation: two_below
+  confidence: high
+  note: A workhorse rather than a frontier model. The MTEB average is level with the current small encoders, but the multilingual
+    tier stops at roughly 512 tokens and the family has shipped nothing since early 2024, which is what separates it from
+    the long-context releases a rung up.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
+    shows: MTEB leaderboard table lists multilingual-e5-large-instruct at 560M parameters, 1024 dimensions, 514 maximum sequence
+      length and an MTEB English average of 64.41.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
+  - url: https://huggingface.co/intfloat/multilingual-e5-large/raw/main/README.md
+    shows: Documents 100-language support from the XLM-RoBERTa initialization and tokenizes usage examples at max_length=512.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 7d7af14813a22388e183b0ac3276e13887c7eb644d0a13af7c6252217066e43f

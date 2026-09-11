@@ -1,0 +1,16 @@
+name: nomic-embed
+display_name: Nomic Embed
+type: model
+description: Nomic Embed produces long-context text embeddings for search and retrieval-augmented generation. The v1 and v1.5
+  encoders accept up to 8,192 tokens, and v1.5 is trained with Matryoshka representations so a vector can be truncated to
+  64 dimensions with graded loss of quality. Version 2 is a mixture-of-experts encoder covering roughly 100 languages at a
+  512-token limit. Nomic AI publishes weights, training data and the contrastors training pipeline together.
+github:
+- url: https://github.com/nomic-ai/contrastors
+huggingface_model:
+- url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5
+- url: https://huggingface.co/nomic-ai/nomic-embed-text-v1
+- url: https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe
+comments: Scored over the nomic-embed-text line only. The first-party GGUF conversions are the same checkpoints in another
+  container and are not counted twice, and nomic-embed-code, nomic-embed-vision and modernbert-embed-base are separate releases.
+  Verified 2026-09-11 via the Hugging Face model cards, the Hub API and the contrastors README.

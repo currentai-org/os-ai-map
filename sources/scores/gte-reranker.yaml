@@ -1,0 +1,114 @@
+product: gte-reranker
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 ungated safetensors for both cross-encoders, with ONNX builds beside the ModernBERT one
+    data:
+      value: closed
+      detail: both cards defer the training mixture to the mGTE paper and release no corpus
+    code:
+      value: partial
+      detail: inference usage through transformers, TEI and Infinity ships on the cards; no training pipeline is published
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(Apache-2.0 ungated safetensors for both cross-encoders, with ONNX builds beside the ModernBERT
+    one);data:closed(both cards defer the training mixture to the mGTE paper and release no corpus);code:partial(inference
+    usage through transformers, TEI and Infinity ships on the cards; no training pipeline is published);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'The same resolution as the gte embedders, on the same evidence: an OSI license over ungated weights, with
+    the corpus and the training run left in the mGTE paper. No reranker SKU carries a more restrictive license, so
+    nothing pulls the line down.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-reranker-modernbert-base
+    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors and an onnx/ folder present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0610e8f94c45f661c3e8a0a8405daf59549a0c025d0cf5ed4f6707540b755e8f
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-reranker-base
+    shows: 'license: apache-2.0; gated: false; private: false; model.safetensors present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b7a2d0cb3a991f769061d623f4829b4db856f6502976e1dacc7df5603794f2e8
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
+    shows: States the gte-modernbert series follows the previous GTE training scheme with ModernBERT as the base and
+      refers readers to the mGTE paper for training details; the usage sections cover transformers, Transformers.js
+      and TEI inference only.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base/raw/main/README.md
+    shows: 'Front matter reads license: apache-2.0. Evaluation is a figure with detail deferred to the mGTE paper
+      (arXiv 2407.19669), no corpus is released, and the usage sections cover transformers, Infinity and TEI inference
+      only.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3d010454d2949f8188bb3496951594e19c35076652e04d203cbd7e20ef3a3871
+    establishes:
+    - data
+    - code
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 3,221,049 downloads in the trailing 30 days across the two reranker checkpoints on the Hugging Face universe
+    sweep - gte-reranker-modernbert-base 2,728,127 and gte-multilingual-reranker-base 492,922. The ModernBERT
+    cross-encoder alone clears the 1M floor. Live Hub API figures a few days later read 2,638,520 and 372,525 and
+    do not move the band. The gte embedders are the sibling gte product and are not counted here.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-reranker-modernbert-base
+    shows: 'downloads: 2638520 for Alibaba-NLP/gte-reranker-modernbert-base.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0610e8f94c45f661c3e8a0a8405daf59549a0c025d0cf5ed4f6707540b755e8f
+  - url: https://huggingface.co/api/models/Alibaba-NLP/gte-multilingual-reranker-base
+    shows: 'downloads: 372525 for Alibaba-NLP/gte-multilingual-reranker-base.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b7a2d0cb3a991f769061d623f4829b4db856f6502976e1dacc7df5603794f2e8
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: BEIR average nDCG@10 on the gte-modernbert card, with LoCo and CoIR beside it
+  relative_to: jina-reranker
+  relation: one_below
+  value: 'gte-reranker-modernbert-base: BEIR 56.19, LoCo 90.68, CoIR 79.99 at 149M parameters and 8,192 tokens, English
+    only; gte-multilingual-reranker-base is a 306M encoder-only cross-encoder over 70+ languages at the same context,
+    evaluated in the mGTE paper.'
+  confidence: high
+  note: 'Rung 3, solid workhorse. Heavily used and credibly measured, but a band below the reranking frontier on the
+    same instrument: 56.19 BEIR nDCG@10 against jina-reranker-v3 at 61.94, and the ModernBERT cross-encoder that carries
+    the downloads is English only where the frontier rerankers are multilingual. The multilingual sibling reaches
+    70+ languages but is the 2024 generation. Same placement and the same peer as bge-reranker, which sits one below
+    jina-reranker on the same reading. The gte embedders are scored separately at 4; this edge is about the reranking
+    half only.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
+    shows: Model table gives gte-reranker-modernbert-base BEIR 56.19, LoCo 90.68 and CoIR 79.99 at 149M parameters,
+      8192 maximum sequence length and primary language English.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
+  - url: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base/raw/main/README.md
+    shows: Describes a 306M encoder-only reranker supporting over 70 languages at 8192 tokens, claiming state-of-the-art
+      multilingual retrieval among rerankers of similar size, with results detailed in the mGTE paper.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3d010454d2949f8188bb3496951594e19c35076652e04d203cbd7e20ef3a3871

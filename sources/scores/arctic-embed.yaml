@@ -1,0 +1,127 @@
+product: arctic-embed
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: ungated checkpoints at xs, s, m, m-long, m-v1.5, l, m-v2.0 and l-v2.0
+    data:
+      value: closed
+      detail: described only as roughly 400M pairs mixing public datasets with proprietary web-search data, then about 1M
+        mined triplets; neither the mixture nor the data ships
+    code:
+      value: partial
+      detail: the arctic-embed repository ships inference and embedding-compression notebooks, not a training pipeline
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(ungated checkpoints at xs, s, m, m-long, m-v1.5, l, m-v2.0 and l-v2.0);data:closed(described only as roughly
+    400M pairs mixing public datasets with proprietary web-search data, then about 1M mined triplets; neither the mixture
+    nor the data ships);code:partial(the arctic-embed repository ships inference and embedding-compression notebooks, not
+    a training pipeline);license:Apache-2.0(OSI)
+  confidence: high
+  note: Open weights under an OSI license with a closed corpus. The proprietary web-search half of the pretraining mixture
+    is what rules out the data rung outright, and the public repository stops at inference and compression examples. The xs
+    checkpoint ships without a license field on its card, and is read as Apache-2.0 on the family statement rather than left
+    unmapped.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-l-v2.0
+    shows: 'license: apache-2.0; gated: false; private: false; downloadable checkpoint files present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4d931426276e495604843f90166c69cad8e95363ed7f7d3c9fa1b292817b502c
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-m-v2.0
+    shows: 'license: apache-2.0; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: a5c11b9ee61d54050c241c1767f6dc88836b174b0fee50b6ab17be0b4000d125
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-s
+    shows: 'license: apache-2.0; gated: false; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0d1266831301115009d85421079f968d3604078baf5c3639387dbd1051b474ba
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-xs
+    shows: 'gated: false; private: false; no license field and no license tag on the v1 xs checkpoint.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2735f2695817442ba11092915428bd32425316a85db17913e1e52327ca57b12b
+    establishes:
+    - weights
+  - url: https://huggingface.co/Snowflake/snowflake-arctic-embed-l-v2.0/raw/main/README.md
+    shows: States "Arctic is licensed under the Apache-2. The released models can be used for commercial purposes free of
+      charge."
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 59952ebef3dd21ee3fe3c2f2fb1b0c37f780d7730b1f6efc11ed5086ea299945
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Snowflake-Labs/arctic-embed/main/README.md
+    shows: Describes pretraining on about 400m samples of "a mix of public datasets and proprietary web search data" followed
+      by about 1m mined triplets, and offers inference and quantization notebooks rather than training code.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4c0c796a44b6e752b4b328c374c31179a578693b31fcc68861761778d4a0d530
+    establishes:
+    - data
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 821,744 downloads in the trailing 30 days for snowflake-arctic-embed-l-v2.0, 590,982 for the s checkpoint and 397,003
+    for m. The Hugging Face universe sweep puts the eight shipped arctic-embed checkpoints at 2,705,158 combined.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-l-v2.0
+    shows: 'downloads: 821744.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4d931426276e495604843f90166c69cad8e95363ed7f7d3c9fa1b292817b502c
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-s
+    shows: 'downloads: 590982.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0d1266831301115009d85421079f968d3604078baf5c3639387dbd1051b474ba
+  - url: https://huggingface.co/api/models/Snowflake/snowflake-arctic-embed-m
+    shows: 'downloads: 397003.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 39941c196fa962babe8938f1c0e967f87537b8f8751ddfb41cf544119f7f1cb8
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: BEIR (15) average NDCG@10 of 55.6, MIRACL (4) 55.8 and CLEF (Full) 54.3 for snowflake-arctic-embed-l-v2.0,
+    on its own card
+  value: 'snowflake-arctic-embed-l-v2.0: BEIR 55.6, MIRACL 55.8, CLEF (Full) 54.3 at 8,192 tokens, holding within 3% of those
+    figures at 256 dimensions.'
+  relative_to: harrier-oss
+  relation: one_below
+  confidence: high
+  note: 'Competitive frontier: multilingual and long-context, and the published table has it ahead of bge-m3 and gte-multilingual-base
+    on English BEIR and on CLEF while staying level on MIRACL. Placed a rung under the leader because the numbers are BEIR
+    and CLEF rather than MMTEB, and because the line has not shipped since the 2.0 release.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Snowflake/snowflake-arctic-embed-l-v2.0/raw/main/README.md
+    shows: Quality table gives snowflake-arctic-l-v2.0 BEIR (15) 55.6, MIRACL (4) 55.8, CLEF (Focused) 52.9 and CLEF (Full)
+      54.3 average NDCG@10, against 48.8 / 56.8 / 40.8 / 41.3 for bge-m3 and 51.1 / 52.3 / 47.7 / 53.1 for gte; truncation
+      to 256 dimensions costs under 3%.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 59952ebef3dd21ee3fe3c2f2fb1b0c37f780d7730b1f6efc11ed5086ea299945
+  - url: https://raw.githubusercontent.com/Snowflake-Labs/arctic-embed/main/README.md
+    shows: Records the 12/04/2024 release of the l-v2.0 and m-v2.0 multilingual models as the most recent additions to the
+      family.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4c0c796a44b6e752b4b328c374c31179a578693b31fcc68861761778d4a0d530

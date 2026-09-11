@@ -1,0 +1,103 @@
+product: embeddinggemma
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 'downloadable but gated: the Hub repo requires manual acceptance of the Gemma terms'
+    data:
+      value: closed
+      detail: approximately 320B tokens of web documents, code and synthetic text, characterized by type only
+    code:
+      value: partial
+      detail: inference and fine-tuning guides; no pretraining pipeline
+    license:
+    - name: Gemma-License
+      detail: Gemma Terms of Use, use bounded
+  confidence: high
+  governing_release: embeddinggemma-300m
+  note: 'The Gemma Terms of Use permit commercial use but reserve the right to restrict it and bind every downstream
+    distribution to the same prohibited-use policy, which is the use_bounded rung: a real bound that almost no
+    user meets. The gate is friction rather than a further restriction - anyone may accept and download - and
+    the training corpus is described only by category, so nothing pulls the score above the open-weights rung.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://ai.google.dev/gemma/docs/embeddinggemma/model_card
+    shows: Google's model card gives the 2K input context, 768-dimension output with MRL truncation, and a training
+      dataset of approximately 320 billion tokens described by component type - web documents, code, synthetic
+      - with no dataset released.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b5446d45cbdeb589a91b9ae325530a9bec2d5f820287f5647ab4f542dd655ff9
+    establishes:
+    - data
+    - code
+  - url: https://ai.google.dev/gemma/terms
+    shows: The Gemma Terms of Use grant a non-exclusive, royalty-free right to use and distribute the model, subject
+      to the Prohibited Use Policy which must be passed on to every downstream recipient, and reserve Google's
+      right to restrict use it believes violates those terms.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 355bd2cd3eaa74a28623116663a2aa202ea9fcf21342d0cd2825a462536cd305
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/google/embeddinggemma-300m
+    shows: 'gated: manual; private: false; cardData license gemma - the weights are downloadable after accepting
+      the terms.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e04b6c37dd5e1230fade158ec50fec6d88d8f877655a520402b20cc16a4584e8
+    establishes:
+    - weights
+    - license
+  raw: 'weights:open(downloadable but gated: the Hub repo requires manual acceptance of the Gemma terms);data:closed(approximately
+    320B tokens of web documents, code and synthetic text, characterized by type only);code:partial(inference
+    and fine-tuning guides; no pretraining pipeline);license:Gemma-License(Gemma Terms of Use, use bounded)'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '2,132,311 downloads in the trailing 30 days across the two shipped checkpoints - 2,129,726 for embeddinggemma-300m
+    and 2,585 for the QAT variant. Notable because the repository is gated: this is volume reached through a click-through
+    license rather than an open download.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/google/embeddinggemma-300m
+    shows: 'downloads: 2129726; gated: manual; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: e04b6c37dd5e1230fade158ec50fec6d88d8f877655a520402b20cc16a4584e8
+  - url: https://huggingface.co/api/models/google/embeddinggemma-300m-qat-q8_0-unquantized
+    shows: 'downloads: 2585; gated: manual; private: false.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0e280354f99dd258369602137a97c2e7965d4d6aedffb28be92e1cd753716734
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MTEB (Multilingual, v2), mean over tasks, at 768 dimensions
+  value: 61.15 mean on MTEB (Multilingual, v2) at 768d, falling to 58.23 at 128d; 69.67 on MTEB (English, v2)
+    at 768d.
+  confidence: high
+  relative_to: harrier-oss
+  relation: two_below
+  note: 'Rung 3. Genuinely strong for 308M parameters and the best of the on-device multilingual options, but
+    the rung is about retrieval quality rather than efficiency, and 61.15 on MMTEB v2 against the anchor''s 74.3
+    is a wide gap. The 2K context is the other narrowing: a sixteenth of Harrier-OSS''s window, which rules out
+    the long-document retrieval the frontier models are sold on. Two below the anchor on the same instrument.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://ai.google.dev/gemma/docs/embeddinggemma/model_card
+    shows: 'Full-precision checkpoint results: MTEB (Multilingual, v2) mean 61.15 at 768d, 60.71 at 512d, 59.68
+      at 256d and 58.23 at 128d; MTEB (English, v2) mean 69.67 at 768d.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: b5446d45cbdeb589a91b9ae325530a9bec2d5f820287f5647ab4f542dd655ff9
+  - url: https://ai.google.dev/gemma/docs/embeddinggemma
+    shows: Overview describes a 308M-parameter multilingual embedding model based on Gemma 3, optimized for everyday
+      devices such as phones, laptops and tablets.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 1f96c3b9dde2033b6cebd346c5b6ccfb61030505038fe6d420b1cacb2b4e93c2

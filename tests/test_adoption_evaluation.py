@@ -42,7 +42,10 @@ _ROOT = Path(__file__).resolve().parents[1]
 TEST_DVID = "test-declaration-version"
 
 BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c9a37a8d4"
-MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae38629742"
+# Moved on 2026-09-11 by the embeddings_retrieval promotion. MEASUREMENT_COUNT is unchanged at
+# 377 - the new products carry no observation in the pinned snapshot, so no row was added - but
+# the recorded bands they contribute change the content the digest covers.
+MEASUREMENTS_DIGEST = "4df6f5d9b71ee7ab04d940168a2343ae9de38662160f623e14991d9ec57931d0"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

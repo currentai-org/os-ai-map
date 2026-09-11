@@ -1,0 +1,102 @@
+product: voyage-rerank
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: the voyageai/rerank-2.5 Hub repo holds .gitattributes, tokenizer.json and tokenizer_config.json
+        only; no weight shards are distributed for any reranker SKU
+    data:
+      value: closed
+      detail: training corpus not released or described
+    code:
+      value: closed
+      detail: no training or inference implementation; client SDKs only
+    license:
+    - name: proprietary
+      detail: hosted rerank endpoint priced per processed token; no license granted over the model
+  raw: weights:closed(the voyageai/rerank-2.5 Hub repo holds .gitattributes, tokenizer.json and tokenizer_config.json
+    only; no weight shards are distributed for any reranker SKU);data:closed(training corpus not released
+    or described);code:closed(no training or inference implementation; client SDKs only);license:proprietary(hosted
+    rerank endpoint priced per processed token; no license granted over the model)
+  confidence: high
+  note: 'API-only, so the ladder''s first rule fires. Worth recording explicitly that the Hub presence
+    is a decoy: voyageai/rerank-2.5 exists and is ungated, but contains a tokenizer and nothing else.
+    The company that open-weighted voyage-4-nano has open-weighted none of its rerankers.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/voyageai/rerank-2.5
+    shows: 'voyageai/rerank-2.5: gated false, 0 downloads, file list is [''.gitattributes'', ''tokenizer.json'',
+      ''tokenizer_config.json'']. No weights, no config, no corpus, no code.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 563c41c7d54fe568d33dfb0af790e7bd864441966836556e9ff08b9c614d83fd
+    establishes:
+    - weights
+    - data
+    - code
+  - url: https://docs.voyageai.com/docs/pricing
+    shows: The reranker endpoint is priced per processed token — rerank-2.5 at $0.05 and rerank-2.5-lite
+      at $0.02 per million tokens — which is the only way the models are sold.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 15fda357f3e4f8ac719928e11048614f3ddbeb56b3744d2c9c0c20d9f65ffcf9
+    establishes:
+    - license
+adoption:
+  level: 3
+  signal_type: reported_traction
+  banded_quantity: MongoDB Atlas platform reach (tens of thousands of customers), not a call count for
+    the rerank endpoint
+  confidence: medium
+  note: 'No artifact to count — the Hub repo records 0 downloads because it holds no weights — and no
+    call volume published. The level rests on distribution: the rerankers ship inside the MongoDB Atlas
+    Embedding and Reranking API alongside the embedding line, on a platform MongoDB says is trusted by
+    tens of thousands of customers, and are separately priced on Voyage''s own endpoint.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://www.mongodb.com/company/blog/product-release-announcements/introducing-the-embedding-and-reranking-api-on-mongodb-atlas
+    shows: MongoDB Atlas's Embedding and Reranking API gives 'direct access to Voyage AI's state-of-the-art
+      retrieval models', including 'high-precision reranking for two-stage retrieval pipelines', on a
+      platform 'trusted by tens of thousands of customers, including over 75% of Fortune 100 companies'.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: d7728a4aa7deabea7b3e9819f0c27414de8d347fe3c768dd75b7372db5094ab8
+  - url: https://docs.voyageai.com/docs/pricing
+    shows: rerank-2.5 and rerank-2.5-lite carry their own per-token list prices on Voyage's pricing page,
+      so they are sold as a product rather than bundled.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 15fda357f3e4f8ac719928e11048614f3ddbeb56b3744d2c9c0c20d9f65ffcf9
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: NDCG@10 across a 93-dataset retrieval suite, as run by Voyage AI against Cohere Rerank
+    v3.5
+  value: Across 93 retrieval datasets spanning multiple domains, rerank-2.5 and rerank-2.5-lite improve
+    retrieval accuracy by 7.94% and 7.16% over Cohere Rerank v3.5, at a 32,000-token limit on query plus
+    any single document, with multilingual support and natural-language instruction following.
+  confidence: medium
+  note: 'Rung 4 rather than 5, on three counts that all point the same way. The 7.94% margin is vendor-run
+    against a vendor-chosen baseline; that baseline is Cohere Rerank v3.5, which Cohere has since replaced
+    with the 4.0 fast/pro pair, so the comparison no longer measures the current rival; and Voyage''s own
+    docs now list rerank-3 and rerank-3-lite above the 2.5 line in preview, which is the publisher saying
+    its frontier has moved. Competitive frontier, not the leader. Placed against the rung definition rather
+    than a peer: no single measurement reports this product and a category peer together - a reranker''s
+    NDCG@10 against an embedding model''s MMTEB - and rule (d) forbids an edge without one.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://blog.voyageai.com/2025/08/11/rerank-2-5/
+    shows: '''On a standard suite of 93 retrieval datasets spanning multiple domains, rerank-2.5 and rerank-2.5-lite
+      improve retrieval accuracy by 7.94% and 7.16% over Cohere Rerank v3.5.'''
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 239e9d14e234185e88322248d3471821df613efc6daef72717e1e0618c8ca76d
+  - url: https://docs.voyageai.com/docs/reranker
+    shows: 'Model Choices table: ''(In Preview) rerank-3 32,000 Highest accuracy. Recommendation for most
+      applications'', ''(In Preview) rerank-3-lite'', then rerank-2.5 and rerank-2.5-lite at 32,000 tokens
+      as the generalist recommendation; rerank-2 and rerank-1 are listed as legacy.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: f87415838f3ff01b3ee5da80e373be9ff2035b3357148bcf7e303c1f7565a940

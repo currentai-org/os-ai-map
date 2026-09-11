@@ -1,0 +1,88 @@
+product: bge-reranker
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights: {value: open, detail: ungated safetensors for every checkpoint in the line}
+    data: {value: closed, detail: no reranker training data released; the BGE corpus release covers the
+        embedders}
+    code: {value: open, detail: 'FlagEmbedding ships the reranker fine-tuning pipeline, configs and data
+        format'}
+    license:
+    - {name: Apache-2.0, detail: OSI; v2-m3 and v2-gemma}
+    - {name: MIT, detail: OSI; the base and large XLM-R rerankers}
+    - {name: Gemma-License, detail: 'the most restrictive distributed SKU, v2.5-gemma2-lightweight'}
+  raw: weights:open(ungated safetensors for every checkpoint in the line);data:closed(no reranker training
+    data released; the BGE corpus release covers the embedders);code:open(FlagEmbedding ships the reranker
+    fine-tuning pipeline, configs and data format);license:Apache-2.0(OSI; v2-m3 and v2-gemma)+MIT(OSI;
+    the base and large XLM-R rerankers)+Gemma-License(the most restrictive distributed SKU, v2.5-gemma2-lightweight)
+  confidence: high
+  note: 'The line ships under three licences and multi_sku_rule resolves it on the most restrictive DISTRIBUTED
+    SKU: bge-reranker-v2.5-gemma2-lightweight carries the Gemma licence, which the ladder places at use_bounded,
+    so the family lands at 3 rather than at the Apache and MIT rung its two most-downloaded checkpoints
+    would reach alone. Note the outcome is the same either way here, since no reranker training corpus
+    is released.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/BAAI/bge-reranker-v2-m3/raw/main/README.md
+    shows: 'Front matter for bge-reranker-v2-m3 reads license: apache-2.0; the card lists the family -
+      base and large on XLM-R, v2-m3 on bge-m3, v2-gemma on gemma-2b, v2-minicpm-layerwise - and points
+      at FlagOpen/FlagEmbedding, with a Fine-tune section giving the training data format and run commands
+      but naming no released corpus.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: c887aa6dd2598f908bf0582ca7068cc816585c7a1b6a07df305b631ede0cb174
+    establishes: [weights, data, code, license]
+  - url: https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight/raw/main/README.md
+    shows: 'Front matter for bge-reranker-v2.5-gemma2-lightweight reads license: gemma, which is the most
+      restrictive licence among the distributed checkpoints in this line.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 2d0d92c2242c0398716f29bb245ecd2e2ec011f153d89e3ec22fee84f19ded09
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/FlagOpen/FlagEmbedding/master/README.md
+    shows: FlagEmbedding README links examples/finetune/reranker and examples/finetune/embedder as the
+      training pipelines and a dataset directory, and records the 2023 release of the BGE massive training
+      data for the embedding models.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 46500109787496a729e233c6a74ac5be2148a48108ad26e39e7de964dc0f5ca3
+    establishes: [code, data]
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: About 24.9M downloads in the trailing 30 days across the line - v2-m3 18.2M, base 3.6M, large
+    2.6M, v2-gemma 311K, v2.5-gemma2-lightweight 164K, v2-minicpm-layerwise 6K. v2-m3 alone clears the
+    >10M band. Community mirrors and GGUF/ONNX conversions are excluded.
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/api/models/BAAI/bge-reranker-v2-m3', shows: 'downloads: 18212308; gated:
+      false; private: false; license apache-2.0 for BAAI/bge-reranker-v2-m3.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: 782446e4923d074cfc71c986a20a1464dbafff4cdcf7a6e4232e23e775dd0fd4}
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: BEIR and MIRACL nDCG@10 as reported in the third-party comparison table on the jina-reranker-v3
+    card
+  relative_to: jina-reranker
+  relation: one_below
+  value: 56.51 BEIR and 69.32 MIRACL nDCG@10 at 0.6B - the best MIRACL figure in that table - against
+    36.28 CoIR, which is the weakest code-retrieval number there.
+  confidence: medium
+  note: 'Rung 3, solid workhorse: the most widely deployed multilingual reranker of the 2024 generation,
+    with the strongest MIRACL number on the comparison table but a BEIR average and a code-retrieval score
+    well behind the 2025-26 frontier. One rung below jina-reranker, which is measured 61.94 to 56.51 on the same
+    table. Confidence is medium because the figures come from a competitor published comparison rather
+    than from BAAI own card, which publishes no headline BEIR number.'
+  last_verified: '2026-09-11'
+  sources:
+  - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Comparison table
+      lists bge-reranker-v2-m3 at 0.6B with 56.51 BEIR, 69.32 MIRACL - the highest MIRACL value in the
+      table - 67.88 MKQA and 36.28 CoIR, against jina-reranker-v3 at 61.94 BEIR.', accessed: '2026-09-11',
+    http_status: 200, content_sha256: d1ab4558cb180b462140d38eb67305aa86f868d30fa094f7744147a11bb4809e}
+  - {url: 'https://huggingface.co/BAAI/bge-reranker-v2-m3/raw/main/README.md', shows: 'Model List describes
+      bge-reranker-v2-m3 as a lightweight multilingual reranker built on bge-m3 and recommends it for
+      multilingual, Chinese and English, and efficiency scenarios.', accessed: '2026-09-11', http_status: 200,
+    content_sha256: c887aa6dd2598f908bf0582ca7068cc816585c7a1b6a07df305b631ede0cb174}

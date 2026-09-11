@@ -1,0 +1,100 @@
+product: mistral-embed
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: no checkpoint distributed; mistral-embed-2312 is a Premier-tier hosted model reached through
+        /v1/embeddings
+    data:
+      value: closed
+      detail: training corpus not released or described
+    code:
+      value: closed
+      detail: no training or inference implementation; client SDKs only
+    license:
+    - name: proprietary
+      detail: Premier-tier API model under Mistral’s terms of service; Mistral publishes weights for parts
+        of its open line but none for this one
+  raw: weights:closed(no checkpoint distributed; mistral-embed-2312 is a Premier-tier hosted model reached
+    through /v1/embeddings);data:closed(training corpus not released or described);code:closed(no training
+    or inference implementation; client SDKs only);license:proprietary(Premier-tier API model under Mistral’s
+    terms of service; Mistral publishes weights for parts of its open line but none for this one)
+  confidence: high
+  note: 'API-only, so the ladder''s first rule fires. Worth stating plainly because Mistral is widely
+    read as the open-weights vendor among the frontier labs: that reputation rests on its generative line,
+    and none of it reaches the embedding endpoint, which has never shipped a checkpoint.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://docs.mistral.ai/models/model-cards/mistral-embed-23-12
+    shows: The Mistral Embed model card records mistral-embed-2312, GA, Premier, version 23.12 dated 2023-12-11,
+      an 8k context and $0.10 per million tokens, with features limited to the /v1/embeddings and /v1/batch
+      endpoints. No weights, corpus or code.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cfe9f22058467d527fb39d7352f718d32f5ae6e32a7c988c63fcd51677b0b0b6
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://mistral.ai/models
+    shows: Mistral's own models page lists 'Mistral Embed ... Embedding Text-to-text mistral-embed' as
+      an API model, separately from Codestral Embed, and separately from the open-weight models it distributes.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0f275740d171845e2374ba206cfda50d829a2ea5eaef5272744d3e79fcec7f23
+    establishes:
+    - weights
+    - license
+adoption:
+  level: 2
+  signal_type: reported_traction
+  confidence: medium
+  note: 'No artifact to count and no usage figure published. The level rests on a narrower distribution
+    surface than any other product in this set: Mistral''s own La Plateforme and nothing first-party beyond
+    it — no Bedrock, Azure or Vertex resale of the embedding SKU — and Mistral''s own attention has moved
+    to codestral-embed for the retrieval use case it markets hardest.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://mistral.ai/models
+    shows: The models page lists Mistral Embed as one API model among Mistral's catalog, with Codestral
+      Embed carried separately and described as the state-of-the-art embedding offering.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 0f275740d171845e2374ba206cfda50d829a2ea5eaef5272744d3e79fcec7f23
+  - url: https://docs.mistral.ai/models/model-cards/mistral-embed-23-12
+    shows: The card records GA and Premier status with a single price and two endpoints; it names no cloud
+      marketplace or third-party distribution.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cfe9f22058467d527fb39d7352f718d32f5ae6e32a7c988c63fcd51677b0b0b6
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: MTEB retrieval, as reported in Mistral’s own La Plateforme announcement
+  value: A retrieval score of 55.26 on MTEB, at 1,024 output dimensions and an 8k context, unchanged since
+    the December 2023 release.
+  confidence: high
+  note: Rung 2, narrow or dated, and this is the clearest case of it in the set. 55.26 on MTEB retrieval
+    was a credible number in December 2023 and is far off the current table; the model is text-only, fixed-dimension
+    and short-context, and Mistral has published no re-evaluation in the two and three-quarter years since.
+    Still sold and still useful for its niche, which is what keeps it off rung 1. It is the root of this
+    cluster's comparison chain and carries no relative_to for that reason — every other product in the
+    set is placed against it or through it.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://mistral.ai/news/la-plateforme/
+    shows: '''Mistral-embed, our embedding endpoint, serves an embedding model with a 1024 embedding dimension.
+      ... This embedding model has been designed with retrieval capabilities in mind. It achieves a retrieval
+      score of 55.26 on MTEB.'''
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5f6fa19bd25defa3418918cb80c48516d88e9b2f756e949af6d5d5205c588699
+  - url: https://docs.mistral.ai/models/model-cards/mistral-embed-23-12
+    shows: Version 23.12, dated 2023-12-11, context 8k, still GA; no updated benchmark is published on
+      the card.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: cfe9f22058467d527fb39d7352f718d32f5ae6e32a7c988c63fcd51677b0b0b6

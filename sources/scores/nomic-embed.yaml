@@ -1,0 +1,122 @@
+product: nomic-embed
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 ungated checkpoints for v1, v1.5 and v2-moe
+    data:
+      value: open
+      detail: the card states the training data is released in its entirety, served through the contrastors repository behind
+        a free Atlas account
+    code:
+      value: open
+      detail: contrastors ships MLM pretraining, contrastive pretraining and finetuning entry points with their configs, plus
+        the scripts that generate the data
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  raw: weights:open(Apache-2.0 ungated checkpoints for v1, v1.5 and v2-moe);data:open(the card states the training data is
+    released in its entirety, served through the contrastors repository behind a free Atlas account);code:open(contrastors
+    ships MLM pretraining, contrastive pretraining and finetuning entry points with their configs, plus the scripts that generate
+    the data);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'The full-release case this rung was written for: weights, corpus and the pipeline that consumed it, all under Apache-2.0,
+    with the v2 paper stating the point of the release is reproducibility of the training run. The corpus is fetched from
+    a Nomic bucket after registering for an Atlas account, which is friction at the download gate rather than a corpus withheld.'
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v1.5
+    shows: 'license: apache-2.0; gated: false; private: false; downloadable checkpoint files present.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ac10fcdc8a98055815389416568205f50f666837e4f15ce385bc1083ce00a88a
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v2-moe
+    shows: 'license: apache-2.0; gated: false; private: false; the mixture-of-experts checkpoint ships under the same terms.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: fcdfea706c8f94ac20f76c3e58c5a7076aaef8827a2970858dbd18c9d8d0f08c
+    establishes:
+    - license
+  - url: https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/raw/main/README.md
+    shows: States "Training data to train the models is released in its entirety" and points at the contrastors repository,
+      and describes the two-stage unsupervised then supervised contrastive pipeline.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 4430178908fbd574fdb6457e302d23e643d733ed036b5777180b0806946767b2
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/nomic-ai/contrastors/main/README.md
+    shows: Documents data access to the nomic-embed-text-v1 dataset, and gives the deepspeed and torchrun commands with configs
+      for MLM pretraining, contrastive pretraining and finetuning, plus the scripts that generate new data.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 3e86bfd1356509447c14d882c1d63ea53aeaf812cc36fa90f55db7c33c357f9e
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe/raw/main/README.md
+    shows: 'Says "Fully Open-Source: Model weights, code, and training data (see code repo) released" and that all code, models
+      and evaluation data are open-sourced for full reproducibility of the training pipeline.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5a5cbb6e82247892faeb200b529cdec5c538c382b80eb9717ba3de645946a6cd
+    establishes:
+    - data
+    - code
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 16,124,079 downloads in the trailing 30 days for nomic-embed-text-v1.5 alone, plus 3,623,688 for v1 and 2,193,696
+    for v2-moe. The Hugging Face universe sweep puts the three shipped nomic-embed-text checkpoints at 22,689,628
+    combined, excluding the first-party GGUF conversions of the same weights.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v1.5
+    shows: 'downloads: 16124079.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: ac10fcdc8a98055815389416568205f50f666837e4f15ce385bc1083ce00a88a
+  - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v1
+    shows: 'downloads: 3623688.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 9947a4b165e22596c021207e4d4115c4b57afc8b662a4aceee85e996822a93fa
+  - url: https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v2-moe
+    shows: 'downloads: 2193696.'
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: fcdfea706c8f94ac20f76c3e58c5a7076aaef8827a2970858dbd18c9d8d0f08c
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: MTEB English average of 62.28 for nomic-embed-text-v1.5 at 8,192 tokens, in the MTEB-leaderboard table reproduced
+    on the gte-modernbert-base card
+  value: 'nomic-embed-text-v1.5: MTEB English average 62.28 at 8,192 tokens; v2-moe adds ~100 languages but caps input at
+    512 tokens.'
+  relative_to: harrier-oss
+  relation: two_below
+  confidence: high
+  note: Solid and widely used, and measurably behind the frontier encoders on the same leaderboard table - 62.28 against 64.38
+    for a model of similar size. The v2 mixture of experts claims parity only within its parameter class, and gives up the
+    long-context window the v1 line was known for.
+  last_verified: '2026-09-11'
+  sources:
+  - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md
+    shows: MTEB leaderboard table lists nomic-embed-text-v1.5 at 768 dimensions, 8192 maximum sequence length and an MTEB
+      English average of 62.28, against 64.38 for gte-modernbert-base.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 02b4dbe7c93b7962270fa44ea8b294986265556ff7dd69492dd708d4a69e606e
+  - url: https://huggingface.co/nomic-ai/nomic-embed-text-v2-moe/raw/main/README.md
+    shows: Claims state-of-the-art multilingual performance compared with ~300M parameter models on BEIR and MIRACL, and states
+      a maximum sequence length of 512 tokens.
+    accessed: '2026-09-11'
+    http_status: 200
+    content_sha256: 5a5cbb6e82247892faeb200b529cdec5c538c382b80eb9717ba3de645946a6cd

@@ -1,0 +1,15 @@
+name: gte-reranker
+display_name: GTE Reranker
+type: model
+description: 'The reranking half of Alibaba''s GTE family: two Apache-2.0 cross-encoders that score query-document
+  pairs for a retrieval pipeline rather than emit vectors. gte-reranker-modernbert-base is a 149M English model on
+  a ModernBERT base reporting BEIR 56.19, LoCo 90.68 and CoIR 79.99 at 8,192 tokens, and gte-multilingual-reranker-base
+  is a 306M encoder-only reranker covering more than 70 languages at the same context, which the mGTE paper positions
+  as roughly ten times faster than the decoder-based alternatives of its generation.'
+huggingface_model:
+- url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base
+- url: https://huggingface.co/Alibaba-NLP/gte-multilingual-reranker-base
+comments: Added 2026-09-11 for the embeddings_retrieval roster, splitting the GTE cross-encoders out from the sibling
+  gte product, which covers the embedders. Scope is the two reranker checkpoints in the Alibaba-NLP account and nothing
+  else; the gte-rerank service on Alibaba Cloud is a separate hosted product the cards note is not identical to the
+  open weights. Verified 2026-09-11 via the model cards and the Hub API.
