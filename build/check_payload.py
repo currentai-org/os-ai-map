@@ -16,8 +16,11 @@ from pathlib import Path
 
 from build.vocabulary import axes, is_iso_date
 
-# Mirrors the `pattern` on every URL field in docs/schemas/ (#525): a scheme and a dotted host.
-_URL_WITH_HOST = re.compile(r"^https?://[^/\s]+\.[^/\s]+")
+# The same regex as the `pattern` on every URL field in docs/schemas/ (#525): an http(s)
+# scheme, a dotted hostname of label characters, an optional port, then a path, query,
+# fragment or the end. Kept character-identical so a URL the schema rejects (`https://?a.b`,
+# where the only dot is in the query) cannot slip through here on a looser reading.
+_URL_WITH_HOST = re.compile(r"^https?://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)")
 
 ROOT = Path(__file__).resolve().parents[1]
 
