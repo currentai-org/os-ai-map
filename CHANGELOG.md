@@ -16,9 +16,57 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- `embeddings_retrieval`, a published category of 35 products — models whose headline output is a
+  vector or a relevance score rather than a chat completion. Extends the shared `pretrained`
+  openness ladder, the first reuse of it outside `base_pretrained`; capability is anchored on
+  MTEB/MMTEB with hand-authored rungs and six banding rules, and the roster includes the closed
+  commercial API tier ([#540](https://github.com/currentai-org/os-ai-map/pull/540)).
+- A rule in `docs/reference/openness.md`: where a product's openness and capability scores rest on
+  different SKUs, the record must name which and why. `multi_sku_rule` resolves openness on
+  distributed weights while capability reads the best tier a publisher ships, so a family with a
+  small open checkpoint beside a hosted flagship measures two artifacts on two axes. Applied to
+  `voyage-embeddings` and `esm-3`; the fix is disclosure rather than splitting the product
+  ([#540](https://github.com/currentai-org/os-ai-map/pull/540)).
+- `scientific_ai_models`, a published category of 34 products — models for scientific domains, from
+  protein structure and single-cell biology through weather, materials and earth observation.
+  Capability uses a `feature_matrix` instrument because the domain has no shared public benchmark
+  ([#537](https://github.com/currentai-org/os-ai-map/pull/537)).
+- `languagebench` (`fair-forward/evals-for-every-language`) to `evaluation_code`, with the
+  `fair-forward` organization ([#531](https://github.com/currentai-org/os-ai-map/pull/531)).
+
+### Changed
+
+- Three license names ruled onto the shared `pretrained` tiers: `OpenMDW-1.1` to
+  `permissive_non_osi`, `Llama-3.2-Community-License` to `use_bounded`, `CC-BY-NC-4.0` to
+  `commercial_forbidden`. All four products that had been deferred for them now compute, and no
+  recorded score moved — each had been hand-placed at exactly the value its tier produces
+  ([#540](https://github.com/currentai-org/os-ai-map/pull/540)).
+- `base_pretrained`'s openness ladder extracted into `sources/rubrics/pretrained.yaml` and inherited
+  through `scoring_recipe: {extends: pretrained}`. Openness only: adoption and capability stay
+  per-category, because neither instrument travels. The block moved verbatim and all 32
+  `base_pretrained` scores reproduce ([#535](https://github.com/currentai-org/os-ai-map/pull/535)).
+- Every workflow document and skill now leads its validation section with `build.preflight`, which
+  runs each CI step locally and accounts for the three it cannot. It already existed and was
+  undiscoverable, which is what `docs/operations/postmortem-2026-09-10-scientific-ai-models.md` was
+  written about ([#539](https://github.com/currentai-org/os-ai-map/pull/539)).
+
+### Fixed
+
+- Both Jina records scoped to the text line on every axis. `jina-embeddings` declared v4 and v5-omni
+  in its scope while its artifacts, license compound and download sum excluded them; `jina-reranker`
+  had the mirror-image defect and counted the multimodal `m0`. Neither score moved
+  ([#540](https://github.com/currentai-org/os-ai-map/pull/540)).
+- `edit-category` and `update-product` name the pytest gate, which neither did — a category or
+  product edit can break a pinned test without failing any `build.*` check
+  ([#534](https://github.com/currentai-org/os-ai-map/pull/534)).
+
 ### Removed
 
-- The `refresh-data` workflow and its weekly cron. Both fetchers it ran were deleted when ADR-003 externalized the `catalog.*` tables, so every scheduled run since had failed ([#509](https://github.com/currentai-org/os-ai-map/issues/509)).
+- The `refresh-data` workflow and its weekly cron. Both fetchers it ran were deleted when ADR-003
+  externalized the `catalog.*` tables, so every scheduled run since had failed
+  ([#509](https://github.com/currentai-org/os-ai-map/issues/509)).
 
 ## [0.3.0] - 2026-09-05
 
