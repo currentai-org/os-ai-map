@@ -132,6 +132,38 @@ def test_below_threshold_never_qualifies_even_with_both_agreements():
     assert not adopt.qualifies(row)[0]
 
 
+@pytest.mark.parametrize("confidence", [
+    0.9999999995,        # rounds to 1.0 at any sane tolerance; the SQL never emits it
+    1.0000000001,        # above the threshold is not "at" it
+    1.5,
+    float("nan"),
+    float("inf"),
+    "1.0000000001",
+    None,
+    "one",
+])
+def test_the_gate_is_exactly_1_0_not_a_tolerance(confidence):
+    row = _row("equivalence", "github", "acme/acme", "acme", confidence=confidence,
+               method=("name_match", "resolution_ledger"))
+    ok, reason = adopt.qualifies(row)
+    assert not ok
+    assert "confidence" in reason
+
+
+@pytest.mark.parametrize("confidence", [1.0, 1, "1.0", "1"])
+def test_an_exact_1_0_in_any_numeric_spelling_passes_the_gate(confidence):
+    row = _row("equivalence", "github", "acme/acme", "acme", confidence=confidence,
+               method=("name_match", "resolution_ledger"))
+    assert adopt.qualifies(row)[0]
+
+
+def test_a_boolean_true_is_not_a_confidence_of_1_0():
+    row = _row("equivalence", "github", "acme/acme", "acme", confidence=True,
+               method=("name_match", "resolution_ledger"))
+    ok, reason = adopt.qualifies(row)
+    assert not ok and "confidence" in reason
+
+
 def test_parked_and_pool_rows_never_qualify():
     row = _row("equivalence", "github", "acme/acme", "acme", method=("name_match", "resolution_ledger"),
                state="pool")
@@ -431,3 +463,19 @@ def test_the_digest_workflow_adopts_after_the_issue_exists_and_opens_a_pr_not_a_
     assert 'git push -u origin "$BRANCH"' in text
     assert "git push origin main" not in text and "git push origin HEAD:main" not in text
     assert "Nothing adopted; no PR." in text
+
+
+def test_the_digest_workflow_reuses_the_weeks_branch_and_pr_on_a_rerun():
+    """A same-week rerun must not recreate the branch from main (non-fast-forward push) or
+    open a second PR, and a run that pushed but never created its PR must be recoverable."""
+    text = (ROOT / ".github" / "workflows" / "identity-digest.yml").read_text()
+    branch_at = text.index("Check out the week's adoption branch")
+    adopt_at = text.index("--adopt --decided-in \"#$NUMBER\"")
+    assert branch_at < adopt_at, "the adopt pass must read the branch's ledger, not main's"
+    assert 'git checkout -B "$BRANCH" "origin/$BRANCH"' in text
+    assert 'git ls-remote --exit-code --heads origin "$BRANCH"' in text
+    # Publish whenever the branch is ahead of main, not only when this run committed.
+    assert 'git rev-list --count "origin/main..$BRANCH"' in text
+    assert 'gh pr list -R "$GITHUB_REPOSITORY" --head "$BRANCH" --state open' in text
+    assert 'gh pr edit "$EXISTING_PR"' in text
+    assert "git push --force" not in text and "push -f " not in text

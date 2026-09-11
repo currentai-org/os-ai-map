@@ -72,6 +72,7 @@ dedupes on the destination key, so two rows resolving to one handle write it onc
 from __future__ import annotations
 
 import json
+import math
 import re
 from dataclasses import dataclass, field
 from datetime import date
@@ -100,9 +101,10 @@ ORGANIZATIONS_DIR = ROOT / "sources" / "organizations"
 LEDGER_SCHEMA_PATH = ROOT / "docs" / "schemas" / "resolution_ledger.schema.json"
 ORG_HANDLES_SCHEMA_PATH = ROOT / "docs" / "schemas" / "org_handles.schema.json"
 
-#: The ruling's threshold. Compared with a tolerance because the column is DOUBLE.
+#: The ruling's threshold. Compared EXACTLY: the digest SQL assigns 1.0 as a literal for the
+#: authoritative methods, so a value that merely rounds to 1.0 (0.9999999995), NaN, or anything
+#: above 1.0 is a row the SQL never produced and must be held, not adopted.
 THRESHOLD = 1.0
-_EPS = 1e-9
 #: The methods a 1.0 may legitimately rest on for a ledger relation. See the module docstring.
 AUTHORITATIVE_METHODS = frozenset({"resolution_ledger", "declared"})
 LEDGER_RELATIONS = ("equivalence", "membership")
@@ -246,8 +248,10 @@ def qualifies(row: dict, org_handles: dict | None = None) -> tuple[bool, str]:
         confidence = float(row.get("confidence"))
     except (TypeError, ValueError):
         return False, "confidence unreadable"
-    if confidence < THRESHOLD - _EPS:
-        return False, f"confidence {confidence} below {THRESHOLD}"
+    if isinstance(row.get("confidence"), bool) or not math.isfinite(confidence):
+        return False, f"confidence {row.get('confidence')!r} is not a finite number"
+    if confidence != THRESHOLD:
+        return False, f"confidence {confidence} is not exactly {THRESHOLD}"
     if not graph_agrees(row):
         return False, "graph does not agree (no authoritative method or evidence line)"
     if not name_agrees(row, org_handles):

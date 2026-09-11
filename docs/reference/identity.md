@@ -419,8 +419,9 @@ identity graph already infers the same `(namespace, org)` pair at confidence ≥
 
 **The one exception to the tick is the weekly digest's auto-adopt rule.** A ranked digest item at
 confidence 1.0 whose name agrees *and* whose graph agrees is adopted by `build/identity_adopt.py`
-without a human tick (ruling 2026-09-08); everything below 1.0, and any 1.0 item that fails either
-test, stays a review item. For an `org` item, name agreement means the account handle agrees with
+without a human tick (ruling 2026-09-08); the threshold is exact, so a confidence that merely
+rounds to 1.0 is held, and everything below 1.0, and any 1.0 item that fails either test, stays a
+review item. For an `org` item, name agreement means the account handle agrees with
 the org slug or a handle the org already declares (the same `name_agrees` test the proposer's
 checklist column uses), and graph agreement means the graph's own `org_handles: <org> …` evidence
 names that org. For an `equivalence` or `membership` item, name agreement means the artifact's name
@@ -428,6 +429,8 @@ segment equals the product slug, and graph agreement means the 1.0 rests on an a
 (`resolution_ledger` or `declared`) rather than on arithmetic alone. An adopted entry is appended to
 the file that records its relation with `decided_in` naming the digest issue and a `note` starting
 with `digest auto-adopt (confidence 1.0):`; a bot opens the pull request and a person merges it.
+Reruns within one week land on the same `digest-adopt/<week>` branch and update its open pull
+request rather than opening a second one.
 `build/identity_eval.py` excludes entries carrying that prefix from truth, so the graph is never
 scored against rulings it wrote itself.
 
