@@ -3,9 +3,10 @@
 ## Scope and boundary
 
 This batch converts the candidate roster in issue #533 into the identity-only seed for the
-`scientific_ai_models` category. Ten of the thirty-four were promoted to fully scored head
-products in the same pull request and carry the category into `published`; the twenty-four rows
-below it are identity-only until promotion verifies each against primary sources. The boundary is the product's data: models trained
+`scientific_ai_models` category. All thirty-four were then promoted to fully scored head
+products in the same pull request, which carries the category into `published` and leaves the
+registry roster empty. Every score was afterwards re-derived by a second, read-only pass that
+did not write it. The boundary is the product's data: models trained
 on instrument, measurement, or scientific-simulation output belong; general-purpose models
 trained on human-authored text, natural images, speech, or video do not. A reusable backbone is
 not required. Software harnesses are outside the category even when they run scientific models.

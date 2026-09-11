@@ -39,16 +39,27 @@ adoption:
     http_status: 200
     content_sha256: 0bf344317215b707d49b8e34bab54fd70ca495052c52c78889c5623a01767e60
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
   basis_detail: scientific adaptation surface
-  value: Adaptable base, forecast generation, and medium/high-resolution span; inputs vary by dataset rather than one documented multi-instrument interface.
+  value: An executable fine-tuning pathway and a medium/high-resolution span; a deterministic forecast target, and inputs that vary by dataset rather than one documented multi-instrument interface.
   relative_to: terramind
-  relation: one_below
+  relation: two_below
   confidence: high
-  note: Three explicit attributes place Aurora one rung below TerraMind without counting a list of specialized task names as a fourth attribute.
+  note: >-
+    Two attributes. Adaptation is executable rather than merely described - docs/finetuning.md
+    ships a Docker image and a fine-tuning loop built on AuroraPretrained - which is the bar
+    ruling (b) sets. Generative is declined under ruling (d): Aurora predicts a deterministic
+    future state, which is prediction rather than generation, and it is declined for the same
+    reason aifs, pangu-weather and climax are. A list of specialized task names is not a
+    further attribute.
   last_verified: '2026-09-10'
   sources:
+  - url: https://raw.githubusercontent.com/microsoft/aurora/main/docs/finetuning.md
+    shows: 'A dedicated Fine-Tuning page - "if you wish to fine-tune Aurora for a specific application, you should build on the pretrained version", with AuroraPretrained().load_checkpoint(), a Docker image and a fine-tuning loop. This is the executable pathway ruling (b) requires, which the README alone only describes.'
+    accessed: '2026-09-10'
+    http_status: 200
+    content_sha256: 5fad3320c86f2f5149abbfeee1489f98bfc51cbf25267e7f2a5109abbe88905c
   - url: https://raw.githubusercontent.com/microsoft/aurora/main/README.md
     shows: Describes adaptation with limited task data, predictive outputs, and separate medium- and high-resolution weather versions.
     accessed: '2026-09-10'
