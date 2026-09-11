@@ -112,8 +112,15 @@ def attestation_states_no_derivable_count(slug: str, category: dict) -> list[str
     Correcting them in place was the wrong fix, and briefly shipped. A count recorded beside
     `verified_on` reads as "this many reproduced when a human last checked", so writing
     today's 39/39 next to a July date asserts a verification of 39 products that did not
-    happen — nineteen of them did not exist yet. The drift was carrying real information:
-    how much of a category has been added since anyone last verified the method by hand.
+    happen — nineteen of them did not exist yet.
+
+    The honest cost of deleting rather than correcting: the historical result is no longer
+    readable from the file, and today's checker cannot reconstruct it. Git history has it.
+    A first draft of this note claimed the drift measured how much of a category postdates
+    the last human pass, and that is too strong — removals, roster transfers, score
+    corrections and ladder changes move the same number. If verification coverage is worth
+    tracking, record the revision that was checked or the roster that was reviewed, which
+    says it directly instead of inferring it from an aggregate.
 
     So the counts are gone rather than corrected, and this gate keeps them gone. What stays
     in `derived_from` is the part nothing can compute: the method, the date a person checked
