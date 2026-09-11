@@ -128,7 +128,7 @@ def _maturity_score(row: dict, w: dict) -> float | None:
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
 
 
-def _unreached_axes(open_rows: list[tuple[dict, float]]) -> list[str]:
+def _unreached_axes(fully_open: list[dict]) -> list[str]:
     """The gap(s) for a category whose best fully-open option clears both cutoffs and still
     misses the maturity bar.
 
@@ -150,13 +150,19 @@ def _unreached_axes(open_rows: list[tuple[dict, float]]) -> list[str]:
     nothing — the parts exist and nobody has assembled them, which is a real state this
     vocabulary cannot yet name.
 
-    32 fully-open products across 13 categories sit at exactly 4/4, so the dead zone this
+    The population here is every FULLY-OPEN product, not the ones carrying a maturity score.
+    A product with no adoption is excluded from the stage arithmetic - we cannot judge what we
+    cannot measure - but its recorded capability is still a fact about what the open ecosystem
+    has reached, and dropping it would report "nobody topped capability" because the product
+    that did lacks an adoption band.
+
+    32 fully-open products across 12 categories sit at exactly 4/4, so the dead zone this
     covers is structural. Today it leaves exactly one category silent.
     """
     gaps: list[str] = []
     for name, block, key in (("capability", "capability", "score"),
                              ("adoption", "adoption", "level")):
-        recorded = [v for r, _ in open_rows
+        recorded = [v for r in fully_open
                     if (v := ((r.get(block) or {}).get(key))) is not None]
         if recorded and max(recorded) < _AXIS_TOP:
             gaps.append(name)
@@ -210,13 +216,22 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
         # there is no longer a one-diagnostic-per-category rule, which is what kept
         # `capability` unreachable behind `openness` and hid the edge_hardware case.
         #
-        # A driver gap fires only when its axis is measured and below its cutoff. If both
-        # measured axes clear their cutoffs yet the blend still misses the bar (adoption 4
-        # with a null capability blends to 4.0, which is benchmark_eval_data's shape), the
-        # category carries no driver gap: the stage number already says it has not reached the
-        # leading-product threshold, and asserting an adoption shortfall where adoption clears
-        # its cutoff would be a knowingly false label. When measurement gaps like this become
-        # common enough to name, introduce a gap for them deliberately.
+        # A driver gap says its axis is SHORT FOR THE CATEGORY, and that is true in two ways.
+        # The best fully-open product is below the axis cutoff -- the per-product reading -- or
+        # no fully-open product has reached the top of the axis at all, which `_unreached_axes`
+        # answers when the per-product reading is silent.
+        #
+        # The second clause is a widening of the contract #318 set, made deliberately. That
+        # contract read the drivers off the best product alone, so a category whose best option
+        # sat at exactly 4 and 4 cleared both cutoffs, missed the 4.5 bar and reported NOTHING.
+        # The old comment here argued that naming an axis there would be a knowingly false
+        # label, and on the per-product reading it would be. The category-level claim is a
+        # different and checkable one: compilers has three fully-open products at capability 5
+        # and, across 44 products, none at adoption 5.
+        #
+        # Both readings answer the same question a reader is asking -- which axis is holding
+        # this category back -- so they share a label rather than minting a seventh gap type.
+        # docs/reference/gap-analysis.md carries the contract in full.
         best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
         cap = ((best or {}).get("capability") or {}).get("score")
         adopt = ((best or {}).get("adoption") or {}).get("level")
@@ -226,7 +241,7 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
         if adopt is not None and adopt < _ADOPTED_MIN:
             gaps.append("adoption")
         if not gaps:
-            gaps = _unreached_axes(open_rows)
+            gaps = _unreached_axes([r for r, b, _ in enr if b == "open"])
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
 
