@@ -34,6 +34,15 @@ corpus files only through `build/components.py` - never load-modify-dump a file 
 
 ## Scripts to run
 ```bash
+uv run python -m build.preflight --skip-tests   # every CI validate gate, ~70s
+uv run python -m build.preflight                # the same plus pytest, before you push
+```
+`build.preflight` runs what `.github/workflows/validate.yml` runs and accounts for every step it
+cannot run locally, so it does not drift the way a copied gate list does. Do not hand-assemble a
+subset — that is what shipped a `check_components` failure to CI once already.
+
+The individual gates, for re-running one after a failure:
+```bash
 uv run python -m build.validate            # 0 error(s)
 uv run python -m build.check_recipe
 uv run python -m build.check_rubric

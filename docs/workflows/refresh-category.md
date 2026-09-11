@@ -100,6 +100,21 @@ appeared, and date it, citing the page that publishes nothing. See
 [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md).
 
 ## Validation
+
+**Run `uv run python -m build.preflight` and read what it says.** It executes what CI's
+`validate` workflow executes — all fifteen locally-runnable steps — and *accounts for the three
+it cannot*, so there is no hand-copied gate list here to drift out of step with
+`.github/workflows/validate.yml`. `--skip-tests` drops the pytest step and finishes in about
+seventy seconds; run it without the flag once before you push.
+
+It exists because a hand-assembled loop of `validate` + `check_recipe` + `check_rubric` +
+`check_verification` + `pytest` looks complete and is not: it misses `check_components`,
+`check_adoption --strict`, `check_instrument`, `check_routing`, `check_payload`,
+`check_retirement`, the goldens check and the serializer dry-runs. Read `build/preflight.py`'s
+own docstring for the promotion that discovered this the expensive way.
+
+The individual gates below are what preflight runs, listed so a failure can be re-run alone:
+
 The canonical gate list for a category batch — run all of it, not a remembered subset:
 ```bash
 uv run python -m build.validate                       # 0 error(s)
