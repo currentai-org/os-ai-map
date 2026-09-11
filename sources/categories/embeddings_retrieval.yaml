@@ -1,0 +1,102 @@
+name: embeddings_retrieval
+display_name: Embeddings & retrieval models
+description: Models whose headline output is a vector representation or a relevance score consumed by a retrieval system, rather than a chat completion.
+weights:
+  adopt: 0.3
+  cap: 0.7
+
+scoring_recipe:
+  version: 1
+  extends: pretrained
+  derived_from:
+    method: >-
+      Shared from-scratch openness ladder, inherited. These are models trained from scratch on a
+      retrieval objective, so the ladder's questions - are the weights downloadable, is the
+      training corpus released, does the training pipeline ship - are the right ones unchanged.
+    inherited_from: base_pretrained
+    verified_on: '2026-09-11'
+    checker: build/check_rubric.py
+
+  adoption:
+    signal_preference:
+    - signal_type: usage_volume
+      source: >-
+        Hugging Face downloads, summed across the family's shipped checkpoints. This is the
+        category's native channel and an unusually good one - the Hub universe sweep counts 1,665
+        models across the retrieval pipeline tags drawing 867M downloads in 30 days, so almost
+        every open product here has a real measured figure rather than a proxy.
+      machine_signal: signal_huggingface.hub_state
+    - signal_type: reported_traction
+      source: >-
+        Credible vendor or third-party reach for an API-only product with no downloadable
+        artifact. Directional only; set confidence to medium at best.
+    - signal_type: stars_fallback
+      source: GitHub stars, last resort
+      machine_signal: signal_github.repo_state
+    bands:
+    - {level: 1, reach: <10K}
+    - {level: 2, reach: 10K-100K}
+    - {level: 3, reach: 100K-1M}
+    - {level: 4, reach: 1M-10M}
+    - {level: 5, reach: '>10M'}
+    reach_is_monthly: true
+    note: >-
+      The numeric bands match the other model categories. Note the ceiling is genuinely reached
+      here in a way it is not elsewhere: all-MiniLM-L6-v2 alone draws 255M downloads a month, so
+      level 5 is populated by measurement rather than by inference.
+
+  capability:
+    basis: benchmark
+    anchor:
+      primary: MTEB / MMTEB, the Massive Text Embedding Benchmark
+      fallback: >-
+        For a product absent from MTEB - a reranker scored on NDCG@10 against a named corpus, a
+        visual-document retriever on ViDoRe, a multimodal embedder on its own reported retrieval
+        suite - the publisher's or a third party's reported retrieval metric, with the instrument
+        named in basis_detail per product rather than per cluster.
+      machine_signal: none - MTEB is not yet a signal_* source
+    bands: null
+    bands_status: >-
+      NOT YET CALIBRATED, deliberately, and on base_pretrained's precedent rather than as an
+      omission. MTEB is a real public per-model instrument, unlike the invented feature matrix
+      scientific_ai_models had to use, so the 1-5 thresholds can be fitted against it - but they
+      must be fitted against promoted scores that exist, not guessed before the roster does.
+      Until fitted, capability is hand-authored with the instrument named per product, and the
+      layer-2 scorer must not write it.
+    note: >-
+      Until the thresholds are fitted, bands are hand-authored against these rungs, which are
+      written here so every product is placed by one definition rather than by whoever researched
+      it. The instrument is retrieval quality, not size, popularity or recency.
+
+      5 - state of the art. Top of the public MTEB/MMTEB table, or the acknowledged leader of its
+      modality where MTEB does not cover it. microsoft/harrier-oss-v1-27b is the anchor: 74.3 on
+      MMTEB v2 and first place as of April 2026.
+      4 - competitive frontier. Current generation with strong published retrieval numbers,
+      multilingual and long-context, credibly within reach of the leaders.
+      3 - solid workhorse. Widely used with credible published numbers, but a superseded
+      generation or a narrower scope than the frontier.
+      2 - narrow or dated. Single-language, short-context, or a generation behind, still useful
+      for its niche.
+      1 - minimal. A small or demonstration checkpoint, or a model publishing no retrieval
+      evaluation at all.
+
+      A band placed by comparison records relative_to and relation so check_capability can check
+      the arithmetic. basis_detail names the instrument for THAT product - MMTEB v2, BEIR,
+      NDCG@10 on a named corpus, ViDoRe - never one instrument borrowed across a cluster.
+  confidence_rule:
+    high: a primary source states the fact directly or publishes the measured result
+    medium: a proxy or publisher summary supports the judgment without a direct measurement
+    low: inferred from indirect evidence, or the source is older than 90 days
+
+products: []
+comments: >-
+  Proposed in issue #52. The boundary is the output: a vector or a relevance score consumed by a
+  downstream retrieval or RAG system. Bi-encoder text embeddings, cross-encoder rerankers,
+  late-interaction retrievers, visual-document retrievers and CLIP-style multimodal embedders all
+  qualify. Three exclusions worth stating because each was tested against real candidates from the
+  Hub universe sweep: general vision backbones whose reason-for-fame is classification or
+  detection rather than retrieval stay out (DINOv3, the timm mirrors) and belong to the multimodal
+  question in issue #9; speech and audio representation models stay out (wav2vec-BERT, WavLM,
+  CLAP); and vector databases stay in storage, because they are the stores rather than the models
+  that populate them. Community re-uploads and format conversions are not products - Xenova,
+  unsloth, Qdrant's ONNX mirrors and the GGUF re-publishers all resolve to somebody else's model.
