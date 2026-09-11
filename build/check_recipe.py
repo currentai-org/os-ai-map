@@ -97,6 +97,50 @@ def _formula(recipe: dict) -> list[dict]:
     return _openness(recipe).get("formula") or []
 
 
+_DERIVABLE_ATTESTATION_KEYS = ("scores_reproduced", "scores_total", "scores_deferred")
+
+
+def attestation_states_no_derivable_count(slug: str, category: dict) -> list[str]:
+    """`scoring_recipe.derived_from` may not store a number this repo computes.
+
+    It used to carry `scores_reproduced`, `scores_total` and `scores_deferred` beside the
+    `verified_on` date. `build/check_rubric.py` recomputes all three on every run, so the
+    stored copies were redundant the day they were written, and by #545 fifteen of twenty
+    categories had drifted from them — understating badly enough that `inference_code`
+    declared 10 of 20 reproducing where all 39 do.
+
+    Correcting them in place was the wrong fix, and briefly shipped. A count recorded beside
+    `verified_on` reads as "this many reproduced when a human last checked", so writing
+    today's 39/39 next to a July date asserts a verification of 39 products that did not
+    happen — nineteen of them did not exist yet.
+
+    The honest cost of deleting rather than correcting: the historical result is no longer
+    readable from the file, and today's checker cannot reconstruct it. Git history has it.
+    A first draft of this note claimed the drift measured how much of a category postdates
+    the last human pass, and that is too strong — removals, roster transfers, score
+    corrections and ladder changes move the same number. If verification coverage is worth
+    tracking, record the revision that was checked or the roster that was reviewed, which
+    says it directly instead of inferring it from an aggregate.
+
+    So the counts are gone rather than corrected, and this gate keeps them gone. What stays
+    in `derived_from` is the part nothing can compute: the method, the date a person checked
+    it, and which checker they used. Run `build.check_rubric` for the live figures.
+
+    The general rule, which this is one instance of: any number the repo states about itself
+    should be computed and compared, never typed — and the number of such statements should
+    be as close to zero as the work allows.
+    """
+    declared = (category.get("scoring_recipe") or {}).get("derived_from")
+    if not isinstance(declared, dict):
+        return []
+    found = [k for k in _DERIVABLE_ATTESTATION_KEYS if k in declared]
+    if not found:
+        return []
+    return [f"category '{slug}': derived_from declares {', '.join(found)}, which "
+            f"build/check_rubric.py recomputes on every run. Remove them; keep "
+            f"method, verified_on and checker."]
+
+
 def every_rung_has_a_because(slug: str, recipe: dict) -> list[str]:
     """The `because` is the reviewable artifact — what a human reads where a machine cannot judge.
 
@@ -448,7 +492,7 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
     # A mixed category holds one ladder per product type, so structural assertions run per
     # VARIANT. `safeguards` is the case: a defect in its software half must not be masked by
     # a clean model half.
-    failures: list[str] = []
+    failures: list[str] = attestation_states_no_derivable_count(slug, category)
     reported: list[str] = []
     dimension_count = 0
     rule_count = 0

@@ -112,9 +112,12 @@ phrasing.
    always need a human read. Required even when the answer is `none`: "nobody has thought about
    it" and "this needs a human forever" are different facts, and the automation roadmap depends
    on telling them apart.
-9. **Verify against one category before sharing a ladder.** Prove it on one roster, record the
-   counts in that category's `derived_from`, and only then let a second category `extend` it.
-   `software.yaml` was verified against `deployment` 27/27 before ten categories inherited it.
+9. **Verify against one category before sharing a ladder.** Prove it on one roster, set that
+   category's `derived_from.verified_on` to the date you checked it, and only then let a second
+   category `extend` it. `software.yaml` was verified against `deployment` before ten categories
+   inherited it. Do NOT write the reproduction counts into `derived_from`:
+   `build/check_rubric.py` computes them on every run and `build/check_recipe.py` fails a category
+   that stores them. Read the counts off a run.
 
 ## Two rules about rungs and dimensions
 

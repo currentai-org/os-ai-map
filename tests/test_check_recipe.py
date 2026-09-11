@@ -346,3 +346,46 @@ def test_the_real_sources_pass_the_gate(slug):
     """The regression guard. Anything this catches is a real defect or an over-strict rule."""
     failures, _ = check_recipe(slug)
     assert failures == [], "\n".join(failures)
+
+
+# --- #545: derived_from may not store a number the repo computes -------------------------
+
+class TestAttestationStatesNoDerivableCount:
+    """`check_rubric` recomputes the reproduction counts on every run, so storing them in
+    `derived_from` was redundant the day it was written. Fifteen of twenty categories had
+    drifted from their stored copies before this gate existed."""
+
+    def _cat(self, **derived):
+        return {"scoring_recipe": {"derived_from": {
+            "method": "shared software ladder", "verified_on": "2026-07-30",
+            "checker": "build/check_rubric.py", **derived}}}
+
+    def test_the_non_derivable_attestation_is_left_alone(self):
+        from build.check_recipe import attestation_states_no_derivable_count
+        assert attestation_states_no_derivable_count("x", self._cat()) == []
+
+    def test_a_stored_count_fails(self):
+        from build.check_recipe import attestation_states_no_derivable_count
+        out = attestation_states_no_derivable_count("inference_code",
+                                                    self._cat(scores_reproduced=10, scores_total=20))
+        assert len(out) == 1
+        assert "scores_reproduced" in out[0] and "scores_total" in out[0]
+
+    def test_a_stored_deferral_count_fails_too(self):
+        from build.check_recipe import attestation_states_no_derivable_count
+        assert attestation_states_no_derivable_count("x", self._cat(scores_deferred=0)) != []
+
+    def test_a_category_with_no_attestation_is_not_invented_for(self):
+        from build.check_recipe import attestation_states_no_derivable_count
+        assert attestation_states_no_derivable_count("x", {"scoring_recipe": {}}) == []
+        assert attestation_states_no_derivable_count("x", {}) == []
+
+    def test_the_corpus_stores_none_of_them(self):
+        """The whole point: correcting the counts was the wrong fix and this is what replaced
+        it. A count written beside a July `verified_on` asserts a verification of products
+        that did not exist in July."""
+        import yaml
+        from build.check_recipe import ROOT, attestation_states_no_derivable_count
+        for path in sorted((ROOT / "sources" / "categories").glob("*.yaml")):
+            cat = yaml.safe_load(path.read_text()) or {}
+            assert attestation_states_no_derivable_count(path.stem, cat) == [], path.stem
