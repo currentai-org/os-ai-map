@@ -79,6 +79,21 @@ openness:
   # Measured before the additions and again after: no base_pretrained product records any of
   # the six names and all 32 of its scores reproduce unchanged, so the blast radius outside
   # scientific_ai_models is nil.
+  #
+  # SECOND MAINTAINER RULING, 2026-09-11. Three more names, all raised by the
+  # embeddings_retrieval promotion and all DEFERRED there rather than decided inside it, which
+  # is what step 7 asks for. The maintainer took the ruling:
+  #
+  #   OpenMDW-1.1          -> permissive_non_osi   (nemotron-embed, nemotron-rerank)
+  #   Llama-3.2-Community-License -> use_bounded   (nemotron-rerank)
+  #   CC-BY-NC-4.0         -> commercial_forbidden (jina-reranker, jina-embeddings)
+  #
+  # Each is argued at its own tier below. Measured before the ruling by applying it and running
+  # build/check_rubric.py: NOT ONE recorded score moves. Every product it reaches had been
+  # hand-placed at exactly the score its tier now computes, so the ruling converts four
+  # abstentions into computed scores and changes nothing a reader of the map can see. Outside
+  # embeddings_retrieval the blast radius is again nil - base_pretrained 32/32, finetuned_chat
+  # 41/41, safeguards 26/26, all unchanged.
   license_tier:
     # Declaration order below IS restrictiveness order, least restrictive first.
     # `multi_sku_rule` resolves a family to the most restrictive tier among its
@@ -127,8 +142,16 @@ openness:
         # for conduct — an acceptable-use policy — plus registration at the download gate. A
         # gate is friction, not a cap on who may use the weights or at what scale, so this is
         # the attribution tier and not `use_bounded`, which is reserved for a real ceiling.
+        #
+        # `OpenMDW-1.1` (2026-09-11) is the Linux Foundation's Open Model, Data and Weights
+        # License Agreement v1.1, which nvidia's Nemotron embedding and reranking lines carry
+        # behind a bare `other` on the Hub. Its body grants dealing in the model materials
+        # without restriction under copyright, patent, database and trade-secret rights, asks
+        # only that the agreement and the origin notices travel with a redistribution, and
+        # disclaims any restriction on the outputs. Not OSI-approved, and no cap on who may use
+        # the weights or at what scale, which is this tier's definition stated directly.
         examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License, CDLA-Permissive-2.0,
-          CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1]
+          CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1, OpenMDW-1.1]
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
@@ -157,7 +180,14 @@ openness:
         # a number: commercial use costs nothing and is granted on an application form.
         # It reaches the ladder as the second half of `internlm`'s compound license, which
         # was invisible until compounds resolved on both halves.
-        examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement,
+        # `Llama-3.2-Community-License` (2026-09-11) is the 700M-monthly-active-user ceiling
+        # already named twice in this list, on the generation between them. It reaches the ladder
+        # inherited rather than chosen: nvidia's nemotron-rerank fine-tunes Llama-3.2-1B and
+        # carries the base terms as "Additional Information: Built with Llama", so the compound
+        # resolves here on multi_sku_rule. Spelled in full because that is what the recorded-name
+        # alias in sources/signal_routing.yaml resolves `Llama-3.2-Community` to; a tier example
+        # is matched after normalization, so the short form here would never be found.
+        examples: [Llama-3.1-Community-License, Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement,
           InternLM-Free-Commercial-License]
       commercial_forbidden:
         definition: >
@@ -176,8 +206,13 @@ openness:
         # `AlphaFold-3-Model-Parameters-Terms-of-Use` governs the current tier of the
         # AlphaFold line: parameters only if received directly from Google, non-commercial.
         # AlphaFold 2's CC-BY-4.0 parameters are the older SKU and do not lift the line.
+        # `CC-BY-NC-4.0` (2026-09-11) is a spelling gap rather than a new ruling. This tier
+        # already names the unversioned `CC-BY-NC` and the share-alike `CC-BY-NC-SA-4.0`; the
+        # plain versioned variant is what Jina's embedding and reranker cards actually carry,
+        # and it answers this tier's one question the same way - commercial use beyond the AWS
+        # and Azure listings requires a sales conversation.
         examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC, CC-BY-NC-SA-4.0, AlphaGenome-Model-Terms,
-          ASL, AlphaFold-3-Model-Parameters-Terms-of-Use]
+          ASL, AlphaFold-3-Model-Parameters-Terms-of-Use, CC-BY-NC-4.0]
       proprietary:
         definition: No public license; weights not distributed.
     multi_sku_rule: >

@@ -26,52 +26,11 @@ scoring_recipe:
     verified_on: '2026-09-11'
     checker: build/check_rubric.py
 
-  # Three licence names the shared ladder does not carry. Per docs/workflows/promote-category.md
-  # step 7, extending a shared tier reaches every inheriting category and is a maintainer's
-  # ruling rather than part of a promotion - so the products are deferred here with the reading
-  # that would apply, and sources/rubrics/pretrained.yaml is untouched. check_recipe will report
-  # each deferral stale the moment a ruling lands, which is how they close.
-  deferred:
-    nemotron-embed:
-      because: >-
-        `OpenMDW-1.1` - the Linux Foundation's Open Model, Data and Weights License Agreement
-        v1.1 - governs the current Nemotron-3-Embed release and matches no name in any tier, so
-        the walk blocks at the first rung that tests one. Read in full it grants dealing in the
-        model materials without restriction under copyright, patent, database and trade-secret
-        rights, asks only that the agreement and origin notices travel with a redistribution,
-        and disclaims any restriction on outputs. That is `permissive_non_osi` by that tier's own
-        definition and would produce the 3/open_weights recorded here. The record also carries a
-        finding worth a maintainer's eye: NVIDIA's `other` tag hides three different licences
-        across the line, and the superseded `llama-embed-nemotron-8b` restricts use to
-        non-commercial research at section 3.3. This record applies the current release as
-        governing; applying multi_sku_rule across every distributed SKU instead would cap the
-        family at 2/restricted.
-    nemotron-rerank:
-      because: >-
-        The same `OpenMDW-1.1` as nemotron-embed, compounded with `Llama-3.2-Community`, which
-        the card names as additional information under "Built with Llama". Neither name is in a
-        tier. The Llama half is the same 700M-monthly-active-user bound the ladder already places
-        at `use_bounded` for `Llama-3.1-Community-License`, and the OpenMDW half reads
-        permissive, so the recorded 3/open_weights is what either reading produces. Closes with
-        the same ruling as nemotron-embed.
-    jina-embeddings:
-      because: >-
-        `CC-BY-NC-4.0` matches no tier, for the same spelling reason as jina-reranker: the ladder
-        names `CC-BY-NC` and `CC-BY-NC-SA-4.0` but not the plain 4.0 variant, which is what the v3
-        and v5-text cards carry. Apache-2.0 covers only the superseded v1 and v2 encoders, so the
-        compound resolves on the non-commercial half and `commercial_forbidden` produces the
-        recorded score. The v4 multimodal retriever, which carries a third unnamed licence - the
-        Qwen Research License inherited from its Qwen2.5-VL-3B base - is no longer part of this
-        product: the category treats a vision-language line as separate, so it left this record on
-        every axis. Closes with the same ruling as jina-reranker.
-    jina-reranker:
-      because: >-
-        `CC-BY-NC-4.0` matches no tier. The ladder names `CC-BY-NC` and `CC-BY-NC-SA-4.0` but not
-        the plain 4.0 variant, which is what Jina's v2, v3 and v3.5 cards actually carry; the
-        superseded v1 SKUs are Apache-2.0, so the compound is recorded on both halves. The
-        non-commercial clause is unambiguous and puts it in `commercial_forbidden` under that
-        tier's one question, which produces the 2/restricted recorded here. This is a spelling
-        gap rather than an open question about the product, and the cheapest possible ruling.
+  # The three licence names this promotion could not score - OpenMDW-1.1, Llama-3.2-Community
+  # and CC-BY-NC-4.0 - were deferred here under docs/workflows/promote-category.md step 7 and
+  # the maintainer ruled on them on 2026-09-11. All three are now in sources/rubrics/pretrained.yaml
+  # and every score they reach is computed rather than hand-placed, at exactly the value it
+  # already carried, so nothing on the map moved. All four deferrals close.
 
   adoption:
     signal_preference:
