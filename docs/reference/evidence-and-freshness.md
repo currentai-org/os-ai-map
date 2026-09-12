@@ -247,11 +247,24 @@ Cleaning the corpus is `skills/clean-score-notes/SKILL.md`, and issue #322 carri
 
 ## Who may write `last_verified`
 
-**A person, and only a person.** No tool in this repo writes the field.
+**Whatever actually confirmed the evidence.** A person, or a tool that re-read every
+establishing source behind the axis and found each still says what it was cited for. What may
+never write the field is a computation over already-recorded values, which confirms nothing by
+construction — the rule under "What may never write it" below.
 
-`build/apply_scores.py` is the only thing allowed to change a score file without
-somebody typing the value, and it writes `openness.score` and `openness.class`
-exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
+`build/reverify.py` is the tool that qualifies, and has since the #445 ruling of 2026-09. It
+re-fetches every establishing source, accepts a confirmation only on a byte-identical body, a
+shows-match or an SPDX comparison, and stamps the date only when every recorded dimension is
+covered and nothing drifted, went transient or was skipped. "Machine re-verification" below
+carries the terms and the axes it may do this on. This section used to open "a person, and only
+a person; no tool in this repo writes the field", which stopped being true when that ruling
+shipped on 2026-09-03 and was left standing here — a reader had to reach the machine
+re-verification section, two hundred lines further down, to find out that the rule at the top
+had been superseded.
+
+`build/apply_scores.py` is the case on the other side of that line. It is the only other thing
+allowed to change a score file without somebody typing the value, and it writes
+`openness.score` and `openness.class` exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
 matter of current coverage: of the recorded openness dimensions only `license` and `weights`
 have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and the
 GitHub code route carries `settles_dimension = false`, so both resolve to document grade in
@@ -308,8 +321,11 @@ readings, so it is consistent with the rule above.
 
 ## How an axis earns its date
 
-**An axis earns `last_verified` when someone re-read its cited sources and re-derived its
-value.** Not when a tool aggregated dates. Not when a value was copied forward.
+**An axis earns `last_verified` when its cited sources were read again and found to still carry
+the value.** A person or an agent re-deriving it is the general case; `build/reverify.py`
+confirming every establishing source under the terms in "Machine re-verification" is the
+mechanical one, and it is narrower — see there for which axes it may do this on. Not when a tool
+aggregated dates. Not when a value was copied forward.
 
 Three consequences, and no other reading is intended:
 
@@ -604,6 +620,11 @@ pricing page read.
 So every openness axis needs at least one read, permanently. Adoption and capability are
 different in kind and can be automated — see the table below.
 
+This is a statement about **deriving** an openness score, not about **confirming** one that was
+already derived. A dimension nothing can settle from a dataset still has to be read by somebody
+the first time; re-reading its cited source later to check it still says the same thing is a
+different operation, and `build/reverify.py` does it under the terms in "Machine re-verification".
+
 ## What a capability confirmation attests to
 
 Less than the other two axes, and the difference is worth stating before dates get written
@@ -670,8 +691,13 @@ peer's axis date, and pays for that with its own evidence requirement: a source 
 **What a `content_sha256` match may prove, and what it may never prove.** A recorded digest that
 reproduces from a live body is proof the fetch was real — SHA-256 preimages are not guessable, so
 those bytes could only have come from that body. Where **every** source an axis cites reproduces,
-that is a defensible basis for re-dating that axis's own `last_verified`, and it is worth
-building. It is never a basis for dating a comparison. Not when the peer's sources reproduce, not
+that is a defensible basis for re-dating that axis's own `last_verified`, and it is now built:
+`build/reverify.py` does exactly this. The permission is narrower than the principle, on purpose.
+The #445 ruling limits machine re-dating to **openness**, because adoption and capability cite
+numbers that move — there, unchanged bytes would confirm a figure that has gone stale rather than
+a fact that has stayed put. `--axes` accepts any axis name and does not enforce that limit, so it
+currently lives in the ruling and in the workflow's invocation rather than in the tool. It is
+never a basis for dating a comparison. Not when the peer's sources reproduce, not
 when both products' sources reproduce, because the thing that falsifies a spacing is a third
 product that neither one cites. An attestation written on the strength of unchanged bytes is the
 rubber stamp this apparatus was built to stop, wearing a digest.
