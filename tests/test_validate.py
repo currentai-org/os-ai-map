@@ -22,7 +22,7 @@ def _fixture():
                 "github": [{"url": f"https://github.com/meta-llama/{slug}"}], "comments": ""}
 
     def score(slug):
-        cite = [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]
+        cite = [{"url": "https://example.com/x", "shows": "y", "accessed": "2026-06-09"}]
         return {"product": slug,
                 "openness": {"score": 2, "class": "restricted", "sources": cite},
                 "adoption": {"level": 4, "signal_type": "usage_volume", "sources": cite},
@@ -510,7 +510,7 @@ def test_capability_without_sources_fails():
 def test_stars_fallback_cannot_exceed_level_3():
     d = _fixture()
     d["scores"]["llama"]["adoption"] = {"level": 5, "signal_type": "stars_fallback",
-                                          "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]}
+                                          "sources": [{"url": "https://example.com/x", "shows": "y", "accessed": "2026-06-09"}]}
     errs = validate_sources(d)
     assert any("stars_fallback" in e for e in errs)
 
@@ -907,3 +907,53 @@ def test_end_of_life_rejects_a_bare_date():
 
 def test_a_product_with_no_end_of_life_is_unaffected():
     assert not [e for e in validate_sources(_fixture()) if "end_of_life" in e]
+
+
+# --- URL fields require a host (#525) ---
+# Every URL field in docs/schemas/ carries the same `pattern`: an http(s) scheme followed by a
+# dotted host. The literal `https://` used to validate, pass check_payload and ship as a link
+# nobody could follow. One negative and one positive per schema, all through validate_sources,
+# so the test proves the check the corpus is actually held to.
+
+def _registry_row(homepage):
+    return {"base_pretrained": {"category": "base_pretrained", "products": [
+        {"slug": "some-homepage-thing", "display_name": "Some Homepage Thing",
+         "type": "software", "org": "meta", "homepage": homepage}]}}
+
+
+HOSTLESS_URLS = [
+    "https://",                 # bare scheme, the #525 case
+    "https://?a.b",             # the only dotted text is a query
+    "https://#a.b",             # ... a fragment
+    "https://user.name@",       # ... userinfo with no host after the @
+    "http://localhost",         # a host, but not a dotted one
+]
+
+
+@pytest.mark.parametrize("place,field,setter", [
+    ("products/llama", "github[0].url",
+     lambda d, v: d["products"]["llama"]["github"].__setitem__(0, {"url": v})),
+    ("products/llama", "end_of_life.source", lambda d, v: d["products"]["llama"].__setitem__(
+        "end_of_life", {"date": "2026-12-31", "source": v, "shows": "shuts down"})),
+    ("organizations/meta", "homepage",
+     lambda d, v: d["organizations"]["meta"].__setitem__("homepage", v)),
+    ("organizations/meta", "github[0].url", lambda d, v: d["organizations"]["meta"].__setitem__(
+        "github", [{"url": v}])),
+    ("scores/llama", "openness.sources[0].url",
+     lambda d, v: d["scores"]["llama"]["openness"]["sources"][0].__setitem__("url", v)),
+    ("registry/base_pretrained", "products[0].homepage",
+     lambda d, v: d.__setitem__("registry", _registry_row(v))),
+])
+def test_hostless_url_fails_schema_naming_the_field_and_real_url_passes(place, field, setter):
+    for bad in HOSTLESS_URLS:
+        d = _fixture()
+        setter(d, bad)
+        errs = validate_sources(d)
+        expected = f"{place}: schema: {field}: {bad!r} does not match"
+        assert any(e.startswith(expected) for e in errs), (bad, errs)
+
+    for good in ["https://example.com", "https://example.com/some/page",
+                 "https://sub.example.org:8443/p?q=1#frag", "http://10.0.0.1/status"]:
+        d = _fixture()
+        setter(d, good)
+        assert [e for e in validate_sources(d) if "schema" in e] == [], good

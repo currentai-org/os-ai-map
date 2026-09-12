@@ -26,6 +26,18 @@ _SCHEMA_FOR_DIR = {
 # here so _load_schemas picks them up.
 _EXTRA_SCHEMAS = ("taxonomy", "model_families", "org_handles")
 
+def _schema_msg(e: "jsonschema.ValidationError") -> str:
+    """Prefix a schema error with the path of the offending field.
+
+    jsonschema's message quotes the value but not where it sat, so a bad URL
+    read as "'https://' does not match ..." with no way to tell which of a
+    record's URL fields it was. `json_path` is "$.github[0].url"; drop the "$."
+    and skip the prefix for a root-level failure.
+    """
+    path = e.json_path[2:] if e.json_path.startswith("$.") else ""
+    return f"{path}: {e.message}" if path else e.message
+
+
 
 def _load_schemas(root: Path) -> dict:
     schema_dir = root / "docs" / "schemas"
@@ -636,7 +648,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
             try:
                 jsonschema.validate(record, schema)
             except jsonschema.ValidationError as e:
-                errors.append(f"{dirname}/{slug}: schema: {e.message}")
+                errors.append(f"{dirname}/{slug}: schema: {_schema_msg(e)}")
 
     # `taxonomy.yaml` is a single file rather than a directory, so it fell outside
     # `_SCHEMA_FOR_DIR` and was never schema-checked despite having a schema and being
@@ -646,7 +658,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     try:
         jsonschema.validate(data["taxonomy"], schemas["taxonomy"])
     except jsonschema.ValidationError as e:
-        errors.append(f"sources/taxonomy.yaml: schema: {e.message}")
+        errors.append(f"sources/taxonomy.yaml: schema: {_schema_msg(e)}")
 
     # org_handles.yaml is single-file, schema-checked the same way as taxonomy.yaml above.
     # The cross-file checks (org exists, one owner per handle) already ran above, before
@@ -654,7 +666,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     try:
         jsonschema.validate(org_handles, schemas["org_handles"])
     except jsonschema.ValidationError as e:
-        errors.append(f"sources/org_handles.yaml: schema: {e.message}")
+        errors.append(f"sources/org_handles.yaml: schema: {_schema_msg(e)}")
 
     # model_families.yaml is single-file, schema-checked the same way as taxonomy.yaml above.
     # Every `product` must resolve to a real sources/products/<slug>.yaml -- a family bridge
@@ -663,7 +675,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     try:
         jsonschema.validate(model_families, schemas["model_families"])
     except jsonschema.ValidationError as e:
-        errors.append(f"sources/model_families.yaml: schema: {e.message}")
+        errors.append(f"sources/model_families.yaml: schema: {_schema_msg(e)}")
     pattern_owner: dict[str, str] = {}
     family_entries = [e for e in (model_families.get("families") or []) if isinstance(e, dict)]
     for entry in family_entries:
@@ -711,7 +723,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         try:
             jsonschema.validate(record, registry_schema)
         except jsonschema.ValidationError as e:
-            errors.append(f"registry/{cid}: schema: {e.message}")
+            errors.append(f"registry/{cid}: schema: {_schema_msg(e)}")
 
     # `sources/resolution_ledger.yaml` is one file rather than a directory, loaded straight
     # from disk here rather than through `load_ledger` above, so a malformed entry is reported
@@ -725,7 +737,7 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
             jsonschema.validate(entry, ledger_schema)
         except jsonschema.ValidationError as e:
             label = entry.get("repo") or (entry.get("artifact") or {}).get("id") or f"entry {i}"
-            errors.append(f"resolution_ledger.yaml: {label}: schema: {e.message}")
+            errors.append(f"resolution_ledger.yaml: {label}: schema: {_schema_msg(e)}")
 
     return errors
 

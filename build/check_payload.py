@@ -10,10 +10,17 @@ row must never read as "fine". A gate that goes green when it cannot understand 
 is worse than no gate at all: it looks like protection nobody is actually getting.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
 from build.vocabulary import axes, is_iso_date
+
+# The same regex as the `pattern` on every URL field in docs/schemas/ (#525): an http(s)
+# scheme, a dotted hostname of label characters, an optional port, then a path, query,
+# fragment or the end. Kept character-identical so a URL the schema rejects (`https://?a.b`,
+# where the only dot is in the query) cannot slip through here on a looser reading.
+_URL_WITH_HOST = re.compile(r"^https?://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)")
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -106,7 +113,7 @@ def _check_end_of_life(slug: str, eol: object) -> None:
     if not is_iso_date(date):
         raise PayloadError(f"{slug!r} has an end_of_life date that is not ISO 8601: {date!r}")
     source = eol.get("source")
-    if not isinstance(source, str) or not source.startswith(("http://", "https://")):
+    if not isinstance(source, str) or not _URL_WITH_HOST.match(source):
         raise PayloadError(
             f"{slug!r} declares an end_of_life with no usable source URL: {source!r}"
         )
