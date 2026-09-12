@@ -240,15 +240,23 @@ _SMART_DOUBLE_QUOTES = "\u201c\u201d\u201e\u201f\u2033"
 MIN_FRAGMENT_CHARS = 24
 
 
-def _shows_fragments(shows: str) -> list[str]:
-    """The verbatim material quoted inside a curator's `shows` sentence.
+def _shows_fragments(shows: str) -> list[str] | None:
+    """The verbatim material quoted inside a curator's `shows` sentence, or None when the
+    quote delimiters do not pair off.
 
     A plain double-quote pair scan: split the whitespace-normalized sentence on `"` and
-    the odd-indexed segments are the insides of the pairs. An unbalanced trailing quote
-    opens a pair that never closes, and that dangling segment is dropped rather than
-    guessed at. Nested quotes are not parsed as nesting — the scan just pairs off
-    quotes in order, which is what a curator writing `"license":{"spdxId":"MIT"}` inside
-    a sentence actually means.
+    the odd-indexed segments are the insides of the pairs. Nested quotes are not parsed as
+    nesting — the scan just pairs off quotes in order, which is what a curator writing
+    `"license":{"spdxId":"MIT"}` inside a sentence actually means.
+
+    An odd number of delimiters is refused outright rather than repaired. The last quote
+    opens a claim that never closes, so the material the curator says the page carries
+    cannot be read out of the sentence at all — and dropping that dangling segment would
+    confirm the source on a strict subset of what it claims, which is the same rubber
+    stamp as a partial match reached through a typo. `... the banner reads "Archived` would
+    otherwise be re-dated by a page with no archive banner anywhere on it. The sentence is
+    ambiguous, a confirmation is not allowed to be, so the fragment path declines and the
+    source drifts to the agent leg where a person can read it.
 
     Fragments are matched with `in` and are never compiled, so a regex metacharacter, a
     bracket or a bare URL inside one is only ever text.
@@ -257,8 +265,9 @@ def _shows_fragments(shows: str) -> list[str]:
     for ch in _SMART_DOUBLE_QUOTES:
         text = text.replace(ch, '"')
     parts = text.split('"')
-    pairs = (len(parts) - 1) // 2
-    return [f for f in (p.strip() for p in parts[1::2][:pairs]) if f]
+    if len(parts) % 2 == 0:  # an odd number of `"` — some quoted claim has no end
+        return None
+    return [f for f in (p.strip() for p in parts[1::2]) if f]
 
 
 def _fragments_confirm(shows: str, body: str) -> bool:
@@ -274,8 +283,12 @@ def _fragments_confirm(shows: str, body: str) -> bool:
     response ever served. A short fragment still has to be there; it just cannot be the
     thing that earns the date. A `shows` that quotes nothing at all has no long fragment,
     so it never reaches this path: saying less must not make a source easier to confirm.
+    A sentence whose quotes do not pair off yields no fragments at all and is refused for
+    the same reason — see `_shows_fragments`.
     """
     fragments = _shows_fragments(shows)
+    if fragments is None:
+        return False
     if not any(len(f) >= MIN_FRAGMENT_CHARS for f in fragments):
         return False
     return all(f in body for f in fragments)

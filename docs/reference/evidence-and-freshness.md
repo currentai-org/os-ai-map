@@ -479,6 +479,12 @@ date. A `shows` that quotes nothing keeps the whole-sentence test and nothing el
 less never makes a source easier to confirm. Measured on 2026-09-12 across the 25 oldest
 products, 72 sources drifted and whole-sentence match confirmed 4 of them.
 
+A sentence whose quote marks do not pair off gets no fragment test at all. The unclosed quote
+opens a claim whose text cannot be recovered — *the banner reads "Archived* — and confirming on
+the fragments that did close would re-date the source on a strict subset of what it claims,
+against a page that need not carry the missing claim anywhere. It keeps the whole-sentence test
+and otherwise drifts to the agent leg, where a person can read both the sentence and the page.
+
 A new verification date records a successful re-evaluation on that date, not a claim that the
 fact was established or the source changed then. Ruling on #445
 (2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and

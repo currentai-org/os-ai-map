@@ -490,14 +490,28 @@ def test_a_regex_metacharacter_in_a_fragment_is_matched_literally(tmp_path):
     assert miss.drifted == [("openness", "https://a/LICENSE")]
 
 
-def test_an_unbalanced_trailing_quote_opens_no_fragment(tmp_path):
+def test_an_unbalanced_quote_refuses_the_fragment_path(tmp_path):
+    """The dangling claim is the one that matters, and it cannot be read out of the
+    sentence. Pairing off what is left and confirming on that would re-date this source
+    against a page carrying no archive banner at all — a partial match reached through a
+    typo. So the fragment path declines and the source goes to the agent leg."""
     shows = ('The README still opens "A composable training library for large models" '
              'and the banner reads "Archived')
-    assert reverify._shows_fragments(shows) == [
-        "A composable training library for large models"]
+    assert reverify._shows_fragments(shows) is None
     result = _shows_case(
         tmp_path, shows, "<p>A composable training library for large models</p>")
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_an_unbalanced_quote_still_confirms_on_the_whole_sentence(tmp_path):
+    """Refusing the fragment path is not refusing the source. If the curator's sentence
+    does occur verbatim, the original test fires exactly as it did before."""
+    shows = ('The README still opens "A composable training library for large models" '
+             'and the banner reads "Archived')
+    result = _shows_case(tmp_path, shows, f"<p>Preamble. {shows}</p>")
     assert result.stamped == ["openness"]
+    assert result.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
 
 
 def test_a_url_inside_a_fragment_is_just_text(tmp_path):
