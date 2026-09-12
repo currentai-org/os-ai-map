@@ -268,12 +268,12 @@ def _fragments_confirm(shows: str, body: str) -> bool:
     Both halves carry weight, and dropping either one breaks it in a different
     direction. **Every** is what stops a partial match being read as a confirmation: a
     `shows` that quotes nine things and finds two of them on the page has not been
-    confirmed; seven of the things it says the page carries are not on the page. **At least one long fragment** is
-    what stops the opposite failure, where a `shows` whose only quoted material is
-    `"license"` and `"MIT"` would confirm against any GitHub API response ever served.
-    A short fragment still has to be there; it just cannot be the thing that earns the
-    date. A `shows` that quotes nothing at all has no long fragment and so never reaches
-    this path — saying less must not make a source easier to confirm.
+    confirmed; seven of the things it says the page carries are not on the page.
+    **At least one long fragment** stops the opposite failure, where a `shows` whose
+    only quoted material is `"license"` and `"MIT"` would confirm against any GitHub API
+    response ever served. A short fragment still has to be there; it just cannot be the
+    thing that earns the date. A `shows` that quotes nothing at all has no long fragment,
+    so it never reaches this path: saying less must not make a source easier to confirm.
     """
     fragments = _shows_fragments(shows)
     if not any(len(f) >= MIN_FRAGMENT_CHARS for f in fragments):
