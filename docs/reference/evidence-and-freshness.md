@@ -247,11 +247,24 @@ Cleaning the corpus is `skills/clean-score-notes/SKILL.md`, and issue #322 carri
 
 ## Who may write `last_verified`
 
-**A person, and only a person.** No tool in this repo writes the field.
+**Whatever actually confirmed the evidence.** A person, or a tool that re-read every
+establishing source behind the axis and found each still says what it was cited for. What may
+never write the field is a computation over already-recorded values, which confirms nothing by
+construction — the rule under "What may never write it" below.
 
-`build/apply_scores.py` is the only thing allowed to change a score file without
-somebody typing the value, and it writes `openness.score` and `openness.class`
-exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
+`build/reverify.py` is the tool that qualifies, and has since the #445 ruling of 2026-09. It
+re-fetches every establishing source, accepts a confirmation only on a byte-identical body, a
+shows-match or an SPDX comparison, and stamps the date only when every recorded dimension is
+covered and nothing drifted, went transient or was skipped. "Machine re-verification" below
+carries the terms and the axes it may do this on. This section used to open "a person, and only
+a person; no tool in this repo writes the field", which stopped being true when that ruling
+shipped on 2026-09-03 and was left standing here — a reader had to reach the machine
+re-verification section, two hundred lines further down, to find out that the rule at the top
+had been superseded.
+
+`build/apply_scores.py` is the case on the other side of that line. It is the only other thing
+allowed to change a score file without somebody typing the value, and it writes
+`openness.score` and `openness.class` exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
 matter of current coverage: of the recorded openness dimensions only `license` and `weights`
 have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and the
 GitHub code route carries `settles_dimension = false`, so both resolve to document grade in
@@ -603,6 +616,11 @@ pricing page read.
 
 So every openness axis needs at least one read, permanently. Adoption and capability are
 different in kind and can be automated — see the table below.
+
+This is a statement about **deriving** an openness score, not about **confirming** one that was
+already derived. A dimension nothing can settle from a dataset still has to be read by somebody
+the first time; re-reading its cited source later to check it still says the same thing is a
+different operation, and `build/reverify.py` does it under the terms in "Machine re-verification".
 
 ## What a capability confirmation attests to
 
