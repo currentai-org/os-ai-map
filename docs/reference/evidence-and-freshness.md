@@ -477,8 +477,10 @@ ids — `license`, `spdx_id`, `MIT` — which occur on every page of the kind be
 prove nothing; a short fragment must still be present, it simply cannot be what earns the
 date. A `shows` that quotes nothing keeps the whole-sentence test and nothing else, so saying
 less never makes a source easier to confirm. Measured on 2026-09-12 across the 25 oldest
-products, 72 sources drifted and whole-sentence match confirmed 4 of them. A new verification date records a successful re-evaluation on that
-date, not a claim that the fact was established or the source changed then. Ruling on #445
+products, 72 sources drifted and whole-sentence match confirmed 4 of them.
+
+A new verification date records a successful re-evaluation on that date, not a claim that the
+fact was established or the source changed then. Ruling on #445
 (2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
 capability are excluded from machine re-dating because their sources carry numbers that
 move. Their re-verification stays with the agent leg in `refresh-category`. Ruled again
