@@ -4,9 +4,11 @@ What it does: for each of the N oldest products (by the oldest of its three axis
 ties broken by slug), re-fetch every digested source that `establishes` a recorded
 dimension on the selected axes through build.fetch_source. A dimension re-confirms when
 every establishing source's fresh fetch is non-transient and either (a) the body is
-byte-identical to what was recorded, (b) the source's recorded `shows` excerpt still
-occurs in the fresh body, or (c) for a GitHub license API / repo endpoint or a Hugging
-Face model-info source, the fresh SPDX id normalizes to the same license already recorded.
+byte-identical to what was recorded, (b) the source's recorded `shows` still checks out
+against the fresh body — the whole sentence occurs, or every fragment quoted inside it
+does and at least one of those is long enough to discriminate — or (c) for a GitHub
+license API / repo endpoint or a Hugging Face model-info source, the fresh SPDX id
+normalizes to the same license already recorded.
 Whichever path confirms it, the source takes the new `accessed`, `http_status` and
 `content_sha256`, and once every dimension an axis records has confirmed, that axis's
 `last_verified` is stamped to today. Any drift, any transient result, or any dimension
@@ -26,6 +28,12 @@ by default (--axes openness). Ruled again 2026-09-03 (#445 follow-up): shows-mat
 SPDX comparison are also acceptable confirmations, since byte identity is the wrong test
 for evidence pages that legitimately re-render on every load. See
 docs/reference/evidence-and-freshness.md.
+
+Shows-match tests the quoted fragments as well as the whole sentence, because `shows` is
+written as a curator's sentence *about* the page with the verbatim material quoted inside
+it, and such a sentence never occurs on the page it describes. Measured 2026-09-12 over
+the 25 oldest products: 72 sources drifted, 0 were skipped, 0 carried a placeholder
+`shows`, and whole-sentence match confirmed 4 of them. See `_fragments_confirm`.
 """
 from __future__ import annotations
 
@@ -214,15 +222,90 @@ def _read_body(fetched: dict) -> str | None:
     return html.unescape(raw.decode("utf-8", errors="replace"))
 
 
+# The corpus quotes with both straight and curly double quotes, sometimes in one
+# sentence, so the delimiters are folded together before the pair scan.
+_SMART_DOUBLE_QUOTES = "\u201c\u201d\u201e\u201f\u2033"
+
+# A quoted fragment shorter than this does not count toward a confirmation. Chosen off
+# the corpus rather than by taste: of the 1,714 fragments quoted inside a `shows` today,
+# the 563 below 24 characters are almost entirely JSON key names and license ids —
+# `license`, `name`, `spdx_id`, `MIT`, `Apache-2.0`, `open_issues_count` — and one- or
+# two-word English like `gated`, `open source`, `Enterprise`. Those occur on any page of
+# the kind being cited, so finding one discriminates nothing. 426 of the 563 are one or
+# two words, and at 24 characters only 5 of the 1,151 surviving fragments are that short
+# (they are file paths, `surfsense_backend/app/proprietary/LICENSE` and the like). At a
+# floor of 20 characters, 93 two-word fragments still qualify; at 24, two do. A two-word
+# quote found somewhere on a page proves nothing, and 24 is where the corpus stops
+# offering them.
+MIN_FRAGMENT_CHARS = 24
+
+
+def _shows_fragments(shows: str) -> list[str]:
+    """The verbatim material quoted inside a curator's `shows` sentence.
+
+    A plain double-quote pair scan: split the whitespace-normalized sentence on `"` and
+    the odd-indexed segments are the insides of the pairs. An unbalanced trailing quote
+    opens a pair that never closes, and that dangling segment is dropped rather than
+    guessed at. Nested quotes are not parsed as nesting — the scan just pairs off
+    quotes in order, which is what a curator writing `"license":{"spdxId":"MIT"}` inside
+    a sentence actually means.
+
+    Fragments are matched with `in` and are never compiled, so a regex metacharacter, a
+    bracket or a bare URL inside one is only ever text.
+    """
+    text = _normalize_text(str(shows))
+    for ch in _SMART_DOUBLE_QUOTES:
+        text = text.replace(ch, '"')
+    parts = text.split('"')
+    pairs = (len(parts) - 1) // 2
+    return [f for f in (p.strip() for p in parts[1::2][:pairs]) if f]
+
+
+def _fragments_confirm(shows: str, body: str) -> bool:
+    """Every fragment quoted inside `shows` still occurs in `body`, and at least one of
+    them is long enough to mean something. `body` is already normalized.
+
+    Both halves carry weight, and dropping either one breaks it in a different
+    direction. **Every** is what stops a partial match being read as a confirmation: a
+    `shows` that quotes nine things and finds two of them on the page has not been
+    confirmed; seven of the things it says the page carries are not on the page. **At least one long fragment** is
+    what stops the opposite failure, where a `shows` whose only quoted material is
+    `"license"` and `"MIT"` would confirm against any GitHub API response ever served.
+    A short fragment still has to be there; it just cannot be the thing that earns the
+    date. A `shows` that quotes nothing at all has no long fragment and so never reaches
+    this path — saying less must not make a source easier to confirm.
+    """
+    fragments = _shows_fragments(shows)
+    if not any(len(f) >= MIN_FRAGMENT_CHARS for f in fragments):
+        return False
+    return all(f in body for f in fragments)
+
+
 def _shows_confirms(src: dict, fetched: dict) -> bool:
-    """The source's recorded `shows` excerpt still occurs in the fresh body."""
+    """The source's recorded `shows` still checks out against the fresh body.
+
+    Two ways, under one normalization (whitespace collapsed, the body read through
+    `html.unescape`). The whole sentence may occur verbatim, which is the original test
+    and is unchanged. Otherwise the fragments quoted inside it must all occur.
+
+    The second path exists because `shows` is almost never an excerpt. It is a curator's
+    sentence *about* the page with the verbatim material quoted inside it — "repo page
+    carries the label "Public archive" and the banner "This repository was archived..."" —
+    and a sentence like that does not appear on the page it describes, so testing the
+    whole of it tests the curator's prose rather than the evidence. Measured 2026-09-12
+    over the 25 oldest products through `build.fetch_source`: 72 sources drifted, none
+    skipped, none carrying a placeholder `shows`, and the whole-sentence path confirmed 4.
+    """
     shows = src.get("shows")
     if not shows or _is_placeholder_shows(shows):
         return False
     body = _read_body(fetched)
     if body is None:
         return False
-    return _normalize_text(str(shows)) in _normalize_text(body)
+    body = _normalize_text(body)
+    if _normalize_text(str(shows)) in body:
+        return True
+    return _fragments_confirm(str(shows), body)
 
 
 def _spdx_confirms(url: str, fetched: dict, recorded_license: str) -> bool:

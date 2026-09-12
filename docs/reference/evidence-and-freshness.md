@@ -446,7 +446,7 @@ of the gate's rule — it calls `build.check_verification.recorded_dimensions` d
 non-evidence key like `free_text` is never treated as requiring one.
 
 A source confirms one of three ways: the body is byte-identical (same `content_sha256`); the
-source's recorded `shows` excerpt still occurs in the fresh body, after both sides are
+source's recorded `shows` still checks out against the fresh body, after both sides are
 whitespace-normalized and the body is tried through `html.unescape` (a placeholder `shows` —
 see `check_verification.placeholder_shows` — never confirms this way); or, for a source
 answering the `license` dimension from a GitHub license/repo API or a Hugging Face
@@ -457,7 +457,27 @@ confirms it, the source is rewritten with the fetch's actual `http_status` and i
 `content_sha256` — a shows match records that the page still says what the source was cited
 for; the new digest is recorded so the next re-check compares against what was actually
 read. It never derives a date, never records a transient fetch, and never touches an axis
-whose evidence changed. A new verification date records a successful re-evaluation on that
+whose evidence changed.
+
+**What "the `shows` still checks out" means, and why it is not the whole sentence.** A
+`shows` is only occasionally an excerpt. Far more often it is a curator's sentence *about*
+the page with the verbatim material quoted inside it — *repo page carries the label "Public
+archive" and the banner "This repository was archived by the owner on Jul 4, 2026"* — and a
+sentence of that shape never occurs on the page it describes. Testing the whole of it tests
+the curator's prose. So the whole sentence is tried first and still confirms where it fires,
+and failing that the **quoted fragments** are tried: every fragment quoted inside the `shows`
+must occur in the fresh body, and at least one of them must be at least
+`reverify.MIN_FRAGMENT_CHARS` (24) characters long.
+
+Both conditions are load-bearing. *Every* fragment, because a `shows` that quotes nine things
+and finds two of them has been contradicted rather than confirmed, and "at least one matched"
+is the rubber stamp this whole apparatus exists to prevent. *At least one long fragment*,
+because the short quoted material in this corpus is overwhelmingly JSON key names and license
+ids — `license`, `spdx_id`, `MIT` — which occur on every page of the kind being cited and so
+prove nothing; a short fragment must still be present, it simply cannot be what earns the
+date. A `shows` that quotes nothing keeps the whole-sentence test and nothing else, so saying
+less never makes a source easier to confirm. Measured on 2026-09-12 across the 25 oldest
+products, 72 sources drifted and whole-sentence match confirmed 4 of them. A new verification date records a successful re-evaluation on that
 date, not a claim that the fact was established or the source changed then. Ruling on #445
 (2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
 capability are excluded from machine re-dating because their sources carry numbers that
