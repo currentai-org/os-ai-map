@@ -18,6 +18,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A `form_factor` dimension on the hardware openness ladder — board, module or chipset — recorded on
+  all 20 `edge_hardware` products, with every rung that reads `schematics` now testing it first and a
+  chipset rung that asks instead whether the datasheets are public and whether anybody can buy one.
+  `rockchip-rk3588` is no longer deferred and reproduces the 3/documented it already recorded; no
+  other score moved ([#219](https://github.com/currentai-org/os-ai-map/issues/219)).
 - `embeddings_retrieval`, a published category of 35 products — models whose headline output is a
   vector or a relevance score rather than a chat completion. Extends the shared `pretrained`
   openness ladder, the first reuse of it outside `base_pretrained`; capability is anchored on

@@ -16,15 +16,27 @@ openness:
       value: required
       detail: proprietary GPU/NPU firmware
       raw: required (proprietary GPU/NPU firmware)
+    retail:
+      value: distributor
+      detail: commercial through Rockchip's module and board partners
+      raw: distributor (commercial through Rockchip's module and board partners)
+    form_factor:
+      value: chipset
+      detail: application-processor SoC, not a board
+      raw: chipset (application-processor SoC, not a board)
   confidence: high
   note: Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed,
     but the SDK ships as prebuilt binaries under a proprietary license with closed firmware. The brief datasheet
     downloads straight from rock-chips.com with no registration or NDA, the RKNN SDK licence in airockchip/rknn-toolkit2
     is the proprietary "RKNN SDK License" (no reverse engineering, use restricted to Rockchip products),
-    and rkbin distributes the DDR/BL31/OPTEE firmware as prebuilt binaries.
+    and rkbin distributes the DDR/BL31/OPTEE firmware as prebuilt binaries. The part is not sold from a
+    Rockchip storefront and no distributor page for the bare silicon was reachable, so retail rests on the
+    module partners who build on it. Firefly lists the Core-3588J, a system-on-module carrying this SoC,
+    at $289 with a working order path.
   raw: toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel
     driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU
-    firmware)
+    firmware);retail:distributor (commercial through Rockchip's module and board partners);form_factor:chipset
+    (application-processor SoC, not a board)
   last_verified: '2026-08-13'
   sources:
   - url: https://www.rock-chips.com/uploads/pdf/2022.8.26/192/RK3588%20Brief%20Datasheet.pdf
@@ -34,6 +46,7 @@ openness:
     accessed: '2026-08-13'
     establishes:
     - datasheets
+    - form_factor
     http_status: 200
     content_sha256: 81aff61337ab10bf0f7c9234450703816037af169bf6657d3d62b868bd61fd1a
   - url: https://github.com/airockchip/rknn-toolkit2/blob/master/LICENSE
@@ -58,6 +71,14 @@ openness:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b5ca75ad042e019b490b1627bd74996fe02a72a320a1d292db2accd549e0dd71
+  - url: https://www.t-firefly.com/products/core-3588j-8k-ai-core-board-rockchip-rk3588-new-gen-8-core-64-bit-processor
+    shows: a module partner selling the part commercially - "Core-3588J 8K AI System on Module RK3588 SOC
+      4G RAM+32G ROM" listed at $289.00 with an Add to cart path
+    accessed: '2026-09-12'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: f50a563d6cbe9b2293c3dff620643091020ebb98f1de996061dc76a1b79e1a4d
 adoption:
   level: 5
   reach: mass-market

@@ -50,8 +50,11 @@ Three caveats, because "a formula exists" is easy to over-read:
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
   not decide, usually because a dimension is not recorded in a form the ladder can read. As of
-  2026-08-18 there are 5 such products across 4 categories (`benchmark_eval_data` 2, and
-  `dataset_processing_tools`, `edge_hardware` and `training_synthetic_datasets` 1 each). The
+  2026-09-12 there are 4 such products across 3 categories (`benchmark_eval_data` 2, and
+  `dataset_processing_tools` and `training_synthetic_datasets` 1 each). `edge_hardware`'s came
+  off that day: `rockchip-rk3588` was blocked on being asked a board question, and #219 gave the
+  hardware ladder a `form_factor` dimension so it asks a chipset about its datasheets and whether
+  anybody can buy one instead. The
   compilers and storage promotions each added one and then closed it the same day: `liger-kernel`
   and `pgvector` recorded `BSD-2-Clause` and the PostgreSQL License, which the shared `osi` tier
   covers by definition and had never been asked to name. Down
@@ -369,6 +372,32 @@ it to 3/documented without any new evidence about the HAT. A frozen number would
 accessory reading more open than the system it completes. That is why `accessory_host` now has a
 rung for each host class the corpus has seen, `open_toolchain` and `documented`, and none for
 `open_hardware`, which no accessory has met.
+
+### A board question asked of a chipset answers about the wrong artifact
+
+The same lesson one kind of product over, ruled on 2026-09-08 and landed in #219.
+
+`edge_hardware` holds boards, modules and bare chipsets, and five of the ladder's eight rungs turn
+on `schematics` — were the board design files published, and may they be reused. A chipset has no
+board, so it records nothing there, correctly, and the ladder abstained. `rockchip-rk3588` sat
+deferred for a month on a question it could not be asked.
+
+`form_factor` (`board` / `module` / `chipset`) is recorded on all 20 products and decides which
+questions apply before any of them are asked. A chipset takes a rung of its own, testing whether
+its datasheets are public and whether anybody can buy one — which is what `documented` means in
+this category, "datasheets public + buyable, but no design files of its own". A module keeps the
+design rungs, because `schematics: none` on an M.2 card means withheld, which is an answer; on a
+chipset it means there was never a board.
+
+Two details are worth carrying forward. **Rung order is not a guard.** First match wins, so
+putting the chipset rung above the design rungs does not keep a chipset off them — a chipset that
+fails its own rung meets a board's next, and scores 3 on a reference design that is not its own.
+Every design rung tests `board_design` as its first condition instead. **And `board_design` is a
+derived dimension**: `reads: [form_factor]`, with `board` and `module` both aliased onto `exists`
+and `chipset` onto `none`, because a rung matches one value exactly and "board or module" needs a
+name of its own. `availability` does the same over `retail`, collapsing `open_market` and
+`distributor` onto `buyable`. Both use the `reads:`/`value_aliases:` pair described above — the
+first use of it to give a ladder its own vocabulary rather than to absorb a contributor's.
 
 ### The toolchain gates the ceiling, the design sets it
 

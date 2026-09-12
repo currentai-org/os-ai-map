@@ -243,7 +243,15 @@ def test_local_scores_matches_check_rubrics_split():
     # use_bounded, CC-BY-NC-4.0 onto commercial_forbidden - and all four closed, returning the
     # count to 5. Not one recorded score moved: every product they reach had been hand-placed at
     # exactly the value its tier computes. The measurement is in pretrained.yaml beside the names.
-    assert len(deferred) == 5
+    #
+    # 5 -> 4 on 2026-09-12, when `form_factor` landed and `edge_hardware`'s only deferral closed
+    # (#219). rockchip-rk3588 was not blocked on a license or on a missing fact: it is an
+    # application-processor SoC, and every rung the hardware ladder had turned on `schematics`,
+    # which a bare chipset has no answer to. The ladder now asks a chipset whether its datasheets
+    # are public and whether anybody can buy one, and never asks it about design files at all,
+    # and the product reproduces the 3/documented it already recorded. The remaining four are all license-tier gaps, three of them waiting on
+    # the same `unstated` ruling.
+    assert len(deferred) == 4
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
@@ -311,12 +319,20 @@ def test_a_missing_row_fails(monkeypatch, capsys):
 # `ui_api` until 2026-08-12, when the second resolution batch took both to zero deferrals -
 # at which point one raised IndexError and the other passed while asserting "0 abstain on
 # both sides", which is the silent-narrowing failure this repo has already been bitten by
-# three times. `edge_hardware` holds the two deferrals least likely to close soon: one waits
-# on the form_factor taxonomy proposal (#219) and one on a direction for the whole hardware
-# ladder. Re-point them rather than loosening them if that stops being true.
+# three times. They then ran against `edge_hardware` until 2026-09-12, when #219 landed
+# `form_factor` and closed its only deferral, taking that category to zero the same way.
+# Re-pointed rather than loosened, as the note here already said to do.
+#
+# `benchmark_eval_data` is the choice now, and it is the least likely of the four remaining
+# to close soon: both livecodebench and multipl-e are blocked on a LADDER gap rather than on
+# an unread fact - an unstated license with no tier, and a BSD-3-with-ML-restriction this
+# ladder has no tier for - and closing either is a rubric change across the categories that
+# share the tier. Two deferrals also means `sorted(deferred)[0]` still picks a victim
+# deterministically without the list being a single item. Re-point them rather than loosening
+# them if that stops being true.
 def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
     """The safeguards bug: a ladder ending in `otherwise` scoring what the repo declined."""
-    computed, deferred = local_scores("edge_hardware")
+    computed, deferred = local_scores("benchmark_eval_data")
     assert deferred, "pick a category that still defers something"
     published = {
         key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
@@ -324,16 +340,16 @@ def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
     published.update({key: row(key[0], key[1], deferred=True) for key in deferred})
     victim = sorted(deferred)[0]
     published[victim] = row(victim[0], victim[1], 3, "open_weights", deferred=False, rule=6)
-    assert run(monkeypatch, published, "edge_hardware") == 1
+    assert run(monkeypatch, published, "benchmark_eval_data") == 1
     assert "repo defers it, the warehouse does not know" in capsys.readouterr().out
 
 
 def test_a_shared_abstention_is_not_a_divergence(monkeypatch, capsys):
     """Both sides declining is a curation work list, not a parity failure."""
-    _, deferred = local_scores("edge_hardware")
+    _, deferred = local_scores("benchmark_eval_data")
     assert deferred, "pick a category that still defers something"
     published = {key: row(key[0], key[1], deferred=True) for key in deferred}
-    assert run(monkeypatch, published, "edge_hardware") == 1  # the scored products are missing
+    assert run(monkeypatch, published, "benchmark_eval_data") == 1  # the scored products are missing
     out = capsys.readouterr().out
     assert f"{len(deferred)} abstain on both sides" in out
 

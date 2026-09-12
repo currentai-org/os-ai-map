@@ -22,9 +22,27 @@ scoring_recipe:
     71% of them were prose sentences, where every other category was curated against
     controlled tokens, and check_rubric reads a token. The normalization preserved each
     original phrase in a parenthetical and moved no score. Where a product recorded nothing
-    for a dimension, nothing was written: `rockchip-rk3588` is deferred rather than given an
-    inferred `schematics` value, which is the honest way to surface that the ladder asks a
+    for a dimension, nothing was written: `rockchip-rk3588` was deferred rather than given an
+    inferred `schematics` value, which was the honest way to surface that the ladder asks a
     board question of a bare chipset.
+
+    That deferral closed on 2026-09-12 (#219). Every product now records a `form_factor` -
+    board, module or chipset - and every rung that reads `schematics` tests it first, so a
+    chipset is scored on what a chipset can be open about and is never offered a question
+    about design files it was never going to have. Eleven boards, six modules and three
+    chipsets. The chipset rung asks two things, because `documented` means two things in this
+    category: datasheets public AND buyable. All three chipsets answer both and all three land
+    on the same 3/documented they already recorded, two of them by a different route than
+    before, and no other score moved. `rockchip-rk3588` gained a `retail` component in the
+    same change - it had never recorded one, and the rung that scores it asks - established by
+    a module partner selling a system-on-module built on the part.
+
+    A module keeps climbing the design rungs on purpose: `schematics: none` on an M.2 card
+    means withheld, which is an answer, where on a chipset it means there was never a board.
+    And a chipset that fails its own rung falls off the ladder rather than down to the board
+    rungs. That is deliberate and it is tested - tests/test_hardware_form_factor.py replays
+    fact sets no product records, because every product on today's roster answers its own
+    questions and the category would reproduce 20/20 either way.
 
     The other two deferrals were real disagreements between the ladder and a recorded score,
     and the owner ruled on both on 2026-08-12. `arduino-uno-q` moved 3 to 5, matching
@@ -39,20 +57,6 @@ scoring_recipe:
     ranked weaker evidence higher.
 
   extends: hardware
-  deferred:
-    rockchip-rk3588:
-      because: >-
-        Records nothing about board design files, and correctly: it is an application-processor
-        SoC, not a board, so `schematics` - the dimension every rung turns on - has no answer
-        rather than a negative one. Recording `none` would conflate "not applicable" with
-        "withheld", and would be inferring evidence from the product description rather than
-        transcribing what the openness axis records. The other four chip-class products all
-        record a schematics clause of their own and so are scored normally; this one does not,
-        which means the line between scored and deferred for a chipset currently falls wherever
-        a curator happened to write something in that field. The owner ruled on 2026-08-12 not
-        to score it and to raise the taxonomy change instead: a `form_factor` key distinguishing
-        board / module / chipset would let the ladder ask the right question of each. That is
-        issue #219, and this deferral stands until it lands.
 products:
 - raspberry-pi-5
 - raspberry-pi-ai-hat-plus
