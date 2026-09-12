@@ -1942,7 +1942,8 @@ here as **contracts**, never as governed assets (ADR-003). Two kinds:
   `retirement_context`: the repo drives their Phase-7 retirement (#384), it does not own them.
 
 Every entry also states `purpose`, `required_by` (the repo files that read it, mechanically
-re-derived), and `owner: oso`. A contract confers **no** migration status, retirement policy, or
+re-derived), and `owner: oso`, which names Carl Cervone (`@ccerv1`) as the maintainer to reach by issue,
+not pull request (ADR-003, "External dependency manifest"). A contract confers **no** migration status, retirement policy, or
 namespace-cleanup obligation. G2/G3/G4 (§11.5) keep the manifest reachable and disjoint so it cannot
 grow into a second org-wide inventory.
 
