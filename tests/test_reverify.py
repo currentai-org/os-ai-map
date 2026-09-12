@@ -331,3 +331,202 @@ def test_apply_refuses_a_confirmation_whose_citation_changed_underneath_it(tmp_p
     # loop was already edited in memory, so the whole file has to be byte-identical —
     # not merely unstamped.
     assert path.read_text() == before
+
+
+# --- The quoted fragments inside a `shows`, not the whole curator's sentence -----------
+#
+# `shows` is written as a sentence ABOUT the page with the verbatim material quoted inside
+# it, so the whole-sentence test tests the curator's prose. Measured 2026-09-12 over the 25
+# oldest products: 72 sources drifted, 0 skipped, 0 placeholder, whole-sentence confirmed 4.
+
+
+_ATROPOS_SHOWS = (
+    'Repo page carries the label "Public archive" and the banner "This repository was '
+    'archived by the owner on Jul 4, 2026. It is now read-only." The rendered README says '
+    '"Atropos is an environment microservice framework for async RL with LLMs." and its '
+    'Navigating the Repo table lists "Core library containing base classes and utilities" '
+    'and "Collection of ready-to-use RL environments"; installation is '
+    '"pip install atroposlib".'
+)
+
+
+def _shows_case(tmp_path, shows, body_text, name="page.html"):
+    # A fresh corpus root per call, so one test can run two cases over one tmp_path.
+    root_dir = tmp_path / f"case-{name}"
+    root_dir.mkdir()
+    body_path = _body(root_dir, name, body_text)
+    root = _score_with_sources(root_dir, [_src("https://a/LICENSE", "a" * 64, ["license"],
+                                                shows=shows)], dims=("license",))
+    fake = lambda url, **kw: {"url": url, "http_status": 200, "content_sha256": "b" * 64,  # noqa: E731
+                              "body_path": str(body_path)}
+    return reverify.reverify_product(root, "p", date(2026, 9, 12), axes=("openness",), fetch=fake)
+
+
+def test_every_quoted_fragment_present_confirms_a_sentence_that_never_occurs(tmp_path):
+    """The shape this change exists for: the curator's sentence is nowhere on the page, and
+    every piece of verbatim material quoted inside it is."""
+    body = (
+        "<h1>NousResearch/atropos</h1><span>Public archive</span>"
+        "<div>This repository was archived by the owner on Jul 4, 2026. It is now read-only.</div>"
+        "<p>Atropos is an environment microservice framework for async RL with LLMs.</p>"
+        "<td>Core library containing base classes and utilities</td>"
+        "<td>Collection of ready-to-use RL environments</td>"
+        "<code>pip install atroposlib</code>"
+    )
+    result = _shows_case(tmp_path, _ATROPOS_SHOWS, body)
+    assert result.stamped == ["openness"]
+    assert result.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
+    assert result.drifted == []
+
+
+def test_a_partial_fragment_match_still_drifts(tmp_path):
+    """The atropos shape that must NOT confirm. Two of the quoted fragments are on the page
+    and the rest are gone; "at least one matched" is exactly the rubber stamp this leg
+    exists to refuse."""
+    body = (
+        "<h1>NousResearch/atropos</h1><span>Public archive</span>"
+        "<p>Atropos is an environment microservice framework for async RL with LLMs.</p>"
+        "<p>The README has been rewritten and the tables are gone.</p>"
+    )
+    result = _shows_case(tmp_path, _ATROPOS_SHOWS, body)
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_a_shows_that_quotes_nothing_is_unchanged(tmp_path):
+    """No quoted fragment means no fragment path, so the whole-sentence test is the only
+    one available. Saying less must not make a source easier to confirm."""
+    absent = _shows_case(
+        tmp_path, "the repo page still describes an archived public MIT project",
+        "<p>An archived public MIT project, described in quite different words.</p>")
+    assert absent.stamped == []
+    assert absent.drifted == [("openness", "https://a/LICENSE")]
+
+    present = _shows_case(
+        tmp_path, "the repo page still describes an archived public MIT project",
+        "<p>Preamble. the repo page still describes an archived public MIT project.</p>",
+        name="present.html")
+    assert present.stamped == ["openness"]
+    assert present.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
+
+
+def test_a_placeholder_shows_never_confirms_on_fragments_either(tmp_path):
+    marker = next(iter(PLACEHOLDER_SHOWS))
+    shows = f'{marker}: the page carries "Licensed under the Apache License, Version 2.0".'
+    body = f"<p>{marker}</p><p>Licensed under the Apache License, Version 2.0</p>"
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_fragments_below_the_length_floor_do_not_earn_a_date(tmp_path):
+    """A `shows` whose only quoted material is a JSON key and a license id would otherwise
+    confirm against any GitHub API response ever served."""
+    shows = 'Repository JSON reads "license": "MIT" and "private": false.'
+    body = '{"license": "MIT", "private": false, "name": "something else entirely"}'
+    assert all(len(f) < reverify.MIN_FRAGMENT_CHARS
+               for f in reverify._shows_fragments(shows)), "the fixture must stay short"
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_the_atropos_api_citation_does_not_confirm_on_json_key_names(tmp_path):
+    """The measured counter-example, and the reason `atropos` still drifts on 2026-09-12.
+
+    Every fragment quoted inside this `shows` does occur in the fresh response — they are
+    the keys and values of a GitHub repository payload, and they occur in every such
+    payload ever served. None of them reaches the length floor, so there is nothing here
+    that could earn a date, and the axis is left alone."""
+    shows = ('Repository JSON: "private": false, "visibility": "public", "archived": true, '
+             '"disabled": false, "spdx_id": "MIT", "pushed_at": "2026-07-04T17:39:01Z", '
+             '"open_issues_count": 0, default_branch main, created 2025-04-29.')
+    body = ('{"private": false, "visibility": "public", "archived": true, "disabled": false, '
+            '"spdx_id": "MIT", "pushed_at": "2026-07-04T17:39:01Z", "open_issues_count": 0}')
+    fragments = reverify._shows_fragments(shows)
+    assert len(fragments) == 10 and all(f in " ".join(body.split()) for f in fragments), (
+        "every fragment is on the page; the floor is the only thing refusing this")
+    assert max(len(f) for f in fragments) < reverify.MIN_FRAGMENT_CHARS
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_a_short_fragment_still_has_to_be_present(tmp_path):
+    """Too short to earn the date is not the same as ignored. The long fragment is on the
+    page; the short one it is quoted beside is not."""
+    shows = ('The model card says "Released under the Apache 2.0 License." '
+             'and the header reads "MIT".')
+    body = "<p>Released under the Apache 2.0 License.</p>"
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_curly_quotes_delimit_a_fragment(tmp_path):
+    shows = "The pricing page says “Comes bundled with your subscription” today."
+    body = "<li>Comes bundled with your subscription</li>"
+    assert reverify._shows_fragments(shows) == ["Comes bundled with your subscription"]
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == ["openness"]
+    assert result.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
+
+
+def test_a_regex_metacharacter_in_a_fragment_is_matched_literally(tmp_path):
+    """`.*` and the brackets are text. Compiled as a pattern the fragment would match
+    almost anything; as a substring it matches only itself."""
+    shows = ('The pyproject line reads '
+             '"license = {text = \'MIT\'}  # (.*|[a-z]+) is not a pattern here" verbatim.')
+    assert reverify._shows_fragments(shows) == [
+        "license = {text = 'MIT'} # (.*|[a-z]+) is not a pattern here"]
+    hit = _shows_case(
+        tmp_path, shows,
+        "<pre>license = {text = 'MIT'}  # (.*|[a-z]+) is not a pattern here</pre>")
+    assert hit.stamped == ["openness"]
+    miss = _shows_case(tmp_path, shows,
+                       "<pre>anything at all, which a compiled pattern would match</pre>",
+                       name="miss.html")
+    assert miss.stamped == []
+    assert miss.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_an_unbalanced_quote_refuses_the_fragment_path(tmp_path):
+    """The dangling claim is the one that matters, and it cannot be read out of the
+    sentence. Pairing off what is left and confirming on that would re-date this source
+    against a page carrying no archive banner at all — a partial match reached through a
+    typo. So the fragment path declines and the source goes to the agent leg."""
+    shows = ('The README still opens "A composable training library for large models" '
+             'and the banner reads "Archived')
+    assert reverify._shows_fragments(shows) is None
+    result = _shows_case(
+        tmp_path, shows, "<p>A composable training library for large models</p>")
+    assert result.stamped == []
+    assert result.drifted == [("openness", "https://a/LICENSE")]
+
+
+def test_an_unbalanced_quote_still_confirms_on_the_whole_sentence(tmp_path):
+    """Refusing the fragment path is not refusing the source. If the curator's sentence
+    does occur verbatim, the original test fires exactly as it did before."""
+    shows = ('The README still opens "A composable training library for large models" '
+             'and the banner reads "Archived')
+    result = _shows_case(tmp_path, shows, f"<p>Preamble. {shows}</p>")
+    assert result.stamped == ["openness"]
+    assert result.reconfirmed_by_shows == [("openness", "https://a/LICENSE")]
+
+
+def test_a_url_inside_a_fragment_is_just_text(tmp_path):
+    shows = ('The notice points at "https://example.org/license?v=2&t=1 (see terms)" '
+             'for the full text.')
+    assert reverify._shows_fragments(shows) == [
+        "https://example.org/license?v=2&t=1 (see terms)"]
+    result = _shows_case(
+        tmp_path, shows,
+        "<a>https://example.org/license?v=2&amp;t=1 (see terms)</a>")
+    assert result.stamped == ["openness"], "the body is unescaped before matching"
+
+
+def test_fragments_are_matched_after_the_same_whitespace_collapse(tmp_path):
+    shows = 'The page carries "Deploy leading open source tools and AI models with confidence".'
+    body = ("<p>Deploy leading open source\n   tools and AI models\twith confidence</p>")
+    result = _shows_case(tmp_path, shows, body)
+    assert result.stamped == ["openness"]
