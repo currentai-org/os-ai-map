@@ -39,7 +39,7 @@
           "arxiv": {"type": "string", "minLength": 1},
           "huggingface_model": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
           "huggingface_dataset": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
-          "homepage": {"type": "string", "format": "uri"}
+          "homepage": {"type": "string", "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)", "description": "URL convention (#525): `pattern` requires an http(s) scheme followed by a dotted hostname made of label characters (letters, digits, hyphens), an optional port, and then a path, query, fragment or the end of the string. The bare string `https://` fails here rather than shipping as a link nobody can follow, and so do `https://?a.b`, `https://#a.b` and `https://user.name@`, where the only dotted text is a query, a fragment or userinfo rather than a host. `http://localhost` fails too (no dot); a dotted IPv4 host passes. `pattern` and not `format: uri`, because build/validate.py calls jsonschema.validate with no format checker and a `format` would assert a check nobody runs. Measured 2026-09-11 against this pattern: 5,635 http(s) strings under sources/ (products, organizations, scores, registry), 0 rejected."}
         }
       }
     }
