@@ -775,6 +775,8 @@ def _equivalence_from_ledger(entries: Iterable[dict]) -> tuple[dict[str, str], s
     positive: dict[str, str] = {}
     negative: set[str] = set()
     for entry in entries:
+        if resolution.is_auto_adopted(entry):
+            continue  # the graph's own output is not truth about the graph
         if resolution.relation_of(entry) != "product_equivalence":
             continue
         verdict = entry["verdict"]
@@ -806,6 +808,8 @@ def _membership_from_ledger(entries: Iterable[dict]) -> dict[tuple[Key, str], bo
     """
     out: dict[tuple[Key, str], bool] = {}
     for entry in entries:
+        if resolution.is_auto_adopted(entry):
+            continue  # see `_equivalence_from_ledger`
         if resolution.relation_of(entry) != "product_membership":
             continue
         slug = entry.get("resolves_to")
@@ -827,7 +831,10 @@ def _org_handles(path: Path = ORG_HANDLES_PATH) -> dict[str, dict[str, frozenset
     doc = _load_optional_yaml(path, {"version": 1, "handles": []})
     by_org: dict[str, dict[str, set[str]]] = {}
     for entry in doc.get("handles") or []:
-        if not isinstance(entry, dict):
+        if not isinstance(entry, dict) or resolution.is_auto_adopted(entry):
+            # An auto-adopted handle (`build/identity_adopt.py`) is the graph's own org claim
+            # written down; letting it decide which truth pairs are recoverable would score the
+            # graph against itself.
             continue
         org_slug, platform, handle = entry.get("org"), entry.get("platform"), entry.get("handle")
         if not (isinstance(org_slug, str) and isinstance(platform, str) and isinstance(handle, str)):
@@ -1222,14 +1229,25 @@ def _route_kinds() -> frozenset[str]:
     return frozenset(r["artifact_kind"] for r in routes if r["artifact_kind"])
 
 
-def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) -> Truth:
+def load_truth(
+    known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES,
+    *,
+    ledger_path: Path | None = None,
+    org_handles_path: Path | None = None,
+) -> Truth:
     """Assemble `Truth` from the ledger, declared artifacts, and org rosters.
 
     `known_negatives` is a parameter, not a hardcoded read of the module constant, so a test
     can inject a bad entry and assert `load_truth` raises rather than silently corrupting the
-    membership table -- see `KnownNegativeDeclaredError`.
+    membership table -- see `KnownNegativeDeclaredError`. `ledger_path` / `org_handles_path`
+    default to the repo's files; a test points them at fixtures.
+
+    Entries the digest auto-adopted (`build.resolution.is_auto_adopted`) are not truth: they
+    are the graph's own confidence-1.0 output written to disk, and scoring the graph against
+    them would be a guard whose two sides come from one source. `_equivalence_from_ledger`,
+    `_membership_from_ledger` and `_org_handles` each drop them.
     """
-    ledger_items = list(resolution.load().values())
+    ledger_items = list(resolution.load(ledger_path or resolution.LEDGER).values())
     equivalence, equivalence_negatives = _equivalence_from_ledger(ledger_items)
     membership = _membership_from_ledger(ledger_items)
 
@@ -1356,7 +1374,7 @@ def load_truth(known_negatives: tuple[dict[str, str], ...] = KNOWN_NEGATIVES) ->
         org=org,
         identity_pairs=identity_pairs,
         route_kinds=_route_kinds(),
-        org_handles=_org_handles(),
+        org_handles=_org_handles(org_handles_path or ORG_HANDLES_PATH),
         equivalence_tier=equivalence_tier,
         membership_tier=membership_tier,
         org_tier=org_tier,

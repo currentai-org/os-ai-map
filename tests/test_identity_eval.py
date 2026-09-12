@@ -1834,3 +1834,75 @@ def test_main_rejects_allow_unprovisioned_without_from_warehouse(tmp_path):
     fixture.write_text("{}")
     rc = main(["--edges", str(fixture), "--allow-unprovisioned"])
     assert rc == 2
+
+
+# ---------------------------------------------------------------------------
+# auto-adopted entries are the graph's own output, never truth about the graph
+# ---------------------------------------------------------------------------
+
+
+def _auto_note(text: str) -> str:
+    from build.resolution import AUTO_ADOPT_NOTE_PREFIX
+    return f"{AUTO_ADOPT_NOTE_PREFIX} {text}"
+
+
+def test_equivalence_truth_excludes_auto_adopted_ledger_entries():
+    entries = [
+        {"repo": "acme/acme", "verdict": "existing_product", "product": "acme",
+         "decided_in": "#1", "decided_on": "2026-09-01", "note": "a person ruled this one"},
+        {"artifact": {"kind": "github", "id": "beta/beta"}, "verdict": "existing_product",
+         "relation": "product_equivalence", "resolves_to": "beta", "decided_in": "#512",
+         "decided_on": "2026-09-11", "note": _auto_note("github:beta/beta -> product:beta")},
+    ]
+    positive, _negative = _equivalence_from_ledger(entries)
+    assert positive == {candidate_key("github", "acme/acme"): "acme"}
+
+
+def test_membership_truth_excludes_auto_adopted_ledger_entries():
+    entries = [
+        {"artifact": {"kind": "pypi", "id": "acme"}, "verdict": "member_of",
+         "relation": "product_membership", "resolves_to": "acme", "decided_in": "#1",
+         "decided_on": "2026-09-01", "note": "a person ruled this package counts"},
+        {"artifact": {"kind": "pypi", "id": "beta"}, "verdict": "member_of",
+         "relation": "product_membership", "resolves_to": "beta", "decided_in": "#512",
+         "decided_on": "2026-09-11", "note": _auto_note("pypi:beta -> product:beta")},
+    ]
+    truth = _membership_from_ledger(entries)
+    assert list(truth) == [(("pypi", "acme"), "acme")]
+
+
+def test_org_handles_truth_excludes_auto_adopted_handles(tmp_path):
+    from build.identity_eval import _org_handles
+
+    path = tmp_path / "org_handles.yaml"
+    path.write_text(
+        "version: 1\nhandles:\n"
+        "- org: acme\n  platform: github\n  handle: acme\n"
+        "- org: acme\n  platform: huggingface\n  handle: acme-hf\n"
+        f"  note: '{_auto_note('github:acme-hf/x -> org:acme')}'\n"
+        "- org: beta\n  platform: github\n  handle: beta\n  note: 'a person recovered this from a repo URL'\n"
+    )
+    handles = _org_handles(path)
+    assert handles == {"acme": {"github": frozenset({"acme"})}, "beta": {"github": frozenset({"beta"})}}
+
+
+def test_load_truth_excludes_auto_adopted_entries_from_both_files(tmp_path):
+    ledger = tmp_path / "ledger.yaml"
+    ledger.write_text(
+        "version: 1\nresolutions:\n"
+        "- repo: acme/acme\n  verdict: existing_product\n  product: acme\n"
+        "  decided_in: '#1'\n  decided_on: '2026-09-01'\n  note: 'a person ruled this one'\n"
+        "- artifact:\n    kind: github\n    id: beta/beta\n  verdict: existing_product\n"
+        "  relation: product_equivalence\n  resolves_to: beta\n  decided_in: '#512'\n"
+        f"  decided_on: '2026-09-11'\n  note: '{_auto_note('github:beta/beta -> product:beta')}'\n"
+    )
+    handles = tmp_path / "org_handles.yaml"
+    handles.write_text(
+        "version: 1\nhandles:\n"
+        "- org: acme\n  platform: github\n  handle: acme\n"
+        f"- org: acme\n  platform: github\n  handle: acme-auto\n  note: '{_auto_note('x')}'\n"
+    )
+    truth = load_truth(ledger_path=ledger, org_handles_path=handles)
+    assert truth.equivalence.get(candidate_key("github", "acme/acme")) == "acme"
+    assert candidate_key("github", "beta/beta") not in truth.equivalence
+    assert truth.org_handles["acme"] == {"github": frozenset({"acme"})}

@@ -11,6 +11,20 @@ name: identity-digest
 # carries a mirror-bound dependency contract in warehouse/dependencies.yaml, so a missing
 # table is a real failure again and is reported as one (exit 2). The flag would be refused
 # anyway -- build.identity_digest.main rejects it once that contract exists.
+#
+# Auto-adoption (ruling 2026-09-08): a ranked item at confidence 1.0 whose name and graph agree
+# is written to the file that records its relation instead of waiting for a tick -- see
+# build/identity_adopt.py for the two tests. Sequence matters: render, create or update the
+# issue, read its number, adopt with decided_in naming it, re-render so the issue lists what was
+# adopted, then open a pull request carrying the two files. Bots open PRs and humans merge
+# them; nothing here pushes to main. No PR is opened when nothing was written.
+#
+# Re-runs inside one ISO week land on the SAME branch, digest-adopt/<week>: the branch is checked
+# out from its remote state (when it exists) BEFORE the adopt pass, so entries an earlier run
+# already wrote come back as already-recorded instead of duplicates, the new commit fast-forwards
+# the remote, and an open PR for the branch is updated in place rather than duplicated. A run
+# that pushed but died before opening its PR is recovered the same way: the branch is ahead of
+# main with no open PR, so the PR step opens one even though this run wrote nothing new.
 
 on:
   schedule:
@@ -19,12 +33,20 @@ on:
 
 permissions:
   issues: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: identity-digest
+  cancel-in-progress: false
 
 jobs:
   identity-digest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -41,7 +63,9 @@ jobs:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
         run: |
           set +e
-          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md)
+          # --dump-rows keeps the snapshot the adopt pass below re-renders from, so the two
+          # passes cannot disagree about which rows were ranked.
+          OUTPUT=$(uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" --out digest.md --dump-rows digest-rows.json)
           STATUS=$?
           echo "$OUTPUT"
           if [ $STATUS -ne 0 ]; then
@@ -54,6 +78,7 @@ jobs:
           fi
 
       - name: Open or update the digest issue
+        id: issue
         if: steps.render.outputs.skipped != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -69,6 +94,120 @@ jobs:
           if [ -n "$EXISTING" ]; then
             gh issue edit "$EXISTING" -R "$GITHUB_REPOSITORY" --body-file digest.md
             gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY" 2>/dev/null || true
+            NUMBER="$EXISTING"
           else
-            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md
+            URL=$(gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body-file digest.md)
+            NUMBER="${URL##*/}"
+          fi
+          echo "number=$NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Check out the week's adoption branch
+        id: branch
+        if: steps.render.outputs.skipped != 'true'
+        env:
+          WEEK: ${{ steps.week.outputs.week }}
+        run: |
+          BRANCH="digest-adopt/$WEEK"
+          # The adopt pass must read the ledger and org_handles as this week's branch already
+          # has them, or a same-week rerun re-adopts what the first run wrote and the push is
+          # rejected as non-fast-forward. -B resets a stale local ref if one exists.
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$BRANCH"
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+          else
+            git checkout -B "$BRANCH"
+          fi
+          echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Adopt confidence-1.0 items and re-render
+        id: adopt
+        if: steps.render.outputs.skipped != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          uv run python -m build.identity_digest --week "${{ steps.week.outputs.week }}" \
+            --rows digest-rows.json --out digest.md \
+            --adopt --decided-in "#$NUMBER" --adopt-report adopt-report.json
+          gh issue edit "$NUMBER" -R "$GITHUB_REPOSITORY" --body-file digest.md
+          WRITTEN=$(uv run python -c 'import json; print(len(json.load(open("adopt-report.json"))["written"]))')
+          echo "written=$WRITTEN" >> "$GITHUB_OUTPUT"
+
+      - name: Gates on the adopted entries
+        # Runs on every non-skipped pass, not only when this run wrote something: on a rerun
+        # the branch may carry an earlier run's entries that main has not seen yet.
+        if: steps.render.outputs.skipped != 'true'
+        run: uv run python -m build.validate
+
+      - name: Open or update the adoption PR
+        if: steps.render.outputs.skipped != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+          WEEK: ${{ steps.week.outputs.week }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+          BRANCH: ${{ steps.branch.outputs.name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain sources/resolution_ledger.yaml sources/org_handles.yaml)" ]; then
+            git add sources/resolution_ledger.yaml sources/org_handles.yaml
+            git commit -m "chore(identity): adopt confidence-1.0 digest items from #$NUMBER"
+          fi
+          # Ahead of main = something to publish, whether this run committed it or an earlier
+          # same-week run did (and then failed before its PR existed).
+          git fetch origin main
+          if [ "$(git rev-list --count "origin/main..$BRANCH")" = "0" ]; then
+            echo "Nothing adopted; no PR."
+            exit 0
+          fi
+          # Push only what the remote lacks. The branch was checked out from origin/$BRANCH, so
+          # this is a fast-forward; a rejection means another run pushed meanwhile, which the
+          # concurrency group rules out, so it is a real fault and fails the job rather than
+          # being forced over.
+          if ! git rev-parse --verify --quiet "origin/$BRANCH" >/dev/null \
+             || [ "$(git rev-list --count "origin/$BRANCH..$BRANCH")" != "0" ]; then
+            git push -u origin "$BRANCH"
+          else
+            echo "Remote branch already at $(git rev-parse --short "$BRANCH"); nothing to push."
+          fi
+          {
+            echo "Confidence-1.0 items from the identity digest #$NUMBER whose name and graph agree, adopted without a tick (ruling 2026-09-08). Each entry's \`decided_in\` names the digest issue and its \`note\` carries the auto-adopt prefix, so \`build/identity_eval.py\` leaves it out of truth. See \`build/identity_adopt.py\` for the two tests."
+            echo
+            uv run python - "$NUMBER" <<'PY'
+          import json, sys
+          number = sys.argv[1]
+          r = json.load(open("adopt-report.json"))
+          for d in r["written"]:
+              print(f'- #{d["rank"]} `{d["item_id"]}` -> `{d["target"]}` ({d["reason"]})')
+              for e in d["evidence"]:
+                  url, _, excerpt = e.partition(" | ")
+                  print(f'  - [{excerpt or url}]({url})' if excerpt else f'  - {url}')
+          # An entry this branch wrote on an earlier run this week reads back as already
+          # recorded, decided in this same digest issue; list it as part of the PR, not as a
+          # human ruling.
+          earlier = [d for d in r["already_recorded"] if f"decided in #{number}" in d["reason"]]
+          by_person = [d for d in r["already_recorded"] if d not in earlier]
+          if earlier:
+              print()
+              print("Adopted by an earlier run this week, already on this branch:")
+              for d in earlier:
+                  print(f'- #{d["rank"]} `{d["item_id"]}` ({d["reason"]})')
+          if by_person:
+              print()
+              print("Already recorded by a person, nothing written:")
+              for d in by_person:
+                  print(f'- #{d["rank"]} `{d["item_id"]}` ({d["reason"]})')
+          if r["conflicts"]:
+              print()
+              print("Held for review in the digest (prior ruling disagrees):")
+              for d in r["conflicts"]:
+                  print(f'- #{d["rank"]} `{d["item_id"]}` ({d["reason"]})')
+          PY
+          } > pr-body.md
+          EXISTING_PR=$(gh pr list -R "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING_PR" ]; then
+            gh pr edit "$EXISTING_PR" -R "$GITHUB_REPOSITORY" --body-file pr-body.md
+            echo "Updated PR #$EXISTING_PR."
+          else
+            gh pr create --title "chore(identity): adopt confidence-1.0 digest items ($WEEK)" --body-file pr-body.md --label sentinel
           fi
