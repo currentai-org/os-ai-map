@@ -321,8 +321,11 @@ readings, so it is consistent with the rule above.
 
 ## How an axis earns its date
 
-**An axis earns `last_verified` when someone re-read its cited sources and re-derived its
-value.** Not when a tool aggregated dates. Not when a value was copied forward.
+**An axis earns `last_verified` when its cited sources were read again and found to still carry
+the value.** A person or an agent re-deriving it is the general case; `build/reverify.py`
+confirming every establishing source under the terms in "Machine re-verification" is the
+mechanical one, and it is narrower — see there for which axes it may do this on. Not when a tool
+aggregated dates. Not when a value was copied forward.
 
 Three consequences, and no other reading is intended:
 
@@ -688,8 +691,13 @@ peer's axis date, and pays for that with its own evidence requirement: a source 
 **What a `content_sha256` match may prove, and what it may never prove.** A recorded digest that
 reproduces from a live body is proof the fetch was real — SHA-256 preimages are not guessable, so
 those bytes could only have come from that body. Where **every** source an axis cites reproduces,
-that is a defensible basis for re-dating that axis's own `last_verified`, and it is worth
-building. It is never a basis for dating a comparison. Not when the peer's sources reproduce, not
+that is a defensible basis for re-dating that axis's own `last_verified`, and it is now built:
+`build/reverify.py` does exactly this. The permission is narrower than the principle, on purpose.
+The #445 ruling limits machine re-dating to **openness**, because adoption and capability cite
+numbers that move — there, unchanged bytes would confirm a figure that has gone stale rather than
+a fact that has stayed put. `--axes` accepts any axis name and does not enforce that limit, so it
+currently lives in the ruling and in the workflow's invocation rather than in the tool. It is
+never a basis for dating a comparison. Not when the peer's sources reproduce, not
 when both products' sources reproduce, because the thing that falsifies a spacing is a third
 product that neither one cites. An attestation written on the strength of unchanged bytes is the
 rubber stamp this apparatus was built to stop, wearing a digest.
