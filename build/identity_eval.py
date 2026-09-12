@@ -176,8 +176,33 @@ falls BELOW its pinned ratio. So coverage can only go up. `--write-coverage-base
 rewrites that file from the live corpus; it is a deliberate act in its own commit, never
 something a failing run does for itself, or the ratchet would ratchet nothing.
 
+A ratchet that only fails downward has two holes, and the pin is guarded on both sides:
+
+- **The pin cannot be quietly lowered** (#493). `tests/test_identity_eval.py` reads the
+  file as of `git merge-base HEAD origin/main` (`merge_base_coverage_baseline`) and
+  `coverage_lowered` fails any route whose pinned ratio went down unless the file carries a
+  `lowered_because` string that is new or changed in the same PR. A `lowered_because` that
+  is new but excuses nothing is reported as stale; one inherited unchanged from the merge
+  base excuses nothing either, so it cannot rot into a standing permission. When the
+  merge-base copy cannot be read the test says so in its output rather than passing: it
+  fails under `GITHUB_ACTIONS` (a checkout that cannot see `origin/main` is a CI bug) and
+  skips with the reason elsewhere (a clone with no remote has nothing to compare against).
+  The scoring path does not run this check: it needs git history, and the weekly run sits
+  on `main` where the merge base is HEAD itself.
+- **The pin cannot fall far behind reality** (#506). `coverage_stale` fails any route whose
+  live ratio exceeds its pin by more than `COVERAGE_MARGIN_POINTS` percentage points, and
+  tells the author to re-pin with `--write-coverage-baseline` in the same PR. It runs in
+  both places: as a test over the live corpus, because the PR that earns the gain is the
+  one that must re-pin (and PR CI is the only run that fires on every PR), and on the
+  scoring path, so the weekly report reads the same status vocabulary. The margin is in
+  percentage points because the ratchet itself compares ratios: a single handle is 0.3
+  points on `github` (350 orgs) and 2 on `homepage_domain` (50 orgs), so a zero margin would
+  fail every single-handle PR on the small route, while the 79-point gap #506 found clears
+  any sane margin. Five points is roughly a dozen `github` handles or three `homepage_domain`
+  ones -- a batch, not a typo.
+
 A route whose denominator falls to 0 passes vacuously -- there are no orgs on it to cover.
-The comparison is by cross-multiplication rather than float division, so a pinned ratio is
+Every comparison is by cross-multiplication rather than float division, so a pinned ratio is
 never re-derived at a different precision than it was written at.
 
 **The invariant is scored only under `--from-warehouse`.** A fixture is a snapshot of what the
@@ -299,6 +324,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import subprocess
 import sys
 from collections import Counter
 from collections.abc import Iterable
@@ -463,6 +489,15 @@ ORG_ROUTE_ARTIFACTS: dict[str, str] = {
 # It sits under `tests/fixtures/` with the eval's other committed inputs rather than in
 # `sources/`: it is a gate's reference value, not a declaration about any product.
 COVERAGE_BASELINE_PATH = ROOT / "tests" / "fixtures" / "identity_coverage_baseline.json"
+
+# How far, in percentage points, live coverage on a route may sit ABOVE its pin before the
+# pin is stale and must be re-pinned in the same PR. Zero would fail every single-handle gain
+# on the smallest route (one org in 50 is 2 points); the gap #506 found was 79 points.
+COVERAGE_MARGIN_POINTS = 5
+
+# The one non-route key the baseline file accepts: a non-empty string saying why a route's
+# pin was lowered on purpose. It excuses a lowering only in the PR that writes or changes it.
+LOWERED_BECAUSE_KEY = "lowered_because"
 
 # Eight storage-category products whose same- or near-same-named PyPI package is a verified
 # client library, not the product's own countable artifact -- read from each product's
@@ -873,51 +908,122 @@ class CoverageBaselineInvalid(RuntimeError):
     """
 
 
+def _parse_coverage_baseline(
+    text: str, where: str
+) -> tuple[dict[str, tuple[int, int]], str | None]:
+    """Parse one baseline document: `(route -> (with_handle, rostered), lowered_because)`.
+
+    `where` names the document in every message -- a path for the working tree, a
+    `<merge-base>:<path>` spec for the copy read out of git.
+    """
+    try:
+        doc = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise CoverageBaselineInvalid(f"{where} is not valid JSON: {exc}") from exc
+    if not isinstance(doc, dict):
+        raise CoverageBaselineInvalid(f"{where} must be an object of route -> [with_handle, rostered]")
+    routes = set(ORG_ROUTES.values())
+    out: dict[str, tuple[int, int]] = {}
+    lowered_because: str | None = None
+    for route, pair in doc.items():
+        if route == LOWERED_BECAUSE_KEY:
+            if not (isinstance(pair, str) and pair.strip()):
+                raise CoverageBaselineInvalid(
+                    f"{where}: {LOWERED_BECAUSE_KEY!r} must be a non-empty string saying why a "
+                    f"route's pin went down, got {pair!r}"
+                )
+            lowered_because = pair
+            continue
+        if route not in routes:
+            raise CoverageBaselineInvalid(
+                f"{where} names route {route!r}, which is not one of {sorted(routes)}"
+            )
+        if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
+            raise CoverageBaselineInvalid(f"{where}: {route!r} must be [with_handle, rostered], got {pair!r}")
+        with_handle, rostered = pair
+        if not (isinstance(with_handle, int) and isinstance(rostered, int)):
+            raise CoverageBaselineInvalid(f"{where}: {route!r} must be two integers, got {pair!r}")
+        if with_handle < 0 or rostered < 0 or with_handle > rostered:
+            raise CoverageBaselineInvalid(
+                f"{where}: {route!r} = {pair!r} is not a coverage ratio (0 <= with_handle <= rostered)"
+            )
+        out[route] = (with_handle, rostered)
+    return out, lowered_because
+
+
 def load_coverage_baseline(path: Path = COVERAGE_BASELINE_PATH) -> dict[str, tuple[int, int]]:
     """The pinned per-route coverage, `route -> (with_handle, rostered)`.
 
     A missing file reads as `{}` -- an older tree that predates the ratchet has nothing to
     ratchet against, and that is not a failure. A file that EXISTS but is malformed raises:
-    the whole point of the ratchet is that it cannot be defeated by accident.
+    the whole point of the ratchet is that it cannot be defeated by accident. The only key
+    that is not a route is `lowered_because` (see `load_lowered_because`).
     """
     if not path.exists():
         return {}
+    routes, _note = _parse_coverage_baseline(path.read_text(), str(path))
+    return routes
+
+
+def load_lowered_because(path: Path = COVERAGE_BASELINE_PATH) -> str | None:
+    """The file's `lowered_because` explanation, or None when it carries none (or is absent)."""
+    if not path.exists():
+        return None
+    _routes, note = _parse_coverage_baseline(path.read_text(), str(path))
+    return note
+
+
+def merge_base_coverage_baseline(
+    base: str = "origin/main", rel: str = "tests/fixtures/identity_coverage_baseline.json"
+) -> tuple[dict[str, tuple[int, int]] | None, str | None, str]:
+    """The baseline as of the merge base with `base`: `(routes, lowered_because, where)`.
+
+    `where` names what was read, `<merge-base sha>:<rel>`, so a message can say which two
+    copies were compared. When the copy cannot be read, `routes` is None and `where` carries
+    git's own words for why -- unlike `build.assets.merge_base_assets`, which returns a bare
+    None for a caller that may skip, this caller must PRINT that it could not compare (#493).
+    A copy that exists but is malformed raises `CoverageBaselineInvalid`.
+    """
     try:
-        doc = json.loads(path.read_text())
-    except json.JSONDecodeError as exc:
-        raise CoverageBaselineInvalid(f"{path} is not valid JSON: {exc}") from exc
-    if not isinstance(doc, dict):
-        raise CoverageBaselineInvalid(f"{path} must be an object of route -> [with_handle, rostered]")
-    routes = set(ORG_ROUTES.values())
-    out: dict[str, tuple[int, int]] = {}
-    for route, pair in doc.items():
-        if route not in routes:
-            raise CoverageBaselineInvalid(
-                f"{path} names route {route!r}, which is not one of {sorted(routes)}"
-            )
-        if not (isinstance(pair, (list, tuple)) and len(pair) == 2):
-            raise CoverageBaselineInvalid(f"{path}: {route!r} must be [with_handle, rostered], got {pair!r}")
-        with_handle, rostered = pair
-        if not (isinstance(with_handle, int) and isinstance(rostered, int)):
-            raise CoverageBaselineInvalid(f"{path}: {route!r} must be two integers, got {pair!r}")
-        if with_handle < 0 or rostered < 0 or with_handle > rostered:
-            raise CoverageBaselineInvalid(
-                f"{path}: {route!r} = {pair!r} is not a coverage ratio (0 <= with_handle <= rostered)"
-            )
-        out[route] = (with_handle, rostered)
-    return out
+        merge_base = subprocess.run(
+            ["git", "-C", str(ROOT), "merge-base", "HEAD", base],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+    except subprocess.CalledProcessError as exc:
+        return None, None, (
+            f"`git merge-base HEAD {base}` failed: {exc.stderr.strip() or exc.stdout.strip() or exc}"
+        )
+    spec = f"{merge_base}:{rel}"
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", spec],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError as exc:
+        return None, None, f"`git show {spec}` failed: {exc.stderr.strip() or exc}"
+    routes, note = _parse_coverage_baseline(blob, spec)
+    return routes, note, spec
 
 
 def write_coverage_baseline(
-    coverage: dict[str, tuple[int, int]], path: Path = COVERAGE_BASELINE_PATH
+    coverage: dict[str, tuple[int, int]],
+    path: Path = COVERAGE_BASELINE_PATH,
+    lowered_because: str | None = None,
 ) -> dict[str, tuple[int, int]]:
     """Pin `coverage` as the new baseline, in `ORG_ROUTE_LABELS` order. Returns what it wrote.
 
-    Only `--write-coverage-baseline` calls this; nothing on the scoring path does.
+    Only `--write-coverage-baseline` calls this; nothing on the scoring path does. A
+    `lowered_because` already in the file is NOT carried forward: it explained a previous
+    lowering, and carrying it would let it excuse this one too. Pass the explanation for this
+    write explicitly (`--lowered-because`), or the file goes out without one.
     """
-    doc = {route: list(coverage.get(route, (0, 0))) for route, _label in ORG_ROUTE_LABELS}
+    if lowered_because is not None and not lowered_because.strip():
+        raise ValueError("lowered_because must be a non-empty string when given")
+    doc: dict = {route: list(coverage.get(route, (0, 0))) for route, _label in ORG_ROUTE_LABELS}
+    if lowered_because is not None:
+        doc[LOWERED_BECAUSE_KEY] = lowered_because
     path.write_text(json.dumps(doc, indent=2) + "\n")
-    return {route: tuple(pair) for route, pair in doc.items()}  # type: ignore[misc]
+    return {route: (pair[0], pair[1]) for route, pair in doc.items() if route != LOWERED_BECAUSE_KEY}
 
 
 def _below_baseline(live: tuple[int, int], pinned: tuple[int, int]) -> bool:
@@ -955,8 +1061,126 @@ def coverage_ratchet(
     return failures
 
 
+def _points_above(live: tuple[int, int], pinned: tuple[int, int]) -> float:
+    """`live`'s ratio minus `pinned`'s, in percentage points; for messages only -- the
+    decision is made by `_above_baseline_by_more_than`, in integers."""
+    live_n, live_d = live
+    base_n, base_d = pinned
+    live_r = live_n / live_d if live_d else 0.0
+    base_r = base_n / base_d if base_d else 0.0
+    return 100 * (live_r - base_r)
+
+
+def _above_baseline_by_more_than(
+    live: tuple[int, int], pinned: tuple[int, int], margin_points: int
+) -> bool:
+    """Is `live`'s ratio more than `margin_points` percentage points above `pinned`'s?
+    Cross-multiplied like `_below_baseline`, so the margin is applied to exact ratios.
+
+    A live denominator of 0 has no coverage to overstate and passes. A pinned denominator of
+    0 pins a ratio of 0 (as `_below_baseline` reads it), so a route that has since gained
+    orgs with handles is stale like any other.
+    """
+    live_n, live_d = live
+    base_n, base_d = pinned
+    if live_d == 0:
+        return False
+    if base_d == 0:
+        base_n, base_d = 0, 1
+    return 100 * (live_n * base_d - base_n * live_d) > margin_points * live_d * base_d
+
+
+def coverage_stale(
+    coverage: dict[str, tuple[int, int]],
+    baseline: dict[str, tuple[int, int]],
+    margin_points: int = COVERAGE_MARGIN_POINTS,
+) -> list[str]:
+    """Routes whose live coverage sits more than `margin_points` above the pin, one message
+    each. The pin is stale on those routes and must be re-pinned in the PR that raised them
+    (#506). Unpinned routes are not checked, as in `coverage_ratchet`.
+    """
+    failures: list[str] = []
+    for route, _label in ORG_ROUTE_LABELS:
+        pinned = baseline.get(route)
+        if pinned is None:
+            continue
+        live = coverage.get(route, (0, 0))
+        if _above_baseline_by_more_than(live, pinned, margin_points):
+            failures.append(
+                f"{route}: coverage {live[0]}/{live[1]} is {_points_above(live, pinned):.1f} points "
+                f"above the pinned {pinned[0]}/{pinned[1]} (margin {margin_points})"
+            )
+    return failures
+
+
+def _pin_lowered(now: tuple[int, int], prior: tuple[int, int]) -> bool:
+    """Is the pin `now` strictly below the pin `prior`? Cross-multiplied like
+    `_below_baseline`, but this compares two PINS, not live coverage to a pin, so a
+    denominator of 0 on either side is read as the ratio 0 it pins rather than as "no orgs
+    to cover". Without that, rewriting 211/328 to 0/0 would pass vacuously, and a re-pin
+    after every eligible org was removed could erase positive coverage unexplained.
+    """
+    now_n, now_d = now if now[1] else (0, 1)
+    prior_n, prior_d = prior if prior[1] else (0, 1)
+    return now_n * prior_d < prior_n * now_d
+
+
+def coverage_lowered(
+    current: dict[str, tuple[int, int]],
+    before: dict[str, tuple[int, int]],
+    lowered_because: str | None,
+    before_lowered_because: str | None = None,
+) -> list[str]:
+    """Why the committed baseline is not an honest successor to the merge-base copy (#493).
+
+    A route's pin may go down only with a `lowered_because` that is new or changed in this
+    PR; one inherited verbatim from the merge base explained an earlier lowering and excuses
+    nothing now. A pin rewritten to `0/0` is a lowering (see `_pin_lowered`). A pin that
+    VANISHED (the route was in `before`, not in `current`) is not a lowering that a note can
+    excuse: an unpinned route is skipped by both live-coverage gates, so an explained deletion
+    would switch the ratchet off for that route and every later PR would inherit the silence.
+    Lower it, to `0/0` if need be, and keep the key. A fresh `lowered_because` with no route
+    lowered is stale and is reported too: an explanation that explains nothing is how a guard
+    rots.
+    """
+    vanished: list[str] = []
+    lowered: list[str] = []
+    for route, _label in ORG_ROUTE_LABELS:
+        prior = before.get(route)
+        if prior is None:
+            continue
+        now = current.get(route)
+        if now is None:
+            vanished.append(
+                f"{route}: pinned {prior[0]}/{prior[1]} at the merge base, unpinned now -- a route "
+                f"may be lowered with a {LOWERED_BECAUSE_KEY!r}, never unpinned; pin it (0/0 if need be)"
+            )
+        elif _pin_lowered(now, prior):
+            lowered.append(f"{route}: pin lowered from {prior[0]}/{prior[1]} to {now[0]}/{now[1]}")
+    fresh_note = lowered_because is not None and lowered_because != before_lowered_because
+    if vanished:
+        needs_note = lowered and not fresh_note
+        return vanished + lowered + (
+            [f"a pin may only go down with a {LOWERED_BECAUSE_KEY!r} written or changed in this PR"]
+            if needs_note else []
+        )
+    if lowered and not fresh_note:
+        return lowered + [
+            f"a pin may only go down with a {LOWERED_BECAUSE_KEY!r} written or changed in this PR"
+            + (" (the one in the file is inherited from the merge base)" if lowered_because else "")
+        ]
+    if fresh_note and not lowered:
+        return [
+            f"{LOWERED_BECAUSE_KEY!r} is set ({lowered_because!r}) but no route's pin is lower than "
+            f"at the merge base; delete the explanation, it excuses nothing"
+        ]
+    return []
+
+
 def coverage_lines(
-    coverage: dict[str, tuple[int, int]], baseline: dict[str, tuple[int, int]]
+    coverage: dict[str, tuple[int, int]],
+    baseline: dict[str, tuple[int, int]],
+    margin_points: int = COVERAGE_MARGIN_POINTS,
 ) -> list[str]:
     """The three `handle coverage` lines, one per route, each with its ratchet status."""
     lines = [
@@ -969,6 +1193,8 @@ def coverage_lines(
             status = "no baseline"
         elif _below_baseline((live_n, live_d), pinned):
             status = f"BELOW BASELINE {pinned[0]}/{pinned[1]}"
+        elif _above_baseline_by_more_than((live_n, live_d), pinned, margin_points):
+            status = f"STALE BASELINE {pinned[0]}/{pinned[1]} (more than {margin_points} points below live)"
         else:
             status = f"at or above baseline {pinned[0]}/{pinned[1]}"
         lines.append(
@@ -1686,6 +1912,14 @@ def main(argv: list[str] | None = None) -> int:
             f"rewrites its own baseline."
         ),
     )
+    parser.add_argument(
+        "--lowered-because", metavar="TEXT",
+        help=(
+            f"with --write-coverage-baseline: why a route's pin is going DOWN. Written into the "
+            f"file as {LOWERED_BECAUSE_KEY!r}; the PR test that compares the file to its merge-base "
+            f"copy fails a lowering without one. A previous explanation is never carried forward."
+        ),
+    )
     source.add_argument(
         "--write-fixture", type=Path, metavar="PATH",
         help=(
@@ -1713,12 +1947,24 @@ def main(argv: list[str] | None = None) -> int:
         print("[FAIL] --allow-unprovisioned only applies to --from-warehouse")
         return 2
 
+    if args.lowered_because is not None and not args.write_coverage_baseline:
+        parser.error("--lowered-because only means something with --write-coverage-baseline")
     if args.write_coverage_baseline:
         # Explicit path, not the bound default -- see the `--allow-unprovisioned` block below
         # for the same reason: a default parameter is bound once at definition time, so a test
         # that monkeypatches the module-level path would otherwise be ignored.
-        pinned = write_coverage_baseline(org_handle_coverage(load_truth()), COVERAGE_BASELINE_PATH)
+        prior_note = load_lowered_because(COVERAGE_BASELINE_PATH)
+        pinned = write_coverage_baseline(
+            org_handle_coverage(load_truth()), COVERAGE_BASELINE_PATH, args.lowered_because
+        )
         print(f"{_repo_path(COVERAGE_BASELINE_PATH)}: pinned handle coverage")
+        if prior_note is not None and args.lowered_because is None:
+            print(
+                f"  dropped the previous {LOWERED_BECAUSE_KEY!r} ({prior_note!r}): it explained an "
+                f"earlier lowering, not this write"
+            )
+        if args.lowered_because is not None:
+            print(f"  {LOWERED_BECAUSE_KEY}: {args.lowered_because}")
         for route, label in ORG_ROUTE_LABELS:
             n, d = pinned[route]
             print(f"  {label:18s} {n}/{d}")
@@ -1792,6 +2038,21 @@ def main(argv: list[str] | None = None) -> int:
     except CoverageBaselineInvalid as exc:
         print(f"[FAIL] {exc}")
         return 2
+    # A baseline file that pins some routes and not others is not a partial ratchet, it is a
+    # switched-off one: both live gates skip an unpinned route, so a deleted pin would pass
+    # here forever. The pytest gate requires every route in the committed file; the scoring
+    # path refuses the same shape so the weekly run cannot report green on a route it never
+    # checked. A missing file (no ratchet at all, an older tree) is still the lenient case.
+    unpinned = (
+        [route for route, _label in ORG_ROUTE_LABELS if route not in baseline]
+        if COVERAGE_BASELINE_PATH.exists() else []  # the FILE decides, not the dict: `{}` is a file with every pin deleted
+    )
+    if unpinned:
+        print(
+            f"[FAIL] {_repo_path(COVERAGE_BASELINE_PATH)} pins no value for {', '.join(unpinned)}; "
+            f"every route must be pinned (0/0 if need be) or the ratchet is off for it"
+        )
+        return 2
     print("")
     for line in coverage_lines(coverage, baseline):
         print(line)
@@ -1811,6 +2072,19 @@ def main(argv: list[str] | None = None) -> int:
             f"  shrank) -- re-pin it on purpose with `uv run python -m build.identity_eval\n"
             f"  --write-coverage-baseline` in its own commit, saying why. Nothing rewrites\n"
             f"  {_repo_path(COVERAGE_BASELINE_PATH)} automatically."
+        )
+        exit_code = 1
+
+    # The other direction (#506): a pin the corpus has outrun is a gate that guards nothing.
+    stale = coverage_stale(coverage, baseline)
+    if stale:
+        print(f"\n[FAIL] handle coverage has outrun its pinned baseline by more than {COVERAGE_MARGIN_POINTS} points:")
+        for line in stale:
+            print(f"  {line}")
+        print(
+            f"\n  The PR that raises coverage re-pins it. Run `uv run python -m build.identity_eval\n"
+            f"  --write-coverage-baseline` and commit {_repo_path(COVERAGE_BASELINE_PATH)} in the\n"
+            f"  same PR, in its own commit, so the gate keeps guarding what the corpus actually has."
         )
         exit_code = 1
 

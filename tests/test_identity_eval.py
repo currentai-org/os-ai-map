@@ -13,6 +13,9 @@ the F2 tests stub `build.warehouse.query` directly rather than hitting a real en
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -23,6 +26,8 @@ import build.warehouse as warehouse_module
 from build.identity import fold_for_proposal
 from build.identity_eval import (
     COVERAGE_BASELINE_PATH,
+    COVERAGE_MARGIN_POINTS,
+    LOWERED_BECAUSE_KEY,
     FLOORS,
     KNOWN_NEGATIVES,
     MIN_TRUTH,
@@ -40,9 +45,12 @@ from build.identity_eval import (
     _identity_dataset_deployed,
     _is_table_not_found,
     _membership_from_ledger,
+    _repo_path,
     candidate_key,
     coverage_lines,
+    coverage_lowered,
     coverage_ratchet,
+    coverage_stale,
     digest_items,
     emits,
     emitted_at_threshold,
@@ -52,6 +60,8 @@ from build.identity_eval import (
     invariant_failures,
     load_coverage_baseline,
     load_edges_from_warehouse,
+    load_lowered_because,
+    merge_base_coverage_baseline,
     load_truth,
     main,
     org_handle_coverage,
@@ -1108,6 +1118,268 @@ def test_the_live_corpus_is_at_or_above_the_committed_baseline():
     assert coverage_ratchet(coverage, load_coverage_baseline(COVERAGE_BASELINE_PATH)) == []
 
 
+def test_the_live_corpus_is_within_the_margin_above_the_committed_baseline():
+    """The other direction (#506): the PR that raises coverage by more than the margin is the
+    PR that re-pins it, so the gate never sits far below reality until a person notices."""
+    coverage = org_handle_coverage(REAL_TRUTH)
+    stale = coverage_stale(coverage, load_coverage_baseline(COVERAGE_BASELINE_PATH))
+    assert stale == [], (
+        "the pin is stale:\n  " + "\n  ".join(stale)
+        + "\nre-pin with `uv run python -m build.identity_eval --write-coverage-baseline` in "
+        "this PR, in its own commit"
+    )
+
+
+def _lowering_check_or_explain(
+    before: tuple[dict | None, str | None, str], in_ci: bool
+) -> list[str]:
+    """The merge-base half of the lowering gate (#493). Returns `coverage_lowered`'s
+    findings; when the merge-base copy cannot be read it does not pass: it fails in CI (the
+    checkout should always see origin/main, and a merge-base it cannot see is a CI bug) and
+    skips with the reason elsewhere. Either way the output names both sides."""
+    before_routes, before_note, where = before
+    committed = _repo_path(COVERAGE_BASELINE_PATH)
+    if before_routes is None:
+        message = (
+            f"cannot compare the committed {committed} to its merge-base copy: {where}. "
+            f"Nothing was checked for a lowered pin."
+        )
+        if in_ci:
+            pytest.fail(message)
+        pytest.skip(message)
+    return coverage_lowered(
+        load_coverage_baseline(COVERAGE_BASELINE_PATH),
+        before_routes,
+        load_lowered_because(COVERAGE_BASELINE_PATH),
+        before_note,
+    )
+
+
+def test_the_committed_baseline_was_not_lowered_against_the_merge_base():
+    """The real gate: HEAD's pin against `git show <merge-base HEAD origin/main>:<file>`."""
+    findings = _lowering_check_or_explain(
+        merge_base_coverage_baseline(), in_ci=bool(os.environ.get("GITHUB_ACTIONS"))
+    )
+    assert findings == [], (
+        f"{_repo_path(COVERAGE_BASELINE_PATH)} against its merge-base copy:\n  "
+        + "\n  ".join(findings)
+    )
+
+
+def test_an_unreadable_merge_base_copy_is_said_out_loud_not_passed():
+    """Synthetic: the None branch must not read as 'nothing lowered'."""
+    unreadable = (None, None, "`git merge-base HEAD origin/main` failed: fatal: Not a valid object name origin/main")
+    with pytest.raises(pytest.fail.Exception) as ci:
+        _lowering_check_or_explain(unreadable, in_ci=True)
+    assert "cannot compare the committed tests/fixtures/identity_coverage_baseline.json" in str(ci.value)
+    assert "Not a valid object name origin/main" in str(ci.value)
+    with pytest.raises(pytest.skip.Exception) as local:
+        _lowering_check_or_explain(unreadable, in_ci=False)
+    assert "Nothing was checked for a lowered pin" in str(local.value)
+
+
+def test_merge_base_coverage_baseline_names_git_when_the_base_is_unresolvable():
+    routes, note, where = merge_base_coverage_baseline(base="no-such-ref-anywhere")
+    assert routes is None and note is None
+    assert "git merge-base HEAD no-such-ref-anywhere" in where
+
+
+def test_merge_base_coverage_baseline_reads_head_when_head_is_the_base():
+    """Against HEAD itself the merge base is HEAD, so the copy read out of git is the
+    committed file byte for byte -- the one case exercisable in any clone."""
+    routes, note, where = merge_base_coverage_baseline(base="HEAD")
+    committed = json.loads(subprocess.run(
+        ["git", "-C", str(COVERAGE_BASELINE_PATH.parents[2]), "show",
+         "HEAD:tests/fixtures/identity_coverage_baseline.json"],
+        capture_output=True, text=True, check=True,
+    ).stdout)
+    assert routes == {r: tuple(v) for r, v in committed.items() if r != LOWERED_BECAUSE_KEY}
+    assert note == committed.get(LOWERED_BECAUSE_KEY)
+    assert where.endswith(":tests/fixtures/identity_coverage_baseline.json")
+
+
+def test_merge_base_coverage_baseline_says_when_the_file_is_absent_at_the_base():
+    routes, _note, where = merge_base_coverage_baseline(base="HEAD", rel="tests/fixtures/no_such_file.json")
+    assert routes is None
+    assert "git show" in where and "no_such_file.json" in where
+
+
+def test_coverage_lowered_fails_a_lowered_pin_without_an_explanation():
+    before = {"github": (2, 4), "huggingface": (1, 10)}
+    now = {"github": (1, 4), "huggingface": (1, 10)}
+    findings = coverage_lowered(now, before, None)
+    assert findings[0] == "github: pin lowered from 2/4 to 1/4"
+    assert LOWERED_BECAUSE_KEY in findings[1]
+
+
+def test_coverage_lowered_is_excused_by_a_fresh_explanation():
+    before = {"github": (2, 4)}
+    assert coverage_lowered({"github": (1, 4)}, before, "an org file was removed", None) == []
+    # changed from the merge-base note counts as fresh too
+    assert coverage_lowered({"github": (1, 4)}, before, "second lowering", "first lowering") == []
+
+
+def test_an_inherited_explanation_excuses_nothing():
+    """The note that excused the last lowering must not become a standing permission."""
+    before = {"github": (2, 4)}
+    findings = coverage_lowered({"github": (1, 4)}, before, "old reason", "old reason")
+    assert findings[0] == "github: pin lowered from 2/4 to 1/4"
+    assert "inherited from the merge base" in findings[1]
+
+
+def test_a_fresh_explanation_with_nothing_lowered_is_stale():
+    before = {"github": (2, 4)}
+    findings = coverage_lowered({"github": (3, 4)}, before, "nothing happened", None)
+    assert len(findings) == 1 and "excuses nothing" in findings[0]
+    # inherited and inert: not this PR's problem
+    assert coverage_lowered({"github": (3, 4)}, before, "old reason", "old reason") == []
+
+
+def test_coverage_lowered_never_excuses_a_vanished_pin():
+    """Deleting a route's pin would switch both live gates off for that route, and every later
+    PR would inherit the silence because the merge-base pin is then already absent. So a
+    vanished pin fails with or without a fresh explanation; the remedy is to pin it, to 0/0
+    if need be, and explain the lowering."""
+    without = coverage_lowered({}, {"github": (2, 4)}, None)
+    assert without[0].startswith("github: pinned 2/4 at the merge base, unpinned now")
+    assert "never unpinned" in without[0]
+    with_fresh_note = coverage_lowered({}, {"github": (2, 4)}, "route retired", None)
+    assert with_fresh_note == without
+    # Pinning it to 0/0 with a fresh explanation is the sanctioned path.
+    assert coverage_lowered({"github": (0, 0)}, {"github": (2, 4)}, "route retired", None) == []
+
+
+def test_coverage_lowered_reads_a_zero_denominator_pin_as_zero():
+    # Regression: 211/328 -> 0/0 used to pass vacuously because the live-coverage comparator
+    # treats an empty denominator as "no orgs to cover". A pin is not live coverage.
+    before = {"github": (211, 328)}
+    findings = coverage_lowered({"github": (0, 0)}, before, None)
+    assert findings[0] == "github: pin lowered from 211/328 to 0/0"
+    assert len(findings) == 2
+    assert coverage_lowered({"github": (0, 0)}, before, "every eligible org was removed") == []
+    # a zero pin at the merge base is ratio 0: nothing goes below it, and 0/0 -> 0/0 is unchanged
+    assert coverage_lowered({"github": (0, 0)}, {"github": (0, 0)}, None) == []
+    assert coverage_lowered({"github": (0, 5)}, {"github": (0, 0)}, None) == []
+    assert coverage_lowered({"github": (3, 5)}, {"github": (0, 0)}, None) == []
+    # 0/0 -> positive with a fresh note is a stale note, same as any other non-lowering
+    assert coverage_lowered({"github": (3, 5)}, {"github": (0, 0)}, "why", None)
+
+
+def test_coverage_lowered_compares_ratios_and_passes_a_raise():
+    before = {"github": (2, 4)}
+    assert coverage_lowered({"github": (1, 2)}, before, None) == []  # same ratio
+    assert coverage_lowered({"github": (3, 4)}, before, None) == []
+    assert coverage_lowered({"github": (3, 4), "huggingface": (1, 1)}, before, None) == []  # new route
+
+
+def test_coverage_stale_passes_within_the_margin_and_fails_beyond_it():
+    baseline = {"github": (200, 400)}  # 50.0%
+    assert coverage_stale({"github": (220, 400)}, baseline, 5) == []  # exactly +5.0 points passes
+    assert coverage_stale({"github": (221, 400)}, baseline, 5) == [
+        "github: coverage 221/400 is 5.2 points above the pinned 200/400 (margin 5)"
+    ]
+    assert coverage_stale({"github": (190, 400)}, baseline, 5) == []  # below is the other gate's job
+
+
+def test_coverage_stale_uses_the_module_margin_by_default():
+    baseline = {"github": (0, 100)}
+    assert coverage_stale({"github": (COVERAGE_MARGIN_POINTS, 100)}, baseline) == []
+    assert coverage_stale({"github": (COVERAGE_MARGIN_POINTS + 1, 100)}, baseline) != []
+
+
+def test_coverage_stale_is_a_ratio_not_a_count():
+    """Ten more handles on a route that also gained ten orgs is no change in coverage."""
+    assert coverage_stale({"github": (210, 420)}, {"github": (200, 400)}, 0) == []
+
+
+def test_coverage_stale_passes_an_empty_live_denominator_and_fails_an_outgrown_zero_pin():
+    assert coverage_stale({"github": (0, 0)}, {"github": (2, 4)}, 5) == []
+    # pinned 0/0 reads as ratio 0 (as `_below_baseline` reads it); 50/50 has outgrown it
+    assert coverage_stale({"github": (50, 50)}, {"github": (0, 0)}, 5) != []
+    assert coverage_stale({"github": (2, 50)}, {"github": (0, 0)}, 5) == []
+
+
+def test_coverage_stale_skips_unpinned_routes():
+    assert coverage_stale({"github": (300, 300)}, {}) == []
+
+
+def test_coverage_lines_flag_a_stale_pin():
+    lines = coverage_lines({"github": (300, 300)}, {"github": (1, 300)})
+    assert "STALE BASELINE 1/300" in lines[1]
+
+
+def _pinned_at_live(**overrides):
+    """A complete baseline (every route pinned at its live corpus value, so the scoring path's
+    completeness check passes) with the routes under test overridden."""
+    live = org_handle_coverage(REAL_TRUTH)
+    doc = {route: list(live[route]) for route in ORG_ROUTES.values()}
+    doc.update({k: list(v) for k, v in overrides.items()})
+    return doc
+
+
+def test_main_exits_one_when_the_corpus_has_outrun_the_pin(tmp_path, monkeypatch, capsys):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps(_pinned_at_live(github=(0, 400))))
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 1
+    out = capsys.readouterr().out
+    assert "[FAIL] handle coverage has outrun its pinned baseline" in out
+    assert "above the pinned 0/400" in out
+    assert "--write-coverage-baseline" in out and "same PR" in out
+    assert json.loads(baseline.read_text()) == _pinned_at_live(github=(0, 400))  # never rewritten by a run
+
+
+def test_load_coverage_baseline_accepts_lowered_because_and_only_that():
+    good = {"github": [1, 2], LOWERED_BECAUSE_KEY: "an org file was removed"}
+    assert load_coverage_baseline(_write(good)) == {"github": (1, 2)}
+    assert load_lowered_because(_write(good)) == "an org file was removed"
+    assert load_lowered_because(_write({"github": [1, 2]})) is None
+    for bad in ({"github": [1, 2], LOWERED_BECAUSE_KEY: ""}, {"github": [1, 2], LOWERED_BECAUSE_KEY: 3},
+                {"github": [1, 2], LOWERED_BECAUSE_KEY: "   "}, {"github": [1, 2], "raised_because": "x"}):
+        with pytest.raises(CoverageBaselineInvalid):
+            load_coverage_baseline(_write(bad))
+
+
+def _write(doc: dict) -> Path:
+    path = Path(tempfile.mkdtemp()) / "baseline.json"
+    path.write_text(json.dumps(doc))
+    return path
+
+
+def test_write_coverage_baseline_drops_a_previous_explanation_and_writes_a_given_one(tmp_path):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps({"github": [1, 1], LOWERED_BECAUSE_KEY: "an earlier lowering"}))
+    write_coverage_baseline({"github": (1, 2)}, baseline)
+    assert LOWERED_BECAUSE_KEY not in json.loads(baseline.read_text())  # never carried forward
+    written = write_coverage_baseline({"github": (1, 2)}, baseline, lowered_because="removed acme")
+    assert written == {route: (1, 2) if route == "github" else (0, 0) for route in ORG_ROUTES.values()}
+    assert json.loads(baseline.read_text())[LOWERED_BECAUSE_KEY] == "removed acme"
+    assert load_lowered_because(baseline) == "removed acme"
+    with pytest.raises(ValueError):
+        write_coverage_baseline({"github": (1, 2)}, baseline, lowered_because="  ")
+
+
+def test_the_write_flag_reports_a_dropped_explanation_and_writes_a_given_one(tmp_path, monkeypatch, capsys):
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text(json.dumps({"github": [0, 1], LOWERED_BECAUSE_KEY: "stale reason"}))
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    assert main(["--write-coverage-baseline"]) == 0
+    out = capsys.readouterr().out
+    assert "dropped the previous 'lowered_because' ('stale reason')" in out
+    assert load_lowered_because(baseline) is None
+    assert main(["--write-coverage-baseline", "--lowered-because", "acme left the roster"]) == 0
+    assert load_lowered_because(baseline) == "acme left the roster"
+
+
+def test_lowered_because_without_the_write_flag_is_refused(tmp_path):
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    with pytest.raises(SystemExit):
+        main(["--edges", str(fixture), "--lowered-because", "x"])
+
+
 def test_coverage_ratchet_passes_at_the_baseline_and_above_it():
     baseline = {"github": (2, 4), "huggingface": (1, 10), "homepage_domain": (0, 0)}
     assert coverage_ratchet(baseline, baseline) == []
@@ -1160,7 +1432,7 @@ def test_main_exits_one_when_a_route_falls_below_its_baseline(tmp_path, monkeypa
     """The ratchet holds without `--floors`: it is a fact about the corpus, not a judgment
     about the graph."""
     baseline = tmp_path / "baseline.json"
-    baseline.write_text(json.dumps({"github": [299, 299]}))
+    baseline.write_text(json.dumps(_pinned_at_live(github=(299, 299))))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
     fixture.write_text('{"equivalence": []}')
@@ -1172,13 +1444,15 @@ def test_main_exits_one_when_a_route_falls_below_its_baseline(tmp_path, monkeypa
 
 
 def test_main_exits_zero_at_the_baseline(tmp_path, monkeypatch, capsys):
+    """Pinned at exactly the live ratio: neither below the pin nor far enough above it."""
+    live_n, live_d = org_handle_coverage(REAL_TRUTH)["github"]
     baseline = tmp_path / "baseline.json"
-    baseline.write_text(json.dumps({"github": [0, 299]}))
+    baseline.write_text(json.dumps(_pinned_at_live()))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
     fixture.write_text('{"equivalence": []}')
     assert main(["--edges", str(fixture)]) == 0
-    assert "at or above baseline 0/299" in capsys.readouterr().out
+    assert f"at or above baseline {live_n}/{live_d}" in capsys.readouterr().out
 
 
 def test_write_coverage_baseline_rewrites_the_file_from_the_corpus(tmp_path):
@@ -1203,7 +1477,7 @@ def test_the_write_coverage_baseline_flag_pins_and_scores_nothing(tmp_path, monk
 def test_the_baseline_is_never_rewritten_by_a_scoring_run(tmp_path, monkeypatch):
     """A ratchet that raises its own reference value on failure ratchets nothing."""
     baseline = tmp_path / "baseline.json"
-    pinned = {"github": [299, 299]}
+    pinned = _pinned_at_live(github=(299, 299))
     baseline.write_text(json.dumps(pinned))
     monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
     fixture = tmp_path / "edges.json"
@@ -1232,6 +1506,26 @@ def test_a_malformed_baseline_raises_rather_than_defaulting_to_empty(tmp_path, b
     path.write_text(body)
     with pytest.raises(CoverageBaselineInvalid):
         load_coverage_baseline(path)
+
+
+def test_a_baseline_missing_a_route_exits_two_from_main(tmp_path, monkeypatch, capsys):
+    """The scoring path refuses a baseline that pins some routes and not others: both live
+    gates skip an unpinned route, so a deleted pin would otherwise pass the weekly run forever.
+    A missing FILE stays lenient (no ratchet at all); a file with a hole does not."""
+    baseline = tmp_path / "baseline.json"
+    baseline.write_text('{"github": [1, 2]}')
+    monkeypatch.setattr(identity_eval_module, "COVERAGE_BASELINE_PATH", baseline)
+    fixture = tmp_path / "edges.json"
+    fixture.write_text('{"equivalence": []}')
+    assert main(["--edges", str(fixture)]) == 2
+    out = capsys.readouterr().out
+    assert "pins no value for huggingface, homepage_domain" in out
+    # A file with every pin deleted is the same hole, not the lenient missing-file case.
+    baseline.write_text("{}")
+    assert main(["--edges", str(fixture)]) == 2
+    assert "pins no value for github, huggingface, homepage_domain" in capsys.readouterr().out
+    baseline.write_text('{"lowered_because": "all gone"}')
+    assert main(["--edges", str(fixture)]) == 2
 
 
 def test_a_malformed_baseline_exits_two_from_main(tmp_path, monkeypatch, capsys):
