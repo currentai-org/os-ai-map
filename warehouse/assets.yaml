@@ -348,7 +348,15 @@ assets:
     reason recorded only that the predicate could not tell "nothing uses it yet" from "nobody wants
     it", and now something does. The declared-identity guard went live 2026-08-25 as revision 3
     (a27b153d-76d8-4661-8fcb-4ee4802cb164); the run SUCCEEDED, which is the coverage proof, since
-    the guard FAILs the materialization on any undeclared artifact.
+    the guard FAILs the materialization on any undeclared artifact. RECREATED 2026-09-13 under a new
+    dataset id, because the old model could not be released once signal_github.artifact_state gained
+    columns= and turned schema-deterministic, and the platform refuses a release that changes a
+    model's determinism verdict in either direction. Proven with a byte-identical control of the old
+    SQL, which was refused identically, so the refusal was the upstream flip rather than the issue
+    562 repoint. The replacement carries that repoint (the package arm reads
+    signal_packages.downloads) and materialized 1022 rows across crates 1, github 465, huggingface
+    325, npm 17, other 45 and pypi 169. The superseded dataset was deleted once the replacement was
+    verified.
   refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 and repointed to the
     declared-identity revision 2026-08-25 (revision 3); the repo owns the definition and is its
     source of truth. Full-refresh
@@ -357,10 +365,10 @@ assets:
     full-refresh, its deployed state was frozen at once as observations.product_adoption_baseline
     (2026-08-24, 654 rows) — the single preserved snapshot §18 requires; a later run overwrites
     this table but must never touch those bytes.'
-  dataset_id: c507c9f9-321f-4773-a107-d96658e2da67
+  dataset_id: 48c011c7-15ec-43f5-ba23-b81e76889db0
   status: active
   materialized: true
-  verified_at: '2026-08-25'
+  verified_at: '2026-09-13'
 - id: observations.source_runs
   table: currentai.observations.source_runs
   kind: observations
