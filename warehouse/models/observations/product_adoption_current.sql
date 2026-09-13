@@ -38,17 +38,30 @@
 -- survives only if that exact artifact is declared for that product; product_type comes from the
 -- matched declaration and is never NULL. An observation with no matching declaration (a stale or
 -- undeclared artifact, or an unknown product) FAILS the materialization loudly via the coverage
--- guard rather than passing through silently. The four source artifact_kind vocabularies —
--- github, huggingface_model / huggingface_dataset, pypi, arxiv — match product_artifacts exactly.
+-- guard rather than passing through silently. The four sources' artifact_kind vocabularies —
+-- github, huggingface_model / huggingface_dataset, pypi / npm / crates, arxiv — match
+-- product_artifacts exactly.
 --
 -- Sources normalized (the deployed machine adoption routes of signal_routing.yaml; the
 -- hand-authored active_users / reported_traction routes have no machine table and are not here):
---   signal_github.artifact_state            channel github        metric stars      (no window)
---   signal_huggingface.artifact_state       channel huggingface   metric downloads  (30-day)
---   signal_pypi.package_downloads           channel pypi          metric downloads  (30-day)
---   signal_semanticscholar.paper_citations  channel other/arxiv   metric citations  (no window)
--- signal_packages.downloads (the merged-registry successor, #314) is deliberately NOT read yet:
--- it is staged and deployed nowhere. It replaces the pypi channel here once it deploys.
+--   signal_github.artifact_state            channel github           metric stars      (no window)
+--   signal_huggingface.artifact_state       channel huggingface      metric downloads  (30-day)
+--   signal_packages.downloads               channel pypi|npm|crates  metric downloads  (30-day)
+--   signal_semanticscholar.paper_citations  channel other/arxiv      metric citations  (no window)
+-- The package arm reads signal_packages.downloads, the merged-registry successor (#314), and no
+-- longer signal_pypi.package_downloads. That is a REPLACEMENT, not an addition: the successor
+-- carries the PyPI leg as well, so reading both would give a PyPI package two rows on one grain.
+-- Because it carries three registries, the package arm is the one arm whose channel and
+-- artifact_kind are PROJECTED rather than literal — a literal 'pypi' would label every npm and
+-- crates row as PyPI. signal_pypi.package_downloads is still read by build/check_artifacts.py
+-- and signal_github.product_adoption; nothing here reads it.
+--
+-- signal_routing.yaml still declares its npm and crates SOURCES `bridged: false` with
+-- `table: null`. That declaration lags this model and belongs to the routing step of #562:
+-- flipping it turns on check_instrument's artifact precondition for every product recording
+-- usage_volume on a package registry, which is a curation change rather than a plumbing one.
+-- Nothing here reads `bridged` and neither does route selection, which keys on artifact_kind,
+-- so the npm and crates routes resolve to an observation from this model's first run.
 
 WITH observations AS (
   -- GitHub stars, per declared repo. artifact_kind 'github' matches registry.product_artifacts.
@@ -87,21 +100,29 @@ WITH observations AS (
 
   UNION ALL
 
-  -- PyPI 30-day downloads, per package. observed_at is the last day of download data in the
-  -- window (the fetcher windows counts rather than stamping a fetch time).
+  -- Package registry 30-day downloads, per declared package, across all three registries.
+  -- artifact_kind is PROJECTED, never literal: the source carries pypi / npm / crates per row and
+  -- §4.3 fixes the channel vocabulary as github|huggingface|pypi|npm|crates|other, so the one
+  -- column maps straight through to both. observed_at is the last day of download data in the
+  -- window (the source windows counts rather than stamping a fetch time).
+  --
+  -- not_primary_channel, which the source also carries, is deliberately NOT read here.
+  -- Observations stay raw and declaration-free; that a declared package is not how the product
+  -- ships is a curation fact, and it is applied one layer up, in build/adoption_measurements.py,
+  -- which drops the named artifact from the summed figure. The observation itself stays.
   SELECT
     product_slug,
-    'pypi'                                         AS channel,
-    'pypi'                                         AS artifact_kind,
+    artifact_kind                                  AS channel,
+    artifact_kind,
     package                                        AS artifact_id,
     'downloads'                                    AS metric_type,
     CAST(downloads_30d AS BIGINT)                  AS raw_value,
     'downloads'                                    AS unit,
     30                                             AS measurement_window_days,
     CAST(last_day_seen AS TIMESTAMP)               AS observed_at,
-    'signal_pypi'                                  AS source_dataset,
-    'currentai.signal_pypi.package_downloads'      AS source_table
-  FROM currentai.signal_pypi.package_downloads
+    'signal_packages'                              AS source_dataset,
+    'currentai.signal_packages.downloads'          AS source_table
+  FROM currentai.signal_packages.downloads
   WHERE downloads_30d IS NOT NULL
 
   UNION ALL

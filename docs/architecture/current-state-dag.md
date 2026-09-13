@@ -109,6 +109,7 @@ graph LR
   registry__product_artifacts --> observations__product_adoption_current
   registry__product_artifacts --> signal_packages__downloads
   registry__product_artifacts --> signal_packages__downloads_daily
+  signal_packages__downloads --> observations__product_adoption_current
   signal_packages__downloads --> signal_packages__product_adoption
   signal_packages__downloads_daily --> signal_packages__downloads
   class observations__product_adoption_baseline staged;
@@ -162,7 +163,6 @@ graph LR
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__signal_huggingface__product_adoption[currentai.signal_huggingface.product_adoption]
   currentai__signal_openrouter__models[currentai.signal_openrouter.models]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
   currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
-  currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]
   currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]
