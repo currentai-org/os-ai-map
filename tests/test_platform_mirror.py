@@ -90,7 +90,7 @@ def test_a_mirrored_sql_model_declares_the_table_it_is_listed_against():
     )
 
 
-def test_the_staged_package_models_are_all_present():
+def test_the_package_models_are_all_present():
     """signal_packages has three models and they deploy as one dataset.
 
     Mirroring two of the three is how the third's absence went unnoticed while a file
@@ -98,11 +98,17 @@ def test_the_staged_package_models_are_all_present():
     counted, so adding a fourth model does not silently satisfy this. The dataset names the
     source and the table must not repeat it (rule 11.1a.1), so `package_downloads` is
     `downloads` under the mirror layout.
+
+    Presence is the assertion, not status. All three were `staged` until issue #314 deployed
+    them on 2026-09-13; `downloads` and `downloads_daily` are now `active` and
+    `product_adoption` is `compatibility`, since a deployed `signal_*.product_adoption` is a
+    retirement candidate. Keying this on `staged` would have made a correct deploy look like
+    a missing model.
     """
-    staged = {a["table"] for a in A.assets() if a["status"] == "staged"}
+    present = {a["table"] for a in A.assets()}
     expected = {
         "currentai.signal_packages.downloads",
         "currentai.signal_packages.downloads_daily",
         "currentai.signal_packages.product_adoption",
     }
-    assert expected <= staged, f"staged signal_packages models missing: {sorted(expected - staged)}"
+    assert expected <= present, f"signal_packages models missing: {sorted(expected - present)}"

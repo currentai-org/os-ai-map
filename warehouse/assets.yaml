@@ -1252,10 +1252,11 @@ assets:
   external_consumers: none_confirmed
   grain: one row per (product_slug, package) over a 30-day window
   producer: warehouse/models/signal_packages/downloads.sql
-  refresh: 'not deployed; see issue #314'
-  status: staged
-  materialized: false
-  verified_at: '2026-08-20'
+  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep, ahead of the observation layer at 03:30. 188 rows over 170 pypi, 17 npm and 1 crates artifact; parity against signal_pypi exact at 169 of 170 products.'
+  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
+  status: active
+  materialized: true
+  verified_at: '2026-09-13'
 - id: signal_packages.downloads_daily
   table: currentai.signal_packages.downloads_daily
   files:
@@ -1281,10 +1282,11 @@ assets:
   external_consumers: none_confirmed
   grain: one row per (package, day)
   producer: warehouse/models/signal_packages/downloads_daily.py
-  refresh: 'not deployed; see issue #314'
-  status: staged
-  materialized: false
-  verified_at: '2026-08-20'
+  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep. Fetches 18 months of npm history and 90 days of crates history; the PyPI leg windows oso.pypi_downloads directly and fetches nothing. 9,326 rows.'
+  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
+  status: active
+  materialized: true
+  verified_at: '2026-09-13'
 - id: signal_packages.product_adoption
   table: currentai.signal_packages.product_adoption
   files:
@@ -1295,7 +1297,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
-  role: repo-computation
+  role: compatibility-shim
   reads:
   - table: currentai.registry.adoption_bands
     scope: internal
@@ -1310,8 +1312,18 @@ assets:
   grain: one row per product_slug across package registries
   producer: warehouse/models/signal_packages/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
-  refresh: 'not deployed; see issue #314'
-  status: staged
-  materialized: false
-  verified_at: '2026-08-20'
-  notes: Staged, not deployed.
+  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep. 186 rows.'
+  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
+  replacement: currentai.observations.product_adoption_current
+  status: compatibility
+  materialized: true
+  verified_at: '2026-09-13'
+  notes: 'A third banding model in a signal namespace, joining the two siblings already marked for
+    retirement. Deployed 2026-09-13 with no exit recorded, which is the defect issue #562 names;
+    the replacement above is that exit. Retire with the other two rather than alone, per
+    data-architecture.md section 11.1. One behaviour has to be reproduced or knowingly dropped
+    first, and it is not a detail. This model sums across registries AND suppresses the band when a
+    declared package went unmeasured, which is the partial-coverage abstention the repo applies
+    deliberately elsewhere. build/adoption_measurements.py selects one artifact-kind route and sums
+    what it has, without checking that every declared artifact was measured. Compiled precedence
+    does not prove equivalence. Step 4 of issue #562.'
