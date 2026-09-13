@@ -61,6 +61,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `observations.product_adoption_current` reads its package arm from
+  `currentai.signal_packages.downloads` instead of `currentai.signal_pypi.package_downloads`, so the
+  observation layer now sees npm and crates alongside PyPI. `channel` and `artifact_kind` are
+  projected from the source row rather than hardcoded to `pypi`. The PyPI leg is unchanged — all 169
+  rows carry the same values and the same `observed_at` — and 18 package rows over 16 products are
+  new. Fourteen of those products gain a banded adoption measurement where the npm route previously
+  resolved to no observation; `hexabot` and `yomo` stay on stars at level 2, because every package
+  artifact they declare is `not_primary_channel`
+  ([#562](https://github.com/currentai-org/os-ai-map/issues/562)).
 - Three license names ruled onto the shared `pretrained` tiers: `OpenMDW-1.1` to
   `permissive_non_osi`, `Llama-3.2-Community-License` to `use_bounded`, `CC-BY-NC-4.0` to
   `commercial_forbidden`. All four products that had been deferred for them now compute, and no
