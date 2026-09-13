@@ -353,6 +353,9 @@ def _spdx_confirms(url: str, fetched: dict, recorded_license: str) -> bool:
 def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] = ("openness",),
                      fetch=_fetch, pace: float = 0.0, sleep=time.sleep,
                      body_dir: Path | None = None) -> ProductResult:
+    refusal = axes_refusal(tuple(axes))
+    if refusal:
+        raise ValueError(refusal)
     score = _score(root, slug)
     result = ProductResult(slug=slug)
     cache: dict[str, dict] = {}
@@ -406,6 +409,17 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
 
 
 def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
+    """Write the confirmations and the new dates.
+
+    The policy check is repeated HERE, not only where axes are chosen, because this is the
+    function that writes `last_verified`. A caller that assembled a `ProductResult` by some
+    other route — a hand-built result, a future planner — would otherwise reach the write with
+    no check between it and the field. Binding the guard to the write is the same doctrine the
+    merge interlock uses: check the thing you are about to do, where you do it.
+    """
+    stamped_refusal = axes_refusal(tuple(result.stamped))
+    if result.stamped and stamped_refusal:
+        raise ValueError(stamped_refusal)
     path = root / "sources" / "scores" / f"{slug}.yaml"
     text = path.read_text()
     for axis in result.stamped:
@@ -423,6 +437,38 @@ def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
         path.write_text(text)
 
 
+#: The only axis a machine may re-date, ruled 2026-09 (#445). Adoption and capability cite
+#: numbers that move. An unchanged body there does not establish that the figure is still
+#: current — it only shows the page has not been rewritten — so re-dating on it would claim a
+#: confirmation nobody made.
+MACHINE_REDATABLE_AXES = ("openness",)
+
+
+def axes_refusal(axes: tuple[str, ...]) -> str | None:
+    """Why `--axes` may not be honoured, or None.
+
+    The #445 limit was documented and enforced nowhere: `--axes` took any string, so
+    `--axes capability` would have re-dated capability against the ruling, and `--axes opennes`
+    would have planned nothing at all and reported a clean run over zero dimensions. A limit
+    that lives only in prose and in how a workflow happens to invoke the tool is not a limit.
+    """
+    if not axes:
+        return "--axes is empty; pass at least one axis"
+    unknown = [a for a in axes if a not in _axes()]
+    if unknown:
+        return (f"--axes names {', '.join(sorted(unknown))}, which is not an axis. Known axes: "
+                f"{', '.join(_axes())}, of which only {', '.join(MACHINE_REDATABLE_AXES)} may be "
+                f"machine re-dated (#445).")
+    refused = [a for a in axes if a not in MACHINE_REDATABLE_AXES]
+    if refused:
+        return (f"--axes names {', '.join(sorted(refused))}. Machine re-dating is limited to "
+                f"{', '.join(MACHINE_REDATABLE_AXES)} by the #445 ruling: adoption and capability "
+                f"cite numbers that move, and an unchanged body does not establish that such a "
+                f"figure is still current. Re-verify those through the agent leg "
+                f"(refresh-category).")
+    return None
+
+
 def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     root = root or ROOT
     p = argparse.ArgumentParser(description=__doc__)
@@ -437,6 +483,10 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     args = p.parse_args(argv)
     today = parse_date(args.today) if args.today else date.today()
     axes = tuple(a.strip() for a in args.axes.split(",") if a.strip())
+    refusal = axes_refusal(axes)
+    if refusal:
+        print(f"[FAIL] {refusal}", file=sys.stderr)
+        return 2
     body_dir = args.body_dir or Path(tempfile.mkdtemp(prefix="os-ai-map-reverify-"))
 
     report = {"today": today.isoformat(), "axes": axes, "products": []}

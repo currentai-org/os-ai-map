@@ -723,8 +723,11 @@ that is a defensible basis for re-dating that axis's own `last_verified`, and it
 `build/reverify.py` does exactly this. The permission is narrower than the principle, on purpose.
 The #445 ruling limits machine re-dating to **openness**, because adoption and capability cite
 numbers that move — there, unchanged bytes would confirm a figure that has gone stale rather than
-a fact that has stayed put. `--axes` accepts any axis name and does not enforce that limit, so it
-currently lives in the ruling and in the workflow's invocation rather than in the tool. It is
+a fact that has stayed put. The tool enforces that limit rather than describing it. `--axes` refuses any axis but
+openness, and refuses a name that is not an axis at all — which previously planned nothing and
+reported a clean run over zero dimensions. The check binds to the write as well as to the flag:
+`reverify_product` refuses a policy-breaking axis, and `apply`, the function that actually
+writes the field, refuses a result stamped for one however it was assembled. It is
 never a basis for dating a comparison. Not when the peer's sources reproduce, not
 when both products' sources reproduce, because the thing that falsifies a spacing is a third
 product that neither one cites. An attestation written on the strength of unchanged bytes is the

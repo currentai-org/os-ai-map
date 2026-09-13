@@ -530,3 +530,72 @@ def test_fragments_are_matched_after_the_same_whitespace_collapse(tmp_path):
     body = ("<p>Deploy leading open source\n   tools and AI models\twith confidence</p>")
     result = _shows_case(tmp_path, shows, body)
     assert result.stamped == ["openness"]
+
+# ---------------------------------------------------------------------------
+# --axes: the #445 limit, enforced rather than documented
+# ---------------------------------------------------------------------------
+
+
+def test_a_non_openness_axis_is_refused():
+    """#445 limits machine re-dating to openness, and until now that limit lived only in prose
+    and in how the workflow happened to invoke the tool. `--axes capability` would have re-dated
+    capability against the ruling."""
+    msg = reverify.axes_refusal(("capability",))
+    assert msg and "limited to openness" in msg and "#445" in msg
+    assert reverify.axes_refusal(("openness", "adoption"))
+
+
+def test_an_axis_that_is_not_an_axis_is_refused():
+    """A typo used to plan nothing and report a clean run over zero dimensions, which reads as
+    success. It is now a refusal that names the known axes."""
+    msg = reverify.axes_refusal(("opennes",))
+    assert msg and "not an axis" in msg and "openness" in msg
+
+
+def test_an_empty_axes_list_is_refused():
+    assert reverify.axes_refusal(())
+
+
+def test_openness_alone_is_allowed():
+    assert reverify.axes_refusal(("openness",)) is None
+
+
+def test_main_exits_two_on_a_refused_axis(capsys):
+    assert reverify.main(["--axes", "capability", "--dry-run", "--limit", "1"]) == 2
+    assert "limited to openness" in capsys.readouterr().err
+
+def test_reverify_product_refuses_a_policy_breaking_axis(tmp_path):
+    """The CLI guard protects main() only. A library caller reaching reverify_product directly
+    would otherwise obtain a stamped capability result and hand it to apply()."""
+    import pytest
+
+    with pytest.raises(ValueError, match="limited to openness"):
+        reverify.reverify_product(tmp_path, "anything", date(2026, 9, 12), axes=("capability",))
+
+
+def test_apply_refuses_to_write_a_date_for_a_policy_breaking_axis(tmp_path):
+    """`apply` is the function that writes `last_verified`, so the check binds to the write.
+    A result assembled by any other route still cannot reach the field."""
+    import pytest
+
+    result = reverify.ProductResult(slug="p")
+    result.stamped = ["capability"]
+    with pytest.raises(ValueError, match="limited to openness"):
+        reverify.apply(tmp_path, "p", result, date(2026, 9, 12))
+
+
+def test_apply_writes_nothing_and_raises_nothing_for_an_empty_result(tmp_path):
+    """An empty stamped list is the ordinary no-confirmation outcome, not a policy breach."""
+    path = tmp_path / "sources" / "scores"
+    path.mkdir(parents=True)
+    (path / "p.yaml").write_text("product: p\n")
+    reverify.apply(tmp_path, "p", reverify.ProductResult(slug="p"), date(2026, 9, 12))
+    assert (path / "p.yaml").read_text() == "product: p\n"
+
+
+def test_the_unknown_axis_message_says_which_axis_may_be_re_dated():
+    """Listing the known axes without saying only openness is permitted invites a second
+    rejected attempt."""
+    msg = reverify.axes_refusal(("opennes",))
+    assert "only openness" in msg
+
