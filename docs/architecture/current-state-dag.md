@@ -76,7 +76,6 @@ graph LR
   subgraph signal_packages
     signal_packages__downloads[downloads]
     signal_packages__downloads_daily[downloads_daily]
-    signal_packages__product_adoption[product_adoption]
   end
   SRC --> registry__adoption_aggregation_rules
   SRC --> registry__adoption_bands
@@ -105,12 +104,10 @@ graph LR
   SRC --> registry__resolution_ledger
   SRC --> registry__tail_products
   observations__product_adoption_current --> evaluation__product_adoption_measurements
-  registry__adoption_bands --> signal_packages__product_adoption
   registry__product_artifacts --> observations__product_adoption_current
   registry__product_artifacts --> signal_packages__downloads
   registry__product_artifacts --> signal_packages__downloads_daily
   signal_packages__downloads --> observations__product_adoption_current
-  signal_packages__downloads --> signal_packages__product_adoption
   signal_packages__downloads_daily --> signal_packages__downloads
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
@@ -120,9 +117,6 @@ graph LR
   class registry__product_aliases staged;
   class registry__resolution_ledger staged;
   class registry__tail_products dormant;
-  class signal_packages__downloads staged;
-  class signal_packages__downloads_daily staged;
-  class signal_packages__product_adoption staged;
   classDef src fill:#def;
   classDef staged stroke-dasharray: 4 3;
   classDef dormant opacity:0.5;
@@ -180,6 +174,8 @@ graph LR
   signal_github__repo_state[signal_github.repo_state]:::compat --> signal_github__artifact_state[signal_github.artifact_state]
   signal_huggingface__hub_state[signal_huggingface.hub_state]:::compat --> signal_huggingface__artifact_state[signal_huggingface.artifact_state]
   signal_huggingface__product_adoption[signal_huggingface.product_adoption]:::compat --> observations__product_adoption_current[observations.product_adoption_current]
+  signal_packages__product_adoption[signal_packages.product_adoption]:::compat --> observations__product_adoption_current[observations.product_adoption_current]
   classDef compat stroke-width:3px;
   classDef src fill:#def;
 ```
+

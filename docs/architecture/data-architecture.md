@@ -49,7 +49,7 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`** (each carrying a `mirror:` block — the compatibility shims are the exception, governed assets in `assets.yaml`). The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
 - Some tracked assets have no reviewed in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
-- The inventory tracks <!-- count:deployed_tables -->31 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
+- The inventory tracks <!-- count:deployed_tables -->34 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1627,6 +1627,13 @@ the honest claim is "no reviewed consumer found", never "no consumer".
 There is no stored `retirement_candidate` boolean. The condition is computed; only the human
 outputs — `retirement_reason` and `retirement_issue` — are recorded.
 
+`retirement_reason` is prose a person writes, but **which assets carry it is not a matter of
+judgement.** The set of assets carrying one must equal the computed candidate set exactly, so
+the field is reserved for that ledger and is not a general "why this will be retired" note. A
+retirement rationale for an asset the predicate does not select belongs in `notes`. Writing one
+into `retirement_reason` makes the authored label disagree with the predicate that exists to
+reproduce it independently, which is the drift the equality check was added to catch.
+
 ### 11.3 Scope: what the inventory covers
 
 `warehouse/assets.yaml` covers the governed Gap Map data system: the assets reachable UPSTREAM from
@@ -1649,26 +1656,29 @@ lose them the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
-staged, not deployed                         <!-- count:staged_assets -->10
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->34
+staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
 logical assets in warehouse/assets.yaml     <!-- count:assets -->42
 ```
 
-The staged ten are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), the
-Phase-3 `registry.axis_assessments` candidate, and the Phase-1 identity outputs
-`registry.resolution_ledger`, `registry.product_aliases`, `registry.org_handles` and
+The staged seven are `observations.source_runs` and `observations.product_adoption_baseline`
+(both Phase 2), the Phase-3 `registry.axis_assessments` candidate, and the Phase-1 identity
+outputs `registry.resolution_ledger`, `registry.product_aliases`, `registry.org_handles` and
 `registry.model_families`: tracked assets whose tables do not exist on the platform yet. The
+three `signal_packages` models were staged here until 2026-09-13, when issue #314 deployed
+them; `downloads` and `downloads_daily` are now deployed, and `product_adoption` is deployed
+and marked `compatibility` because it is a third banding model in a signal namespace and
+retires with its two siblings. The
 two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
 **deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
 was later **externalized** under ADR-003 — frozen under platform ownership and removed from this
 inventory — so it is no longer a governed asset here.)
 `observations.source_runs`, `observations.product_adoption_baseline` and
-`registry.axis_assessments` are staged for a reason the `signal_packages` three are not — they are
-repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
+`registry.axis_assessments` were staged for a reason the `signal_packages` three never were — they
+are repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
 declaration-keyed release-builder candidate whose row a maintainer publishes), and `staged` here
 records only that no platform table carries their name.
 Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
@@ -1864,7 +1874,10 @@ exist.
 5. `reads` and `read_by` match what parsing the model bodies and tracked notebooks finds.
 6. No duplicate asset ID or table.
 7. The retirement condition of 11.2 is computed, never read from a stored boolean. Any asset
-   satisfying it must carry a `retirement_reason` and `retirement_issue`. No asset with
+   satisfying it must carry a `retirement_reason` and `retirement_issue`, **and any asset
+   carrying a `retirement_reason` must satisfy it.** The gate tests the equality of the two
+   sets, not one implication, so an authored reason on an unselected asset fails it just as a
+   missing reason on a selected one does. No asset with
    any `consumer_checks` value other than `checked` for `platform_models` or
    `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
