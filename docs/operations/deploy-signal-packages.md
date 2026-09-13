@@ -128,18 +128,31 @@ before: sixteen products gain a package band, three of them moving from the star
 
 `signal_pypi` is **intact and not dropped.** Both things this section used to say needed a
 maintainer are done: `not_primary_channel` shipped in #563, and `columns=` was applied to
-`signal_github.artifact_state` — which did not break the deadlock and instead caused the cascade
-described below. What remains is #562 steps 3 to 5.
+`signal_github.artifact_state`. That did not break the deadlock, and — contrary to what this
+document said for several hours — it did not cause one either. What remains is #562 steps 3 to 5.
 
 ## The determinism lock, which is the expensive lesson here
 
-A release may not change a model's schema-determinism verdict, **in either direction**. The
-verdict depends on what a model reads, so changing an upstream can lock downstream models nobody
-touched. Adding `columns=` to `signal_github.artifact_state` on 2026-09-13 locked five.
+A release may not change a model's schema-determinism verdict, **in either direction**, and a
+large share of this org's models could not be released at all on 2026-09-13 — including datasets
+with no connection to the gap map.
 
-The refusal names the model you are releasing, not the upstream that moved, so it reads as a
-fault in your own change. Isolate it with a byte-identical control: re-release the previous SQL
-unchanged, and if that is refused too the cause is upstream.
+**This section first blamed our own `columns=` change on `signal_github.artifact_state`, and that
+was wrong.** Twenty of the frozen models never read that table. The two events happened within
+minutes of each other and the second was read as a consequence of the first for most of a day.
+Correcting it here because the wrong version told a maintainer to expect a cascade from their own
+edit, which is the opposite of the right instinct.
+
+The refusal names the model you are releasing, so it always reads as a fault in your own change.
+**Isolate it with a byte-identical control:** re-release the previous revision unchanged. If that
+is refused too, the cause is not your edit. Two models tested this way behaved differently on the
+same day — `currentai.metrics.daily` re-released cleanly while `currentai.scores.taxonomy` was
+refused — so the question is always per-model, never org-wide.
+
+**Do not read the verdict off an unreleased draft.** For SQL the schema is derived and frozen at
+release, so a fresh revision can report non-deterministic with zero columns and still release
+fine, coming back with its full schema. Reading drafts produced a wrong count twice in one
+evening.
 
 There is no repair, only recreation. `updateDataModel` accepts a `name`, returns `success: true`
 and leaves the name unchanged, because the name lives on the revision and releasing one is what
@@ -147,11 +160,15 @@ is refused — so delete and recreate under the target name. Recreation loses th
 table, the model context and the schedule, and two of those come back wrong by default:
 `deploy_udm.py` sets a new model to `@manual`, and a brand-new dataset has no cron at all.
 
-**Recreation restores releasability and does not immunize.** Read `isSchemaDeterministic` on
-`latestRevision`. Passing an explicit column schema does not flip it. As of 2026-09-13, ten of
-the org's 59 models resolve non-deterministic and they are almost exactly this scoring chain, so
-the same lock can recur on any of them. Before adding `columns=` to anything, list what reads it
-and expect every one of those to need recreating.
+**Recreation restores releasability and does not immunize.** A recreated model is stable at
+whatever verdict it is born with, which is the only reason it releases. If the platform's
+resolution behaviour changes again, these models move in the other direction and lock again, so
+treat a recreation as a way out of today rather than a fix.
+
+For a **Python** model the schema comes from the in-code `columns=` declaration, so a model whose
+schema was supplied as the `schema:` argument instead cannot be re-released at all. Declaring
+`columns=` is the repair, and it only takes effect on a newly created model. That is what the
+four fetchers of #358 needed.
 
 ## Proving it
 
