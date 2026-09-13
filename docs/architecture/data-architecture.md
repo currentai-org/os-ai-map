@@ -1627,6 +1627,13 @@ the honest claim is "no reviewed consumer found", never "no consumer".
 There is no stored `retirement_candidate` boolean. The condition is computed; only the human
 outputs — `retirement_reason` and `retirement_issue` — are recorded.
 
+`retirement_reason` is prose a person writes, but **which assets carry it is not a matter of
+judgement.** The set of assets carrying one must equal the computed candidate set exactly, so
+the field is reserved for that ledger and is not a general "why this will be retired" note. A
+retirement rationale for an asset the predicate does not select belongs in `notes`. Writing one
+into `retirement_reason` makes the authored label disagree with the predicate that exists to
+reproduce it independently, which is the drift the equality check was added to catch.
+
 ### 11.3 Scope: what the inventory covers
 
 `warehouse/assets.yaml` covers the governed Gap Map data system: the assets reachable UPSTREAM from
@@ -1867,7 +1874,10 @@ exist.
 5. `reads` and `read_by` match what parsing the model bodies and tracked notebooks finds.
 6. No duplicate asset ID or table.
 7. The retirement condition of 11.2 is computed, never read from a stored boolean. Any asset
-   satisfying it must carry a `retirement_reason` and `retirement_issue`. No asset with
+   satisfying it must carry a `retirement_reason` and `retirement_issue`, **and any asset
+   carrying a `retirement_reason` must satisfy it.** The gate tests the equality of the two
+   sets, not one implication, so an authored reason on an unselected asset fails it just as a
+   missing reason on a selected one does. No asset with
    any `consumer_checks` value other than `checked` for `platform_models` or
    `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
