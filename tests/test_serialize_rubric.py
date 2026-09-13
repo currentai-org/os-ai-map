@@ -698,11 +698,21 @@ def test_real_sources_serialize_without_errors(real_rubric):
     #
     # `edge_hardware` is the first HARDWARE category and the only ladder with no
     # `license_tier`. It was 6: 4 rungs, each a single condition on `schematics` except the
-    # two that also test `toolchain`. It is 7 since 2026-08-12, when a single-condition
+    # two that also test `toolchain`. It was 7 from 2026-08-12, when a single-condition
     # `accessory_host` rung was added at the top of the formula on the ruling that an
     # accessory tracks the platform it completes. It decides a different KIND of product
-    # rather than a better one - `raspberry-pi-ai-hat-plus` is a HAT, and the four rungs
+    # rather than a better one - `raspberry-pi-ai-hat-plus` is a HAT, and the rungs
     # below it all assume the thing being scored is a board.
+    #
+    # 9 -> 17 on 2026-09-12 (#219), when `form_factor` landed. Eight of those rows are the
+    # new chipset rung, which serializes as three (`form_factor`, `datasheets`,
+    # `availability`), plus one `board_design` row on each of the five rungs that turn on
+    # `schematics`: a bare SoC has no board design files, so those rungs answer about an
+    # artifact it does not have, and each now says so in its own conditions rather than
+    # relying on sitting below the chipset rung. First match wins, so position guards
+    # nothing - a chipset falling past its own rung would meet a board's next.
+    # No score moved; `rockchip-rk3588` stopped being deferred and `ti-am67a` and
+    # `nxp-imx-8m-plus` reach their unchanged 3/documented by the chipset rung.
     # Software is 13 since 2026-08-12, and `safeguards` 23, because `permissive_non_osi`
     # got a rung back. Three rows, not one: it tests `license_tier`, `source` and
     # `core_gated`, and a three-condition rung serializes as three. Note the shape of the
@@ -718,7 +728,7 @@ def test_real_sources_serialize_without_errors(real_rubric):
             ("base_pretrained", "finetuned_chat", "safeguards", "benchmark_eval_data",
              "training_synthetic_datasets", "edge_hardware")} == {
         "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 23,
-        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 9,
+        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 17,
     }
     # Software categories inherit ONE ladder, so they must all serialize the same rule
     # count. Identical counts are the point: a category showing a different number means
@@ -960,8 +970,8 @@ def test_real_sources_serialize_without_errors(real_rubric):
         # six rows it now publishes include the `framework` and `note` keys it already carried.
         # The category now defers nothing.
         "safeguards": 123,
-        # 17 scored hardware products across the five recorded dimensions, less the keys
-        # individual products do not record. No license row among them, by design -
+        # 20 scored hardware products across the seven keys they record, read as nine
+        # declared dimensions, less the keys individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.
         #
         # 83 -> 90 when raspberry-pi-ai-hat-plus's deferral closed on 2026-08-12. It had been
@@ -972,9 +982,20 @@ def test_real_sources_serialize_without_errors(real_rubric):
         # 90 -> 95 the same day when arduino-uno-q moved 3/documented to the 5/open_hardware
         # the ladder computes, on openly licensed CC-BY-SA 4.0 design files - the same
         # `schematics: open` as beagley-ai. Five rows, from none while deferred.
-        # rockchip-rk3588 stays deferred pending the form_factor proposal (#219) and so still
-        # publishes nothing, which is what holds the rise to the one product.
-        "edge_hardware": 95,
+        #
+        # 95 -> 158 on 2026-09-12 when `form_factor` landed (#219). Four movements in one
+        # number, and they are worth separating. Nineteen already-scored products each gained
+        # one `form_factor` row (+19). rockchip-rk3588's deferral closed, so it went from
+        # publishing nothing to publishing all five of its recorded keys (+5), the fifth being
+        # the `retail` this change records for it - the chipset rung asks whether anybody can
+        # buy one, and until now nothing in the file answered. Then two derived dimensions
+        # publish a row each wherever the key they read is recorded: `board_design` on all 20,
+        # `availability` on the 19 that record `retail`. 95 + 19 + 5 + 20 + 19 = 158.
+        #
+        # A derived dimension emits its own row because the warehouse joins a rule's
+        # condition_key against this column, and the rungs test `board_design`, not
+        # `form_factor`. The recorded key is not lost: it goes out under its own name too.
+        "edge_hardware": 158,
         # compilers and storage joined on 2026-08-18, promoted from the tail registry with 26
         # and 27 products. Both inherit the shared software ladder and both record the same three
         # dimensions per product, so the row count runs close to 4 x products, short of it because

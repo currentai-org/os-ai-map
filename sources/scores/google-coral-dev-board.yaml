@@ -21,6 +21,10 @@ openness:
       value: discontinued
       detail: broadly purchasable
       raw: open_market (broadly purchasable)
+    form_factor:
+      value: board
+      detail: baseboard carrying a Google SoM, sold as one board
+      raw: board (baseboard carrying a Google SoM, sold as one board)
   confidence: high
   note: 'Google publishes a public datasheet and the baseboard design files, and there is an open runtime
     with a TensorFlow Lite path, but the Edge TPU silicon and the model compiler are proprietary closed
@@ -41,11 +45,12 @@ openness:
     names no hardware and links no purchase route; and no reachable distributor confirms stock, with Mouser
     serving a bot-denial page and Farnell and Digi-Key refusing automated requests. Open market, distributor-only
     and restricted all describe a part somebody can still buy under some terms, so a withdrawn part is recorded
-    instead as discontinued. The wording is score-neutral either way, since no rung on the hardware ladder
-    reads the retail component.'
-  raw: schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM
-    withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required
-    (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)
+    instead as discontinued. The wording is score-neutral for this product, since no BOARD rung
+    reads the retail component - the chipset rung does, through `availability`, and this is a board.'
+  raw: schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial
+    (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary
+    Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable);form_factor:board (baseboard
+    carrying a Google SoM, sold as one board)
   last_verified: '2026-08-14'
   sources:
   - url: https://coral.ai/products/dev-board
@@ -69,6 +74,7 @@ openness:
     establishes:
     - schematics
     - datasheets
+    - form_factor
   - url: https://github.com/google-coral/electricals
     shows: '"Electrical designs for coral.ai projects", Apache-2.0, public; dev_board/ holds
       Coral-Dev-Board-baseboard-schematic.pdf, -schematic-Altium.zip and -layout-Allegro.brd, which is

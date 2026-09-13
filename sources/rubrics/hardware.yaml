@@ -21,9 +21,89 @@
 # certified, which is the closest thing hardware has to OSI approval, and that is what keeps
 # `open_hardware` in the `open` bucket honest - see docs/reference/openness.md.
 #
-# Verified against edge_hardware, 18/20.
+# Verified against edge_hardware. Run `build.check_rubric` for the reproduction figure rather
+# than reading one typed here - the figure that used to sit on this line, 18/20, was two
+# corrections out of date by the time anybody read it.
 openness:
   dimensions:
+    form_factor:
+      question: Is the thing being scored a board, a module, or a bare chipset?
+      # WHICH QUESTIONS APPLY, asked before any of them are.
+      #
+      # Every dimension below this one was written for a board, and `schematics` - the
+      # dimension five of the eight rungs turn on - asks whether the board design files were
+      # published. The roster holds three kinds of thing, and asking that of the other two
+      # answers about the wrong artifact. `rockchip-rk3588` is the case and it cost a
+      # deferral: an application-processor SoC records nothing under `schematics`, correctly,
+      # because there was never a board whose design could have been withheld, and the ladder
+      # could not tell that from a board whose designer published nothing. It abstained, and
+      # the category deferred it for a month. The owner ruled on 2026-09-08 that the
+      # distinction is a dimension rather than a special case. Issue #219.
+      #
+      # The line between the three is what the vendor SELLS, not what is inside it. Every
+      # board on the roster carries a chipset and several carry a module; the question is
+      # which of them the buyer receives.
+      values: [board, module, chipset]
+      evidence:
+      - '`board`: a finished PCB sold ready to power on, whose design somebody could have
+        published. Eleven of the twenty, `raspberry-pi-5` through `sipeed-maixcam`.
+        `raspberry-pi-ai-hat-plus` is one too: a HAT is an add-on rather than a host, but it
+        is still a board, and the HAT+ specification it publishes is a board specification.
+        Which host it completes is a separate question, answered by `accessory_host`'
+      - '`module`: a part sold to be carried by somebody else''s board - an M.2 or mPCIe
+        card, a SO-DIMM, a SoM. `nvidia-jetson-orin-nx` is a 260-pin SO-DIMM and `hailo-8`
+        an M.2 Key B+M card; both have a design their vendor could have released and did
+        not. So `schematics: none` on a module means withheld, which is a real answer to the
+        board question, and a module climbs the board rungs unchanged'
+      - '`chipset`: the silicon itself, sold to be designed onto a board that does not exist
+        yet. `rockchip-rk3588`, `ti-am67a` and `nxp-imx-8m-plus` are application processors.
+        `schematics` has no answer here rather than a negative one, and the clauses two of
+        them do record - `partial (reference designs)`, `none (EVK reference designs only)` -
+        are describing an evaluation kit the vendor sells separately, not the part being
+        scored. Those clauses are left as recorded; the chipset rung simply no longer reads
+        them'
+      machine_signal: none, and unusually there is nothing a fetcher could go and look at.
+        No feed, registry or distributor catalogue carries a product-class field; the vendor
+        says it in prose on its own page - "M.2 Key B+M", "260-pin SO-DIMM connector",
+        "applications processor family" - and a human reads the sentence. The nearest thing
+        to a route is a distributor's category tree, which is a taxonomy of what a shop
+        stocks rather than of what a part is
+    board_design:
+      question: Is there a board design of the product being scored, for the design
+        questions below to be about?
+      # The same fact as `form_factor`, in the vocabulary the design rungs need, and the
+      # guard that keeps them off a chipset. A board and a module both have a design
+      # somebody could have published; a chipset does not. Every one of the five rungs
+      # that turn on `schematics` asks this first, so a chipset is never scored by a
+      # question about design files it was never going to have.
+      #
+      # Rung order alone does not do that job, however much it looks as though it does.
+      # First match wins, so a chipset that falls past its own rung meets a board's next:
+      # put the chipset rung on top and leave the design rungs open, and a part whose
+      # datasheets are gated still collects 3/documented from somebody's reference-board
+      # files - a design that is not its own, read by a rung that never asked whose it was.
+      # The routing has to be a condition on the rung, not a position in the list.
+      #
+      # It is a second dimension rather than a condition on `form_factor` because a rung
+      # matches one value exactly - `check_rubric.matches` is equality, deliberately - so
+      # "board or module" needs a name of its own. `reads` plus `value_aliases` is the
+      # mechanism the ladders already use for exactly this, software.yaml reading
+      # `self-host` as `core_gated` and translating its spellings. Nothing new is recorded
+      # for it: it is the `form_factor` every product already carries, read one level up.
+      reads: [form_factor]
+      values: [exists, none]
+      value_aliases:
+        board: exists
+        module: exists
+        chipset: none
+      evidence:
+      - '`exists`: a board or a module, seventeen of the twenty. There is a design of the
+        product being sold, so whether it was published is a fair question and `schematics`
+        is asked'
+      - '`none`: a chipset. There is no board to have designed, so `schematics` has no
+        answer rather than a negative one, and the design rungs are not offered to it'
+      machine_signal: none, and it inherits that from `form_factor` rather than lacking a
+        route of its own - it is the same fact, read in the design rungs' terms
     schematics:
       question: Are the board design files published, and may they be reused?
       # THE deciding dimension. Every board rung turns on it, which is not an accident:
@@ -52,7 +132,9 @@ openness:
         `raspberry-pi-5` publishes a mechanical drawing and two STEP files, which is what a
         HAT or a case is designed against, and no schematic of the Pi itself'
       - '`none`: no design files. For an accelerator module that means withheld; for a bare
-        chipset it means there is no board to have designed. See the note on form factor'
+        chipset it means there is no board to have designed. That distinction now has
+        somewhere to live: `board_design` is tested by every rung below that reads this one,
+        so a chipset is never asked the question and a module still is'
       machine_signal: none - needs a human to find a design-file repo and read its license.
         OSHWA maintains a certification directory that a fetcher could check, which would
         settle the top rung but not the three below it
@@ -68,11 +150,15 @@ openness:
         never that the compiler is in it, which is exactly the open/partial distinction
     datasheets:
       question: Are the part's datasheets public, or behind an NDA?
-      # Declared and tested by no rung. Every product in the category publishes at least a
-      # product brief, so a rung on this would either be unsatisfiable or fire for all 20.
-      # It stays declared because it is recorded evidence, because it is half of what the
-      # `restricted` tier will turn on the first time an NDA-only part joins the roster, and
-      # because dropping it would make 17 products report vocabulary drift.
+      # Tested by exactly one rung, and only for a chipset. It used to be tested by none, on
+      # the reasoning that every product here publishes at least a product brief so a rung on
+      # it would either be unsatisfiable or fire for all 20 - true of a roster read as one
+      # population, and the thing `form_factor` splits. For a chipset this is one of the two
+      # openness questions the corpus can answer - `availability` is the other - because the
+      # design questions have no subject; for a board it is a caveat beside a design file,
+      # which is why no board rung reads it.
+      # It remains half of what the `restricted` tier will turn on the first time an NDA-only
+      # part joins the roster.
       values: [public, brief, nda]
       machine_signal: none - a vendor page either links a datasheet or it does not, but
         telling a full datasheet from a marketing brief needs a human
@@ -131,24 +217,89 @@ openness:
       machine_signal: none - needs a human to identify the host and read its score
     retail:
       question: Can anyone buy one?
-      # Declared, tested by no rung. Two products record nothing here and the rest split
-      # between open_market and distributor, neither of which any rung distinguishes. It is
-      # the other half of the future `restricted` tier: an NDA/design-win part is one nobody
+      # Read by the chipset rung, through `availability` below, which collapses the two
+      # buyable spellings into the one value a rung can match. No board rung reads it: for a
+      # board `schematics` carries the answer, and availability is a caveat beside it.
+      # `beagley-ai` is the only product recording nothing here, and it is a board.
+      # It is also half of the future `restricted` tier: an NDA/design-win part is one nobody
       # can buy AND whose docs nobody can read.
       # `discontinued` added 2026-08-14 for google-coral-dev-board, which no reachable
       # source describes as buyable: Seeed marks both variants Discontinued and out of
       # stock, coral.ai/products/dev-board 302s to a page naming no hardware and linking
       # no purchase route. None of open_market/distributor/restricted fits - `restricted`
       # means gated by NDA or design win, which is a part somebody CAN buy under terms,
-      # and a withdrawn part is a different fact about a different question. Score-neutral:
-      # no rung reads `retail`.
+      # and a withdrawn part is a different fact about a different question. Score-neutral when
+      # it landed, because no rung read `retail` at all then. It still is: the only rung that
+      # reads it now is the chipset one, `google-coral-dev-board` is a board, and the question
+      # `availability` asks of the two spellings is the same either way - nobody can buy one.
       values: [open_market, distributor, restricted, discontinued]
       machine_signal: none - a listing on a distributor site is checkable in principle,
         but absence of a listing does not establish restriction
+    availability:
+      question: Can this part be obtained commercially today, in the form it is sold in?
+      # `retail` in the vocabulary the chipset rung needs, by the same mechanism and for the
+      # same reason as `board_design`: two of the four recorded spellings mean the part is on
+      # sale, and a rung matches one value at a time.
+      #
+      # It is half of what `documented` means. The category defines the class as "datasheets
+      # public + buyable, but no design files of its own", and until #219 no rung tested
+      # either half - `schematics` carried the whole answer and the rest was inferred from it.
+      # For a board that is harmless. For a chipset there is no design to read, so both halves
+      # have to be asked or the rung is handing out `documented` on one fact, and a part
+      # nobody can buy would collect the word `buyable` on the strength of a PDF.
+      #
+      # No board rung asks it, and that is a choice with a cost worth naming: a module nobody
+      # could buy would still score on its design files alone. Adding the condition to the
+      # design rungs would move a recorded score - `google-coral-dev-board` records
+      # `discontinued` and is recorded at 3/documented - and re-scoring a board is a curation
+      # ruling rather than a side effect of giving the chipset a rung. #219 changed no score
+      # on purpose. Worth its own issue.
+      #
+      # `gated` covers two different reasons a part is not on sale - behind an NDA or a design
+      # win, or withdrawn - and this rung treats them alike because all it asks is whether
+      # anybody can buy one. The reasons stay apart in `retail`, which still records which.
+      reads: [retail]
+      values: [buyable, gated]
+      value_aliases:
+        open_market: buyable
+        distributor: buyable
+        restricted: gated
+        discontinued: gated
+      evidence:
+      - '`buyable`: the silicon can be obtained commercially today, in the form it is sold in.
+        For a board that means the board is on sale; for a chipset it means the part reaches
+        buyers, and the channel that does that is module and board partners rather than a reel
+        of chips - that IS the retail channel for application-processor silicon, not a proxy for
+        one. The question is deliberately about obtaining the part, not about a bare-part
+        purchase: requiring a cut-tape listing would mark almost every SoC in the category
+        ungated-and-unbuyable, which is the less true answer. So a partner listing is evidence
+        FOR this claim rather than an inference about a different artifact, and the note on each
+        record says which channel was read. `ti-am67a` is ACTIVE with an order path on TI''s own
+        product page; `nxp-imx-8m-plus` and `rockchip-rk3588` reach buyers through the module
+        partners who build on them. Ruled 2026-09-12'
+      - '`gated`: nobody can buy one, either because the part is behind an NDA or a design win
+        (`restricted`, which nothing on the roster records) or because it has been withdrawn
+        (`discontinued`, which is `google-coral-dev-board`)'
+      machine_signal: none, and the asymmetry `retail` records carries over - a distributor
+        listing is checkable in principle, but absence of a listing does not establish that
+        nobody can buy the part
 
   # Ordered, first match wins. No `otherwise`: a product recording no `schematics` value is
   # unrecorded rather than closed, and an `otherwise` would score it at whatever the last
-  # rung happened to be.
+  # rung happened to be. That absence is load-bearing in this change - it is what makes
+  # falling off the ladder an available outcome, and therefore what lets a rung insist on
+  # two facts instead of settling for one.
+  #
+  # The first three rungs decide which KIND of thing is being scored rather than how open it
+  # is, and they are first for that reason: an accessory answers about its host and a chipset
+  # answers about its documentation and its availability. The five below them are the board
+  # ladder, and each of them SAYS so - `board_design: exists` is the first condition on every
+  # one - rather than relying on its position in the list. Being lower down is not a guard:
+  # first match wins means a chipset that falls past its own rung meets a board's next, so
+  # without the condition a chipset whose datasheets are gated would collect 3/documented
+  # from somebody else's reference-board files. A module takes the board rungs deliberately - it has a
+  # design and its vendor chose not to release it, so `schematics` asks a module a question it
+  # can answer - and that is why the guard is `board_design` rather than `form_factor: board`.
   #
   # There is deliberately no `restricted`/1 rung. The category's prose ladder defines one
   # (NDA / design-win / private-sale only) and no product on the roster is one, so declaring
@@ -156,6 +307,12 @@ openness:
   # dangerous: a dead rule in a first-match-wins formula is a place for a later edit to hide.
   # #133 is what that looks like when it goes wrong. The tier is described in the category's
   # comments so the vocabulary is not lost; it becomes a rung when a part needs it.
+  #
+  # Until then, a part that would sit on it abstains: a chipset answering `datasheets: nda`
+  # or `availability: gated` matches no rung and the category defers it with a reason. That
+  # is the ladder reporting that it does not decide, which is a weaker claim than 1/restricted
+  # and the only one the evidence supports - being unable to read a datasheet is not the same
+  # finding as a vendor gating the part, and one rung cannot tell them apart.
   formula:
   - when: {accessory_host: open_toolchain}
     then: {score: 4, class: open_toolchain}
@@ -174,7 +331,39 @@ openness:
       accessory cannot offer a builder more openness than the system it completes. Reading
       the HAT's own answers instead would score the wrong artifact, which is what this
       dimension exists to prevent.
-  - when: {schematics: open, toolchain: open}
+  - when: {form_factor: chipset, datasheets: public, availability: buyable}
+    then: {score: 3, class: documented}
+    because: >-
+      The first rung that asks a chipset something it can answer, and it asks both halves of
+      what the answer means. `documented` is defined by this category as "datasheets public +
+      buyable, but no design files of its own", so the rung tests the documentation and tests
+      whether anybody can buy one. `rockchip-rk3588` publishes the full technical reference
+      manual and datasheet with no NDA and no registration and reaches buyers through the
+      module and board partners built on it; `ti-am67a` is ACTIVE and orderable from TI;
+      `nxp-imx-8m-plus` is stocked by DigiKey and carried by Toradex. A part whose datasheet
+      is behind a design win answers `nda`, a part nobody can buy answers `gated`, and either
+      one matches no rung and is deferred - the design rungs below all test `board_design`
+      first, so falling past this one leads off the ladder rather than onto a board's.
+
+      It does NOT test the toolchain, and that is a decision rather than an omission. There is
+      no way to let the toolchain decide a chipset's score here that is both true as a general
+      statement and consistent with what this ladder already says. Making an open SDK a
+      REQUIREMENT for 3 would put bare silicon below the module built on it: this category's
+      own vocabulary places "a closed or registration-gated SDK" inside `documented`, and
+      `nvidia-jetson-orin-nx` and `nvidia-jetson-agx-orin` both record `toolchain: closed` and
+      score 3. Making it a LIFT to 4 fails from the other side, because 4 is a claim about a
+      published design that a chipset does not have, and `ti-am67a` and `nxp-imx-8m-plus`
+      record `toolchain: open` and are recorded at 3. So the toolchain is recorded on all
+      three chipsets and read by no rung, which is the honest place to leave it. `blobs` sits
+      there too, for a neighbouring reason it has carried since #132: every part in this
+      category needs proprietary firmware, so it separates none of them.
+
+      3 is the ceiling for a chipset and it is not a consolation prize. The rungs above are
+      claims about a design somebody can READ (4) and REUSE (5), and a chipset has none to
+      publish. A rung splitting the three chipsets by toolchain was drafted and dropped: both
+      outcomes are 3 under this vocabulary, so it would have added a rule that changes no
+      number, which is the clutter the `restricted` tier is kept out of the ladder to avoid.
+  - when: {board_design: exists, schematics: open, toolchain: open}
     then: {score: 5, class: open_hardware}
     because: >-
       Design files published under terms permitting reuse, and a stack that builds from open
@@ -182,13 +371,13 @@ openness:
       runs on a closed SoC, so requiring open silicon would make the rung unreachable by
       construction. Reusable terms are what keep this in the `open` bucket - it is hardware's
       analogue of the OSI requirement the other ladders enforce.
-  - when: {schematics: published, toolchain: open}
+  - when: {board_design: exists, schematics: published, toolchain: open}
     then: {score: 4, class: open_toolchain}
     because: >-
       Schematics readable but not reusable, which is the distinction the class name draws:
       what is open here is the toolchain. `radxa-rock-5b` publishes PDFs, DXF and STP and
       explicitly withholds editable PCB source.
-  - when: {schematics: published}
+  - when: {board_design: exists, schematics: published}
     then: {score: 3, class: documented}
     because: >-
       A design you can read and a stack you cannot build. The rung above is a claim about the
@@ -198,19 +387,23 @@ openness:
       layout all published, Edge TPU compiler a closed binary. `documented` is the word the
       category's own ladder already uses for a closed or registration-gated SDK, so this
       rung names the state rather than inventing one.
-  - when: {schematics: partial}
+  - when: {board_design: exists, schematics: partial}
     then: {score: 3, class: documented}
     because: >-
       A carrier guide or an EVK design documents how to build your own board; it is not the
       design of the board being sold. An open SDK does not make the hardware open, which is
       why the rung ignores `toolchain` entirely.
-  - when: {schematics: none}
+  - when: {board_design: exists, schematics: none}
     then: {score: 3, class: documented}
     because: >-
-      Accelerator modules and bare chipsets publish datasheets and no design files. The tier
-      is named `documented` because that is precisely what it is - and it is the same 3 as
-      the rung above, because from a builder's position a partial design and no design differ
-      less than either differs from a design you may reuse.
+      An accelerator module whose vendor published nothing of its design. `none` here means
+      withheld, which is why the rung still reads as a judgment about openness: the four
+      products that reach it - `hailo-8`, `hailo-10h`, `axelera-metis-aipu`, `memryx-mx3` -
+      each have an M.2 or PCIe card whose files could have been released. A chipset recording
+      the same word means something else and does not reach this rung; that is what
+      `board_design` is for. The tier is named `documented` because that is precisely what it
+      is, and it is the same 3 as the rung above, because from a builder's position a partial
+      design and no design differ less than either differs from a design you may reuse.
 
 # Adoption bands: which monthly figure maps to which level, for this product type.
 #
