@@ -66610,7 +66610,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)",
+            "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
             "note": "Raspberry Pi publishes an open Linux kernel tree and public datasheets and the board is on sale worldwide, but it publishes no schematic for the Pi 5 at all. The Pi 4's reduced schematic is still served at datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf; the matching Pi 5 path returns nothing, and the documentation index offers for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one of them with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - rather than a design, so the published design files count as partial, and a partial design holds the board at 3, documented, however open the kernel tree is. The public documentation rests on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi 5's own I/O controller, served without registration under CC BY-ND and carrying no NDA or confidentiality notice anywhere in it. The firmware position rests on the raspberrypi/firmware README, which splits the tree by licence - \"start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader\", covered by Broadcom's licence, against kernel images, device trees and modules under the GPL. Availability rests on The Pi Hut listing all five SKUs in stock with an add-to-cart button and no account gate. One inconsistency is worth stating rather than resolving here: this board describes its proprietary Broadcom boot chain as minimal firmware, where all nineteen other boards in the category describe the same shape of fact as required firmware, beagley-ai included. Nothing scored turns on the difference, because no rung on the hardware ladder reads the firmware component at all.",
             "last_verified": "2026-08-14",
@@ -66622,7 +66622,8 @@
                 "http_status": 200,
                 "content_sha256": "5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2",
                 "establishes": [
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ]
               },
               {
@@ -66749,7 +66750,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
+            "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market);form_factor:board (HAT+ add-on board; the host it completes is recorded under accessory-host)",
             "confidence": "medium",
             "note": "An officially supported open Raspberry Pi software stack and a public product page, on sale worldwide, but the underlying Hailo model-compiler toolchain is registration-gated. The HAT is scored as an accessory: an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into. Its own design files and its own toolchain are each only partly open, and neither describes the system anyone actually uses, so the host's openness is what decides the score. The Pi 5 sits at 3, documented, because it publishes no schematic, only a mechanical drawing, and an accessory cannot offer more openness than the system it completes, so this HAT sits at 3 as well. raspberrypi.com refuses every automated request, so the evidence here is Raspberry Pi's own AI HAT+ product brief, RP-008133-DS, on datasheets.raspberrypi.com, which carries four of the six components on its own. The documentation counts as a brief rather than a full datasheet because that is what it is - six pages of overview, a specification table, a dimensioned drawing and safety text, against the 93-page register-level datasheet the Pi 5 gets. The design files count as partial on the HAT+ Specification, which describes itself as \"A guide to designing Hardware-Attached-on-Top of a Raspberry Pi\" and licenses its contents for use \"solely in conjunction with the Raspberry Pi products\" - an interface standard for building your own board, not this board's design. The host pairing comes from the brief tying the HAT to one host and no other: it \"communicates using Raspberry Pi 5's PCIe Gen 3 interface\" and ships a stacking kit \"to enable fitting on Raspberry Pi 5\". The toolchain and firmware positions come from Hailo's own repositories rather than the vendor page, HailoRT carrying the open half and the Model Zoo naming the customer-gated compiler. Retail availability comes from The Pi Hut stocking both variants.",
             "last_verified": "2026-08-14",
@@ -66774,7 +66775,8 @@
                 "http_status": 200,
                 "content_sha256": "3a0932253767147038383162ac9f4b5aac3adb048c30bd1f9177a462a054ca1e",
                 "establishes": [
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ]
               },
               {
@@ -66881,7 +66883,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (carrier design guide public);toolchain:closed (JetPack/Jetson Linux free but NVIDIA-SLA proprietary);datasheets:public;blobs:required (proprietary GPU drivers/bootloader required);retail:open_market (mass-market)",
+            "components": "schematics:partial (carrier design guide public);toolchain:closed (JetPack/Jetson Linux free but NVIDIA-SLA proprietary);datasheets:public;blobs:required (proprietary GPU drivers/bootloader required);retail:open_market (mass-market);form_factor:board (developer kit - the module on its own carrier board)",
             "confidence": "high",
             "note": "Public datasheets and globally purchasable, but the SDK requires proprietary NVIDIA drivers/blobs under license, so it sits in the documented tier despite the community OE4T BSP. The developer-kit page publishes a datasheet link and directs buyers to worldwide partners, the Jetson Orin family page points designers at the Product Design Guide rather than releasing the kit's own board files, and Jetson Linux 39.2.1 ships its kernel, UEFI bootloader and NVIDIA drivers under the NVIDIA Software License Agreement.",
             "last_verified": "2026-08-13",
@@ -66892,7 +66894,8 @@
                 "accessed": "2026-08-13",
                 "establishes": [
                   "datasheets",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "bfc0f0b3900815dcad4c93c9b773b1eaafd9be69c143f0e1002f9fd1f507d952"
@@ -66975,7 +66978,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor (via distributors)",
+            "components": "schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor (via distributors);form_factor:module (699-pin Mirror Mezz module for a carrier board)",
             "confidence": "high",
             "note": "Public datasheets and commercially purchasable, but SDK relies on proprietary NVIDIA blobs under license, placing it in the documented tier. The family page publishes module data sheets and points designers at the Product Design Guide rather than releasing the module's own board files, routes buyers through the Jetson partner ecosystem, and Jetson Linux 39.2.1 ships kernel, UEFI bootloader and NVIDIA drivers under the NVIDIA Software License Agreement.",
             "last_verified": "2026-08-13",
@@ -66987,7 +66990,8 @@
                 "establishes": [
                   "schematics",
                   "datasheets",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "99efa728010da0ac785f54233fbef4e621123d6f61ca67f2df5deee3d3df3fe2"
@@ -67060,7 +67064,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor (via distributors)",
+            "components": "schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor (via distributors);form_factor:module (260-pin SO-DIMM module for a carrier board)",
             "confidence": "high",
             "note": "Public datasheets and purchasable through distributors, but the SDK depends on proprietary NVIDIA blobs under license. The family page publishes module data sheets and points designers at the Product Design Guide rather than releasing the module's own board files, routes buyers through the Jetson partner ecosystem, and Jetson Linux 39.2.1 ships kernel, UEFI bootloader and NVIDIA drivers under the NVIDIA Software License Agreement.",
             "last_verified": "2026-08-13",
@@ -67072,7 +67076,8 @@
                 "establishes": [
                   "schematics",
                   "datasheets",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "99efa728010da0ac785f54233fbef4e621123d6f61ca67f2df5deee3d3df3fe2"
@@ -67145,7 +67150,7 @@
           "openness": {
             "class": "open_toolchain",
             "score": 4,
-            "components": "schematics:published (published PDF);toolchain:open (open GPL-2.0 BSP/build system);datasheets:public (public RK3588S);blobs:required (Rockchip firmware required);retail:open_market (global)",
+            "components": "schematics:published (published PDF);toolchain:open (open GPL-2.0 BSP/build system);datasheets:public (public RK3588S);blobs:required (Rockchip firmware required);retail:open_market (global);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
             "note": "Proprietary Rockchip silicon with an open GPL-2.0 BSP, public datasheet and schematics, and global retail availability, but bootable images depend on Rockchip firmware blobs.",
             "last_verified": "2026-08-13",
@@ -67176,7 +67181,8 @@
                 "accessed": "2026-08-13",
                 "establishes": [
                   "datasheets",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "9477dddc0147a7932d0959d44d7e687e5d09d047b76aa181786e08c88917fc94"
@@ -67253,7 +67259,7 @@
           "openness": {
             "class": "open_toolchain",
             "score": 4,
-            "components": "schematics:published (PDF + SMD maps + DXF + 3D STP + CE/FCC public);toolchain:open (open BSP/kernel/U-Boot);blobs:required (Rockchip rkbin/DDR/TF-A required);retail:open_market (global)",
+            "components": "schematics:published (PDF + SMD maps + DXF + 3D STP + CE/FCC public);toolchain:open (open BSP/kernel/U-Boot);blobs:required (Rockchip rkbin/DDR/TF-A required);retail:open_market (global);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
             "note": "Schematics and mechanical files are publicly downloadable and the BSP is open, but the RK3588 needs proprietary Rockchip blobs and editable PCB source is not released.",
             "last_verified": "2026-08-13",
@@ -67263,7 +67269,8 @@
                 "shows": "Hardware Design section listing \"v1.3 Schematic pdf\", \"v1.42 Schematic pdf\", \"v1.3 SMD pdf\", \"v1.3 2D Top&Bottom dxf\", \"v1.42 3D Figure stp\" and a Quality certification section with CE EMC test reports; no editable PCB source offered",
                 "accessed": "2026-08-13",
                 "establishes": [
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "5be2c030020841b46a9db971a60695cb5e30415494eabed3d8d53e166dbd4ec5"
@@ -67362,7 +67369,7 @@
           "openness": {
             "class": "open_toolchain",
             "score": 4,
-            "components": "schematics:published (versioned PDFs published);toolchain:open (open GPL-2.0 Fenix + mainline Armbian);datasheets:public (public SoC TRM);blobs:required (Rockchip NPU/boot blobs required);retail:open_market (global)",
+            "components": "schematics:published (versioned PDFs published);toolchain:open (open GPL-2.0 Fenix + mainline Armbian);datasheets:public (public SoC TRM);blobs:required (Rockchip NPU/boot blobs required);retail:open_market (global);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
             "note": "Khadas publishes versioned board schematics and an open toolchain with mainline Armbian support, but proprietary Rockchip silicon and required firmware blobs keep it at the open-toolchain tier rather than fully open hardware. One caveat on the documentation: this record describes the public datasheet as an RK3588S2 technical reference manual, where what is actually readable is Rockchip's brief RK3588 datasheet plus Khadas's own published specification.",
             "last_verified": "2026-08-13",
@@ -67372,7 +67379,8 @@
                 "shows": "directory index of /products/edge2/schematics/ listing edge2-sch-v11.pdf, edge2-sch-v12.pdf, edge2-sch-v13.pdf and matching silkscreen PDFs",
                 "accessed": "2026-08-13",
                 "establishes": [
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "32fb979dda95231cd393dee14d5a7c3c78e4bcf74164524ac216c880d4923be2"
@@ -67477,7 +67485,7 @@
           "openness": {
             "class": "open_hardware",
             "score": 5,
-            "components": "schematics:open (schematics + 3D/mechanical files, CC-BY/CC-BY-SA-4.0, OSHWA-certified US002616);toolchain:open (open Linux/U-Boot BSP);datasheets:public (public TI AM67A datasheet);blobs:required (TI DSP/WiFi firmware blobs a caveat)",
+            "components": "schematics:open (schematics + 3D/mechanical files, CC-BY/CC-BY-SA-4.0, OSHWA-certified US002616);toolchain:open (open Linux/U-Boot BSP);datasheets:public (public TI AM67A datasheet);blobs:required (TI DSP/WiFi firmware blobs a caveat);form_factor:board (SBC sold ready to run, OSHWA-certified as a board)",
             "confidence": "high",
             "note": "Full board design files published under Creative Commons and OSHWA-certified, with an open toolchain and a public datasheet, though proprietary AM67A silicon and firmware blobs are a caveat. The OSHWA certification is US002616, recording hardware under CC-BY-4.0, software under the GPL and documentation under CC-BY-SA-4.0. The design page itself no longer prints the OSHWA UID, though the certificate and the repository README both still do.",
             "last_verified": "2026-08-13",
@@ -67488,7 +67496,8 @@
                 "accessed": "2026-08-13",
                 "establishes": [
                   "schematics",
-                  "toolchain"
+                  "toolchain",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "2863573852c2ebfa8cf746eef592e52abd6fd1434365bba08fa1b170536499bf"
@@ -67580,9 +67589,9 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU firmware)",
+            "components": "toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU firmware);retail:distributor (commercial through Rockchip's module and board partners);form_factor:chipset (application-processor SoC, not a board)",
             "confidence": "high",
-            "note": "Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware. The brief datasheet downloads straight from rock-chips.com with no registration or NDA, the RKNN SDK licence in airockchip/rknn-toolkit2 is the proprietary \"RKNN SDK License\" (no reverse engineering, use restricted to Rockchip products), and rkbin distributes the DDR/BL31/OPTEE firmware as prebuilt binaries.",
+            "note": "Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware. The brief datasheet downloads straight from rock-chips.com with no registration or NDA, the RKNN SDK licence in airockchip/rknn-toolkit2 is the proprietary \"RKNN SDK License\" (no reverse engineering, use restricted to Rockchip products), and rkbin distributes the DDR/BL31/OPTEE firmware as prebuilt binaries. The part is not sold from a Rockchip storefront and no distributor page for the bare silicon was reachable, so retail rests on the module partners who build on it. Firefly lists the Core-3588J, a system-on-module carrying this SoC, at $289 with a working order path.",
             "last_verified": "2026-08-13",
             "sources": [
               {
@@ -67590,7 +67599,8 @@
                 "shows": "Rockchip's own RK3588 brief datasheet, downloadable from rock-chips.com with no registration or NDA - block diagram, quad Cortex-A76 + quad Cortex-A55, Mali-G610 MP4, High Performance NPU, LPDDR4/LPDDR4X/LPDDR5 quad-channel",
                 "accessed": "2026-08-13",
                 "establishes": [
-                  "datasheets"
+                  "datasheets",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "81aff61337ab10bf0f7c9234450703816037af169bf6657d3d62b868bd61fd1a"
@@ -67621,6 +67631,16 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "b5ca75ad042e019b490b1627bd74996fe02a72a320a1d292db2accd549e0dd71"
+              },
+              {
+                "url": "https://www.t-firefly.com/products/core-3588j-8k-ai-core-board-rockchip-rk3588-new-gen-8-core-64-bit-processor",
+                "shows": "a module partner selling the part commercially - \"Core-3588J 8K AI System on Module RK3588 SOC 4G RAM+32G ROM\" listed at $289.00 with an Add to cart path",
+                "accessed": "2026-09-12",
+                "establishes": [
+                  "retail"
+                ],
+                "http_status": 200,
+                "content_sha256": "f50a563d6cbe9b2293c3dff620643091020ebb98f1de996061dc76a1b79e1a4d"
               }
             ],
             "bucket": "closed"
@@ -67687,7 +67707,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules)",
+            "components": "schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules);form_factor:module (M.2 Key B+M accelerator card, also sold as bare silicon)",
             "confidence": "high",
             "note": "Proprietary silicon with an open source runtime and public product briefs, but the model-compiler toolchain requires registration and the silicon itself is closed. HailoRT's README carries the open half of the toolchain - \"libhailort, pyhailort & hailortcli - distributed under the MIT license\", with hailonet under LGPL 2.1 - and the gated half is named by the Model Zoo README, which instructs \"Install Hailo Dataflow Compiler ... In case you are not Hailo customer please contact hailo.ai\". The same README is why firmware blobs are required: the PCIe driver \"includes the Hailo-8 firmware that runs on the Hailo device\". The published documentation is Hailo's own Hailo-8 M.2 data sheet Rev 1.1, mirrored publicly by distributor Premio and stamped \"Hailo proprietary - unauthorized reproduction prohibited\", which is also why no schematics are published at all. Retail availability is Waveshare listing the module at $179.99 with an add-to-cart button. hailo.ai refuses every automated request, so all of this rests on substitute sources.",
             "last_verified": "2026-08-14",
@@ -67726,7 +67746,8 @@
                 "content_sha256": "b4b4953effe80c43eeafe323505d4d71ba4ab9f5612c05f9ce71e65c6008256c",
                 "establishes": [
                   "datasheets",
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ]
               },
               {
@@ -67828,7 +67849,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable)",
+            "components": "schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable);form_factor:module (M.2 accelerator module, also sold as bare silicon)",
             "confidence": "high",
             "note": "Proprietary silicon with published datasheets and an open generative-AI model zoo, but the silicon and the full toolchain are closed. The GenAI model zoo is MIT-licensed, as GitHub's own repository metadata records. HailoRT is MIT and LGPL-2.1, while the developer-zone documentation sits behind registration and the Dataflow Compiler behind a customer relationship, which is the closed half of the toolchain. Firmware blobs are required because HailoRT's driver ships the device firmware. The published documentation is AAEON's UP page, which carries the full specification table for the module, and retail availability is that same page plus Geniatech shipping an independent Hailo-10 module. hailo.ai itself refuses every automated request, so all of this rests on substitute sources.",
             "last_verified": "2026-08-14",
@@ -67868,7 +67889,8 @@
                 "establishes": [
                   "datasheets",
                   "retail",
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ]
               },
               {
@@ -67969,9 +67991,9 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)",
+            "components": "schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable);form_factor:board (baseboard carrying a Google SoM, sold as one board)",
             "confidence": "high",
-            "note": "Google publishes a public datasheet and the baseboard design files, and there is an open runtime with a TensorFlow Lite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries. The datasheet page links design files throughout: a baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an Apache-2.0 LICENSE. That is more than radxa-rock-5b releases, and it stops short of fully open because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has no design files. Published board files reach the next tier up only alongside a stack that builds from source, and the Edge TPU Compiler is a closed binary, so the board lands at 3, documented, either way; what the published files change is that the 3 is derived from what Google actually publishes. The public documentation is that same v1.7 datasheet. The toolchain is partly open: libedgetpu ships its runtime source under Apache-2.0 against an Edge TPU Compiler distributed only as an apt binary from packages.cloud.google.com with no source anywhere, and a repository being archived does not make it closed. Firmware blobs are required because that same closed compiler stands between any model and the proprietary Edge TPU. Retail is the awkward component: the board reads as withdrawn rather than on open sale. Seeed, its named reseller, marks both the 1GB at $129.99 and the 4GB at $169.99 discontinued and out of stock; coral.ai/products/dev-board now redirects to developers.google.com/coral, a page that names no hardware and links no purchase route; and no reachable distributor confirms stock, with Mouser serving a bot-denial page and Farnell and Digi-Key refusing automated requests. Open market, distributor-only and restricted all describe a part somebody can still buy under some terms, so a withdrawn part is recorded instead as discontinued. The wording is score-neutral either way, since no rung on the hardware ladder reads the retail component.",
+            "note": "Google publishes a public datasheet and the baseboard design files, and there is an open runtime with a TensorFlow Lite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries. The datasheet page links design files throughout: a baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an Apache-2.0 LICENSE. That is more than radxa-rock-5b releases, and it stops short of fully open because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has no design files. Published board files reach the next tier up only alongside a stack that builds from source, and the Edge TPU Compiler is a closed binary, so the board lands at 3, documented, either way; what the published files change is that the 3 is derived from what Google actually publishes. The public documentation is that same v1.7 datasheet. The toolchain is partly open: libedgetpu ships its runtime source under Apache-2.0 against an Edge TPU Compiler distributed only as an apt binary from packages.cloud.google.com with no source anywhere, and a repository being archived does not make it closed. Firmware blobs are required because that same closed compiler stands between any model and the proprietary Edge TPU. Retail is the awkward component: the board reads as withdrawn rather than on open sale. Seeed, its named reseller, marks both the 1GB at $129.99 and the 4GB at $169.99 discontinued and out of stock; coral.ai/products/dev-board now redirects to developers.google.com/coral, a page that names no hardware and links no purchase route; and no reachable distributor confirms stock, with Mouser serving a bot-denial page and Farnell and Digi-Key refusing automated requests. Open market, distributor-only and restricted all describe a part somebody can still buy under some terms, so a withdrawn part is recorded instead as discontinued. The wording is score-neutral for this product, since no BOARD rung reads the retail component - the chipset rung does, through `availability`, and this is a board.",
             "last_verified": "2026-08-14",
             "sources": [
               {
@@ -67992,7 +68014,8 @@
                 "content_sha256": "b47ca1ecbc39b2f0c88cdbb55dd3c5053b77728971901027092192c617b494d2",
                 "establishes": [
                   "schematics",
-                  "datasheets"
+                  "datasheets",
+                  "form_factor"
                 ]
               },
               {
@@ -68091,7 +68114,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none;toolchain:open (Voyager SDK on public GitHub);datasheets:brief (product pages/briefs public);blobs:required (proprietary AIPU silicon + firmware);retail:open_market (webstore + partners)",
+            "components": "schematics:none;toolchain:open (Voyager SDK on public GitHub);datasheets:brief (product pages/briefs public);blobs:required (proprietary AIPU silicon + firmware);retail:open_market (webstore + partners);form_factor:module (sold as M.2 modules and PCIe cards)",
             "confidence": "medium",
             "note": "Proprietary in-memory-compute silicon with a publicly available Voyager SDK on GitHub and retail purchasing, but board design files are not open.",
             "last_verified": "2026-08-13",
@@ -68104,7 +68127,8 @@
                   "schematics",
                   "datasheets",
                   "blobs",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "1cbac435bb57fb831cfc088ab93b95edfdf022785053c407b19fd78c53dd2192"
@@ -68183,7 +68207,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none;toolchain:partial (open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler);datasheets:public;blobs:required (proprietary silicon);retail:open_market (Amazon/Mouser ~$149)",
+            "components": "schematics:none;toolchain:partial (open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler);datasheets:public;blobs:required (proprietary silicon);retail:open_market (Amazon/Mouser ~$149);form_factor:module (M.2 2280 module carrying four MX3 chips)",
             "confidence": "high",
             "note": "Proprietary dataflow silicon with public datasheets, retail availability, and several open source runtime/driver repos, though the compiler core is closed.",
             "last_verified": "2026-08-13",
@@ -68194,7 +68218,8 @@
                 "accessed": "2026-08-13",
                 "establishes": [
                   "schematics",
-                  "datasheets"
+                  "datasheets",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "14d338f59a212d65ca4cae04933e6643e1cedba983b98f5ad9963f4bb88e9479"
@@ -68291,7 +68316,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors)",
+            "components": "schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors);form_factor:board (96Boards development-kit board)",
             "confidence": "high",
             "note": "Proprietary Qualcomm silicon with public documentation and a Linux SDK, sold through distributors, but the board itself is not fully open hardware. The public documentation is a product brief, document 87-74789-1 Rev. A, served by docs.qualcomm.com. The design files count as partial on \"The hardware development kit is also compliant with the 96Boards open hardware specification to support a range of mezzanine-board expansions\" - an open interface standard published with a block diagram but no board files. The toolchain counts as open on \"Support for Linux, Android\" plus the Intelligent Multimedia, Robotics, Neural Processing and Hexagon SDKs, and on Qualcomm AI Hub Models being a BSD-3-Clause repository at 1,183 stars. Firmware blobs are required because the whole stack sits on the proprietary QCS6490 with vendor SDKs. Retail comes from Edge Impulse, which names Advantech, Tria, Thundercomm and Quectel as manufacturers of QCS6490 kits. www.qualcomm.com serves a client-rendered 9KB shell to an automated fetch and no header set changes that, which is why the brief is taken from docs.qualcomm.com instead.",
             "last_verified": "2026-08-14",
@@ -68311,7 +68336,8 @@
                   "datasheets",
                   "schematics",
                   "toolchain",
-                  "blobs"
+                  "blobs",
+                  "form_factor"
                 ]
               },
               {
@@ -68397,7 +68423,7 @@
           "openness": {
             "class": "open_hardware",
             "score": 5,
-            "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global)",
+            "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
             "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-design-and-open-toolchain pair that puts beagley-ai at 5. This ladder scores the openness of design files rather than of silicon - the top rung says so in its own terms - and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs are not a reason to place it lower. The toolchain half rests on published source rather than on a vendor claim: github.com/arduino/arduino-app-lab is public under GPL-3.0, 19MB of Go and TypeScript carrying the app, ui-packages and standalone-apps trees, and github.com/arduino/app-bricks-py is public under MPL-2.0. Arduino's FAQ is stale on this point: it still answers \"Is UNO Q open source?\" with schematics and gerbers only, and its App Lab answer still reads \"we are working to publish corresponding source code repositories, they will become available soon\". The public documentation is the 109-page UNO Q user manual for ABX00162-ABX00173, served from docs.arduino.cc as a plain PDF with no registration, alongside the schematics, pinout, CAD and STEP downloads. The board is on open sale: the FAQ names the channels - \"UNO Q is available to order from the official Arduino Store, RS Components, Digikey, Mouser, Macfos\" - and the store sells both SKUs at EUR59,90 and EUR82,90. Firmware blobs are still recorded as required, on the proprietary Dragonwing QRB2210 the board is built around, which is what every other part in this category records for the same fact; but the manual narrows what that covers, and the narrowing is worth recording - the Adreno 702 graphics stack is open, with \"hardware-accelerated 3D graphics rendering through open-source Mesa drivers\", freedreno for OpenGL and turnip for Vulkan, and video encode and decode reached through plain V4L2. What remains closed is the SoC boot chain, which Arduino publishes nothing of.",
             "last_verified": "2026-08-14",
@@ -68411,7 +68437,8 @@
                 "establishes": [
                   "schematics",
                   "toolchain",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ]
               },
               {
@@ -68518,7 +68545,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (reference designs (BeagleY-AI board files open));toolchain:open (open SDK + TIDL tools + Edge AI Studio);datasheets:public (Rev B);blobs:required (proprietary silicon + TIDL firmware);retail:distributor (active via TI and partners)",
+            "components": "schematics:partial (reference designs (BeagleY-AI board files open));toolchain:open (open SDK + TIDL tools + Edge AI Studio);datasheets:public (Rev B);blobs:required (proprietary silicon + TIDL firmware);retail:distributor (active via TI and partners);form_factor:chipset (edge-AI vision SoC, not a board)",
             "confidence": "high",
             "note": "Public datasheet and open SDK/TIDL tools on GitHub, commercially active, but proprietary silicon and firmware keep it short of fully open hardware. TI publishes the \"AM67x Processors datasheet (Rev. B)\" openly and links Jacinto 7 LPDDR4 board design and layout guidelines rather than the design of any product board, and ships a FIRMWARE-BUILDER-AM67A alongside the Linux SDKs; edgeai-tidl-tools is a public repository.",
             "last_verified": "2026-08-13",
@@ -68531,7 +68558,8 @@
                   "schematics",
                   "datasheets",
                   "blobs",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a"
@@ -68610,7 +68638,7 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none (EVK reference designs only);toolchain:open (Linux/Yocto BSP);datasheets:public (IMX8MPCEC);blobs:required (proprietary silicon + NPU firmware);retail:distributor (commercial via NXP and SoM partners)",
+            "components": "schematics:none (EVK reference designs only);toolchain:open (Linux/Yocto BSP);datasheets:public (IMX8MPCEC);blobs:required (proprietary silicon + NPU firmware);retail:distributor (commercial via NXP and SoM partners);form_factor:chipset (applications-processor family, not a board)",
             "confidence": "high",
             "note": "Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files. The documentation is the strongest part of the picture: the datasheet identified as \"Document Number IMX8MPCEC, Rev. 2.1, 07/2023, i.MX 8M Plus Applications Processor Datasheet for Consumer Products\" is mirrored in full and openly downloadable from DigiKey, 111 pages of electrical characteristics, boot modes and pin assignments. The toolchain and the firmware position both come from NXP's own Yocto layer repo - the BSP is public and buildable, and the same README states \"The NXP i.MX End User License Agreement (EULA) is displayed during the setup process ... The license must be accepted to allow access to the NXP EULA-licensed recipes\", which is the gated-blob half stated by the vendor. No board files are published at all: what the BSP offers is machine configurations for NXP's own EVK and FRDM reference boards, and what the datasheet offers is package and pin data, neither of which is a design. Retail rests on Toradex shipping a Verdin SoM around the part and DigiKey stocking the silicon. www.nxp.com itself is unfetchable - it answers 404 to every path tried including its own root, and browser headers change nothing, so this is the host and not the URL - and these components therefore rest on substitute sources.",
             "last_verified": "2026-08-14",
@@ -68628,7 +68656,8 @@
                 "content_sha256": "6cfe20059a1d3bec77bd89893c3db75bcf0fd99b7742f3730adb528f091911d1",
                 "establishes": [
                   "datasheets",
-                  "schematics"
+                  "schematics",
+                  "form_factor"
                 ]
               },
               {
@@ -68716,7 +68745,7 @@
           "openness": {
             "class": "open_toolchain",
             "score": 4,
-            "components": "schematics:published (available via wiki/GitHub);toolchain:open (fully open (MaixPy/MaixCDK, Apache-2.0));datasheets:public (public on wiki);blobs:required (SG2002 silicon proprietary);retail:open_market (global via AliExpress/Taobao)",
+            "components": "schematics:published (available via wiki/GitHub);toolchain:open (fully open (MaixPy/MaixCDK, Apache-2.0));datasheets:public (public on wiki);blobs:required (SG2002 silicon proprietary);retail:open_market (global via AliExpress/Taobao);form_factor:board (camera board sold ready to run)",
             "confidence": "high",
             "note": "Open Apache-2.0 SDKs, public schematics/datasheets, and global retail availability, though the SG2002 silicon itself is proprietary.",
             "last_verified": "2026-08-13",
@@ -68729,7 +68758,8 @@
                   "schematics",
                   "datasheets",
                   "blobs",
-                  "retail"
+                  "retail",
+                  "form_factor"
                 ],
                 "http_status": 200,
                 "content_sha256": "98cfa748b6715a0a8eae56bb6520f503a18b33e43820f373258dd97469db62da"
@@ -73816,7 +73846,7 @@
     }
   },
   "n_total": 685,
-  "generated": "2026-09-12",
+  "generated": "2026-09-13",
   "version": "0.3.0",
   "released": "2026-09-05",
   "contract": 1,
