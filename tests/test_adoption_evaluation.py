@@ -48,7 +48,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # Moved again on 2026-09-11 by the agenta recategorization (#302): the product left
 # telemetry_observability for orchestration_agents, and `category_slug` is one of the columns
 # this digest covers. Same 377 rows, same band, one row's category.
-MEASUREMENTS_DIGEST = "5e27bfeb2652c6e9c187bcb86506503d2e3f6a4840cbdba8b19e5919e8d8bf31"
+# Moved on 2026-09-13 by the `not_primary_channel` declarations (#562), which is the fourth thing
+# this digest tracks: a declaration change. `hexabot`'s npm widget and `yomo`'s crate are declared
+# not to be how either product ships, so neither package kind bears a route any more and both
+# products fall through to stars - 377 -> 379 rows, both new rows level 2, no existing row's
+# value touched (only the added `non_primary_artifacts` column, empty everywhere else).
+MEASUREMENTS_DIGEST = "b5ef45df6fd2650e28f6fe0ae509d801b6bc9568de63664bb62a6bea191b9cf3"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -71,13 +76,13 @@ MEASUREMENTS_DIGEST = "5e27bfeb2652c6e9c187bcb86506503d2e3f6a4840cbdba8b19e5919e
 # standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
 # Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
 
-MEASUREMENT_COUNT = 377
+MEASUREMENT_COUNT = 379
 ROUTING_POLICY_VERSION = "2"
 
 
 @pytest.fixture(scope="module")
 def inputs():
-    return load_inputs()  # (routing_tables, band_rows, category_of, declared, recorded_instruments)
+    return load_inputs()  # build.adoption_measurements.Inputs, a 6-tuple
 
 
 @pytest.fixture(scope="module")
@@ -92,9 +97,9 @@ def scores():
 
 @pytest.fixture(scope="module")
 def measurement_rows(inputs, observations):
-    tables, band_rows, category_of, declared, recorded = inputs
+    tables, band_rows, category_of, declared, recorded, non_primary = inputs
     return measurements(
-        observations, tables, band_rows, category_of, declared, recorded,
+        observations, tables, band_rows, category_of, declared, recorded, non_primary,
         declaration_version_id=TEST_DVID,
         observation_snapshot_id=observation_snapshot_id(observations),
     )
@@ -102,7 +107,7 @@ def measurement_rows(inputs, observations):
 
 @pytest.fixture(scope="module")
 def reconciliation_rows(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared, _recorded = inputs
+    tables, _, category_of, declared, _recorded, _non_primary = inputs
     return reconcile(
         scores, measurement_rows, tables, category_of, declared,
         declaration_version_id=TEST_DVID,
@@ -116,12 +121,12 @@ def _digest(rows, serializer) -> str:
 
 
 def _measure(inputs, observation_rows, recorded_override=None, **overrides):
-    tables, band_rows, category_of, declared, recorded = inputs
+    tables, band_rows, category_of, declared, recorded, non_primary = inputs
     ids = {"declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64}
     ids.update(overrides)
     return measurements(
         observation_rows, tables, band_rows, category_of, declared,
-        recorded if recorded_override is None else recorded_override, **ids,
+        recorded if recorded_override is None else recorded_override, non_primary, **ids,
     )
 
 
@@ -187,7 +192,7 @@ def test_route_selection_is_by_declared_artifacts_not_observations(inputs, obser
 def test_authoritative_active_users_precedes_stars(inputs):
     """A product recorded as active_users with a GitHub artifact must not be scored on stars: the
     authoritative hand-authored route outranks the fallback, and is unmeasured."""
-    tables, band_rows, category_of, _declared, _recorded = inputs
+    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
     obs = [_obs("synthetic-au", "github", "stars", 5000)]
     declared = {"synthetic-au": {"github"}}
 
@@ -206,7 +211,7 @@ def test_authoritative_active_users_precedes_stars(inputs):
 def test_unbridged_npm_route_precedes_stars(inputs):
     """A product declaring an unbridged npm package must be unmeasured on the npm route, not scored
     on GitHub stars — an unbridged authoritative instrument does not fall through."""
-    tables, band_rows, category_of, _declared, recorded = inputs
+    tables, band_rows, category_of, _declared, recorded, _non_primary = inputs
     obs = [_obs("synthetic-npm", "github", "stars", 5000)]
     with_npm = measurements(
         obs, tables, band_rows, category_of, {"synthetic-npm": {"npm", "github"}}, {},
@@ -223,7 +228,7 @@ def test_unbridged_npm_route_precedes_stars(inputs):
 
 
 def test_winning_route_is_the_top_applicable_route(inputs, measurement_rows):
-    tables, _, category_of, declared, recorded = inputs
+    tables, _, category_of, declared, recorded, _non_primary = inputs
     routes, scopes = all_routes(tables), route_scopes(tables)
     for row in measurement_rows:
         winner = select_route(
@@ -231,6 +236,106 @@ def test_winning_route_is_the_top_applicable_route(inputs, measurement_rows):
             row["category_slug"], routes, scopes,
         )
         assert winner is not None and winner["route_id"] == row["route_id"]
+
+
+# --- a declared artifact that is not how the product ships -----------------------
+
+
+def test_non_primary_artifact_leaves_the_sum_and_nothing_else(inputs):
+    """Two PyPI packages, one declared `not_primary_channel`: the PyPI route still applies -- the
+    product does ship a package -- and the figure is the primary package alone. The excluded
+    observation is still in the input set and still nameable; only the sum moves."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    obs = [
+        _obs("synthetic-np", "pypi", "downloads", 900_000, artifact_id="ships-this"),
+        _obs("synthetic-np", "pypi", "downloads", 40, artifact_id="widget", observation_id="widget-obs"),
+    ]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-np": {"pypi"}}, {},
+        {"synthetic-np": {("pypi", "widget")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["route_id"] == "pypi.downloads_30d"
+    assert row["raw_value"] == 900_000, "the non-primary package was summed in"
+    assert row["contributing_observation_ids"] == ["synthetic-np:pypi:downloads"]
+    assert row["non_primary_artifacts"] == "pypi:widget"
+
+
+def test_a_kind_that_is_all_non_primary_falls_through_to_the_next_route(inputs):
+    """The all-non-primary case, which is `hexabot` and `yomo`. The product ships through no
+    package at all, so the package kind bears no route and the next applicable one wins. This is
+    NOT the forbidden fallthrough: that one substitutes a weaker route when an authoritative route
+    was merely unobserved, and here the declaration says there is nothing to observe."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    obs = [
+        _obs("synthetic-all-np", "github", "stars", 4_000),
+        _obs("synthetic-all-np", "pypi", "downloads", 40, artifact_id="widget"),
+    ]
+    kw = dict(declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64)
+    # What load_inputs computes for such a product: pypi is declared but is not a shipping channel.
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-all-np": {"github"}}, {},
+        {"synthetic-all-np": {("pypi", "widget")}}, **kw,
+    )
+    assert [(r["route_id"], r["measured_level"], r["raw_value"]) for r in rows] == [
+        ("github.stargazers_count", 2, 4_000)
+    ]
+    assert rows[0]["non_primary_artifacts"] == "pypi:widget"
+    # Banding the package anyway would have produced a level off 40 downloads, not 4,000 stars.
+    without = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-all-np": {"pypi", "github"}}, {}, {}, **kw,
+    )
+    assert [(r["route_id"], r["raw_value"]) for r in without] == [("pypi.downloads_30d", 40)]
+
+
+def test_an_unobserved_primary_artifact_still_produces_no_row(inputs):
+    """The boundary the exclusion must not cross. A product with one primary package and one
+    non-primary one, where only the non-primary was observed, is UNMEASURED -- it does not fall
+    through to stars, because the route it declares is applicable and simply was not collected."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    obs = [
+        _obs("synthetic-unobs", "github", "stars", 4_000),
+        _obs("synthetic-unobs", "pypi", "downloads", 40, artifact_id="widget"),
+    ]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-unobs": {"pypi", "github"}}, {},
+        {"synthetic-unobs": {("pypi", "widget")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert rows == []
+
+
+def test_load_inputs_reads_the_declaration_off_the_registry():
+    """Both readings come from `registry.product_artifacts`, which is where the serializer now
+    carries the reason. The artifact keeps its row and the product keeps its key; what it loses is
+    that KIND as a route-bearing channel."""
+    inputs = load_inputs()
+    assert inputs.declared_artifacts["hexabot"] == {"github"}
+    assert inputs.non_primary_artifacts["hexabot"] == {("npm", "@hexabot-ai/widget")}
+    assert inputs.declared_artifacts["yomo"] == {"github"}
+    assert inputs.non_primary_artifacts["yomo"] == {("crates", "yomo")}
+    # Nothing else declares one, so nothing else can have moved.
+    assert set(inputs.non_primary_artifacts) == {"hexabot", "yomo"}
+
+
+def test_the_two_declared_products_band_on_stars_at_two(measurement_rows):
+    """The 2026-08-14 minority-channel ruling holds both at level 2. Banding them on a package
+    neither ships through fell both to 1, which is what the warehouse models did while
+    `not_primary_channel` resolved NULL."""
+    rows = {r["product_slug"]: r for r in measurement_rows if r["product_slug"] in ("hexabot", "yomo")}
+    assert set(rows) == {"hexabot", "yomo"}
+    for slug, row in rows.items():
+        assert row["route_id"] == "github.stargazers_count", slug
+        assert row["measured_level"] == 2, slug
+        assert row["non_primary_artifacts"], slug
+
+
+def test_no_other_product_carries_an_exclusion(measurement_rows):
+    """The column is empty everywhere else, so a reader can tell an exclusion from an absence."""
+    carrying = {r["product_slug"] for r in measurement_rows if r["non_primary_artifacts"]}
+    assert carrying == {"hexabot", "yomo"}
 
 
 # --- measurements: aggregation, numbers, banding ---------------------------------
@@ -466,7 +571,7 @@ def test_active_users_products_are_not_reconciled_against_stars(reconciliation_r
 
 
 def test_evaluated_at_is_excluded_from_the_content_digest(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared, _recorded = inputs
+    tables, _, category_of, declared, _recorded, _non_primary = inputs
     osid = observation_snapshot_id(observations)
     kw = dict(declaration_version_id=TEST_DVID, observation_snapshot_id=osid)
     a = reconcile(scores, measurement_rows, tables, category_of, declared,

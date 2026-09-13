@@ -15,7 +15,8 @@ Emitted tables (one CSV each, written to build/registry/):
                         weight_adopt, weight_cap, arc_name, layer, status
   tail_products          slug, display_name, product_type, org_slug,
                         category_slug, artifact_kind, artifact_id, artifact_url
-  product_artifacts     product_slug, product_type, artifact_kind, artifact_id, artifact_url
+  product_artifacts     product_slug, product_type, artifact_kind, artifact_id,
+                        artifact_url, not_primary_channel
                         (kinds: github, huggingface_model, huggingface_dataset,
                          pypi, npm, crates, arxiv)
   product_categories    product_slug, category_slug
@@ -110,6 +111,12 @@ TABLES: dict[str, tuple[str, ...]] = {
         "artifact_kind",
         "artifact_id",
         "artifact_url",
+        # Why this artifact is not how the product ships, declared per artifact on the URL
+        # wrapper in sources/products/*.yaml and carried through verbatim. Empty for all but
+        # a handful of artifacts. The warehouse models that band package downloads
+        # (currentai.signal_packages.downloads and .product_adoption) were written against
+        # this column before anything produced it, and read NULL until it existed (#562).
+        "not_primary_channel",
     ),
     "product_categories": ("product_slug", "category_slug"),
     "product_organizations": ("product_slug", "org_slug"),
@@ -129,6 +136,26 @@ TABLES: dict[str, tuple[str, ...]] = {
     "org_handles": ("platform", "handle", "org_slug"),
     "model_families": ("pattern", "product_slug", "note", "decided_in"),
 }
+
+def _artifact_entries(value: object) -> list[tuple[str, str]]:
+    """Artifact values as (url, not_primary_channel) pairs, the reason empty where unset.
+
+    The wrapper object is where per-artifact metadata lives (docs/schemas/product.schema.json,
+    `definitions.url`), so an artifact block is read as entries rather than as bare URLs. A bare
+    string is tolerated on read exactly as `_urls` tolerates it, and carries no reason.
+    """
+    out: list[tuple[str, str]] = []
+    if isinstance(value, str):
+        return [(value, "")]
+    if isinstance(value, list):
+        for item in value:
+            if isinstance(item, dict) and isinstance(item.get("url"), str):
+                reason = item.get("not_primary_channel")
+                out.append((item["url"], reason if isinstance(reason, str) else ""))
+            elif isinstance(item, str):
+                out.append((item, ""))
+    return out
+
 
 def _urls(value: object) -> list[str]:
     """Artifact values are lists of {url: ...}; tolerate a bare string too."""
@@ -324,7 +351,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
             }
         )
         for kind in ARTIFACT_KINDS:
-            for url in _urls(product.get(kind)):
+            for url, not_primary_channel in _artifact_entries(product.get(kind)):
                 identifier = artifact_id(kind, url)
                 if identifier is None:
                     warnings.append(f"product '{slug}': {kind} url names no repo: {url}")
@@ -336,6 +363,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                         "artifact_kind": kind,
                         "artifact_id": identifier,
                         "artifact_url": url,
+                        "not_primary_channel": not_primary_channel,
                     }
                 )
         lineage = product.get("lineage")

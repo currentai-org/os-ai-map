@@ -765,6 +765,7 @@ metric_type
 instrument_type
 aggregation_method           from registry.adoption_aggregation_rules
 contributing_observation_ids the artifact observations that produced this row
+non_primary_artifacts        the product's declared artifacts that are not how it ships
 raw_value
 unit
 measurement_window_days
@@ -778,6 +779,13 @@ measurement_as_of
 `contributing_observation_ids` is what makes the aggregation auditable: a product measured
 across four repositories can be traced back to the four artifact observations and the rule that
 combined them. Without it, a disputed band has no re-derivable basis.
+
+`non_primary_artifacts` is the other half of that: `kind:id` for each declared artifact carrying
+`not_primary_channel` (docs/reference/adoption.md), pipe-joined, empty on almost every row. Those
+artifacts are left out of the aggregate and out of route applicability, so a row whose winning
+route looks weaker than the product's declarations would suggest says on its face why — the
+counterpart of `artifacts_excluded` on `currentai.signal_packages.product_adoption`. Excluded from
+the sum and from nothing else: the artifact keeps its registry row and its observation.
 
 The flow is then explicit, with one owner per step:
 

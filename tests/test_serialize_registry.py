@@ -258,6 +258,58 @@ def test_tail_row_with_only_crates_serializes_with_the_crate_id():
     ]
 
 
+def test_not_primary_channel_rides_along_on_the_artifact_row():
+    """The reason declared on the URL wrapper reaches `registry.product_artifacts` as a column.
+    The two warehouse models that band package downloads were written against it and resolved
+    NULL until this existed (#562). The artifact is emitted exactly as any other -- the exemption
+    is carried beside it, never instead of it -- and an artifact with no declaration carries an
+    empty string rather than a missing key, so the column is rectangular."""
+    sources = _sources(
+        products={
+            "widgetco": {
+                "display_name": "WidgetCo",
+                "type": "software",
+                "github": [{"url": "https://github.com/widgetco/widgetco"}],
+                "npm": [
+                    {
+                        "url": "https://www.npmjs.com/package/@widgetco/widget",
+                        "not_primary_channel": "An embeddable widget, not the self-hosted platform.",
+                    }
+                ],
+            }
+        },
+        organizations={"widgetco": {"products": ["widgetco"]}},
+        categories={"ui": {"products": ["widgetco"]}},
+        taxonomy={"arcs": [{"name": "Applications", "layer": "applications", "categories": ["ui"]}]},
+    )
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    rows = {r["artifact_kind"]: r for r in tables["product_artifacts"]}
+    assert set(rows) == {"github", "npm"}
+    assert rows["npm"]["artifact_id"] == "@widgetco/widget"
+    assert rows["npm"]["not_primary_channel"] == "An embeddable widget, not the self-hosted platform."
+    assert rows["github"]["not_primary_channel"] == ""
+    assert "not_primary_channel" in TABLES["product_artifacts"]
+
+
+def test_the_declared_non_primary_artifacts_are_the_two_that_were_ruled_on():
+    """`hexabot`'s npm widget and `yomo`'s crate, and nothing else. A third would be a curation
+    decision, not a serializer change, and this is where it would show up."""
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _errors, _warnings = build_registry(load_sources(root))
+    declared = {
+        (r["product_slug"], r["artifact_kind"], r["artifact_id"])
+        for r in tables["product_artifacts"]
+        if r["not_primary_channel"]
+    }
+    assert declared == {
+        ("hexabot", "npm", "@hexabot-ai/widget"),
+        ("yomo", "crates", "yomo"),
+    }
+
+
 def test_real_sources_serialize_without_structural_errors():
     from pathlib import Path
 
@@ -306,6 +358,7 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
             "artifact_kind": "arxiv",
             "artifact_id": "2110.14168",
             "artifact_url": "https://arxiv.org/abs/2110.14168",
+            "not_primary_channel": "",
         }
     ]
 
