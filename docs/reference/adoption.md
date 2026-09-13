@@ -487,6 +487,45 @@ floor and its note says so.
 The tell to look for when reviewing: **a note that describes the signal as understating the
 product, followed by a band recorded on that signal anyway.**
 
+### Saying so on the artifact: `not_primary_channel`
+
+Remedies 1 to 3 are things a curator does to a `score` record. This one is a declaration on the
+`product`, and it is what makes the machine agree with the judgment instead of quietly disagreeing
+with it. An entry in an artifact block may carry `not_primary_channel` beside its `url`, and the
+value is the reason:
+
+```yaml
+npm:
+- url: https://www.npmjs.com/package/@hexabot-ai/widget
+  not_primary_channel: The embeddable chat widget a site drops into a page, not the self-hosted
+    platform the product is. ...
+```
+
+Presence is the exemption, the value says why, the same shape as `artifact_exceptions`. It says one
+thing only: **this artifact is not a channel the product ships through, so its figure is left out of
+the summed one.** It is not a denial that the artifact is the product's. That stronger claim is a
+`product_membership` ruling in `sources/resolution_ledger.yaml` (`not_member_of`), which says the
+measurement is not this product's at all; here it is the product's, and it stays published.
+
+What it does and does not touch:
+
+- **Out of the sum.** `currentai.signal_packages.product_adoption` and
+  `build/adoption_measurements.py` both leave the artifact's figure out of the figure they band.
+- **In the table.** The artifact keeps its row in `registry.product_artifacts` (carrying the reason
+  as a column), its observation stays in `observations.product_adoption_current`, and
+  `currentai.signal_packages.downloads` still computes and publishes its downloads per artifact.
+  Only the banded figure changes.
+- **A kind with nothing left is not a channel.** Where every artifact of a kind carries the
+  declaration, the product has no figure on that kind and falls through to its next route — remedy
+  3, reached by declaration rather than by hand. `hexabot` (an embeddable widget, not the
+  self-hosted platform) and `yomo` (a Rust SDK crate for a runtime shipped as a Go binary) are the
+  two cases, and both land on stars at the level 2 the 2026-08-14 ruling gave them. Banding them on
+  the package instead put both at level 1.
+
+Declaring one is a curation judgment with the same test as the ruling above: what the package IS,
+and whether installing it is a meaningful unit of use of the scored product. It is never a way to
+drop a number that reads low.
+
 ### The gate: `build/check_channel_authority.py`
 
 The ladder above was a habit for its first two weeks, and habits are not applied evenly. Some

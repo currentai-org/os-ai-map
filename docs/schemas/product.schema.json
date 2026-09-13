@@ -192,8 +192,13 @@
         "url"
       ],
       "additionalProperties": false,
-      "description": "The shape every artifact block's entries take: a single-key object wrapping one URL. An object rather than a bare string because these blocks mirror oss-directory's project files, where the wrapper is where per-artifact metadata would go. Nothing here adds a second key yet, and `additionalProperties: false` means adding one is a schema change rather than a data change. build/serialize_registry.py tolerates a bare string on read, but the schema does not, so write the object form.",
+      "description": "The shape every artifact block's entries take: an object wrapping one URL, plus whatever per-artifact metadata the schema has admitted. An object rather than a bare string because these blocks mirror oss-directory's project files, where the wrapper is where that metadata would go. `not_primary_channel` is the first key to take that space (#562), so the wrapper is no longer single-key; `additionalProperties: false` means the next one is still a schema change rather than a data change. build/serialize_registry.py tolerates a bare string on read, but the schema does not, so write the object form.",
       "properties": {
+        "not_primary_channel": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Why this artifact is not how the product ships, so its measurement is left out of the product's summed adoption figure. The presence of the key is the exemption and the value is the reason, the same shape as `artifact_exceptions` and a category's `deferred` block; the reason is what makes the exclusion reviewable, so it says what the package IS (`@hexabot-ai/widget` is an embeddable widget rather than the self-hosted platform, the `yomo` crate is a Rust SDK for a Go binary). It is deliberately WEAKER than a `product_membership` ruling in sources/resolution_ledger.yaml: that says the artifact's measurement is not this product's at all, whereas this says the measurement is the product's and is published per artifact, and only the banded sum leaves it out. The artifact stays declared, its row stays in registry.product_artifacts, and currentai.signal_packages.downloads still computes and publishes its downloads; currentai.signal_packages.product_adoption and build/adoption_measurements.py are what exclude it. A product whose every artifact of a kind carries this has no figure on that kind at all and falls through to its next route, which is the under-coverage remedy in docs/reference/adoption.md (\"rather than banding on the minority channel that happens to be countable\"), not a re-band. Never a way to drop an inconvenient number: the test is what the package is, and the 2026-08-14 minority-channel ruling is the precedent."
+        },
         "url": {
           "type": "string",
           "pattern": "^https?://[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+(:[0-9]+)?([/?#]|$)",

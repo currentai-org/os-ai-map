@@ -18,6 +18,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `not_primary_channel`, a per-artifact declaration on a product's artifact entries: the presence of
+  the key exempts that artifact from the product's summed adoption figure and the value says why.
+  Declared on `hexabot`'s npm widget and `yomo`'s crate, carried into
+  `registry.product_artifacts` as a column the two deployed `signal_packages` models already read,
+  and honoured by `build/adoption_measurements.py`, which now drops the artifact from the sum and
+  falls through to stars where a product ships through no package at all. Both products band at
+  level 2, where the 2026-08-14 minority-channel ruling put them; the `registry` static model gains
+  a column and must be recreated on the platform rather than re-uploaded
+  ([#562](https://github.com/currentai-org/os-ai-map/issues/562)).
 - A `form_factor` dimension on the hardware openness ladder — board, module or chipset — recorded on
   all 20 `edge_hardware` products, with every rung that reads `schematics` now testing it first and a
   chipset rung that asks instead whether the datasheets are public and whether anybody can buy one.
