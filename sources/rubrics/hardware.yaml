@@ -236,7 +236,7 @@ openness:
       machine_signal: none - a listing on a distributor site is checkable in principle,
         but absence of a listing does not establish restriction
     availability:
-      question: Can anybody go and buy one today?
+      question: Can this part be obtained commercially today, in the form it is sold in?
       # `retail` in the vocabulary the chipset rung needs, by the same mechanism and for the
       # same reason as `board_design`: two of the four recorded spellings mean the part is on
       # sale, and a rung matches one value at a time.
@@ -266,10 +266,17 @@ openness:
         restricted: gated
         discontinued: gated
       evidence:
-      - '`buyable`: on sale to anyone, whether off a shelf (`open_market`) or through a
-        distributor or module partner (`distributor`). `ti-am67a` is ACTIVE and orderable from
-        TI, `nxp-imx-8m-plus` reaches buyers through DigiKey and Toradex, and
-        `rockchip-rk3588` through the module and board partners who build on it'
+      - '`buyable`: the silicon can be obtained commercially today, in the form it is sold in.
+        For a board that means the board is on sale; for a chipset it means the part reaches
+        buyers, and the channel that does that is module and board partners rather than a reel
+        of chips - that IS the retail channel for application-processor silicon, not a proxy for
+        one. The question is deliberately about obtaining the part, not about a bare-part
+        purchase: requiring a cut-tape listing would mark almost every SoC in the category
+        ungated-and-unbuyable, which is the less true answer. So a partner listing is evidence
+        FOR this claim rather than an inference about a different artifact, and the note on each
+        record says which channel was read. `ti-am67a` is ACTIVE with an order path on TI''s own
+        product page; `nxp-imx-8m-plus` and `rockchip-rk3588` reach buyers through the module
+        partners who build on them. Ruled 2026-09-12'
       - '`gated`: nobody can buy one, either because the part is behind an NDA or a design win
         (`restricted`, which nothing on the roster records) or because it has been withdrawn
         (`discontinued`, which is `google-coral-dev-board`)'
