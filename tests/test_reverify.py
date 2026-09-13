@@ -530,3 +530,36 @@ def test_fragments_are_matched_after_the_same_whitespace_collapse(tmp_path):
     body = ("<p>Deploy leading open source\n   tools and AI models\twith confidence</p>")
     result = _shows_case(tmp_path, shows, body)
     assert result.stamped == ["openness"]
+
+# ---------------------------------------------------------------------------
+# --axes: the #445 limit, enforced rather than documented
+# ---------------------------------------------------------------------------
+
+
+def test_a_non_openness_axis_is_refused():
+    """#445 limits machine re-dating to openness, and until now that limit lived only in prose
+    and in how the workflow happened to invoke the tool. `--axes capability` would have re-dated
+    capability against the ruling."""
+    msg = reverify.axes_refusal(("capability",))
+    assert msg and "limited to openness" in msg and "#445" in msg
+    assert reverify.axes_refusal(("openness", "adoption"))
+
+
+def test_an_axis_that_is_not_an_axis_is_refused():
+    """A typo used to plan nothing and report a clean run over zero dimensions, which reads as
+    success. It is now a refusal that names the known axes."""
+    msg = reverify.axes_refusal(("opennes",))
+    assert msg and "not an axis" in msg and "openness" in msg
+
+
+def test_an_empty_axes_list_is_refused():
+    assert reverify.axes_refusal(())
+
+
+def test_openness_alone_is_allowed():
+    assert reverify.axes_refusal(("openness",)) is None
+
+
+def test_main_exits_two_on_a_refused_axis(capsys):
+    assert reverify.main(["--axes", "capability", "--dry-run", "--limit", "1"]) == 2
+    assert "limited to openness" in capsys.readouterr().err
