@@ -1,0 +1,167 @@
+# Deploy `signal_packages`, then retire `signal_pypi` (maintainer, MCP write)
+
+The npm/crates bridge of issue #314, and the two things that must happen around it: #348 before
+the retirement, #517 after the deploy. The general deploy mechanic is
+`docs/operations/deploy-models.md`; this is the order for this one change, which has an
+irreversible step at the end and two constraints that fail silently if taken out of turn.
+
+**Steps 1 to 3 were executed on 2026-09-13 and #314 and #348 are both closed.** What remains is
+the irreversible drop, and #562 now carries its preconditions rather than step 4 here. Keep this
+document for the order it records, for the three diff shapes, and above all for the determinism
+lock at the end, which cost five models.
+
+Model source is `currentai-org/udms/`, **not this repository** — `packages_package_downloads.sql`,
+`packages_package_downloads_daily.py` and `packages_product_adoption.sql`. Nothing here is a
+mirror to edit; see ADR-003 and the mirror table in `data-architecture.md`.
+
+## The order
+
+Each step's output is the next step's precondition. Only the last one cannot be undone.
+
+1. **Done 2026-09-13. Republish the `registry` static model, by delete and recreate.** It gains a
+   `not_primary_channel` column, and a static model cannot gain a column by re-upload — the
+   multi-column ALTER fails, and the failure mode is a bare `PUT` or a `SignatureDoesNotMatch`
+   rather than a clear error. Required for its own sake regardless: the deployed table has held
+   `artifact_id = "https://crates.io/crates/yomo"` because `serialize_registry.py` carried no
+   crates pattern, so the crates route could not have worked.
+2. **Done 2026-09-13. Create the dataset and deploy the three models.** `createDataset` `signal_packages` as a
+   `USER_MODEL`, then for each model revision → **release** → run. The release is the step that
+   gets forgotten and the symptom is "my change had no effect", not an error.
+   `createDataModelRevision` requires `cron`, `kind` and `schema` alongside the code, and the
+   readers that return the code omit all three. Weekly is the house default.
+3. **#348 — already done, check rather than do.** The precedence
+   `pypi > huggingface > stars` is declared in `sources/signal_routing.yaml` and compiles into
+   `registry.adoption_routes` as `route_order` with the stars route last and capped at 3. The
+   blocker `data-architecture.md` §4.1 names — that the ordering lives only inside
+   `signal_github/product_adoption.sql` and would be lost silently on retirement — **is met.**
+   What is *not* true is that anything on the platform applies the ordering: the routes table
+   records it, and the consuming model is a `UNION`. Verified 2026-09-13.
+4. **Repoint the reader — currently impossible, and this is what blocks the retirement.**
+   The deployed `signal_github.product_adoption` reads `currentai.signal_pypi.package_downloads`
+   in its `already_measured` CTE, so the drop cannot happen until it reads the new table. It
+   **refuses every new release**: "This release would change the model's schema-determinism
+   verdict from its live release." That is not caused by the change being offered — a revision
+   carrying code byte-identical to its own live revision was refused with the same error, which
+   is the control that isolates the rule from the edit. Its upstream `signal_github.artifact_state`
+   is a Python model with no `columns=`, which makes it a non-deterministic boundary sink; the
+   consumer's live release predates that rule and is grandfathered, so any new release
+   re-resolves and is rejected.
+
+   **This step is now void, and the fix it proposed was tried and made things worse.** An
+   earlier draft said the remedy was `columns=` on `artifact_state`. That was applied on
+   2026-09-13. It did not unblock the consumer — the verdict simply flipped the other way and
+   the release was refused again — and because the verdict depends on what a model *reads*, it
+   locked four further models that nobody had touched: `evidence.product_evidence`,
+   `observations.product_adoption_current`, `scores.openness_facts` and
+   `scores.openness_computed`. All four had to be deleted and recreated, losing their
+   materialized tables, their schedules and their model contexts. See the determinism section
+   below before touching `columns=` on anything.
+
+   The repoint this step asks for is not needed either. Issue #562 retires
+   `signal_github.product_adoption` rather than migrating it, and you do not repoint a model you
+   are deleting. What replaces this precondition is #562 step 3: `build/check_artifacts.py` and
+   `sources/signal_routing.yaml` are the readers that must move off `signal_pypi`.
+5. **Diff old against new**, per artifact and per product, before anything is dropped. Expected
+   disagreements come in exactly three shapes (below). Anything outside them is a finding to
+   explain, not a rounding difference to accept.
+6. **Merge the repository side**, then flip `bridged: true` and drop `blocked_by`. A test fails
+   the flip if it is done in the other order.
+7. **Drop `signal_pypi`.** The only irreversible step in the sequence, and the one still
+   outstanding. The precondition is no longer step 4 but #562 steps 3 and 4: every reader
+   migrated, and the three shims given an explicit disposition. Dropping it while a reader still
+   points at it would break that reader at its next scheduled run and let the stars fallback
+   silently re-band every product that already has a download signal — the corruption this order
+   exists to prevent.
+
+## `not_primary_channel` exists now, and means something narrower than it sounds
+
+Built in PR #563 on 2026-09-13, as step 1 of #562. It is an optional key on the artifact wrapper
+in `docs/schemas/product.schema.json` whose value is the reason; `build/serialize_registry.py`
+emits it as a column on `registry.product_artifacts`, and `build/adoption_measurements.py`
+excludes a declared artifact from the summed figure. The artifact stays declared and its
+observation stays recorded and readable per artifact — only the banded sum changes. Declared on
+two artifacts: `hexabot`'s npm `@hexabot-ai/widget` and `yomo`'s crate `yomo`.
+
+**It means the package measures a DIFFERENT POPULATION, never a smaller share of the same one.**
+Hexabot's widget counts sites embedding a bot rather than deployments of the self-hosted
+platform; YoMo's crate counts Rust builds linking the SDK rather than installs of a Go runtime.
+A third product, `n8n`, was proposed for it on review and refused: npm is a minority install path
+for n8n but the same population, and its own adoption note already counts those downloads toward
+its level. Declaring it would have discarded a valid measurement to compensate for a channel the
+warehouse cannot see at all — Docker, which has no artifact kind — and would not have worked
+anyway, since excluding the package drops the product onto stars, which caps at 3.
+
+## What the diff may legitimately show
+
+Three shapes, and the port is deliberately not bit-identical:
+
+- **Cross-registry summation.** A product with both npm and PyPI now sums them.
+- **No-primary-channel abstention.** A package that is a minority channel for its product
+  carries `not_primary_channel` and is excluded from the banded sum rather than counted.
+- **Partial coverage.**
+
+`signal_pypi` joined `registry.adoption_bands` on `product_type` alone; the successor joins
+`signal_type` too. That was checked against every band row at the time and moved no band, so a
+future difference there is a finding rather than a porting error.
+
+## #517 comes after, and the deploy has now landed
+
+The six governed assets wearing a read-only mirror banner are reclassified once this deploy
+lands. Three of them — `signal_packages.downloads`, `downloads_daily` and `product_adoption` —
+had **no governed reader until step 2**, and a dependency contract must be reachable from a
+governed root. Reclassifying them first would have pushed them out of scope in *both* manifests.
+Step 2 landed on 2026-09-13, so that trap has passed and #517 is unblocked.
+
+Read #562 before actioning it anyway. The asset set moves again when the three
+`signal_*.product_adoption` shims retire, and `signal_packages.product_adoption` has since been
+reclassified `compatibility` with `observations.product_adoption_current` as its replacement.
+
+## State, 13 September 2026
+
+`currentai.signal_packages` is **deployed, released, materialized and scheduled** (Sunday 01:00
+UTC): `downloads_daily` over 18 artifacts, `downloads` at 188 rows across pypi, npm and crates,
+`product_adoption` at 186, all three recorded `active` or `compatibility` in `assets.yaml`.
+Parity against `signal_pypi` was checked per product and is exact —
+of its 170 products, 169 band identically and one is unbanded on both sides; nothing moved and
+nothing was lost. Everything that changes comes from npm and crates, which had no signal model
+before: sixteen products gain a package band, three of them moving from the stars cap of 3 to 5.
+
+`signal_pypi` is **intact and not dropped.** Both things this section used to say needed a
+maintainer are done: `not_primary_channel` shipped in #563, and `columns=` was applied to
+`signal_github.artifact_state` — which did not break the deadlock and instead caused the cascade
+described below. What remains is #562 steps 3 to 5.
+
+## The determinism lock, which is the expensive lesson here
+
+A release may not change a model's schema-determinism verdict, **in either direction**. The
+verdict depends on what a model reads, so changing an upstream can lock downstream models nobody
+touched. Adding `columns=` to `signal_github.artifact_state` on 2026-09-13 locked five.
+
+The refusal names the model you are releasing, not the upstream that moved, so it reads as a
+fault in your own change. Isolate it with a byte-identical control: re-release the previous SQL
+unchanged, and if that is refused too the cause is upstream.
+
+There is no repair, only recreation. `updateDataModel` accepts a `name`, returns `success: true`
+and leaves the name unchanged, because the name lives on the revision and releasing one is what
+is refused — so delete and recreate under the target name. Recreation loses the materialized
+table, the model context and the schedule, and two of those come back wrong by default:
+`deploy_udm.py` sets a new model to `@manual`, and a brand-new dataset has no cron at all.
+
+**Recreation restores releasability and does not immunize.** Read `isSchemaDeterministic` on
+`latestRevision`. Passing an explicit column schema does not flip it. As of 2026-09-13, ten of
+the org's 59 models resolve non-deterministic and they are almost exactly this scoring chain, so
+the same lock can recur on any of them. Before adding `columns=` to anything, list what reads it
+and expect every one of those to need recreating.
+
+## Proving it
+
+A populated `cron`, `lastRunAt` or `nextRunAt` does **not** prove the model runs on a schedule.
+Only a run whose `triggerType` is `SCHEDULED` proves that; the cron field is metadata, and models
+have carried one while every run in their history was `MANUAL`. Read the output table back rather
+than trusting a run's reported status, which can still say `RUNNING` after the run has finished.
+
+## Related
+
+- `docs/operations/deploy-models.md` — the general mechanic, the refresh order, the parity gate
+- `docs/architecture/data-architecture.md` §4.1 — why the route precedence must move first
+- `docs/architecture/adr-003-repository-scope-boundary.md` — why the model source is not here

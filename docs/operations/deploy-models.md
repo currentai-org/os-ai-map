@@ -258,5 +258,7 @@ datasets' run history first" — it can mean the warehouse is stale rather than 
 
 - `docs/reference/evidence-and-freshness.md` — what the chain computes and the gates over it
 - `docs/operations/publish-map.md` — serializing and publishing the notebook
+- `docs/operations/deploy-signal-packages.md` — the #314 bridge, its two ordering constraints and
+  the one irreversible step
 - `docs/operations/refresh-data.md` — loading a fetched CSV into the warehouse as a static model
 - `warehouse/assets.yaml` and `docs/architecture/data-architecture.md` — the asset inventory and the model families it covers
