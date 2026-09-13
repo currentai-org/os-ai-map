@@ -1,0 +1,78 @@
+product: yylo
+openness:
+  score: 5
+  class: open_source
+  confidence: high
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+    free_text:
+    - no managed tier
+    - model-agnostic
+  note: Verified MIT (standard license text, Copyright (c) 2026 JUNO AI INC.), full CLI source
+    public on GitHub, no paid tier, managed offering, or enterprise directory. The tool delegates
+    model work to the coding agent the user installs and configures.
+  raw: license:MIT(OSI);source:public;no managed tier; model-agnostic;core-gated:ungated
+  last_verified: '2026-09-13'
+  sources:
+  - url: https://github.com/yylo-dev/yylo/blob/main/LICENSE
+    shows: MIT License text, Copyright (c) 2026 JUNO AI INC., standard OSI license body
+    accessed: '2026-09-13'
+    http_status: 200
+    content_sha256: 95f3d09ccad6480516255cb5927ad1c96f66fba7746fbece09e8bd476b0252be
+    establishes:
+    - license
+  - url: https://github.com/yylo-dev/yylo
+    shows: MIT license on the repo, full CLI source public, 59 stars, 6 forks; no managed tier,
+      no paid plan, no enterprise directory
+    accessed: '2026-09-13'
+    http_status: 200
+    content_sha256: c36b0165cb64bb22ee0644296cc901fa08173189bb90321305d4fde8f7e420e9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: The npm download API returns 933 downloads for @yylo/cli over the trailing month,
+    which bands at level 1 (<10K monthly) on the software scale. @yylo/cli is the product's
+    declared and only distribution channel, so the figure measures the product itself rather
+    than standing in for it. Raw download volume includes CI and mirror traffic, so this is
+    install volume rather than a user count; an early-stage tool, included as the open
+    orchestration layer of a category whose marquee agents are proprietary.
+  last_verified: '2026-09-13'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@yylo/cli
+    shows: npm registry download API returns 933 downloads for @yylo/cli over the trailing
+      month, 2026-08-13 to 2026-09-11
+    accessed: '2026-09-13'
+    http_status: 200
+    content_sha256: 57b4e08652f1130317bd65b8f161491aa9b0253cb5f659199740863de25fef66
+capability:
+  score: 2
+  basis: feature_matrix
+  value: Task-driven orchestration over user-installed coding agents - dedicated branch and
+    worktree per task, typed task/validation/merge/release-readiness boundaries, receipt-backed
+    repository changes, repeatable command workflows, and a merge queue with risk-based review.
+    Not an agent itself, and no standardized benchmark result.
+  confidence: medium
+  note: Narrow, early orchestration tool (933 npm installs a month, 59 stars); capable within
+    its scope - typed boundaries, isolated worktrees, durable receipts - but young and with no
+    third-party benchmark coverage, so scored 2. No peer comparison is recorded because the
+    scale bottoms out before the anchor is reachable.
+  last_verified: '2026-09-13'
+  sources:
+  - url: https://yylo.dev
+    shows: homepage describing YYLO as a command-layer system coordinating coding agents from
+      intent through validated code, with isolated worktrees, evidence receipts, review and
+      merge boundaries; npm install of @yylo/cli; no benchmark figure
+    accessed: '2026-09-13'
+    http_status: 200
+    content_sha256: 599138a9c711105eec0791952190db4cd18ca0ae99f645f18ebc6ed99cd47bd7
