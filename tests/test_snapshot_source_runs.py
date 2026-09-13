@@ -98,11 +98,19 @@ def test_source_datasets_add_the_staged_successor_separately():
 
 
 def test_real_routing_yaml_derives_the_deployed_adoption_datasets():
-    """Against the committed signal_routing.yaml, not a synthetic one."""
+    """Against the committed signal_routing.yaml, not a synthetic one.
+
+    `signal_packages` replaced `signal_pypi` here on 2026-09-13 (#562 step 3): the package
+    routes now point at the merged-registry successor, which carries pypi, npm and crates on
+    one grain. `signal_pypi` is still deployed and still read by
+    `signal_github/product_adoption.sql`, but no adoption ROUTE names it any more, which is
+    what this function derives.
+    """
     deployed = S.deployed_adoption_source_datasets(S.load_routing(S.A.ROOT))
     assert "signal_semanticscholar" in deployed
-    assert "signal_github" in deployed and "signal_pypi" in deployed
+    assert "signal_github" in deployed and "signal_packages" in deployed
     assert "signal_huggingface" in deployed
+    assert "signal_pypi" not in deployed
 
 
 # --- parsing the row contract -----------------------------------------------------

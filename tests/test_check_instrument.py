@@ -30,8 +30,10 @@ def test_the_rules_are_read_from_routing_and_not_mirrored_in_python():
     artifacts, evidence = instrument_rules()
 
     # Counting instruments resolve to the artifact keys a product must declare.
+    # npm and crates joined this set on 2026-09-13 when signal_packages.downloads
+    # bridged all three package registries (#562 step 3).
     assert artifacts["usage_volume"] == {
-        "pypi", "huggingface_model", "huggingface_dataset", "arxiv",
+        "pypi", "npm", "crates", "huggingface_model", "huggingface_dataset", "arxiv",
     }
     assert artifacts["stars_fallback"] == {"github"}
 
@@ -41,25 +43,46 @@ def test_the_rules_are_read_from_routing_and_not_mirrored_in_python():
     assert evidence["active_users"] == ["accessed", "content_sha256"]
 
 
-def test_an_unbridged_source_does_not_satisfy_recomputation():
-    """Declaring an npm package does not make a download count RE-DERIVABLE.
+def test_an_unbridged_source_does_not_satisfy_recomputation(tmp_path):
+    """A declared artifact on an UNBRIDGED route does not make a count RE-DERIVABLE.
 
-    This is the distinction the whole check rests on. `signal_routing.yaml` declares npm and
-    crates with `bridged: false` — the route exists, nothing reads it. `mcp-typescript-sdk`
-    declares an npm package and records `usage_volume` at level 5, and no model in the
-    pipeline can confirm or refute that number.
+    This is the distinction the whole check rests on: the route exists, nothing reads it, so
+    the recorded number can be neither confirmed nor refuted by the pipeline.
 
-    The routing file's own note used to say these products "fall through to the stars scale
-    and its cap of 3", which was the comfortable reading and not what happened: 11 of the 13
-    npm products record `usage_volume` instead.
+    Written against a synthetic routing file rather than the live one, deliberately. It used
+    to assert `"npm" not in artifacts["usage_volume"]`, which was true only while npm happened
+    to be unbridged; bridging it on 2026-09-13 broke the test without touching the invariant
+    it exists to protect. A gate keyed to whichever source is currently unmeasured will keep
+    failing for the good news. This version tests the rule.
 
-    They are not thereby unfalsifiable, which is the correction that reshaped this gate. Most
-    of them cite a digested npm API response and are re-checkable by re-fetch; what they are
-    not is re-derivable by a pipeline that reads no npm. Route 1 is closed to them and route 2
-    is open, and the gate cares only that one of the two is.
+    The history is worth keeping. While npm was unbridged, 11 of the then-13 npm products
+    recorded `usage_volume` rather than falling through to the stars cap, `mcp-typescript-sdk`
+    and `openclaw` at level 5 — an unbridged route does not produce a capped band, it produces
+    an unfalsifiable one. They were still re-CHECKABLE by re-fetch, which is the correction
+    that reshaped this gate: route 1 was closed to them and route 2 was open, and the gate
+    cares only that one of the two is.
     """
-    artifacts, _ = instrument_rules()
-    assert "npm" not in artifacts["usage_volume"]
+    (tmp_path / "sources").mkdir()
+    (tmp_path / "sources" / "signal_routing.yaml").write_text(
+        "sources:\n"
+        "  measured:\n"
+        "    artifact_key: measured_kind\n"
+        "    bridged: true\n"
+        "  unmeasured:\n"
+        "    artifact_key: unmeasured_kind\n"
+        "    bridged: false\n"
+        "dimensions:\n"
+        "  adoption:\n"
+        "    routes:\n"
+        "    - signal_type: usage_volume\n"
+        "      source: measured\n"
+        "    - signal_type: usage_volume\n"
+        "      source: unmeasured\n",
+        encoding="utf-8",
+    )
+    artifacts, _ = instrument_rules(tmp_path)
+    assert artifacts["usage_volume"] == {"measured_kind"}
+    assert "unmeasured_kind" not in artifacts["usage_volume"]
     assert "crates" not in artifacts["usage_volume"]
 
 

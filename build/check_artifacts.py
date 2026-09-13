@@ -1,6 +1,6 @@
 """Catch a declared artifact that has drifted away from the thing it names.
 
-An artifact_id is a join key. `signal_github` keys on it, `signal_pypi` keys on it, and
+An artifact_id is a join key. `signal_github` keys on it, `signal_packages` keys on it, and
 every adoption band downstream rests on whatever it resolves to. So a stale one does not
 fail loudly — it attaches another project's stars, license and downloads to this product
 and keeps reporting them, which is indistinguishable from a working signal.
@@ -20,7 +20,11 @@ Three drifts, all of which happened in the week this was written:
     do on its own: does the package's own metadata name the repository we declare?
 
 Two of the three need no network. `signal_github.resolved_via_redirect` and
-`signal_pypi.missing_from_pypi` are computed weekly and were simply never read.
+`signal_packages.missing_from_registry` are computed weekly and were simply never read.
+
+The missing-package check reads `signal_packages.downloads`, the merged-registry successor,
+so it now covers **npm and crates as well as PyPI** rather than PyPI alone. That is a widening,
+not a swap: a reserved or deleted npm package was previously invisible to every check here.
 
 ## Reports rather than fails, by default
 
@@ -52,7 +56,7 @@ from build.warehouse import query
 
 ROOT = Path(__file__).resolve().parents[1]
 
-CHECKS = ("github_moved", "pypi_missing", "pypi_stub", "pypi_repo_mismatch")
+CHECKS = ("github_moved", "package_missing", "pypi_stub", "pypi_repo_mismatch")
 
 
 def load_products() -> dict[str, dict]:
@@ -111,13 +115,22 @@ def canonical_repo(repo: str) -> str:
     return fold_for_proposal("github", full or repo)
 
 
-def pypi_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
-    """Declared packages the signal could not find on PyPI at all."""
+def package_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
+    """Declared packages the signal could not find on their own registry at all.
+
+    Reads `signal_packages.downloads`, which carries pypi, npm and crates on one grain, so
+    the registry is named per row rather than assumed. `missing_from_registry` is the
+    successor to `signal_pypi`'s `missing_from_pypi`; the rename is the point, since the
+    column now answers the question for three registries.
+    """
     rows = query(
-        "SELECT product_slug, package FROM currentai.signal_pypi.package_downloads "
-        "WHERE missing_from_pypi = true"
+        "SELECT product_slug, package, artifact_kind "
+        "FROM currentai.signal_packages.downloads WHERE missing_from_registry = true"
     )
-    return [(r["product_slug"], r["package"], "absent from PyPI") for r in rows]
+    return [
+        (r["product_slug"], r["package"], f"absent from {r['artifact_kind']}")
+        for r in rows
+    ]
 
 
 def pypi_content(products: dict[str, dict]) -> tuple[list, list]:
@@ -163,7 +176,7 @@ def main() -> int:
     products = load_products()
     results: dict[str, list[tuple[str, str, str]]] = {
         "github_moved": github_moved(products),
-        "pypi_missing": pypi_missing(products),
+        "package_missing": package_missing(products),
         "pypi_stub": [],
         "pypi_repo_mismatch": [],
     }
