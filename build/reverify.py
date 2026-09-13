@@ -353,6 +353,9 @@ def _spdx_confirms(url: str, fetched: dict, recorded_license: str) -> bool:
 def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] = ("openness",),
                      fetch=_fetch, pace: float = 0.0, sleep=time.sleep,
                      body_dir: Path | None = None) -> ProductResult:
+    refusal = axes_refusal(tuple(axes))
+    if refusal:
+        raise ValueError(refusal)
     score = _score(root, slug)
     result = ProductResult(slug=slug)
     cache: dict[str, dict] = {}
@@ -406,6 +409,17 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
 
 
 def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
+    """Write the confirmations and the new dates.
+
+    The policy check is repeated HERE, not only where axes are chosen, because this is the
+    function that writes `last_verified`. A caller that assembled a `ProductResult` by some
+    other route — a hand-built result, a future planner — would otherwise reach the write with
+    no check between it and the field. Binding the guard to the write is the same doctrine the
+    merge interlock uses: check the thing you are about to do, where you do it.
+    """
+    stamped_refusal = axes_refusal(tuple(result.stamped))
+    if result.stamped and stamped_refusal:
+        raise ValueError(stamped_refusal)
     path = root / "sources" / "scores" / f"{slug}.yaml"
     text = path.read_text()
     for axis in result.stamped:
@@ -424,8 +438,9 @@ def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
 
 
 #: The only axis a machine may re-date, ruled 2026-09 (#445). Adoption and capability cite
-#: numbers that move, so an unchanged body there confirms that a figure is STALE rather than
-#: that a fact has held — the opposite of what a confirmation claims.
+#: numbers that move. An unchanged body there does not establish that the figure is still
+#: current — it only shows the page has not been rewritten — so re-dating on it would claim a
+#: confirmation nobody made.
 MACHINE_REDATABLE_AXES = ("openness",)
 
 
@@ -441,14 +456,16 @@ def axes_refusal(axes: tuple[str, ...]) -> str | None:
         return "--axes is empty; pass at least one axis"
     unknown = [a for a in axes if a not in _axes()]
     if unknown:
-        return (f"--axes names {', '.join(sorted(unknown))}, which is not an axis. "
-                f"Known axes: {', '.join(_axes())}")
+        return (f"--axes names {', '.join(sorted(unknown))}, which is not an axis. Known axes: "
+                f"{', '.join(_axes())}, of which only {', '.join(MACHINE_REDATABLE_AXES)} may be "
+                f"machine re-dated (#445).")
     refused = [a for a in axes if a not in MACHINE_REDATABLE_AXES]
     if refused:
         return (f"--axes names {', '.join(sorted(refused))}. Machine re-dating is limited to "
                 f"{', '.join(MACHINE_REDATABLE_AXES)} by the #445 ruling: adoption and capability "
-                f"cite numbers that move, so an unchanged body confirms a stale figure rather "
-                f"than a held fact. Re-verify those through the agent leg (refresh-category).")
+                f"cite numbers that move, and an unchanged body does not establish that such a "
+                f"figure is still current. Re-verify those through the agent leg "
+                f"(refresh-category).")
     return None
 
 
