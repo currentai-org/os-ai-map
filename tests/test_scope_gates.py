@@ -197,13 +197,15 @@ def test_notebook_producer_is_flagged(monkeypatch):
 import hashlib
 from pathlib import Path
 
-_REAL_MODEL = "warehouse/models/signal_pypi/package_downloads.sql"
+# Any real mirror file on disk will do -- the gate hashes its bytes. Repointed off the
+# signal_pypi mirror on 2026-09-14, when that model was dropped and its file deleted.
+_REAL_MODEL = "warehouse/models/signal_packages/downloads.sql"
 
 
 def _currentai_dep(**over):
     h = hashlib.sha256((A.ROOT / _REAL_MODEL).read_bytes()).hexdigest()
     base = dict(
-        table="currentai.signal_pypi.package_downloads", purpose="p", expected_grain="g",
+        table="currentai.signal_packages.downloads", purpose="p", expected_grain="g",
         freshness_requirement="<= 8 days", required_by=["build/x.py"], verified_revision=3,
         owner="oso", files={"model": _REAL_MODEL},
         mirror={"model_id": "m", "revision": 3, "hash": "hh",

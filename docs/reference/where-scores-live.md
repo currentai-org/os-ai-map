@@ -255,7 +255,7 @@ product declares:
 | Table | Instrument | Agrees with the repo |
 |---|---|---|
 | `currentai.signal_huggingface.product_adoption` | 30-day Hub downloads | nearly always |
-| `currentai.signal_pypi.package_downloads` | monthly PyPI downloads | nearly always |
+| `currentai.signal_packages.product_adoption` | 30-day pypi / npm / crates downloads, summed per product | nearly always |
 | `currentai.signal_github.product_adoption` | stars, a declared **fallback** | about half the time |
 
 Read those three rates together and they say something specific rather than alarming. Where a
