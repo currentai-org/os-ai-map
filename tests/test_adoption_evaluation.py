@@ -53,7 +53,14 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # not to be how either product ships, so neither package kind bears a route any more and both
 # products fall through to stars - 377 -> 379 rows, both new rows level 2, no existing row's
 # value touched (only the added `non_primary_artifacts` column, empty everywhere else).
-MEASUREMENTS_DIGEST = "b5ef45df6fd2650e28f6fe0ae509d801b6bc9568de63664bb62a6bea191b9cf3"
+# Moved again on 2026-09-14 by WITHDRAWING a declaration (#448). `cohere-rerank-api` declared the
+# `cohere` PyPI package, which is the vendor's whole client SDK - chat, embed, classify and rerank
+# behind one client - so its downloads were never this product's. A declaration asserts that its
+# numbers ARE the product's numbers (identity.md), so the fix is to remove it rather than to flag
+# it: `not_primary_channel` keeps an artifact whose measurement does belong and drops it only from
+# the banded sum, which is a different fact. 379 -> 378 rows, the lost row being this product's
+# only machine route; its recorded level 3 reported_traction is unchanged and no other row moved.
+MEASUREMENTS_DIGEST = "2946ac653f0b7f07853e4aa967157e1219086d559f4a5dbd3b318686c4f81eec"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -76,7 +83,7 @@ MEASUREMENTS_DIGEST = "b5ef45df6fd2650e28f6fe0ae509d801b6bc9568de63664bb62a6bea1
 # standing in for the product measured. Same 613 rows; MEASUREMENTS_DIGEST unchanged.
 # Census and digest now live in tests/goldens/corpus.json; see build/goldens.py.
 
-MEASUREMENT_COUNT = 379
+MEASUREMENT_COUNT = 378
 ROUTING_POLICY_VERSION = "2"
 
 

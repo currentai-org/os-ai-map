@@ -5,12 +5,13 @@ description: 'Reranking API that takes a query and a list of documents and retur
   It is built for RAG pipelines: an agent retrieves candidates from a vector database, then calls Rerank to
   pick the most relevant before passing them to a model. It is offered standalone rather than bundled into
   a vector database, and applied as a single API call.'
-pypi:
-- url: https://pypi.org/project/cohere
-  not_primary_channel: Cohere's whole client SDK - chat, embed, classify and rerank behind one client - so
-    its downloads count the vendor's entire API surface rather than this product. One SDK spanning N
-    products measures none of them individually.
-comments: The declared pypi artifact is Cohere's whole client SDK rather than a reranker package, so it cannot
-  measure this product; adoption rests on multi-cloud distribution instead. Every published performance figure
-  is vendor-run, which is why capability stops at 4. Verified 2026-08-13 via the Cohere rerank overview, the
-  3.5 changelog and the 3.5 launch post.
+comments: 'No pypi artifact is declared, and its absence is the point. Cohere ships one client SDK -
+  chat, embed, classify and rerank behind a single client - so the `cohere` package''s downloads count the
+  vendor''s entire API surface. Declaring an artifact asserts that its numbers are this product''s numbers
+  (docs/reference/identity.md), and these are not, so the package was removed rather than declared and
+  excluded: one SDK spanning N products measures none of them individually. That is a membership fact, not
+  a channel-primacy one, which is why `not_primary_channel` is the wrong instrument here - that field keeps
+  an artifact whose measurement DOES belong to the product and drops it only from the banded sum. Adoption
+  rests on multi-cloud distribution instead. Every published performance figure is vendor-run, which is why
+  capability stops at 4. Verified 2026-08-13 via the Cohere rerank overview, the 3.5 changelog and the 3.5
+  launch post.'
