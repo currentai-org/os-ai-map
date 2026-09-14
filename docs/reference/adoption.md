@@ -434,9 +434,11 @@ it does not make the claim automatic, it makes it falsifiable.
 - **GitHub stars** — real, already fetched wherever a repo is declared, banded nowhere yet. Capped at
   level 3 by the rubric because stars measure attention rather than use. **Open route.**
 - **Vendor SDK downloads** — `mistralai`, `anthropic`, `cohere` on PyPI are dated proxies for
-  API integration, and the trap is attribution. `cohere-rerank-api` is currently banded on
-  37.9M downloads of the `cohere` package, which is the SDK for Cohere's entire API surface
-  rather than the rerank product. **An SDK covering N products may not be attributed wholly to
+  API integration, and the trap is attribution. `cohere-rerank-api` was banded on 37.9M downloads of the
+  `cohere` package, which is the SDK for Cohere's entire API surface rather than the rerank
+  product. It no longer is: since 2026-09-14 its level rests on multi-cloud distribution, and
+  the package carries `not_primary_channel` so the exclusion binds machine routing rather than
+  sitting only in prose. **An SDK covering N products may not be attributed wholly to
   one** — the rule is in "When a re-read may re-band" above, along with the
   transitive-dependency case it did not originally anticipate.
 - **OpenRouter rankings** — the only true API-channel signal, via
