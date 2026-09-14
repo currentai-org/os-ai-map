@@ -6,7 +6,7 @@ fails if this file drifts from the renderer. Regenerate with
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
 not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->42 governed
-assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->18
+assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->17
 external contracts in `warehouse/dependencies.yaml`. The peripheral OSO pipelines are out of scope:
 they were removed and **frozen** under platform ownership (disposition `frozen-without-producer`,
 recorded in the reproducible receipt `warehouse/audits/externalization.json`; not an ownership
@@ -156,10 +156,8 @@ graph LR
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__signal_huggingface__product_adoption[currentai.signal_huggingface.product_adoption]
   currentai__signal_openrouter__models[currentai.signal_openrouter.models]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
-  currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]
   currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]
-  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep
   classDef dep fill:#eee;
   classDef audit fill:#ffd;
   classDef src fill:#def;
@@ -177,6 +175,3 @@ graph LR
   classDef compat stroke-width:3px;
   classDef src fill:#def;
 ```
-
-
-

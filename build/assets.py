@@ -19,6 +19,7 @@ import hashlib
 import json
 import re
 import subprocess
+from datetime import date as _date
 from pathlib import Path
 
 import yaml
@@ -329,11 +330,32 @@ RECLAIM_REQUIRED_FIELDS = (
 # to be false, and the mirror's model_id/verified_revision would anchor to a model the destination
 # now owns. Reclaiming a transferred table therefore needs a ruling, not a gate that shrugs.
 RECLAIMABLE_FROM = {"frozen-without-producer"}
+# A FOURTH state, and the only terminal one: the model is no longer live on the platform at all.
+#
+# `retired` is NOT an externalization. Every `assets` entry records a table LEFT LIVE under
+# platform ownership -- the no-orphan handoff -- and reproduces against the base inventory, so a
+# table that was deleted outright can neither be recorded there (it would claim to be live) nor
+# pass the membership check (it need never have been a governed asset at all; a dependency
+# contract can be retired too). It gets its own list for the same reason `reclaims` does: it is a
+# different event about a different population.
+#
+# `platform_state` says which kind of "no longer live" this is, because the three are not the same
+# thing to a reader deciding whether they can still query it:
+#   deleted     -- the dataset/model was removed from the platform; the table does not resolve.
+#   archived    -- the deployed table is retained and readable but nothing refreshes it.
+#   irrelevant  -- still live and possibly still refreshing, but nothing here reads it and the
+#                  repo no longer asserts anything about it.
+# Retirement is TERMINAL. There is no reclaim out of it: reviving a retired table means deploying
+# something new and contracting it, which is a fresh entry in the graph rather than a transition.
+RETIREMENT_DISPOSITION = "retired"
+RETIREMENT_PLATFORM_STATES = {"deleted", "archived", "irrelevant"}
+RETIREMENT_REQUIRED_FIELDS = ("table", "disposition", "platform_state", "date", "reason")
 # 3 adds the reclaim block (`reclaims`, `reclaimed_count`, `still_external_count`, `reclaim_note`)
-# to the version-2 document. Both are accepted: a version-2 receipt has no reclaims, and the
-# reclaim fields fail closed when absent, so an older receipt still validates.
-EXTERNALIZATION_SCHEMA_VERSION = 3
-EXTERNALIZATION_SCHEMA_VERSIONS = {2, 3}
+# to the version-2 document. 4 adds the retirement block (`retirements`, `retired_count`,
+# `retirement_note`). All are accepted: an older receipt simply has no such list, and every
+# derived field fails closed when absent, so it still validates.
+EXTERNALIZATION_SCHEMA_VERSION = 4
+EXTERNALIZATION_SCHEMA_VERSIONS = {2, 3, 4}
 PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
 # The externalized artifacts live under these path prefixes; every file that existed under them
 # at the base commit and is now gone must be archived in the receipt (completeness check).
@@ -355,6 +377,20 @@ def externalized() -> list[dict]:
     out of the repo's dependency graph.
     """
     return externalization_receipt().get("assets") or []
+
+
+def retirements() -> list[dict]:
+    """The receipt's retirement events (a table that is no longer live on the platform).
+
+    Disjoint from `externalized()`: an externalized table is still live and platform-owned, a
+    retired one is not. Retirement is terminal -- nothing reclaims out of it.
+    """
+    return externalization_receipt().get("retirements") or []
+
+
+def retired_tables() -> set[str]:
+    """The full table names the receipt records as retired."""
+    return {r.get("table") for r in retirements() if r.get("table")}
 
 
 def reclaims() -> list[dict]:
@@ -629,6 +665,113 @@ def reclaim_violations() -> list[str]:
     return problems
 
 
+def retirement_violations() -> list[str]:
+    """A retirement is evidenced the same way an externalization is, minus the handoff.
+
+    `retired` says the table is no longer live on the platform, so the no-orphan evidence an
+    externalization carries (a frozen deployed table, its surviving platform consumers) does not
+    apply and is not demanded. What IS demanded is that the claim is true on every surface this
+    repo can check, and that the files it removes are archived with hashes that reproduce:
+
+    * SHAPE -- every required field present, `disposition` is `retired`, `platform_state` is one
+      of deleted / archived / irrelevant, and no table is retired twice;
+    * DISJOINT -- a table is never both externalized and retired, and never both retired and
+      reclaimed. Externalization means still live under platform ownership; retirement means not
+      live. A reclaim out of retirement is not a transition but a new deployment, so it is refused
+      here rather than silently allowed;
+    * GONE -- the table is absent from `assets.yaml`, absent from `dependencies.yaml`, and no
+      repository model file still produces it. A retired table with a live contract or producer is
+      the repo asserting something it has just said it no longer asserts;
+    * PROVENANCE -- every `archived_source_sha256` hash equals the file's bytes at the
+      externalization base commit, and every such file is genuinely gone from the worktree. These
+      paths also satisfy the receipt's deleted-file completeness check, which is the mechanism
+      that makes deleting a model file legal at all.
+
+    `successor` is optional prose-or-table and is never what satisfies the gate; it is recorded so
+    a reader who finds the table missing knows where the answer moved to.
+    """
+    problems: list[str] = []
+    receipt = externalization_receipt()
+    if not receipt:
+        return problems
+
+    records = retirements()
+    if not records:
+        return problems
+
+    base = receipt.get("externalization_base_commit")
+    externalized_tables = {e.get("table") for e in (receipt.get("assets") or []) if e.get("table")}
+    reclaimed_tables = {r.get("table") for r in (receipt.get("reclaims") or []) if r.get("table")}
+    governed = set(by_table())
+    dep_tables = {d.get("table") for d in dependencies() if d.get("table")}
+    producers = {(a.get("files") or {}).get("model") for a in assets()}
+    producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
+
+    seen: set[str] = set()
+    for r in records:
+        tbl = r.get("table")
+        label = tbl or f"retirement record {r!r}"
+        for field in RETIREMENT_REQUIRED_FIELDS:
+            if not str(r.get(field) or "").strip():
+                problems.append(f"{label}: retirement record is missing {field}")
+        if not tbl:
+            continue
+        if tbl in seen:
+            problems.append(f"{tbl}: listed more than once in the receipt's retirements")
+        seen.add(tbl)
+
+        if r.get("disposition") != RETIREMENT_DISPOSITION:
+            problems.append(
+                f"{tbl}: retirement disposition {r.get('disposition')!r} != "
+                f"{RETIREMENT_DISPOSITION!r}")
+        state = r.get("platform_state")
+        if state not in RETIREMENT_PLATFORM_STATES:
+            problems.append(
+                f"{tbl}: platform_state {state!r} not in {sorted(RETIREMENT_PLATFORM_STATES)}")
+        # fromisoformat, not a regex: a shape check accepts 2026-99-99, and a retirement date
+        # that cannot have happened is not evidence of anything.
+        try:
+            _date.fromisoformat(str(r.get("date") or ""))
+        except ValueError:
+            problems.append(f"{tbl}: retirement date {r.get('date')!r} is not a real ISO date")
+
+        # DISJOINT -- the three populations do not overlap.
+        if tbl in externalized_tables:
+            problems.append(
+                f"{tbl}: recorded as both externalized and retired; externalization means the "
+                "table is still live under platform ownership and retirement means it is not")
+        if tbl in reclaimed_tables:
+            problems.append(
+                f"{tbl}: recorded as both reclaimed and retired; there is no reclaim out of "
+                "retirement -- reviving it is a new deployment and a new contract")
+
+        # GONE -- from every live surface this repo controls.
+        if tbl.removeprefix("currentai.") in governed:
+            problems.append(f"{tbl}: retired but still a governed asset in assets.yaml")
+        if tbl in dep_tables:
+            problems.append(f"{tbl}: retired but still a dependency contract in dependencies.yaml")
+        still = {pp for pp in producers if pp and table_for_path(pp) == tbl}
+        if still:
+            problems.append(
+                f"{tbl}: retired but a repository model file still produces it "
+                f"({', '.join(sorted(still))})")
+
+        # PROVENANCE -- archived hashes reproduce from the base blobs and the files are gone.
+        for path, h in (r.get("archived_source_sha256") or {}).items():
+            want = _git_blob_sha256(base, path) if base else None
+            if want is None:
+                problems.append(f"{tbl}: archived {path} did not exist at the base commit")
+            elif want != h:
+                problems.append(f"{tbl}: archived {path} hash {h} != base blob {want}")
+            if _worktree_has(path):
+                problems.append(f"{tbl}: archived {path} still exists in the worktree (not deleted)")
+
+    if receipt.get("retired_count") != len(records):
+        problems.append(
+            f"receipt retired_count {receipt.get('retired_count')!r} != {len(records)} retirements")
+    return problems
+
+
 def externalization_receipt_violations() -> list[str]:
     """The externalization receipt MECHANICALLY REPRODUCES from its named base commit.
 
@@ -684,6 +827,7 @@ def externalization_receipt_violations() -> list[str]:
     entries = receipt.get("assets") or []
     reclaimed = {r.get("table") for r in (receipt.get("reclaims") or []) if r.get("table")}
     problems += reclaim_violations()
+    problems += retirement_violations()
 
     # -- document well-formedness --------------------------------------------------
     if receipt.get("schema_version") not in EXTERNALIZATION_SCHEMA_VERSIONS:
@@ -864,6 +1008,11 @@ def externalization_receipt_violations() -> list[str]:
     # -- completeness: every deleted externalized file is archived ------------------
     base_files = _tree_files_at_commit(base, EXTERNALIZED_FILE_PREFIXES)
     deleted = {p for p in base_files if not (ROOT / p).exists()}
+    # A retirement archives its own files, with hashes reproduced against the same base commit by
+    # `retirement_violations`. Those paths are accounted for, so they are not orphans here -- this
+    # is what makes deleting a model file legal without pretending it was externalized.
+    for r in retirements():
+        archived_all |= set((r.get("archived_source_sha256") or {}).keys())
     for p in sorted(deleted - archived_all):
         problems.append(f"{p}: deleted since the base commit but not archived in any receipt entry")
 

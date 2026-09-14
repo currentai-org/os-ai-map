@@ -284,6 +284,43 @@ reproduction check then treats a reclaimed table as still in the **historical** 
 set never shrinks — while `still_external_count` records the population currently outside the graph,
 so the shrink is written down rather than inferred.
 
+### Retirement — the terminal state
+
+A table can also stop being live, and that is a different event from externalization, not a further
+step in it. An externalized table is **left live** under platform ownership; that is the whole point
+of the no-orphan handoff. So a table that was deleted from the platform outright cannot be recorded
+in `assets` without claiming to be something it is not — and it need never have been a governed asset
+at all, since a dependency contract can be retired too, which the membership check would reject.
+
+`retired` therefore gets its own list, for the same reason `reclaims` does: a different event about a
+different population. A `retirements` record carries `table`, `disposition: retired`,
+`platform_state`, `date`, `reason`, an optional `successor`, and the `archived_source_sha256` of
+every repository file the retirement removes. `platform_state` says which kind of not-live this is,
+because they are not the same thing to a reader deciding whether they can still query it:
+
+- **`deleted`** — the dataset or model was removed; the table does not resolve.
+- **`archived`** — the deployed table is retained and readable, but nothing refreshes it.
+- **`irrelevant`** — still live and possibly still refreshing, but nothing here reads it and the repo
+  no longer asserts anything about it.
+
+`build.assets.retirement_violations()` enforces it: shape and a real ISO date; that a retired table is
+neither externalized nor reclaimed; that the table is gone from `assets.yaml`, gone from
+`dependencies.yaml`, and produced by no repository model file; and that every archived hash
+reproduces from the base commit blob while the file is genuinely deleted. Those archived paths are
+also what satisfies the receipt's deleted-file completeness check — **this is the mechanism that
+makes deleting a model file legal at all**, and before it existed there was no honest way to record
+one.
+
+Note that the three lists are not pairwise disjoint in general, and are not meant to be: a `reclaims`
+record deliberately points *into* `assets`, because a reclaim is a transition out of a state that
+stays on the record. What the gate enforces is narrower and is the part that matters — a *retired*
+table appears in neither of the other two.
+
+Retirement is **terminal**. There is no reclaim out of it: reviving a retired table means deploying
+something new and contracting it, which is a fresh entry in the graph rather than a transition, and
+the gate refuses a record that is both retired and reclaimed. `successor` is recorded so a reader who
+finds the table missing knows where the answer moved to; it is never what satisfies the gate.
+
 Two limits keep a reclaim from being a general amnesty:
 
 - **Only a frozen table is reclaimable.** `prior_disposition` must be `frozen-without-producer`. A

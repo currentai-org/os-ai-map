@@ -102,9 +102,10 @@ def test_real_routing_yaml_derives_the_deployed_adoption_datasets():
 
     `signal_packages` replaced `signal_pypi` here on 2026-09-13 (#562 step 3): the package
     routes now point at the merged-registry successor, which carries pypi, npm and crates on
-    one grain. `signal_pypi` is still deployed and still read by
-    `signal_github/product_adoption.sql`, but no adoption ROUTE names it any more, which is
-    what this function derives.
+    one grain. `signal_pypi` was dropped entirely on 2026-09-14 once
+    `signal_github/product_adoption.sql` was repointed off it, so it is neither routed nor
+    deployed any more. The synthetic fixture above still names it, deliberately -- it tests the
+    derivation, not the estate.
     """
     deployed = S.deployed_adoption_source_datasets(S.load_routing(S.A.ROOT))
     assert "signal_semanticscholar" in deployed

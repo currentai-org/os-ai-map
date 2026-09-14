@@ -380,7 +380,7 @@ not follow from the evidence the score itself recorded.
 
 | model | grain | covers | route |
 |---|---|---|---|
-| `currentai.signal_pypi.package_downloads` | package | software products declaring a `pypi` artifact | PyPI |
+| `currentai.signal_packages.product_adoption` | **product** | software products declaring a `pypi`, `npm` or `crates` artifact | PyPI / npm / crates |
 | `currentai.signal_huggingface.product_adoption` | **product** | model / dataset products declaring a Hugging Face artifact | Hugging Face |
 
 Both read the bands from `registry.adoption_bands` and band on the product's declared type.

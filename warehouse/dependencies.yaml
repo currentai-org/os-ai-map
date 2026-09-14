@@ -164,26 +164,6 @@ dependencies:
     cron: 0 2 * * 0
     timezone: UTC
     last_observed_trigger: MANUAL
-- table: currentai.signal_pypi.package_downloads
-  purpose: pypi_adoption_signal
-  expected_grain: one row per (product_slug, package) over a 30-day window
-  freshness_requirement: <= 8 days (weekly platform refresh)
-  required_by:
-  - warehouse/models/signal_github/product_adoption.sql
-  verified_revision: 4
-  owner: oso
-  files:
-    model: warehouse/models/signal_pypi/package_downloads.sql
-  mirror:
-    model_id: a88bff56-0a00-49d1-8667-809a79b4d7c0
-    revision: 4
-    hash: 39511381c4f06644ff520f8182edc3d06cfeee60f21b5a976817e2a98ed4dfc7
-    local_sha256: a357c9ff6f8948870533031a544e129ae2d479e1dac8f27c37e7c162cf0bf817
-    synced_at: '2026-09-04'
-  platform_schedule:
-    cron: 0 1 * * 0
-    timezone: UTC
-    last_observed_trigger: SCHEDULED
 - table: currentai.signal_semanticscholar.paper_citations
   purpose: paper_citation_signal
   expected_grain: one row per (product_slug, arxiv_id)
@@ -223,7 +203,6 @@ dependencies:
   freshness_requirement: <= 35 days (map reads trailing-30d and trailing-7d windows)
   required_by:
   - warehouse/models/signal_packages/downloads.sql
-  - warehouse/models/signal_pypi/package_downloads.sql
   owner: oso
   verified_at: '2026-08-29'
   content_contract_sha256: fc944c8a4d6faf77bd3ee10b4616e6dc99ea1a1481e0ff94a0ceca29ee9543fc

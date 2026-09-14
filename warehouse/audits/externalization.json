@@ -1,5 +1,5 @@
 {
- "schema_version": 3,
+ "schema_version": 4,
  "note": "Append-only externalization receipt for ADR-003 steps 5-6. Each entry is a table removed from this repo's inventory/publisher and LEFT LIVE on the OSO platform under platform ownership (no OSO deletion). disposition 'frozen-without-producer' = the deployed table is retained and frozen at its last publish with no repository producer; this satisfies the no-orphan rule but is NOT an ownership transfer to a named destination repo. The receipt is MECHANICALLY REPRODUCIBLE from externalization_base_commit: build.assets.externalization_receipt_violations() re-derives id, population_was, platform facts, archived_source_sha256 (base git blobs), and the repo/external consumer lists from the base inventory + platform_models.json, and checks membership == the assets removed from the base inventory, per-file archival of every deleted source/data/model file, and append-only immutability. Honest verification: recorded_at is when the entry was written; last_platform_verified_at is the asset's actual prior verification date (no live OSO read occurred when the receipt was recorded); evidence_basis names what is reproduced vs captured. Do not edit or remove entries; append only.",
  "reclaim_note": "A table can legitimately come back. When an in-scope governed asset starts reading an externalized table, the transition is recorded as a 'reclaims' event -- disposition history in-scope -> externalized -> reclaimed-as-dependency -- and the original 'assets' entry stays byte-identical, because it is history. 'reclaimed-as-dependency' means the table is STILL platform-owned and still not deployed from this repo; it is once again inside the repo's governed dependency graph, represented by a warehouse/dependencies.yaml contract with a mirror block (provenance, not ownership). Each record carries table, prior_disposition, prior_date, new_disposition, date, reason and governed_reader (the in-repo file that now reads it). build.assets.reclaim_violations() checks the prior entry exists with the stated disposition and date, that governed_reader exists and genuinely reads the table (same scanner the rest of the graph uses), and that the contract with a mirror block exists; a contract for an externalized table with no reclaim record is a hard error too. Only 'frozen-without-producer' is reclaimable: a 'transferred' table is owned by its named destination repo, so a contract's owner: oso would be false, and that case needs a ruling. A reclaim re-admits ONLY the files its own contract claims (the mirror model and any schema beside it, both content-bound by the mirror hashes); every other archived path stays under the deleted-from-the-worktree rule, and only the contract's own mirror path may derive the reclaimed table. 'count' and 'assets' are the HISTORICAL removed set and never shrink; 'still_external_count' = count - reclaimed_count is the population currently outside the graph, stated here rather than inferred.",
  "externalization_base_commit": "caebc97ef1c6cbb541d4a98a64f2b6ad30af810e",
@@ -783,6 +783,31 @@
    "last_platform_verified_at": "2026-08-20",
    "evidence_basis": "committed base inventory at caebc97 + warehouse/audits/platform_models.json (audited_at 2026-08-29); id, population_was, platform.dataset_id, the platform model facts, archived_source_sha256, consumers_at_removal.repo_read_by and .external_notebooks_or_products all reproduce from the base asset and the platform audit. consumers_at_removal.platform_models was captured from the externalization-time platform scan and was NOT re-verified live in this session.",
    "owner": "platform (currentai org; maintainer carl)"
+  }
+ ],
+ "retirement_note": "A table can also stop being live. 'retired' is the terminal state and is NOT an externalization: every entry in 'assets' records a table LEFT LIVE on the platform under platform ownership, so a table that was deleted outright cannot be recorded there without claiming to be something it is not -- and need never have been a governed asset at all, since a dependency contract can be retired too. platform_state says which kind of not-live this is: 'deleted' (the dataset/model was removed; the table does not resolve), 'archived' (the deployed table is retained and readable but nothing refreshes it), or 'irrelevant' (still live, but nothing here reads it and the repo no longer asserts anything about it). Each record archives the repository files it removes, with hashes reproduced against externalization_base_commit exactly as an 'assets' entry does, and those paths are what satisfy the receipt's deleted-file completeness check -- this is the mechanism that makes deleting a model file legal. build.assets.retirement_violations() checks shape, that the three populations (externalized / reclaimed / retired) do not overlap, that the table is gone from assets.yaml, dependencies.yaml and every repository producer, and that every archived file reproduces and is really deleted. Retirement is TERMINAL: there is no reclaim out of it, because reviving a retired table means deploying something new and contracting it, which is a fresh entry in the graph rather than a transition. 'successor' is recorded so a reader who finds the table missing knows where the answer moved to; it is never what satisfies the gate.",
+ "retired_count": 1,
+ "retirements": [
+  {
+   "table": "currentai.signal_pypi.package_downloads",
+   "disposition": "retired",
+   "platform_state": "deleted",
+   "date": "2026-09-14",
+   "reason": "Superseded by currentai.signal_packages.*, which carries pypi, npm and crates on one grain. Dropped once nothing read it: signal_github.product_adoption -- the last reader, via its already_measured CTE -- was repointed onto signal_packages.product_adoption in revision 7 on 2026-09-14, after which the platform lineage graph showed zero downstream consumers and the one notebook that queried it directly (gap-map-packages) had been migrated. Issue #562 step 5.",
+   "successor": "currentai.signal_packages.downloads for the per-artifact volume, and currentai.signal_packages.product_adoption for the band, which moves up a grain to the product because the usage_volume unit sums a product's declared package artifacts.",
+   "platform": {
+    "dataset_id": "c7c3a04c-7e2d-4cea-a7e6-5861c725ea65",
+    "model_id": "a88bff56-0a00-49d1-8667-809a79b4d7c0",
+    "deleted_dataset": true,
+    "deleted_model": true
+   },
+   "archived_source_sha256": {
+    "warehouse/models/signal_pypi/package_downloads.sql": "21fe2106888e7cf8aecc12d3a57b449a8a064537608eb4ac54ac32bb5d180499"
+   },
+   "pre_drop_snapshot": "170 rows read and saved to CSV immediately before the drop; the table's final state. Not committed to this repository -- it is measurement data, not a governed artifact.",
+   "recorded_at": "2026-09-14",
+   "evidence_basis": "Lineage read read-only from the platform (zero downstream consumers) plus a repository scan for readers; the archived hash reproduces from the base commit blob. The deletion itself is not reproducible from this repo -- deleting the dataset left the model record behind, still enabled and still carrying a nextRunAt, so it was deleted separately.",
+   "owner": "oso"
   }
  ]
 }

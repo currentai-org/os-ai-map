@@ -11,19 +11,33 @@
 -- derivation at product grain. A rubric change re-bands without re-fetching.
 --
 -- THIS IS THE LAST RESORT ROUTE. signal_routing.yaml orders adoption
--- huggingface_model -> huggingface_dataset -> pypi -> stars, first artifact the
+-- pypi -> huggingface_model -> huggingface_dataset -> stars, first artifact the
 -- product has wins, and stars are marked "last resort, and explicitly last"
 -- because they measure attention rather than use. So a product already banded on
 -- a download signal is excluded here rather than published twice with two
--- different levels.
+-- different levels. (The ordering is recorded authoritatively in
+-- registry.adoption_routes as route_order; already_measured below is a UNION and
+-- so is order-independent, but do not copy a precedence claim out of this comment
+-- into anywhere that cares about order.)
 --
 -- The scale is the stars scale from registry.adoption_bands, filtered to
 -- signal_type = 'stars_fallback'. It is declared once on the route in
 -- signal_routing.yaml, is type-independent, and is CAPPED AT 3 - a star count can
 -- never claim the top two levels however large. Joining this table without
 -- filtering on signal_type would band stars against the download scale.
+--
+-- -- The package arm reads signal_packages, not signal_pypi (2026-09-14) --
+-- signal_packages.product_adoption is the registry-neutral successor and carries
+-- npm and crates as well as PyPI, so a product banded on an npm download no longer
+-- also gets published a stars level here. It bands at PRODUCT grain, summing a
+-- product's declared package artifacts, which is why this reads it rather than
+-- signal_packages.downloads: downloads deliberately carries no adoption_level.
+-- It also ABSTAINS (null level) where every declared package artifact is marked
+-- not_primary_channel, and that abstention is load-bearing here: hexabot and yomo
+-- must stay in this table's population and fall through to stars, which is what
+-- the 2026-08-14 ruling holds them at.
 WITH already_measured AS (
-  SELECT product_slug FROM currentai.signal_pypi.package_downloads
+  SELECT product_slug FROM currentai.signal_packages.product_adoption
   WHERE adoption_level IS NOT NULL
   UNION
   SELECT product_slug FROM currentai.signal_huggingface.product_adoption
