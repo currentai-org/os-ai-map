@@ -24,7 +24,7 @@
 -- sources/rubrics/software.yaml is "package downloads in the trailing 30 days, summed across
 -- declared artifacts" — so a band on one artifact of a product that ships several is a band on
 -- part of the product. The band moves one grain up, to
--- currentai.signal_packages.product_adoption.
+-- build/adoption_measurements.py, which bands it once from the compiled routing.
 --
 -- Where each leg's history comes from:
 --   * pypi   — oso.pypi_downloads.daily_downloads_by_package, the marketplace dataset holding

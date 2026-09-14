@@ -378,14 +378,16 @@ not follow from the evidence the score itself recorded.
 
 ## What the machine actually computes today
 
-| model | grain | covers | route |
+| stage | model | grain | covers |
 |---|---|---|---|
-| `currentai.signal_packages.product_adoption` | **product** | software products declaring a `pypi`, `npm` or `crates` artifact | PyPI / npm / crates |
-| `currentai.signal_huggingface.product_adoption` | **product** | model / dataset products declaring a Hugging Face artifact | Hugging Face |
+| observe | `currentai.observations.product_adoption_current` | **artifact** | every declared artifact on a machine route, band-free |
+| evaluate | `build/adoption_measurements.py` | **product** | the winning route per product, banded once |
 
-Both read the bands from `registry.adoption_bands` and band on the product's declared type.
-Neither writes anything back to `sources/`: **a computed band is an observation, never a
-score.** Only a person sets `level`, and only per `evidence-and-freshness.md`.
+The per-dataset `signal_*.product_adoption` models that used to do both at once were retired on
+2026-09-14 (#562). The evaluator reads the bands from `registry.adoption_bands` and bands on the
+product's declared type. It writes nothing back to `sources/`: **a computed band is an
+observation, never a score.** Only a person sets `level`, and only per
+`evidence-and-freshness.md`.
 
 ### Sum across the family, not per artifact
 
@@ -513,8 +515,8 @@ measurement is not this product's at all; here it is the product's, and it stays
 
 What it does and does not touch:
 
-- **Out of the sum.** `currentai.signal_packages.product_adoption` and
-  `build/adoption_measurements.py` both leave the artifact's figure out of the figure they band.
+- **Out of the sum.** `build/adoption_measurements.py` leaves the artifact's figure out of the
+  figure it bands.
 - **In the table.** The artifact keeps its row in `registry.product_artifacts` (carrying the reason
   as a column), its observation stays in `observations.product_adoption_current`, and
   `currentai.signal_packages.downloads` still computes and publishes its downloads per artifact.

@@ -93,29 +93,30 @@ def test_kind_gate_holds(inventory):
     assert A.kind_violations() == []
 
 
-def test_signal_product_adoption_deployed_tables_are_compatibility_shims(inventory):
-    """The three `signal_*.product_adoption` per-source banding tables are superseded by the
-    central observations + evaluation layer. The deployed ones (`signal_github`,
-    `signal_huggingface`) are live compatibility shims naming
-    `observations.product_adoption_current` as their `replacement`; the staged sibling
-    (`signal_packages`, never deployed) is exempt -- a table that never entered service is not a
-    live shim.
+def test_signal_product_adoption_shims_are_retired_and_stay_retired(inventory):
+    """The three `signal_*.product_adoption` per-source banding tables were retired together on
+    2026-09-14 (#562 step 4), superseded by the central observations + evaluation layer:
+    `observations.product_adoption_current` holds the raw artifact-level measurement and
+    `build/adoption_measurements.py` computes the band once from the compiled routing.
+
+    This test used to assert they existed as live compatibility shims. It is INVERTED rather
+    than deleted, because the value now is anti-reintroduction: a per-dataset banding model is
+    exactly the mistake #562 exists to stop being made again, and re-adding one would otherwise
+    pass every gate. Retirement is terminal -- there is no reclaim out of it -- so the inventory
+    must stay empty of these and the receipt must keep recording all three.
     """
-    seen = 0
-    for asset in inventory:
-        if not asset["table"].endswith(".product_adoption"):
-            continue
-        if not asset["table"].split(".")[1].startswith("signal_"):
-            continue
-        seen += 1
-        if not asset.get("materialized"):
-            continue
-        assert asset["status"] == "compatibility", (
-            f"{asset['id']}: a deployed signal_*.product_adoption table must be "
-            f"status: compatibility, not {asset['status']!r}")
-        assert asset.get("replacement") == "currentai.observations.product_adoption_current", (
-            f"{asset['id']}: must name observations.product_adoption_current as its replacement")
-    assert seen == 3, f"expected the three signal_*.product_adoption tables, saw {seen}"
+    live = [a["id"] for a in inventory
+            if a["table"].endswith(".product_adoption")
+            and a["table"].split(".")[1].startswith("signal_")]
+    assert live == [], (
+        f"retired signal_*.product_adoption tables are back in the inventory: {live}. "
+        f"Banding belongs to build/adoption_measurements.py, not to a per-dataset model (#562).")
+
+    retired = A.retired_tables()
+    for table in ("currentai.signal_github.product_adoption",
+                  "currentai.signal_huggingface.product_adoption",
+                  "currentai.signal_packages.product_adoption"):
+        assert table in retired, f"{table}: missing its retirement record in the receipt"
 
 
 def test_phase7_openness_chain_is_a_dependency_with_retirement_context(inventory):

@@ -252,11 +252,18 @@ The **score** is curated in `sources/scores/*.yaml` as `adoption.level`, and mir
 What the warehouse does hold is a **measured band per product**, from whichever channel the
 product declares:
 
-| Table | Instrument | Agrees with the repo |
+| Route | Instrument | Agrees with the repo |
 |---|---|---|
-| `currentai.signal_huggingface.product_adoption` | 30-day Hub downloads | nearly always |
-| `currentai.signal_packages.product_adoption` | 30-day pypi / npm / crates downloads, summed per product | nearly always |
-| `currentai.signal_github.product_adoption` | stars, a declared **fallback** | about half the time |
+| `huggingface_model` / `huggingface_dataset` | 30-day Hub downloads | nearly always |
+| `pypi` / `npm` / `crates` | 30-day downloads, summed per product | nearly always |
+| `github` | stars, a declared **fallback** | about half the time |
+
+The three per-dataset `signal_*.product_adoption` models that used to carry these bands were
+retired on 2026-09-14 (#562). The raw measurement now lives at artifact grain in
+`currentai.observations.product_adoption_current`, and the band is computed once by
+`build/adoption_measurements.py` from the compiled `registry.adoption_*` routing. Note that
+its published table, `currentai.evaluation.product_adoption_measurements`, is uploaded by a
+manual runbook and carries no schedule, so it is not a live read.
 
 Read those three rates together and they say something specific rather than alarming. Where a
 product publishes a download channel, the repo and the warehouse agree. Where adoption rests on
@@ -302,8 +309,9 @@ Four things carry columns named like ours and answer a different question.
 SELECT product_slug, openness_score, openness_class, last_checked
 FROM currentai.scores.openness_computed WHERE category_slug = 'compilers';
 
--- adoption, measured where a channel exists
-SELECT product_slug, adoption_level FROM currentai.signal_huggingface.product_adoption;
+-- adoption, measured where a channel exists: raw observations at artifact grain
+SELECT product_slug, artifact_kind, metric_type, raw_value, observed_at
+FROM currentai.observations.product_adoption_current;
 
 -- all three axes at once, mirrored from the repo
 SELECT product_slug, openness_score, adoption_level, capability_score, overall_score

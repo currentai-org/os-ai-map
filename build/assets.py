@@ -872,10 +872,20 @@ def externalization_receipt_violations() -> list[str]:
     # A reclaimed table is a dependency contract again, yet it still belongs to the HISTORICAL
     # removed set this receipt records -- so it counts as removed here. Without that carve-out the
     # removed set would shrink silently and the receipt would read as having invented an entry.
+    # A RETIRED table is also absent from the current inventory, and it is accounted for by the
+    # `retirements` block rather than by `assets` -- so it must not be demanded here as a missing
+    # externalization entry. Nothing is hidden by the carve-out: `retirement_violations` enforces
+    # the same GONE and PROVENANCE evidence over that block, and the DISJOINT rule already forbids
+    # a table being recorded as both externalized and retired. Without this a governed asset could
+    # never be retired at all -- the first retirement (signal_pypi.package_downloads) only passed
+    # because it was a dependency contract rather than a governed asset, so it was never in
+    # `base_assets` and the membership check never saw it.
+    retired = retired_tables()
     removed = {
         t for t in base_assets
         if t.removeprefix("currentai.") not in governed
         and (t.removeprefix("currentai.") not in dep_tables_bare or t in reclaimed)
+        and t not in retired
     }
     recorded = set(tables)
     for t in sorted(removed - recorded):

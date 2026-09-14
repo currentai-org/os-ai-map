@@ -47,9 +47,12 @@ def _declared_table(path: Path) -> str | None:
     Scoped to the header on purpose. Searching the whole file was the first cut and it
     established less than it claimed, on two files:
 
-      * `signal_packages/downloads.sql` writes a `-- currentai.signal_packages.product_adoption`
+      * `signal_packages/downloads.sql` wrote a `-- currentai.signal_packages.product_adoption`
         line describing its own CONSUMER 27 lines in. A whole-file search would accept an
-        entry filing it under that table.
+        entry filing it under that table. That consumer was retired on 2026-09-14 (#562) and
+        the line now names `build/adoption_measurements.py`, so this particular trap no longer
+        reproduces; the scoping rule it motivated still holds, and the openness_facts case
+        below is live.
       * `scores/openness_facts.sql` opens a line with `-- currentai.registry.category_dimensions`,
         one of its INPUTS.
 
@@ -99,16 +102,19 @@ def test_the_package_models_are_all_present():
     source and the table must not repeat it (rule 11.1a.1), so `package_downloads` is
     `downloads` under the mirror layout.
 
-    Presence is the assertion, not status. All three were `staged` until issue #314 deployed
-    them on 2026-09-13; `downloads` and `downloads_daily` are now `active` and
-    `product_adoption` is `compatibility`, since a deployed `signal_*.product_adoption` is a
-    retirement candidate. Keying this on `staged` would have made a correct deploy look like
-    a missing model.
+    Presence is the assertion, not status. Both were `staged` until issue #314 deployed them on
+    2026-09-13 and are now `active`. Keying this on `staged` would have made a correct deploy
+    look like a missing model.
+
+    `product_adoption` was a third member of this set and is deliberately NOT here any more: it
+    was retired with the other two `signal_*.product_adoption` shims on 2026-09-14 (#562), so its
+    absence is the expected state and asserting its presence would re-fail the retirement.
     """
     present = {a["table"] for a in A.assets()}
     expected = {
         "currentai.signal_packages.downloads",
         "currentai.signal_packages.downloads_daily",
-        "currentai.signal_packages.product_adoption",
     }
     assert expected <= present, f"signal_packages models missing: {sorted(expected - present)}"
+    assert "currentai.signal_packages.product_adoption" not in present, (
+        "signal_packages.product_adoption is retired (#562); it must not return to the inventory")

@@ -51,7 +51,7 @@ route. What the no-fallthrough rule forbids is substituting a weaker route when 
 one was merely not OBSERVED — an accident of collection. A kind with a primary artifact declared
 and no observation still produces no row, as before. Both products here are all-non-primary on
 their package kind, so both fall through to stars, which is what
-`currentai.signal_packages.product_adoption` already does with the same declaration
+the retired `currentai.signal_packages.product_adoption` did with the same declaration
 ("no primary package channel ... so the product ships another way") and what the under-coverage
 remedy in `docs/reference/adoption.md` prescribes — abstain on the minority channel rather than
 band on it. Banding them on a package they do not ship through fell both to level 1; the

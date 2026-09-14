@@ -423,11 +423,6 @@ assets:
   population: gap_map
   release_path: true
   role: governed-output
-  read_by:
-    models:
-    - warehouse/models/signal_github/product_adoption.sql
-    - warehouse/models/signal_huggingface/product_adoption.sql
-    - warehouse/models/signal_packages/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -999,8 +994,6 @@ assets:
     - warehouse/models/identity/equivalence_edges.sql
     - warehouse/models/identity/membership_edges.sql
     - warehouse/models/scores/openness_facts.sql
-    - warehouse/models/signal_github/product_adoption.sql
-    - warehouse/models/signal_huggingface/product_adoption.sql
   platform_model_consumers:
   - currentai.gap_map_analysis.product_scores_enriched
   consumer_checks:
@@ -1069,57 +1062,6 @@ assets:
   status: dormant
   materialized: false
   verified_at: '2026-08-20'
-- id: signal_github.product_adoption
-  table: currentai.signal_github.product_adoption
-  files:
-    model: warehouse/models/signal_github/product_adoption.sql
-    schema: null
-    data: null
-  kind: evaluation
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: compatibility-shim
-  reads:
-  - table: currentai.registry.adoption_bands
-    scope: internal
-  - table: currentai.registry.products
-    scope: internal
-  - table: currentai.signal_github.artifact_state
-    scope: internal
-  - table: currentai.signal_huggingface.product_adoption
-    scope: internal
-  - table: currentai.signal_packages.product_adoption
-    scope: internal
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per product_slug, stars fallback tier only
-  producer: warehouse/models/signal_github/product_adoption.sql
-  classification_note: a banded candidate assessment, not a raw measurement
-  refresh: dataset cron '0 3 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
-  status: compatibility
-  replacement: currentai.observations.product_adoption_current
-  materialized: true
-  verified_at: '2026-08-28'
-  notes: The stars fallback tier. Reads signal_packages and signal_huggingface to skip already-measured
-    products, so it holds the route precedence pypi > huggingface > stars in SQL. registry.adoption_routes
-    now compiles that ordering, so the retirement precondition is met. Repointed off signal_pypi on
-    2026-09-14 (revision 7) immediately before that dataset was dropped; the package arm now covers npm and
-    crates as well as PyPI.
-  mirror:
-    model_id: 25538fa7-f956-481c-ac14-474ab1661ac3
-    revision: 7
-    hash: cef9441c4f6d09edf7e598160a19bb7939e86fd29fea3b8edbecb7ec15492be1
-    local_sha256: 4deea7bfe1628f356e9ffcfdb0ba55a419d89718e18c7540bcdd923defffc091
-    synced_at: '2026-09-14'
 - id: signal_github.repo_state
   table: currentai.signal_github.repo_state
   files:
@@ -1195,51 +1137,6 @@ assets:
     hash: d7b62c33cb51b13235dcb9d7e8b7f57fd7a8c76ec3bf2f8d912c32c145fc41f5
     local_sha256: d2c0ef261ee4af9beda119d14965301fd9f99411d9eddd978ed9aeeb49781b21
     synced_at: '2026-08-15'
-- id: signal_huggingface.product_adoption
-  table: currentai.signal_huggingface.product_adoption
-  files:
-    model: warehouse/models/signal_huggingface/product_adoption.sql
-    schema: null
-    data: null
-  kind: evaluation
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: compatibility-shim
-  reads:
-  - table: currentai.registry.adoption_bands
-    scope: internal
-  - table: currentai.registry.products
-    scope: internal
-  - table: currentai.signal_huggingface.artifact_state
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/signal_github/product_adoption.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per product_slug, Hub downloads route
-  producer: warehouse/models/signal_huggingface/product_adoption.sql
-  classification_note: a banded candidate assessment, not a raw measurement
-  refresh: dataset cron '0 2 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
-  status: compatibility
-  replacement: currentai.observations.product_adoption_current
-  materialized: true
-  verified_at: '2026-08-28'
-  mirror:
-    model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
-    revision: 4
-    hash: 3a07002e0fd547adb46e17c7963fe134824ef3b34a5ce267891b17281df66353
-    local_sha256: e7d3d29e7e895c7155a873ebf8a97d88abaecae95af5f2e5b77b234663680584
-    synced_at: '2026-08-24'
 - id: signal_packages.downloads
   table: currentai.signal_packages.downloads
   files:
@@ -1261,7 +1158,6 @@ assets:
   read_by:
     models:
     - warehouse/models/observations/product_adoption_current.sql
-    - warehouse/models/signal_packages/product_adoption.sql
     build:
     - build/check_artifacts.py
   consumer_checks:
@@ -1307,46 +1203,3 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-09-13'
-- id: signal_packages.product_adoption
-  table: currentai.signal_packages.product_adoption
-  files:
-    model: warehouse/models/signal_packages/product_adoption.sql
-    schema: null
-    data: null
-  kind: evaluation
-  authority: repo
-  population: gap_map
-  release_path: false
-  role: compatibility-shim
-  reads:
-  - table: currentai.registry.adoption_bands
-    scope: internal
-  - table: currentai.signal_packages.downloads
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/signal_github/product_adoption.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per product_slug across package registries
-  producer: warehouse/models/signal_packages/product_adoption.sql
-  classification_note: a banded candidate assessment, not a raw measurement
-  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep. 186 rows.'
-  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
-  replacement: currentai.observations.product_adoption_current
-  status: compatibility
-  materialized: true
-  verified_at: '2026-09-13'
-  notes: 'A third banding model in a signal namespace, joining the two siblings already marked for
-    retirement. Deployed 2026-09-13 with no exit recorded, which is the defect issue #562 names;
-    the replacement above is that exit. Retire with the other two rather than alone, per
-    data-architecture.md section 11.1. One behaviour has to be reproduced or knowingly dropped
-    first, and it is not a detail. This model sums across registries AND suppresses the band when a
-    declared package went unmeasured, which is the partial-coverage abstention the repo applies
-    deliberately elsewhere. build/adoption_measurements.py selects one artifact-kind route and sums
-    what it has, without checking that every declared artifact was measured. Compiled precedence
-    does not prove equivalence. Step 4 of issue #562.'

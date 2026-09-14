@@ -49,7 +49,7 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`** (each carrying a `mirror:` block — the compatibility shims are the exception, governed assets in `assets.yaml`). The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
 - Some tracked assets have no reviewed in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
-- The inventory tracks <!-- count:deployed_tables -->34 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
+- The inventory tracks <!-- count:deployed_tables -->31 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1349,7 +1349,7 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-<!-- count:tracked_warehouse_files -->35 files are tracked under `warehouse/`, and the mirror
+<!-- count:tracked_warehouse_files -->32 files are tracked under `warehouse/`, and the mirror
 layout of 11.1 is in place. Alongside the models sit the audit receipts —
 `warehouse/audits/platform_models.json` (the deployed-model audit) and
 `warehouse/audits/source_runs.json` (the `source_runs` attestation, §4.3) — the frozen adoption
@@ -1656,11 +1656,11 @@ lose them the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->34
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
 staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->42
+logical assets in warehouse/assets.yaml     <!-- count:assets -->39
 ```
 
 The staged seven are `observations.source_runs` and `observations.product_adoption_baseline`
@@ -1732,7 +1732,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->24   (13 models, 3 ingest, 16 mirror)
+  of which SQL/Python models   <!-- count:model_files -->21   (13 models, 3 ingest, 16 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```

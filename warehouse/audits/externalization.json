@@ -786,7 +786,7 @@
   }
  ],
  "retirement_note": "A table can also stop being live. 'retired' is the terminal state and is NOT an externalization: every entry in 'assets' records a table LEFT LIVE on the platform under platform ownership, so a table that was deleted outright cannot be recorded there without claiming to be something it is not -- and need never have been a governed asset at all, since a dependency contract can be retired too. platform_state says which kind of not-live this is: 'deleted' (the dataset/model was removed; the table does not resolve), 'archived' (the deployed table is retained and readable but nothing refreshes it), or 'irrelevant' (still live, but nothing here reads it and the repo no longer asserts anything about it). Each record archives the repository files it removes, with hashes reproduced against externalization_base_commit exactly as an 'assets' entry does, and those paths are what satisfy the receipt's deleted-file completeness check -- this is the mechanism that makes deleting a model file legal. build.assets.retirement_violations() checks shape, that the three populations (externalized / reclaimed / retired) do not overlap, that the table is gone from assets.yaml, dependencies.yaml and every repository producer, and that every archived file reproduces and is really deleted. Retirement is TERMINAL: there is no reclaim out of it, because reviving a retired table means deploying something new and contracting it, which is a fresh entry in the graph rather than a transition. 'successor' is recorded so a reader who finds the table missing knows where the answer moved to; it is never what satisfies the gate.",
- "retired_count": 1,
+ "retired_count": 4,
  "retirements": [
   {
    "table": "currentai.signal_pypi.package_downloads",
@@ -807,6 +807,66 @@
    "pre_drop_snapshot": "170 rows read and saved to CSV immediately before the drop; the table's final state. Not committed to this repository -- it is measurement data, not a governed artifact.",
    "recorded_at": "2026-09-14",
    "evidence_basis": "Lineage read read-only from the platform (zero downstream consumers) plus a repository scan for readers; the archived hash reproduces from the base commit blob. The deletion itself is not reproducible from this repo -- deleting the dataset left the model record behind, still enabled and still carrying a nextRunAt, so it was deleted separately.",
+   "owner": "oso"
+  },
+  {
+   "table": "currentai.signal_github.product_adoption",
+   "disposition": "retired",
+   "platform_state": "deleted",
+   "date": "2026-09-14",
+   "reason": "A second, parallel implementation of governed product-adoption banding inside a signal_* dataset, which build/adoption_measurements.py now does centrally from the compiled registry.adoption_* routing. Retired as a set per issue #562 step 4 and data-architecture.md 11.1, which requires the three to go together rather than one at a time. Banded GitHub stars as the declared fallback instrument. Its already_measured CTE was the only edge between the three shims, so joint retirement removed it rather than stranding it.",
+   "successor": "currentai.observations.product_adoption_current for the raw artifact-level observation, and build/adoption_measurements.py into currentai.evaluation.product_adoption_measurements for the governed band. Note the evaluation table is published from the Phase-2 baseline by a manual runbook and carries no schedule, so it is not a live read; nothing consumed these shims that needed one.",
+   "platform": {
+    "dataset_id": "cc74e8db-7718-4615-a004-7f27cabaf967",
+    "model_id": "25538fa7-f956-481c-ac14-474ab1661ac3",
+    "deleted_dataset": false,
+    "deleted_model": true
+   },
+   "archived_source_sha256": {
+    "warehouse/models/signal_github/product_adoption.sql": "28a46af11338d101c3c9045b9cbb2cecdf59be6a3f038148907c0214c018836d"
+   },
+   "recorded_at": "2026-09-14",
+   "evidence_basis": "Three checks, because the first two were not enough on their own: a repository scan for readers (none outside the three themselves), and the platform lineage graph read read-only (GetLineage DOWNSTREAM returned only signal_github.product_adoption, which is one of the three). Lineage does NOT traverse notebooks, so all 22 published notebooks were downloaded and scanned as well; that found the one real consumer, gap-map-packages, which was migrated before any deletion. The archived hashes reproduce from the base commit blob. The deletions are not reproducible from this repo and were verified with ListDataModels afterwards.",
+   "owner": "oso"
+  },
+  {
+   "table": "currentai.signal_huggingface.product_adoption",
+   "disposition": "retired",
+   "platform_state": "deleted",
+   "date": "2026-09-14",
+   "reason": "A second, parallel implementation of governed product-adoption banding inside a signal_* dataset, which build/adoption_measurements.py now does centrally from the compiled registry.adoption_* routing. Retired as a set per issue #562 step 4 and data-architecture.md 11.1, which requires the three to go together rather than one at a time. Banded 30-day Hub downloads.",
+   "successor": "currentai.observations.product_adoption_current for the raw artifact-level observation, and build/adoption_measurements.py into currentai.evaluation.product_adoption_measurements for the governed band. Note the evaluation table is published from the Phase-2 baseline by a manual runbook and carries no schedule, so it is not a live read; nothing consumed these shims that needed one.",
+   "platform": {
+    "dataset_id": "6108e4d6-868f-4cba-8df5-ee64f8fb301e",
+    "model_id": "abcf0044-dd9d-4942-a2a1-e047dab8e8b1",
+    "deleted_dataset": false,
+    "deleted_model": true
+   },
+   "archived_source_sha256": {
+    "warehouse/models/signal_huggingface/product_adoption.sql": "e7d3d29e7e895c7155a873ebf8a97d88abaecae95af5f2e5b77b234663680584"
+   },
+   "recorded_at": "2026-09-14",
+   "evidence_basis": "Three checks, because the first two were not enough on their own: a repository scan for readers (none outside the three themselves), and the platform lineage graph read read-only (GetLineage DOWNSTREAM returned only signal_github.product_adoption, which is one of the three). Lineage does NOT traverse notebooks, so all 22 published notebooks were downloaded and scanned as well; that found the one real consumer, gap-map-packages, which was migrated before any deletion. The archived hashes reproduce from the base commit blob. The deletions are not reproducible from this repo and were verified with ListDataModels afterwards.",
+   "owner": "oso"
+  },
+  {
+   "table": "currentai.signal_packages.product_adoption",
+   "disposition": "retired",
+   "platform_state": "deleted",
+   "date": "2026-09-14",
+   "reason": "A second, parallel implementation of governed product-adoption banding inside a signal_* dataset, which build/adoption_measurements.py now does centrally from the compiled registry.adoption_* routing. Retired as a set per issue #562 step 4 and data-architecture.md 11.1, which requires the three to go together rather than one at a time. Banded package downloads summed across pypi, npm and crates. The one shim with a consumer outside the set: the gap-map-packages notebook joined it for adoption_level. That notebook now computes the same figure inline from currentai.signal_packages.downloads and currentai.registry.adoption_bands, verified equal on all 182 banded products with zero mismatches before anything was deleted. NOTE it carried one behaviour the centralized evaluator does not reproduce: partial-coverage abstention, which suppresses the band when a declared primary package produced no figure. Dropped knowingly. It bound nothing at retirement -- all four abstaining rows were the zero-measured case that build/adoption_measurements.py already handles -- and the inline query in the notebook keeps it.",
+   "successor": "currentai.observations.product_adoption_current for the raw artifact-level observation, and build/adoption_measurements.py into currentai.evaluation.product_adoption_measurements for the governed band. Note the evaluation table is published from the Phase-2 baseline by a manual runbook and carries no schedule, so it is not a live read; nothing consumed these shims that needed one.",
+   "platform": {
+    "dataset_id": "c9e4c61f-d6ed-4c7b-bd5a-63846622e58d",
+    "model_id": "0cb522be-5c18-4d9d-8a69-ee806a179517",
+    "deleted_dataset": false,
+    "deleted_model": true
+   },
+   "archived_source_sha256": {
+    "warehouse/models/signal_packages/product_adoption.sql": "85e75fde64c09ba88e0729a9734edf8c00f45ab178549cb3a9fd6bfc102f8a87"
+   },
+   "recorded_at": "2026-09-14",
+   "evidence_basis": "Three checks, because the first two were not enough on their own: a repository scan for readers (none outside the three themselves), and the platform lineage graph read read-only (GetLineage DOWNSTREAM returned only signal_github.product_adoption, which is one of the three). Lineage does NOT traverse notebooks, so all 22 published notebooks were downloaded and scanned as well; that found the one real consumer, gap-map-packages, which was migrated before any deletion. The archived hashes reproduce from the base commit blob. The deletions are not reproducible from this repo and were verified with ListDataModels afterwards.",
    "owner": "oso"
   }
  ]
