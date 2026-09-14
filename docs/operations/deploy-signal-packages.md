@@ -151,16 +151,20 @@ The refusal names the model you are releasing, so it always reads as a fault in 
    revision** — not merely "a previous revision". An older release or an unreleased draft is a
    different model definition, and the next step would ship it.
 2. Attempt to release it. **A control can succeed**, and then it is live. That happened on
-   2026-09-13 to `currentai.metrics.daily`; the code was identical so nothing changed in
-   behaviour, but re-releasing the original afterwards does NOT undo it — the release row is
+   2026-09-13 to `currentai.metrics.daily` — externalized under ADR-003, which is exactly why
+   it was an acceptable thing to experiment on. The code was identical so nothing changed in
+   behaviour, but re-releasing the original afterwards does NOT undo it: the release row is
    updated in place and keeps its original timestamp, so it cannot supersede the newer one.
-   Only run a control on a model where shipping an identical definition is acceptable.
+   **Run a control only on a model where shipping an identical definition is acceptable**, and
+   prefer one this repository does not govern.
 3. Read the refusal, if there is one. It must be **the determinism-verdict message** for the
    diagnosis to hold. A release refused for any other reason says nothing about this.
 
-Two models tested this way behaved differently on the same day — `metrics.daily` released
-cleanly while `currentai.scores.taxonomy` was refused — so the question is always per-model,
-never org-wide.
+Two models tested this way behaved differently on the same day. Neither is a governed asset
+here and nothing below is data to read — it is release behaviour, nothing more.
+`currentai.metrics.daily`, externalized, released cleanly.
+`currentai.scores.taxonomy`, externalized, was refused.
+The question is always per-model, never org-wide.
 
 **Do not read the verdict off an unreleased draft.** For SQL the schema is derived and frozen at
 release, so a fresh revision can report non-deterministic with zero columns and still release
