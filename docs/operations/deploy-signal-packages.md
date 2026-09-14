@@ -47,15 +47,16 @@ Each step's output is the next step's precondition. Only the last one cannot be 
    consumer's live release predates that rule and is grandfathered, so any new release
    re-resolves and is rejected.
 
-   **This step is now void, and the fix it proposed was tried and made things worse.** An
-   earlier draft said the remedy was `columns=` on `artifact_state`. That was applied on
-   2026-09-13. It did not unblock the consumer — the verdict simply flipped the other way and
-   the release was refused again — and because the verdict depends on what a model *reads*, it
-   locked four further models that nobody had touched: `evidence.product_evidence`,
-   `observations.product_adoption_current`, `scores.openness_facts` and
-   `scores.openness_computed`. All four had to be deleted and recreated, losing their
-   materialized tables, their schedules and their model contexts. See the determinism section
-   below before touching `columns=` on anything.
+   **This step is void, and the remedy it proposed does not work.** An earlier draft said the
+   fix was `columns=` on `artifact_state`. That was applied on 2026-09-13 and did not unblock
+   the consumer; the release was refused again.
+
+   A later draft of this document then said that change *caused* four more models to lock.
+   **That was also wrong** and is retracted here rather than quietly deleted, because it is the
+   claim a maintainer would have planned around. Those four were already unreleasable, along
+   with a large share of the org, including datasets with no connection to the gap map. They
+   were deleted and recreated, losing their materialized tables, schedules and model contexts —
+   but not because of anything done in this step. See the determinism section below.
 
    The repoint this step asks for is not needed either. Issue #562 retires
    `signal_github.product_adoption` rather than migrating it, and you do not repoint a model you
@@ -128,18 +129,47 @@ before: sixteen products gain a package band, three of them moving from the star
 
 `signal_pypi` is **intact and not dropped.** Both things this section used to say needed a
 maintainer are done: `not_primary_channel` shipped in #563, and `columns=` was applied to
-`signal_github.artifact_state` — which did not break the deadlock and instead caused the cascade
-described below. What remains is #562 steps 3 to 5.
+`signal_github.artifact_state`. That did not break the deadlock, and — contrary to what this
+document said for several hours — it did not cause one either. What remains is #562 steps 3 to 5.
 
 ## The determinism lock, which is the expensive lesson here
 
-A release may not change a model's schema-determinism verdict, **in either direction**. The
-verdict depends on what a model reads, so changing an upstream can lock downstream models nobody
-touched. Adding `columns=` to `signal_github.artifact_state` on 2026-09-13 locked five.
+A release may not change a model's schema-determinism verdict, **in either direction**, and a
+large share of this org's models could not be released at all on 2026-09-13 — including datasets
+with no connection to the gap map.
 
-The refusal names the model you are releasing, not the upstream that moved, so it reads as a
-fault in your own change. Isolate it with a byte-identical control: re-release the previous SQL
-unchanged, and if that is refused too the cause is upstream.
+**This section first blamed our own `columns=` change on `signal_github.artifact_state`, and that
+was wrong.** Twenty of the frozen models never read that table. The two events happened within
+minutes of each other and the second was read as a consequence of the first for most of a day.
+Correcting it here because the wrong version told a maintainer to expect a cascade from their own
+edit, which is the opposite of the right instinct.
+
+The refusal names the model you are releasing, so it always reads as a fault in your own change.
+**Isolate it with a byte-identical control**, and run it carefully:
+
+1. Create a new revision whose code is byte-identical to **the model's currently live released
+   revision** — not merely "a previous revision". An older release or an unreleased draft is a
+   different model definition, and the next step would ship it.
+2. Attempt to release it. **A control can succeed**, and then it is live. That happened on
+   2026-09-13 to `currentai.metrics.daily` — externalized under ADR-003, which is exactly why
+   it was an acceptable thing to experiment on. The code was identical so nothing changed in
+   behaviour, but re-releasing the original afterwards does NOT undo it: the release row is
+   updated in place and keeps its original timestamp, so it cannot supersede the newer one.
+   **Run a control only on a model where shipping an identical definition is acceptable**, and
+   prefer one this repository does not govern.
+3. Read the refusal, if there is one. It must be **the determinism-verdict message** for the
+   diagnosis to hold. A release refused for any other reason says nothing about this.
+
+Two models tested this way behaved differently on the same day. Neither is a governed asset
+here and nothing below is data to read — it is release behaviour, nothing more.
+`currentai.metrics.daily`, externalized, released cleanly.
+`currentai.scores.taxonomy`, externalized, was refused.
+The question is always per-model, never org-wide.
+
+**Do not read the verdict off an unreleased draft.** For SQL the schema is derived and frozen at
+release, so a fresh revision can report non-deterministic with zero columns and still release
+fine, coming back with its full schema. Reading drafts produced a wrong count twice in one
+evening.
 
 There is no repair, only recreation. `updateDataModel` accepts a `name`, returns `success: true`
 and leaves the name unchanged, because the name lives on the revision and releasing one is what
@@ -147,11 +177,15 @@ is refused — so delete and recreate under the target name. Recreation loses th
 table, the model context and the schedule, and two of those come back wrong by default:
 `deploy_udm.py` sets a new model to `@manual`, and a brand-new dataset has no cron at all.
 
-**Recreation restores releasability and does not immunize.** Read `isSchemaDeterministic` on
-`latestRevision`. Passing an explicit column schema does not flip it. As of 2026-09-13, ten of
-the org's 59 models resolve non-deterministic and they are almost exactly this scoring chain, so
-the same lock can recur on any of them. Before adding `columns=` to anything, list what reads it
-and expect every one of those to need recreating.
+**Recreation restores releasability and does not immunize.** A recreated model is stable at
+whatever verdict it is born with, which is the only reason it releases. If the platform's
+resolution behaviour changes again, these models move in the other direction and lock again, so
+treat a recreation as a way out of today rather than a fix.
+
+For a **Python** model the schema comes from the in-code `columns=` declaration, so a model whose
+schema was supplied as the `schema:` argument instead cannot be re-released at all. Declaring
+`columns=` is the repair, and it only takes effect on a newly created model. That is what the
+four fetchers of #358 needed.
 
 ## Proving it
 
