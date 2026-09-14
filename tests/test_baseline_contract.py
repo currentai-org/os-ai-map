@@ -128,10 +128,29 @@ def test_product_type_is_never_null(rows):
     assert all(r["product_type"] is not None for r in rows)
 
 
+# A declaration the corpus has since WITHDRAWN, with the reason. The baseline is frozen bytes
+# from 2026-08-24 and the corpus moves on; an artifact undeclared after the freeze leaves rows
+# behind that nothing can or should rewrite. Listed rather than tolerated in general, because
+# the ordinary meaning of an undeclared baseline row is still a defect, and each entry here is
+# a decision somebody made on purpose.
+WITHDRAWN_SINCE_THE_BASELINE = {
+    # `cohere` is Cohere's whole client SDK - chat, embed, classify and rerank behind one
+    # client - so its downloads were never this product's. A declaration asserts that its
+    # numbers ARE the product's numbers (identity.md), so it was removed rather than flagged
+    # (#448). The baseline row is a true record of what was declared on 2026-08-24.
+    ("cohere-rerank-api", "pypi", "cohere"),
+}
+
+
 def test_every_row_matches_a_declared_artifact(rows):
     """Declared-artifact coverage, re-checked against the frozen bytes: every observation's
     (product_slug, artifact_kind, artifact_id) is a declared artifact in registry.product_artifacts
-    — the same guarantee the current-state model's coverage guard enforces at materialization."""
+    — the same guarantee the current-state model's coverage guard enforces at materialization.
+
+    The exception is a declaration deliberately withdrawn after the freeze. The baseline cannot be
+    rewritten, so those rows persist; they are named in `WITHDRAWN_SINCE_THE_BASELINE` with why,
+    rather than the assertion being softened to let any undeclared row through.
+    """
     tables, _errors, _warnings = build_registry(load_sources(ROOT))
     declared = {
         (r["product_slug"], r["artifact_kind"], r["artifact_id"])
@@ -143,8 +162,31 @@ def test_every_row_matches_a_declared_artifact(rows):
             for r in rows
             if (r["product_slug"], r["artifact_kind"], r["artifact_id"]) not in declared
         }
+        - WITHDRAWN_SINCE_THE_BASELINE
     )
     assert not undeclared, f"baseline rows for undeclared artifacts: {undeclared[:5]}"
+
+
+def test_the_withdrawn_list_has_not_gone_stale(rows):
+    """An entry here must still describe a baseline row whose artifact is no longer declared.
+
+    Without this the list rots into a permanent exemption: a declaration could be restored, or an
+    entry could be added for a row the baseline never held, and the first test would keep passing.
+    """
+    tables, _errors, _warnings = build_registry(load_sources(ROOT))
+    declared = {
+        (r["product_slug"], r["artifact_kind"], r["artifact_id"])
+        for r in tables["product_artifacts"]
+    }
+    in_baseline = {(r["product_slug"], r["artifact_kind"], r["artifact_id"]) for r in rows}
+    stale = sorted(
+        entry for entry in WITHDRAWN_SINCE_THE_BASELINE
+        if entry not in in_baseline or entry in declared
+    )
+    assert not stale, (
+        "WITHDRAWN_SINCE_THE_BASELINE entries that no longer describe a withdrawn baseline row "
+        f"— delete them: {stale}"
+    )
 
 
 # --- receipt <-> asset agreement, and the honest run-binding record ------------------------
