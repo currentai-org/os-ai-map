@@ -531,6 +531,8 @@ drop a number that reads low.
 The ladder above was a habit for its first two weeks, and habits are not applied evenly. Some
 products had already taken remedy 3 — `helm`, `laminar` and `swe-bench` among them record
 `reported_traction` with `reach` omitted while their winning route is a bridged usage channel —
+(`laminar` still does, and as of 2026-09-14 records why its bridged figure cannot band it, which is
+the measurement-population rule above rather than the ladder)
 and nothing said whether the ones that had not were exceptions or oversights. The gate is what
 makes the ladder answerable.
 
