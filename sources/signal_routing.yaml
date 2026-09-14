@@ -33,10 +33,13 @@
 version: 2
 verified_on: '2026-07-28'
 # version 2 (2026-08-25): declared the adoption aggregation rule for stars_fallback
-# (sum_stars_across_artifacts) and the unbridged npm/crates authoritative usage routes, so the
-# evaluation rollup sums stars across a family's repos and an unbridged-authoritative product is
-# left unmeasured rather than falling through to stars. The bump binds into
+# (sum_stars_across_artifacts) and the then-unbridged npm/crates authoritative usage routes, so
+# the evaluation rollup sums stars across a family's repos and an unbridged-authoritative product
+# is left unmeasured rather than falling through to stars. The bump binds into
 # evaluation.adoption_reconciliation via routing_policy_version.
+# npm and crates were BRIDGED on 2026-09-13 (#562 step 3) onto signal_packages.downloads. The
+# aggregation rule is unchanged; what changed is that those two routes now resolve to an
+# observation, so the unmeasured-rather-than-downgraded case they were declared for is rarer.
 
 # Where each artifact kind's facts live. `key` is the join column back to the
 # registry; a source with no key cannot be used until a bridge exists.
@@ -63,38 +66,44 @@ sources:
     bridged: true
   pypi:
     artifact_key: pypi
-    table: currentai.signal_pypi.package_downloads
+    table: currentai.signal_packages.downloads
     key: product_slug
+    filter: artifact_kind = 'pypi'
     evidence_url: https://pypistats.org/packages/{package}
     bridged: true
   npm:
     artifact_key: npm
-    table: null
-    key: null
+    table: currentai.signal_packages.downloads
+    key: product_slug
+    filter: artifact_kind = 'npm'
     evidence_url: https://www.npmjs.com/package/{package}
-    bridged: false
+    bridged: true
     bridge_note: >
-      13 products declare an npm package and no signal model reads the npm registry. npm
-      download counts are a direct analogue of the pypi route, so this is a missing model
-      rather than a missing method. Declared here so the gap is a backlog entry rather than
-      an invisible one.
+      BRIDGED 2026-09-13 by `signal_packages.downloads`, which fetches 18 months of npm
+      history. 17 npm artifacts are now measured; the observation layer carries them as
+      `artifact_kind = 'npm'` rather than mislabelled as PyPI.
 
-      CORRECTED 2026-08-13. This note used to say those products "fall through to the stars
-      scale and its cap of 3", which is not what happened and was the more comfortable
-      reading. 11 of the 13 record `usage_volume` - they claim a DOWNLOAD COUNT on a registry
-      nothing in the pipeline can read, `mcp-typescript-sdk` and `openclaw` at level 5. An
+      KEPT because the reason it existed is worth not losing. While unbridged, 11 of the
+      then-13 npm products recorded `usage_volume` - a DOWNLOAD COUNT on a registry nothing
+      in the pipeline could read, `mcp-typescript-sdk` and `openclaw` at level 5. An
       unbridged route does not produce a capped band; it produces an unfalsifiable one,
-      because there is no computed figure for the recorded one to disagree with.
-      `build/check_instrument.py` now gates the general case.
+      because there is no computed figure for the recorded one to disagree with. Those
+      records are now falsifiable, which is the point of bridging rather than a side effect.
+      An earlier version of this note said they "fall through to the stars scale and its cap
+      of 3", corrected 2026-08-13; that was the more comfortable reading and it was wrong.
   crates:
     artifact_key: crates
-    table: null
-    key: null
+    table: currentai.signal_packages.downloads
+    key: product_slug
+    filter: artifact_kind = 'crates'
     evidence_url: https://crates.io/crates/{package}
-    bridged: false
+    bridged: true
     bridge_note: >
-      One product (`yomo`) declares a crates package. Same shape as npm: crates.io publishes
-      download counts and no model reads them.
+      BRIDGED 2026-09-13 by `signal_packages.downloads`, which fetches 90 days of crates.io
+      history. One product (`yomo`) declares a crates package, and it is declared
+      `not_primary_channel` — the crate is a Rust SDK for a Go runtime — so it is excluded
+      from the banded sum and falls through to its next route. The route is live regardless;
+      the exclusion is a curation fact applied one layer up.
   semanticscholar:
     artifact_key: arxiv
     table: currentai.signal_semanticscholar.paper_citations
@@ -312,23 +321,28 @@ dimensions:
       authority: authoritative
       confidence: high
       note: >
-        UNBRIDGED. npm download counts are a direct analogue of the pypi route
-        (see sources.npm.bridge_note), but no signal model reads the npm registry yet,
-        so this route resolves to no observation. It is declared as an authoritative
-        usage route so that a product declaring an npm package selects it — and is left
-        UNMEASURED — rather than falling through to the fallback stars route: an
-        unbridged authoritative instrument must not be scored on a weaker signal. It
-        ranks after the bridged download channels, so a product that also declares a
-        PyPI or Hugging Face artifact is still measured there.
+        BRIDGED 2026-09-13 by signal_packages.downloads, which fetches 18 months of npm
+        history; 17 npm artifacts are measured. This route now resolves to an observation
+        rather than leaving a declaring product unmeasured.
+
+        It was declared as an authoritative usage route while unbridged so that a product
+        declaring an npm package selected it and was left UNMEASURED rather than falling
+        through to the fallback stars route — an unbridged authoritative instrument must
+        not be scored on a weaker signal. That reasoning is kept because it is why the
+        route existed before it could measure anything; what changed is only that it now
+        can. It still ranks after the other download channels.
     - source: crates
       column: downloads_30d
       signal_type: usage_volume
       authority: authoritative
       confidence: high
       note: >
-        UNBRIDGED, same shape as the npm route: crates.io publishes download counts and
-        no model reads them (see sources.crates.bridge_note). Declared so a crates-only
-        product is unmeasured on its authoritative route rather than scored on stars.
+        BRIDGED 2026-09-13, same shape as the npm route: signal_packages.downloads fetches
+        90 days of crates.io history. One product declares a crates package and it is
+        declared not_primary_channel, so it is excluded from the banded sum and falls
+        through to its next route — a curation fact applied one layer up, not a property
+        of this route. Declared, while unbridged, so a crates-only product was unmeasured
+        on its authoritative route rather than scored on stars.
     - source: null
       signal_type: active_users
       authority: authoritative

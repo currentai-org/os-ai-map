@@ -1,6 +1,6 @@
 """Catch a declared artifact that has drifted away from the thing it names.
 
-An artifact_id is a join key. `signal_github` keys on it, `signal_pypi` keys on it, and
+An artifact_id is a join key. `signal_github` keys on it, `signal_packages` keys on it, and
 every adoption band downstream rests on whatever it resolves to. So a stale one does not
 fail loudly — it attaches another project's stars, license and downloads to this product
 and keeps reporting them, which is indistinguishable from a working signal.
@@ -20,7 +20,11 @@ Three drifts, all of which happened in the week this was written:
     do on its own: does the package's own metadata name the repository we declare?
 
 Two of the three need no network. `signal_github.resolved_via_redirect` and
-`signal_pypi.missing_from_pypi` are computed weekly and were simply never read.
+`signal_packages.missing_from_registry` are computed weekly and were simply never read.
+
+The missing-package check reads `signal_packages.downloads`, the merged-registry successor,
+so it now covers **npm and crates as well as PyPI** rather than PyPI alone. That is a widening,
+not a swap: a reserved or deleted npm package was previously invisible to every check here.
 
 ## Reports rather than fails, by default
 
@@ -52,7 +56,7 @@ from build.warehouse import query
 
 ROOT = Path(__file__).resolve().parents[1]
 
-CHECKS = ("github_moved", "pypi_missing", "pypi_stub", "pypi_repo_mismatch")
+CHECKS = ("github_moved", "package_missing", "pypi_stub", "pypi_repo_mismatch")
 
 
 def load_products() -> dict[str, dict]:
@@ -111,13 +115,42 @@ def canonical_repo(repo: str) -> str:
     return fold_for_proposal("github", full or repo)
 
 
-def pypi_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
-    """Declared packages the signal could not find on PyPI at all."""
+def package_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
+    """Declared packages the signal looked for and did not find.
+
+    Reads `signal_packages.downloads`, which carries pypi, npm and crates on one grain, so
+    the registry is named per row rather than assumed.
+
+    **`missing_from_registry` is not by itself evidence of absence, and this reads it
+    narrowly.** The column is `no history AND (kind is pypi OR a status came back)`, which
+    admits three different situations:
+
+      * **pypi** — the PyPI leg windows `oso.pypi_downloads` and fetches nothing, so there is
+        never a status to inspect. No rows means no downloads recorded in the window, which a
+        package present on PyPI with no installs produces just as readily as one that is gone.
+        Reported as what it is rather than as "absent from PyPI", which is what the
+        `signal_pypi` predecessor claimed and could not support either.
+      * **npm / crates, 404** — the registry was asked and said no. That is absence.
+      * **npm / crates, anything else** — a 429 or a 5xx sets the column too, because a status
+        came back and no history did. That is a FAILED MEASUREMENT and it is skipped here. A
+        rate-limited fetch must not surface as a curation finding, least of all under
+        `--strict`, where it would fail CI for weather.
+    """
     rows = query(
-        "SELECT product_slug, package FROM currentai.signal_pypi.package_downloads "
-        "WHERE missing_from_pypi = true"
+        "SELECT product_slug, package, artifact_kind, http_status "
+        "FROM currentai.signal_packages.downloads WHERE missing_from_registry = true"
     )
-    return [(r["product_slug"], r["package"], "absent from PyPI") for r in rows]
+    found = []
+    for r in rows:
+        kind, status = r["artifact_kind"], r["http_status"]
+        if kind == "pypi":
+            reason = "no downloads recorded on PyPI in the window"
+        elif status == 404:
+            reason = f"absent from {kind} (404)"
+        else:
+            continue  # a transport failure is not evidence of anything
+        found.append((r["product_slug"], r["package"], reason))
+    return found
 
 
 def pypi_content(products: dict[str, dict]) -> tuple[list, list]:
@@ -163,7 +196,7 @@ def main() -> int:
     products = load_products()
     results: dict[str, list[tuple[str, str, str]]] = {
         "github_moved": github_moved(products),
-        "pypi_missing": pypi_missing(products),
+        "package_missing": package_missing(products),
         "pypi_stub": [],
         "pypi_repo_mismatch": [],
     }

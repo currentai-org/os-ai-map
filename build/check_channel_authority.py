@@ -45,7 +45,10 @@ looked wrong. Neither catches `atropos`, a dormant project accurately measured.
     tagging `latest`.
   * **Everything that is not a registry channel.** A Hugging Face model or dataset repo IS
     the artifact; there is no registry-version-against-source-version gap to measure, which
-    puts four categories out of leg 1's reach entirely. npm and crates are unbridged.
+    puts four categories out of leg 1's reach entirely. npm and crates gained a download
+    signal on 2026-09-13, which does not help here: `signal_packages.downloads` carries
+    volume, not a published version, and leg 1 needs a registry version to compare against
+    a source one.
   * **The downloads-against-stars ratio.** Computable, and wrong. The precedence rule exists
     to stop stars setting a band; a test that lets stars decide whether a usage measurement
     counts hands stars a veto instead of a vote, which is the closed failure re-entering one
