@@ -115,21 +115,30 @@ capability:
     latency as a measured fact: the vendor claim and the measured figure are recorded separately, which
     is what the two sources support. The 4 stands on isolation and feature depth.
 
-    Settled 2026-09-14 under issue 264. The 1.35s does NOT pull the score down, for a reason about the
-    category rather than about this product. Cold-start is not what separates 3 from 4 here. blaxel-sandbox
-    sits at 3 while claiming sub-second fresh starts and sub-25ms resume from standby, which is a better
-    cold-start story than this one; e2b-sandbox holds 4 on an unmeasured "sub-second class" claim; and
-    daytona-sandbox holds 4 on a sub-90ms figure that is its CONTAINER class rather than its VM class.
+Settled 2026-09-14 under issue 264, and an earlier draft of this settlement was withdrawn on review
+    for asserting a measurement asymmetry that does not exist. Every near peer here carries an independent
+    ComputeSDK figure, so the claim that this is the only measured provider was simply false.
 
-    Tensorlake is the only provider in the category whose cold start has been independently measured.
-    Dropping the one measured provider below peers resting on vendor claims would score verification
-    rather than capability, and would make being measured a liability. That is the same failure
-    build/check_channel_authority.py refuses one axis over, where letting stars veto a download figure
-    hands the weaker signal a veto instead of a vote.
+    The measured field, with recorded capability scores:
 
-    Confidence stays medium, which is where the vendor-claim-versus-measurement gap belongs. If the TTI
-    benchmark is ever run across the rest of the category, this band should be recalibrated against those
-    figures rather than against this one in isolation.'
+      daytona-sandbox      ~140ms median, 4th of 19    capability 4
+      blaxel-sandbox        0.51s median               capability 3
+      e2b-sandbox           0.66s median, 12th of 24   capability 4
+      tensorlake-sandbox    1.35s median, 15th of 24   capability 4
+
+    Latency is the worst of the four here, and it is not what separates 3 from 4 in this category: blaxel
+    is 2.6 times faster and sits a band lower. What blaxel lacks is proven scale, where e2b records 1B+
+    sandboxes started. So the band turns on isolation, feature depth and scale, and latency is a component
+    of the feature matrix rather than the discriminator.
+
+    The 4 rests on Firecracker microVM isolation at the top tier, plus durable-execution orchestration -
+    queues, timers, retries and versioned mountable volumes - which is a feature surface blaxel does not
+    have. That is the positive case and it is what should be argued with.
+
+    The soft spot is scale rather than latency. This record reports thousands of concurrent sandboxes
+    against e2b''s 1B+ started, and those are not the same measure. If this band is revisited, scale
+    evidence is where to press, not the TTI. Confidence stays medium, which is where the vendor''s
+    sub-second claim standing against a measured 1.35s belongs.'
   last_verified: '2026-08-14'
   sources:
   - url: https://www.tensorlake.ai/
