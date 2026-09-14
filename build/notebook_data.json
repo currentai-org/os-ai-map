@@ -42414,11 +42414,25 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
+            "relative_to": "grok-app",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-09-14",
+              "sources": [
+                {
+                  "url": "https://grok.com/",
+                  "shows": "The Grok product surface still presents a single-provider consumer assistant - own frontier models in a picker, real-time search, voice and multimodal - with no organisational-data grounding or third-party model hub. That is the class this band is placed level with, and the spacing holds.",
+                  "accessed": "2026-09-14",
+                  "http_status": 200,
+                  "content_sha256": "4df779451e4020978211b5e41f159dafb8d1f88a649eb2228d707130243b0b2a"
+                }
+              ]
+            },
             "value": "consumer assistant feature set: single-vendor first-party models (Muse Spark 1.1); multimodal (text + image gen); agentic task execution with email and calendar connections and slide generation; delivered through the Meta AI app, meta.ai and Meta's messaging surfaces; consumer single-user (no enterprise RAG / multi-provider model hub / org-data grounding)",
             "confidence": "medium",
-            "note": "A broad-reach consumer assistant that is nonetheless narrow on the dimensions this category measures: one provider, consumer-only, no enterprise or organisational-data depth, so not a category frontier-definer on capability. The assistant now runs on Muse Spark 1.1 from Meta Superintelligence Labs rather than Llama 4, and it connects to email and calendar apps, generates slides and executes multi-step plans, so it is no longer thin on tool breadth. What still does not appear is enterprise or organisational-data grounding, or any third-party model choice, and that is what holds the score down.",
+            "note": "A feature-broad consumer assistant locked to one provider, so high on breadth and not a category frontier-definer. It runs on Muse Spark 1.1 from Meta Superintelligence Labs rather than Llama 4, and it connects to email and calendar apps, generates slides and executes multi-step plans.\nRaised from 3 to 4 under issue 264, placed AT grok-app, on consistency with the category rather than on any new fact. grok-app is the anchor rather than le-chat because le-chat carries enterprise and internal-data breadth that this product does not, so the two are not level on every dimension the category measures; grok-app is the closer match - single provider, consumer-first, high feature breadth, and explicitly only a LIGHTER enterprise story rather than none. This category places a single-provider assistant at 4 when its breadth is high and at 3 when it is narrow. le-chat holds 4 on connectors and agents, code interpreter and multimodal, locked to Mistral; grok-app holds 4 on real-time search, voice and multimodal, locked to xAI and explicitly with only a LIGHTER enterprise story rather than none. The shipped connector-and-agent surface here is the same shape, and it now exceeds the beta or emerging agentic features of deepseek-chat and doubao, the two products it had been sitting level with at 3.\nWhat is still absent is enterprise or organisational-data grounding and any third-party model choice. That is why this is a 4 and not a 5. Its distribution across Meta's messaging surfaces is deliberately NOT part of this score - reach is adoption, and reading it as capability is the error this axis exists to avoid.",
             "last_verified": "2026-08-14",
             "sources": [
               {
@@ -42430,9 +42444,9 @@
               }
             ]
           },
-          "overall_score": 4.4,
-          "tier": "strong",
-          "maturity": 4.4,
+          "overall_score": 4.7,
+          "tier": "leading",
+          "maturity": 4.7,
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
@@ -44335,28 +44349,16 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "banded_quantity": "GitHub stars (~3k); the ~17M lmnr PyPI figure is treated as CI/mirror-inflated and discounted rather than banded",
-            "note": "pypistats reports 34,062,990 downloads in the last month for lmnr (9,228,203 in the last week, 1,293,104 in the last day). That is a level-5 figure on the download scale and it is not believed: at roughly 1.3M downloads a day lmnr would outrun Langfuse, a project an order of magnitude larger by stars, contributors and customers, which is the tell for transitive or mirror pulls of an OpenTelemetry auto-instrumentation SDK. That is why the band rests on reported traction rather than a download count - a download band claims a figure somebody else can recompute, and the only figure available here is one this record disputes. What the level does rest on is the standing of an Apache-2.0 tracing platform of this size: a real but small user base, around 3,000 GitHub stars.",
-            "last_verified": "2026-08-14",
+            "banded_quantity": "none. This record claims no count, and the two figures available cannot supply one - see the note.",
+            "note": "Level 3 is the standing of an Apache-2.0 tracing platform of this size, carried forward unchanged. Reworked under issue 448 because the record had come to rest on a basis the corpus forbids, and the fix is to remove that basis rather than to re-band.\nThe lmnr PyPI figure cannot band this product, and the reason is the measurement-population rule in docs/reference/adoption.md rather than any doubt about the number. lmnr is an OpenTelemetry auto-instrumentation SDK for the Laminar platform - a client whose install population can vary independently of platform use, and which is pulled transitively. That is the same shape as the logfire SDK and latitude-telemetry, both of which that rule places on the not-the-product side. A package bands the head product only when installing it is itself a meaningful unit of use of the scored product, and that has not been established here.\nAn earlier version of this note discounted the figure on different grounds - that roughly 1.3M downloads a day would outrun Langfuse. That comparison is not supported: measured on the same grain on the same day, Langfuse reads 24,272,571 and lmnr 17,798,110, so lmnr sits below Langfuse rather than above it. The argument was also, stripped of its plausibility language, a downloads-against-stars ratio test, which build/check_channel_authority.py excludes by name because letting stars decide whether a usage measurement counts hands the weaker signal a veto. Both are withdrawn.\nWhat is removed and not replaced is the old banded_quantity, which named GitHub stars outright. Issue 441 forbids a level re-derived from the star count, so a record resting on stars cannot stand whatever else is true. The level is held rather than re-derived because that is what adoption.md prescribes when the claim to have counted something fails - re-deriving is a separate judgment needing its own evidence, and no admissible figure exists here yet.\nNote for whoever picks this up: langfuse is banded 5 on the langfuse client and adoption.md already flags it as a known record standing under the superseded rule, pending its own update-product pass. It is not a safe calibration peer for this product until that happens.",
+            "last_verified": "2026-09-14",
             "sources": [
               {
-                "url": "https://pypistats.org/api/packages/lmnr/recent",
-                "shows": "last_month = 34,084,386 downloads for lmnr (last_week 9,210,651, last_day 1,617,970); recorded as a measurement of the channel, not as the basis of the band.",
-                "accessed": "2026-08-14",
+                "url": "https://github.com/lmnr-ai/lmnr",
+                "shows": "Apache-2.0 tracing platform, 3,251 GitHub stars, last pushed 2026-09-13; recorded as the standing this level rests on, and explicitly NOT as a count - issue 441 forbids a level re-derived from the star number, and none is derived here",
+                "accessed": "2026-09-14",
                 "http_status": 200,
-                "content_sha256": "aa10188d675f0504f79dac9f41d84fa85384cec1f0e4c07b7b12526adb5aba7a"
-              },
-              {
-                "url": "https://pypistats.org/api/packages/lmnr/recent",
-                "shows": "pypistats for lmnr: `{\"data\":{\"last_day\":1293104,\"last_month\":34062990,\"last_week\":9228203},\"package\":\"lmnr\"}`. Recorded as a measurement of the PyPI channel, explicitly NOT as the basis of the band.",
-                "accessed": "2026-08-14",
-                "http_status": 200,
-                "content_sha256": "652866567c724684a441cbee54a76c05b64249d3e60253faedf3f55ab00f46cd"
-              },
-              {
-                "url": "https://pypistats.org/packages/lmnr",
-                "shows": "~17.06M lmnr downloads in last month (flagged as likely mirror-inflated)",
-                "accessed": "2026-06-04"
+                "content_sha256": "9b9bcfcb4a53ffa1218202ffebad97deb8e4dfb27594dafdad7fdd2a8bd2b9ce"
               }
             ]
           },
@@ -44386,9 +44388,9 @@
           "freshness": {
             "date": "2026-08-13",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-08-14"
+            "latest_axis_confirmation": "2026-09-14"
           },
-          "version_note": "The lmnr PyPI download count runs far above what a project of this size plausibly serves and is treated as mirror-inflated, so the adoption band is discounted rather than read straight off it. Verified 2026-08-13 via the lmnr-ai/lmnr repository and the lmnr PyPI project page."
+          "version_note": "The lmnr PyPI package is an OpenTelemetry auto-instrumentation SDK for the Laminar platform, so its download count does not band the product - a client whose install population varies independently of platform use measures its own users, per the measurement-population rule in docs/reference/adoption.md. The earlier reading here, that the count was mirror-inflated, was withdrawn on 2026-09-14 under issue 448; the figure is not disputed, it simply counts something else. Verified 2026-08-13 via the lmnr-ai/lmnr repository and the lmnr PyPI project page."
         },
         {
           "slug": "openlit",
@@ -66509,7 +66511,7 @@
             "basis": "feature_matrix",
             "value": "isolation:Firecracker microVM (top tier); cold-start:vendor claims sub-second creation via the Lattice scheduler, independently measured at 1.35s median time-to-interactive; runtime breadth:arbitrary agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported thousands of concurrent sandboxes",
             "confidence": "medium",
-            "note": "Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for a rich agent-runtime feature set, level with the microVM peers: tensorlake.ai leads on Firecracker isolation with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. The measured half of that picture is in tension with the score. Independent ComputeSDK TTI benchmarks put Tensorlake at 1.35s median time-to-interactive, 1.44s P95, composite 86.1, 15th of 24 providers - roughly three times the ~460ms and 12th-of-19 reading this band was written against, and well short of the vendor’s own sub-second creation claim. Note that 460ms is also the number the vendor site animates in its demo, so the vendor claim and the leaderboard are not two independent measurements. Nothing here asserts sub-second latency as a measured fact: the vendor claim and the measured figure are recorded separately, which is what the two sources support. The 4 stands on isolation and feature depth, and whether a 1.35s time-to-interactive should pull it down is an open question rather than one settled here.",
+            "note": "Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for a rich agent-runtime feature set, level with the microVM peers: tensorlake.ai leads on Firecracker isolation with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. The measured half of that picture is in tension with the score. Independent ComputeSDK TTI benchmarks put Tensorlake at 1.35s median time-to-interactive, 1.44s P95, composite 86.1, 15th of 24 providers - roughly three times the ~460ms and 12th-of-19 reading this band was written against, and well short of the vendor’s own sub-second creation claim. Note that 460ms is also the number the vendor site animates in its demo, so the vendor claim and the leaderboard are not two independent measurements. Nothing here asserts sub-second latency as a measured fact: the vendor claim and the measured figure are recorded separately, which is what the two sources support. The 4 stands on isolation and feature depth.\nSettled under issue 264, and an earlier draft of this settlement was withdrawn on review for asserting a measurement asymmetry that does not exist. Every near peer here carries an independent ComputeSDK figure, so the claim that this is the only measured provider was simply false.\nThe measured field, with recorded capability scores:\ndaytona-sandbox      ~140ms median, 4th of 19    capability 4 blaxel-sandbox        0.51s median               capability 3 e2b-sandbox           0.66s median, 12th of 24   capability 4 tensorlake-sandbox    1.35s median, 15th of 24   capability 4\nLatency is the worst of the four here, and it is not what separates 3 from 4 in this category: blaxel is 2.6 times faster and sits a band lower. What blaxel lacks is proven scale, where e2b records 1B+ sandboxes started. So the band turns on isolation, feature depth and scale, and latency is a component of the feature matrix rather than the discriminator.\nThe 4 rests on Firecracker microVM isolation at the top tier, plus durable-execution orchestration - queues, timers, retries and versioned mountable volumes - which is a feature surface blaxel does not have. That is the positive case and it is what should be argued with.\nThe soft spot is scale rather than latency. This record reports thousands of concurrent sandboxes against e2b's 1B+ started, and those are not the same measure. If this band is revisited, scale evidence is where to press, not the TTI. Confidence stays medium, which is where the vendor's sub-second claim standing against a measured 1.35s belongs.",
             "last_verified": "2026-08-14",
             "sources": [
               {
@@ -66693,9 +66695,9 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market);form_factor:board (SBC sold ready to run)",
+            "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:required (proprietary Broadcom boot chain);retail:open_market (mass-market);form_factor:board (SBC sold ready to run)",
             "confidence": "high",
-            "note": "Raspberry Pi publishes an open Linux kernel tree and public datasheets and the board is on sale worldwide, but it publishes no schematic for the Pi 5 at all. The Pi 4's reduced schematic is still served at datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf; the matching Pi 5 path returns nothing, and the documentation index offers for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one of them with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - rather than a design, so the published design files count as partial, and a partial design holds the board at 3, documented, however open the kernel tree is. The public documentation rests on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi 5's own I/O controller, served without registration under CC BY-ND and carrying no NDA or confidentiality notice anywhere in it. The firmware position rests on the raspberrypi/firmware README, which splits the tree by licence - \"start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader\", covered by Broadcom's licence, against kernel images, device trees and modules under the GPL. Availability rests on The Pi Hut listing all five SKUs in stock with an add-to-cart button and no account gate. One inconsistency is worth stating rather than resolving here: this board describes its proprietary Broadcom boot chain as minimal firmware, where all nineteen other boards in the category describe the same shape of fact as required firmware, beagley-ai included. Nothing scored turns on the difference, because no rung on the hardware ladder reads the firmware component at all.",
+            "note": "Raspberry Pi publishes an open Linux kernel tree and public datasheets and the board is on sale worldwide, but it publishes no schematic for the Pi 5 at all. The Pi 4's reduced schematic is still served at datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf; the matching Pi 5 path returns nothing, and the documentation index offers for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one of them with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - rather than a design, so the published design files count as partial, and a partial design holds the board at 3, documented, however open the kernel tree is. The public documentation rests on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi 5's own I/O controller, served without registration under CC BY-ND and carrying no NDA or confidentiality notice anywhere in it. The firmware position rests on the raspberrypi/firmware README, which splits the tree by licence - \"start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader\", covered by Broadcom's licence, against kernel images, device trees and modules under the GPL. Availability rests on The Pi Hut listing all five SKUs in stock with an add-to-cart button and no account gate. The firmware component read minimal until recently and now reads required, resolving an inconsistency this note used to state and leave open. All nineteen other boards describe the same shape of fact as required, beagley-ai included, whose TI DSP and WiFi caveat is the lighter case. What let the two readings coexist was an undefined vocabulary; the rubric now says the test is necessity rather than size, so a small blob you cannot boot without is required, and start*.elf, fixup*.dat and bootcode.bin are not optional on this board. Nothing scored turns on the change, because no rung on the hardware ladder reads the firmware component at all.",
             "last_verified": "2026-08-14",
             "sources": [
               {
