@@ -7533,7 +7533,7 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "The de facto default managed reranker for RAG, distributed through Azure AI Foundry, AWS SageMaker JumpStart and OpenSearch, and Oracle GenAI as well as Cohere's own API. No call-volume or user count is published anywhere, so the level rests on that breadth of multi-cloud distribution rather than on a measured figure.",
+            "note": "The de facto default managed reranker for RAG, distributed through Azure AI Foundry, AWS SageMaker JumpStart and OpenSearch, and Oracle GenAI as well as Cohere's own API. No call-volume or user count is published anywhere, so the level rests on that breadth of multi-cloud distribution rather than on a measured figure. The `cohere` PyPI package is NOT that figure and must not be read as one. It is the whole Cohere SDK - chat, embed, classify and rerank behind a single client - so its download count measures the vendor's entire API surface rather than this product. The figure is deliberately not quoted here, because this record claims no count and a number in its prose would read as one. Recorded under issue 448 because the package is declared elsewhere in the corpus and a reader will find the number. The measurement exists; it simply measures a different population.",
             "last_verified": "2026-08-13",
             "sources": [
               {
@@ -7586,7 +7586,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-09-11"
           },
-          "version_note": "The declared pypi artifact is Cohere's whole client SDK rather than a reranker package, so it cannot measure this product; adoption rests on multi-cloud distribution instead. Every published performance figure is vendor-run, which is why capability stops at 4. Verified 2026-08-13 via the Cohere rerank overview, the 3.5 changelog and the 3.5 launch post."
+          "version_note": "No pypi artifact is declared, and its absence is the point. Cohere ships one client SDK - chat, embed, classify and rerank behind a single client - so the `cohere` package's downloads count the vendor's entire API surface. Declaring an artifact asserts that its numbers are this product's numbers (docs/reference/identity.md), and these are not, so the package was removed rather than declared and excluded: one SDK spanning N products measures none of them individually. That is a membership fact, not a channel-primacy one, which is why `not_primary_channel` is the wrong instrument here - that field keeps an artifact whose measurement DOES belong to the product and drops it only from the banded sum. Adoption rests on multi-cloud distribution instead. Every published performance figure is vendor-run, which is why capability stops at 4. Verified 2026-08-13 via the Cohere rerank overview, the 3.5 changelog and the 3.5 launch post."
         },
         {
           "slug": "jina-embeddings",
@@ -37897,10 +37897,11 @@
           },
           "adoption": {
             "level": 4,
-            "signal_type": "reported_traction",
+            "signal_type": "usage_volume",
+            "reach": "1M-10M",
             "confidence": "medium",
-            "banded_quantity": "npm downloads of opencode-ai (8,643,056 in the trailing month) and 197.0k stars",
-            "note": "197.0k GitHub stars and active npm distribution through opencode-ai. The npm registry download API returns 8,643,056 downloads for opencode-ai over the trailing month, which bands at level 4 (1M-10M) on the software adoption scale. npm is the product's declared and primary distribution channel, so that is a counted figure rather than a reported claim.",
+            "banded_quantity": "npm downloads of opencode-ai (8,643,056 in the trailing month)",
+            "note": "The npm registry download API returns 8,643,056 downloads for opencode-ai over the trailing month, which bands at level 4 (1M-10M) on the software adoption scale. The package IS the product rather than a client of it - the published install instructions install opencode-ai and then run opencode - so this measures the scored thing rather than standing in for it. npm is the declared channel but not the only one; an install script, Homebrew and binaries are also offered, so the figure is a floor on distribution rather than the whole of it. 197.0k GitHub stars corroborate and are not the basis. Relabelled from reported_traction to usage_volume under issue 448. The label was the only thing that was ever reported - this note already said the figure was counted rather than claimed - and npm became a machine-readable route, so the count is now re-derivable by a model rather than by hand.",
             "last_verified": "2026-08-13",
             "sources": [
               {
