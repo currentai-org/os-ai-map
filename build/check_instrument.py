@@ -96,9 +96,14 @@ def instrument_rules(root: Path = ROOT) -> tuple[dict[str, set[str]], dict[str, 
 
     Both read straight off `sources/signal_routing.yaml`. A source counts toward an
     instrument's artifact precondition only when it is `bridged` — an unbridged route is
-    declared, but nothing reads it, so declaring an npm package does not make a download
-    count re-derivable. That distinction is the entire point: `mcp-typescript-sdk` declares
-    an npm package and records level 5 `usage_volume`, and no model can confirm or refute it.
+    declared, but nothing reads it, so a declared artifact on one does not make the recorded
+    count re-derivable.
+
+    npm and crates were the standing example until 2026-09-13, when signal_packages.downloads
+    bridged all three package registries. `mcp-typescript-sdk` recorded level 5 `usage_volume`
+    against an npm package no model could confirm or refute; it now can be. The distinction
+    still holds for any route declared without a reader, which is what the rule is written
+    against rather than any particular source.
     """
     from build.serialize_rubric import load_routing
 
@@ -118,6 +123,19 @@ def instrument_rules(root: Path = ROOT) -> tuple[dict[str, set[str]], dict[str, 
         if source.get("bridged") and source.get("artifact_key"):
             artifacts.setdefault(signal_type, set()).add(source["artifact_key"])
     return artifacts, evidence
+
+
+def all_artifact_keys(root: Path = ROOT) -> set[str]:
+    """Every artifact key any declared source names, bridged or not.
+
+    Used only to say what a product declares that the instrument in hand cannot count. Read
+    from `signal_routing.yaml` for the same reason `instrument_rules` is: a list of artifact
+    kinds written out in Python drifts, and this one did.
+    """
+    from build.serialize_rubric import load_routing
+
+    sources = (load_routing(root).get("sources") or {}).values()
+    return {s["artifact_key"] for s in sources if s and s.get("artifact_key")}
 
 
 def is_recomputable(product: dict, artifacts: set[str]) -> bool:
@@ -207,8 +225,14 @@ def collect(sources: dict, root: Path = ROOT) -> tuple[list[str], int]:
             continue
 
         if signal in artifacts:
+            # What the product DOES declare that this instrument cannot count, derived from
+            # the routing file's own source list rather than named here. The previous version
+            # hardcoded ("npm", "crates", "docker"), which is the mirrored-in-Python drift the
+            # sibling test forbids — and it went stale the day npm and crates were bridged,
+            # since both became countable and could no longer reach this branch.
             declared = sorted(
-                k for k in ("npm", "crates", "docker") if product.get(k)
+                kind for kind in all_artifact_keys(root)
+                if product.get(kind) and kind not in artifacts[signal]
             ) or ["nothing countable"]
             findings.append(
                 f"{slug}: records {signal} at level {adoption['level']}, which claims a "

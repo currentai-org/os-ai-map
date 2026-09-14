@@ -116,21 +116,41 @@ def canonical_repo(repo: str) -> str:
 
 
 def package_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
-    """Declared packages the signal could not find on their own registry at all.
+    """Declared packages the signal looked for and did not find.
 
     Reads `signal_packages.downloads`, which carries pypi, npm and crates on one grain, so
-    the registry is named per row rather than assumed. `missing_from_registry` is the
-    successor to `signal_pypi`'s `missing_from_pypi`; the rename is the point, since the
-    column now answers the question for three registries.
+    the registry is named per row rather than assumed.
+
+    **`missing_from_registry` is not by itself evidence of absence, and this reads it
+    narrowly.** The column is `no history AND (kind is pypi OR a status came back)`, which
+    admits three different situations:
+
+      * **pypi** — the PyPI leg windows `oso.pypi_downloads` and fetches nothing, so there is
+        never a status to inspect. No rows means no downloads recorded in the window, which a
+        package present on PyPI with no installs produces just as readily as one that is gone.
+        Reported as what it is rather than as "absent from PyPI", which is what the
+        `signal_pypi` predecessor claimed and could not support either.
+      * **npm / crates, 404** — the registry was asked and said no. That is absence.
+      * **npm / crates, anything else** — a 429 or a 5xx sets the column too, because a status
+        came back and no history did. That is a FAILED MEASUREMENT and it is skipped here. A
+        rate-limited fetch must not surface as a curation finding, least of all under
+        `--strict`, where it would fail CI for weather.
     """
     rows = query(
-        "SELECT product_slug, package, artifact_kind "
+        "SELECT product_slug, package, artifact_kind, http_status "
         "FROM currentai.signal_packages.downloads WHERE missing_from_registry = true"
     )
-    return [
-        (r["product_slug"], r["package"], f"absent from {r['artifact_kind']}")
-        for r in rows
-    ]
+    found = []
+    for r in rows:
+        kind, status = r["artifact_kind"], r["http_status"]
+        if kind == "pypi":
+            reason = "no downloads recorded on PyPI in the window"
+        elif status == 404:
+            reason = f"absent from {kind} (404)"
+        else:
+            continue  # a transport failure is not evidence of anything
+        found.append((r["product_slug"], r["package"], reason))
+    return found
 
 
 def pypi_content(products: dict[str, dict]) -> tuple[list, list]:
