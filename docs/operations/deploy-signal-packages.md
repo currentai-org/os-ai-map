@@ -47,15 +47,16 @@ Each step's output is the next step's precondition. Only the last one cannot be 
    consumer's live release predates that rule and is grandfathered, so any new release
    re-resolves and is rejected.
 
-   **This step is now void, and the fix it proposed was tried and made things worse.** An
-   earlier draft said the remedy was `columns=` on `artifact_state`. That was applied on
-   2026-09-13. It did not unblock the consumer — the verdict simply flipped the other way and
-   the release was refused again — and because the verdict depends on what a model *reads*, it
-   locked four further models that nobody had touched: `evidence.product_evidence`,
-   `observations.product_adoption_current`, `scores.openness_facts` and
-   `scores.openness_computed`. All four had to be deleted and recreated, losing their
-   materialized tables, their schedules and their model contexts. See the determinism section
-   below before touching `columns=` on anything.
+   **This step is void, and the remedy it proposed does not work.** An earlier draft said the
+   fix was `columns=` on `artifact_state`. That was applied on 2026-09-13 and did not unblock
+   the consumer; the release was refused again.
+
+   A later draft of this document then said that change *caused* four more models to lock.
+   **That was also wrong** and is retracted here rather than quietly deleted, because it is the
+   claim a maintainer would have planned around. Those four were already unreleasable, along
+   with a large share of the org, including datasets with no connection to the gap map. They
+   were deleted and recreated, losing their materialized tables, schedules and model contexts —
+   but not because of anything done in this step. See the determinism section below.
 
    The repoint this step asks for is not needed either. Issue #562 retires
    `signal_github.product_adoption` rather than migrating it, and you do not repoint a model you
@@ -144,10 +145,22 @@ Correcting it here because the wrong version told a maintainer to expect a casca
 edit, which is the opposite of the right instinct.
 
 The refusal names the model you are releasing, so it always reads as a fault in your own change.
-**Isolate it with a byte-identical control:** re-release the previous revision unchanged. If that
-is refused too, the cause is not your edit. Two models tested this way behaved differently on the
-same day — `currentai.metrics.daily` re-released cleanly while `currentai.scores.taxonomy` was
-refused — so the question is always per-model, never org-wide.
+**Isolate it with a byte-identical control**, and run it carefully:
+
+1. Create a new revision whose code is byte-identical to **the model's currently live released
+   revision** — not merely "a previous revision". An older release or an unreleased draft is a
+   different model definition, and the next step would ship it.
+2. Attempt to release it. **A control can succeed**, and then it is live. That happened on
+   2026-09-13 to `currentai.metrics.daily`; the code was identical so nothing changed in
+   behaviour, but re-releasing the original afterwards does NOT undo it — the release row is
+   updated in place and keeps its original timestamp, so it cannot supersede the newer one.
+   Only run a control on a model where shipping an identical definition is acceptable.
+3. Read the refusal, if there is one. It must be **the determinism-verdict message** for the
+   diagnosis to hold. A release refused for any other reason says nothing about this.
+
+Two models tested this way behaved differently on the same day — `metrics.daily` released
+cleanly while `currentai.scores.taxonomy` was refused — so the question is always per-model,
+never org-wide.
 
 **Do not read the verdict off an unreleased draft.** For SQL the schema is derived and frozen at
 release, so a fresh revision can report non-deterministic with zero columns and still release
