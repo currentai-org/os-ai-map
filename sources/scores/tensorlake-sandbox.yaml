@@ -113,8 +113,23 @@ capability:
     own sub-second creation claim. Note that 460ms is also the number the vendor site animates in its demo,
     so the vendor claim and the leaderboard are not two independent measurements. Nothing here asserts sub-second
     latency as a measured fact: the vendor claim and the measured figure are recorded separately, which
-    is what the two sources support. The 4 stands on isolation and feature depth, and whether a 1.35s time-to-interactive
-    should pull it down is an open question rather than one settled here.'
+    is what the two sources support. The 4 stands on isolation and feature depth.
+
+    Settled 2026-09-14 under issue 264. The 1.35s does NOT pull the score down, for a reason about the
+    category rather than about this product. Cold-start is not what separates 3 from 4 here. blaxel-sandbox
+    sits at 3 while claiming sub-second fresh starts and sub-25ms resume from standby, which is a better
+    cold-start story than this one; e2b-sandbox holds 4 on an unmeasured "sub-second class" claim; and
+    daytona-sandbox holds 4 on a sub-90ms figure that is its CONTAINER class rather than its VM class.
+
+    Tensorlake is the only provider in the category whose cold start has been independently measured.
+    Dropping the one measured provider below peers resting on vendor claims would score verification
+    rather than capability, and would make being measured a liability. That is the same failure
+    build/check_channel_authority.py refuses one axis over, where letting stars veto a download figure
+    hands the weaker signal a veto instead of a vote.
+
+    Confidence stays medium, which is where the vendor-claim-versus-measurement gap belongs. If the TTI
+    benchmark is ever run across the rest of the category, this band should be recalibrated against those
+    figures rather than against this one in isolation.'
   last_verified: '2026-08-14'
   sources:
   - url: https://www.tensorlake.ai/
