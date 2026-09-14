@@ -170,6 +170,19 @@ openness:
       # SoC needing firmware, `beagley-ai` included, and `beagley-ai` is the only 5. That
       # text was corrected in #132. Blobs are a caveat on every product in the category and
       # therefore a discriminator between none of them.
+      #
+      # WHAT THE THREE VALUES MEAN. Added 2026-09-14 (#264) because the vocabulary was
+      # undefined and a curator had to guess, which is how one board came to record
+      # `minimal` where nineteen recorded `required` for the same shape of fact. The test
+      # is NECESSITY, not size: a small blob you cannot boot without is `required`.
+      #   `none`     - the part boots and runs inference with no proprietary firmware.
+      #                Nothing in this category records it, and nothing is expected to.
+      #   `minimal`  - proprietary firmware exists but is OPTIONAL: the part boots and runs
+      #                inference without it, and the blob buys an extra peripheral or an
+      #                accelerated path rather than a working system.
+      #   `required` - booting or inference needs it. Covers the ordinary case where a
+      #                vendor BSP ships firmware you cannot substitute, whether that is a
+      #                whole boot chain or a single WiFi blob.
       values: [none, minimal, required]
       machine_signal: none - requires reading the BSP
     accessory_host:
