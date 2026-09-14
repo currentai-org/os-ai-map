@@ -303,13 +303,18 @@ because they are not the same thing to a reader deciding whether they can still 
 - **`irrelevant`** — still live and possibly still refreshing, but nothing here reads it and the repo
   no longer asserts anything about it.
 
-`build.assets.retirement_violations()` enforces it: shape and an ISO date; that the three populations
-(externalized, reclaimed, retired) are disjoint; that the table is gone from `assets.yaml`, gone from
+`build.assets.retirement_violations()` enforces it: shape and a real ISO date; that a retired table is
+neither externalized nor reclaimed; that the table is gone from `assets.yaml`, gone from
 `dependencies.yaml`, and produced by no repository model file; and that every archived hash
 reproduces from the base commit blob while the file is genuinely deleted. Those archived paths are
 also what satisfies the receipt's deleted-file completeness check — **this is the mechanism that
 makes deleting a model file legal at all**, and before it existed there was no honest way to record
 one.
+
+Note that the three lists are not pairwise disjoint in general, and are not meant to be: a `reclaims`
+record deliberately points *into* `assets`, because a reclaim is a transition out of a state that
+stays on the record. What the gate enforces is narrower and is the part that matters — a *retired*
+table appears in neither of the other two.
 
 Retirement is **terminal**. There is no reclaim out of it: reviving a retired table means deploying
 something new and contracting it, which is a fresh entry in the graph rather than a transition, and

@@ -897,7 +897,16 @@ def test_retirement_with_a_non_iso_date_is_flagged(monkeypatch):
     r = _real_receipt()
     _retirement(r, date="last Tuesday")
     _serve(monkeypatch, r)
-    assert any("is not an ISO date" in v for v in A.retirement_violations())
+    assert any("is not a real ISO date" in v for v in A.retirement_violations())
+
+
+def test_retirement_with_a_wellshaped_but_impossible_date_is_flagged(monkeypatch):
+    # A regex shape check passes 2026-99-99. A retirement date that cannot have happened is
+    # not evidence of anything, so the gate parses rather than pattern-matches.
+    r = _real_receipt()
+    _retirement(r, date="2026-99-99")
+    _serve(monkeypatch, r)
+    assert any("is not a real ISO date" in v for v in A.retirement_violations())
 
 
 def test_a_table_cannot_be_both_externalized_and_retired(monkeypatch):

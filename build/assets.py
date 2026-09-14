@@ -19,6 +19,7 @@ import hashlib
 import json
 import re
 import subprocess
+from datetime import date as _date
 from pathlib import Path
 
 import yaml
@@ -727,8 +728,12 @@ def retirement_violations() -> list[str]:
         if state not in RETIREMENT_PLATFORM_STATES:
             problems.append(
                 f"{tbl}: platform_state {state!r} not in {sorted(RETIREMENT_PLATFORM_STATES)}")
-        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(r.get("date") or "")):
-            problems.append(f"{tbl}: retirement date {r.get('date')!r} is not an ISO date")
+        # fromisoformat, not a regex: a shape check accepts 2026-99-99, and a retirement date
+        # that cannot have happened is not evidence of anything.
+        try:
+            _date.fromisoformat(str(r.get("date") or ""))
+        except ValueError:
+            problems.append(f"{tbl}: retirement date {r.get('date')!r} is not a real ISO date")
 
         # DISJOINT -- the three populations do not overlap.
         if tbl in externalized_tables:
