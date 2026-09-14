@@ -18,6 +18,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- `yylo` (`yylo-dev/yylo`) to `orchestration_agents`, with the JUNO AI organization
+  ([#561](https://github.com/currentai-org/os-ai-map/pull/561)).
 - `not_primary_channel`, a per-artifact declaration on a product's artifact entries: the presence of
   the key exempts that artifact from the product's summed adoption figure and the value says why.
   Declared on `hexabot`'s npm widget and `yomo`'s crate, carried into
@@ -27,6 +29,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   level 2, where the 2026-08-14 minority-channel ruling put them; the `registry` static model gains
   a column and must be recreated on the platform rather than re-uploaded
   ([#562](https://github.com/currentai-org/os-ai-map/issues/562)).
+- Automatic adoption of confidence-1.0 identity matches. A digest item whose name and graph agree
+  is written to the resolution ledger without a human tick; anything below stays a checkbox. The
+  weekly workflow opens a PR with the adopted entries and a person merges it, and auto-adopted
+  entries are excluded from the identity eval so it cannot score the graph against its own output
+  ([#552](https://github.com/currentai-org/os-ai-map/pull/552)).
 - A `form_factor` dimension on the hardware openness ladder — board, module or chipset — recorded on
   all 20 `edge_hardware` products, with every rung that reads `schematics` now testing it first and a
   chipset rung that asks instead whether the datasheets are public and whether anybody can buy one.
@@ -61,6 +68,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `meta-ai` capability 3 to 4: reach was being read as capability, and reach is adoption. The
+  hardware ladder's `firmware` vocabulary is now defined on necessity rather than size, after one
+  board recorded `minimal` where nineteen recorded `required` for the same fact; `raspberry-pi-5`
+  now reads `required` and no score moved with it, and `tensorlake-sandbox` held at 4
+  ([#571](https://github.com/currentai-org/os-ai-map/pull/571)).
+- The `pypi`, `npm` and `crates` adoption routes all read `currentai.signal_packages.downloads` with
+  an `artifact_kind` filter. npm and crates previously pointed at no table, so a download count
+  recorded on either is now falsifiable rather than merely re-checkable
+  ([#568](https://github.com/currentai-org/os-ai-map/pull/568)).
 - `observations.product_adoption_current` reads its package arm from
   `currentai.signal_packages.downloads` instead of `currentai.signal_pypi.package_downloads`, so the
   observation layer now sees npm and crates alongside PyPI. `channel` and `artifact_kind` are
@@ -70,6 +86,30 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   resolved to no observation; `hexabot` and `yomo` stay on stars at level 2, because every package
   artifact they declare is `not_primary_channel`
   ([#562](https://github.com/currentai-org/os-ai-map/issues/562)).
+- Capability abstained on the four scored evaluation datasets. `gaia`, `humanitys-last-exam` and
+  `livebench` drop from 5 to null and `mt-bench` from 4 to null. Capability read as discriminative
+  power decays as a benchmark is adopted and trained against, which makes it anti-correlated with
+  adoption and puts the category on a treadmill; the twenty-eight records that already abstained
+  had it right
+  ([#548](https://github.com/currentai-org/os-ai-map/pull/548)).
+- `compilers` reports an adoption gap where it previously reported none. A product at exactly 4 on
+  both adoption and capability clears each cutoff while missing maturity, and where such a product
+  is its category's best the category rendered with no gaps at all. 32 fully-open products across 13
+  categories sit in that zone; `compilers` was the only category it silenced
+  ([#549](https://github.com/currentai-org/os-ai-map/pull/549)).
+- Every URL field the schemas constrain now requires a host, across the product, organization,
+  score and registry schemas ([#554](https://github.com/currentai-org/os-ai-map/pull/554)).
+- `last_verified` may be written by whatever confirmed the evidence, a person or a tool that re-read
+  every establishing source, rather than by a person alone; a source is confirmed on the quoted
+  fragments inside `shows` rather than the sentence around them; and machine re-dating is enforced
+  to openness, so `--axes capability` now exits 2 instead of re-dating against the ruling
+  ([#557](https://github.com/currentai-org/os-ai-map/pull/557),
+  [#558](https://github.com/currentai-org/os-ai-map/pull/558),
+  [#559](https://github.com/currentai-org/os-ai-map/pull/559)).
+- `agenta` moved from `telemetry_observability` to `orchestration_agents`, capability 3 unchanged
+  and re-anchored on `openhands` because its old anchor stayed behind. LlamaFactory renamed with an
+  `aliases` field, and twelve arXiv citations repointed from `/abs` to `/pdf` behind a new
+  `check_citations` gate ([#544](https://github.com/currentai-org/os-ai-map/pull/544)).
 - Three license names ruled onto the shared `pretrained` tiers: `OpenMDW-1.1` to
   `permissive_non_osi`, `Llama-3.2-Community-License` to `use_bounded`, `CC-BY-NC-4.0` to
   `commercial_forbidden`. All four products that had been deferred for them now compute, and no
