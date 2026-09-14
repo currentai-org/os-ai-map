@@ -853,3 +853,122 @@ def test_a_version_2_receipt_without_reclaims_still_validates(monkeypatch):
     real_has = A._worktree_has
     monkeypatch.setattr(A, "_worktree_has", lambda p: p != RECLAIM_MIRROR and real_has(p))
     assert A.externalization_receipt_violations() == []
+
+
+# --- retirement: the terminal state (build.assets.retirement_violations) ---------
+#
+# `retired` is deliberately NOT reachable from an externalization entry: an externalized table is
+# still live under platform ownership, a retired one is not, so the two populations are disjoint
+# rather than sequential. These tests pin that disjointness, the gone-from-every-surface checks,
+# and the archival that makes deleting a model file legal at all.
+
+_RETIRED_TABLE = "currentai.signal_pypi.package_downloads"
+
+
+def _retirement(r, **over):
+    """The committed retirement record, overridable. Mutates and returns the record in `r`."""
+    recs = r.setdefault("retirements", [])
+    assert recs, "committed receipt should carry the signal_pypi retirement"
+    recs[0].update(over)
+    r["retired_count"] = len(recs)
+    return recs[0]
+
+
+def test_committed_retirement_reproduces_clean():
+    # The positive anchor, against the real committed receipt -- not a synthetic one.
+    assert A.retirement_violations() == []
+
+
+def test_retirement_missing_a_required_field_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _retirement(r, reason="")
+    _serve(monkeypatch, r)
+    assert any("missing reason" in v for v in A.retirement_violations())
+
+
+def test_retirement_with_an_unknown_platform_state_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _retirement(r, platform_state="mothballed")
+    _serve(monkeypatch, r)
+    assert any("platform_state" in v for v in A.retirement_violations())
+
+
+def test_retirement_with_a_non_iso_date_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _retirement(r, date="last Tuesday")
+    _serve(monkeypatch, r)
+    assert any("is not an ISO date" in v for v in A.retirement_violations())
+
+
+def test_a_table_cannot_be_both_externalized_and_retired(monkeypatch):
+    r = _real_receipt()
+    _retirement(r, table=r["assets"][0]["table"])
+    _serve(monkeypatch, r)
+    assert any("both externalized and retired" in v for v in A.retirement_violations())
+
+
+def test_a_table_cannot_be_both_reclaimed_and_retired(monkeypatch):
+    # There is no reclaim out of retirement: reviving a retired table is a new deployment.
+    r = _real_receipt()
+    reclaimed = (r.get("reclaims") or [{}])[0].get("table")
+    assert reclaimed, "committed receipt should carry a reclaim to test against"
+    _retirement(r, table=reclaimed)
+    _serve(monkeypatch, r)
+    assert any("both reclaimed and retired" in v for v in A.retirement_violations())
+
+
+def test_retired_table_that_is_still_a_dependency_contract_is_flagged(monkeypatch):
+    r = _real_receipt()
+    rec = _retirement(r)
+    _serve(monkeypatch, r)
+    monkeypatch.setattr(A, "dependencies", lambda: [{"table": rec["table"], "files": {}}])
+    assert any("still a dependency contract" in v for v in A.retirement_violations())
+
+
+def test_retired_table_that_a_repository_file_still_produces_is_flagged(monkeypatch):
+    r = _real_receipt()
+    _retirement(r)
+    _serve(monkeypatch, r)
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    monkeypatch.setattr(A, "assets", lambda: [
+        {"table": "currentai.some.other_asset",
+         "files": {"model": "warehouse/models/signal_pypi/package_downloads.sql"}}])
+    assert any("still produces it" in v for v in A.retirement_violations())
+
+
+def test_retirement_archiving_a_file_that_still_exists_is_flagged(monkeypatch):
+    # The archival is what excuses the deletion, so a file still on disk must not pass as archived.
+    r = _real_receipt()
+    rec = _retirement(r)
+    _serve(monkeypatch, r)
+    real_has = A._worktree_has
+    monkeypatch.setattr(A, "_worktree_has", lambda p: True if p in rec["archived_source_sha256"] else real_has(p))
+    assert any("still exists in the worktree" in v for v in A.retirement_violations())
+
+
+def test_retirement_archived_hash_must_reproduce_from_the_base_blob(monkeypatch):
+    r = _real_receipt()
+    rec = _retirement(r)
+    path = next(iter(rec["archived_source_sha256"]))
+    rec["archived_source_sha256"][path] = "0" * 64
+    _serve(monkeypatch, r)
+    assert any("!= base blob" in v for v in A.retirement_violations())
+
+
+def test_retired_count_must_match_the_records(monkeypatch):
+    r = _real_receipt()
+    _retirement(r)
+    r["retired_count"] = 99
+    _serve(monkeypatch, r)
+    assert any("retired_count" in v for v in A.retirement_violations())
+
+
+def test_a_retirement_archives_the_deleted_file_for_the_completeness_check(monkeypatch):
+    # Without the carve-out, deleting a model file is an unarchived orphan. Drop the retirement
+    # and the receipt should complain about exactly that file.
+    r = _real_receipt()
+    r["retirements"] = []
+    r["retired_count"] = 0
+    _serve(monkeypatch, r)
+    assert any("deleted since the base commit but not archived" in v
+               for v in A.externalization_receipt_violations())

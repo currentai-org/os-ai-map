@@ -1349,7 +1349,7 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-<!-- count:tracked_warehouse_files -->36 files are tracked under `warehouse/`, and the mirror
+<!-- count:tracked_warehouse_files -->35 files are tracked under `warehouse/`, and the mirror
 layout of 11.1 is in place. Alongside the models sit the audit receipts —
 `warehouse/audits/platform_models.json` (the deployed-model audit) and
 `warehouse/audits/source_runs.json` (the `source_runs` attestation, §4.3) — the frozen adoption
@@ -1732,7 +1732,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->25   (13 models, 3 ingest, 17 mirror)
+  of which SQL/Python models   <!-- count:model_files -->24   (13 models, 3 ingest, 16 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
