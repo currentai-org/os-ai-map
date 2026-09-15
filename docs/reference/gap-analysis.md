@@ -115,17 +115,34 @@ Worth stating plainly, because the code makes them look alike and they behave op
   product — "we can't judge what we can't measure, so they neither advance nor depress the
   category's stage." Measured 2026-08-13: 20 products, 19 of them `closed`, which the open-only
   counting rule already excluded. The abstention is real and costs nothing.
-- **Null capability does not abstain.** It falls through to adoption alone, which silently
-  reweights maturity from a blend to a single axis rather than declining to score. The product
-  keeps counting toward the stage.
+- **Null capability does not abstain.** It falls through to adoption alone, which reweights
+  maturity from a blend to a single axis rather than declining to score. The product keeps
+  counting toward the stage. It has a second effect worth stating because the code does not:
+  a null **suppresses the PER-PRODUCT capability driver gap**. That reading fires when the best
+  fully-open product's capability is below the cutoff, and a null is not below anything — it is
+  not comparable at all — so it cannot fire.
+
+  It does **not** suppress the category-level reading. When neither per-product driver fires,
+  `_stage_and_gaps` falls through to `_unreached_axes` over every fully-open product, and that can
+  still name `capability`: it asks whether any fully-open product has topped the axis, which a
+  null in the best product does not answer either way. So the null closes one of the two readings,
+  not both, and a category whose best fully-open product abstains usually still carries a gap —
+  `compilers` and `dataset_processing_tools` both report `adoption` from the per-product read.
+
+  A genuinely empty gap set at Stages 1-3 therefore needs the category-level reading to be silent
+  too, which happens only when an axis is unrecorded across the whole fully-open population or has
+  been topped somewhere in it. That is narrow and no category is in it today; `benchmark_eval_data`
+  was, during the #319 calibration, before that issue resolved toward abstention. The shape is
+  general, which is why it is documented rather than left to be rediscovered.
 
 That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
 everyone evaluates against is, by that fact, a good corpus.
 
-**Every other category inherits it by accident.** `model-context-protocol` is the clearest
-live case: adoption 5, capability null, `open_source`, so its overall score computes to 5.0 and
-it counts as a category-leading fully-open product on one axis while a reader assumes two.
+**It reaches every other category too**, and that is the part #547 had to rule on rather than
+assume. `model-context-protocol` is the clearest live case: adoption 5, capability null,
+`open_source`, so its overall score computes to 5.0 and it counts as a category-leading
+fully-open product on one axis where a reader might assume two.
 
 **A correction, because this guide got the stakes wrong on first writing.** It claimed that
 `agent_tools_protocols`'s stage rested on that null, on the reasoning that one category-leading fully-open
@@ -134,14 +151,36 @@ checked against the category: it has **several** category-leading fully-open pro
 `qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and most of them
 reach 4.5 from a real adoption *and* a real capability score with no null in the arithmetic.
 That comfortably clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting
-MCP entirely changes nothing. The methodological defect is unaffected; the claim
-that a stage depended on it was wrong, and was caught by re-deriving it against
-`build/serialize.py` rather than reasoning from the threshold.
+MCP entirely changes nothing. The claim that a stage depended on it was wrong, and was caught by
+re-deriving it against `build/serialize.py` rather than reasoning from the threshold. What the
+correction left standing — that adoption-only grading reaches categories it was not designed for
+— is the question #547 settled, immediately below.
 
-So the open question is whether "graded on adoption alone" should be a **per-category
-declaration**, like `disclosure` below, rather than a global fallback. It is deliberately not
-settled here: it is to be resolved during the `agent_tools_protocols` verification pass, when
-`model-context-protocol` gets a real capability score and the question stops being hypothetical.
+**Both effects are the settled behavior, and neither is a bug (#547).** A category whose best
+fully-open product abstains on capability is graded on adoption alone: the product is NOT dropped
+from the stage computation the way a null adoption drops it, and the empty gap set is not marked.
+The reasoning is that these categories genuinely lack a capability signal worth grading on, so
+adoption alone is the honest reading rather than a fallback that happens to be reachable — the
+answer the map has now arrived at more than once, most recently when `benchmark_eval_data`
+rejected a capability recipe for its corpora and returned to abstaining (#546).
+
+Grading on adoption alone is therefore a **convention of this methodology**, not a per-category
+declaration and not a flag a reader sees. It follows from the axis being null, which is itself a
+recorded editorial judgment carrying its own reasoning in the score file. Two consequences a
+reader of the map should know:
+
+- an overall score built from adoption alone is on the same 1-5 scale as one built from both
+  axes, and `overall_score` itself carries no marker of which. The payload does not hide the
+  difference — the product's `capability` block is emitted with `score: null` beside a non-null
+  `adoption.level`, so a consumer can tell — but nothing in the blended number says so, and
+  nothing in the category's stage or gaps does either;
+- a category can sit at Stages 1-3 with no gaps named. That is not by itself evidence of an
+  ungraded shortfall: the paragraph below on the two gapless states describes a second route to
+  it, where both axes have been topped but never in the same product. Which one a category is in
+  is answered by reading its products, not by the empty set.
+
+This closes the question the earlier draft of this section left open, which asked whether
+adoption-only grading should become a per-category declaration like `disclosure`. It should not.
 
 ## Dataset categories
 
@@ -286,7 +325,10 @@ cost of a vocabulary nobody asked to learn.
 
 **Two states still carry no driver gap, deliberately.** An axis that **no** fully-open product
 records is unmeasured rather than deficient, and is never named: a category graded on adoption
-alone must not be told it has a capability shortfall. And a category that has topped both axes,
+alone must not be told it has a capability shortfall. A null on the *best* fully-open product alone
+is NOT this state — it silences the per-product reading and leaves the category-level one intact, so
+a capability gap can still fire from a peer that recorded the axis. See the null-capability rule
+above, which #547 settled rather than changed. And a category that has topped both axes,
 but never in the same product, reports nothing — the parts exist and nobody has assembled them,
 which is a real state this vocabulary cannot yet name. That shape exists today in
 `training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
