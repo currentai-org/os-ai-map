@@ -864,17 +864,25 @@ def test_the_marker_alone_changes_nothing_when_no_provenance_moved(monkeypatch):
     assert _provenance(monkeypatch, _mirror(), _mirror(code_unchanged_from=4)) == []
 
 
-def test_the_three_metadata_only_contracts_carry_the_marker():
+def test_metadata_only_contracts_carry_the_marker():
     """The contracts the platform revised without touching their code. Named rather than
-    counted, because the marker is a per-contract claim a reviewer signed off on; a fourth
-    contract acquiring one should be a deliberate edit to this list."""
+    counted, because the marker is a per-contract claim a reviewer signed off on; a contract
+    acquiring one should be a deliberate edit to this list.
+
+    The list is EMPTY as of the #579 resync, and that is the expected state rather than a
+    disabled test. It previously held `scores.openness_facts` (7), `scores.openness_computed`
+    (15) and `signal_github.artifact_state` (2). All three lost the marker for a reason the
+    runbook already gives: a resync that moves the bytes deletes it (artifact_state), and a
+    contract migrated onto a recreated model is carried by `mirror_migration` instead, since
+    the marker's claim is about advancing within one model's revision sequence and a
+    recreation starts a new one (the openness pair).
+
+    `identity.digest` is the live candidate -- the sentinel reports it `metadata-only` and it
+    carries no marker yet -- so a future edit here is expected.
+    """
     marked = {d["table"]: d["mirror"]["code_unchanged_from"]
               for d in A.dependencies() if (d.get("mirror") or {}).get("code_unchanged_from")}
-    assert marked == {
-        "currentai.scores.openness_facts": 7,
-        "currentai.scores.openness_computed": 15,
-        "currentai.signal_github.artifact_state": 2,
-    }
+    assert marked == {}
     for table, prior in marked.items():
         mirror = next(d for d in A.dependencies() if d["table"] == table)["mirror"]
         assert mirror["revision"] > prior, table
