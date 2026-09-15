@@ -1,0 +1,87 @@
+product: kueue
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: kubernetes-sigs/kueue is the whole controller
+    core-gated:
+      value: ungated
+      detail: a 15,902-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0 and governed by a Kubernetes Special Interest Group, so there is no vendor and no paid tier
+    for a core to be withheld from. The 15,902-entry recursive tree carries one governing LICENSE and no enterprise,
+    ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(kubernetes-sigs/kueue is the whole controller);core-gated:ungated(a
+    15,902-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/kubernetes-sigs/kueue
+    shows: 'Repository page for kubernetes-sigs/kueue: Apache-2.0 license, public and unarchived, described
+      as ''Kubernetes-native Job Queueing''. Establishes the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: eba1d5116ff87736b06b6cdac2d3b963d31e8ba23c147e157a8c1e7e011bd10a
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/kubernetes-sigs/kueue/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 15,902 entries. Licenses are the root LICENSE
+      and vendored dependencies. No path matches enterprise, ee, commercial or proprietary. A tree lists paths;
+      it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 908786a3b9cdcd6a292183df417db7d06a5f6e3feea488ef2aa349ea3db4f224
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 2,971 GitHub stars. The project ships as container images and a Helm chart and publishes no package-registry
+    artifact, so no usage-volume channel exists for it and the band rests on stars, which measure attention
+    rather than use. The stars route caps at level 3 for that reason.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/kubernetes-sigs/kueue
+    shows: Repository page showing the star count for kubernetes-sigs/kueue.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: eba1d5116ff87736b06b6cdac2d3b963d31e8ba23c147e157a8c1e7e011bd10a
+capability:
+  score: 5
+  basis: feature_matrix
+  value: admits or holds a Job against ClusterQueue quota and ResourceFlavors; preempts running jobs; and under
+    Topology-Aware Scheduling finds a fixed assignment of pods to nodes and injects a NodeSelector so the pods
+    land on the chosen nodes, with podset-required-topology binding a whole PodSet to one rack or block
+  confidence: medium
+  relative_to: volcano
+  relation: at
+  note: Banded on Topology-Aware Scheduling rather than on the queueing alone. Kueue's own documentation states
+    that when the lowest topology level is set to node, TAS 'finds a fixed assignment of pods to nodes and
+    injects a NodeSelector to make sure the pods get scheduled on the selected nodes', and podset-required-topology
+    requires every pod of a set to sit in one domain. That is choosing the machines and reserving the set together,
+    which is band 5 here - the Kubernetes bind call executing the choice does not move the decision elsewhere.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/
+    shows: 'Kueue''s Topology-Aware Scheduling concept page: ''When the lowest level of Topology is set to
+      node, TAS finds a fixed assignment of pods to nodes and injects a NodeSelector to make sure the pods
+      get scheduled on the selected nodes'', and the podset-required-topology annotation requiring all pods
+      within one topology domain.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f253677ffe43a68eceedda7352d0cd7376e76700f811897d5db373166730d2ef
+  - url: https://kueue.sigs.k8s.io/docs/overview/
+    shows: 'Kueue overview: ''Kueue decides when a job should wait, when a job should be admitted to start
+      (as in pods can be created) and when a job should be preempted'', with quotas, fair sharing and resource
+      fungibility across flavors.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 198089fb4457cbafcec87331b1474de5724827ffd75b876d237196e9ebfb1abe

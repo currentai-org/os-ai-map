@@ -1,0 +1,90 @@
+product: metaflow
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: Netflix/metaflow is the framework you run
+    core-gated:
+      value: ungated
+      detail: a 1,255-entry recursive tree carries a root LICENSE and R/LICENSE, every other license file under
+        metaflow/_vendor/, and no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0 with the whole framework published. Outerbounds sells a managed platform alongside, which
+    the ladder does not read as gating. The 1,255-entry recursive tree carries one governing LICENSE; every
+    other license file is a vendored third-party dependency under metaflow/_vendor/, and there is no enterprise,
+    ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(Netflix/metaflow is the framework you run);core-gated:ungated(a
+    1,255-entry recursive tree carries a root LICENSE and R/LICENSE, every other license file under metaflow/_vendor/,
+    and no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/Netflix/metaflow
+    shows: 'Repository page for Netflix/metaflow: Apache-2.0 license, public and unarchived, described as ''Build,
+      Manage and Deploy AI/ML Systems''. Establishes the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 98140afd19da71db4ae520fe3543acf201055af533349e558a87a212258f1ced
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/Netflix/metaflow/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 1,255 entries. Licenses are the root LICENSE
+      and R/LICENSE; every other license file sits under metaflow/_vendor/. No path matches enterprise, ee,
+      commercial or proprietary. A tree lists paths; it is cited for that and for nothing about the vendor's
+      offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f3ebf9940039351ffed15727f038f1c7167fec456f875aa6a9e00cf810a9671f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 482,037 downloads of metaflow in the trailing
+    30 days, inside the 100K-1M band for level 3. PyPI is the product's declared distribution
+    channel, so the level can be recomputed from that feed.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://pypistats.org/api/packages/metaflow/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 482,037
+      downloads in the trailing month.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 315df55550173aa7958a9b85a64305bd0d2c046edce145c8a7ca622abbbf5e5e
+capability:
+  score: 3
+  basis: feature_matrix
+  value: '@resources(gpu=...) as Metaflow''s own field; @batch and @kubernetes submit
+    the step to AWS Batch or Kubernetes, naming the queue; per-step retries, checkpoints
+    and resume; run, artifact and model tracking'
+  confidence: medium
+  relative_to: flyte
+  relation: at
+  note: 'Admitted on the accelerator limb - @resources(gpu=...) is Metaflow''s own
+    decorator, not a pod spec passed through. Band 3: Metaflow decides when a step
+    runs and which queue or cluster it is submitted to, and AWS Batch or the Kubernetes
+    scheduler chooses the machine. Under this dimension it does what flyte does, and
+    the two are banded together.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://raw.githubusercontent.com/Netflix/metaflow/master/metaflow/plugins/resources_decorator.py
+    shows: Metaflow's own ResourcesDecorator, declaring a gpu field on the step. Establishes
+      that the accelerator request is expressed in Metaflow's schema.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 02da0ec20e261d81d8b6183e0807db7da9be4224f4562b832c3a2e9280ef17a4
+  - url: https://raw.githubusercontent.com/Netflix/metaflow/master/metaflow/plugins/aws/batch/batch_decorator.py
+    shows: Metaflow's AWS Batch decorator, taking a queue parameter defaulting to
+      METAFLOW_BATCH_JOB_QUEUE. Establishes that Metaflow selects the queue and AWS
+      Batch performs the placement.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 906061358841d2f05425f4fbd26ddd0944f56eecf4667e00688346f37c256ed6

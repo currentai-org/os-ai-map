@@ -205,6 +205,14 @@ def test_the_prose_leg_holds_at_its_known_count():
     deployments no channel counts). dynamo wrote the same shape and was remedied in the
     same change (banded_quantity naming the countable channel, note phrased as a floor),
     which is why it is not in the set.
+
+    Unmoved by the ml_orchestration promotion, which is the interesting part. `slurm` bands
+    on stars and was drafted with a note saying the figure understated it badly; review
+    found that claim unsupported - an absent channel shows a gap, not its size - and the
+    note now says only what the channel is. The detector stopped firing on it, which is the
+    correct outcome: this set holds notes that ASSERT under-coverage, and slurm no longer
+    asserts it. Seven products in that category still band on stars for want of an
+    instrument; none of them claims to know what the missing measurement would say.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()

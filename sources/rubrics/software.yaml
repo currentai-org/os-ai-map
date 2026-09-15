@@ -144,9 +144,22 @@ openness:
         # one deferral each to full reproduction, 26/26 and 27/27, and check_recipe reported
         # both deferrals stale on the same run, which is how a ruling like this is supposed
         # to close.
-        examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0,
-          MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT, PostgreSQL,
-          Apache-2.0-WITH-LLVM-exception]
+        examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-2.0, GPL-3.0, AGPL-3.0,
+          LGPL-3.0, MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT,
+          PostgreSQL, Apache-2.0-WITH-LLVM-exception]
+        # `GPL-2.0` was added on 2026-09-15, on the owner's ruling, when the ml_orchestration
+        # promotion turned up `slurm` recording it. Slurm's COPYING body states that all Slurm
+        # code and documentation is available under the GNU General Public License. GPL-2.0 is
+        # OSI-approved and copyleft, which this tier's own definition already admits - AGPL sits
+        # beside Apache here - so it was inside the definition and outside the list, exactly the
+        # shape of the BSD-2-Clause and PostgreSQL additions above. The tier decides by literal
+        # name, which is the only reason it abstained.
+        #
+        # Measured before adding, per the note on the tier below: no other software-type product
+        # on the map records GPL-2.0 under `license`. The one other occurrence anywhere in the
+        # corpus is `orange-pi-5`, under a `toolchain:` key the hardware ladder reads and this
+        # one does not. So adding the name moved the computed score of `slurm` and of nothing
+        # else, and it closed that category's only deferral.
         # `Apache-2.0-WITH-LLVM-exception` was added on 2026-09-02, when the compilers round-2
         # promotion turned up `cuda-tile` recording it. LLVM's exception text only widens what a
         # derivative work may do with the Apache-2.0 grant - it drops the patent-notice

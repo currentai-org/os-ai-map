@@ -251,6 +251,11 @@ def test_local_scores_matches_check_rubrics_split():
     # are public and whether anybody can buy one, and never asks it about design files at all,
     # and the product reproduces the 3/documented it already recorded. The remaining four are all license-tier gaps, three of them waiting on
     # the same `unstated` ruling.
+    #
+    # Held at 4 through the ml_orchestration promotion. `slurm` records GPL-2.0, which this tier
+    # did not name, and it briefly deferred; the owner ruled the name into the shared osi tier in
+    # the same change rather than leave a product scored by hand, so the deferral opened and
+    # closed without the count moving. The measurement behind the ruling is in software.yaml.
     assert len(deferred) == 4
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral

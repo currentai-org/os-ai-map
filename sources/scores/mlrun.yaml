@@ -1,0 +1,81 @@
+product: mlrun
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: mlrun/mlrun is the runnable platform, self-host included
+    core-gated:
+      value: ungated
+      detail: a 2,580-entry recursive tree carries one root LICENSE and no path matching enterprise, ee, commercial
+        or proprietary
+  confidence: high
+  note: 'Apache-2.0 with the platform itself in the open tree. Iguazio sells a managed offering alongside,
+    which the ladder does not read as gating: the 2,580-entry recursive tree carries one governing LICENSE,
+    no enterprise, ee or commercial path, and nothing behind a license key. This is the langchain shape rather
+    than the langgraph one.'
+  raw: license:Apache-2.0(OSI);source:public(mlrun/mlrun is the runnable platform, self-host included);core-gated:ungated(a
+    2,580-entry recursive tree carries one root LICENSE and no path matching enterprise, ee, commercial or
+    proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/mlrun/mlrun
+    shows: 'Repository page for mlrun/mlrun: Apache-2.0 license, public and unarchived, described as an open
+      source MLOps platform for building and managing continuous ML applications. Establishes the license and
+      that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 4705019edf365457efea2d10cebee700815b6c58be842d763496a1901df183ec
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/mlrun/mlrun/git/trees/development?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 2,580 entries. One root LICENSE. No path
+      matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing
+      about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 107b616ac132a5eb32d6dcdb389cab9bd4ed1a9c5aba0afed340ae1f3856440a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 21,372 downloads of mlrun in the trailing 30
+    days, inside the 10K-100K band for level 2. PyPI is the product's declared distribution
+    channel, so the level can be recomputed from that feed and challenged.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://pypistats.org/api/packages/mlrun/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 21,372
+      downloads in the trailing month, inside the 10K-100K band.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: ad3caea3019dd53a8412531ac7caf69a780554d9e0d8688be56d784b1eda94c5
+capability:
+  score: 3
+  basis: feature_matrix
+  value: functions and pipelines executed as Kubernetes jobs; feature store; artifact,
+    model and run tracking; real-time serving graphs; runs on a cluster it does not
+    itself schedule onto
+  confidence: medium
+  relative_to: kubeflow-pipelines
+  relation: at
+  note: 'Admitted on the ML-job-model limb: runs, models and artifacts are first-class
+    types it schedules and tracks. Band 3 because MLRun decides when a function runs
+    and on which cluster, and the Kubernetes scheduler chooses the machine.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/mlrun/mlrun
+    shows: Repository page and README for mlrun/mlrun describing functions executed
+      on Kubernetes, pipelines, the feature store and model tracking.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 4705019edf365457efea2d10cebee700815b6c58be842d763496a1901df183ec
