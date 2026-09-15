@@ -87,8 +87,8 @@ scoring_recipe:
         inputs, hardware backends and the passes between them; for an optimizer, how many techniques
         over how many classes of model; for a kernel library, how many operator families over how
         many hardware generations and vendors.
-      * how much of the stack depends on it. Whether named engines, frameworks and compilers call
-        this product for the job, or whether it is one of several ways to do one job.
+      * how much of the stack depends on it, which the 3/4 rule below makes a single checkable
+        question rather than a judgment.
 
       5  At the top of BOTH: the whole path from a framework graph to a target, across more than
          one vendor's backends, through the product's own optimizer and code generator. No kernel
@@ -96,83 +96,76 @@ scoring_recipe:
          one layer's primitives covers less of the category's surface than covering the whole path
          does.
       4  At the top of ONE, with real coverage on the other. Either the whole path narrowed to one
-         vendor's targets or one class of model, or an operator surface that the stack's own named
-         engines and frameworks call for the job. tensorrt and flash-attention are the two shapes.
+         vendor's targets or one class of model, or an operator surface that clears the dependency
+         test below. tensorrt and flash-attention are the two shapes.
       3  Real coverage, at the top of neither. A single optimization family applied across classes
-         of model; or an operator set whose named consumers are its own vendor's stack, one
-         framework's users, or nobody the documentation names.
+         of model; or an operator surface that does not clear the dependency test.
       2  Narrow on both. A single-pass graph utility, or kernels for one operator variant on one
          hardware generation, usually purpose-built for one model family.
 
     The 3/4 line is the one that has to be reproducible, because it is where the three populations
-    meet and where the old yardstick did its damage. One question decides it, read off declared
-    dependencies rather than asserted:
+    meet and where the old yardstick did its damage. One question decides it:
 
-      does a framework or engine OUTSIDE this product's own distribution declare a dependency on
-      it - a submodule, a pinned requirement, or an integration the consumer itself documents?
+      is there a framework or engine OUTSIDE this product's own distribution that declares a
+      dependency on it?
 
-      4  yes. CUTLASS and Composable Kernel are each vendored as a submodule by PyTorch and by
-         FlashAttention; oneDNN's README names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and
-         TensorFlow as built on it; FlashAttention's usage page names PyTorch core, Hugging Face
-         transformers, DeepSpeed, Megatron-LM, Composer, GPT-NeoX and PaddlePaddle; FlashInfer's
-         README names SGLang, vLLM, MLC-LLM and ScaleLLM, and vLLM pins flashinfer-python.
-      3  no. Its consumers reach it as part of its vendor's own distribution, or none is named.
-         MIOpen arrives with ROCm; Arm Compute Library through Arm's stack and oneDNN's ACL build
-         option; Liger Kernel as monkey patches inside one framework; oneMath and DeepGEMM name
-         nothing that calls them.
+    Three forms of evidence qualify, and they are ranked because they are not equally strong:
+
+      1. the CONSUMER's own declaration - a submodule in its `.gitmodules`, a pinned requirement,
+         a build flag. Strongest, because it states the direction.
+      2. the PRODUCER naming a consumer AND linking that consumer's own integrating change, which
+         is a consumer declaration at one remove and checkable in one click.
+      3. the producer naming consumers with no link. Admissible only as corroboration, never on
+         its own. A "tested against" list is this: it states no direction, because a library can
+         test against something it consumes.
+
+    Applied to the roster's kernel libraries:
+
+      4  CUTLASS and Composable Kernel, each vendored as a submodule by PyTorch and FlashAttention
+         (form 1). FlashInfer, pinned in vLLM's CUDA requirements (form 1) and naming SGLang, vLLM,
+         MLC-LLM and ScaleLLM itself (form 3). FlashAttention, whose usage page names PyTorch core,
+         Hugging Face transformers, DeepSpeed, Megatron-LM, Composer, GPT-NeoX and PaddlePaddle and
+         links each integrating change (form 2). oneDNN, whose README names ONNX Runtime, OpenVINO,
+         PaddlePaddle, PyTorch and TensorFlow (form 3 today - a form 1 or 2 citation would settle
+         it, and none is on file).
+      3  MIOpen, Arm Compute Library, Liger Kernel, oneMath, DeepGEMM. None carries a qualifying
+         declaration ON FILE. That is where the evidence stands rather than a proof of absence, and
+         each note says so in those terms: a search that has not found a consumer and a consumer
+         that does not exist look identical from here, and only the first is what this roster knows.
 
     Two earlier versions of this line tried to separate CUTLASS from Composable Kernel and could
-    not, which is the finding rather than a failure. They have the SAME two declared consumers.
-    The first version asked whether a consumer existed at all, which stops discriminating the
-    moment you look - PyTorch vendors both. The second asked whether the dependence spanned
-    ecosystems, which counted software ecosystems for one and hardware ecosystems for the other:
-    CUTLASS is CUDA-only exactly as Composable Kernel is ROCm-only, so under any consistent reading
-    they sit together. Keeping them apart would have meant scoring CUDA's install base against
-    ROCm's, which is a claim about market share and not one this axis makes. Composable Kernel is
-    the AMD counterpart to CUTLASS and lands in the same band.
+    not, which is the finding rather than a failure. They have the SAME two declared consumers. The
+    first version asked whether a consumer existed at all and then placed them apart anyway. The
+    second asked whether the dependence spanned ecosystems, which counted software ecosystems for
+    one and hardware ecosystems for the other: CUTLASS is CUDA-only exactly as Composable Kernel is
+    ROCm-only, so under any consistent reading they sit together. Keeping them apart would have
+    meant scoring CUDA's install base against ROCm's, which is a claim about market share and not
+    one this axis makes. Composable Kernel is the AMD counterpart to CUTLASS and lands beside it.
 
-    This turns on nothing about how much of a compiler's pipeline the product performs, which is
-    the whole point of the rewrite.
-
-    The question is the BREADTH of that consuming population, not its existence. Almost every
-    serious kernel library has some external consumer, so "is it depended on at all" stops
-    discriminating immediately: PyTorch vendors `NVIDIA/cutlass` and `ROCm/composable_kernel` as
-    submodules alike. The band above asks whether the product is the implementation the stack
-    reaches for ACROSS ecosystems, or the one it reaches for inside a single hardware ecosystem.
-
-      4  named by consumers spanning more than one ecosystem, or by the frameworks generally.
-         CUTLASS is vendored as a submodule by both PyTorch and FlashAttention; oneDNN's README
-         names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow as built on it;
-         FlashInfer's says it powers SGLang, vLLM, MLC-LLM and ScaleLLM.
-      3  real dependence confined to one hardware ecosystem, or to one framework's users.
-         Composable Kernel is vendored by PyTorch and FlashAttention too, but on the AMD path,
-         reached only when the hardware is AMD; MIOpen's README names ROCm; Liger Kernel arrives
-         as monkey patches against Hugging Face classes.
-
-    That is checkable in one read, and it does not turn on how much of a compiler's pipeline the
-    product performs, which is the whole point of the rewrite.
+    None of this turns on how much of a compiler's pipeline the product performs, which is the
+    whole point of the rewrite.
 
     apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
     rung below it, so `check_capability` can check the arithmetic.
 
-    Seven bands moved with the rewrite, all of them kernel libraries the old yardstick had capped:
-    flash-attention, cutlass, onednn and flashinfer 3 -> 4, composable-kernel 2 -> 4, liger-kernel
-    2 -> 3. flashmla re-anchors from one_below to two_below flash-attention to hold its own band at
-    2. Nothing else moved and the category's stage did not: Stage 3, L = 0, B = 4.00, one gap, and
-    that gap stays `adoption`. Which is #434's other finding - what holds this layer back is that
-    the adoption instruments cannot see a library that is built from source rather than installed
-    from a package (#426).
+    Six bands moved, all of them kernel libraries the old yardstick had capped: flash-attention,
+    cutlass, onednn and flashinfer 3 -> 4, composable-kernel 2 -> 4, liger-kernel 2 -> 3. flashmla
+    re-anchors from one_below to two_below flash-attention, which holds its band at 2 rather than
+    moving it. Nothing else moved and the category's stage did not: Stage 3, L = 0, B = 4.00, one
+    gap, and that gap stays `adoption`. Which is #434's other finding - what holds this layer back
+    is that the adoption instruments cannot see a library that is built from source rather than
+    installed from a package (#426).
 
-    Every band below the line was re-argued against the new test rather than left standing on the
-    retired one, because a band whose stated reason has been withdrawn is not a band anyone can
-    check. arm-compute-library, miopen and onemath keep the band they had; composable-kernel and
-    liger-kernel moved up to it. Each now says which named consumers put it below the line, rather
-    than which part of a compiler's pipeline it does not perform.
+    Every kernel library was re-argued against the new test rather than left standing on the retired
+    one, because a band whose stated reason has been withdrawn is not a band anyone can check.
+    arm-compute-library, miopen, onemath and deepgemm keep the band they had; each now says what is
+    on file about its consumers rather than which part of a compiler's pipeline it does not perform.
 
-    onemath is the one to re-read on the next coverage pass. Its README names the backends it
-    dispatches DOWN to and nothing that calls it, so its 3 rests on an absence of evidence rather
-    than on evidence of absence, and an interface layer is the shape most likely to be depended on
-    without being credited.
+    Two to re-read on the next coverage pass. oneMath, because an interface layer is the shape most
+    likely to be depended on without being credited, and its 3 rests entirely on nothing being on
+    file. oneDNN, because its 4 rests on a form-3 citation alone, which the rule above admits only
+    as corroboration - PyTorch and TensorFlow almost certainly declare it somewhere, and until one
+    of those declarations is cited the band is under-evidenced rather than wrong.
 
     Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
     shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins
