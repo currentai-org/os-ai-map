@@ -109,8 +109,11 @@ scoring_recipe:
       2  Narrow on both. A single-pass graph utility, or kernels for one operator variant on one
          hardware generation, usually purpose-built for one model family.
 
-    The 3/4 line is the one that has to be reproducible, because it is where the three populations
-    meet and where the old yardstick did its damage. One question decides it:
+    The KERNEL-LIBRARY route above is the one that has to be reproducible, because it is where the
+    old yardstick did its damage and where a judgment would otherwise stand in for a rule. The
+    compiler and optimizer routes are decided on coverage, as they always were, and nothing below
+    applies to them: a compiler does not need a declared consumer to reach 4, and an optimizer does
+    not either. One question decides the kernel-library route:
 
       is there a framework or engine OUTSIDE this product's own distribution that declares a
       dependency on it?
@@ -125,7 +128,7 @@ scoring_recipe:
          its own. A "tested against" list is this: it states no direction, because a library can
          test against something it consumes.
 
-    Applied to the roster's kernel libraries:
+    Applied to the roster's kernel and primitive libraries, and to nothing else:
 
       4  CUTLASS and Composable Kernel, each vendored as a submodule by PyTorch and FlashAttention
          (form 1). FlashInfer, pinned in vLLM's CUDA requirements (form 1) and naming SGLang, vLLM,
