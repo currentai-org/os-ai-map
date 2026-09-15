@@ -174,10 +174,30 @@ def reconcile(
             )
         elif measured_level is None:
             status = "abstained"
-            explanation = (
-                f"route {route['route_id']} produced no banded level "
-                f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
-            )
+            # Two different reasons land here and reading one as the other loses the finding, so
+            # the explanation says which. A missing band set is a rubric fact -- hardware declares
+            # no usage ladder, and that absence IS the abstention. A withheld aggregate under a
+            # band set that exists is a COVERAGE fact: the route was observed on some but not all
+            # of the product's declared primary artifacts, so the sum was short and both the value
+            # and the band were suppressed (#585). Before that landed this branch blamed the band
+            # set in every case, which was wrong for the coverage one.
+            if not measurement["band_set_id"]:
+                explanation = (
+                    f"route {route['route_id']} has no band set for product type "
+                    f"{measurement['product_type']!r}; the absence of a ladder is the abstention"
+                )
+            elif measurement["raw_value"] is None:
+                explanation = (
+                    f"route {route['route_id']} withheld its aggregate under band set "
+                    f"{measurement['band_set_id']!r}: the route was observed, but not on every "
+                    f"declared primary artifact of its kind, so the sum would be short by an "
+                    f"unknown amount and neither it nor a band is published"
+                )
+            else:
+                explanation = (
+                    f"route {route['route_id']} produced no banded level "
+                    f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
+                )
         elif not same_instrument:
             # The measurement and the recorded assessment are different instruments — a category
             # error to subtract. route_mismatch when an authoritative instrument is on either side
@@ -255,11 +275,12 @@ def resolve(
     from build.validate import load_sources
 
     base = root or ROOT
-    tables, band_rows, category_of, declared, recorded, non_primary = load_inputs(base)
+    tables, band_rows, category_of, declared, recorded, non_primary, primary = load_inputs(base)
     dvid = resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"]
     osid = observation_snapshot_id(observation_rows)
     measurement_rows = measurements(
         observation_rows, tables, band_rows, category_of, declared, recorded, non_primary,
+        primary_artifacts=primary,
         declaration_version_id=dvid, observation_snapshot_id=osid,
     )
     return reconcile(

@@ -296,7 +296,7 @@ def load_inputs(root: Path | None = None):
     variants_by_category = {
         slug: resolve_recipe_variants(cat or {}, shared)[0] for slug, cat in src["categories"].items()
     }
-    tables, _bands, _category_of, declared, _recorded, _non_primary = load_routing_inputs(base)
+    tables, _bands, _category_of, declared, _recorded, _non_primary, _primary = load_routing_inputs(base)
     return population, src["scores"], held, variants_by_category, declared, all_routes(tables), route_scopes(tables)
 
 

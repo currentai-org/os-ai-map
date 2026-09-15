@@ -389,6 +389,18 @@ product's declared type. It writes nothing back to `sources/`: **a computed band
 observation, never a score.** Only a person sets `level`, and only per
 `evidence-and-freshness.md`.
 
+### Partial coverage abstains
+
+A route can be observed and still not cover the product. Where the observations miss a declared
+primary artifact of the winning route's kind, `build/adoption_measurements.py` withholds both the
+band and the aggregate rather than publishing a sum it knows is short. This is the same rule as
+the under-coverage remedy above, applied within a channel rather than across channels: abstain
+rather than band on the part of the product that happens to be countable.
+
+Zero observations is a different outcome — no measurement row at all, reconciled as `unmeasured`.
+A partial one produces a row with a null level, reconciled as `abstained`, whose explanation says
+the aggregate was withheld rather than blaming a missing ladder.
+
 ### Sum across the family, not per artifact
 
 `signal_routing.yaml` declares `sum_across_artifacts: true` for adoption, because the map's
@@ -516,7 +528,8 @@ measurement is not this product's at all; here it is the product's, and it stays
 What it does and does not touch:
 
 - **Out of the sum.** `build/adoption_measurements.py` leaves the artifact's figure out of the
-  figure it bands.
+  figure it bands, and out of the coverage test below with it — an artifact declared not to be a
+  shipping channel is not a hole in the measurement.
 - **In the table.** The artifact keeps its row in `registry.product_artifacts` (carrying the reason
   as a column), its observation stays in `observations.product_adoption_current`, and
   `currentai.signal_packages.downloads` still computes and publishes its downloads per artifact.

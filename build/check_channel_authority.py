@@ -170,7 +170,7 @@ def lag_verdict(pypi_version: str, repo_tag: str) -> tuple[str, int]:
 
 def pypi_routed(root: Path | None = None) -> dict[str, str]:
     """slug -> declared package, for every product whose winning adoption route is PyPI."""
-    tables, _bands, category_of, declared, recorded, _non_primary = load_inputs(root or ROOT)
+    tables, _bands, category_of, declared, recorded, _non_primary, _primary = load_inputs(root or ROOT)
     routes, scopes = all_routes(tables), route_scopes(tables)
     base = root or ROOT
     out: dict[str, str] = {}
