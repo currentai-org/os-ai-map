@@ -36,9 +36,42 @@ openness:
       machine_signal: signal_huggingface.hub_state (gated, private, files)
     data:
       question: Is the pretraining corpus released, or reconstructible from released scripts?
-      values: [open, documented-not-released, closed]
+      # `components-listed` was added on 2026-09-15, settling issue #106. It sits between
+      # `open` and `documented-not-released` because naming every component with a resolvable
+      # public source is a materially different disclosure from describing the mixture in
+      # prose: a reader can go and look at what went in, even though nobody can rebuild the
+      # corpus.
+      #
+      # The discriminator is COMPLETE, PER-COMPONENT ENUMERATION, not detail. A composition
+      # described in prose stays `documented-not-released` however careful the prose and however
+      # many sample counts it carries, and so does a release that enumerates one stage of a
+      # mixture, or names some components while describing the rest. This value applies only where
+      # EVERY component is named and individually resolvable - a link, or a citation identifying
+      # that specific dataset - while the mixture or the sampling is withheld, so the corpus is
+      # not reproducible. RWKV is the case it was written for: a machine-readable index with a URL
+      # column naming every component dataset, and no corpus and no reconstruction script.
+      #
+      # Whether each named corpus is itself freely downloadable is NOT the test. That is a fact
+      # about third parties rather than about this release's disclosure, and a gate on one
+      # component is friction rather than withholding - the same reading the evidence store
+      # already applies to gated weights. RWKV's own index includes a gated component and still
+      # names it with a resolvable link, which is the act this value records.
+      #
+      # Three records were held back from this value for failing the enumeration test rather than
+      # the availability one, and they are the shapes to watch: a partly synthetic mixture whose
+      # generated half is described rather than named (nemotron-embed), a two-stage mixture with
+      # only the first stage evidenced (e5), and data-preparation documentation naming what the
+      # model consumes rather than what it was trained on (neuralgcm). All three are on issue #590.
+      #
+      # It scores exactly as `documented-not-released` does at every rung, deliberately. The
+      # gain is descriptive accuracy, not credit. Scoring it higher would reward publishing a
+      # list and shipping nothing, which is the objection #106 raised against its own proposal.
+      values: [open, components-listed, documented-not-released, closed]
       evidence:
       - a released dataset, or scripts that reconstruct the corpus end to end
+      - '`components-listed` where every component is named and resolves to a public
+        source, but the mixture or the sampling is not published, so the corpus cannot
+        be rebuilt'
       - '`documented-not-released` where composition is fully described but no
         data or scripts ship'
       - a data card describing sources is NOT sufficient for `open`
@@ -273,6 +306,14 @@ openness:
       Full pipeline but a non-OSI license caps the score at 4. MOF would call this
       source-available rather than open, so it must not reach the `open` bucket; see
       docs/reference/openness.md.
+  - when: {data: components-listed, code: open}
+    then: {score: 4, class: open_weights}
+    because: >-
+      Every component named and publicly resolvable, and the code to rebuild against them,
+      but no assembled corpus and no sampling. Level with the rung below on purpose: the two
+      differ in how the corpus is disclosed, not in what a reader can do with it, and paying
+      for a list would reward publishing one and shipping nothing. Declared as its own rung
+      rather than folded into the next so the difference stays visible to `check_rubric`.
   - when: {data: documented-not-released, code: open}
     then: {score: 4, class: open_weights}
     because: >-

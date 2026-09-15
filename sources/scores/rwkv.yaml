@@ -7,7 +7,7 @@ openness:
       value: open
       detail: Apache-2.0
     data:
-      value: documented-not-released
+      value: components-listed
       detail: itemized machine-readable component index with resolvable links to public datasets, but no
         released corpus and no reconstruction pipeline
     code:
@@ -30,39 +30,44 @@ openness:
     used, so the mixture is not reproducible in detail even in principle. Open data means a released dataset
     or scripts that reconstruct the corpus end to end, and neither holds here - which narrows one claim
     rather than downgrading the project, since the weights, the training code and the license are all fully
-    open under Apache-2.0. This lands in a genuine gap in the openness scale: every component named and
-    publicly resolvable, but the mixture not reproducible, is meaningfully more open than prose documentation
-    and less than a released corpus, and the scale has no value for it. Nemotron 3''s partial release falls
-    into the same gap. The evidence behind all of this: the Goose-World repository holds only the component
-    index, the two preview subsamples, two READMEs and a figure, with no corpus shards; RWKV-LM is public
-    and Apache-2.0 at 14,661 stars with no data-preparation directory; and rwkv-7-world is ungated apache-2.0.'
-  raw: weights:open(Apache-2.0);data:documented-not-released(itemized machine-readable component index with
-    resolvable links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
+    open under Apache-2.0. Every component named and publicly resolvable, but the mixture not reproducible,
+    is meaningfully more open than prose documentation and less than a released corpus. The ladder records
+    that as `components-listed`, between the two, and this record is the case that value was written for
+    (issue #106). The value carries the same score as the one it replaces, so 4 stands, earned through the
+    open training code rather than through the corpus. The evidence behind all of this: the Goose-World
+    repository holds only the component index, the two preview subsamples, two READMEs and a figure, with
+    no corpus shards; RWKV-LM is public and Apache-2.0 at 14,661 stars with no data-preparation directory;
+    and rwkv-7-world is ungated apache-2.0.'
+  raw: weights:open(Apache-2.0);data:components-listed(itemized machine-readable component index with resolvable
+    links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/datasets/RWKV/RWKV-World-Listing/raw/main/train.csv
-    shows: 'Header `Dataset;Category;Categories;Citation;Version;URL;Notes`; every source named with a
-      resolvable link. Notes defer exact sampling to unpublished supplementary material ("see wiki.txt
-      in the supplementary material for exact" amounts) and include the unresolved question "peS2o -
-      Which version out of the 3?".'
+    shows: Header `Dataset;Category;Categories;Citation;Version;URL;Notes`; every source named with a resolvable
+      link. Notes defer exact sampling to unpublished supplementary material ("see wiki.txt in the supplementary
+      material for exact" amounts) and include the unresolved question "peS2o - Which version out of the
+      3?".
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b017936cd892fab763f650c6d9ee11cb375faaa0240f4ee313866960310ab03d
-    establishes: [data]
+    establishes:
+    - data
   - url: https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3
     shows: '`gated: false`, `private: false`, 217 downloads. Files are `index/train.jsonl`, `train.csv`,
-      `100k/subsample_100k.jsonl`, `1m/subsample_1m.jsonl`, two READMEs and one figure. No corpus
-      shards, which is what holds `data` at documented-not-released.'
+      `100k/subsample_100k.jsonl`, `1m/subsample_1m.jsonl`, two READMEs and one figure. No corpus shards,
+      which is what holds `data` at components-listed.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6eb12fd74e2421f22bc9efd63151490f6aecffd043ae57b0470cef84171db5e7
-    establishes: [data]
+    establishes:
+    - data
   - url: https://api.github.com/repos/BlinkDL/RWKV-LM
     shows: '`private: false`, license `Apache-2.0`, 14,642 stars, pushed 2026-07-23. Model and training
       code by version (RWKV-v1..v8). No data-prep or corpus-reconstruction directory.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: cd92f52601e7771174a5709bbd8767b6de507813ce89fde15a62f66016d7f9f1
-    establishes: [code]
+    establishes:
+    - code
   - url: https://huggingface.co/api/models/BlinkDL/rwkv-7-world
     shows: '`gated: false`, `private: false`, card license `apache-2.0`, 4,537 downloads. Weight files downloadable
       as `RWKV-x070-World-{0.1B,0.4B,1.5B}-*.pth` - the only source on file that establishes the open weights
@@ -74,9 +79,9 @@ openness:
     - weights
     - license
   - url: https://arxiv.org/abs/2503.14456
-    shows: 'RWKV-7 Goose paper abstract: "we also present an extended open source 3.1 trillion token
-      multilingual corpus". No arXiv ancillary files are attached, so the supplementary material the
-      dataset notes point to is not obtainable from the paper either.'
+    shows: 'RWKV-7 Goose paper abstract: "we also present an extended open source 3.1 trillion token multilingual
+      corpus". No arXiv ancillary files are attached, so the supplementary material the dataset notes point
+      to is not obtainable from the paper either.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323
