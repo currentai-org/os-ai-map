@@ -325,9 +325,10 @@ cost of a vocabulary nobody asked to learn.
 
 **Two states still carry no driver gap, deliberately.** An axis that **no** fully-open product
 records is unmeasured rather than deficient, and is never named: a category graded on adoption
-alone must not be told it has a capability shortfall. The same holds one product down, where the
-category's *best* fully-open product is the one abstaining — see the null-capability rule above,
-which #547 settled rather than changed. And a category that has topped both axes,
+alone must not be told it has a capability shortfall. A null on the *best* fully-open product alone
+is NOT this state — it silences the per-product reading and leaves the category-level one intact, so
+a capability gap can still fire from a peer that recorded the axis. See the null-capability rule
+above, which #547 settled rather than changed. And a category that has topped both axes,
 but never in the same product, reports nothing — the parts exist and nobody has assembled them,
 which is a real state this vocabulary cannot yet name. That shape exists today in
 `training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
