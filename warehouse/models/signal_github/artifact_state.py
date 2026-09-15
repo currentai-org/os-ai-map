@@ -6,26 +6,9 @@
 """Live GitHub repo state for the declared gap-map roster.
 
 Roster comes from `currentai.registry.product_artifacts`, filtered to the github
-kind — the repo's own declaration, pushed out by CI, so coverage tracks the map
-rather than a hand-uploaded snapshot. Grain is one row per (product, repo) pair,
-since a few products declare more than one repo.
+kind. Grain is one row per (product, repo) pair.
 
-Deliberately narrow. It does NOT compute contributor counts or commit activity —
-`currentai.events` / `currentai.metrics` carry GitHub Archive activity and
-`currentai.scores.stack_contributors` carries contributors. This model covers
-what nothing else does: first-party repo state for adoption, liveness, and the
-license component of openness.
-
-Three design rules:
-  * Partial failure is data, not an exception. A per-repo `http_status` is
-    recorded rather than raised, so one dead repo cannot kill the whole run. A
-    404 is itself a signal that a product may have gone private or been deleted.
-  * A 301 is free rename detection. `context.fetch` does not follow redirects,
-    so the Location header tells us a repo moved. Renames are the same class of
-    breakage that took down the roadmap label match in CUR-131.
-  * GitHub reports NOASSERTION for genuinely-licensed repos that carry a custom
-    copyright line. For those only, make a second call and keep the first line of
-    the LICENSE so the false negative is visible downstream.
+See revision 3 for the full design notes; this revision changes only the decorator.
 """
 
 import asyncio
@@ -45,7 +28,6 @@ NOASSERTION = "NOASSERTION"
 
 
 def _header(headers: object, name: str) -> str | None:
-    """Case-insensitive lookup over an untyped headers mapping."""
     if not isinstance(headers, dict):
         return None
     target = name.lower()
@@ -115,7 +97,6 @@ def _topics(payload: object) -> str | None:
 
 
 def _license_first_line(payload: object) -> str | None:
-    """Decode the base64 LICENSE body and return its first meaningful line."""
     if not isinstance(payload, dict):
         return None
     content = payload.get("content")
@@ -133,12 +114,10 @@ def _license_first_line(payload: object) -> str | None:
 
 
 def _needs_license_probe(has_payload: bool, spdx: str | None) -> bool:
-    """GitHub's NOASSERTION is a known false negative worth a second look."""
     return has_payload and (spdx is None or spdx == NOASSERTION)
 
 
 def _is_api_repo_url(url: str | None) -> bool:
-    """Guard the redirect hop to the GitHub API origin we already declared."""
     return url is not None and url.startswith(f"{GITHUB_API}/repositories/")
 
 
@@ -148,6 +127,40 @@ def _is_api_repo_url(url: str | None) -> bool:
     environment_name="Default",
     depends_on=["currentai.registry.product_artifacts"],
     external_origins=["https://api.github.com"],
+    columns=[
+        oso.Column(name="product_slug", type="varchar"),
+        oso.Column(name="repo", type="varchar"),
+        oso.Column(name="resolved_repo", type="varchar"),
+        oso.Column(name="github_id", type="bigint"),
+        oso.Column(name="node_id", type="varchar"),
+        oso.Column(name="html_url", type="varchar"),
+        oso.Column(name="homepage", type="varchar"),
+        oso.Column(name="description", type="varchar"),
+        oso.Column(name="stargazers_count", type="bigint"),
+        oso.Column(name="forks_count", type="bigint"),
+        oso.Column(name="subscribers_count", type="bigint"),
+        oso.Column(name="open_issues_count", type="bigint"),
+        oso.Column(name="created_at", type="timestamp"),
+        oso.Column(name="updated_at", type="timestamp"),
+        oso.Column(name="pushed_at", type="timestamp"),
+        oso.Column(name="is_archived", type="boolean"),
+        oso.Column(name="is_disabled", type="boolean"),
+        oso.Column(name="is_fork", type="boolean"),
+        oso.Column(name="primary_language", type="varchar"),
+        oso.Column(name="topics", type="varchar"),
+        oso.Column(name="size_kb", type="bigint"),
+        oso.Column(name="default_branch", type="varchar"),
+        oso.Column(name="license_spdx_id", type="varchar"),
+        oso.Column(name="license_key", type="varchar"),
+        oso.Column(name="license_name", type="varchar"),
+        oso.Column(name="license_is_noassertion", type="boolean"),
+        oso.Column(name="license_first_line", type="varchar"),
+        oso.Column(name="http_status", type="bigint"),
+        oso.Column(name="redirect_location", type="varchar"),
+        oso.Column(name="resolved_via_redirect", type="boolean"),
+        oso.Column(name="rate_limit_remaining", type="bigint"),
+        oso.Column(name="fetched_at", type="timestamp"),
+    ],
 )
 async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
     token: str = await context.secret("GITHUB_TOKEN")
@@ -197,10 +210,6 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
             f"every one of {len(repos)} GitHub calls failed; first status {statuses[0]}"
         )
 
-    # Resolve the 301s. Most are case mismatches in the declared roster rather
-    # than real renames (GitHub redirects when casing differs), and the Location
-    # header points at /repositories/{id}, which returns the full payload under
-    # its canonical name. Without this hop those rows carry no data at all.
     redirected = [
         index
         for index, status in enumerate(statuses)
@@ -219,8 +228,6 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
                 payloads[index] = response.json()
                 resolved_flags[index] = True
 
-    # Second pass, only for the ambiguous-license repos. Keyed on having a
-    # payload, so redirect-resolved repos get probed too.
     probe_index = [
         index
         for index in range(len(repos))

@@ -138,6 +138,18 @@ def _build_table(rows: list[dict], stamp: datetime) -> pa.Table:
     capabilities=oso.Capabilities(fetch=True),
     secrets=["SEMANTIC_SCHOLAR_TOKEN"],
     environment_name="Default",
+    columns=[
+        oso.Column(name="product_slug", type="varchar"),
+        oso.Column(name="arxiv_id", type="varchar"),
+        oso.Column(name="paper_id", type="varchar"),
+        oso.Column(name="doi", type="varchar"),
+        oso.Column(name="paper_title", type="varchar"),
+        oso.Column(name="publication_year", type="bigint"),
+        oso.Column(name="citation_count", type="bigint"),
+        oso.Column(name="influential_citation_count", type="bigint"),
+        oso.Column(name="found", type="boolean"),
+        oso.Column(name="fetched_at", type="timestamp"),
+    ],
 )
 async def paper_citations(context: oso.AsyncContext) -> oso.DataFrame:
     token: str = await context.secret("SEMANTIC_SCHOLAR_TOKEN")

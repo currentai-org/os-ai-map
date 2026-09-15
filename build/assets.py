@@ -1786,8 +1786,32 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
                    or cur.get("schema_sha256") != prior.get("schema_sha256"))
     marker = cur.get("code_unchanged_from")
     old_rev, new_rev = prior.get("revision"), cur.get("revision")
+    migrated_ok = cur.get("model_id") != prior.get("model_id") and has_migration
     if not bytes_moved:
         if not any(cur.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
+            return problems
+        # An AUTHORIZED migration onto a recreated model, where the platform rebuilt the model
+        # from the same source. The bytes are identical by construction and the anchor still has
+        # to move -- new model_id, new revision numbering, new hash -- so neither the default rule
+        # ("bytes and provenance move together") nor `code_unchanged_from` fits: the marker demands
+        # an advance within one model's sequence, and there is no such sequence across a
+        # recreation. `mirror_migration` is the claim that carries this; two of the five contracts
+        # resynced in #579 (scores.openness_facts, scores.openness_computed) are exactly this case.
+        # synced_at still may not regress.
+        #
+        # What this branch does NOT do is verify the claim -- `has_migration` is the contract
+        # asserting a migration, not proof of one, so on its own it would let a fabricated
+        # migration present a stale mirror as resynced. That is not left hanging: this gate is
+        # offline and has no platform to ask, and `build/check_mirror_drift` is the half that
+        # does ask. It runs weekly and its source comparison decides EVERY contract before the
+        # revision numbers are consulted, so mirror bytes that do not match the deployed source
+        # surface there as `code` drift whatever the contract claims. The split is deliberate:
+        # this gate pins the claim to a shape a reviewer can check in one look, the sentinel
+        # checks whether it is true.
+        if migrated_ok:
+            old_at, new_at = str(prior.get("synced_at") or ""), str(cur.get("synced_at") or "")
+            if new_at < old_at:
+                problems.append(f"{label}: synced_at moved backward, {old_at} -> {new_at}")
             return problems
         if marker is None:
             problems.append(f"{label}: provenance changed but the mirrored bytes did not")
@@ -1813,13 +1837,23 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
             "changed; a resync that moves the bytes is not a metadata-only revision -- DELETE "
             "the code_unchanged_from line, the rest of the resync stands"
         )
-    if isinstance(old_rev, int) and isinstance(new_rev, int):
-        if new_rev <= old_rev:
-            problems.append(
-                f"{label}: bytes changed but revision went {old_rev} -> {new_rev}; a refetch advances it"
-            )
-    elif new_rev == old_rev:
-        problems.append(f"{label}: bytes changed but revision did not")
+    # Revision numbers are PER MODEL, so they are only comparable within one model_id. A
+    # migration moves the contract onto a different model, and a model recreated on the platform
+    # starts its numbering again at 1 -- the five contracts resynced in #579 went 11 -> 3, 9 -> 3,
+    # 17 -> 3, 5 -> 2 and 4 -> 3. Demanding an advance across that boundary asks the new model to
+    # continue the old one's sequence, which nothing does, and would make an authorized migration
+    # impossible to land. So the advance rule is scoped to an unchanged model_id; everything else
+    # (the hash must move, synced_at must not regress, the marker rules) still applies, and the
+    # model_id change itself is already gated above on `mirror_migration` being present.
+    migrated = cur.get("model_id") != prior.get("model_id")
+    if not migrated:
+        if isinstance(old_rev, int) and isinstance(new_rev, int):
+            if new_rev <= old_rev:
+                problems.append(
+                    f"{label}: bytes changed but revision went {old_rev} -> {new_rev}; a refetch advances it"
+                )
+        elif new_rev == old_rev:
+            problems.append(f"{label}: bytes changed but revision did not")
     if cur.get("hash") == prior.get("hash"):
         problems.append(f"{label}: bytes changed but the platform hash did not")
     old_at, new_at = str(prior.get("synced_at") or ""), str(cur.get("synced_at") or "")

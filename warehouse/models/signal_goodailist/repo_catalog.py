@@ -40,6 +40,9 @@ BASE = "https://goodailist.com"
 SUMMARY_PATH = "/api/summary"
 REPOS_PATH = "/api/repos"
 PAGE_SIZE = 1000
+# Concurrency bound on the page walk; see the comment in repo_catalog.
+FETCH_BATCH = 4
+FETCH_PAUSE_SECONDS = 1.0
 
 # Two distinct limits bite here, and both fixes are needed.
 #   1. Returning polars panics in Arrow serialization (see the module docstring).
@@ -225,7 +228,34 @@ def _build_table(
     return pa.table({name: columns[name] for name in ordered})
 
 
-@oso.model(external_origins=["https://goodailist.com"])
+@oso.model(
+    external_origins=["https://goodailist.com"],
+    capabilities=oso.Capabilities(fetch=True),
+    columns=[
+        oso.Column(name="repo", type="varchar"),
+        oso.Column(name="description", type="varchar"),
+        oso.Column(name="category", type="varchar"),
+        oso.Column(name="subcat", type="varchar"),
+        oso.Column(name="keywords", type="varchar"),
+        oso.Column(name="country", type="varchar"),
+        oso.Column(name="top_devs", type="varchar"),
+        oso.Column(name="language", type="varchar"),
+        oso.Column(name="stars", type="bigint"),
+        oso.Column(name="forks", type="bigint"),
+        oso.Column(name="contributors", type="bigint"),
+        oso.Column(name="star_1d", type="bigint"),
+        oso.Column(name="star_7d", type="bigint"),
+        oso.Column(name="star_1d_pct", type="double"),
+        oso.Column(name="star_7d_pct", type="double"),
+        oso.Column(name="created_at", type="date"),
+        oso.Column(name="updated_at", type="date"),
+        oso.Column(name="first_seen", type="date"),
+        oso.Column(name="is_new", type="boolean"),
+        oso.Column(name="archived", type="boolean"),
+        oso.Column(name="source_updated_at", type="timestamp"),
+        oso.Column(name="ingested_at", type="timestamp"),
+    ],
+)
 async def repo_catalog(context: oso.AsyncContext) -> AsyncIterator[oso.DataFrame]:
     summary_response = await context.fetch(f"{BASE}{SUMMARY_PATH}")
     if summary_response.status != 200:
@@ -241,16 +271,29 @@ async def repo_catalog(context: oso.AsyncContext) -> AsyncIterator[oso.DataFrame
     records: list[dict] = _records(payload)
 
     if pages > 1:
-        rest = list(range(2, pages + 1))
-        responses = await asyncio.gather(
-            *(context.fetch(_repos_url(page)) for page in rest)
-        )
-        for page, response in zip(rest, responses):
-            if response.status != 200:
-                raise RuntimeError(
-                    f"goodailist /api/repos returned {response.status} on page {page}"
-                )
-            records.extend(_records(response.json()))
+        # Fetched in small batches rather than one asyncio.gather over every remaining
+        # page. The unbounded gather issued ~17 concurrent requests through the UDM
+        # host's fetch gate and the gate answered PERMISSION_DENIED, which failed every
+        # scheduled run from 2026-09-13 back. The first two fetches above always
+        # succeeded, which is what localised it to concurrency rather than to the origin
+        # allowlist or the site: goodailist.com serves these pages fine.
+        #
+        # The batch is deliberately small and the pause deliberately dumb. This is a
+        # weekly model fetching about eighteen pages; there is no throughput problem
+        # worth solving and a sequential walk would also be fine.
+        for start in range(2, pages + 1, FETCH_BATCH):
+            batch = list(range(start, min(start + FETCH_BATCH, pages + 1)))
+            responses = await asyncio.gather(
+                *(context.fetch(_repos_url(page)) for page in batch)
+            )
+            for page, response in zip(batch, responses):
+                if response.status != 200:
+                    raise RuntimeError(
+                        f"goodailist /api/repos returned {response.status} on page {page}"
+                    )
+                records.extend(_records(response.json()))
+            if batch[-1] < pages:
+                await asyncio.sleep(FETCH_PAUSE_SECONDS)
 
     if not records:
         raise RuntimeError("goodailist returned no repos")
