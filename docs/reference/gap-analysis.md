@@ -115,9 +115,13 @@ Worth stating plainly, because the code makes them look alike and they behave op
   product — "we can't judge what we can't measure, so they neither advance nor depress the
   category's stage." Measured 2026-08-13: 20 products, 19 of them `closed`, which the open-only
   counting rule already excluded. The abstention is real and costs nothing.
-- **Null capability does not abstain.** It falls through to adoption alone, which silently
-  reweights maturity from a blend to a single axis rather than declining to score. The product
-  keeps counting toward the stage.
+- **Null capability does not abstain.** It falls through to adoption alone, which reweights
+  maturity from a blend to a single axis rather than declining to score. The product keeps
+  counting toward the stage. It has a second effect worth stating because the code does not:
+  a null **suppresses the capability driver gap**. That gap fires when the best fully-open
+  product's capability is below the cutoff, and a null is not below anything — it is not
+  comparable at all — so where the best fully-open product abstains on capability, the category
+  can report a Stage 1-3 with an empty gap set.
 
 That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
@@ -138,10 +142,26 @@ MCP entirely changes nothing. The methodological defect is unaffected; the claim
 that a stage depended on it was wrong, and was caught by re-deriving it against
 `build/serialize.py` rather than reasoning from the threshold.
 
-So the open question is whether "graded on adoption alone" should be a **per-category
-declaration**, like `disclosure` below, rather than a global fallback. It is deliberately not
-settled here: it is to be resolved during the `agent_tools_protocols` verification pass, when
-`model-context-protocol` gets a real capability score and the question stops being hypothetical.
+**Both effects are the settled behavior, and neither is a bug (#547).** A category whose best
+fully-open product abstains on capability is graded on adoption alone: the product is NOT dropped
+from the stage computation the way a null adoption drops it, and the empty gap set is not marked.
+The reasoning is that these categories genuinely lack a capability signal worth grading on, so
+adoption alone is the honest reading rather than a fallback that happens to be reachable — the
+answer the map has now arrived at more than once, most recently when `benchmark_eval_data`
+rejected a capability recipe for its corpora and returned to abstaining (#546).
+
+Grading on adoption alone is therefore a **convention of this methodology**, not a per-category
+declaration and not a flag a reader sees. It follows from the axis being null, which is itself a
+recorded editorial judgment carrying its own reasoning in the score file. Two consequences a
+reader of the map should know:
+
+- an overall score built from adoption alone is on the same 1-5 scale as one built from both
+  axes, and the two are not distinguished in the payload;
+- a category can sit at Stages 1-3 with no gaps named, and that means its shortfall is on an axis
+  nobody has graded, not that it has none.
+
+This closes the question the earlier draft of this section left open, which asked whether
+adoption-only grading should become a per-category declaration like `disclosure`. It should not.
 
 ## Dataset categories
 
@@ -286,7 +306,9 @@ cost of a vocabulary nobody asked to learn.
 
 **Two states still carry no driver gap, deliberately.** An axis that **no** fully-open product
 records is unmeasured rather than deficient, and is never named: a category graded on adoption
-alone must not be told it has a capability shortfall. And a category that has topped both axes,
+alone must not be told it has a capability shortfall. The same holds one product down, where the
+category's *best* fully-open product is the one abstaining — see the null-capability rule above,
+which #547 settled rather than changed. And a category that has topped both axes,
 but never in the same product, reports nothing — the parts exist and nobody has assembled them,
 which is a real state this vocabulary cannot yet name. That shape exists today in
 `training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
