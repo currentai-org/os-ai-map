@@ -96,8 +96,9 @@ openness:
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded - a monthly-active-user ceiling, an annual
-          revenue ceiling, or an acceptable-use policy. The overwhelming majority of users
-          are inside the bound and may use the artifact commercially without asking.
+          revenue ceiling, or a requirement to ask before using the artifact commercially.
+          The overwhelming majority of users are inside the bound and may use the artifact
+          commercially without asking.
 
           This tier was `use_restricted` and capped at 2 until the universal license scale
           landed. It sits at 3 because the test at this boundary is whether commercial use is
@@ -106,6 +107,19 @@ openness:
           the distinction the map exists to draw. Renamed with the cap change so that a stale
           reference to `use_restricted` fails loudly rather than resolving to a tier whose
           meaning moved underneath it.
+        # This definition read "or an acceptable-use policy" until 2026-09-15, which
+        # contradicted permissive_non_osi's definition a few lines above - that tier says in
+        # its own words that an AUP "caps neither commerce nor reach". The same licence
+        # therefore satisfied both tiers, and they give different scores. sources/rubrics/
+        # pretrained.yaml removed the clause on 2026-09-11 and issue #538 recorded that this
+        # ladder still carried the original wording; the ruling is now applied here so the two
+        # ladders agree. Conduct restrictions alone belong in permissive_non_osi, and this tier
+        # describes scale ceilings or a requirement to ask permission. The clause is removed
+        # here rather than from permissive_non_osi, so issue #117's reading stands.
+        #
+        # No example moves. This tier decides by the names in its `examples` list and none of
+        # them is an AUP-only licence - `Cohere-Acceptable-Use-Policy` is declared one tier up -
+        # so the correction changes no score in either inheriting category.
         # `InternLM-Free-Commercial-License` is the bound written as a process rather than a
         # number: commercial use costs nothing and is granted on an application form. Still
         # a bound, because permission is asked for rather than given, and still well inside
