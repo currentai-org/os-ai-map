@@ -1,0 +1,88 @@
+product: openpai
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the body is the MIT text under a Microsoft Corporation copyright line, which is why the
+        GitHub API reports the license and not NOASSERTION
+    source:
+      value: public
+      detail: microsoft/pai carries the platform and vendors its scheduler at src/hivedscheduler
+    core-gated:
+      value: ungated
+      detail: a 2,498-entry recursive tree carries no enterprise/, ee/ or commercial/ path and Microsoft sells
+        no OpenPAI edition
+  confidence: high
+  note: 'MIT, read from the body rather than the label: the text is the standard MIT grant under a Microsoft
+    Corporation copyright line. The 2,498-entry recursive tree carries no enterprise, ee or commercial path,
+    and Microsoft sells no paid OpenPAI, so nothing is withheld from what is published.'
+  raw: license:MIT(OSI; the body is the MIT text under a Microsoft Corporation copyright line, which is why
+    the GitHub API reports the license and not NOASSERTION);source:public(microsoft/pai carries the platform
+    and vendors its scheduler at src/hivedscheduler);core-gated:ungated(a 2,498-entry recursive tree carries
+    no enterprise/, ee/ or commercial/ path and Microsoft sells no OpenPAI edition)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/microsoft/pai
+    shows: 'Repository page for microsoft/pai: MIT license, public and unarchived, described as ''Resource
+      scheduling and cluster management for AI''. Establishes the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 91b92dd3f53f455893bf1cb07995efb50f8cef1ebdb1506907a26d8d718e8531
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/microsoft/pai/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 2,498 entries, with no enterprise/, ee/,
+      commercial/ or proprietary/ path.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9d7183dbe0623855590fafa1189195d8eed488d51ba36b091328e2f2a71450f6
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 2,690 GitHub stars. The project ships as container images and a Helm chart and publishes no package-registry
+    artifact, so no usage-volume channel exists and the band rests on stars, which measure attention rather
+    than use. The stars route caps at level 3 for that reason.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/microsoft/pai
+    shows: Repository page showing the star count for microsoft/pai.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 91b92dd3f53f455893bf1cb07995efb50f8cef1ebdb1506907a26d8d718e8531
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'HiveD scheduler extender: models each tenant as a virtual cluster and guarantees GPU quantity AND
+    topology, so a job needing eight GPUs inside one node is placed only where that holds; tenants may borrow
+    other virtual clusters'' free capacity at lower priority'
+  confidence: medium
+  relative_to: kai-scheduler
+  relation: at
+  note: 'Banded on HiveD''s own documentation rather than on the platform''s positioning. HiveD decides which
+    GPUs on which machines a job receives and guarantees the topology of that set, which is choosing the machines
+    and reserving them together - band 5. That the Kubernetes bind call executes the choice does not move the
+    decision: HiveD is a scheduler extender, and the extender is what decides.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/README.md
+    shows: 'HiveD''s own README: ''HiveD is a scheduler for deep learning workloads'', a Kubernetes scheduler
+      extender for multi-tenant GPU clusters, whose ''killer feature'' is topology-aware resource guarantee
+      - the example given is an eight-GPU job that must run within a single node and cannot be allocated by
+      a scheduler that guarantees only a count.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: d08ece93c6dde960540ecd69ad53ec6814cc52d1a1e1062d09b0be1b4ebbcea5
+  - url: https://github.com/microsoft/pai
+    shows: Repository page for microsoft/pai, establishing that the platform being scored is the one HiveD
+      schedules for.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 91b92dd3f53f455893bf1cb07995efb50f8cef1ebdb1506907a26d8d718e8531

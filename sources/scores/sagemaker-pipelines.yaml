@@ -1,0 +1,77 @@
+product: sagemaker-pipelines
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: AWS managed service
+    source:
+      value: closed
+      detail: no implementation is published; the SageMaker Python SDK is a client
+  confidence: high
+  note: A managed AWS service. AWS publishes a Python SDK that authors and submits
+    pipelines, but the orchestration service itself is unpublished, and AWS states
+    it provisions and manages the orchestration compute on the user's behalf. Nothing
+    about a license can help where there is no self-hostable implementation, which
+    is why the ladder settles this on source alone.
+  raw: license:Proprietary;service:proprietary(AWS managed service);source:closed(no
+    implementation is published; the SageMaker Python SDK is a client)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines.html
+    shows: 'AWS''s own documentation: ''Amazon SageMaker Pipelines is a purpose-built
+      workflow orchestration service to automate machine learning development'', with
+      ''auto-scaling serverless infrastructure - you don''t need to manage the underlying
+      orchestration infrastructure to run Pipelines, which allows you to focus on
+      core ML tasks. SageMaker AI automatically provisions, scales, and shuts down
+      the pipeline orchestration compute resources.'' Establishes a managed service
+      with no published implementation.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 84e317b2992a37e3d20f8e345a9cbafbc00a67976d574f4eb559b28ed96f4fc1
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically. The vendor's platform
+    as a whole is widely used, but nothing disclosed is specific to the orchestration
+    product being scored, and it publishes no countable artifact - no package, repository
+    or registry entry - so no level is assigned rather than one being inferred from
+    the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://aws.amazon.com/sagemaker/ai/customers/
+    shows: AWS's SageMaker AI customers page, read for a usage disclosure specific
+      to Pipelines; it names customers but publishes no count of pipelines, runs or
+      customers using the orchestration service.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 4b082c4ac9b6687e655586922f52415f686664b4f81e0b5368047e86b7925c82
+capability:
+  score: 4
+  basis: feature_matrix
+  value: typed ML steps - training, processing, tuning, model registration - as first-class
+    pipeline elements; instance type chosen per step and provisioned by the service;
+    visual editor, SDK, API and JSON authoring
+  confidence: medium
+  note: 'Admitted on the ML-job-model limb: training and tuning steps are first-class
+    types it schedules and tracks. Band 4 rather than 3 because Pipelines chooses
+    each step''s instance type and AWS provisions that machine for it, so it does
+    select the hardware - and rather than 5 because the multi-instance allocation
+    of a distributed training job belongs to SageMaker Training, which Pipelines invokes
+    as a step, not to the pipeline scheduler itself.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines.html
+    shows: AWS's Pipelines documentation describing the step types, the visual editor
+      and SDK authoring, and the automatic provisioning of orchestration compute.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 84e317b2992a37e3d20f8e345a9cbafbc00a67976d574f4eb559b28ed96f4fc1

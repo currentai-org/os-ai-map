@@ -1,0 +1,77 @@
+product: nvidia-run-ai
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: NVIDIA commercial platform
+    source:
+      value: closed
+      detail: the platform is unpublished; the separately published KAI Scheduler
+        is a different product, scored on its own record
+  confidence: high
+  note: A closed commercial platform. NVIDIA open-sourced KAI Scheduler, which its
+    own page describes as 'based on NVIDIA Run:ai', but that is a separate published
+    project with its own record here rather than the platform's source - the same
+    shape as google-cloud-run beside gVisor. The open component is recorded on its
+    own and does not lift this product's source dimension.
+  raw: license:Proprietary;service:proprietary(NVIDIA commercial platform);source:closed(the
+    platform is unpublished; the separately published KAI Scheduler is a different
+    product, scored on its own record)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.nvidia.com/en-us/software/run-ai/
+    shows: 'NVIDIA''s Run:ai product page: ''The enterprise platform for AI workloads
+      and GPU orchestration'', with dynamic resource allocation and GPU pooling across
+      public clouds, private clouds, hybrid environments and on-premise data centres,
+      and the note that the open-source KAI Scheduler is ''based on NVIDIA Run:ai''.
+      Establishes a closed platform with a separately published component.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes
+    no countable artifact - no package, repository or registry entry - so no level
+    is assigned rather than one being inferred from the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.nvidia.com/en-us/software/run-ai/
+    shows: The NVIDIA Run:ai product page, read for a usage disclosure; it publishes
+      percentage efficiency claims but no count of clusters, GPUs or customers.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+capability:
+  score: 4
+  basis: feature_matrix
+  value: GPU pooling across clouds, hybrid environments and on-premise clusters; dynamic
+    and fractional GPU allocation; quotas and priorities per team; places workloads
+    onto the GPUs it allocates
+  confidence: medium
+  relative_to: sagemaker-pipelines
+  relation: at
+  note: Band 4, and deliberately not 5. NVIDIA's page evidences GPU pooling and fractional
+    allocation, which is binding work to specific accelerators, but it attributes
+    gang scheduling to Grove together with KAI Scheduler rather than to the platform.
+    Banded on what the product's own page supports and no higher; crediting it with
+    the open scheduler's documented behaviour would score one product on another product's
+    evidence.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.nvidia.com/en-us/software/run-ai/
+    shows: NVIDIA's Run:ai page describing dynamic scheduling and orchestration, GPU
+      pooling and fractional inference allocation, and attributing gang-scheduled
+      deployments to Grove with KAI Scheduler.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959

@@ -1,0 +1,160 @@
+name: ml_orchestration
+display_name: ML orchestration
+description: Schedulers and pipeline systems that place and run distributed ML jobs across infrastructure.
+strapline: 'The schedulers are open; the platforms around them are not. Every product that reserves
+  its own multi-machine allocation is open source or open core - Slurm, Ray, Volcano, KAI, Kueue, SkyPilot,
+  dstack, OpenPAI, Determined - and not one of the six closed records reaches that band; what vendors
+  sell here is the managed platform wrapped around a scheduling layer the open ecosystem already owns.
+  The gap is measurement rather than capability: eight of the open products publish no countable channel
+  at all, so this category''s adoption reads lower than it is.'
+weights:
+  adopt: 0.6
+  cap: 0.4
+products:
+- ray
+- slurm
+- kubeflow-pipelines
+- skypilot
+- volcano
+- flyte
+- metaflow
+- kueue
+- clearml
+- zenml
+- determined-ai
+- kai-scheduler
+- openpai
+- kubeflow-trainer
+- katib
+- mlrun
+- dstack
+- polyaxon
+- armada
+- sagemaker-pipelines
+- vertex-ai-pipelines
+- azure-machine-learning-pipelines
+- nvidia-run-ai
+- pai-dlc
+- union
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    verified_on: '2026-09-15'
+    checker: build/check_rubric.py
+  note: "Capability here is ONE quantity: how far the product's own scheduler gets toward putting\n\
+    work on a machine. Each band contains the one below it.\n\n  1  The product places nothing and schedules\
+    \ nothing. It hands the whole pipeline to an\n     orchestrator it does not own.\n  3  Its own scheduler\
+    \ decides WHEN each unit of work runs and WHICH pool, queue or cluster it\n     goes to. A lower-level\
+    \ scheduler then binds it to a machine.\n  5  Its own scheduler chooses the MACHINES, and reserves\
+    \ a multi-machine set as one allocation.\n\nBands 2 and 4 are for a product that exceeds one anchor\
+    \ without reaching the next; 4 is occupied\n(a scheduler that selects the hardware but exposes no\
+    \ multi-machine reservation of its own), 2 is\ncurrently empty.\n\nThree things deliberately do\
+    \ NOT enter the definition. SUBSTRATE BREADTH: whether a product can\nplace work on two clouds or\
+    \ one is a fact about what the vendor sells, not a capability, and an\nearlier draft that banded\
+    \ on it was rejected for exactly that. LIBRARY PROVISION: shipping\ntraining libraries is a different\
+    \ axis. COMMERCIAL TIER: this category scores wholly closed\nproducts, so conditioning capability\
+    \ on openness would put two questions on one axis - which is\nwhy clearml's enterprise-only GPU\
+    \ allocation and polyaxon's commercial queueing both count.\n\nDistribution, counted rather than\
+    \ asserted: 1 at band 1, 12 at band 3, 4 at band 4, 8 at band 5.\nThe widest band holds 48% of the\
+    \ roster. `capability.md` calls a third a diagnostic; measured\nacross the live corpus, 18 of 20\
+    \ published categories exceed it (median ~48%), so the number is\nreported here rather than used\
+    \ to trim the roster. What it reflects is real: most ML\norchestrators decide when and on which\
+    \ cluster, and let Kubernetes or a cloud batch service bind\nthe machine.\n\nThe bottom and top\
+    \ bands each hold one or few products and that is not a defect of the wording.\nzenml sits at 1\
+    \ because its own documentation makes the orchestrator a pluggable stack component\nit does not\
+    \ own; the products at 5 - slurm, volcano, kai-scheduler, kueue, openpai, ray,\nskypilot, dstack,\
+    \ determined-ai - each reserve a co-scheduled set, and each cites the mechanism."
+  deferred:
+    slurm:
+      because: 'The COPYING body states all Slurm code and documentation is under the GNU General Public
+        License - GPL-2.0. The shared osi tier names GPL-3.0, AGPL-3.0, LGPL-3.0 and GPLv3 but not GPL-2.0,
+        and the tier decides by literal name, so the lookup abstains and the 5/open_source pair is hand-assigned.
+        GPL-2.0 is OSI-approved and inside the tier''s own definition, the same shape as the BSD-2-Clause
+        and PostgreSQL additions of 2026-08-18. Measured before raising it: no other software-type product
+        records GPL-2.0 under `license`, so naming it in the tier would move this record and no other.
+        Extending a shared tier reaches eleven categories, so it is a maintainer''s ruling rather than
+        part of this promotion.'
+comments: 'Created 2026-09-15 under issue #429, which was ruled BUILD against the recommendation the
+
+  issue itself opened with: create the category and discover its peer set, rather than hold until a
+
+  peer set exists. `ray` moved here from `deployment`, whose ladder is a single ordering on
+
+  isolation strength and whose own capability note on ray conceded it is "a distributed compute,
+
+  training, tuning, data and serving framework rather than an isolation boundary".
+
+
+  MEMBERSHIP TEST. A product belongs here if EITHER limb holds. (a) Its own job model declares ML
+
+  work as a first-class type it schedules and tracks - a training run, a tuning trial, a model or
+
+  checkpoint artifact - rather than a generic unit of work. (b) Its own scheduler consumes an
+
+  accelerator request expressed in its own schema, and uses it to select or provision the machine
+
+  the work runs on. Passing a backend''s pod spec through does not satisfy (b), and neither does a
+
+  resource field no shipped scheduler reads.
+
+
+  WHY THE NEIGHBOURS ARE EXCLUDED, all on that one test. `airflow` defines Resources(cpus, ram,
+
+  disk, gpus) in its Task SDK, but a repository-wide search finds the field referenced only by the
+
+  operator definition, serialization and tests - no shipped executor reads it for placement (that
+
+  establishes no first-party consumer, not a universal negative across provider packages, and it is
+
+  recorded at that strength). `prefect`, `dagster` and `argo-workflows` pass a Kubernetes or Docker
+
+  spec through to the backend. `kestra`, `hatchet`, `dagu` and `atmos` are the four excluded in
+
+  #428. `kedro` is an authoring toolbox that delegates running entirely. `mlflow` models runs and
+
+  artifacts as first-class types but SCHEDULES nothing, which is why the word "schedules" is in
+
+  limb (a) and why mlflow stays in telemetry_observability. `bentoml` is model serving, which is
+
+  deployment''s question. `kuberay` is an operator for Ray rather than a distinct product.
+
+
+  `kubeflow-pipelines` is the admit worth checking, because it runs on Argo Workflows and Argo is
+
+  excluded. The difference is one file: the KFP SDK defines system.Model, system.Dataset,
+
+  system.Metrics and system.ClassificationMetrics as typed artifacts, and Argo has no equivalent.
+
+
+  EVALUATED AND NOT ADDED. `cube-studio` - a genuine MIT body behind a Tencent Music copyright
+
+  line, but two repositories carry the name (tencentmusic/cube-studio and data-infra/cube-studio)
+
+  and the first has a 25-entry tree, so identity is unsettled rather than the product rejected.
+
+  `modelarts-training` (Huawei) - passes limb (a) on its typed training jobs, but three
+
+  support.huaweicloud.com and huaweicloud.com URLs return HTTP 403 to the repository''s own fetcher,
+
+  and a citation nobody can re-fetch is not evidence. `modal` - passes limb (b) on its own gpu=
+
+  field, but `modal-sandboxes` already sits in deployment and a product lives in exactly one
+
+  category, so this needs an identity ruling rather than a quiet second record. `yunikorn`,
+
+  `htcondor`, `lsf`, `dlrover`, `hami` and Nebius''s serverless jobs are unevaluated candidates
+
+  carried forward rather than rejected.
+
+
+  ADOPTION READS LOW HERE BY CONSTRUCTION. Six products - volcano, kueue, kai-scheduler,
+
+  kubeflow-trainer, openpai and armada - plus slurm ship as container images, Helm charts or
+
+  distribution packages and publish no artifact on any route signal_routing.yaml carries. They band
+
+  on stars_fallback, which caps at 3. That is a missing instrument, not a measurement: slurm in
+
+  particular runs a large share of the world''s GPU training fleets and bands at 2.'

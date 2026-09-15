@@ -68,7 +68,15 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # (1 of 2); each keeps its row and its contributing_observation_ids and loses measured_level,
 # measured_reach and raw_value. This reproduces `is_complete` on the retired
 # currentai.signal_packages.product_adoption; the zero-observation case still produces no row.
-MEASUREMENTS_DIGEST = "b3d89de9e484faea8ffdbac4bc090f11eefdee7d364747b7482937475618f5e8"
+# Moved on 2026-09-15 by the ml_orchestration promotion (#429), and this is the first kind of
+# move again rather than a new one: a product changed category. `ray` left `deployment` for
+# `ml_orchestration`, and `category_slug` is one of the columns this digest covers. Measured
+# rather than asserted - the row sets were dumped on both sides and diffed: 378 rows before
+# and after, exactly one row different, and the only field that differs on it is
+# `category_slug`. Same band, same channel, same contributing_observation_ids. The twenty-four
+# products added in the same change contribute no rows, because measurements come from the
+# frozen observation snapshot rather than from declared artifacts.
+MEASUREMENTS_DIGEST = "513cd0519bb80cde7d72bdccb3df605d609596e28a0cb0b5a014b58fc49e9fdc"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

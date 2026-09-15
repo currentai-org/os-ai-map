@@ -105,32 +105,28 @@ adoption:
     shows: Ray under the PyTorch Foundation (governance / ecosystem standing)
     accessed: '2026-06-04'
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
-  value: null
+  value: placement groups atomically reserve bundles of resources across multiple nodes - gang scheduling -
+    and Ray's own scheduler then places tasks and actors into that reservation, PACKed for locality or SPREAD
+    for fault tolerance; Ray Train and Ray Tune use the placement group API so that every resource for a trial
+    is available at the same time
   confidence: high
-  note: 'General distributed-compute + model-serving framework (Ray Core, Serve, Tune, Train, Data). No
-    standardized inference/training benchmark (MLPerf) applies to Ray as a whole; scored on breadth of distributed-serving
-    feature coverage. Not directly comparable to single-engine inference benchmarks. It is a scheduling
-    and serving substrate rather than an isolation boundary, which is why it sits at 4 and not at the microVM
-    frontier this category''s 5s occupy: Ray Core plus the AI libraries (Data, Train, Tune, Serve, RLlib),
-    clusters on VMs or Kubernetes, mixed CPU/GPU scheduling, and workloads spanning batch inference, model
-    serving, distributed training, hyperparameter tuning, feature engineering and reinforcement learning.'
-  last_verified: '2026-08-13'
+  note: 'Ray reaches the top of this category''s ladder: placement groups atomically reserve bundles of resources
+    across multiple nodes and Ray''s own scheduler then places tasks and actors inside that reservation, PACKed
+    for locality or SPREAD for fault tolerance. Ray''s own documentation names the all-or-nothing property
+    as what distributed training needs - every resource for a trial available at the same time - which is the
+    band''s requirement stated by the product itself. The band is not carried over from deployment, whose ladder
+    orders on isolation strength: moving a product between categories re-opens the instrument and not just
+    the number, and this axis asks how far a product''s own scheduler gets toward putting work on a machine.'
+  last_verified: '2026-09-15'
   sources:
-  - url: https://www.anyscale.com/product/open-source/ray
-    shows: Anyscale's open-source Ray page, describing Ray Core plus the Data, Train, Tune and Serve libraries
-      and deployment on VMs or Kubernetes. Establishes the feature breadth the capability band rests on.
-    accessed: '2026-08-15'
+  - url: https://docs.ray.io/en/latest/ray-core/scheduling/placement-group.html
+    shows: 'Ray''s placement-group documentation: placement groups ''allow users to atomically reserve groups
+      of resources across multiple nodes, a concept commonly known as gang scheduling'', with tasks and actors
+      then scheduled into them PACKed or SPREAD. ''Distributed Training (e.g., Ray Train and Ray Tune) uses
+      the placement group APIs to enable gang scheduling. In these settings, all resources for a trial must
+      be available at the same time.'''
+    accessed: '2026-09-15'
     http_status: 200
-    content_sha256: 19e2ccd77f49e1dd71ece2933c6e521db3fe66cf9af6e706e702e749b196a9fc
-  - url: https://docs.anyscale.com/get-started/what-is-ray
-    shows: '"Ray is an open source framework for building, deploying, and serving AI and ML applications
-      using distributed compute resources. Ray excels when applications need to scale to many machines
-      and optimizes resource utilization for workloads that require both CPUs and GPUs." Lists the
-      libraries built on Ray Core (Data, Train, Tune, Serve) and the common workloads - batch inference,
-      LLMs and gen AI, model serving, feature engineering, hyperparameter tuning, distributed training,
-      reinforcement learning. "All Ray apps deploy as Ray clusters", on virtual machines or Kubernetes.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: ec01ef00a03ff45805f1a10bde79f3818f131323dc49731c5952635ed2c7f947
+    content_sha256: 29012bae87bad1b04524a8890b899d8835d6f101b663fa9e122741524630b3aa

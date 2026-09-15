@@ -1,0 +1,91 @@
+product: kubeflow-pipelines
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: kubeflow/pipelines carries the backend, the frontend and the SDK
+    core-gated:
+      value: ungated
+      detail: a 5,632-entry recursive tree carries one Apache-2.0 LICENSE and every
+        other license sits under a third_party/ or frontend/third_party/ path; Kubeflow
+        is a CNCF project with no vendor edition
+  confidence: high
+  note: Apache-2.0 under CNCF governance with no vendor and no paid edition. The 5,632-entry
+    recursive tree carries one governing LICENSE and every other license file is a
+    vendored third-party dependency.
+  raw: license:Apache-2.0(OSI);source:public(kubeflow/pipelines carries the backend,
+    the frontend and the SDK);core-gated:ungated(a 5,632-entry recursive tree carries
+    one Apache-2.0 LICENSE and every other license sits under a third_party/ or frontend/third_party/
+    path; Kubeflow is a CNCF project with no vendor edition)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/kubeflow/pipelines
+    shows: 'Repository page for kubeflow/pipelines: Apache-2.0 license, public and
+      unarchived, described as ''Machine Learning Pipelines for Kubeflow''. Establishes
+      the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9ae6a2905841e0f4894cff10a655c57da08b6672d2c7c2d11119feb90975cf77
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/kubeflow/pipelines/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 5,632 entries; all
+      license files other than the root LICENSE sit under third_party/ or frontend/third_party/.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 3b8b92fd05b212a1110b090ff9d49660876afdde54ea281f8c91a01d3f78b248
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 11,622,421 downloads of kfp in the trailing
+    30 days, above the >10M floor for level 5. kfp is the pipeline SDK and the product's
+    declared distribution channel; the figure is read from the download API rather
+    than a rendered page, so it can be recomputed and challenged.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://pypistats.org/api/packages/kfp/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact kfp: 11,622,421
+      downloads in the trailing month, above the >10M level-5 floor.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 1c7bef9a80505da51598cb4003e39c214284f24b4fe5dd74ec38c59a36fb64ae
+capability:
+  score: 3
+  basis: feature_matrix
+  value: typed ML artifacts - system.Model, system.Dataset, system.Metrics, system.ClassificationMetrics
+    - as first-class component inputs and outputs; set_accelerator_type and set_accelerator_limit
+    per step; ML Metadata lineage across runs; containerized steps placed by the Kubernetes
+    scheduler
+  confidence: medium
+  note: 'Admitted on the ML-job-model limb, and this is the record that shows why
+    the limb is worth having: KFP runs on Argo Workflows, which this category excludes,
+    and the difference is one file - sdk/python/kfp/dsl/types/artifact_types.py defines
+    Model, Dataset, Metrics and ClassificationMetrics as typed artifacts, which Argo
+    has no equivalent of. Band 3: KFP decides the order and the cluster, and the Kubernetes
+    scheduler places the pod.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://raw.githubusercontent.com/kubeflow/pipelines/master/sdk/python/kfp/dsl/types/artifact_types.py
+    shows: 'The KFP SDK''s artifact type definitions: Model with schema_title system.Model,
+      plus Dataset, Metrics and ClassificationMetrics. Establishes the typed ML artifact
+      system that distinguishes KFP from the general workflow engine it runs on.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 4a79a4e0a59c9b65bf4043bcb5a7b6e74143ade329d73a44aa62156877d18c1a
+  - url: https://www.kubeflow.org/docs/components/pipelines/overview/
+    shows: Kubeflow Pipelines overview, describing pipelines as containerized components
+      with typed inputs and outputs run on Kubernetes.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9c269ca81c59b3ca2507df59f2a9ea018c400e4a1a49234faa7091f3885c94c5

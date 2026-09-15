@@ -1,0 +1,70 @@
+product: azure-machine-learning-pipelines
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Microsoft Azure managed service
+    source:
+      value: closed
+      detail: no implementation is published; the azure-ai-ml SDK is a client
+  confidence: high
+  note: A managed Azure service. Microsoft publishes a CLI extension and a Python
+    SDK for authoring pipelines, but the service that runs them is unpublished and
+    cannot be self-hosted.
+  raw: license:Proprietary;service:proprietary(Microsoft Azure managed service);source:closed(no
+    implementation is published; the azure-ai-ml SDK is a client)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines
+    shows: 'Microsoft Learn: ''An Azure Machine Learning pipeline is a workflow that
+      automates a complete machine learning task'', broken into components whose dependencies
+      Azure Machine Learning manages, authored through the Azure CLI ml extension
+      or the azure-ai-ml Python SDK. Establishes a managed service with a client SDK
+      and no published implementation.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9709f576cba6248ffc5107d09edf50c99ff36a59206772bbfee96d8ee21788d0
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically. The vendor's platform
+    as a whole is widely used, but nothing disclosed is specific to the orchestration
+    product being scored, and it publishes no countable artifact - no package, repository
+    or registry entry - so no level is assigned rather than one being inferred from
+    the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines
+    shows: The Azure Machine Learning pipelines concept page, read for a usage disclosure;
+      it publishes none.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9709f576cba6248ffc5107d09edf50c99ff36a59206772bbfee96d8ee21788d0
+capability:
+  score: 3
+  basis: feature_matrix
+  value: pipelines of components with managed step dependencies; compute targets defined
+    per step in the workspace; output caching and reuse across runs
+  confidence: medium
+  relative_to: kubeflow-pipelines
+  relation: at
+  note: 'Band 3: the service decides when each component runs and which compute target
+    it goes to, and Azure allocates from that target. Banded level with the other
+    managed pipeline services rather than above them.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/machine-learning/concept-ml-pipelines
+    shows: The Azure Machine Learning pipelines concept page describing components,
+      managed dependencies and compute targets.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9709f576cba6248ffc5107d09edf50c99ff36a59206772bbfee96d8ee21788d0
