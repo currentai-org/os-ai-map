@@ -188,6 +188,17 @@ def reconcile(
             #   * no band set for this (route, product_type) -- hardware declares no usage ladder,
             #     and that absence IS the abstention;
             #   * a value that clears no band on a ladder that exists.
+            #
+            # THE FLOOR OF INFERRING RATHER THAN CARRYING: one combination cannot be fully
+            # resolved from the row. A rule-less route with several observations that is ALSO
+            # short on coverage nulls raw_value for either reason, and the row records neither
+            # -- so this reports the undefined aggregation and cannot know to add the coverage
+            # cause beside it. That is a limit of deriving the reason in the consumer, not a
+            # missing case here. Closing it means carrying an explicit reason from
+            # measurements(), which is a new column in its COLUMNS -- the published schema of a
+            # deployed static model -- so it is raised as a decision rather than slipped in.
+            # No route reaches the combination today: both routable instruments with a machine
+            # table declare a sum rule.
             causes = []
             if measurement["raw_value"] is None:
                 if (not measurement["aggregation_method"]
