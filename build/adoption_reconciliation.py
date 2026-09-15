@@ -182,17 +182,31 @@ def reconcile(
             # and the band were suppressed (#585). Before that landed this branch blamed the band
             # set in every case, which was wrong for the coverage one.
             #
-            # The coverage arm requires an aggregation_method, because a null raw_value has one
-            # other cause: a rule-less route with more than one contributing observation, which
-            # abstains rather than invent an aggregation. No route reaches that today, but claiming
-            # short coverage for it would be the same misattribution in a new place, so it falls
-            # through to the generic arm instead.
+            # A null raw_value has one other cause: a rule-less route with MORE THAN ONE
+            # contributing observation, which abstains rather than invent an aggregation. That is
+            # what the second arm keys on, and it is checked first because it is the narrower fact.
+            #
+            # An earlier version keyed the coverage arm on aggregation_method being non-empty
+            # instead, which was wrong: a rule-less route with exactly ONE observation and two
+            # declared primary artifacts takes the `len(values) == 1` path in measurements(), so it
+            # carries an empty method AND is genuinely short on coverage. Requiring a method there
+            # sent a real coverage abstention to the generic wording. Keying on the observation
+            # count instead leaves that row where it belongs.
             if not measurement["band_set_id"]:
                 explanation = (
                     f"route {route['route_id']} has no band set for product type "
                     f"{measurement['product_type']!r}; the absence of a ladder is the abstention"
                 )
-            elif measurement["raw_value"] is None and measurement["aggregation_method"]:
+            elif (measurement["raw_value"] is None
+                  and not measurement["aggregation_method"]
+                  and len(measurement["contributing_observation_ids"]) > 1):
+                explanation = (
+                    f"route {route['route_id']} declares no aggregation rule and has "
+                    f"{len(measurement['contributing_observation_ids'])} contributing observations; "
+                    f"combining them would be an undefined aggregation, so the route abstains "
+                    f"rather than invent one"
+                )
+            elif measurement["raw_value"] is None:
                 explanation = (
                     f"route {route['route_id']} withheld its aggregate under band set "
                     f"{measurement['band_set_id']!r}: the route was observed, but not on every "

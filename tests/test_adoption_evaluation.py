@@ -480,6 +480,54 @@ def test_stars_sum_rule_aggregates_multiple_repositories(measurement_rows):
         assert row["measured_level"] is not None
 
 
+def test_the_live_partial_coverage_rows_get_the_coverage_explanation(
+        inputs, measurement_rows, scores, observations):
+    """The explanation must name the RIGHT cause. This branch used to blame the band set in every
+    case, which is right for a missing ladder and wrong for short coverage."""
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    rows = reconcile(
+        scores, measurement_rows, tables, category_of, declared,
+        declaration_version_id=TEST_DVID,
+        observation_snapshot_id=observation_snapshot_id(observations), evaluated_at=None,
+    )
+    by_slug = {r["product_slug"]: r for r in rows}
+    for slug in ("composable-kernel", "glm", "olmo-instruct"):
+        row = by_slug[slug]
+        assert row["status"] == "abstained", slug
+        assert "not on every declared primary artifact" in row["explanation"], slug
+
+
+def test_a_rule_less_route_with_one_observation_still_reads_as_short_coverage(inputs, scores):
+    """The discriminator's sharp edge. A rule-less route with exactly ONE contributing observation
+    and two declared primary artifacts takes the `len(values) == 1` path in measurements(), so it
+    carries an EMPTY aggregation_method and is genuinely short on coverage. An earlier version
+    keyed the coverage arm on the method being non-empty and sent this row to the generic wording.
+    Keying on the observation count instead keeps it where it belongs."""
+    row = {
+        "product_slug": "synthetic-ruleless", "category_slug": "c", "product_type": "software",
+        "route_id": "pypi.downloads_30d", "channel": "pypi", "metric_type": "downloads",
+        "instrument_type": "usage_volume", "aggregation_method": "",
+        "contributing_observation_ids": ["one"], "non_primary_artifacts": "",
+        "raw_value": None, "unit": "downloads", "measurement_window_days": 30,
+        "band_set_id": "type:software", "measured_level": None, "measured_reach": None,
+        "route_authority": "authoritative", "measurement_as_of": None,
+        "declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64,
+        "routing_policy_version": ROUTING_POLICY_VERSION,
+    }
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    out = reconcile(
+        {"synthetic-ruleless": {"adoption": {"level": 3, "signal_type": "usage_volume"}}},
+        [row], tables, {**category_of, "synthetic-ruleless": "c"},
+        {**declared, "synthetic-ruleless": {"pypi"}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64, evaluated_at=None,
+    )
+    match = [r for r in out if r["product_slug"] == "synthetic-ruleless"]
+    assert match, "the synthetic row was not reconciled"
+    assert match[0]["status"] == "abstained"
+    assert "not on every declared primary artifact" in match[0]["explanation"]
+    assert "undefined aggregation" not in match[0]["explanation"]
+
+
 def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     """Before #585 the baseline had no abstentions at all. It now has exactly the rows whose
     winning route was observed on some but not all of the product's declared primary artifacts of
