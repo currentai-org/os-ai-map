@@ -37,10 +37,18 @@ openness:
       - naming the datasets used is NOT sufficient for `open`
       machine_signal: none - requires research
       vocabulary_note: >
-        `described_not_released` here is `documented-not-released` in
-        base_pretrained. Same concept, two spellings, and neither category should
-        be the one that unilaterally renames it. Unifying the shared data
-        vocabulary is issue #106.
+        `described_not_released` here is `documented-not-released` on the
+        pretrained ladder. Same concept, two spellings, and neither category
+        should be the one that unilaterally renames it. Issue #106 settled a
+        different half of that question on 2026-09-15 - it added
+        `components-listed` to `sources/rubrics/pretrained.yaml`, between `open`
+        and `documented-not-released`, for a corpus whose every component is named
+        and publicly resolvable while the mixture is withheld. It did not touch
+        the spelling here, and no rung was added to this ladder: the question a
+        tune answers is what the TUNER released, and no tune in the corpus pairs
+        an enumerated-but-unreproducible post-training mixture with anything, so
+        the rung could not fire. Unifying the spelling, and deciding whether this
+        ladder ever wants the new value, is issue #590.
     code:
       question: Is the fine-tuning pipeline released, not just inference code?
       # `recipe` is how two products spell this, and it is the more natural word for a

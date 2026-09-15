@@ -723,11 +723,17 @@ def test_real_sources_serialize_without_errors(real_rubric):
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py. The non-software
     # counts stay literal because a ladder is a hand-authored rubric - they move only when a
     # human edits its scoring_recipe, a governance event, not a product add.
+    #
+    # base_pretrained 12 -> 14 on 2026-09-15 (#106), when the `data` dimension gained
+    # `components-listed` and the formula gained the rung that reads it. Two rows because the
+    # rung tests two dimensions, `data` and `code`, and a two-condition rung serializes as two.
+    # No score moved: the new rung emits the same 4/open_weights as the `documented-not-released`
+    # rung beside it, and check_rubric is byte-identical before and after across every category.
     csr = per_category("category_scoring_rules")
     assert {k: csr[k] for k in
             ("base_pretrained", "finetuned_chat", "safeguards", "benchmark_eval_data",
              "training_synthetic_datasets", "edge_hardware")} == {
-        "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 23,
+        "base_pretrained": 14, "finetuned_chat": 10, "safeguards": 23,
         "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 17,
     }
     # Software categories inherit ONE ladder, so they must all serialize the same rule
