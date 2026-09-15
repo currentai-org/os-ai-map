@@ -60,22 +60,30 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: several operator families, called by named engines'
-  value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed at serving
-    stacks. Broader operator coverage than a single-kernel library, still short of transforming a model.
+  basis_detail: 'category feature matrix: an operator surface depended on across the serving ecosystem'
+  value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed
+    at serving stacks. Its README states it powers inference in SGLang, vLLM, MLC-LLM and ScaleLLM.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
   note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Attention, GEMM
     and MoE kernels with JIT specialization over four backend implementations is several operator families
-    rather than one, and the 3/4 test is met by name: it is one of the packages CUTLASS''s own release notes
-    test against, and it is built for the serving stacks that call it. Narrow on targets, recent NVIDIA
-    hardware only, which is what holds it below the anchor.'
+    rather than one, and the dependence spans the serving ecosystem rather than one project: its README
+    names SGLang, vLLM, MLC-LLM and ScaleLLM as what it powers. Narrow on targets, recent NVIDIA hardware
+    only, which is what holds it below the anchor.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md
-    shows: README still documents a library and kernel generator for inference exposing unified attention, GEMM
-      and MoE APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT specialization.
+    shows: README still documents a library and kernel generator for inference exposing unified attention,
+      GEMM and MoE APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT
+      specialization.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: 47cb615c276565c65af95fb0c7695cbba32902b2b24e03d9b50b6116d4e5a1e3
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/README.md
+    shows: '"FlashInfer powers inference in:" lists SGLang, vLLM, MLC-LLM and ScaleLLM. The same README
+      records FlashInfer as inspired by FlashAttention, vLLM, stream-K, CUTLASS and AITemplate, so the direction
+      of each relation is stated rather than inferred.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 2388ff1cda27bb48a2aaea3525312f5c6d2a1725435d84ded76f6e4685cf2463

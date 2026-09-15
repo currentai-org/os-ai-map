@@ -64,19 +64,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: a primitive layer a vendor''s ecosystem builds on'
+  basis_detail: 'category feature matrix: an operator surface depended on across ecosystems'
   value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with
-    CuTe layout algebra. Its own release notes test against PyTorch, TensorRT-LLM, FlashAttention, FlashInfer
-    and cuDNN-Frontend.
+    CuTe layout algebra. Vendored as a git submodule by PyTorch (third_party/cutlass) and by FlashAttention
+    (csrc/cutlass).
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
   note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. GEMM and convolution
-    templates across the warp, block and device levels of CUDA with the CuTe layout algebra is a wide surface
-    for one vendor, and the 3/4 test is met by name: the README''s own "tested against" list is PyTorch,
-    TensorRT-LLM, FlashAttention, FlashInfer and cuDNN-Frontend, none of which is NVIDIA''s own compiler
-    stack. Below the anchor because it covers one layer rather than the path from a framework graph to a
-    target.'
+    templates across the warp, block and device levels of CUDA with the CuTe layout algebra is a wide surface,
+    and the dependence spans ecosystems rather than sitting inside one: PyTorch and FlashAttention each
+    vendor it as a submodule and build against its headers, and NVIDIA''s own release notes additionally
+    test against TensorRT-LLM, FlashInfer and cuDNN-Frontend. Below the anchor because it covers one layer
+    rather than the path from a framework graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/NVIDIA/cutlass/blob/main/README.md
@@ -93,3 +93,17 @@ capability:
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: a78c6aa81d87a88012db7b6570015c8a87f2778f663348c6ffc61936e06b9dce
+  - url: https://raw.githubusercontent.com/pytorch/pytorch/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: c7364691cf019f9a34f17d68de041715f5c3d9d58ded3704d0e2f7bda514434f
+    shows: '`[submodule "third_party/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. PyTorch
+      vendors CUTLASS and builds against it, which establishes the direction of the dependency where a compatibility
+      list does not.'
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 0c57db58f50c4c7c7aa10c7a0b14d253cb6bfab5368caee0a7ca4c7d3f003b59
+    shows: '`[submodule "csrc/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. FlashAttention
+      vendors CUTLASS; its setup.py initializes the submodule and asserts csrc/cutlass/include/cutlass/cutlass.h
+      exists before building.'

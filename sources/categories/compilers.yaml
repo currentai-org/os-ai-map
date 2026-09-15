@@ -106,11 +106,26 @@ scoring_recipe:
 
     The 3/4 line is the one that has to be reproducible, because it is where the three populations
     meet and where the old yardstick did its damage. It is decided by WHO CALLS THE PRODUCT, read
-    off the product's own documentation rather than asserted: an operator library reaches 4 when
-    engines and frameworks outside its own vendor name it as the implementation they use, and sits
-    at 3 when its named consumers are its vendor's own stack or one framework's users. oneDNN's
-    README names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow; MIOpen's names ROCm.
-    That is the difference, and it is checkable in one read.
+    off declared dependencies rather than asserted - a submodule, a build requirement, or the
+    product's own documentation naming what it powers.
+
+    The question is the BREADTH of that consuming population, not its existence. Almost every
+    serious kernel library has some external consumer, so "is it depended on at all" stops
+    discriminating immediately: PyTorch vendors `NVIDIA/cutlass` and `ROCm/composable_kernel` as
+    submodules alike. The band above asks whether the product is the implementation the stack
+    reaches for ACROSS ecosystems, or the one it reaches for inside a single hardware ecosystem.
+
+      4  named by consumers spanning more than one ecosystem, or by the frameworks generally.
+         CUTLASS is vendored as a submodule by both PyTorch and FlashAttention; oneDNN's README
+         names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow as built on it;
+         FlashInfer's says it powers SGLang, vLLM, MLC-LLM and ScaleLLM.
+      3  real dependence confined to one hardware ecosystem, or to one framework's users.
+         Composable Kernel is vendored by PyTorch and FlashAttention too, but on the AMD path,
+         reached only when the hardware is AMD; MIOpen's README names ROCm; Liger Kernel arrives
+         as monkey patches against Hugging Face classes.
+
+    That is checkable in one read, and it does not turn on how much of a compiler's pipeline the
+    product performs, which is the whole point of the rewrite.
 
     apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
     rung below it, so `check_capability` can check the arithmetic.
@@ -123,12 +138,16 @@ scoring_recipe:
     the adoption instruments cannot see a library that is built from source rather than installed
     from a package (#426).
 
-    Five bands that did NOT move were re-argued against the new 3/4 test rather than left standing
-    on the retired one, because a band whose stated reason has been withdrawn is not a band anyone
-    can check: arm-compute-library, miopen, onemath, composable-kernel and liger-kernel each now
-    say which named consumers put them below the line. onemath is the one to re-read on the next
-    coverage pass - its README names the backends it dispatches DOWN to and nothing that calls it,
-    and an interface layer is the shape most likely to be called without being credited.
+    Every band below the line was re-argued against the new test rather than left standing on the
+    retired one, because a band whose stated reason has been withdrawn is not a band anyone can
+    check. arm-compute-library, miopen and onemath keep the band they had; composable-kernel and
+    liger-kernel moved up to it. Each now says which named consumers put it below the line, rather
+    than which part of a compiler's pipeline it does not perform.
+
+    onemath is the one to re-read on the next coverage pass. Its README names the backends it
+    dispatches DOWN to and nothing that calls it, so its 3 rests on an absence of evidence rather
+    than on evidence of absence, and an interface layer is the shape most likely to be depended on
+    without being credited.
 
     Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
     shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins
