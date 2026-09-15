@@ -528,6 +528,37 @@ def test_a_rule_less_route_with_one_observation_still_reads_as_short_coverage(in
     assert "undefined aggregation" not in match[0]["explanation"]
 
 
+def test_a_row_with_two_causes_reports_both(inputs, scores):
+    """Causes are not mutually exclusive and the explanation must not mask one with another. A
+    product type with no usage ladder can ALSO be short on coverage; an earlier version led with
+    the missing ladder and told the reader to add one, when adding one still would not have
+    produced a value."""
+    row = {
+        "product_slug": "synthetic-both", "category_slug": "c", "product_type": "hardware",
+        "route_id": "pypi.downloads_30d", "channel": "pypi", "metric_type": "downloads",
+        "instrument_type": "usage_volume", "aggregation_method": "sum",
+        "contributing_observation_ids": ["one"], "non_primary_artifacts": "",
+        "raw_value": None, "unit": "downloads", "measurement_window_days": 30,
+        "band_set_id": "", "measured_level": None, "measured_reach": None,
+        "route_authority": "authoritative", "measurement_as_of": None,
+        "declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64,
+        "routing_policy_version": ROUTING_POLICY_VERSION,
+    }
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    out = reconcile(
+        {"synthetic-both": {"adoption": {"level": 2, "signal_type": "usage_volume"}}},
+        [row], tables, {**category_of, "synthetic-both": "c"},
+        {**declared, "synthetic-both": {"pypi"}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64, evaluated_at=None,
+    )
+    match = [r for r in out if r["product_slug"] == "synthetic-both"]
+    assert match, "the synthetic row was not reconciled"
+    explanation = match[0]["explanation"]
+    assert match[0]["status"] == "abstained"
+    assert "not on every declared primary artifact" in explanation, explanation
+    assert "no band set is declared" in explanation, explanation
+
+
 def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     """Before #585 the baseline had no abstentions at all. It now has exactly the rows whose
     winning route was observed on some but not all of the product's declared primary artifacts of

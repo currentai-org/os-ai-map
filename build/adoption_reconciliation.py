@@ -174,50 +174,44 @@ def reconcile(
             )
         elif measured_level is None:
             status = "abstained"
-            # Two different reasons land here and reading one as the other loses the finding, so
-            # the explanation says which. A missing band set is a rubric fact -- hardware declares
-            # no usage ladder, and that absence IS the abstention. A withheld aggregate under a
-            # band set that exists is a COVERAGE fact: the route was observed on some but not all
-            # of the product's declared primary artifacts, so the sum was short and both the value
-            # and the band were suppressed (#585). Before that landed this branch blamed the band
-            # set in every case, which was wrong for the coverage one.
+            # Several independent things can null a level, and they are NOT mutually exclusive, so
+            # this reports every cause that applies rather than picking one. An if/elif chain here
+            # masked: a product type with no usage ladder can ALSO be short on coverage, and an
+            # earlier version led with the missing ladder, so the reader was told to add a ladder
+            # when adding one would still not have produced a value. Two rounds of review were
+            # spent on the ORDER of these arms before the shape turned out to be the problem.
             #
-            # A null raw_value has one other cause: a rule-less route with MORE THAN ONE
-            # contributing observation, which abstains rather than invent an aggregation. That is
-            # what the second arm keys on, and it is checked first because it is the narrower fact.
-            #
-            # An earlier version keyed the coverage arm on aggregation_method being non-empty
-            # instead, which was wrong: a rule-less route with exactly ONE observation and two
-            # declared primary artifacts takes the `len(values) == 1` path in measurements(), so it
-            # carries an empty method AND is genuinely short on coverage. Requiring a method there
-            # sent a real coverage abstention to the generic wording. Keying on the observation
-            # count instead leaves that row where it belongs.
+            # The causes:
+            #   * a suppressed aggregate -- either an undefined aggregation (no rule AND more than
+            #     one contributing observation, identified by the count rather than by the absent
+            #     rule alone) or short coverage (#585), which is the general case;
+            #   * no band set for this (route, product_type) -- hardware declares no usage ladder,
+            #     and that absence IS the abstention;
+            #   * a value that clears no band on a ladder that exists.
+            causes = []
+            if measurement["raw_value"] is None:
+                if (not measurement["aggregation_method"]
+                        and len(measurement["contributing_observation_ids"]) > 1):
+                    causes.append(
+                        f"the route declares no aggregation rule and has "
+                        f"{len(measurement['contributing_observation_ids'])} contributing "
+                        f"observations, so combining them would be an undefined aggregation"
+                    )
+                else:
+                    causes.append(
+                        "the route was observed, but not on every declared primary artifact of "
+                        "its kind, so the sum would be short by an unknown amount"
+                    )
             if not measurement["band_set_id"]:
-                explanation = (
-                    f"route {route['route_id']} has no band set for product type "
-                    f"{measurement['product_type']!r}; the absence of a ladder is the abstention"
+                causes.append(
+                    f"no band set is declared for product type "
+                    f"{measurement['product_type']!r}, so there is no ladder to place it on"
                 )
-            elif (measurement["raw_value"] is None
-                  and not measurement["aggregation_method"]
-                  and len(measurement["contributing_observation_ids"]) > 1):
-                explanation = (
-                    f"route {route['route_id']} declares no aggregation rule and has "
-                    f"{len(measurement['contributing_observation_ids'])} contributing observations; "
-                    f"combining them would be an undefined aggregation, so the route abstains "
-                    f"rather than invent one"
+            elif measurement["raw_value"] is not None:
+                causes.append(
+                    f"the aggregate clears no band on {measurement['band_set_id']!r}"
                 )
-            elif measurement["raw_value"] is None:
-                explanation = (
-                    f"route {route['route_id']} withheld its aggregate under band set "
-                    f"{measurement['band_set_id']!r}: the route was observed, but not on every "
-                    f"declared primary artifact of its kind, so the sum would be short by an "
-                    f"unknown amount and neither it nor a band is published"
-                )
-            else:
-                explanation = (
-                    f"route {route['route_id']} produced no banded level "
-                    f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
-                )
+            explanation = f"route {route['route_id']} abstains: " + "; and ".join(causes)
         elif not same_instrument:
             # The measurement and the recorded assessment are different instruments — a category
             # error to subtract. route_mismatch when an authoritative instrument is on either side
