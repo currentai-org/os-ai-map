@@ -1798,6 +1798,16 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
         # recreation. `mirror_migration` is the claim that carries this; two of the five contracts
         # resynced in #579 (scores.openness_facts, scores.openness_computed) are exactly this case.
         # synced_at still may not regress.
+        #
+        # What this branch does NOT do is verify the claim -- `has_migration` is the contract
+        # asserting a migration, not proof of one, so on its own it would let a fabricated
+        # migration present a stale mirror as resynced. That is not left hanging: this gate is
+        # offline and has no platform to ask, and `build/check_mirror_drift` is the half that
+        # does ask. It runs weekly and its source comparison decides EVERY contract before the
+        # revision numbers are consulted, so mirror bytes that do not match the deployed source
+        # surface there as `code` drift whatever the contract claims. The split is deliberate:
+        # this gate pins the claim to a shape a reviewer can check in one look, the sentinel
+        # checks whether it is true.
         if migrated_ok:
             old_at, new_at = str(prior.get("synced_at") or ""), str(cur.get("synced_at") or "")
             if new_at < old_at:
