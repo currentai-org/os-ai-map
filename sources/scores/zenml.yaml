@@ -81,26 +81,26 @@ adoption:
 capability:
   score: 1
   basis: feature_matrix
-  value: pipelines and steps written once and run on a configured stack; the orchestrator
-    is a pluggable stack component - local, Docker, Kubernetes, Airflow, Kubeflow,
-    SageMaker, AzureML, Databricks, Tekton, SkyPilot VM, HyperAI, Lightning AI - and
-    ZenML owns none of them
+  value: pipelines and steps written once and run on a configured stack; the orchestrator is a pluggable stack
+    component and is mandatory, with flavors for local and Docker execution that ZenML implements itself and
+    for Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton, SkyPilot VM, HyperAI and Lightning AI that
+    hand execution to a system ZenML does not own
   confidence: medium
-  note: 'The floor of this category''s ladder, and ZenML''s own documentation is what
-    puts it there: the orchestrator is ''a mandatory component in the ZenML stack''
-    and is ''responsible for running your machine learning pipelines''. ZenML hands
-    the whole pipeline to an orchestrator it does not own, so it places nothing and
-    does not even choose a pool per unit of work. That is a statement about this one
-    dimension and not about the product''s quality; the stack abstraction is the point
-    of ZenML, and this axis measures the thing it deliberately delegates.'
+  note: 'The floor of this category''s ladder. ZenML''s own documentation makes the orchestrator a mandatory
+    stack component ''responsible for running your machine learning pipelines'', and the flavors it ships for
+    remote execution delegate to Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton and SkyPilot - systems
+    ZenML does not own. The built-in local and Docker orchestrators are ZenML''s own code, and they are what
+    the band rests on rather than against: running a pipeline in local processes or local containers places
+    nothing on a cluster and chooses no machine. Anywhere real work runs, something else decides where. That
+    is a statement about this one dimension, not about the product: the stack abstraction is the point of ZenML,
+    and this axis measures what it deliberately delegates.'
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.zenml.io/stacks/stack-components/orchestrators
-    shows: 'ZenML''s orchestrator documentation: the orchestrator is ''an essential
-      component in any MLOps stack as it is responsible for running your machine learning
-      pipelines'' and ''a mandatory component in the ZenML stack'', with flavors listed
-      for local, Docker, Kubernetes, Airflow, Kubeflow, SageMaker, AzureML, Databricks,
-      Tekton, SkyPilot VM and others.'
+    shows: 'ZenML''s orchestrator documentation: the orchestrator is ''an essential component in any MLOps
+      stack as it is responsible for running your machine learning pipelines'' and ''a mandatory component
+      in the ZenML stack'', with flavors listed for local, Docker, Kubernetes, Airflow, Kubeflow, SageMaker,
+      AzureML, Databricks, Tekton, SkyPilot VM and others.'
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: ba05903f8f9ba27ba90843c461c406dbf88c1ee2fe291e9aa98d58e2d61a9c12

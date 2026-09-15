@@ -206,17 +206,18 @@ def test_the_prose_leg_holds_at_its_known_count():
     same change (banded_quantity naming the countable channel, note phrased as a floor),
     which is why it is not in the set.
 
-    17 -> 18 with the ml_orchestration promotion: `slurm` bands on stars and says in its
-    own note that the figure understates it badly, because Slurm is distributed as source
-    tarballs and distribution packages rather than through any registry this map routes.
-    That is a missing instrument rather than a remediable note - there is nothing to
-    relabel it to - so it will sit here until an instrument exists, alongside the six other
-    products in that category shipping only as container images and Helm charts.
+    Unmoved by the ml_orchestration promotion, which is the interesting part. `slurm` bands
+    on stars and was drafted with a note saying the figure understated it badly; review
+    found that claim unsupported - an absent channel shows a gap, not its size - and the
+    note now says only what the channel is. The detector stopped firing on it, which is the
+    correct outcome: this set holds notes that ASSERT under-coverage, and slurm no longer
+    asserts it. Seven products in that category still band on stars for want of an
+    instrument; none of them claims to know what the missing measurement would say.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
     assert {f[0] for f in findings} == {
         "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
         "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",
-        "ollama", "perplexica", "promptfoo", "searxng", "slurm", "uzu",
+        "ollama", "perplexica", "promptfoo", "searxng", "uzu",
     }

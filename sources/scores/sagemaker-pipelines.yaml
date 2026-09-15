@@ -55,23 +55,24 @@ adoption:
     http_status: 200
     content_sha256: 4b082c4ac9b6687e655586922f52415f686664b4f81e0b5368047e86b7925c82
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  value: typed ML steps - training, processing, tuning, model registration - as first-class
-    pipeline elements; instance type chosen per step and provisioned by the service;
-    visual editor, SDK, API and JSON authoring
+  value: typed ML steps - training, processing, tuning, model registration - as first-class pipeline elements;
+    instance type chosen per step and provisioned by the service; visual editor, SDK, API and JSON authoring
   confidence: medium
-  note: 'Admitted on the ML-job-model limb: training and tuning steps are first-class
-    types it schedules and tracks. Band 4 rather than 3 because Pipelines chooses
-    each step''s instance type and AWS provisions that machine for it, so it does
-    select the hardware - and rather than 5 because the multi-instance allocation
-    of a distributed training job belongs to SageMaker Training, which Pipelines invokes
-    as a step, not to the pipeline scheduler itself.'
+  note: 'Admitted on the ML-job-model limb: training and tuning steps are first-class types it schedules and
+    tracks. Band 3, level with the other managed pipeline services. It was drafted at 4 on the reading that
+    Pipelines selects each step''s hardware, and the cited documentation does not show that - it shows AWS
+    provisioning the ORCHESTRATION compute. The multi-instance allocation of a distributed training job belongs
+    to SageMaker Training, which Pipelines invokes as a step. Crediting the pipeline product with its downstream
+    service''s placement is the error this band avoids.'
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines.html
-    shows: AWS's Pipelines documentation describing the step types, the visual editor
-      and SDK authoring, and the automatic provisioning of orchestration compute.
+    shows: AWS's Pipelines documentation describing the step types, the visual editor and SDK authoring, and
+      the automatic provisioning of orchestration compute.
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: 84e317b2992a37e3d20f8e345a9cbafbc00a67976d574f4eb559b28ed96f4fc1
+  relative_to: kubeflow-pipelines
+  relation: at
