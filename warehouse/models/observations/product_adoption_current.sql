@@ -53,9 +53,8 @@
 -- carries the PyPI leg as well, so reading both would give a PyPI package two rows on one grain.
 -- Because it carries three registries, the package arm is the one arm whose channel and
 -- artifact_kind are PROJECTED rather than literal — a literal 'pypi' would label every npm and
--- crates row as PyPI. signal_pypi.package_downloads is still read by signal_github.product_adoption,
--- and by nothing else since build/check_artifacts.py moved to the successor (#562 step 3);
--- nothing here reads it.
+-- crates row as PyPI. signal_pypi.package_downloads was dropped on 2026-09-14 and its last
+-- reader, signal_github.product_adoption, was retired the same day (#562); nothing here read it.
 --
 -- signal_routing.yaml still declares its npm and crates SOURCES `bridged: false` with
 -- `table: null`. That declaration lags this model and belongs to the routing step of #562:

@@ -113,6 +113,20 @@
    "has_repository_source": false
   },
   {
+   "table": "currentai.events.github_events",
+   "dataset": "events",
+   "name": "github_events",
+   "model_id": "dbdb3674-59d5-448c-a537-8456ec27e3d4",
+   "revision_hash": "a91b58476647fb770fb3b1d47adf6710567086a6aa5593e5c847ec33dbe7d985",
+   "source_sha256": "9fcefe1bd0630731464e428519ded312a6664c98fbb5a08f768b5f9520af52f9",
+   "language": "sql",
+   "internal_reads": [
+    "currentai.entities.repos"
+   ],
+   "in_scope_reads": [],
+   "has_repository_source": false
+  },
+  {
    "table": "currentai.evidence.product_evidence",
    "dataset": "evidence",
    "name": "product_evidence",
@@ -383,6 +397,23 @@
    "has_repository_source": true
   },
   {
+   "table": "currentai.scores.dependency_graph",
+   "dataset": "scores",
+   "name": "dependency_graph",
+   "model_id": "2998ad7b-d01c-407f-90a5-8df43b3891aa",
+   "revision_hash": "f613c497523f63ec3a33151d596a2f20245ba845e83dd8c6969f01021a3aa205",
+   "source_sha256": "f4d0dd4bae0c77506e78d99962263a2ca7b0caa641648007b4f49adab388c9a1",
+   "language": "SQL",
+   "internal_reads": [
+    "currentai.entities.repos",
+    "currentai.signal_goodailist.repo_catalog"
+   ],
+   "in_scope_reads": [
+    "currentai.signal_goodailist.repo_catalog"
+   ],
+   "has_repository_source": false
+  },
+  {
    "table": "currentai.scores.fragility",
    "dataset": "scores",
    "name": "fragility",
@@ -537,6 +568,23 @@
    "has_repository_source": false
   },
   {
+   "table": "currentai.scores.taxonomy",
+   "dataset": "scores",
+   "name": "taxonomy",
+   "model_id": "7e62719e-34d0-403d-871a-7d460dc96dee",
+   "revision_hash": "c58c2721f45a5e104123f03a2c78d4e99c3771e90c162edbdcc699d303e12fc5",
+   "source_sha256": "99e920603db5123089ebae4e0d12a78b645b69aa461fbdbc3ac5fa2c758436e4",
+   "language": "sql",
+   "internal_reads": [
+    "currentai.catalog.osai_gap_map",
+    "currentai.catalog.osai_subcategory_mapping",
+    "currentai.catalog.taxonomy_crosswalk",
+    "currentai.entities.repos"
+   ],
+   "in_scope_reads": [],
+   "has_repository_source": false
+  },
+  {
    "table": "currentai.signal_artificialanalysis.model_evaluations",
    "dataset": "signal_artificialanalysis",
    "name": "model_evaluations",
@@ -561,30 +609,6 @@
    ],
    "in_scope_reads": [
     "currentai.registry.product_artifacts"
-   ],
-   "has_repository_source": true
-  },
-  {
-   "table": "currentai.signal_github.product_adoption",
-   "dataset": "signal_github",
-   "name": "product_adoption",
-   "model_id": "25538fa7-f956-481c-ac14-474ab1661ac3",
-   "revision_hash": "cef9441c4f6d09edf7e598160a19bb7939e86fd29fea3b8edbecb7ec15492be1",
-   "source_sha256": "e7962faa44e4e798f012b490ebf60a9098d24cb61d4bea311c14c6222f2d8fc9",
-   "language": "SQL",
-   "internal_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.registry.products",
-    "currentai.signal_github.artifact_state",
-    "currentai.signal_huggingface.product_adoption",
-    "currentai.signal_packages.product_adoption"
-   ],
-   "in_scope_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.registry.products",
-    "currentai.signal_github.artifact_state",
-    "currentai.signal_huggingface.product_adoption",
-    "currentai.signal_packages.product_adoption"
    ],
    "has_repository_source": true
   },
@@ -661,26 +685,6 @@
    "has_repository_source": true
   },
   {
-   "table": "currentai.signal_huggingface.product_adoption",
-   "dataset": "signal_huggingface",
-   "name": "product_adoption",
-   "model_id": "abcf0044-dd9d-4942-a2a1-e047dab8e8b1",
-   "revision_hash": "3a07002e0fd547adb46e17c7963fe134824ef3b34a5ce267891b17281df66353",
-   "source_sha256": "c03057c64368cefe8be5d6f6e8a690eca6238fdbd13cf0a2b88cce9dbf744980",
-   "language": "SQL",
-   "internal_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.registry.products",
-    "currentai.signal_huggingface.artifact_state"
-   ],
-   "in_scope_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.registry.products",
-    "currentai.signal_huggingface.artifact_state"
-   ],
-   "has_repository_source": true
-  },
-  {
    "table": "currentai.signal_lmarena.text_leaderboard",
    "dataset": "signal_lmarena",
    "name": "text_leaderboard",
@@ -735,24 +739,6 @@
    ],
    "in_scope_reads": [
     "currentai.registry.product_artifacts"
-   ],
-   "has_repository_source": true
-  },
-  {
-   "table": "currentai.signal_packages.product_adoption",
-   "dataset": "signal_packages",
-   "name": "product_adoption",
-   "model_id": "0cb522be-5c18-4d9d-8a69-ee806a179517",
-   "revision_hash": "cebcc990d47ddaba388765075e36b2e1270885e5c1f8ca076fac6ee4d42e06da",
-   "source_sha256": "59163030881e443d704fc9f76f2af5dc2aface6a64059b2dc1bd0c863c9d0b1a",
-   "language": "SQL",
-   "internal_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.signal_packages.downloads"
-   ],
-   "in_scope_reads": [
-    "currentai.registry.adoption_bands",
-    "currentai.signal_packages.downloads"
    ],
    "has_repository_source": true
   },

@@ -87,7 +87,7 @@ api.npmjs.org answers 404 for, and nothing in the pipeline could say so.
 
 Counts are raw registry requests: CI jobs, mirrors and container builds included.
 Volume, not unique users. No band here — bands are declared in the repo and applied
-in `signal_packages.product_adoption`.
+in `build/adoption_measurements.py`.
 """
 
 import asyncio
