@@ -62,18 +62,18 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
-  value: Primitive library covering convolution, matmul, RNN, normalization and fusion across x86-64, AMD64, Arm64
-    CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks.
+  value: Primitive library covering convolution, matmul, RNN, normalization and fusion across x86-64, AMD64,
+    Arm64 CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks. Declared as a submodule
+    in OpenVINO's own repository.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: One band below the apache-tvm anchor, on the operator-surface half of that band. Convolution, matmul,
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Convolution, matmul,
     RNN, normalization and fusion across x86-64, AMD64 and Arm64 CPUs and Intel GPUs is real coverage, and
-    its own README names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow as built on it. That
-    is the weakest of the three forms of dependency evidence the recipe admits, carrying no link to a consumer's
-    own integrating change, so the band is under-evidenced rather than contested and the recipe flags it
-    for the next coverage pass. Short of the anchor because it supplies the operators rather than the path
-    from a framework graph to a target.
+    it clears the dependency test on the strongest form of evidence: OpenVINO declares two oneDNN submodules
+    in its own `.gitmodules`. Its README''s list of ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow
+    corroborates and does not decide. Short of the anchor because it supplies the operators rather than
+    the path from a framework graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
@@ -90,3 +90,10 @@ capability:
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: b11198d0e1344c3e030a5f35e557ed08cefaadef4fbf33ddcf4e8fb6c632f18b
+  - url: https://raw.githubusercontent.com/openvinotoolkit/openvino/master/.gitmodules
+    shows: 'Two oneDNN submodules: `src/plugins/intel_cpu/thirdparty/onednn` and `thirdparty/onednn_gpu`
+      at src/plugins/intel_gpu/thirdparty/onednn_gpu, the latter pointing at https://github.com/oneapi-src/oneDNN.git.
+      A consumer''s own declaration, which is the strongest of the three forms the recipe admits.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 4f05411e24fccf476ec34582f3d201d257d3207d11b7356f4575a26641ab9070
