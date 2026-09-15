@@ -62,17 +62,19 @@ adoption:
     http_status: 200
     content_sha256: 260a24188d1a2c8988eec3800d31bd8075a127ca5003f1d75111d79032886b78
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  basis_detail: 'category feature matrix: a primitive layer a vendor''s ecosystem builds on'
   value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with CuTe layout
     algebra. Supplies the primitives compilers target rather than transforming a model itself.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: One band below the apache-tvm anchor. GEMM and convolution templates spanning the warp, block and
+    device levels of CUDA with the CuTe layout algebra, which is a wide operator surface for one vendor,
+    and a large share of CUDA GEMM work is written against it rather than beside it - flashkda on this roster
+    builds its own kernels on it. Below the anchor because it covers one layer rather than the path from
+    a framework graph to a target.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/NVIDIA/cutlass/blob/main/README.md

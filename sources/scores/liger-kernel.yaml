@@ -61,17 +61,17 @@ adoption:
     http_status: 200
     content_sha256: 7cec0608832dc8d0c5b30da592384575bf01548059ed968e67285b410e79375b
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  basis_detail: 'category feature matrix: a fixed operator set on a narrow install base'
   value: Fused Triton kernels for a fixed list of transformer training operations, plus post-training loss implementations,
     delivered as monkey patches for Hugging Face classes.
-  relative_to: tensorrt
+  relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
-    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
-    performs, over how many inputs and targets.
+  note: Two bands below the apache-tvm anchor. Fused Triton kernels for a fixed list of transformer training
+    operations plus post-training losses, which is a set rather than a single kernel, delivered as monkey
+    patches against Hugging Face classes. A wide surface on a narrow install base is what this band records.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/linkedin/Liger-Kernel/blob/main/README.md

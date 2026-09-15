@@ -58,17 +58,19 @@ adoption:
     http_status: 200
     content_sha256: 9777625edeb7883d7b3adc80d8d6e7ba0866003ca71c82e06a94de1bab87b387
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  basis_detail: 'category feature matrix: one operator family the whole stack depends on'
   value: Exact IO-aware attention kernels across NVIDIA GPU generations, the implementation training and serving
     stacks call for the operator. One operator family, near-universal use.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: One band below the apache-tvm anchor. One operator family on one vendor's hardware, so it is narrow
+    on surface, and it is the reference implementation of exact IO-aware attention and the thing training
+    and serving stacks call when they want the operator, which is the widest reach any library on this roster
+    has. Narrow on one axis and at the top of the other is what this band records; tensorrt holds the same
+    band from the opposite direction.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md

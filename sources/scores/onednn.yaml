@@ -59,17 +59,18 @@ adoption:
     http_status: 200
     content_sha256: 8bd9e7d5716f5b456ed5b8b2f30895a665d871a714bf11c068c4ce6347b1a4bd
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  basis_detail: 'category feature matrix: broad operator coverage across vendors'
   value: Primitive library covering convolution, matmul, RNN, normalization and fusion across x86-64, AMD64, Arm64
     CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: 'One band below the apache-tvm anchor, and the only library on this roster that is broad on both
+    axes without being a compiler: convolution, matmul, RNN, normalization and fusion across x86-64, AMD64
+    and Arm64 CPUs and Intel GPUs, sitting beneath the frameworks as their CPU kernel layer. Short of the
+    anchor because it supplies the operators rather than the path from a framework graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md

@@ -58,17 +58,18 @@ adoption:
     http_status: 200
     content_sha256: 57a89a7628337d7b29e8c24bb69edde706eb00d4c53e2a8f0460752426487077
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  basis_detail: 'category feature matrix: several operator families, called by named engines'
   value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed at serving
     stacks. Broader operator coverage than a single-kernel library, still short of transforming a model.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: One band below the apache-tvm anchor. Attention, GEMM and MoE kernels with JIT specialization over
+    four backend implementations, which is several operator families rather than one, and the serving stacks
+    it targets call it by name. Narrow on targets, recent NVIDIA hardware only, which is what holds it below
+    the anchor.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md

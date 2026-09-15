@@ -73,15 +73,48 @@ scoring_recipe:
     because of its license: its optimizing builder is a prebuilt binary the repository links
     against, so `source` is `partial` and the formula settles it on that alone.
 
-    Capability is a category feature matrix rather than a benchmark. It bands on how much of the
-    model-to-hardware transformation pipeline a product performs, over how many inputs and targets:
-    5 is a retargetable end-to-end compiler (multi-framework input, multi-vendor backends, its own
-    optimizer and code generator), 4 is full compilation or a multi-technique optimization toolchain
-    narrowed to one vendor's targets or one class of models, 3 is one optimization family applied
-    broadly or a performance-critical kernel and operator library that supplies the primitives
-    compilers target, and 2 is a narrow kernel set or a single-pass graph utility. apache-tvm is the
-    top anchor and every other band is recorded against it or against the tensorrt rung below it,
-    so `check_capability` can check the arithmetic.
+    Capability is a category feature matrix rather than a benchmark. It banded on how much of the
+    model-to-hardware transformation pipeline a product performs until issue #434, which is a
+    compiler's yardstick: a kernel library performs none of that pipeline by construction, so no
+    kernel library on the roster could score above 3 and several of the most load-bearing pieces of
+    software in the category sat at 2. #434 ruled that evidence against the matrix before it is
+    evidence against the products, and ruled the yardstick be fixed with the roster left whole.
+
+    The matrix asks the same two questions of all three populations the roster holds - compilers and
+    converters, quantizers and optimizers, kernel and primitive libraries:
+
+      * how much of the category's surface the product covers. For a compiler that is framework
+        inputs, hardware backends and the passes between them; for an optimizer, how many techniques
+        over how many classes of model; for a kernel library, how many operator families over how
+        many hardware generations and vendors.
+      * how much of the stack depends on it. Whether named engines, frameworks and compilers call
+        this product for the job, or whether it is one of several ways to do one job.
+
+      5  Broad on both: a retargetable end-to-end compiler, multi-framework input to multi-vendor
+         backends through its own optimizer and code generator. No kernel library reaches it, and
+         that is a claim about surface rather than about layer - supplying one layer's primitives
+         covers less of the category's surface than covering the whole path does.
+      4  Broad on one and narrow on the other, in either direction. Full compilation or a
+         multi-technique optimization toolchain narrowed to one vendor's targets or one class of
+         model; or an operator library whose coverage is wide - several operator families, or one
+         family across a vendor's whole line - that the stack's named engines and frameworks
+         actually call. tensorrt and flash-attention are the two shapes of this band.
+      3  One job done broadly, or a broad job done in one place. A single optimization family
+         applied across classes of model; an operator library covering one family well on one
+         vendor's hardware, or a wide set with a narrow install base.
+      2  Narrow on both. A single-pass graph utility, or kernels for one operator variant on one
+         hardware generation, usually purpose-built for one model family.
+
+    apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
+    rung below it, so `check_capability` can check the arithmetic.
+
+    Six bands moved with the rewrite, all of them kernel libraries the old yardstick had capped:
+    flash-attention, cutlass, onednn and flashinfer 3 -> 4, composable-kernel and liger-kernel
+    2 -> 3. flashmla re-anchors from one_below to two_below flash-attention to hold its own band at
+    2. Nothing else moved and the category's stage did not: Stage 3, L = 0, B = 4.00, one gap, and
+    that gap stays `adoption`. Which is #434's other finding - what holds this layer back is that
+    the adoption instruments cannot see a library that is built from source rather than installed
+    from a package (#426).
 
     Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
     shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins
