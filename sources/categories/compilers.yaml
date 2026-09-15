@@ -105,9 +105,34 @@ scoring_recipe:
          hardware generation, usually purpose-built for one model family.
 
     The 3/4 line is the one that has to be reproducible, because it is where the three populations
-    meet and where the old yardstick did its damage. It is decided by WHO CALLS THE PRODUCT, read
-    off declared dependencies rather than asserted - a submodule, a build requirement, or the
-    product's own documentation naming what it powers.
+    meet and where the old yardstick did its damage. One question decides it, read off declared
+    dependencies rather than asserted:
+
+      does a framework or engine OUTSIDE this product's own distribution declare a dependency on
+      it - a submodule, a pinned requirement, or an integration the consumer itself documents?
+
+      4  yes. CUTLASS and Composable Kernel are each vendored as a submodule by PyTorch and by
+         FlashAttention; oneDNN's README names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and
+         TensorFlow as built on it; FlashAttention's usage page names PyTorch core, Hugging Face
+         transformers, DeepSpeed, Megatron-LM, Composer, GPT-NeoX and PaddlePaddle; FlashInfer's
+         README names SGLang, vLLM, MLC-LLM and ScaleLLM, and vLLM pins flashinfer-python.
+      3  no. Its consumers reach it as part of its vendor's own distribution, or none is named.
+         MIOpen arrives with ROCm; Arm Compute Library through Arm's stack and oneDNN's ACL build
+         option; Liger Kernel as monkey patches inside one framework; oneMath and DeepGEMM name
+         nothing that calls them.
+
+    Two earlier versions of this line tried to separate CUTLASS from Composable Kernel and could
+    not, which is the finding rather than a failure. They have the SAME two declared consumers.
+    The first version asked whether a consumer existed at all, which stops discriminating the
+    moment you look - PyTorch vendors both. The second asked whether the dependence spanned
+    ecosystems, which counted software ecosystems for one and hardware ecosystems for the other:
+    CUTLASS is CUDA-only exactly as Composable Kernel is ROCm-only, so under any consistent reading
+    they sit together. Keeping them apart would have meant scoring CUDA's install base against
+    ROCm's, which is a claim about market share and not one this axis makes. Composable Kernel is
+    the AMD counterpart to CUTLASS and lands in the same band.
+
+    This turns on nothing about how much of a compiler's pipeline the product performs, which is
+    the whole point of the rewrite.
 
     The question is the BREADTH of that consuming population, not its existence. Almost every
     serious kernel library has some external consumer, so "is it depended on at all" stops
@@ -130,8 +155,8 @@ scoring_recipe:
     apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
     rung below it, so `check_capability` can check the arithmetic.
 
-    Six bands moved with the rewrite, all of them kernel libraries the old yardstick had capped:
-    flash-attention, cutlass, onednn and flashinfer 3 -> 4, composable-kernel and liger-kernel
+    Seven bands moved with the rewrite, all of them kernel libraries the old yardstick had capped:
+    flash-attention, cutlass, onednn and flashinfer 3 -> 4, composable-kernel 2 -> 4, liger-kernel
     2 -> 3. flashmla re-anchors from one_below to two_below flash-attention to hold its own band at
     2. Nothing else moved and the category's stage did not: Stage 3, L = 0, B = 4.00, one gap, and
     that gap stays `adoption`. Which is #434's other finding - what holds this layer back is that

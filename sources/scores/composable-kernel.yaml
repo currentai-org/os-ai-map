@@ -67,21 +67,20 @@ adoption:
     http_status: 200
     content_sha256: b4bc8889dfef2e77d46268e809322743c31f5fe34f7b965d424ad8179cb10f9f
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: an operator surface depended on inside one hardware ecosystem'
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
   value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD
     GPUs. Vendored as a git submodule by PyTorch (third_party/composable_kernel) and by FlashAttention (csrc/composable_kernel),
     in both cases on the AMD path.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: 'Two bands below the apache-tvm anchor. The operator surface is real - GEMM, convolution and fused
-    attention through tile-level templates and a codegen dispatcher - which is why it is not a 2, and it
-    has genuine external consumers: PyTorch and FlashAttention both vendor it as a submodule, exactly as
-    they vendor cutlass. What separates it from cutlass is the breadth of that dependence, not its existence.
-    Both consumers reach it on the AMD path only, so it is the implementation inside one hardware ecosystem
-    where cutlass is the one they reach for across theirs.'
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Tile-level templates
+    and a codegen dispatcher for GEMM, convolution and fused attention on AMD GPUs is a wide operator surface,
+    and it clears the 3/4 test on the same evidence cutlass does: PyTorch and FlashAttention each vendor
+    it as a submodule and build against it. It is the AMD counterpart to cutlass and sits beside it. Below
+    the anchor because it covers one layer rather than the path from a framework graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md

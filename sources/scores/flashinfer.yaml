@@ -60,7 +60,7 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: an operator surface depended on across the serving ecosystem'
+  basis_detail: 'category feature matrix: an operator surface engines declare a dependency on'
   value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed
     at serving stacks. Its README states it powers inference in SGLang, vLLM, MLC-LLM and ScaleLLM.
   relative_to: apache-tvm
@@ -87,3 +87,10 @@ capability:
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: 2388ff1cda27bb48a2aaea3525312f5c6d2a1725435d84ded76f6e4685cf2463
+  - url: https://raw.githubusercontent.com/vllm-project/vllm/main/requirements/cuda.txt
+    shows: vLLM's CUDA requirements pin flashinfer-python and flashinfer-cubin to an exact version, with
+      an extra index URL for them. A consumer's own pinned build requirement states the dependency from
+      the other side of the relation.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9393effcd139d93e343195924c455efd97bd914053d4f68365c0467e5dba1272
