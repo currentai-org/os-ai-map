@@ -60,15 +60,16 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  basis_detail: 'category feature matrix: several primitive families, no dependency declaration on file'
   value: FP8, FP4 and BF16 GEMMs, fused MoE with communication overlap and MQA scoring in one JIT-compiled CUDA
     library. Several primitive families rather than one.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: Two bands below the apache-tvm anchor. FP8, FP4 and BF16 GEMMs, fused MoE with communication overlap
+    and MQA scoring is several primitive families rather than one, which is why it is not a 2. It stays
+    at 3 because no qualifying dependency declaration is on file, which is where the evidence stands rather
+    than a proof of absence.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/README.md

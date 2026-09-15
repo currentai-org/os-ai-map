@@ -58,22 +58,39 @@ adoption:
     http_status: 200
     content_sha256: 57a89a7628337d7b29e8c24bb69edde706eb00d4c53e2a8f0460752426487077
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
-  value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed at serving
-    stacks. Broader operator coverage than a single-kernel library, still short of transforming a model.
+  basis_detail: 'category feature matrix: an operator surface engines declare a dependency on'
+  value: Attention, GEMM and MoE kernels with JIT specialization over four backend implementations, aimed
+    at serving stacks. Its README states it powers inference in SGLang, vLLM, MLC-LLM and ScaleLLM.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Attention, GEMM
+    and MoE kernels with JIT specialization over four backend implementations is several operator families
+    rather than one, and the dependence spans the serving ecosystem rather than one project: its README
+    names SGLang, vLLM, MLC-LLM and ScaleLLM as what it powers. Narrow on targets, recent NVIDIA hardware
+    only, which is what holds it below the anchor.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md
-    shows: README still documents a library and kernel generator for inference exposing unified attention, GEMM
-      and MoE APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT specialization.
+    shows: README still documents a library and kernel generator for inference exposing unified attention,
+      GEMM and MoE APIs over FlashAttention-2 and -3, cuDNN, CUTLASS and TensorRT-LLM backends, with JIT
+      specialization.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: 47cb615c276565c65af95fb0c7695cbba32902b2b24e03d9b50b6116d4e5a1e3
+  - url: https://raw.githubusercontent.com/flashinfer-ai/flashinfer/main/README.md
+    shows: '"FlashInfer powers inference in:" lists SGLang, vLLM, MLC-LLM and ScaleLLM. The same README
+      records FlashInfer as inspired by FlashAttention, vLLM, stream-K, CUTLASS and AITemplate, so the direction
+      of each relation is stated rather than inferred.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 2388ff1cda27bb48a2aaea3525312f5c6d2a1725435d84ded76f6e4685cf2463
+  - url: https://raw.githubusercontent.com/vllm-project/vllm/main/requirements/cuda.txt
+    shows: vLLM's CUDA requirements pin flashinfer-python and flashinfer-cubin to an exact version, with
+      an extra index URL for them. A consumer's own pinned build requirement states the dependency from
+      the other side of the relation.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 9393effcd139d93e343195924c455efd97bd914053d4f68365c0467e5dba1272

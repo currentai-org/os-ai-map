@@ -67,22 +67,39 @@ adoption:
     http_status: 200
     content_sha256: b4bc8889dfef2e77d46268e809322743c31f5fe34f7b965d424ad8179cb10f9f
 capability:
-  score: 2
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
-  value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD GPUs. One
-    vendor, and narrower operator and ecosystem coverage than CUTLASS.
-  relative_to: tensorrt
-  relation: two_below
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
+  value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD
+    GPUs. Vendored as a git submodule by PyTorch (third_party/composable_kernel) and by FlashAttention (csrc/composable_kernel),
+    in both cases on the AMD path.
+  relative_to: apache-tvm
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
-    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
-    performs, over how many inputs and targets.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Tile-level templates
+    and a codegen dispatcher for GEMM, convolution and fused attention on AMD GPUs is a wide operator surface,
+    and it clears the 3/4 test on the same evidence cutlass does: PyTorch and FlashAttention each vendor
+    it as a submodule and build against it. It is the AMD counterpart to cutlass and sits beside it. Below
+    the anchor because it covers one layer rather than the path from a framework graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
-    shows: README still documents a programming model and template library for performance-critical ML kernels across
-      architectures, with a code generator and dispatcher, shipped as part of ROCm.
+    shows: README still documents a programming model and template library for performance-critical ML kernels
+      across architectures, with a code generator and dispatcher, shipped as part of ROCm.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b
+  - url: https://raw.githubusercontent.com/pytorch/pytorch/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: c7364691cf019f9a34f17d68de041715f5c3d9d58ded3704d0e2f7bda514434f
+    shows: '`[submodule "third_party/composable_kernel"]` with url https://github.com/ROCm/composable_kernel.git,
+      alongside `third_party/cutlass`. PyTorch vendors both; which one a build reaches is decided by the
+      hardware target.'
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 0c57db58f50c4c7c7aa10c7a0b14d253cb6bfab5368caee0a7ca4c7d3f003b59
+    shows: '`[submodule "csrc/composable_kernel"]` with url https://github.com/ROCm/composable_kernel.git
+      and branch amd-master, alongside `csrc/cutlass`. The branch name is the scope: this is FlashAttention''s
+      AMD path.'

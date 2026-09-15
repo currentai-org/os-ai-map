@@ -73,15 +73,106 @@ scoring_recipe:
     because of its license: its optimizing builder is a prebuilt binary the repository links
     against, so `source` is `partial` and the formula settles it on that alone.
 
-    Capability is a category feature matrix rather than a benchmark. It bands on how much of the
-    model-to-hardware transformation pipeline a product performs, over how many inputs and targets:
-    5 is a retargetable end-to-end compiler (multi-framework input, multi-vendor backends, its own
-    optimizer and code generator), 4 is full compilation or a multi-technique optimization toolchain
-    narrowed to one vendor's targets or one class of models, 3 is one optimization family applied
-    broadly or a performance-critical kernel and operator library that supplies the primitives
-    compilers target, and 2 is a narrow kernel set or a single-pass graph utility. apache-tvm is the
-    top anchor and every other band is recorded against it or against the tensorrt rung below it,
-    so `check_capability` can check the arithmetic.
+    Capability is a category feature matrix rather than a benchmark. It banded on how much of the
+    model-to-hardware transformation pipeline a product performs until issue #434, which is a
+    compiler's yardstick: a kernel library performs none of that pipeline by construction, so no
+    kernel library on the roster could score above 3 and several of the most load-bearing pieces of
+    software in the category sat at 2. #434 ruled that evidence against the matrix before it is
+    evidence against the products, and ruled the yardstick be fixed with the roster left whole.
+
+    The matrix asks the same two questions of all three populations the roster holds - compilers and
+    converters, quantizers and optimizers, kernel and primitive libraries:
+
+      * how much of the category's surface the product covers. For a compiler that is framework
+        inputs, hardware backends and the passes between them; for an optimizer, how many techniques
+        over how many classes of model; for a kernel library, how many operator families over how
+        many hardware generations and vendors.
+      * how much of the stack depends on it, which the 3/4 rule below makes a single checkable
+        question rather than a judgment.
+
+      5  At the top of BOTH: the whole path from a framework graph to a target, across more than
+         one vendor's backends, through the product's own optimizer and code generator. No kernel
+         library reaches it, and that is a claim about surface rather than about layer - supplying
+         one layer's primitives covers less of the category's surface than covering the whole path
+         does.
+      4  At the top of ONE, with real coverage on the other. Three routes, one per population, and
+         a product reaches the band by any of them:
+           - a compiler or converter covering the whole path, narrowed to one vendor's targets or
+             one class of program (tensorrt, coremltools, mlc-llm, torch-tensorrt, cuda-tile,
+             nvidia-tensor-ir, taco, finch-jl, freetensor);
+           - an optimizer applying SEVERAL techniques across classes of model rather than one
+             (nvidia-model-optimizer, intel-neural-compressor, torchao);
+           - a kernel or primitive library whose operator surface clears the dependency test below
+             (cutlass, composable-kernel, onednn, flash-attention, flashinfer).
+      3  Real coverage, at the top of neither. A single optimization family applied broadly; or an
+         operator surface that does not clear the dependency test.
+      2  Narrow on both. A single-pass graph utility, or kernels for one operator variant on one
+         hardware generation, usually purpose-built for one model family.
+
+    The KERNEL-LIBRARY route above is the one that has to be reproducible, because it is where the
+    old yardstick did its damage and where a judgment would otherwise stand in for a rule. The
+    compiler and optimizer routes are decided on coverage, as they always were, and nothing below
+    applies to them: a compiler does not need a declared consumer to reach 4, and an optimizer does
+    not either. One question decides the kernel-library route:
+
+      is there a framework or engine OUTSIDE this product's own distribution that declares a
+      dependency on it?
+
+    Three forms of evidence qualify, and they are ranked because they are not equally strong:
+
+      1. the CONSUMER's own declaration - a submodule in its `.gitmodules`, a pinned requirement,
+         a build flag. Strongest, because it states the direction.
+      2. the PRODUCER naming a consumer AND linking that consumer's own integrating change, which
+         is a consumer declaration at one remove and checkable in one click.
+      3. the producer naming consumers with no link. Admissible only as corroboration, never on
+         its own. A "tested against" list is this: it states no direction, because a library can
+         test against something it consumes.
+
+    Applied to the roster's kernel and primitive libraries, and to nothing else:
+
+      4  CUTLASS and Composable Kernel, each vendored as a submodule by PyTorch and FlashAttention
+         (form 1). FlashInfer, pinned in vLLM's CUDA requirements (form 1) and naming SGLang, vLLM,
+         MLC-LLM and ScaleLLM itself (form 3). FlashAttention, whose usage page names PyTorch core,
+         Hugging Face transformers, DeepSpeed, Megatron-LM, Composer, GPT-NeoX and PaddlePaddle and
+         links each integrating change (form 2). oneDNN, declared as a submodule in OpenVINO's own
+         `.gitmodules` (form 1), which its README's list of ONNX Runtime, OpenVINO, PaddlePaddle,
+         PyTorch and TensorFlow then corroborates.
+      3  MIOpen, Arm Compute Library, Liger Kernel, oneMath, DeepGEMM. None carries a qualifying
+         declaration ON FILE. That is where the evidence stands rather than a proof of absence, and
+         each note says so in those terms: a search that has not found a consumer and a consumer
+         that does not exist look identical from here, and only the first is what this roster knows.
+
+    Two earlier versions of this line tried to separate CUTLASS from Composable Kernel and could
+    not, which is the finding rather than a failure. They have the SAME two declared consumers. The
+    first version asked whether a consumer existed at all and then placed them apart anyway. The
+    second asked whether the dependence spanned ecosystems, which counted software ecosystems for
+    one and hardware ecosystems for the other: CUTLASS is CUDA-only exactly as Composable Kernel is
+    ROCm-only, so under any consistent reading they sit together. Keeping them apart would have
+    meant scoring CUDA's install base against ROCm's, which is a claim about market share and not
+    one this axis makes. Composable Kernel is the AMD counterpart to CUTLASS and lands beside it.
+
+    None of this turns on how much of a compiler's pipeline the product performs, which is the
+    whole point of the rewrite.
+
+    apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
+    rung below it, so `check_capability` can check the arithmetic.
+
+    Six bands moved, all of them kernel libraries the old yardstick had capped: flash-attention,
+    cutlass, onednn and flashinfer 3 -> 4, composable-kernel 2 -> 4, liger-kernel 2 -> 3. flashmla
+    re-anchors from one_below to two_below flash-attention, which holds its band at 2 rather than
+    moving it. Nothing else moved and the category's stage did not: Stage 3, L = 0, B = 4.00, one
+    gap, and that gap stays `adoption`. Which is #434's other finding - what holds this layer back
+    is that the adoption instruments cannot see a library that is built from source rather than
+    installed from a package (#426).
+
+    Every kernel library was re-argued against the new test rather than left standing on the retired
+    one, because a band whose stated reason has been withdrawn is not a band anyone can check.
+    arm-compute-library, miopen, onemath and deepgemm keep the band they had; each now says what is
+    on file about its consumers rather than which part of a compiler's pipeline it does not perform.
+
+    oneMath is the one to re-read on the next coverage pass. An interface layer is the shape most
+    likely to be depended on without being credited, and its 3 rests entirely on nothing qualifying
+    being on file.
 
     Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
     shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins

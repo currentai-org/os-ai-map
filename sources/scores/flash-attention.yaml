@@ -58,22 +58,33 @@ adoption:
     http_status: 200
     content_sha256: 9777625edeb7883d7b3adc80d8d6e7ba0866003ca71c82e06a94de1bab87b387
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
-  value: Exact IO-aware attention kernels across NVIDIA GPU generations, the implementation training and serving
-    stacks call for the operator. One operator family, near-universal use.
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
+  value: Exact IO-aware attention kernels across NVIDIA GPU generations. Its usage page names PyTorch core,
+    Hugging Face transformers, DeepSpeed, Megatron-LM, MosaicML Composer, GPT-NeoX and PaddlePaddle as having
+    integrated it.
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. One operator family
+    on one vendor''s hardware is narrow coverage, and the declared dependence is the widest on this roster:
+    its own usage page lists integrations by PyTorch core, Hugging Face transformers, DeepSpeed, Megatron-LM,
+    Composer, GPT-NeoX and PaddlePaddle. Narrow on one axis and at the top of the other is what this band
+    records; tensorrt holds it from the opposite direction.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
-    shows: README still documents the official implementation of FlashAttention and FlashAttention-2, IO-aware exact
-      attention, with the papers, benchmarks and Hopper-specific kernels beside it.
+    shows: README still documents the official implementation of FlashAttention and FlashAttention-2, IO-aware
+      exact attention, with the papers, benchmarks and Hopper-specific kernels beside it.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/usage.md
+    shows: '"Integrated into machine learning frameworks" lists PyTorch (into core nn.Transformer), Hugging
+      Face transformers, Microsoft DeepSpeed, NVIDIA Megatron-LM, MosaicML Composer, EleutherAI GPT-NeoX
+      and PaddlePaddle, each with a link to the integrating change. The consumers are named by the product
+      itself and span vendors.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 47dab5f673095ba63d41996b4d7cdfdfb89d4672f0da9463212c267bbec511f7

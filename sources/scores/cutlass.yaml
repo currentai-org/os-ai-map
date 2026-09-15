@@ -62,23 +62,49 @@ adoption:
     http_status: 200
     content_sha256: 260a24188d1a2c8988eec3800d31bd8075a127ca5003f1d75111d79032886b78
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
-  value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with CuTe layout
-    algebra. Supplies the primitives compilers target rather than transforming a model itself.
+  basis_detail: 'category feature matrix: an operator surface frameworks declare a dependency on'
+  value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with
+    CuTe layout algebra. Vendored as a git submodule by PyTorch (third_party/cutlass) and by FlashAttention
+    (csrc/cutlass).
   relative_to: apache-tvm
-  relation: two_below
+  relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
-    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
-    a product performs, over how many inputs and targets.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. GEMM and convolution
+    templates across the warp, block and device levels of CUDA with the CuTe layout algebra is a wide surface,
+    and it clears the dependency test on the strongest form of evidence: PyTorch and FlashAttention each
+    vendor it as a submodule in their own repositories and build against its headers. NVIDIA''s release
+    notes additionally test against TensorRT-LLM, FlashInfer and cuDNN-Frontend, which corroborates and
+    does not decide. Below the anchor because it covers one layer rather than the path from a framework
+    graph to a target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/NVIDIA/cutlass/blob/main/README.md
-    shows: README still documents C++ abstractions for high-performance GEMM and related computations at every level
-      of the CUDA hierarchy, with hierarchical decomposition and data movement specialized through tiling sizes,
-      data types and algorithmic policy.
+    shows: README still documents C++ abstractions for high-performance GEMM and related computations at
+      every level of the CUDA hierarchy, with hierarchical decomposition and data movement specialized through
+      tiling sizes, data types and algorithmic policy.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: f9bf5185585cf851146c382bccd5a897f9b6ad264aad3ce28cacd8c2746f4f98
+  - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/README.md
+    shows: '"This release has been tested against the following packages" lists FlashAttention, Quack, FlashInfer,
+      cuDNN-Frontend, Pytorch and TensorRT-LLM, each pinned to a commit. A compatibility list states no
+      direction on its own; it corroborates the submodule declarations, which do.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: a78c6aa81d87a88012db7b6570015c8a87f2778f663348c6ffc61936e06b9dce
+  - url: https://raw.githubusercontent.com/pytorch/pytorch/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: c7364691cf019f9a34f17d68de041715f5c3d9d58ded3704d0e2f7bda514434f
+    shows: '`[submodule "third_party/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. PyTorch
+      vendors CUTLASS and builds against it, which establishes the direction of the dependency where a compatibility
+      list does not.'
+  - url: https://raw.githubusercontent.com/Dao-AILab/flash-attention/main/.gitmodules
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 0c57db58f50c4c7c7aa10c7a0b14d253cb6bfab5368caee0a7ca4c7d3f003b59
+    shows: '`[submodule "csrc/cutlass"]` with url https://github.com/NVIDIA/cutlass.git. FlashAttention
+      vendors CUTLASS; its setup.py initializes the submodule and asserts csrc/cutlass/include/cutlass/cutlass.h
+      exists before building.'
