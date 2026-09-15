@@ -60,7 +60,15 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # it: `not_primary_channel` keeps an artifact whose measurement does belong and drops it only from
 # the banded sum, which is a different fact. 379 -> 378 rows, the lost row being this product's
 # only machine route; its recorded level 3 reported_traction is unchanged and no other row moved.
-MEASUREMENTS_DIGEST = "2946ac653f0b7f07853e4aa967157e1219086d559f4a5dbd3b318686c4f81eec"
+# Moved on 2026-09-15 by #585, the first change to the EVALUATOR itself rather than to a
+# declaration: partial coverage now abstains. Where the winning route was observed on some but not
+# all of a product's declared primary artifacts of that kind, the sum is short by an unknown amount,
+# so the band and the value are both suppressed. Three rows change and the row count does not -
+# `composable-kernel` (1 of 2 github repos), `glm` (3 of 4 Hugging Face models) and `olmo-instruct`
+# (1 of 2); each keeps its row and its contributing_observation_ids and loses measured_level,
+# measured_reach and raw_value. This reproduces `is_complete` on the retired
+# currentai.signal_packages.product_adoption; the zero-observation case still produces no row.
+MEASUREMENTS_DIGEST = "b3d89de9e484faea8ffdbac4bc090f11eefdee7d364747b7482937475618f5e8"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -104,9 +112,10 @@ def scores():
 
 @pytest.fixture(scope="module")
 def measurement_rows(inputs, observations):
-    tables, band_rows, category_of, declared, recorded, non_primary = inputs
+    tables, band_rows, category_of, declared, recorded, non_primary, primary = inputs
     return measurements(
         observations, tables, band_rows, category_of, declared, recorded, non_primary,
+        primary_artifacts=primary,
         declaration_version_id=TEST_DVID,
         observation_snapshot_id=observation_snapshot_id(observations),
     )
@@ -114,7 +123,7 @@ def measurement_rows(inputs, observations):
 
 @pytest.fixture(scope="module")
 def reconciliation_rows(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared, _recorded, _non_primary = inputs
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
     return reconcile(
         scores, measurement_rows, tables, category_of, declared,
         declaration_version_id=TEST_DVID,
@@ -128,8 +137,9 @@ def _digest(rows, serializer) -> str:
 
 
 def _measure(inputs, observation_rows, recorded_override=None, **overrides):
-    tables, band_rows, category_of, declared, recorded, non_primary = inputs
-    ids = {"declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64}
+    tables, band_rows, category_of, declared, recorded, non_primary, primary = inputs
+    ids = {"declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64,
+           "primary_artifacts": primary}
     ids.update(overrides)
     return measurements(
         observation_rows, tables, band_rows, category_of, declared,
@@ -199,7 +209,7 @@ def test_route_selection_is_by_declared_artifacts_not_observations(inputs, obser
 def test_authoritative_active_users_precedes_stars(inputs):
     """A product recorded as active_users with a GitHub artifact must not be scored on stars: the
     authoritative hand-authored route outranks the fallback, and is unmeasured."""
-    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
     obs = [_obs("synthetic-au", "github", "stars", 5000)]
     declared = {"synthetic-au": {"github"}}
 
@@ -218,7 +228,7 @@ def test_authoritative_active_users_precedes_stars(inputs):
 def test_unbridged_npm_route_precedes_stars(inputs):
     """A product declaring an unbridged npm package must be unmeasured on the npm route, not scored
     on GitHub stars — an unbridged authoritative instrument does not fall through."""
-    tables, band_rows, category_of, _declared, recorded, _non_primary = inputs
+    tables, band_rows, category_of, _declared, recorded, _non_primary, _primary = inputs
     obs = [_obs("synthetic-npm", "github", "stars", 5000)]
     with_npm = measurements(
         obs, tables, band_rows, category_of, {"synthetic-npm": {"npm", "github"}}, {},
@@ -235,7 +245,7 @@ def test_unbridged_npm_route_precedes_stars(inputs):
 
 
 def test_winning_route_is_the_top_applicable_route(inputs, measurement_rows):
-    tables, _, category_of, declared, recorded, _non_primary = inputs
+    tables, _, category_of, declared, recorded, _non_primary, _primary = inputs
     routes, scopes = all_routes(tables), route_scopes(tables)
     for row in measurement_rows:
         winner = select_route(
@@ -252,7 +262,7 @@ def test_non_primary_artifact_leaves_the_sum_and_nothing_else(inputs):
     """Two PyPI packages, one declared `not_primary_channel`: the PyPI route still applies -- the
     product does ship a package -- and the figure is the primary package alone. The excluded
     observation is still in the input set and still nameable; only the sum moves."""
-    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
     obs = [
         _obs("synthetic-np", "pypi", "downloads", 900_000, artifact_id="ships-this"),
         _obs("synthetic-np", "pypi", "downloads", 40, artifact_id="widget", observation_id="widget-obs"),
@@ -275,7 +285,7 @@ def test_a_kind_that_is_all_non_primary_falls_through_to_the_next_route(inputs):
     package at all, so the package kind bears no route and the next applicable one wins. This is
     NOT the forbidden fallthrough: that one substitutes a weaker route when an authoritative route
     was merely unobserved, and here the declaration says there is nothing to observe."""
-    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
     obs = [
         _obs("synthetic-all-np", "github", "stars", 4_000),
         _obs("synthetic-all-np", "pypi", "downloads", 40, artifact_id="widget"),
@@ -301,7 +311,7 @@ def test_an_unobserved_primary_artifact_still_produces_no_row(inputs):
     """The boundary the exclusion must not cross. A product with one primary package and one
     non-primary one, where only the non-primary was observed, is UNMEASURED -- it does not fall
     through to stars, because the route it declares is applicable and simply was not collected."""
-    tables, band_rows, category_of, _declared, _recorded, _non_primary = inputs
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
     obs = [
         _obs("synthetic-unobs", "github", "stars", 4_000),
         _obs("synthetic-unobs", "pypi", "downloads", 40, artifact_id="widget"),
@@ -312,6 +322,104 @@ def test_an_unobserved_primary_artifact_still_produces_no_row(inputs):
         declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
     )
     assert rows == []
+
+
+def test_partial_coverage_abstains_and_suppresses_the_short_sum(inputs):
+    """#585. The winning route WAS observed, but not on every artifact the product declares as a
+    shipping channel on that kind, so the aggregate is short by an unknown amount. The band and the
+    value both go: leaving a short sum in raw_value with a null level invites a reader to band it
+    themselves, which is the error this prevents. The audit trail stays."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    obs = [_obs("synthetic-partial", "pypi", "downloads", 5_000_000, artifact_id="pkg-a")]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-partial": {"pypi"}}, {}, {},
+        primary_artifacts={"synthetic-partial": {("pypi", "pkg-a"), ("pypi", "pkg-b")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["measured_level"] is None
+    assert row["measured_reach"] is None
+    assert row["raw_value"] is None
+    # the row is the record of WHY it abstained, so the trail survives
+    assert row["contributing_observation_ids"]
+    assert row["measurement_as_of"] is not None
+
+
+def test_complete_coverage_still_bands(inputs):
+    """The other side of the same boundary: every declared primary artifact of the winning kind was
+    observed, so the sum is whole and bands normally."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    obs = [
+        _obs("synthetic-complete", "pypi", "downloads", 4_000_000, artifact_id="pkg-a"),
+        _obs("synthetic-complete", "pypi", "downloads", 1_000_000, artifact_id="pkg-b"),
+    ]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-complete": {"pypi"}}, {}, {},
+        primary_artifacts={"synthetic-complete": {("pypi", "pkg-a"), ("pypi", "pkg-b")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    assert rows[0]["raw_value"] == 5_000_000
+    assert rows[0]["measured_level"] is not None
+
+
+def test_completeness_is_scoped_to_the_winning_route_kind(inputs):
+    """A product declaring an unmeasured artifact of some OTHER kind is not short on the route that
+    won. Without the kind filter, any unobserved github repo would suppress a complete pypi sum."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    obs = [_obs("synthetic-otherkind", "pypi", "downloads", 5_000_000, artifact_id="pkg-a")]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-otherkind": {"pypi", "github"}}, {}, {},
+        primary_artifacts={"synthetic-otherkind": {("pypi", "pkg-a"), ("github", "org/unseen")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    assert rows[0]["raw_value"] == 5_000_000
+    assert rows[0]["measured_level"] is not None
+
+
+def test_a_non_primary_artifact_is_not_counted_as_missing_coverage(inputs):
+    """`not_primary_channel` takes the artifact out of the sum AND out of the completeness test.
+    Counting it as missing would abstain every product carrying one -- hexabot and yomo included --
+    which is the opposite of the 2026-08-14 ruling."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    obs = [_obs("synthetic-np", "pypi", "downloads", 5_000_000, artifact_id="pkg-a")]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-np": {"pypi"}}, {},
+        {"synthetic-np": {("pypi", "widget")}},
+        primary_artifacts={"synthetic-np": {("pypi", "pkg-a")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    assert rows[0]["raw_value"] == 5_000_000
+    assert rows[0]["measured_level"] is not None
+
+
+def test_zero_coverage_still_produces_no_row_at_all(inputs):
+    """The completeness test must not swallow the zero-observation case, which is a DIFFERENT
+    outcome: no row, reconciled as `unmeasured`, rather than a row abstaining."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    rows = measurements(
+        [], tables, band_rows, category_of, {"synthetic-none": {"pypi"}}, {}, {},
+        primary_artifacts={"synthetic-none": {("pypi", "pkg-a")}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert rows == []
+
+
+def test_omitting_primary_artifacts_disables_the_check(inputs):
+    """The default is "no completeness data, do not enforce" -- right for a synthetic input set and
+    never for a real one. Pinned because it is exactly how a production caller that forgets to pass
+    it would fail: silently, still banding short sums."""
+    tables, band_rows, category_of, _declared, _recorded, _non_primary, _primary = inputs
+    obs = [_obs("synthetic-off", "pypi", "downloads", 5_000_000, artifact_id="pkg-a")]
+    rows = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-off": {"pypi"}}, {}, {},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert len(rows) == 1
+    assert rows[0]["measured_level"] is not None
 
 
 def test_load_inputs_reads_the_declaration_off_the_registry():
@@ -355,7 +463,10 @@ def test_usage_volume_sums_across_contributing_artifacts(measurement_rows):
     ]
     assert summed
     for row in summed:
-        assert row["aggregation_method"] == "sum" and row["raw_value"] >= 0
+        assert row["aggregation_method"] == "sum"
+        # raw_value is None on a partial-coverage abstention (#585) -- the short sum is suppressed
+        # along with the band. Where a value survives, it is still a real non-negative aggregate.
+        assert row["raw_value"] is None or row["raw_value"] >= 0
 
 
 def test_stars_sum_rule_aggregates_multiple_repositories(measurement_rows):
@@ -369,8 +480,97 @@ def test_stars_sum_rule_aggregates_multiple_repositories(measurement_rows):
         assert row["measured_level"] is not None
 
 
-def test_no_measurement_abstains_in_the_baseline(measurement_rows):
-    assert all(r["measured_level"] is not None for r in measurement_rows)
+def test_the_live_partial_coverage_rows_get_the_coverage_explanation(
+        inputs, measurement_rows, scores, observations):
+    """The explanation must name the RIGHT cause. This branch used to blame the band set in every
+    case, which is right for a missing ladder and wrong for short coverage."""
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    rows = reconcile(
+        scores, measurement_rows, tables, category_of, declared,
+        declaration_version_id=TEST_DVID,
+        observation_snapshot_id=observation_snapshot_id(observations), evaluated_at=None,
+    )
+    by_slug = {r["product_slug"]: r for r in rows}
+    for slug in ("composable-kernel", "glm", "olmo-instruct"):
+        row = by_slug[slug]
+        assert row["status"] == "abstained", slug
+        assert "not on every declared primary artifact" in row["explanation"], slug
+
+
+def test_a_rule_less_route_with_one_observation_still_reads_as_short_coverage(inputs, scores):
+    """The discriminator's sharp edge. A rule-less route with exactly ONE contributing observation
+    and two declared primary artifacts takes the `len(values) == 1` path in measurements(), so it
+    carries an EMPTY aggregation_method and is genuinely short on coverage. An earlier version
+    keyed the coverage arm on the method being non-empty and sent this row to the generic wording.
+    Keying on the observation count instead keeps it where it belongs."""
+    row = {
+        "product_slug": "synthetic-ruleless", "category_slug": "c", "product_type": "software",
+        "route_id": "pypi.downloads_30d", "channel": "pypi", "metric_type": "downloads",
+        "instrument_type": "usage_volume", "aggregation_method": "",
+        "contributing_observation_ids": ["one"], "non_primary_artifacts": "",
+        "raw_value": None, "unit": "downloads", "measurement_window_days": 30,
+        "band_set_id": "type:software", "measured_level": None, "measured_reach": None,
+        "route_authority": "authoritative", "measurement_as_of": None,
+        "declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64,
+        "routing_policy_version": ROUTING_POLICY_VERSION,
+    }
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    out = reconcile(
+        {"synthetic-ruleless": {"adoption": {"level": 3, "signal_type": "usage_volume"}}},
+        [row], tables, {**category_of, "synthetic-ruleless": "c"},
+        {**declared, "synthetic-ruleless": {"pypi"}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64, evaluated_at=None,
+    )
+    match = [r for r in out if r["product_slug"] == "synthetic-ruleless"]
+    assert match, "the synthetic row was not reconciled"
+    assert match[0]["status"] == "abstained"
+    assert "not on every declared primary artifact" in match[0]["explanation"]
+    assert "undefined aggregation" not in match[0]["explanation"]
+
+
+def test_a_row_with_two_causes_reports_both(inputs, scores):
+    """Causes are not mutually exclusive and the explanation must not mask one with another. A
+    product type with no usage ladder can ALSO be short on coverage; an earlier version led with
+    the missing ladder and told the reader to add one, when adding one still would not have
+    produced a value."""
+    row = {
+        "product_slug": "synthetic-both", "category_slug": "c", "product_type": "hardware",
+        "route_id": "pypi.downloads_30d", "channel": "pypi", "metric_type": "downloads",
+        "instrument_type": "usage_volume", "aggregation_method": "sum",
+        "contributing_observation_ids": ["one"], "non_primary_artifacts": "",
+        "raw_value": None, "unit": "downloads", "measurement_window_days": 30,
+        "band_set_id": "", "measured_level": None, "measured_reach": None,
+        "route_authority": "authoritative", "measurement_as_of": None,
+        "declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64,
+        "routing_policy_version": ROUTING_POLICY_VERSION,
+    }
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
+    out = reconcile(
+        {"synthetic-both": {"adoption": {"level": 2, "signal_type": "usage_volume"}}},
+        [row], tables, {**category_of, "synthetic-both": "c"},
+        {**declared, "synthetic-both": {"pypi"}},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64, evaluated_at=None,
+    )
+    match = [r for r in out if r["product_slug"] == "synthetic-both"]
+    assert match, "the synthetic row was not reconciled"
+    explanation = match[0]["explanation"]
+    assert match[0]["status"] == "abstained"
+    assert "not on every declared primary artifact" in explanation, explanation
+    assert "no band set is declared" in explanation, explanation
+
+
+def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
+    """Before #585 the baseline had no abstentions at all. It now has exactly the rows whose
+    winning route was observed on some but not all of the product's declared primary artifacts of
+    that kind -- the short sums that used to band. Named rather than counted: an abstention
+    appearing for any other reason is a finding, not a tolerance."""
+    abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
+    assert abstained == {"composable-kernel", "glm", "olmo-instruct"}
+    for row in measurement_rows:
+        if row["measured_level"] is None:
+            # the short aggregate goes with the band, and the audit trail stays
+            assert row["raw_value"] is None
+            assert row["contributing_observation_ids"]
 
 
 def test_stars_are_capped_by_their_band_set(measurement_rows):
@@ -578,7 +778,7 @@ def test_active_users_products_are_not_reconciled_against_stars(reconciliation_r
 
 
 def test_evaluated_at_is_excluded_from_the_content_digest(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared, _recorded, _non_primary = inputs
+    tables, _, category_of, declared, _recorded, _non_primary, _primary = inputs
     osid = observation_snapshot_id(observations)
     kw = dict(declaration_version_id=TEST_DVID, observation_snapshot_id=osid)
     a = reconcile(scores, measurement_rows, tables, category_of, declared,

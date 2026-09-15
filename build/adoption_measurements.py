@@ -61,6 +61,28 @@ band on it. Banding them on a package they do not ship through fell both to leve
 the rollup rather than something a reader has to diff the registry to notice — the counterpart of
 `artifacts_excluded`/`kinds_excluded` on the warehouse model.
 
+## Partial coverage abstains
+
+The winning route can be observed and still not cover the product. Where the contributing
+observations miss a declared PRIMARY artifact of that route's kind, the aggregate is short by an
+unknown amount, so the band and the value are both withheld -- a sum over some of a product's
+artifacts is the under-coverage error in `docs/reference/adoption.md`, and it is worse than no
+number because it carries a level. This reproduces `is_complete` on the retired
+`currentai.signal_packages.product_adoption` (#585).
+
+Three boundaries it must not cross, each pinned by a test:
+
+  * it is scoped to the WINNING route's kind -- an unobserved artifact of some other kind does not
+    make this route short;
+  * a `not_primary_channel` artifact is out of the completeness test as well as out of the sum,
+    otherwise every product carrying one would abstain;
+  * ZERO observations is a different outcome and stays the `continue` above: no row at all,
+    reconciled as `unmeasured` rather than `abstained`.
+
+It is also narrower than "every abstention withholds its value": a route with no band set for the
+product's type still publishes a valid aggregate (hardware declares no usage ladder), and only the
+short-sum case nulls `raw_value`.
+
 ## Aggregation
 
 The winning route's contributing observations (all of the product's observations matching the
@@ -250,6 +272,7 @@ def measurements(
     recorded_instruments: Mapping[str, str],
     non_primary_artifacts: Mapping[str, set[tuple[str, str]]] | None = None,
     *,
+    primary_artifacts: Mapping[str, set[tuple[str, str]]] | None = None,
     declaration_version_id: str,
     observation_snapshot_id: str,
 ) -> list[dict]:
@@ -267,6 +290,13 @@ def measurements(
     emitted only where the product's winning applicable route actually has an eligible observation
     — never a fallthrough, and never when the winning route is an unbridged or hand-authored one
     (it has no observation).
+
+    ``primary_artifacts`` maps slug -> the ``(artifact_kind, artifact_id)`` pairs the product
+    declares AS a shipping channel, and is what makes PARTIAL COVERAGE visible. Omitting it means
+    "no completeness data, do not enforce", which is right for a synthetic input set and never for
+    a real one — ``load_inputs`` returns it beside the other two readings, and every production
+    caller passes it. A caller that forgets does not fail; it silently bands short sums, so the
+    publishing path is covered by its own test.
     """
     routes = all_routes(routing_tables)
     scopes = route_scopes(routing_tables)
@@ -280,6 +310,7 @@ def measurements(
     }
     band_index = _band_index(band_rows)
     non_primary = non_primary_artifacts or {}
+    primary = primary_artifacts
 
     by_product: dict[str, list[Mapping]] = {}
     for obs in observation_rows:
@@ -312,6 +343,22 @@ def measurements(
             # outcome is reconciliation's to record.
             continue
 
+        # PARTIAL COVERAGE ABSTAINS. The winning route was observed, but not on every artifact the
+        # product declares as a shipping channel on that kind, so the aggregate is short by an
+        # unknown amount. A sum over some of a product's artifacts is the under-coverage error in
+        # docs/reference/adoption.md and it is worse than no number, because it carries a level.
+        # This reproduces `is_complete` on the retired currentai.signal_packages.product_adoption
+        # (#562, #585); the zero-observation case is the `continue` above and stays separate.
+        #
+        # Scoped to THIS route's kind: a product declaring an unmeasured artifact of some other
+        # kind is not short on the route that won.
+        incomplete = False
+        if primary is not None:
+            want = {ident for kind, ident in (primary.get(product_slug) or set())
+                    if kind == route["artifact_kind"]}
+            have = {o["artifact_id"] for o in contributing}
+            incomplete = bool(want - have)
+
         product_type = contributing[0]["product_type"]
         method = method_by_rule.get(route["aggregation_rule_id"], "")
         values = [_numeric(o["raw_value"], "raw_value") for o in contributing]
@@ -325,7 +372,15 @@ def measurements(
             raw_value = None  # rule-less route, several artifacts: undefined aggregation, abstain
 
         band_set_id = band_set_of.get((route["route_id"], product_type), "")
-        if raw_value is None or not band_set_id:
+        if incomplete:
+            # The short aggregate is suppressed along with the band: leaving it in raw_value with a
+            # null level invites a reader to band it themselves, which is the error this prevents.
+            # Note this is NARROWER than "every abstention nulls raw_value" -- a route with no band
+            # set for the product's type (hardware declares no usage ladder) still publishes a
+            # perfectly valid aggregate, and that behaviour is unchanged below.
+            raw_value = None
+            measured_level, measured_reach = None, None
+        elif raw_value is None or not band_set_id:
             measured_level, measured_reach = None, None
         else:
             measured_level, measured_reach = _band_for(band_index, band_set_id, raw_value)
@@ -376,11 +431,12 @@ def canonical_row(row: Mapping) -> str:
 class Inputs(NamedTuple):
     """What the rollup needs from the committed sources, in the order callers unpack it.
 
-    ``declared_artifacts`` and ``non_primary_artifacts`` are two readings of the same
-    ``registry.product_artifacts`` rows: the kinds a product ships through, and the individual
-    artifacts declared not to be a shipping channel. They are separate because they are used at
-    different steps — the first decides which route applies, the second which observations the
-    winning route may sum.
+    ``declared_artifacts``, ``non_primary_artifacts`` and ``primary_artifacts`` are three readings
+    of the same ``registry.product_artifacts`` rows: the kinds a product ships through, the
+    individual artifacts declared not to be a shipping channel, and the individual artifacts that
+    ARE a shipping channel. They are separate because they are used at different steps — the first
+    decides which route applies, the second which observations the winning route may sum, and the
+    third whether those observations cover everything the product declared.
     """
 
     routing_tables: Mapping[str, Sequence[Mapping]]
@@ -389,10 +445,11 @@ class Inputs(NamedTuple):
     declared_artifacts: Mapping[str, set[str]]
     recorded_instruments: Mapping[str, str]
     non_primary_artifacts: Mapping[str, set[tuple[str, str]]]
+    primary_artifacts: Mapping[str, set[tuple[str, str]]]
 
 
 def load_inputs(root: Path | None = None) -> Inputs:
-    """The six inputs above, read from the committed sources."""
+    """The seven inputs above, read from the committed sources."""
     from build.serialize_registry import build_registry
     from build.serialize_routing import build_routing, load_routing
     from build.serialize_rubric import adoption_bands, route_bands
@@ -407,6 +464,7 @@ def load_inputs(root: Path | None = None) -> Inputs:
     band_rows = adoption_bands(src["rubrics"])[0] + route_bands(routing)[0]
     declared: dict[str, set[str]] = {}
     non_primary: dict[str, set[tuple[str, str]]] = {}
+    primary: dict[str, set[tuple[str, str]]] = {}
     for row in build_registry(src)[0]["product_artifacts"]:
         slug = row["product_slug"]
         # The product keeps its key either way: an artifact declared non-primary is still a
@@ -417,6 +475,7 @@ def load_inputs(root: Path | None = None) -> Inputs:
             non_primary.setdefault(slug, set()).add((row["artifact_kind"], row["artifact_id"]))
         else:
             kinds.add(row["artifact_kind"])
+            primary.setdefault(slug, set()).add((row["artifact_kind"], row["artifact_id"]))
     recorded_instruments = {
         slug: (doc["adoption"] or {}).get("signal_type") or ""
         for slug, doc in src["scores"].items()
@@ -424,7 +483,7 @@ def load_inputs(root: Path | None = None) -> Inputs:
     }
     return Inputs(
         tables, band_rows, _category_of(src["categories"]), declared, recorded_instruments,
-        non_primary,
+        non_primary, primary,
     )
 
 
@@ -529,6 +588,7 @@ def resolve(observation_rows: Sequence[Mapping], root: Path | None = None, allow
         inputs.declared_artifacts,
         inputs.recorded_instruments,
         inputs.non_primary_artifacts,
+        primary_artifacts=inputs.primary_artifacts,
         declaration_version_id=resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"],
         observation_snapshot_id=observation_snapshot_id(observation_rows),
     )

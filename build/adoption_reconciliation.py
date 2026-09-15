@@ -174,10 +174,55 @@ def reconcile(
             )
         elif measured_level is None:
             status = "abstained"
-            explanation = (
-                f"route {route['route_id']} produced no banded level "
-                f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
-            )
+            # Several independent things can null a level, and they are NOT mutually exclusive, so
+            # this reports every cause that applies rather than picking one. An if/elif chain here
+            # masked: a product type with no usage ladder can ALSO be short on coverage, and an
+            # earlier version led with the missing ladder, so the reader was told to add a ladder
+            # when adding one would still not have produced a value. Two rounds of review were
+            # spent on the ORDER of these arms before the shape turned out to be the problem.
+            #
+            # The causes:
+            #   * a suppressed aggregate -- either an undefined aggregation (no rule AND more than
+            #     one contributing observation, identified by the count rather than by the absent
+            #     rule alone) or short coverage (#585), which is the general case;
+            #   * no band set for this (route, product_type) -- hardware declares no usage ladder,
+            #     and that absence IS the abstention;
+            #   * a value that clears no band on a ladder that exists.
+            #
+            # THE FLOOR OF INFERRING RATHER THAN CARRYING: one combination cannot be fully
+            # resolved from the row. A rule-less route with several observations that is ALSO
+            # short on coverage nulls raw_value for either reason, and the row records neither
+            # -- so this reports the undefined aggregation and cannot know to add the coverage
+            # cause beside it. That is a limit of deriving the reason in the consumer, not a
+            # missing case here. Closing it means carrying an explicit reason from
+            # measurements(), which is a new column in its COLUMNS -- the published schema of a
+            # deployed static model -- so it is raised as a decision rather than slipped in.
+            # No route reaches the combination today: both routable instruments with a machine
+            # table declare a sum rule.
+            causes = []
+            if measurement["raw_value"] is None:
+                if (not measurement["aggregation_method"]
+                        and len(measurement["contributing_observation_ids"]) > 1):
+                    causes.append(
+                        f"the route declares no aggregation rule and has "
+                        f"{len(measurement['contributing_observation_ids'])} contributing "
+                        f"observations, so combining them would be an undefined aggregation"
+                    )
+                else:
+                    causes.append(
+                        "the route was observed, but not on every declared primary artifact of "
+                        "its kind, so the sum would be short by an unknown amount"
+                    )
+            if not measurement["band_set_id"]:
+                causes.append(
+                    f"no band set is declared for product type "
+                    f"{measurement['product_type']!r}, so there is no ladder to place it on"
+                )
+            elif measurement["raw_value"] is not None:
+                causes.append(
+                    f"the aggregate clears no band on {measurement['band_set_id']!r}"
+                )
+            explanation = f"route {route['route_id']} abstains: " + "; and ".join(causes)
         elif not same_instrument:
             # The measurement and the recorded assessment are different instruments — a category
             # error to subtract. route_mismatch when an authoritative instrument is on either side
@@ -255,11 +300,12 @@ def resolve(
     from build.validate import load_sources
 
     base = root or ROOT
-    tables, band_rows, category_of, declared, recorded, non_primary = load_inputs(base)
+    tables, band_rows, category_of, declared, recorded, non_primary, primary = load_inputs(base)
     dvid = resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"]
     osid = observation_snapshot_id(observation_rows)
     measurement_rows = measurements(
         observation_rows, tables, band_rows, category_of, declared, recorded, non_primary,
+        primary_artifacts=primary,
         declaration_version_id=dvid, observation_snapshot_id=osid,
     )
     return reconcile(
