@@ -181,12 +181,18 @@ def reconcile(
             # of the product's declared primary artifacts, so the sum was short and both the value
             # and the band were suppressed (#585). Before that landed this branch blamed the band
             # set in every case, which was wrong for the coverage one.
+            #
+            # The coverage arm requires an aggregation_method, because a null raw_value has one
+            # other cause: a rule-less route with more than one contributing observation, which
+            # abstains rather than invent an aggregation. No route reaches that today, but claiming
+            # short coverage for it would be the same misattribution in a new place, so it falls
+            # through to the generic arm instead.
             if not measurement["band_set_id"]:
                 explanation = (
                     f"route {route['route_id']} has no band set for product type "
                     f"{measurement['product_type']!r}; the absence of a ladder is the abstention"
                 )
-            elif measurement["raw_value"] is None:
+            elif measurement["raw_value"] is None and measurement["aggregation_method"]:
                 explanation = (
                     f"route {route['route_id']} withheld its aggregate under band set "
                     f"{measurement['band_set_id']!r}: the route was observed, but not on every "
