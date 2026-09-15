@@ -42,12 +42,26 @@ openness:
       # prose: a reader can go and look at what went in, even though nobody can rebuild the
       # corpus.
       #
-      # The discriminator is ENUMERATION, not detail. A composition described in prose stays
-      # `documented-not-released` however careful the prose and however many sample counts it
-      # carries. This value applies only where every component is named AND each resolves to a
-      # public source, while the mixture or the sampling is withheld, so the corpus is not
-      # reproducible. RWKV is the case it was written for: an itemized machine-readable index
-      # naming every component dataset with a URL, and no corpus and no reconstruction script.
+      # The discriminator is COMPLETE, PER-COMPONENT ENUMERATION, not detail. A composition
+      # described in prose stays `documented-not-released` however careful the prose and however
+      # many sample counts it carries, and so does a release that enumerates one stage of a
+      # mixture, or names some components while describing the rest. This value applies only where
+      # EVERY component is named and individually resolvable - a link, or a citation identifying
+      # that specific dataset - while the mixture or the sampling is withheld, so the corpus is
+      # not reproducible. RWKV is the case it was written for: a machine-readable index with a URL
+      # column naming every component dataset, and no corpus and no reconstruction script.
+      #
+      # Whether each named corpus is itself freely downloadable is NOT the test. That is a fact
+      # about third parties rather than about this release's disclosure, and a gate on one
+      # component is friction rather than withholding - the same reading the evidence store
+      # already applies to gated weights. RWKV's own index includes a gated component and still
+      # names it with a resolvable link, which is the act this value records.
+      #
+      # Three records were held back from this value for failing the enumeration test rather than
+      # the availability one, and they are the shapes to watch: a partly synthetic mixture whose
+      # generated half is described rather than named (nemotron-embed), a two-stage mixture with
+      # only the first stage evidenced (e5), and data-preparation documentation naming what the
+      # model consumes rather than what it was trained on (neuralgcm). All three are on issue #590.
       #
       # It scores exactly as `documented-not-released` does at every rung, deliberately. The
       # gain is descriptive accuracy, not credit. Scoring it higher would reward publishing a
