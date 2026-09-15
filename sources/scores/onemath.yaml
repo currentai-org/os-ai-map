@@ -60,16 +60,17 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
-  value: Cross-vendor BLAS, LAPACK, FFT, RNG and sparse routines dispatched to a hardware backend per device (oneMKL, cuBLAS,
-    rocBLAS and others). Supplies the primitives compilers and frameworks target rather than transforming a model itself.
+  basis_detail: 'category feature matrix: an operator surface with no named consumer'
+  value: Cross-vendor BLAS, LAPACK, FFT, RNG and sparse routines dispatched to a hardware backend per device
+    (oneMKL, cuBLAS, rocBLAS and others). The README names the backends it dispatches to, and no engine
+    or framework built on it.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library, the same
-    shape as onednn and arm-compute-library. Placed two bands below the apache-tvm anchor, on a matrix that
-    bands on how much of the category's surface a product covers, over how many targets, and how much of
-    the stack depends on it.
+  note: 'Two bands below the apache-tvm anchor. Breadth of routine and of vendor is real, and wider than
+    oneDNN''s on the vendor axis. It sits at 3 on the 3/4 test: the README names what oneMath dispatches
+    DOWN to and nothing that calls it, so the named-consumer evidence the band above requires is absent
+    rather than weak.'
   last_verified: '2026-09-02'
   sources:
   - url: https://github.com/uxlfoundation/oneMath/blob/develop/README.md

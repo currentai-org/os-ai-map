@@ -90,20 +90,27 @@ scoring_recipe:
       * how much of the stack depends on it. Whether named engines, frameworks and compilers call
         this product for the job, or whether it is one of several ways to do one job.
 
-      5  Broad on both: a retargetable end-to-end compiler, multi-framework input to multi-vendor
-         backends through its own optimizer and code generator. No kernel library reaches it, and
-         that is a claim about surface rather than about layer - supplying one layer's primitives
-         covers less of the category's surface than covering the whole path does.
-      4  Broad on one and narrow on the other, in either direction. Full compilation or a
-         multi-technique optimization toolchain narrowed to one vendor's targets or one class of
-         model; or an operator library whose coverage is wide - several operator families, or one
-         family across a vendor's whole line - that the stack's named engines and frameworks
-         actually call. tensorrt and flash-attention are the two shapes of this band.
-      3  One job done broadly, or a broad job done in one place. A single optimization family
-         applied across classes of model; an operator library covering one family well on one
-         vendor's hardware, or a wide set with a narrow install base.
+      5  At the top of BOTH: the whole path from a framework graph to a target, across more than
+         one vendor's backends, through the product's own optimizer and code generator. No kernel
+         library reaches it, and that is a claim about surface rather than about layer - supplying
+         one layer's primitives covers less of the category's surface than covering the whole path
+         does.
+      4  At the top of ONE, with real coverage on the other. Either the whole path narrowed to one
+         vendor's targets or one class of model, or an operator surface that the stack's own named
+         engines and frameworks call for the job. tensorrt and flash-attention are the two shapes.
+      3  Real coverage, at the top of neither. A single optimization family applied across classes
+         of model; or an operator set whose named consumers are its own vendor's stack, one
+         framework's users, or nobody the documentation names.
       2  Narrow on both. A single-pass graph utility, or kernels for one operator variant on one
          hardware generation, usually purpose-built for one model family.
+
+    The 3/4 line is the one that has to be reproducible, because it is where the three populations
+    meet and where the old yardstick did its damage. It is decided by WHO CALLS THE PRODUCT, read
+    off the product's own documentation rather than asserted: an operator library reaches 4 when
+    engines and frameworks outside its own vendor name it as the implementation they use, and sits
+    at 3 when its named consumers are its vendor's own stack or one framework's users. oneDNN's
+    README names ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow; MIOpen's names ROCm.
+    That is the difference, and it is checkable in one read.
 
     apache-tvm is the top anchor and every other band is recorded against it or against the tensorrt
     rung below it, so `check_capability` can check the arithmetic.
@@ -115,6 +122,13 @@ scoring_recipe:
     that gap stays `adoption`. Which is #434's other finding - what holds this layer back is that
     the adoption instruments cannot see a library that is built from source rather than installed
     from a package (#426).
+
+    Five bands that did NOT move were re-argued against the new 3/4 test rather than left standing
+    on the retired one, because a band whose stated reason has been withdrawn is not a band anyone
+    can check: arm-compute-library, miopen, onemath, composable-kernel and liger-kernel each now
+    say which named consumers put them below the line. onemath is the one to re-read on the next
+    coverage pass - its README names the backends it dispatches DOWN to and nothing that calls it,
+    and an interface layer is the shape most likely to be called without being credited.
 
     Round 2 (2026-09-02) promoted 18 of 21 registry candidates and added two named licenses to the
     shared software ladder rather than a new tier: `Apache-2.0-WITH-LLVM-exception` (cuda-tile) joins

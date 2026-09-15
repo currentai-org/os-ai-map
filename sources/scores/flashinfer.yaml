@@ -66,10 +66,11 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: One band below the apache-tvm anchor. Attention, GEMM and MoE kernels with JIT specialization over
-    four backend implementations, which is several operator families rather than one, and the serving stacks
-    it targets call it by name. Narrow on targets, recent NVIDIA hardware only, which is what holds it below
-    the anchor.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Attention, GEMM
+    and MoE kernels with JIT specialization over four backend implementations is several operator families
+    rather than one, and the 3/4 test is met by name: it is one of the packages CUTLASS''s own release notes
+    test against, and it is built for the serving stacks that call it. Narrow on targets, recent NVIDIA
+    hardware only, which is what holds it below the anchor.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/flashinfer-ai/flashinfer/blob/main/README.md

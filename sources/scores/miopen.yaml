@@ -61,16 +61,17 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
-  value: Convolution, RNN, pooling, batch-normalization and fusion primitives for ROCm/HIP, the AMD counterpart to cuDNN.
-    Supplies the primitives compilers and frameworks target rather than transforming a model itself.
+  basis_detail: 'category feature matrix: an operator surface whose named consumers are its own vendor''s
+    stack'
+  value: Convolution, RNN, pooling, batch-normalization and fusion primitives for ROCm/HIP, the AMD counterpart
+    to cuDNN. The README names ROCm as what it serves, and no consumer outside AMD's own stack.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: Banded on the category feature matrix as performance-critical kernel and operator library, the same
-    shape as onednn and arm-compute-library. Placed two bands below the apache-tvm anchor, on a matrix that
-    bands on how much of the category's surface a product covers, over how many targets, and how much of
-    the stack depends on it.
+  note: 'Two bands below the apache-tvm anchor. The operator surface is real - convolution, RNN, pooling,
+    normalization and fusion - and wider than most of the roster''s kernel libraries, which is why it is
+    not a 2. It stays at 3 on the 3/4 test rather than on coverage: the README names ROCm and nothing outside
+    AMD''s own stack, where oneDNN''s names five frameworks built on it.'
   last_verified: '2026-09-02'
   sources:
   - url: https://github.com/ROCm/MIOpen/blob/develop_deprecated/README.md

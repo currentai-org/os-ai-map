@@ -65,22 +65,31 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: 'category feature matrix: a primitive layer a vendor''s ecosystem builds on'
-  value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with CuTe layout
-    algebra. Supplies the primitives compilers target rather than transforming a model itself.
+  value: Templated GEMM and convolution primitives spanning warp, block and device levels of CUDA, with
+    CuTe layout algebra. Its own release notes test against PyTorch, TensorRT-LLM, FlashAttention, FlashInfer
+    and cuDNN-Frontend.
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: One band below the apache-tvm anchor. GEMM and convolution templates spanning the warp, block and
-    device levels of CUDA with the CuTe layout algebra, which is a wide operator surface for one vendor,
-    and a large share of CUDA GEMM work is written against it rather than beside it - flashkda on this roster
-    builds its own kernels on it. Below the anchor because it covers one layer rather than the path from
-    a framework graph to a target.
+  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. GEMM and convolution
+    templates across the warp, block and device levels of CUDA with the CuTe layout algebra is a wide surface
+    for one vendor, and the 3/4 test is met by name: the README''s own "tested against" list is PyTorch,
+    TensorRT-LLM, FlashAttention, FlashInfer and cuDNN-Frontend, none of which is NVIDIA''s own compiler
+    stack. Below the anchor because it covers one layer rather than the path from a framework graph to a
+    target.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/NVIDIA/cutlass/blob/main/README.md
-    shows: README still documents C++ abstractions for high-performance GEMM and related computations at every level
-      of the CUDA hierarchy, with hierarchical decomposition and data movement specialized through tiling sizes,
-      data types and algorithmic policy.
+    shows: README still documents C++ abstractions for high-performance GEMM and related computations at
+      every level of the CUDA hierarchy, with hierarchical decomposition and data movement specialized through
+      tiling sizes, data types and algorithmic policy.
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: f9bf5185585cf851146c382bccd5a897f9b6ad264aad3ce28cacd8c2746f4f98
+  - url: https://raw.githubusercontent.com/NVIDIA/cutlass/main/README.md
+    shows: '"This release has been tested against the following packages" lists FlashAttention, Quack, FlashInfer,
+      cuDNN-Frontend, Pytorch and TensorRT-LLM, each pinned to a commit. That is the named-consumer evidence
+      the 3/4 band line turns on, and the consumers are outside NVIDIA''s own compiler toolchain.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: a78c6aa81d87a88012db7b6570015c8a87f2778f663348c6ffc61936e06b9dce

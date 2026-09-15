@@ -69,15 +69,17 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  basis_detail: 'category feature matrix: an operator surface on one vendor'
+  basis_detail: 'category feature matrix: an operator surface whose named consumers are its own vendor''s
+    stack'
   value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD GPUs. One
     vendor, and narrower operator and ecosystem coverage than CUTLASS.
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: Two bands below the apache-tvm anchor. Tile-level templates and a codegen dispatcher for GEMM, convolution
-    and fused attention on AMD GPUs, which is a real operator surface done in one place. A band below cutlass
-    rather than beside it, on its own narrower operator and ecosystem coverage.
+  note: 'Two bands below the apache-tvm anchor. Tile-level templates and a codegen dispatcher for GEMM,
+    convolution and fused attention on AMD GPUs is a real operator surface, which is why it moves off 2.
+    It sits a band below cutlass on the 3/4 test: its named consumers are ROCm''s own stack, where cutlass''s
+    README lists PyTorch, TensorRT-LLM, FlashAttention and FlashInfer.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
