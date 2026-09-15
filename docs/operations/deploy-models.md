@@ -186,6 +186,39 @@ Resync in one commit per contract where you can. The cross-commit coherence gate
 revision, hash and `synced_at` as one movement, and a batch that half-lands is harder to read
 than several small ones.
 
+### A recreated model, and what it was rebuilt from
+
+`missing` means the anchor is gone, and the runbook above says to find out whether the model was
+deleted or recreated before resyncing. There is a second question to ask when it was recreated,
+and #586 is what it cost to skip: **which source was it rebuilt from?**
+
+A recreation is a fresh `createDataModel` plus a revision, and whoever does it pushes from a
+working copy. The working copies for the scoring chain sit in `currentai-org/{tools,udms}/`,
+outside version control, so one can be arbitrarily old while the repo's mirror is current. That
+is what happened to `evidence.product_evidence`: the 2026-09-13 recreation was pushed from a copy
+predating the Phase 2 Unit 2 rename, and its whole diff against the mirror was five lines of the
+rename running backwards. It ran, because `signal_github.repo_state` and
+`signal_huggingface.hub_state` still exist as the compatibility tables the rename left behind, and
+it stamped the retired names into `source_table` on every row it emitted. Nothing failed. The only
+visible symptom was the sentinel reporting the contract `missing`, which is accurate about the
+anchor and says nothing about the code.
+
+So resyncing a `missing` contract onto whatever the platform now serves can write a regression
+into the repository's record. Diff the deployed code against the mirror first:
+
+- **The mirror is behind** — resync as usual, per the five steps above.
+- **The mirror is ahead, or they have diverged** — redeploy from the mirror before touching the
+  contract. Refresh the working copy from `warehouse/models/<dataset>/<table>.sql` (dropping its
+  five-line banner), then revision -> release -> run with
+  `tools/deploy_udm.py --from-current`, which inherits schema, kind and cron and changes only the
+  SQL. `--from-current` matters on a recreated model: the recreation may carry an empty declared
+  schema deliberately, because that is how it escaped the determinism release lock, and passing
+  the sidecar schema would re-lock it.
+
+Then resync the contract onto the new revision, and record the whole sequence in
+`mirror_migration` rather than only the new `model_id` — the next reader needs to know the
+rename went backwards and came back, not just that the id moved.
+
 ### Metadata-only revisions
 
 The platform mints a revision for edits that touch no code — a cron cleared, a description

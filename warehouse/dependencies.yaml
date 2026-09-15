@@ -45,17 +45,18 @@ dependencies:
   freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/scores/openness_facts.sql
-  verified_revision: 11
+  verified_revision: 4
   owner: oso
   files:
     model: warehouse/models/evidence/product_evidence.sql
     schema: warehouse/models/evidence/product_evidence.schema.json
+  mirror_migration: 'Recreated on the platform 2026-09-13 to escape the schema-determinism release lock, so the contract''s old model_id stopped resolving and revision numbering restarted. The recreation was built from a source predating the Phase 2 Unit 2 rename and served signal_github.repo_state / signal_huggingface.hub_state, which still exist as compatibility tables, so it ran and stamped the retired names into every source_table it emitted. Redeployed 2026-09-15 from this repo''s mirror as revision 4 (schema, kind and cron inherited from revision 3, SQL only), and the deployed table now reports only the artifact_state names. New model_id db96aa8f-76d6-4928-b7e8-72ac2591122c. See #586, and #579 for the five contracts resynced ahead of it.'
   mirror:
-    model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
-    revision: 11
-    hash: 039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4
+    model_id: db96aa8f-76d6-4928-b7e8-72ac2591122c
+    revision: 4
+    hash: 075a5828ba5252d3d923e743a644246a1029022db1aef0dc691818b959481cb3
     local_sha256: d31044ba633a012666543a80c15890530f58807e392db89a92f5d25363f60e57
-    synced_at: '2026-08-24'
+    synced_at: '2026-09-15'
     schema_sha256: 625b9bb254aef512dd92151b8ef1055e8aab3566ec3326c2a4b806ea8feef46c
   platform_schedule:
     cron: 0 3 * * 1
