@@ -37,6 +37,7 @@ products:
 - vertex-ai-pipelines
 - azure-machine-learning-pipelines
 - nvidia-run-ai
+- ibm-spectrum-lsf
 - pai-dlc
 - union
 scoring_recipe:
@@ -65,8 +66,8 @@ scoring_recipe:
     \ draft that banded on it was rejected for exactly that. LIBRARY PROVISION: shipping\ntraining libraries\
     \ is a different axis. COMMERCIAL TIER: this category scores wholly closed\nproducts, so conditioning\
     \ capability on openness would put two questions on one axis - which is\nwhy clearml's enterprise-only\
-    \ GPU allocation and polyaxon's commercial queueing both count.\n\nDistribution: 16 at band 3, 2\
-    \ at band 4, 10 at band 5. The widest band holds 57% of\nthe roster. `capability.md` calls a third\
+    \ GPU allocation and polyaxon's commercial queueing both count.\n\nDistribution: 16 at band 3, 3\
+    \ at band 4, 10 at band 5. The widest band holds 55% of\nthe roster. `capability.md` calls a third\
     \ a diagnostic; measured\nacross the live corpus, 18 of 20 published categories exceed it (median\
     \ ~48%), so the number is\nreported here rather than used to trim the roster. What it reflects is\
     \ real: most ML\norchestrators decide when and on which cluster, and let Kubernetes or a cloud batch\
@@ -144,11 +145,15 @@ comments: 'Created 2026-09-15 under issue #429, which was ruled BUILD against th
   category, so this needs an identity ruling rather than a quiet second record. `yunikorn`,
 
   `htcondor`, `dlrover` and `hami` were evaluated and are on the roster above. `lsf` (IBM Spectrum LSF)
-  is held for the same reason as `modelarts-training`: ibm.com returns HTTP 403 to this repository''s
-  own fetcher, and a citation nobody can re-fetch is not evidence. Two large enterprise vendors blocking
-  it is a property of the instrument rather than of their products, and it means the closed side here
-  skews toward vendors whose documentation is openly readable. `yunikorn` and Nebius''s serverless jobs
-  remain unevaluated candidates carried forward rather than rejected.
+  is on the roster, and how it got there is worth recording: ibm.com/docs returns HTTP 403 to this repository''s
+  fetcher on every header combination while serving curl normally, which is a TLS-level block rather
+  than a policy. IBM''s product pages and its own GitHub repositories are reachable, so the record is
+  built from those - the Spectrum LSF Suites page and IBM''s lsf-python-api GPU submission example -
+  and its capability band says what is citable rather than what is likely. `modelarts-training` is still
+  held on the same class of problem, with a difference: Huawei''s block is a header fingerprint on `Accept-Encoding:
+  gzip, deflate`, which the shared fetcher could be changed to avoid. That change reaches every product
+  on the map, so it belongs in its own pull request rather than this one. `yunikorn` and Nebius''s serverless
+  jobs remain unevaluated candidates carried forward rather than rejected.
 
 
   ADOPTION READS LOW HERE BY CONSTRUCTION. Six products - volcano, kueue, kai-scheduler,

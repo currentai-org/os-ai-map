@@ -1,0 +1,91 @@
+product: ibm-spectrum-lsf
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: IBM commercial suite, licensed per site
+    source:
+      value: closed
+      detail: no implementation is published; IBM's open repositories are API wrappers and integrations around
+        the closed scheduler
+  confidence: high
+  note: A commercial IBM suite. IBM publishes a Python API wrapper and integration code on GitHub, but those
+    drive the scheduler rather than implement it, and no source for LSF itself is published. Nothing about
+    a license can help where there is no self-hostable implementation, which is why the ladder settles this
+    on source alone.
+  raw: license:Proprietary;service:proprietary(IBM commercial suite, licensed per site);source:closed(no implementation
+    is published; IBM's open repositories are API wrappers and integrations around the closed scheduler)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://www.ibm.com/products/hpc-workload-management
+    shows: 'IBM''s own product page: ''IBM Spectrum LSF Suites is a workload management platform and job scheduler
+      for distributed high performance computing (HPC)'', sold as a suite with a separately downloadable Community
+      Edition. Establishes a commercial product with no published implementation.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 7d566ed865dbf1c8ea25baf5f36b81cbda6bd19753bd507a841562ccd73a08d2
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for LSF, and it publishes no countable artifact - no package, repository
+    or registry entry for the scheduler itself. IBM's lsf-python-api repository is a wrapper rather than the
+    product, so its stars would measure a different thing. No level is assigned rather than one being inferred.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://www.ibm.com/products/hpc-workload-management
+    shows: The IBM Spectrum LSF Suites product page, read for a usage disclosure; it names capabilities and
+      a roadmap but publishes no count of sites, clusters or customers.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 7d566ed865dbf1c8ea25baf5f36b81cbda6bd19753bd507a841562ccd73a08d2
+capability:
+  score: 4
+  basis: feature_matrix
+  value: GPU requests in LSF's own submit schema - SUB4_GPU_REQ with JDATA_EXT_GPU_NUM, GPU_MODE, GPU_MODEL,
+    GPU_MEM, GPU_TILE and MPS options - or the equivalent resource string rusage[ngpus_physical=2:gmodel=K80#12G:nvlink=yes];
+    numProcessors and maxNumProcessors bound the allocation; the scheduler places the job on hosts advertising
+    matching resources
+  confidence: medium
+  relative_to: openpai
+  relation: at
+  comparison:
+    last_attested: '2026-09-16'
+    sources:
+    - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/doc/user-manual.md
+      shows: Re-read of the peer this band is placed against. HiveD still presents as choosing which GPUs on
+        which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
+        reservation - the property both products share at this band.
+      accessed: '2026-09-16'
+      http_status: 200
+      content_sha256: b4140035b19168633fbdf15d4d2585bdd8d966c173daa4009a0c765d833c73d4
+  note: 'Admitted on the accelerator limb: the GPU request is LSF''s own submit schema, not a backend spec
+    passed through, and LSF''s scheduler consumes it to choose the hosts. Band 4 - it selects the hardware,
+    down to GPU model and memory, and nothing reachable establishes a multi-machine set reserved as one allocation,
+    which is band 5. LSF does have multi-host allocation, but the documentation that would evidence it sits
+    on ibm.com/docs, which this repository cannot fetch; the band records what is citable rather than what
+    is likely.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://raw.githubusercontent.com/IBMSpectrumComputing/lsf-python-api/master/examples/submit_gpu_job.py
+    shows: 'IBM''s own lsf-python-api GPU submission example: submitreq.options4 = lsf.SUB4_GPU_REQ with gpuOpt
+      entries JDATA_EXT_GPU_NUM, JDATA_EXT_GPU_MODE, JDATA_EXT_GPU_MODEL, JDATA_EXT_GPU_MEM and JDATA_EXT_GPU_TILE,
+      and the commented alternative resReq = ''rusage[ngpus_physical=2:gmodel=K80#12G:nvlink=yes]''. Establishes
+      that the accelerator request is expressed in LSF''s own schema and submitted to its scheduler.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 2f970c95e4930e1435d7bf1f5f0633c98c165baa20d40798b1a034df657be779
+  - url: https://www.ibm.com/products/hpc-workload-management
+    shows: IBM's product page describing LSF as a job scheduler for distributed HPC with automated NVIDIA GPU
+      detection and configuration, and autoscaling onto cloud capacity under scheduling policies.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 7d566ed865dbf1c8ea25baf5f36b81cbda6bd19753bd507a841562ccd73a08d2
