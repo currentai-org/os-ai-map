@@ -1,0 +1,80 @@
+name: document_conversion
+display_name: Document conversion & OCR
+description: 'Software and services that turn documents into text or structured output a model can consume:
+  PDF, Office, HTML, email and scanned images into Markdown, JSON or layout-preserving formats, including
+  the OCR and layout-analysis engines underneath them.'
+weights:
+  adopt: 0.6
+  cap: 0.4
+products: []
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, not yet verified against hand-authored scores
+    checker: build/check_rubric.py
+  note: 'PRELIMINARY - the capability ladder is not written yet, and writing it is the promotion''s
+
+    first job rather than an afterthought.
+
+
+    One thing is already settled about it, from the discovery pass that seeded this roster: THE
+
+    LADDER CANNOT BE BENCHMARK-BASED. Three benchmarks are in circulation and each is led by the
+
+    party that publishes it - olmOCR-Bench is AI2''s and olmOCR wins it (82.4 against MinerU''s 75.2);
+
+    OmniDocBench is OpenDataLab''s, who also make MinerU, which wins that one (93.04 against olmOCR''s
+
+    85.74); a third board is led by its own host. A ladder resting on any single one of them would
+
+    encode whose benchmark it chose. Band on format and structure coverage - what goes in, what comes
+
+    out, and how much document structure survives - and cite benchmark scores as corroboration with
+
+    the home-field problem stated.
+
+
+    The openness ladder is the shared software one and needs no change. Note that this category will
+
+    exercise `competition_restricted` more than most: the Datalab family ships Apache-2.0 code with
+
+    weights under a modified OpenRAIL-M license carrying a USD 2M revenue threshold and an
+
+    anti-compete clause, which is the tier''s definition stated directly and is already why `marker`
+
+    scores where it does.'
+comments: 'Created preliminary 2026-09-16 under #430, which ruled that a document-converter bucket must
+  be
+
+  separated from wire protocols and tool servers. The evidence that they are one group rather than
+
+  two is already in the corpus: `olmocr` sits in `dataset_processing_tools` and its capability value
+
+  benchmarks it directly against Marker and MinerU, which sit in `agent_tools_protocols`. The corpus
+
+  treats them as peers and files them in two categories.
+
+
+  At promotion this category takes `docling`, `marker`, `mineru` and `markitdown` from
+
+  `agent_tools_protocols`, and `olmocr` from `dataset_processing_tools`. That resolves the second
+
+  half of #605 differently from the way #605 proposes it - #605 suggests moving the four converters
+
+  into `dataset_processing_tools`, and the reason not to is that that category''s capability bands
+
+  already span two instruments (corpus quality for `datatrove` and `nemo-curator`, operator breadth
+
+  for `data-juicer` and `decon`) and its `scoring_recipe.note` carries no written rungs at all.
+
+  Moving four more products in on a third instrument would relocate the defect #430 exists to fix.
+
+
+  BOUNDARY. This category is the conversion step itself. `dataset_processing_tools` keeps corpus
+
+  construction - filtering, deduplication, decontamination, synthetic generation - and a pipeline
+
+  that happens to call a converter stays there. The test is what the product''s own job is, not what
+
+  it can be used for.'
