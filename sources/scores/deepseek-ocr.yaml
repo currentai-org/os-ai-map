@@ -55,8 +55,9 @@ adoption:
   confidence: high
   note: The Hugging Face API reports 2,386,735 downloads of deepseek-ai/DeepSeek-OCR in the trailing 30 days
     and 3,380 likes, inside the 1M-10M band for level 4. Hugging Face is the declared distribution channel
-    for the weights, and this is the most-downloaded product in the category by an order of magnitude - the
-    level-5 floor is above 10M, which it does not reach.
+    for the weights. An earlier draft called this the most-downloaded product in the category by an order of
+    magnitude; that was false and is withdrawn - docling records 12,493,111 and markitdown 12,755,994, both
+    on PyPI and both a band above.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
@@ -66,21 +67,23 @@ adoption:
     http_status: 200
     content_sha256: e1689a639195e7256a16c38cfc2b46e531b1c03fcd31644eeb947862604df56b
 capability:
-  score: 3
-  basis: feature_matrix
-  value: page image to linearised markdown-like text via optical context compression; a research release demonstrating
-    vision-token compression rather than a document pipeline
-  confidence: medium
-  relative_to: tesseract
-  relation: at
-  note: Text and position survive; the output is linearised markdown-like text from a page image. The band
-    rests on what the release documents itself as doing - optical context compression, a page of text carried
-    in vision tokens - and not on a claim that it cannot emit structure, which nothing cited here tests. Banded
-    at tesseract, the reference point for text-out-of-image.
-  last_verified: '2026-09-16'
+  score: null
+  basis: n/a
+  value: null
+  confidence: low
+  note: 'ABSTAINS. The band this record carried said text survives and structure does not, and nothing cited
+    establishes the second half: the release documents optical context compression - a page of text carried
+    in vision tokens - and neither the repository nor the model card tests whether tables or reading order
+    survive. An earlier draft asserted they do not, which was an absence of evidence read as evidence of absence;
+    removing the assertion does not rescue the band that rested on it. This abstains rather than guessing,
+    and closes when someone runs a document through it. The abstention is dated rather than left blank: the
+    queue''s own rule is that a null somebody looked for and did not find is a confirmed axis, and the record
+    below is where it was looked for.'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
-    shows: The model's Hugging Face record, establishing what is published and its declared licence.
+    shows: 'The model''s Hugging Face record: what is published, the declared licence, and - the point of citing
+      it on an abstention - no statement about what document structure the output preserves.'
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: e1689a639195e7256a16c38cfc2b46e531b1c03fcd31644eeb947862604df56b
+  last_verified: '2026-09-16'
