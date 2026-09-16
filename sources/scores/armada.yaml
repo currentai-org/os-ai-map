@@ -1,0 +1,82 @@
+product: armada
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: armadaproject/armada is the whole system
+    core-gated:
+      value: ungated
+      detail: a 2,416-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0 with no commercial edition. The 2,416-entry recursive tree carries one governing LICENSE
+    and no enterprise, ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(armadaproject/armada is the whole system);core-gated:ungated(a
+    2,416-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/armadaproject/armada
+    shows: 'Repository page for armadaproject/armada: Apache-2.0 license, public and unarchived, described
+      as ''A multi-cluster batch queuing system for high-throughput workloads on Kubernetes''. Establishes
+      the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: b85918292ba06df8b0fb2c3043cdf4cc4eed57712060a7e24cdd9ef773dae53b
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/armadaproject/armada/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 2,416 entries. One root LICENSE. No path
+      matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing
+      about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f015b20ea3440ac8936df205db20727d754da136734f60a5296834227eed3487
+    establishes:
+    - source
+  - url: https://www.cncf.io/projects/armada/
+    shows: Armada's project page on cncf.io, establishing CNCF hosting rather than vendor ownership.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 9dc280b40a61f36552f6d666274dab0ea92235f9116c5d33e6a4e829ba882081
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 633 GitHub stars. The project ships as container images and a Helm chart and publishes no package-registry
+    artifact, so no usage-volume channel exists and the band rests on stars, which measure attention rather
+    than use. The stars route caps at level 3 for that reason. It is the smallest record in this category by
+    this measure, and the note says so rather than leaving the reader to infer it.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/armadaproject/armada
+    shows: Repository page showing the star count for armadaproject/armada.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: b85918292ba06df8b0fb2c3043cdf4cc4eed57712060a7e24cdd9ef773dae53b
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a queue in front of many Kubernetes clusters; per-queue fair share applied across the fleet; decides
+    which cluster a job is sent to; the receiving cluster's scheduler places the pods
+  confidence: medium
+  relative_to: kubeflow-pipelines
+  relation: at
+  note: 'Armada decides which cluster a job goes to and in what order, which is band 3 in this category: it
+    chooses the pool, and the chosen cluster''s own scheduler chooses the machine. Multi-cluster reach is breadth
+    rather than depth of the placement decision, so it does not lift the band.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/armadaproject/armada
+    shows: Repository page and README for armadaproject/armada describing multi-cluster batch queuing and per-queue
+      fair share.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: b85918292ba06df8b0fb2c3043cdf4cc4eed57712060a7e24cdd9ef773dae53b

@@ -1,0 +1,108 @@
+product: htcondor
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: htcondor/htcondor is the product you run
+    core-gated:
+      value: ungated
+      detail: a 5,213-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0, published by an academic centre with no paid edition. The 5,213-entry recursive tree carries
+    no enterprise, ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(htcondor/htcondor is the product you run);core-gated:ungated(a
+    5,213-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/htcondor/htcondor
+    shows: 'Repository page for htcondor/htcondor: Apache-2.0 license, public and unarchived, described as
+      the HTCondor source repository. Establishes the license and that the source is public.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 3e555cf245b78316b323a9cbdd4ea70c13db0dd97b159ce1c1a686f519ac67f0
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/htcondor/htcondor/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 5,213 entries. Licenses are the root LICENSE
+      and vendored dependencies. No path matches enterprise, ee, commercial or proprietary. A tree lists paths;
+      it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 6df694c23ec890cd4f8143b3072677d6750325150602a165f10d02d8582268f7
+    establishes:
+    - source
+  - url: https://htcondor.org/
+    shows: HTCondor's own project site, run by the Center for High Throughput Computing at the University of
+      Wisconsin-Madison. An academic project with no commercial edition positioned to withhold functionality
+      from the published source.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 0aafad6fd8362909d5cb308f76853957d58c0fd7a46e9ed8f1842ab71584312d
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 'The PyPI download API reports 28,301 downloads of htcondor in the trailing 30 days, inside the 10K-100K
+    band for level 2. The package is the Python bindings rather than the scheduler daemons, and it is still
+    the band: it covers this product and no other, so the measurement belongs to it, and preferring a star
+    count on the grounds that bindings users are a subset of HTCondor users is a minority-share argument rather
+    than a different-population one.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/htcondor/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 28,301 downloads in the trailing
+      month.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 6fcd54c01b3989286e84f5cfe6799d1780e0df71171beb0daf337768d69a2b94
+capability:
+  score: 5
+  basis: feature_matrix
+  value: request_GPUs, require_gpus, gpus_minimum_capability and gpus_minimum_memory in HTCondor's own submit
+    language; the scheduler advertises machines with GPUs and matches jobs needing them to machines that have
+    them; machine_count in the parallel universe names the number of machines dedicated to one job
+  confidence: medium
+  relative_to: nvidia-run-ai
+  relation: at
+  comparison:
+    last_attested: '2026-09-16'
+    sources:
+    - url: https://www.nvidia.com/en-us/software/run-ai/
+      shows: Re-read of the peer this band is placed against. NVIDIA Run:ai still presents as selecting the
+        accelerators a workload runs on without an evidenced multi-machine reservation of its own, which is
+        the property HTCondor is banded level with.
+      accessed: '2026-09-16'
+      http_status: 200
+      content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+  note: 'Admitted on the accelerator limb: request_GPUs and require_gpus are HTCondor''s own submit language,
+    and its documentation describes ''matching jobs that need GPUs to machines that have them''. Band 5 on
+    the parallel universe, where machine_count is ''the number of machines to be dedicated toward running the
+    job'' - a multi-machine set held for one job by HTCondor''s own dedicated scheduler. Drafted at 4 from
+    the single-job GPU submission page alone, which is silent on the parallel universe; the silence was read
+    as a ceiling and it was not one.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://htcondor.readthedocs.io/en/latest/users-manual/submitting-a-job.html
+    shows: 'HTCondor''s submit documentation on GPUs: ''matching jobs that need GPUs to machines that have
+      them'', with request_GPUs = <n> to declare the count and require_gpus, gpus_minimum_capability and gpus_minimum_memory
+      to qualify which GPU. Establishes that the accelerator request is expressed in HTCondor''s own schema
+      and consumed by its matchmaking.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 94de435b71e8b51dddfa7b3a33f38b19793b7767379b4d83b33b27733483120e
+  - url: https://htcondor.readthedocs.io/en/24.0/man-pages/condor_submit.html
+    shows: 'HTCondor''s condor_submit manual page: ''machine_count = <max> For the parallel universe, a single
+      value (max) is required. It is neither a maximum or minimum, but the number of machines to be dedicated
+      toward running the job.'' Establishes a multi-machine allocation held for one job.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: a5a1ebb6b9c64c698d68ceef4646b91cef889f08c09d0cd3f685ce77dc7c99f6

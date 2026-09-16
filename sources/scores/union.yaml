@@ -1,0 +1,84 @@
+product: union
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Union.ai commercial platform, deployed into the customer's cloud
+    source:
+      value: closed
+      detail: no source is published for the Union control plane; flyteorg/flyte is
+        Flyte, a different product with its own record
+  confidence: high
+  note: Closed on the dimension's own question - whether the source of the product
+    you run is published - rather than on its managed-service example. Union is self-hostable
+    in the sense that it deploys into the customer's cloud, but no source repository
+    exists for the control plane; the open flyteorg/flyte repository is Flyte, scored
+    separately. Deployment location and source availability are different questions,
+    and this dimension asks the second.
+  raw: license:Proprietary;service:proprietary(Union.ai commercial platform, deployed
+    into the customer's cloud);source:closed(no source is published for the Union
+    control plane; flyteorg/flyte is Flyte, a different product with its own record)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.union.ai/
+    shows: 'Union.ai''s own homepage: ''The durable AI runtime that runs in your cloud,
+      not ours'', with zero-trust deployment into the customer''s infrastructure.
+      Establishes the deployment model and that no implementation is published.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 85128f77c8aa65306c0bf374c6f7fa4d3d403a7ec4d5eb48e8abbe7ba1f1e038
+    establishes:
+    - source
+    - license
+  - url: https://www.union.ai/pricing
+    shows: Union.ai's pricing page, establishing that the product is sold commercially
+      rather than published.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 58350f8257f026f815f014fc99a75467bb80a91759608bb7b10183849c9fcae1
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes
+    no countable artifact - no package, repository or registry entry - so no level
+    is assigned rather than one being inferred from the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.union.ai/
+    shows: Union.ai's homepage, read for a usage disclosure; it names customers but
+      publishes no count of workflows, runs or customers.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 85128f77c8aa65306c0bf374c6f7fa4d3d403a7ec4d5eb48e8abbe7ba1f1e038
+capability:
+  score: 3
+  basis: feature_matrix
+  value: the Flyte execution model - typed Python tasks emitted as pods against declared
+    resources - run from a managed control plane inside the customer's cloud
+  confidence: medium
+  relative_to: flyte
+  relation: at
+  note: 'Banded at flyte, whose engine it runs. That is the honest placement rather
+    than an independent judgement: under this dimension the two do the same thing,
+    and the commercial control plane around it does not change which component chooses
+    the machine. The Kubernetes scheduler still does.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.union.ai/
+    shows: Union.ai's homepage describing the runtime and its deployment into the
+      customer's cloud.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 85128f77c8aa65306c0bf374c6f7fa4d3d403a7ec4d5eb48e8abbe7ba1f1e038
+  - url: https://www.union.ai/docs/v2/flyte/user-guide/core-concepts/tasks/
+    shows: Flyte's task documentation, hosted by Union.ai, describing the typed task
+      model both products execute.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 58210b2a70e9cb32cb0ea582caf84d1254b1c16aef043e6c14b386d0edfaa6f0

@@ -1,0 +1,98 @@
+product: flyte
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the control plane and the SDKs both build from this repo
+    core-gated:
+      value: ungated
+      detail: a 2,504-entry recursive tree carries a root LICENSE plus flyteplugins/LICENSE and flytestdlib/LICENSE,
+        and no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: 'Apache-2.0 with the orchestrator itself published. Union.ai sells a managed platform alongside, which
+    the ladder does not read as gating a core: the 2,504-entry recursive tree carries a governing Apache-2.0
+    LICENSE plus two component licenses under flyteplugins and flytestdlib, and no enterprise, ee or commercial
+    path.'
+  raw: license:Apache-2.0(OSI);source:public(the control plane and the SDKs both build from this repo);core-gated:ungated(a
+    2,504-entry recursive tree carries a root LICENSE plus flyteplugins/LICENSE and flytestdlib/LICENSE, and
+    no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/flyteorg/flyte
+    shows: 'Repository page for flyteorg/flyte: Apache-2.0 license, public and unarchived, described as ''Dynamic,
+      resilient AI orchestration''. Establishes the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 2aa94ab47f696bb7c146c74dbeaaac5b3386df7ee01e572c39e6d3eba1a78ce8
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/flyteorg/flyte/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 2,504 entries. Licenses are the root LICENSE
+      plus flyteplugins/LICENSE and flytestdlib/LICENSE. No path matches enterprise, ee, commercial or proprietary.
+      A tree lists paths; it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 02adf9ae7319542fef6b5c192463b985763901db764f1b0fe2c587e4bf5f2888
+    establishes:
+    - source
+  - url: https://www.union.ai/
+    shows: Union.ai's homepage, presenting its own runtime as a separate commercial product deployed into the
+      customer's cloud rather than as a fuller edition of Flyte. Establishes that the commercial offering sits
+      beside the open orchestrator.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 85128f77c8aa65306c0bf374c6f7fa4d3d403a7ec4d5eb48e8abbe7ba1f1e038
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 164,818 downloads of flyte and 574,094 of flytekit
+    in the trailing 30 days, 738,912 summed across the two declared artifacts, inside
+    the 100K-1M band for level 3. The unit is package downloads summed across declared
+    artifacts, so a user who installs both is counted twice; both packages band at
+    3 individually, so the sum does not move the level.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://pypistats.org/api/packages/flyte/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact flyte:
+      164,818 downloads in the trailing month.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: ca362937e054453ea46ebd8bac2e33a6ac365af401155647ca9e0bb28a4a8cb9
+  - url: https://pypistats.org/api/packages/flytekit/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact flytekit:
+      574,094 downloads in the trailing month.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: c7595056a54cdc2b6ac5b100a055e52ec277e81479b4d51076fe1dda364553ba
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Propeller walks the workflow graph and emits one pod per task against declared
+    Resources; typed artifacts passed between steps with caching; plugin task types
+    for PyTorch, Spark, Ray and Dask; the Kubernetes scheduler chooses the node
+  confidence: medium
+  relative_to: kubeflow-pipelines
+  relation: at
+  note: Flyte's own control plane decides when each task runs and which cluster and
+    project-domain it goes to, and emits the pod; the Kubernetes scheduler then picks
+    the machine. That is band 3 here. It does the same thing metaflow does under this
+    dimension, and the two are banded together rather than separated on a distinction
+    the evidence does not carry.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/flyteorg/flyte
+    shows: Repository page and README for flyteorg/flyte describing the control plane,
+      typed tasks and the plugin task types.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 2aa94ab47f696bb7c146c74dbeaaac5b3386df7ee01e572c39e6d3eba1a78ce8

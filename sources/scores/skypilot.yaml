@@ -1,0 +1,97 @@
+product: skypilot
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: skypilot-org/skypilot is the framework you run
+    core-gated:
+      value: ungated
+      detail: a 3,121-entry recursive tree carries a root LICENSE plus two vendored component files, and no
+        path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0 with the framework published whole. SkyPilot Platform is sold beside it, which the ladder
+    does not read as gating a core. The 3,121-entry recursive tree carries one governing LICENSE and no enterprise,
+    ee or commercial path, and SkyPilot's own site lists the open project and SkyPilot Platform as separate
+    products.
+  raw: license:Apache-2.0(OSI);source:public(skypilot-org/skypilot is the framework you run);core-gated:ungated(a
+    3,121-entry recursive tree carries a root LICENSE plus two vendored component files, and no path matching
+    enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/skypilot-org/skypilot
+    shows: 'Repository page for skypilot-org/skypilot: Apache-2.0 license, public and unarchived, described
+      as ''The AI Compute Platform for frontier teams''. Establishes the license and that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 1a29238f564050291a241a3e5524507579e4c80302191dbaa1b8c41b0a4cf3d7
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/skypilot-org/skypilot/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 3,121 entries. Licenses are the root LICENSE
+      plus two vendored component files. No path matches enterprise, ee, commercial or proprietary. A tree
+      lists paths; it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 470c29b8ef5108eac69fd2c2647acbb8fe646fe5cc923cd7cac90e924cc96e79
+    establishes:
+    - source
+  - url: https://www.skypilot.ai/
+    shows: SkyPilot's homepage, listing 'Open Source' and 'SkyPilot Platform' as separate items in its own
+      navigation. Establishes that the commercial platform is sold beside the open project.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 88d6e09273315670bbcc5e24ad1e22b215497c86cde463197ed985e5987b3aad
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 1,433,089 downloads of skypilot in the trailing
+    30 days, inside the 1M-10M band for level 4. PyPI is the product's declared distribution
+    channel.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://pypistats.org/api/packages/skypilot/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 1,433,089
+      downloads in the trailing month.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: fbf5ec70d76dc6ec7312ae2dd729887339faf97431c5b74f42dd02b270bd101c
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'accelerators: H100 and infra: aws/us-west-2 | gcp/us-central1 | k8s/...
+    in SkyPilot''s own YAML schema; num_nodes reserving a set of nodes for one job,
+    with SKYPILOT_NODE_RANK and SKYPILOT_NUM_NODES exposed to it; provisions the cluster
+    it then places onto'
+  confidence: medium
+  relative_to: kai-scheduler
+  relation: at
+  note: 'Admitted on the accelerator limb: accelerators and infra are SkyPilot''s
+    own fields and it provisions against them. Band 5 because num_nodes is documented
+    as ''the number of nodes reserved for the job'' - a multi-machine set granted
+    together - and SkyPilot chooses and creates those machines rather than handing
+    the request to someone else''s scheduler.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://raw.githubusercontent.com/skypilot-org/skypilot/master/docs/source/reference/yaml-spec.rst
+    shows: SkyPilot's YAML specification, defining accelerators and infra in its own
+      schema with values such as aws/us-west-2, gcp/us-central1 and k8s contexts.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: a4cf3c41bcb53bb43812779fcfd172a7b20968cbc0f8110de1ad9ed63adfa999
+  - url: https://raw.githubusercontent.com/skypilot-org/skypilot/master/docs/source/running-jobs/distributed-jobs.rst
+    shows: 'SkyPilot''s distributed-jobs documentation: num_nodes is ''the number
+      of nodes reserved for the job'', with SKYPILOT_NODE_RANK and SKYPILOT_NUM_NODES
+      exposed to the running job.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 6a736abd9abe0e922393bd34fbb6b5a7ea659a1a71a4ccee4fc9b5db9f54dbc4

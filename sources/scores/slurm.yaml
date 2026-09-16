@@ -1,0 +1,107 @@
+product: slurm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-2.0
+      detail: OSI; the COPYING body states all Slurm code and documentation is under the GNU General Public
+        License, with some contribs/ tools under other licenses
+    source:
+      value: public
+      detail: SchedMD/slurm is the scheduler you run
+    core-gated:
+      value: ungated
+      detail: a 3,889-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: 'GPL throughout, read from the COPYING body rather than from the API label: GitHub reports NOASSERTION
+    because the file opens with a SLURM LICENSE AGREEMENT preamble, and the text then states that all Slurm
+    code and documentation is available under the GNU General Public License. SchedMD sells support and services
+    beside it rather than a fuller build. GPL-2.0 is named in the shared osi tier, so this pair is computed
+    by the ladder rather than authored; the tier entry records the measurement that no other software-type
+    product on the map declares that license, so adding the name moved this record alone.'
+  raw: license:GPL-2.0(OSI; the COPYING body states all Slurm code and documentation is under the GNU General
+    Public License, with some contribs/ tools under other licenses);source:public(SchedMD/slurm is the scheduler
+    you run);core-gated:ungated(a 3,889-entry recursive tree carries no path matching enterprise, ee, commercial
+    or proprietary)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://raw.githubusercontent.com/SchedMD/slurm/master/COPYING
+    shows: 'Slurm''s COPYING file: ''SLURM LICENSE AGREEMENT. All Slurm code and documentation is available
+      under the GNU General Public License. Some tools in the contribs directory have other licenses.'' Establishes
+      the license from the body rather than from the API label.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 0ce020db66ca1a1497b7e5ca36630b9c0987132e779ed97eb7dd14771b285639
+    establishes:
+    - license
+  - url: https://github.com/SchedMD/slurm
+    shows: 'Repository page for SchedMD/slurm: public and unarchived, described as ''Slurm: A Highly Scalable
+      Workload Manager''. Establishes that the source is public.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f110e77c355050ff3bf34e9fbd28ef8366a3fde61d80066d9d77ff4f96a61758
+    establishes:
+    - source
+  - url: https://api.github.com/repos/SchedMD/slurm/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 3,889 entries. Licenses are the root COPYING
+      plus contribs/ components. No path matches enterprise, ee, commercial or proprietary. A tree lists paths;
+      it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: a30eea78e64d688b12d0225b902b91686d4d12a63a9c38528363032e1e7f5c6f
+    establishes:
+    - source
+  - url: https://www.schedmd.com/slurm-support/support/
+    shows: 'SchedMD''s support page: the commercial offering around Slurm is support, training and development
+      services. Establishes that what is sold is service rather than a fuller build.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 119a36ffb6a171842bf27109a51e506afaea8d723deead86d8fc221ebbc74cb5
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,357 GitHub stars. Slurm is distributed as source tarballs and distribution packages rather than through
+    a package registry this map routes, so no usage-volume channel exists for it and the band rests on stars.
+    Stars measure attention rather than use, so the level says what the available channel shows and not how
+    widely Slurm is deployed - which nothing cited here can establish in either direction.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://github.com/SchedMD/slurm
+    shows: Repository page showing the star count for SchedMD/slurm.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: f110e77c355050ff3bf34e9fbd28ef8366a3fde61d80066d9d77ff4f96a61758
+capability:
+  score: 5
+  basis: feature_matrix
+  value: --gres and --gpus requests consumed by Slurm's own controller to allocate specific GPUs and nodes;
+    multi-node allocations granted together so a distributed job starts whole; enforcement of the allocation
+    for the life of the job
+  confidence: medium
+  relative_to: kai-scheduler
+  relation: at
+  note: 'Admitted on the accelerator limb: --gres and --gpus are Slurm''s own submit-language fields and its
+    controller allocates against them. Band 5 because it picks the machines and grants a multi-node allocation
+    as one unit. General-purpose origins do not lower the band - the test is what the scheduler does, and what
+    it does is exactly what the newer AI-specific schedulers here do.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://slurm.schedmd.com/gres.html
+    shows: Slurm's generic resource (GRES) scheduling documentation, describing --gres and GPU allocation by
+      the controller. Establishes that the accelerator request is consumed by Slurm's own scheduler.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: b54efd1e6021b97acb112f6bdfc2e9038a4cb765d83057d973ed73d33fb1b8db
+  - url: https://slurm.schedmd.com/quickstart.html
+    shows: 'Slurm''s quickstart: as a cluster workload manager it ''allocates exclusive and/or non-exclusive
+      access to resources (compute nodes) to users for some duration of time'', and then ''provides a framework
+      for starting, executing, and monitoring work (normally a parallel job) on the set of allocated nodes''.
+      Establishes that the allocation is a set of nodes held for one job.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: a304bcbd47da2c3b755e66351f7c326d2f3061083131def889f4dd9596be919e

@@ -28,7 +28,6 @@ products:
 - northflank-sandboxes
 - spaces
 - ollama
-- ray
 - openpcc
 - nono
 - tensorlake-sandbox
@@ -45,4 +44,17 @@ scoring_recipe:
     tiers, and no `otherwise` rule. See docs/reference/openness.md.
 
   extends: software
-comments: ''
+comments: 'ray left this category on 2026-09-15 for ml_orchestration, taking the roster from 27 to 26. It had
+  been the anomaly here rather than a member: this category''s capability ladder is a single ordering on isolation
+  strength - every other product is a sandbox, a microVM or a sandbox service, banded on isolation tier, cold
+  start, per-instance overhead and fleet scale - and ray''s own capability note conceded the point, calling
+  it "a distributed compute, training, tuning, data and serving framework rather than an isolation boundary".
+  Issue #429 settled it. The reasoning is the same one that moved Qdrant, Milvus and Pinecone to storage on
+  2026-08-18: two capability recipes banding the same kind of product make the published bands incomparable.
+  One band here did rest on ray: modal-sandboxes recorded `at ray`, and a peer must sit in the same category,
+  so it was repointed to `one_below firecracker` - the comparison its own note already argued, and a root that
+  records a capability value, which ollama, the other 4 that note named, does not. `check_capability` caught
+  that rather than a reading of the roster; the first draft of this note asserted ray anchored nothing, and
+  it was wrong. No score changed: modal-sandboxes is 4 before and after. Ray''s capability band was re-opened
+  rather than carried across, per the rule in docs/reference/capability.md that moving a product between categories
+  re-opens the instrument: it was 4 on isolation strength here and is 5 on scheduling depth there.'

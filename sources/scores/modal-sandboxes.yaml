@@ -87,22 +87,24 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  relative_to: ray
-  relation: at
-  value: isolation:gVisor user-space kernel (Sentry intercepts syscalls) - strong container isolation,
-    below microVM but above plain containers; cold-start:optimized container stack, fast startup; runtime
-    breadth:arbitrary images/dependencies (custom images, any deps, repo checkout); persistence:named/ID
-    sandbox lookup, custom images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up
-    to 24h
+  relative_to: firecracker
+  relation: one_below
+  value: isolation:gVisor user-space kernel (Sentry intercepts syscalls) - strong container isolation, below
+    microVM but above plain containers; cold-start:optimized container stack, fast startup; runtime breadth:arbitrary
+    images/dependencies (custom images, any deps, repo checkout); persistence:named/ID sandbox lookup, custom
+    images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up to 24h
   confidence: medium
   note: 'Strong, purpose-built agent sandbox: gVisor isolation, arbitrary images and high concurrency. The
     Sandboxes guide documents arbitrary custom images, named lookup and a 5-minute default lifetime extendable
-    to 24 hours, and Modal’s own comparison page states gVisor isolation and 50,000+ concurrent sessions.
-    It sits just below the Firecracker-microVM frontier (Lambda, Vercel) on isolation strength, so 4 - level
-    with the Ray and Ollama capability anchors. Independent ComputeSDK TTI benchmarks put Modal at a 0.76s
-    median cold-start, 0.82s P95, composite 92.1, 14th by median of 24 providers, against ~470ms and 13th
-    of 19 on the earlier run: slower in absolute terms and unchanged in placement, still mid-field, still
-    short of the sub-0.3s leaders and well clear of the multi-second tail.'
+    to 24 hours, and Modal’s own comparison page states gVisor isolation and 50,000+ concurrent sessions. It
+    sits just below the Firecracker-microVM frontier (Lambda, Vercel) on isolation strength, so 4 - and the
+    comparison is recorded against firecracker directly, which is what that sentence already rested on. The
+    comparison names firecracker rather than ollama, the other 4 in this category, because ollama records no
+    capability value and a band resting on an unstated root is checkable for arithmetic and not for correctness.
+    Independent ComputeSDK TTI benchmarks put Modal at a 0.76s median cold-start, 0.82s P95, composite 92.1,
+    14th by median of 24 providers, against ~470ms and 13th of 19 on the earlier run: slower in absolute terms
+    and unchanged in placement, still mid-field, still short of the sub-0.3s leaders and well clear of the
+    multi-second tail.'
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox
@@ -116,20 +118,20 @@ capability:
       ~470ms sequential / ~570ms burst @100 concurrent; 13th of 19 providers'
     accessed: '2026-07-09'
   - url: https://modal.com/docs/guide/sandbox
-    shows: Sandbox lifecycle through the SDK, arbitrary custom images, named/ID lookup, 5-minute
-      default timeout extendable to 24 hours, untrusted-code framing.
+    shows: Sandbox lifecycle through the SDK, arbitrary custom images, named/ID lookup, 5-minute default timeout
+      extendable to 24 hours, untrusted-code framing.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
   - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
-    shows: 'Still states gVisor container isolation for Modal against microVM competitors, and "can
-      scale to 50,000+ concurrent sessions".'
+    shows: Still states gVisor container isolation for Modal against microVM competitors, and "can scale to
+      50,000+ concurrent sessions".
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: eb0fb2ec1e5f12aca248e6389998745b0ba48a21edfd9b211bd1474d98eea34e
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Modal median 0.76s, P95
-      0.82s, P99 0.85s, 100% success, composite 92.1; 14th of 24 by median.'
+    shows: ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Modal median 0.76s, P95 0.82s,
+      P99 0.85s, 100% success, composite 92.1; 14th of 24 by median.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: cbb96170184f9c48e5c5f0a9834e15ab2a87a083132581c8a632f0cdc6e42e85

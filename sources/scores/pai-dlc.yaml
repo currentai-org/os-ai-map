@@ -1,0 +1,67 @@
+product: pai-dlc
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Alibaba Cloud managed service
+    source:
+      value: closed
+      detail: no implementation is published
+  confidence: high
+  note: A managed Alibaba Cloud service. Nothing about the orchestration implementation
+    is published and it cannot be self-hosted.
+  raw: license:Proprietary;service:proprietary(Alibaba Cloud managed service);source:closed(no
+    implementation is published)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.alibabacloud.com/help/en/pai/user-guide/overview-of-dlc
+    shows: Alibaba Cloud's own Deep Learning Containers overview, describing the managed
+      distributed training service and its job types. Establishes a managed service
+      with no published implementation.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 272e4d1458d687fc7243c7dca455c8881102a4f51b4919a3fe5c910246e9f992
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes
+    no countable artifact - no package, repository or registry entry - so no level
+    is assigned rather than one being inferred from the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.alibabacloud.com/help/en/pai/user-guide/overview-of-dlc
+    shows: The PAI-DLC overview page, read for a usage disclosure; it publishes none.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 272e4d1458d687fc7243c7dca455c8881102a4f51b4919a3fe5c910246e9f992
+capability:
+  score: 3
+  basis: feature_matrix
+  value: typed distributed training jobs - PyTorch, TensorFlow and other frameworks - as first-class submissions;
+    resource quotas backed by GPU instances the service provisions; queued, running and terminal job states
+    managed by the service
+  confidence: medium
+  relative_to: sagemaker-pipelines
+  relation: at
+  note: 'Admitted on the ML-job-model limb: the job model names training types directly rather than a generic
+    unit of work. Band 3, level with the other managed training and pipeline services. The cited overview establishes
+    distributed job types and resource quotas; it does not establish that PAI-DLC''s own scheduler selects
+    the machines, and inferring placement from the fact that a managed service provisions capacity is the error
+    corrected on sagemaker-pipelines in the same pass.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://www.alibabacloud.com/help/en/pai/user-guide/overview-of-dlc
+    shows: Alibaba Cloud's PAI-DLC overview describing distributed training job types and the resource quotas
+      they run against.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 272e4d1458d687fc7243c7dca455c8881102a4f51b4919a3fe5c910246e9f992

@@ -1,0 +1,74 @@
+product: vertex-ai-pipelines
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Google Cloud managed service
+    source:
+      value: closed
+      detail: no implementation is published; pipelines are authored with the open
+        KFP or TFX SDK but executed by a closed service
+  confidence: high
+  note: A managed Google Cloud service. The authoring SDKs are open - Kubeflow Pipelines
+    and TFX, both scored elsewhere on this map - but the service that executes the
+    pipeline is unpublished and cannot be self-hosted, which is the question this
+    dimension asks.
+  raw: license:Proprietary;service:proprietary(Google Cloud managed service);source:closed(no
+    implementation is published; pipelines are authored with the open KFP or TFX SDK
+    but executed by a closed service)
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://cloud.google.com/vertex-ai/docs/pipelines/introduction
+    shows: 'Google''s own introduction: the service ''lets you automate, monitor,
+      and govern your machine learning (ML) systems in a serverless manner by using
+      ML pipelines to orchestrate your ML workflows'', batch-running pipelines defined
+      with the Kubeflow Pipelines or TensorFlow Extended framework. Establishes a
+      managed serverless service authored through open SDKs but executed by a closed
+      one.'
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 653825d93f01d4594c492769b9d21e6fb1f5855a52ee825b2d94ab54c73f1677
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically. The vendor's platform
+    as a whole is widely used, but nothing disclosed is specific to the orchestration
+    product being scored, and it publishes no countable artifact - no package, repository
+    or registry entry - so no level is assigned rather than one being inferred from
+    the parent platform.
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/pipelines/schedule-pipeline-run
+    shows: Google's pipeline scheduling documentation under the renamed path, read
+      for a usage disclosure; it publishes none.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 5df4ef03d871c4894cdf0f978c7de2d924cc1bb4a5061b12990a39d123c959fe
+capability:
+  score: 3
+  basis: feature_matrix
+  value: serverless execution of pipelines defined with the Kubeflow Pipelines or
+    TFX SDK; recurring scheduled runs; ML Metadata lineage across runs and experiments
+  confidence: medium
+  relative_to: kubeflow-pipelines
+  relation: at
+  note: 'Band 3: the service decides when each pipeline task runs and runs it on compute
+    it manages, without the user choosing or seeing the machine. Level with the other
+    managed pipeline services.'
+  last_verified: '2026-09-15'
+  sources:
+  - url: https://cloud.google.com/vertex-ai/docs/pipelines/introduction
+    shows: Google's pipelines introduction describing serverless orchestration, the
+      KFP and TFX authoring frameworks, and ML Metadata lineage.
+    accessed: '2026-09-15'
+    http_status: 200
+    content_sha256: 653825d93f01d4594c492769b9d21e6fb1f5855a52ee825b2d94ab54c73f1677
