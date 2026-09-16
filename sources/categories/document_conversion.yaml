@@ -35,30 +35,42 @@ scoring_recipe:
   derived_from:
     method: shared software ladder, not yet verified against hand-authored scores
     checker: build/check_rubric.py
-  note: "Capability here is ONE quantity: how much of a document survives the conversion. Each band\n\
-    contains the one below it.\n\n  3  Turns the page into text. Characters and their positions come\
-    \ out; reading order, tables and\n     document structure do not, and whatever consumes the output\
-    \ has to recover them.\n  4  Turns the document into structure. Reading order, tables and forms\
-    \ survive into Markdown,\n     JSON or an equivalent a consumer can use directly.\n  5  Turns the\
-    \ document into meaning the consumer defines. Typed entities, custom document types\n     trained\
-    \ on a customer's own forms, or the widest input set converted with structure intact.\n\nWHY THE\
-    \ LADDER IS NOT BENCHMARK-BASED, decided before the bands were written. Three\ndocument-conversion\
-    \ benchmarks are in circulation and each is led by whoever publishes it:\nolmOCR-Bench is AI2's\
-    \ and olmOCR wins it, 82.4 against MinerU's 75.2; OmniDocBench is\nOpenDataLab's, who also make\
-    \ MinerU, which wins that one at 93.04 against olmOCR's 85.74. A\nladder resting on either would\
-    \ encode the choice of benchmark rather than measure the products.\nScores are cited on individual\
-    \ records as corroboration and the home-field problem is stated\nwhere they appear.\n\nTWO LADDERS\
-    \ for openness, not one. This category holds converters that are software - a pipeline\nyou install\
-    \ - and OCR models that are weights you load, so `extends` is the per-type form\n`{model: model,\
-    \ software: software}` that `safeguards` already uses. It matters more than the\nshape suggests:\
-    \ the software ladder has no `otherwise` and abstains on an unrecorded dimension,\nwhile the model\
-    \ ladder falls through to 3/open_weights. `deepseek-ocr` is the case worth reading -\nMIT on both\
-    \ code and weights, and 3 rather than 5, because the training corpus and pipeline are\nnot published\
-    \ and a permissive licence does not substitute for a published recipe.\n\nDistribution: 4 at band\
-    \ 3, 12 at band 4, 4 at band 5. The widest band holds 60% of the roster, which is high and is the\
-    \ honest\nreading rather than a wording failure: document conversion has a large middle where products\n\
-    recover structure into Markdown or JSON, and the discriminating rungs are narrow at both ends -\n\
-    character-level extraction below, customer-defined entity extraction above."
+  note: "Capability here is ONE quantity, and it nests: how much of a document survives the conversion.\n\
+    \n  3  TEXT survives. Characters and their positions come out; reading order, tables and document\n\
+    \     structure do not, and whatever consumes the output has to recover them.\n  4  STRUCTURE survives.\
+    \ Reading order, tables and forms come through into Markdown, JSON or an\n     equivalent the consumer\
+    \ can use directly. Contains band 3.\n  5  MEANING survives. The output carries typed entities the\
+    \ consumer defines - an invoice total,\n     a custom document type trained on a customer's own\
+    \ forms - not only where things sit on the\n     page. Contains band 4.\n\nTWO THINGS DELIBERATELY\
+    \ EXCLUDED, both of which an earlier draft banded on and both of which are a\nsecond quantity rather\
+    \ than more of this one. INPUT BREADTH: how many document kinds a product can\ndo this for is not\
+    \ how much of one survives, which is why `paddleocr` is not at 5 for covering a\nhundred languages\
+    \ and `docling` is not at 5 for the widest format list. PIPELINE POSITION: whether\nthe output feeds\
+    \ a human or another program does not change how much survived, which is why\n`surya` is not below\
+    \ the converters for being the engine one of them runs on - an earlier draft\nput it at 3 on that\
+    \ reasoning, contradicting its own recorded value in the line above.\n\nTHE DISTRIBUTION IS BAD\
+    \ AND IT IS REPORTED RATHER THAN ENGINEERED AWAY: 3 at band 3, 15 at band 4, 2 at band 5, so the\
+    \ middle band\nholds 75% of the roster. That is poor discrimination by `capability.md`'s own diagnostic,\
+    \ and the\nhonest reading is that this axis separates this category weakly: almost everything here\
+    \ recovers\nstructure into Markdown or JSON, and the two ends are narrow - character-level extraction\
+    \ below,\ncustomer-defined entity extraction above. Within the middle the real differences are input\
+    \ breadth\nand structure depth, which trade off against each other and which the available evidence\
+    \ - vendor\nfeature lists - cannot order. Manufacturing rungs to spread the count would encode a\
+    \ distinction\nthe evidence does not carry. A shared benchmark would fix this and there is not one,\
+    \ for the reason\nbelow.\n\nWHY NO BENCHMARK LADDER. Three document-conversion benchmarks circulate\
+    \ and each is led by whoever\npublishes it: olmOCR-Bench is AI2's and olmOCR wins it, 82.4 against\
+    \ MinerU's 75.2; OmniDocBench is\nOpenDataLab's, who also make MinerU, which wins that one at 93.04\
+    \ against olmOCR's 85.74. A ladder\nresting on either would encode the choice of benchmark rather\
+    \ than measure the products. Scores are\ncited on individual records as corroboration with the home-field\
+    \ problem stated.\n\nTWO LADDERS for openness, not one. `extends` is the per-type form `{model:\
+    \ model, software:\nsoftware}` that `safeguards` already uses, and the line between them is checkable\
+    \ rather than\neditorial: a product that publishes an installable package is software - you install\
+    \ a library and\ncall it - and a product that publishes only weights is a model, because what you\
+    \ use is the\nweights. `olmocr`, `chandra`, `surya` and `paddleocr` ship packages; `deepseek-ocr`,\
+    \ `dots-ocr`,\n`lightonocr` and `nanonets-ocr` do not. It matters: the software ladder abstains\
+    \ on an unrecorded\ndimension while the model ladder asks about the training recipe, so `deepseek-ocr`\
+    \ scores 3 rather\nthan 5 despite MIT on both code and weights - the corpus and the pipeline are\
+    \ not published, and a\npermissive licence does not substitute for a published recipe."
   deferred:
     chandra:
       because: 'Datalab ships Apache-2.0 code with model weights under a modified OpenRAIL-M licence
@@ -118,9 +130,9 @@ comments: 'Created preliminary 2026-09-16 under #430, which ruled that a documen
 
   it can be used for.'
 strapline: 'Conversion is where the open stack still competes and the closed stack still sells. Six
-  of the twenty products publish their source outright and three more publish weights, but every product
-  that turns a document into customer-defined structure is either an open engine with the widest format
-  coverage or a hyperscaler''s managed service - and the seven closed services publish no countable
-  channel at all, so half this category''s adoption is unmeasurable rather than low. The licences are
-  the sharp edge: two of the strongest open converters ship permissive code with model weights under
-  revenue-capped terms, which is why four records here read source-available.'
+  of the twenty products publish their source outright and three more publish weights, but the only
+  two that carry a document''s MEANING rather than its layout - typed entities, models trained on a
+  customer''s own forms - are both hyperscaler services, and the seven closed products publish no countable
+  channel at all, so a third of this category''s adoption is unmeasurable rather than low. The licences
+  are the sharp edge: two of the strongest open converters ship permissive code with model weights under
+  revenue-capped terms, which is why four records here sit below their code.'

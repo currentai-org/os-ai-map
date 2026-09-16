@@ -13,20 +13,15 @@ openness:
     source:
       value: public
       detail: datalab-to/surya carries the engine and the weights are published
-  confidence: high
-  note: 'Apache-2.0 covers the CODE and the model WEIGHTS do not: the README carries two badges, ''Code License
-    Apache-2.0'' and ''Model License OpenRAIL-M'', and states that the weights are ''free for research, personal
-    use, and startups under $2M funding/revenue, cannot be used competitively with our API''. A revenue threshold
-    above which a class of use is charged for, plus an anti-compete clause, is the competition_restricted tier''s
-    definition stated directly - the same reading that placed MinerU-Open-Source-License and marker''s funding
-    threshold there. Most-restrictive-wins across the license compound therefore settles this at 2/source_available:
-    the source is fully public and it is the terms on the thing you actually run that hold the score down.
-    The repository label reads Apache-2.0 and is not wrong; it does not describe the weights. The weights terms
-    are NOT asserted to match Chandra''s: Chandra''s README states a USD 2M threshold, Surya''s badge states
-    none, and the recognition weights Datalab has published on Hugging Face carry CC-BY-NC-SA-4.0, which is
-    NonCommercial and a materially different grant. An earlier draft of this record claimed the two were the
-    same terms; that was unverified and is withdrawn. The pair is hand-assigned and the category defers it:
-    the shared software tier lists licences by literal name and does not name this one, so the lookup abstains.
+  confidence: low
+  note: 'Apache-2.0 covers the code. The model weights do not: the README carries a ''Model License OpenRAIL-M''
+    badge linking to Datalab''s pricing page, so the thing you run is not under the code''s licence. What the
+    weights terms actually SAY is unresolved here and that is why the record defers rather than scores. The
+    weights terms are NOT asserted to match Chandra''s: Chandra''s README states a USD 2M threshold, Surya''s
+    badge states none, and the recognition weights Datalab has published on Hugging Face carry CC-BY-NC-SA-4.0,
+    which is NonCommercial and a materially different grant. An earlier draft of this record claimed the two
+    were the same terms; that was unverified and is withdrawn. The pair is hand-assigned and the category defers
+    it: the shared software tier lists licences by literal name and does not name this one, so the lookup abstains.
     Extending a shared tier reaches eleven categories and is a maintainer''s ruling rather than part of a promotion.'
   raw: license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights, per the README's
     Model License badge linking to Datalab's pricing page; the badge states the family and not a threshold,
@@ -76,17 +71,18 @@ adoption:
     http_status: 200
     content_sha256: 1c3e83617293640a5cccb1cecc74956e3806cad38bb036613c0d8a76dd046340
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   value: text line detection, layout block classification, reading-order ordering and table recognition across
     90+ languages; an engine that produces structure rather than a finished document format
   confidence: medium
   relative_to: tesseract
-  relation: at
-  note: 'An engine rather than a converter, and banded accordingly: it recovers structure and hands it on,
-    where the products above it emit Markdown, HTML or JSON a reader can use directly. That is a statement
-    about where it sits in the pipeline and not about quality - Marker''s output depends on it. Banded at tesseract,
-    the other OCR engine here, rather than against the converters.'
+  relation: one_above
+  note: 'Structure survives, and the record''s own value is what settles it: text line detection, layout block
+    classification, reading-order ordering and table recognition. It was drafted at 3 on the reasoning that
+    an engine sits below a converter - which is a pipeline-position argument, not this ladder''s quantity,
+    and it contradicted the value directly above it. Where the output goes next does not change how much of
+    the document survived.'
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/datalab-to/surya

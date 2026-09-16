@@ -49,13 +49,14 @@ openness:
     - data
     - license
 adoption:
-  level: 5
-  reach: '>10M'
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: The Hugging Face API reports 2,386,735 downloads of deepseek-ai/DeepSeek-OCR in the trailing 30 days
-    and 3,380 likes. Hugging Face is the product's declared distribution channel for the weights, and the figure
-    is an order of magnitude above every other model in this category.
+    and 3,380 likes, inside the 1M-10M band for level 4. Hugging Face is the declared distribution channel
+    for the weights, and this is the most-downloaded product in the category by an order of magnitude - the
+    level-5 floor is above 10M, which it does not reach.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
@@ -72,10 +73,10 @@ capability:
   confidence: medium
   relative_to: tesseract
   relation: at
-  note: Band 3, and the adoption figure is not the reason. What it emits is linearised text from a page image;
-    it does not recover tables, forms or reading order into a structured format the way the converters above
-    it do, and it ships no pipeline around the model. Banded at tesseract - both turn an image into text and
-    leave the structure to whatever consumes it.
+  note: Text and position survive; the output is linearised markdown-like text from a page image. The band
+    rests on what the release documents itself as doing - optical context compression, a page of text carried
+    in vision tokens - and not on a claim that it cannot emit structure, which nothing cited here tests. Banded
+    at tesseract, the reference point for text-out-of-image.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
