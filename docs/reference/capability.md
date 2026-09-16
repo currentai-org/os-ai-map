@@ -205,16 +205,35 @@ order that clears the most dependent bands.
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the
-axis is won or lost. Two rules, both learned on 2026-08-18 while banding `compilers` and `storage`.
+axis is won or lost. One rule and one diagnostic, both learned on 2026-08-18 while banding
+`compilers` and `storage`. The diagnostic was a rule until 2026-09-16; see below for why it is not.
 
-**Count the products per rung before you accept the wording.** A rung holding a third of the
-category is not discriminating between anything; it is a label. `storage`'s top rung was first
+**Count the products per rung before you accept the wording, and re-read the wording when one
+rung is wide.** A wide rung is a PROMPT, not a verdict: sometimes the definition is satisfiable by
+almost everything, and sometimes the products really do share a capability. `storage`'s top rung was first
 written as "a distributed retrieval platform that also ranks or runs inference in the serving
 path", which on that day admitted seven of the twenty-seven products then in the category - Vespa
 and Elasticsearch, but also every vector database that fuses scores, since Qdrant has RRF and DBSF,
 Infinity has tensor reranking and Milvus has rerank functions. Reworded to "hosts and evaluates
 ranking or embedding models inside the serving path" it admitted two. Nothing about the products changed; the definition stopped being
 satisfiable by almost all of them. The distribution is the diagnostic, and it costs one query.
+
+An earlier version of this section made that diagnostic a RULE - a rung holding a third of the
+category was unacceptable - and the rule is withdrawn as of 2026-09-16, because the corpus does not
+obey it and cannot be made to. Measured over every published category with at least one banded
+product: 19 of 21 have a widest rung above a third, the median widest rung is 50%, and the range
+runs from `base_pretrained` at 28% to `document_conversion` at 83%. With five bands even an evenly
+split three-product category breaches it. A rule that nearly every category fails is not a standard
+anyone is held to; it is a line that gets quoted at whichever category is being reviewed that day.
+
+What replaces it is a reading, not a threshold. When one rung is wide, ask whether the definition
+generalized - the `storage` case, where a reword moved five products and nothing about the products
+changed - or whether the products genuinely cluster. `document_conversion` is the second case: 15 of
+its 18 banded products recover reading order, tables and formulas into Markdown or JSON, the ends of
+the ladder are narrow by construction, and the differences inside the middle are input breadth
+against structure depth, which trade off and which vendor feature lists cannot order. Manufacturing
+rungs to spread that count would encode a distinction the evidence does not carry. Report the
+concentration in the category's `scoring_recipe.note` and say which of the two cases it is.
 
 **Prefer a definition stated as a capability the product either has or has not, over one stated as
 an outcome.** "Ranks results" is an outcome, and outcomes generalize until they are vacuous -
@@ -251,8 +270,8 @@ harnesses. One name for a group of products reads as a shared measurement that d
 - [ ] `basis` names the instrument; `basis_detail` and `value` carry what it was and what it said.
 - [ ] `basis_detail` names the instrument for THIS product - not one inherited from a cluster of
       peers, and not a harness the product is absent from.
-- [ ] A new or reworded rung was checked against its own distribution: no rung quietly holds a
-      third of the category (see "Writing the rungs").
+- [ ] A new or reworded rung was checked against its own distribution, and a wide rung is either
+      reworded or reported in the recipe note with which case it is (see "Writing the rungs").
 - [ ] A comparison-placed band records `relative_to` (same category) and `relation`, and the
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.
