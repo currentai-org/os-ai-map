@@ -1,0 +1,54 @@
+name: search_retrieval
+display_name: Search & retrieval
+description: 'Services and engines that retrieve information from a live external surface on behalf
+  of a model or agent: web search APIs, crawling and scraping platforms, metasearch engines, and hosted
+  retrieval endpoints.'
+weights:
+  adopt: 0.6
+  cap: 0.4
+products: []
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, not yet verified against hand-authored scores
+    checker: build/check_rubric.py
+  note: 'PRELIMINARY - the capability ladder is not written yet. The quantity the existing bands
+
+    already use is how much of a live surface the product can reach, and how fresh what it returns
+
+    is; `apify` records "coverage - 59,817 prebuilt Actors" and `searxng` records "engines
+
+    aggregated", which is that quantity in two shapes. Writing it is the promotion''s first job.
+
+
+    One caution for whoever writes it: the vendor-published eval numbers in this space - SimpleQA,
+
+    BrowseComp - are self-reported and not comparable across vendors. They do not belong in a
+
+    capability `value` without a shared harness somebody actually ran.'
+comments: 'Created preliminary 2026-09-16 under #430. At promotion it takes the retrieval half of
+
+  `agent_tools_protocols` - `firecrawl`, `crawl4ai`, `serper`, `exa-search-api`,
+
+  `tavily-search-api`, `perplexity-sonar-api`, `google-grounding-api`, `algolia-ai-search`,
+
+  `searxng`, `apify`, `jina-reader` and `context7` - plus the seed roster below.
+
+
+  BOUNDARY against `embeddings_retrieval`, which is the near neighbour: that category holds MODELS
+
+  whose output is a vector or a relevance score. This one holds SERVICES that go and fetch from a
+
+  live surface. A product that embeds your corpus belongs there; a product that queries the web
+
+  belongs here.
+
+
+  `context7` is the borderline and it is placed here deliberately. Its interface is an MCP server,
+
+  which argues for tool servers, but its recorded value is version-aware retrieval of library
+
+  documentation, which is this category''s quantity. Placed on the instrument rather than the
+
+  interface, which is the reasoning the whole split rests on.'
