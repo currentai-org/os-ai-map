@@ -213,11 +213,17 @@ def test_the_prose_leg_holds_at_its_known_count():
     correct outcome: this set holds notes that ASSERT under-coverage, and slurm no longer
     asserts it. Seven products in that category still band on stars for want of an
     instrument; none of them claims to know what the missing measurement would say.
+
+    17 -> 18 with the document_conversion promotion: `tesseract` bands on stars and says in its own
+    note that the figure understates a library embedded in a very large amount of other software.
+    Unlike most notes in this set that is not a remediable recording choice - Tesseract ships as
+    source and distribution packages and there is no channel to relabel it to, so it sits here
+    until an instrument exists.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
     assert {f[0] for f in findings} == {
         "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
         "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",
-        "ollama", "perplexica", "promptfoo", "searxng", "uzu",
+        "ollama", "perplexica", "promptfoo", "searxng", "tesseract", "uzu",
     }

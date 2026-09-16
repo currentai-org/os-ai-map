@@ -1,0 +1,100 @@
+product: surya
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; covers the code
+    - name: Datalab-Modified-OpenRAIL-M
+      detail: the model weights, per the README's Model License badge linking to Datalab's pricing page; the
+        badge states the family and not a threshold, and Datalab's published recognition weights have historically
+        carried CC-BY-NC-SA-4.0, so the exact terms need a maintainer's read
+    source:
+      value: public
+      detail: datalab-to/surya carries the engine and the weights are published
+  confidence: low
+  note: 'Apache-2.0 covers the code. The model weights do not: the README carries a ''Model License OpenRAIL-M''
+    badge linking to Datalab''s pricing page, so the thing you run is not under the code''s licence. What the
+    weights terms actually SAY is unresolved here, which is why the LICENSE TIER abstains and the category
+    records the deferral. The published 2/source_available is HAND-ASSIGNED, not computed: replaying the walk
+    over these components returns no result at all - it stops at the first rung that tests a tier, which is
+    what the category''s deferral records. The 2 is the curator''s reading that a revenue-capped, anti-compete
+    weights licence over a public source is the competition_restricted tier, which is the same reading that
+    settles `chandra` and `marker`. It stands until the tier is extended and the walk can reproduce it. An
+    earlier draft of this note said the walk returns the 2, and a second said the record defers rather than
+    scores; the first was false and the second contradicted the published number. The weights terms are NOT
+    asserted to match Chandra''s: Chandra''s README states a USD 2M threshold, Surya''s badge states none,
+    and the recognition weights Datalab has published on Hugging Face carry CC-BY-NC-SA-4.0, which is NonCommercial
+    and a materially different grant. An earlier draft of this record claimed the two were the same terms;
+    that was unverified and is withdrawn. The pair is hand-assigned and the category defers it: the shared
+    software tier lists licences by literal name and does not name this one, so the lookup abstains. Extending
+    a shared tier reaches eleven categories and is a maintainer''s ruling rather than part of a promotion.'
+  raw: license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights, per the README's
+    Model License badge linking to Datalab's pricing page; the badge states the family and not a threshold,
+    and Datalab's published recognition weights have historically carried CC-BY-NC-SA-4.0, so the exact terms
+    need a maintainer's read);source:public(datalab-to/surya carries the engine and the weights are published)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/datalab-to/surya
+    shows: 'Repository page for datalab-to/surya: public and unarchived, 21,393 stars, label Apache-2.0. Establishes
+      that the source is public.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 240b867ef98bd10b26d9ea41d0132524d5a9deb716e3fbf1aa49f624764a9765
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/datalab-to/surya/master/README.md
+    shows: Surya's README carries the same two Datalab badges as Chandra - 'Code License Apache-2.0' and 'Model
+      License OpenRAIL-M' linking to the Datalab pricing page. Establishes that the weights are not under the
+      code's licence.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: edb0368b5ad6ad33dbd705decd1c2d42dc11c9f011fe55be1e39ddb4550798f5
+    establishes:
+    - license
+  - url: https://api.github.com/repos/datalab-to/surya/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 205 entries. One root LICENSE. No path matches
+      enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about
+      the vendor's offerings.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 8b8fd23055fa5425fa67d1d0bcef4677261893671b27d3f08b0b23839900cf57
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 263,032 downloads of surya-ocr in the trailing 30 days, inside the 100K-1M
+    band for level 3.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/surya-ocr/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 263,032 downloads in the trailing
+      month.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 1c3e83617293640a5cccb1cecc74956e3806cad38bb036613c0d8a76dd046340
+capability:
+  score: 4
+  basis: feature_matrix
+  value: text line detection, layout block classification, reading-order ordering and table recognition across
+    90+ languages; an engine that produces structure rather than a finished document format
+  confidence: medium
+  relative_to: tesseract
+  relation: one_above
+  note: 'Structure survives, and the record''s own value is what settles it: text line detection, layout block
+    classification, reading-order ordering and table recognition. It was drafted at 3 on the reasoning that
+    an engine sits below a converter - which is a pipeline-position argument, not this ladder''s quantity,
+    and it contradicted the value directly above it. Where the output goes next does not change how much of
+    the document survived.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/datalab-to/surya
+    shows: Repository page and README describing OCR, line detection, layout analysis, reading order and table
+      recognition across more than ninety languages.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 240b867ef98bd10b26d9ea41d0132524d5a9deb716e3fbf1aa49f624764a9765

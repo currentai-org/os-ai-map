@@ -1,0 +1,64 @@
+product: adobe-pdf-extract
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Adobe commercial API
+    source:
+      value: closed
+      detail: no implementation is published
+  confidence: high
+  note: A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted,
+    which is the question this dimension asks; the ladder settles it on source alone.
+  raw: license:Proprietary;service:proprietary(Adobe commercial API);source:closed(no implementation is published)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/
+    shows: Adobe's PDF Extract API documentation, describing extraction of text, tables and figures from PDFs
+      into structured JSON with reading order and styling. Establishes a commercial API with no published implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes no countable artifact
+    - no package, repository or registry entry - so no level is assigned rather than one being inferred from
+    the vendor's platform as a whole.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/
+    shows: The product page, read for a usage disclosure; it publishes none specific to this service.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32
+capability:
+  score: 4
+  basis: feature_matrix
+  value: PDF text, tables and figures to structured JSON with reading order and styling, using Adobe's own
+    PDF engine rather than page OCR; figures and tables returned as separate renditions
+  confidence: medium
+  relative_to: chandra
+  relation: at
+  note: 'Structure survives: the service reads the PDF''s own object model rather than an image of it and returns
+    tables, figures and reading order as structured JSON, which is band 4. It does not reach band 5 because
+    it returns the document''s structure and not typed entities the customer defines - there is no custom-processor
+    path here. An earlier draft stopped it at 4 because it reads one input format, which is input breadth and
+    is excluded from this ladder by name. Banded at chandra.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/
+    shows: Adobe's PDF Extract API documentation, describing extraction of text, tables and figures from PDFs
+      into structured JSON with reading order and styling. Establishes a commercial API with no published implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32
