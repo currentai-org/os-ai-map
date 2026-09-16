@@ -76,7 +76,16 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # `category_slug`. Same band, same channel, same contributing_observation_ids. The twenty-four
 # products added in the same change contribute no rows, because measurements come from the
 # frozen observation snapshot rather than from declared artifacts.
-MEASUREMENTS_DIGEST = "513cd0519bb80cde7d72bdccb3df605d609596e28a0cb0b5a014b58fc49e9fdc"
+# Moved on 2026-09-16 by the document_conversion promotion (#430): three products changed
+# category, and `category_slug` is one of the columns this digest covers. Measured rather than
+# asserted - the row sets were dumped on both sides and diffed: 378 rows before and after, three
+# rows different, and on each the only field that differs is `category_slug` (docling and
+# markitdown out of agent_tools_protocols, olmocr out of dataset_processing_tools, all three into
+# document_conversion). `marker` and `mineru` moved category too and have no rows, so the change
+# is smaller than the roster move; the fifteen products promoted alongside them contribute none
+# either, because measurements come from the frozen observation snapshot rather than from
+# declared artifacts.
+MEASUREMENTS_DIGEST = "17fdfb058a84b896e2c6dc421a11fd6f6a14c98179b41349281526145586dac8"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

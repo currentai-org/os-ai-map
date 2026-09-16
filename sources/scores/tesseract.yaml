@@ -1,0 +1,76 @@
+product: tesseract
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: tesseract-ocr/tesseract is the engine
+    core-gated:
+      value: ungated
+      detail: a 780-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary,
+        and no vendor sells a Tesseract edition
+  confidence: high
+  note: Apache-2.0 with no vendor and no paid edition. The 780-entry recursive tree carries no enterprise,
+    ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(tesseract-ocr/tesseract is the engine);core-gated:ungated(a 780-entry
+    recursive tree carries no path matching enterprise, ee, commercial or proprietary, and no vendor sells
+    a Tesseract edition)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/tesseract-ocr/tesseract
+    shows: The Tesseract repository page. Tesseract is maintained as a community open-source project with no
+      vendor and no commercial edition; cited for the licence, the public source and the absence of a paid
+      tier.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5
+    establishes:
+    - core-gated
+    - license
+    - source
+  - url: https://api.github.com/repos/tesseract-ocr/tesseract/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 780 entries. One root LICENSE. No path matches
+      enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about
+      the vendor's offerings.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 1e8f24e078aabf05c5678e7ecca4ba37018fc56905d771cafe3328d0401e6d35
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 76,518 GitHub stars, the largest count in this category. Tesseract is distributed as source and through
+    distribution packages rather than a registry this map routes, so no usage-volume channel exists and the
+    band rests on stars, which cap at 3. That understates a library embedded in a very large amount of other
+    software, and the understatement is a property of the instrument.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/tesseract-ocr/tesseract
+    shows: Repository page showing the star count for tesseract-ocr/tesseract.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5
+capability:
+  score: 3
+  basis: feature_matrix
+  value: LSTM text recognition across 100+ languages; output as plain text, hOCR, ALTO, TSV and PDF; no layout
+    understanding or document-structure recovery of its own
+  confidence: medium
+  note: The engine band. It recognises characters and emits text with positions; it does not recover reading
+    order, tables or document structure, which is what separates this rung from the converters. It anchors
+    band 3 in this category as the reference OCR engine other products build on.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/tesseract-ocr/tesseract
+    shows: Repository page and README describing the LSTM OCR engine, its language coverage and its output
+      formats.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5

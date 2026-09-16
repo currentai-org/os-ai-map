@@ -13,7 +13,6 @@ products:
 - datatrove
 - distilabel
 - nemo-curator
-- olmocr
 - dolma-toolkit
 - datamap-rs
 - duplodocus
@@ -58,7 +57,19 @@ scoring_recipe:
         across eleven software categories, and it is the same open question `livecodebench` and
         `openhermes-2-5` are waiting on one ladder over.
 comments: 'The software that produces the training_synthetic_datasets row (Columbia model-components layer;
-  MOF ''Data Preprocessing Code''). Scoped to data-processing software; human-data / RLHF labor marketplaces (Scale, Surge, Mercor) are
-  out of scope -- per the Columbia framework their output is data (the datasets category) and their labor
-  is an upstream transparency axis, not a stack component. Software openness vocabulary. Proposed in issue #85. TxT360 pipeline scored source_available:
-  its README asserts Apache-2.0 but the repo ships no LICENSE file.'
+  MOF ''Data Preprocessing Code''). Scoped to data-processing software; human-data / RLHF labor marketplaces
+  (Scale, Surge, Mercor) are out of scope -- per the Columbia framework their output is data (the datasets
+  category) and their labor is an upstream transparency axis, not a stack component. Software openness vocabulary.
+  Proposed in issue #85. TxT360 pipeline scored source_available: its README asserts Apache-2.0 but the repo
+  ships no LICENSE file.
+
+
+  `olmocr` left on 2026-09-16 for document_conversion, taking the roster from 21 to 20. It is the product whose
+  capability value benchmarks it against Marker and MinerU on olmOCR-Bench, and those two sat in agent_tools_protocols
+  - so the corpus already treated the three as peers across two categories. #605 proposed resolving that by
+  moving the converters here instead. The reason this change goes the other way: this category''s bands already
+  span two instruments - corpus quality for `datatrove` and `nemo-curator`, measured by what the corpus they
+  build does downstream, and operator breadth for `data-juicer` and `decon` - and its scoring_recipe carries
+  no written capability rungs at all. Moving four more converters in on a third instrument would have relocated
+  the defect #430 exists to fix. The boundary that remains: this category keeps corpus construction, and a
+  pipeline that happens to call a converter stays here.'

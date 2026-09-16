@@ -1,0 +1,77 @@
+product: google-document-ai
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: Google Cloud managed service
+    source:
+      value: closed
+      detail: no implementation is published
+  confidence: high
+  note: A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted,
+    which is the question this dimension asks; the ladder settles it on source alone.
+  raw: license:Proprietary;service:proprietary(Google Cloud managed service);source:closed(no implementation
+    is published)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://cloud.google.com/document-ai
+    shows: Google Cloud's Document AI product page, describing a platform of pretrained and custom processors
+      that extract structured entities from documents. Establishes a managed Google Cloud service with no published
+      implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes no countable artifact
+    - no package, repository or registry entry - so no level is assigned rather than one being inferred from
+    the vendor's platform as a whole.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://cloud.google.com/document-ai
+    shows: The product page, read for a usage disclosure; it publishes none specific to this service.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4
+capability:
+  score: 5
+  basis: feature_matrix
+  value: pretrained processors for forms, invoices, receipts and identity documents plus custom processors
+    trained on a customer's own document types; extraction to typed entities rather than text; human-in-the-loop
+    review built into the platform
+  confidence: medium
+  relative_to: docling
+  relation: at
+  comparison:
+    last_attested: '2026-09-16'
+    sources:
+    - url: https://github.com/docling-project/docling
+      shows: Re-read of the peer these bands are placed against. Docling still presents as the widest input
+        set in this category - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images into Markdown, HTML and
+        lossless JSON with layout and reading order - which is the property the spacing rests on.
+      accessed: '2026-09-16'
+      http_status: 200
+      content_sha256: 69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5
+  note: 'Top band, and the reason is the custom-processor path rather than format count: the product converts
+    documents into typed entities a customer defines, which is a strictly larger transformation than emitting
+    markdown and is what the rung asks for. Banded at docling on structure recovered, from the other direction
+    - docling spans more input formats, this recovers more meaning from each.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://cloud.google.com/document-ai
+    shows: Google Cloud's Document AI product page, describing a platform of pretrained and custom processors
+      that extract structured entities from documents. Establishes a managed Google Cloud service with no published
+      implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4

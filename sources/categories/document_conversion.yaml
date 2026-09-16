@@ -6,44 +6,83 @@ description: 'Software and services that turn documents into text or structured 
 weights:
   adopt: 0.6
   cap: 0.4
-products: []
+products:
+- docling
+- paddleocr
+- chandra
+- marker
+- mineru
+- markitdown
+- nanonets-ocr
+- dots-ocr
+- olmocr
+- surya
+- tesseract
+- deepseek-ocr
+- lightonocr
+- google-document-ai
+- azure-document-intelligence
+- mistral-ocr
+- textract
+- adobe-pdf-extract
+- mathpix
+- reducto
 scoring_recipe:
   version: 1
-  extends: software
+  extends:
+    model: model
+    software: software
   derived_from:
     method: shared software ladder, not yet verified against hand-authored scores
     checker: build/check_rubric.py
-  note: 'PRELIMINARY - the capability ladder is not written yet, and writing it is the promotion''s
-
-    first job rather than an afterthought.
-
-
-    One thing is already settled about it, from the discovery pass that seeded this roster: THE
-
-    LADDER CANNOT BE BENCHMARK-BASED. Three benchmarks are in circulation and each is led by the
-
-    party that publishes it - olmOCR-Bench is AI2''s and olmOCR wins it (82.4 against MinerU''s 75.2);
-
-    OmniDocBench is OpenDataLab''s, who also make MinerU, which wins that one (93.04 against olmOCR''s
-
-    85.74); a third board is led by its own host. A ladder resting on any single one of them would
-
-    encode whose benchmark it chose. Band on format and structure coverage - what goes in, what comes
-
-    out, and how much document structure survives - and cite benchmark scores as corroboration with
-
-    the home-field problem stated.
-
-
-    The openness ladder is the shared software one and needs no change. Note that this category will
-
-    exercise `competition_restricted` more than most: the Datalab family ships Apache-2.0 code with
-
-    weights under a modified OpenRAIL-M license carrying a USD 2M revenue threshold and an
-
-    anti-compete clause, which is the tier''s definition stated directly and is already why `marker`
-
-    scores where it does.'
+  note: "Capability here is ONE quantity: how much of a document survives the conversion. Each band\n\
+    contains the one below it.\n\n  3  Turns the page into text. Characters and their positions come\
+    \ out; reading order, tables and\n     document structure do not, and whatever consumes the output\
+    \ has to recover them.\n  4  Turns the document into structure. Reading order, tables and forms\
+    \ survive into Markdown,\n     JSON or an equivalent a consumer can use directly.\n  5  Turns the\
+    \ document into meaning the consumer defines. Typed entities, custom document types\n     trained\
+    \ on a customer's own forms, or the widest input set converted with structure intact.\n\nWHY THE\
+    \ LADDER IS NOT BENCHMARK-BASED, decided before the bands were written. Three\ndocument-conversion\
+    \ benchmarks are in circulation and each is led by whoever publishes it:\nolmOCR-Bench is AI2's\
+    \ and olmOCR wins it, 82.4 against MinerU's 75.2; OmniDocBench is\nOpenDataLab's, who also make\
+    \ MinerU, which wins that one at 93.04 against olmOCR's 85.74. A\nladder resting on either would\
+    \ encode the choice of benchmark rather than measure the products.\nScores are cited on individual\
+    \ records as corroboration and the home-field problem is stated\nwhere they appear.\n\nTWO LADDERS\
+    \ for openness, not one. This category holds converters that are software - a pipeline\nyou install\
+    \ - and OCR models that are weights you load, so `extends` is the per-type form\n`{model: model,\
+    \ software: software}` that `safeguards` already uses. It matters more than the\nshape suggests:\
+    \ the software ladder has no `otherwise` and abstains on an unrecorded dimension,\nwhile the model\
+    \ ladder falls through to 3/open_weights. `deepseek-ocr` is the case worth reading -\nMIT on both\
+    \ code and weights, and 3 rather than 5, because the training corpus and pipeline are\nnot published\
+    \ and a permissive licence does not substitute for a published recipe.\n\nDistribution: 4 at band\
+    \ 3, 12 at band 4, 4 at band 5. The widest band holds 60% of the roster, which is high and is the\
+    \ honest\nreading rather than a wording failure: document conversion has a large middle where products\n\
+    recover structure into Markdown or JSON, and the discriminating rungs are narrow at both ends -\n\
+    character-level extraction below, customer-defined entity extraction above."
+  deferred:
+    chandra:
+      because: 'Datalab ships Apache-2.0 code with model weights under a modified OpenRAIL-M licence
+        - free below USD 2M funding or revenue and not usable competitively with Datalab''s own API.
+        That is the competition_restricted tier''s definition stated almost word for word, and the tier
+        already holds `AI-Pubs-Open-RAIL-M-Modified`, the sibling licence on `marker` from the same
+        vendor. It abstains only because the tier decides by literal name and this string is not in
+        the list. Adding it is the same move that added MinerU-Open-Source-License and marker''s own
+        licence, and it wants the measurement those additions record: which other products the name
+        would reach.'
+    surya:
+      because: 'The LICENSE TIER abstains: the weights carry a Datalab modified OpenRAIL-M that the
+        shared software tier does not name, exactly as `chandra` does, so the lookup returns no tier
+        and the walk stops at the first rung that tests one. A second question rides along and is why
+        this one is not simply `chandra`''s twin: the README badge names OpenRAIL-M and states no threshold,
+        while Datalab''s published recognition weights on Hugging Face carry CC-BY-NC-SA-4.0 - NonCommercial,
+        a materially different grant that would tier lower again. Naming the licence in the tier fixes
+        the abstention; reading which weights Surya actually ships decides which name to add.'
+    nanonets-ocr:
+      because: 'The Hugging Face card declares no licence in its metadata, so there is no grant to tier,
+        and the model ladder tests the tier before reaching its fallthrough rung. Recorded as `none-declared`
+        so the lookup reads a name rather than a sentence. This is the same open question `livecodebench`
+        and `txt360-pipeline` sit on one ladder over: a tier for unstated licences is a rubric change,
+        not a per-product fix. It closes the moment Nanonets declares one.'
 comments: 'Created preliminary 2026-09-16 under #430, which ruled that a document-converter bucket must
   be
 
@@ -78,3 +117,10 @@ comments: 'Created preliminary 2026-09-16 under #430, which ruled that a documen
   that happens to call a converter stays there. The test is what the product''s own job is, not what
 
   it can be used for.'
+strapline: 'Conversion is where the open stack still competes and the closed stack still sells. Six
+  of the twenty products publish their source outright and three more publish weights, but every product
+  that turns a document into customer-defined structure is either an open engine with the widest format
+  coverage or a hyperscaler''s managed service - and the seven closed services publish no countable
+  channel at all, so half this category''s adoption is unmeasurable rather than low. The licences are
+  the sharp edge: two of the strongest open converters ship permissive code with model weights under
+  revenue-capped terms, which is why four records here read source-available.'

@@ -1,0 +1,81 @@
+product: nanonets-ocr
+openness:
+  score: 3
+  class: open_weights
+  components:
+    license:
+    - name: none-declared
+      detail: the Hugging Face model card returns no license field in its metadata, so the weights are published
+        without a declared grant
+    weights:
+      value: open
+      detail: downloadable from Hugging Face without a gate
+    data:
+      value: closed
+      detail: no training corpus is published or described
+    code:
+      value: closed
+      detail: no training or fine-tuning code is published; the hosted platform is the vendor's product
+  confidence: medium
+  note: 'Open weights with a closed recipe, which is what the model ladder''s fallthrough rung is for. The
+    weights download from Hugging Face without a gate; no training corpus and no training code are published.
+    The licence is the interesting part and it does not change the band: the card declares none at all, so
+    there is no grant to tier, and the ladder reaches this rung by fallthrough rather than by matching a licence.
+    That lands it in the open-ish bucket rather than the open one, which is the right outcome for weights nobody
+    has attached terms to - unrecorded evidence must never count as open. Nanonets sells a hosted platform
+    beside these weights; that is a separate product and not what is scored here. The pair is hand-assigned
+    and the category defers it: `none-declared` is in no tier, and the model ladder tests the tier before it
+    reaches the fallthrough, so the walk stops rather than falling through. Giving an unstated licence a rung
+    is a rubric change across every category that inherits the model ladder.'
+  raw: license:none-declared(the Hugging Face model card returns no license field in its metadata, so the weights
+    are published without a declared grant);weights:open(downloadable from Hugging Face without a gate);data:closed(no
+    training corpus is published or described);code:closed(no training or fine-tuning code is published; the
+    hosted platform is the vendor's product)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B
+    shows: 'Hugging Face model API record for nanonets/Nanonets-OCR2-3B: 38,340 downloads in the trailing 30
+      days, 516 likes, weights downloadable, and NO license field in cardData. Establishes that the weights
+      are open, that no licence is declared where the platform expects one, and that no training data or code
+      accompanies the release.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e
+    establishes:
+    - license
+    - weights
+    - data
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: The Hugging Face API reports 38,340 downloads of nanonets/Nanonets-OCR2-3B in the trailing 30 days,
+    inside the 10K-100K band for level 2.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B
+    shows: 'Hugging Face model API record: 38,340 downloads in the trailing 30 days.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e
+capability:
+  score: 4
+  basis: feature_matrix
+  value: document to structured markdown with tables, equations, signatures, checkboxes and watermarks recognised
+    as tagged elements rather than flattened into text
+  confidence: medium
+  relative_to: chandra
+  relation: at
+  note: 'Recovers semantic document elements beyond text and layout - signatures, checkboxes and watermarks
+    are the distinguishing set, and few products in this category tag them at all. Banded at chandra: both
+    emit structured output with the hard elements preserved, and neither matches the input-format breadth of
+    the band above.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B
+    shows: The model's Hugging Face record, establishing what is published and its documented output structure.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e
