@@ -31,6 +31,7 @@
       "benchmark_eval_data": "Benchmark datasets used to evaluate models.",
       "training_synthetic_datasets": "Corpora for pre-training and post-training models. This category is the datasets themselves; the software that builds them lives in Dataset Processing Tools.",
       "dataset_processing_tools": "Software that builds training corpora: extraction, filtering, deduplication, decontamination, and synthetic-data generation pipelines. This category is the tooling; the corpora themselves live in Training & synthetic datasets.",
+      "document_conversion": "Software and services that turn documents into text or structured output a model can consume: PDF, Office, HTML, email and scanned images into Markdown, JSON or layout-preserving formats, including the OCR and layout-analysis engines underneath them.",
       "orchestration_agents": "Frameworks and agents that plan and execute tasks.",
       "ui_api": "Chat UIs and API gateways in front of models.",
       "telemetry_observability": "Tracing and observability for LLM apps.",
@@ -32913,96 +32914,6 @@
           "version_note": "Powers the Nemotron-CC curation pipeline and Nemotron-4 data prep (8T+ multilingual tokens). The repo now lives at NVIDIA-NeMo/Curator and the older NVIDIA/NeMo-Curator path redirects to it. Verified 2026-08-13 via the GitHub README and the LICENSE body."
         },
         {
-          "slug": "olmocr",
-          "product": "olmOCR",
-          "org_slug": "allen-institute-for-ai",
-          "org": "Allen Institute for AI",
-          "type": "software",
-          "description": "Converts PDFs and images to clean markdown/text using a 7B vision-language model, handling equations, tables, and handwriting. Emits Dolma-format documents; used in the Dolma 3 PDF-extraction path.",
-          "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(allenai/olmocr);governance:Allen Institute for AI;no feature-gated core;core-gated:ungated",
-            "confidence": "high",
-            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://github.com/allenai/olmocr/blob/main/LICENSE",
-                "shows": "Apache License Version 2.0 text",
-                "accessed": "2026-08-13",
-                "establishes": [
-                  "license"
-                ],
-                "http_status": 200,
-                "content_sha256": "62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3"
-              },
-              {
-                "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
-                "shows": "README documents the whole pipeline building and installing from the published repo; no paid tier, enterprise edition or license key appears anywhere in it, so nothing is withheld from the source",
-                "accessed": "2026-08-13",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ],
-                "http_status": 200,
-                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
-              }
-            ],
-            "bucket": "open"
-          },
-          "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
-            "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "22,925 PyPI downloads in the trailing 30 days for olmocr, which bands at 10K-100K, level 2 on the software and model adoption scale.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://pypistats.org/api/packages/olmocr/recent",
-                "shows": "22,925 downloads in the trailing 30 days for olmocr",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "bb20341457a175680a368fcc852c01c24115f79f75407a8eb51434d1105d2bcd"
-              }
-            ]
-          },
-          "capability": {
-            "score": 4,
-            "basis": "benchmark",
-            "value": "olmOCR v0.4.0 scores 82.4 on olmOCR-Bench, ahead of Marker 1.10.1 (76.1), MinerU 2.5.4 (75.2) and Mistral OCR (72.0), but now behind Chandra OCR 0.1.0 (83.1) and Infinity-Parser 7B (82.5); on the third-party OmniDocBench it is mid-pack (85.74), behind MinerU-2.5 (93.04), Gemini 3 Pro (92.91) and GPT-5.2 (86.59).",
-            "confidence": "high",
-            "note": "Benchmark-anchored: olmOCR scores near the top of olmOCR-Bench, the benchmark the project publishes itself, ahead of Marker, MinerU and Mistral OCR but now behind Chandra OCR and Infinity-Parser; on the third-party OmniDocBench it sits mid-pack. Near-SOTA rather than SOTA, and a snapshot at that, because extraction leaderboards move.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
-                "shows": "olmOCR-Bench table in the README - olmOCR v0.4.0 scores 82.4, ahead of Marker 1.10.1 76.1, MinerU 2.5.4 75.2 and Mistral OCR 72.0, but now behind Chandra OCR 0.1.0 83.1 and Infinity-Parser 7B 82.5. GPT-4o has been dropped from the table.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
-              },
-              {
-                "url": "https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md",
-                "shows": "OmniDocBench leaderboard - olmOCR 85.74 overall, mid-pack behind MinerU-2.5 93.04, Gemini 3 Pro 92.91 and GPT-5.2 86.59, and level with Mistral OCR 85.66",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "1c3f6f7e0dc6027e96161fd368f68b41b1e797b2329a4decbefdd4f2d2ec31eb"
-              }
-            ]
-          },
-          "overall_score": 2.8,
-          "tier": null,
-          "maturity": 2.8,
-          "mature": false,
-          "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified"
-          },
-          "version_note": "Feeds the Dolma 3 PDF-extraction path and ships its own olmOCR-Bench suite. Verified 2026-08-13 via the GitHub README and the LICENSE body."
-        },
-        {
           "slug": "dolma-toolkit",
           "product": "Dolma toolkit",
           "org_slug": "allen-institute-for-ai",
@@ -34441,6 +34352,1717 @@
             "basis": "verified"
           },
           "version_note": "Together togethercomputer/RedPajama-Data, dormant since December 2024. The construction pipeline, not the dataset, behind RedPajama-v2 and the RedPajama-INCITE models. Verified 2026-08-13 via the GitHub README and the LICENSE body."
+        }
+      ]
+    },
+    "document_conversion": {
+      "label": "Document conversion & OCR",
+      "arc": "Model components",
+      "layer": "model_components",
+      "stage": {
+        "num": 4,
+        "name": "Competitive Open Ecosystem"
+      },
+      "gaps": [
+        "resiliency"
+      ],
+      "products": [
+        {
+          "slug": "docling",
+          "product": "Docling",
+          "org_slug": "ibm",
+          "org": "IBM",
+          "type": "software",
+          "description": "SDK and CLI that parses PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, audio and video into unified structured output - Markdown, lossless JSON, HTML, WebVTT and DocTags - for generative-AI and RAG pipelines. Unlike URL-to-Markdown services it does deep local document understanding: layout and reading-order analysis, table-structure recognition, formula and code extraction, OCR, and vision and speech model integration. It also reads application-specific XML schemas including USPTO patents, JATS articles and XBRL filings, and ships its own MCP server.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(github.com/docling-project/docling);self-host:primary;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "MIT, local-first document parsing, fully self-hostable with integrated open-weight models.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/docling-project/docling/main/LICENSE",
+                "shows": "Plain MIT License text: \"Copyright (c) 2024 International Business Machines\".",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "9816fb12b11c33c552f4e8621879d0da493be47c0f86be785b53a2cf7f7ae4c6",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://github.com/docling-project/docling",
+                "shows": "Repo page - MIT badge, 64,719 stargazers. \"Local execution capabilities for sensitive data and air-gapped environments\"; open-weight VLMs such as GraniteDocling driven from the CLI; docling-serve as the self-run API server. No paid tier, license key or enterprise directory.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "12,493,111 downloads of docling in the trailing 30 days, which bands at >10M, level 5 on the software adoption scale. The count is for the first-party package alone; docling-core adds more again on top of it.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/docling/recent",
+                "shows": "12,493,111 downloads in the trailing 30 days for docling",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c81ce393cb034f9bc8db666fdff640be75b337519a7dee035dee389236c80bc9"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/WAV/MP3/WebVTT/email/images/LaTeX and video -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition; formula/code extraction; image classification; OCR; VLM and ASR models; application-specific XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server",
+            "confidence": "high",
+            "note": "Structure survives across the widest input set in the category - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images into Markdown, HTML and lossless JSON with layout and reading order. It was drafted at 5, and 5 here is reserved for output the consumer can ask the MEANING of: typed entities, or models trained on a customer's own document types. Docling recovers structure faithfully and does not assign semantics to it, so it anchors this band rather than the one above.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://github.com/docling-project/docling",
+                "shows": "Feature list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, WAV, MP3, WebVTT, Box Notes, EML/MSG, images, LaTeX, DocLang and plain text input; \"Advanced PDF understanding incl. page layout, reading order, table structure, code, formulas, image classification\"; export to Markdown, HTML, WebVTT, DocLang, DocTags and lossless JSON; \"Extensive OCR support for scanned PDFs and images\"; VLM support; \"Audio support with Automatic Speech Recognition (ASR) models\"; \"Connect to any agent using the MCP server\"; video parsing under What's new.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891"
+              }
+            ]
+          },
+          "overall_score": 4.6,
+          "tier": "leading",
+          "maturity": 4.6,
+          "mature": true,
+          "freshness": {
+            "date": "2026-08-12",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
+          },
+          "version_note": "Originated at IBM Research, inducted into the Linux Foundation AI & Data Foundation (Docling Project) on 2025-04-29 under community governance. Verified 2026-08-13 via GitHub, the repository LICENSE and the pypistats API."
+        },
+        {
+          "slug": "paddleocr",
+          "product": "PaddleOCR",
+          "org_slug": "paddlepaddle",
+          "org": "PaddlePaddle",
+          "type": "software",
+          "description": "OCR and document-parsing toolkit from Baidu's PaddlePaddle project, covering text detection and recognition in more than a hundred languages plus table, formula and seal recognition, and a document-parsing pipeline that emits Markdown and JSON. PaddleOCR-VL is its vision-language parsing model.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(PaddlePaddle/PaddleOCR is the toolkit you run);core-gated:ungated(a 2,968-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)",
+            "confidence": "high",
+            "note": "Apache-2.0 throughout, read from the LICENSE body. The 2,968-entry recursive tree carries no enterprise, ee or commercial path, and PaddleOCR is published as part of Baidu's PaddlePaddle open-source project rather than sold as an edition.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/PaddlePaddle/PaddleOCR",
+                "shows": "The PaddleOCR repository page. PaddleOCR is published as part of Baidu's PaddlePaddle open-source project with no commercial edition offered; cited for the licence, the public source and the absence of a paid tier.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "3e737e1ad11e6ed5c27f82917d5e89114164c65dce29e4257479f970159530e0",
+                "establishes": [
+                  "core-gated",
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/PaddlePaddle/PaddleOCR/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch, 2,968 entries. One root LICENSE. No path matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about the vendor's offerings.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "ebf007bf6065ce676221a0dea5b06c3f228feb4989797cf3a9900f4eddcab63a",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The PyPI download API reports 1,495,891 downloads of paddleocr in the trailing 30 days, inside the 1M-10M band for level 4. An earlier draft called it the most-installed product in the category; that is false on the same channel - docling records 12,493,111 and markitdown 12,755,994 - and is withdrawn.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/paddleocr/recent",
+                "shows": "Trailing-window download counts for the declared PyPI artifact: 1,495,891 downloads in the trailing month.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "a37091b620cc47c50d92f8c644849828d40b6fa2653f03a7de2352d21540344c"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "text detection and recognition across 100+ languages; table, formula and seal recognition; a document-parsing pipeline emitting Markdown and JSON; PaddleOCR-VL as the vision-language parsing model on top",
+            "confidence": "medium",
+            "relative_to": "docling",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-09-16",
+              "sources": [
+                {
+                  "url": "https://github.com/docling-project/docling",
+                  "shows": "Re-read of the peer these bands are placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the spacing rests on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property these bands are placed on, because the recipe excludes input breadth by name.",
+                  "accessed": "2026-09-16",
+                  "http_status": 200,
+                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                }
+              ]
+            },
+            "note": "Structure survives: the parsing pipeline emits Markdown and JSON with tables, formulas and seals recovered, which is this band. It was drafted at 5 on language breadth - 100+ languages, the widest here - and that is not what the ladder measures. Breadth of input is how MANY documents it can do this for, not how much of one survives, and banding on it would put a second quantity in the column.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/PaddlePaddle/PaddleOCR",
+                "shows": "Repository page and README describing multilingual text detection and recognition, table, formula and seal recognition, and the document-parsing pipeline.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "3e737e1ad11e6ed5c27f82917d5e89114164c65dce29e4257479f970159530e0"
+              }
+            ]
+          },
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the repository, its recursive tree and the PyPI download API."
+        },
+        {
+          "slug": "chandra",
+          "product": "Chandra",
+          "org_slug": "datalab",
+          "org": "Datalab",
+          "type": "software",
+          "description": "Document OCR and layout model from Datalab that converts PDFs and images into Markdown, HTML and JSON while preserving structure - reading order, tables, forms, handwriting and mathematical notation. It is the successor model to the same team's Marker pipeline and is served both as open weights and as a hosted API.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights: free for research, personal use and startups below USD 2M funding or revenue, and not usable competitively with Datalab's API; the Hugging Face card declares the family as openrail);source:public(datalab-to/chandra carries the inference code and the weights are published)",
+            "confidence": "high",
+            "note": "Apache-2.0 covers the CODE and the model WEIGHTS do not: the README carries two badges, 'Code License Apache-2.0' and 'Model License OpenRAIL-M', and states that the weights are 'free for research, personal use, and startups under $2M funding/revenue, cannot be used competitively with our API'. A revenue threshold above which a class of use is charged for, plus an anti-compete clause, is the competition_restricted tier's definition stated directly - the same reading that placed MinerU-Open-Source-License and marker's funding threshold there. Most-restrictive-wins across the license compound therefore settles this at 2/source_available: the source is fully public and it is the terms on the thing you actually run that hold the score down. The repository label reads Apache-2.0 and is not wrong; it does not describe the weights. The pair is hand-assigned and the category defers it: the shared software tier lists licences by literal name and does not name this one, so the lookup abstains. Extending a shared tier reaches eleven categories and is a maintainer's ruling rather than part of a promotion.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/datalab-to/chandra",
+                "shows": "Repository page for datalab-to/chandra: public and unarchived, 12,267 stars, label Apache-2.0. Establishes that the source is public.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "354fcec9a84da801ccdd7c6e70f100ed24a14b5ac0691e2d410b8ec5a7dc4446",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/chandra/master/README.md",
+                "shows": "Chandra's README: two badges, 'Code License Apache-2.0' and 'Model License OpenRAIL-M', and under Commercial usage - 'This code is Apache 2.0, and our model weights use a modified OpenRAIL-M license (free for research, personal use, and startups under $2M funding/revenue, cannot be used competitively with our API). To remove the OpenRAIL license requirements, or for broader commercial licensing, visit our pricing page'. Establishes the two-licence split and the terms on the weights.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "edf170f70a20673559d6551e621bb5d5969a0b439d82125eca5ad6bec599b9fa",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/datalab-to/chandra/git/trees/master?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch, 70 entries. One root LICENSE. No path matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about the vendor's offerings.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "434ef004e178d08e1edb1845c57ae8df0bdfb83858ee4a60a8574efc65276e1b",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The PyPI download API reports 9,116 downloads of chandra-ocr in the trailing 30 days. The level-2 band opens above 10,000, so this sits in the <10K band at level 1 - 884 downloads short of the boundary on the day it was read. Quoted rather than rounded, because the band turns on it.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/chandra-ocr/recent",
+                "shows": "Trailing-window download counts for the declared PyPI artifact: 9,116 downloads in the trailing month.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "117c64aa50507a9b10169d6f807325423bcc864a8ac25ec3a41e00540bafc553"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "PDF and image to Markdown, HTML and JSON with layout preserved: reading order, tables, forms, handwriting and mathematical notation; served as open weights and as a hosted API",
+            "confidence": "medium",
+            "relative_to": "docling",
+            "relation": "at",
+            "comparison": {
+              "last_attested": "2026-09-16",
+              "sources": [
+                {
+                  "url": "https://github.com/docling-project/docling",
+                  "shows": "Re-read of the peer these bands are placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the spacing rests on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property these bands are placed on, because the recipe excludes input breadth by name.",
+                  "accessed": "2026-09-16",
+                  "http_status": 200,
+                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                }
+              ]
+            },
+            "note": "Structure survives: the product recovers reading order, tables and forms into Markdown and JSON, including handwriting and mathematics, which most converters drop. Banded `at docling` because both recover the same amount of a document, which is what this ladder measures. An earlier draft banded it one below docling on input breadth - docling parses a wider set of file types - and breadth is the second quantity the recipe note excludes by name. Benchmark standing corroborates and does not decide: Chandra now leads olmOCR-Bench, above olmOCR itself, so nothing here suggests it recovers less than the products around it.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/datalab-to/chandra",
+                "shows": "Repository page and README describing PDF and image conversion to Markdown, HTML and JSON with layout, tables, forms, handwriting and mathematical notation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "354fcec9a84da801ccdd7c6e70f100ed24a14b5ac0691e2d410b8ec5a7dc4446"
+              }
+            ]
+          },
+          "overall_score": 2.2,
+          "tier": null,
+          "maturity": 2.2,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "The code and the weights carry different licences; see the openness note. Verified 2026-09-16 via the repository, its recursive tree, the README's commercial-usage section and the PyPI download API."
+        },
+        {
+          "slug": "marker",
+          "product": "Marker",
+          "org_slug": "datalab",
+          "org": "Datalab",
+          "type": "software",
+          "description": "Document conversion pipeline that turns PDFs, images, Office documents and EPUB into Markdown, JSON and HTML, running layout analysis, table and equation recognition and OCR through a stack of purpose-trained models. Published by Datalab alongside a hosted API and an on-premises offering.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:Apache-2.0(OSI, over the code)+AI-Pubs-Open-RAIL-M-Modified(model weights; free below USD 5M funding or revenue, commercial license required above it);source:public(the repository builds the conversion pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the weights license)",
+            "confidence": "high",
+            "note": "Two licenses, and the compound is resolved on the more restrictive of them because both cover the artifact you actually run. The code is Apache-2.0. The model weights the pipeline requires - Marker does not convert a document without them - are under a modified AI Pubs Open RAIL-M that the README states is 'free for research, personal use, and startups under $5M funding/revenue', with a commercial license required above that threshold. A license charging for a class of use above a revenue threshold is the competition_restricted tier, and a public source under that tier scores 2/source_available. This is deliberately not the model-context-protocol case, where a CC-BY-4.0 documentation license was moved out of the compound because it covered the project's prose rather than the artifact you run: here the bounded license covers the weights, and the weights are the product.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/LICENSE",
+                "shows": "LICENSE body is the Apache License 2.0 text, covering the repository's code.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/MODEL_LICENSE",
+                "shows": "MODEL_LICENSE body is the AI PUBS OPEN RAIL-M LICENSE (MODIFIED), Version 0.1, applying use restrictions to the model weights and their derivatives.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "636dfb8eb19efc5835ed6efb878f8b694a93f028c715d2547d831e2a55440276",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
+                "shows": "README, Commercial usage section: 'Our code is licensed under Apache 2.0 - free to use, including commercially. Our model weights use a modified AI Pubs Open Rail-M license (free for research, personal use, and startups under $5M funding/revenue). For commercial use of the model weights beyond that, visit our pricing page.'",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/datalab-to/marker",
+                "shows": "Repo metadata - license spdx_id Apache-2.0, archived false, 39,389 stars - for datalab-to/marker.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "2cf501fb97b288dd6016e359054aaafaed543236e28dc8908751670b9b87de3f",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "289,172 downloads of marker-pdf in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/marker-pdf/recent",
+                "shows": "last_month = 289,172 downloads for marker-pdf.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "9d409f427b6997f83409ab183dcae0de675e3d05c634e6537f99afcdd93b9a6a"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and equations",
+            "value": "PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
+            "relative_to": "docling",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Structure survives: layout, tables, equations and reading order come through into Markdown and JSON, which is band 4. Banded `at docling` on that quantity. An earlier draft put it one below docling and justified that by docling's audio, video and XML coverage, which is input breadth - how many document kinds it can do this for, not how much of one survives - and the recipe note excludes it. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
+                "shows": "README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML, with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "The repository carries two licenses, Apache-2.0 over the code and a modified AI Pubs Open RAIL-M over the model weights the pipeline requires. Verified 2026-08-30 via the GitHub API, both LICENSE bodies and the pypistats API."
+        },
+        {
+          "slug": "mineru",
+          "product": "MinerU",
+          "org_slug": "shanghai-ai-laboratory",
+          "org": "Shanghai AI Laboratory",
+          "type": "software",
+          "description": "Document extraction pipeline that converts PDFs and Office documents into LLM-ready Markdown and JSON, preserving reading order and handling multi-column layouts, tables, formulas and scanned pages through OCR. Published by OpenDataLab and distributed as a Python package, a Docker image and a hosted web application.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:MinerU-Open-Source-License(Apache-2.0 plus commercial thresholds; not OSI);source:public(the repository builds the extraction pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the license, not in the build)",
+            "confidence": "high",
+            "note": "Read from the LICENSE.md body rather than from the badge, and the badge is the thing to distrust here. MinerU is Apache-2.0 'subject to the additional terms below', and those terms require a separate commercial license once an organization and its affiliates exceed 100 million monthly active users or USD 20 million in monthly revenue, oblige anyone offering an online service built on it to say so prominently, and terminate the grant automatically if those terms are violated. That is a license charging for a class of use above a threshold, which is the competition_restricted tier stated directly, and the ladder scores a public source under that tier at 2/source_available. Nothing is withheld from the published tree - the whole pipeline is there and builds - so core-gated is ungated and the cap comes from the license alone. GitHub reports NOASSERTION because the file is a modified Apache text, which is substantive here rather than the usual custom-copyright-line false alarm.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/LICENSE.md",
+                "shows": "LICENSE.md body: 'MinerU is licensed under Apache License 2.0 and is subject to the additional terms below.' Section 1 requires a separate commercial license where an entity and its affiliates exceed 100 million monthly active users or USD 20 million total monthly revenue; Section 2 imposes a prominent-attribution obligation on online services; Section 3 terminates the license automatically where either is not met.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "2d9aeb5d15159329a20dd804f251c64860ba954fbd26ec02f802220e6d71cf5c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/opendatalab/MinerU",
+                "shows": "Repo metadata - license spdx_id NOASSERTION, archived false, 78,805 stars - for opendatalab/MinerU.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "9cca7dcf8f2e6206b23ceb3d0c6438404974a962566c8dabb0cafdcd8ae1feb6",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
+                "shows": "README documents the extraction pipeline built from this repository and distributed as a Python package and Docker image, with no enterprise directory, license-key-gated build or withheld component described.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "269,753 downloads of mineru in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
+            "last_verified": "2026-08-30",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/mineru/recent",
+                "shows": "last_month = 269,753 downloads for mineru.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "ccc3863295b4fa66f4b9d742f7de5f0419ee79fab8e98397e30886e226aa31ef"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and formulas",
+            "value": "PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
+            "relative_to": "docling",
+            "relation": "at",
+            "confidence": "medium",
+            "note": "Structure survives: layout, tables, formulas and reading order are recovered into Markdown and JSON. Banded `at docling` on that quantity, not one below it - the earlier draft's reason for the gap was docling's wider format list, which is input breadth and is excluded from this ladder by name. Benchmark standing corroborates: MinerU leads OmniDocBench at 93.04 against olmOCR's 85.74, and OmniDocBench is published by MinerU's own maintainers, so it is read as evidence that MinerU is not behind the frontier here rather than as evidence it is ahead.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
+                "shows": "README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
+                "accessed": "2026-08-30",
+                "http_status": 200,
+                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-30"
+          },
+          "version_note": "OpenDataLab is a project identity under Shanghai AI Laboratory, whose contact address the GitHub org publishes as OpenDataLab@pjlab.org.cn, so the record is filed under the lab rather than under a separate org. Verified 2026-08-30 via the GitHub API, the LICENSE.md body and the pypistats API."
+        },
+        {
+          "slug": "markitdown",
+          "product": "MarkItDown",
+          "org_slug": "microsoft",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "Lightweight Python utility from Microsoft for converting files and office documents - PDF, DOCX, PPTX, XLSX, images (OCR), audio (transcription), HTML, CSV/JSON/XML, ZIP, EPub, even YouTube URLs - into Markdown optimized for LLMs and agents. Offers CLI, Python API, Docker, and a plugin system, with optional Azure Document Intelligence and LLM-vision for image descriptions.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI; repo LICENSE + pyproject, PyPI field null);source:public;no-feature-gated-core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Fully MIT; optional Azure/LLM features are pluggable, not gating. Azure Document Intelligence and Azure Content Understanding are optional install extras - the `[az-doc-intel]` and `[az-content-understanding]` groups - sitting beside built-in offline converters, so the conversion the product exists to do runs entirely in the published package and core-gated stays ungated.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/LICENSE",
+                "shows": "Plain MIT License text: \"Copyright (c) Microsoft Corporation\".",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://github.com/microsoft/markitdown",
+                "shows": "Repo page - MIT badge, root tree carrying LICENSE, Dockerfile and packages/. A capability table compares \"Built-in converters\" (offline, format-specific) against Azure Document Intelligence and Azure Content Understanding, both installed as optional extras `[az-doc-intel]` and `[az-content-understanding]`. No license key, second license or enterprise directory.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "12,755,994 downloads of markitdown in the trailing 30 days, which bands at >10M, level 5 on the software adoption scale. The count is for the PyPI package, not the unrelated npm package of the same name.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/markitdown/recent",
+                "shows": "12,755,994 downloads in the trailing 30 days for markitdown",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "025a87c7a3124469fe5107a8e72afee552a23c481035a3fe810186d13d94ff98"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "converts PDF/DOCX/PPTX/XLSX/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown; CLI + Python API + Docker; plugins; optional Azure Doc Intelligence + LLM vision",
+            "confidence": "medium",
+            "note": "Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/markitdown",
+                "shows": "Format list - PDF, Office documents, images (OCR), audio (speech transcription), HTML, text-based formats (CSV, JSON, XML), \"ZIP files (iterates over contents)\", YouTube URLs, EPubs. Optional extras `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`; a Plugins section; a Dockerfile in the root tree.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9"
+              }
+            ]
+          },
+          "overall_score": 4.6,
+          "tier": "leading",
+          "maturity": 4.6,
+          "mature": true,
+          "freshness": {
+            "date": "2026-08-12",
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
+          },
+          "version_note": "The PyPI license field is null, so the terms come from the repository and pyproject, which is what the openness axis reads. The Azure Document Intelligence and Content Understanding paths are optional install extras rather than a core withheld from the package. Verified 2026-08-13 via GitHub, the repository LICENSE and the pypistats API."
+        },
+        {
+          "slug": "nanonets-ocr",
+          "product": "Nanonets OCR",
+          "org_slug": "nanonets",
+          "org": "Nanonets",
+          "type": "model",
+          "description": "Document-parsing models from Nanonets released as open weights alongside the company's hosted intelligent-document-processing platform. The models convert documents to structured markdown, recognising tables, equations, signatures, checkboxes and watermarks as tagged elements rather than flattening them into text.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "license:none-declared(the Hugging Face model card returns no license field in its metadata, so the weights are published without a declared grant);weights:open(downloadable from Hugging Face without a gate);data:closed(no training corpus is published or described);code:closed(no training or fine-tuning code is published; the hosted platform is the vendor's product)",
+            "confidence": "medium",
+            "note": "Open weights with a closed recipe, which is the state the model ladder's fallthrough rung describes. The weights download from Hugging Face without a gate; no training corpus and no training code are published. The licence is the interesting part and it does not change the band: the card declares none at all, so there is no grant to tier. That lands it in the open-ish bucket rather than the open one, which is the right outcome for weights nobody has attached terms to - unrecorded evidence must never count as open. Nanonets sells a hosted platform beside these weights; that is a separate product and not what is scored here. The 3/open_weights pair is HAND-ASSIGNED, not computed, and the category defers it: `none-declared` is in no tier, the model ladder tests the tier before it reaches the fallthrough, and replaying the walk returns no result at all. The 3 is the curator's reading of the rung the record would land on once a tier exists for an unstated licence, and it stands until that rubric change is made. Giving an unstated licence a rung is a rubric change across every category that inherits the model ladder.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B",
+                "shows": "Hugging Face model API record for nanonets/Nanonets-OCR2-3B: 38,340 downloads in the trailing 30 days, 516 likes, weights downloadable, and NO license field in cardData. Establishes that the weights are open, that no licence is declared where the platform expects one, and that no training data or code accompanies the release.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e",
+                "establishes": [
+                  "license",
+                  "weights",
+                  "data",
+                  "code"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The Hugging Face API reports 38,340 downloads of nanonets/Nanonets-OCR2-3B in the trailing 30 days, inside the 10K-100K band for level 2.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B",
+                "shows": "Hugging Face model API record: 38,340 downloads in the trailing 30 days.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "document to structured markdown with tables, equations, signatures, checkboxes and watermarks recognised as tagged elements rather than flattened into text",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Structure survives, and further into the hard elements than most: signatures, checkboxes and watermarks come out as tagged elements rather than flattened into text, which few products here do at all. Band 5 is out of reach because the tags are the model's own fixed set and not entity types a customer defines. An earlier draft explained the ceiling by input-format breadth, which is excluded from this ladder by name. Banded at chandra: both emit structured output with the hard elements preserved.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B",
+                "shows": "The model's Hugging Face record, establishing what is published and its documented output structure.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "b16886f2958a2292bf8dd6f52ae76244a93ab6a9fbc8d59f6b8f7d5e4093d02e"
+              }
+            ]
+          },
+          "overall_score": 2.8,
+          "tier": null,
+          "maturity": 2.8,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "The Hugging Face card declares no licence in its metadata, so the openness walk stops at the tier test and the published 3/open_weights is hand-assigned - see the openness note. Nanonets sells a hosted platform beside the open weights. Verified 2026-09-16 via the Hugging Face model API."
+        },
+        {
+          "slug": "dots-ocr",
+          "product": "dots.ocr",
+          "org_slug": "studio-dots-ai",
+          "org": "Studio Dots AI",
+          "type": "model",
+          "description": "Multilingual document-parsing model that performs layout detection and content recognition in a single vision-language model rather than a pipeline of separate stages, switching task by prompt. It emits layout blocks with their reading order and the text inside them.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "license:MIT(OSI; the LICENSE body reads MIT License, Copyright (c) 2025 rednote-hilab);weights:open(published on Hugging Face and downloadable without a gate);data:closed(the training corpus is neither published nor described);code:partial(inference code and a loader are published; no training or data-construction pipeline is)",
+            "confidence": "high",
+            "note": "MIT over both the code and the weights, and 3 rather than 5 because the model ladder asks about the recipe and not only the licence: the weights download freely and inference code is public - which the model ladder calls `partial` rather than open, because open means the pipeline that produced the weights - while the training corpus and that pipeline are not published. Same reading, and same band, as deepseek-ocr - which is the point of typing it this way rather than scoring a weights-first release on the software ladder, where the training questions are never asked.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/studio-dots-ai/dots.ocr",
+                "shows": "Repository page for studio-dots-ai/dots.ocr: MIT, public and unarchived, 9,117 stars, carrying inference code with the weights published on Hugging Face. Establishes the licence, the published code and the absence of a training pipeline.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "222311bb0e61ffb8c00c57a0d906cbb520bd6bfd34108915c6ec509ffe01a9c3",
+                "establishes": [
+                  "license",
+                  "code",
+                  "weights",
+                  "data"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The Hugging Face API reports 668,858 downloads of dots-studio/dots.ocr in the trailing 30 days, inside the 100K-1M band for level 3. An earlier draft banded this on stars and said no usage-volume channel existed; that was written before the record declared its Hugging Face artifact, and the channel was there all along.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/dots-studio/dots.ocr",
+                "shows": "Hugging Face model API record for dots-studio/dots.ocr: 668,858 downloads in the trailing 30 days, license mit. Establishes the usage-volume channel and its figure.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "556a9a857bdba87ff6b099288f0c5b83acd6479ab234ce3a505af14ab999073b"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "layout detection and content recognition unified in one vision-language model, task-switched by prompt; emits layout blocks with reading order and their text; multilingual",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Structure survives: the model card documents layout detection, reading order and table recognition emitted as JSON, which is band 4. Banded `at chandra`, the other single-model parser here, which recovers the same amount. An earlier draft banded it below the converters because it is a model something else calls, which is pipeline position - excluded from this ladder by name, on the same reasoning that settled `surya`.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/studio-dots-ai/dots.ocr",
+                "shows": "Repository page and README describing unified layout detection and content recognition in one vision-language model with prompt-based task switching.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "222311bb0e61ffb8c00c57a0d906cbb520bd6bfd34108915c6ec509ffe01a9c3"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "The GitHub API reports the repository under studio-dots-ai; it is commonly cited under a rednote-hilab path that does not resolve, and the LICENSE body carries a rednote-hilab copyright line, so the project moved organizations. Typed `model` as a judgement rather than by a rule: the release is one vision-language model, and the repository is inference tooling for it. An earlier draft justified this by the absence of an installable package, which is simply wrong - the repository ships setup.py and the model card installs it with pip install -e . - and the claim is withdrawn. Verified 2026-09-16 via the repository and its recursive tree."
+        },
+        {
+          "slug": "olmocr",
+          "product": "olmOCR",
+          "org_slug": "allen-institute-for-ai",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Converts PDFs and images to clean markdown/text using a 7B vision-language model, handling equations, tables, and handwriting. Emits Dolma-format documents; used in the Dolma 3 PDF-extraction path.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/olmocr);governance:Allen Institute for AI;no feature-gated core;core-gated:ungated",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/olmocr/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-08-13",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
+                "shows": "README documents the whole pipeline building and installing from the published repo; no paid tier, enterprise edition or license key appears anywhere in it, so nothing is withheld from the source",
+                "accessed": "2026-08-13",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "22,925 PyPI downloads in the trailing 30 days for olmocr, which bands at 10K-100K, level 2 on the software and model adoption scale.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/olmocr/recent",
+                "shows": "22,925 downloads in the trailing 30 days for olmocr",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "bb20341457a175680a368fcc852c01c24115f79f75407a8eb51434d1105d2bcd"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "value": "olmOCR v0.4.0 scores 82.4 on olmOCR-Bench, ahead of Marker 1.10.1 (76.1), MinerU 2.5.4 (75.2) and Mistral OCR (72.0), but now behind Chandra OCR 0.1.0 (83.1) and Infinity-Parser 7B (82.5); on the third-party OmniDocBench it is mid-pack (85.74), behind MinerU-2.5 (93.04), Gemini 3 Pro (92.91) and GPT-5.2 (86.59).",
+            "confidence": "high",
+            "note": "Structure survives: the pipeline emits linearized text with reading order and tables recovered from PDFs, which is band 4, and it does not emit typed entities a consumer defines, which is what band 5 asks for. An earlier draft banded this on benchmark position, which the recipe note rules out as an instrument because each circulating benchmark is led by whoever publishes it. The benchmark reading is kept as corroboration against the category's state of the art: olmOCR scores 82.4 on its own olmOCR-Bench against MinerU's 75.2 and sits mid-pack on the third-party OmniDocBench, so it is near the frontier on both and clear of it on neither.",
+            "last_verified": "2026-08-13",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/allenai/olmocr/main/README.md",
+                "shows": "olmOCR-Bench table in the README - olmOCR v0.4.0 scores 82.4, ahead of Marker 1.10.1 76.1, MinerU 2.5.4 75.2 and Mistral OCR 72.0, but now behind Chandra OCR 0.1.0 83.1 and Infinity-Parser 7B 82.5. GPT-4o has been dropped from the table.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md",
+                "shows": "OmniDocBench leaderboard - olmOCR 85.74 overall, mid-pack behind MinerU-2.5 93.04, Gemini 3 Pro 92.91 and GPT-5.2 86.59, and level with Mistral OCR 85.66",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1c3f6f7e0dc6027e96161fd368f68b41b1e797b2329a4decbefdd4f2d2ec31eb"
+              }
+            ]
+          },
+          "overall_score": 2.8,
+          "tier": null,
+          "maturity": 2.8,
+          "mature": false,
+          "freshness": {
+            "date": "2026-08-13",
+            "basis": "verified"
+          },
+          "version_note": "Feeds the Dolma 3 PDF-extraction path and ships its own olmOCR-Bench suite. Verified 2026-08-13 via the GitHub README and the LICENSE body."
+        },
+        {
+          "slug": "surya",
+          "product": "Surya",
+          "org_slug": "datalab",
+          "org": "Datalab",
+          "type": "software",
+          "description": "OCR, layout analysis and reading-order engine from Datalab covering more than ninety languages. It detects text lines, classifies layout blocks, orders them for reading, and recognises tables - and it is the engine underneath the same team's Marker document pipeline rather than a competing end-to-end converter.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights, per the README's Model License badge linking to Datalab's pricing page; the badge states the family and not a threshold, and Datalab's published recognition weights have historically carried CC-BY-NC-SA-4.0, so the exact terms need a maintainer's read);source:public(datalab-to/surya carries the engine and the weights are published)",
+            "confidence": "low",
+            "note": "Apache-2.0 covers the code. The model weights do not: the README carries a 'Model License OpenRAIL-M' badge linking to Datalab's pricing page, so the thing you run is not under the code's licence. What the weights terms actually SAY is unresolved here, which is why the LICENSE TIER abstains and the category records the deferral. The published 2/source_available is HAND-ASSIGNED, not computed: replaying the walk over these components returns no result at all - it stops at the first rung that tests a tier, which is what the category's deferral records. The 2 is the curator's reading that a revenue-capped, anti-compete weights licence over a public source is the competition_restricted tier, which is the same reading that settles `chandra` and `marker`. It stands until the tier is extended and the walk can reproduce it. An earlier draft of this note said the walk returns the 2, and a second said the record defers rather than scores; the first was false and the second contradicted the published number. The weights terms are NOT asserted to match Chandra's: Chandra's README states a USD 2M threshold, Surya's badge states none, and the recognition weights Datalab has published on Hugging Face carry CC-BY-NC-SA-4.0, which is NonCommercial and a materially different grant. An earlier draft of this record claimed the two were the same terms; that was unverified and is withdrawn. The pair is hand-assigned and the category defers it: the shared software tier lists licences by literal name and does not name this one, so the lookup abstains. Extending a shared tier reaches eleven categories and is a maintainer's ruling rather than part of a promotion.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/datalab-to/surya",
+                "shows": "Repository page for datalab-to/surya: public and unarchived, 21,393 stars, label Apache-2.0. Establishes that the source is public.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "240b867ef98bd10b26d9ea41d0132524d5a9deb716e3fbf1aa49f624764a9765",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/surya/master/README.md",
+                "shows": "Surya's README carries the same two Datalab badges as Chandra - 'Code License Apache-2.0' and 'Model License OpenRAIL-M' linking to the Datalab pricing page. Establishes that the weights are not under the code's licence.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "edb0368b5ad6ad33dbd705decd1c2d42dc11c9f011fe55be1e39ddb4550798f5",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/datalab-to/surya/git/trees/master?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch, 205 entries. One root LICENSE. No path matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about the vendor's offerings.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "8b8fd23055fa5425fa67d1d0bcef4677261893671b27d3f08b0b23839900cf57",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The PyPI download API reports 263,032 downloads of surya-ocr in the trailing 30 days, inside the 100K-1M band for level 3.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/surya-ocr/recent",
+                "shows": "Trailing-window download counts for the declared PyPI artifact: 263,032 downloads in the trailing month.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "1c3e83617293640a5cccb1cecc74956e3806cad38bb036613c0d8a76dd046340"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "text line detection, layout block classification, reading-order ordering and table recognition across 90+ languages; an engine that produces structure rather than a finished document format",
+            "confidence": "medium",
+            "relative_to": "tesseract",
+            "relation": "one_above",
+            "note": "Structure survives, and the record's own value is what settles it: text line detection, layout block classification, reading-order ordering and table recognition. It was drafted at 3 on the reasoning that an engine sits below a converter - which is a pipeline-position argument, not this ladder's quantity, and it contradicted the value directly above it. Where the output goes next does not change how much of the document survived.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/datalab-to/surya",
+                "shows": "Repository page and README describing OCR, line detection, layout analysis, reading order and table recognition across more than ninety languages.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "240b867ef98bd10b26d9ea41d0132524d5a9deb716e3fbf1aa49f624764a9765"
+              }
+            ]
+          },
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "The code and the weights carry different licences; see the openness note. It is the engine Marker runs on, which is why the two are scored as separate products rather than one. Verified 2026-09-16 via the repository, its recursive tree, the README and the PyPI download API."
+        },
+        {
+          "slug": "tesseract",
+          "product": "Tesseract OCR",
+          "org_slug": "tesseract-ocr",
+          "org": "Tesseract OCR",
+          "type": "software",
+          "description": "Long-standing open-source OCR engine, originally developed at HP and maintained since 2006 with Google's support. It recognises text in over a hundred languages with an LSTM-based engine, and outputs plain text, hOCR, ALTO, TSV and PDF. It remains the default OCR dependency for a large amount of other software rather than a document-conversion product in its own right.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(tesseract-ocr/tesseract is the engine);core-gated:ungated(a 780-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary, and no vendor sells a Tesseract edition)",
+            "confidence": "high",
+            "note": "Apache-2.0 with no vendor and no paid edition. The 780-entry recursive tree carries no enterprise, ee or commercial path.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/tesseract-ocr/tesseract",
+                "shows": "The Tesseract repository page. Tesseract is maintained as a community open-source project with no vendor and no commercial edition; cited for the licence, the public source and the absence of a paid tier.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5",
+                "establishes": [
+                  "core-gated",
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/tesseract-ocr/tesseract/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch, 780 entries. One root LICENSE. No path matches enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about the vendor's offerings.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "1e8f24e078aabf05c5678e7ecca4ba37018fc56905d771cafe3328d0401e6d35",
+                "establishes": [
+                  "source"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": ">10K stars",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "76,518 GitHub stars, the largest count in this category. Tesseract is distributed as source and through distribution packages rather than a registry this map routes, so no usage-volume channel exists and the band rests on stars, which cap at 3. That understates a library embedded in a very large amount of other software, and the understatement is a property of the instrument.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/tesseract-ocr/tesseract",
+                "shows": "Repository page showing the star count for tesseract-ocr/tesseract.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "LSTM text recognition across 100+ languages; output as plain text, hOCR, ALTO, TSV and PDF; no layout understanding or document-structure recovery of its own",
+            "confidence": "medium",
+            "note": "Text and position survive and nothing else does: the LSTM engine emits characters with their locations in plain text, hOCR, ALTO, TSV or PDF, and recovers no reading order, tables or document structure of its own. It anchors this band as the reference OCR engine other products build on.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/tesseract-ocr/tesseract",
+                "shows": "Repository page and README describing the LSTM OCR engine, its language coverage and its output formats.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e65b9668e01dd434fe51058d42b9d0e346b314bb29eb9a9ecf852892234953e5"
+              }
+            ]
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "No package channel this map routes - it is distributed as source and distribution packages, and the popular pytesseract PyPI package is a third-party wrapper rather than the product - so adoption bands on stars. Verified 2026-09-16 via the repository and its recursive tree."
+        },
+        {
+          "slug": "deepseek-ocr",
+          "product": "DeepSeek-OCR",
+          "org_slug": "deepseek",
+          "org": "DeepSeek",
+          "type": "model",
+          "description": "Vision-language model from DeepSeek that treats a page image as a compressed carrier of text, converting document images into linearised markdown-like output. It was released as a study in optical context compression - how far a page of text can be represented by vision tokens rather than text tokens - and the OCR capability is the demonstration of it.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "license:MIT(OSI; the LICENSE body reads MIT License, Copyright (c) 2025 DeepSeek, and the Hugging Face card declares mit);weights:open(downloadable from Hugging Face without a gate);data:closed(the training corpus is neither published nor described);code:closed(inference code is published; no training or data-construction pipeline is)",
+            "confidence": "high",
+            "note": "MIT on both the code and the weights, and the band is 3 rather than 5 because openness here is about the recipe and not only the licence. The weights download without a gate and the inference code is public; the training corpus and the pipeline that built it are not, so the ladder's data-and-code rung is not reached and it lands on the fallthrough - open weights, closed recipe. A permissive licence does not substitute for a published recipe, which is the whole reason the model ladder checks weights and data before it checks the licence.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://github.com/deepseek-ai/DeepSeek-OCR",
+                "shows": "Repository page for deepseek-ai/DeepSeek-OCR: MIT, public and unarchived, 23,890 stars, carrying inference code. Establishes the licence, the published code and the absence of a training pipeline.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "62db4bea0836e2b4d2aeded0858c6b4bdf3fe462503d555155e7feec01ca8918",
+                "establishes": [
+                  "license",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR",
+                "shows": "Hugging Face model API record: license mit, 2,386,735 downloads in the trailing 30 days, weights downloadable without a gate, and no dataset declared. Establishes the open weights and the absent corpus.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e1689a639195e7256a16c38cfc2b46e531b1c03fcd31644eeb947862604df56b",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The Hugging Face API reports 2,386,735 downloads of deepseek-ai/DeepSeek-OCR in the trailing 30 days and 3,380 likes, inside the 1M-10M band for level 4. Hugging Face is the declared distribution channel for the weights. An earlier draft called this the most-downloaded product in the category by an order of magnitude; that was false and is withdrawn - docling records 12,493,111 and markitdown 12,755,994, both on PyPI and both a band above.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR",
+                "shows": "Hugging Face model API record for deepseek-ai/DeepSeek-OCR: 2,386,735 downloads in the trailing 30 days, 3,380 likes, license mit.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e1689a639195e7256a16c38cfc2b46e531b1c03fcd31644eeb947862604df56b"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "low",
+            "note": "ABSTAINS. The band this record carried said text survives and structure does not, and nothing cited establishes the second half: the release documents optical context compression - a page of text carried in vision tokens - and neither the repository nor the model card tests whether tables or reading order survive. An earlier draft asserted they do not, which was an absence of evidence read as evidence of absence; removing the assertion does not rescue the band that rested on it. This abstains rather than guessing, and closes when someone runs a document through it. The abstention is dated rather than left blank: the queue's own rule is that a null somebody looked for and did not find is a confirmed axis, and the record below is where it was looked for.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR",
+                "shows": "The model's Hugging Face record: what is published, the declared licence, and - the point of citing it on an abstention - no statement about what document structure the output preserves.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e1689a639195e7256a16c38cfc2b46e531b1c03fcd31644eeb947862604df56b"
+              }
+            ],
+            "last_verified": "2026-09-16"
+          },
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the repository, its recursive tree and the Hugging Face model API."
+        },
+        {
+          "slug": "lightonocr",
+          "product": "LightOnOCR",
+          "org_slug": "lighton",
+          "org": "LightOn",
+          "type": "model",
+          "description": "Compact vision-language OCR model from LightOn, released at around one billion parameters and trained end-to-end to turn page images into markdown-formatted text. Its argument is throughput: it targets the accuracy of far larger document models at a fraction of the inference cost.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "license:Apache-2.0(OSI; declared on the Hugging Face model card);weights:open(downloadable from Hugging Face without a gate);data:closed(the training corpus is not published);code:closed(no training pipeline is published; the release is the weights)",
+            "confidence": "high",
+            "note": "Apache-2.0 weights with a closed recipe. The licence is as permissive as the ladder's top rung asks for, and the band stops at 3 because neither the training corpus nor the pipeline is published, so the reproducibility rung is never reached. This is the category's centre of gravity for model-typed products rather than a mark against the release.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/lightonai/LightOnOCR-2-1B",
+                "shows": "Hugging Face model API record for lightonai/LightOnOCR-2-1B: license apache-2.0, 129,301 downloads in the trailing 30 days, 807 likes, weights downloadable without a gate, and no training dataset declared. Establishes the licence, the open weights and the absent recipe.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e189219f2cf4d9c08a3a280f7c0504ad0f8a9aee0948a4ba152d769f9e5721b3",
+                "establishes": [
+                  "license",
+                  "weights",
+                  "data",
+                  "code"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The Hugging Face API reports 129,301 downloads of lightonai/LightOnOCR-2-1B in the trailing 30 days, inside the 100K-1M band for level 3. Hugging Face is the declared distribution channel.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/lightonai/LightOnOCR-2-1B",
+                "shows": "Hugging Face model API record: 129,301 downloads in the trailing 30 days.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e189219f2cf4d9c08a3a280f7c0504ad0f8a9aee0948a4ba152d769f9e5721b3"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "low",
+            "note": "ABSTAINS, on the same reading as deepseek-ocr. The cited model record establishes size, licence and download count; it does not establish what structure survives a conversion, which is what this category's ladder measures. An earlier draft banded it at 3 partly on parameter count and inference throughput, neither of which is this quantity. The abstention is dated rather than left blank: the queue's own rule is that a null somebody looked for and did not find is a confirmed axis, and the record below is where it was looked for.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/models/lightonai/LightOnOCR-2-1B",
+                "shows": "The model's Hugging Face record: what is published, its size class and the declared licence, and no statement about what document structure the output preserves.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "e189219f2cf4d9c08a3a280f7c0504ad0f8a9aee0948a4ba152d769f9e5721b3"
+              }
+            ],
+            "last_verified": "2026-09-16"
+          },
+          "overall_score": 3.0,
+          "tier": null,
+          "maturity": 3.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Distributed as Hugging Face weights rather than through a package registry. Verified 2026-09-16 via the Hugging Face model API."
+        },
+        {
+          "slug": "google-document-ai",
+          "product": "Google Cloud Document AI",
+          "org_slug": "google-cloud",
+          "org": "Google Cloud",
+          "type": "software",
+          "description": "Managed document-processing platform on Google Cloud built around processors - pretrained ones for forms, invoices, receipts and identity documents, and custom ones trained on a customer's own document types - that turn documents into structured entities rather than plain text.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(Google Cloud managed service);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://cloud.google.com/document-ai",
+                "shows": "Google Cloud's Document AI product page, describing a platform of pretrained and custom processors that extract structured entities from documents. Establishes a managed Google Cloud service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://cloud.google.com/document-ai",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "pretrained processors for forms, invoices, receipts and identity documents plus custom processors trained on a customer's own document types; extraction to typed entities rather than text; human-in-the-loop review built into the platform",
+            "confidence": "medium",
+            "relative_to": "docling",
+            "relation": "one_above",
+            "comparison": {
+              "last_attested": "2026-09-16",
+              "sources": [
+                {
+                  "url": "https://github.com/docling-project/docling",
+                  "shows": "Re-read of the peer these bands are placed against. Docling still emits Markdown, HTML and lossless JSON with layout and reading order preserved, which is the amount of a document surviving that the spacing rests on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the same page and is recorded here for completeness; it is NOT the property these bands are placed on, because the recipe excludes input breadth by name.",
+                  "accessed": "2026-09-16",
+                  "http_status": 200,
+                  "content_sha256": "69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5"
+                }
+              ]
+            },
+            "note": "Meaning survives, which is the top band: custom processors return typed entities the customer defines - an invoice total, a field on a form the customer trained the processor on - rather than the position of text on the page. Banded `one_above docling`, which recovers structure faithfully and assigns no semantics to it. An earlier draft recorded the edge as `at docling` while the prose argued the band above; the edge was the error.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://cloud.google.com/document-ai",
+                "shows": "Google Cloud's Document AI product page, describing a platform of pretrained and custom processors that extract structured entities from documents. Establishes a managed Google Cloud service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "adc30d47f3af17809a5c5be22c5e1de02277b6d4d51651d3a8f59f63fc0e1ea4"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the Google Cloud product page."
+        },
+        {
+          "slug": "azure-document-intelligence",
+          "product": "Azure AI Document Intelligence",
+          "org_slug": "microsoft-azure",
+          "org": "Microsoft Azure",
+          "type": "software",
+          "description": "Managed document-processing service on Azure, formerly Form Recognizer, that converts documents into markdown or structured JSON with layout, tables, selection marks and key-value pairs, and supports custom models trained on a customer's own forms.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(Microsoft Azure managed service);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/products/ai-services/ai-document-intelligence",
+                "shows": "Microsoft's Azure AI Document Intelligence product page, describing extraction of text, tables, structure and key-value pairs from documents with prebuilt and custom models. Establishes a managed Azure service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "132db6fd47156e24e94d7f342b25565b802c40217d8617c7fe856fa3b95444d5",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/products/ai-services/ai-document-intelligence",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "132db6fd47156e24e94d7f342b25565b802c40217d8617c7fe856fa3b95444d5"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "markdown and structured JSON output with layout, tables, selection marks and key-value pairs; prebuilt models for common document types and custom models trained on a customer's own forms",
+            "confidence": "medium",
+            "relative_to": "google-document-ai",
+            "relation": "at",
+            "note": "Top band on the same reading as Document AI: prebuilt and custom models turn documents into typed structure rather than text, and the markdown output path makes it directly usable as model context. Banded at google-document-ai, its direct counterpart.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/products/ai-services/ai-document-intelligence",
+                "shows": "Microsoft's Azure AI Document Intelligence product page, describing extraction of text, tables, structure and key-value pairs from documents with prebuilt and custom models. Establishes a managed Azure service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "132db6fd47156e24e94d7f342b25565b802c40217d8617c7fe856fa3b95444d5"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Formerly named Form Recognizer; the product page carries the current name. Verified 2026-09-16 via the Azure product page."
+        },
+        {
+          "slug": "mistral-ocr",
+          "product": "Mistral OCR",
+          "org_slug": "mistral-ai-api",
+          "org": "Mistral AI (API)",
+          "type": "software",
+          "description": "Document-understanding API from Mistral that converts PDFs and images into ordered markdown with images, tables and equations preserved as structured elements, and returns them in a form intended to be fed straight into a model's context.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(commercial managed service);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mistral.ai/news/mistral-ocr",
+                "shows": "Mistral's own announcement of Mistral OCR, describing a document-understanding API that extracts ordered markdown with interleaved images, tables and equations. Establishes a hosted commercial API with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "03af76cde673b76eba625de8469c5292993940757d29235c2ef57fad2d066832",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mistral.ai/news/mistral-ocr",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "03af76cde673b76eba625de8469c5292993940757d29235c2ef57fad2d066832"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "PDF and image to ordered markdown with images, tables and equations preserved as structured elements; served as a hosted API with document-as-context output",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Structure survives: ordered markdown with tables, equations and interleaved images preserved as structured elements, which is band 4. It does not reach band 5 because nothing published offers extraction to customer-defined entity types. An earlier draft explained the ceiling by a narrower input set, which is input breadth and is excluded from this ladder by name. Banded at chandra.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mistral.ai/news/mistral-ocr",
+                "shows": "Mistral's own announcement of Mistral OCR, describing a document-understanding API that extracts ordered markdown with interleaved images, tables and equations. Establishes a hosted commercial API with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "03af76cde673b76eba625de8469c5292993940757d29235c2ef57fad2d066832"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via Mistral's own announcement page."
+        },
+        {
+          "slug": "textract",
+          "product": "Amazon Textract",
+          "org_slug": "amazon-web-services",
+          "org": "Amazon Web Services",
+          "type": "software",
+          "description": "Managed document-analysis service from AWS that extracts text, handwriting, tables, forms and key-value pairs from scanned documents, with query-based extraction that answers a natural-language question against a document rather than returning the whole page.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(AWS managed service);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/textract/",
+                "shows": "AWS's Textract product page, describing automatic extraction of printed text, handwriting, tables, forms and key-value pairs from scanned documents. Establishes a managed AWS service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/textract/",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "text, handwriting, tables, forms and key-value pairs from scanned documents; query-based extraction against a document; managed and scaled by AWS",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Structure recovery across forms and tables plus handwriting, which is the band. Query-based extraction is a retrieval convenience layered on the same parse rather than a wider conversion capability, so it does not lift the band. Banded at chandra.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/textract/",
+                "shows": "AWS's Textract product page, describing automatic extraction of printed text, handwriting, tables, forms and key-value pairs from scanned documents. Establishes a managed AWS service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the AWS product page."
+        },
+        {
+          "slug": "adobe-pdf-extract",
+          "product": "Adobe PDF Extract API",
+          "org_slug": "adobe",
+          "org": "Adobe",
+          "type": "software",
+          "description": "Document-extraction API from Adobe that returns a PDF's text, tables and figures as structured JSON with the reading order and styling information the format carries, built on Adobe's own PDF engine rather than on OCR of a rendered page.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(Adobe commercial API);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/",
+                "shows": "Adobe's PDF Extract API documentation, describing extraction of text, tables and figures from PDFs into structured JSON with reading order and styling. Establishes a commercial API with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "PDF text, tables and figures to structured JSON with reading order and styling, using Adobe's own PDF engine rather than page OCR; figures and tables returned as separate renditions",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Structure survives: the service reads the PDF's own object model rather than an image of it and returns tables, figures and reading order as structured JSON, which is band 4. It does not reach band 5 because it returns the document's structure and not typed entities the customer defines - there is no custom-processor path here. An earlier draft stopped it at 4 because it reads one input format, which is input breadth and is excluded from this ladder by name. Banded at chandra.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/",
+                "shows": "Adobe's PDF Extract API documentation, describing extraction of text, tables and figures from PDFs into structured JSON with reading order and styling. Establishes a commercial API with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "f70b2418d9cc07672c50f5d8cd28cc9ce57a4d5fd051451a6bd3807ca497ea32"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via Adobe's developer documentation."
+        },
+        {
+          "slug": "mathpix",
+          "product": "Mathpix",
+          "org_slug": "mathpix",
+          "org": "Mathpix",
+          "type": "software",
+          "description": "Document-conversion service specialising in scientific and mathematical content. It converts PDFs, images and handwriting into LaTeX, Markdown, DOCX and HTML, and is the reference tool for documents whose value is in the equations rather than the prose.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(Mathpix commercial API);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mathpix.com/",
+                "shows": "Mathpix's homepage, describing conversion of PDFs, images and handwriting into LaTeX, Markdown, DOCX and HTML with an emphasis on mathematical notation. Establishes a commercial service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "86b21c6ede04323e1ebf95c6e535ee349bc12df7d62d070fc951d1e7c25e95a8",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mathpix.com/",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "86b21c6ede04323e1ebf95c6e535ee349bc12df7d62d070fc951d1e7c25e95a8"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "PDF, image and handwriting to LaTeX, Markdown, DOCX and HTML; mathematical notation and chemical diagrams as first-class output rather than as dropped or flattened content",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Equation fidelity is the discriminator and this is the category's reference point for it - LaTeX out of handwritten mathematics is a harder transformation than any of the general converters attempt. Narrower overall than the top band on ordinary document structure. Banded at chandra.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://mathpix.com/",
+                "shows": "Mathpix's homepage, describing conversion of PDFs, images and handwriting into LaTeX, Markdown, DOCX and HTML with an emphasis on mathematical notation. Establishes a commercial service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "86b21c6ede04323e1ebf95c6e535ee349bc12df7d62d070fc951d1e7c25e95a8"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the Mathpix homepage."
+        },
+        {
+          "slug": "reducto",
+          "product": "Reducto Parse",
+          "org_slug": "reducto",
+          "org": "Reducto",
+          "type": "software",
+          "description": "Document-ingestion API aimed at retrieval pipelines. It parses PDFs, images, spreadsheets and Office documents into layout-aware JSON and into chunks sized and bounded for embedding, so the output is shaped for a retrieval index rather than for a human reader.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "license:Proprietary;service:proprietary(Reducto commercial API);source:closed(no implementation is published)",
+            "confidence": "high",
+            "note": "A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted, which is the question this dimension asks; the ladder settles it on source alone.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://reducto.ai",
+                "shows": "Reducto's homepage, describing document parsing into layout-aware structure and LLM-ready chunks for retrieval pipelines. Establishes a commercial service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "0382576e03e45c95d147fa9be61b367bc804ffbad160f39e97b150b2fb7c5ee8",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "unknown",
+            "confidence": "low",
+            "note": "No usage figure is published for this service specifically, and it publishes no countable artifact - no package, repository or registry entry - so no level is assigned rather than one being inferred from the vendor's platform as a whole.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://reducto.ai",
+                "shows": "The product page, read for a usage disclosure; it publishes none specific to this service.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "0382576e03e45c95d147fa9be61b367bc804ffbad160f39e97b150b2fb7c5ee8"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "PDF, image, spreadsheet and Office parsing to layout-aware JSON and to chunks bounded for embedding; output shaped for a retrieval index rather than for reading",
+            "confidence": "medium",
+            "relative_to": "chandra",
+            "relation": "at",
+            "note": "Wide input coverage with structure preserved, and a chunking stage on the end that the other converters leave to the caller. That is an addition to the pipeline rather than deeper conversion, so it does not lift the band. Banded at chandra.",
+            "last_verified": "2026-09-16",
+            "sources": [
+              {
+                "url": "https://reducto.ai",
+                "shows": "Reducto's homepage, describing document parsing into layout-aware structure and LLM-ready chunks for retrieval pipelines. Establishes a commercial service with no published implementation.",
+                "accessed": "2026-09-16",
+                "http_status": 200,
+                "content_sha256": "0382576e03e45c95d147fa9be61b367bc804ffbad160f39e97b150b2fb7c5ee8"
+              }
+            ]
+          },
+          "overall_score": null,
+          "tier": null,
+          "maturity": null,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-16",
+            "basis": "verified"
+          },
+          "version_note": "Verified 2026-09-16 via the Reducto homepage."
         }
       ]
     },
@@ -51594,174 +53216,6 @@
           "version_note": "The original reference Postgres server was archived read-only in May 2025 and only did read-only queries, so this is the maintained successor. \"Pro\" is part of the product name rather than a paid edition; there is no second tier. Verified 2026-08-13 via GitHub and the repository LICENSE."
         },
         {
-          "slug": "docling",
-          "product": "Docling",
-          "org_slug": "ibm",
-          "org": "IBM",
-          "type": "software",
-          "description": "SDK and CLI that parses PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, audio and video into unified structured output - Markdown, lossless JSON, HTML, WebVTT and DocTags - for generative-AI and RAG pipelines. Unlike URL-to-Markdown services it does deep local document understanding: layout and reading-order analysis, table-structure recognition, formula and code extraction, OCR, and vision and speech model integration. It also reads application-specific XML schemas including USPTO patents, JATS articles and XBRL filings, and ships its own MCP server.",
-          "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "license:MIT(OSI);source:public(github.com/docling-project/docling);self-host:primary;no-feature-gated-core;core-gated:ungated",
-            "confidence": "high",
-            "note": "MIT, local-first document parsing, fully self-hostable with integrated open-weight models.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/docling-project/docling/main/LICENSE",
-                "shows": "Plain MIT License text: \"Copyright (c) 2024 International Business Machines\".",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "9816fb12b11c33c552f4e8621879d0da493be47c0f86be785b53a2cf7f7ae4c6",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://github.com/docling-project/docling",
-                "shows": "Repo page - MIT badge, 64,719 stargazers. \"Local execution capabilities for sensitive data and air-gapped environments\"; open-weight VLMs such as GraniteDocling driven from the CLI; docling-serve as the self-run API server. No paid tier, license key or enterprise directory.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ]
-              }
-            ],
-            "bucket": "open"
-          },
-          "adoption": {
-            "level": 5,
-            "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "12,493,111 downloads of docling in the trailing 30 days, which bands at >10M, level 5 on the software adoption scale. The count is for the first-party package alone; docling-core adds more again on top of it.",
-            "reach": ">10M",
-            "last_verified": "2026-08-12",
-            "sources": [
-              {
-                "url": "https://pypistats.org/api/packages/docling/recent",
-                "shows": "12,493,111 downloads in the trailing 30 days for docling",
-                "accessed": "2026-08-12",
-                "http_status": 200,
-                "content_sha256": "c81ce393cb034f9bc8db666fdff640be75b337519a7dee035dee389236c80bc9"
-              }
-            ]
-          },
-          "capability": {
-            "score": 5,
-            "basis": "feature_matrix",
-            "value": "parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/WAV/MP3/WebVTT/email/images/LaTeX and video -> Markdown/HTML/WebVTT/DocLang/DocTags/lossless JSON; layout + reading-order; table-structure recognition; formula/code extraction; image classification; OCR; VLM and ASR models; application-specific XML schemas (DocLang, USPTO patents, JATS, XBRL); MCP server",
-            "confidence": "high",
-            "note": "Deepest local document understanding among RAG ingestion tools; web-URL parsers lack rich binary-doc depth.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://github.com/docling-project/docling",
-                "shows": "Feature list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, WAV, MP3, WebVTT, Box Notes, EML/MSG, images, LaTeX, DocLang and plain text input; \"Advanced PDF understanding incl. page layout, reading order, table structure, code, formulas, image classification\"; export to Markdown, HTML, WebVTT, DocLang, DocTags and lossless JSON; \"Extensive OCR support for scanned PDFs and images\"; VLM support; \"Audio support with Automatic Speech Recognition (ASR) models\"; \"Connect to any agent using the MCP server\"; video parsing under What's new.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "23ecab48418cfbc5de53cbb3a01663ec3af4e2e029550cf73306342d7cc2a891"
-              }
-            ]
-          },
-          "overall_score": 5.0,
-          "tier": "leading",
-          "maturity": 5.0,
-          "mature": true,
-          "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
-          },
-          "version_note": "Originated at IBM Research, inducted into the Linux Foundation AI & Data Foundation (Docling Project) on 2025-04-29 under community governance. Verified 2026-08-13 via GitHub, the repository LICENSE and the pypistats API."
-        },
-        {
-          "slug": "markitdown",
-          "product": "MarkItDown",
-          "org_slug": "microsoft",
-          "org": "Microsoft",
-          "type": "software",
-          "description": "Lightweight Python utility from Microsoft for converting files and office documents - PDF, DOCX, PPTX, XLSX, images (OCR), audio (transcription), HTML, CSV/JSON/XML, ZIP, EPub, even YouTube URLs - into Markdown optimized for LLMs and agents. Offers CLI, Python API, Docker, and a plugin system, with optional Azure Document Intelligence and LLM-vision for image descriptions.",
-          "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "license:MIT(OSI; repo LICENSE + pyproject, PyPI field null);source:public;no-feature-gated-core;core-gated:ungated",
-            "confidence": "high",
-            "note": "Fully MIT; optional Azure/LLM features are pluggable, not gating. Azure Document Intelligence and Azure Content Understanding are optional install extras - the `[az-doc-intel]` and `[az-content-understanding]` groups - sitting beside built-in offline converters, so the conversion the product exists to do runs entirely in the published package and core-gated stays ungated.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/LICENSE",
-                "shows": "Plain MIT License text: \"Copyright (c) Microsoft Corporation\".",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://github.com/microsoft/markitdown",
-                "shows": "Repo page - MIT badge, root tree carrying LICENSE, Dockerfile and packages/. A capability table compares \"Built-in converters\" (offline, format-specific) against Azure Document Intelligence and Azure Content Understanding, both installed as optional extras `[az-doc-intel]` and `[az-content-understanding]`. No license key, second license or enterprise directory.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ]
-              }
-            ],
-            "bucket": "open"
-          },
-          "adoption": {
-            "level": 5,
-            "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "12,755,994 downloads of markitdown in the trailing 30 days, which bands at >10M, level 5 on the software adoption scale. The count is for the PyPI package, not the unrelated npm package of the same name.",
-            "reach": ">10M",
-            "last_verified": "2026-08-12",
-            "sources": [
-              {
-                "url": "https://pypistats.org/api/packages/markitdown/recent",
-                "shows": "12,755,994 downloads in the trailing 30 days for markitdown",
-                "accessed": "2026-08-12",
-                "http_status": 200,
-                "content_sha256": "025a87c7a3124469fe5107a8e72afee552a23c481035a3fe810186d13d94ff98"
-              }
-            ]
-          },
-          "capability": {
-            "score": 4,
-            "basis": "feature_matrix",
-            "value": "converts PDF/DOCX/PPTX/XLSX/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown; CLI + Python API + Docker; plugins; optional Azure Doc Intelligence + LLM vision",
-            "confidence": "medium",
-            "note": "Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://github.com/microsoft/markitdown",
-                "shows": "Format list - PDF, Office documents, images (OCR), audio (speech transcription), HTML, text-based formats (CSV, JSON, XML), \"ZIP files (iterates over contents)\", YouTube URLs, EPubs. Optional extras `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`; a Plugins section; a Dockerfile in the root tree.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9"
-              }
-            ]
-          },
-          "overall_score": 4.6,
-          "tier": "leading",
-          "maturity": 4.6,
-          "mature": true,
-          "freshness": {
-            "date": "2026-08-12",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-13"
-          },
-          "version_note": "The PyPI license field is null, so the terms come from the repository and pyproject, which is what the openness axis reads. The Azure Document Intelligence and Content Understanding paths are optional install extras rather than a core withheld from the package. Verified 2026-08-13 via GitHub, the repository LICENSE and the pypistats API."
-        },
-        {
           "slug": "yomo",
           "product": "YoMo",
           "org_slug": "vivgrid",
@@ -51964,104 +53418,6 @@
           "version_note": "The LICENSE is Apache-2.0 with an appended attribution requirement that binds public use as well as redistribution, so the GitHub API's Apache-2.0 label understates the terms. Verified 2026-08-30 via the GitHub API, the LICENSE body and the pypistats API."
         },
         {
-          "slug": "mineru",
-          "product": "MinerU",
-          "org_slug": "shanghai-ai-laboratory",
-          "org": "Shanghai AI Laboratory",
-          "type": "software",
-          "description": "Document extraction pipeline that converts PDFs and Office documents into LLM-ready Markdown and JSON, preserving reading order and handling multi-column layouts, tables, formulas and scanned pages through OCR. Published by OpenDataLab and distributed as a Python package, a Docker image and a hosted web application.",
-          "openness": {
-            "score": 2,
-            "class": "source_available",
-            "components": "license:MinerU-Open-Source-License(Apache-2.0 plus commercial thresholds; not OSI);source:public(the repository builds the extraction pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the license, not in the build)",
-            "confidence": "high",
-            "note": "Read from the LICENSE.md body rather than from the badge, and the badge is the thing to distrust here. MinerU is Apache-2.0 'subject to the additional terms below', and those terms require a separate commercial license once an organization and its affiliates exceed 100 million monthly active users or USD 20 million in monthly revenue, oblige anyone offering an online service built on it to say so prominently, and terminate the grant automatically if those terms are violated. That is a license charging for a class of use above a threshold, which is the competition_restricted tier stated directly, and the ladder scores a public source under that tier at 2/source_available. Nothing is withheld from the published tree - the whole pipeline is there and builds - so core-gated is ungated and the cap comes from the license alone. GitHub reports NOASSERTION because the file is a modified Apache text, which is substantive here rather than the usual custom-copyright-line false alarm.",
-            "last_verified": "2026-08-30",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/LICENSE.md",
-                "shows": "LICENSE.md body: 'MinerU is licensed under Apache License 2.0 and is subject to the additional terms below.' Section 1 requires a separate commercial license where an entity and its affiliates exceed 100 million monthly active users or USD 20 million total monthly revenue; Section 2 imposes a prominent-attribution obligation on online services; Section 3 terminates the license automatically where either is not met.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "2d9aeb5d15159329a20dd804f251c64860ba954fbd26ec02f802220e6d71cf5c",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/opendatalab/MinerU",
-                "shows": "Repo metadata - license spdx_id NOASSERTION, archived false, 78,805 stars - for opendatalab/MinerU.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "9cca7dcf8f2e6206b23ceb3d0c6438404974a962566c8dabb0cafdcd8ae1feb6",
-                "establishes": [
-                  "license",
-                  "source"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
-                "shows": "README documents the extraction pipeline built from this repository and distributed as a Python package and Docker image, with no enterprise directory, license-key-gated build or withheld component described.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358",
-                "establishes": [
-                  "source",
-                  "core-gated"
-                ]
-              }
-            ],
-            "bucket": "open-ish"
-          },
-          "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "269,753 downloads of mineru in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
-            "last_verified": "2026-08-30",
-            "sources": [
-              {
-                "url": "https://pypistats.org/api/packages/mineru/recent",
-                "shows": "last_month = 269,753 downloads for mineru.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "ccc3863295b4fa66f4b9d742f7de5f0419ee79fab8e98397e30886e226aa31ef"
-              }
-            ]
-          },
-          "capability": {
-            "score": 4,
-            "basis": "feature_matrix",
-            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and formulas",
-            "value": "PDF and Office document extraction to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
-            "relative_to": "docling",
-            "relation": "one_below",
-            "confidence": "medium",
-            "note": "Banded one below the docling anchor on the category feature matrix. MinerU covers the same layout, table, formula and OCR path over documents, but docling additionally parses audio through ASR, video and application-specific XML schemas, which is the breadth the top band is anchored on. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md",
-                "shows": "README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358"
-              }
-            ]
-          },
-          "overall_score": 3.4,
-          "tier": null,
-          "maturity": 3.4,
-          "mature": false,
-          "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-30"
-          },
-          "version_note": "OpenDataLab is a project identity under Shanghai AI Laboratory, whose contact address the GitHub org publishes as OpenDataLab@pjlab.org.cn, so the record is filed under the lab rather than under a separate org. Verified 2026-08-30 via the GitHub API, the LICENSE.md body and the pypistats API."
-        },
-        {
           "slug": "context7",
           "product": "Context7",
           "org_slug": "upstash",
@@ -52158,114 +53514,6 @@
             "latest_axis_confirmation": "2026-08-30"
           },
           "version_note": "Verified 2026-08-30 via the GitHub API, the repository README and the npm downloads API."
-        },
-        {
-          "slug": "marker",
-          "product": "Marker",
-          "org_slug": "datalab",
-          "org": "Datalab",
-          "type": "software",
-          "description": "Document conversion pipeline that turns PDFs, images, Office documents and EPUB into Markdown, JSON and HTML, running layout analysis, table and equation recognition and OCR through a stack of purpose-trained models. Published by Datalab alongside a hosted API and an on-premises offering.",
-          "openness": {
-            "score": 2,
-            "class": "source_available",
-            "components": "license:Apache-2.0(OSI, over the code)+AI-Pubs-Open-RAIL-M-Modified(model weights; free below USD 5M funding or revenue, commercial license required above it);source:public(the repository builds the conversion pipeline the package installs);core-gated:ungated(nothing is withheld from the published tree; the constraint is in the weights license)",
-            "confidence": "high",
-            "note": "Two licenses, and the compound is resolved on the more restrictive of them because both cover the artifact you actually run. The code is Apache-2.0. The model weights the pipeline requires - Marker does not convert a document without them - are under a modified AI Pubs Open RAIL-M that the README states is 'free for research, personal use, and startups under $5M funding/revenue', with a commercial license required above that threshold. A license charging for a class of use above a revenue threshold is the competition_restricted tier, and a public source under that tier scores 2/source_available. This is deliberately not the model-context-protocol case, where a CC-BY-4.0 documentation license was moved out of the compound because it covered the project's prose rather than the artifact you run: here the bounded license covers the weights, and the weights are the product.",
-            "last_verified": "2026-08-30",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/LICENSE",
-                "shows": "LICENSE body is the Apache License 2.0 text, covering the repository's code.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/MODEL_LICENSE",
-                "shows": "MODEL_LICENSE body is the AI PUBS OPEN RAIL-M LICENSE (MODIFIED), Version 0.1, applying use restrictions to the model weights and their derivatives.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "636dfb8eb19efc5835ed6efb878f8b694a93f028c715d2547d831e2a55440276",
-                "establishes": [
-                  "license"
-                ]
-              },
-              {
-                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
-                "shows": "README, Commercial usage section: 'Our code is licensed under Apache 2.0 - free to use, including commercially. Our model weights use a modified AI Pubs Open Rail-M license (free for research, personal use, and startups under $5M funding/revenue). For commercial use of the model weights beyond that, visit our pricing page.'",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4",
-                "establishes": [
-                  "license",
-                  "source",
-                  "core-gated"
-                ]
-              },
-              {
-                "url": "https://api.github.com/repos/datalab-to/marker",
-                "shows": "Repo metadata - license spdx_id Apache-2.0, archived false, 39,389 stars - for datalab-to/marker.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "2cf501fb97b288dd6016e359054aaafaed543236e28dc8908751670b9b87de3f",
-                "establishes": [
-                  "source"
-                ]
-              }
-            ],
-            "bucket": "open-ish"
-          },
-          "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "289,172 downloads of marker-pdf in the trailing 30 days, which bands at 100K-1M, level 3 on the software adoption scale.",
-            "last_verified": "2026-08-30",
-            "sources": [
-              {
-                "url": "https://pypistats.org/api/packages/marker-pdf/recent",
-                "shows": "last_month = 289,172 downloads for marker-pdf.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "9d409f427b6997f83409ab183dcae0de675e3d05c634e6537f99afcdd93b9a6a"
-              }
-            ]
-          },
-          "capability": {
-            "score": 4,
-            "basis": "feature_matrix",
-            "basis_detail": "category feature matrix: multi-format document understanding with layout, tables and equations",
-            "value": "PDF, image, Office and EPUB conversion to Markdown, JSON and HTML with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
-            "relative_to": "docling",
-            "relation": "one_below",
-            "confidence": "medium",
-            "note": "Banded one below the docling anchor on the same reading as MinerU: the same layout, table, equation and OCR path over documents, without the audio, video and application-specific XML breadth the top band is anchored on. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative band is only as fresh as the record it is relative to.",
-            "last_verified": "2026-08-13",
-            "sources": [
-              {
-                "url": "https://raw.githubusercontent.com/datalab-to/marker/master/README.md",
-                "shows": "README documents conversion of PDFs, images, Office documents and EPUB to Markdown, JSON and HTML, with layout analysis, table and equation recognition, OCR and optional LLM-assisted refinement.",
-                "accessed": "2026-08-30",
-                "http_status": 200,
-                "content_sha256": "1b874b82efc709d55d3a251cc631c13f695ed08935241fb4cce995e964fd00e4"
-              }
-            ]
-          },
-          "overall_score": 3.4,
-          "tier": null,
-          "maturity": 3.4,
-          "mature": false,
-          "freshness": {
-            "date": "2026-08-13",
-            "basis": "verified",
-            "latest_axis_confirmation": "2026-08-30"
-          },
-          "version_note": "The repository carries two licenses, Apache-2.0 over the code and a modified AI Pubs Open RAIL-M over the model weights the pipeline requires. Verified 2026-08-30 via the GitHub API, both LICENSE bodies and the pypistats API."
         },
         {
           "slug": "lightpanda",
@@ -71723,6 +72971,7 @@
     "benchmark_eval_data",
     "training_synthetic_datasets",
     "dataset_processing_tools",
+    "document_conversion",
     "orchestration_agents",
     "ui_api",
     "telemetry_observability",
@@ -71795,6 +73044,19 @@
       "country": "",
       "products": [
         "deep-lake"
+      ]
+    },
+    "adobe": {
+      "slug": "adobe",
+      "display_name": "Adobe",
+      "type": "company",
+      "homepage": "https://www.adobe.com",
+      "github": [
+        "https://github.com/adobe"
+      ],
+      "country": "",
+      "products": [
+        "adobe-pdf-extract"
       ]
     },
     "agent-infra": {
@@ -71990,7 +73252,8 @@
         "aws-neuron",
         "bedrock-guardrails",
         "firecracker",
-        "sagemaker-pipelines"
+        "sagemaker-pipelines",
+        "textract"
       ]
     },
     "amd": {
@@ -72799,7 +74062,9 @@
       ],
       "country": "United States",
       "products": [
-        "marker"
+        "chandra",
+        "marker",
+        "surya"
       ]
     },
     "datasette": {
@@ -72867,6 +74132,7 @@
         "deepseek-chat",
         "deepseek-coder",
         "deepseek-instruct",
+        "deepseek-ocr",
         "deepseek-r1",
         "flashmla",
         "smallpond"
@@ -73347,6 +74613,7 @@
       "country": "",
       "products": [
         "google-cloud-tpu-inference",
+        "google-document-ai",
         "vertex-ai-gen-ai-evaluation-service",
         "vertex-ai-model-observability",
         "vertex-ai-pipelines",
@@ -74092,6 +75359,19 @@
         "pytorch-lightning"
       ]
     },
+    "lighton": {
+      "slug": "lighton",
+      "display_name": "LightOn",
+      "type": "company",
+      "homepage": "https://www.lighton.ai",
+      "github": [
+        "https://github.com/lightonai"
+      ],
+      "country": "",
+      "products": [
+        "lightonocr"
+      ]
+    },
     "lightpanda": {
       "slug": "lightpanda",
       "display_name": "Lightpanda",
@@ -74287,6 +75567,19 @@
         "mastra"
       ]
     },
+    "mathpix": {
+      "slug": "mathpix",
+      "display_name": "Mathpix",
+      "type": "company",
+      "homepage": "https://mathpix.com",
+      "github": [
+        "https://github.com/Mathpix"
+      ],
+      "country": "",
+      "products": [
+        "mathpix"
+      ]
+    },
     "meilisearch": {
       "slug": "meilisearch",
       "display_name": "Meili SAS",
@@ -74405,6 +75698,7 @@
         "azure-ai-foundry-observability",
         "azure-ai-model-inference",
         "azure-content-safety",
+        "azure-document-intelligence",
         "azure-machine-learning-pipelines",
         "azure-openai-fine-tuning"
       ]
@@ -74482,7 +75776,8 @@
       "github": [],
       "country": "",
       "products": [
-        "codestral"
+        "codestral",
+        "mistral-ocr"
       ]
     },
     "mit-han-lab": {
@@ -74725,6 +76020,19 @@
       "country": "",
       "products": [
         "n8n"
+      ]
+    },
+    "nanonets": {
+      "slug": "nanonets",
+      "display_name": "Nanonets",
+      "type": "company",
+      "homepage": "https://nanonets.com",
+      "github": [
+        "https://github.com/NanoNets"
+      ],
+      "country": "",
+      "products": [
+        "nanonets-ocr"
       ]
     },
     "nasa-harvest": {
@@ -75346,7 +76654,8 @@
       "country": "",
       "products": [
         "fastdeploy",
-        "paddle"
+        "paddle",
+        "paddleocr"
       ]
     },
     "paradedb": {
@@ -75714,6 +77023,19 @@
       "country": "",
       "products": [
         "redisearch"
+      ]
+    },
+    "reducto": {
+      "slug": "reducto",
+      "display_name": "Reducto",
+      "type": "company",
+      "homepage": "https://reducto.ai",
+      "github": [
+        "https://github.com/reductoai"
+      ],
+      "country": "",
+      "products": [
+        "reducto"
       ]
     },
     "reka-ai": {
@@ -76108,6 +77430,19 @@
         "uce"
       ]
     },
+    "studio-dots-ai": {
+      "slug": "studio-dots-ai",
+      "display_name": "Studio Dots AI",
+      "type": "company",
+      "homepage": "https://github.com/studio-dots-ai",
+      "github": [
+        "https://github.com/studio-dots-ai"
+      ],
+      "country": "",
+      "products": [
+        "dots-ocr"
+      ]
+    },
     "surfsense": {
       "slug": "surfsense",
       "display_name": "SurfSense",
@@ -76238,6 +77573,19 @@
       "country": "",
       "products": [
         "tensorlake-sandbox"
+      ]
+    },
+    "tesseract-ocr": {
+      "slug": "tesseract-ocr",
+      "display_name": "Tesseract OCR",
+      "type": "foundation",
+      "homepage": "https://tesseract-ocr.github.io",
+      "github": [
+        "https://github.com/tesseract-ocr"
+      ],
+      "country": "",
+      "products": [
+        "tesseract"
       ]
     },
     "texas-instruments": {
@@ -76985,7 +78333,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 715,
+  "n_total": 730,
   "generated": "2026-09-16",
   "version": "0.3.0",
   "released": "2026-09-05",
@@ -76998,8 +78346,8 @@
       "total": 24626,
       "overlap": 309,
       "universe": 24856,
-      "scored": 715,
-      "scored_outside": 406,
+      "scored": 730,
+      "scored_outside": 421,
       "uncategorized": 24317
     },
     "top": [
