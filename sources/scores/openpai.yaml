@@ -64,14 +64,13 @@ capability:
     topology, so a job needing eight GPUs inside one node is placed only where that holds; tenants may borrow
     other virtual clusters'' free capacity at lower priority'
   confidence: medium
-  relative_to: nvidia-run-ai
-  relation: at
   note: 'HiveD decides which GPUs on which machines a job receives, and guarantees the topology of that set
     rather than only its size - an eight-GPU job that must run inside one node is placed only where that holds.
     That is selecting the hardware, which is band 4. It is NOT banded 5: the cited manual establishes that
     cells represent topology above the node level, and a representation is not the same as evidence that one
     job receives a multi-machine set reserved together. The band says what the documentation shows and stops
-    there.'
+    there. It anchors this band rather than resting on a peer, now that nvidia-run-ai has moved to 5 on its
+    own scheduler documentation.'
   last_verified: '2026-09-15'
   sources:
   - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/README.md

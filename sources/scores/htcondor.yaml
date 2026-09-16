@@ -47,27 +47,29 @@ openness:
     establishes:
     - core-gated
 adoption:
-  level: 1
-  reach: <1K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 328 GitHub stars. The htcondor PyPI package exists but is the Python bindings, not the scheduler, so
-    banding on its downloads would measure Python API users rather than the clusters HTCondor runs; the band
-    rests on stars instead. Both figures understate a scheduler distributed mainly as distribution packages,
-    and neither says how widely it is deployed.
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 'The PyPI download API reports 28,301 downloads of htcondor in the trailing 30 days, inside the 10K-100K
+    band for level 2. The package is the Python bindings rather than the scheduler daemons, and it is still
+    the band: it covers this product and no other, so the measurement belongs to it, and preferring a star
+    count on the grounds that bindings users are a subset of HTCondor users is a minority-share argument rather
+    than a different-population one.'
   last_verified: '2026-09-16'
   sources:
-  - url: https://github.com/htcondor/htcondor
-    shows: Repository page showing the star count for htcondor/htcondor.
+  - url: https://pypistats.org/api/packages/htcondor/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 28,301 downloads in the trailing
+      month.'
     accessed: '2026-09-16'
     http_status: 200
-    content_sha256: 3e555cf245b78316b323a9cbdd4ea70c13db0dd97b159ce1c1a686f519ac67f0
+    content_sha256: 6fcd54c01b3989286e84f5cfe6799d1780e0df71171beb0daf337768d69a2b94
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
   value: request_GPUs, require_gpus, gpus_minimum_capability and gpus_minimum_memory in HTCondor's own submit
     language; the scheduler advertises machines with GPUs and matches jobs needing them to machines that have
-    them
+    them; machine_count in the parallel universe names the number of machines dedicated to one job
   confidence: medium
   relative_to: nvidia-run-ai
   relation: at
@@ -81,11 +83,12 @@ capability:
       accessed: '2026-09-16'
       http_status: 200
       content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
-  note: 'Admitted on the accelerator limb, and cleanly: the GPU request is HTCondor''s own submit language
-    rather than a backend spec passed through, and HTCondor''s documentation describes it ''matching jobs that
-    need GPUs to machines that have them''. Band 4 - it selects the machine, and the cited documentation does
-    not establish a multi-machine set reserved as one allocation, which is band 5. Its general-purpose origins
-    do not lower the band; the test is what the scheduler does.'
+  note: 'Admitted on the accelerator limb: request_GPUs and require_gpus are HTCondor''s own submit language,
+    and its documentation describes ''matching jobs that need GPUs to machines that have them''. Band 5 on
+    the parallel universe, where machine_count is ''the number of machines to be dedicated toward running the
+    job'' - a multi-machine set held for one job by HTCondor''s own dedicated scheduler. Drafted at 4 from
+    the single-job GPU submission page alone, which is silent on the parallel universe; the silence was read
+    as a ceiling and it was not one.'
   last_verified: '2026-09-16'
   sources:
   - url: https://htcondor.readthedocs.io/en/latest/users-manual/submitting-a-job.html
@@ -96,3 +99,10 @@ capability:
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 94de435b71e8b51dddfa7b3a33f38b19793b7767379b4d83b33b27733483120e
+  - url: https://htcondor.readthedocs.io/en/24.0/man-pages/condor_submit.html
+    shows: 'HTCondor''s condor_submit manual page: ''machine_count = <max> For the parallel universe, a single
+      value (max) is required. It is neither a maximum or minimum, but the number of machines to be dedicated
+      toward running the job.'' Establishes a multi-machine allocation held for one job.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: a5a1ebb6b9c64c698d68ceef4646b91cef889f08c09d0cd3f685ce77dc7c99f6

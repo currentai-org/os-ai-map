@@ -67,23 +67,23 @@ capability:
     patches the placement decision onto the pod as hami.io/vgpu-node and hami.io/vgpu-devices-to-allocate;
     GPU virtualization across NVIDIA, Cambricon and other vendors
   confidence: medium
-  relative_to: nvidia-run-ai
+  relative_to: openpai
   relation: at
   comparison:
     last_attested: '2026-09-16'
     sources:
-    - url: https://www.nvidia.com/en-us/software/run-ai/
-      shows: Re-read of the peer this band is placed against. NVIDIA Run:ai still presents as GPU pooling with
-        dynamic and fractional allocation, attributing gang scheduling to Grove with KAI rather than to itself
-        - so it still selects hardware without an evidenced multi-machine reservation, which is the property
-        that puts both products at this band.
+    - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/doc/user-manual.md
+      shows: Re-read of the peer this band is placed against. HiveD still presents as choosing which GPUs on
+        which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
+        reservation - the property both products share at this band.
       accessed: '2026-09-16'
       http_status: 200
-      content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+      content_sha256: b4140035b19168633fbdf15d4d2585bdd8d966c173daa4009a0c765d833c73d4
   note: 'Admitted on the accelerator limb: HAMi registers devices in its own annotation schema and its own
     scheduler consumes that to choose placement. Band 4 - it selects the node AND the specific devices, which
     is more than dispatching, and nothing cited shows it reserving a multi-machine set as one allocation, which
-    is what band 5 asks.'
+    is what band 5 asks. Repointed from nvidia-run-ai to openpai when Run:ai moved to band 5: a peer must be
+    at the band being claimed, and openpai selects hardware on the same footing this record does.'
   last_verified: '2026-09-16'
   sources:
   - url: https://raw.githubusercontent.com/Project-HAMi/HAMi/master/docs/develop/protocol.md

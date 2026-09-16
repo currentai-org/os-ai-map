@@ -52,16 +52,20 @@ adoption:
     http_status: 200
     content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
-  value: GPU pooling across clouds, hybrid environments and on-premise clusters; dynamic and fractional GPU
-    allocation; quotas and priorities per team; places workloads onto the GPUs it allocates
+  value: its Scheduler handles each pod as part of a pod group with gang scheduling, minimum replicas and topology
+    applied across the whole group; hierarchical sub-groups for leader-worker sets; hierarchical queues per
+    project and node pool; GPU pooling with dynamic and fractional allocation
   confidence: medium
-  note: 'Band 4, and deliberately not 5. NVIDIA''s page evidences GPU pooling and fractional allocation, which
-    is binding work to specific accelerators, but it attributes gang scheduling to Grove together with KAI
-    Scheduler rather than to the platform. It anchors this band rather than resting on a peer: it is banded
-    on what its own page supports and no higher, and crediting it with the open scheduler''s documented behaviour
-    would score one product on another product''s evidence.'
+  note: Band 5 on NVIDIA's own scheduler documentation, which states that the Scheduler 'always uses the pod
+    group associated with each pod and handles the pod as part of a larger group of pods' with 'gang scheduling,
+    minimum replicas or workers... applied consistently across the entire pod group', over 'distributed workloads
+    using multiple pods, each running on a node'. That is a multi-machine set reserved as one allocation by
+    the product's own scheduler. It was drafted at 4 from the product marketing page, which describes pooling
+    and fractional allocation and attributes gang scheduling to Grove with KAI; reading the scheduler documentation
+    rather than the marketing page is what corrected it, and treating a marketing page's silence as a capability
+    ceiling is the error.
   last_verified: '2026-09-15'
   sources:
   - url: https://www.nvidia.com/en-us/software/run-ai/
@@ -70,3 +74,13 @@ capability:
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+  - url: https://run-ai-docs.nvidia.com/saas/platform-management/runai-scheduler/scheduling/concepts-and-principles
+    shows: 'NVIDIA Run:ai''s own Scheduler documentation: the Scheduler ''always uses the pod group associated
+      with each pod and handles the pod as part of a larger group of pods, while taking into consideration
+      the common characteristics of the pod group, such as gang scheduling, minimum replicas or workers, workload
+      priority class, workload preemptibility policy, topology information'', applied ''consistently across
+      the entire pod group''; workloads range to ''distributed workloads using multiple pods, each running
+      on a node''. Establishes gang scheduling by the platform''s own scheduler rather than by a separate component.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 083367d9b78505e497cde38c177fd901ee8b6598946111733ead88944e462392
