@@ -24,12 +24,13 @@ openness:
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/microsoft/pai
-    shows: 'Repository page for microsoft/pai: MIT license, public and unarchived, described as ''Resource
-      scheduling and cluster management for AI''. Establishes the license and that the source is public.'
+    shows: The microsoft/pai repository page. Microsoft publishes no commercial OpenPAI edition, and the repository
+      is the whole platform; this is cited for that and for the license.
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: 91b92dd3f53f455893bf1cb07995efb50f8cef1ebdb1506907a26d8d718e8531
     establishes:
+    - core-gated
     - license
     - source
   - url: https://api.github.com/repos/microsoft/pai/git/trees/master?recursive=1
@@ -41,7 +42,6 @@ openness:
     content_sha256: 9d7183dbe0623855590fafa1189195d8eed488d51ba36b091328e2f2a71450f6
     establishes:
     - source
-    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -58,18 +58,20 @@ adoption:
     http_status: 200
     content_sha256: 91b92dd3f53f455893bf1cb07995efb50f8cef1ebdb1506907a26d8d718e8531
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   value: 'HiveD scheduler extender: models each tenant as a virtual cluster and guarantees GPU quantity AND
     topology, so a job needing eight GPUs inside one node is placed only where that holds; tenants may borrow
     other virtual clusters'' free capacity at lower priority'
   confidence: medium
-  relative_to: kai-scheduler
+  relative_to: nvidia-run-ai
   relation: at
-  note: 'Banded on HiveD''s own documentation rather than on the platform''s positioning. HiveD decides which
-    GPUs on which machines a job receives and guarantees the topology of that set, which is choosing the machines
-    and reserving them together - band 5. That the Kubernetes bind call executes the choice does not move the
-    decision: HiveD is a scheduler extender, and the extender is what decides.'
+  note: 'HiveD decides which GPUs on which machines a job receives, and guarantees the topology of that set
+    rather than only its size - an eight-GPU job that must run inside one node is placed only where that holds.
+    That is selecting the hardware, which is band 4. It is NOT banded 5: the cited manual establishes that
+    cells represent topology above the node level, and a representation is not the same as evidence that one
+    job receives a multi-machine set reserved together. The band says what the documentation shows and stops
+    there.'
   last_verified: '2026-09-15'
   sources:
   - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/README.md

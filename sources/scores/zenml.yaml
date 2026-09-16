@@ -79,21 +79,20 @@ adoption:
     http_status: 200
     content_sha256: 467f95df1ff89f8d6e7ba5609f8a35a8d2ab50b73476f9094ef4c3df5eddb0fd
 capability:
-  score: 1
+  score: 3
   basis: feature_matrix
   value: pipelines and steps written once and run on a configured stack; the orchestrator is a pluggable stack
     component and is mandatory, with flavors for local and Docker execution that ZenML implements itself and
     for Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton, SkyPilot VM, HyperAI and Lightning AI that
     hand execution to a system ZenML does not own
   confidence: medium
-  note: 'The floor of this category''s ladder. ZenML''s own documentation makes the orchestrator a mandatory
-    stack component ''responsible for running your machine learning pipelines'', and the flavors it ships for
-    remote execution delegate to Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton and SkyPilot - systems
-    ZenML does not own. The built-in local and Docker orchestrators are ZenML''s own code, and they are what
-    the band rests on rather than against: running a pipeline in local processes or local containers places
-    nothing on a cluster and chooses no machine. Anywhere real work runs, something else decides where. That
-    is a statement about this one dimension, not about the product: the stack abstraction is the point of ZenML,
-    and this axis measures what it deliberately delegates.'
+  note: 'Band 3, and it was drafted at 1. The floor band says the product schedules nothing and hands the whole
+    pipeline to an orchestrator it does not own, and ZenML does not quite fit that: the local and Docker orchestrators
+    are its own code, and they decide when each step runs and dispatch it, which is band 3''s requirement.
+    Its remote flavors - Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton, SkyPilot - do delegate
+    wholly, and that is the product''s point. Banding it at the floor required a distinction the ladder does
+    not make, between scheduling onto a local machine and scheduling onto a remote one, so the honest placement
+    is level with the other products whose scheduler dispatches work and lets something else choose the machine.'
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.zenml.io/stacks/stack-components/orchestrators
@@ -104,3 +103,5 @@ capability:
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: ba05903f8f9ba27ba90843c461c406dbf88c1ee2fe291e9aa98d58e2d61a9c12
+  relative_to: kubeflow-pipelines
+  relation: at

@@ -13,9 +13,11 @@ weights:
 products:
 - ray
 - slurm
+- htcondor
 - kubeflow-pipelines
 - skypilot
 - volcano
+- hami
 - flyte
 - metaflow
 - kueue
@@ -25,6 +27,7 @@ products:
 - kai-scheduler
 - openpai
 - kubeflow-trainer
+- dlrover
 - katib
 - mlrun
 - dstack
@@ -45,29 +48,33 @@ scoring_recipe:
     checker: build/check_rubric.py
   note: "Capability here is ONE quantity: how far the product's own scheduler gets toward putting\n\
     work on a machine. Each band contains the one below it.\n\n  1  The product places nothing and schedules\
-    \ nothing. It hands the whole pipeline to an\n     orchestrator it does not own.\n  3  Its own scheduler\
-    \ decides WHEN each unit of work runs and dispatches it. A lower-level\n     scheduler then binds\
-    \ it to a machine. Some products here also choose the queue or cluster\n     - metaflow names the\
-    \ AWS Batch queue, clearml the agent queue, armada the cluster - which\n     exceeds the minimum\
-    \ this band asks for rather than defining it.\n  5  Its own scheduler chooses the MACHINES, and\
-    \ reserves a multi-machine set as one allocation.\n\nBands 2 and 4 are for a product that exceeds\
-    \ one anchor without reaching the next; 4 is occupied\n(a scheduler that selects the hardware but\
-    \ exposes no multi-machine reservation of its own), 2 is\ncurrently empty.\n\nThree things deliberately\
-    \ do NOT enter the definition. SUBSTRATE BREADTH: whether a product can\nplace work on two clouds\
-    \ or one is a fact about what the vendor sells, not a capability, and an\nearlier draft that banded\
-    \ on it was rejected for exactly that. LIBRARY PROVISION: shipping\ntraining libraries is a different\
-    \ axis. COMMERCIAL TIER: this category scores wholly closed\nproducts, so conditioning capability\
-    \ on openness would put two questions on one axis - which is\nwhy clearml's enterprise-only GPU\
-    \ allocation and polyaxon's commercial queueing both count.\n\nDistribution: 1 at band 1, 13 at\
-    \ band 3, 2 at band 4, 9 at band 5. The widest band holds 52% of\nthe roster. `capability.md` calls\
-    \ a third a diagnostic; measured\nacross the live corpus, 18 of 20 published categories exceed it\
-    \ (median ~48%), so the number is\nreported here rather than used to trim the roster. What it reflects\
-    \ is real: most ML\norchestrators decide when and on which cluster, and let Kubernetes or a cloud\
-    \ batch service bind\nthe machine.\n\nThe bottom and top bands each hold one or few products and\
-    \ that is not a defect of the wording.\nzenml sits at 1 because its own documentation makes the\
-    \ orchestrator a pluggable stack component\nit does not own; the products at 5 - slurm, volcano,\
-    \ kai-scheduler, kueue, openpai, ray,\nskypilot, dstack, determined-ai - each reserve a co-scheduled\
-    \ set, and each cites the mechanism."
+    \ nothing: no component of it decides when a unit\n     of work runs. NO PRODUCT ON THIS ROSTER\
+    \ OCCUPIES IT, and that is worth saying rather than\n     hiding. zenml was drafted here on the\
+    \ strength of delegating execution to a pluggable\n     stack, but its own local and Docker orchestrators\
+    \ decide when a step runs, which is band\n     3. Even a framework built to delegate ships an executor,\
+    \ so the floor is defined and\n     empty rather than quietly redefined to hold one product.\n \
+    \ 3  Its own scheduler decides WHEN each unit of work runs and dispatches it. A lower-level\n  \
+    \   scheduler then binds it to a machine. Some products here also choose the queue or cluster\n\
+    \     - metaflow names the AWS Batch queue, clearml the agent queue, armada the cluster - which\n\
+    \     exceeds the minimum this band asks for rather than defining it.\n  5  Its own scheduler chooses\
+    \ the MACHINES, and reserves a multi-machine set as one allocation.\n\nBands 2 and 4 are for a product\
+    \ that exceeds one anchor without reaching the next; 4 is occupied\n(a scheduler that selects the\
+    \ hardware but exposes no multi-machine reservation of its own), 2 is\ncurrently empty.\n\nThree\
+    \ things deliberately do NOT enter the definition. SUBSTRATE BREADTH: whether a product can\nplace\
+    \ work on two clouds or one is a fact about what the vendor sells, not a capability, and an\nearlier\
+    \ draft that banded on it was rejected for exactly that. LIBRARY PROVISION: shipping\ntraining libraries\
+    \ is a different axis. COMMERCIAL TIER: this category scores wholly closed\nproducts, so conditioning\
+    \ capability on openness would put two questions on one axis - which is\nwhy clearml's enterprise-only\
+    \ GPU allocation and polyaxon's commercial queueing both count.\n\nDistribution: 16 at band 3, 4\
+    \ at band 4, 8 at band 5. The widest band holds 57% of\nthe roster. `capability.md` calls a third\
+    \ a diagnostic; measured\nacross the live corpus, 18 of 20 published categories exceed it (median\
+    \ ~48%), so the number is\nreported here rather than used to trim the roster. What it reflects is\
+    \ real: most ML\norchestrators decide when and on which cluster, and let Kubernetes or a cloud batch\
+    \ service bind\nthe machine.\n\nThe bottom and top bands each hold one or few products and that\
+    \ is not a defect of the wording.\nzenml sits at 1 because its own documentation makes the orchestrator\
+    \ a pluggable stack component\nit does not own; the products at 5 - slurm, volcano, kai-scheduler,\
+    \ kueue, openpai, ray,\nskypilot, dstack, determined-ai - each reserve a co-scheduled set, and each\
+    \ cites the mechanism."
 comments: 'Created 2026-09-15 under issue #429, which was ruled BUILD against the recommendation the
 
   issue itself opened with: create the category and discover its peer set, rather than hold until a

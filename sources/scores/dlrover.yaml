@@ -1,0 +1,89 @@
+product: dlrover
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body opens with a preamble before the Apache text, which is why the GitHub API
+        reports NOASSERTION
+    source:
+      value: public
+      detail: intelligent-machine-learning/dlrover is the product you run
+    core-gated:
+      value: ungated
+      detail: a 1,514-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0, read from the LICENSE body rather than the API label. The 1,514-entry recursive tree carries
+    no enterprise, ee or commercial path, and Ant Group sells no DLRover edition.
+  raw: license:Apache-2.0(OSI; the LICENSE body opens with a preamble before the Apache text, which is why
+    the GitHub API reports NOASSERTION);source:public(intelligent-machine-learning/dlrover is the product you
+    run);core-gated:ungated(a 1,514-entry recursive tree carries no path matching enterprise, ee, commercial
+    or proprietary)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/intelligent-machine-learning/dlrover
+    shows: The dlrover repository page. Ant Group publishes no commercial DLRover edition, and the repository
+      carries the system itself; cited for the license, the public source and the absence of a paid tier.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: d9864dc799045199f2483c05d6f3589506f2c7aa15bc23425d95ba6c227ef88f
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/intelligent-machine-learning/dlrover/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 1,514 entries. Licenses are the root LICENSE
+      and vendored dependencies. No path matches enterprise, ee, commercial or proprietary. A tree lists paths;
+      it is cited for that and for nothing about the vendor's offerings.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: e8e91cc1c22c9b3a6027ab8fbadfc374307a52aa79f17581d735c04a10323b69
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: The PyPI download API reports 295 downloads of dlrover in the trailing 30 days, inside the <10K band
+    for level 1. The package is the product's own, published from the same repository, so it is the declared
+    channel even though the figure is small - most deployments are Kubernetes rather than pip installs, and
+    the note says so rather than reaching for the star count instead.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/dlrover/recent
+    shows: 'Trailing-window download counts for the declared PyPI artifact: 295 downloads in the trailing month.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 774a2cf0566323726028b9a8b2629485fc3bba83dd75321041b32b10a15e078e
+capability:
+  score: 3
+  basis: feature_matrix
+  value: elastic training jobs on Kubernetes with workers scaled during a run; node failure detection and replacement;
+    checkpoint-based resume so a job survives a failure
+  confidence: medium
+  relative_to: kubeflow-trainer
+  relation: at
+  comparison:
+    last_attested: '2026-09-16'
+    sources:
+    - url: https://github.com/kubeflow/trainer
+      shows: 'Re-read of the peer this band is placed against. kubeflow-trainer still presents as a Kubernetes
+        operator whose TrainJob creates a JobSet and leaves placement to the cluster scheduler, which is the
+        property the spacing rests on: both products dispatch training work and neither chooses the machine,
+        so they sit level.'
+      accessed: '2026-09-16'
+      http_status: 200
+      content_sha256: 5a902f032f3b7074963eccb990b8a69d26d6bf19df7d01f77d138570df6efccb
+  note: 'Admitted on the ML-job-model limb: a training run is a first-class type it schedules, tracks and repairs.
+    Band 3 - DLRover decides when workers start, stop and restart, and the Kubernetes scheduler places the
+    pods it creates. Level with kubeflow-trainer, which does the same thing for the same substrate.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/intelligent-machine-learning/dlrover
+    shows: Repository page and README for dlrover, describing elastic distributed training on Kubernetes with
+      automatic scaling, fault detection and resume.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: d9864dc799045199f2483c05d6f3589506f2c7aa15bc23425d95ba6c227ef88f

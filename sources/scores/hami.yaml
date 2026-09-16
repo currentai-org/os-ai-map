@@ -1,0 +1,101 @@
+product: hami
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: Project-HAMi/HAMi is the product you run
+    core-gated:
+      value: ungated
+      detail: a 591-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
+  confidence: high
+  note: Apache-2.0 under CNCF hosting, with no vendor positioned to sell a fuller edition. The recursive tree
+    carries no enterprise, ee or commercial path.
+  raw: license:Apache-2.0(OSI);source:public(Project-HAMi/HAMi is the product you run);core-gated:ungated(a
+    591-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/Project-HAMi/HAMi
+    shows: 'Repository page for Project-HAMi/HAMi: Apache-2.0 license, public and unarchived, described as
+      ''Heterogeneous GPU Sharing on Kubernetes''. Establishes the license and that the source is public.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: d62238403b350e7ad65ed2512a97e00122caa76b5ed739943a6a121445a3683b
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/Project-HAMi/HAMi/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch, 591 entries. One root LICENSE. No path matches
+      enterprise, ee, commercial or proprietary. A tree lists paths; it is cited for that and for nothing about
+      the vendor's offerings.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: a757cbf76fb754a44eb4fca15bc8f491380d3fde4fae88f11ff0ac75c81946be
+    establishes:
+    - source
+  - url: https://www.cncf.io/projects/hami/
+    shows: HAMi's project page on cncf.io, establishing CNCF hosting rather than vendor ownership, so no commercial
+      party is positioned to withhold functionality from the published source.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 4ac3b4fc02160d16ff6f072927b2e93e59fc7e9dceaee9f29b4bc226676a126d
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,600 GitHub stars. HAMi ships as container images and a Helm chart and publishes no package-registry
+    artifact, so no usage-volume channel exists and the band rests on stars, which measure attention rather
+    than use. The stars route caps at level 3.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/Project-HAMi/HAMi
+    shows: Repository page showing the star count for Project-HAMi/HAMi.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: d62238403b350e7ad65ed2512a97e00122caa76b5ed739943a6a121445a3683b
+capability:
+  score: 4
+  basis: feature_matrix
+  value: device registration carrying split count, memory limit and core limit per accelerator; its own scheduler
+    patches the placement decision onto the pod as hami.io/vgpu-node and hami.io/vgpu-devices-to-allocate;
+    GPU virtualization across NVIDIA, Cambricon and other vendors
+  confidence: medium
+  relative_to: nvidia-run-ai
+  relation: at
+  comparison:
+    last_attested: '2026-09-16'
+    sources:
+    - url: https://www.nvidia.com/en-us/software/run-ai/
+      shows: Re-read of the peer this band is placed against. NVIDIA Run:ai still presents as GPU pooling with
+        dynamic and fractional allocation, attributing gang scheduling to Grove with KAI rather than to itself
+        - so it still selects hardware without an evidenced multi-machine reservation, which is the property
+        that puts both products at this band.
+      accessed: '2026-09-16'
+      http_status: 200
+      content_sha256: f7e926f23072c3709cfd6fd678f62ea7f32c59e56aaf56bb7419978dbe865959
+  note: 'Admitted on the accelerator limb: HAMi registers devices in its own annotation schema and its own
+    scheduler consumes that to choose placement. Band 4 - it selects the node AND the specific devices, which
+    is more than dispatching, and nothing cited shows it reserving a multi-machine set as one allocation, which
+    is what band 5 asks.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://raw.githubusercontent.com/Project-HAMi/HAMi/master/docs/develop/protocol.md
+    shows: 'HAMi''s own protocol document: device-plugin registration patches each device''s UUID, split count,
+      memory limit and core limit into node annotations, and under Schedule Decision ''HAMi scheduler needs
+      to patch schedule decisions into pod annotations'' as hami.io/vgpu-devices-to-allocate and hami.io/vgpu-node:
+      {schedule decision node}. Establishes that HAMi''s own scheduler chooses the node.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: c647e6a0a751c37da7f78f20ef5ac1350b8c19fb7ec41d363c406d89b030e64d
+  - url: https://project-hami.io/docs/core-concepts/gpu-virtualization
+    shows: HAMi's GPU virtualization documentation, describing the device-plugin mechanism it builds on.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: d851ed16657c20c216d15aeb2ab8f4af2b95b2f4005f266dd426b1045cebcf9a
