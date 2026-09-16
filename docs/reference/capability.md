@@ -215,25 +215,43 @@ written as "a distributed retrieval platform that also ranks or runs inference i
 path", which on that day admitted seven of the twenty-seven products then in the category - Vespa
 and Elasticsearch, but also every vector database that fuses scores, since Qdrant has RRF and DBSF,
 Infinity has tensor reranking and Milvus has rerank functions. Reworded to "hosts and evaluates
-ranking or embedding models inside the serving path" it admitted two. Nothing about the products changed; the definition stopped being
-satisfiable by almost all of them. The distribution is the diagnostic, and it costs one query.
+ranking or embedding models inside the serving path" it admitted two. Nothing about the products
+changed; the definition stopped admitting products whose only qualifying feature was score fusion.
+The distribution is the diagnostic, and it costs one query.
 
 An earlier version of this section made that diagnostic a RULE - a rung holding a third of the
-category was unacceptable - and the rule is withdrawn as of 2026-09-16, because the corpus does not
-obey it and cannot be made to. Measured over every published category with at least one banded
-product: 19 of 21 have a widest rung above a third, the median widest rung is 50%, and the range
-runs from `base_pretrained` at 28% to `document_conversion` at 83%. With five bands even an evenly
-split three-product category breaches it. A rule that nearly every category fails is not a standard
-anyone is held to; it is a line that gets quoted at whichever category is being reviewed that day.
+category was unacceptable - and the rule is withdrawn as of 2026-09-16. Not because the corpus fails
+it, which would be an argument for fixing the corpus, but because a distribution cannot decide the
+question the rule asked it to decide. Two things produce a wide rung and the count cannot tell them
+apart: a definition loose enough that nearly everything satisfies it, and a category whose products
+genuinely share a capability. The first is a defect in the wording. The second is a fact about the
+world, and splitting it would mean recording a distinction no evidence supports - which is the error
+this whole document exists to prevent, arriving from the other direction.
 
-What replaces it is a reading, not a threshold. When one rung is wide, ask whether the definition
-generalized - the `storage` case, where a reword moved five products and nothing about the products
-changed - or whether the products genuinely cluster. `document_conversion` is the second case: 15 of
-its 18 banded products recover reading order, tables and formulas into Markdown or JSON, the ends of
-the ladder are narrow by construction, and the differences inside the middle are input breadth
-against structure depth, which trade off and which vendor feature lists cannot order. Manufacturing
-rungs to spread that count would encode a distinction the evidence does not carry. Report the
-concentration in the category's `scoring_recipe.note` and say which of the two cases it is.
+The threshold was also never calibrated. The `storage` case above is the evidence this section was
+built on, and the rung it condemns admitted 7 of 27 products - 26%, under the third the rule went on
+to forbid. The founding example never breached the line drawn from it. What made that rung wrong was
+that its qualifying feature was satisfied incidentally by every vector database with score fusion,
+which a curator found by reading the definition against the products, not by comparing a percentage
+to a constant.
+
+For scale, the corpus measured on 2026-09-16: of the 21 published categories with at least one
+banded product, 19 have a widest rung above a third, the median widest rung is 50%, and the range
+runs from `base_pretrained` at 28% to `document_conversion` at 83%. That is the reason the line was
+being quoted selectively - at whichever category was under review - rather than the reason it goes.
+
+**A wide rung still triggers a review, and the review has to leave a record.** Above a third is the
+trigger, kept as a number so it fires the same way for everyone. What it demands is not a
+redistribution but an entry in the category's `scoring_recipe.note` carrying four things: the count
+and its denominator, the rung's wording as it stands, which of the two cases this is, and the
+evidence for that reading - the reword, if the definition generalized, or what the products actually
+share, if they cluster. A reword is re-counted afterwards, because the point of rewording is to move
+the distribution and an unverified reword has not been shown to.
+
+`document_conversion` is the clustering case and reports it that way: 15 of its 18 banded products
+recover reading order, tables and formulas into Markdown or JSON, the ends of the ladder are narrow
+by construction, and the differences inside the middle are input breadth against structure depth,
+which trade off against each other and which vendor feature lists cannot order.
 
 **Prefer a definition stated as a capability the product either has or has not, over one stated as
 an outcome.** "Ranks results" is an outcome, and outcomes generalize until they are vacuous -
@@ -270,8 +288,10 @@ harnesses. One name for a group of products reads as a shared measurement that d
 - [ ] `basis` names the instrument; `basis_detail` and `value` carry what it was and what it said.
 - [ ] `basis_detail` names the instrument for THIS product - not one inherited from a cluster of
       peers, and not a harness the product is absent from.
-- [ ] A new or reworded rung was checked against its own distribution, and a wide rung is either
-      reworded or reported in the recipe note with which case it is (see "Writing the rungs").
+- [ ] A new or reworded rung was checked against its own distribution. A rung above a third of the
+      category is reworded and re-counted, or reported in the recipe note with the count, the
+      denominator, the wording, and the evidence that the products genuinely share the capability
+      (see "Writing the rungs").
 - [ ] A comparison-placed band records `relative_to` (same category) and `relation`, and the
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.
