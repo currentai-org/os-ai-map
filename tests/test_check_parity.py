@@ -256,7 +256,16 @@ def test_local_scores_matches_check_rubrics_split():
     # did not name, and it briefly deferred; the owner ruled the name into the shared osi tier in
     # the same change rather than leave a product scored by hand, so the deferral opened and
     # closed without the count moving. The measurement behind the ruling is in software.yaml.
-    assert len(deferred) == 4
+    #
+    # 4 -> 7 with the document_conversion promotion (#430). All three additions are the same class
+    # as the four before them - a licence the shared tier does not name, not a missing fact - and
+    # all three are recorded with the mechanism the ladder abstains on rather than a description of
+    # the product. `chandra` and `surya` ship Apache-2.0 code with model weights under a Datalab
+    # modified OpenRAIL-M that the software tier does not list, though it already lists the sibling
+    # licence on `marker` from the same vendor. `nanonets-ocr` declares no licence at all, which is
+    # the open question `livecodebench` and `txt360-pipeline` already sit on one ladder over.
+    # Recording an increase rather than hiding one: each closes on a tier ruling, not on more work.
+    assert len(deferred) == 7
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

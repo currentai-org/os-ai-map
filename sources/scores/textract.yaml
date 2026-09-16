@@ -1,0 +1,64 @@
+product: textract
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    service:
+      value: proprietary
+      detail: AWS managed service
+    source:
+      value: closed
+      detail: no implementation is published
+  confidence: high
+  note: A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted,
+    which is the question this dimension asks; the ladder settles it on source alone.
+  raw: license:Proprietary;service:proprietary(AWS managed service);source:closed(no implementation is published)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://aws.amazon.com/textract/
+    shows: AWS's Textract product page, describing automatic extraction of printed text, handwriting, tables,
+      forms and key-value pairs from scanned documents. Establishes a managed AWS service with no published
+      implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4
+    establishes:
+    - source
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No usage figure is published for this service specifically, and it publishes no countable artifact
+    - no package, repository or registry entry - so no level is assigned rather than one being inferred from
+    the vendor's platform as a whole.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://aws.amazon.com/textract/
+    shows: The product page, read for a usage disclosure; it publishes none specific to this service.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4
+capability:
+  score: 4
+  basis: feature_matrix
+  value: text, handwriting, tables, forms and key-value pairs from scanned documents; query-based extraction
+    against a document; managed and scaled by AWS
+  confidence: medium
+  relative_to: chandra
+  relation: at
+  note: Structure recovery across forms and tables plus handwriting, which is the band. Query-based extraction
+    is a retrieval convenience layered on the same parse rather than a wider conversion capability, so it does
+    not lift the band. Banded at chandra.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://aws.amazon.com/textract/
+    shows: AWS's Textract product page, describing automatic extraction of printed text, handwriting, tables,
+      forms and key-value pairs from scanned documents. Establishes a managed AWS service with no published
+      implementation.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 04db7dd51bc0cd36c2f1e254720e58d8ccfe07e8d6984e015d3e3ecf901f56e4
