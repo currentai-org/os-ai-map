@@ -20,7 +20,9 @@ alias, never a deletion).
 
 ## Agent orchestration
 - **Prose-only** change: rewrite `description`/`comments` to `docs/reference/product-copy.md`
-  against primary sources. This never touches scores and never writes `last_verified`.
+  against primary sources. `comments` is a footnote about the reading or nothing; it carries no
+  `Verified … via` line. This never touches scores and never writes `last_verified`. A whole
+  category's notes written in rubric vocabulary is `clean-corpus-prose`, not this.
 - **A score moved**: this is evidence work and earns a date — re-read the cited sources, record
   the evidence, and stamp `last_verified` per `docs/reference/evidence-and-freshness.md`. Do not
   just edit the number. If the whole category is stale, use `refresh-category` instead.

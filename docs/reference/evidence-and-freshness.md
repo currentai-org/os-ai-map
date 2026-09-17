@@ -243,7 +243,9 @@ to maintain the copy. Duplicated history drifts; git's does not.
 The public payload publishes `note` and `sources` verbatim, so anything written into a note is
 published. That is the reason this boundary is a rule and not a style preference.
 
-Cleaning the corpus is `skills/clean-score-notes/SKILL.md`, and issue #322 carries the audit.
+The verification log was cleared in one pass under issue #322, which carries the audit. The
+prose pass that succeeded it, for notes written in the rubric's vocabulary rather than the
+reader's, is `skills/clean-corpus-prose/SKILL.md` (#619).
 
 ## Who may write `last_verified`
 

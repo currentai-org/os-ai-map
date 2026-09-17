@@ -99,8 +99,9 @@ Every skill is classified in `skills/registry.yaml` (validated in CI). Beyond th
 doors above:
 
 - **Advanced** — deep editorial skills for maintainers: `build-rubric` (derive a category's
-  scoring ladder), `clean-score-notes` (strip a record's own history out of its score notes),
-  and `refresh-all-categories` (drive the whole-corpus sweep).
+  scoring ladder), `clean-corpus-prose` (rewrite notes, `shows` and footnotes that were written
+  for the score auditor rather than the visitor, one category per pass, never a score or a
+  date), and `refresh-all-categories` (drive the whole-corpus sweep).
 - **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
   fetcher), `pyoso-analyst` (read-only warehouse analysis), and `publish-release` (cut a
   versioned release and update the changelog; maintainer only).
