@@ -1,6 +1,7 @@
 """The licence-body gate: a record that disputes GitHub's classifier must cite the file."""
 from pathlib import Path
 
+import pytest
 import yaml
 
 from build.check_license_body import BODY, disputed, failures
@@ -55,10 +56,37 @@ def test_a_blob_view_of_a_licence_file_satisfies_it(tmp_path):
     assert failures(tmp_path) == []
 
 
-def test_the_pattern_does_not_match_an_ordinary_repo_page():
-    assert not BODY("https://github.com/o/r")
-    assert not BODY("https://api.github.com/repos/o/r/license")
-    assert BODY("https://raw.githubusercontent.com/o/r/main/LICENSE.md")
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://raw.githubusercontent.com/o/r/main/LICENSE",
+        "https://raw.githubusercontent.com/o/r/main/LICENSE.md",
+        "https://github.com/o/r/blob/main/COPYING",
+        "https://github.com/o/r/blob/main/legal/LICENCE.txt",
+        "https://github.com/o/r/blob/main/LICENSE-APACHE",
+        # A fragment or a query follows the filename and must not defeat the match. The
+        # first draft anchored on the end of the whole URL and rejected both.
+        "https://github.com/o/r/blob/main/LICENSE.md#L1",
+        "https://example.com/legal/LICENSE?download=1",
+    ],
+)
+def test_a_licence_file_is_a_body(url):
+    assert BODY(url)
+
+
+@pytest.mark.parametrize(
+    "url, why",
+    [
+        ("https://github.com/o/r", "a repository page names no file"),
+        ("https://api.github.com/repos/o/r/license", "the endpoint that returned NOASSERTION"),
+        # The first draft accepted all three of these on a substring match.
+        ("https://raw.githubusercontent.com/o/r/main/README.md", "a raw URL is not automatically a licence"),
+        ("https://github.com/o/r/blob/main/NOT_A_LICENSE.txt", "contains the word, is not the file"),
+        ("https://github.com/o/LICENSE", "a repository that happens to be named LICENSE"),
+    ],
+)
+def test_what_is_not_a_body(url, why):
+    assert not BODY(url), why
 
 
 def test_the_live_corpus_passes():

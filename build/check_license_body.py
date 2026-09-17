@@ -22,14 +22,17 @@ indistinguishable from one written by a curator who opened the file - same score
 prose, same confidence. The citation is the only thing that separates them, and without it
 the next re-verification pass has nothing to re-read.
 
-Scope, and why it ratchets: the population is records whose own prose mentions
-NOASSERTION. A record that never disputes the classifier is not covered, because there is
-nothing to check - its licence claim rests on whatever the classifier said and agreeing
-with a classifier needs no second source.
+Scope, and why it ratchets: the population is records whose own prose MENTIONS
+NOASSERTION - a deliberately broader test than "disputes it", because a record that
+explains why the classifier did or did not report NOASSERTION is making a claim about the
+licence body either way, and a claim about a body should cite one. A record that never
+mentions it is not covered: its licence claim rests on whatever the classifier said, and
+agreeing with a classifier needs no second source.
 """
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 import yaml
 
@@ -37,29 +40,38 @@ ROOT = Path(__file__).resolve().parents[1]
 SCORES = ROOT / "sources" / "scores"
 PRODUCTS = ROOT / "sources" / "products"
 
-# A licence BODY: the raw file, a blob view of one, or a path ending in the usual names.
-# `api.github.com/repos/<o>/<r>/license` is deliberately NOT here - it is the endpoint that
-# returns NOASSERTION, so accepting it would let the disputed evidence answer the dispute.
-CLASSIFIER = re.compile(r"api\.github\.com/repos/[^/]+/[^/]+/license/?$", re.IGNORECASE)
+# A licence BODY is decided on the URL's PATH, never on the whole string. The first draft
+# matched the raw URL with `$`-anchored alternatives and got it wrong in both directions:
+# `/blob/main/LICENSE.md#L1` and `/legal/LICENSE?download=1` were rejected because a fragment
+# or a query follows the filename, while `raw.githubusercontent.com/o/r/main/README.md`,
+# `/blob/main/NOT_A_LICENSE.txt` and a repository literally named `github.com/o/LICENSE` were
+# accepted because the pattern matched a substring of something that is not a licence file.
+#
+# `api.github.com/repos/<o>/<r>/license` is excluded by name: it is the endpoint that returned
+# NOASSERTION, so letting it answer the dispute is circular.
+LICENCE_FILE = re.compile(r"^(licen[cs]e|copying|notice)([.\-][A-Za-z0-9._\-]+)?$", re.IGNORECASE)
 
-_BODY = re.compile(
-    r"(raw\.githubusercontent\.com/.+)"
-    r"|(/blob/[^?#]*(LICENSE|LICENCE|COPYING|NOTICE)[^/?#]*$)"
-    r"|(/(LICENSE|LICENCE|COPYING|NOTICE)[^/?#]*$)",
-    re.IGNORECASE,
-)
 
+def BODY(url: str) -> bool:  # noqa: N802 - reads as a matcher at the call sites
+    """True when `url` names a licence FILE rather than a page that merely mentions one.
 
-def BODY(url: str):  # noqa: N802 - reads as a matcher at the call sites
-    """Truthy when `url` points at a licence FILE rather than at the classifier.
-
-    The exclusion is the whole point: `api.github.com/repos/<o>/<r>/license` ends in
-    `/license` and would otherwise look like a body, but it is the endpoint that returned
-    NOASSERTION in the first place. Letting it answer the dispute is circular.
+    The test is the last path segment, so a fragment or a query cannot defeat it and a
+    same-named repository cannot satisfy it: `github.com/o/LICENSE` has only two path
+    segments and a licence file always sits deeper than the repository it belongs to.
     """
-    if CLASSIFIER.search(url):
-        return None
-    return _BODY.search(url)
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    segments = [s for s in parsed.path.split("/") if s]
+    if not segments:
+        return False
+    if host == "api.github.com" and segments[-1:] == ["license"]:
+        return False
+    # On GitHub the filename has to sit deeper than owner/repo, or a repository NAMED
+    # `LICENSE` would satisfy the gate. Off GitHub there is no such shape to exclude, and a
+    # vendor licence page at `/legal/LICENSE` is a real body.
+    if host in {"github.com", "raw.githubusercontent.com"} and len(segments) < 3:
+        return False
+    return bool(LICENCE_FILE.match(segments[-1]))
 
 
 def _prose(slug: str, openness: dict) -> str:
