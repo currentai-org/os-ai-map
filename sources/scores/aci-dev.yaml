@@ -1,0 +1,90 @@
+product: aci-dev
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the platform backend and its portal
+    self-host:
+      value: 'yes'
+      detail: run the backend and frontend yourself
+    service:
+      value: optional
+      detail: the vendor also runs a hosted tier
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Apache-2.0 over the platform, including the authentication machinery that is the product's whole point
+    - which is what separates it from the closed connector platforms beside it.
+  raw: license:Apache-2.0(OSI);source:public(the platform backend and its portal);self-host:yes(run the backend
+    and frontend yourself);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
+    withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/aipotheosis-labs/aci/main/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 62668700014f302a0a3b4e5f59cfa7f19fc2c0adcbb373ce7d9f58a2bb268298
+    establishes:
+    - license
+  - url: https://api.github.com/repos/aipotheosis-labs/aci
+    shows: 'Repository metadata: spdx_id Apache-2.0, 4,891 stars, not archived, not a fork, last pushed 2026-05-28,
+      described as "the open source tool-calling platform that hooks up 600+ tools into any agentic IDE or
+      custom AI agent".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 58c3bf22a9c9d87579e6ff38b8e43125c8cb9b3ddadad6ebca8d1b6f5febdf89
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,891 GitHub stars. The `aci-sdk` PyPI package is the client for the platform rather than the platform,
+    at 2,627 downloads a month, and no customer or request figure is published. Stars cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/aipotheosis-labs/aci
+    shows: 'Repository metadata for aipotheosis-labs/aci: 4,891 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 58c3bf22a9c9d87579e6ff38b8e43125c8cb9b3ddadad6ebca8d1b6f5febdf89
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'more than six hundred integrations reached by direct function calling or a unified MCP server, with
+    built-in multi-tenant OAuth flows and secrets management: the caller addresses a linked account by an owner
+    id rather than by holding the end user''s credential'
+  confidence: medium
+  relative_to: composio
+  relation: at
+  note: 'Many systems and credentials the platform runs and stores, which is band 5. The distinguishing detail
+    is in how the caller''s code refers to a grant: not a token but a `linked account owner id`, with the OAuth
+    flow completed in ACI''s own portal. The one secret the caller handles is ACI''s own API key. Banded at
+    composio.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/aipotheosis-labs/aci/main/README.md
+    shows: 'The README: "Instead of writing separate OAuth flows and API clients for Google Calendar, Slack,
+      and more, use ACI.dev to manage authentication and provide AI agents with unified, secure function calls",
+      with "Multi-tenant Authentication: Built-in OAuth flows and secrets management for both developers and
+      end-users" and "600+ Pre-built Integrations".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 335ac01919926bcee1be823fc0378ad4f56a927a72804ef92ade31cb7c167354
+  - url: https://www.aci.dev/docs/introduction/quickstart.md
+    shows: 'The quickstart: "Click Start OAuth2 Flow button to start the OAuth2 flow and link your Github account
+      under the project", after which "you''ll need to provide this linked account owner id in your code to
+      execute functions on behalf of the user". The caller''s own credential is ACI''s: "Each Agent is assigned
+      an API key".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 14db0dbef7586f9f6ddc64aad3f2f0c6bfc07f615cdb0455e3d1f041a695bc79

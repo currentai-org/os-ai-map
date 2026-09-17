@@ -1,0 +1,84 @@
+product: mcp-java-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the core SDK and its Spring integrations
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Plain MIT, and the only member of the official SDK family whose licence classifies cleanly - the others
+    carry the project's dual transition file that GitHub reports as NOASSERTION.
+  raw: license:MIT(OSI);source:public(the core SDK and its Spring integrations);self-host:yes(a library you
+    build against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/java-sdk/main/LICENSE
+    shows: 'The LICENSE body: the verbatim MIT text under "Copyright (c) 2025 the original author or authors."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 077f5c1f533a15ec6c67d61b0c09b5df60bb57a1839a7d1fb27faaf7b746195f
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/java-sdk
+    shows: 'Repository metadata: spdx_id MIT, 3,698 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "The official Java SDK for Model Context Protocol servers and clients. Maintained in collaboration
+      with Spring AI".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: a76a2579638b80b713e8e1d0b1368c70af543682add3d62a0ef54027e8bc52c3
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 3,698 GitHub stars. Maven Central publishes no download figures, so there is no usage-volume channel
+    for a Java library and stars are what is left; they cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/java-sdk
+    shows: 'Repository metadata for modelcontextprotocol/java-sdk: 3,698 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: a76a2579638b80b713e8e1d0b1368c70af543682add3d62a0ef54027e8bc52c3
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'of the Model Context Protocol, version not stated as a target: both roles, synchronous and asynchronous,
+    over stdio, Server-Sent Events and Streamable HTTP. The primitive set is NOT enumerated in the documentation
+    read - the README delegates it to a features page - so tools, resources and prompts are unestablished here
+    rather than confirmed'
+  confidence: low
+  relative_to: mcp-python-sdk
+  relation: one_below
+  note: 'Band 3 on the ladder''s second clause - both roles with a primitive set that is not established -
+    rather than band 4, and the reason is the documentation rather than the product. The README covers roles
+    and transports and sends the reader elsewhere for the primitives, so the evidence read here cannot say
+    the full set is implemented. Confidence is low and this is the record in the category most likely to move
+    on a second read: its conformance results suggest broad coverage - 40 of 40 server scenarios passing against
+    the 2025-11-25 suite - and conformance passing is not the same claim as the primitive enumeration this
+    ladder asks for.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/java-sdk/main/README.md
+    shows: 'The README: "MCP supports both clients ... and servers ... The SDK provides support for both sides",
+      with "STDIO transports for inter-process communication using pipes" and "Streaming transports such as
+      Server-Sent Events and Streamable HTTP". It names no target specification version outside a conformance
+      command line (--spec-version 2025-11-25) and does not enumerate tools, resources or prompts, linking
+      to a separate features page instead. Conformance: Server "40/40 passed (100%)", Client "3/4 scenarios,
+      9/10 checks passed".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 91ddf4dad6ad32586ba12f0ccb3f88fccc9461736a1c6ed97980c960fae592cb

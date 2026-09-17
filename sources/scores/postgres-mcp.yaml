@@ -13,10 +13,10 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT, no feature-gated core. Despite the "Pro" in the product name there is no paid edition
-    - the whole server, index tuning and health checks included, ships in the tree and runs from PyPI or
-    the crystaldba/postgres-mcp Docker image with only a DATABASE_URI, and there is no license key, second
-    license or enterprise directory.
+  note: Fully MIT, no feature-gated core. Despite the "Pro" in the product name there is no paid edition -
+    the whole server, index tuning and health checks included, ships in the tree and runs from PyPI or the
+    crystaldba/postgres-mcp Docker image with only a DATABASE_URI, and there is no license key, second license
+    or enterprise directory.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -40,8 +40,8 @@ adoption:
   level: 3
   signal_type: usage_volume
   confidence: medium
-  note: 491,612 downloads of postgres-mcp in the trailing 30 days, which bands at 100K-1M, level 3 on the
-    software adoption scale. The package is first-party.
+  note: 491,612 downloads of postgres-mcp in the trailing 30 days, which bands at 100K-1M, level 3 on the software
+    adoption scale. The package is first-party.
   reach: 100K-1M
   last_verified: '2026-08-12'
   sources:
@@ -51,20 +51,25 @@ adoption:
     http_status: 200
     content_sha256: a9378ebd2f817ccaf79903e8c3fecd1294079472497f71f5cbf273e06e23e2f5
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  value: '9 tools: schema/object inspection, execute_sql w/ access modes, EXPLAIN + hypothetical indexes, slow-query
-    analysis, index advising, health checks'
+  value: a curated tool surface over a PostgreSQL database - schema and object inspection, SQL execution under
+    access modes, EXPLAIN with hypothetical indexes, slow-query analysis, index advice and health checks -
+    against a connection string the caller supplies
   confidence: medium
-  note: Richest open Postgres MCP surface, well beyond the archived read-only reference server.
-  last_verified: '2026-08-13'
+  note: 'A curated surface over one system with the caller supplying the credential: the server takes a `DATABASE_URI`
+    environment variable and authenticates nothing itself. Its tooling is unusually deep - index advising and
+    health checks are DBA work rather than CRUD - and depth of coverage is explicitly not what this ladder
+    reads. Banded at playwright-mcp.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/crystaldba/postgres-mcp
-    shows: '"A Postgres MCP server with index tuning, explain plans, health checks, and safe sql execution."
-      Tool table - explain_query "Can be invoked with hypothetical indexes to simulate the behavior after
-      adding indexes"; get_top_queries "Reports the slowest SQL queries based on total execution time";
-      analyze_db_health "buffer cache hit rates, connection health, constraint validation, index health
-      (duplicate/unused/invalid), sequence limits, and vacuum health". Access modes set by --access-mode.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/README.md
+    shows: The README's configuration passes `DATABASE_URI` as an environment variable to the container - "postgresql://..."
+      supplied by the caller - with `--access-mode` controlling what the server may execute. The tools cover
+      schema inspection, SQL execution, EXPLAIN with hypothetical indexes, slow-query analysis, index advice
+      and health checks.
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 0fe59606d32afd588b7354d4e3f694c1c685117ef745f8a5adf3562a0cbefe53
+    content_sha256: 6f78d8e5094298aa109de5ed269e6db4f0eb5c11ab0f20ef21d11d9dcc08a026
+  relative_to: playwright-mcp
+  relation: at

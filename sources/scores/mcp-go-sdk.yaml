@@ -1,0 +1,102 @@
+product: mcp-go-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the SDK, its documentation and its examples
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Open source under the Model Context Protocol project''s dual transition licence: Apache-2.0 for new
+    contributions, MIT retained where authors have not consented to relicensing. GitHub''s classifier reports
+    NOASSERTION over it, which is a fact about the file''s shape rather than the grant, and the body is cited.'
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the SDK, its documentation and its examples);self-host:yes(a library you build
+    against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/LICENSE
+    shows: The LICENSE body, read rather than the classifier's label. It opens "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0", licensing new contributions
+      Apache-2.0, documentation CC-BY-4.0, and retaining MIT for contributions whose authors have not consented
+      to relicensing. That transition preamble is what GitHub's classifier cannot match, and it is why the
+      API reports NOASSERTION.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: af679003d933f045393a6a029f43da113f9ae364eac651d9ae268392985580f5
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/go-sdk
+    shows: 'Repository metadata: 5,116 stars, not archived, not a fork, last pushed 2026-09-17, description
+      "The official Go SDK for Model Context Protocol servers and clients. Maintained in collaboration with
+      Google."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 4aebec2d96d558c27adfd4a9ffcbab0716b0ca59698dfcb64e2fa6bcd8c413fc
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 5,116 GitHub stars. Go modules are resolved from the repository rather than a registry that publishes
+    counts, so there is no download figure to band and stars are what is left. They cap at level 3 by policy
+    and understate a library distributed this way.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/go-sdk
+    shows: 'Repository metadata for modelcontextprotocol/go-sdk: 5,116 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 4aebec2d96d558c27adfd4a9ffcbab0716b0ca59698dfcb64e2fa6bcd8c413fc
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'of the Model Context Protocol at version 2026-07-28: BOTH roles, the full primitive set (tools, resources
+    with subscriptions, prompts), all three transports (stdio, Streamable HTTP, legacy SSE) plus custom transports,
+    and the optional features for those roles - elicitation live, roots and sampling supported through their
+    deprecation window'
+  confidence: high
+  note: 'Band 5, and the first record in this category to reach it. Every leg is met and each is citable: the
+    compatibility table names 2026-07-28 as the current revision it implements, which is the newest the specification
+    repository publishes; both roles, all primitives and all transports are documented; and the optional features
+    are covered with a precision worth recording - roots and sampling were DEPRECATED by the 2026-07-28 revision
+    itself and the SDK continues to support them through a stated twelve-month window, while elicitation is
+    live. Supporting an optional feature the current spec has deprecated is coverage of that spec, not a gap
+    in it.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/README.md
+    shows: 'The README''s compatibility table: "| v1.7.0+ | 2026-07-28 | 2026-07-28, 2025-11-25*, 2025-06-18,
+      2025-03-26, 2024-11-05 |". It also states "the mcp package defines the primary APIs for constructing
+      and using MCP clients and servers" and "The SDK endeavors to implement the full MCP spec".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b139b8fe162c6b79a160d4b0c10ab73b56ed9ae437a7ef21c6d184d7e2e38bab
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/docs/protocol.md
+    shows: 'The protocol documentation lists the transports implemented: "Stdio Transport", "Streamable Transport",
+      "Legacy SSE Transport" and "Custom transports".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: fb79a090f2a39563ecb9e551204522a637038cb7e42ac79612d9e958fea4be68
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/go-sdk/main/docs/server.md
+    shows: The server documentation carries top-level sections for Prompts, Resources (including resource subscriptions)
+      and Tools, and documents elicitation in a worked example. It records that "The roots, sampling, and logging
+      features are deprecated as of protocol version 2026-07-28 by SEP-2577" and that the SDK supports them
+      "for compatibility during the deprecation window (at least twelve months)".
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 75c9f63ef97a01f4aefd92bb02994caaa34a8283f285d7bb2ef7f6b9d50c46d9

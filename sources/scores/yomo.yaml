@@ -17,21 +17,21 @@ openness:
     - full-runtime-in-repo(Rust core+QUIC+multi-language SDKs)
     - managed-hosting-by-Vivgrid-optional
   confidence: medium
-  note: 'Cargo.toml declares license = "Apache-2.0" at v2.0.6 and the README''s License section points at
-    the Apache License 2.0, but no LICENSE file is committed at the repository root, so the GitHub API reports
+  note: 'Cargo.toml declares license = "Apache-2.0" at v2.0.6 and the README''s License section points at the
+    Apache License 2.0, but no LICENSE file is committed at the repository root, so the GitHub API reports
     the license as null. That is the weakest part of this record. Nothing is gated, though: what YoMo publishes
     is the whole runtime rather than a client to a hosted one. src/ carries router.rs, zipper.rs, serverless.rs,
     agent_loop.rs, tool_invoker.rs, tool_mgr.rs, llm_provider/, model_api_provider/, auth.rs, http_auth.rs,
     tls.rs and connector.rs - routing, the serverless host, tool invocation, the OpenAI-compatible surface,
-    auth and transport - with no ee/ directory, no second license and no license-key path. Vivgrid sells
-    "serverless LLM function calling that lets enterprise AI agents run their tools in the cloud - with
-    observability, evaluation, and globally distributed inference built in", on a free tier plus credits,
-    but its landing page does not mention YoMo and the current YoMo README does not mention Vivgrid. A hosted
-    platform sold beside a complete open core is not a gate.'
+    auth and transport - with no ee/ directory, no second license and no license-key path. Vivgrid sells "serverless
+    LLM function calling that lets enterprise AI agents run their tools in the cloud - with observability,
+    evaluation, and globally distributed inference built in", on a free tier plus credits, but its landing
+    page does not mention YoMo and the current YoMo README does not mention Vivgrid. A hosted platform sold
+    beside a complete open core is not a gate.'
   raw: license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime
-    is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with
-    no second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo
-    neither references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional
+    is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no
+    second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither
+    references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional
   last_verified: '2026-08-12'
   sources:
   - url: https://github.com/yomorun/yomo/blob/main/Cargo.toml
@@ -62,11 +62,11 @@ openness:
     - source
     - core-gated
   - url: https://vivgrid.com/
-    shows: Vivgrid sells "serverless LLM function calling that lets enterprise AI agents run their tools
-      in the cloud - with observability, evaluation, and globally distributed inference built in", with
-      a free tier and $200/month in credits for maintainers of approved open-source projects. The landing
-      page does not mention YoMo at all, so what is sold is a hosted platform beside the framework rather
-      than a piece of it.
+    shows: Vivgrid sells "serverless LLM function calling that lets enterprise AI agents run their tools in
+      the cloud - with observability, evaluation, and globally distributed inference built in", with a free
+      tier and $200/month in credits for maintainers of approved open-source projects. The landing page does
+      not mention YoMo at all, so what is sold is a hosted platform beside the framework rather than a piece
+      of it.
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: e9a351d735ab01dd0784220cfe5f2b9f97af9afc0e18a75352761f5ac5809482
@@ -77,10 +77,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '1,920 GitHub stars on yomorun/yomo, which bands at 1K-10K stars, level 2 on the stars scale - a
-    scale that caps at 3 in any case, because a star is not a use. No download, install or customer figure
-    is published for this product: crates.io shows roughly 250 downloads a month, and there is no mass-market
-    usage volume to band. Stars are the only honest signal available here, so the level is directional.'
+  note: '1,920 GitHub stars on yomorun/yomo, which bands at 1K-10K stars, level 2 on the stars scale - a scale
+    that caps at 3 in any case, because a star is not a use. No download, install or customer figure is published
+    for this product: crates.io shows roughly 250 downloads a month, and there is no mass-market usage volume
+    to band. Stars are the only honest signal available here, so the level is directional.'
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/yomorun/yomo
@@ -89,15 +89,15 @@ adoption:
     http_status: 200
     content_sha256: 5ae4f5373be48fa652e9e3eef01b9cfc64c5d5dd7b41215a6d63f491cd9d6e33
 capability:
-  score: 3
-  basis: feature_matrix
-  value: strongly-typed LLM function calling/skills, serverless deployment across geo-distributed edge
-    nodes, QUIC transport + TLS 1.3, OpenAI-compatible chat completions API, MCP and A2A integration,
-    TypeScript and Go SDKs
-  confidence: medium
-  note: Distinctive full agent runtime with an edge/geo-distributed angle and multi-language SDKs. Functional
-    and coherent feature set for the agent-tooling layer but narrower ecosystem and integration surface
-    than the category leaders (MCP itself, FastMCP). Rated 3 on feature breadth from repo/README review.
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: 'ABSTAINS. Nothing sits behind YoMo that it adapts: it is a serverless runtime for LLM function calling
+    on geo-distributed edge nodes - where a function RUNS rather than what it reaches. #430''s own coherence
+    test reached the same conclusion, that no question this category asks is its primary job. Its destination
+    is `deployment`, and it has not moved there because `deployment`''s recipe carries no capability ladder
+    at all, so the move would relocate the defect this split exists to remove rather than resolve it.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/yomorun/yomo

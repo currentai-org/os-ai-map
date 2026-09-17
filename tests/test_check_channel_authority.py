@@ -219,11 +219,17 @@ def test_the_prose_leg_holds_at_its_known_count():
     Unlike most notes in this set that is not a remediable recording choice - Tesseract ships as
     source and distribution packages and there is no channel to relabel it to, so it sits here
     until an instrument exists.
+
+    18 -> 19 with the agent_tools_protocols split: `mcp-registry` bands on stars because it is a
+    hosted registry with no package anyone installs and no published request or listing count, and
+    its note says the figure understates the product - what matters about a registry is how many
+    clients READ it. That is the tesseract shape rather than a recording choice: there is no channel
+    to relabel it to, so it sits here until an instrument exists.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
     assert {f[0] for f in findings} == {
         "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
         "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",
-        "ollama", "perplexica", "promptfoo", "searxng", "tesseract", "uzu",
+        "mcp-registry", "ollama", "perplexica", "promptfoo", "searxng", "tesseract", "uzu",
     }

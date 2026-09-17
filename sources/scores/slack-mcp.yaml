@@ -13,9 +13,9 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT, no feature-gated core. The LICENSE is the plain MIT License, the whole Go server ships
-    in the tree and installs from npm or Docker with no key, and the maintainer sells nothing beside it
-    - no hosted tier, enterprise directory or second license.
+  note: Fully MIT, no feature-gated core. The LICENSE is the plain MIT License, the whole Go server ships in
+    the tree and installs from npm or Docker with no key, and the maintainer sells nothing beside it - no hosted
+    tier, enterprise directory or second license.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -39,8 +39,8 @@ adoption:
   level: 3
   signal_type: usage_volume
   confidence: medium
-  note: 111,307 downloads of slack-mcp-server in the trailing 30 days, which bands at 100K-1M, level 3 on
-    the software adoption scale. The figure is for the npm package, whose registry metadata points at korotovsky/slack-mcp-server;
+  note: 111,307 downloads of slack-mcp-server in the trailing 30 days, which bands at 100K-1M, level 3 on the
+    software adoption scale. The figure is for the npm package, whose registry metadata points at korotovsky/slack-mcp-server;
     the PyPI package of the same name is an unedited template and is a different thing entirely.
   reach: 100K-1M
   last_verified: '2026-08-12'
@@ -51,19 +51,27 @@ adoption:
     http_status: 200
     content_sha256: 210197fc526457e516f3a4c0c248e6119d0653e9a7921b7b35db711579fb2698
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  value: '18 tools: history/replies/search, posting, reactions, channel/user/usergroup management, saved items;
-    stealth + OAuth modes'
+  value: a curated tool surface over a Slack workspace - history, replies, search, posting, reactions, channel
+    and user management - working either through OAuth tokens or in a stealth mode that needs no workspace
+    permissions
   confidence: medium
-  note: Broad Slack read/write surface with an unusual no-permission stealth mode.
-  last_verified: '2026-08-13'
+  note: 'A curated surface over one system with the caller supplying the secret, which is band 3. An earlier
+    draft banded this 4 on the README''s mention of OAuth, and the authentication guide settles it the other
+    way: every documented path hands the caller a token to find and paste - `xoxp` or `xoxb` from a Slack app
+    you create, or `xoxc`/`xoxd` extracted from the browser''s own local storage with a snippet pasted into
+    the developer console. The server performs no OAuth flow of its own. That is the same case as postgres-mcp''s
+    DATABASE_URI, and banding it above them applied this category''s own 3-versus-4 rule inconsistently.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/korotovsky/slack-mcp-server
-    shows: 'README - "supports Stdio, SSE and HTTP transports, proxy settings, DMs, Group DMs, Smart History
-      fetch (by date or count), may work via OAuth or in complete stealth mode with no permissions and scopes
-      in Workspace". Feature list opens with "Stealth and OAuth Modes" and "Enterprise Workspaces Support";
-      a Tools section enumerates the tool set.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/docs/01-authentication-setup.md
+    shows: 'The authentication setup guide: "You only need one of the following: an xoxp-* User OAuth token,
+      an xoxb-* Bot token, or both xoxc-* and xoxd-* session tokens", with the xoxc path instructing the reader
+      to open the browser console, type "allow pasting" and run a snippet against `localStorage.localConfig_v2`
+      to print the token. Every path ends with the caller holding a secret to configure.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: f38b737fc78075988b9677af13bebb862515ad41b6bfe040f4284135f1ae4c5d
+    content_sha256: ef8338d12cf12f8e4d407541961eddf9add4d6e84ff4e0368effbdfa05a0f3ec
+  relative_to: playwright-mcp
+  relation: at
