@@ -180,3 +180,47 @@ def test_sheet_mentions_every_category_delta():
     after = _payload({"c": _cat(2, ["adoption"], [("a", None), ("b", None)])})
     sheet = ccd.render_sheet(ccd.diff_payloads(before, after), row_changes=[])
     assert "| c |" in sheet and "+1" in sheet and "stage moves: none" in sheet
+
+
+# --- a category rename is not a silent rewrite ------------------------------------------
+#
+# Added 2026-09-17 with agent_tools_protocols -> agent_tools_connectors. The rename moves
+# `category_slug` on every row of that category while touching none of those products' files,
+# which is this gate's definition of a silent rewrite and is not one: the products did not
+# change, their category's name did. The exemption is scoped to the renamed slugs and to that
+# one column, so everything else about those products is still compared exactly.
+
+def _row(**kw):
+    import json
+    base = {"product_slug": "p1", "axis": "openness", "category_slug": "old_name", "score": 4}
+    base.update(kw)
+    return json.dumps(base, separators=(",", ":"), sort_keys=True)
+
+
+def test_a_renamed_category_alone_is_not_flagged():
+    import build.check_corpus_diff as ccd
+
+    before = {"p1|openness": _row(category_slug="old_name")}
+    after = {"p1|openness": _row(category_slug="new_name")}
+    assert ccd.compare_rows(before, after, touched=set(),
+                            renamed={"old_name", "new_name"}) == []
+
+
+def test_a_real_change_inside_a_renamed_category_is_still_flagged():
+    """The exemption covers one column, not the product."""
+    import build.check_corpus_diff as ccd
+
+    before = {"p1|openness": _row(category_slug="old_name", score=4)}
+    after = {"p1|openness": _row(category_slug="new_name", score=5)}
+    changes = ccd.compare_rows(before, after, touched=set(), renamed={"old_name", "new_name"})
+    assert changes and "p1|openness changed" in changes[0]
+
+
+def test_a_category_move_without_a_rename_is_still_flagged():
+    """A product moving between two categories that both still exist is the case to catch."""
+    import build.check_corpus_diff as ccd
+
+    before = {"p1|openness": _row(category_slug="cat_a")}
+    after = {"p1|openness": _row(category_slug="cat_b")}
+    assert ccd.compare_rows(before, after, touched=set(), renamed=set())
+    assert ccd.compare_rows(before, after, touched=set(), renamed={"other", "unrelated"})
