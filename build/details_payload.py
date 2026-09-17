@@ -18,6 +18,8 @@ never reads was already a defect at 527 - the expansion is only what made it vis
 """
 from __future__ import annotations
 
+import base64
+import json
 from collections.abc import Mapping, Sequence
 
 from build.vocabulary import axes
@@ -62,3 +64,44 @@ def details_records(data: Mapping, order: Sequence[str]) -> dict[str, dict]:
             record["category_label"] = category["label"]
             payload[product["product"]] = record
     return payload
+
+
+#: How much base64 one hidden iframe may carry. marimo's cap is 8,000,000 bytes on a cell's
+#: SERIALIZED output, which was measured at twice the attribute's own size, so a chunk has to
+#: stay under 4,000,000 to be safe and this leaves a wide margin. The corpus crossed the cap on
+#: 2026-09-17 at 4,048,380 base64 characters - 1.2% over, after eighteen months of linear
+#: growth - and would have crossed it on the next promotion whatever this number were set to.
+#: Chunking is what makes the cap stop being a deadline.
+CHUNK_CHARS = 2_000_000
+
+
+def payload_base64(data: Mapping, order: Sequence[str]) -> str:
+    """The whole payload, base64 of UTF-8 JSON.
+
+    Base64 rather than raw JSON for two reasons that both bit on 2026-08-18: the payload is
+    interpolated into an HTML attribute, so `"` would be escaped and expand it, and one astral
+    character anywhere in a score note widens the entire Python string to 4 bytes per character.
+    Base64 is pure ASCII and contains none of `&"<`.
+    """
+    return base64.b64encode(
+        json.dumps(details_records(data, order), ensure_ascii=False).encode("utf-8")
+    ).decode("ascii")
+
+
+def payload_chunks(data: Mapping, order: Sequence[str], chunk_chars: int = CHUNK_CHARS) -> list[str]:
+    """The same base64, split so no single cell output approaches marimo's cap.
+
+    Splitting the BASE64 rather than the records keeps the decoder synchronous: the chunks are
+    concatenated back into one string before a single `atob`, so the JavaScript never has to
+    merge objects or know what a record looks like. It also keeps the split invisible to the
+    modal - there is one payload, delivered in pieces.
+
+    Compression was the alternative and was rejected: gzip would cut this 4.2x, and inflating it
+    in the browser means `DecompressionStream`, which is async, which makes the bootstrap async,
+    which races the click handler that reads the payload. A synchronous decoder is worth more
+    than the bytes.
+    """
+    encoded = payload_base64(data, order)
+    if chunk_chars <= 0:
+        raise ValueError("chunk_chars must be positive")
+    return [encoded[i:i + chunk_chars] for i in range(0, len(encoded), chunk_chars)] or [""]
