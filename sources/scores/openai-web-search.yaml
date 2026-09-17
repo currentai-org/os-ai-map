@@ -30,22 +30,27 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: low
-  note: ABSTAINS. OpenAI publishes no usage figure for the web search tool specifically, and no package measures
-    it - the `openai` SDK serves the whole API, so its downloads say nothing about this tool. The abstention
-    is dated rather than left blank, on the queue's rule that a null somebody looked for and did not find is
-    a confirmed axis; the page below is where it was looked for.
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  banded_quantity: the OpenAI Responses API surface the tool is enabled on, not a count of web-search tool
+    calls
+  confidence: medium
+  note: 'Mass-market by position rather than by count. The tool is a built-in of the Responses API, enabled
+    per request by any caller of OpenAI''s main developer surface, and it is what grounds search-backed answers
+    across that surface. No count is published for the tool and none is claimed here: this is a reading of
+    the platform it ships inside, recorded as `banded_quantity` so a consumer reading `level: 5` off the warehouse
+    sees what was banded. An earlier draft abstained on the grounds that no package measures the tool, which
+    is true and is not a reason to record a hyperscaler''s default web-search path as unmeasured when the map
+    already bands `gemini-pro` this way.'
+  last_verified: '2026-09-16'
   sources:
   - url: https://platform.openai.com/docs/guides/tools-web-search
-    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
-      or developer count - which is what the abstention rests on.
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
+      platform surface named in `banded_quantity` and that no usage figure is published for it.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 130367f984a95f73b98546ceb780ca5fe496723138499b3092840d9b6a4498a0
-  last_verified: '2026-09-16'
 capability:
   score: 5
   basis: feature_matrix

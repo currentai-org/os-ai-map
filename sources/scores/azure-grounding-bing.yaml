@@ -36,22 +36,26 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: low
-  note: ABSTAINS. Microsoft publishes no usage figure for the tool, and the only package near it - `azure-ai-projects`
-    - is the client for the whole Foundry platform, so its downloads would measure Foundry rather than web
-    grounding. The abstention is dated rather than left blank, on the queue's rule that a null somebody looked
-    for and did not find is a confirmed axis; the page below is where it was looked for.
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  banded_quantity: the Microsoft Foundry Agent Service surface the tool ships in, not a count of grounding
+    calls
+  confidence: medium
+  note: 'Broad by position rather than by count: web grounding is a first-party tool of Microsoft Foundry Agent
+    Service, one of three ways an agent built on Azure reaches the live web, and it is billed as a First Party
+    Consumption Service rather than sold as a standalone API anyone counts. No usage figure is published. Banded
+    4 rather than 5 to match `azure-ai-model-inference`, which reads the Azure enterprise base the same way:
+    an enterprise cloud surface is broad, and it is not the mass-market consumer reach that puts the Gemini
+    and OpenAI equivalents at 5.'
+  last_verified: '2026-09-17'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview
-    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
-      or developer count - which is what the abstention rests on.
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
+      platform surface named in `banded_quantity` and that no usage figure is published for it.
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: be3111c95bfa57b2b447a1f72de5855dc42ab62f708d23f1be4a8c6835d9dc1e
-  last_verified: '2026-09-17'
 capability:
   score: 5
   basis: feature_matrix
