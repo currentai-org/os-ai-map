@@ -1,59 +1,20 @@
 # Shared openness ladder for DATASET categories.
 #
 # Inherited via `scoring_recipe: {extends: dataset}`. See build/rubrics.py for the merge
-# rules and why the ladder is shared rather than copied per category.
+# rules and docs/reference/openness.md for the rulings behind this ladder.
 #
-# A corpus asks neither the software question nor the model question. There is no runtime to
-# self-host and no weights to download, so `source` and `core-gated` have nothing to bind to.
-# What decides a dataset's openness is whether you can get it, whether the license that
-# covers it covers all of it, and whether anything documents what is inside. Three
-# dimensions, in that order of weight.
-#
-# Derived from training_synthetic_datasets, 30/38, then widened by benchmark_eval_data.
-#
-# The widening is worth recording, because the first version could not read the second
-# category AT ALL - 0 of 27, every product abstaining. Two reasons, and neither was that the
-# questions differed:
-#
-#   * benchmark_eval_data spells the card key `datasheet`, so `documentation` was blank for
-#     all 27. A `reads:` addition.
-#   * a training corpus is published by definition and the only question is whether download
-#     is gated. A benchmark may not be published at all - an internal eval suite, or a
-#     deliberately held-out test set - so `gate` was too narrow a question and became
-#     `availability`, which spans not-published / gated / open.
-#
-# One dimension is genuinely new and belongs only to benchmarks: whether the ANSWERS are
-# released. A benchmark whose questions are public and whose answers are held back to prevent
-# contamination is a different artifact from one you can score yourself, and that distinction
-# has no meaning for a training corpus. It is declared here rather than in a per-category
-# override because the license tiers are the bulk of this file and duplicating them is exactly
-# what software.yaml's header argues against: whether ODC-BY permits redistribution is a fact
-# about ODC-BY, not about benchmarks versus training data.
-#
-# training_synthetic_datasets reproduces identically before and after the widening.
-# Each inheriting category records its own `derived_from.verified_on`; the reproduction counts
-# are computed by build/check_rubric.py on every run and are not stored.
+# Ruling: docs/reference/openness.md, "A corpus has no source or weights to gate".
 openness:
   dimensions:
     availability:
       question: Can the corpus be obtained at all, and on what terms?
-      # Three keys and two polarities record the gating half of this. `gated: false`,
-      # `ungated: yes` and `access: ungated` are the same statement three ways, and `reads:`
-      # cannot reconcile them because it selects a key and takes its value: it has no way to
-      # invert one.
-      #
-      # The ladder does not need it to. Every way of saying "there is a barrier" is a
-      # distinct positive token, so the rules test only those, and all the spellings of "no
-      # barrier" fall through to the license rungs below. They are declared anyway, because
-      # they ARE the recorded vocabulary and a reader should see what the data says rather
-      # than what it ought to say.
-      #
-      # `access` is read before `data` because where both are recorded, `access` carries the
-      # terms and `data` only carries whether a file exists.
-      #
-      # `'yes'` and `'false'` are quoted deliberately. YAML 1.1 parses both bare, and a
-      # `values:` list holding [True, False] stops matching the strings the formula sees.
+      # `reads:` selects a key and takes its value, so it can't invert polarity - every
+      # barrier spelling is its own positive token, and `access` is read before `data`
+      # because it carries the terms where `data` only carries whether a file exists.
+      # Ruling: docs/reference/openness.md, "`self-host` and `core-gated` are one question".
       reads: [access, gated, ungated, data]
+      # `'yes'` and `'false'` are quoted: YAML 1.1 parses both bare, and unquoted they would
+      # stop matching the strings a `values:` list of [True, False] needs to see.
       values: [public, ungated, downloadable, open, 'yes', 'false',
         gated, HF-gated, auto, manual, terms-acceptance, terms-acceptance+contact-info,
         internal-only, held-out, closed]
@@ -75,39 +36,20 @@ openness:
     answers:
       question: Are the answers released, or held back to stop the benchmark leaking into
         training data?
-      # Benchmarks only. A training corpus has no answers to withhold, so this is declared
-      # and never fires for training_synthetic_datasets - which is fine, and the reverse of
-      # the rule about rungs. A dimension no product in one category records is legitimate; a
-      # RUNG no product anywhere reaches is not.
-      #
-      # This is what separates two products the gate cannot tell apart: `gaia` publishes its
-      # questions and keeps 300 test answers private, while `gpqa` is equally login-walled
-      # and explicitly ships no hidden split.
-      # Only the two withholding values. `public` was declared here at first and removed:
-      # no rung tests it, and `public` is a value a dozen other keys carry, so declaring it
-      # made `paper:public` and `splits:public` read as answer evidence on five products
-      # that record no answer state at all. check_recipe caught it. A value no rung tests
-      # earns its place only if it is unambiguous, and this one is not.
+      # Benchmarks only; declared and never fires for training_synthetic_datasets, which is
+      # legitimate for a dimension (a rung nothing reaches is not - see the pointer below).
+      # Ruling: docs/reference/openness.md, "An answer withheld is a different limitation
+      # from a locked door".
       reads: [answers, holdout]
       values: [held-out, private]
       machine_signal: none - requires reading the card and often the paper
     documentation:
       question: Is there a dataset card describing provenance, composition and limits?
-      # `present` and `yes` are one value with two spellings, under two keys. Unlike the
-      # gate above the polarity is consistent, so `reads:` handles the keys and both
-      # spellings are declared - but the drift does reach the formula, which carries the
-      # top rung twice, once per spelling. That is the honest cost of not rewriting 5
-      # score files to agree with the other 25, and it is the first thing a components
-      # normalization on this category would remove.
-      #
-      # The top rung tests this dimension rather than resting on availability and license
-      # alone, which is deliberate. The availability rungs fire on POSITIVE evidence, so a
-      # product recording no availability key at all is not thereby ungated - it is
-      # unrecorded. Requiring a card at the top rung is what stops "no evidence" from
-      # resolving as "nothing wrong".
-      #
-      # `datasheet` is benchmark_eval_data's spelling of the same key, and `no` is a value
-      # only that category records.
+      # `present`/`yes` and `card`/`dataset_card`/`datasheet` are the same value and the same
+      # fact under different spellings across the two categories; `no` is benchmark_eval_data's
+      # own value.
+      # Ruling: docs/reference/openness.md, "A card is required at the top rung so unrecorded
+      # evidence cannot resolve as clean".
       reads: [dataset_card, card, datasheet]
       values: [present, 'yes', partial, legacy-repo-only, 'no']
       evidence:
@@ -130,23 +72,12 @@ openness:
           Attribution and share-alike obligations belong here: they bind whoever
           redistributes without capping who may use the corpus, which is the line this
           ladder draws, exactly as the software ladder puts AGPL beside Apache.
-        # Spelling and case variants are listed literally rather than normalized, following
-        # software.yaml: whether ODC-BY permits redistribution is a fact, and a fact is
-        # cheaper to look up than a regex is to get right.
-        #
-        # `permissive` and `open` are NOT license names. They are a curator's conclusion
-        # recorded where the license goes, and they are listed because they are what four
-        # products actually record. Replacing them with the licenses they stand for is a
-        # curation fix, not a rubric one.
-        # `Apache-2.0/MIT` is `livebench` dual-licensing under two open licenses, so either
-        # branch lands on this rung. `Etalab-2.0` is the French government's open license.
-        #
-        # `CommonCrawl-ToU` replaces the compound `CommonCrawl-ToU+Apache-2.0`, which was
-        # `redpajama-data-v2`'s license string copied verbatim into the ladder - a
-        # per-product override, and one that only worked because resolution truncated at
-        # the first `(`. Compounds now resolve on both halves, so the operand is what
-        # belongs here. The tier is unchanged and deliberate: Common Crawl's terms permit
-        # redistribution and reuse, commercial use included, which is this tier's test.
+        # Spellings are listed literally rather than normalized. `permissive` and `open` are
+        # curator conclusions recorded where a license name goes, not license names, and
+        # stay until the license they stand for is looked up.
+        # `CommonCrawl-ToU` and other compounds resolve on every operand.
+        # Ruling: docs/reference/openness.md, "A compound license resolves on all of its
+        # parts".
         examples: [ODC-BY, odc-by, ODC-BY-1.0, CC-BY-4.0, CC-BY-SA-4.0, cc0-1.0, Apache-2.0,
           apache-2.0, MIT, mit, Apache-2.0/MIT, Etalab-2.0, permissive, open,
           NVIDIA-Open-Data, CommonCrawl-ToU]
@@ -171,34 +102,23 @@ openness:
           restriction you can read is a smaller problem than an unbounded one you have to
           audit per subset, and above `unstated` because at least the obligation is
           locatable.
-        # `per-task` and `per-component` are the same conclusion as `mixed-per-subset`, in
-        # the words the curator happened to use, and they appear as the SECOND half of a
-        # compound - `Apache-2.0(recipe)+per-task` on `flan-collection`. The recipe is
-        # Apache-2.0; the tasks it assembles are not, and until compounds resolved on both
-        # halves that half was invisible.
-        #
-        # `follows mC4 + OSCAR-2301 terms` stays a whole-value example, and the `+` in it is
-        # why: it is English, joining two CORPUS names rather than two licenses, so there is
-        # nothing there to decompose. That is the line between a legitimate compound example
-        # and a per-product override - whether its operands are licenses.
+        # `per-task`/`per-component`/`mixed-per-subset` are one conclusion in different
+        # curator words; `follows mC4 + OSCAR-2301 terms` stays whole because its `+` joins
+        # two corpus names, not two licenses, so there is nothing there to decompose.
+        # Ruling: docs/reference/openness.md, "Where the boundary is currently weakest"
+        # (the-pile, stack-edu, flan-collection).
         examples: [mixed-per-subset, inherits-the-stack-v2, follows mC4 + OSCAR-2301 terms,
           per-task, per-component]
       unstated:
         definition: >-
           No license recorded on the card at all. The most restrictive tier, because absent
           a grant there is no permission to rely on, however freely the files download.
-        # `cc` is `livecodebench` recording the family without the variant, which names no
-        # terms: CC-BY and CC-BY-NC are both `cc`. `undeclared on HF dataset card` is
-        # `swe-bench-verified` saying so outright.
-        #
-        # `none`, `closed` and `proprietary` are listed here rather than left to
-        # check_rubric's definitional fallback, which resolves all three to a tier NAMED
-        # `proprietary` whether or not the ladder declares one. This ladder does not: an
-        # unpublished eval suite grants nothing, which is what `unstated` already means, and
-        # its definition above says so. Left implicit the two halves disagreed - the local
-        # checker invented the tier and scored the three internal-eval products on their
-        # availability rung, while the warehouse joins a real lookup table, found no row, and
-        # suppressed the score. Declaring it puts both on the same table.
+        # `cc` names the family without the variant (CC-BY and CC-BY-NC both write it);
+        # `undeclared on HF dataset card` is `swe-bench-verified` saying so outright.
+        # `none`/`closed`/`proprietary` are declared here rather than left to check_rubric's
+        # definitional fallback.
+        # Ruling: docs/reference/openness.md, "When the local checker and the warehouse must
+        # agree on 'no license'".
         examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc, none,
           closed, proprietary]
 
@@ -208,10 +128,7 @@ openness:
   # license nobody recorded.
   formula:
   # A licence forbidding commercial use caps the corpus wherever it sits, so this is tested
-  # before availability: an ungated CC-BY-NC download is not more usable than a gated one.
-  # `restricted` is the class, shared with the model and hardware vocabularies - the dataset
-  # vocabulary had no word between `open` and `gated`, which is why every corpus scored 3 or
-  # above used to land in the `open` bucket. See docs/reference/openness.md.
+  # before availability. See docs/reference/openness.md, "The license scale".
   - when: {license_tier: noncommercial}
     then: {score: 2, class: restricted}
     because: >-
@@ -310,38 +227,14 @@ openness:
 
 # Adoption bands: which monthly figure maps to which level, for this product type.
 #
-# Declared here rather than in the warehouse because they were hardcoded in
-# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
-# split that check_parity exists to catch, one axis over. The scoring SQL now reads
-# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+# registry.adoption_bands is emitted from this block by build/serialize_registry.py; see
+# docs/reference/adoption.md, "The bands" for why it lives here rather than in the warehouse.
 #
-# The scale is a property of the product TYPE, which is what the rubrics are already
-# keyed on, so this is four declarations rather than sixteen.
+# `above` is the exclusive lower bound and the floor is -1 rather than 0, so a figure of
+# exactly zero still bands at 1. See docs/reference/adoption.md, "The floor admits zero".
 #
-# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
-# highest level whose `above` the figure exceeds wins. `reach` is the label a score
-# records, and it carries the UNIT the band was read in - stars and downloads are not
-# the same reach at the same magnitude.
-#
-# The floor band is -1 rather than 0 so that a figure of exactly ZERO still bands at 1.
-# With 0 it did not: `0 > 0` is false, the product matched no band, and it came back
-# unbanded - which asserts "no scale exists for this type" when the truth is "nobody
-# downloaded it". zentropi-cope surfaced it on the first real run.
-#
-# ONE order of magnitude below software and model, and the reason is measured rather
-# than assumed. Across the 66 Hugging Face dataset artifacts with a download figure on
-# 2026-08-09: median 27,648, exactly one above 1M, and NONE above 10M. On the software
-# scale level 5 would be unreachable and 76% of datasets would pile into levels 2-3,
-# which is a scale that cannot discriminate.
-#
-# Shifting down one order reproduces the corpus's own bottom three levels exactly
-# (<1K->1, 1K-10K->2, 10K-100K->3) and yields a spread comparable to model's.
-#
-# Known disagreement, deliberately not resolved by this change: 14 dataset products
-# record level 4 against a reach of 1M-10M, which is level 5 on this scale. Some were
-# read in a different unit - citations for a benchmark, GitHub for a corpus shipped as
-# code - and `reach` carries the unit precisely so those are not silently comparable.
-# They are a work list, not a migration.
+# ONE order of magnitude below software and model. See docs/reference/adoption.md, "Why
+# `dataset` sits one order lower".
 adoption:
   reach_is_monthly: true
   unit: Hugging Face dataset downloads in the trailing 30 days

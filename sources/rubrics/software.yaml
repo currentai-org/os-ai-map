@@ -1,24 +1,8 @@
-# Shared openness ladder for SOFTWARE categories.
-#
-# Inherited via `scoring_recipe: {extends: software}`. See build/rubrics.py for the merge
-# rules and why the ladder is shared rather than copied per category.
-#
-# Software openness does not turn on a model's questions. There are no weights and no
-# training corpus; what matters is whether the thing you run is the thing that was
-# published. Eleven categories ask that same question of the same four license tiers, so
-# the ladder lives here and the license-to-tier mapping has one home: whether AGPL is `osi`
-# is a fact about AGPL, not about telemetry versus deployment.
-#
-# Verified against deployment first. Each inheriting category records its own
-# `derived_from.verified_on`; the reproduction counts are computed by build/check_rubric.py
-# on every run and are not stored (build/check_recipe.py fails a category that stores them).
+# Shared openness ladder for SOFTWARE categories, inherited via
+# `scoring_recipe: {extends: software}`. See build/rubrics.py for the merge rules and
+# docs/reference/openness.md for the rulings behind the license tiers and gating rules
+# below.
 openness:
-  # Software openness does not turn on the same questions as a model's. There are no
-  # weights and no training corpus; what matters is whether the thing you actually run
-  # is the thing that was published. Two dimensions carry that, and both were already
-  # being recorded in prose before this recipe existed - in about forty phrasings, which
-  # is precisely why a rubric could not read them. The controlled keys restate the prose;
-  # they do not replace it.
   dimensions:
     source:
       question: Is the source of the product you actually run published?
@@ -34,49 +18,13 @@ openness:
       question: Is functionality withheld from the published source for a paid tier?
       values: [gated, ungated]
       reads: [core-gated, self-host]
-      # WHAT COUNTS AS GATING. The question is whether functionality is withheld FROM THE
-      # PUBLISHED SOURCE, not whether the vendor sells anything. A separate hosted product, a
-      # managed service, or a different SaaS built around an otherwise complete open core does
-      # not gate that core, however much it costs. What gates a core is a piece of the product
-      # ITSELF being withheld: a closed package the open one depends on, an enterprise or `ee/`
-      # directory under a different license, a license key that unlocks functionality.
+      # Ruling: docs/reference/openness.md, "Selling something is not gating a core" (what
+      # counts as gating, and the langgraph/langchain/litellm precedent).
+      # Ruling: docs/reference/openness.md, "`self-host` and `core-gated` are one question"
+      # (the reads:/value_aliases merge and why it's conservative).
       #
-      # `langgraph` against `langchain` is the pair worth remembering, because from outside the
-      # two look identical - same vendor, same paid platform. langgraph is `gated`: its Agent
-      # Server ships as a closed Elastic-2.0 `langgraph-api` package that exists in no public
-      # repo and needs LANGGRAPH_CLOUD_LICENSE_KEY to run. langchain is `ungated`: every package
-      # in the repo is MIT and LangSmith is a separate platform sold beside it. `llama-index`
-      # (LlamaParse), `pydantic-ai` (Logfire), `zed` (Zed-hosted inference) and `otari` (the
-      # hosted Otari.ai platform) are all the langchain shape. Each of those five recorded
-      # 4/open_core on a `commercial:` clause - on the vendor selling something at all - and each
-      # was corrected to 5/open_source on 2026-08-11. `litellm` is the other side of the line and
-      # kept its 4, its gate being an `enterprise-dir` in the repo rather than a product beside it.
-      #
-      # So a `commercial:` or `service:` clause is NOT evidence for this dimension, and the
-      # ladder reads neither key. Where that is all a product records, `core-gated` is unanswered
-      # and the formula abstains - the right outcome, because somebody still has to read the repo.
-      #
-      # `self-host` is the same question in the vocabulary the corpus actually used.
-      # Whether the vendor lets you run the published thing yourself IS whether the core is
-      # withheld, and 54 records say so under that name while 164 say it under
-      # `core-gated`. Where both are recorded - 23 records - they never disagree: 11
-      # `yes`/`ungated`, 10 `primary`/`ungated`, 2 `only`/`ungated`, and no contradictions.
-      # Until this list read it, `self-host` was an undeclared key and was dropped before
-      # the formula ran, which is why check_recipe's docstring names it as the single most
-      # common piece of vocabulary drift on the map.
-      #
-      # `reads:` selects a key and takes its value, so a synonym key still needs its values
-      # translated - the problem dataset.yaml's `availability` notes it cannot solve by
-      # widening `reads:` alone. `value_aliases` is that translation, and it is the same
-      # idea `license_tier` already uses: a canonical rung with the literal spellings that
-      # land on it declared beside it, because whether `enterprise-only` means gated is a
-      # fact worth writing down rather than a regex worth getting wrong. A recorded
-      # spelling with no entry here is not guessed at - it falls outside the enum, the
-      # dimension reads as unanswered, and the formula abstains.
-      #
-      # `'yes'` and `'no'` are quoted for the reason the note below gives about `values`:
-      # YAML 1.1 parses both bare as booleans, and a boolean key never matches the string
-      # the parser hands it.
+      # `'yes'` and `'no'` are quoted because YAML 1.1 parses both bare as booleans, which
+      # never match the quoted strings the formula reads.
       value_aliases:
         'yes': ungated
         primary: ungated
@@ -118,35 +66,15 @@ openness:
         there is nothing to gate, and the formula settles those on `source` alone.
       machine_signal: none — requires reading the repo and the pricing page
 
-      # WHAT EVIDENCE ESTABLISHES `ungated` - the ruling behind the acceptance standard in the
-      # `evidence` list above. Ruled 2026-09-16, after it had been argued three times in one
-      # review with the standard written down nowhere.
-      #
-      # `ungated` is a negative. No document asserts it, so a reviewer can always say the cited
-      # evidence establishes something weaker and be literally right - which is unfalsifiable
-      # rather than rigorous. The standard states what the ladder ACCEPTS instead, and lives in
-      # `evidence` rather than here because it is an operative rule and a YAML parse must see it.
-      # This comment keeps only the history.
-      #
-      # IT IS PROSPECTIVE, and the reason is measured rather than assumed. Of the 334 products
-      # whose `core-gated` is explicitly established today, roughly 370 of ~395 citations are
-      # GitHub hosts - a first-party repository read, usually without a separate vendor or
-      # governance statement beside it. The standard is therefore stricter than the corpus's own
-      # practice, and it is scoped forward so that adopting it does not assert that several
-      # hundred existing records are wrong on evidence nobody has re-examined. Whether to sweep
-      # the back catalogue is a separate ruling with its own cost.
-      #
-      # Raising the bar retrospectively would unsettle every foundation project on the map at
-      # once, and that is a migration rather than something a category promotion may do on the
-      # side.
+      # Ruling: docs/reference/openness.md, "The `ungated` acceptance standard, and why it is
+      # prospective" (what the acceptance standard requires, and why it does not apply
+      # retroactively).
 
-  # Same shape as the model ladder, different rungs. Declaration order IS restrictiveness
-  # order, least restrictive first, and `tier_rank` is emitted from it.
+  # Declaration order is restrictiveness order (least restrictive first); `tier_rank` is
+  # emitted from it.
   license_tier:
-    # Most products record the license under `license`. A few record it under
-    # `license-terms` instead, where the terms are a paragraph rather than a name -
-    # `webcontainers` is the case, its runtime being proprietary while a shell repo is
-    # MIT. Either key answers the same question, so both are read, first match winning.
+    # `license-terms` holds a paragraph rather than a name (e.g. `webcontainers`); either key
+    # is read, first match winning.
     reads: [license, license-terms]
     ordered_by: restrictiveness_ascending
     values:
@@ -157,118 +85,20 @@ openness:
           is the line this ladder draws. AGPL sits beside Apache here, not below it.
           Settled in issue #125, which was opened because two products had been scored a
           level down for AGPL on a rationale the other 22 copyleft products did not apply.
-        # Spelling variants and dual forms are listed literally rather than normalized:
-        # whether `GPLv3` is OSI is a fact, and a fact is cheaper to look up than a regex
-        # is to get right. `LGPL-3.0/GPL-3.0` is openfn dual-licensing under two OSI
-        # licenses, so either branch lands on this rung. `Apache-2.0/MIT` is the same shape
-        # on `megatron-lm`'s vendored components, and is already declared verbatim in
-        # `dataset.yaml` for `livebench` - one spelling, one tier, in both ladders.
-        #
-        # `BSD-2-Clause` and `PostgreSQL` were added on 2026-08-18, on the owner's ruling,
-        # when the compilers and storage promotions each turned up one product this tier
-        # plainly covers and could not name: `liger-kernel` records the two-clause BSD text
-        # under a LinkedIn copyright, and `pgvector` records the PostgreSQL License, the
-        # Postgres project's own permissive terms. Both are OSI-approved, so both were
-        # already inside this tier's definition; the tier decides by literal name, which is
-        # the only reason either abstained.
-        #
-        # Checked before adding rather than after, which is what the note below asks for.
-        # Each is the FIRST product on the map to record its license, and the measurement
-        # was run rather than assumed: adding both names changed the computed score of two
-        # products - liger-kernel and pgvector, each from an abstention to the 5/open_source
-        # they already recorded - and of none of the other 520. Both categories went from
-        # one deferral each to full reproduction, 26/26 and 27/27, and check_recipe reported
-        # both deferrals stale on the same run, which is how a ruling like this is supposed
-        # to close.
+        # Ruling: docs/reference/openness.md, "The `osi` tier's `examples`: literal spellings,
+        # and what's been added to it" (why dual licenses and the added GPL-2.0 /
+        # Apache-2.0-WITH-LLVM-exception names land here).
         examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-2.0, GPL-3.0, AGPL-3.0,
           LGPL-3.0, MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT,
           PostgreSQL, Apache-2.0-WITH-LLVM-exception]
-        # `GPL-2.0` was added on 2026-09-15, on the owner's ruling, when the ml_orchestration
-        # promotion turned up `slurm` recording it. Slurm's COPYING body states that all Slurm
-        # code and documentation is available under the GNU General Public License. GPL-2.0 is
-        # OSI-approved and copyleft, which this tier's own definition already admits - AGPL sits
-        # beside Apache here - so it was inside the definition and outside the list, exactly the
-        # shape of the BSD-2-Clause and PostgreSQL additions above. The tier decides by literal
-        # name, which is the only reason it abstained.
-        #
-        # Measured before adding, per the note on the tier below: no other software-type product
-        # on the map records GPL-2.0 under `license`. The one other occurrence anywhere in the
-        # corpus is `orange-pi-5`, under a `toolchain:` key the hardware ladder reads and this
-        # one does not. So adding the name moved the computed score of `slurm` and of nothing
-        # else, and it closed that category's only deferral.
-        # `Apache-2.0-WITH-LLVM-exception` was added on 2026-09-02, when the compilers round-2
-        # promotion turned up `cuda-tile` recording it. LLVM's exception text only widens what a
-        # derivative work may do with the Apache-2.0 grant - it drops the patent-notice
-        # requirement for object-code-only redistribution - and adds no cap on who may use the
-        # software or at what scale, so SPDX and OSI both treat the combination as the
-        # OSI-approved Apache-2.0 license. This is a different reading from `max`, which records
-        # the identical string under its own `repo-license` key (a key this ladder does not
-        # read): `max`'s governing license is the non-OSI Modular Community License layered on
-        # top, and the Apache-2.0-WITH-LLVM-exception text there covers the repository, not the
-        # product's usage terms. `cuda-tile` carries no such wrapper - the LICENSE body is the
-        # Apache-2.0-WITH-LLVM-exception text and nothing else - so the name resolves cleanly on
-        # its own here. Measured before adding: no other software-type product records this
-        # string under `license`, so the addition moved only `cuda-tile`.
       permissive_non_osi:
         definition: >-
           Not OSI-approved, but imposes no restriction on WHO may use the software or AT
           WHAT SCALE. Attribution and naming requirements belong here.
-        # CC-BY-4.0 is the first entry, added 2026-08-12 on the owner's ruling that a
-        # protocol may license its documentation under Creative Commons. It is here and
-        # not in `osi` because OSI approves software licenses and has never approved a
-        # Creative Commons content license; CC-BY-4.0's own deed warns it is "not
-        # recommended for software". It is here and not lower because attribution is all
-        # it asks: it caps neither who may use the work nor at what scale, which is this
-        # tier's definition stated directly, and it is the same reading that put
-        # TII-Falcon-License-2.0 and the DeepSeek Model License in the model ladder's
-        # copy of this tier under issue #117.
-        #
-        # `model-context-protocol` is the only software product it reaches. The other
-        # five CC-BY-4.0 records on the map - codecontests, dclm-baseline, gpqa, mbpp,
-        # synth - are corpora scored by `dataset.yaml`, which keeps its own tier list, so
-        # this addition moves no score outside the eleven software categories and none
-        # inside them either. Checked before adding, per the note on the tier below: a
-        # name added for one product tiers every product that happens to record it.
-        #
-        # This tier gained a rung on 2026-08-12 - 3/source_available on a public,
-        # ungated source - and NO product currently reaches it. Both halves are
-        # deliberate, and the second one is the surprise.
-        #
-        # MCP was the product the rung was ruled for, and it turned out not to need it.
-        # Its CC-BY-4.0 covers documentation other than the specifications, and it had
-        # been recorded inside the `license` compound, where most-restrictive-wins made
-        # a license over the project's PROSE decide the score of the artifact you run.
-        # `autogen` records the identical facts the other way - MIT under `license`,
-        # CC-BY-4.0 under a `docs:` key this ladder does not read - and scores 5. The
-        # convention already existed; MCP was the record that departed from it. Moving
-        # the docs license out returned MCP to 5/open_source and left this tier empty of
-        # products again.
-        #
-        # So the rung is currently unexercised, which this file elsewhere calls a place
-        # for a later edit to hide. It is kept rather than reverted for two reasons: the
-        # ruling it encodes is about the license class and not about MCP, so it stands
-        # whoever arrives next; and unlike the two rungs deleted before it, this one
-        # emits an open-ISH class, so `test_openness_buckets` bounds the damage a bad
-        # edit could do. `test_permissive_non_osi_rung_is_pinned` pins its outcome so a
-        # silent change is a test failure rather than a score move.
-        # `Crawl4AI-Attribution-License` was added on 2026-08-30, and it is the first product
-        # ever to reach this tier. crawl4ai's LICENSE is the stock Apache-2.0 text followed,
-        # after END OF TERMS AND CONDITIONS, by an appended Attribution Requirement binding
-        # "all distributions, publications, or public uses" to carry a set credit line in a
-        # NOTICE, a paper's acknowledgments, a website's About section or a CLI's help output.
-        #
-        # It lands here rather than in `osi` because Apache-2.0 section 4(d) binds
-        # REDISTRIBUTION of the Work while this clause binds public USE of it, and section 4
-        # permits added terms only over a contributor's own modifications - so the composite
-        # is not the OSI-approved license the GitHub API reports. It lands here rather than in
-        # `competition_restricted` because attribution is all it asks: it caps neither who may
-        # use the software nor at what scale, which is this tier's definition stated directly.
-        #
-        # This retires the note below about the rung being unexercised. The rung's outcome is
-        # unchanged and still pinned by test_permissive_non_osi_rung_is_pinned; what changed is
-        # that a product now walks it. Measured before adding, as this file requires: no other
-        # product records this license name, and adding it moved the computed score of crawl4ai
-        # alone.
+        # Ruling: docs/reference/openness.md, "`permissive_non_osi`: attribution-only
+        # licenses, and the artifact they have to attach to" (CC-BY-4.0 on
+        # model-context-protocol, the docs-license-vs-product-license rule, and
+        # Crawl4AI-Attribution-License).
         examples: [CC-BY-4.0, Crawl4AI-Attribution-License]
       competition_restricted:
         definition: >-
@@ -277,68 +107,13 @@ openness:
           use before a delayed conversion date. The reader can audit the code and still
           not be free to run it, which is why this sits below the OSI tiers rather than
           beside them. Delayed-conversion licenses are scored on their terms TODAY.
-        # `n8n-Enterprise-License` covers the `ee/` directories n8n ships in the same public
-        # repo as its Sustainable-Use-License core: the source is published and readable,
-        # and running it needs a paid license key. That is this tier's definition almost
-        # word for word, and it is why the tier is NOT `proprietary` - proprietary here
-        # means the source is not published, and n8n's is.
-        #
-        # The five vendor licenses below join on the same reading, each confirmed against the
-        # terms its product's score records rather than against the marketing:
-        #   * `Modular-Community-License` caps capacity by device architecture - eight devices
-        #     on any accelerator other than X86/ARM/NVIDIA-PTX - and grants only "a limited
-        #     right to redistribute certain components of the SDK". Scale, not attribution.
-        #   * `Dify-Open-Source-License` is Apache-2.0 plus a multi-tenant service restriction
-        #     and branding conditions. The multi-tenant clause is the anti-compete clause.
-        #   * `Open-WebUI-License` is BSD-3-Clause plus a branding-retention clause that binds
-        #     above 50 end-users per 30 days unless an enterprise license is bought. A
-        #     threshold above which production use is charged for.
-        #   * `LobeHub-Community-License` is Apache-2.0 plus a requirement to buy a commercial
-        #     license before distributing a derivative work. This one restricts DISTRIBUTION
-        #     rather than running, so it is the loosest fit of the five - but a paid gate on
-        #     derivatives is still a class of use charged for, and it is plainly neither OSI
-        #     nor `permissive_non_osi`, which admits attribution and naming and nothing more.
-        #   * `PolyForm-Shield` forbids use in anything competing with the licensor's product,
-        #     which is this tier's first clause stated directly. It governs `autogpt_platform/`,
-        #     AutoGPT's active product; the legacy MIT components do not lift it.
-        #
-        # Every one of the five is recorded by exactly one product, so adding them here moved
-        # no other score. That is worth checking before extending this list rather than after:
-        # the list is shared across eleven categories, and a name added for one product tiers
-        # every product that happens to record it.
-        # `MinerU-Open-Source-License` and `AI-Pubs-Open-RAIL-M-Modified` were added on
-        # 2026-08-30, when the agent_tools_protocols promotion turned up two products whose
-        # licenses this tier plainly covers and could not name. Both are the shape the tier
-        # already holds under a dozen vendor names: an Apache or RAIL base with a revenue or
-        # funding threshold above which a separate commercial license is required. MinerU is
-        # Apache-2.0 "subject to the additional terms below", requiring a commercial license
-        # above 100M MAU or USD 20M monthly revenue; marker's weights are free below USD 5M
-        # funding or revenue and licensed commercially above it.
-        #
-        # Measured before adding, per the note on this file's other tier extensions. Neither
-        # name is recorded by any other product on the map. The two OpenRAIL records that do
-        # exist - `zentropi-cope` (zentropi-openrail-m) and `starcoder2` (BigCode-OpenRAIL-M) -
-        # are `type: model`, scored by model.yaml against its own tier list, and spell their
-        # licenses differently besides. Adding both names changed the computed score of exactly
-        # the two products they were added for, and of none of the other 525.
+        # Ruling: docs/reference/openness.md, "`competition_restricted`: the vendor licenses
+        # that land here, and why" (n8n, Modular, Dify, Open WebUI, LobeHub, PolyForm,
+        # MinerU, AI-Pubs-Open-RAIL-M, and NXAI).
         examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0, Elastic License 2.0,
           Sustainable-Use-License, n8n-Enterprise-License, Modular-Community-License, Dify-Open-Source-License,
           Open-WebUI-License, LobeHub-Community-License, PolyForm-Shield, MinerU-Open-Source-License,
           AI-Pubs-Open-RAIL-M-Modified, NXAI-Community-License]
-        # `NXAI-Community-License` was added on 2026-09-02, when the compilers round-2 promotion
-        # turned up `mlstm-kernels` recording it. The NXAI Community License Agreement is a
-        # Llama-3-style base with its own "Additional Commercial Terms": above EUR 100,000,000
-        # in consolidated annual revenue, incorporating the material into a commercial product
-        # or service needs a separate license NXAI may grant at its sole discretion. That is a
-        # revenue threshold above which a class of use is charged for, the tier's definition
-        # stated directly, and the same shape MinerU-Open-Source-License and marker's funding
-        # threshold already hold here under different vendor names. It is not `use_bounded` in
-        # the sense the model ladder uses that word for Llama-family licenses, because this
-        # ladder has no such tier - `competition_restricted` is where a bounded-commercial
-        # license already lands for software, on the same reading `n8n-Enterprise-License` and
-        # `Modular-Community-License` were added under. Measured before adding: no other
-        # software-type product records this string under `license`, so the addition moved only
-        # `mlstm-kernels`.
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.
@@ -346,9 +121,7 @@ openness:
 
   # Ordered, first match wins. There is deliberately NO `otherwise`: a product whose
   # recorded evidence does not reach a rule is abstained on by check_rubric and reported,
-  # rather than being scored at whatever the last rung happened to be. Roughly a third of
-  # software products across the map do not yet record `core-gated`, and an `otherwise`
-  # would publish a score for every one of them.
+  # rather than being scored at whatever the last rung happened to be.
   formula:
   - when: {source: closed}
     then: {score: 1, class: closed}
@@ -382,59 +155,12 @@ openness:
       open bucket under either the Model Openness Framework or OSAID. Above
       competition_restricted because nothing here caps who may use the software or at what
       scale, which is the line between those two tiers stated directly.
-  # The rung above is `permissive_non_osi`'s only one, added 2026-08-12 on the owner's
-  # ruling. It emits 3/source_available: above `competition_restricted`'s 2 because
-  # attribution asks less than a no-compete clause or a paid production threshold, and
-  # below the OSI rungs because no non-OSI license reaches the `open` bucket under MOF or
-  # OSAID. `source_available` is not a compromise word chosen for the bucket - it is the
-  # only class between `open_core` and `closed` that the software vocabulary in
-  # build/validate.py declares, so the alternative was inventing one.
-  #
-  # There is no gated counterpart. A second rung emitting 2/source_available for a gated
-  # permissive-non-OSI core would be dead on arrival, and dead rules are the hazard this
-  # comment block exists to record.
-  #
-  # Until 2026-08-12 the tier had no rung at all, so a product landing there abstained
-  # and was deferred for a human. Two rungs used to sit here, emitting 4/open_core and
-  # 5/open_source. Both were unreachable, because this tier's `examples` list is empty and
-  # no software product resolves into it - and both were wrong in the same way: they handed
-  # a non-OSI license an open_source or open_core class, and openness-class-map.json puts
-  # both of those in the `open` bucket. render.py calls that bucket boundary a "strict
-  # OSI/MOF cut", and it was neither. The Model Openness Framework classes a release under
-  # OpenRAIL or a Llama community license as source-available rather than open, and OSAID
-  # requires the freedom to use a system "for any purpose", so a non-OSI license cannot
-  # reach the open bucket by either standard.
-  #
-  # Dead rules were the reason it went unnoticed. model.yaml already records the principle:
-  # a dead rule in a first-match-wins formula is a place for a later edit to hide. Assigning
-  # any license to this tier would have silently activated a 5/open_source rung.
-  #
-  # Restoring a rung here needs evidence from a real product, not a guess about a
-  # hypothetical one. tests/test_openness_buckets.py enforces the boundary either way.
+  # Ruling: docs/reference/openness.md, "How the buckets relate to MOF and OSAID" (why
+  # `permissive_non_osi` has exactly one rung, emitting 3/source_available, and the dead-rule
+  # history of the two rungs this tier used to wrongly emit).
 
-# Adoption bands: which monthly figure maps to which level, for this product type.
-#
-# Declared here rather than in the warehouse because they were hardcoded in
-# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
-# split that check_parity exists to catch, one axis over. The scoring SQL now reads
-# registry.adoption_bands, which build/serialize_registry.py emits from this block.
-#
-# The scale is a property of the product TYPE, which is what the rubrics are already
-# keyed on, so this is four declarations rather than sixteen.
-#
-# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
-# highest level whose `above` the figure exceeds wins. `reach` is the label a score
-# records, and it carries the UNIT the band was read in - stars and downloads are not
-# the same reach at the same magnitude.
-#
-# The floor band is -1 rather than 0 so that a figure of exactly ZERO still bands at 1.
-# With 0 it did not: `0 > 0` is false, the product matched no band, and it came back
-# unbanded - which asserts "no scale exists for this type" when the truth is "nobody
-# downloaded it". zentropi-cope surfaced it on the first real run.
-#
-# Derived 2026-08-09 from the 279 software products recording both a level and a reach.
-# The mapping is unambiguous at every level: <10K->1 (11 of 12), 10K-100K->2 (26 of 44),
-# 100K-1M->3 (56 of 72), 1M-10M->4 (63 of 67), >10M->5 (32 of 35).
+# Adoption bands: which monthly figure maps to which level, for this product type. See
+# docs/reference/adoption.md, "The bands", for the mapping's rationale.
 adoption:
   reach_is_monthly: true
   unit: package downloads in the trailing 30 days, summed across declared artifacts

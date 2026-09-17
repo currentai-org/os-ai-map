@@ -1,48 +1,19 @@
 # Shared openness ladder for HARDWARE categories.
 #
 # Inherited via `scoring_recipe: {extends: hardware}`. See build/rubrics.py for the merge
-# rules and why the ladder is shared rather than copied per category.
+# rules and docs/reference/openness.md for the rulings behind this ladder.
 #
-# The only ladder in the map with NO `license_tier`, and that is the whole point of it. A
-# board is not licensed the way software is: what you can do with a design depends on whether
-# the design files were published and under what terms, and every part in this category runs
-# on a proprietary SoC regardless. `edge_hardware`'s own comments have said so since issue
-# #24 - "scored on design + toolchain + availability rather than source license" - and the
-# evidence agrees: not one of its 20 products records a `license` key at all.
-#
-# check_rubric resolved a license tier before applying any formula and treated an unresolved
-# tier as a hard failure, which made a tier-free ladder impossible to write. That is fixed in
-# this change rather than worked around, because "this artifact's openness does not turn on a
-# source license" is a true statement about hardware and the machinery should be able to
-# express it.
-#
-# Where the analogue of an OSI license does show up, it is in the top rung: level 5 requires
-# design files under terms permitting reuse. `beagley-ai` is CC-BY/CC-BY-SA and OSHWA-
-# certified, which is the closest thing hardware has to OSI approval, and that is what keeps
-# `open_hardware` in the `open` bucket honest - see docs/reference/openness.md.
-#
-# Verified against edge_hardware. Run `build.check_rubric` for the reproduction figure rather
-# than reading one typed here - the figure that used to sit on this line, 18/20, was two
-# corrections out of date by the time anybody read it.
+# Ruling: docs/reference/openness.md, "Where the boundary is currently weakest" (hardware has
+# no license gate; design, toolchain and availability decide openness instead).
 openness:
   dimensions:
     form_factor:
       question: Is the thing being scored a board, a module, or a bare chipset?
-      # WHICH QUESTIONS APPLY, asked before any of them are.
-      #
-      # Every dimension below this one was written for a board, and `schematics` - the
-      # dimension five of the eight rungs turn on - asks whether the board design files were
-      # published. The roster holds three kinds of thing, and asking that of the other two
-      # answers about the wrong artifact. `rockchip-rk3588` is the case and it cost a
-      # deferral: an application-processor SoC records nothing under `schematics`, correctly,
-      # because there was never a board whose design could have been withheld, and the ladder
-      # could not tell that from a board whose designer published nothing. It abstained, and
-      # the category deferred it for a month. The owner ruled on 2026-09-08 that the
-      # distinction is a dimension rather than a special case. Issue #219.
-      #
-      # The line between the three is what the vendor SELLS, not what is inside it. Every
-      # board on the roster carries a chipset and several carry a module; the question is
-      # which of them the buyer receives.
+      # WHICH QUESTIONS APPLY, asked before any of them are: every dimension below this one
+      # was written for a board, and asking a chipset about a board's design answers about
+      # the wrong artifact.
+      # Ruling: docs/reference/openness.md, "A board question asked of a chipset answers
+      # about the wrong artifact" (rockchip-rk3588, issue #219).
       values: [board, module, chipset]
       evidence:
       - '`board`: a finished PCB sold ready to power on, whose design somebody could have
@@ -71,25 +42,13 @@ openness:
     board_design:
       question: Is there a board design of the product being scored, for the design
         questions below to be about?
-      # The same fact as `form_factor`, in the vocabulary the design rungs need, and the
-      # guard that keeps them off a chipset. A board and a module both have a design
-      # somebody could have published; a chipset does not. Every one of the five rungs
-      # that turn on `schematics` asks this first, so a chipset is never scored by a
-      # question about design files it was never going to have.
-      #
-      # Rung order alone does not do that job, however much it looks as though it does.
-      # First match wins, so a chipset that falls past its own rung meets a board's next:
-      # put the chipset rung on top and leave the design rungs open, and a part whose
-      # datasheets are gated still collects 3/documented from somebody's reference-board
-      # files - a design that is not its own, read by a rung that never asked whose it was.
-      # The routing has to be a condition on the rung, not a position in the list.
-      #
-      # It is a second dimension rather than a condition on `form_factor` because a rung
-      # matches one value exactly - `check_rubric.matches` is equality, deliberately - so
-      # "board or module" needs a name of its own. `reads` plus `value_aliases` is the
-      # mechanism the ladders already use for exactly this, software.yaml reading
-      # `self-host` as `core_gated` and translating its spellings. Nothing new is recorded
-      # for it: it is the `form_factor` every product already carries, read one level up.
+      # Derived from `form_factor` (`board`/`module` -> `exists`, `chipset` -> `none`) so
+      # every design rung can test "board or module" as one value. Guarding on this rather
+      # than on rung position matters: first match wins, so a chipset that fell past its own
+      # rung would otherwise meet a board's next and collect a score from someone else's
+      # reference-board files.
+      # Ruling: docs/reference/openness.md, "A board question asked of a chipset answers
+      # about the wrong artifact".
       reads: [form_factor]
       values: [exists, none]
       value_aliases:
@@ -106,14 +65,13 @@ openness:
         route of its own - it is the same fact, read in the design rungs' terms
     schematics:
       question: Are the board design files published, and may they be reused?
-      # THE deciding dimension. Every board rung turns on it, which is not an accident:
-      # openness for a board is a question about the design. It sets the ceiling and the
-      # toolchain decides whether the product reaches it - `open` reaches 5 and `published`
-      # reaches 4 only with a stack that builds from source, and `published` falls to 3
-      # without one. Below `published` the toolchain stops mattering, because a design you
-      # cannot see is not redeemed by an SDK you can. `open` schematics with a non-open
-      # toolchain has no rung on purpose: no product records that pair, and a rule that
-      # cannot fire is a place for a later edit to hide.
+      # THE deciding dimension: every board rung turns on it. `open` reaches 5 only with an
+      # open toolchain too, and `published` falls to 3 without one - below `published` the
+      # toolchain stops mattering, because a design you cannot see is not redeemed by an SDK
+      # you can. There is deliberately no rung for `{open, closed}`: no product records that
+      # pair.
+      # Ruling: docs/reference/openness.md, "A rule that cannot fire is a place for a later
+      # edit to hide".
       values: [open, published, partial, none]
       evidence:
       - '`open`: design files for the WHOLE product under terms permitting reuse, or OSHWA
@@ -150,39 +108,22 @@ openness:
         never that the compiler is in it, which is exactly the open/partial distinction
     datasheets:
       question: Are the part's datasheets public, or behind an NDA?
-      # Tested by exactly one rung, and only for a chipset. It used to be tested by none, on
-      # the reasoning that every product here publishes at least a product brief so a rung on
-      # it would either be unsatisfiable or fire for all 20 - true of a roster read as one
-      # population, and the thing `form_factor` splits. For a chipset this is one of the two
-      # openness questions the corpus can answer - `availability` is the other - because the
-      # design questions have no subject; for a board it is a caveat beside a design file,
-      # which is why no board rung reads it.
-      # It remains half of what the `restricted` tier will turn on the first time an NDA-only
-      # part joins the roster.
+      # Tested by exactly one rung, and only for a chipset - one of the two openness
+      # questions the corpus can ask it, `availability` below being the other, because the
+      # design questions have no subject for a bare chipset. For a board it is a caveat
+      # beside a design file, which is why no board rung reads it.
+      # Ruling: docs/reference/openness.md, "Reaching buyers through module partners is a
+      # retail channel, not a proxy for one".
       values: [public, brief, nda]
       machine_signal: none - a vendor page either links a datasheet or it does not, but
         telling a full datasheet from a marketing brief needs a human
     blobs:
       question: Does booting or inference require proprietary firmware?
-      # Declared, tested by no rung, and the one that most looks like it should be. The
-      # category's own prose ladder used to define level 5 as "open schematics + open
-      # toolchain, NO BLOBS", which was unreachable: every part here runs on a proprietary
-      # SoC needing firmware, `beagley-ai` included, and `beagley-ai` is the only 5. That
-      # text was corrected in #132. Blobs are a caveat on every product in the category and
-      # therefore a discriminator between none of them.
-      #
-      # WHAT THE THREE VALUES MEAN. Added 2026-09-14 (#264) because the vocabulary was
-      # undefined and a curator had to guess, which is how one board came to record
-      # `minimal` where nineteen recorded `required` for the same shape of fact. The test
-      # is NECESSITY, not size: a small blob you cannot boot without is `required`.
-      #   `none`     - the part boots and runs inference with no proprietary firmware.
-      #                Nothing in this category records it, and nothing is expected to.
-      #   `minimal`  - proprietary firmware exists but is OPTIONAL: the part boots and runs
-      #                inference without it, and the blob buys an extra peripheral or an
-      #                accelerated path rather than a working system.
-      #   `required` - booting or inference needs it. Covers the ordinary case where a
-      #                vendor BSP ships firmware you cannot substitute, whether that is a
-      #                whole boot chain or a single WiFi blob.
+      # Declared, tested by no rung: every part in the category needs proprietary firmware,
+      # so it is a caveat on every product and a discriminator between none of them.
+      # `none`/`minimal`/`required` are defined by NECESSITY, not size.
+      # Ruling: docs/reference/openness.md, "A vocabulary needs definitions before it needs
+      # a rung" (#264).
       values: [none, minimal, required]
       machine_signal: none - requires reading the BSP
     accessory_host:
@@ -191,30 +132,12 @@ openness:
         plugs into score?
       reads: [accessory-host]
       values: [open_hardware, open_toolchain, documented]
-      # WHY THIS DIMENSION EXISTS, and why it is not the obvious alternative.
-      #
-      # The owner ruled on 2026-08-12 that an accessory's openness should track its host
-      # platform: what a HAT or a carrier board offers a builder is the openness of the
-      # system it completes, and asking the board questions of a thing that is not a board
-      # answers about the wrong artifact. `raspberry-pi-ai-hat-plus` is the case and, today,
-      # the only one - it publishes the HAT+ mechanical specification rather than board
-      # design files, and its toolchain is half open, the Pi driver integration being open
-      # while Hailo's Dataflow Compiler is registration-gated.
-      #
-      # The obvious way to reproduce its 4 was a rung on `{schematics: partial, toolchain:
-      # partial}`, and that was rejected after checking what it would say. Across the 20
-      # products in the category that pair is unique to this one product, so it would fire
-      # for exactly one thing either way - but it would ALSO be non-monotonic: `ti-am67a`
-      # and `qualcomm-dragonwing-rb3-gen-2` both record `{partial, open}` and score 3, so a
-      # rung handing `{partial, partial}` a 4 would rank strictly weaker evidence strictly
-      # higher. A rule that is false as a general statement is the thing this repo has
-      # already been bitten by twice (issues #132 and #133), and a curator reading the
-      # ladder later has no way to know it was meant narrowly.
-      #
-      # So the principle is recorded as its own axis instead. It says what it means, it is
-      # orthogonal to the design and toolchain questions rather than contradicting them,
-      # and the next accessory records its host rather than needing another rung. The
-      # narrowness is real and is not hidden: one product records this key today.
+      # An accessory's openness tracks its host platform rather than being asked the board
+      # questions itself - a HAT is not a board. Recorded as its own axis rather than a rung
+      # on `{schematics: partial, toolchain: partial}` because that pair is unique to one
+      # product and would be non-monotonic against others recording the same values.
+      # Ruling: docs/reference/openness.md, "An accessory tracks the platform it completes"
+      # (raspberry-pi-ai-hat-plus, ruled 2026-08-12).
       evidence:
       - '`open_toolchain`: the accessory completes a platform scoring 4/open_toolchain.
         `raspberry-pi-ai-hat-plus` plugs into `raspberry-pi-5`, whose schematics are
@@ -230,47 +153,23 @@ openness:
       machine_signal: none - needs a human to identify the host and read its score
     retail:
       question: Can anyone buy one?
-      # Read by the chipset rung, through `availability` below, which collapses the two
-      # buyable spellings into the one value a rung can match. No board rung reads it: for a
-      # board `schematics` carries the answer, and availability is a caveat beside it.
-      # `beagley-ai` is the only product recording nothing here, and it is a board.
-      # It is also half of the future `restricted` tier: an NDA/design-win part is one nobody
-      # can buy AND whose docs nobody can read.
-      # `discontinued` added 2026-08-14 for google-coral-dev-board, which no reachable
-      # source describes as buyable: Seeed marks both variants Discontinued and out of
-      # stock, coral.ai/products/dev-board 302s to a page naming no hardware and linking
-      # no purchase route. None of open_market/distributor/restricted fits - `restricted`
-      # means gated by NDA or design win, which is a part somebody CAN buy under terms,
-      # and a withdrawn part is a different fact about a different question. Score-neutral when
-      # it landed, because no rung read `retail` at all then. It still is: the only rung that
-      # reads it now is the chipset one, `google-coral-dev-board` is a board, and the question
-      # `availability` asks of the two spellings is the same either way - nobody can buy one.
+      # Read by the chipset rung only, through `availability` below. `discontinued`
+      # (google-coral-dev-board, added 2026-08-14) and `restricted` (NDA/design-win, not yet
+      # recorded) are both "nobody can buy one" but for different reasons, and stay apart
+      # here even though `availability` treats them alike.
+      # Ruling: docs/reference/openness.md, "Reaching buyers through module partners is a
+      # retail channel, not a proxy for one".
       values: [open_market, distributor, restricted, discontinued]
       machine_signal: none - a listing on a distributor site is checkable in principle,
         but absence of a listing does not establish restriction
     availability:
       question: Can this part be obtained commercially today, in the form it is sold in?
-      # `retail` in the vocabulary the chipset rung needs, by the same mechanism and for the
-      # same reason as `board_design`: two of the four recorded spellings mean the part is on
-      # sale, and a rung matches one value at a time.
-      #
-      # It is half of what `documented` means. The category defines the class as "datasheets
-      # public + buyable, but no design files of its own", and until #219 no rung tested
-      # either half - `schematics` carried the whole answer and the rest was inferred from it.
-      # For a board that is harmless. For a chipset there is no design to read, so both halves
-      # have to be asked or the rung is handing out `documented` on one fact, and a part
-      # nobody can buy would collect the word `buyable` on the strength of a PDF.
-      #
-      # No board rung asks it, and that is a choice with a cost worth naming: a module nobody
-      # could buy would still score on its design files alone. Adding the condition to the
-      # design rungs would move a recorded score - `google-coral-dev-board` records
-      # `discontinued` and is recorded at 3/documented - and re-scoring a board is a curation
-      # ruling rather than a side effect of giving the chipset a rung. #219 changed no score
-      # on purpose. Worth its own issue.
-      #
-      # `gated` covers two different reasons a part is not on sale - behind an NDA or a design
-      # win, or withdrawn - and this rung treats them alike because all it asks is whether
-      # anybody can buy one. The reasons stay apart in `retail`, which still records which.
+      # `retail` collapsed onto the two values the chipset rung needs: `open_market` and
+      # `distributor` both mean buyable, `restricted` and `discontinued` both mean gated. No
+      # board rung reads it - a module nobody could buy would still score on its design
+      # files alone, a deliberate asymmetry with the chipset rung.
+      # Ruling: docs/reference/openness.md, "Reaching buyers through module partners is a
+      # retail channel, not a proxy for one" (buyable ruled 2026-09-12).
       reads: [retail]
       values: [buyable, gated]
       value_aliases:
@@ -298,34 +197,18 @@ openness:
         nobody can buy the part
 
   # Ordered, first match wins. No `otherwise`: a product recording no `schematics` value is
-  # unrecorded rather than closed, and an `otherwise` would score it at whatever the last
-  # rung happened to be. That absence is load-bearing in this change - it is what makes
-  # falling off the ladder an available outcome, and therefore what lets a rung insist on
-  # two facts instead of settling for one.
+  # unrecorded rather than closed, which is what lets a rung insist on two facts instead of
+  # settling for one.
   #
-  # The first three rungs decide which KIND of thing is being scored rather than how open it
-  # is, and they are first for that reason: an accessory answers about its host and a chipset
-  # answers about its documentation and its availability. The five below them are the board
-  # ladder, and each of them SAYS so - `board_design: exists` is the first condition on every
-  # one - rather than relying on its position in the list. Being lower down is not a guard:
-  # first match wins means a chipset that falls past its own rung meets a board's next, so
-  # without the condition a chipset whose datasheets are gated would collect 3/documented
-  # from somebody else's reference-board files. A module takes the board rungs deliberately - it has a
-  # design and its vendor chose not to release it, so `schematics` asks a module a question it
-  # can answer - and that is why the guard is `board_design` rather than `form_factor: board`.
+  # The first three rungs decide which KIND of thing is being scored - an accessory answers
+  # about its host, a chipset about its documentation and availability - and each says so as
+  # a condition (`board_design: exists`) rather than relying on position in the list, for the
+  # same reason `board_design` guards the design rungs above.
   #
-  # There is deliberately no `restricted`/1 rung. The category's prose ladder defines one
-  # (NDA / design-win / private-sale only) and no product on the roster is one, so declaring
-  # it would add a rule that cannot fire - and model.yaml already records why that is
-  # dangerous: a dead rule in a first-match-wins formula is a place for a later edit to hide.
-  # #133 is what that looks like when it goes wrong. The tier is described in the category's
-  # comments so the vocabulary is not lost; it becomes a rung when a part needs it.
-  #
-  # Until then, a part that would sit on it abstains: a chipset answering `datasheets: nda`
-  # or `availability: gated` matches no rung and the category defers it with a reason. That
-  # is the ladder reporting that it does not decide, which is a weaker claim than 1/restricted
-  # and the only one the evidence supports - being unable to read a datasheet is not the same
-  # finding as a vendor gating the part, and one rung cannot tell them apart.
+  # There is deliberately no `restricted`/1 rung, though the category's prose ladder
+  # describes one and the vocabulary for it is fully declared.
+  # Ruling: docs/reference/openness.md, "A rule that cannot fire is a place for a later edit
+  # to hide" (issue #133).
   formula:
   - when: {accessory_host: open_toolchain}
     then: {score: 4, class: open_toolchain}
@@ -420,26 +303,13 @@ openness:
 
 # Adoption bands: which monthly figure maps to which level, for this product type.
 #
-# Declared here rather than in the warehouse because they were hardcoded in
-# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
-# split that check_parity exists to catch, one axis over. The scoring SQL now reads
-# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+# registry.adoption_bands is emitted from this block by build/serialize_registry.py; see
+# docs/reference/adoption.md, "The bands" for why it lives here rather than in the warehouse.
 #
-# The scale is a property of the product TYPE, which is what the rubrics are already
-# keyed on, so this is four declarations rather than sixteen.
-#
-# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
-# highest level whose `above` the figure exceeds wins. `reach` is the label a score
-# records, and it carries the UNIT the band was read in - stars and downloads are not
-# the same reach at the same magnitude.
-#
-# Hardware has no download to count, and the corpus has never pretended otherwise: all
-# 20 products record a qualitative reach (niche, broad, mass-market) and none records a
-# figure. So this type declares NO numeric bands, and that absence is the declaration -
-# a consumer that finds no band here must not fall back to another type's scale.
-#
-# The recorded levels span 3 to 5 only, which is honest for a category whose members are
-# all shipping products rather than an unfiltered long tail.
+# Hardware has no download to count, and none of the roster pretends otherwise: all 20
+# products record a qualitative reach and none records a figure, so this type declares NO
+# numeric bands - the absence is the declaration.
+# Ruling: docs/reference/adoption.md, "Why `hardware` declares none".
 adoption:
   reach_is_monthly: false
   qualitative: true
