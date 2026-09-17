@@ -1,394 +1,679 @@
-# Product Info Guide
+# Prose guide
 
-The style, format, and tone of a product's **prose** fields — `description` and
-`comments` — and the procedure for keeping them current.
+The house style for every hand-written string on the map: the product `description` and
+`comments`, the score `note` on each axis, the `shows` extract on each source, and the
+unpublished prose an editor reads (category `comments`, `scoring_recipe.note`, YAML `#`
+comments, module docstrings). One rule runs through all of it, and the rest of this guide is
+that rule applied field by field.
 
-> This guide governs the two hand-authored strings in `sources/products/<slug>.yaml`.
-> It is the prose companion to the scoring machinery, which is a different thing: how a
-> *score* earns a `last_verified` date, its evidence, and its gates live in
-> `docs/reference/evidence-and-freshness.md` and `docs/reference/evidence-and-freshness.md`, and this guide never
-> overrides them. When a rule here changes, change the guide first and make the reviewer
-> (and the `update-product` skill) follow.
+> This guide governs prose. How a *score* earns a `last_verified` date, what counts as
+> evidence, and the gates around both live in
+> [`evidence-and-freshness.md`](evidence-and-freshness.md), and nothing here overrides them.
+> When a rule here changes, change the guide first and make the workflows and skills follow.
 
-Both fields are reader-facing. `serialize.py` emits `description` into the payload as
-`description` and `comments` as `version_note`; both render in the notebook. So neither is
-a scratchpad — they are published copy.
+## The one rule
 
-## Scope, and what this is NOT
+**Write for the reader who has never seen the rubric.**
 
-In scope: the free-text prose an editor writes by hand — `description` and `comments` —
-plus the two label fields around them (`display_name`, and how they relate to `name`).
+Four of these fields are published. `build/serialize.py` puts `description`, `comments` (as
+`version_note`), every `note` and every `shows` into the payload verbatim, and the product
+detail panel renders all of them, one above the other, in this order: description, comments,
+then per axis the components, the note as `Why` or `Detail`, and the source list. A visitor
+reads them as one page about one product. An editor reads the same strings in the score file
+while deciding whether the score is right.
 
-Out of scope, and deliberately: **anything a score records.** `openness`, `adoption`,
-`capability`, their `sources[]`, and `last_verified` live in
-`sources/scores/<slug>.yaml`, are governed by `evidence-and-freshness.md`/`evidence-and-freshness.md`, and are
-partly machine-written (`build/apply_scores.py`). Do not encode a score judgment in the
-prose (see "Keep judgments on the axes" below), and do not treat the `comments`
-verification line as a freshness date — the two are related in spirit and separate in
-mechanism (see "Provenance vs. `last_verified`").
+The corpus was written for the second reader. It says "rung 4", "the other half of the
+ladder", "one below the anchor", "level 5 here is measured, not inferred", "the formula has
+nothing to resolve to". Every one of those is a sentence about the scoring machinery, addressed
+to the person auditing the score, sitting in the copy a visitor reads. Measured 2026-09-17,
+879 of 2,289 notes carried that vocabulary, and 963 restated an exact figure that the source
+line directly beneath them already showed.
 
-## The fields at a glance
+So the test for every sentence in a published field is: **would a careful reader who has never
+opened `sources/rubrics/` understand it, and does it tell them something the page does not
+already show?** A sentence that fails the first half is rewritten in plain terms. A sentence
+that fails the second half is deleted.
 
-| field | schema | what it is | audience |
-|---|---|---|---|
-| `name` | required, kebab-case | the slug/identity; see `add-product` | machine |
-| `display_name` | required | the human label | reader |
-| `description` | string | what the product IS and DOES, neutral | reader (payload `description`) |
-| `comments` | string | footnote: how the entry was verified, and any judgment call behind it | reader (payload `version_note`) |
+The unpublished fields have the opposite reader and the same discipline: they are read by the
+next editor, so they may use the rubric's words, but they still say a thing once and point to
+where it lives rather than restating it.
 
-Both prose fields are optional in the schema, but in practice every product carries a
-`description` and almost every one carries `comments`. Write both.
+## Where each field renders, and who reads it
 
-## `description` — what it is and does
+| field | file | payload | renders as | reader |
+|---|---|---|---|---|
+| `description` | `products/<slug>.yaml` | `description` | the paragraph under the product name | visitor |
+| `comments` | `products/<slug>.yaml` | `version_note` | a smaller footnote under the description; absent when empty | visitor |
+| `openness.note` | `scores/<slug>.yaml` | `openness.note` | the `Why` row on the openness axis | visitor |
+| `adoption.note`, `capability.note` | `scores/<slug>.yaml` | `<axis>.note` | the `Detail` row on that axis | visitor |
+| `sources[].shows` | `scores/<slug>.yaml` | `<axis>.sources[].shows` | the line under each source URL | visitor |
+| category `comments`, `scoring_recipe.note` | `categories/<slug>.yaml` | not published | nothing | editor |
+| YAML `#` comments | `rubrics/`, `registry/`, `signal_routing.yaml`, … | not parsed | nothing | editor |
+| module docstrings | `build/*.py` | `--help` for the CLIs | nothing | editor |
 
-**Purpose.** Tell a reader what the product is and what it does, in the neutral register
-of a catalog entry. It is not a pitch and not a review.
+The score, class, level, reach, confidence, components and the `Verified <date>` freshness
+label are all rendered from structured fields. Prose never needs to repeat any of them.
+
+## `description`: what the product is and does
+
+**Purpose.** Tell a reader what the product is and what it does, in the neutral register of a
+catalog entry. It is not a pitch and not a review.
 
 **`description` is the load-bearing field.** Everything a reader needs about the product
-belongs here: what it is, what it does, what distinguishes it, and who builds or stewards
-it. `comments` is a footnote about *how we know*, not a second place to put product facts —
-see "The division of labor" below. When a fact could sit in either, it goes here.
+belongs here: what it is, what it does, what distinguishes it, and who builds or stewards it.
+When a fact could sit in either `description` or `comments`, it goes here.
 
 **Format.**
-- **Length: 2–4 sentences, ~35–70 words.** The corpus median is 3 sentences / 55 words;
-  treat 1 sentence as too thin for a scored product and 6 as too long. A long tail entry
-  may be a single clause.
+- **Length: 2 to 4 sentences, roughly 35 to 70 words.** One sentence is too thin for a scored
+  product and six is too long. A long-tail entry may be a single clause.
 - **Lead with the product doing something**, not with its vendor. Good: "Accelerate is a
-  Hugging Face PyTorch library that lets users run raw PyTorch training scripts across
-  CPUs, multi-GPU, and TPU…". Who builds it belongs in the description, but usually in a
-  closing clause rather than the opening one, unless the org is load-bearing for identity
-  (e.g. "NVIDIA's content-safety classifier").
-- **Vary the sentence openings.** Three sentences in a row beginning "It …" reads as a
-  generated list. Recast one around its real subject ("A graph compiler optimizes…",
-  "Modular develops and distributes it").
-- **Present tense, third person, declarative.** No second person ("you can"), no imperative.
+  Hugging Face PyTorch library that lets users run raw PyTorch training scripts across CPUs,
+  multi-GPU, and TPU". Who builds it usually closes the paragraph rather than opening it,
+  unless the org is load-bearing for identity ("NVIDIA's content-safety classifier").
+- **Vary the sentence openings.** Three sentences in a row beginning "It …" read as a
+  generated list.
+- **Present tense, third person, declarative.** No second person, no imperative.
 - **First mention uses the display name**, then a natural short form.
-- **Spell out an acronym once** if the category reader would not know it.
+- **Spell out an acronym once** if the category's reader would not know it.
 
-**Content — include:**
-- The product's *kind* (library / model / protocol / dataset / board) and its one-line job.
-- What distinguishes it from the obvious neighbor, factually ("Where MCP connects agents
-  to tools, A2A connects agents to other agents").
-- Concrete, checkable specifics: parameter class, modality, what it bundles, what standard
-  it implements.
+**Include:** the product's kind (library, model, protocol, dataset, board) and its one-line
+job; what distinguishes it from the obvious neighbor, factually ("Where MCP connects agents to
+tools, A2A connects agents to other agents"); concrete, checkable specifics such as parameter
+class, modality, what it bundles, what standard it implements.
 
-**Content — exclude:**
+**Exclude:**
 - **Marketing cadence.** No "powerful", "cutting-edge", "seamless", "revolutionary",
-  "blazing-fast". Borrow the register named in `docs/methodology.md`: *precise, defined,
-  measured, forthright about limitations.*
-- **Unsourced superlatives and rankings** ("the best", "the leading", "the de facto
-  standard") unless they are a plain, checkable fact stated as one.
-- **Point-in-time facts** — star counts, download/install/pull counts, contributor and
-  commit counts, "fastest-growing", and the product's current version number. See
-  "Volatile facts" below; they go stale the day they are written and prose has no
-  freshness gate to catch it.
-- **Curator rationale** — why the map includes the product. See below.
+  "blazing-fast". Borrow the register named in `docs/methodology.md`: precise, defined,
+  measured, forthright about limitations. `tests/test_product_prose.py` holds a list of the
+  phrases that have actually appeared.
+- **Unsourced superlatives and rankings** ("the best", "the leading", "the de facto standard")
+  unless they are a plain, checkable fact stated as one, with the measure named.
+- **Point-in-time facts**: star counts, download counts, contributor counts, "fastest-growing",
+  the current version number. See "Volatile facts" below.
+- **Curator rationale.** "Picked when hardware is constrained" is a note about our selection,
+  not about the product, and it reads as a recommendation in a catalog entry. Find it with
+  `\b(picked|chosen|included|selected)\s+(because|when|by|for|as|if)\b`. Salvage any product
+  fact trapped inside the clause into the description proper, drop the counts and superlatives,
+  delete what is left. A genuine selection judgment worth recording is a footnote about our
+  reading and belongs in `comments`.
 
-### Curator rationale is not description content
+## `comments`: a footnote, usually empty
 
-A description describes. A clause explaining why the map picked something up — "Picked when
-hardware is constrained", "Chosen because it is the only OSI-licensed option in the category" —
-is a note about our selection rather than about the product, and it reads as a recommendation
-in a field that is meant to be a catalog entry.
+**Purpose.** Something about *our reading* of the product that a visitor would want beside the
+description and that no other field carries. It is optional, and most products need none.
 
-It is also where the content this guide already bans has collected. Surveying the corpus on
-2026-08-08, every hardcoded star count in a product carrying such a clause sat inside the
-clause, as did nearly every superlative, while the descriptive half of the same field was
-clean. Removing the clause is mostly a deletion, not a rewrite.
-
-Find them with:
-
-```
-\b(picked|chosen|included|selected)\s+(because|when|by|for|as|if)\b
-```
-
-Rewrite in this order:
-
-1. **Salvage the facts trapped inside.** The clause often carries the most concrete thing in
-   the entry — "powers the Hugging Face Open LLM Leaderboard", "the execution layer behind
-   Vercel Open Agents", "Anyscale's founders created Ray at UC Berkeley's RISELab in 2019".
-   Those are product facts. Move them into the description proper.
-2. **Drop counts, funding and superlatives.** Banned elsewhere in this guide already, so no
-   judgment call is involved.
-3. **Delete the recommendation framing.** What is left of "Picked when hardware is
-   constrained" after steps 1 and 2 is our opinion, and it goes.
-
-If a selection judgment genuinely needs recording — a product admitted on a borderline reading,
-say — it is a footnote about *our reading*, so it belongs in `comments` under the rules below.
-
-## `comments` — verification details and methodology footnotes
-
-**Purpose.** How we know what the entry says, and anything a reader or the next editor
-needs about the *treatment* rather than the product. In practice: the verification line,
-plus the occasional footnote about a judgment call or an evidence gap.
-
-### The division of labor
-
-`description` is load-bearing; `comments` is a footnote. The test is the subject of the
-sentence:
+The test is the subject of the sentence:
 
 | the sentence is about… | field |
 |---|---|
-| the product — what it is, does, runs on, who builds it | `description` |
-| our reading of it — what was checked, what was ambiguous, what a score followed | `comments` |
-
-Both fields render in the same product detail panel, one directly above the other. A fact
-stated twice is read twice, so the split is not cosmetic. Before writing a clause in
-`comments`, check it is not already in `description`; if it belongs to the product, move it
-rather than repeat it.
+| the product: what it is, does, runs on, who builds it | `description` |
+| why a score is what it is | the axis `note` |
+| what a cited page shows | that source's `shows` |
+| our reading of the entry as a whole: an evidence gap, a treatment choice | `comments` |
 
 Footnotes that earn their place:
-- an evidence gap — "no tagged releases, so this is verified against the repository head"
-- a judgment call the score rests on — "the repository source and usage terms carry
-  different licenses; the openness score follows the usage terms"
-- something in a source that would mislead the next reader — "the LICENSE file also bundles
-  third-party code under separate terms"
+- an evidence gap: "No tagged releases, so the entry is read against the repository head."
+- a treatment choice that spans axes: "Scored as the hosted service; the open-source SDK is a
+  separate entry."
+- something in a source that would mislead the next reader: "The LICENSE file also bundles
+  third-party code under separate terms."
 
-**Format.** Up to ~45 words, and no lower bound. Most products need only the verification
-line, and one line is a complete entry. Do not pad, and do not invent a footnote to fill
-the field.
+Footnotes that do not:
+- **A restatement of an axis note.** "The self-hosted build cannot take screenshots; that is
+  the gate the openness score rests on" is the openness `Why` said again two screens up. Measured
+  2026-09-17, 153 of the 564 non-empty footnotes overlapped a note that heavily. Delete them.
+- **A dated verification sentence.** `Verified 2026-08-13 via the LICENSE body.` used to end
+  every `comments` field. The date is `last_verified` on each axis, and the page already prints
+  it as `Verified <date>`. The line was a third copy, and the one visitors read as a footnote
+  about the product. It is gone, `tests/test_product_prose.py` keeps it gone, and no workflow
+  writes it. What it named (the document that was read) belongs on the source entry as `url`
+  and `shows`.
+- **A product fact.** Move it to `description`.
+- **The license.** It is `openness.components`, rendered in larger type directly below.
 
-**Do not state the license here.** It is a scored field — see "Scored fields" below.
+**Format.** Up to about 45 words, one or two sentences, no lower bound. An empty `comments`
+omits `version_note` from the payload, and the panel is quieter for it. Do not invent a
+footnote to fill the field.
 
-### The verification line — canonical form
+## The score `note`: why this rung, in plain words
 
-The corpus carries this idiom in many spellings ("Verified live June 2026", "verified live on
-HF June 2026", "Verified live 2026-06-22 via primary sources", …). Standardize on:
+**Purpose.** The `note` is the one place a visitor learns *why* an axis reads what it reads.
+The schema says "a sentence or two", and the corpus median was already close to that; the
+problem was the audience, not the length.
 
-```
-Verified <YYYY-MM-DD> via <source>.
-```
+**The shape.** Two sentences carry almost every note on the map:
 
-- **ISO date**, matching the `accessed:` format in score files. A month-year ("June 2026")
-  is acceptable only when the exact day is genuinely unknown; prefer the full date.
-- **`<source>` names the document you read, not the method you used.** `GitHub`, `PyPI`,
-  `the LICENSE body`, `the HF model card`, `the AWS Neuron documentation`, `Groq's LPU
-  architecture blog` are all good. This list is **illustrative, not closed** — name the
-  source specifically enough that the next editor can open the same page. Where several
-  sources were needed, name them.
-- **Never name a method.** `web search`, `research`, and the bare `primary sources` describe
-  how you looked rather than what settled it, and leave the next editor nothing to re-open.
-  If a search led you to a vendor page, the vendor page is the source.
-- Capital "V". One line, at the end of `comments`.
+1. **What the product ships or does that puts it on this rung.** The fact, named concretely:
+   the license and where it applies, the figure and what it counts, the feature or benchmark
+   result.
+2. **What keeps it off the next rung**, or, at the top, what the rung asks for that it has.
+   Also a fact: the training corpus is not published, the engine is not in any repository,
+   the leaderboard now has a higher entry.
 
-Examples:
-- `Verified 2026-06-22 via GitHub and the LICENSE body.`
-- `No tagged releases, so this is verified against the repository head. Verified 2026-06-22 via GitHub.`
-- `The base weights are gated, so openness was read from the model card rather than a download. Verified 2026-06-14 via the HF model card.`
+A third sentence is allowed when the score turns on a distinction a reader would otherwise
+miss (the vendor sells a hosted service, but that is not what gates the core). A fourth almost
+never is. Where the argument needs more room than that, the detail belongs in the sources'
+`shows` lines and in `components[].detail`, both of which the page renders beneath the note.
+
+**Write in the reader's vocabulary, not the rubric's.** The words below are internal. Each has
+a plain equivalent, and the equivalent is nearly always shorter.
+
+| rubric word | what to write instead |
+|---|---|
+| "rung 4", "band 3", "level 5", "the top rung" | say what the rung *means*: "the competitive frontier", "over ten million downloads a month", "an open model". The number is rendered beside the note already. |
+| "the anchor", "one below the anchor", "level with the anchor" | name the product: "a step below vLLM". Record the comparison in `capability.relative_to` and `relation` too, where a gate can check it. |
+| "the ladder", "the other half of the ladder", "the software scale" | name the dimension: "the training data", "the design files", "the usage figure". |
+| "`multi_sku_rule`", "the formula", "the rule fires", "abstains" | delete. A visitor cannot see the rule, and the note argues from the facts the rule reads. |
+| "the band rests on X", "the score rests on X", "banded on X" | "X puts it here" or simply state X. |
+| "measured, not inferred", "stated by the vendor", "which is what the rung asks for" | delete. The sources beneath show what was measured and who said it. |
+| "instrument", "signal type", "`stars_fallback`" | "GitHub stars are the only signal" or whatever the plain fact is; `signal_type` is rendered as `Signal`. |
+
+**Figures.** Round them in the note and leave the exact number to the source's `shows`. "About
+12.5 million downloads a month across the three sizes, most of them the 0.6B" is what a reader
+retains; "12,549,679 … 7,806,497 for the 0.6B, 2,489,577 for the 4B and 2,253,605 for the 8B"
+is a table set as a sentence, and each of those numbers sits in the bullet directly beneath.
+Exceptions: a `reported_traction` note that cites a magnitude must keep its `banded_quantity`
+in step, and a note whose argument is a *gap* between two figures (a registry at 1.0.4 against
+a repository at 2.1.0) keeps both.
+
+**Peers.** Name them. "One tier below the Megatron-LM anchor" becomes "a tier below
+Megatron-LM", and the comparison goes into `relative_to` and `relation` so
+`build/check_capability.py` can hold it against both scores. A note that names a peer it does
+not record is listed by `check_capability --candidates`.
+
+**Phrases a gate reads.** Two detectors read adoption notes for a candid admission, and their
+findings are pinned. A note that says the signal *understates* the product, or is *inflated*,
+or counts a *minority channel*, is making a claim the map records deliberately. Rewriting such a
+note keeps that phrase verbatim (`build/sweep_status.py`, `UNDERSTATES` and `INFLATED`, is the
+list) unless the claim itself is being withdrawn, which is a re-read, not a prose edit.
+
+**No dates, no chronology.** A note states what is true until the score changes. When it was
+checked is `last_verified`; what it used to say is `git log -p --follow`. "Corrected from level
+4", "the note this replaces", "settled under issue 264", "an earlier draft was withdrawn" are all
+history, and they leave. The exception is a date that is a fact about the product or the source,
+a spec revision named by its date or a GA date, and each such axis is listed in
+`tests/test_score_notes.py` with its reason.
+
+**A note may not restate `components` or `shows`.** "Apache-2.0 (OSI), source public, core
+ungated" is the components block set as prose. The note explains; the block records.
+
+**Abstaining is a note too.** Where `level` or `score` is null, the note says why no reading was
+possible in the same two-sentence shape: what was looked for, and why nothing found could stand
+in for it.
+
+**Length.** The guard in `tests/test_score_notes.py` holds a note at or under 600 characters,
+which is where the longest golden below lands. A note that cannot argue its rung in that space
+is carrying evidence that belongs in `shows` or `components[].detail`.
+
+## `sources[].shows`: what the page shows
+
+**Purpose.** What a reader would see if they opened the URL: the license text, the download
+figure, the sentence in the README. It is an extract, not an argument.
+
+- **Short.** One or two clauses, up to about 40 words. The corpus median is already there.
+- **Quote where a quotation is the evidence.** `"You may not provide the software to third
+  parties as a hosted or managed service"` is exactly the kind of thing `shows` is for.
+- **Say which dimension it settles only through `establishes`**, not in prose.
+- **Do not retell the note.** A `shows` that argues the rung is the note said twice. If the
+  note leans on a detail that is not in any `shows`, the detail moves down into `shows`, not
+  the other way.
+- **Dates are fine here.** Sources carry dates honestly: a `pushed_at`, a copyright year, a
+  leaderboard snapshot date. The no-date rule is for notes.
+- **No re-read narrative.** "Re-fetched, unchanged" is `accessed` and `content_sha256`.
+
+## Goldens
+
+Eleven notes and two footnotes, each rewritten from the corpus to the rules above. The lengths
+of the rewritten notes are what the 600-character guard is read from. The before text is what
+the record carried on 2026-09-17; the facts in the after text are the same facts, only the
+audience changed.
+
+### 1. `qwen3-embedding` openness: rubric vocabulary
+
+Before:
+
+> Apache-2.0 across every distributed size, which is unusual for a Qwen release and means
+> multi_sku_rule has nothing restrictive to resolve to. What holds it at 3 rather than higher
+> is the other half of the ladder: the training corpus is described in the paper but not
+> published, and the repository carries evaluation and usage code rather than the pipeline
+> that produced the checkpoints.
+
+After:
+
+> All three sizes ship under Apache-2.0, unusually for a Qwen release. The training corpus is
+> described in the paper but not published, and the repository holds evaluation and usage code
+> rather than the pipeline that produced the checkpoints, so this is open weights rather than
+> an open model.
+
+`multi_sku_rule` and "the other half of the ladder" are the machinery. The reader needs the
+two facts and what they add up to.
+
+### 2. `qwen3-embedding` adoption: figures restated from the sources
+
+Before:
+
+> 12,549,679 downloads in the trailing 30 days across the three shipped embedding checkpoints
+> - 7,806,497 for the 0.6B, 2,489,577 for the 4B and 2,253,605 for the 8B. Excluded from the
+> sum: the vendor's own GGUF conversions of the same three checkpoints (another 173k) and the
+> separate Qwen3-VL-Embedding line, which is a different product. Level 5 here is measured, not
+> inferred.
+
+After:
+
+> About 12.5 million Hugging Face downloads a month across the three embedding checkpoints,
+> most of them the 0.6B. The vendor's GGUF conversions and the separate Qwen3-VL-Embedding
+> line are not counted.
+
+The three exact figures are the three `shows` lines beneath. "Measured, not inferred" is a
+remark to the auditor; the `Signal` row says `usage_volume`.
+
+### 3. `qwen3-embedding` capability: the anchor
+
+Before:
+
+> Rung 4, the competitive frontier. Qwen3-Embedding-8B held first place on the multilingual
+> MTEB leaderboard at release and still posts 70.58, with 100+ languages, a 32k context and
+> Matryoshka dimensions - everything the rung asks for. It is one below Harrier-OSS because the
+> anchor's 74.3 has since displaced it from the top of the same table, not because anything
+> about the Qwen line has weakened.
+
+After:
+
+> Qwen3-Embedding-8B led the multilingual MTEB leaderboard at release and still scores 70.58
+> there, with 100+ languages, a 32k context and Matryoshka dimensions. Harrier-OSS has since
+> passed it on the same table at 74.3, which is the only thing between it and the top band.
+
+`relative_to: harrier-oss`, `relation: one_below` already record the comparison.
+
+### 4. `firecrawl` openness: a gated close call, 1,800 characters
+
+Before (abridged; the full note walked the repository tree file by file):
+
+> The AGPL-3.0 core is genuinely open, but a piece of the product is withheld from it, which is
+> what keeps this at open core rather than open source. The gate has a name: Fire-engine,
+> Firecrawl's own scraping engine, whose source is in no public repository. What
+> firecrawl/firecrawl publishes under apps/api/src/scraper/scrapeURL/engines/fire-engine is
+> only a client - index.ts, scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed
+> at a URL you have to be given, and apps/api/.env.example says as much in one line […] These
+> are features of the product itself, kept out of the published source behind a closed beta,
+> so the score stays at 4. The managed cloud advertising "additional features" would not on its
+> own be enough to establish a gate; the evidence here is in the code.
+
+After:
+
+> The AGPL-3.0 core is open, but Fire-engine, Firecrawl's own scraping engine, exists in no
+> public repository: the tree ships only a client pointed at a URL you have to be given, and
+> the self-hosting guide says screenshots, page actions and the agent, browser and specialty
+> formats need Fire-engine or Firecrawl Cloud. A piece of the product itself is withheld from
+> the published source, which is what open core means here. The managed cloud selling
+> "additional features" would not on its own establish a gate.
+
+The file names, the `.env.example` line and the self-hosting guide's exact words are already
+in the five `shows` lines and in `components.core-gated.detail`. The note keeps the argument.
+
+### 5. `tensorlake-sandbox` capability: 2,700 characters of settlement history
+
+Before (abridged): the note argued the band, then recorded that it was "settled under issue
+264", that "an earlier draft of this settlement was withdrawn on review", set a four-row table
+of peers' latencies and scores, and closed with advice on "where to press" if the band is
+revisited.
+
+After:
+
+> Firecracker microVM isolation for every tool call, snapshots with pause, fork and resume,
+> versioned mountable volumes and durable functions with queues, timers and retries: a feature
+> surface the microVM peers at this band share and Blaxel, a band lower, does not. Latency is
+> the weak point, at 1.35 s median time-to-interactive on the independent ComputeSDK table
+> against the vendor's sub-second claim, but latency is not what separates the bands in this
+> category. Scale is the softer spot: thousands of concurrent sandboxes reported, against the
+> billion-plus starts E2B records.
+
+The settlement is in the issue and in git. The peers' scores are in the peers' files. What
+survives is the positive case, the weak point, and the softer spot, which is what a reader
+would want to know before trusting the 4.
+
+### 6. `raspberry-pi-5` openness: a hardware board, and vocabulary drift
+
+Before (abridged): after the schematic argument, the note explained that "the firmware
+component read minimal until recently and now reads required, resolving an inconsistency this
+note used to state and leave open", that "all nineteen other boards describe the same shape of
+fact as required", that "what let the two readings coexist was an undefined vocabulary; the
+rubric now says the test is necessity rather than size", and that "nothing scored turns on the
+change".
+
+After:
+
+> Raspberry Pi publishes an open kernel tree and register-level datasheets for the RP1 I/O
+> controller, and the board is on open sale, but there is no schematic for the Pi 5: the
+> documentation index offers a mechanical drawing and two STEP files, which is what a HAT or a
+> case is designed against rather than a design. A partial set of design files holds the board
+> at documented, however open the software stack is. The GPU firmware and bootloader remain
+> Broadcom-licensed blobs the board cannot boot without.
+
+The vocabulary ruling belongs in `docs/reference/openness.md`, where it now is. The note says
+what is true of the board.
+
+### 7. `tesseract` adoption: a phrase a gate reads
+
+Before:
+
+> 76,518 GitHub stars, the largest count in this category. Tesseract is distributed as source
+> and through distribution packages rather than a registry this map routes, so no usage-volume
+> channel exists and the band rests on stars, which cap at 3. That understates a library
+> embedded in a very large amount of other software, and the understatement is a property of
+> the instrument.
+
+After:
+
+> About 76k GitHub stars, the most in this category. Tesseract ships as source and through
+> distribution packages rather than a registry this map counts, so stars are the only signal,
+> and a star-based reading stops at 3. That understates a library embedded in a very large
+> amount of other software.
+
+"Understates" stays, word for word: `check_channel_authority` lists this record because the
+note admits the figure under-measures the product, and the admission is the point. "The band
+rests on" and "a property of the instrument" go.
+
+### 8. `milvus` adoption: the "Banded on the" template
+
+Before:
+
+> Banded on the downloads of the declared client SDK: where a server has no countable channel
+> of its own, its client's downloads are the best available usage signal, and this product
+> declares pymilvus on exactly that basis. The registry reports 5,976,463 downloads in the last
+> month (1,484,328 in the last week, 241,978 in the last day), which lands in 1M-10M on the
+> software scale. Qdrant is treated the same way, being the same shape of product and banded on
+> qdrant-client. Milvus is the default open source engine for billion-scale semantic search and
+> an LF AI & Data graduate, but the band rests on the count rather than on that description.
+> Zilliz publishes no server-side deployment figure, and the repository's 45,627 stars are a
+> different instrument that cannot be read as usage volume.
+
+After:
+
+> Milvus is a server with no countable channel of its own, so its declared client SDK stands
+> in: pymilvus records about 6 million PyPI downloads a month. Qdrant is read the same way
+> through qdrant-client. Zilliz publishes no server-side deployment figure, and the
+> repository's stars are a different kind of signal.
+
+Seventy notes opened "Banded on the". The opening is the fingerprint of one prompt writing
+all of them, and it says nothing a reader wants first.
+
+### 9. `chitu` capability: "One band below the anchor"
+
+Before:
+
+> One band below the vllm anchor, level with xllm, rtp-llm and fastdeploy, the other
+> production engines whose distinguishing surface is domestic-accelerator breadth. Its hardware
+> span (five vendors plus pure CPU) and PD-separated cluster serving clear the two_below locals;
+> it is not the community-wide throughput frontier the anchor and sglang occupy.
+
+After:
+
+> A production inference engine whose distinguishing feature is breadth across domestic
+> Chinese accelerators, five vendors plus pure CPU, with prefill-decode separated cluster
+> serving. That puts it with xLLM, RTP-LLM and FastDeploy, a step below vLLM and SGLang, which
+> set the community-wide throughput frontier.
+
+`relative_to: vllm`, `relation: one_below` stays. "The two_below locals" is a rubric enum
+value set as a noun.
+
+### 10. `adobe-pdf-extract` adoption: abstaining, already right
+
+Before:
+
+> No usage figure is published for this service specifically, and it publishes no countable
+> artifact - no package, repository or registry entry - so no level is assigned rather than one
+> being inferred from the vendor's platform as a whole.
+
+After:
+
+> Adobe publishes no usage figure for this service, and it ships no countable artifact, no
+> package, repository or registry entry, so no level is assigned rather than inferred from the
+> Adobe platform as a whole.
+
+Included so the worker sees what "leave it alone" looks like. The edit is a trim, and a pass
+that finds nothing to say about a note says nothing.
+
+### 11. `accelerate` openness: already right, untouched
+
+> LICENSE file is the standard, unmodified Apache 2.0 text. The repository is public and
+> unarchived, and the README describes the whole library with no paid, enterprise or hosted
+> tier beside it, so source is public and the core ungated.
+
+Two sentences, two facts, the conclusion, no vocabulary. Most of the corpus reads like this,
+and the pass is for the third that does not.
+
+### A `shows` line: `agentops` openness, `app/LICENSE`
+
+Before (700 characters):
+
+> The license on the AgentOps app, which is not the license this record carries. The file is
+> the Elastic License 2.0 verbatim. Its Limitations: "You may not provide the software to third
+> parties as a hosted or managed service, where the service provides users with access to any
+> substantial set of the features or functionality of the software", and "You may not move,
+> change, disable, or circumvent the license key functionality in the software […]".
+> Elastic-License-2.0 is declared in software.yaml's competition_restricted examples. The only
+> commit touching this path is "AgentOps OSS release (#1190)", 2025-08-09, so it is the
+> license the app was published under rather than a later change.
+
+After:
+
+> Elastic License 2.0, verbatim: "You may not provide the software to third parties as a hosted
+> or managed service". Added in the "AgentOps OSS release (#1190)" commit of 2025-08-09, so the
+> app was published under it.
+
+Which rung an Elastic license lands on is the rubric's business, not the source's.
+
+### Two `comments` footnotes
+
+`firecrawl`, before:
+
+> The self-hosted build cannot take screenshots or run page actions - both need Fire-engine,
+> which is closed and ships in no public repo. That is the gate the openness score rests on.
+> Verified 2026-08-13 via GitHub and the self-hosting guide.
+
+After: **nothing.** Both sentences are the openness note; the third was the Verified line. The
+key is removed and the panel shows description, then the axes.
+
+`mastra`, before:
+
+> GitHub's classifier cannot place the split license file, so it was read from the body and
+> confirmed against npm metadata. Enterprise authentication code sits under separate terms, and
+> a hosted platform is sold beside the framework. Verified 2026-08-12 via the mastra-ai/mastra
+> repository tree and the npm registry.
+
+After:
+
+> GitHub's license classifier cannot read the split license file; the score was read from the
+> file body.
+
+The enterprise code and the hosted platform are the openness argument and live in that note.
+What survives is the one thing a reader would not learn anywhere else on the page.
+
+## Unpublished prose: category files, YAML comments, docstrings
+
+These are read by the next editor, never by a visitor, so they may use the rubric's vocabulary
+freely. Their discipline is different: **say it once, where it lives, and point.**
+
+**Category `comments` and `scoring_recipe.note`.** The decision log for a category: why the
+ladder was chosen, which license bodies had to be read rather than trusted, which product is
+the exception and why. Keep it. Cut only what restates a rule that `docs/reference/` already
+states (link instead) or narrates a sweep (that is `docs/sweeps/`). A `strapline` is published
+and is one or two sentences about the category's shape today, without counts that a build
+could interpolate instead.
+
+**YAML `#` comments** in `sources/rubrics/`, `sources/registry/`, `signal_routing.yaml`,
+`evidence_policy.yaml` and the other config files are ignored by every consumer. Two kinds are
+worth keeping: a one-line clarifier beside a key whose reading is not obvious (why `'yes'` is
+quoted under YAML 1.1; what `reads:` selects), and a one-line pointer to the reference document
+that carries the reasoning. Everything else, the case law about which product gates and which
+does not, the sweep narrative, the history of how a vocabulary settled, belongs in
+`docs/reference/openness.md`, `docs/reference/adoption.md` or `docs/sweeps/`, where it is
+found by someone who is not editing that file. Moving it is not deleting it: the salvage
+happens first, with a table of where each block went, and the strip is checked to be
+parse-identical.
+
+**Module docstrings** in `build/` say why the module exists and how to run it, in a paragraph,
+then point at the reference document that is the authority on the rule. A docstring is not the
+normative home of a rule; `docs/reference/` is. Two constraints from #573: no live census in a
+docstring that prints as `--help` ("four records today" is wrong within a fortnight), and an
+example a docstring quotes must be one the function actually handles the way the prose says.
+The comments inside a function that settle a live question stay; that volume was measured and
+is not the problem.
 
 ## Global rules
 
-1. **American English everywhere** — `license` not `licence`, `penalized`, `labeled`,
-   `behavior`. This is a standing hazard in `workflows/refresh-category.md` and applies to prose
-   too, not just identifiers.
+1. **American English everywhere**: `license` not `licence`, `penalized`, `labeled`,
+   `behavior`. Identifiers and prose alike.
 2. **No marketing cadence.** Same register as the methodology copy.
-3. **Never assert from memory.** Any factual claim — version, release date, license,
-   what it bundles — is confirmed against a PRIMARY source before it is written. A
-   plausible claim that does not survive a check is not written. (This is the same rule
-   `add-product` step 7 states for adding.)
-4. **Keep judgments on the axes.** Adoption and openness are scored, sourced fields. An
-   *openness verdict* ("truly open") and the **license it rests on** belong in the score
-   file, where they carry evidence. See "Scored fields" below.
-5. **Do not embed volatile facts** — counts, current version numbers, or corporate events.
-   See below.
+3. **Never assert from memory.** Any factual claim is confirmed against a primary source before
+   it is written. A prose-only pass that opens no source writes no new fact; it rewrites what
+   the record already says.
+4. **Keep judgments on the axes.** An openness verdict and the license it rests on belong in
+   the score file, where they carry evidence. See "Scored fields" below.
+5. **Do not embed volatile facts** in `description` or `comments`: counts, current version
+   numbers, corporate events. See below.
 
 ## How far to verify a claim
 
-A prose refresh runs *inside* the score re-read — one pass per product, described in
-`docs/workflows/refresh-category.md` Phase 4. The same repository, model card and vendor docs
-are opened once and both halves are written from what they show. So prose carries no separate
-research budget, and the only question left is what to do with the claims that sit outside the
-score's evidence.
+A prose refresh runs *inside* the score re-read, one pass per product, described in
+`docs/workflows/refresh-category.md`. The same repository, model card and vendor docs are
+opened once and both halves are written from what they show, so prose carries no separate
+research budget. The question left is what to do with claims outside the score's evidence:
 
 | claim class | policy |
 |---|---|
-| what the product is and does | **verify** — the score re-read establishes it anyway |
-| comparative positioning ("Where MCP …, A2A …") | **verify** — the same pages settle it |
-| superlative or unsourced ranking | **delete** — already against this guide |
+| what the product is and does | **verify**, the score re-read establishes it anyway |
+| comparative positioning ("Where MCP …, A2A …") | **verify**, the same pages settle it |
+| superlative or unsourced ranking | **delete** |
 | corporate event (acquired / raised / IPO) | **omit** unless identity-bearing |
 | curator rationale ("Picked when …") | **remove from `description`** |
 
-Three of the five resolve to delete or omit rather than research, which is most of the reason
-the prose half adds little to the cost of a re-read. A claim that the sources opened for the
-score do not settle, and that none of the rules above disposes of, comes **out** of the prose.
-It is never left in unverified on the grounds that it was already there.
+A claim that the sources opened for the score do not settle, and that none of the rules above
+disposes of, comes out of the prose. It is never left in unverified on the grounds that it was
+already there.
 
-This is also why the coupling matters. A prose pass run on its own does not open primary
-sources, and the result is a provenance line naming a method — `Verified 2026-08-08 via web
-search` — which is precisely what the canonical form below forbids.
+A prose pass run on its own, with no re-read, is a *rewrite*, not a refresh: it may reword,
+shorten and delete, and it may not add a fact the record does not already carry.
 
-## Scored fields — don't restate them
+## Scored fields: do not restate them
 
-The license is the clearest case, and the one this guide used to get backwards. It is not
-merely descriptive: it *is* the openness score's basis, recorded in
-`sources/scores/<slug>.yaml` as `openness.components` — either the legacy flat string
-(`license:Apache-2.0(OSI);…`) or the structured mapping the corpus is migrating to, always
-read via `components_of` rather than assumed to be either shape — with `sources[].accessed`
-behind it and the invariant and the digest requirement in front of it.
+The license is the clearest case. It is the openness score's basis, recorded in
+`sources/scores/<slug>.yaml` as `openness.components`, with `sources[].accessed` behind it and
+the invariant and the digest requirement in front of it. Restating it in `comments` or
+`description` creates a second copy with none of that, and the two drift in one direction
+only: a relicense flows through the score and the prose is quietly left wrong.
 
-Restating it in `comments` creates a second copy with none of that. The two then drift in
-one direction only: a relicense flows correctly through `evidence-and-freshness.md`, the score
-updates, and the prose is quietly left wrong with nothing to catch it. That is the same
-"liability with no owner" the volatile-facts rule names, made worse by the copy *looking*
-authoritative.
+It also buys the reader nothing. The panel renders `openness.components` directly below the
+prose, in larger type. So **read the LICENSE body, and do not write it into product prose.**
+Reading it stays essential: the GitHub classifier lies (a custom copyright line makes a genuine
+MIT repo report `NOASSERTION`), and the OSI call is what the score turns on. When the body
+disagrees with the recorded score, that is a score finding: stop and follow
+`evidence-and-freshness.md`.
 
-It also buys the reader nothing. `build/serialize.py` emits the `openness` dict into the
-payload, flattening `components` back to a string via `components_string` whichever shape
-the score file carries, and the front end already renders `openness.components` in the
-product detail panel — in larger type than the prose `version_note` directly above it. The
-license is on screen either way; only one copy carries evidence.
+The same applies to adoption, capability and the openness class. Prose describes; the axes
+carry the judgment.
 
-So: **read the LICENSE body, and do not write it into prose.** Reading it stays essential —
-the GitHub classifier lies (a custom copyright line makes a genuine MIT/Apache repo report
-`NOASSERTION`), and the OSI / not-OSI call is exactly what the score turns on. But when the
-body disagrees with the recorded score, that is a **score** finding: stop and follow
-`evidence-and-freshness.md`. Do not reconcile it by editing the product file.
+## Volatile facts: link, do not embed
 
-The same applies to any other scored dimension. Adoption, capability, and the openness
-class are axes with evidence; prose describes what the product is and lets them carry the
-judgment.
+Prose carries no freshness mechanism. `last_verified` gates scores, not `description` text, so
+any fact in prose that a later event can invalidate is a liability with no owner.
 
-## Volatile facts — link, don't embed
+**The test: would a future release make this sentence wrong?** If yes, it is volatile and does
+not belong in `description` or `comments`. If a future release would instead be a different
+product entry, or there will be no future release, the fact is durable and can stay.
 
-Prose carries no freshness mechanism. `last_verified` gates *scores*, not `description`
-text, so any fact in prose that a later event can invalidate is a liability with no owner.
+**Counts.** A star, download or contributor count is stale the moment it is written. The
+artifact URLs are the live link, and magnitude of use is the `adoption` axis, where the figure
+sits with a date and a signal type. Prose may say the durable, qualitative shape of adoption
+when it is a structural fact ("the distributed-training backbone for other Hugging Face
+libraries"), sparingly, and never as a stand-in for a number.
 
-**The test: would a future release make this sentence wrong?** If yes, it is volatile and
-does not belong in prose. If a future release would instead be a *different product entry*,
-or if there will be no future release, the fact is durable and can stay.
+**Current version and release date.** The next release makes it wrong. Three durable cases
+stay: the version is the entry's identity (a named model release); there will be no future
+release (an archived project's last version); a statement of absence ("no tagged releases,
+built from source").
 
-### Counts
+**Corporate events.** An acquisition, funding round or IPO is omitted unless it is
+identity-bearing: it establishes who ships the product now, and a reader who did not know it
+would look for the wrong vendor. "Predibase, now part of Rubrik" earns its clause; "raised a
+$50M Series B" does not.
 
-A star count, download count, or contributor count is stale the moment it is written. A
-hardcoded "24K GitHub stars" or "~4.8k stars, actively maintained" fails the test. Do not
-write it.
+Where a version or an event bears on a *score*, it is score evidence with a `sources[].accessed`
+date, not a prose clause.
 
-The actuals already have two homes, and neither is the prose:
+## Prose has no date of its own
 
-- **The artifact URLs are the live link.** A product's `github`/`pypi`/`huggingface_*`
-  entries point at the page that shows the current number. A reader who wants the count
-  follows the link; a tool reads it from the source.
-- **Adoption is a computed axis.** Magnitude of use is scored on the `adoption` axis from
-  those artifacts by the warehouse (`docs/methodology.md`: "real usage, not stars"), which
-  is where the number belongs *with* a date and a signal type.
+`last_verified` lives in the score file, per axis, and confirms that a *score* is still correct
+and re-derivable from its sources. Only a person writes it, and only per the rules in
+`evidence-and-freshness.md`. Nothing in prose earns one, and prose carries no date of its own:
+the `comments` verification line that used to serve as one is retired, so a description ages
+silently. That is acceptable because a prose refresh is coupled to the axis re-read in
+`refresh-category.md`; it is not acceptable to write a date into prose to compensate. If a
+prose re-read turns up a fact that moves a score, that is a score change: stop and follow
+`evidence-and-freshness.md`.
 
-What prose may still say is the **durable, qualitative** shape of adoption when it is a
-structural fact rather than a number — "the distributed-training backbone for other Hugging
-Face libraries", "hosted by the Linux Foundation". Prefer even these sparingly, and never
-as a stand-in for a count. If a number matters, it is an `adoption` score, not a sentence.
+## Rewriting a note or footnote: procedure
 
-> Forward direction: as the notebook renders live/computed counts from the linked artifacts
-> and the `adoption` axis, prose should carry none. Treat every metric you would type as a
-> link you should rely on instead.
+For a prose-only pass (the `clean-corpus-prose` skill automates it):
 
-### Current version and release date
+1. **Read the whole record**: all three notes, every `shows`, `components`, `comments`. The same
+   argument often appears in two of them.
+2. **Classify each note** against the goldens: already right (leave it), rubric vocabulary,
+   restated figures, template opening, chronology, or over the length guard.
+3. **Rewrite in the two-sentence shape**, from the facts the record already carries. Do not
+   open a source, do not add a fact, do not remove a fact the argument needs.
+4. **Move, do not lose.** A detail the note leaned on that no `shows` carries moves into the
+   relevant `shows`. A vocabulary ruling or precedent moves into `docs/reference/`.
+5. **Check the pinned phrases** (under-coverage, the date allowlist) survived verbatim, and that
+   any peer named is in `relative_to`.
+6. **Drop a `comments` footnote that restates a note.** Keep one that says something no other
+   field does.
+7. **Edit through `build/components.py`** (`set_field`, `set_source`, `set_document_field`),
+   never a load-modify-dump and never a hand splice.
+8. **Anything the pass may not fix, write down**: a note whose argument contradicts its score,
+   a stale fact, a thin note the tail was hiding. The log goes on the PR; each entry is
+   somebody's later `update-product`.
 
-A "latest version" clause fails the same test for the same reason: the next release makes
-it wrong, and nothing in the repo will notice. `v0.26.0 released 2026-07-25` and
-`Latest stable v1.2.1 ...; 1.3.0 release candidates in progress` are both promises the map
-cannot keep across the whole corpus. The `github`/`pypi`/`huggingface_*` links
-already point at the page showing the current release. Do not restate it.
+For a product refresh (the `update-product` and `refresh-category` skills):
 
-Three cases are **durable** and stay:
-
-1. **The version is the entry's identity.** For a named model release — `Apertus family
-   (8B + 70B), released 2 Sep 2025` — the date is a historical fact about *this* product,
-   and the next release is a different entry (or a different rung; see
-   `docs/reference/identity.md`). Keep it.
-2. **There will be no future release.** `Latest release v3.3.7 (2025-12-19). Repo archived
-   2026-03-21 and placed in maintenance mode` is durable precisely because the project
-   stopped. Keep it — an archived project's last release is a lifecycle fact.
-3. **A statement of absence.** `Created 6 May 2026; no tagged releases (built from source)`
-   describes how the project ships, not where it currently is.
-
-### Corporate events
-
-An acquisition, a funding round, or an IPO fails the same test. It is true on the day it is
-written, the next event makes it incomplete rather than wrong, and nothing in the repo is
-watching. **Omit it by default.**
-
-The exception is when the event is *identity-bearing* — it establishes who ships the product
-now, and a reader who did not know it would go looking for the wrong vendor. `Predibase, now
-part of Rubrik` earns its clause on those grounds. `Raised a $50M Series B in 2025` does not,
-and neither does an acquisition recounted as company history. Funding in particular is a
-proxy for traction, which is what the `adoption` axis is for.
-
-The tell for the volatile case is a word like "latest", "current", or "as of". A tier
-product states this outright — see `claude-sonnet`: *"Anthropic ships a new Sonnet roughly
-every few months, so a versioned entry goes stale faster than it can be reviewed; the slug
-is stable."* That reasoning generalizes; it is why the rule exists.
-
-Where a version genuinely bears on a *score* — a relicense at v2, weights pulled in a
-later release — it is score evidence with a `sources[].accessed` date, not a prose clause.
-
-## Provenance vs. `last_verified`
-
-These look alike and are not the same, and conflating them is the exact error
-`evidence-and-freshness.md` exists to prevent. Keep them straight:
-
-- The **`comments` verification line** is *editorial provenance for the prose* in the
-  product file. It says "an editor last confirmed these descriptive facts on this day." It
-  is not gated, not machine-read for freshness, and carries no per-dimension evidence.
-- **`last_verified`** lives in the *score* file, per axis, and is a confirmation that a
-  *score* is still correct, re-derivable from `sources[].establishes`, and gated by the
-  invariant and the digest requirement. Only a person writes it, and only per the rules in
-  `evidence-and-freshness.md`.
-
-Writing the `comments` line **does not** earn a `last_verified`, and updating a product's
-prose is not a score re-check. If a prose re-read turns up a fact that moves a *score* (a
-relicense, weights pulled, a dataset gated), that is a score change: stop, and follow
-`evidence-and-freshness.md` — do not edit the score from the product file.
-
-## Updating a product — procedure
-
-Use this to refresh an existing product's prose (the `update-product` skill automates it):
-
-1. **Open the primary source(s)** the product points at — its `github`/`huggingface_*`/
-   `pypi` URLs, and the vendor blog or registry. Never refresh from memory or a secondary
-   summary.
-2. **Re-derive the checkable facts**: what it bundles/does, ownership/hosting, lifecycle
-   state. Read the LICENSE body and the current release too — not to write them into prose,
-   but to confirm the project is alive and that neither has moved a score. A version goes in
-   only under one of the three durable cases above; a license does not go in at all.
-3. **Rewrite `description`** to the format above if anything material changed, keeping it
-   neutral and within the length band. Leave it alone if nothing moved. Strip a curator
-   rationale clause and a corporate event wherever you find one, salvaging any product fact
-   inside first; both are edits worth making on their own, with nothing else moving.
-4. **Update `comments`**: strip any stale count, "latest version" clause, or license
-   restatement, and move any surviving *product* fact into `description`. Keep only
-   footnotes about the reading itself. Set the verification line to today's date and the
-   document you read.
-5. **If a fact moves a score**, do not touch the score file here — record it and hand off
-   to the `evidence-and-freshness.md` flow.
-6. **Validate:** `uv run python -m build.validate` prints `0 error(s)`. Preview only; do
-   not commit `build/notebook_data.json` or `notebooks/ai-stack-map.py` (bot-owned).
+1. **Open the primary sources** the product points at. Never refresh from memory.
+2. **Re-derive the checkable facts**: what it does, who ships it, lifecycle state. Read the
+   LICENSE body and the current release to confirm the project is alive and that neither has
+   moved a score.
+3. **Rewrite `description`** to the format above if anything material changed.
+4. **Rewrite `comments`** to a footnote or to nothing. No verification line.
+5. **Write each axis note** in the two-sentence shape, in the reader's vocabulary.
+6. **If a fact moves a score**, follow `evidence-and-freshness.md`; do not edit the score from
+   the product file.
+7. **Validate:** `uv run python -m build.validate` prints `0 error(s)`; `uv run pytest
+   tests/test_product_prose.py tests/test_score_notes.py` passes.
 
 ## Checklist
 
-- [ ] `description`: 2–4 sentences, ~35–70 words, leads with the product doing something,
-      present tense, neutral register.
-- [ ] No marketing words; no unsourced superlatives; judgments left on the axes. Watch
-      "high-performance" and "high-throughput" — say what the product does instead.
-- [ ] No three consecutive sentences opening "It …".
-- [ ] No hardcoded star/download/contributor counts — rely on the artifact links and the
-      `adoption` axis instead.
-- [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
-- [ ] No curator rationale — no "Picked when …" / "Chosen because …" clause in `description`.
-- [ ] No funding round, acquisition, or IPO, unless it says who ships the product now.
-- [ ] No license restatement — it is `openness.components` in the score file (string or
-      structured mapping, read via `components_of`, edited only via `build/components.py`).
-- [ ] `comments` says nothing `description` already says — no product facts, footnotes only.
-- [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
-- [ ] `<source>` names a document someone could reopen, never a method ("web search").
+- [ ] `description`: 2 to 4 sentences, leads with the product doing something, present tense,
+      neutral register, no marketing words, no counts, no current-version clause, no curator
+      rationale, no corporate event, no license.
+- [ ] `comments`: empty, or one footnote about our reading that no note or description carries.
+      No `Verified … via` sentence.
+- [ ] Each `note`: two sentences, what puts it here and what keeps it off the next rung, in
+      words a reader who has never seen the rubric follows. No rung, band, level, ladder,
+      anchor, formula or rule names. Figures rounded. Peers named and recorded in `relative_to`.
+      No dates, no chronology. At or under 600 characters.
+- [ ] Each `shows`: a short extract of the page, not a retelling of the note.
+- [ ] The pinned under-coverage phrases and the date-allowlist dates are intact.
+- [ ] No score, `last_verified`, URL, `accessed`, `http_status`, `content_sha256` or
+      `establishes` moved.
 - [ ] American English throughout.
-- [ ] Every factual claim confirmed against a primary source, not memory.
-- [ ] `uv run python -m build.validate` → `0 error(s)`.
+- [ ] `uv run python -m build.validate` prints `0 error(s)`.
 
 ## Related
 
-- `skills/update-product/SKILL.md` — the procedure above, as an agent-runnable skill
-- `skills/add-product/SKILL.md` — creating a product (step 7 is the same primary-source rule)
-- `docs/reference/evidence-and-freshness.md` — normative: how a *score* earns `last_verified`
-- `docs/reference/evidence-and-freshness.md` — normative: what `last_verified` means
-- `docs/methodology.md` — the register these fields borrow ("no marketing cadence")
-- `docs/schemas/product.schema.json` — the field definitions
+- `skills/clean-corpus-prose/SKILL.md`: the prose-only pass, one category per unit of work
+- `skills/update-product/SKILL.md` and `skills/refresh-category/SKILL.md`: prose inside a re-read
+- `docs/reference/evidence-and-freshness.md`: normative on how a score earns `last_verified`
+- `docs/reference/openness.md` and `docs/reference/adoption.md`: the rulings the notes used to
+  carry as vocabulary
+- `docs/methodology.md`: the register these fields borrow
+- `docs/schemas/product.schema.json` and `docs/schemas/score.schema.json`: the field definitions
+- `tests/test_product_prose.py`, `tests/test_score_notes.py`: the guards
