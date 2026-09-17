@@ -31,6 +31,27 @@ is intended:
    earns the date. This is what makes the field fill in as automation lands.
 3. **A date is never derived from `sources[].accessed`.** See below.
 
+## Two evidence grades: dataset and document
+
+Evidence is graded by re-derivability, not by who produced it — the first pass of
+`sources/scores/` was agent-authored, so authorship never established trust and does not now.
+What matters is whether the value can be arrived at again:
+
+| grade | what it is | how it's re-derived |
+|---|---|---|
+| `dataset` | a named field in a machine-readable source | running a query; carries the table, the column and the transform |
+| `document` | a specific URL whose content asserts the value | reading it again; carries the url, what it shows, and when it was read |
+
+`dataset` is preferred wherever it can answer, because a document is an interpretation of prose
+and a dataset field is a lookup. `rwkv` is the case that settled it: its data-openness score of
+5 rested on a paper's claim of a 3.1T open corpus, and what corrected it to 4 was the Hugging
+Face datasets API showing the published repos hold a component index and 100k/1M previews, no
+corpus. The document was plausible, traceable and wrong; the dataset was neither plausible nor
+implausible, it was just checkable.
+
+`sources/signal_routing.yaml` decides *which* source is authoritative per dimension;
+`sources/evidence_policy.yaml` decides *whether* a given observation is admissible at all.
+
 ## Why freshness is not `max(sources[].accessed)`
 
 `accessed: 2026-06-08` says somebody opened that URL that day. `last_verified:
@@ -152,6 +173,14 @@ Note what `partial` does *not* depend on. It follows from an axis being unconfir
 a queue entry — a hold explains an unconfirmed axis, and its absence does not make one
 confirmed. An undated axis with no queue entry is still `partial`, and is separately a finding
 for `check_freshness` and `sweep_status`.
+
+### A hold is a claim about now, not a record of history
+
+A hold in `sources/verification_queue.yaml` is a claim about the CURRENT state of an axis, and
+nothing in the repository forces it to stay true. A later pass that settles the question writes
+its finding into the score note, where the queue cannot see it — so a stale hold does not
+announce itself; it just sits there, contradicted by a note nobody re-read. Before adding an
+entry, read the axis's note and its source dates. Before trusting an existing one, do the same.
 
 ## What it is for
 
@@ -398,6 +427,29 @@ axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2
 
 That is the gap that makes a re-check unfalsifiable, and closing it is what makes everything
 below possible.
+
+### Why `shows` has no minimum length
+
+A length floor on `shows` was tried and rejected. A 25-character floor would have thrown out
+`'MIT License text'` and `'13,834 monthly downloads'`, both short and completely specific, while
+keeping every filler row like `flagship phase-C verification source`, which is long. Length
+measures verbosity, not specificity.
+
+### Abstention values live on the route, not here
+
+A value that means "this source has no answer" — GitHub's `NOASSERTION`, the Hub's `other` — is
+a fact about a SOURCE, so it is declared once, on that source's route in
+`sources/signal_routing.yaml`, as `abstain_values`. `evidence_policy.yaml` never repeats it: an
+earlier draft declared `NOASSERTION` in both files, alongside the `abstain_when` that
+`signal_routing.yaml` already had, and two declarations of one rule is exactly the drift that
+split exists to prevent.
+
+What `evidence_policy.yaml` owns instead is the abstention policy that is *not* source-specific.
+A null value is an abstention from every source and needs no per-source interpretation. And a
+declared artifact that does not resolve is not a signal, whichever source it came from — five
+base-model artifacts were in this state before PR #109: `gemma-3` (both SKUs 404),
+`mistral-large-3` (404), `gemma-4` (307), `olmo-3`'s 32B SKU (404), and `rwkv`, whose
+`artifact_id` was `RWKV`, an organization rather than a repository.
 
 ### `establishes`: per-dimension attribution
 
