@@ -67,7 +67,7 @@ The individual gates below are what preflight runs, listed so a failure can be r
 
 ```bash
 uv run python -m build.validate            # must print 0 error(s)
-uv run pytest -q                           # the identity ratchets live here, not in the gate
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial                           # the identity ratchets live here, not in the gate
 ```
 Then serialize and render locally to preview; do not commit the generated notebook or payload.
 

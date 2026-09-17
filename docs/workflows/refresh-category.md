@@ -124,7 +124,7 @@ uv run python -m build.check_recipe
 uv run python -m build.check_adoption --strict        # exits 0
 uv run python -m build.check_refetch --product <one you just wrote>
 uv run python -m build.check_freshness --category <slug>
-uv run python -m pytest tests/ -q
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial
 ```
 Expect gates to fail first and tell you something — read the failure before working around it.
 Never commit while a gate is failing. Never commit `build/notebook_data.json` or `notebooks/`.
