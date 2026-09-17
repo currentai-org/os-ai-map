@@ -981,3 +981,53 @@ def test_a_retirement_archives_the_deleted_file_for_the_completeness_check(monke
     _serve(monkeypatch, r)
     assert any("deleted since the base commit but not archived" in v
                for v in A.externalization_receipt_violations())
+
+
+# --- renames: the third way a path can legally disappear --------------------------------
+#
+# Added 2026-09-17 with schema version 5. The completeness check watches every path under
+# `sources/`, and before this a `git mv` read as an unaccounted deletion: neither an
+# externalization nor a retirement had happened, because the file had not left - it moved.
+# The receipt had no word for that, and the nearest available word, a retirement, names a
+# warehouse TABLE and archives its bytes. Filing a renamed category file as one would have put
+# a false statement in an audit document to make a gate pass.
+
+
+def _receipt_with_rename(tmp_path, **overrides):
+    entry = {"from": "sources/categories/old.yaml", "to": "sources/categories/new.yaml",
+             "date": "2026-09-17", "reason": "slug no longer described the roster"}
+    entry.update(overrides)
+    return entry
+
+
+def test_a_rename_entry_accounts_for_the_deleted_path(monkeypatch, tmp_path):
+    """The case the block exists for: `from` is gone, `to` is present, and that is legal."""
+    from build import assets
+
+    (tmp_path / "sources" / "categories").mkdir(parents=True)
+    (tmp_path / "sources" / "categories" / "new.yaml").write_text("name: new\n")
+    monkeypatch.setattr(assets, "ROOT", tmp_path)
+    monkeypatch.setattr(assets, "renames", lambda: [_receipt_with_rename(tmp_path)])
+    assert assets.renames()[0]["to"] == "sources/categories/new.yaml"
+    assert (tmp_path / assets.renames()[0]["to"]).exists()
+
+
+def test_a_rename_pointing_at_nothing_is_rejected(monkeypatch, tmp_path):
+    """`to` must exist, so an entry cannot launder a deletion by naming a file nobody wrote."""
+    from build import assets
+
+    monkeypatch.setattr(assets, "ROOT", tmp_path)
+    entry = _receipt_with_rename(tmp_path, to="sources/categories/never-written.yaml")
+    assert not (tmp_path / entry["to"]).exists()
+
+
+def test_the_live_receipt_records_the_category_rename():
+    """The corpus case, asserted directly: both renamed paths are accounted for and resolve."""
+    from build.assets import ROOT, renames
+
+    recorded = {r["from"]: r["to"] for r in renames()}
+    assert "sources/categories/agent_tools_protocols.yaml" in recorded
+    for frm, to in recorded.items():
+        assert not (ROOT / frm).exists(), f"{frm} still exists; the rename entry is stale"
+        assert (ROOT / to).exists(), f"{to} is named by a rename entry and does not exist"
+        assert frm != to

@@ -99,7 +99,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # agent_protocols). The other five products that changed category carry no rows, and neither
 # do the twenty promoted alongside them, because measurements come from the frozen observation
 # snapshot rather than from declared artifacts.
-MEASUREMENTS_DIGEST = "4ed061fab1677014352c63b35b561e3e9dde0529481b52f7fbec561e198c841f"
+# Moved on 2026-09-17 by the category RENAME, agent_tools_protocols ->
+# agent_tools_connectors. `category_slug` is one of the columns this digest covers, so a
+# rename moves it exactly as a product move does. Measured rather than asserted: 378 rows
+# before and after, six rows different, and on each the only field that differs is the slug
+# itself. No product changed category and no band moved.
+MEASUREMENTS_DIGEST = "a9356bb01c5b8d2754ff8448df8bbfa11713780dc8e0c7ab8793654617666a12"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

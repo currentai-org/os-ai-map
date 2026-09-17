@@ -353,13 +353,23 @@ RETIREMENT_REQUIRED_FIELDS = ("table", "disposition", "platform_state", "date", 
 # 3 adds the reclaim block (`reclaims`, `reclaimed_count`, `still_external_count`, `reclaim_note`)
 # to the version-2 document. 4 adds the retirement block (`retirements`, `retired_count`,
 # `retirement_note`). All are accepted: an older receipt simply has no such list, and every
-# derived field fails closed when absent, so it still validates.
-EXTERNALIZATION_SCHEMA_VERSION = 4
-EXTERNALIZATION_SCHEMA_VERSIONS = {2, 3, 4}
+# derived field fails closed when absent, so it still validates. 5 adds `renames`, for a path that
+# moved rather than left - see the completeness check for why a retirement could not say it.
+EXTERNALIZATION_SCHEMA_VERSION = 5
+EXTERNALIZATION_SCHEMA_VERSIONS = {2, 3, 4, 5}
 PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
 # The externalized artifacts live under these path prefixes; every file that existed under them
 # at the base commit and is now gone must be archived in the receipt (completeness check).
 EXTERNALIZED_FILE_PREFIXES = ("warehouse/models/", "warehouse/data/", "sources/")
+
+
+def renames() -> list[dict]:
+    """Paths that moved rather than left, from the receipt's `renames` block.
+
+    Empty for every receipt written before schema version 5, which is why every reader of this
+    block treats absence as "no renames" rather than as a malformed document.
+    """
+    return externalization_receipt().get("renames") or []
 
 
 def externalization_receipt() -> dict:
@@ -1023,6 +1033,30 @@ def externalization_receipt_violations() -> list[str]:
     # is what makes deleting a model file legal without pretending it was externalized.
     for r in retirements():
         archived_all |= set((r.get("archived_source_sha256") or {}).keys())
+    # A RENAME is the third way a path can legally disappear, and the receipt had no word for it.
+    # Added 2026-09-17 when `agent_tools_protocols` became `agent_tools_connectors`: the file was
+    # gone from the base tree and nothing had externalized or retired it, because neither had
+    # happened - it moved. The vocabulary above could not say so. `retirements` names warehouse
+    # TABLES and archives their bytes; claiming one for a renamed category file would have put a
+    # false statement into an audit document to get a gate to pass, which is the failure this
+    # whole receipt exists to prevent.
+    #
+    # A rename entry is deliberately thinner than a retirement: no hashes, because the content is
+    # not archived, it is still in the tree under a new name and usually edited in the same change.
+    # What it asserts is only that somebody recorded the move and where it went, and `to` is
+    # checked to exist so the entry cannot point at nothing.
+    for r in renames():
+        frm, to = r.get("from"), r.get("to")
+        if not (frm and to):
+            problems.append("rename entry must name both `from` and `to`")
+            continue
+        if not (ROOT / to).exists():
+            problems.append(f"{frm}: renamed to {to}, which does not exist")
+            continue
+        if not r.get("date") or not r.get("reason"):
+            problems.append(f"{frm}: rename entry needs a date and a reason")
+            continue
+        archived_all.add(frm)
     for p in sorted(deleted - archived_all):
         problems.append(f"{p}: deleted since the base commit but not archived in any receipt entry")
 

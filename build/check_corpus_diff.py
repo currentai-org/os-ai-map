@@ -113,6 +113,22 @@ def touched_products(root: Path, base_ref: str) -> set[str]:
 _IDENTITY_COLUMNS = frozenset({"declaration_version_id", "source_git_sha"})
 
 
+def _without_category(serialized: str, renamed: set[str]) -> str:
+    """`serialized` with `category_slug` dropped, but only when it names a renamed category.
+
+    The row is deterministic JSON, so this parses and re-dumps rather than editing the string:
+    a first draft did a substring replace against a format this function had guessed at, which
+    matched nothing and would have left the gate looking fixed while changing nothing.
+
+    Scoped to the renamed slugs on purpose. A product that moved between two categories that
+    still exist shows a changed row, which is exactly what this gate is for.
+    """
+    row = json.loads(serialized)
+    if row.get("category_slug") in renamed:
+        row.pop("category_slug")
+    return json.dumps(row, separators=(",", ":"), sort_keys=True)
+
+
 def content_row(row) -> str:
     """Canonicalize one axis-assessment row for CONTENT comparison, excluding identity columns.
 
@@ -171,7 +187,41 @@ def _snapshot_at(root: Path, ref: str | None) -> tuple[dict, dict[str, str]]:
                        capture_output=True)
 
 
-def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str]) -> list[str]:
+def renamed_categories(root: Path, base_ref: str) -> set[str]:
+    """Slugs of categories whose FILE was renamed in this PR, as `{old, new}` pairs flattened.
+
+    A category rename moves `category_slug` on every row of that category while touching none
+    of those products' files, which is a silent rewrite by this gate's definition and is not
+    one: the products did not change, their category's name did. Detected from the diff rather
+    than declared, so nobody can exempt a product by claiming a rename that did not happen.
+    """
+    out = subprocess.run(["git", "diff", "--name-status", "--find-renames", f"{base_ref}...HEAD"],
+                         cwd=root, capture_output=True, text=True, check=True).stdout
+    slugs: set[str] = set()
+    for line in out.splitlines():
+        parts = line.split("\t")
+        if not parts[0].startswith("R") or len(parts) != 3:
+            continue
+        old_path, new_path = parts[1], parts[2]
+        if old_path.startswith("sources/categories/") and new_path.startswith("sources/categories/"):
+            slugs.add(Path(old_path).stem)
+            slugs.add(Path(new_path).stem)
+    return slugs
+
+
+def compare_rows(before: dict[str, str], after: dict[str, str], touched: set[str],
+                 renamed: set[str] | None = None) -> list[str]:
+    """Rows belonging to products the PR did not touch must be byte-identical.
+
+    `renamed` names categories whose file moved in this PR. For a product sitting in one, the
+    `category_slug` column is projected out of BOTH sides before comparing - that column is
+    what the rename legitimately changed - and every other column is still compared exactly,
+    so a silent rewrite of anything else about those products still fails.
+    """
+    renamed = renamed or set()
+    if renamed:
+        before = {k: _without_category(v, renamed) for k, v in before.items()}
+        after = {k: _without_category(v, renamed) for k, v in after.items()}
     out = []
     for key in sorted(set(before) | set(after)):
         slug = key.split("|", 1)[0]
@@ -213,7 +263,8 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     after_payload, after_rows = _snapshot_at(root, None)
     diff = diff_payloads(before_payload, after_payload)
     touched = touched_products(root, args.base)
-    row_changes = compare_rows(before_rows, after_rows, touched)
+    row_changes = compare_rows(before_rows, after_rows, touched,
+                               renamed=renamed_categories(root, args.base))
     sheet = render_sheet(diff, row_changes)
     (args.sheet.write_text(sheet) if args.sheet else print(sheet))
 
