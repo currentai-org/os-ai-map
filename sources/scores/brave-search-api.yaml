@@ -1,0 +1,97 @@
+product: brave-search-api
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no self-hostable index; the only published artifact is an MCP client wrapper
+    managed:
+      value: cloud SaaS with API keys
+      detail: per-request plans, 50 requests per second on the Search plan
+      raw: cloud SaaS with API keys, per-request plans, 50 requests per second on the Search plan
+  confidence: high
+  note: 'A closed index behind an API key. The one openly licensed artifact is `@brave/brave-search-mcp-server`
+    (MIT), which is a client. The service terms go further than most in this category: clause (xiii) of the
+    Use Restrictions forbids using the results to train, benchmark or improve AI models, which is worth knowing
+    on a map about AI.'
+  raw: license:Proprietary(API-only);source:closed(no self-hostable index; the only published artifact is an
+    MCP client wrapper);managed:cloud SaaS with API keys, per-request plans, 50 requests per second on the
+    Search plan
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api-dashboard.search.brave.com/documentation/resources/terms-of-service
+    shows: 'Use Restrictions: the customer shall not "(i) store, cache, or create a database of Search Results",
+      "(xii) redistribute, resell, or sublicense the Search Results", or "(xiii) use the Search Results to
+      create, evaluate, train, re-train, fine-tune, benchmark or otherwise improve artificial intelligence
+      models or services". No self-hosting or source-available option.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: e7b892e9fce37e40436f16c3732156e346ef0f846182ce81f95df18d6c6a0a9e
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://api-dashboard.search.brave.com/documentation/pricing
+    shows: 'Plan cards: Search at $5.00 per 1,000 requests, Answers at $4.00 per 1,000 queries plus token charges,
+      Spellcheck and Autosuggest at $5.00 per 10,000. Establishes that the service is metered per request behind
+      an account.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 9b130f9639ab2aefe7449df88b7cacdeb8f6cb1cd6ff0cf612563a0c6a9e22dc
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: 'ABSTAINS. Brave publishes no request, customer or developer count for the API, and no first-party
+    package measures it: `@brave/brave-search-mcp-server` records 62,956 npm downloads in the trailing month,
+    but an MCP wrapper is one access path among several rather than the channel the service is used through,
+    so banding on it would measure a different population from the product. The same abstention as `serper`
+    and `google-grounding-api`, which are closed search APIs with no countable channel. The abstention is dated
+    rather than left blank, on the queue''s rule that a null somebody looked for and did not find is a confirmed
+    axis; the page below is where it was looked for.'
+  sources:
+  - url: https://api-dashboard.search.brave.com/documentation/pricing
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
+      or developer count - which is what the abstention rests on.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 9b130f9639ab2aefe7449df88b7cacdeb8f6cb1cd6ff0cf612563a0c6a9e22dc
+  last_verified: '2026-09-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: one Search plan covering Web Search (title, url, description and up to five extra snippets per result)
+    and LLM Context ("extracted page chunks and source metadata"), plus news, video, image, place, autosuggest
+    and spellcheck endpoints
+  confidence: high
+  relative_to: firecrawl
+  relation: at
+  note: 'Finds and returns the content. LLM Context is documented as returning "extracted page chunks and source
+    metadata in a shape and length that satisfies the needs of an LLM without need for further scraping", and
+    it is inside the same $5/1,000 Search plan as Web Search, so the combinations rule reaches band 4 on one
+    product. It stops there: AI Answers composes the cited reply, and Answers is a separately activated plan
+    at its own price, which the scoring rule excludes as a different product. Banded at firecrawl, the band-4
+    anchor, which sells the same find-plus-content shape.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api-dashboard.search.brave.com/documentation/services/llm-context
+    shows: '"Traditional Web Search returns titles and short snippets for a results page. LLM Context returns
+      extracted page chunks and source metadata in a shape and length that satisfies the needs of an LLM without
+      need for further scraping." Feature bullet: "Pre-Extracted Content - Get actual page content (text, tables,
+      code) ready for LLM consumption - no scraping needed."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 774496eb19ec82ecd855659141f91355b673e2b7e0f151517ee753c433fe75a3
+  - url: https://api-dashboard.search.brave.com/documentation/services/answers
+    shows: 'The Answers endpoint - "AI-generated answers backed by verifiable sources" - and the sentence that
+      fences it off from this product: "Access to the API is available through the Answers plan. Activate the
+      Answers plan to unlock these capabilities." Establishes that answer composition is not part of the Search
+      plan being scored here.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: debca65f20f6da50fdf794580ea935a253b1fd585dfdac9b30b212ff527d85a0

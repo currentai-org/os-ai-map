@@ -1,0 +1,85 @@
+product: ddgs
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the LICENSE.md body is the unmodified MIT text
+    source:
+      value: public
+      detail: the whole library, CLI and both optional servers
+    self-host:
+      value: 'yes'
+      detail: there is nothing else - no hosted service exists
+    service:
+      value: none
+    core-gated:
+      value: ungated
+      detail: no vendor tier for anything to be withheld for
+  confidence: high
+  note: 'Open source with nothing behind it: the MIT grant covers the product itself rather than a client in
+    front of a closed index, which is what separates this record from every other search product in the category.
+    The READMEs "educational purposes only" line is a disclaimer about use and not a licence term - it is not
+    in LICENSE.md, which is the unmodified MIT text.'
+  raw: license:MIT(OSI; the LICENSE.md body is the unmodified MIT text);source:public(the whole library, CLI
+    and both optional servers);self-host:yes(there is nothing else - no hosted service exists);service:none;core-gated:ungated(no
+    vendor tier for anything to be withheld for)
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://raw.githubusercontent.com/deedy5/ddgs/main/LICENSE.md
+    shows: 'The LICENSE.md body: verbatim MIT text, "Copyright (c) 2022 deedy5", with no added clause, field-of-use
+      restriction or non-commercial rider.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 767a763769d3c3dcd2b8947e4bdc57f04151f7ea4adbc0bf13e052c77e600427
+    establishes:
+    - license
+  - url: https://api.github.com/repos/deedy5/ddgs
+    shows: 'Repository metadata for deedy5/ddgs: spdx_id MIT, 2,973 stars, not archived, not a fork, last pushed
+      2026-08-26, description "A metasearch library that aggregates results from diverse web search services".'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: b817ccc0390a1b5ac63717c3e58bdad477ffec762971fe8b6a57285561be6e02
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 5,600,698 downloads of `ddgs` on PyPI in the trailing 30 days, inside the 1M-10M band for level 4.
+    PyPI is the product's distribution channel rather than a minority one - the library IS the product, there
+    is no service to call - so downloads measure the thing being scored.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/ddgs/recent
+    shows: last_month = 5,600,698 downloads for the package `ddgs` (last_week 1,179,206, last_day 185,847).
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 71832e1bfa328f5218fbe4bd8f50a67424ed07ea95c52f0b830ff98da54159fd
+capability:
+  score: 4
+  basis: feature_matrix
+  value: '`text()` returns ranked references - title, href and a body snippet - aggregated across ten backends;
+    `images()`, `videos()`, `news()` and `books()` do the same for their verticals; `extract()` fetches a URL
+    the caller names and converts it to markdown'
+  confidence: high
+  relative_to: firecrawl
+  relation: at
+  note: 'Finds and returns the content, under the combinations rule: `text()` answers a query with ranked references
+    and `extract()` returns the content behind any of them, which is the same two-call workflow that bands
+    jina-reader. An earlier draft banded this 3 on the reasoning that `extract()` takes a URL rather than a
+    query - true, and true of jina''s `r.` endpoint too, so the reasoning banded two identical shapes differently
+    and is withdrawn. Banded at firecrawl, the band-4 anchor.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/deedy5/ddgs/main/README.md
+    shows: 'The README: "A metasearch library that aggregates results from diverse web search services", the
+      backend table listing ten `text()` backends, the worked `text()` example returning objects of exactly
+      {title, href, body}, and "extract(): Fetch a URL and extract its content in various formats" documented
+      as taking `url`.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 4541f0854142f2c9a939fee7e8bdf3f075d73d3dcd7b52abdeb1c3d564513223

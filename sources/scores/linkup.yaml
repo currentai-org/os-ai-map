@@ -1,0 +1,77 @@
+product: linkup
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no index or ranking code published; the LinkupPlatform repos are clients and plugins
+    managed:
+      value: cloud SaaS with API keys
+      detail: per-request, $0.005-$0.055 for search depending on depth and output type
+      raw: cloud SaaS with API keys, per-request, $0.005-$0.055 for search depending on depth and output type
+  confidence: high
+  note: Closed service, MIT clients. `linkup-sdk` is MIT on both PyPI and npm and the MCP servers are MIT;
+    none of that is the index. The repository named `ranking` is the only one that would be, and it declares
+    no licence at all.
+  raw: license:Proprietary(API-only);source:closed(no index or ranking code published; the LinkupPlatform repos
+    are clients and plugins);managed:cloud SaaS with API keys, per-request, $0.005-$0.055 for search depending
+    on depth and output type
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://www.linkup.so/pricing
+    shows: Per-request pricing for three routes on one account - Fetch $0.001-$0.006, Search $0.005-$0.006,
+      Research $0.25-$2.50 - with SOC 2 Type II and enterprise ZDR. A hosted metered service; no self-hosting
+      or source-available option.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 952d51970d94943ea56d7a2f559c599f46ae9aeabbcca7cb1e2b85bed9eb2e6d
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: '236,301 downloads of `linkup-sdk` on PyPI in the trailing 30 days, inside the 100K-1M band for level
+    3. A client package standing in for a hosted service, admitted on the same population argument as `serpapi`:
+    the SDK exists only to call this API, and the product being scored is the whole API rather than one SKU
+    of it, so the package''s users and the product''s users are the same people. Medium confidence because
+    npm adds 154,782 more that this band does not count.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/linkup-sdk/recent
+    shows: last_month = 236,301 downloads for `linkup-sdk` (last_week 54,861, last_day 9,836).
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 54b03e118c6185ea1596a1dc278733681474d3c0628acb4f35a8bb28632c36bd
+capability:
+  score: 5
+  basis: feature_matrix
+  value: '`POST /search` with a required `outputType` of `searchResults` (ranked {name, url, content}), `sourcedAnswer`
+    ("search results plus a natural-language answer with inline citations") or `structured`; `POST /fetch`
+    for a named URL; `POST /research` for the same sourced-answer shape asynchronously'
+  confidence: high
+  relative_to: perplexity-sonar-api
+  relation: at
+  note: 'Answers, with citations, and it is the same endpoint rather than a separate product: `sourcedAnswer`
+    is one of three values of the required `outputType` on `/search`, priced at $0.006 against $0.005 for raw
+    results. That is the distinction this category''s scoring rule turns on - Brave, Parallel and Kagi all
+    fence their answer endpoints behind separate plans and stay at 4, while Linkup sells it as a parameter.
+    Banded at perplexity-sonar-api, the other product whose ordinary search call returns a cited answer.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://docs.linkup.so/pages/documentation/endpoints/search/overview
+    shows: '"Given a natural-language query, the /search route returns ranked sources, optionally bundled with
+      a cited natural-language answer or with structured output matching a JSON schema." The outputType table:
+      searchResults "Array of {name, url, content}"; sourcedAnswer "Search results plus a natural-language
+      answer with inline citations"; structured. Pricing on the same page: $0.005 for searchResults against
+      $0.006 for sourcedAnswer.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 5ff9d110bbf6e81692b055ffccfb9242307471fabf32033f563e5567a8b3c4b3

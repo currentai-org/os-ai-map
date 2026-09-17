@@ -21,10 +21,10 @@ openness:
     on the hosted endpoint rather than functionality: jina.ai/reader lists Reader at 20 RPM without a key,
     500 RPM with a free key and 5,000 RPM on Premium, with PDF, MS-Office, image captioning and search available
     at every tier. The published branch does have the MongoDB-backed SaaS storage layer stripped out, which
-    the README states plainly, but it is accounting and persistence for the hosted service rather than a
-    piece of the reader the open build needs - the README says the branch "runs in stateless mode out of
-    the box, with optional MinIO/S3-compatible bucket caching". Nothing is withheld from the published source,
-    so core-gated is ungated.'
+    the README states plainly, but it is accounting and persistence for the hosted service rather than a piece
+    of the reader the open build needs - the README says the branch "runs in stateless mode out of the box,
+    with optional MinIO/S3-compatible bucket caching". Nothing is withheld from the published source, so core-gated
+    is ungated.'
   raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no
     enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai
     hosted SaaS (free tier + paid API key) on top of the same OSS core
@@ -34,18 +34,18 @@ openness:
     shows: Apache-2.0 license, public source, self-host Docker instructions, ~11k stars
     accessed: '2026-06-04'
   - url: https://github.com/jina-ai/reader/blob/main/LICENSE
-    shows: the repository LICENSE is the Apache License, Version 2.0, headed "Copyright 2020-2024 Jina
-      AI Limited"; the GitHub repo API reports the SPDX id Apache-2.0
+    shows: the repository LICENSE is the Apache License, Version 2.0, headed "Copyright 2020-2024 Jina AI Limited";
+      the GitHub repo API reports the SPDX id Apache-2.0
     accessed: '2026-08-12'
     establishes:
     - license
     http_status: 200
     content_sha256: ee3aeb6c37d4222522d759df6c7014542880b6af1b55cdc5b3bfb11f160e9210
   - url: https://github.com/jina-ai/reader/blob/main/README.md
-    shows: 'the repo is "the open source branch of the codebase behind https://r.jina.ai and https://s.jina.ai";
-      it "runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included
-      here"; the 2026-04 entry adds that the oss branch "runs in stateless mode out of the box, with optional
-      MinIO/S3-compatible bucket caching via docker compose"'
+    shows: the repo is "the open source branch of the codebase behind https://r.jina.ai and https://s.jina.ai";
+      it "runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included here";
+      the 2026-04 entry adds that the oss branch "runs in stateless mode out of the box, with optional MinIO/S3-compatible
+      bucket caching via docker compose"
     accessed: '2026-08-12'
     establishes:
     - source
@@ -55,8 +55,8 @@ openness:
   - url: https://jina.ai/reader
     shows: 'the pricing and rate-limit table: Reader 20 RPM with no key, 500 RPM with a free API key, 5,000
       RPM on Premium, and Search 100/1,000 RPM; the feature list (PDF reading, image captioning, web search)
-      is the same at every tier, so the tiers differ on throughput rather than on features. No enterprise
-      or commercial edition is offered.'
+      is the same at every tier, so the tiers differ on throughput rather than on features. No enterprise or
+      commercial edition is offered.'
     accessed: '2026-08-12'
     establishes:
     - core-gated
@@ -68,13 +68,12 @@ adoption:
   signal_type: stars_fallback
   confidence: low
   note: 'No verified download or API-call volume is published by any primary source: neither the repository
-    nor jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix
-    rather than as a package, so there is no registry artifact to band. That leaves stars - 11,865 stargazers
-    on the one declared repository, which bands at >10K stars, level 3, and a stars-based signal caps the
-    level there because a star is not a use. The hosted r.jina.ai endpoint is widely used but its traffic
-    is not published anywhere. The page the star count comes from carries a live counter, so its content
-    will differ on any later fetch; that is expected drift on this source rather than a signal about the
-    claim.'
+    nor jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix rather
+    than as a package, so there is no registry artifact to band. That leaves stars - 11,865 stargazers on the
+    one declared repository, which bands at >10K stars, level 3, and a stars-based signal caps the level there
+    because a star is not a use. The hosted r.jina.ai endpoint is widely used but its traffic is not published
+    anywhere. The page the star count comes from carries a live counter, so its content will differ on any
+    later fetch; that is expected drift on this source rather than a signal about the claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader
@@ -84,19 +83,22 @@ adoption:
     http_status: 200
     content_sha256: 2036425188beee6cb596f6ff67b63e907edd64b625384651b3a366463539d515
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
-  value: URL->LLM-friendly markdown; handles HTML/PDF/MS-Office/images (AI captioning); web search via
-    s.jina.ai; stateless + optional caching; self-host or hosted
+  value: '`r.jina.ai/<url>` converts a named URL to LLM-friendly markdown and `s.jina.ai/<query>` searches
+    the web for a query; both are documented as the two things Reader does'
   confidence: medium
-  note: A solid single-purpose reader and scraper, covering several document formats and adding a search
-    mode. That puts it mid-tier on the dimensions that matter here - coverage, freshness, structured output
-    and rate limits - against full agentic browse and search platforms.
-  last_verified: '2026-08-13'
+  note: 'Finds and returns the content, and this record is the reason the scoring rule had to be written down.
+    Read at its primary job it is band 1 - a URL-to-markdown converter. Read as the product the vendor documents,
+    it is two endpoints, one of which searches, and the combinations rule bands the pair: the caller runs `s.`
+    then `r.` against the same product. Banded at firecrawl, the band-4 anchor.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/jina-ai/reader
-    shows: 'Feature list - HTML, PDF and MS-Office input, image captioning, markdown output, search mode via
-      s.jina.ai, stateless operation with optional bucket caching.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/jina-ai/reader/main/README.md
+    shows: '"Reader does two things: Read: It converts any URL to an LLM-friendly input with https://r.jina.ai/https://your.url
+      ... Search: It searches the web for a given query with https://s.jina.ai/your+query."'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 2036425188beee6cb596f6ff67b63e907edd64b625384651b3a366463539d515
+    content_sha256: 583b250f78916c63a244eeb2903077548bcc39e9245f471947857fe84c70536c
+  relative_to: firecrawl
+  relation: at

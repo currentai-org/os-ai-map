@@ -18,9 +18,9 @@ openness:
   confidence: high
   note: The product proper - the Apify platform and its Actor store - is proprietary SaaS. Apify also maintains
     Crawlee, an Apache-2.0 scraping library, but Crawlee is an adjacent SDK rather than the platform core,
-    so most of the value stays behind the managed cloud. Open core would mean an OSI-licensed core with
-    functionality withheld for a paid tier; there is no open core here, only an open periphery. Publishing
-    a repository while the runtime itself does not ship counts as partial source, which scores 2, source-available.
+    so most of the value stays behind the managed cloud. Open core would mean an OSI-licensed core with functionality
+    withheld for a paid tier; there is no open core here, only an open periphery. Publishing a repository while
+    the runtime itself does not ship counts as partial source, which scores 2, source-available.
   raw: platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform
     that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK
     open)
@@ -51,17 +51,16 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: Crawlee at 25,373 GitHub stars (corroborating, not basis); the platform serves named enterprises
-    (T-Mobile, Microsoft, Accenture) and the store advertises 59,817 published Actors, which implies a sizable
-    active developer base. The site links a Discord invite without stating a member count, so no community
-    figure is carried. No precise account, run or API-call count is published, so the level stays an aggregate
-    judgment across platform + OSS SDK and remains 3.
+  note: Crawlee at 25,373 GitHub stars (corroborating, not basis); the platform serves named enterprises (T-Mobile,
+    Microsoft, Accenture) and the store advertises 59,817 published Actors, which implies a sizable active
+    developer base. The site links a Discord invite without stating a member count, so no community figure
+    is carried. No precise account, run or API-call count is published, so the level stays an aggregate judgment
+    across platform + OSS SDK and remains 3.
   last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
     shows: '"Browse 59,817 Actors" in the store; T-Mobile and Accenture among named enterprise users; a Discord
-      invite link. NOT on the page: a Discord member count, an account count, a run count or an API-call
-      figure.'
+      invite link. NOT on the page: a Discord member count, an account count, a run count or an API-call figure.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
@@ -73,26 +72,31 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'coverage - 59,817 prebuilt Actors in the store; HTTP + headless via Puppeteer, Playwright, Cheerio
-    and JSDOM; proxy rotation and session management; anti-blocking; structured output of tabular data and
-    files; serverless custom Actors; an Apify MCP server for agent clients'
+  value: a platform API that runs actors and returns their dataset items synchronously or asynchronously, with
+    Apify's own first-party search and crawl actors on top of it
   confidence: high
-  note: Broad scrape/browse feature matrix, multi-engine crawling, proxy/anti-block, structured extraction,
-    serverless deploy, and MCP integration for agents. Among the most complete scrape platforms; rated 4
-    (frontier-adjacent for the browser/scrape sub-segment).
-  last_verified: '2026-08-13'
+  note: 'Finds and returns the content, through the first-party actors Apify itself publishes and the platform
+    API that runs them and hands back the dataset - Google Search Results Scraper is developer "Apify", maintained
+    by Apify, and returns organic SERP results, which is the find step the platform API alone does not establish.
+    Third-party actors in the store do NOT count toward this band: the scoring rule excludes what a product
+    merely hosts, and the count of them is a coverage claim this ladder excludes by name. Banded at firecrawl.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://apify.com
-    shows: '"Browse 59,817 Actors"; navigation items for Actors, Integrations, MCP ("Give your AI access to
-      Actors"), Anti-blocking ("Scrape without getting blocked") and Proxy ("Rotate scraper IP addresses");
-      "Configure your Apify MCP server with Actors and tools for seamless integration with MCP clients".'
-    accessed: '2026-08-13'
+  - url: https://docs.apify.com/api/v2
+    shows: 'The Apify API v2 reference: Run Actor, "Run Actor synchronously and get dataset items", Get list
+      of runs, and the dataset endpoints. Establishes that the documented interface runs an actor and returns
+      its structured output.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
-  - url: https://github.com/apify/crawlee
-    shows: '"Works with Puppeteer, Playwright, Cheerio, JSDOM, and raw HTTP. Both headful and headless mode.
-      With proxy rotation." Feature list adds structured storage of tabular data and files, automatic scaling,
-      "Integrated proxy rotation and session management", hooks and a bootstrap CLI. NOT named: Selenium.'
-    accessed: '2026-08-13'
+    content_sha256: 55305f8d4b7ec5ee86807d8e1ba32e22bd85c03007cf09d9515781d21b14adf1
+  - url: https://apify.com/apify/google-search-scraper
+    shows: 'Google Search Results Scraper, `apify/google-search-scraper`: "Developer Apify. Maintained by Apify",
+      "Scrape Google Search Engine Results Pages (SERPs)... extract organic and paid results, AI Mode, AI overviews,
+      ads, queries, People Also Ask", priced from $1.80 per 1,000 scraped search result pages, 17K monthly
+      active users. Establishes a first-party query-driven search surface rather than a hosted third-party
+      one.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: ec88f295f5cacae7903e4e3d7884b7d33f1e709f2441d3a0dcfd44e2bf48e9e8
+    content_sha256: ac3988428c44af646037e08c10ee91a5b044b184caf2363161755b35be4cc21a
+  relative_to: firecrawl
+  relation: at

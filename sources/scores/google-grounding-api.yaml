@@ -11,8 +11,8 @@ openness:
     managed:
       value: Vertex-AI/Gemini-Agent-Platform
   confidence: high
-  note: Fully proprietary Google Cloud managed grounding service; no open source component or self-host.
-    Tied to Gemini + Google Search index.
+  note: Fully proprietary Google Cloud managed grounding service; no open source component or self-host. Tied
+    to Gemini + Google Search index.
   raw: license:proprietary(GCP-managed API);source:closed;managed:Vertex-AI/Gemini-Agent-Platform
   last_verified: '2026-08-13'
   sources:
@@ -30,40 +30,41 @@ openness:
     - source
     - core-gated
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: low
-  note: Bundled feature of Vertex AI / Gemini Enterprise Agent Platform with no standalone usage figure
-    disclosed. The overview page carries a capability table and a benefits list, but no request count, customer
-    count, developer count or named-customer list for grounding specifically, and there is no package or
-    registry artifact to band. The broad Vertex AI / Gemini surface is large, but no honest grounding-API-specific
-    adoption signal is verifiable and the parent platform's reach is not a substitute, so the axis abstains.
-  last_verified: '2026-08-13'
-  sources:
-  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview
-    shows: Grounding documented as a platform capability with a benefits list (reduces hallucinations, anchors
-      responses to your data sources, provides grounding support links for auditability) and a table of grounding
-      types. No usage, request or customer figure for the grounding API itself.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 6cdb0c2ef2eb8c68310dc37b3cf5e7dbe6e430ef6f2bf224b95c75c40d326cd4
-capability:
-  score: 4
-  basis: feature_matrix
-  value: 'coverage: full Google Search index grounding; freshness=live web; structured grounding metadata
-    + citations/grounding-support attribution returned to the model'
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  banded_quantity: the Gemini and Vertex AI surfaces grounding is available on, not a count of grounded requests
   confidence: medium
-  note: Grounds model output in the full Google Search index and returns citation and grounding-support
-    metadata alongside it, which gives best-in-class web freshness and coverage for agent grounding. Rated
-    4 on coverage, freshness and structured output, and capped below 5 because per-feature confirmation
-    came only from the product overview page rather than from deeper feature documentation.
-  last_verified: '2026-08-13'
+  note: Mass-market by position rather than by count, on the same reading as `gemini-pro`, which bands 5 on
+    the surfaces the tier powers rather than on a per-model figure. Grounding with Google Search is the default
+    way a Gemini call reaches the live web, across the Gemini app, AI Studio and Vertex AI. No request count
+    is published and none is claimed; `banded_quantity` records what was read instead.
+  last_verified: '2026-09-17'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview
-    shows: '"Connect your model to world knowledge and a wide possible range of topics using results from
-      Google''s search engine"; "Provides auditability by providing grounding support, which are links to
-      sources"; "Reduces model hallucinations". Overview level only - no per-feature reference on this page.'
-    accessed: '2026-08-13'
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
+      platform surface named in `banded_quantity` and that no usage figure is published for it.
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 6cdb0c2ef2eb8c68310dc37b3cf5e7dbe6e430ef6f2bf224b95c75c40d326cd4
+    content_sha256: b2d6ca59ad53497d7d848e188f47cd35ee77a2b1b91f1d03d56e30afdc6811df
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'grounding for a Gemini call: the model''s answer comes back with grounding metadata - citations and
+    grounding supports attributing spans of the answer to the retrieved sources - rather than a result list
+    the caller reads'
+  confidence: medium
+  note: Answers, with citations. What the caller receives is the model's composed answer plus grounding metadata
+    attributing it to sources the service retrieved, which is band 5 on this category's ladder. Banded at azure-grounding-bing,
+    the same shape from the other hyperscaler. The previous band of 4 was read against `agent_tools_protocols`'s
+    quantity and does not carry over.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview
+    shows: 'Vertex AI grounding overview: grounding connects a Gemini model to live Google Search, and the
+      response carries grounding metadata attributing the model''s answer to the retrieved sources.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b2d6ca59ad53497d7d848e188f47cd35ee77a2b1b91f1d03d56e30afdc6811df
+  relative_to: azure-grounding-bing
+  relation: at

@@ -85,7 +85,14 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # is smaller than the roster move; the fifteen products promoted alongside them contribute none
 # either, because measurements come from the frozen observation snapshot rather than from
 # declared artifacts.
-MEASUREMENTS_DIGEST = "17fdfb058a84b896e2c6dc421a11fd6f6a14c98179b41349281526145586dac8"
+# Moved on 2026-09-17 by the search_retrieval promotion (#430), for the same reason and in the
+# same shape. Measured rather than asserted - the row sets were dumped on both sides and diffed:
+# 378 rows before and after, five rows different, and on each the only field that differs is
+# `category_slug` (firecrawl, tavily-search-api, exa-search-api, jina-reader and searxng out of
+# agent_tools_protocols and into search_retrieval). The other six movers and the ten promoted
+# products contribute no rows, because measurements come from the frozen observation snapshot
+# rather than from declared artifacts.
+MEASUREMENTS_DIGEST = "79babc6c393224af99a5f7e0036af25a9940946c4e697da3f9c188fa22e123e8"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

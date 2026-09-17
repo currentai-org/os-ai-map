@@ -1,54 +1,238 @@
 name: search_retrieval
 display_name: Search & retrieval
-description: 'Services and engines that retrieve information from a live external surface on behalf
-  of a model or agent: web search APIs, crawling and scraping platforms, metasearch engines, and hosted
-  retrieval endpoints.'
+description: 'Services and engines that retrieve information from a live external surface on behalf of a model
+  or agent: web search APIs, crawling and scraping platforms, metasearch engines, and hosted retrieval endpoints.'
 weights:
   adopt: 0.6
   cap: 0.4
-products: []
+products:
+- perplexity-sonar-api
+- linkup
+- azure-grounding-bing
+- openai-web-search
+- tavily-search-api
+- exa-search-api
+- firecrawl
+- brave-search-api
+- kagi-search-api
+- parallel-search
+- you-com-search-api
+- apify
+- context7
+- jina-reader
+- searxng
+- serper
+- serpapi
+- ddgs
+- google-programmable-search
+- google-grounding-api
+- crawl4ai
 scoring_recipe:
   version: 1
   extends: software
   derived_from:
     method: shared software ladder, not yet verified against hand-authored scores
     checker: build/check_rubric.py
-  note: 'PRELIMINARY - the capability ladder is not written yet. The quantity the existing bands
+  note: "Capability here measures HOW FAR ALONG ONE WORKFLOW the product's own documented interface takes\n\
+    the caller. The workflow, stated because the order has no meaning without it: a caller holds a\nquestion\
+    \ and an HTTP client, and wants text it can put in front of a model. The steps are decide\nwhere to look,\
+    \ find candidate sources, retrieve and clean them, compose an answer over them.\n\n  1  Fetches an address\
+    \ you name. No index, no query: you supply the URL, it returns the content.\n  3  Finds, and returns references\
+    \ - links, titles, snippets - for a query, from an index or a set\n     of engines.\n  4  Finds AND returns\
+    \ the content behind the references, cleaned or extracted.\n  5  Answers: a composed reply over sources\
+    \ the product retrieved, carrying citations to them.\n     Answer composition is part of this quantity,\
+    \ not a separate axis.\n\nTHE BANDS DO NOT NEST AND THE NOTE SAYS SO. A first draft claimed each band contained\
+    \ the one\nbelow and that is false at the first step: SearXNG returns references and will not fetch a URL\
+    \ you\nname, Crawl4AI fetches anything you name and finds nothing. This is an ordinal scale over interface\n\
+    function, not a cumulative capability count, and the order rests on one assumption, stated so it\ncan be\
+    \ argued with rather than guessed at:\n\n  Given a candidate URL, retrieval is the step a caller is most\
+    \ likely to already have, and\n  discovery is the step it is least likely to have. An HTTP client is in\
+    \ every runtime; a web index\n  is not purchasable by the page.\n\nThat is about AVAILABILITY, not difficulty,\
+    \ and it does not claim a higher band means less work.\nRetrieval is often the hard part - JavaScript rendering,\
+    \ bot walls, PDFs, paywalls - and a band-3\nproduct leaves all of it with the caller.\n\nBAND 2 IS UNUSED\
+    \ AND MUST NOT BE ASSIGNED. An earlier draft defined it as \"one of the finding steps,\npartially\", which\
+    \ has no reproducible test and collided with band 3 through the scoped-index case.\n`ml_orchestration`\
+    \ sets the precedent for a ladder that skips a number.\n\nTHE SCORING UNIT, in three parts, because the\
+    \ first draft applied it inconsistently and lifted\nFirecrawl on an extra endpoint while reading Jina at\
+    \ its primary job:\n\n  1. COMBINATIONS COUNT. The unit is the product's documented interface as a whole,\
+    \ and a band is\n     reached if its endpoints TOGETHER perform the step. A caller orchestrating two calls\
+    \ to the\n     same product is allowed and expected: Tavily's search plus extract, Firecrawl's search plus\n\
+    \     scrape and Jina's `s.` plus `r.` are one shape and are read one way.\n  2. A PRODUCT IS WHAT THE\
+    \ VENDOR SELLS UNDER THAT NAME. A sibling API billed separately is a\n     separate product. This is what\
+    \ stops a vendor's catalogue collapsing into one band, and it is\n     doing real work here: Brave's Answers,\
+    \ Kagi's FastGPT, Parallel's Responses API and You.com's\n     Answer API would each lift their product\
+    \ to 5, and each is a separate plan or SKU, so none of\n     them do. Linkup reaches 5 because `sourcedAnswer`\
+    \ is a parameter of the one `/search` route it\n     sells, at $0.006 against $0.005.\n  3. THE HIGHEST\
+    \ STEP REACHED, alone or in combination, is the band. Not a flagship endpoint, not\n     the common use.\n\
+    \nTHE COST OF THAT RULE, named rather than discovered later: a vendor that documents a thin answer\nendpoint\
+    \ outranks one that does excellent search and stops there. That follows from measuring\ninterface function\
+    \ while excluding quality, and it is the price of an instrument that can be\nchecked against documentation.\
+    \ A band is not a claim that the product is better.\n\nTHREE THINGS DELIBERATELY EXCLUDED, each a real\
+    \ property and each a second quantity:\n  VENDOR EVAL NUMBERS - SimpleQA and BrowseComp figures are run\
+    \ by each vendor against its own\n  retrieval configuration and cannot be re-derived or compared. You.com\
+    \ publishes 93.48% on\n  SimpleQA and Brave claims state of the art on the same benchmark; neither can\
+    \ be placed against\n  the other. A shared harness somebody actually ran would measure retrieval QUALITY,\
+    \ which is a\n  different quantity from this one.\n  INDEX SIZE AND COVERAGE CLAIMS - \"96% of the web\"\
+    , \"59,817 Actors\", \"1B+ queries\" have no shared\n  denominator, so banding on them orders vendors by\
+    \ confidence of self-description. This is also\n  why `google-programmable-search` is not marked down for\
+    \ a site-scoped engine.\n  LATENCY - sub-20ms against a 3.4s P95 measures serving engineering.\n\nTHE DISTRIBUTION,\
+    \ reported because band 4 holds more than a third of the roster and `capability.md`\nrequires the count,\
+    \ the denominator and which of the two cases it is. 1 at band 1, 4 at band 3, 11\nat band 4 and 5 at band\
+    \ 5, over 21 banded products - widest rung 52%, against a corpus median of\n50%. The wording of band 4\
+    \ is \"ranked references for a query AND the content behind them, cleaned\nor extracted\", and this is\
+    \ the CLUSTERING case rather than the loose-definition one: eleven vendors\nindependently converged on\
+    \ search-plus-extraction as the thing an agent wants. Narrowing the rung\nwould have to invent a distinction\
+    \ between Firecrawl's scrape, Kagi's inline extract, You.com's\nfull_page mode, Brave's LLM Context, Exa's\
+    \ contents block, Parallel's excerpts and Tavily's\nraw_content, and there is none in what they document.\n\
+    \nThe band-4 bulge is also where the separately-sold test lands most of its weight, which is worth\nsaying\
+    \ plainly: Brave, Kagi, Parallel, Exa and You.com all sell an answer product, and all five stay\nat 4 because\
+    \ that product is a different line item from the search they are scored on. Move the test\nand the distribution\
+    \ moves with it. That is an argument for stating the test precisely, not for\nsoftening it."
+comments: 'Promoted 2026-09-17 under #430, the last piece of the split. Eleven products moved in from
 
-    already use is how much of a live surface the product can reach, and how fresh what it returns
-
-    is; `apify` records "coverage - 59,817 prebuilt Actors" and `searxng` records "engines
-
-    aggregated", which is that quantity in two shapes. Writing it is the promotion''s first job.
+  `agent_tools_protocols` and ten were promoted from the seed registry.
 
 
-    One caution for whoever writes it: the vendor-published eval numbers in this space - SimpleQA,
+  BOUNDARY: who supplies and maintains the searchable corpus, not who owns the content - a customer
 
-    BrowseComp - are self-reported and not comparable across vendors. They do not belong in a
+  can index third-party material and a fetcher can retrieve a customer''s own site, so ownership is
 
-    capability `value` without a shared harness somebody actually ran.'
-comments: 'Created preliminary 2026-09-16 under #430. At promotion it takes the retrieval half of
+  the wrong test. This category holds products that maintain, or reach into, a corpus the caller did
 
-  `agent_tools_protocols` - `firecrawl`, `crawl4ai`, `serper`, `exa-search-api`,
+  not supply. `storage` holds engines the caller loads its own corpus into, which is where
 
-  `tavily-search-api`, `perplexity-sonar-api`, `google-grounding-api`, `algolia-ai-search`,
+  Elasticsearch, Vespa, Meilisearch, Typesense and Orama already are. `embeddings_retrieval` holds
 
-  `searxng`, `apify`, `jina-reader` and `context7` - plus the seed roster below.
-
-
-  BOUNDARY against `embeddings_retrieval`, which is the near neighbour: that category holds MODELS
-
-  whose output is a vector or a relevance score. This one holds SERVICES that go and fetch from a
-
-  live surface. A product that embeds your corpus belongs there; a product that queries the web
-
-  belongs here.
+  models whose output is a vector or a relevance score rather than services that fetch.
 
 
-  `context7` is the borderline and it is placed here deliberately. Its interface is an MCP server,
+  `algolia-ai-search` FAILS that test and did not move here. It searches the catalogue the customer
 
-  which argues for tool servers, but its recorded value is version-aware retrieval of library
+  loads into it, and its direct peers are all in `storage` - the same reasoning that moved Qdrant,
 
-  documentation, which is this category''s quantity. Placed on the instrument rather than the
+  Milvus and Pinecone out of `agent_tools_protocols` on 2026-08-18. It is left where it is in this PR
 
-  interface, which is the reasoning the whole split rests on.'
+  rather than moved quietly: the move changes `storage`''s roster and distribution, and it needs its
+
+  recorded capability value read against `storage`''s instrument rather than assumed to port, so it
+
+  gets its own pull request.
+
+
+  `whoogle` was in the seed roster and is NOT promoted: the repository is archived. An archived
+
+  self-hosted front end is not a live product, and padding a roster with one to reach a count is
+
+  worse than a shorter roster.
+
+
+  `context7` is the borderline and is placed here deliberately. Its interface is an MCP server, which
+
+  argues for tool servers, but what it does is resolve a library name against its own documentation
+
+  index and return the documentation - finding and returning content over a corpus the caller did not
+
+  supply, which is this category''s quantity. Placed on the instrument rather than the interface,
+
+  which is the reasoning the whole split rests on.
+
+
+  FOUR PRODUCTS ARE SCOPED TO ONE SKU of a vendor that sells several, and each record says so:
+
+  `parallel-search` is the Search API and not the Responses API; `you-com-search-api` is the Web
+
+  Search API and not Answer, Contents or Research; `brave-search-api` is the Search plan and not
+
+  Answers; `kagi-search-api` is v1 search and extract and not FastGPT. The alternative - scoring a vendor''s
+  whole
+
+  catalogue as one product - would have put `brave-search-api`, `kagi-search-api`, `parallel-search`,
+
+  `you-com-search-api` and `exa-search-api` at band 5 on products their customers buy separately, and
+
+  measured nothing.
+
+
+  A LICENCE TRAP RUNS THROUGH THIS CATEGORY and is worth stating once: `serpapi`, `linkup`,
+
+  `you-com-search-api`, `parallel-search`, `brave-search-api` and `kagi-search-api` all publish
+
+  permissively licensed client SDKs in front of a closed index. The SDK is not the product. Every one
+
+  of those records scores the service and says what the SDK is.
+
+
+  ADOPTION, and the rule for client packages, stated once here because four records turn on it. A
+
+  first-party SDK counts as a usage-volume channel for the service ONLY when the vendor sells one
+
+  product and the package exists to call it: `serpapi` bands 4 on 1,605,478 monthly downloads of
+
+  `google-search-results` and `linkup` bands 3 on 236,301 of `linkup-sdk`, both at medium confidence
+
+  because each vendor also ships a client in another language that the band does not count. Two
+
+  things are NOT that channel. A multi-product SDK measures a wider population than a record scoped
+
+  to one SKU, which is why `parallel-search` abstains despite 2,631,725 downloads of `parallel-web`
+
+  and `you-com-search-api` abstains despite 235,116 of `youdotcom`. And a wrapper implementing a
+
+  different protocol measures adoption of that protocol rather than of the service, which is why
+
+  `brave-search-api` abstains rather than banding on 62,956 downloads of its MCP server.
+
+
+  THE HYPERSCALER TOOLS BAND ON POSITION, not on a count. `openai-web-search`,
+
+  `google-grounding-api` and `azure-grounding-bing` carry `reported_traction` bands with a
+
+  `banded_quantity` naming the platform surface they ship inside - the Responses API, the Gemini and
+
+  Vertex surfaces, Microsoft Foundry Agent Service. The first two are 5 and Azure is 4. None of the three publishes
+  a usage figure and
+
+  none is claimed; this is the reading the map already applies to `gemini-pro`, which bands 5 on the
+
+  surfaces its tier powers rather than on a per-model number. They abstained in the first draft of
+
+  this category on the ground that no package measures them, which recorded a hyperscaler''s default
+
+  web-search path as unmeasured while the independents around it carried numbers - an abstention that
+
+  was technically defensible and read as a claim that nobody uses them.
+
+
+  `azure-grounding-bing` is 4 rather than 5 on the nearest precedent: `azure-ai-model-inference`
+
+  reads the Azure enterprise base the same way. An enterprise cloud surface is broad reach; it is not
+
+  the mass-market consumer reach that carries the Gemini and OpenAI equivalents.
+
+
+  `google-programmable-search` is NOT banded with them and still abstains. It is a metered legacy
+
+  API with a hundred free queries a day, not the default path anything reaches the web through, so
+
+  the parent-surface reading that carries the other three does not apply to it.
+
+
+  NINE of the twenty-one publish no countable usage figure at all. Six of those nine abstain -
+
+  `brave-search-api`, `kagi-search-api`, `parallel-search`, `you-com-search-api`, `serper` and
+
+  `google-programmable-search`, five independents and one Google API - and three are banded on the
+
+  platform surface they ship inside, which is a judgement about position and not a measurement that
+
+  appeared. Each of the six names the page the figure was looked for on. Keeping those two numbers
+
+  apart matters: banding a feature on its parent''s reach does not make the feature countable.'
+strapline: 'Search is the category where the open stack has no index. Three of the twenty-one products publish
+  their source outright and four more publish part of it, but not one of them crawls the web: what is open
+  here is a metasearch front end that queries other people''s engines, a URL-to-markdown converter, a library
+  that scrapes ten search sites without their blessing, and three crawlers you point at a page. Fourteen products
+  are closed, and the ones that run an index of their own guard it completely - one forbids using its results
+  to train or benchmark an AI model at all. Nine of the twenty-one publish no countable usage figure at all
+  - six abstain outright, and the three hyperscaler tools near the top of the adoption axis are banded on the
+  platforms they ship inside rather than on any number anyone has published.'

@@ -1,0 +1,89 @@
+product: azure-grounding-bing
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no index or serving code published; the tool runs inside Microsoft's service
+    managed:
+      value: cloud SaaS with API keys
+      detail: billed per tool call against a first-party Bing resource
+      raw: cloud SaaS with API keys, billed per tool call against a first-party Bing resource
+  confidence: high
+  note: 'Closed, and further outside the caller''s reach than most: the tool is a First Party Consumption Service
+    whose terms sit outside the Azure compliance boundary, and Microsoft requires that its citations be displayed
+    in the exact form provided. The `azure-ai-projects` SDK is MIT and is a client for the whole Foundry surface
+    rather than for this tool.'
+  raw: license:Proprietary(API-only);source:closed(no index or serving code published; the tool runs inside
+    Microsoft's service);managed:cloud SaaS with API keys, billed per tool call against a first-party Bing
+    resource
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview
+    shows: The three web tools on the current agents API - Web Search, Grounding with Bing Search, Grounding
+      with Bing Custom Search - with "Use of Grounding with Bing Search and Grounding with Bing Custom Search
+      incurs costs" and the statement that these are First Party Consumption Services whose data "flows outside
+      the Azure compliance and Geo boundary". No self-hosting and no published source.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: be3111c95bfa57b2b447a1f72de5855dc42ab62f708d23f1be4a8c6835d9dc1e
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  banded_quantity: the Microsoft Foundry Agent Service surface the tool ships in, not a count of grounding
+    calls
+  confidence: medium
+  note: 'Broad by position rather than by count: web grounding is a first-party tool of Microsoft Foundry Agent
+    Service, one of three ways an agent built on Azure reaches the live web, and it is billed as a First Party
+    Consumption Service rather than sold as a standalone API anyone counts. No usage figure is published. Banded
+    4 rather than 5 on the surface itself, not on a claim about who uses it: this tool is one option inside
+    an enterprise agent product, where `google-grounding-api` is the default web path across the Gemini app,
+    AI Studio and Vertex AI, and `openai-web-search` is the default web path of the Responses API. `azure-ai-model-inference`
+    reads the Azure enterprise base at 4 the same way.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
+      platform surface named in `banded_quantity` and that no usage figure is published for it.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: be3111c95bfa57b2b447a1f72de5855dc42ab62f708d23f1be4a8c6835d9dc1e
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'an agent tool: the model formulates queries, Bing runs them, and the model returns an answer carrying
+    `url_citation` annotations. Raw results are not returned to the developer at all'
+  confidence: high
+  relative_to: perplexity-sonar-api
+  relation: at
+  note: 'Answers, with citations, and it cannot do anything else - the documentation says plainly that "Grounding
+    with Bing Search tool does NOT return the tool output to developers and end users". That makes it the purest
+    band-5 record in the category: the lower steps are not merely unused, they are unavailable, which is also
+    the clearest demonstration that this ladder is ordinal rather than cumulative. Banded at perplexity-sonar-api
+    on what comes back to the caller.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry-classic/agents/how-to/tools-classic/bing-grounding
+    shows: '"Developers and end users don''t have access to raw content returned from Grounding with Bing Search.
+      The model response, however, includes citations with links to the websites used to generate the response,
+      and a link to the Bing query used for the search." Restated as a limitation: "Grounding with Bing Search
+      tool does NOT return the tool output to developers and end users." Also carries the deprecation notice
+      for agents (classic), retiring 2027-03-31.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 622e9496a91dc5a56c5976ad742447a55a599606bd7327ccf12b4427ce8e8e3d
+  - url: https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-search
+    shows: 'The current tool page: "the model can return up-to-date answers with inline citations". Establishes
+      that the answer-with-citations contract is the current product''s as well as the classic one''s.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 36a550ad846160220986492bf08ea43de08221dee52f3f0560d52a4df087abf7

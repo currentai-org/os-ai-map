@@ -15,8 +15,8 @@ openness:
       raw: cloud SaaS with API keys, usage-based pricing
   confidence: high
   note: Closed neural-search API; no self-hostable core, the index and ranking models are proprietary.
-  raw: license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client
-    SDKs public);managed:cloud SaaS with API keys, usage-based pricing
+  raw: license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client SDKs
+    public);managed:cloud SaaS with API keys, usage-based pricing
   last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
@@ -49,19 +49,30 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: neural/semantic web search + contents retrieval + Websets (search, verify-against-criteria, enrich
-    entity lists); positioned for high-compute complex queries; scaling to hundreds of thousands of searches/sec
-    (vendor)
+  value: '`POST /search` with a `contents` block returning text, highlights or a schema-shaped summary per
+    result, plus Contents, Answer, Agent, Monitors and Websets endpoints in one API reference'
   confidence: medium
-  note: Strong on coverage and structured output, and the Websets pipeline - search, verify against criteria,
-    then enrich entity lists - is a differentiated capability beyond plain search, which puts Exa near the
-    frontier of agent search APIs. No independent benchmark for semantic search APIs exists, so the score
-    rests on a comparison of features rather than on a measured result.
-  last_verified: '2026-08-13'
+  note: 'Finds and returns the content: `/search`''s `contents` block returns page text, highlights or a schema-shaped
+    summary per result. Exa''s Answer endpoint DOES return `{answer, citations[]}` and would be band 5, and
+    it is excluded by the same test that excludes Parallel''s Responses API and Brave''s Answers: it is a separate
+    endpoint on Exa''s own price list, $5 per 1,000 against $7 for search. An earlier draft banded this 5 because
+    Search and Answer share an API reference, which is navigation rather than a product boundary. Banded at
+    firecrawl.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://exa.ai/about
-    shows: Neural/semantic search plus contents retrieval; Websets named as the verify-and-enrich product
-      on top; positioning around AI-issued rather than human-issued search volume.
-    accessed: '2026-08-13'
+  - url: https://docs.exa.ai/reference/search
+    shows: 'The Exa API reference: Search, Contents, Agent, Monitors, Answer, Websets and Batch under one navigation.
+      The `/search` request body carries a `contents` object with `text`, `highlights` and a `summary` with
+      a JSON schema.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74
+    content_sha256: 87465b58db69d9886d3eef1afe86687f8c1f324dd3531be154c42a7946bf2bac
+  - url: https://exa.ai/pricing
+    shows: 'Exa''s endpoint price table, which is what settles the product boundary: Search $7, Deep Search
+      $12, Deep-Reasoning Search $15, Contents $1 per 1,000 pages, Monitors $15, Answer $5 - each endpoint
+      priced separately per 1,000 requests.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: e6a185201c8232923a151b87a09b5198685fc2588d16ae2aa5142fa297a28c13
+  relative_to: firecrawl
+  relation: at
