@@ -1,41 +1,6 @@
-# Swept 2026-09-07 (weekly tail batch). Category selected because the map's own gap arithmetic puts
-# it at maturity stage 2 with an `adoption` gap - the lowest stage in the taxonomy - so the roster is
-# where new candidates are most likely to change the reading.
-#
-# Sources: GitHub repository search, 18 queries - 14 in the first pass (six free-text, eight
-# topic-scoped: synthetic-data, data-curation, deduplication, web-crawler+llm,
-# data-quality+machine-learning) and four in a second, replenishing pass (topic:data-augmentation,
-# topic:ocr+topic:pdf, topic:dataset+topic:llm, topic:tokenizer). Predeclared retrieval cutoff,
-# identical in both passes: sort by stars, top 30 per query, floor 1,000 all-time stars and a push no
-# older than 2025-09-07, executed 2026-09-07. A candidate below that cutoff is parked with the floor
-# that excluded it - no candidate is accepted below it, and no floor was lowered to reach a row count.
-#
-# How every field on these rows was produced, mechanically and in full:
-#   `slug`          slugify(declared repository or model name). Where that string is already a head
-#                   slug, a retired alias, an existing registry slug or another row in this batch,
-#                   slugify(declared owner)-slugify(declared name) instead. A row whose slug still
-#                   collides is parked, not renamed by hand.
-#   `display_name`  the declared name, verbatim.
-#   `org`           the organization `sources/org_handles.yaml` already declares for that platform
-#                   and owner login; where no handle is declared, slugify(declared owner login).
-#   `type`          `software` for a GitHub repository signal, `model` for a Hugging Face model.
-#   `category`      the category declared for the query that returned the signal (GitHub), or the
-#                   category the declared-metadata rule names from the model's own `tags` and
-#                   `pipeline_tag` (Hugging Face).
-#   artifacts       the identifier from the API response, plus the repository's declared homepage
-#                   where it declares one.
-# Nothing between the API response and the row below is a reading, and no field folds two
-# identifiers into one product: collapsing `roberta-base` and `roberta-large` into a `roberta`
-# product line is an editorial act, so it happens when a person promotes the row, not here.
-#
-# Acceptance is a predicate, not a list: inside the predeclared retrieval cutoff, survives dedup
-# against head slugs, retired aliases, existing registry rows, the resolution ledger and itself,
-# carries an addressable identifier that is not a URL, and has a derivable category. Judgment can
-# park a candidate; it cannot admit one. Every park is in the batch summary with its reason.
-#
-# Counts, the source URL and fetch date behind every candidate accepted or parked, the retrieval
-# cutoffs, the query manifest and the duplicate mappings are in
-# docs/sweeps/2026-09-07-tail-batch.md. Nothing here is scored.
+# Category: dataset_processing_tools. A row here is identity and artifacts only — nothing is
+# scored. Workflow: docs/workflows/discover-candidates.md
+# Sweep record: docs/sweeps/2026-09-07-tail-batch.md
 category: dataset_processing_tools
 products:
   - slug: ade-cli
