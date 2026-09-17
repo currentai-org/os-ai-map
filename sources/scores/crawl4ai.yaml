@@ -13,38 +13,40 @@ openness:
       value: ungated
       detail: a Cloud API is announced as a separate closed beta beside the library, not carved out of it
   confidence: high
-  note: 'Read to the end of the LICENSE rather than to the end of the Apache boilerplate, which is where this record
-    first went wrong. The file carries the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS'' appends
-    an Attribution Requirement: all distributions, publications or PUBLIC USES must carry a set credit line, prominently,
-    in a NOTICE or README for distributions, in the acknowledgments for publications, in an About or Credits section
-    for websites, and in the help output for command-line tools. That is not Apache-2.0''s own NOTICE clause restated.
-    Apache-2.0 section 4(d) binds redistribution of the Work; this clause binds public USE of it, which is a condition
-    the Apache grant does not carry, and section 4 permits added terms only over Your own modifications rather than
-    over the Work. So the composite is not the OSI-approved license the badge and the GitHub API both report. It
-    is an attribution and naming requirement that caps neither who may use the software nor at what scale, which
-    is the permissive_non_osi tier stated word for word, and the ladder scores a public, ungated source under that
-    tier at 3/source_available. crawl4ai is the first product on the map to exercise that rung, which had been pinned
-    as a dead rule. The README calls attribution ''recommended'' and then lists methods you ''must'' include; the
-    LICENSE governs and it says must.'
-  raw: license:Crawl4AI-Attribution-License(Apache-2.0 text plus an appended attribution condition covering public
-    use; not OSI);source:public(the published repository builds the crawler, the Docker deployment and the CLI);core-gated:ungated(a
-    Cloud API is announced as a separate closed beta beside the library, not carved out of it)
+  note: 'Read to the end of the LICENSE rather than to the end of the Apache boilerplate, which is where this
+    record first went wrong. The file carries the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS''
+    appends an Attribution Requirement: all distributions, publications or PUBLIC USES must carry a set credit
+    line, prominently, in a NOTICE or README for distributions, in the acknowledgments for publications, in
+    an About or Credits section for websites, and in the help output for command-line tools. That is not Apache-2.0''s
+    own NOTICE clause restated. Apache-2.0 section 4(d) binds redistribution of the Work; this clause binds
+    public USE of it, which is a condition the Apache grant does not carry, and section 4 permits added terms
+    only over Your own modifications rather than over the Work. So the composite is not the OSI-approved license
+    the badge and the GitHub API both report. It is an attribution and naming requirement that caps neither
+    who may use the software nor at what scale, which is the permissive_non_osi tier stated word for word,
+    and the ladder scores a public, ungated source under that tier at 3/source_available. crawl4ai is the first
+    product on the map to exercise that rung, which had been pinned as a dead rule. The README calls attribution
+    ''recommended'' and then lists methods you ''must'' include; the LICENSE governs and it says must.'
+  raw: license:Crawl4AI-Attribution-License(Apache-2.0 text plus an appended attribution condition covering
+    public use; not OSI);source:public(the published repository builds the crawler, the Docker deployment and
+    the CLI);core-gated:ungated(a Cloud API is announced as a separate closed beta beside the library, not
+    carved out of it)
   last_verified: '2026-08-30'
   sources:
   - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/LICENSE
-    shows: 'LICENSE body: the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS'' a separate ''Attribution
-      Requirement'' section - ''All distributions, publications, or public uses of this software, or derivative
-      works based on this software, must include the following attribution'', with placement required in a NOTICE/README,
-      a publication''s acknowledgments, a website''s About or Credits section, or a command-line tool''s help output.'
+    shows: 'LICENSE body: the stock Apache-2.0 text, then after ''END OF TERMS AND CONDITIONS'' a separate
+      ''Attribution Requirement'' section - ''All distributions, publications, or public uses of this software,
+      or derivative works based on this software, must include the following attribution'', with placement
+      required in a NOTICE/README, a publication''s acknowledgments, a website''s About or Credits section,
+      or a command-line tool''s help output.'
     accessed: '2026-08-30'
     http_status: 200
     content_sha256: 193fe32704bee15cd74f5153e569cdf830e26445e19798a55daee32da40758aa
     establishes:
     - license
   - url: https://api.github.com/repos/unclecode/crawl4ai
-    shows: Repo metadata - license spdx_id Apache-2.0, archived false, 80,161 stars - for unclecode/crawl4ai. The
-      API reports the stock header and does not see the appended attribution section, which is why the LICENSE body
-      rather than this field settles the tier.
+    shows: Repo metadata - license spdx_id Apache-2.0, archived false, 80,161 stars - for unclecode/crawl4ai.
+      The API reports the stock header and does not see the appended attribution section, which is why the
+      LICENSE body rather than this field settles the tier.
     accessed: '2026-08-30'
     http_status: 200
     content_sha256: a25dea5a4d7a31d2e4c0bb7a969a27b799d1adba7f82696be5e40eeeada65e0b
@@ -52,9 +54,9 @@ openness:
     - license
     - source
   - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md
-    shows: README documents the crawler, Docker deployment and CLI built from this repository, and announces a Crawl4AI
-      Cloud API as a separate closed beta. No enterprise directory, license key or paid build of the library itself
-      is described.
+    shows: README documents the crawler, Docker deployment and CLI built from this repository, and announces
+      a Crawl4AI Cloud API as a separate closed beta. No enterprise directory, license key or paid build of
+      the library itself is described.
     accessed: '2026-08-30'
     http_status: 200
     content_sha256: 157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718
@@ -76,25 +78,24 @@ adoption:
     http_status: 200
     content_sha256: b201db69a6e205d92daf8d09a5d883a8396fd927f6c78685c404d5cd0cf7ba6f
 capability:
-  score: 4
+  score: 1
   basis: feature_matrix
   basis_detail: 'category feature matrix: full crawl-to-extraction pipeline over many strategies'
-  value: Asynchronous crawling with a managed headless browser, session reuse, hooks and proxy rotation; Markdown
-    generation with content filtering; CSS, XPath, regex and LLM-driven extraction strategies; deep-crawl strategies;
-    Docker deployment and a CLI.
-  relative_to: firecrawl
-  relation: at
-  confidence: medium
-  note: Banded on the category feature matrix at the same level as firecrawl, which covers the same crawl, scrape
-    and structured-extraction path as a hosted service. The two differ on openness rather than on what they do.
-    The comparison is dated to when the anchor was last confirmed rather than to this sweep, because a relative
-    band is only as fresh as the record it is relative to.
-  last_verified: '2026-08-13'
+  value: '`AsyncWebCrawler.arun(url=...)` fetches a URL the caller names and returns markdown, with extraction
+    strategies, hooks, session reuse and proxy rotation around it; the CLI takes a URL the same way'
+  confidence: high
+  note: 'Fetches an address you name. Everything Crawl4AI does is downstream of knowing where to look: `arun`
+    takes a `url`, not a query, and the precise missing operation is query-based discovery over an index -
+    link traversal is not discovery. It is the most capable crawler on this roster by any engineering measure
+    and it sits at the bottom of this ladder, which is what the ladder measures and is said in the recipe note
+    rather than hidden: the band is how much of the workflow the interface performs, not how well it performs
+    it.'
+  last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/unclecode/crawl4ai/main/README.md
-    shows: README documents asynchronous crawling, browser session reuse, hooks and proxy rotation, Markdown generation
-      with content filtering, CSS/XPath/regex and LLM-driven extraction strategies, deep-crawl strategies, Docker
-      deployment and a CLI.
-    accessed: '2026-08-30'
+    shows: 'The quickstart: `async with AsyncWebCrawler() as crawler: result = await crawler.arun(url="https://www.nbcnews.com/business")`,
+      and the CLI `crwl https://www.nbcnews.com/business -o markdown`. Both take a URL. No query-based search
+      interface appears in the README.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 157214ef86639f896087ca220056ec190f36692a8e17affec9417f638d57e718
+    content_sha256: 3de808095d5cb8101f2467b9646a795a76e1d81d8cf7d953c171c66d7ae0d3dd

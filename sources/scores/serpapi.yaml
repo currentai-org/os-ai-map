@@ -1,0 +1,81 @@
+product: serpapi
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no index and no parser published; the clients are MIT SDKs over the hosted service
+    managed:
+      value: cloud SaaS with API keys
+      detail: metered in searches per month, from $25 for 1,000
+      raw: cloud SaaS with API keys, metered in searches per month, from $25 for 1,000
+  confidence: high
+  note: 'Closed, and the registry''s licence trap is confirmed: `google-search-results` on PyPI and `serpapi`
+    on npm are both MIT, and both are clients. Nothing of the scraping, parsing or proxy infrastructure is
+    published. Scoring the SDK''s MIT as the product''s licence is the measurement-population error `langfuse`
+    was corrected for, in its licence form.'
+  raw: license:Proprietary(API-only);source:closed(no index and no parser published; the clients are MIT SDKs
+    over the hosted service);managed:cloud SaaS with API keys, metered in searches per month, from $25 for
+    1,000
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://serpapi.com/pricing
+    shows: Metered plans - Starter $25/month for 1,000 searches, Developer $75 for 5,000, Production $150 for
+      15,000, Big Data $275 - with every engine drawing on one search quota. No self-hosted or source-available
+      option anywhere on the page.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: f3322f4ab7ccec8a9a307cb1a26d6b5b3a9175c939ca8eb57a16a6001646eaa5
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: '1,605,478 downloads of `google-search-results` on PyPI in the trailing 30 days, inside the 1M-10M
+    band for level 4. This is a client package measuring a hosted service, which the corpus usually refuses
+    - and the reason it holds here is population identity: SerpApi sells exactly one metered product, the package
+    exists only to call it, and nobody installs it without an API key. That is the opposite of the `langfuse`
+    case, where the package measured self-hosters rather than the service. Confidence is medium rather than
+    high because the client is one of several ways to call the API and the npm client adds 606,626 more that
+    this band does not count.'
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://pypistats.org/api/packages/google-search-results/recent
+    shows: last_month = 1,605,478 downloads for `google-search-results`, SerpApi's official Python client (last_week
+      381,730, last_day 69,011).
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 047e862b178acec0c00863ddf6f993dcff49e384218a182ccbaa136f30293068
+capability:
+  score: 3
+  basis: feature_matrix
+  value: structured JSON of a search engine results page - organic results, answer box, knowledge graph, local
+    pack, news, shopping, video and ads - across roughly 130 engines; `output` can be json, the raw HTML of
+    the SERP, or a markdown rendering of the same data
+  confidence: high
+  relative_to: serper
+  relation: at
+  note: Finds, and returns references. Every output mode is a rendering of the search engine's own results
+    page - the documented `organic_results` object carries title, link and the engine's snippet - and the HTML
+    mode is explicitly "the raw HTML results from Google" rather than the pages behind the results. There is
+    no endpoint anywhere in the catalogue that returns the content of a result page. Banded at serper, the
+    other product that resells somebody else's SERP as structured data.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://serpapi.com/search-api
+    shows: '"Our Google Search API allows you to scrape results from the Google search page." JSON output "includes
+      structured data for Organic Results, Local Results, Ad Results, the Knowledge Graph, Direct Answer boxes,
+      Images Results, News Results, Shopping Results, Video Results, and more." The `output` parameter: json,
+      `html` which "gives you the raw HTML results from Google", or `md`. The organic_results fields are title,
+      link, displayed_link and snippet.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 263b8635e7fa64fe2d4d1ad87783ee6f29f48a8eef6d1225145e61fab0e3c5fa

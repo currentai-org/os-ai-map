@@ -1,0 +1,68 @@
+product: openai-web-search
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no index or serving code published; the tool runs inside the model call
+    managed:
+      value: cloud SaaS with API keys
+      detail: billed per tool call alongside model tokens
+      raw: cloud SaaS with API keys, billed per tool call alongside model tokens
+  confidence: high
+  note: 'Closed: a hosted tool inside a hosted API. Nothing of the retrieval path is published.'
+  raw: license:Proprietary(API-only);source:closed(no index or serving code published; the tool runs inside
+    the model call);managed:cloud SaaS with API keys, billed per tool call alongside model tokens
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://platform.openai.com/docs/guides/tools-web-search
+    shows: 'The web search tool guide in the OpenAI API documentation: a built-in tool of the Responses API,
+      enabled per request and billed with the call. No self-hosting, no source, no separate search endpoint.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 130367f984a95f73b98546ceb780ca5fe496723138499b3092840d9b6a4498a0
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: ABSTAINS. OpenAI publishes no usage figure for the web search tool specifically, and no package measures
+    it - the `openai` SDK serves the whole API, so its downloads say nothing about this tool. The abstention
+    is dated rather than left blank, on the queue's rule that a null somebody looked for and did not find is
+    a confirmed axis; the page below is where it was looked for.
+  sources:
+  - url: https://platform.openai.com/docs/guides/tools-web-search
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
+      or developer count - which is what the abstention rests on.
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 130367f984a95f73b98546ceb780ca5fe496723138499b3092840d9b6a4498a0
+  last_verified: '2026-09-16'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'a built-in tool of the Responses API: the model searches the live web during the call and returns
+    an answer with inline citations to the pages used'
+  confidence: medium
+  relative_to: azure-grounding-bing
+  relation: at
+  note: Answers, with citations. Like the Azure tool, what comes back is the model's composed answer over sources
+    the product retrieved rather than a result list the caller can read, which is band 5. Confidence is medium
+    rather than high because the guide is rendered client-side and the fetched bytes carry the surrounding
+    documentation shell around the tool description.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://platform.openai.com/docs/guides/tools-web-search
+    shows: 'The web search tool guide: the tool searches the web during a model call and the response carries
+      citations to the pages used.'
+    accessed: '2026-09-16'
+    http_status: 200
+    content_sha256: 130367f984a95f73b98546ceb780ca5fe496723138499b3092840d9b6a4498a0

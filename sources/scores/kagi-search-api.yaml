@@ -1,0 +1,79 @@
+product: kagi-search-api
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no self-hostable index; the published clients are generated OpenAPI wrappers and an MCP server
+    managed:
+      value: cloud SaaS with API keys
+      detail: $12 per 1,000 search requests, $4 per 1,000 extracted pages
+      raw: cloud SaaS with API keys, $12 per 1,000 search requests, $4 per 1,000 extracted pages
+  confidence: high
+  note: A closed index behind an API key. The OpenAPI document itself carries an Apache-2.0 licence, which
+    covers the specification file and not the service - a distinction worth making explicitly, because a licence
+    field on a spec is the kind of thing that gets read as the product's licence. The generated Python and
+    TypeScript clients are published on GitHub with no licence at all, and the MCP server is MIT.
+  raw: license:Proprietary(API-only);source:closed(no self-hostable index; the published clients are generated
+    OpenAPI wrappers and an MCP server);managed:cloud SaaS with API keys, $12 per 1,000 search requests, $4
+    per 1,000 extracted pages
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://kagi.com/api/pricing
+    shows: 'The v1 API price list: Search "$12 /1k requests", Extract "$4 /1k pages", and an Enterprise "Get
+      a quote" tier. Establishes a metered closed service with no self-hosting option.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 04e7916010baaafc5aee90d73dfae0719e71572e1d63141a13242c396c472397
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: ABSTAINS. Kagi publishes 75,506 members on its stats page, but that counts subscribers to the consumer
+    search product rather than callers of the API - a different population, which is the error the `langfuse`
+    correction was made for. The `kagiapi` PyPI package records 209 downloads in the trailing month and the
+    generated v1 clients are not published to PyPI or npm at all, so no package measures this product either.
+    The abstention is dated rather than left blank, on the queue's rule that a null somebody looked for and
+    did not find is a confirmed axis; the page below is where it was looked for.
+  sources:
+  - url: https://kagi.com/api/pricing
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
+      or developer count - which is what the abstention rests on.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 04e7916010baaafc5aee90d73dfae0719e71572e1d63141a13242c396c472397
+  last_verified: '2026-09-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: v1 exposes `POST /search` ("a response with a description and results references used" - url, title,
+    snippet) and `POST /extract` ("Extract page content as markdown from URLs"), and `/search` takes an `extract`
+    block that fetches the result pages and replaces each snippet with the page markdown
+  confidence: high
+  relative_to: firecrawl
+  relation: at
+  note: Finds and returns the content, in one call. The `extract` block on `/search` is documented as fetching
+    the result pages so that "the resulting page markdown will update the value of the `snippet` field on the
+    respective result item" - references plus their content, which is band 4. FastGPT composes an answer with
+    references, and FastGPT is a separate v0 product at its own price, so it does not lift this record. Banded
+    at brave-search-api, the same find-plus-extracted-content shape sold as one metered API.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://kagi.com/api/docs/_spec/openapi.yaml
+    shows: 'The v1 OpenAPI document. Two paths: `/search` "Perform a web search" returning searchResult objects
+      of url, title and snippet, and `/extract` "Extract page content as markdown from URLs". The `/search`
+      request''s `extract` property: "Configuration for extracting page content from search results. When provided,
+      the API will fetch and extract the content from the specified number of result pages. The resulting page
+      markdown will update the value of the snippet field on the respective result item."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 6b438426481d385b6e29d027d4252fe516683e81acce336a2f8d0f04e3d63bdf

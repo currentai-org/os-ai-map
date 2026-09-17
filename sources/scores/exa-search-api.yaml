@@ -15,8 +15,8 @@ openness:
       raw: cloud SaaS with API keys, usage-based pricing
   confidence: high
   note: Closed neural-search API; no self-hostable core, the index and ranking models are proprietary.
-  raw: license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client
-    SDKs public);managed:cloud SaaS with API keys, usage-based pricing
+  raw: license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client SDKs
+    public);managed:cloud SaaS with API keys, usage-based pricing
   last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
@@ -47,21 +47,22 @@ adoption:
     http_status: 200
     content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
-  value: neural/semantic web search + contents retrieval + Websets (search, verify-against-criteria, enrich
-    entity lists); positioned for high-compute complex queries; scaling to hundreds of thousands of searches/sec
-    (vendor)
+  value: '`POST /search` with a `contents` block returning text, highlights or a schema-shaped summary per
+    result, plus Contents, Answer, Agent, Monitors and Websets endpoints in one API reference'
   confidence: medium
-  note: Strong on coverage and structured output, and the Websets pipeline - search, verify against criteria,
-    then enrich entity lists - is a differentiated capability beyond plain search, which puts Exa near the
-    frontier of agent search APIs. No independent benchmark for semantic search APIs exists, so the score
-    rests on a comparison of features rather than on a measured result.
-  last_verified: '2026-08-13'
+  note: Answers, with citations. Exa documents Search, Contents and Answer in one API reference under one product,
+    and `/search` itself returns page text and highlights through its `contents` block, so the interface spans
+    finding, content and composition. Banded at perplexity-sonar-api.
+  last_verified: '2026-09-17'
   sources:
-  - url: https://exa.ai/about
-    shows: Neural/semantic search plus contents retrieval; Websets named as the verify-and-enrich product
-      on top; positioning around AI-issued rather than human-issued search volume.
-    accessed: '2026-08-13'
+  - url: https://docs.exa.ai/reference/search
+    shows: 'The Exa API reference: Search, Contents, Agent, Monitors, Answer, Websets and Batch under one navigation.
+      The `/search` request body carries a `contents` object with `text`, `highlights` and a `summary` with
+      a JSON schema.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74
+    content_sha256: 87465b58db69d9886d3eef1afe86687f8c1f324dd3531be154c42a7946bf2bac
+  relative_to: perplexity-sonar-api
+  relation: at

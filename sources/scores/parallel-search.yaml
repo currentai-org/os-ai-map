@@ -1,0 +1,77 @@
+product: parallel-search
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no index published; the parallel-web SDKs are MIT clients
+    managed:
+      value: cloud SaaS with API keys
+      detail: $0.001-$0.005 per search request for ten results
+      raw: cloud SaaS with API keys, $0.001-$0.005 per search request for ten results
+  confidence: high
+  note: Closed index, MIT clients - `parallel-web` is MIT on PyPI and npm and the Python SDK repo is MIT, none
+    of which is the search system.
+  raw: license:Proprietary(API-only);source:closed(no index published; the parallel-web SDKs are MIT clients);managed:cloud
+    SaaS with API keys, $0.001-$0.005 per search request for ten results
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://parallel.ai/ai/pricing
+    shows: 'Six separately priced APIs on one table. The Search API row: "Outputs: Ranked URLs, Compressed
+      excerpts", "$0.001 - $0.005 for 10 results". A hosted metered service with no self-hosting or source-available
+      option.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 331b62be2018215a296c48ab214f75365a155393f113cf4eff2c9b6952a4343d
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: ABSTAINS, deliberately, where a number was available. `parallel-web` records 2,631,725 PyPI downloads
+    in the trailing 30 days, but that SDK covers all six of Parallel's APIs - Task, Search, Extract, Responses,
+    Monitor and Find All - and this record scores the Search SKU alone. The package's population and the product's
+    are not the same set, which is the measurement-population rule, and the figure is also large enough for
+    a young vendor to suggest automation rather than callers. `serpapi` and `linkup` band on their SDKs because
+    each sells one product; this one does not. The abstention is dated rather than left blank, on the queue's
+    rule that a null somebody looked for and did not find is a confirmed axis; the page below is where it was
+    looked for.
+  sources:
+  - url: https://parallel.ai/ai/pricing
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
+      or developer count - which is what the abstention rests on.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 331b62be2018215a296c48ab214f75365a155393f113cf4eff2c9b6952a4343d
+  last_verified: '2026-09-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: '`POST /v1/search` takes an `objective` in natural language plus optional search queries and returns
+    results of {url, title, publish_date, excerpts[]}, with excerpt size tunable through `excerpt_settings.max_chars_per_result`'
+  confidence: high
+  relative_to: firecrawl
+  relation: at
+  note: Finds and returns the content. The vendor's own summary of the Search API's output is "Ranked URLs,
+    Compressed excerpts", and the documented response carries extracted page text rather than engine snippets.
+    It stops at 4 because the cited-answer product is the Responses API, a separate SKU priced at $0.01-$0.25
+    against this one's $0.001-$0.005, and a search response's own usage block names `sku_search`. Banded at
+    exa-search-api, which sells the same objective-in, excerpts-out shape.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://docs.parallel.ai/search/search-quickstart.md
+    shows: '"The Search API takes a natural language objective and returns relevant excerpts optimized for
+      LLMs, replacing multiple keyword searches with a single call for broad or complex queries." The documented
+      response is a results array of {url, title, publish_date, excerpts}, the example excerpts carrying extracted
+      page text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 07aba1b616513b665d675f6c671dd5167b97f40072becdf662b57658f9628122

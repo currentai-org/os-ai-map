@@ -18,9 +18,9 @@ openness:
     - reproducible-Docker-build
     - no-proprietary-backend
   confidence: high
-  note: Fully open source under copyleft AGPL-3.0, complete source public, reproducible official Docker
-    image, no proprietary backend or gated hosted tier - self-hosting (or community public instances) is
-    the only distribution.
+  note: Fully open source under copyleft AGPL-3.0, complete source public, reproducible official Docker image,
+    no proprietary backend or gated hosted tier - self-hosting (or community public instances) is the only
+    distribution.
   raw: license:AGPL-3.0(OSI);source:public(github.com/searxng/searxng);self-host:only(no official SaaS);reproducible-Docker-build;no-proprietary-backend;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -42,41 +42,39 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Around 32,000 GitHub stars, roughly 70 maintained public instances and Docker pull volume well
-    into the high band - concrete deployment volume rather than stars alone. SearXNG is the de facto open
-    web-search backend for self-hosted AI. The band comes from the Docker Hub payload for searxng/searxng,
-    which reports 71,581,974 pulls since the repository was registered; across the 63.70 months since then
-    that averages 1,123,660 pulls a month, landing in 1M-10M at level 4. A cumulative total is not directly
-    comparable with any other record on this scale, since the axis is monthly, so the figure is treated
-    as a declared floor: a lifetime average understates a growing product, and SearXNG''s pull rate is not
-    flat. Docker is not one of this product''s declared artifacts, so the figure lives in this note rather
-    than in a recorded signal.'
+  note: 'Around 32,000 GitHub stars, roughly 70 maintained public instances and Docker pull volume well into
+    the high band - concrete deployment volume rather than stars alone. SearXNG is the de facto open web-search
+    backend for self-hosted AI. The band comes from the Docker Hub payload for searxng/searxng, which reports
+    71,581,974 pulls since the repository was registered; across the 63.70 months since then that averages
+    1,123,660 pulls a month, landing in 1M-10M at level 4. A cumulative total is not directly comparable with
+    any other record on this scale, since the axis is monthly, so the figure is treated as a declared floor:
+    a lifetime average understates a growing product, and SearXNG''s pull rate is not flat. Docker is not one
+    of this product''s declared artifacts, so the figure lives in this note rather than in a recorded signal.'
   last_verified: '2026-08-13'
   sources:
   - url: https://hub.docker.com/r/searxng/searxng
-    shows: Official image searxng/searxng. Repository payload gives pull_count 71,581,974, star_count 186, status
-      active, date_registered 2021-04-22.
+    shows: Official image searxng/searxng. Repository payload gives pull_count 71,581,974, star_count 186,
+      status active, date_registered 2021-04-22.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7a9d29c4bf78123a855e7869aeeb8331951e5c88c7a2d08734a62ff14f60a387
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  value: 'engines aggregated - a long declared list spanning general web, images, science, code and package
-    registries; API - JSON, CSV and RSS via ?format=json, GET or POST to /search; programmatic access - a
-    simple HTTP call, though many public instances disable the non-HTML formats; consumed as a web-search/RAG
-    backend by Open WebUI, Perplexica, Morphic, LibreChat; self-hostable official Docker image'
+  value: '`GET|POST /search?format=json` returns the aggregated results of the engines the instance has enabled,
+    as JSON, CSV or RSS'
   confidence: medium
-  note: The reference open implementation of the search-backend slot - broad source aggregation, clean structured
-    JSON, fully self-hosted. Below top among AI search APIs because it is raw metasearch without the AI-native
-    extraction/reranking that proprietary peers (Tavily/Exa) layer on.
-  last_verified: '2026-08-13'
+  note: Finds, and returns references. SearXNG aggregates other engines and returns their results; it fetches
+    no page for the caller, which is what keeps it at 3 rather than 4. Its Answer result type is an instant
+    answer forwarded from an upstream engine, not a composed reply over retrieved sources. Banded at serper.
+  last_verified: '2026-09-17'
   sources:
   - url: https://docs.searxng.org/dev/search_api.html
-    shows: 'Endpoints GET / , GET /search , POST / , POST /search with `?format=json` and `format=csv` examples.
-      "Be aware that many public instances have these formats disabled" and will return 403. Engine roster
-      is a separate Configured Engines page. NOT on this page: any count of aggregated search services, 269
-      or otherwise. Docs build 2026.8.13.'
-    accessed: '2026-08-13'
+    shows: 'The search API: endpoints `GET /`, `GET /search`, `POST /`, `POST /search`, with `curl ''https://searx.example.org/search?q=searxng&format=json''`
+      and the json, csv and rss formats. Result types are Main Results, Key-Value, Code, Paper, File, Image,
+      Answer, Correction, Suggestion and Infobox - all shapes of a results page.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 217b29dab753375c44193abe49cd66b40e0e7a0e208a08188551fd70a51994f9
+    content_sha256: 70749d5f689db6a53a429a837b252ca281ab89b74c1bfa48da9896882f369946
+  relative_to: serper
+  relation: at
