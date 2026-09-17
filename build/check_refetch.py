@@ -227,6 +227,14 @@ def _headers(url: str) -> dict[str, str]:
 # explicit is. This fires ONLY after a 403 on the default path, so no page that is already
 # fetchable changes its bytes, and both the writer and the gate reach it through the same
 # condition, so a digest recorded on the retry is reproduced by the retry.
+#
+# THE ONE CASE THAT CAN STILL MISMATCH, stated rather than left to be discovered: a host that
+# 403s INTERMITTENTLY can serve the writer on the default path and the gate on the retry, or
+# the reverse, and the two bodies can differ - measured at 1 of 16 otherwise stable pages. The
+# consequence is bounded, because `check_refetch` reports a changed body as DRIFTED, a re-check
+# queue entry rather than a failure, and drift on a challenge-protected host is expected
+# anyway. Recording which mode produced a digest would close it properly, and that is a schema
+# change on every source rather than a fix belonging to this one.
 def _encoding_retry_headers(url: str) -> dict[str, str]:
     return {**_headers(url), "Accept-Encoding": "gzip"}
 
@@ -281,10 +289,14 @@ def http_get(
                 pass  # the 403 stands as the finding; a failed retry does not replace it
             else:
                 attempts += 1
-                if retried.status_code != 403:
+                # A retry that comes back TRANSIENT falls through to the backoff below rather
+                # than returning: a gzip-path 503 is still "not now", and returning it here
+                # would spend the fingerprint check and skip the retries the 503 deserves.
+                if retried.status_code not in TRANSIENT:
                     retried.attempts = attempts  # type: ignore[attr-defined]
                     retried.encoding_retry = True  # type: ignore[attr-defined]
                     return retried
+                response = retried
         if response.status_code in TRANSIENT and attempts <= retries:
             sleep(backoff * attempts)
             continue

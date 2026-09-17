@@ -237,6 +237,31 @@ def test_a_real_403_stays_a_403_and_the_encoding_is_tried_only_once():
     assert len(encoded) == 1
 
 
+def test_a_transient_from_the_retry_falls_through_to_the_backoff():
+    """A gzip-path 503 is still "not now", so it must not skip the retries it deserves.
+
+    The first draft returned any non-403 from the retry immediately, which spent the
+    fingerprint check and then handed back a 503 that had never been retried once.
+    """
+    responses = [_response(403), _response(503), _response(200)]
+    slept: list[float] = []
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get("https://flaky.example/x", timeout=5.0, sleep=slept.append)
+    assert response.status_code == 200
+    assert get.call_count == 3
+    assert slept, "the transient path must back off rather than retry immediately"
+
+
+def test_the_encoding_retry_is_tried_before_any_backoff():
+    """Ordering matters: a fingerprint answers 403 to every attempt, so asking three times
+    first costs six requests and two sleeps to learn nothing."""
+    slept: list[float] = []
+    with patch("build.check_refetch.requests.get", side_effect=[_response(403), _response(200)]) as get:
+        http_get("https://fingerprints.example/doc", timeout=5.0, sleep=slept.append)
+    assert get.call_count == 2
+    assert slept == [], "no sleep should happen before the encoding retry"
+
+
 def test_a_failed_encoding_retry_leaves_the_403_standing():
     def _get(*_args, **kwargs):
         if kwargs["headers"].get("Accept-Encoding"):
