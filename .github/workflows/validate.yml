@@ -98,6 +98,17 @@ jobs:
       - name: Instrument gate (every signal_type claim has what it needs to be falsifiable)
         run: uv run python -m build.check_instrument
 
+      # GitHub's licence endpoint reports NOASSERTION whenever the LICENSE file is not a
+      # byte-recognizable copy of a template, and five things in this corpus trip it, all
+      # benign: a SLURM preamble above the GPL, a sentence above the Apache text in dlrover,
+      # MIT indented four spaces in openpai, eight copyright holders in executorch, an SPDX
+      # header in nemo-guardrails. So NOASSERTION is a prompt to read the file rather than a
+      # licence finding, and 23 records say so in prose. This gates what that prose rests on:
+      # dispute the classifier and the evidence has to be the licence FILE, not the API record
+      # that reported NOASSERTION. Ratchets - a record that never disputes it is not covered.
+      - name: Licence-body gate (a record disputing GitHub's classifier cites the file)
+        run: uv run python -m build.check_license_body
+
       # Structural check on sources/signal_routing.yaml: a route pointing at a source the
       # table does not declare is a bug, and should fail here rather than halfway through a
       # research run. Added to CI 2026-08-15. It had never run anywhere, and it had been
