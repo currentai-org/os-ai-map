@@ -1,0 +1,86 @@
+product: mcp-php-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the SDK, its transports and its framework integrations
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Open source under the Model Context Protocol project's dual transition licence, with the body cited
+    because the classifier reports NOASSERTION over it.
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the SDK, its transports and its framework integrations);self-host:yes(a library
+    you build against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/php-sdk/main/LICENSE
+    shows: 'The LICENSE body, read rather than the classifier''s label: it opens with the MCP project''s licensing
+      transition from MIT to Apache-2.0 and carries both texts, which is the shape GitHub''s classifier cannot
+      match and the reason the API reports NOASSERTION.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/php-sdk
+    shows: 'Repository metadata: 1,612 stars, not archived, not a fork, last pushed 2026-09-15, description
+      "The official PHP SDK for Model Context Protocol servers and clients. Maintained in collaboration with
+      The PHP Foundation."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 046691785a9593f7e85322809276190fd4de1365ed5b6a087dc68480e5824266
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 953,763 monthly downloads of `mcp/sdk` on Packagist, inside the 100K-1M band for level 3. Packagist
+    is the install channel for a PHP library, so this measures the product.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://packagist.org/packages/mcp/sdk.json
+    shows: 'The Packagist API record for mcp/sdk: downloads total 3,605,864, monthly 953,763, daily 49,497;
+      1,609 GitHub stars; not abandoned.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 717cc22b3a4f2bcb3ba2fd0f0cb8e22c5a8ec35903867a8480162c6e718514e6
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'of the Model Context Protocol at versions 2026-07-28 and 2025-11-25: both roles, the full primitive
+    set (tools, resources, resource templates, prompts), stdio and HTTP transports, with conformance measured
+    weekly against the MCP Conformance Test Framework for both revisions'
+  confidence: medium
+  relative_to: mcp-python-sdk
+  relation: at
+  note: 'Both roles, the full primitive set and two transports, which is band 4 - and this record names the
+    current revision, so unlike the C# and Kotlin SDKs its version leg passes. What keeps it at 4 is the optional
+    features: sampling, roots and elicitation are not named anywhere in the documentation read, so band 5''s
+    other leg is unestablished. Worth recording beside the band: the project calls itself experimental until
+    its first major release.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/php-sdk/main/README.md
+    shows: 'The README: "a framework-agnostic API for implementing MCP servers and clients in PHP" covering
+      "tools, resources, prompts, STDIO and HTTP transports, sessions, authorization, and both protocol eras
+      (the initialize handshake and the stateless 2026-07-28 revision)", with a conformance table carrying
+      rows for 2026-07-28 and 2025-11-25 "Measured weekly against the MCP Conformance Test Framework". It also
+      states "Until the first major release, this SDK is considered experimental".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b205f7d2c4bc8f6954a124a16d839cc9fe05774b827376738844a74fe447e7af

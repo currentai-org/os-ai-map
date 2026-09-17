@@ -15,21 +15,20 @@ openness:
       raw: Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer
     core-gated:
       value: gated
-      detail: the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only
-        and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev
+      detail: the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and
+        toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev
         behind a COMPOSIO_API_KEY with no self-host option documented
   confidence: high
-  note: 'The SDK and core are MIT and public, while the hosted multi-app integration and auth platform is
-    the proprietary tier - classic open core. The gate is not a directory but an absence: the execution
-    engine is in no public repository. What is published is SDKs and provider adapters - python/composio
-    with its providers/, and ts/packages/ holding core, cli, cli-local-tools, cli-keyring, providers, slim,
-    experimental and the schema converters. Toolkit execution, the catalogue of more than 1000 apps and
-    managed OAuth all run on Composio''s own servers: the README''s first instruction is to "Grab a COMPOSIO_API_KEY
-    from the dashboard first", sessions are created against the hosted API, the docs give the REST base
-    URL as https://backend.composio.dev/api/v3.1 and describe Composio-managed auth as the default, and
-    no self-hosting or on-premise option is documented anywhere. Nothing in the published source executes
-    a toolkit without that platform. The finding rests on that evidence in the code, not on the mere fact
-    that Composio sells a hosted platform.'
+  note: 'The SDK and core are MIT and public, while the hosted multi-app integration and auth platform is the
+    proprietary tier - classic open core. The gate is not a directory but an absence: the execution engine
+    is in no public repository. What is published is SDKs and provider adapters - python/composio with its
+    providers/, and ts/packages/ holding core, cli, cli-local-tools, cli-keyring, providers, slim, experimental
+    and the schema converters. Toolkit execution, the catalogue of more than 1000 apps and managed OAuth all
+    run on Composio''s own servers: the README''s first instruction is to "Grab a COMPOSIO_API_KEY from the
+    dashboard first", sessions are created against the hosted API, the docs give the REST base URL as https://backend.composio.dev/api/v3.1
+    and describe Composio-managed auth as the default, and no self-hosting or on-premise option is documented
+    anywhere. Nothing in the published source executes a toolkit without that platform. The finding rests on
+    that evidence in the code, not on the mere fact that Composio sells a hosted platform.'
   raw: license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio
     hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the
     execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution
@@ -43,19 +42,19 @@ openness:
   - url: https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md
     shows: '"Create a session for a user, hand its tools to your agent, and let the agent take action across
       1000+ apps. Grab a COMPOSIO_API_KEY from the dashboard (dashboard.composio.dev/settings) first." Also
-      offers a hosted MCP endpoint per session - "Pass mcp: true to composio.create() and point Claude,
-      Cursor, or any MCP client at session.mcp.url". Every path to running a tool goes through the hosted
-      platform and a key issued by it.'
+      offers a hosted MCP endpoint per session - "Pass mcp: true to composio.create() and point Claude, Cursor,
+      or any MCP client at session.mcp.url". Every path to running a tool goes through the hosted platform
+      and a key issued by it.'
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: 8c723e06bec36f55f3aaff4e2933834856a87dff5f6acd94f0a091b85457d94f
     establishes:
     - core-gated
   - url: https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages
-    shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core,
-      experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The
-      python/ tree is the same shape - composio plus providers. There is no server, no toolkit runtime and
-      no auth service anywhere in the repository, which is the functionality the paid platform holds.'
+    shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core, experimental,
+      json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The python/ tree is the
+      same shape - composio plus providers. There is no server, no toolkit runtime and no auth service anywhere
+      in the repository, which is the functionality the paid platform holds.'
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239
@@ -63,9 +62,9 @@ openness:
     - core-gated
   - url: https://docs.composio.dev/docs/welcome
     shows: Documents the REST API served at https://backend.composio.dev/api/v3.1, "Composio-managed auth"
-      as the default in which "the agent connects accounts at runtime through the session", and session
-      creation via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment
-      option is documented anywhere in it.
+      as the default in which "the agent connects accounts at runtime through the session", and session creation
+      via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment option
+      is documented anywhere in it.
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: c9a2887c9a76300f53c2cb609c7e038457703b9629fb2e5ef8197454114571cf
@@ -96,21 +95,21 @@ adoption:
     http_status: 200
     content_sha256: c459ac619d97bdc45e0f5c1956f736986a7fc4fbfca43dfc4300a2ddaa4ec836
 capability:
-  score: 4
+  score: 5
   basis: feature_matrix
-  value: 1000+ toolkits, tool search, context management, managed OAuth/auth, sandboxed workbench, a per-session
-    hosted MCP endpoint, multi-framework SDKs (OpenAI/Anthropic/LangChain/LlamaIndex)
+  value: a catalogue spanning more than 1,500 applications, with per-end-user OAuth, API keys and tokens stored
+    and refreshed by the platform, and a hosted MCP endpoint per session
   confidence: medium
-  note: Broad tool coverage together with managed auth and a sandboxed workbench makes this one of the most
-    capable agent tool-integration layers - strong on coverage, structured output and breadth, and just
-    short of a frontier-defining 5.
-  last_verified: '2026-08-13'
+  note: Many systems, managed credentials and hosted execution - all three questions answered yes, and the
+    band-5 anchor the other five are placed against. What earns it is not the size of the catalogue, which
+    is a coverage claim this ladder excludes; it is that the credentials are the platform's problem rather
+    than the caller's.
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/ComposioHQ/composio
-    shows: 'Repo description - "Composio powers 1000+ toolkits, tool search, context management, authentication,
-      and a sandboxed workbench to help you build AI agents that turn intent into action." README - "let
-      the agent take action across 1000+ apps"; a hosted MCP endpoint per session. NOT on the page: any mention
-      of Rube.'
-    accessed: '2026-08-13'
+  - url: https://docs.composio.dev/getting-started/welcome
+    shows: 'The platform overview: "tool search over 1,500+ apps, surfaced just in time with the right scope"
+      and "Auth and context, per end-user. OAuth, API keys, and tokens scoped to each user and refreshed automatically",
+      with per-user connections illustrated across Slack, Gmail and Linear.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 54d3c57c63b6308992d0b715185191a69239c5a0a26743c88eb7a45e69e967f9
+    content_sha256: b008fa2baca63a855b0c050b2e6c4ac6a63da3f1656f5e70d43da7870dc863b3

@@ -1,0 +1,122 @@
+name: agent_protocols
+display_name: Agent protocols & SDKs
+description: 'The specification layer agents talk over, and the software that implements it: the protocols
+  themselves, the SDKs that speak them in each language, the tooling that exercises them, and the registry
+  that lists what is out there.'
+weights:
+  adopt: 0.6
+  cap: 0.4
+products:
+- model-context-protocol
+- agent2agent-protocol
+- agent-client-protocol
+- ag-ui
+- mcp-apps
+- mcp-python-sdk
+- mcp-typescript-sdk
+- mcp-go-sdk
+- mcp-rust-sdk
+- mcp-csharp-sdk
+- mcp-java-sdk
+- mcp-kotlin-sdk
+- mcp-php-sdk
+- mcp-swift-sdk
+- mcp-go
+- fastmcp
+- mcp-inspector
+- fastapi-mcp
+- mcp-registry
+- mcpb
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    checker: build/check_rubric.py
+  note: "Capability here measures HOW MUCH OF A NAMED SPECIFICATION the product implements, and\nthe denominator\
+    \ is the specification at a stated version rather than anything the curator chooses.\nThree dimensions,\
+    \ all enumerable from the spec text itself:\n\n  ROLE        client, server, or both\n  PRIMITIVES  the\
+    \ REQUIRED set the cited version defines - for MCP: tools, resources, prompts.\n              Sampling,\
+    \ roots and elicitation are OPTIONAL features, and they belong to band 5\n              rather than to\
+    \ this dimension; an earlier draft listed them in both places, which\n              made the difference\
+    \ between bands 4 and 5 unreadable.\n  TRANSPORTS  the spec's own list - for MCP: stdio, Streamable HTTP,\
+    \ SSE\n\n  1  one role, one primitive. Enough to speak the protocol, not to build on it.\n  3  one role\
+    \ with that role's full primitive set, OR both roles with a partial set.\n  4  both roles, the full primitive\
+    \ set, and more than one transport.\n  5  band 4, plus every optional feature the cited version defines\
+    \ FOR THE ROLES IMPLEMENTED, with\n     the cited version being the newest the specification has published\
+    \ on the date recorded.\n\nEvery record names the spec version it was read against and lists which primitives\
+    \ and transports\nit found, so the band is recomputable from the record without re-reading the product.\
+    \ WHERE THE\nPRODUCT DOES NOT STATE A VERSION the record says so rather than guessing, and band 5 is then\
+    \ out of\nreach on the version leg by construction - which is a fact about what the project publishes,\
+    \ and it\nis recorded as that rather than as a capability finding. The newest published version on\n2026-09-17\
+    \ is 2026-07-28; the specification repository lists 2024-11-05, 2025-03-26, 2025-06-18,\n2025-11-25 and\
+    \ 2026-07-28.\n\nWHAT ABSTAINS, and why it is not a gap. The SPECIFICATIONS abstain: `model-context-protocol`,\n\
+    `agent2agent-protocol` and `agent-client-protocol` are the documents this ladder measures other\nthings\
+    \ against, and a wire protocol is not benchmarked - the settled policy `model-context-protocol`\nalready\
+    \ carries. `mcp-registry` abstains for a different reason: it is the protocol's discovery\nservice rather\
+    \ than an implementation of the client-server contract, so role, primitives and\ntransports have nothing\
+    \ to say about it. Eight of the twenty abstain, which is high, and it is what\nan honest reading of a specification\
+    \ layer looks like: four of them ARE specifications, three are\nthe extension spec, the packaging format\
+    \ and the registry, and one is an SDK whose primitives no\nreachable document enumerates.\n\nTRANSPORT\
+    \ BREADTH IS PART OF THE QUANTITY HERE and is explicitly packaging in\n`agent_tools_protocols` next door.\
+    \ That is not a contradiction. For something implementing the\nprotocol, which transports it speaks is\
+    \ part of what the spec defines and what an implementation is\njudged on. For a connector, the transport\
+    \ is how it is delivered and says nothing about what it\nadapts.\n\nTHE DISTRIBUTION, reported because\
+    \ band 4 holds more than a third of what is banded. Of twenty\nproducts, eight abstain and twelve carry\
+    \ a band: 1 at band 1, 1 at band 3, 8 at band 4, 2 at band 5\n- widest rung 67% of the banded twelve. This\
+    \ is the CLUSTERING case rather than a loose\ndefinition, and the cluster is real: an SDK for this protocol\
+    \ exists to implement both roles, the\nfull primitive set and more than one transport, so that is what\
+    \ nearly all of them do. The ladder\nstill separates them, and the separations are the interesting part\
+    \ of this category:\n\n  BAND 5 is reached by the official Go and Rust SDKs, and only by them, because\
+    \ band 5 needs the\n  CURRENT specification revision plus the optional features - and the two of them cite\
+    \ 2026-07-28\n  and document sampling, elicitation and roots against it.\n  BAND 4 holds eight SDKs that\
+    \ each miss one leg, and the leg differs: the C# and Kotlin SDKs\n  document every optional feature but\
+    \ name no version; the Swift SDK documents everything and\n  targets 2025-11-25, which the specification\
+    \ has since superseded; the PHP SDK names the current\n  revision but documents no optional features; mcp-go\
+    \ enumerates through 2025-11-25.\n  BAND 3 holds mcp-inspector alone, a client with no server role. The\
+    \ Java SDK would sit here on\n  its roles and transports and does not, because no reachable document enumerates\
+    \ its primitives\n  and a band needs the evidence rather than the absence of it; it abstains instead.\n\
+    \  BAND 1 holds fastapi-mcp: one role, one primitive.\n\nThat spread is what a version-and-feature ladder\
+    \ buys over a coverage judgement. Every one of those\ndistinctions is a sentence in a document somebody\
+    \ can re-read.\n\nEIGHT ABSTENTIONS, two fifths of the roster. Four are specifications - MCP, A2A, the\
+    \ Agent Client\nProtocol and AG-UI. MCP Apps is an extension with its own dated specification, MCP Bundles\
+    \ is a\npackaging format, and the MCP Registry is the discovery service: none of them implements the\n\
+    client-server contract this ladder measures. The eighth is the Java SDK, which does implement it -\nit\
+    \ abstains for want of a document, not for want of a product, and its record says what would close\nit."
+comments: 'Created 2026-09-17 by splitting `agent_tools_protocols`, which closed #430''s last
+
+  open question. That category had lost its document converters to `document_conversion` and its
+
+  retrieval layer to `search_retrieval`, and what remained was still two things: the specification
+
+  layer and the connector layer, measured on quantities that do not convert into one another.
+
+
+  TWO LADDER DESIGNS FOR A SINGLE COMBINED CATEGORY WERE WRITTEN AND BOTH FAILED REVIEW, both on the
+
+  same point - a connector''s capability can only be stated as a proportion of its target, the targets
+
+  are incomparable, and any rule loose enough to span them can be gamed by narrowing the target. The
+
+  repository''s own rule applied: a rule that takes more than two attempts to state consistently is
+
+  drawing a line that is not there. The line that IS there is the one between implementing a
+
+  specification and adapting a system, and it is now a category boundary.
+
+
+  BOUNDARY against `agent_tools_protocols`: this category holds the contract and what implements it;
+
+  that one holds what adapts a system an agent does not own. `lightpanda` is the case worth stating -
+
+  it implements the DOM and the Chrome DevTools Protocol, which is a specification, and it is NOT
+
+  here, because the specification is a browser''s rather than an agent protocol''s and the product is
+
+  used as a browser an agent drives.'
+strapline: 'The specification layer is open all the way down: twenty products, and every one publishes its
+  source under an OSI licence - four wire protocols, nine SDKs, an extension spec, a packaging format, a registry
+  and the tooling around them. Nothing here is closed, which is true of no other category on this map. Read
+  it beside the connectors next door, where the same protocols are wrapped in products that hold your credentials
+  - and where, encouragingly, most of those publish their source too: the standard is a commons, and so far
+  the convenience largely is as well.'

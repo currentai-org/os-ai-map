@@ -1,0 +1,78 @@
+product: selenium
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the framework, the bindings and the grid
+    self-host:
+      value: 'yes'
+      detail: build and run it yourself
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Apache-2.0 across the project, under Software Freedom Conservancy stewardship.
+  raw: license:Apache-2.0(OSI);source:public(the framework, the bindings and the grid);self-host:yes(build
+    and run it yourself);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 307012b4481479a56605420e81db14686a0274d246d06d224c363ee09297d330
+    establishes:
+    - license
+  - url: https://api.github.com/repos/SeleniumHQ/selenium
+    shows: 'Repository metadata: spdx_id Apache-2.0, 34,494 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "A browser automation framework and ecosystem."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 6bf12520f98585399b96b87225c17dc5ba369a1bee154f1290359e9afc59863a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: '35,872,023 downloads of the `selenium` PyPI package in the trailing 30 days, above the >10M floor
+    for level 5. Medium confidence for a stated reason: this is the PYTHON BINDING, one of several the project
+    ships, so it undercounts the product rather than measuring it. The band would not change if the others
+    were added, which is why it stands.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://pypistats.org/api/packages/selenium/recent
+    shows: last_month = 35,872,023 downloads for the `selenium` PyPI package (last_week 6,318,640, last_day
+      1,067,149).
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 68f7acace1aae2159eee8ea06f1a7f4e330f0b099ef5983ee85f74210446641d
+capability:
+  score: 3
+  basis: feature_matrix
+  value: language bindings over the W3C WebDriver specification, driving every major browser, run by the caller
+    with no credential in the product
+  confidence: high
+  relative_to: playwright-mcp
+  relation: at
+  note: 'A curated surface over one system with the caller supplying everything: band 3, with puppeteer. The
+    README read here is explicitly a contributor document - "This README is for developers interested in contributing
+    to the project" - so it establishes what the project is and how it is built rather than a runtime credential
+    story, and no credential mechanism appears in it.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/SeleniumHQ/selenium/trunk/README.md
+    shows: 'The README: "Selenium is an umbrella project encapsulating a variety of tools and libraries enabling
+      web browser automation. Selenium specifically provides an infrastructure for the W3C WebDriver specification
+      - a platform and language-neutral coding interface compatible with all major web browsers." Its Installing
+      section covers Bazelisk and a JDK; no authentication section exists.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: cddee91a72895c73d37228873c4e1328ea0b3e3b5fd313ae38f4ebd50b9eacc3

@@ -1,0 +1,80 @@
+product: desktop-commander-mcp
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the server and its tooling
+    self-host:
+      value: 'yes'
+      detail: npx, runs on your machine
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: MIT over the whole server. A hosted relay exists for remote clients; the execution stays local.
+  raw: license:MIT(OSI);source:public(the server and its tooling);self-host:yes(npx, runs on your machine);core-gated:ungated(nothing
+    withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/main/LICENSE
+    shows: 'The LICENSE body: the verbatim MIT text under "Copyright (c) 2024-2025 Eduard Ruzga and Desktop
+      Commander Contributors".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: e77cff545e0506903bf6a4bf29169fa40911eb76d70d239267df10c5c59370dd
+    establishes:
+    - license
+  - url: https://api.github.com/repos/wonderwhy-er/DesktopCommanderMCP
+    shows: 'Repository metadata: spdx_id MIT, 9,643 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "This is MCP server for Claude that gives it terminal control, file system search and diff
+      file editing capabilities".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 2a5d1122d645d750aeefe591c87b8da399d788811af6d0f8dd0c93ab50831be9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 278,322 downloads of `@wonderwhy-er/desktop-commander` on npm in the trailing 30 days, inside the 100K-1M
+    band for level 3. The package is the product itself rather than a client for it, and npx is the documented
+    install path.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@wonderwhy-er/desktop-commander
+    shows: 'npm downloads point API: 278,322 downloads for `@wonderwhy-er/desktop-commander` over 2026-08-13
+      to 2026-09-11.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 224ae8b8b02d9981d2d4c553d624539bd2c934f1857bc34f27d3c1655b603f65
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a curated tool surface over the local machine - terminal execution, filesystem search and diff editing,
+    process control, and document readers - installed with npx and running under the caller's own user with
+    no credential
+  confidence: high
+  relative_to: filesystem-mcp
+  relation: at
+  note: 'A curated surface over one system with no credentials at all, which is band 3 alongside filesystem-mcp.
+    There is nothing for it to authenticate to: the system behind it is the caller''s own machine, and "commands
+    execute under your user permissions". The optional Remote MCP relay authenticates the caller''s DEVICE
+    to that service rather than brokering any third-party credential, and execution stays local either way.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/main/README.md
+    shows: 'The README: install is `npx @wonderwhy-er/desktop-commander@latest setup` with an MCP config block
+      carrying no secret. Features are terminal execution, filesystem operations, process control and document
+      formats. Under the Remote MCP option: "You run a lightweight Remote Device on your computer... Commands
+      execute locally, results return to your AI", with "Commands execute under your user permissions".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: a2ceb9735738051a57ca98a9ca97de159b1dd7bd40345579e52f9e4519175001

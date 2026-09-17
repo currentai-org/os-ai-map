@@ -14,8 +14,8 @@ openness:
     - no-feature-gated-core
   confidence: high
   note: Fully MIT, first-party Notion server, no feature-gated core. Notion also runs a hosted MCP endpoint
-    documented at developers.notion.com, but that is a managed deployment of this same server rather than
-    a tier withholding tools from it, which the ladder settles as ungated.
+    documented at developers.notion.com, but that is a managed deployment of this same server rather than a
+    tier withholding tools from it, which the ladder settles as ungated.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -27,9 +27,9 @@ openness:
     establishes:
     - license
   - url: https://github.com/makenotion/notion-mcp-server
-    shows: Repo page - MIT badge, 4,588 stargazers, the whole server in the tree, installed from npm. The
-      hosted Notion MCP is pointed at as documentation rather than as a paid tier; no license key, second
-      license or enterprise directory.
+    shows: Repo page - MIT badge, 4,588 stargazers, the whole server in the tree, installed from npm. The hosted
+      Notion MCP is pointed at as documentation rather than as a paid tier; no license key, second license
+      or enterprise directory.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2551411540a29e3a7bafa33a61391a5cfb155ad2d0296ae021c2af21e94232f8
@@ -41,8 +41,8 @@ adoption:
   signal_type: usage_volume
   confidence: medium
   note: 739,577 npm downloads of @notionhq/notion-mcp-server in the trailing 30 days, which bands at 100K-1M,
-    level 3 on the software adoption scale. Because that package publishes a real figure, the level rests
-    on a measurement rather than on stars plus an inference that npm distribution implies wider use.
+    level 3 on the software adoption scale. Because that package publishes a real figure, the level rests on
+    a measurement rather than on stars plus an inference that npm distribution implies wider use.
   reach: 100K-1M
   last_verified: '2026-08-12'
   sources:
@@ -54,18 +54,19 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: tools across search, data sources, pages, blocks and comments, with data sources the primary database
-    abstraction since v2.0.0; OAuth installation; token-optimized responses and Markdown page editing
+  value: a curated tool surface over a Notion workspace - search, data sources, pages, blocks and comments,
+    with Markdown page editing - installed through standard OAuth
   confidence: medium
-  note: Comprehensive single-product Notion API coverage.
-  last_verified: '2026-08-13'
+  note: One system with managed authentication. Notion's own remote server installs "via standard OAuth" rather
+    than asking the caller to mint and paste an integration token, which is the 3-to-4 line. Banded at github-mcp.
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/makenotion/notion-mcp-server
-    shows: '"Version 2.0.0 migrates to the Notion API 2025-09-03 which introduces data sources as the primary
-      abstraction for databases", with seven new tools listed. "Easy installation via standard OAuth"; "Powerful
-      tools tailored to AI agents, including editing pages in Markdown. These tools are designed with optimized
-      token consumption in mind." Worked examples call v1/search and v1/comments. NOT on the page: a tool
-      count of 22 or any other number.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/README.md
+    shows: 'The README announcing the remote server: "Easy installation via standard OAuth. No need to fiddle
+      with JSON or API tokens anymore", with "powerful tools tailored to AI agents, including editing pages
+      in Markdown". The older path creates an internal integration token by hand.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 2551411540a29e3a7bafa33a61391a5cfb155ad2d0296ae021c2af21e94232f8
+    content_sha256: 8dd7a5336a9e5044840c0109dd53a379b28402b6e23956bd0099d0f79bc3add7
+  relative_to: github-mcp
+  relation: at

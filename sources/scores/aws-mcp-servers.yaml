@@ -1,0 +1,79 @@
+product: aws-mcp-servers
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: all 58 servers and their shared tooling
+    self-host:
+      value: 'yes'
+      detail: uvx or pip, run locally over stdio
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Apache-2.0 across the suite, published by AWS Labs with nothing withheld.
+  raw: license:Apache-2.0(OSI);source:public(all 58 servers and their shared tooling);self-host:yes(uvx or
+    pip, run locally over stdio);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/awslabs/mcp/main/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/awslabs/mcp
+    shows: 'Repository metadata: spdx_id Apache-2.0, 9,702 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "Open source MCP Servers for AWS".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 7eaf7d46884e6ed69b65838a59e6056a7b034f53fe7ff944712e7235ea6033db
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 9,702 GitHub stars. The repository ships one PyPI distribution per server rather than a package that
+    represents the product, so no single usage-volume channel exists to band and stars are what is left; they
+    cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/awslabs/mcp
+    shows: 'Repository metadata for awslabs/mcp: 9,702 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 7eaf7d46884e6ed69b65838a59e6056a7b034f53fe7ff944712e7235ea6033db
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 58 servers across AWS's own services, each a curated tool surface over one service, running locally
+    over stdio against credentials the caller has already configured
+  confidence: medium
+  relative_to: playwright-mcp
+  relation: at
+  note: 'Band 3, and the count of servers is the thing NOT to band on. This is a catalogue in the loose sense
+    - 58 servers - but they front one vendor''s services rather than many systems, and the two conditions that
+    lift a product above 3 are both absent: the caller configures the AWS credential chain before any server
+    starts, and the servers run on the caller''s machine over stdio. A catalogue without managed credentials
+    or hosted execution is band 3, which is the rule doing its job rather than an oversight. AWS''s separately
+    managed remote MCP server is a different product and is not what this record scores.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/awslabs/mcp/main/README.md
+    shows: 'The README: "A suite of specialized MCP servers that help you get the most out of AWS". Installation
+      and Setup step 3 is "Configure AWS credentials with access to required services", and the MCP client
+      configuration blocks carry no credential, only `FASTMCP_LOG_LEVEL`. "The MCP servers in this repository
+      are designed to support stdio only." It distinguishes AWS''s own managed remote servers, which "require
+      no setup or infrastructure management on your part", as a separate offering.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 6ae181af0fde4fb7e8ca944b3caa638889d36ddd87ecd3b57c0e36e84e4cb56e

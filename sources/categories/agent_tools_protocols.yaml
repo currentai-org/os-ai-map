@@ -1,34 +1,38 @@
 name: agent_tools_protocols
-display_name: Agent tools & protocols
-description: "Tools, protocols, and retrieval for agents."
-strapline: Open protocols, closed search. The protocol layer is almost entirely open - MCP, the SDKs
-  and the servers around them - and every product here that publishes no source at all is a hosted search
-  or retrieval API. Between the two sits a group whose repository is public but whose terms are not open,
-  either because the engine behind the service stays private or because the license appends conditions to
-  the open one it borrows from.
+display_name: Agent tools & connectors
+description: 'Adapters that put a system an agent does not own within its reach: servers exposing one product''s
+  operations, catalogues spanning many, and the browser-control layer.'
+strapline: 'Connectors are mostly open; the credential vault is where the money is. Sixteen of the twenty-one
+  products here publish their source under an OSI licence and two more publish most of it, including three
+  of the six that reach the top band - a connector platform is not an inherently closed thing, and OpenConnector
+  and ACI.dev publish the OAuth machinery that Zapier and Pipedream sell. What separates a band-3 product from
+  a band-5 one is not scale but whether it holds your credentials: nine products here make you bring your own
+  token, and the ones that do not are the ones agents get built on.'
 weights:
   adopt: 0.6
   cap: 0.4
 products:
-- model-context-protocol
-- playwright-mcp
-- fastmcp
-- agent2agent-protocol
 - composio
+- open-connector
+- klavis
+- aci-dev
+- zapier-mcp
+- pipedream
 - browserbase
-- algolia-ai-search
-- browser-use
-- mcp-python-sdk
-- mcp-typescript-sdk
-- mcp-inspector
+- steel-browser
 - github-mcp
-- slack-mcp
 - notion-mcp
-- filesystem-mcp
+- playwright-mcp
+- browser-use
+- puppeteer
+- selenium
+- slack-mcp
 - postgres-mcp
-- yomo
+- filesystem-mcp
+- desktop-commander-mcp
+- aws-mcp-servers
 - lightpanda
-- mcp-go
+- yomo
 scoring_recipe:
   version: 1
   extends: software
@@ -36,26 +40,52 @@ scoring_recipe:
     method: shared software ladder, verified against the hand-authored scores
     verified_on: '2026-08-30'
     checker: build/check_rubric.py
-  # Nothing is deferred here any more. `model-context-protocol` was the last one, and it
-  # closed on a recording fix rather than on the rubric change it appeared to be waiting
-  # for: its CC-BY-4.0 documentation license was recorded inside the `license` compound,
-  # where most-restrictive-wins applied a license covering the project's PROSE to the
-  # artifact you run, and demoted it to 3/source_available. `autogen` had the identical
-  # facts recorded the other way - MIT under `license`, CC-BY-4.0 under a separate `docs:`
-  # key the ladder does not read - and kept its 5. MCP now matches autogen and reproduces
-  # at 5/open_source.
-comments: 'Qdrant, Milvus and Pinecone left this category on 2026-08-18 for storage, which took the roster
-  from 32 to 29. They had been placed here because agents call them for retrieval, but they are vector databases,
-  and their direct peers - Chroma, LanceDB, Vearch, Infinity, HelixDB, Zvec - sit in storage. Two capability
-  recipes banding the same kind of product meant their bands could not be compared in the published map. The
-  three anchored a self-contained comparison cluster among themselves, so nothing left here points at them
-  and no band in this category moved; the reproduction count fell by exactly the three products that left.
-  What is left is the protocol and hosted-tool layer this category is actually about.
-
-
-  `docling`, `marker`, `mineru` and `markitdown` left on 2026-09-16 for document_conversion, taking the roster
-  from 34 to 30. They were the document-converter group #430 identified as incoherent here: this category''s
-  anchor was `docling`, whose capability value is document-conversion breadth, and most of the roster converts
-  nothing. The evidence that they belong together elsewhere was already in the corpus - `olmocr`, in dataset_processing_tools,
-  records a capability value benchmarking it directly against Marker and MinerU, so the map measured them as
-  peers while filing them in two categories. All five now sit in one.'
+  note: "Capability here measures WHAT THE ADAPTER ITSELF ADDS between an agent and the system behind it.\n\
+    Not how much of that system it covers - two ladder designs tried that and both failed review, for\nthe\
+    \ same reason: a connector's coverage can only be stated as a proportion of its target, the\ntargets here\
+    \ are incomparable (GitHub's API, a Postgres instance, a browser, a sandboxed directory),\nand any rule\
+    \ loose enough to span them can be gamed by narrowing the target.\n\nThree questions, the same three for\
+    \ every product, each answerable from the product's own\ndocumentation:\n\n  ONE SYSTEM OR MANY?      does\
+    \ it adapt a single product, or a catalogue of them?\n  DOES IT HOLD CREDENTIALS? does the product manage\
+    \ authentication on the caller's behalf - OAuth it\n                            performs, tokens it stores\
+    \ and refreshes - or does the caller supply a\n                            secret the product merely passes\
+    \ through?\n  DOES IT HOST EXECUTION?   does the adapter run somewhere the caller does not operate?\n\n\
+    \  1  raw passthrough: the target's interface re-exposed with no curation.\n  3  a curated tool surface\
+    \ over ONE system, with credentials supplied by the caller.\n  4  band 3 plus credentials the product manages,\
+    \ or execution it hosts.\n  5  a catalogue spanning MANY systems, with both.\n\nA supplied secret is not\
+    \ managed credentials, and the test is whether the PRODUCT RUNS AN\nAUTHENTICATION FLOW - not whether the\
+    \ word OAuth appears in its README. `github-mcp` and\n`notion-mcp` operate remote servers that perform\
+    \ the OAuth install against the host, so the caller\nnever handles a token: band 4. `postgres-mcp` takes\
+    \ a `DATABASE_URI` the caller sets,\n`playwright-mcp` a `--storage-state` file the caller points at, `filesystem-mcp`\
+    \ nothing at all, and\n`slack-mcp` - which an earlier draft put at 4 on the strength of the word OAuth\
+    \ - asks the caller to\ncreate a Slack app and copy its token, or to paste a snippet into the browser console\
+    \ and read one\nout of local storage. All four are band 3.\n\nWHAT THIS LADDER DOES NOT MEASURE, stated\
+    \ because the first two designs did: how much of the target\nis reachable. A server exposing nine PostgreSQL\
+    \ operations and one exposing ninety band the same\nhere, and that is a deliberate loss. The alternative\
+    \ was a number nobody could reproduce.\n\nTHE DISTRIBUTION, reported under `capability.md`: 9 at band 3,\
+    \ 4 at band 4, 6 at band 5 and 2\nabstaining, over 21 products - widest rung 47% of the nineteen banded.\
+    \ Band 3 is the bulge and it is\na real cluster: nine products are a curated tool surface over one system\
+    \ with the caller supplying\nwhatever secret is needed, which is what most MCP servers and every browser-driving\
+    \ library are. The\nladder's two questions then split the rest cleanly - four products hold credentials\
+    \ or host\nexecution for one system, and six do both across many.\n\nTWO PRODUCTS ABSTAIN because they\
+    \ are not adapters, and both are placement questions rather than\nscoring ones. `lightpanda` IS a browser\
+    \ - it implements the DOM and the Chrome DevTools Protocol -\nso it is the system other products here adapt\
+    \ rather than an adapter. `yomo` is a serverless runtime\nfor LLM function calling: nothing sits behind\
+    \ it, it is where a function runs. `yomo`'s destination\nis `deployment`, whose recipe carries no capability\
+    \ ladder at all, so moving it there today would\nrelocate the defect this split exists to remove."
+comments: "This category was `Agent tools & protocols` and is now the connector half of it. It\nkept the slug\
+  \ because a category slug is consumed by the front end and by every serialized payload,\nand renaming one\
+  \ is a retirement with aliases rather than an edit; the display name and the\ndefinition carry the change.\n\
+  \nWHAT LEFT, across three pull requests closing #430:\n  2026-09-16  `docling`, `marker`, `mineru`, `markitdown`\
+  \ to `document_conversion`\n  2026-09-17  `firecrawl`, `crawl4ai`, `serper`, `exa-search-api`, `tavily-search-api`,\n\
+  \              `perplexity-sonar-api`, `google-grounding-api`, `searxng`, `apify`, `jina-reader`,\n     \
+  \         `context7` to `search_retrieval`\n  2026-09-17  `model-context-protocol`, `agent2agent-protocol`,\
+  \ `mcp-python-sdk`,\n              `mcp-typescript-sdk`, `mcp-go`, `fastmcp`, `mcp-inspector` to `agent_protocols`\n\
+  \  2026-09-17  `algolia-ai-search` to `storage`\n\nTHE CAPABILITY LADDER IS NEW, and the honest reason is\
+  \ that there was not one before: this\ncategory's `scoring_recipe` carried an openness note and no capability\
+  \ section at all, while its\nbands pointed at `docling` as an anchor - a document converter that left the\
+  \ category on 2026-09-16.\nEvery band on this roster has been re-read against the ladder above rather than\
+  \ converted.\n\n`algolia-ai-search` moves to `storage` in this change rather than waiting: it searches the\
+  \ catalogue\na customer loads into it, which is `storage`'s question and not this one, and its peers -\n\
+  Elasticsearch, Meilisearch, Typesense, Orama - are all already there. Its capability was re-read\nagainst\
+  \ `storage`'s own ladder rather than carried over."

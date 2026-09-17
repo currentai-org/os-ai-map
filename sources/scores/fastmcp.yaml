@@ -14,9 +14,9 @@ openness:
     - no-feature-gated-core
     - maintained-by-Prefect
   confidence: high
-  note: Fully OSI-licensed, no open-core split observed on the repo. The LICENSE is the full Apache-2.0
-    text, the whole framework - servers, apps and clients - is in the published tree and installs from PyPI
-    with no key, and Prefect maintains it rather than selling a tier of it.
+  note: Fully OSI-licensed, no open-core split observed on the repo. The LICENSE is the full Apache-2.0 text,
+    the whole framework - servers, apps and clients - is in the published tree and installs from PyPI with
+    no key, and Prefect maintains it rather than selling a tier of it.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;maintained-by-Prefect;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -43,8 +43,8 @@ adoption:
   confidence: high
   note: fastmcp draws 94,141,215 PyPI downloads in the last month, comfortably above the >10M level-5 floor,
     which is what carries the band. The README's own claims corroborate rather than carry it - "downloaded
-    a million times a day, and some version of FastMCP powers 70% of MCP servers across all languages" -
-    and both remain vendor statements. Mass-market reach for MCP server tooling.
+    a million times a day, and some version of FastMCP powers 70% of MCP servers across all languages" - and
+    both remain vendor statements. Mass-market reach for MCP server tooling.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/fastmcp/recent
@@ -59,26 +59,38 @@ adoption:
     http_status: 200
     content_sha256: b2d55be6d54dea465f1a978227cbc9797563c9e0112df98242009dbfedc98d48
   - url: https://github.com/jlowin/fastmcp
-    shows: '27,203 stargazers; README - "the actively maintained standalone project is downloaded a million
+    shows: 27,203 stargazers; README - "the actively maintained standalone project is downloaded a million
       times a day, and some version of FastMCP powers 70% of MCP servers across all languages". No dependent-project
-      count is stated on the page.'
+      count is stated on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
 capability:
   score: 4
   basis: feature_matrix
-  value: auto schema generation/validation, tool/resource/prompt primitives, server+client, auth, deployment,
-    protocol lifecycle management; the standard high-level MCP server framework
+  value: 'of the Model Context Protocol, version not stated by the product: both roles - "Servers ... Clients
+    ..." - the full primitive set (tools, resources, prompts) and managed transport negotiation across the
+    standard transports'
   confidence: medium
-  note: Most feature-complete framework for authoring the tool-protocol layer (MCP); scored 4 on protocol-tooling
-    feature breadth; a 5 is reserved for the protocol/category-definer (MCP itself).
-  last_verified: '2026-08-13'
+  note: 'Both roles, the full primitive set and more than one transport, which is band 4. Banded at mcp-python-sdk:
+    FastMCP 1.0 was folded into that SDK and the standalone project covers the same dimensions. Its Apps pillar
+    - interactive UIs rendered in the conversation - is surface beyond the specification, and the ladder does
+    not read it, because a band here is coverage of the spec rather than of what a framework can do. Band 5
+    is out of reach on this evidence rather than on a judgement: it needs the optional features the cited spec
+    version defines for the roles implemented - sampling, roots and elicitation - and none of the documentation
+    read here enumerates them. Closing that is a documentation read, not a product change. The documentation
+    read does not name the specification version it targets, so the band rests on role, primitives and transports
+    alone and band 5 is out of reach on the version leg as well as the optional-features one. Establishing
+    the version is a documentation read rather than a product question.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/jlowin/fastmcp
-    shows: 'README - "FastMCP is the standard framework for working with MCP. FastMCP 1.0 was incorporated
-      into the official MCP Python SDK in 2024." Three pillars: Servers, Apps, clients. Schema generation
-      and validation, tool/resource/prompt primitives, auth and deployment.'
-    accessed: '2026-08-13'
+  - url: https://gofastmcp.com/getting-started/welcome
+    shows: 'The documentation''s three pillars: "Servers - Expose Python functions, data, and instructions
+      as MCP tools, resources, and prompts", "Clients - Connect to any MCP server", and Apps. The overview
+      states that "transport negotiation, authentication, and protocol lifecycle are managed for you", and
+      the Clients section documents a Transports reference.'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
+    content_sha256: bb0cdb563e5ef5703f5607e576f2c62632ccde5c89223e4004560718bd9f5f78
+  relative_to: mcp-python-sdk
+  relation: at

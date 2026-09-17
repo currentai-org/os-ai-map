@@ -1,0 +1,99 @@
+product: klavis
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the servers and the Strata aggregator
+    source:
+      value: public
+      detail: the MCP servers and Strata, not the platform around them
+    self-host:
+      value: 'yes'
+      detail: docker pull the servers, pipx install strata-mcp
+    service:
+      value: primary
+      detail: the hosted platform is where the credential brokering runs
+    core-gated:
+      value: gated
+      detail: the OAuth brokering the product is sold on is hosted-only; the open-source path documents no
+        authentication step
+  confidence: high
+  note: 'Apache-2.0 over real, useful software - the MCP servers and the Strata aggregator - with the part
+    the product is SOLD on kept back. What makes Klavis a platform rather than a collection of servers is that
+    it performs OAuth for the end user and holds the grant, and its own documentation puts that on the hosted
+    side: the Open Source tab covers local Strata with no authentication step at all, while the UI and API
+    paths return `oauthUrls` the platform mints. That is functionality withheld from the published tree rather
+    than a managed convenience beside a complete core, which is the litellm shape and lands at 4/open_core.
+    An earlier draft of this record scored 5 by reading the published servers as the whole product, which left
+    its openness and its capability describing two different things.'
+  raw: license:Apache-2.0(OSI; the servers and the Strata aggregator);source:public(the MCP servers and Strata,
+    not the platform around them);self-host:yes(docker pull the servers, pipx install strata-mcp);service:primary(the
+    hosted platform is where the credential brokering runs);core-gated:gated(the OAuth brokering the product
+    is sold on is hosted-only; the open-source path documents no authentication step)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/Klavis-AI/klavis/main/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/Klavis-AI/klavis
+    shows: 'Repository metadata: spdx_id Apache-2.0, 5,804 stars, not archived, not a fork, last pushed 2026-06-01,
+      description "Klavis AI: MCP integration platforms that let AI agents use tools reliably at any scale".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 99c0856916a0ad7ea623d86833370f0e6fa9872226745aac10d1fcc2b1ef6175
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: '5,804 GitHub stars. Two PyPI packages exist and neither measures the product: `klavis` is the hosted
+    platform''s client SDK at 3,497 downloads a month and `strata-mcp` is the self-hostable aggregator at 653.
+    The platform publishes no customer or request count. Stars cap at 3 and they are the least bad signal here.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/Klavis-AI/klavis
+    shows: 'Repository metadata for Klavis-AI/klavis: 5,804 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 99c0856916a0ad7ea623d86833370f0e6fa9872226745aac10d1fcc2b1ef6175
+capability:
+  score: 5
+  basis: feature_matrix
+  value: a hosted catalogue of more than a hundred prebuilt MCP servers with OAuth performed for the end user
+    and the resulting grant held by the platform, plus Strata, a self-hostable aggregator exposing many tools
+    through one server
+  confidence: medium
+  relative_to: composio
+  relation: at
+  note: 'Many systems, credentials the platform obtains and holds, execution it hosts: band 5. The flow is
+    the platform''s rather than the caller''s - the create-server call returns `oauthUrls` for the user to
+    complete and Klavis keeps the grant, which is why its own documentation warns not to share the resulting
+    token. The open-source half, Strata run locally, has no OAuth step at all; the band reads the product as
+    sold, and the record says which half does what.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://www.klavis.ai/docs/quickstart.md
+    shows: 'The hosted quickstart: the create-server response carries "oauthUrls: Authorization links for services
+      that require OAuth authentication" and "apiKeyUrls", and the worked code opens them - `webbrowser.open(oauth_url)`
+      then "Press Enter after completing {server_name} OAuth authorization". It warns "DO NOT share your access
+      token or direct URL publicly as they provide access to your connected accounts and data". The Open Source
+      tab covers local Strata - `strata add`, stdio mode - with no OAuth step.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c642566be6894fc9f1f845b6055e6e4ceb111ad5fcdacbcb28df35a222ba2c26
+  - url: https://raw.githubusercontent.com/Klavis-AI/klavis/main/README.md
+    shows: 'The README: "MCP Integrations - 100+ prebuilt integrations out-of-the-box, with OAuth support",
+      with a cloud-hosted option at klavis.ai and self-hosting via `ghcr.io/klavis-ai/github-mcp-server` and
+      `pipx install strata-mcp`.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 32deea8cf68374690944b289a2144f20dbf9063f45b4887a982e107f52ac1609

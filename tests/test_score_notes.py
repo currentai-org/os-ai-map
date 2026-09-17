@@ -165,6 +165,24 @@ ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 # Each was reviewed when the score-history sweep (#323) ran. Adding to this list is a claim that
 # the date would still be true if nobody ever re-read the record.
 DATES_THAT_ARE_PRODUCT_FACTS = {
+    # --- Model Context Protocol specification revisions, added 2026-09-17 with the
+    # agent_protocols category. These dates are the NAMES OF SPECIFICATION VERSIONS -
+    # 2024-11-05, 2025-03-26, 2025-06-18, 2025-11-25, 2026-07-28 - and the category's ladder
+    # requires every implementation to name the revision its coverage was read against, because
+    # band 5 asks for the current one. The date is the product's own version string, true
+    # whether or not anybody re-reads the record, and removing it would delete the denominator
+    # the band is computed from. `mcp-apps` carries its own extension spec version, 2026-01-26.
+    ("mcp-apps", "capability"),
+    ("mcp-go", "capability"),
+    ("mcp-go-sdk", "capability"),
+    ("mcp-java-sdk", "capability"),
+    ("mcp-python-sdk", "capability"),
+    ("mcp-rust-sdk", "capability"),
+    ("mcp-swift-sdk", "capability"),
+    ("mcp-typescript-sdk", "capability"),
+    # `model-context-protocol` states the date its governance moved to the Linux Foundation's
+    # AAIF, which is a fact about the project rather than about the reading.
+    ("model-context-protocol", "capability"),
     ("amazon-bedrock-evaluations", "adoption"),
     ("apertus", "adoption"),
     # A release date on each side of a trailing registry line. The whole reason the band does

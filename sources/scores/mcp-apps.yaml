@@ -1,0 +1,83 @@
+product: mcp-apps
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the specification, the SDK packages and the examples
+    self-host:
+      value: 'yes'
+      detail: the specification and its SDK are the product
+    core-gated:
+      value: ungated
+      detail: nothing withheld
+  confidence: high
+  note: Open source under the MCP project's dual transition licence, with the body cited because the classifier
+    reports NOASSERTION over it.
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the specification, the SDK packages and the examples);self-host:yes(the specification
+    and its SDK are the product);core-gated:ungated(nothing withheld)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/ext-apps/main/LICENSE
+    shows: 'The LICENSE body, read rather than the classifier''s label: the MCP project''s licensing transition
+      file, Apache-2.0 for new contributions with MIT retained where consent was not given. That shape is why
+      the API reports NOASSERTION.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/ext-apps
+    shows: 'Repository metadata: 2,848 stars, not archived, not a fork, last pushed 2026-09-16, description
+      "Official repo for spec & SDK of MCP Apps protocol - standard for UIs embedded AI chatbots, served by
+      MCP servers".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: d8cc54fc5a5f6c339438253f4e5ecf7fdad0fc9a79fa9f46294c1cd4b27f0b9d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 13,385,596 downloads of `@modelcontextprotocol/ext-apps` on npm in the trailing 30 days, above the
+    >10M floor for level 5. The package is the SDK the specification ships with, which is the product's own
+    distribution channel.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/ext-apps
+    shows: 'npm downloads point API: 13,385,596 downloads for `@modelcontextprotocol/ext-apps` over 2026-08-13
+      to 2026-09-11.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 7fc5076ca61f16505652b7fdf90951ffd0a7fc4918c3ab3b487ee37a8c5a97e5
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: medium
+  note: 'ABSTAINS. This ladder measures coverage of the MCP client-server contract over role, primitives and
+    transports, and MCP Apps implements none of those: it EXTENDS the protocol with a UI resource convention,
+    publishing its own dated specification - stable at 2026-01-26 - and an SDK for three audiences that are
+    not MCP roles (app developers, host developers and server authors registering UI metadata). Banding it
+    would mean reading a second quantity inside a category built to hold one. It belongs here because it is
+    a specification the protocol''s own project publishes and governs.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/ext-apps/main/README.md
+    shows: 'The README: "MCP Apps is an extension to the core MCP specification", working by "Tool definition
+      - Your tool declares a ui:// resource containing its HTML interface" which "The host fetches ... and
+      displays in a sandboxed iframe". Its own version table lists "2026-01-26 | Stable" and "draft | Development",
+      and "The base MCP SDK packages are ^2.0.0 peers".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 03bb330e99c0ee241cde4614e78cfc7c17f3593b145c69ddd0f6c930606b8c0e

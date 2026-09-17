@@ -1,0 +1,83 @@
+product: mcpb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the bundle specification, the CLI and the loader
+    self-host:
+      value: 'yes'
+      detail: the specification and its SDK are the product
+    core-gated:
+      value: ungated
+      detail: nothing withheld
+  confidence: high
+  note: Open source under the MCP project's dual transition licence, with the body cited because the classifier
+    reports NOASSERTION over it.
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the bundle specification, the CLI and the loader);self-host:yes(the specification
+    and its SDK are the product);core-gated:ungated(nothing withheld)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/mcpb/main/LICENSE
+    shows: 'The LICENSE body, read rather than the classifier''s label: the MCP project''s licensing transition
+      file, Apache-2.0 for new contributions with MIT retained where consent was not given. That shape is why
+      the API reports NOASSERTION.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/mcpb
+    shows: 'Repository metadata: 2,112 stars, not archived, not a fork, last pushed 2026-05-26, description
+      "Desktop Extensions: One-click local MCP server installation in desktop apps" - the pre-rename name.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 046f065a992fda1f60f98fcb239822229e3516eeeb1b5660456ab4b936c75996
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: 261,250 downloads of `@anthropic-ai/mcpb` on npm in the trailing 30 days, inside the 100K-1M band for
+    level 3. Medium confidence because the package is mid-rename from `@anthropic-ai/dxt`, so installs may
+    still be split across two names and this figure counts only the new one.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/mcpb
+    shows: 'npm downloads point API: 261,250 downloads for `@anthropic-ai/mcpb` over 2026-08-13 to 2026-09-11.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 980a8446c02205e785ea02515d274ffab9bada3e376883e70da8b8393adc8ec7
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: high
+  note: 'ABSTAINS. A packaging format implements no part of the client-server contract this ladder measures:
+    there is no role, no primitive and no transport to read. MCP Bundles describes how a server is shipped
+    and installed - "zip archives containing a local MCP server and a manifest.json", spiritually a `.crx`
+    or a `.vsix` - and the only protocol statement in it is advice to bundle authors to "Implement proper MCP
+    protocol communication via stdio transport", which is a requirement it places on others rather than one
+    it meets.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/mcpb/main/README.md
+    shows: 'The README: "MCP Bundles (.mcpb) are zip archives containing a local MCP server and a manifest.json
+      that describes the server and its capabilities. The format is spiritually similar to Chrome extensions
+      (.crx) or VS Code extensions (.vsix), enabling end users to install local MCP servers with a single click."
+      It ships "the bundle specification in MANIFEST.md, a CLI tool for creating bundles ... and the code used
+      by Claude for macOS and Windows to load and verify MCPB bundles", and carries the DXT-to-MCPB rename
+      notice.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: f0dd6672a09f88f71b0f9ad432185ed34876781aff94db47515648fe2267e01f

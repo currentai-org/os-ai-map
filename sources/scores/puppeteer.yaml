@@ -1,0 +1,74 @@
+product: puppeteer
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the library and its browser management
+    self-host:
+      value: 'yes'
+      detail: npm install, runs a local browser
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Apache-2.0 over the whole library, with no hosted tier and nothing withheld.
+  raw: license:Apache-2.0(OSI);source:public(the library and its browser management);self-host:yes(npm install,
+    runs a local browser);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/puppeteer/puppeteer/main/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: a27ca07269b3518550b2e83aed13eadd7d14d924b5864e14889b40cf227530ca
+    establishes:
+    - license
+  - url: https://api.github.com/repos/puppeteer/puppeteer
+    shows: 'Repository metadata: spdx_id Apache-2.0, 95,583 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "JavaScript API for Chrome and Firefox".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b406cf846096f4933140f1c52cd2b3ded259653dea0c3ac706053c6817706b8c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 44,469,009 downloads of `puppeteer` on npm in the trailing 30 days, above the >10M floor for level
+    5. The package is the product rather than a client for it.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/puppeteer
+    shows: 'npm downloads point API: 44,469,009 downloads for `puppeteer` over 2026-08-13 to 2026-09-11.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 155e15e6df708c81819562001e41b966bb6a9480d4d88e4e7ae6d5a81d68e3fa
+capability:
+  score: 3
+  basis: feature_matrix
+  value: a high-level API over one browser, driven through the DevTools Protocol or WebDriver BiDi, launched
+    and run by the caller with no credential of any kind
+  confidence: high
+  relative_to: playwright-mcp
+  relation: at
+  note: 'A curated surface over one system, with the caller supplying everything - which is band 3, and the
+    band the whole browser-driving group sits at. There is no authentication in the product: installation is
+    `npm i puppeteer` and the browser it downloads runs on the caller''s machine. Scale is not what this ladder
+    reads, and 44 million downloads a month do not move it.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/puppeteer/puppeteer/main/README.md
+    shows: 'The README: "Puppeteer is a JavaScript library which provides a high-level API to control Chrome
+      or Firefox over the DevTools Protocol or WebDriver BiDi." Installation is `npm i puppeteer`, which "Downloads
+      compatible Chrome during installation". No authentication, token or credential appears anywhere in it.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b2564c37c112336cc191da0890bdc4a8a3e5e039830b17613c69ac7914a7b4bc

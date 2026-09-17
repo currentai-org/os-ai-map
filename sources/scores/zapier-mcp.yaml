@@ -1,0 +1,79 @@
+product: zapier-mcp
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no self-hostable component; a single hosted endpoint
+    managed:
+      value: cloud SaaS with API keys
+      detail: two tasks per successful tool call against the account's Zapier plan
+      raw: cloud SaaS with API keys, two tasks per successful tool call against the account's Zapier plan
+  confidence: high
+  note: 'Closed and hosted end to end: one endpoint, no self-hosting option anywhere in the documentation,
+    and the value is precisely the credential estate Zapier holds on the caller''s behalf.'
+  raw: license:Proprietary(API-only);source:closed(no self-hostable component; a single hosted endpoint);managed:cloud
+    SaaS with API keys, two tasks per successful tool call against the account's Zapier plan
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://docs.zapier.com/mcp/overview/how-connections-work.md
+    shows: 'The connections documentation: "Every MCP client connects to the same endpoint: https://mcp.zapier.com/api/v1/connect"
+      and "Zapier MCP supports the Model Context Protocol over Streamable HTTP only." No self-hosted or source-available
+      option appears.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c8c78a199fa18c367baee962b059fc6d0155408fd7548e990967b981375c5bef
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  banded_quantity: MCP servers created on the platform (450,000+) and tool calls completed (18.5M+), not a
+    count of people or of this product's customers
+  confidence: medium
+  note: 'Banded on the vendor''s published platform figures rather than a count of users: 450,000+ MCP servers
+    created and 18.5M+ tool calls completed, with 1M+ apps connected. Those are activity counts on the hosted
+    product, which is the closest thing to a usage signal anyone publishes here, and `banded_quantity` records
+    what was actually read so a consumer sees it. The reach is recorded as a word rather than a range: `reported_traction`
+    carries no count behind it, and a numeric band would claim a measurement nobody made.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://zapier.com/mcp
+    shows: 'The product page: "Connect AI tools to 9,000 apps with Zapier MCP", with a figures block reading
+      "450,000+ MCP servers created", "18.5M+ tool calls completed" and "1M+ apps connected".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 104ebedd25951a0a86e582a14a19821eb759c60d4a0a7c87ac8c64e3bea3dbf8
+capability:
+  score: 5
+  basis: feature_matrix
+  value: one hosted endpoint fronting roughly 9,000 applications, with Zapier performing the sign-in and holding
+    every downstream app credential, and per-app authorization prompted at execution time
+  confidence: high
+  relative_to: composio
+  relation: at
+  note: 'Many systems, credentials the vendor holds, execution it hosts: band 5, and the clearest statement
+    of the credential test anywhere in this category comes from its own documentation - "Zapier holds the app
+    credentials, so your MCP client never handles a third-party API key." Banded at composio.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://docs.zapier.com/mcp/overview/how-connections-work.md
+    shows: 'The connections page: "Zapier holds the app credentials, so your MCP client never handles a third-party
+      API key." On the OAuth path: "The MCP client registers Zapier as an MCP server and sends you through
+      a Zapier sign-in... You do not manage a credential: the MCP client stores and refreshes the OAuth token."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c8c78a199fa18c367baee962b059fc6d0155408fd7548e990967b981375c5bef
+  - url: https://docs.zapier.com/mcp/quickstart.md
+    shows: 'The quickstart: "If they have not connected that app in Zapier yet, execution prompts them to authenticate
+      it."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 34a78cdc8582e74563900a4631996e037f87da679c2e025785fa32705d9f91f5

@@ -1,0 +1,82 @@
+product: mcp-swift-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the SDK, its transports and its examples
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: Open source under the Model Context Protocol project's dual transition licence, with the body cited
+    because the classifier reports NOASSERTION over it.
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the SDK, its transports and its examples);self-host:yes(a library you build
+    against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/swift-sdk/main/LICENSE
+    shows: 'The LICENSE body, read rather than the classifier''s label: it opens with the MCP project''s licensing
+      transition from MIT to Apache-2.0 and carries both texts, which is the shape GitHub''s classifier cannot
+      match and the reason the API reports NOASSERTION.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/swift-sdk
+    shows: 'Repository metadata: 1,491 stars, not archived, not a fork, last pushed 2026-05-07, description
+      "The official Swift SDK for Model Context Protocol servers and clients."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 3ef2a82a22be93b368a6ad8a0170b4f08bdcdae6292a7f0280d737a8f94bee0e
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,491 GitHub stars. Swift Package Manager resolves packages straight from git, so no registry publishes
+    a download count for this product and stars are the only countable signal; they cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/swift-sdk
+    shows: 'Repository metadata for modelcontextprotocol/swift-sdk: 1,491 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 3ef2a82a22be93b368a6ad8a0170b4f08bdcdae6292a7f0280d737a8f94bee0e
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'of the Model Context Protocol at version 2025-11-25: both roles, the full primitive set (tools, resources
+    with subscriptions, prompts), stdio, Streamable HTTP stateless and stateful, in-memory and network transports,
+    and all three optional features - sampling, elicitation and roots, each documented on both sides'
+  confidence: high
+  relative_to: mcp-python-sdk
+  relation: at
+  note: 'Both roles, the full primitive set, several transports and every optional feature - and band 4 rather
+    than 5 on the version leg alone. It states plainly that it implements 2025-11-25, and the current revision
+    is 2026-07-28, so the currency requirement fails. This is the cleanest illustration of why the ladder asks
+    for a version at all: on features this record is a 5, and the specification moved after its last release.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/swift-sdk/main/README.md
+    shows: 'The README: "This Swift SDK implements both client and server components according to the 2025-11-25
+      (latest) version of the MCP specification." The transport table lists StdioTransport, HTTPClientTransport,
+      StatelessHTTPServerTransport, StatefulHTTPServerTransport, InMemoryTransport and NetworkTransport, and
+      Sampling, Elicitation and Roots each have their own documented sections.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: ad833069a6dbbaa6db3b01a1150b69f013d076ab2c5434ce14b69dd1a050c493

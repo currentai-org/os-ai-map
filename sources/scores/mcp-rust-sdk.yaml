@@ -1,0 +1,91 @@
+product: mcp-rust-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the crate, its features and its examples
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Open source under the Model Context Protocol project''s dual transition licence: Apache-2.0 for new
+    contributions, MIT retained where authors have not consented to relicensing. GitHub''s classifier reports
+    NOASSERTION over it, which is a fact about the file''s shape rather than the grant, and the body is cited.'
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the crate, its features and its examples);self-host:yes(a library you build
+    against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/rust-sdk/main/LICENSE
+    shows: The LICENSE body, read rather than the classifier's label. It opens "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0", licensing new contributions
+      Apache-2.0, documentation CC-BY-4.0, and retaining MIT for contributions whose authors have not consented
+      to relicensing. That transition preamble is what GitHub's classifier cannot match, and it is why the
+      API reports NOASSERTION.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/rust-sdk
+    shows: 'Repository metadata: 3,935 stars, not archived, not a fork, last pushed 2026-09-15, description
+      "The official Rust SDK for the Model Context Protocol".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: d46822f73b1d603cd92e16d94cf25b52c438238f433c0cb37ae1e320e65c5132
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: The crates.io API reports 14,002,418 recent downloads for `rmcp`, which is crates.io's NINETY-DAY figure
+    rather than a monthly one - roughly 4.67 million a month, inside the 1M-10M band for level 4. Reading the
+    90-day number as monthly would band this a level high, which is the trap this note exists to close. Medium
+    confidence because the conversion assumes an even rate across the window.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://crates.io/api/v1/crates/rmcp
+    shows: 'The crates.io API record for `rmcp`: 27,118,854 downloads all-time and 14,002,418 recent_downloads,
+      which crates.io defines as the trailing 90 days. Latest stable 3.4.0, updated 2026-09-15.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: bffda92e7cc44da9daf081f4becaccb42adff671f0423b79ce95f78c7feaf6cb
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'of the Model Context Protocol at version 2026-07-28: both roles, the full primitive set (tools, resources,
+    prompts, each linked to its 2026-07-28 spec section), stdio and Streamable HTTP transports, and the optional
+    features - sampling, elicitation and roots each with their own documented section'
+  confidence: high
+  relative_to: mcp-go-sdk
+  relation: at
+  note: 'Band 5 on the same reading as the official Go SDK, and the transport question is worth stating rather
+    than glossing: `rmcp` ships stdio and Streamable HTTP and deliberately does NOT ship the legacy two-endpoint
+    HTTP+SSE transport from the 2024-11-05 revision, calling it a non-goal. The ladder asks for more than one
+    transport rather than all of them, and declining a transport the current specification has superseded is
+    coverage of that specification rather than a gap against it.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/rust-sdk/main/README.md
+    shows: 'The README: "This SDK implements the stable MCP 2026-07-28 specification while remaining fully
+      compatible with the 2025-11-25 release and earlier versions." Tools, Resources and Prompts each have
+      a section with a 2026-07-28 spec link, as do Sampling, Elicitation and Roots. The transport table lists
+      stdio, child process, Streamable HTTP server and client, and in-process; on SSE it states "There is no
+      separate ''SSE transport'' to configure" and that the 2024-11-05 HTTP+SSE transport is "a deliberate
+      non-goal".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c4f68586fc688a74a32f3177f00aa2f9d2e529f5c64326a0cfdc50eaa37679f0

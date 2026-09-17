@@ -15,9 +15,9 @@ openness:
   confidence: high
   note: 'Fully MIT reference SDK. The LICENSE is the plain MIT License, "Copyright (c) 2024 Anthropic, PBC"
     - worth stating because the sibling MCP repos are not: modelcontextprotocol/typescript-sdk and modelcontextprotocol/servers
-    have both moved to the project''s Apache-2.0 transition license, and this one has not. PyPI agrees,
-    classifying `mcp` as "OSI Approved :: MIT License". The whole SDK is in the published repo and installs
-    from PyPI with no key or paid tier, so core-gated stays ungated.'
+    have both moved to the project''s Apache-2.0 transition license, and this one has not. PyPI agrees, classifying
+    `mcp` as "OSI Approved :: MIT License". The whole SDK is in the published repo and installs from PyPI with
+    no key or paid tier, so core-gated stays ungated.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -52,9 +52,8 @@ adoption:
   signal_type: usage_volume
   confidence: medium
   note: '333,111,291 downloads of `mcp` in the trailing 30 days, which bands at >10M, level 5 on the software
-    adoption scale. The package is first-party rather than a squatted name: PyPI gives its repository as
-    github.com/modelcontextprotocol/python-sdk and its author as "Model Context Protocol a Series of LF
-    Projects, LLC".'
+    adoption scale. The package is first-party rather than a squatted name: PyPI gives its repository as github.com/modelcontextprotocol/python-sdk
+    and its author as "Model Context Protocol a Series of LF Projects, LLC".'
   reach: '>10M'
   last_verified: '2026-08-12'
   sources:
@@ -64,21 +63,25 @@ adoption:
     http_status: 200
     content_sha256: f969df13f1c89b38b15d36d7e3580fd78143d04c39f3d5062f979b737e318dfb
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
-  value: client+server; every standard transport - stdio, Streamable HTTP and SSE; tools, resources and prompts;
-    an `mcp` CLI (dev/run/install)
-  confidence: high
-  note: 'Most complete Python MCP toolkit. The README enumerates servers exposing "tools, resources, and
-    prompts to any MCP host", clients, and "Speak every standard transport: stdio, Streamable HTTP, and
-    SSE"; the value is held to what that page supports, and the 5 rests on this still being the reference
-    implementation of the protocol in Python, carrying every transport the spec defines.'
-  last_verified: '2026-08-13'
+  value: 'of the Model Context Protocol at version 2026-07-28: BOTH roles, the full primitive set (tools, resources,
+    prompts) and all three standard transports (stdio, Streamable HTTP, SSE)'
+  confidence: medium
+  note: 'Both roles, the full primitive set and every standard transport, which is band 4. The official Go
+    and Rust SDKs reach 5 above it, on the version and optional-feature legs rather than on anything this record
+    lacks structurally. It is the band-4 anchor: the other implementations are placed against it. Band 5 is
+    out of reach on this evidence rather than on a judgement: it needs the optional features the cited spec
+    version defines for the roles implemented - sampling, roots and elicitation - and none of the documentation
+    read here enumerates them. Closing that is a documentation read, not a product change. The README cites
+    the 2026-07-28 specification, which is the newest version published in the specification repository, so
+    the version leg of band 5 is satisfied and the optional-features leg is what it still lacks.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/modelcontextprotocol/python-sdk
-    shows: 'README - build MCP servers exposing tools, resources and prompts to any host; build MCP clients;
-      "Speak every standard transport: stdio, Streamable HTTP, and SSE". The `cli` extra adds `mcp dev`,
-      `mcp run` and `mcp install`. NOT on the page: FastMCP, OAuth 2.1, structured output or elicitation.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md
+    shows: 'The README states the coverage in one sentence each: "Build MCP servers that expose tools, resources,
+      and prompts to any MCP host", "Build MCP clients that connect to any MCP server", "Speak every standard
+      transport: stdio, Streamable HTTP, and SSE".'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 95eba3f326fa703f49d41a7e7a3a254b7d4545d0fbcd5f5376cea16404ac4cde
+    content_sha256: 87df4643ed5cb0e962c235ab19487fc9490f79392a63adc46427d5126d207259
