@@ -137,7 +137,7 @@ uv run python -m build.serialize_registry --check
 uv run python -m build.serialize_routing --check
 uv run python -m build.serialize_rubric --check
 uv run python -m build.serialize_scores --check
-uv run pytest -q
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial
 ```
 
 That list is `.github/workflows/validate.yml`'s, not a memorable subset of it. Two of these bite

@@ -128,7 +128,7 @@ uv run python -m build.check_artifacts     # identity / artifacts changed
 uv run python -m build.check_retirement    # a retirement alias was recorded
 uv run python -m build.check_payload       # an end-of-life date was declared
 uv run python -m build.check_verification  # an axis was re-dated
-uv run pytest -q                           # org membership or artifacts changed
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial                           # org membership or artifacts changed
 ```
 Never commit `build/notebook_data.json` or `notebooks/` (bot-owned).
 

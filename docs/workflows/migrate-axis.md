@@ -81,7 +81,7 @@ The individual gates below are what preflight runs, listed so a failure can be r
 uv run python -m build.validate            # 0 error(s) under the new schema
 uv run python -m build.check_verification
 uv run python -m build.check_payload
-uv run python -m pytest tests/ -q
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial
 ```
 Plus the distribution comparison from step 9, and (maintainer) `check_parity` once the warehouse
 side is deployed.

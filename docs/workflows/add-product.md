@@ -116,7 +116,15 @@ uv run python -m build.check_verification  # producible pair; invariant if you d
 uv run python -m build.check_capability    # the comparisons and their attestations hold
 ```
 
-Those four are necessary and not sufficient. **Run `uv run pytest` before opening the PR** — the
+WHY THE `-n auto` FORM. The suite is CPU-bound and parallelizes: measured on 2026-09-17 over
+2,120 tests, `uv run pytest -q` took 16m23s and the split form above took 6m35s on the same tree,
+with the same result. The `serial` marker exists for the one test that mutates the working tree and
+cannot run concurrently, which is why it gets its own pass. This is exactly what CI runs - see the
+"Run tests" step in `.github/workflows/validate.yml` - and `build/preflight.py` runs CI's commands
+verbatim, so `uv run python -m build.preflight` (without `--skip-tests`) already gets the fast path.
+The bare `uv run pytest` these documents used to recommend was the only slow way left to do it.
+
+Those four are necessary and not sufficient. **Run `uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial` before opening the PR** — the
 identity-eval ratchets live in the test suite, not in the gates, and a new org that skipped
 `org_handles.yaml` passes all four and fails CI.
 

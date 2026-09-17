@@ -273,7 +273,7 @@ The individual gates below are what preflight runs, listed so a failure can be r
 
 ```bash
 uv run python -m build.validate          # schema + roster integrity; must print 0 error(s)
-uv run pytest tests/ -q                  # full suite
+uv run pytest -q -n auto -m "not serial" && uv run pytest -q -m serial   # full suite
 ```
 
 `build.validate` catches a malformed registry row (including a URL where an identifier
