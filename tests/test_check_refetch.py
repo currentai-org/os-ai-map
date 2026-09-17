@@ -196,6 +196,82 @@ def test_github_host_gets_no_authorization_when_token_is_unset(monkeypatch):
     assert "Authorization" not in get.call_args.kwargs["headers"]
 
 
+# --- The 403 encoding retry ----------------------------------------------------------
+# Some hosts fingerprint urllib3's default `Accept-Encoding: gzip, deflate` and answer 403
+# to it while serving any explicit single value. Measured against Huawei Cloud on
+# 2026-09-17: 403 at 462 bytes on the default, 200 at 77,230 bytes with `Accept-Encoding:
+# gzip`. The retry is scoped to a 403 so that no page which is already fetchable changes
+# its bytes - a corpus-wide header pin was measured to re-digest 1 of 16 otherwise stable
+# pages, which is why this is a retry and not a default.
+
+def test_403_is_retried_once_with_an_explicit_encoding():
+    responses = [_response(403), _response(200)]
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get("https://fingerprints.example/doc", timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 200
+    assert get.call_count == 2
+    assert "Accept-Encoding" not in get.call_args_list[0].kwargs["headers"]
+    assert get.call_args_list[1].kwargs["headers"]["Accept-Encoding"] == "gzip"
+    assert response.encoding_retry is True
+
+
+def test_a_200_never_sets_accept_encoding():
+    """The default path is unchanged, which is what keeps every recorded digest valid."""
+    with patch("build.check_refetch.requests.get", return_value=_response(200)) as get:
+        http_get("https://a.example/x", timeout=5.0)
+    assert get.call_count == 1
+    assert "Accept-Encoding" not in get.call_args.kwargs["headers"]
+
+
+def test_a_real_403_stays_a_403_and_the_encoding_is_tried_only_once():
+    """A page that is genuinely forbidden answers 403 to both headers, and the finding survives.
+
+    403 is also in TRANSIENT - openai.com lets roughly one request in eight through - so the
+    backoff loop still runs after the encoding retry. What this pins is that the explicit
+    header is tried exactly once rather than on every attempt.
+    """
+    with patch("build.check_refetch.requests.get", return_value=_response(403)) as get:
+        response = http_get("https://forbidden.example/x", timeout=5.0, sleep=lambda _: None)
+    assert response.status_code == 403
+    encoded = [c for c in get.call_args_list if "Accept-Encoding" in c.kwargs["headers"]]
+    assert len(encoded) == 1
+
+
+def test_a_transient_from_the_retry_falls_through_to_the_backoff():
+    """A gzip-path 503 is still "not now", so it must not skip the retries it deserves.
+
+    The first draft returned any non-403 from the retry immediately, which spent the
+    fingerprint check and then handed back a 503 that had never been retried once.
+    """
+    responses = [_response(403), _response(503), _response(200)]
+    slept: list[float] = []
+    with patch("build.check_refetch.requests.get", side_effect=responses) as get:
+        response = http_get("https://flaky.example/x", timeout=5.0, sleep=slept.append)
+    assert response.status_code == 200
+    assert get.call_count == 3
+    assert slept, "the transient path must back off rather than retry immediately"
+
+
+def test_the_encoding_retry_is_tried_before_any_backoff():
+    """Ordering matters: a fingerprint answers 403 to every attempt, so asking three times
+    first costs six requests and two sleeps to learn nothing."""
+    slept: list[float] = []
+    with patch("build.check_refetch.requests.get", side_effect=[_response(403), _response(200)]) as get:
+        http_get("https://fingerprints.example/doc", timeout=5.0, sleep=slept.append)
+    assert get.call_count == 2
+    assert slept == [], "no sleep should happen before the encoding retry"
+
+
+def test_a_failed_encoding_retry_leaves_the_403_standing():
+    def _get(*_args, **kwargs):
+        if kwargs["headers"].get("Accept-Encoding"):
+            raise requests.Timeout("timed out on the retry")
+        return _response(403)
+
+    with patch("build.check_refetch.requests.get", side_effect=_get):
+        assert http_get("https://x.example/y", timeout=5.0, sleep=lambda _: None).status_code == 403
+
+
 # --- Bot walls -------------------------------------------------------------------------
 # A wall answers 200 and hands back a page that is not the document, so neither the
 # TRANSIENT branch nor the >=400 branch sees it. On 2026-08-13 two PyPI sources were

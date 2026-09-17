@@ -145,10 +145,18 @@ USER_AGENT = (
 # body served under a different Accept can differ byte-for-byte, so every recorded digest
 # would drift at once. The cost is real and the benefit measured zero.
 #
-# Accept-Encoding in particular must NEVER be set here. urllib3 advertises only the codecs
-# it can decode, and this environment has no brotli; forcing `br` returned a 200 whose
-# `.content` was raw compressed bytes. Every digest taken that way would be a digest of
-# ciphertext-looking garbage that no re-fetch could reproduce or read.
+# Accept-Encoding must NEVER be set on the DEFAULT path, and there are two reasons rather
+# than one. Forcing `br` returned a 200 whose `.content` was raw compressed bytes, because
+# urllib3 advertises only the codecs it can decode and this environment has no brotli; every
+# digest taken that way would be a digest of ciphertext-looking garbage. And setting even a
+# decodable value corpus-wide re-digests pages that are otherwise stable: measured 2026-09-17
+# over a 24-URL sample spanning one URL per cited host, 16 were stable under a two-fetch
+# control and 1 of those 16 returned a different body under `Accept-Encoding: gzip` -
+# www.getpanto.ai, same 194,443 bytes, deterministically different digest in each mode.
+# 6% of the corpus re-digesting is a real cost with no benefit to the pages already fetchable.
+#
+# The 403 RETRY below is the narrow exception, and it is narrow on purpose: see
+# `_encoding_retry_headers`.
 #
 # `Authorization` is the one addition, and it is scoped to GitHub's own hosts only: the
 # anonymous 60/hour limit turns a 150-product weekly re-verify into a wall of TRANSIENT
@@ -206,6 +214,31 @@ def _headers(url: str) -> dict[str, str]:
     return headers
 
 
+# Some hosts fingerprint urllib3's default `Accept-Encoding: gzip, deflate` and answer 403
+# to it while serving any explicit single-codec value. Measured 2026-09-17 against Huawei
+# Cloud, which holds the last citations `modelarts-training` needs:
+#
+#   support.huaweicloud.com/intl/en-us/productdesc-modelarts/...  default 403 (462 bytes)
+#                                                                 gzip     200 (77,230 bytes)
+#   www.huaweicloud.com/intl/en-us/product/modelarts.html         default 403 (426 bytes)
+#                                                                 gzip     200 (104,206 bytes)
+#
+# `identity` and `*` behave the same as `gzip` on both, so the value is not the point - being
+# explicit is. This fires ONLY after a 403 on the default path, so no page that is already
+# fetchable changes its bytes, and both the writer and the gate reach it through the same
+# condition, so a digest recorded on the retry is reproduced by the retry.
+#
+# THE ONE CASE THAT CAN STILL MISMATCH, stated rather than left to be discovered: a host that
+# 403s INTERMITTENTLY can serve the writer on the default path and the gate on the retry, or
+# the reverse, and the two bodies can differ - measured at 1 of 16 otherwise stable pages. The
+# consequence is bounded, because `check_refetch` reports a changed body as DRIFTED, a re-check
+# queue entry rather than a failure, and drift on a challenge-protected host is expected
+# anyway. Recording which mode produced a digest would close it properly, and that is a schema
+# change on every source rather than a fix belonging to this one.
+def _encoding_retry_headers(url: str) -> dict[str, str]:
+    return {**_headers(url), "Accept-Encoding": "gzip"}
+
+
 def http_get(
     url: str,
     timeout: float = 20.0,
@@ -228,6 +261,7 @@ def http_get(
     """
     url = canonical(url)
     attempts = 0
+    encoding_retried = False
     while True:
         attempts += 1
         try:
@@ -239,6 +273,30 @@ def http_get(
                 sleep(backoff * attempts)
                 continue
             raise
+        # The encoding retry goes BEFORE the transient backoff, not after it. A header
+        # fingerprint answers 403 to every attempt, so waiting three times to ask the same
+        # question costs six requests and two sleeps to learn nothing.
+        if response.status_code == 403 and not encoding_retried:
+            encoding_retried = True
+            try:
+                retried = requests.get(
+                    url,
+                    timeout=timeout,
+                    headers=_encoding_retry_headers(url),
+                    allow_redirects=True,
+                )
+            except requests.RequestException:
+                pass  # the 403 stands as the finding; a failed retry does not replace it
+            else:
+                attempts += 1
+                # A retry that comes back TRANSIENT falls through to the backoff below rather
+                # than returning: a gzip-path 503 is still "not now", and returning it here
+                # would spend the fingerprint check and skip the retries the 503 deserves.
+                if retried.status_code not in TRANSIENT:
+                    retried.attempts = attempts  # type: ignore[attr-defined]
+                    retried.encoding_retry = True  # type: ignore[attr-defined]
+                    return retried
+                response = retried
         if response.status_code in TRANSIENT and attempts <= retries:
             sleep(backoff * attempts)
             continue
