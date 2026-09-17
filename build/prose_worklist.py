@@ -14,7 +14,8 @@ built from. Five tells per note, one per product:
                abstain, instrument, "rests on", "measured, not inferred"
   figure       two or more comma-grouped or five-digit figures that also appear in a `shows`
                on the same axis, so the note is a table set as a sentence
-  opening      one of the template openings a single prompt wrote hundreds of times
+  opening      a rubric-speak opening a single prompt wrote hundreds of times ("Banded on
+               the", "One band below")
   retracting   the note corrects itself in place (`sweep_status.RETRACTING`)
   length       over the 600-character guard the goldens set
   comments     a product footnote whose vocabulary sits mostly in the notes already
@@ -61,11 +62,14 @@ RUBRIC_VOCABULARY = re.compile(
     re.IGNORECASE,
 )
 
-# The first words of a note, where one prompt's habit shows. Seventy notes opened "Banded on
-# the"; sixty-eight "<license> license body"; thirty-six "One|Two bands below".
+# The first words of a note, where one prompt's habit shows AND the words are the rubric's:
+# seventy notes opened "Banded on the", thirty-six "One|Two bands below". Deliberately not
+# "Apache-2.0 license body confirmed" or "Fully OSI-licensed (MIT), full source public": those
+# are short, factual and plain, sixty-eight products share the same facts, and the pilot pass
+# that flagged them replaced each with the same 330-character paragraph, name swapped, which
+# was the defect wearing a new coat. A short factual note is left alone.
 TEMPLATE_OPENINGS = re.compile(
-    r"^(?:banded on|one band below|two bands below|one tier below"
-    r"|[A-Za-z0-9.\-]+ licen[cs]e body|fully osi-licensed|admitted on the)",
+    r"^(?:banded on|one band below|two bands below|one tier below|admitted on the)",
     re.IGNORECASE,
 )
 

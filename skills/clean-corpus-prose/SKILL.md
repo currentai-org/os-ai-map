@@ -92,6 +92,14 @@ Never load-modify-dump a corpus file, and never hand-splice one; both have shipp
 - **Add a fact.** No source is opened, so no new fact is known.
 - **Leave a note that no longer stands alone.** The vocabulary was sometimes carrying the whole
   argument. Rewrite it in plain words; do not cut it to a fragment.
+- **Lengthen a note without a reason, or paste one paragraph across products.** The pilot pass
+  turned fourteen one-line notes ("Fully OSI-licensed (Apache-2.0), full source public") into
+  the same 330-character paragraph with the vendor swapped, lifting the `shows` lines up into
+  the note to do it. Identical facts get the same short sentence. A `shows` detail stays in
+  `shows`.
+- **Grade a figure.** "Comfortably", "solid", "mid-range", "at the low end" are filler. The
+  figure, what it counts, what it cannot show; and "a star is not a use" is the whole reason a
+  star count reads low, not "caps any reading low".
 
 ## Order and size
 

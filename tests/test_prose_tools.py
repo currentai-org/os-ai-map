@@ -73,7 +73,9 @@ def test_one_restated_figure_is_a_claim_with_its_evidence():
 
 def test_the_template_openings_and_the_ceiling():
     assert "opening" in note_tells({"note": "Banded on the downloads of the client SDK."})
-    assert "opening" in note_tells({"note": "Apache-2.0 license body confirmed; public repo."})
+    # Short, factual and plain is not the defect, however many products share the sentence.
+    assert "opening" not in note_tells({"note": "Apache-2.0 license body confirmed; public repo."})
+    assert "opening" not in note_tells({"note": "Fully OSI-licensed (MIT), full source public."})
     assert "opening" not in note_tells({"note": "Milvus is a server with no channel of its own."})
     assert "length" in note_tells({"note": "x" * (NOTE_CEILING + 1)})
     assert "length" not in note_tells({"note": "x" * NOTE_CEILING})

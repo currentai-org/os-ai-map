@@ -195,7 +195,22 @@ a spec revision named by its date or a GA date, and each such axis is listed in
 `tests/test_score_notes.py` with its reason.
 
 **A note may not restate `components` or `shows`.** "Apache-2.0 (OSI), source public, core
-ungated" is the components block set as prose. The note explains; the block records.
+ungated" is the components block set as prose. The note explains; the block records. The
+reverse move is the same defect: lifting a `shows` line's detail up into the note so the note
+"has an argument" puts the evidence on the page twice.
+
+**Shorter, not longer.** A rewrite is drawn from the facts the record already carries and is
+normally shorter than what it replaces. A one-sentence factual note on a plain open-source
+tool ("MIT, public repository, nothing sold beside it") is already right, however many products
+share the sentence, because they share the facts. Do not expand it into a paragraph, and do not
+invent variety: sixty products with identical evidence get the same short sentence, not the
+same long paragraph with the vendor's name swapped. A rewrite that lengthens a note needs a
+reason.
+
+**No adjectives about a figure.** "Comfortably in the tens of thousands", "a solid but mid-range
+figure", "at the low end of the measured range" say nothing the number does not. State the figure,
+what it counts, and what it cannot show. The plain reason a star count cannot place a product
+high is that a star is not a use; say that, not "caps any reading low".
 
 **Abstaining is a note too.** Where `level` or `score` is null, the note says why no reading was
 possible in the same two-sentence shape: what was looked for, and why nothing found could stand
@@ -441,7 +456,10 @@ that finds nothing to say about a note says nothing.
 > tier beside it, so source is public and the core ungated.
 
 Two sentences, two facts, the conclusion, no vocabulary. Most of the corpus reads like this,
-and the pass is for the third that does not.
+and the pass is for the third that does not. It is one product's evidence written down, not a
+template: the pilot pass pasted this paragraph, name swapped, onto fourteen products whose
+notes had read "Fully OSI-licensed (Apache-2.0), full source public", and every one of the
+fourteen was better before. A short factual sentence is left alone.
 
 ### A `shows` line: `agentops` openness, `app/LICENSE`
 
