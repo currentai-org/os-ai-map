@@ -75,11 +75,11 @@ capability:
   value: a platform API that runs actors and returns their dataset items synchronously or asynchronously, with
     Apify's own first-party search and crawl actors on top of it
   confidence: high
-  note: Finds and returns the content, through the first-party actors Apify itself publishes and the platform
-    API that runs them and hands back the dataset. The store's third-party actors do NOT count toward this
-    band - the scoring rule excludes what a product merely hosts - and neither does the count of them, which
-    is a coverage claim this ladder excludes by name. Banded at firecrawl, the other product that sells find-and-scrape
-    as one service.
+  note: 'Finds and returns the content, through the first-party actors Apify itself publishes and the platform
+    API that runs them and hands back the dataset - Google Search Results Scraper is developer "Apify", maintained
+    by Apify, and returns organic SERP results, which is the find step the platform API alone does not establish.
+    Third-party actors in the store do NOT count toward this band: the scoring rule excludes what a product
+    merely hosts, and the count of them is a coverage claim this ladder excludes by name. Banded at firecrawl.'
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.apify.com/api/v2
@@ -89,5 +89,14 @@ capability:
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 55305f8d4b7ec5ee86807d8e1ba32e22bd85c03007cf09d9515781d21b14adf1
+  - url: https://apify.com/apify/google-search-scraper
+    shows: 'Google Search Results Scraper, `apify/google-search-scraper`: "Developer Apify. Maintained by Apify",
+      "Scrape Google Search Engine Results Pages (SERPs)... extract organic and paid results, AI Mode, AI overviews,
+      ads, queries, People Also Ask", priced from $1.80 per 1,000 scraped search result pages, 17K monthly
+      active users. Establishes a first-party query-driven search surface rather than a hosted third-party
+      one.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: ac3988428c44af646037e08c10ee91a5b044b184caf2363161755b35be4cc21a
   relative_to: firecrawl
   relation: at

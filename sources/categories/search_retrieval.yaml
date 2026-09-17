@@ -77,13 +77,17 @@ scoring_recipe:
     \ confidence of self-description. This is also\n  why `google-programmable-search` is not marked down for\
     \ a site-scoped engine.\n  LATENCY - sub-20ms against a 3.4s P95 measures serving engineering.\n\nTHE DISTRIBUTION,\
     \ reported because band 4 holds more than a third of the roster and `capability.md`\nrequires the count,\
-    \ the denominator and which of the two cases it is. 1 at band 1, 5 at band 3, 8 at\nband 4 and 7 at band\
-    \ 5, over 21 banded products - widest rung 38%, against a corpus median of 50%.\nThe wording of band 4\
-    \ is \"ranked references for a query AND the content behind them, cleaned or\nextracted\", and this is\
-    \ the CLUSTERING case rather than the loose-definition one: eight vendors\nindependently converged on search-plus-extraction\
-    \ as the thing an agent wants, five of them\nmetering the extraction separately on the same call. Narrowing\
-    \ the rung would have to invent a\ndistinction between Firecrawl's scrape, Kagi's extract, You.com's full_page\
-    \ and Brave's LLM Context,\nand there is none in what they document."
+    \ the denominator and which of the two cases it is. 1 at band 1, 4 at band 3, 11\nat band 4 and 5 at band\
+    \ 5, over 21 banded products - widest rung 52%, against a corpus median of\n50%. The wording of band 4\
+    \ is \"ranked references for a query AND the content behind them, cleaned\nor extracted\", and this is\
+    \ the CLUSTERING case rather than the loose-definition one: eleven vendors\nindependently converged on\
+    \ search-plus-extraction as the thing an agent wants. Narrowing the rung\nwould have to invent a distinction\
+    \ between Firecrawl's scrape, Kagi's inline extract, You.com's\nfull_page mode, Brave's LLM Context, Exa's\
+    \ contents block, Parallel's excerpts and Tavily's\nraw_content, and there is none in what they document.\n\
+    \nThe band-4 bulge is also where the separately-sold test lands most of its weight, which is worth\nsaying\
+    \ plainly: Brave, Kagi, Parallel, Exa and You.com all sell an answer product, and all five stay\nat 4 because\
+    \ that product is a different line item from the search they are scored on. Move the test\nand the distribution\
+    \ moves with it. That is an argument for stating the test precisely, not for\nsoftening it."
 comments: 'Promoted 2026-09-17 under #430, the last piece of the split. Eleven products moved in from
 
   `agent_tools_protocols` and ten were promoted from the seed registry.
@@ -139,11 +143,14 @@ comments: 'Promoted 2026-09-17 under #430, the last piece of the split. Eleven p
 
   Search API and not Answer, Contents or Research; `brave-search-api` is the Search plan and not
 
-  Answers; `kagi-search-api` is v1 search and extract and not FastGPT. The alternative - scoring a
+  Answers; `kagi-search-api` is v1 search and extract and not FastGPT. The alternative - scoring a vendor''s
+  whole
 
-  vendor''s whole catalogue as one product - would have put five more records at band 5 and measured
+  catalogue as one product - would have put `brave-search-api`, `kagi-search-api`, `parallel-search`,
 
-  nothing.
+  `you-com-search-api` and `exa-search-api` at band 5 on products their customers buy separately, and
+
+  measured nothing.
 
 
   A LICENCE TRAP RUNS THROUGH THIS CATEGORY and is worth stating once: `serpapi`, `linkup`,
@@ -152,11 +159,41 @@ comments: 'Promoted 2026-09-17 under #430, the last piece of the split. Eleven p
 
   permissively licensed client SDKs in front of a closed index. The SDK is not the product. Every one
 
-  of those records scores the service and says what the SDK is.'
-strapline: 'Search is the category where the open stack does not have an index. Three of the twenty-one products
-  publish their source, and not one of them crawls the web: a metasearch front end that queries other people''s
-  engines, a URL-to-markdown converter, and a client library that scrapes ten search sites without their blessing.
-  Fourteen are closed outright, every one of them shipping a permissively licensed SDK in front of an index
-  nobody outside the company has seen, and one forbids using its results to train or benchmark an AI model
-  at all. Nine of the twenty-one publish no countable usage signal, so almost half of this category''s adoption
-  is unmeasurable rather than low.'
+  of those records scores the service and says what the SDK is.
+
+
+  ADOPTION, and the rule for client packages, stated once here because four records turn on it. A
+
+  first-party SDK counts as a usage-volume channel for the service ONLY when the vendor sells one
+
+  product and the package exists to call it: `serpapi` bands 4 on 1,605,478 monthly downloads of
+
+  `google-search-results` and `linkup` bands 3 on 236,301 of `linkup-sdk`, both at medium confidence
+
+  because each vendor also ships a client in another language that the band does not count. Two
+
+  things are NOT that channel. A multi-product SDK measures a wider population than a record scoped
+
+  to one SKU, which is why `parallel-search` abstains despite 2,631,725 downloads of `parallel-web`
+
+  and `you-com-search-api` abstains despite 235,116 of `youdotcom`. And a wrapper implementing a
+
+  different protocol measures adoption of that protocol rather than of the service, which is why
+
+  `brave-search-api` abstains rather than banding on 62,956 downloads of its MCP server.
+
+
+  Nine of the twenty-one abstain on adoption altogether, every one of them a closed service that
+
+  publishes no request, customer or developer count and has no package that measures it. That is the
+
+  honest state of this layer rather than a gap in the research, and each record names the page the
+
+  figure was looked for on.'
+strapline: 'Search is the category where the open stack has no index. Three of the twenty-one products publish
+  their source outright and four more publish part of it, but not one of them crawls the web: what is open
+  here is a metasearch front end that queries other people''s engines, a URL-to-markdown converter, a library
+  that scrapes ten search sites without their blessing, and three crawlers you point at a page. Fourteen products
+  are closed, and the ones that run an index of their own guard it completely - one forbids using its results
+  to train or benchmark an AI model at all. Nine of the twenty-one publish no countable usage signal, so nearly
+  half of this category''s adoption is unmeasurable rather than low.'

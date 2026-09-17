@@ -58,15 +58,16 @@ adoption:
     http_status: 200
     content_sha256: 75aba5a8ab16b90ffdfbb4e23e31c2839e0688e680e4fec6b9bce1edc47a6f0c
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
   value: '`POST /search` with `include_raw_content` for the page text behind each result and `include_answer`
     for a generated answer over them, plus extract, crawl, map and research endpoints on the same API'
   confidence: medium
-  note: 'Answers, with citations, on the same endpoint: `include_answer` is a documented parameter of `/search`,
-    alongside `include_raw_content` for the page text. That is the Linkup shape rather than the Brave one -
-    one route, parameters rather than plans - so it reaches band 5 under the scoring rule. It was banded 4
-    in `agent_tools_protocols` against a different quantity entirely.'
+  note: 'Finds and returns the content: `include_raw_content` returns the page text behind each result on the
+    search call itself. It does NOT reach band 5, and the reason is narrow: `include_answer` does return a
+    composed answer - the documented 200 response carries an `answer` string - but nothing in the response
+    attributes that answer to the results beside it, and band 5 requires the citations. An earlier draft banded
+    this 5 on the answer alone. Banded at firecrawl.'
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.tavily.com/documentation/api-reference/endpoint/search
@@ -75,5 +76,11 @@ capability:
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 8435da3f5c2390da73e25516bf21498ca29bdf9764b1f017200284612ca81703
-  relative_to: perplexity-sonar-api
+  - url: https://docs.tavily.com/documentation/best-practices/best-practices-search
+    shows: 'Tavily''s search best-practices guide: search depths, chunking and `chunks_per_source`, describing
+      what comes back per source. No citation contract is documented for the `answer` field.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 15acdeb2bad831fe1379e29295251b40b2bc0e729ca1ee80c881765274ede8e3
+  relative_to: firecrawl
   relation: at

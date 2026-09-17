@@ -60,18 +60,19 @@ adoption:
     http_status: 200
     content_sha256: 71832e1bfa328f5218fbe4bd8f50a67424ed07ea95c52f0b830ff98da54159fd
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   value: '`text()` returns ranked references - title, href and a body snippet - aggregated across ten backends;
     `images()`, `videos()`, `news()` and `books()` do the same for their verticals; `extract()` fetches a URL
     the caller names and converts it to markdown'
   confidence: high
-  relative_to: serper
+  relative_to: firecrawl
   relation: at
-  note: 'Finds, and returns references. `text()` answers a query with title, link and snippet, which is band
-    3, and no method returns the content behind a result. `extract()` does return page content but takes a
-    URL the caller names rather than a query, so under the combinations rule it adds the band-1 step and not
-    the band-4 one. Banded at serper, which is the same shape: someone else''s index, references out.'
+  note: 'Finds and returns the content, under the combinations rule: `text()` answers a query with ranked references
+    and `extract()` returns the content behind any of them, which is the same two-call workflow that bands
+    jina-reader. An earlier draft banded this 3 on the reasoning that `extract()` takes a URL rather than a
+    query - true, and true of jina''s `r.` endpoint too, so the reasoning banded two identical shapes differently
+    and is withdrawn. Banded at firecrawl, the band-4 anchor.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/deedy5/ddgs/main/README.md
