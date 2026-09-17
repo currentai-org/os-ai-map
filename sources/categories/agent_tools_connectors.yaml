@@ -1,4 +1,4 @@
-name: agent_tools_protocols
+name: agent_tools_connectors
 display_name: Agent tools & connectors
 description: 'Adapters that put a system an agent does not own within its reach: servers exposing one product''s
   operations, catalogues spanning many, and the browser-control layer.'
@@ -73,19 +73,29 @@ scoring_recipe:
     \ rather than an adapter. `yomo` is a serverless runtime\nfor LLM function calling: nothing sits behind\
     \ it, it is where a function runs. `yomo`'s destination\nis `deployment`, whose recipe carries no capability\
     \ ladder at all, so moving it there today would\nrelocate the defect this split exists to remove."
-comments: "This category was `Agent tools & protocols` and is now the connector half of it. It\nkept the slug\
-  \ because a category slug is consumed by the front end and by every serialized payload,\nand renaming one\
-  \ is a retirement with aliases rather than an edit; the display name and the\ndefinition carry the change.\n\
-  \nWHAT LEFT, across three pull requests closing #430:\n  2026-09-16  `docling`, `marker`, `mineru`, `markitdown`\
-  \ to `document_conversion`\n  2026-09-17  `firecrawl`, `crawl4ai`, `serper`, `exa-search-api`, `tavily-search-api`,\n\
-  \              `perplexity-sonar-api`, `google-grounding-api`, `searxng`, `apify`, `jina-reader`,\n     \
-  \         `context7` to `search_retrieval`\n  2026-09-17  `model-context-protocol`, `agent2agent-protocol`,\
-  \ `mcp-python-sdk`,\n              `mcp-typescript-sdk`, `mcp-go`, `fastmcp`, `mcp-inspector` to `agent_protocols`\n\
-  \  2026-09-17  `algolia-ai-search` to `storage`\n\nTHE CAPABILITY LADDER IS NEW, and the honest reason is\
-  \ that there was not one before: this\ncategory's `scoring_recipe` carried an openness note and no capability\
-  \ section at all, while its\nbands pointed at `docling` as an anchor - a document converter that left the\
-  \ category on 2026-09-16.\nEvery band on this roster has been re-read against the ladder above rather than\
-  \ converted.\n\n`algolia-ai-search` moves to `storage` in this change rather than waiting: it searches the\
-  \ catalogue\na customer loads into it, which is `storage`'s question and not this one, and its peers -\n\
-  Elasticsearch, Meilisearch, Typesense, Orama - are all already there. Its capability was re-read\nagainst\
-  \ `storage`'s own ladder rather than carried over."
+comments: "THE SLUG CHANGED ON 2026-09-17, from `agent_tools_protocols` to `agent_tools_connectors`. The old\n\
+  one had stopped describing the category: the protocols and the SDKs left for `agent_protocols` the\nsame\
+  \ day, and a slug saying `protocols` on a roster with none in it is the drift this map's own\nrules exist\
+  \ to catch. There is no alias mechanism for a category slug the way there is for a\nproduct, so this note\
+  \ is the mapping - anything in the corpus that says `agent_tools_protocols`\nmeans this category as it was\
+  \ before the split.\n\nREFERENCES TO THE OLD SLUG ARE LEFT ALONE WHERE THEY RECORD HISTORY. `sources/resolution_ledger.yaml`\n\
+  carries 31 of them in verdicts decided under #413, and four score notes say a product \"moved out of\nagent_tools_protocols\"\
+  \ - each describes a decision taken while that was the name, and rewriting them\nwould make the record say\
+  \ something that was not true on its own date. References that name this\ncategory as a thing that exists\
+  \ NOW were updated, because a reader following one has to be able to\nfind it.\n\nThis category was `Agent\
+  \ tools & protocols` and is now the connector half of it. It\nkept the slug because a category slug is consumed\
+  \ by the front end and by every serialized payload,\nand renaming one is a retirement with aliases rather\
+  \ than an edit; the display name and the\ndefinition carry the change.\n\nWHAT LEFT, across three pull requests\
+  \ closing #430:\n  2026-09-16  `docling`, `marker`, `mineru`, `markitdown` to `document_conversion`\n  2026-09-17\
+  \  `firecrawl`, `crawl4ai`, `serper`, `exa-search-api`, `tavily-search-api`,\n              `perplexity-sonar-api`,\
+  \ `google-grounding-api`, `searxng`, `apify`, `jina-reader`,\n              `context7` to `search_retrieval`\n\
+  \  2026-09-17  `model-context-protocol`, `agent2agent-protocol`, `mcp-python-sdk`,\n              `mcp-typescript-sdk`,\
+  \ `mcp-go`, `fastmcp`, `mcp-inspector` to `agent_protocols`\n  2026-09-17  `algolia-ai-search` to `storage`\n\
+  \nTHE CAPABILITY LADDER IS NEW, and the honest reason is that there was not one before: this\ncategory's\
+  \ `scoring_recipe` carried an openness note and no capability section at all, while its\nbands pointed at\
+  \ `docling` as an anchor - a document converter that left the category on 2026-09-16.\nEvery band on this\
+  \ roster has been re-read against the ladder above rather than converted.\n\n`algolia-ai-search` moves to\
+  \ `storage` in this change rather than waiting: it searches the catalogue\na customer loads into it, which\
+  \ is `storage`'s question and not this one, and its peers -\nElasticsearch, Meilisearch, Typesense, Orama\
+  \ - are all already there. Its capability was re-read\nagainst `storage`'s own ladder rather than carried\
+  \ over."

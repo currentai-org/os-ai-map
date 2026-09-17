@@ -76,3 +76,20 @@ def test_html_escape_neutralizes_contributor_markup(text):
     assert "<" not in escaped and ">" not in escaped
     if "&" in text:
         assert "&amp;" in escaped
+
+
+def test_the_order_tolerates_a_payload_that_names_a_category_sources_no_longer_has():
+    """The committed payload lags sources between a merge and the bot's regeneration.
+
+    Until 2026-09-17 a renamed or removed category made `_build_straplines_literal` raise
+    KeyError at module scope, which is an import error, which takes this whole file down as a
+    collection error rather than one readable failure. The window is unavoidable - the payload
+    is bot-owned and regenerated after merge - so the renderer has to survive it.
+    """
+    from build.render import _build_straplines_literal
+
+    cats = {"kept": {"strapline": "still here"}}
+    order = [cid for cid in ["kept", "renamed-away"] if cid in cats]
+    literal = _build_straplines_literal(order, cats)
+    assert '"kept": "still here"' in literal
+    assert "renamed-away" not in literal
