@@ -157,33 +157,18 @@ def test_the_whole_sentence_is_returned_so_the_reader_knows_what_to_delete():
     assert sentence == "Verified 2026-08-13 via the README."
 
 
-# The corpus carried the line on every product when #619 opened. It is stripped in the commit
-# after this one lands; until then the count is pinned so the suite is green at each step and
-# a product cannot pick the line back up while the strip is in flight. Lower this to zero with
-# the strip, then delete the two tests that reference it in favor of the strict one below.
-VERIFIED_LINE_BACKLOG = 763
-
-
 def test_no_product_carries_a_dated_verification_sentence():
     """The corpus-wide invariant, and the one this section exists to hold.
 
-    While the backlog stands it is a ratchet; once it is zero the ratchet is the invariant.
+    Strict rather than a ratchet: the corpus was cleared in one scripted pass (#619), so there is
+    no backlog to name, and an allowlist would only give the next instance somewhere to hide.
     """
     found = census()
-    assert len(found) <= VERIFIED_LINE_BACKLOG, (
-        f"{len(found) - VERIFIED_LINE_BACKLOG} product(s) picked the verification line back up. "
-        "The date is `last_verified`; the document read belongs on a source entry. "
+    assert not found, (
+        f"{len(found)} product(s) carry a dated verification sentence in comments. The date is "
+        "`last_verified`; the document read belongs on a source entry as `url` and `shows`. "
         "See docs/reference/product-copy.md:\n"
         + "\n".join(f"  {slug}: {sentence}" for slug, sentence in list(found.items())[:20])
-    )
-
-
-def test_the_backlog_has_not_silently_shrunk_without_being_recorded():
-    """Measured must equal recorded, or the pin stops describing the corpus and starts hiding
-    the next reintroduction behind the slack."""
-    assert len(census()) == VERIFIED_LINE_BACKLOG, (
-        f"{len(census())} products carry the line; VERIFIED_LINE_BACKLOG says "
-        f"{VERIFIED_LINE_BACKLOG}. Record the new count."
     )
 
 
