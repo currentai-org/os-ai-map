@@ -758,8 +758,8 @@ __SECTION_CELLS__
 
 @app.cell(hide_code=True)
 def details_payload(DATA, ORDER, mo):
-    import base64 as _b64
-    import json as _json
+    import base64 as _b64  # noqa: F401 - kept for the comment below to stay true
+    import json as _json  # noqa: F401
     # Build a per-product payload keyed by product name, then install a delegated
     # click handler + modal via a hidden-iframe onload bootstrap (marimo strips
     # <script>, so we inject through the iframe into the parent document).
@@ -775,9 +775,16 @@ def details_payload(DATA, ORDER, mo):
     # Details button rendered wired to a handler that was never installed. Base64 is pure
     # ASCII -- 1 byte per character, nothing for the attribute escaping to expand, and
     # immune to whatever character lands in a score note next.
-    _pj = "'" + _b64.b64encode(
-        _json.dumps(_payload, ensure_ascii=False).encode("utf-8")
-    ).decode("ascii") + "'"
+    # The payload is DELIVERED IN CHUNKS, one per marimo cell, because a cell output is
+    # capped at 8,000,000 bytes and the whole payload crossed it on 2026-09-17 at 4,048,380
+    # base64 characters (marimo measures roughly twice the attribute). Splitting the base64
+    # rather than the records keeps this decoder synchronous: the chunks concatenate back into
+    # one string before a single `atob`, so the JavaScript never merges objects. Compression
+    # would have been smaller and needs `DecompressionStream`, which is async, which races the
+    # click handler that reads the payload.
+    from build.details_payload import payload_chunks
+    _chunks = payload_chunks(DATA, ORDER)
+    _pj = "window.__V3_B64__"
     _css = (
         ".v3-details{padding:3px 9px;font-size:11px;font-family:'DM Mono',ui-monospace,monospace;"
         "border:1px solid #a5bbbe;background:#fff;color:#0b252f;border-radius:0;cursor:pointer;font-weight:500;"
@@ -850,9 +857,49 @@ def details_payload(DATA, ORDER, mo):
              "s.textContent='" + _css.replace("\\\\", "\\\\\\\\").replace("'", "\\\\'") + "';document.head.appendChild(s);}})();"
              + _js.replace("__PAYLOAD__", _pj))
     _boot = _full.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
+
+    def details_carrier(text):
+        """One hidden iframe that appends its slice of the base64 to the page."""
+        js = ("window.__V3_B64__=(window.__V3_B64__||'')+'" + text + "';")
+        esc = js.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
+        return ('<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
+                'style="display:none;width:0;height:0;border:0;position:absolute" '
+                f'onload="{esc}"></iframe>')
+
+    details_chunks = _chunks
+    details_boot = _boot
+    mo.Html(details_carrier(details_chunks[0]) if details_chunks else "")
+    return details_boot, details_carrier, details_chunks
+
+
+@app.cell(hide_code=True)
+def details_chunk_2(details_carrier, details_chunks, mo):
+    mo.Html(details_carrier(details_chunks[1]) if len(details_chunks) > 1 else "")
+    return
+
+
+@app.cell(hide_code=True)
+def details_chunk_3(details_carrier, details_chunks, mo):
+    mo.Html(details_carrier(details_chunks[2]) if len(details_chunks) > 2 else "")
+    return
+
+
+@app.cell(hide_code=True)
+def details_chunk_4(details_carrier, details_chunks, mo):
+    # Four carriers is the ceiling, and `tests/test_details_payload_size.py` fails when the
+    # payload needs a fifth rather than dropping one silently - which is the failure mode this
+    # whole mechanism exists to prevent. At 2,000,000 characters each that is room for roughly
+    # twice today's corpus; adding a fifth cell is the fix when it fills.
+    mo.Html(details_carrier(details_chunks[3]) if len(details_chunks) > 3 else "")
+    return
+
+
+@app.cell(hide_code=True)
+def details_install(details_boot, mo):
+    # Runs after every carrier above, so `window.__V3_B64__` is complete when it decodes.
     mo.Html(
         f'<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
-        f'style="display:none;width:0;height:0;border:0;position:absolute" onload="{_boot}"></iframe>'
+        f'style="display:none;width:0;height:0;border:0;position:absolute" onload="{details_boot}"></iframe>'
     )
     return
 

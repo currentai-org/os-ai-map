@@ -40,6 +40,21 @@ MARIMO_SERIALIZATION_FACTOR = 2
 PAYLOAD = Path(__file__).resolve().parents[1] / "build" / "notebook_data.json"
 
 
+#: How many carrier cells `build/render.py` declares. The payload is split across them, and a
+#: payload needing a fifth has to FAIL here rather than lose its last chunk silently - losing a
+#: chunk breaks every Details button for the products in it, which is the 2026-08-18 failure
+#: wearing a different hat.
+CARRIER_CELLS = 4
+
+
+def _chunks() -> list[str]:
+    from build.details_payload import payload_chunks
+
+    data = json.loads(PAYLOAD.read_text(encoding="utf-8"))
+    order = data["order"] if isinstance(data.get("order"), list) else list(data["categories"])
+    return payload_chunks(data, order)
+
+
 def _details_attribute() -> str:
     """Exactly what build/render.py puts in the iframe's onload attribute.
 
@@ -59,16 +74,38 @@ def _details_attribute() -> str:
     return encoded.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
 
 
-def test_the_details_payload_fits_in_a_marimo_cell_output():
+def test_every_carrier_cell_fits_in_a_marimo_cell_output():
+    """The cap applies per cell, so it is the biggest CHUNK that has to fit, not the payload."""
+    for i, chunk in enumerate(_chunks(), start=1):
+        measured = sys.getsizeof(chunk) * MARIMO_SERIALIZATION_FACTOR
+        assert measured < OUTPUT_MAX_BYTES, (
+            f"carrier {i} measures ~{measured:,} bytes against marimo's {OUTPUT_MAX_BYTES:,}. "
+            "Lower CHUNK_CHARS in build/details_payload.py."
+        )
+
+
+def test_the_payload_fits_in_the_carrier_cells_that_exist():
+    """A fifth chunk with four carriers means the last one is never delivered."""
+    chunks = _chunks()
+    assert len(chunks) <= CARRIER_CELLS, (
+        f"the payload needs {len(chunks)} carrier cells and build/render.py declares "
+        f"{CARRIER_CELLS}. The last {len(chunks) - CARRIER_CELLS} would never reach the page and "
+        "every Details button for the products in them would do nothing. Add a "
+        "`details_chunk_{n}` cell to render.py and raise CARRIER_CELLS here."
+    )
+
+
+def test_the_whole_payload_would_not_fit_in_one_cell():
+    """Why the chunking exists, asserted so nobody reverts it as premature.
+
+    If this ever fails the corpus has shrunk below the cap and one cell would do again - which
+    is not a reason to undo the split, but is a reason to know.
+    """
     attribute = _details_attribute()
     measured = sys.getsizeof(attribute) * MARIMO_SERIALIZATION_FACTOR
-    assert measured < OUTPUT_MAX_BYTES, (
-        f"the Details payload measures ~{measured:,} bytes against marimo's "
-        f"{OUTPUT_MAX_BYTES:,}-byte output_max_bytes. marimo will drop this cell's output "
-        f"silently and every Details button in the published notebook will do nothing when "
-        f"clicked. Trim the payload to the fields the modal actually renders (it ignores "
-        f"freshness, slug, org_slug, tier, overall_score and the sources' content_sha256 / "
-        f"accessed / http_status), or split it across cells."
+    assert measured >= OUTPUT_MAX_BYTES, (
+        f"the whole payload now measures ~{measured:,} bytes, under marimo's "
+        f"{OUTPUT_MAX_BYTES:,}-byte cap. The corpus has shrunk since the chunking landed."
     )
 
 
