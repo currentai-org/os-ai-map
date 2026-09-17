@@ -20,10 +20,10 @@ openness:
     - no-feature-gated-core
   confidence: high
   note: 'A fully OSI-licensed reference server with no feature-gated core, though the two available license
-    statements disagree. The server''s own README says "This MCP server is licensed under the MIT License
-    ... please see the LICENSE file in the project repository", and that LICENSE file is not MIT: modelcontextprotocol/servers
-    carries the MCP project''s transition text, byte-identical to the specification repo''s - Apache-2.0
-    for new code, CC-BY-4.0 for documentation other than specifications, and MIT retained only for pre-transition
+    statements disagree. The server''s own README says "This MCP server is licensed under the MIT License ...
+    please see the LICENSE file in the project repository", and that LICENSE file is not MIT: modelcontextprotocol/servers
+    carries the MCP project''s transition text, byte-identical to the specification repo''s - Apache-2.0 for
+    new code, CC-BY-4.0 for documentation other than specifications, and MIT retained only for pre-transition
     contributions not yet relicensed. So the README points at a file that contradicts it. Both code licenses
     are recorded here, and the documentation license apart from them, since a license covering prose should
     not govern the artifact you run. Every part is OSI-approved, so the tier and the 5 hold whichever statement
@@ -38,18 +38,18 @@ openness:
       a licensing transition from the MIT License to the Apache License, Version 2.0. All new code and specification
       contributions to the project are licensed under Apache-2.0. Documentation contributions (excluding specifications)
       are licensed under CC-BY-4.0. Contributions made by authors who originally licensed their work under
-      the MIT License and who have not yet granted explicit permission to relicense remain licensed under
-      the MIT License." Followed by the full Apache-2.0 text.'
+      the MIT License and who have not yet granted explicit permission to relicense remain licensed under the
+      MIT License." Followed by the full Apache-2.0 text.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
     establishes:
     - license
   - url: https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md
-    shows: 'License section - "This MCP server is licensed under the MIT License. This means you are free
-      to use, modify, and distribute the software, subject to the terms and conditions of the MIT License.
-      For more details, please see the LICENSE file in the project repository." The whole server ships here
-      and installs as @modelcontextprotocol/server-filesystem; nothing is withheld and there is no paid tier.'
+    shows: License section - "This MCP server is licensed under the MIT License. This means you are free to
+      use, modify, and distribute the software, subject to the terms and conditions of the MIT License. For
+      more details, please see the LICENSE file in the project repository." The whole server ships here and
+      installs as @modelcontextprotocol/server-filesystem; nothing is withheld and there is no paid tier.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd
@@ -69,8 +69,8 @@ adoption:
   signal_type: usage_volume
   confidence: low
   note: 1,945,615 downloads of @modelcontextprotocol/server-filesystem in the trailing 30 days, which bands
-    at 1M-10M, level 4 on the software adoption scale. The count is for the per-server npm package rather
-    than for the monorepo it lives in, so it is not shared with the other servers in that repository.
+    at 1M-10M, level 4 on the software adoption scale. The count is for the per-server npm package rather than
+    for the monorepo it lives in, so it is not shared with the other servers in that repository.
   reach: 1M-10M
   last_verified: '2026-08-12'
   sources:
@@ -80,26 +80,24 @@ adoption:
     http_status: 200
     content_sha256: cda748d40b5be539d16128ed592a15d1ffc6bf0d98f5cc43619bbbc78ba84faf
 capability:
-  score: 4
+  score: 3
   basis: feature_matrix
-  value: granular read/write/edit; directory tree; search; media reads; sandboxed allowed-directory access; Roots
-    support
-  confidence: high
-  note: Full local-filesystem surface with sandboxed access controls. Access is confined to allowed directories
-    set either by command-line argument or, preferred, dynamically by the client through the MCP Roots protocol,
-    and the server refuses to initialize if neither is provided.
-  last_verified: '2026-08-13'
+  value: a curated tool surface over a directory tree - read, write, edit, move, search, directory listing
+    and media reads - confined to directories the caller allows, either as launch arguments or through MCP
+    Roots
+  confidence: medium
+  note: 'A curated surface over one system with no credentials in the picture at all: access is bounded by
+    the allowed-directory list rather than authenticated. A filesystem has nothing to authenticate to, which
+    is why this record sits at 3 on the same footing as the others rather than being marked down for lacking
+    auth. Banded at playwright-mcp.'
+  last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md
-    shows: 'Features - read/write files, create/list/delete directories, move, search, file metadata, "Dynamic
-      directory access control via Roots". Per-tool table with readOnlyHint and destructiveHint columns; read_media_file
-      streams a file back as a base64 content block with its MIME type. Without command-line arguments and
-      without client Roots support "the server will throw an error during initialization".'
-    accessed: '2026-08-13'
+    shows: 'The README''s two access methods: "Specify Allowed directories when starting the server: mcp-server-filesystem
+      /path/to/dir1 /path/to/dir2" and "MCP Roots (Recommended)". No authentication, token or credential appears
+      anywhere in it.'
+    accessed: '2026-09-17'
     http_status: 200
     content_sha256: df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd
-  - url: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
-    shows: The server's directory in the monorepo, rendering the tool list above.
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 25d203fcb2f09a85d3d04932e4eb5222f66a2b9e02b734e0ddb50952ef89354a
+  relative_to: playwright-mcp
+  relation: at

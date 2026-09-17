@@ -92,7 +92,14 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # agent_tools_protocols and into search_retrieval). The other six movers and the ten promoted
 # products contribute no rows, because measurements come from the frozen observation snapshot
 # rather than from declared artifacts.
-MEASUREMENTS_DIGEST = "79babc6c393224af99a5f7e0036af25a9940946c4e697da3f9c188fa22e123e8"
+# Moved on 2026-09-17 by the agent_tools_protocols split, for the same reason and in the same
+# shape. Measured rather than asserted - the row sets were dumped on both sides and diffed:
+# 378 rows before and after, TWO rows different, and on each the only field that differs is
+# `category_slug` (fastmcp and mcp-python-sdk out of agent_tools_protocols and into
+# agent_protocols). The other five products that changed category carry no rows, and neither
+# do the twenty promoted alongside them, because measurements come from the frozen observation
+# snapshot rather than from declared artifacts.
+MEASUREMENTS_DIGEST = "4ed061fab1677014352c63b35b561e3e9dde0529481b52f7fbec561e198c841f"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

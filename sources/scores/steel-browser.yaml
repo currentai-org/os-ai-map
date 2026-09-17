@@ -1,0 +1,95 @@
+product: steel-browser
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the browser API, the session manager and the Docker image
+    self-host:
+      value: 'yes'
+      detail: docker run, or Steel Cloud
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Apache-2.0 over the whole API and its session management. A hosted tier exists - Steel Cloud - beside
+    a complete self-hostable core, which is not gating: the SDKs target either through a `baseURL` option.
+    The `ungated` reading meets the shared software rubric''s acceptance standard for that dimension rather
+    than resting on path absence: the vendor''s own documentation names its commercial offering as a separate
+    thing, and the source cited below carries that statement.'
+  raw: license:Apache-2.0(OSI);source:public(the browser API, the session manager and the Docker image);self-host:yes(docker
+    run, or Steel Cloud);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/steel-dev/steel-browser/main/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License 2.0 text.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/steel-dev/steel-browser
+    shows: 'Repository metadata: spdx_id Apache-2.0, 7,654 stars, not archived, not a fork, last pushed 2026-09-16,
+      described as an "Open Source Browser API for AI Agents & Apps" and a "batteries-included browser sandbox".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 02ca23ccf1a6f4e03141ad8e6c0e5509146da42e8b6a102f02062f8e48025c97
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/steel-dev/steel-browser/main/README.md
+    shows: 'The README names the commercial offering as a deployment of the same product rather than a tier
+      above it, which is what the `ungated` acceptance standard asks for: self-hosting is `docker run ghcr.io/steel-dev/steel-browser`
+      with Railway and Render one-click alternatives, "The easiest way to get started with Steel is by creating
+      a Steel Cloud account", and the SDKs "are compatible with both Steel Cloud and self-hosted Steel instances
+      (changeable using the baseURL option)" - one API, two places to run it.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 668949f121cb5a8ac262a8d3222a31eaee6692bfc0de9b86e60ae04f885ccc9b
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 7,654 GitHub stars. The `steel-sdk` npm package records 126,266 downloads a month, and it is a CLIENT
+    for the API rather than the product - banding on it would measure a different population, the error the
+    `langfuse` correction was made for. The product itself ships as a Docker image, which publishes no count.
+    Stars cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/steel-dev/steel-browser
+    shows: 'Repository metadata for steel-dev/steel-browser: 7,654 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 02ca23ccf1a6f4e03141ad8e6c0e5509146da42e8b6a102f02062f8e48025c97
+capability:
+  score: 4
+  basis: feature_matrix
+  value: an HTTP API over a managed browser - sessions, pages and processes, with cookie and local-storage
+    state persisted across requests - self-hostable with Docker or consumed as Steel Cloud, with proxy credentials
+    supplied by the caller
+  confidence: medium
+  relative_to: browserbase
+  relation: at
+  note: 'Band 4, and on the hosting leg rather than the credential one. Steel runs no authentication flow -
+    the only secret in its documentation is a proxy string the caller passes in - but it hosts execution: Steel
+    Cloud runs the browsers, and the same SDKs point at either deployment. Under this ladder band 4 is band
+    3 plus managed credentials OR hosted execution, and the second is met. Banded at browserbase, which sells
+    the same shape commercially.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/steel-dev/steel-browser/main/README.md
+    shows: 'The README: "Steel.dev is an open-source browser API that makes it easy to build AI apps and agents
+      that interact with the web... Under the hood, it manages sessions, pages, and browser processes", with
+      "Session Management: Maintains browser state, cookies, and local storage across requests". Its only credential
+      is `proxyUrl: "user:pass@host:port"`, supplied by the caller. Deployment is `docker run ... ghcr.io/steel-dev/steel-browser`
+      or "The easiest way to get started with Steel is by creating a Steel Cloud account".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 668949f121cb5a8ac262a8d3222a31eaee6692bfc0de9b86e60ae04f885ccc9b

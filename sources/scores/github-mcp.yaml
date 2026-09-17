@@ -15,8 +15,8 @@ openness:
   confidence: high
   note: Fully MIT, first-party GitHub server, no feature-gated core. GitHub also runs a hosted Remote GitHub
     MCP Server, but that is a managed endpoint for the same server rather than a tier holding features back
-    - the toolset list is the same one, configured by header instead of by flag - which is the langchain
-    shape the ladder settles as ungated.
+    - the toolset list is the same one, configured by header instead of by flag - which is the langchain shape
+    the ladder settles as ungated.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -43,12 +43,11 @@ adoption:
   signal_type: stars_fallback
   confidence: medium
   note: 'No download metric exists for the channels this server actually ships through: a Go binary, a Docker
-    image and GitHub''s own hosted remote endpoint, none of which publishes a count, and there is no npm
-    or PyPI package to read. Stars are therefore forced rather than chosen as the signal - 32,220 stargazers
-    on the one declared repository, which bands at >10K stars, level 3, though first-party backing implies
-    real usage well above that. The page the count comes from carries a live star counter, so its content
-    will differ on any later fetch; that is expected drift on this source rather than a signal about the
-    claim.'
+    image and GitHub''s own hosted remote endpoint, none of which publishes a count, and there is no npm or
+    PyPI package to read. Stars are therefore forced rather than chosen as the signal - 32,220 stargazers on
+    the one declared repository, which bands at >10K stars, level 3, though first-party backing implies real
+    usage well above that. The page the count comes from carries a live star counter, so its content will differ
+    on any later fetch; that is expected drift on this source rather than a signal about the claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/github/github-mcp-server
@@ -58,19 +57,24 @@ adoption:
     http_status: 200
     content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
-  value: '20+ toolsets: repos, issues, PRs, Actions, code security, Dependabot, Discussions, Projects, Copilot'
-  confidence: high
-  note: The most comprehensive GitHub-platform tool surface among MCP servers.
-  last_verified: '2026-08-13'
+  value: a curated tool surface over GitHub - repositories, issues, pull requests, Actions, code security,
+    Dependabot, discussions - reached with a personal access token, or through a remote server that performs
+    OAuth
+  confidence: medium
+  note: 'One system, and the product handles authentication rather than passing a secret through: the remote
+    server does OAuth with the host, and the local server takes a PAT. That is the line between 3 and 4 here.
+    Its earlier band read a different question in a category that no longer exists.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/github/github-mcp-server
-    shows: 'Toolset table with per-toolset icons, including dependabot; README groups them as repository management,
-      "CI/CD intelligence: Monitor GitHub Actions workflow runs, analyze build failures, manage releases",
-      "Code Analysis: Examine security findings, review Dependabot alerts" and "Team Collaboration: Access
-      discussions, manage notifications". Default toolsets apply when none is specified; Insiders mode and
-      the remote server documentation cover the rest.'
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/github/github-mcp-server/main/README.md
+    shows: The README documents a remote server requiring "a compatible MCP host with remote server support
+      (VS Code 1.101+, Claude Desktop, Cursor, Windsurf)" for "remote MCP and OAuth support", and a local server
+      configured with a "GitHub Personal Access Token" input. Its toolsets span repositories, issues, pull
+      requests, Actions, code analysis, Dependabot alerts and discussions.
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c
+    content_sha256: 0686b41067fd437abbde4b473c394fe2365e5ad2ae81c21b9f988735359c9666
+  relative_to: browserbase
+  relation: at

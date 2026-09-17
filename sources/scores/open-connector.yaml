@@ -1,0 +1,104 @@
+product: open-connector
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: the gateway, its catalogue and its credential handling
+    self-host:
+      value: 'yes'
+      detail: docker compose, Helm, Fly.io or a single binary
+    service:
+      value: optional
+      detail: the vendor also runs a hosted tier
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Apache-2.0 over the gateway itself, which is the unusual part of this record: the hosted alternatives
+    in this category are closed, and this one publishes the thing that holds the credentials. The `ungated`
+    reading meets the shared software rubric''s acceptance standard for that dimension rather than resting
+    on path absence: the vendor''s own documentation names its commercial offering as a separate thing, and
+    the source cited below carries that statement.'
+  raw: license:Apache-2.0(OSI);source:public(the gateway, its catalogue and its credential handling);self-host:yes(docker
+    compose, Helm, Fly.io or a single binary);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
+    withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/LICENSE.txt
+    shows: 'The LICENSE.txt body: the verbatim Apache License 2.0 text. Note the path - the repository has
+      no file named `LICENSE`, and a citation of that name returns 404.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/oomol-lab/open-connector
+    shows: 'Repository metadata: spdx_id Apache-2.0, 5,794 stars, not archived, not a fork, last pushed 2026-09-17,
+      description "Open-source auth gateway connecting 1500+ SaaS providers to AI agents through SDK, CLI,
+      MCP, HTTP, and OpenAPI."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 837568b83c01bec41d7e7446c40717bc3c7d7c194bebdfbc6a04297805c17928
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md
+    shows: 'The README''s deployment table names the hosted offering as a separate product and says exactly
+      what it adds, which is what the `ungated` acceptance standard asks for: hosted gives "Managed OAuth and
+      hosted runtime, ready to use. No deployment or OAuth app setup", self-hosted is "Run locally or on your
+      own infrastructure with Docker or Node.js. You manage storage and OAuth apps." The gateway, its catalogue
+      and its credential handling are in the published tree either way; what the hosted tier supplies is OAuth
+      client registrations, not code.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 51975a342b647726a614483ae568d7c112f3408565a839ef3fd6f05b5b358a53
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: '5,794 GitHub stars. The npm package `@oomol-lab/open-connector` records ZERO downloads for the trailing
+    month, which is not a signal of disuse: the README distributes the runtime as a GHCR Docker image and names
+    npm only as an embeddable option. A container registry publishes no count this scale can read, so stars
+    are what is left and they cap at 3.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/oomol-lab/open-connector
+    shows: 'Repository metadata for oomol-lab/open-connector: 5,794 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 837568b83c01bec41d7e7446c40717bc3c7d7c194bebdfbc6a04297805c17928
+capability:
+  score: 5
+  basis: feature_matrix
+  value: a catalogue of over a thousand providers and ten thousand prebuilt actions, with credential handling
+    for API keys, OAuth2 and custom schemes - named connections, encryption and token refresh - behind a runtime
+    the caller can self-host or consume hosted
+  confidence: medium
+  relative_to: composio
+  relation: at
+  note: 'Many systems, credentials the product holds and refreshes, and a runtime that can be hosted: band
+    5, alongside ACI.dev as the open-source products that reach it here. One qualification the README states
+    plainly and this record repeats rather than smooths: self-hosting means YOU register the OAuth applications
+    with each provider, while the hosted tier supplies them. The gateway performs the flow and stores the grant
+    in both cases, which is what the band reads; who owns the OAuth client is a deployment question. Banded
+    at composio, the closed-source product with the same shape.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md
+    shows: 'The README: "an open-source connector gateway for AI agents and an alternative to Pipedream/Composio.
+      Connect user app accounts once, then expose a shared catalog of 1,000+ providers and 10,000+ prebuilt
+      Actions", with "Credential handling for API keys, OAuth2, custom credentials, and no-auth providers",
+      "Provider secrets stay behind the runtime boundary" and "named connections, credential encryption, token
+      refresh, and action policies". The deployment table: hosted gives "Managed OAuth and hosted runtime...
+      No deployment or OAuth app setup"; self-hosted means "You manage storage and OAuth apps".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 51975a342b647726a614483ae568d7c112f3408565a839ef3fd6f05b5b358a53

@@ -1,0 +1,88 @@
+product: mcp-kotlin-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the client and server artefacts and their examples
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Open source under the Model Context Protocol project''s dual transition licence: Apache-2.0 for new
+    contributions, MIT retained where authors have not consented to relicensing. The classifier reports NOASSERTION
+    over it, which is the file''s shape rather than the grant, and the body is cited. Two other places disagree
+    with it - a README badge saying Apache-2.0 and a Maven Central entry saying MIT - and the file is what
+    this record follows.'
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the client and server artefacts and their examples);self-host:yes(a library
+    you build against);core-gated:ungated(nothing withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/kotlin-sdk/main/LICENSE
+    shows: The LICENSE body, read rather than the classifier's label. It opens "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0", licensing new contributions
+      Apache-2.0 and retaining MIT where relicensing consent was not given. That preamble is what GitHub's
+      classifier cannot match, and it is why the API reports NOASSERTION.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 7c6a686d2b34b86ad8c726e0ac4d76903b525f251d73e617f8db3879fa8f11fc
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/kotlin-sdk
+    shows: 'Repository metadata: 1,458 stars, not archived, not a fork, last pushed 2026-09-17, description
+      "The official Kotlin SDK for Model Context Protocol servers and clients. Maintained in collaboration
+      with JetBrains."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 386034c2ec06ee9015c49cc2460bc35e48f3feca3dc8f2c08581ecef4b8130d9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,458 GitHub stars. Maven Central publishes no download figures and the legacy Solr index returns nothing
+    for this group, so there is no usage-volume channel to band; stars cap at 3.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/kotlin-sdk
+    shows: 'Repository metadata for modelcontextprotocol/kotlin-sdk: 1,458 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 386034c2ec06ee9015c49cc2460bc35e48f3feca3dc8f2c08581ecef4b8130d9
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'of the Model Context Protocol, version not stated by the product: both roles, the full primitive
+    set (prompts, resources, tools, plus logging and completions), and four transports - stdio, SSE, Streamable
+    HTTP and WebSocket'
+  confidence: medium
+  relative_to: mcp-python-sdk
+  relation: at
+  note: 'Both roles, the full primitive set and four transports, which is band 4. The version leg of band 5
+    fails for the same reason as the C# SDK: the README says only that it "implements the MCP specification"
+    and links to "latest", naming no dated revision. All three optional features are documented, including
+    a `sampling.tools` sub-capability.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/kotlin-sdk/main/README.md
+    shows: 'The README: "Build MCP clients that can connect to any MCP server" and "Create MCP servers that
+      expose resources, prompts, and tools", a feature table covering Prompts, Resources and Tools, and "Use
+      standard transports like stdio, SSE, Streamable HTTP, and WebSocket". The client capability table lists
+      sampling, roots and elicitation. No dated specification revision appears; it links to the specification''s
+      "latest".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 8a8aa430249df40cb8853fb35903e40ec8d2e2addc390b6c6558918035e23965

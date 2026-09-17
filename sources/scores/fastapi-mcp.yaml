@@ -1,0 +1,76 @@
+product: fastapi-mcp
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: the whole converter
+    self-host:
+      value: 'yes'
+      detail: a library you mount in your own app
+    service:
+      value: optional
+      detail: the vendor sells a hosted product beside it
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published package
+  confidence: high
+  note: MIT over the whole library, which is the product - Tadata sells a hosted service alongside it and withholds
+    nothing from the package.
+  raw: license:MIT(OSI);source:public(the whole converter);self-host:yes(a library you mount in your own app);service:optional(the
+    vendor sells a hosted product beside it);core-gated:ungated(nothing withheld from the published package)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/tadata-org/fastapi_mcp
+    shows: 'Repository metadata: spdx_id MIT, 12,008 stars, not archived, not a fork, description "Expose your
+      FastAPI endpoints as Model Context Protocol (MCP) tools, with Auth!".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: dd151f5b57bccdd9e6007b04c5dd5cd2bf9e0fa571716af2e959a320ed2d6c29
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 2,715,464 downloads of `fastapi-mcp` on PyPI in the trailing 30 days, inside the 1M-10M band for level
+    4. PyPI is the documented install channel for a Python library, so downloads measure the product.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://pypistats.org/api/packages/fastapi-mcp/recent
+    shows: last_month = 2,715,464 downloads for `fastapi-mcp` (last_week 798,004, last_day 77,205).
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 2ca9a10f448936f1995dcca8f62d8dec856c7a3a314e41e52f8f83d74f957d84
+capability:
+  score: 1
+  basis: feature_matrix
+  value: 'of the Model Context Protocol, version not stated by the product: the SERVER role only, the TOOLS
+    primitive only - endpoints become tools, and no resources or prompts are exposed - over FastAPI''s own
+    ASGI transport'
+  confidence: medium
+  relative_to: mcp-inspector
+  relation: two_below
+  note: 'One role and one primitive, which is band 1 on this ladder. That reads harshly against 12,000 stars
+    and it is what the ladder measures: spec coverage, not usefulness. Converting an existing API into tools
+    is the product''s whole job and it does that well - the README''s own feature list is authentication, schema
+    preservation and zero configuration, none of which is protocol surface. Banded two below mcp-inspector,
+    which implements one role across the full primitive set. The README names no specification version, which
+    matters less here than elsewhere: one role and one primitive is band 1 under any version of the spec.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/tadata-org/fastapi_mcp/main/README.md
+    shows: 'The README''s feature list: "Authentication built in, using your existing FastAPI dependencies",
+      "Preserving schemas of your request models and response models", "Flexible deployment - Mount your MCP
+      server to the same app, or deploy separately", "ASGI transport - Uses FastAPI''s ASGI interface directly".
+      Endpoints become tools; no resource or prompt primitive and no client role appear anywhere in it.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: d573958d974385f87b444cef01309245a98f4752eae4a7b32e9d31dc54895630

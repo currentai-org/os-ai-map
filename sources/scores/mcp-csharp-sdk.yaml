@@ -1,0 +1,102 @@
+product: mcp-csharp-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the relicensing
+    source:
+      value: public
+      detail: the SDK and its documentation
+    self-host:
+      value: 'yes'
+      detail: a library you build against
+    core-gated:
+      value: ungated
+      detail: nothing withheld from the published tree
+  confidence: high
+  note: 'Open source under the Model Context Protocol project''s dual transition licence: Apache-2.0 for new
+    contributions, MIT retained where authors have not consented to relicensing. The classifier reports NOASSERTION
+    over it, which is the file''s shape rather than the grant, and the body is cited.'
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    relicensing);source:public(the SDK and its documentation);self-host:yes(a library you build against);core-gated:ungated(nothing
+    withheld from the published tree)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/main/LICENSE
+    shows: The LICENSE body, read rather than the classifier's label. It opens "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0", licensing new contributions
+      Apache-2.0 and retaining MIT where relicensing consent was not given. That preamble is what GitHub's
+      classifier cannot match, and it is why the API reports NOASSERTION.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 7c6a686d2b34b86ad8c726e0ac4d76903b525f251d73e617f8db3879fa8f11fc
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/csharp-sdk
+    shows: 'Repository metadata: 4,532 stars, not archived, not a fork, last pushed 2026-09-14, description
+      "The official C# SDK for Model Context Protocol servers and clients. Maintained in collaboration with
+      Microsoft."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c00a4a90a9c867a8ec075ba03a6371d480d00e2e4399b10a89f1349b3f6b0260
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,532 GitHub stars. NuGet's search API reports 31,852,326 downloads for the `ModelContextProtocol`
+    package, and that is a CUMULATIVE all-time total rather than a figure for any window - the adoption scale
+    is monthly, so banding on it would compare two different quantities. Stars are what is left, and they cap
+    at 3 by policy.
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/csharp-sdk
+    shows: 'Repository metadata for modelcontextprotocol/csharp-sdk: 4,532 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: c00a4a90a9c867a8ec075ba03a6371d480d00e2e4399b10a89f1349b3f6b0260
+  - url: https://azuresearch-usnc.nuget.org/query?q=packageid:ModelContextProtocol&prerelease=true
+    shows: 'NuGet search API for packageid:ModelContextProtocol: version 2.2.0, totalDownloads 31,852,326 -
+      a cumulative figure, recorded here as context for the abstention from a usage-volume band rather than
+      as the basis of one.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0311d3600f4b9897e381598fda6030bae76a500df01775e43b3f385ee2020961
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'of the Model Context Protocol, version not stated by the product: both roles, the full primitive
+    set (tools, prompts, resources, plus logging and completions), and all three transports - stdio, Streamable
+    HTTP and legacy SSE, the last disabled by default'
+  confidence: medium
+  relative_to: mcp-python-sdk
+  relation: at
+  note: 'Both roles, the full primitive set and three transports, which is band 4. It does not reach 5 on the
+    version leg: the documentation names no target revision, describing runtime negotiation instead - "During
+    connection setup, the client and server negotiate a mutually supported MCP protocol version" - so there
+    is no cited version to check currency against. All three optional features ARE documented, which is the
+    other half of band 5, so this record is one documentation sentence away from it.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/main/docs/concepts/capabilities/capabilities.md
+    shows: 'The capabilities documentation: server capabilities "Tools - Server exposes callable tools", "Prompts
+      - Server exposes prompt templates", "Resources - Server exposes readable resources", plus Logging and
+      Completions; client capabilities "Roots", "Sampling" and "Elicitation". It frames versioning as negotiation:
+      "During connection setup, the client and server negotiate a mutually supported MCP protocol version."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0b8f36a30288f142fd013c8bee443a4113ba017216544a253e636e7823bf6742
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/main/docs/concepts/transports/transports.md
+    shows: 'The transports documentation: "Three transport mechanisms are supported: stdio, Streamable HTTP,
+      and SSE (Server-Sent Events, legacy)", with "Legacy SSE endpoints (/sse and /message) are disabled by
+      default".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: d283a3bac246cb41d98ad123e3a958679c484dbe671a206cd7b0d7684575517d

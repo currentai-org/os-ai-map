@@ -1,0 +1,82 @@
+product: pipedream
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: API-only
+    source:
+      value: closed
+      detail: no self-hostable runtime; tool definitions are published, the platform is not
+    managed:
+      value: cloud SaaS with API keys
+      detail: hosted runtime, per-user credential storage, usage-based pricing
+      raw: cloud SaaS with API keys, hosted runtime, per-user credential storage, usage-based pricing
+  confidence: high
+  note: Closed platform. The tool definitions are on GitHub - "All on GitHub - extend any tool or write your
+    own" - and the runtime, the credential vault and the proxy that make it a product are not.
+  raw: license:Proprietary(API-only);source:closed(no self-hostable runtime; tool definitions are published,
+    the platform is not);managed:cloud SaaS with API keys, hosted runtime, per-user credential storage, usage-based
+    pricing
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://pipedream.com/connect
+    shows: 'The product page: "Requests run in Pipedream''s managed runtime - no OAuth apps to register, nothing
+      to host or scale", with the MCP endpoint at https://remote.mcp.pipedream.net. No self-hosting option
+      is offered.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 18c67ae199c02297bec999e3a67d8eb515320cb88e196681f7dc5eff3fe0ec2c
+    establishes:
+    - license
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  banded_quantity: end-user accounts connected through the platform (1M+), not a count of developers or customers
+  confidence: medium
+  note: 'Banded on the vendor''s published figure of 1M+ accounts connected, alongside 10,000+ prebuilt tools
+    across 3,000+ APIs. An account connected is an end user of somebody else''s product rather than a customer
+    of this one, which is why `banded_quantity` says so rather than letting `level: 4` imply a developer count.
+    The reach is recorded as a word rather than a range: `reported_traction` carries no count behind it, and
+    a numeric band would claim a measurement nobody made.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://pipedream.com/connect
+    shows: 'The product page stat block: "10,000+ Prebuilt tools & triggers", "3,000+ Integrated APIs", "1M+
+      Accounts connected".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 18c67ae199c02297bec999e3a67d8eb515320cb88e196681f7dc5eff3fe0ec2c
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'managed authentication across roughly 3,000 APIs: hosted OAuth clients, token storage and automatic
+    refresh, with fresh tokens injected per user on every request through a hosted runtime and MCP endpoint'
+  confidence: high
+  relative_to: composio
+  relation: at
+  note: 'Many systems, credentials the vendor runs end to end, execution it hosts: band 5. Its own page states
+    the credential test as directly as the ladder does - "Pipedream runs the entire authorization flow: hosted
+    OAuth clients, secure token storage, and automatic refresh. Your users connect their accounts in seconds
+    - you never touch a credential." Bringing your own OAuth client is offered as an option rather than the
+    default. Banded at composio.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://pipedream.com/connect
+    shows: 'The product page: "Pipedream runs the entire authorization flow: hosted OAuth clients, secure token
+      storage, and automatic refresh. Your users connect their accounts in seconds - you never touch a credential",
+      with "fresh tokens are injected on every request, per user" and "Credentials never route through your
+      servers".'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 18c67ae199c02297bec999e3a67d8eb515320cb88e196681f7dc5eff3fe0ec2c
+  - url: https://pipedream.com/docs/connect
+    shows: The Connect documentation, covering the hosted connect link and embedded SDK flows and the managed
+      runtime the requests execute in.
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 8be9884c9f23999c662ed7664577ca15deafae688275b5835a93c9d7b525a4be

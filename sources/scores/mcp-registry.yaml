@@ -1,0 +1,84 @@
+product: mcp-registry
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; new code and specification contributions
+    - name: MIT
+      detail: OSI; contributions predating the transition
+    source:
+      value: public
+      detail: the registry service and its API
+    governance:
+      value: Linux-Foundation/AAIF
+      detail: the same governance as the protocol
+    core-gated:
+      value: ungated
+      detail: the hosted instance runs the published code
+  confidence: high
+  note: 'Open source under the protocol''s own licence and governance. The LICENSE is the specification repository''s
+    file: Apache-2.0 for new code, MIT retained for contributions whose authors did not consent to relicensing,
+    and CC-BY-4.0 for documentation other than the specifications - which is recorded apart from the code licences
+    for the reason `model-context-protocol` records it apart, since a documentation licence does not govern
+    the artifact you run.'
+  raw: license:Apache-2.0(OSI; new code and specification contributions)+MIT(OSI; contributions predating the
+    transition);source:public(the registry service and its API);governance:Linux-Foundation/AAIF(the same governance
+    as the protocol);core-gated:ungated(the hosted instance runs the published code)
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/registry/main/LICENSE
+    shows: 'The LICENSE body, read rather than the classifier''s label: it opens "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0" and then carries the
+      Apache terms, with MIT retained for pre-transition contributions. That transition preamble is what GitHub''s
+      classifier cannot match, and it is why the API reports NOASSERTION.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/registry
+    shows: 'Repository metadata: 7,258 stars, not archived, last pushed 2026-09-16, description "A community
+      driven registry service for Model Context Protocol (MCP) servers."'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b1fba312d2f4aa772fd7daf54fd30f3b58e8aff68be57b8891d1c723d271ef14
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: '7,258 GitHub stars, which the stars scale bands at level 2 - the >10K rung starts above 10,000. The
+    registry is a hosted service with no published request or listing count and no package anyone installs,
+    so stars are the only countable signal, and they cap at 3 by policy in any case. The figure understates
+    the product: what matters about a registry is how many clients read it, and nobody publishes that.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://api.github.com/repos/modelcontextprotocol/registry
+    shows: 'Repository metadata for modelcontextprotocol/registry: 7,258 stargazers.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: b1fba312d2f4aa772fd7daf54fd30f3b58e8aff68be57b8891d1c723d271ef14
+capability:
+  score: null
+  basis: n/a
+  value: null
+  confidence: medium
+  note: 'ABSTAINS, and for a different reason from the three specifications. This ladder measures how much
+    of the client-server contract a product implements - role, primitives, transports - and a registry implements
+    none of it: it is the protocol''s discovery service, listing servers rather than speaking to them. Banding
+    it would mean inventing a second quantity inside a category created to hold one. It sits here because it
+    is infrastructure the protocol itself defines and governs, and the category note says so.'
+  last_verified: '2026-09-17'
+  sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/registry/main/README.md
+    shows: 'The README: "The MCP registry provides MCP clients with a list of MCP servers, like an app store
+      for MCP servers", with a publishing flow and a live API. Nothing in it implements the client or server
+      role of the tool-calling protocol.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: e41644afc72bde8cdeae0e93deb9235f8d79bb646945e747e0b4ecad39202ac7

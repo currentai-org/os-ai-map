@@ -19,22 +19,21 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'A fully OSI-licensed reference SDK with no feature-gated core. The repository''s LICENSE is the
-    MCP project''s transition text, identical byte-for-byte to the one on the specification repo: new code
-    and specification contributions under Apache-2.0, documentation other than specifications under CC-BY-4.0,
-    and pre-transition contributions whose authors have not consented remaining MIT. package.json agrees,
-    carrying "license": "SEE LICENSE IN LICENSE" rather than a bare SPDX identifier. Both code licenses
-    are recorded here, and the documentation license apart from them, because a license covering the project''s
-    prose must not be allowed to govern the artifact you actually run - the same arrangement as on the Model
-    Context Protocol record. Both code licenses are OSI-approved, so the tier holds at 5.'
+  note: 'A fully OSI-licensed reference SDK with no feature-gated core. The repository''s LICENSE is the MCP
+    project''s transition text, identical byte-for-byte to the one on the specification repo: new code and
+    specification contributions under Apache-2.0, documentation other than specifications under CC-BY-4.0,
+    and pre-transition contributions whose authors have not consented remaining MIT. package.json agrees, carrying
+    "license": "SEE LICENSE IN LICENSE" rather than a bare SPDX identifier. Both code licenses are recorded
+    here, and the documentation license apart from them, because a license covering the project''s prose must
+    not be allowed to govern the artifact you actually run - the same arrangement as on the Model Context Protocol
+    record. Both code licenses are OSI-approved, so the tier holds at 5.'
   raw: license:Apache-2.0(OSI, new code)+MIT(OSI, legacy contributions not yet relicensed);docs:CC-BY-4.0(documentation
-    other than the specifications; not read by the openness ladder, which scores the artifact the product
-    ships);source:public;no-feature-gated-core;core-gated:ungated
+    other than the specifications; not read by the openness ladder, which scores the artifact the product ships);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
   - url: https://www.npmjs.com/package/@modelcontextprotocol/sdk
-    shows: The npm package page. The registry answers HTTP 403 to the fetcher, so the license is derived
-      from the repository LICENSE and package.json instead.
+    shows: The npm package page. The registry answers HTTP 403 to the fetcher, so the license is derived from
+      the repository LICENSE and package.json instead.
     accessed: '2026-06-17'
   - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/LICENSE
     shows: 'The MCP transition license, whose digest is byte-identical to the spec repo''s: "The MCP project
@@ -49,8 +48,8 @@ openness:
     establishes:
     - license
   - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/package.json
-    shows: '"license": "SEE LICENSE IN LICENSE" - the package no longer declares a bare SPDX id, which is
-      the machine-readable half of the transition above.'
+    shows: '"license": "SEE LICENSE IN LICENSE" - the package no longer declares a bare SPDX id, which is the
+      machine-readable half of the transition above.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 154e5e4b5dd7800a0d6de39af3e02997635ab3e538ca986eba5b396de3d26a7a
@@ -69,9 +68,9 @@ adoption:
   level: 5
   signal_type: usage_volume
   confidence: high
-  note: 198,046,096 npm downloads in the trailing 30 days for @modelcontextprotocol/sdk. Bands at level
-    5 (>10M) on the software and model adoption scale. The reference TypeScript MCP SDK, and the highest
-    download figure on the map.
+  note: 198,046,096 npm downloads in the trailing 30 days for @modelcontextprotocol/sdk. Bands at level 5 (>10M)
+    on the software and model adoption scale. The reference TypeScript MCP SDK, and the highest download figure
+    on the map.
   reach: '>10M'
   last_verified: '2026-08-12'
   sources:
@@ -81,16 +80,24 @@ adoption:
     http_status: 200
     content_sha256: a5daab95266dd756f2c613e07ac16b5636554268822c6a8c52e7caebcb051610
 capability:
-  score: 5
+  score: 4
   basis: feature_matrix
-  value: client+server; Node/Bun/Deno; Streamable-HTTP/stdio; auth + framework middleware
-  confidence: high
-  note: Feature parity with the Python SDK; the canonical JS/TS MCP implementation.
-  last_verified: '2026-08-13'
+  value: 'of the Model Context Protocol at version 2026-07-28: both roles, the full primitive set, and Streamable
+    HTTP plus stdio'
+  confidence: medium
+  note: 'Both roles, the full primitive set and more than one transport, which is band 4. Banded at mcp-python-sdk,
+    the anchor, on the same reading. Band 5 is out of reach on this evidence rather than on a judgement: it
+    needs the optional features the cited spec version defines for the roles implemented - sampling, roots
+    and elicitation - and none of the documentation read here enumerates them. Closing that is a documentation
+    read, not a product change. The README cites the 2026-07-28 specification, the newest published, so what
+    keeps this at 4 is the optional features rather than the version.'
+  last_verified: '2026-09-17'
   sources:
-  - url: https://github.com/modelcontextprotocol/typescript-sdk
-    shows: Repo page - client and server libraries, multi-runtime support, stdio and Streamable-HTTP transports,
-      auth helpers and framework middleware. 13,160 stargazers.
-    accessed: '2026-08-13'
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md
+    shows: The README documents client and server construction, tools, resources and prompts, and the Streamable
+      HTTP and stdio transports, across Node, Bun and Deno.
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 63924218dd6803902c5f600a97a0fa764c5984f3532e51df5d1ac347af92c305
+    content_sha256: ecda9a1a30f74de6f843078d5b61bb3b4b63459987ab6c1ec55748f8154d43ae
+  relative_to: mcp-python-sdk
+  relation: at

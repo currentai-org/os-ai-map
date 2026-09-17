@@ -12,12 +12,12 @@ openness:
     note:
       value: companion Stagehand SDK IS open source
       detail: Apache/MIT) but the Browserbase service being scored is the closed managed platform
-      raw: companion Stagehand SDK IS open source (Apache/MIT) but the Browserbase service being scored
-        is the closed managed platform
+      raw: companion Stagehand SDK IS open source (Apache/MIT) but the Browserbase service being scored is
+        the closed managed platform
   confidence: high
   note: The product scored here is the managed browser-infrastructure service, which is closed and proprietary.
-    The companion Stagehand SDK is open source, but it is a client to the service rather than the service
-    itself, so it does not make the scored platform open.
+    The companion Stagehand SDK is open source, but it is a client to the service rather than the service itself,
+    so it does not make the scored platform open.
   raw: license:Proprietary(API-only managed browser infra);source:closed(cloud browser fleet/session infra);note:companion
     Stagehand SDK IS open source (Apache/MIT) but the Browserbase service being scored is the closed managed
     platform
@@ -43,32 +43,35 @@ adoption:
   note: No primary usage figure for the Browserbase managed service itself was published. Best primary proxy
     is its own SDK, Stagehand, which Browserbase docs cite at 22k GitHub stars and 700k+ weekly downloads,
     a strong open-SDK adoption signal that approximates the platform's developer reach (100K-1M band). The
-    closed service's own user/session count is undisclosed. 700k weekly downloads is roughly 3M monthly,
-    which would band at 4 if it were the platform's own figure; it is a companion SDK standing in, so the
-    level stays at 3 with the discount that substitution deserves.
+    closed service's own user/session count is undisclosed. 700k weekly downloads is roughly 3M monthly, which
+    would band at 4 if it were the platform's own figure; it is a companion SDK standing in, so the level stays
+    at 3 with the discount that substitution deserves.
   last_verified: '2026-08-13'
   sources:
   - url: https://docs.browserbase.com/
-    shows: '"The SDK for browser agents. Natural language selectors, self-healing actions, and caching at
-      scale. 22k GitHub stars, 700k+ weekly downloads. Built by Browserbase." No session, request, user or
-      customer figure for the Browserbase platform itself appears anywhere in the docs.'
+    shows: '"The SDK for browser agents. Natural language selectors, self-healing actions, and caching at scale.
+      22k GitHub stars, 700k+ weekly downloads. Built by Browserbase." No session, request, user or customer
+      figure for the Browserbase platform itself appears anywhere in the docs.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 7134c34322beae8ecc5e5f7861058d5c37e0c891318a809215edd0ff7e21765b
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Browser API (session control), Search API, Fetch API (markdown), Functions (agent deploy/schedule),
-    Model Gateway (100+ LLM providers); Stagehand: natural-language selectors, self-healing actions, caching
-    at scale'
+  value: hosted headless browser sessions reached with one API key, with anti-bot and CAPTCHA handling, search
+    and fetch, deployable functions and a model gateway around them
   confidence: medium
-  note: Broad browser-automation-for-agents feature set (control + search + fetch + deploy + model routing)
-    plus a capable agent SDK; near-frontier among agent browser/scrape platforms.
-  last_verified: '2026-08-13'
+  note: One class of system - the browser - with credentials and execution both the platform's. It is one below
+    composio because it adapts a single kind of target rather than a catalogue of them, which is the only difference
+    between bands 4 and 5 on this ladder.
+  last_verified: '2026-09-17'
   sources:
-  - url: https://docs.browserbase.com/
-    shows: Browser API, Search API, Fetch API, Functions and Model Gateway documented as the platform surface;
-      Stagehand's natural-language selectors, self-healing actions and caching at scale.
-    accessed: '2026-08-13'
+  - url: https://docs.browserbase.com/introduction/what-is-browserbase
+    shows: 'The platform overview: "One API key gives your agent headless browsers, web search, page fetching,
+      functions, model access, and identity", with "Fleets of headless browsers at scale with isolated sessions"
+      and Agent Identity to get "past anti-bot systems, CAPTCHAs, and auth walls".'
+    accessed: '2026-09-17'
     http_status: 200
-    content_sha256: 7134c34322beae8ecc5e5f7861058d5c37e0c891318a809215edd0ff7e21765b
+    content_sha256: e9250df655029f711e6091f9d17501e1496daf0ba7f123b670763fdec941aaf7
+  relative_to: composio
+  relation: one_below
