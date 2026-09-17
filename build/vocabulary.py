@@ -8,8 +8,9 @@ the thing it mirrored:
     seven, so a bridged `npm`/`crates` route would have read as uncovered;
   * `check_routing.artifacts_of` enumerated the same vocabulary a second time in the same
     file, so a correctly declared new kind was invisible to coverage;
-  * the prose applier reimplemented `product_prose.METHOD_WORDS` more narrowly, so
-    `substitute sources` passed as a document name;
+  * the prose applier reimplemented the verification line's method-word vocabulary more
+    narrowly, so `substitute sources` passed as a document name (both the applier and the
+    line are gone now, the vocabulary with them);
   * two modules each validated a date by shape, accepting `2026-99-99`.
 
 None of them failed loudly. Each reported success over a narrower question than the one it
@@ -26,10 +27,6 @@ is written down and tested, so it is a decision rather than drift.
 already gated by `tests/test_openness_buckets.py`, which asserts all three agree — that is the
 same protection this module provides, arrived at differently, and moving them would churn a
 working invariant for symmetry.
-
-`build/product_prose.py` keeps `METHOD_WORDS` rather than moving it here. It has exactly one
-owner already, that owner is the module the vocabulary is *about*, and the sibling test holds
-it there. Relocating a constant with one owner buys nothing.
 
 `check_adoption._DOWNLOAD_INSTRUMENTS` also stays. It is not a copy of the `signal_type` enum;
 it names the subset measured on a download scale, and its module explains why `unknown` is

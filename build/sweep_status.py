@@ -11,13 +11,16 @@ head-product verification work and are excluded until publication.
 The bar agreed on 2026-08-08, and it is per product rather than per axis:
 
   * every axis carries a real `last_verified`, or abstains deliberately (a null value, which
-    `evidence-and-freshness.md` explains for the 46 axes that have one), or the product is held;
-  * `comments` ends in the canonical verification line, which is the prose half's proxy —
-    `product-copy.md` has rules a checker cannot enforce, but the line is the one thing a
-    finished product always has;
+    `evidence-and-freshness.md` explains for the axes that have one), or the product is held;
   * held products count as resolved, not as remaining. A product whose evidence cannot be
     settled goes into `sources/verification_queue.yaml` with a reason and stops blocking its
     category, which is what let the pilot ship five of six.
+
+The prose has no part in "done". It used to: `comments` had to end in a dated `Verified … via`
+line, which was the one thing about the prose a checker could see. The line was a third copy
+of the axis dates and read as a footnote about the product, so #619 retired it, and the prose
+half of a refresh is now held by `product-copy.md`'s rules and the reviewer rather than by a
+marker in the field. `build/product_prose.py` checks that the line has not come back.
 
 Deliberately NOT counted as done: an axis whose value is null because nobody looked. The two
 are indistinguishable in the file today, which is the gap the per-axis deferral idea closes.
@@ -36,8 +39,8 @@ need the warehouse.
 Once a category is gate-clean it stays "done" forever, which is wrong the moment a confirmation
 ages: `last_verified` is a claim about a day, and the map keeps moving. `--max-age-days` (or
 `--since`) reads a confirmation older than the window as `stale` rather than `verified`, so the
-same tooling that drove the first pass drives the recurring one. The prose ages on the same
-clock, because the canonical verification line carries its own date.
+same tooling that drove the first pass drives the recurring one. Prose has no date of its own
+and ages with the axes it was written beside.
 
 Usage:
     uv run python -m build.sweep_status
@@ -54,7 +57,6 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -67,7 +69,6 @@ ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 VALUE_KEY = {"openness": "score", "adoption": "level", "capability": "score"}
 ARTIFACTS = ("github", "pypi", "npm", "crates", "huggingface_model", "huggingface_dataset")
-VERIFIED_LINE = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via ")
 
 
 def load() -> tuple[dict, dict, dict, dict, dict]:
@@ -107,13 +108,17 @@ def _on_or_after(value: object, cutoff: date | None) -> bool:
 def product_state(
     slug: str, product: dict, score: dict, held: dict, cutoff: date | None = None
 ) -> dict:
-    """Per-product: which axes are settled, whether the prose is, and whether it is held.
+    """Per-product: which axes are settled, and whether it is held.
 
     With a `cutoff`, a confirmation older than it counts as `stale` rather than `verified` -
     which is what turns the sweep from a one-time pass into a recurring refresh. An axis that
     was never confirmed is `open` whatever the cutoff, and unlike `check_freshness` there is no
     commit-date fallback here: the question this asks is "has anyone re-read this", and a commit
     date answers "did anyone touch the file", which is a different question.
+
+    `product` is accepted and unread. The prose used to decide half of "done" through the
+    verification line in `comments`; the parameter stays so the callers and the signature do
+    not churn, and so that the next thing the prose contributes has somewhere to land.
     """
     axes = {}
     for axis in AXES:
@@ -124,32 +129,10 @@ def product_state(
             axes[axis] = "abstained"
         else:
             axes[axis] = "open"
-    # The canonical verification line carries its own date, so the prose ages on the same
-    # clock. Four states, not two: measured 2026-08-15 NO product is missing a line and every
-    # date is in August, so a bare missing/verified split reported 245 products as unfinished
-    # when what actually varied was whether the line names a document a reader can reopen.
-    # `named_noncanonical` needs a rewording; `generic` names a method and needs evidence or a
-    # re-read. Collapsing those into one number hid which was which.
-    from build.product_prose import classify
-
-    prose_kind, prose_date, _ = classify(product.get("comments"))
-    if prose_kind == "missing":
-        prose_state = "missing"
-    elif not _on_or_after(prose_date, cutoff):
-        prose_state = "stale"
-    elif prose_kind == "canonical":
-        prose_state = "verified"
-    else:
-        prose_state = prose_kind
-    prose = prose_state == "verified"
     return {
         "axes": axes,
-        "prose": prose,
-        "prose_state": prose_state,
         "held": slug in held,
-        "done": slug in held or (
-            all(v not in ("open", "stale") for v in axes.values()) and prose
-        ),
+        "done": slug in held or all(v not in ("open", "stale") for v in axes.values()),
     }
 
 
@@ -314,18 +297,6 @@ def main() -> int:
             f"{row['coverage']:10.0%}"
         )
     print(f"{'TOTAL':30}{done:6}{sum(r['held'] for r in rows):6}{total:5}")
-
-    prose = Counter(
-        s["prose_state"] for row in rows for s in row["states"].values()
-    )
-    print(f"\nprose verification lines: "
-          + ", ".join(f"{prose[k]} {k}" for k in
-                      ("verified", "named_noncanonical", "ambiguous_noncanonical",
-                       "generic", "stale", "missing")
-                      if prose.get(k)))
-    print("  `generic` names a method rather than a document (product-copy.md forbids it);\n"
-          "  `named_noncanonical` names a real document behind `live`/`on`/`against`;\n"
-          "  `ambiguous_noncanonical` is dated but names nothing to reopen.")
     print()
     if pending:
         nxt = pending[0]
@@ -351,16 +322,6 @@ def main() -> int:
                     bits.append("stale: " + ",".join(stale))
                 if abstained:
                     bits.append("abstained: " + ",".join(abstained))
-                if state["prose_state"] == "missing":
-                    bits.append("no verification line")
-                elif state["prose_state"] == "stale":
-                    bits.append("prose line stale")
-                elif state["prose_state"] == "generic":
-                    bits.append("prose names a method, not a document")
-                elif state["prose_state"] == "named_noncanonical":
-                    bits.append("prose line noncanonical wording")
-                elif state["prose_state"] == "ambiguous_noncanonical":
-                    bits.append("prose line names no document")
                 print(f"  {slug:38} {'; '.join(bits)}")
     return 0
 

@@ -217,7 +217,7 @@ github:
 - url: https://github.com/org/widget
 pypi:
 - url: https://pypi.org/project/widget
-comments: Verified 2026-08-08 via GitHub.
+comments: No tagged releases, so the entry is read against the repository head.
 """
 
 
@@ -247,8 +247,28 @@ def test_a_list_item_in_column_zero_is_not_a_sibling_key():
 def test_the_last_field_can_be_replaced():
     from build.components import set_document_field
 
-    out = set_document_field(PRODUCT, "comments", "Verified 2026-08-09 via the LICENSE body.")
-    assert yaml.safe_load(out)["comments"] == "Verified 2026-08-09 via the LICENSE body."
+    out = set_document_field(PRODUCT, "comments", "The LICENSE file also bundles third-party code.")
+    assert yaml.safe_load(out)["comments"] == "The LICENSE file also bundles third-party code."
+
+
+def test_the_last_field_can_be_removed_outright():
+    """An absent `comments` and an empty one publish differently: `serialize` omits
+    `version_note` only when the key is gone. Retiring the verification line left a fifth
+    of the products with nothing else in the field, so removal is a real operation."""
+    from build.components import drop_document_field
+
+    out = drop_document_field(PRODUCT, "comments")
+    after, before = yaml.safe_load(out), yaml.safe_load(PRODUCT)
+    assert "comments" not in after
+    assert after == {k: v for k, v in before.items() if k != "comments"}
+    assert "comments" not in out
+
+
+def test_removing_a_field_that_is_not_there_raises():
+    from build.components import drop_document_field
+
+    with pytest.raises(ValueError):
+        drop_document_field(PRODUCT, "aliases")
 
 
 def test_a_colon_in_the_value_is_the_dumper_problem():

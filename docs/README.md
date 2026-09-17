@@ -68,7 +68,7 @@ both read as authoritative. This applies within a file as much as across them.
 | [`reference/capability.md`](reference/capability.md) | The capability axis and the peer-comparison instrument |
 | [`reference/evidence-and-freshness.md`](reference/evidence-and-freshness.md) | What `last_verified` means, how an axis earns it, the gates |
 | [`reference/where-scores-live.md`](reference/where-scores-live.md) | Which axis is in the repo, which is in the warehouse, and which tables only look like scores |
-| [`reference/product-copy.md`](reference/product-copy.md) | The `description`/`comments` prose spec |
+| [`reference/product-copy.md`](reference/product-copy.md) | The prose guide: `description`, `comments`, the score notes, `shows`, and editor-facing prose |
 | [`reference/gap-analysis.md`](reference/gap-analysis.md) | How the map derives gaps from scores |
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
 | [`reference/sibling-invariants.md`](reference/sibling-invariants.md) | What must hold between a product and its siblings |

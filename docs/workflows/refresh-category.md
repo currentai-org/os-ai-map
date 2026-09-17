@@ -24,8 +24,9 @@ single product, use [`update-product.md`](update-product.md). For an axis-wide s
 ## Definition of done, per product
 - every axis carries a real `last_verified`, or abstains deliberately, or the product is **held**;
 - every source behind a claimed date records `http_status` and `content_sha256`;
-- `description` and `comments` satisfy [`../reference/product-copy.md`](../reference/product-copy.md),
-  with the canonical verification line;
+- `description`, `comments` and every axis `note` satisfy
+  [`../reference/product-copy.md`](../reference/product-copy.md): written for a reader who has
+  never seen the rubric, and `comments` a footnote or empty, never a dated verification line;
 - `capability.relative_to` + `relation` recorded where the note places the band against a peer.
 
 A product whose evidence cannot be settled is **held**, not forced. A date you cannot support is
@@ -70,8 +71,10 @@ The unit is the product, not the axis, because prose and scores come from the sa
    capability, record the peer comparison as `relative_to` + `relation` and confirm the peer at
    least as recently.
 4. **Rewrite the prose** per [`../reference/product-copy.md`](../reference/product-copy.md) —
-   `description` load-bearing and within the length band, `comments` ending in the canonical
-   verification line. Delete rather than research a superlative, a corporate event, or a curator
+   `description` load-bearing and within the length band, `comments` a footnote about the
+   reading or nothing, each axis `note` in the two-sentence shape and the reader's vocabulary.
+   The document you read goes on the source entry as `url` and `shows`, not into a `Verified …
+   via` sentence. Delete rather than research a superlative, a corporate event, or a curator
    rationale clause.
 5. **If a value moved, that is the valuable output** — fix the score and say why in `note`.
 6. **Stamp `last_verified` only once every recorded dimension has an establishing source.**

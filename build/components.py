@@ -324,6 +324,29 @@ def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_
     return new_text
 
 
+def drop_document_field(text: str, key: str) -> str:
+    """Return `text` with the top-level `key` removed. Raises when it is not there.
+
+    `set_document_field` cannot express "this product has no footnote": the schema makes
+    `comments` optional and `build/serialize.py` omits `version_note` only when the key is
+    absent, so an empty string would publish an empty footnote. Retiring the verification line
+    (#619) left a fifth of the corpus with nothing else in the field, and those need the key
+    gone rather than blanked. Same reparse assertion as the setter, for the same reason.
+    """
+    lines = text.splitlines(keepends=True)
+    span = document_field_span(lines, key)
+    if span is None:
+        raise ValueError(f"no top-level {key!r} field to remove")
+    new_text = "".join(lines[: span[0]] + lines[span[1] :])
+
+    before = yaml.safe_load(text)
+    expected = copy.deepcopy(before)
+    del expected[key]
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"removing {key} changed something else in the document; refusing to write")
+    return new_text
+
+
 def rewrite(path: Path, value: object, axis: str = "openness", key: str = "components") -> bool:
     """Write the new value into the file. True when the file changed."""
     text = path.read_text()

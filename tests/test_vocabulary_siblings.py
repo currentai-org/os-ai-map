@@ -163,10 +163,13 @@ def test_capability_relation_deltas_match_the_schema_enum():
     assert set(DELTA) == set(enum)
 
 
-def test_the_method_vocabulary_has_exactly_one_definition():
-    """A second, narrower copy in the applier is how `substitute sources` passed as a
-    document name. The applier is gone; the rule outlives it, because the next module that
-    needs to recognize a method word will be tempted to spell it out again.
+def test_the_method_vocabulary_is_not_redefined_now_that_its_owner_is_gone():
+    """`product_prose.METHOD_WORDS` named the method words a verification line could not
+    cite (`primary sources`, `web search`). A second, narrower copy in the applier is how
+    `substitute sources` passed as a document name. The line is retired (#619) and the
+    vocabulary with it; this holds that nobody reintroduces the constant in a module that
+    now has no single owner to defer to. If a method-word rule is needed again, it gets
+    one owner and this test names it.
 
     AST-based, so an annotated assignment (`METHOD_WORDS: re.Pattern = ...`) is caught; the
     first cut matched `^METHOD_WORDS\\s*=` and would not have been.
@@ -175,9 +178,7 @@ def test_the_method_vocabulary_has_exactly_one_definition():
         name for name, source in _module_sources().items()
         if "METHOD_WORDS" in _assigned_names(ast.parse(source))
     ]
-    assert definers == ["product_prose.py"], (
-        f"METHOD_WORDS is assigned in {definers}; it must have exactly one owner"
-    )
+    assert definers == [], f"METHOD_WORDS is assigned in {definers}; the vocabulary is retired"
 
 
 def test_date_validation_rejects_impossible_dates():
