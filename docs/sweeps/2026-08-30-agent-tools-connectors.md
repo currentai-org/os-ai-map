@@ -2,8 +2,8 @@
 
 ## Scope and boundary
 
-Swept from the warehouse discovery pool (`currentai.scores.repos_summary`, snapshot
-2026-08-24), over the six subcategories that carry agent-facing tooling: AI Engineering / Give
+Swept from the warehouse discovery pool, `currentai.scores.repos_summary` (frozen since, under ADR-003),
+at its 2026-08-24 snapshot, over the six subcategories that carry agent-facing tooling: AI Engineering / Give
 agent tools, Give agent knowledge and Protocols, and Infrastructure / Protocols, Make world
 agent-ready and Index & Search. Predeclared retrieval cutoff: the top 300 repositories by
 all-time stars across those six, which bottoms out at 4,621 stars. Every row was verified
