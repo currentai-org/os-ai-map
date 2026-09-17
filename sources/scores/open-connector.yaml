@@ -20,7 +20,10 @@ openness:
       detail: nothing withheld from the published tree
   confidence: high
   note: 'Apache-2.0 over the gateway itself, which is the unusual part of this record: the hosted alternatives
-    in this category are closed, and this one publishes the thing that holds the credentials.'
+    in this category are closed, and this one publishes the thing that holds the credentials. The `ungated`
+    reading meets the shared software rubric''s acceptance standard for that dimension rather than resting
+    on path absence: the vendor''s own documentation names its commercial offering as a separate thing, and
+    the source cited below carries that statement.'
   raw: license:Apache-2.0(OSI);source:public(the gateway, its catalogue and its credential handling);self-host:yes(docker
     compose, Helm, Fly.io or a single binary);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
     withheld from the published tree)
@@ -41,6 +44,18 @@ openness:
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 837568b83c01bec41d7e7446c40717bc3c7d7c194bebdfbc6a04297805c17928
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md
+    shows: 'The README''s deployment table names the hosted offering as a separate product and says exactly
+      what it adds, which is what the `ungated` acceptance standard asks for: hosted gives "Managed OAuth and
+      hosted runtime, ready to use. No deployment or OAuth app setup", self-hosted is "Run locally or on your
+      own infrastructure with Docker or Node.js. You manage storage and OAuth apps." The gateway, its catalogue
+      and its credential handling are in the published tree either way; what the hosted tier supplies is OAuth
+      client registrations, not code.'
+    accessed: '2026-09-17'
+    http_status: 200
+    content_sha256: 51975a342b647726a614483ae568d7c112f3408565a839ef3fd6f05b5b358a53
     establishes:
     - source
     - core-gated
@@ -70,11 +85,11 @@ capability:
   relative_to: composio
   relation: at
   note: 'Many systems, credentials the product holds and refreshes, and a runtime that can be hosted: band
-    5, and the only open-source product to reach it here. One qualification the README states plainly and this
-    record repeats rather than smooths: self-hosting means YOU register the OAuth applications with each provider,
-    while the hosted tier supplies them. The gateway performs the flow and stores the grant in both cases,
-    which is what the band reads; who owns the OAuth client is a deployment question. Banded at composio, the
-    closed-source product with the same shape.'
+    5, alongside ACI.dev as the open-source products that reach it here. One qualification the README states
+    plainly and this record repeats rather than smooths: self-hosting means YOU register the OAuth applications
+    with each provider, while the hosted tier supplies them. The gateway performs the flow and stores the grant
+    in both cases, which is what the band reads; who owns the OAuth client is a deployment question. Banded
+    at composio, the closed-source product with the same shape.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md

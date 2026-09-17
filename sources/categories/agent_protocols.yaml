@@ -55,31 +55,34 @@ scoring_recipe:
     \ against, and a wire protocol is not benchmarked - the settled policy `model-context-protocol`\nalready\
     \ carries. `mcp-registry` abstains for a different reason: it is the protocol's discovery\nservice rather\
     \ than an implementation of the client-server contract, so role, primitives and\ntransports have nothing\
-    \ to say about it. Four of ten abstain, which is high, and it is what an honest\nreading of a specification\
-    \ layer looks like: three of the ten ARE specifications and a fourth is the\nregistry that lists what implements\
-    \ them.\n\nTRANSPORT BREADTH IS PART OF THE QUANTITY HERE and is explicitly packaging in\n`agent_tools_protocols`\
-    \ next door. That is not a contradiction. For something implementing the\nprotocol, which transports it\
-    \ speaks is part of what the spec defines and what an implementation is\njudged on. For a connector, the\
-    \ transport is how it is delivered and says nothing about what it\nadapts.\n\nTHE DISTRIBUTION, reported\
-    \ because band 4 holds more than a third of what is banded. Of twenty\nproducts, seven abstain and thirteen\
-    \ carry a band: 1 at band 1, 2 at band 3, 8 at band 4, 2 at\nband 5 - widest rung 62% of the banded thirteen.\
-    \ This is the CLUSTERING case rather than a loose\ndefinition, and the cluster is real: an SDK for this\
-    \ protocol exists to implement both roles, the\nfull primitive set and more than one transport, so that\
-    \ is what nearly all of them do. The ladder\nstill separates them, and the separations are the interesting\
-    \ part of this category:\n\n  BAND 5 is reached by the official Go and Rust SDKs, and only by them, because\
+    \ to say about it. Eight of the twenty abstain, which is high, and it is what\nan honest reading of a specification\
+    \ layer looks like: four of them ARE specifications, three are\nthe extension spec, the packaging format\
+    \ and the registry, and one is an SDK whose primitives no\nreachable document enumerates.\n\nTRANSPORT\
+    \ BREADTH IS PART OF THE QUANTITY HERE and is explicitly packaging in\n`agent_tools_protocols` next door.\
+    \ That is not a contradiction. For something implementing the\nprotocol, which transports it speaks is\
+    \ part of what the spec defines and what an implementation is\njudged on. For a connector, the transport\
+    \ is how it is delivered and says nothing about what it\nadapts.\n\nTHE DISTRIBUTION, reported because\
+    \ band 4 holds more than a third of what is banded. Of twenty\nproducts, eight abstain and twelve carry\
+    \ a band: 1 at band 1, 1 at band 3, 8 at band 4, 2 at band 5\n- widest rung 67% of the banded twelve. This\
+    \ is the CLUSTERING case rather than a loose\ndefinition, and the cluster is real: an SDK for this protocol\
+    \ exists to implement both roles, the\nfull primitive set and more than one transport, so that is what\
+    \ nearly all of them do. The ladder\nstill separates them, and the separations are the interesting part\
+    \ of this category:\n\n  BAND 5 is reached by the official Go and Rust SDKs, and only by them, because\
     \ band 5 needs the\n  CURRENT specification revision plus the optional features - and the two of them cite\
     \ 2026-07-28\n  and document sampling, elicitation and roots against it.\n  BAND 4 holds eight SDKs that\
     \ each miss one leg, and the leg differs: the C# and Kotlin SDKs\n  document every optional feature but\
     \ name no version; the Swift SDK documents everything and\n  targets 2025-11-25, which the specification\
     \ has since superseded; the PHP SDK names the current\n  revision but documents no optional features; mcp-go\
-    \ enumerates through 2025-11-25.\n  BAND 3 holds mcp-inspector, a client with no server role, and the Java\
-    \ SDK, whose README does not\n  enumerate its primitives.\n  BAND 1 holds fastapi-mcp: one role, one primitive.\n\
-    \nThat spread is what a version-and-feature ladder buys over a coverage judgement. Every one of those\n\
-    distinctions is a sentence in a document somebody can re-read.\n\nSEVEN ABSTENTIONS, which is a third of\
-    \ the roster and is what a specification layer looks like. Four\nare specifications - MCP, A2A, the Agent\
-    \ Client Protocol and AG-UI. MCP Apps is an extension with\nits own dated specification, MCP Bundles is\
-    \ a packaging format, and the MCP Registry is the\ndiscovery service. None of them implements the client-server\
-    \ contract this ladder measures."
+    \ enumerates through 2025-11-25.\n  BAND 3 holds mcp-inspector alone, a client with no server role. The\
+    \ Java SDK would sit here on\n  its roles and transports and does not, because no reachable document enumerates\
+    \ its primitives\n  and a band needs the evidence rather than the absence of it; it abstains instead.\n\
+    \  BAND 1 holds fastapi-mcp: one role, one primitive.\n\nThat spread is what a version-and-feature ladder\
+    \ buys over a coverage judgement. Every one of those\ndistinctions is a sentence in a document somebody\
+    \ can re-read.\n\nEIGHT ABSTENTIONS, two fifths of the roster. Four are specifications - MCP, A2A, the\
+    \ Agent Client\nProtocol and AG-UI. MCP Apps is an extension with its own dated specification, MCP Bundles\
+    \ is a\npackaging format, and the MCP Registry is the discovery service: none of them implements the\n\
+    client-server contract this ladder measures. The eighth is the Java SDK, which does implement it -\nit\
+    \ abstains for want of a document, not for want of a product, and its record says what would close\nit."
 comments: 'Created 2026-09-17 by splitting `agent_tools_protocols`, which closed #430''s last
 
   open question. That category had lost its document converters to `document_conversion` and its
@@ -115,4 +118,5 @@ strapline: 'The specification layer is open all the way down: twenty products, a
   source under an OSI licence - four wire protocols, nine SDKs, an extension spec, a packaging format, a registry
   and the tooling around them. Nothing here is closed, which is true of no other category on this map. Read
   it beside the connectors next door, where the same protocols are wrapped in products that hold your credentials
-  and mostly do not publish anything: the standard is a commons and the convenience is a market.'
+  - and where, encouragingly, most of those publish their source too: the standard is a commons, and so far
+  the convenience largely is as well.'

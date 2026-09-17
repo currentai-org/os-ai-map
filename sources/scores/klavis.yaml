@@ -1,29 +1,37 @@
 product: klavis
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
-      detail: OSI
+      detail: OSI; the servers and the Strata aggregator
     source:
       value: public
-      detail: the MCP servers and the Strata aggregator
+      detail: the MCP servers and Strata, not the platform around them
     self-host:
       value: 'yes'
-      detail: docker pull, or pipx install strata-mcp
+      detail: docker pull the servers, pipx install strata-mcp
     service:
-      value: optional
-      detail: the vendor also runs a hosted tier
+      value: primary
+      detail: the hosted platform is where the credential brokering runs
     core-gated:
-      value: ungated
-      detail: nothing withheld from the published tree
+      value: gated
+      detail: the OAuth brokering the product is sold on is hosted-only; the open-source path documents no
+        authentication step
   confidence: high
-  note: Apache-2.0 over the servers and the Strata aggregator. The credential brokering that defines the product
-    sits on the hosted side, which is a service beside a real open core rather than gating.
-  raw: license:Apache-2.0(OSI);source:public(the MCP servers and the Strata aggregator);self-host:yes(docker
-    pull, or pipx install strata-mcp);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
-    withheld from the published tree)
+  note: 'Apache-2.0 over real, useful software - the MCP servers and the Strata aggregator - with the part
+    the product is SOLD on kept back. What makes Klavis a platform rather than a collection of servers is that
+    it performs OAuth for the end user and holds the grant, and its own documentation puts that on the hosted
+    side: the Open Source tab covers local Strata with no authentication step at all, while the UI and API
+    paths return `oauthUrls` the platform mints. That is functionality withheld from the published tree rather
+    than a managed convenience beside a complete core, which is the litellm shape and lands at 4/open_core.
+    An earlier draft of this record scored 5 by reading the published servers as the whole product, which left
+    its openness and its capability describing two different things.'
+  raw: license:Apache-2.0(OSI; the servers and the Strata aggregator);source:public(the MCP servers and Strata,
+    not the platform around them);self-host:yes(docker pull the servers, pipx install strata-mcp);service:primary(the
+    hosted platform is where the credential brokering runs);core-gated:gated(the OAuth brokering the product
+    is sold on is hosted-only; the open-source path documents no authentication step)
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/Klavis-AI/klavis/main/LICENSE
