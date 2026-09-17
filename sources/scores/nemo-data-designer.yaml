@@ -17,15 +17,11 @@ openness:
     free_text:
     - the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product
   confidence: medium
-  note: 'NVIDIA''s own documentation settles this. The NeMo microservices Data Designer page states that
-    "The service is built on the open-source NVIDIA NeMo Data Designer library" and links to github.com/NVIDIA-NeMo/DataDesigner,
-    which is Apache-2.0 and installs with `pip install data-designer`. The repository ships data-designer-config,
-    data-designer-engine and data-designer, so the generation engine itself is published. What the NeMo
-    Platform adds on top is infrastructure rather than function: inference routed through the NMP gateway,
-    distributed job execution with monitoring, NMP fileset seeds, NMP artifact storage and the NMP Secrets
-    service. None of that is functionality withheld from the published source, which is the test that decides
-    this score. So the core is ungated - a managed service sold alongside a complete open core - and the
-    product scores 5, open source.'
+  note: 'NVIDIA''s own documentation states that the Data Designer service is built on the open-source NeMo
+    Data Designer library, which is Apache-2.0 and installs with `pip install data-designer`: the generation
+    engine itself is published, not held back for the service. The NeMo Platform sells infrastructure around
+    that library, such as managed inference routing and monitored job execution, rather than withholding
+    any function from it, so the published core is ungated.'
   raw: license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer,
     the published framework runs locally against any configured inference provider);core-gated:ungated(the
     NeMo Platform adds infrastructure around the published library rather than withholding generation from
@@ -81,10 +77,9 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: '416,634 downloads in the trailing 30 days on the declared PyPI artifact `data-designer`, which
-    bands at 100K-1M, level 3. The package is unambiguously the product''s own rather than a same-named
-    stranger: the quick start in NVIDIA-NeMo/DataDesigner''s README is `pip install data-designer`, and
-    for a Python library PyPI is the primary distribution channel rather than a minority one.'
+  note: 'About 417,000 PyPI downloads a month for the data-designer package, this tool''s own primary distribution
+    channel. The package is confirmed as this product''s rather than a same-named stranger: the repository''s
+    own quick start is `pip install data-designer`.'
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/data-designer/recent
