@@ -18,10 +18,9 @@ openness:
       value: OSS
   confidence: high
   note: Weave's wandb/weave repository is Apache-2.0 and publishes more than an SDK, including a working
-    ClickHouse trace-server library, but it carries no web UI and not the HTTP service that fronts the trace
-    server - the repository's own architecture diagram places that service in W&B's closed core. Using the
-    published package still requires a Weights & Biases account, and W&B's own docs say a self-managed install
-    needs a purchased Server license, so the product cannot be stood up from what is published here.
+    ClickHouse trace-server library, but not the web UI or the HTTP service that fronts it, both of which
+    live in W&B's closed core. Using the package requires a Weights & Biases account, and a self-managed
+    install needs a purchased Server license, so it cannot be run from what ships here.
   raw: license:Apache-2.0(OSI, SDK/client repo wandb/weave);source:partial(the Apache-2.0 repo publishes
     the SDK and a ClickHouse-backed trace-server library, but no web UI, no deployment manifest and not
     the HTTP service that fronts the trace server, which its own trace_server/README.md places in W&B's
@@ -103,12 +102,10 @@ capability:
     + code scorers, experiments vs datasets); datasets/annotation; cost tracking; integrations(OpenAI/Anthropic
     + framework hooks). Missing dedicated prompt-management/versioning depth vs MLflow/Langfuse.
   confidence: medium
-  note: 'Weave is an end-to-end tracing and evaluation suite: auto-logged OpenAI and Anthropic calls with
-    inputs, outputs, tokens and cost; LLM-as-judge and code scorers running experiments against datasets;
-    datasets and annotation; cost tracking; and framework integrations. Prompt management and versioning
-    are lighter than MLflow''s or Langfuse''s, and the README notes that Weave boards are paused "as we
-    focus on Tracing and Evaluations," which keeps the product level with Langfuse rather than ahead of
-    it.'
+  note: Weave provides end-to-end tracing and evaluation, including LLM-as-judge and code scorers, datasets,
+    annotation and cost tracking. Prompt management and versioning are lighter than Langfuse's, and the
+    README notes that Weave's boards feature is paused while development focuses on tracing and evaluations,
+    keeping the product level with Langfuse rather than ahead of it.
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/wandb/weave/master/README.md
