@@ -24,11 +24,9 @@ openness:
     a modeling file for inference and the paid tiers ship client SDKs only);license:Apache-2.0(governs
     voyage-4-nano, the only SKU whose weights are distributed; multi_sku_rule excludes the API-only tiers)
   confidence: high
-  note: Of the four Voyage 4 models, only voyage-4-nano ships as Apache-2.0 weights on the Hub; voyage-4-large,
+  note: Of the four Voyage 4 models, only voyage-4-nano ships Apache-2.0 weights on the Hub; voyage-4-large,
     voyage-4 and voyage-4-lite are API-only, with Hub repositories that hold a tokenizer and config but
-    no weight file. Because the score reflects what can actually be downloaded, that is voyage-4-nano's
-    open license, not a claim about the flagship. Training data and training code remain undisclosed for
-    every tier, which keeps the family at open weights rather than fully open.
+    no weight file. Training data and training code remain undisclosed for every tier, including voyage-4-nano's.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/voyageai/voyage-4-nano
@@ -68,10 +66,10 @@ adoption:
     Hugging Face downloads of voyage-4-nano — one SKU of four, and the only open one — rather than a usage
     figure for the line
   confidence: medium
-  note: Adoption is recorded as reported traction rather than a download count, because the only Hugging
-    Face figure available is for voyage-4-nano alone and would misdescribe a line whose flagship is API-only.
-    The stronger signal is native distribution inside MongoDB Atlas, which acquired Voyage AI and now serves
-    these models through its own Embedding and Reranking API, corroborated by nano's own Hub downloads.
+  note: Adoption is recorded as reported traction rather than a download count because the only Hugging
+    Face figure available is for voyage-4-nano alone, and the flagship tiers are API-only. The stronger
+    signal is native distribution inside MongoDB Atlas, which acquired Voyage AI and now serves these models
+    through its own Embedding and Reranking API.
   last_verified: '2026-09-11'
   sources:
   - url: https://www.mongodb.com/company/blog/product-release-announcements/introducing-the-embedding-and-reranking-api-on-mongodb-atlas
@@ -97,12 +95,10 @@ capability:
   relative_to: harrier-oss
   relation: one_below
   confidence: medium
-  note: Voyage-4-large leads RTEB, the benchmark it is measured on, but RTEB is Voyage's own benchmark rather
-    than an independent public leaderboard, so it stops short of the top. Confidence is medium because the
-    comparison is publisher-run against publisher-chosen baselines, even though those baselines are the
-    three obvious rivals. It is placed level with Harrier-OSS, which leads MMTEB v2 at 74.3, since the two
-    lead different benchmarks that cannot be ranked against each other. The number reads voyage-4-large,
-    an API-only tier different from the voyage-4-nano checkpoint the openness score covers.
+  note: Voyage-4-large leads RTEB, the benchmark it is measured on, but RTEB is Voyage's own benchmark,
+    run against publisher-chosen baselines, rather than an independent public leaderboard. That keeps it
+    a step below Harrier-OSS, which leads MMTEB v2 at 74.3; the benchmark reflects voyage-4-large, the flagship
+    tier, not the voyage-4-nano checkpoint the openness score covers.
   last_verified: '2026-09-11'
   sources:
   - url: https://blog.voyageai.com/2026/01/15/voyage-4/
