@@ -181,9 +181,6 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("mcp-rust-sdk", "capability"),
     ("mcp-swift-sdk", "capability"),
     ("mcp-typescript-sdk", "capability"),
-    # `model-context-protocol` states the date its governance moved to the Linux Foundation's
-    # AAIF, which is a fact about the project rather than about the reading.
-    ("model-context-protocol", "capability"),
     ("amazon-bedrock-evaluations", "adoption"),
     ("apertus", "adoption"),
     # A release date on each side of a trailing registry line. The whole reason the band does

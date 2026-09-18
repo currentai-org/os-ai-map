@@ -20,12 +20,10 @@ openness:
         as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests
         - so what is sold is control plane rather than engine
   confidence: high
-  note: 'Qdrant''s engine ships entirely under Apache-2.0: a search of the repository turns up no enterprise,
-    license-key or separately licensed directory, and the two features the pricing page marks as cloud-only,
-    GPU indexing and shard resharding, are both present in the open source tree. What the paid Qdrant Cloud
-    tier actually adds is operational tooling - uptime SLAs, managed backups, multi-AZ deployment and enterprise
-    SSO - not the engine itself, making it a managed service sold beside a complete open core rather than
-    a gate on the open source build.'
+  note: Qdrant's engine ships entirely under Apache-2.0, with no enterprise, license-key or separately licensed
+    directory anywhere in the repository. The two features the pricing page marks as cloud-only, GPU indexing
+    and shard resharding, are both in the open-source tree, and what the paid Qdrant Cloud tier adds is
+    operational tooling such as SLAs, managed backups and SSO rather than the engine itself.
   raw: license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid
     + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise
     or license key. The two engine features the pricing table marks absent from OSS are both in the open
@@ -101,12 +99,10 @@ capability:
     the highest RPS and lowest latency in almost all scenarios against Milvus, Weaviate, Elasticsearch and
     Redis at matched precision.
   confidence: medium
-  note: Qdrant is a complete, distributed vector engine offering dense, sparse and multi-vector search,
-    score fusion, quantization, and sharded, replicated scaling with zero-downtime resizing, on par with
-    Milvus. Its own benchmark reports the highest throughput and lowest latency in most scenarios against
-    Milvus, Weaviate, Elasticsearch and Redis; ANN-Benchmarks lists it among comparable algorithms but publishes
-    no ranking. It stops short of the top level, reserved for a platform that hosts and evaluates models
-    inside the serving path, not score fusion over supplied vectors.
+  note: Qdrant is a complete, distributed vector engine on par with Milvus. Its own benchmarks claim the
+    highest throughput and lowest latency among comparable engines, though ANN-Benchmarks lists it without
+    a ranking, and the top level is reserved for a platform that hosts and evaluates models inside the serving
+    path rather than fusing scores over supplied vectors.
   last_verified: '2026-08-18'
   sources:
   - url: https://ann-benchmarks.com/
