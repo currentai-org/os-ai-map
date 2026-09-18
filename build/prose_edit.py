@@ -56,8 +56,13 @@ def _product_fact_dates() -> set[tuple[str, str]]:
 
 
 def _read_text(path: str) -> str:
-    text = Path(path).read_text()
-    return text.strip()
+    """The file's text with its whitespace normalized to single spaces.
+
+    A worker that hard-wraps a draft for readability would otherwise embed the newlines in
+    the published prose; the YAML dumper re-wraps the field itself, so internal line breaks
+    carry no information worth keeping.
+    """
+    return " ".join(Path(path).read_text().split())
 
 
 def _refuse(reason: str) -> int:
