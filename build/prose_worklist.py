@@ -225,11 +225,11 @@ def description_tells(text: str) -> dict[str, object]:
         tells["voice"] = m
     if (m := re.findall(r"\b20\d\d-\d\d-\d\d\b", text)):
         tells["date"] = m
-    # "Texas Instruments", the verb "instruments an application" and an OCR product's "formula
-    # recognition" are English, not the rubric's nouns; a description may say all three.
+    # "Texas Instruments", the verb "instruments an application", an OCR product's "formula
+    # recognition" and the benchmark subset "MATH Level 5" are English, not the rubric's nouns.
     plain = re.sub(r"Texas Instruments|\b(?:auto-)?instruments? (?:an?|the|your|any|every|applications?|code|calls|models?|LLM)\b"
                    r"|\bformulas? (?:recognition|extraction|detection|parsing|understanding|and|or)\b"
-                   r"|\b(?:math(?:ematical)?|chemical|table,) formulas?\b",
+                   r"|\b(?:math(?:ematical)?|chemical|table,) formulas?\b|\bMATH Level [1-5]\b",
                    "", text, flags=re.IGNORECASE)
     if (v := vocabulary_hits(plain)):
         tells["vocabulary"] = v
