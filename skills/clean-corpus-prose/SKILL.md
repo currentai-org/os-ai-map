@@ -56,7 +56,9 @@ left alone even when a rewrite would be nicer. For each flagged record:
 1. **Read the whole score file** and the product file: all three notes, every `shows`,
    `components`, `comments`. The same argument often sits in two of them.
 2. **Classify the note against the goldens.** Already right, or one of the tells.
-3. **Rewrite in the two-sentence shape**, from the facts the record already carries. What puts
+3. **Rewrite in the two-sentence shape**, from the facts the record already carries. The
+   worklist's `shape` tell (over 400 characters or more than two sentences) is advisory, because
+   three goldens run past it; a third sentence stays only for a distinction the score turns on. What puts
    it on this rung; what keeps it off the next. Plain words for every rubric word. Figures
    rounded, exact ones left to `shows`. Peers named. A capability note that names a peer with
    no `relative_to` recorded goes in the findings log; recording the comparison is a structured
@@ -74,13 +76,15 @@ uv run python -m build.prose_edit note <slug> <axis> --text-file new.txt
 uv run python -m build.prose_edit shows <slug> <axis> <index> --text-file new.txt
 uv run python -m build.prose_edit comments <slug> --text-file new.txt
 uv run python -m build.prose_edit comments <slug> --drop
+uv run python -m build.prose_edit description <slug> --text-file new.txt
 ```
 
 It wraps `build/components.py`, so nothing else in the file can move, and it refuses the edits
 this pass is not allowed to make: emptying a note, running past the 600-character guard, adding
 a date, dropping a phrase `check_channel_authority` reads (`understates`, `inflated`, `minority
 channel`), dropping a date on the product-fact allowlist, writing a `Verified … via` sentence
-into a footnote. A refusal is a finding for the log, not a reason to reach for a text editor.
+into a footnote, a description that refers to this record or the map, speaks as "we" or "you",
+or carries a rubric word (the worklist's `description_*` tells). A refusal is a finding for the log, not a reason to reach for a text editor.
 Never load-modify-dump a corpus file, and never hand-splice one; both have shipped defects here.
 
 ## What a pass may never do
@@ -106,8 +110,9 @@ Never load-modify-dump a corpus file, and never hand-splice one; both have shipp
   in it (8B parameters, a 32k context, a benchmark score at release) stays. Nor any grading of a
   figure: "comfortably", "solid", "mid-range" are filler.
 - **Write scorer's shorthand.** "Holds it at", "stands in", "is read the same way", "a band
-  lower", "at this band", "countable channel", "star-based reading", a fragment where a
-  sentence was wanted. Every note is full sentences an editor would publish without noticing
+  lower", "at this band", "the adoption band", "nothing to band on", "bands on stars",
+  "countable channel", "star-based reading", a fragment where a sentence was wanted. "Band" as
+  the name of a score is machinery wherever it appears; a spectral band is not. Every note is full sentences an editor would publish without noticing
   the prose; clear but visibly written from a rubric is not good enough.
 
 ## Order and size

@@ -72,7 +72,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   is now the guide for every hand-written string on the map, with eleven goldens and a 600-character note
   guard; every score note, source line and footnote in the corpus that used the rubric's own words, quoted a
   usage figure, or ran past the guard was rewritten to it, one commit per category, through a guarded editor
-  that could move no score, date, URL or digest. The dated "Verified" line is gone from all 763 product
+  that could move no score, date, URL or digest; a second pass per category brought the notes still over two
+  sentences or 400 characters down to the argument for the rung, and took the reference to "this record",
+  the second person and the over-long paragraph out of the product descriptions. The dated "Verified" line is gone from all 763 product
   footnotes, `build/prose_worklist.py`, `build/prose_edit.py` and `build/check_prose_diff.py` are the tools
   for the next pass, `clean-corpus-prose` replaces the `clean-score-notes` skill, and the case law that lived
   as `#` comments in the rubric, registry and config files is under `docs/reference/` and `docs/sweeps/`

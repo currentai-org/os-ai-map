@@ -177,10 +177,33 @@ def _category_of() -> dict[str, str]:
     return out
 
 
+# "band" as the name of a score: "the adoption band", "one band below vLLM", "nothing to band
+# on", "adoption bands on stars". A spectral band in satellite imagery and the stats strip a
+# vendor page calls a "stat band" are English and stripped first.
+BAND_NOUN = re.compile(
+    r"\b(?:adoption|capability|openness|usage|download|customer|reach|higher|lower|same|low|top|old"
+    r"|recorded|current|(?:one|two|a|the|its|this|that)(?: \w+)?) bands?\b"
+    r"|\bbands? (?:on|at|where|below|above|holds|does not|is |was |still|reads|rests|stands|routes|has"
+    r"|floor|re-derived|read on|set on|scored on)\b"
+    r"|\bto band\b|\bbands?[.,;]|\b\w+'s band\b|\bbands (?:in|are) ",
+    re.IGNORECASE,
+)
+BAND_ENGLISH = re.compile(
+    r"\b(?:\d+|six|spectral|multispectral|hyperspectral|S2|Sentinel|HLS|SRTM|ERA5|frequency)[- ]bands?\b"
+    r"|\bbands? (?:are supplied|metadata|plus Dynamic)|\bstat band\b|\bwavelengths?\b",
+    re.IGNORECASE,
+)
+
+
 def vocabulary_hits(note: str) -> list[str]:
-    hits = [m.group(0) for m in RUBRIC_VOCABULARY.finditer(note or "")]
-    hits += [m.group(0) for m in BAND_RANGE.finditer(note or "")]
-    return hits
+    text = note or ""
+    found = [m for pat in (RUBRIC_VOCABULARY, BAND_RANGE) for m in pat.finditer(text)]
+    taken = [(m.start(), m.end()) for m in found]
+    plain = BAND_ENGLISH.sub(lambda m: " " * len(m.group(0)), text)
+    for m in BAND_NOUN.finditer(plain):
+        if not any(a < m.end() and m.start() < b for a, b in taken):
+            found.append(m)
+    return [m.group(0).strip(".,; ") for m in sorted(found, key=lambda m: m.start())]
 
 
 def usage_figures(note: str) -> list[str]:

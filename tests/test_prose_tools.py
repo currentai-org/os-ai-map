@@ -162,6 +162,26 @@ def test_english_that_shares_a_word_with_the_rubric_is_not_a_tell(text):
     assert "vocabulary" not in description_tells(text)
 
 
+@pytest.mark.parametrize("text", [
+    "That volume is what places it in the higher usage band.",
+    "Dynamo is one band below vLLM.",
+    "No download count exists to band, so no reach word is recorded.",
+    "Adoption bands on stars.",
+    "The band was re-derived against the current page.",
+])
+def test_band_as_the_name_of_a_score_is_a_tell(text):
+    assert vocabulary_hits(text)
+
+
+@pytest.mark.parametrize("text", [
+    "An Earth Engine ImageCollection of 64-band annual embedding images.",
+    "Weights from the wavelengths of whatever bands are supplied.",
+    "The stat band still reads 94% of Fortune 100.",
+])
+def test_a_spectral_band_is_english(text):
+    assert vocabulary_hits(text) == []
+
+
 def test_a_product_named_you_com_is_not_second_person():
     assert "voice" not in description_tells("You.com search API returning web results as JSON.")
 
