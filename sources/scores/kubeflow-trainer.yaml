@@ -13,8 +13,8 @@ openness:
       value: ungated
       detail: a 1,325-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
   confidence: high
-  note: Apache-2.0 under CNCF governance with no commercial edition. The 1,325-entry recursive tree carries
-    one governing LICENSE and no enterprise, ee or commercial path.
+  note: Kubeflow Trainer is published under Apache-2.0 with CNCF governance and no commercial edition. A
+    full scan of the repository tree finds one governing LICENSE and no enterprise, ee or commercial path.
   raw: license:Apache-2.0(OSI);source:public(kubeflow/trainer is the whole operator);core-gated:ungated(a 1,325-entry
     recursive tree carries no path matching enterprise, ee, commercial or proprietary)
   last_verified: '2026-09-15'
@@ -51,15 +51,14 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 2,221 GitHub stars. The project ships as container images and a Helm chart and publishes no package-registry
-    artifact, so no usage-volume channel exists for it and the band rests on stars, which measure attention
-    rather than use. The stars route caps at level 3 for that reason. The `kubeflow` PyPI package reports 100,711
-    monthly downloads but is the umbrella Kubeflow SDK rather than this product's own channel, so attributing
-    it here would band on a different population.
+  note: Kubeflow Trainer ships as container images and a Helm chart rather than through a package registry,
+    leaving GitHub stars as the only comparable adoption signal; a star is not a use. The `kubeflow` PyPI
+    package does report downloads, but it is the umbrella SDK covering several components, so it measures
+    a different population and is excluded here.
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/kubeflow/trainer
-    shows: Repository page showing the star count for kubeflow/trainer.
+    shows: Repository page for kubeflow/trainer showing 2,221 stars.
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: 5ee17d5e60c3158224b4d27167a6c0d4aa17ce78724e8b2d36b81134ae821f02
@@ -71,10 +70,10 @@ capability:
   confidence: medium
   relative_to: kubeflow-pipelines
   relation: at
-  note: 'Admitted on the ML-job-model limb: a training run is a first-class type it schedules and tracks. It
-    sits at band 3 rather than higher because it creates the JobSet and leaves the choice of machine, and any
-    gang guarantee, to whichever scheduler the cluster runs - a plugin such as volcano or kueue rather than
-    Trainer itself.'
+  note: Kubeflow Trainer treats a training run as a first-class resource that it schedules and tracks, the
+    same shape of decision as Kubeflow Pipelines. It creates the JobSet but leaves the choice of machine,
+    and any gang-scheduling guarantee, to whichever scheduler the cluster runs, such as Volcano or Kueue,
+    rather than deciding that itself.
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/kubeflow/trainer

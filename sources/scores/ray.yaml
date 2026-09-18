@@ -17,15 +17,11 @@ openness:
         license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature the open
         project lacks
   confidence: high
-  note: Apache-2.0 throughout with a managed platform sold beside it, and nothing in the core held back.
-    That reading rests on the repo and on Anyscale’s own page. The 11,885-entry untruncated tree of ray-project/ray@master
-    carries a single governing Apache-2.0 LICENSE plus three vendored third-party ones, and no enterprise/,
-    ee/, commercial/ or proprietary/ path; the only Anyscale-named files are CI image definitions and release-test
-    harnesses, not a closed package the open tree depends on. Anyscale’s Ray page sells infrastructure management
-    - "Ray runs anywhere. Or choose Anyscale, and leave the infrastructure to us" - and claims no Ray capability
-    the open project withholds. So the published source is the whole product, and it scores at the top of
-    the ladder. Ray is also governed by the PyTorch Foundation rather than by Anyscale, which is why the
-    managed platform can be moved out of the openness question entirely.
+  note: Ray's entire core is published under Apache-2.0; a full scan of the repository tree finds one governing
+    license plus a few vendored third-party ones, no enterprise, ee, commercial or proprietary path, and
+    no closed package behind the handful of Anyscale-named files, which are only CI and release-test tooling.
+    Anyscale sells managed infrastructure beside the open project without claiming any Ray capability that
+    the open source lacks, and Ray is governed by the PyTorch Foundation rather than by Anyscale.
   raw: license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS
     on top;core-gated:ungated(a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/
     or ee/ path, no license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature
@@ -81,14 +77,9 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 63,273,910 downloads of ray in the trailing 30 days and 15,105,708
-    in the trailing week, comfortably above the >10M a month floor for level 5 - and above even the stricter
-    50M floor applied to the highest-volume software records, where PyTorch sits at ~88.6M and Triton at
-    ~64.7M. The trailing-week figure alone clears the floor, so the band does not turn on which window is
-    read. The figure is read from the download API rather than from the rendered pepy page, and PyPI is
-    the product’s declared distribution channel, so the level can be recomputed from that feed and challenged.
-    Ray is the standard open distributed-compute and model-serving substrate (Ray Serve, Tune, Train, Data)
-    under the PyTorch Foundation.
+  note: Adoption is measured as PyPI downloads of the ray package in the trailing month, the product's declared
+    distribution channel. Ray is the standard open distributed-compute and model-serving substrate under
+    the PyTorch Foundation.
   last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/ray
@@ -112,13 +103,10 @@ capability:
     for fault tolerance; Ray Train and Ray Tune use the placement group API so that every resource for a trial
     is available at the same time
   confidence: high
-  note: 'Ray reaches the top of this category''s ladder: placement groups atomically reserve bundles of resources
-    across multiple nodes and Ray''s own scheduler then places tasks and actors inside that reservation, PACKed
-    for locality or SPREAD for fault tolerance. Ray''s own documentation names the all-or-nothing property
-    as what distributed training needs - every resource for a trial available at the same time - which is the
-    band''s requirement stated by the product itself. The band is not carried over from deployment, whose ladder
-    orders on isolation strength: moving a product between categories re-opens the instrument and not just
-    the number, and this axis asks how far a product''s own scheduler gets toward putting work on a machine.'
+  note: Ray's placement groups atomically reserve bundles of resources across multiple nodes, and Ray's
+    own scheduler then places tasks and actors inside that reservation, packed for locality or spread for
+    fault tolerance. Ray's documentation names that all-or-nothing guarantee, every resource for a trial
+    available at once, as exactly what distributed training needs.
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.ray.io/en/latest/ray-core/scheduling/placement-group.html

@@ -13,10 +13,9 @@ openness:
       detail: no implementation is published; IBM's open repositories are API wrappers and integrations around
         the closed scheduler
   confidence: high
-  note: A commercial IBM suite. IBM publishes a Python API wrapper and integration code on GitHub, but those
-    drive the scheduler rather than implement it, and no source for LSF itself is published. Nothing about
-    a license can help where there is no self-hostable implementation, which is why the ladder settles this
-    on source alone.
+  note: IBM Spectrum LSF is a commercial suite with no published implementation. IBM's GitHub repositories
+    are a Python API wrapper and integration code that drive the scheduler rather than implement it, so
+    no license can substitute for the missing source.
   raw: license:Proprietary;service:proprietary(IBM commercial suite, licensed per site);source:closed(no implementation
     is published; IBM's open repositories are API wrappers and integrations around the closed scheduler)
   last_verified: '2026-09-16'
@@ -67,12 +66,10 @@ capability:
       accessed: '2026-09-16'
       http_status: 200
       content_sha256: b4140035b19168633fbdf15d4d2585bdd8d966c173daa4009a0c765d833c73d4
-  note: 'Admitted on the accelerator limb: the GPU request is LSF''s own submit schema, not a backend spec
-    passed through, and LSF''s scheduler consumes it to choose the hosts. Band 4 - it selects the hardware,
-    down to GPU model and memory, and nothing reachable establishes a multi-machine set reserved as one allocation,
-    which is band 5. LSF does have multi-host allocation, but the documentation that would evidence it sits
-    on ibm.com/docs, which this repository cannot fetch; the band records what is citable rather than what
-    is likely.'
+  note: The GPU request is expressed in LSF's own submit schema rather than a backend spec passed through,
+    and LSF's scheduler uses it to select which hosts receive the job, down to GPU model and memory. Nothing
+    reachable establishes a multi-machine set reserved as a single allocation, the property that would lift
+    it above OpenPAI, which selects hardware the same way.
   last_verified: '2026-09-16'
   sources:
   - url: https://raw.githubusercontent.com/IBMSpectrumComputing/lsf-python-api/master/examples/submit_gpu_job.py

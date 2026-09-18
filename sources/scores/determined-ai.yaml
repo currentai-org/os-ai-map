@@ -15,11 +15,10 @@ openness:
         when a license key and public key are present, so an enterprise edition is
         unlocked by a key rather than shipped in the open tree
   confidence: high
-  note: 'Apache-2.0 source with an enterprise edition behind a key. The open repository
-    itself carries the gate: master/internal/license/license.go defines IsEE(), which
-    returns true when both a license key and a verifying public key are set. That
-    is functionality unlocked by a key rather than a separate product sold alongside,
-    which is what this dimension asks about.'
+  note: 'Apache-2.0 source with an enterprise edition behind a key. The open repository itself carries the
+    gate: master/internal/license/license.go defines IsEE(), which returns true when both a license key
+    and a verifying public key are set. That is functionality unlocked by a key rather than a separate product
+    sold alongside it.'
   raw: license:Apache-2.0(OSI; the body is the Apache text under a Determined.ai copyright
     line);source:public(determined-ai/determined is the open platform);core-gated:gated(master/internal/license/license.go
     ships an IsEE() check returning true when a license key and public key are present,
@@ -51,8 +50,7 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 62,711 downloads of determined in the trailing
-    30 days, inside the 10K-100K band for level 2.
+  note: Adoption is measured by PyPI downloads of the determined package in the trailing 30 days.
   last_verified: '2026-09-15'
   sources:
   - url: https://pypistats.org/api/packages/determined/recent
@@ -70,11 +68,10 @@ capability:
   confidence: medium
   relative_to: kai-scheduler
   relation: at
-  note: 'Band 5 on Determined''s own documentation: setting slots_per_trial to 16
-    means ''two 8-GPU agent machines will be used in a trial'', an allocation spanning
-    machines and granted together by Determined''s own scheduler over its resource
-    pools. It chooses the machines and holds the set, which is what this band asks
-    for.'
+  note: Determined's own scheduler allocates slots_per_trial across whole agent machines when the count
+    requires it - setting slots_per_trial to 16 grants two 8-GPU machines together for a single trial -
+    and holds that machine set for the trial. Choosing the machines and holding them together puts Determined
+    level with KAI Scheduler.
   last_verified: '2026-09-15'
   sources:
   - url: https://raw.githubusercontent.com/determined-ai/determined/main/docs/model-dev-guide/dtrain/dtrain-implement.rst

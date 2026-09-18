@@ -14,12 +14,10 @@ openness:
       value: ungated
       detail: a 3,889-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
   confidence: high
-  note: 'GPL throughout, read from the COPYING body rather than from the API label: GitHub reports NOASSERTION
-    because the file opens with a SLURM LICENSE AGREEMENT preamble, and the text then states that all Slurm
-    code and documentation is available under the GNU General Public License. SchedMD sells support and services
-    beside it rather than a fuller build. GPL-2.0 is named in the shared osi tier, so this pair is computed
-    by the ladder rather than authored; the tier entry records the measurement that no other software-type
-    product on the map declares that license, so adding the name moved this record alone.'
+  note: Slurm is licensed under the GNU General Public License, read from the COPYING body rather than GitHub's
+    classifier label, which reports NOASSERTION because the file opens with a SLURM LICENSE AGREEMENT preamble.
+    SchedMD sells support, training and development services around Slurm rather than a fuller build, so
+    the full source remains what anyone runs.
   raw: license:GPL-2.0(OSI; the COPYING body states all Slurm code and documentation is under the GNU General
     Public License, with some contribs/ tools under other licenses);source:public(SchedMD/slurm is the scheduler
     you run);core-gated:ungated(a 3,889-entry recursive tree carries no path matching enterprise, ee, commercial
@@ -65,10 +63,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,357 GitHub stars. Slurm is distributed as source tarballs and distribution packages rather than through
-    a package registry this map routes, so no usage-volume channel exists for it and the band rests on stars.
-    Stars measure attention rather than use, so the level says what the available channel shows and not how
-    widely Slurm is deployed - which nothing cited here can establish in either direction.
+  note: Slurm is distributed as source tarballs and operating-system packages rather than through a package
+    registry this map can measure, leaving GitHub stars as the only available adoption signal. Stars measure
+    attention rather than use, so this reading reflects what that channel shows and says nothing about how
+    widely Slurm is actually deployed.
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/SchedMD/slurm
@@ -85,10 +83,10 @@ capability:
   confidence: medium
   relative_to: kai-scheduler
   relation: at
-  note: 'Admitted on the accelerator limb: --gres and --gpus are Slurm''s own submit-language fields and its
-    controller allocates against them. Band 5 because it picks the machines and grants a multi-node allocation
-    as one unit. General-purpose origins do not lower the band - the test is what the scheduler does, and what
-    it does is exactly what the newer AI-specific schedulers here do.'
+  note: --gres and --gpus are Slurm's own submit-language fields, and its controller allocates specific
+    GPUs and nodes against them, granting a multi-node allocation as one unit for the life of the job. Being
+    a general-purpose scheduler rather than an AI-specific one does not count against it here, since it
+    does exactly what the newer accelerator-focused schedulers do, which puts it level with KAI Scheduler.
   last_verified: '2026-09-15'
   sources:
   - url: https://slurm.schedmd.com/gres.html

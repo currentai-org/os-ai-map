@@ -58,14 +58,10 @@ capability:
     applied across the whole group; hierarchical sub-groups for leader-worker sets; hierarchical queues per
     project and node pool; GPU pooling with dynamic and fractional allocation
   confidence: medium
-  note: Band 5 on NVIDIA's own scheduler documentation, which states that the Scheduler 'always uses the pod
-    group associated with each pod and handles the pod as part of a larger group of pods' with 'gang scheduling,
-    minimum replicas or workers... applied consistently across the entire pod group', over 'distributed workloads
-    using multiple pods, each running on a node'. That is a multi-machine set reserved as one allocation by
-    the product's own scheduler. It was drafted at 4 from the product marketing page, which describes pooling
-    and fractional allocation and attributes gang scheduling to Grove with KAI; reading the scheduler documentation
-    rather than the marketing page is what corrected it, and treating a marketing page's silence as a capability
-    ceiling is the error.
+  note: NVIDIA Run:ai's own scheduler documentation states that the Scheduler always handles a pod as part
+    of its pod group, applying gang scheduling, minimum replicas and topology consistently across the whole
+    group, including distributed workloads that span multiple nodes. That is a multi-machine set reserved
+    as one allocation by the platform's own scheduler.
   last_verified: '2026-09-15'
   sources:
   - url: https://www.nvidia.com/en-us/software/run-ai/
