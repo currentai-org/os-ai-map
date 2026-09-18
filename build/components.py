@@ -109,9 +109,12 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
     replacing them — which the re-parse assertion catches as a doubled list rather than
     letting it through, but catching it is not the same as handling it.
 
-    A blank line ends the span. Nothing in `sources/scores/` puts one inside a scalar, and
-    treating it as a terminator fails loudly via the reparse assertion if that ever stops
-    being true, rather than swallowing the rest of the block.
+    A blank line ends the span unless the next non-blank line is still a continuation, more
+    indented than the key. A quoted scalar may hold a paragraph break, which the file carries
+    as a blank line between two indented lines; `laminar`'s adoption note did, and the old rule
+    ("nothing in sources/scores/ puts a blank line inside a scalar") cut the span at the break
+    and the reparse assertion refused the edit. The look-ahead keeps the span whole, and the
+    reparse assertion still guards the result.
     """
     start = find_key(lines, bounds, key)
     if start is None:
@@ -120,6 +123,12 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
     while end < bounds[1]:
         line = lines[end]
         if not line.strip():
+            nxt = end + 1
+            while nxt < bounds[1] and not lines[nxt].strip():
+                nxt += 1
+            if nxt < bounds[1] and (len(lines[nxt]) - len(lines[nxt].lstrip())) > len(INDENT):
+                end = nxt
+                continue
             break
         indent = len(line) - len(line.lstrip())
         if indent <= len(INDENT) and not line.startswith(f"{INDENT}- "):

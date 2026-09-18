@@ -221,6 +221,30 @@ comments: No tagged releases, so the entry is read against the repository head.
 """
 
 
+PARAGRAPH_NOTE = """product: widget
+openness:
+  score: 5
+  note: 'First paragraph of the note, which runs on for a while and
+
+    then continues after a blank line, as a quoted scalar may.'
+  sources:
+  - url: https://example.com
+    shows: x
+"""
+
+
+def test_a_quoted_scalar_with_a_paragraph_break_is_one_field():
+    """A blank line inside a quoted scalar used to end the span, so the edit spliced the new
+    value above the old note's second paragraph and the reparse assertion refused it."""
+    from build.components import set_field
+
+    assert "\n" in yaml.safe_load(PARAGRAPH_NOTE)["openness"]["note"]
+    out = set_field(PARAGRAPH_NOTE, "One paragraph now.", axis="openness", key="note")
+    doc = yaml.safe_load(out)
+    assert doc["openness"]["note"] == "One paragraph now."
+    assert doc["openness"]["sources"] == [{"url": "https://example.com", "shows": "x"}]
+
+
 def test_a_top_level_field_is_replaced_without_touching_its_neighbors():
     from build.components import set_document_field
 
