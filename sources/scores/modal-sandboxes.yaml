@@ -59,13 +59,10 @@ adoption:
   signal_type: reported_traction
   confidence: low
   banded_quantity: Modal platform teams (10,000+), not Sandboxes sessions or jobs
-  note: No Modal Sandboxes user or usage count is disclosed on the primary pages; Modal is a well-known
-    managed AI-compute platform with broad developer use and a documented free tier. Placed at 3 on reported
-    multi-customer traction rather than on a measured figure, kept conservative in the absence of a hard
-    number. The nearest figure Modal publishes is platform-wide rather than per-product - its sandbox comparison
-    page claims Modal "powers infrastructure for over 10,000 teams" and names Lovable and Quora as production
-    users running untrusted code - which is another reported-traction claim rather than a count of Sandboxes
-    use, so no reach figure is recorded.
+  note: Modal publishes no user or usage count for Sandboxes specifically. Its nearest disclosed figure
+    is platform-wide -- a count of Modal teams overall, naming Lovable and Quora as production users running
+    untrusted code -- so the level reflects reported multi-customer traction for the platform rather than
+    a measured figure for the sandbox feature itself.
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox
@@ -94,17 +91,12 @@ capability:
     images/dependencies (custom images, any deps, repo checkout); persistence:named/ID sandbox lookup, custom
     images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up to 24h
   confidence: medium
-  note: 'Strong, purpose-built agent sandbox: gVisor isolation, arbitrary images and high concurrency. The
-    Sandboxes guide documents arbitrary custom images, named lookup and a 5-minute default lifetime extendable
-    to 24 hours, and Modal’s own comparison page states gVisor isolation and 50,000+ concurrent sessions. It
-    sits just below the Firecracker-microVM frontier (Lambda, Vercel) on isolation strength, so 4 - and the
-    comparison is recorded against firecracker directly, which is what that sentence already rested on. The
-    comparison names firecracker rather than ollama, the other 4 in this category, because ollama records no
-    capability value and a band resting on an unstated root is checkable for arithmetic and not for correctness.
-    Independent ComputeSDK TTI benchmarks put Modal at a 0.76s median cold-start, 0.82s P95, composite 92.1,
-    14th by median of 24 providers, against ~470ms and 13th of 19 on the earlier run: slower in absolute terms
-    and unchanged in placement, still mid-field, still short of the sub-0.3s leaders and well clear of the
-    multi-second tail.'
+  note: Modal Sandboxes isolate each container with gVisor's user-space kernel, one step below microVM isolation,
+    and support arbitrary custom images, named lookup, and sessions running from a five-minute default up
+    to 24 hours. Independent ComputeSDK benchmarks measured a 0.76-second median cold start, slower than
+    the microVM-isolated platforms such as Firecracker that define the top of this category. Modal's own
+    reporting adds a high volume of concurrent production sessions, corroborated by named users such as
+    Lovable and Quora.
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox

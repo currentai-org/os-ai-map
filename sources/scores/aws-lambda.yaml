@@ -44,13 +44,10 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'AWS states that Lambda "processes trillions of executions for hundreds of thousands of active customers
-    every month" - a mass-market serverless deployment substrate, unambiguously past the >10M reach floor.
-    The adoption is attributed to general serverless usage rather than specifically to agent code execution.
-    AWS’s current Lambda FAQ raises that figure, stating "15 trillion+ monthly Lambda Function invocations"
-    against the launch post’s "trillions". One caveat travels with the level: Lambda has no countable artifact
-    - no package, repo or registry entry - and the invocation figure is a vendor-reported platform total
-    rather than a per-user count, so the band rests on vendor disclosure rather than on a measurable channel.'
+  note: AWS discloses invocation and active-customer figures for Lambda that describe mass-market use far
+    beyond what any package or download count could show. Lambda has no package, repository or registry
+    entry to count independently, and AWS's disclosed figures describe general serverless usage rather than
+    agent code execution specifically.
   last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
@@ -70,16 +67,12 @@ capability:
     Node/Python/Java/Go/Ruby/.NET + custom runtimes/container images, arbitrary code); persistence:stateless+attachable
     storage (EFS, /tmp); scale:trillions of executions/mo, effectively unbounded autoscale
   confidence: high
-  note: 'Frontier-definer for this category: microVM-grade isolation, the widest runtime breadth, and the
-    largest proven scale of any deployment runtime here. Scored 5. Runtime breadth is the widest here -
-    Java, Go, PowerShell, Node.js, C#, Python and Ruby natively plus a Runtime API for any other language,
-    and both .zip archives and container images - and isolation is per-function and Firecracker-backed.
-    AWS has since shipped Lambda MicroVMs, a primitive explicitly "purpose-built for workloads that execute
-    user- or AI-generated code" with VM-level isolation, near-instant launch and resume, and state persistence
-    up to 8 hours, which puts Lambda directly on the agent-sandbox feature axis this category scores rather
-    than only adjacent to it; MicroVM containers reach 32GB of memory and 16 vCPUs on Amazon Linux 2023,
-    and functions scale at up to 1000 concurrent executions every 10 seconds on top of 15 trillion monthly
-    invocations.'
+  note: AWS Lambda supports Java, Go, PowerShell, Node.js, C#, Python and Ruby natively, plus any other
+    language through a Runtime API, deploying either as a .zip archive or a container image, with each invocation
+    isolated in its own Firecracker microVM. Lambda MicroVMs extend this to workloads built for AI- or agent-generated
+    code, adding near-instant launch and resume, state persistence for up to eight hours, and containers
+    scaling to 32 GB of memory and 16 vCPUs, making Lambda the frontier of this category on both breadth
+    and isolation.
   last_verified: '2026-08-14'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/

@@ -66,15 +66,11 @@ adoption:
   signal_type: reported_traction
   confidence: medium
   banded_quantity: GitHub stars (~8k), corroboration only; no download or user figure is published
-  note: 'Established CNCF/OpenInfra-adjacent container-runtime project integrated into Kubernetes runtimeclass
-    deployments; broad but operator-concentrated infrastructure adoption rather than a mass per-user count.
-    No clean download or user figure could be verified, and the ~8k GitHub stars only corroborate rather
-    than carry the level. Level 3 reflects specialist infrastructure reach. The absence of a numeric reach
-    is deliberate: katacontainers.io publishes no download, install, cluster or user count anywhere - what
-    it publishes instead is a running user survey asking operators to self-report, plus one named production
-    deployment (Baidu, for Function Computing, Cloud Container Instances and Edge Computing) - and the project
-    ships as release tarballs and a kata-deploy Helm chart rather than through a countable package registry,
-    so there is no channel to band on.'
+  note: Kata Containers is adopted as Kubernetes infrastructure through its runtimeclass integration, with
+    Baidu named as a production deployment across several of its cloud services. The project publishes no
+    download, install, cluster or user count anywhere, relying instead on a self-report survey, and it ships
+    as release tarballs and a Helm chart rather than through a countable package registry, so GitHub stars
+    serve only as corroborating context rather than the basis for this reading.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
@@ -109,12 +105,10 @@ capability:
     cold-start:VM boot (slower than pure userspace); language/runtime breadth:any OCI container (language-agnostic,
     K8s-native); persistence:container lifecycle; scale:K8s clusters
   confidence: high
-  note: VM-grade isolation with OCI and Kubernetes compatibility and pluggable hypervisors; very strong
-    isolation but higher cold-start than the microVM and userspace frontier-definers, so 4. Five hypervisors
-    are pluggable - QEMU, Cloud Hypervisor, Firecracker, Dragonball and StratoVirt - with QEMU the best-supported
-    for NVIDIA GPUs and confidential computing, and the runtime ships as a containerd shimv2 shim with an
-    in-VM agent across x86_64, aarch64, ppc64le and s390x. That places it one rung below Firecracker, which
-    defines the frontier here.
+  note: Kata Containers gives every workload VM-grade isolation through a pluggable hypervisor layer - QEMU,
+    Cloud Hypervisor, Firecracker, Dragonball or StratoVirt - integrated with Kubernetes via a containerd
+    shimv2 shim across x86_64, aarch64, ppc64le and s390x. Its cold start runs higher than the microVM and
+    userspace frontier, putting it a step below Firecracker, which defines that frontier here.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
