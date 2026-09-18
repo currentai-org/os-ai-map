@@ -279,8 +279,8 @@ def test_the_date_allowlist_has_not_gone_stale(sources):
 # corpus is between states until it finishes. Lower each pin as a category lands; at zero,
 # replace the pair with a strict assertion, the way the verification-line tests did.
 
-RUBRIC_VOCABULARY_BACKLOG = 860
-OVERLONG_NOTE_BACKLOG = 302
+RUBRIC_VOCABULARY_BACKLOG = 806
+OVERLONG_NOTE_BACKLOG = 278
 
 
 def test_rubric_vocabulary_in_notes_only_goes_down():
