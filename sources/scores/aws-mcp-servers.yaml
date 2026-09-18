@@ -42,9 +42,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 9,702 GitHub stars. The repository ships one PyPI distribution per server rather than a package that
-    represents the product, so no single usage-volume channel exists to band and stars are what is left; they
-    cap at 3.
+  note: The repository ships one PyPI distribution per server rather than a single package for the suite,
+    so no usage-volume channel exists and GitHub stars are the only comparable adoption signal. A star is
+    not a use, so this reading stands on a weak signal alone.
   last_verified: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/awslabs/mcp
@@ -60,12 +60,11 @@ capability:
   confidence: medium
   relative_to: playwright-mcp
   relation: at
-  note: 'Band 3, and the count of servers is the thing NOT to band on. This is a catalogue in the loose sense
-    - 58 servers - but they front one vendor''s services rather than many systems, and the two conditions that
-    lift a product above 3 are both absent: the caller configures the AWS credential chain before any server
-    starts, and the servers run on the caller''s machine over stdio. A catalogue without managed credentials
-    or hosted execution is band 3, which is the rule doing its job rather than an oversight. AWS''s separately
-    managed remote MCP server is a different product and is not what this record scores.'
+  note: AWS MCP Servers is a catalogue of 58 servers, but each fronts one AWS service rather than many independent
+    systems, and the caller configures AWS credentials before any server starts and runs every server locally
+    over stdio. Managed credentials or hosted execution, which this suite has neither of, are what would
+    move it to a higher tier. AWS's separately managed remote MCP server is a different product and is not
+    what this record scores.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/awslabs/mcp/main/README.md

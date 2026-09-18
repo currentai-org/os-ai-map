@@ -57,10 +57,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 7,654 GitHub stars. The `steel-sdk` npm package records 126,266 downloads a month, and it is a CLIENT
-    for the API rather than the product - banding on it would measure a different population, the error the
-    `langfuse` correction was made for. The product itself ships as a Docker image, which publishes no count.
-    Stars cap at 3.
+  note: GitHub stars are the adoption signal here because Steel Browser ships as a Docker image, which publishes
+    no download count. The steel-sdk npm package does report real downloads, but it is a client library
+    for the API rather than the product itself, so counting it would measure a different population.
   last_verified: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/steel-dev/steel-browser
@@ -77,11 +76,10 @@ capability:
   confidence: medium
   relative_to: browserbase
   relation: at
-  note: 'Band 4, and on the hosting leg rather than the credential one. Steel runs no authentication flow -
-    the only secret in its documentation is a proxy string the caller passes in - but it hosts execution: Steel
-    Cloud runs the browsers, and the same SDKs point at either deployment. Under this ladder band 4 is band
-    3 plus managed credentials OR hosted execution, and the second is met. Banded at browserbase, which sells
-    the same shape commercially.'
+  note: 'Steel runs no authentication flow itself - the only secret in its documentation is a proxy string
+    the caller supplies - but it does host execution: Steel Cloud runs the browsers, and the same SDKs point
+    at either deployment. Hosting the execution is what lifts it above a bare curated surface, the same
+    reason Browserbase, which sells the same shape commercially, sits at the same level.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/steel-dev/steel-browser/main/README.md

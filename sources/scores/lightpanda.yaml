@@ -13,14 +13,10 @@ openness:
       value: ungated
       detail: the hosted Lightpanda cloud is a separate managed service, not a carve-out of the published engine
   confidence: high
-  note: The repository states its own terms canonically. LICENSING.md names the default license for the project
-    as AGPL-3.0-only, spelled per the SPDX License List, the LICENSE body is the AGPL-3.0 text, and the GitHub
-    API reports the same spdx_id, so all three agree and nothing is appended after the license text. The repository
-    builds the browser binary, and the hosted Lightpanda service is a managed offering sold beside the engine
-    rather than functionality withheld from it, so the core is ungated. Placing AGPL in the OSI tier beside
-    Apache rather than a rung below it is the ladder's standing rule - a copyleft obligation binds whoever
-    redistributes and caps neither who may use the software nor at what scale - and it is a fact about AGPL
-    rather than evidence about this product.
+  note: LICENSING.md, the LICENSE file and the GitHub metadata all agree that the project ships under AGPL-3.0,
+    an OSI-approved license, and nothing is appended after the license text. The repository builds the browser
+    binary itself, and the hosted Lightpanda service is a separate, managed offering sold beside the engine
+    rather than a feature held back from it, so nothing in the core is withheld.
   raw: license:AGPL-3.0(OSI, copyleft);source:public(the repository builds the browser binary);core-gated:ungated(the
     hosted Lightpanda cloud is a separate managed service, not a carve-out of the published engine)
   last_verified: '2026-08-30'
@@ -62,9 +58,9 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 34,318 GitHub stars, which lands in the >10K stars band, level 3, and the stars scale caps at 3. Lightpanda
-    ships as a binary rather than as a package on PyPI or npm, so no download count exists for it and the stars
-    fallback is the only instrument available. The band should be read as a floor rather than a measurement.
+  note: Lightpanda ships as a binary rather than a package on PyPI or npm, so no download count exists and
+    GitHub stars are the only available adoption signal. That reading should be treated as a floor rather
+    than a precise measurement, since a star count shows attention rather than use.
   last_verified: '2026-08-30'
   sources:
   - url: https://api.github.com/repos/lightpanda-io/browser
@@ -77,12 +73,11 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: ABSTAINS. This category's ladder measures what an adapter adds between an agent and the system behind
-    it, and Lightpanda has no system behind it - it IS the browser, implementing the DOM and a JavaScript runtime
-    and speaking the Chrome DevTools Protocol, which is the thing `playwright-mcp` and `browser-use` adapt.
-    Banding it would mean answering a question the ladder does not ask. It stays in the category because it
-    is the browser layer this roster is built on and there is no better home for it today; that is a placement
-    question left open rather than settled.
+  note: 'Lightpanda has no separate system behind it: it is the browser itself, implementing the DOM, a
+    JavaScript runtime and the Chrome DevTools Protocol that tools like Playwright MCP and browser-use adapt.
+    Scoring what it adds between an agent and a system it controls does not apply to something that is the
+    system itself, so no capability score is assigned. It stays listed here as the browser layer the rest
+    of the roster runs on, though where it belongs long-term is still an open question.'
   last_verified: '2026-08-30'
   sources:
   - url: https://raw.githubusercontent.com/lightpanda-io/browser/main/README.md

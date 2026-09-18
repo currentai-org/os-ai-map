@@ -19,16 +19,10 @@ openness:
         toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev
         behind a COMPOSIO_API_KEY with no self-host option documented
   confidence: high
-  note: 'The SDK and core are MIT and public, while the hosted multi-app integration and auth platform is the
-    proprietary tier - classic open core. The gate is not a directory but an absence: the execution engine
-    is in no public repository. What is published is SDKs and provider adapters - python/composio with its
-    providers/, and ts/packages/ holding core, cli, cli-local-tools, cli-keyring, providers, slim, experimental
-    and the schema converters. Toolkit execution, the catalogue of more than 1000 apps and managed OAuth all
-    run on Composio''s own servers: the README''s first instruction is to "Grab a COMPOSIO_API_KEY from the
-    dashboard first", sessions are created against the hosted API, the docs give the REST base URL as https://backend.composio.dev/api/v3.1
-    and describe Composio-managed auth as the default, and no self-hosting or on-premise option is documented
-    anywhere. Nothing in the published source executes a toolkit without that platform. The finding rests on
-    that evidence in the code, not on the mere fact that Composio sells a hosted platform.'
+  note: Composio's SDKs and provider adapters are MIT-licensed and public, but the toolkit-execution engine,
+    the app catalog and OAuth management run only on Composio's own servers, with no self-hosting option
+    documented. The published tree contains no server or auth service, and every path to running a tool
+    requires a hosted API key, which is what makes this open core rather than open source.
   raw: license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio
     hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the
     execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution
@@ -85,8 +79,7 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: 194,657 downloads in the trailing 30 days for the one declared artifact, composio-core, which bands
-    at 100K-1M, level 3 on the software adoption scale.
+  note: Adoption is measured by monthly PyPI downloads of composio-core, the package's one declared artifact.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/composio-core/recent
@@ -100,10 +93,9 @@ capability:
   value: a catalogue spanning more than 1,500 applications, with per-end-user OAuth, API keys and tokens stored
     and refreshed by the platform, and a hosted MCP endpoint per session
   confidence: medium
-  note: Many systems, managed credentials and hosted execution - all three questions answered yes, and the
-    band-5 anchor the other five are placed against. What earns it is not the size of the catalogue, which
-    is a coverage claim this ladder excludes; it is that the credentials are the platform's problem rather
-    than the caller's.
+  note: Composio supports many different systems, manages every credential itself rather than leaving that
+    to the caller, and hosts execution end to end. What earns the top score is not the size of its catalogue
+    but that the platform, not the caller, carries the credentials.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.composio.dev/getting-started/welcome
