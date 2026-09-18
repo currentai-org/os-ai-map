@@ -17,12 +17,10 @@ openness:
       detail: core development moved to a private codebase in June 2026 - daytonaio/daytona now holds only
         a README and logos, and the daytona org publishes SDKs and clients but no server or runtime
   confidence: high
-  note: Daytona's AGPL-3.0 license and public source describe the project as it stood at its last tagged
-    release, v0.190.0. Since then, the repository states that core development has moved to a private codebase,
-    and the default branch now holds only a README and two logo files; the daytona org's other public repositories
-    are limited to SDKs, clients and legacy provider plugins, with no server or sandbox runtime published
-    anywhere. Judged against what currently ships rather than that frozen snapshot, the source would read
-    as partial rather than open core.
+  note: Daytona's AGPL-3.0 license and public source describe the project at its last tagged release, v0.190.0;
+    since then, core development has moved to a private codebase, and the default branch holds only a README
+    and two logo files, with no server or runtime published anywhere in the daytona org. Judged against
+    what currently ships, the source would read as partial rather than open core.
   raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated(core
     development moved to a private codebase in June 2026 - daytonaio/daytona now holds only a README and
     logos, and the daytona org publishes SDKs and clients but no server or runtime)
@@ -105,11 +103,10 @@ capability:
     class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory
     snapshots on VM sandboxes; scale:elastic
   confidence: high
-  note: Each Daytona sandbox gets a dedicated kernel, filesystem, network stack and its own vCPU, RAM and
-    disk allocation, and independent benchmarks confirm fast, well-under-a-second cold starts for the default
-    container class. Daytona names no microVM or gVisor-style isolation mechanism, so the isolation claim
-    is limited to OCI and Docker compatibility rather than a hardened kernel boundary, and persistence features
-    such as fork, pause and resume are scoped to a separate, opt-in VM tier rather than the container default.
+  note: Each Daytona sandbox gets a dedicated kernel, filesystem and network stack, and independent benchmarks
+    confirm well-under-a-second cold starts for the default container class. Daytona names no microVM or
+    gVisor-style isolation, so isolation is limited to OCI and Docker compatibility, and fork, pause and
+    resume apply only to a separate, opt-in VM tier.
   last_verified: '2026-08-14'
   sources:
   - url: https://daytona.io/docs/en/sandboxes

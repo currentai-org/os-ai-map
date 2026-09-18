@@ -55,11 +55,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: Replit discloses no standalone usage figure for the code-execution API, so this reading is attributed
-    to the wider Replit Agent and platform surface it powers, which serves a large user base and runs many
-    live projects on Google Cloud Run. Neither Replit nor the API exposes a countable artifact, so the level
-    depends on those vendor-quoted figures rather than a number the map can recompute, and the API measured
-    on its own would place lower.
+  note: Replit discloses no standalone usage figure for the code-execution API, so this reading follows
+    the wider Replit Agent and platform surface it powers, which runs many live projects on Google Cloud
+    Run. Neither Replit nor the API publishes a countable artifact of its own, so the level follows those
+    platform figures rather than a verifiable number, and the API alone would likely place lower.
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
@@ -80,9 +79,8 @@ capability:
   confidence: medium
   note: Replit runs each execution inside an ephemeral, unprivileged container on its own Deployments infrastructure,
     sandboxed by the third-party omegajail project, as a stateless API purpose-built for AI agents with
-    a swappable container image. Isolation stays at the container level rather than a microVM, the language
-    focus is narrow (Python), and sandboxes carry no persistence between calls; the public client that once
-    exposed this directly is archived, so the capability now lives only inside the Replit Agent surface.
+    a swappable image. Isolation stays at the container level rather than a microVM, the language focus
+    is narrow (Python), and sandboxes carry no persistence between calls.
   last_verified: '2026-08-14'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution

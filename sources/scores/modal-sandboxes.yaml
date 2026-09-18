@@ -20,9 +20,9 @@ openness:
       detail: free starter credits
       raw: pay-as-you-go usage, free starter credits
   confidence: high
-  note: 'Closed managed service. The client SDK is open, but the execution substrate is a proprietary managed
-    cloud with no self-host option, and an open client over a closed runtime is not open core. The contrast
-    with E2B is the point: E2B ships self-hostable infrastructure, Modal does not.'
+  note: 'Modal Sandboxes is a closed managed service: the client SDK is open, but the execution substrate
+    is a proprietary cloud with no self-host option, so an open client over a closed runtime does not make
+    this open core. Unlike E2B, which ships self-hostable infrastructure, Modal does not.'
   raw: license:Proprietary;source:closed;service:proprietary Modal managed cloud (no self-host of the gVisor
     execution plane);open-part:client SDK only (modal Python/JS client libraries);pricing:pay-as-you-go
     usage, free starter credits
@@ -92,11 +92,9 @@ capability:
     images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up to 24h
   confidence: medium
   note: Modal Sandboxes isolate each container with gVisor's user-space kernel, one step below microVM isolation,
-    and support arbitrary custom images, named lookup, and sessions running from a five-minute default up
-    to 24 hours. Independent ComputeSDK benchmarks measured a 0.76-second median cold start, slower than
-    the microVM-isolated platforms such as Firecracker that define the top of this category. Modal's own
-    reporting adds a high volume of concurrent production sessions, corroborated by named users such as
-    Lovable and Quora.
+    and support arbitrary custom images, named lookup, and sessions from a five-minute default up to 24
+    hours. Independent ComputeSDK benchmarks measured a 0.76-second median cold start, slower than the microVM-isolated
+    platforms such as Firecracker that define the top of this category.
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox

@@ -18,10 +18,10 @@ openness:
       detail: proprietary service
       raw: Proprietary, proprietary service
   confidence: high
-  note: Closed managed service. The SDK and CLI are open, but they are only a client for Vercel’s proprietary
-    microVM cloud, which cannot be self-hosted; an open client over a closed runtime is not open core, because
-    the core is proprietary. It sits with the other proprietary sandbox clouds - Google Cloud Run, Fly Sprites,
-    Northflank.
+  note: 'Vercel Sandbox is a closed managed service: the SDK and CLI are open, but they are only a client
+    for Vercel''s proprietary microVM cloud, which cannot be self-hosted, so an open client over a closed
+    runtime does not amount to open core. It sits with the other proprietary sandbox clouds — Google Cloud
+    Run, Fly Sprites and Northflank.'
   raw: source:closed;service:proprietary Vercel Fluid-compute managed cloud (no self-host of the Firecracker
     microVM plane);open-part:client SDK/CLI only (@vercel/sandbox JS + Python, vercel/sandbox on GitHub);license:Proprietary,
     proprietary service
@@ -92,12 +92,10 @@ capability:
     drives; scale:managed autoscale to 10,000 concurrent sandboxes, 24h max duration, 32 vCPU / 64GB
     ceiling, single region (iad1)
   confidence: high
-  note: Vercel Sandbox isolates each run in a Firecracker microVM with persistent, snapshot-capable state,
-    and independent benchmarks put its cold start in the hundreds of milliseconds - short of the vendor's
-    millisecond claim but still sub-second. It supports any Linux distribution or a custom OCI image, the
-    same flexibility that makes AWS Lambda the frontier here, but its concurrency ceiling is far smaller
-    than Lambda's and it runs in a single region, which is the tighter of the two limits and keeps it one
-    step below Lambda.
+  note: Vercel Sandbox isolates each run in a Firecracker microVM with persistent, snapshot-capable state;
+    independent benchmarks put its cold start in the hundreds of milliseconds, short of the vendor's millisecond
+    claim but still sub-second. It matches AWS Lambda's flexibility across Linux distributions and OCI images,
+    but tighter concurrency and region limits keep it one step below Lambda.
   last_verified: '2026-08-14'
   sources:
   - url: https://vercel.com/docs/sandbox

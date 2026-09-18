@@ -18,10 +18,9 @@ openness:
       value: CPU free + paid GPU upgrades
   confidence: medium
   note: Spaces apps are built with open source SDKs such as Gradio, which run anywhere, but the Spaces host
-    itself -- the hosting and orchestration Hugging Face runs the apps on -- has no public source and cannot
-    be self-hosted. Hugging Face's terms of service claim ownership of the service outright, and the pricing
-    page sells the host only as metered compute on Hugging Face's own infrastructure, with no self-hosted
-    option anywhere. That keeps Spaces closed even though the apps running on it are typically open.
+    itself has no public source and cannot be self-hosted. Hugging Face's terms of service claim ownership
+    of the platform, and it is sold only as metered compute on its own infrastructure with no self-hosted
+    option, keeping Spaces closed even though the apps running on it are typically open.
   raw: license:Proprietary;source:closed;platform:proprietary(HF-managed hosting/orchestration, no self-hostable
     Spaces);open-part:app SDKs only (Gradio Apache-2.0, Streamlit) which are separate, portable OSS products;hardware-tiers:CPU
     free + paid GPU upgrades
@@ -84,11 +83,10 @@ capability:
     (broad for app hosting); persistence: persistent storage tiers + dev mode; scale: CPU free tier +
     paid GPU upgrades on HF infra'
   confidence: medium
-  note: Spaces hosts machine-learning apps with broad SDK and GPU support, from a free 2 vCPU CPU Basic
-    tier up through paid GPU hardware, and a Space can now also serve as an MCP server, agent tool or API
-    endpoint. But it runs each app in a managed Docker container rather than a hardened microVM, and free-tier
-    Spaces sleep when idle, so it is built for hosting and demoing apps rather than for isolating arbitrary
-    untrusted code.
+  note: Spaces hosts machine-learning apps with broad SDK and GPU support, from a free CPU tier through
+    paid GPU hardware, and a Space can also serve as an MCP server, agent tool or API endpoint. But each
+    app runs in a managed Docker container rather than a hardened microVM, and free-tier Spaces sleep when
+    idle, making it built for hosting and demoing apps rather than isolating untrusted code.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/docs/hub/spaces

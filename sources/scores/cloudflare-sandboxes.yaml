@@ -21,12 +21,9 @@ openness:
       detail: Dynamic Workers $0.002/unique-worker/day
       raw: Workers paid plan, Dynamic Workers $0.002/unique-worker/day
   confidence: high
-  note: 'Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare’s proprietary
-    managed edge network, with no way to self-host the isolate or container plane; an open client SDK over
-    a closed runtime is not open core. One classification wrinkle is worth recording: GitHub reports cloudflare/sandbox-sdk
-    as NOASSERTION because the root LICENSE file is a one-line pointer to packages/sandbox/LICENSE, and
-    that file is the verbatim Apache License 2.0 - the SDK is Apache-2.0 as recorded, and the classifier
-    is simply defeated by the redirect.'
+  note: The Sandbox SDK is Apache-2.0, but running it requires Cloudflare's proprietary managed edge network,
+    with no way to self-host the isolate or container plane. An open client SDK over a closed runtime does
+    not make this open core.
   raw: license:Proprietary;source:closed;service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic
     Worker Loader - no self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox
     Apache-2.0, cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day
@@ -106,11 +103,10 @@ capability:
     container sandbox; persistence:Durable Objects-backed state; scale:edge-global, unlimited dynamic
     workers
   confidence: medium
-  note: 'Cloudflare''s JS/TS-only Dynamic Workers isolates and its general-purpose, container-backed Sandbox
-    SDK are scored together here as one product; the isolates start in milliseconds with roughly 100 times
-    the density of containers. That speed does not carry over to the container path that actually runs arbitrary
-    code: independent benchmarks put its cold start at several seconds, and Dynamic Workers itself remains
-    in open beta with only per-customer scale evidence rather than a published limit.'
+  note: 'Dynamic Workers'' JS/TS-only isolates start in milliseconds, roughly 100 times the density of containers,
+    but that speed does not carry over to the general-purpose Sandbox SDK that actually runs arbitrary code:
+    independent benchmarks put its cold start at several seconds. Dynamic Workers itself remains in open
+    beta, with only per-customer scale evidence rather than a published limit.'
   last_verified: '2026-08-13'
   sources:
   - url: https://blog.cloudflare.com/dynamic-workers/

@@ -16,10 +16,9 @@ openness:
     free_text:
     - no managed/proprietary tier(it is a local library, not a service)
   confidence: high
-  note: Apache-2.0 OS-level sandboxing library, fully open and self-contained; no feature-gated core or
-    paid tier. The README installs the whole tool with a single `npm install -g @anthropic-ai/sandbox-runtime`
-    and documents no hosted plan, license key or withheld capability. It is labeled a beta research preview,
-    which is a maturity statement rather than a gate.
+  note: Sandbox Runtime is Apache-2.0, fully open and self-contained, installing entirely with a single
+    `npm install -g @anthropic-ai/sandbox-runtime` and no hosted plan, license key or withheld capability.
+    It is labeled a beta research preview, a maturity statement rather than a gate.
   raw: license:Apache-2.0(OSI);source:public(GitHub);distribution:npm package;no managed/proprietary tier(it
     is a local library, not a service);core-gated:ungated
   last_verified: '2026-08-13'
@@ -58,11 +57,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: low
-  note: npm downloads of @anthropic-ai/sandbox-runtime, measured over the 2026-07-11 to 2026-08-09 window,
-    exceed this reading's threshold by a razor-thin margin -- thin enough that a later fetch could just
-    as easily fall short of it. Package-manager pulls also overstate real usage through CI and mirror traffic,
-    which matters more for a young research preview shipped alongside Claude Code than for an established
-    package.
+  note: Downloads of @anthropic-ai/sandbox-runtime measured over 2026-07-11 to 2026-08-09 exceed this reading's
+    threshold by a razor-thin margin, thin enough that a later fetch could fall short of it. npm pulls also
+    overstate real usage through CI and mirror traffic, which matters more for a young research preview
+    than an established package.
   last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/sandbox-runtime
@@ -93,10 +91,10 @@ capability:
     spin-up); runtime breadth:any local process (language-agnostic, host-defined); persistence:n/a (host
     fs, deny/allow rules); scale:per-host, no managed fleet
   confidence: medium
-  note: Best-in-class for low-overhead, no-container process isolation with fine-grained fs+network allow/deny
-    and pre-built seccomp filters; but a process-level sandbox is a weaker security boundary than the microVM/gVisor
-    frontier and offers no managed scale, so 3. Seccomp filters are x64/arm64 only, with unix sockets going
-    unrestricted where seccomp is unavailable, and the tool ships no managed or multi-host mode.
+  note: Sandbox Runtime gives low-overhead, no-container process isolation with fine-grained filesystem
+    and network allow/deny rules and pre-built seccomp filters. A process-level sandbox is a weaker security
+    boundary than the microVM/gVisor frontier, and seccomp coverage is limited to x64/arm64, with unix sockets
+    unrestricted elsewhere and no managed or multi-host mode.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime

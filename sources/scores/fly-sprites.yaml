@@ -18,10 +18,9 @@ openness:
       value: Firecracker
       detail: Firecracker itself is OSS/AWS, but the Sprites product/orchestration is proprietary
   confidence: high
-  note: Proprietary managed sandbox SaaS; no open source runtime published (only client SDKs). Underlying
-    Firecracker is OSS but the product is not. The product page (now fly.io/sprites) ships only client surfaces
-    - a CLI installer, a REST API, and JavaScript, Go, Elixir and Python SDKs - against a hosted Fly.io
-    control plane, with metered CPU, memory and storage pricing and no self-hostable runtime or source release.
+  note: Fly Sprites is a proprietary managed sandbox SaaS; only client SDKs are open, not the runtime. The
+    underlying Firecracker hypervisor is open source, but Fly.io's orchestration and control plane are closed,
+    sold as metered usage with no self-hostable release.
   raw: license:Proprietary;service:proprietary(Fly.io managed);source:closed;clients:CLI/REST/JS/Go SDKs
     (client libs only, no open runtime);isolation:Firecracker(Firecracker itself is OSS/AWS, but the Sprites
     product/orchestration is proprietary)
@@ -62,12 +61,10 @@ capability:
     sessions (a key differentiator); language/runtime breadth: arbitrary Linux (''any code blob''); scale:
     Fly.io global infra'
   confidence: medium
-  note: 'Each Sprite is a Firecracker microVM with its own kernel and filesystem, isolated in hardware from
-    every other Sprite, with a persistent 100 GB POSIX volume that survives sleep and moves between hosts,
-    and live copy-on-write checkpoints. That combination of strong isolation and durable, stateful sandboxes
-    is unusual in this category. What keeps it a step below the frontier is scale: the product is new and
-    unproven against established incumbents, and the vendor no longer publishes a bounded cold-start figure,
-    only that a Sprite spins up in seconds.'
+  note: 'Each Sprite is a Firecracker microVM with its own kernel, isolated in hardware, with a persistent
+    100 GB volume that survives sleep and moves between hosts, plus live copy-on-write checkpoints. What
+    keeps it a step below the frontier is scale: the product is new and unproven against established incumbents,
+    and Fly.io no longer publishes a bounded cold-start figure.'
   last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/

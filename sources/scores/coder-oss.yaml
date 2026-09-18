@@ -94,12 +94,10 @@ capability:
     (seconds-minutes), not ms; runtime breadth:any (IaC-defined, full dev environments); persistence:persistent
     long-lived workspaces; scale:org-scale self-hosted
   confidence: medium
-  note: Strong as a persistent governed dev-environment platform, but a poor fit for what this category
-    asks - safely running arbitrary agent-generated code in an ephemeral sandbox. Isolation and cold-start
-    depend on the Terraform template backing the workspace rather than on a purpose-built sandbox, so 3.
-    It belongs more with dev environments than with the agent sandboxes around it. Coder Agents runs the
-    agent loop in the control plane so that no model credentials sit in the workspace, but that is governance
-    rather than isolation strength or cold-start, so the band holds at 3.
+  note: Coder OSS is a persistent, governed dev-environment platform, with each workspace a Terraform-provisioned
+    VM, container or Kubernetes pod, so isolation and cold start depend on the backing template rather than
+    a purpose-built sandbox. Coder Agents runs the agent loop in the control plane rather than the workspace,
+    which is a governance feature rather than an isolation improvement.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/coder/coder

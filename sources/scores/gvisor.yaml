@@ -16,11 +16,10 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: gVisor is Apache-2.0, with the entire runtime -- runsc, the sandbox shim, webhook and VDSO components
-    -- in the public tree and no enterprise or paid-tier directory; a few files carry their own permissive
-    MIT or BSD notices, but Apache-2.0 governs the project as a whole. Google runs gVisor inside Cloud Run
-    and GKE Sandbox but sells no separate gVisor product and withholds no feature from the source, so nothing
-    about the core is gated.
+  note: gVisor is Apache-2.0, and the entire runtime, including the runsc OCI shim, sits in the public tree
+    with no enterprise or paid-tier directory; a handful of files carry their own permissive MIT or BSD
+    notices, but Apache-2.0 governs the project as a whole. Google runs gVisor inside Cloud Run and GKE
+    Sandbox without selling a separate product or withholding any feature from the public source.
   raw: license:Apache-2.0(OSI);source:public(Go);governance:Google-led open project;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -69,11 +68,10 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: gVisor powers Google Cloud Run, GKE Sandbox, App Engine and Cloud Functions, and Google names production
-    users including Anthropic, Cloudflare, DigitalOcean and Ant Group. A PyPI package named gvisor exists,
-    but it is not the product's primary distribution channel and sees only a trickle of downloads -- gVisor
-    ships as the runsc binary, consumed through container runtimes -- so the reading here comes from Google's
-    documented production reach rather than from that package's download count.
+  note: gVisor powers Google Cloud Run, GKE Sandbox, App Engine and Cloud Functions, with production users
+    including Anthropic, Cloudflare and DigitalOcean. A PyPI package named gvisor exists but sees only a
+    trickle of downloads and is not the product's primary distribution channel — it ships as the runsc binary
+    instead — so the reading follows Google's production reach.
   last_verified: '2026-08-13'
   sources:
   - url: https://gvisor.dev/docs/

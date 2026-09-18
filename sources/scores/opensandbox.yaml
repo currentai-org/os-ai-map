@@ -17,10 +17,10 @@ openness:
     - no-managed-tier-observed
     - no-feature-gated-core
   confidence: high
-  note: 'OpenSandbox is Apache-2.0 and fully self-hostable: the repository tree covers the whole product
-    -- server, components, Kubernetes manifests, CLI, SDKs and specs -- with Apache-2.0 license files throughout
-    and no enterprise or proprietary directory. The project''s site is documentation only, with no pricing
-    page, hosted offering or sign-up, so there is no managed tier for any part of the core to be gated behind.'
+  note: 'OpenSandbox is Apache-2.0 and fully self-hostable: the repository tree covers the whole product,
+    including the server, Kubernetes manifests, CLI and SDKs, with no enterprise or proprietary directory.
+    The project''s site is documentation only, with no pricing page, hosted offering or sign-up, so there
+    is no managed tier for any part of the core to be gated behind.'
   raw: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -72,9 +72,8 @@ adoption:
   signal_type: stars_fallback
   confidence: low
   note: 'GitHub stars are the only adoption signal for OpenSandbox: the project is only months old, and
-    no download or named-deployment figure has surfaced yet. Stars accumulated quickly right after launch,
-    but a star is not a use, so this reads as early visibility rather than measured adoption. A Python SDK
-    is now published on PyPI as opensandbox, a channel this record does not yet use.'
+    no download or named-deployment figure has surfaced yet. Stars accumulated quickly after launch, but
+    a star is not a use, so this reads as early visibility rather than measured adoption.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
@@ -94,12 +93,10 @@ capability:
     language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
     persistence:file ops; scale:K8s'
   confidence: medium
-  note: OpenSandbox ships working support for pluggable secure runtimes -- gVisor, Kata QEMU, Kata Firecracker
-    and Kata CLH, alongside plain runc -- already implemented rather than only proposed. It does not install
-    the runtimes itself, so the microVM tier depends on infrastructure the operator supplies, and there
-    is no independent latency measurement, only the project's own planning estimates. That leaves it level
-    with Daytona, which reaches the same score on the same shape -- container isolation by default, VM classes
-    opt-in.
+  note: 'OpenSandbox ships working, not merely proposed, support for pluggable secure runtimes: gVisor,
+    three Kata Containers backends and plain runc as fallback. It does not install those runtimes itself,
+    so the microVM tier depends on infrastructure the operator supplies, and its cold-start figures are
+    the project''s own planning estimates rather than an independent measurement.'
   last_verified: '2026-08-14'
   sources:
   - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py
