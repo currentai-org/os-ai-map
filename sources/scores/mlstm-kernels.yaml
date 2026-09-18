@@ -12,11 +12,11 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: LICENSE body is the NXAI Community License Agreement. Section 2, 'Additional Commercial Terms', requires a separate
-    commercial license, granted at NXAI's sole discretion, once a licensee's consolidated annual revenue exceeds EUR 100,000,000
-    and it incorporates the material into a commercial product or service - a revenue-bounded commercial restriction, not
-    an unconditional grant. The repository is public and unarchived and builds the whole product with no separate withheld
-    component, so source is public and the core ungated - the license itself, not a gated core, is what caps the score.
+  note: 'NX-AI publishes mlstm_kernels under its own NXAI Community License rather than an OSI-approved
+    one: past roughly EUR 100 million in a licensee''s annual revenue, using the code in a commercial product
+    or service requires a separate license granted at NX-AI''s discretion. The repository itself is public
+    and unarchived with no separate withheld component, so it is the license term itself, not a hidden or
+    gated portion of the code, that keeps this below full open source.'
   raw: license:NXAI-Community-License(non-OSI, Llama-3-style base with a revenue-bounded commercial term - a separate license
     is required above EUR 100,000,000 in consolidated annual revenue);source:public;core-gated:ungated
   last_verified: '2026-09-02'
@@ -53,9 +53,9 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 11,616 PyPI downloads of `mlstm-kernels` in the trailing 30 days, which lands in the 10K-100K band of the software
-    usage scale, level 2. `pip install mlstm_kernels` is the README's install path and the package is published by the NX-AI
-    authors.
+  note: PyPI downloads of `mlstm-kernels` are the adoption signal here; its README documents `pip install
+    mlstm_kernels` as the install path, and the package is published by the NX-AI team that maintains the
+    project.
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/mlstm-kernels/recent
@@ -78,8 +78,9 @@ capability:
   relative_to: tensorrt
   relation: two_below
   confidence: medium
-  note: 'Banded on the category feature matrix as a narrow kernel set: kernels for one recurrent architecture family. Placed
-    two bands below the tensorrt rung, the same level as flashkda and flashqla.'
+  note: mLSTM Kernels provides chunkwise-parallel Triton kernels for one recurrent architecture family,
+    mLSTM/xLSTM, with JAX and PyTorch integrations. That is a narrow, single-architecture kernel set, well
+    short of the broad, production-grade engine TensorRT represents in this category.
   last_verified: '2026-09-02'
   sources:
   - url: https://github.com/NX-AI/mlstm_kernels/blob/main/README.md
