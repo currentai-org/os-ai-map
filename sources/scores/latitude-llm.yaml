@@ -60,15 +60,11 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,613 GitHub stars on latitude-dev/latitude-llm, which lands in the 1K-10K stars band of the stars
-    scale, level 2. The platform is deployed as Docker Hub images, a Helm chart or a Railway template, and
-    none of those is a declarable artifact kind, so no download count of the platform itself exists to band
-    on. The telemetry packages (latitude-telemetry at 15,728 PyPI downloads a month, @latitude-data/telemetry
-    at 27,563 npm downloads a month) are one component of the platform - the instrumentation library an
-    application imports - and count instrumented applications rather than running Latitude instances, so they
-    are recorded as context and not banded. Docker Hub reports between 22,922 and 29,501 cumulative pulls per
-    image across the six platform images, a lifetime total that corroborates a small deployed base without
-    being a monthly figure.
+  note: Latitude is deployed as Docker Hub images, a Helm chart or a Railway template, none of which is
+    a countable artifact, so GitHub stars on the repository are the only adoption signal available. The
+    telemetry packages that applications import to send traces are a separate, smaller signal of instrumented
+    applications rather than running Latitude instances, and Docker Hub's cumulative pull counts corroborate
+    a small deployed base without giving a monthly figure.
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/latitude-dev/latitude-llm
@@ -106,12 +102,11 @@ capability:
     and opens a fix PR with full trace context; regression datasets and monitors to verify a fix against
     real failing traces.'
   confidence: medium
-  note: 'Covers tracing, dataset-based regression testing and monitoring - the dimensions this category
-    grades - and adds an autonomous triage-and-fix loop (failure clustering, agent dispatch, verified
-    replay) that no other product in this category offers. That is a genuinely distinctive capability set,
-    held at level with the Langfuse anchor at 4 rather than above it: the category''s top rung is reserved
-    for Arize AX''s frontier-scale closed platform, and Latitude''s own dispatch loop is not yet evidenced
-    at that scale.'
+  note: Latitude covers tracing, dataset-based regression testing and monitoring, and adds an autonomous
+    triage-and-fix loop (automatic failure clustering, coding-agent dispatch and verified replay against
+    the original failing traces) that no other product in this category offers. That distinctive loop keeps
+    it level with Langfuse rather than above it, since the most capable tier in the category is reserved
+    for Arize AX's frontier-scale closed platform, which Latitude's own loop is not yet evidenced to match.
   comparison:
     last_attested: '2026-09-02'
     sources:

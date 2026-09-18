@@ -48,38 +48,16 @@ adoption:
   confidence: low
   banded_quantity: none. This record claims no count, and the two figures available cannot supply one
     - see the note.
-  note: 'Level 3 is the standing of an Apache-2.0 tracing platform of this size, carried forward
-    unchanged. Reworked under issue 448 because the record had come to rest on a basis the corpus forbids, and the fix is to remove that basis rather than to re-band.
-
-    The lmnr PyPI figure cannot band this product, and the reason is the measurement-population rule in
-    docs/reference/adoption.md rather than any doubt about the number. lmnr is an OpenTelemetry
-    auto-instrumentation SDK for the Laminar platform - a client whose install population can vary
-    independently of platform use, and which is pulled transitively. That is the same shape as the
-    logfire SDK and latitude-telemetry, both of which that rule places on the not-the-product side. A
-    package bands the head product only when installing it is itself a meaningful unit of use of the
-    scored product, and that has not been established here.
-
-    An earlier version of this note discounted the figure on different grounds - that roughly 1.3M
-    downloads a day would outrun Langfuse. That comparison is not supported: measured on the same grain on the same day, Langfuse reads 24,272,571 and lmnr 17,798,110, so lmnr sits below Langfuse rather than
-    above it. The argument was also, stripped of its plausibility language, a downloads-against-stars
-    ratio test, which build/check_channel_authority.py excludes by name because letting stars decide
-    whether a usage measurement counts hands the weaker signal a veto. Both are withdrawn.
-
-    What is removed and not replaced is the old banded_quantity, which named GitHub stars outright.
-    Issue 441 forbids a level re-derived from the star count, so a record resting on stars cannot stand
-    whatever else is true. The level is held rather than re-derived because that is what adoption.md
-    prescribes when the claim to have counted something fails - re-deriving is a separate judgment
-    needing its own evidence, and no admissible figure exists here yet.
-
-    Note for whoever picks this up: langfuse is banded 5 on the langfuse client and adoption.md already
-    flags it as a known record standing under the superseded rule, pending its own update-product pass.
-    It is not a safe calibration peer for this product until that happens.'
+  note: 'Laminar''s lmnr package is a client SDK for the platform: an application installs it to send traces,
+    so its downloads count instrumented applications rather than direct use of Laminar itself, the same
+    shape as Logfire''s and Latitude''s client SDKs. No other usage figure for the platform exists, and
+    the repository''s GitHub stars are not a use, so the score reflects Laminar''s standing as a known platform
+    in this category and carries low confidence.'
   last_verified: '2026-09-14'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
-    shows: Apache-2.0 tracing platform, 3,251 GitHub stars, last pushed 2026-09-13; recorded as the
-      standing this level rests on, and explicitly NOT as a count - issue 441 forbids a level re-derived
-      from the star number, and none is derived here
+    shows: Apache-2.0 tracing platform, 3,251 GitHub stars, last pushed 2026-09-13; the star count is recorded
+      for the record and is not what the level is derived from.
     accessed: '2026-09-14'
     http_status: 200
     content_sha256: 9b9bcfcb4a53ffa1218202ffebad97deb8e4dfb27594dafdad7fdd2a8bd2b9ce
@@ -92,10 +70,10 @@ capability:
   confidence: medium
   relative_to: langfuse
   relation: one_below
-  note: Solid coverage of OpenTelemetry-native tracing, evaluations run from the SDK, CLI and CI, datasets
-    with an annotation UI, and a differentiated SQL-over-traces and dashboard layer. Prompt versioning and
-    explicit cost tracking are not surfaced in the repository, which leaves it below Langfuse and MLflow
-    on breadth, one rung under the anchor at 4.
+  note: Laminar covers OpenTelemetry-native tracing, evaluations run from its SDK, CLI and CI, datasets
+    with an annotation UI, and a distinctive SQL-over-traces query and dashboard layer. It does not surface
+    prompt versioning or explicit cost tracking in the repository, which keeps it a step behind Langfuse
+    and MLflow on breadth.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
