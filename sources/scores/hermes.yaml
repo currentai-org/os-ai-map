@@ -19,12 +19,10 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI
-  note: 'Nous ships one post-training recipe across four base models, and the base a user picks decides
-    the license: the Seed-OSS-36B and Qwen3-14B builds are Apache-2.0, while the Llama-3.1 70B and 405B
-    builds carry Meta''s more restrictive community terms. Because switching to the Apache-licensed build
-    costs nothing, the score follows that build rather than the most restrictive one. The post-training
-    data behind the recipe is proprietary and only inference code ships, which keeps the family at open
-    weights rather than higher.'
+  note: 'The Hermes 4 recipe ships on four base models, and the license follows whichever a user picks:
+    Apache-2.0 on the Seed-OSS-36B and Qwen3-14B builds, Meta''s more restrictive terms on the Llama-3.1
+    builds; since switching to the Apache build is free, the score follows it. Its post-training data is
+    proprietary and only inference code ships, which keeps the family at open weights rather than higher.'
   raw: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample
     corpus);code:partial(inference only);license:Apache-2.0(OSI)
   last_verified: '2026-08-13'
@@ -70,10 +68,9 @@ capability:
   value: MATH-500 96.2, AIME'24 81.9, AIME'25 78.1, GPQA Diamond 70.6, MMLU-Pro 80.6, LCBv6 61.4, BBH 86.3
     (Hermes 4 technical report, 405B reasoning column)
   confidence: medium
-  note: The strongest Hermes 4 SKU is near-frontier on math and knowledge for an open instruct model, though
-    its coding trails the 2026 frontier coders, so not a category-defining 5 (those are DeepSeek-V4, Qwen3.6
-    and Kimi class). The technical report's coding row is LiveCodeBench v6 at 61.4. The OpenRouter model
-    page carries no benchmark figure, so it evidences distribution rather than capability.
+  note: The strongest Hermes 4 checkpoint is near-frontier on math and knowledge for an open instruct model,
+    scoring 61.4 on LiveCodeBench v6. Its coding still trails the 2026 frontier coders such as DeepSeek-V4,
+    Qwen3.6 and Kimi, which keeps it a step below the top tier.
   last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/pdf/2508.18255
