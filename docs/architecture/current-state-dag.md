@@ -38,6 +38,7 @@ graph LR
     registry__product_lineage[product_lineage]
     registry__product_openness_evidence[product_openness_evidence]
     registry__product_organizations[product_organizations]
+    registry__product_score_notes[product_score_notes]
     registry__product_score_sources[product_score_sources]
     registry__product_scores[product_scores]
     registry__products[products]
@@ -69,6 +70,7 @@ graph LR
   SRC --> registry__product_lineage
   SRC --> registry__product_openness_evidence
   SRC --> registry__product_organizations
+  SRC --> registry__product_score_notes
   SRC --> registry__product_score_sources
   SRC --> registry__product_scores
   SRC --> registry__products
@@ -86,6 +88,7 @@ graph LR
   class registry__model_families staged;
   class registry__org_handles staged;
   class registry__product_aliases staged;
+  class registry__product_score_notes staged;
   class registry__resolution_ledger staged;
   class registry__tail_products dormant;
   classDef src fill:#def;

@@ -52,6 +52,7 @@ Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
   product_openness_evidence   per-dimension values read off `components`, and one row per
                               part of a recorded license
   product_score_sources       per-axis sources, each with an admission verdict
+  product_score_notes         per-axis authored prose explaining the score
 
 Usage:
     uv run python -m build.serialize_rubric            # write CSVs
@@ -196,6 +197,17 @@ TABLES: dict[str, tuple[str, ...]] = {
         "grade",
         "admitted",
         "reject_reason",
+    ),
+    # The authored prose behind a score, which until now existed only in sources/scores and in
+    # the notebook payload. Its own table rather than a column on product_scores because the
+    # grain is the axis, not the product-category: three notes per row there would widen the
+    # fat table with prose and leave it carrying two grains at once. Same key as
+    # product_score_sources, deliberately - a note and the sources it cites join cleanly.
+    "product_score_notes": (
+        "product_slug",
+        "category_slug",
+        "axis",
+        "note",
     ),
 }
 
@@ -759,6 +771,18 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
 
             rejected = 0
             for axis in AXES:
+                # An axis that abstains has no note, and an empty row would say "measured,
+                # said nothing" rather than "not measured". Absence is the honest encoding.
+                note = ((record.get(axis) or {}).get("note") or "").strip()
+                if note:
+                    tables["product_score_notes"].append(
+                        {
+                            "product_slug": product_slug,
+                            "category_slug": slug,
+                            "axis": axis,
+                            "note": note,
+                        }
+                    )
                 for source in (record.get(axis) or {}).get("sources") or []:
                     if not isinstance(source, dict):
                         continue
