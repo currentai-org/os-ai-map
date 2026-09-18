@@ -17,10 +17,9 @@ openness:
       value: HF-gated
       detail: accept-terms,anti-resharing
   confidence: high
-  note: 'Test answers are private and the dataset itself is access-gated. No license is stated anywhere
-    the project publishes: the Hub API returns no license field and no license tag, the gated card states
-    only the no-resharing condition, and the paper states no release terms. The license is therefore recorded
-    as unstated rather than guessed at; either way, the held-out answers decide the score.'
+  note: No license is stated on GAIA's dataset card, its API metadata, or the paper, and the corpus requires
+    Hugging Face access-gating with a no-resharing condition. Answers to 300 of the questions are held out
+    entirely, which keeps the score gated regardless of the missing license.
   raw: license:not-clearly-stated-on-card(the Hub API cardData carries no license key and no license tag;
     the card states only the no-resharing condition, and the paper states no release terms);questions:public(val);answers:held-out(300-Q
     test,private);access:HF-gated(accept-terms,anti-resharing)
