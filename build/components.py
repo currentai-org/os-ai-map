@@ -95,6 +95,42 @@ def find_key(lines: list[str], bounds: tuple[int, int], key: str) -> int | None:
     return None
 
 
+def quoted_scalar_end(lines: list[str], start: int, bounds: tuple[int, int]) -> int | None:
+    """End (exclusive) of a quoted scalar opened on `lines[start]` and closed on a later line.
+
+    None when the key's value is not quoted, or the quote closes on the key line itself: those
+    cases are the indentation walk's. `''` inside a single-quoted scalar and `\\"` inside a
+    double-quoted one are escapes, not closers.
+
+    The scan runs past `bounds`: `block_bounds` ends a block at the first column-zero line,
+    and the one case this helper exists for IS a column-zero line inside the scalar. The
+    closing quote, not the block estimate, says where the field ends.
+    """
+    head = lines[start].split(":", 1)[1].lstrip() if ":" in lines[start] else ""
+    if not head or head[0] not in "'\"":
+        return None
+    quote = head[0]
+    text = head[1:]
+    for i in range(start, len(lines)):
+        if i > start:
+            text = lines[i]
+        j = 0
+        while j < len(text):
+            ch = text[j]
+            if quote == "'" and ch == "'":
+                if text[j + 1 : j + 2] == "'":
+                    j += 2
+                    continue
+                return None if i == start else i + 1
+            if quote == '"' and ch == "\\":
+                j += 2
+                continue
+            if quote == '"' and ch == '"':
+                return None if i == start else i + 1
+            j += 1
+    return None
+
+
 def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int, int] | None:
     """[start, end) covering `  key:` AND every folded continuation line.
 
@@ -115,10 +151,19 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
     ("nothing in sources/scores/ puts a blank line inside a scalar") cut the span at the break
     and the reparse assertion refused the edit. The look-ahead keeps the span whole, and the
     reparse assertion still guards the result.
+
+    A quoted scalar is bounded by its quotes, not by indentation, and PyYAML reads a
+    continuation line at column zero inside one as more of the scalar. `tensorlake-sandbox`'s
+    capability note carried such a line from an old hand-splice, so the indentation walk ended
+    the span there and the edit produced a file that would not parse. When the key line opens a
+    quote it does not close, the span runs to the line that closes it.
     """
     start = find_key(lines, bounds, key)
     if start is None:
         return None
+    quoted = quoted_scalar_end(lines, start, bounds)
+    if quoted is not None:
+        return start, quoted
     end = start + 1
     while end < bounds[1]:
         line = lines[end]

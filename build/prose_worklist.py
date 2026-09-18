@@ -64,7 +64,13 @@ RUBRIC_VOCABULARY = re.compile(
     # the goldens: each is a place where a subject and a verb would have done.
     r"|\bholds? (?:it|this|the \w+) at\b|\bstands? in\b|\b(?:is|are) read the same way\b"
     r"|\ba band (?:lower|higher|below|above)\b|\bat this band\b|\bcountable channel\b"
-    r"|\bstar-based\b",
+    r"|\bstar-based\b"
+    # The map's own machinery named as a noun: "this dimension asks for", "the top of the
+    # scale", "the next level up". A reader sees a product, not an axis.
+    r"|\bthis (?:dimension|scale|axis) (?:asks|measures|scores|rewards|counts|reads)\b"
+    r"|\b(?:on|for|along|against) this (?:dimension|scale|axis)\b"
+    r"|\b(?:top|middle|bottom) of (?:this|the) (?:\w+ )?scale\b"
+    r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b",
     re.IGNORECASE,
 )
 
@@ -93,8 +99,8 @@ FIGURE = re.compile(
     # A bare comma-grouped or five-digit count, unless it is a product dimension or a
     # measured property: a token limit, a parameter count, an embedding size, a context
     # window, a throughput, a latency, a percentage.
-    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:token|param|dimension|context|d\b|tok/s|ms\b|seconds?|per second|%|hours?|steps?))"
-    r"|\b\d{5,}\b(?![\s-]*(?:token|param|dimension|context|tok/s|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|d\b|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|\b\d{5,}\b(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
 )
 
 # A band range or a band rank stated as prose. The Reach row carries the range; a note that

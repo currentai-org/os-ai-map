@@ -245,6 +245,41 @@ def test_a_quoted_scalar_with_a_paragraph_break_is_one_field():
     assert doc["openness"]["sources"] == [{"url": "https://example.com", "shows": "x"}]
 
 
+COLUMN_ZERO_NOTE = """product: widget
+openness:
+  score: 5
+  note: 'First paragraph of the note, which runs on for a while and
+
+then continues at column zero, which PyYAML still reads as the same quoted scalar,
+
+    before a final indented line closes it.'
+  sources:
+  - url: https://example.com
+    shows: x
+"""
+
+
+def test_a_quoted_scalar_runs_to_its_closing_quote_whatever_the_indent():
+    """A hand-spliced note carried a continuation line at column zero inside its quotes. The
+    indentation walk ended the span there and the edit left half a scalar behind."""
+    from build.components import set_field
+
+    assert "column zero" in yaml.safe_load(COLUMN_ZERO_NOTE)["openness"]["note"]
+    out = set_field(COLUMN_ZERO_NOTE, "One paragraph now.", axis="openness", key="note")
+    doc = yaml.safe_load(out)
+    assert doc["openness"]["note"] == "One paragraph now."
+    assert doc["openness"]["sources"] == [{"url": "https://example.com", "shows": "x"}]
+
+
+def test_a_quote_closed_on_the_key_line_is_left_to_the_indentation_walk():
+    from build.components import quoted_scalar_end
+
+    lines = ["openness:", "  note: 'short'", "  score: 5"]
+    assert quoted_scalar_end(lines, 1, (1, 3)) is None
+    lines = ["openness:", "  note: 'it''s long", "and closes here.'", "  score: 5"]
+    assert quoted_scalar_end(lines, 1, (1, 4)) == 3
+
+
 def test_a_top_level_field_is_replaced_without_touching_its_neighbors():
     from build.components import set_document_field
 
