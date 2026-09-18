@@ -17,12 +17,10 @@ openness:
         so they fall outside this axis
   governing_release: qwen-3-6
   confidence: high
-  note: 'Apache-2.0 across the distributed base variants, with a closed corpus and only inference code published,
-    so 3. The exclusion that carries the score: Qwen3.7-Max is proprietary and served only through Alibaba
-    Model Studio, so it is never distributed and does not cap the family. Counting it would publish Qwen
-    as closed, which would say nothing useful about the weights anyone can actually download - an API-only
-    tier is a different product surface. Qwen 2.5 scored 2, because its distributed 3B and 72B checkpoints
-    carried the Qwen License Agreement; from Qwen3 onward every distributed variant is Apache-2.0.'
+  note: Every distributed Qwen3 variant ships under Apache-2.0, with a closed training corpus and only inference
+    code published. Qwen3.7-Max, the proprietary flagship, is served only through Alibaba Model Studio and
+    never distributed, so it does not affect the family's reading; earlier Qwen 2.5 checkpoints carried
+    the more restrictive Qwen License Agreement before the move to Apache-2.0.
   last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage
     code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the
@@ -75,11 +73,9 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: 14,030,698 downloads in the trailing 30 days across the six declared artifacts (Qwen/Qwen2.5-72B
-    28,852; Qwen/Qwen2.5-7B 716,344; Qwen/Qwen3.6-27B 6,830,615; Qwen/Qwen3.6-35B-A3B 5,609,980; Qwen/Qwen3-235B-A22B
-    529,067; Qwen/Qwen3.5-397B-A17B 315,840), which bands at level 5 (>10M) on the model adoption scale.
-    The two Qwen3.6 checkpoints supply 89% of that total, so the family's reach is current rather than inherited
-    from the 2.5 generation.
+  note: Adoption is measured as Hugging Face downloads summed across six checkpoints spanning Qwen2.5 through
+    the current Qwen3.6 generation. The two Qwen3.6 checkpoints account for most of that total, so the family's
+    reach reflects its current release rather than the older 2.5 generation.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen2.5-72B
