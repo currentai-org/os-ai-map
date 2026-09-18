@@ -81,7 +81,15 @@ RUBRIC_VOCABULARY = re.compile(
     r"|\b(?:top|middle|bottom) of (?:this|the) (?:\w+ )?scale\b"
     r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b"
     r"|\bbanded (?:at|on|against)\b"
-    r"|\baxis (?:weighs|follows|rests|reads|scores|measures|asks|counts|resolves|abstains)\b",
+    r"|\baxis (?:weighs|follows|rests|reads|scores|measures|asks|counts|resolves|abstains)\b"
+    # The score named as a number in the prose ("Scored 4 rather than 5", "puts this at 1"),
+    # the instrument named ("scored on the feature matrix"), and the pass narrating itself
+    # ("the LICENSE body was read in full", "an earlier reading leaned on"). A random sample of
+    # finished pages turned these up in notes the first detectors had not flagged.
+    r"|\b(?:scored|score of|puts? (?:this|it) at|sits at|held at|caps? at|capped at|lands? (?:this |it )?at|places? (?:this |it )?at) [0-5]\b"
+    r"|\bat [0-5], (?:closed|open|gated|restricted|source[- ]available|open[- ]core|open[- ]weights)\b"
+    r"|\bfeature matrix\b|\b(?:was|were) read in full\b"
+    r"|\ban earlier (?:reading|pass|draft)\b|\bthis category (?:scores|rates|holds)\b",
     re.IGNORECASE,
 )
 

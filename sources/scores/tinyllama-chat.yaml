@@ -20,11 +20,11 @@ openness:
     - name: Apache-2.0
       detail: OSI
   note: 'Unusually transparent for a chat model: an open base, and named public alignment datasets (UltraChat
-    for SFT, UltraFeedback for DPO). This category scores what the tuner released - the post-training data
-    - rather than the base pretraining corpus. Zephyr scores fully open on these same two datasets while
-    sitting on Mistral-7B, whose corpus is closed outright, so judging TinyLlama by its base while judging
-    zephyr by its post-training set would penalize the more open of the two bases. One of the most open
-    records in this category.'
+    for SFT, UltraFeedback for DPO). This entry is judged on what the tuner released - the post-training
+    data - rather than the base pretraining corpus. Zephyr scores fully open on these same two datasets
+    while sitting on Mistral-7B, whose corpus is closed outright, so judging TinyLlama by its base while
+    judging zephyr by its post-training set would penalize the more open of the two bases. One of the most
+    open records in this category.'
   raw: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training-data:open(SFT
     on UltraChat + DPO on UltraFeedback, both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
   last_verified: '2026-08-13'
@@ -57,8 +57,9 @@ capability:
   basis_detail: MMLU
   value: 1.1B Llama-2-era model; intended for lightweight/edge use, not competitive on 2026 capability benchmarks
   confidence: high
-  note: Intentionally tiny (1.1B, 2023 Llama-2 architecture). Its value is footprint and openness, not capability;
-    scored 1 against a 2026 frontier comparison set. Not built to compete on reasoning/coding suites.
+  note: Intentionally tiny (1.1B, 2023 Llama-2 architecture). Its value is footprint and openness rather
+    than capability, and it was never built to compete against a 2026 frontier comparison set on reasoning
+    or coding suites.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0

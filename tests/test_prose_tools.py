@@ -37,7 +37,7 @@ ROOT = Path(__file__).resolve().parents[1]
         ("One below the anchor on the same table.", ["anchor"]),
         ("multi_sku_rule has nothing restrictive to resolve to.", ["multi_sku_rule"]),
         ("Level 5 here is measured, not inferred.", ["Level 5", "measured, not inferred"]),
-        ("The band rests on stars, which cap at 3.", ["band rests on"]),
+        ("The band rests on stars, which cap at 3.", ["band rests on", "cap at 3"]),
         ("No instrument exists for a hosted registry.", ["instrument"]),
         # The scorer's shorthand the editor named while reading the goldens.
         ("What holds it at 3 is the data question.", ["holds it at", "at 3"][:1]),
