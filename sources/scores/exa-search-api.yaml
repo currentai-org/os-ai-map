@@ -35,9 +35,9 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: Exa's own about page states it powers search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com
-    and 400,000+ developers. Developer reach in the 100K-1M band; large enterprise/agent customers but below
-    the 1M-developer Tavily tier.
+  note: Exa's own about page names the customers it serves, including Cursor, Cognition, HubSpot, OpenRouter
+    and Monday.com, and states its developer count directly. No independently published request, query or
+    revenue figure exists, so that vendor-stated count is what the reach here reflects.
   last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
@@ -52,12 +52,11 @@ capability:
   value: '`POST /search` with a `contents` block returning text, highlights or a schema-shaped summary per
     result, plus Contents, Answer, Agent, Monitors and Websets endpoints in one API reference'
   confidence: medium
-  note: 'Finds and returns the content: `/search`''s `contents` block returns page text, highlights or a schema-shaped
-    summary per result. Exa''s Answer endpoint DOES return `{answer, citations[]}` and would be band 5, and
-    it is excluded by the same test that excludes Parallel''s Responses API and Brave''s Answers: it is a separate
-    endpoint on Exa''s own price list, $5 per 1,000 against $7 for search. An earlier draft banded this 5 because
-    Search and Answer share an API reference, which is navigation rather than a product boundary. Banded at
-    firecrawl.'
+  note: Exa's `/search` endpoint returns page text, highlights or a schema-shaped summary through its `contents`
+    block, combining discovery and content extraction in one call, which puts it level with Firecrawl. Its
+    Answer endpoint does compose a cited response (`{answer, citations[]}`), but it is priced and documented
+    as a separate endpoint from Search, $5 per 1,000 requests against $7, so it is excluded the same way
+    Parallel's Responses API and Brave's Answers are.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.exa.ai/reference/search

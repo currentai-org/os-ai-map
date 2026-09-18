@@ -38,12 +38,10 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: ABSTAINS. Kagi publishes 75,506 members on its stats page, but that counts subscribers to the consumer
-    search product rather than callers of the API - a different population, which is the error the `langfuse`
-    correction was made for. The `kagiapi` PyPI package records 209 downloads in the trailing month and the
-    generated v1 clients are not published to PyPI or npm at all, so no package measures this product either.
-    The abstention is dated rather than left blank, on the queue's rule that a null somebody looked for and
-    did not find is a confirmed axis; the page below is where it was looked for.
+  note: Kagi publishes a subscriber count for its consumer search product, not for API callers, so that
+    figure measures the wrong population. The `kagiapi` package on PyPI sees too little use to serve as
+    a proxy, and Kagi's own generated v1 clients are not published to any package registry, so no channel
+    measures how the API itself is used.
   sources:
   - url: https://kagi.com/api/pricing
     shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
@@ -61,11 +59,10 @@ capability:
   confidence: high
   relative_to: firecrawl
   relation: at
-  note: Finds and returns the content, in one call. The `extract` block on `/search` is documented as fetching
-    the result pages so that "the resulting page markdown will update the value of the `snippet` field on the
-    respective result item" - references plus their content, which is band 4. FastGPT composes an answer with
-    references, and FastGPT is a separate v0 product at its own price, so it does not lift this record. Banded
-    at brave-search-api, the same find-plus-extracted-content shape sold as one metered API.
+  note: Kagi's `/search` endpoint can run its `extract` option inline, replacing each result's snippet with
+    the full page markdown, so one call returns both references and their content. That puts it level with
+    Firecrawl, which sells the same find-plus-content combination; FastGPT, which composes a cited answer,
+    is a separate product at its own price and is not part of what is scored here.
   last_verified: '2026-09-17'
   sources:
   - url: https://kagi.com/api/docs/_spec/openapi.yaml

@@ -47,13 +47,9 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'ABSTAINS. Brave publishes no request, customer or developer count for the API, and no first-party
-    package measures it: `@brave/brave-search-mcp-server` records 62,956 npm downloads in the trailing month,
-    but an MCP wrapper is one access path among several rather than the channel the service is used through,
-    so banding on it would measure a different population from the product. The same abstention as `serper`
-    and `google-grounding-api`, which are closed search APIs with no countable channel. The abstention is dated
-    rather than left blank, on the queue''s rule that a null somebody looked for and did not find is a confirmed
-    axis; the page below is where it was looked for.'
+  note: Brave publishes no usage figures for the API itself, and the only related package, the @brave/brave-search-mcp-server
+    client, is one access route among several rather than a measure of how the service as a whole is used.
+    Serper and Google's Grounding with Google Search present the same gap and are left unscored too.
   sources:
   - url: https://api-dashboard.search.brave.com/documentation/pricing
     shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
@@ -71,12 +67,11 @@ capability:
   confidence: high
   relative_to: firecrawl
   relation: at
-  note: 'Finds and returns the content. LLM Context is documented as returning "extracted page chunks and source
-    metadata in a shape and length that satisfies the needs of an LLM without need for further scraping", and
-    it is inside the same $5/1,000 Search plan as Web Search, so the combinations rule reaches band 4 on one
-    product. It stops there: AI Answers composes the cited reply, and Answers is a separately activated plan
-    at its own price, which the scoring rule excludes as a different product. Banded at firecrawl, the band-4
-    anchor, which sells the same find-plus-content shape.'
+  note: Brave's Search plan bundles LLM Context, which returns extracted page chunks and source metadata
+    for models, with Web Search under the same $5-per-1,000-request price, so one product delivers both
+    discovery and page content. That puts it level with Firecrawl, which sells the same find-plus-content
+    combination; composing a cited answer from those sources is a separate Answers plan at its own price
+    and is not part of what is scored here.
   last_verified: '2026-09-17'
   sources:
   - url: https://api-dashboard.search.brave.com/documentation/services/llm-context

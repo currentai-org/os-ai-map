@@ -100,8 +100,8 @@ FIGURE = re.compile(
     # A bare comma-grouped or five-digit count, unless it is a product dimension or a
     # measured property: a token limit, a parameter count, an embedding size, a context
     # window, a throughput, a latency, a percentage.
-    r"|\b\d{1,3}(?:,\d{3})+\b(?!,\d)(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|d\b|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
-    r"|\b\d{5,}\b(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|(?<!per )(?<!per-)(?<!/)\b\d{1,3}(?:,\d{3})+\b(?!,\d)(?![\s-]*(?:(?:output |input )?tokens?|RPM|requests?|calls?|pages?|queries|GPUs?|H100|param|dimension|context|d\b|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|(?<!per )(?<!per-)(?<!/)\b\d{5,}\b(?![\s-]*(?:(?:output |input )?tokens?|RPM|requests?|calls?|pages?|queries|GPUs?|H100|param|dimension|context|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
 )
 
 # A band range or a band rank stated as prose. The Reach row carries the range; a note that

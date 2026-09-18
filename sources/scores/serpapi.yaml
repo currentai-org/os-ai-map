@@ -39,13 +39,12 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: '1,605,478 downloads of `google-search-results` on PyPI in the trailing 30 days, inside the 1M-10M
-    band for level 4. This is a client package measuring a hosted service, which the corpus usually refuses
-    - and the reason it holds here is population identity: SerpApi sells exactly one metered product, the package
-    exists only to call it, and nobody installs it without an API key. That is the opposite of the `langfuse`
-    case, where the package measured self-hosters rather than the service. Confidence is medium rather than
-    high because the client is one of several ways to call the API and the npm client adds 606,626 more that
-    this band does not count.'
+  note: Adoption is measured by PyPI downloads of google-search-results, SerpApi's official Python client.
+    A client package is normally a weak proxy for a hosted service, but it holds here because SerpApi sells
+    exactly one metered product and the package exists only to call it, unlike a case such as Langfuse where
+    the same kind of package also measures self-hosted use. Confidence is medium rather than high because
+    the Python client is only one of several ways to call the API, and its npm counterpart adds further,
+    uncounted downloads.
   last_verified: '2026-09-16'
   sources:
   - url: https://pypistats.org/api/packages/google-search-results/recent
@@ -63,11 +62,10 @@ capability:
   confidence: high
   relative_to: serper
   relation: at
-  note: Finds, and returns references. Every output mode is a rendering of the search engine's own results
-    page - the documented `organic_results` object carries title, link and the engine's snippet - and the HTML
-    mode is explicitly "the raw HTML results from Google" rather than the pages behind the results. There is
-    no endpoint anywhere in the catalogue that returns the content of a result page. Banded at serper, the
-    other product that resells somebody else's SERP as structured data.
+  note: 'SerpApi''s every output mode renders the search engine''s own results page: the documented `organic_results`
+    object carries title, link and snippet, and even its HTML mode returns the raw Google results page rather
+    than the pages behind the links. No endpoint in its catalog returns a result page''s content, which
+    puts it level with Serper, the other product that resells someone else''s SERP as structured data.'
   last_verified: '2026-09-17'
   sources:
   - url: https://serpapi.com/search-api

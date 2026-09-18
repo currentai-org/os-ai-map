@@ -17,14 +17,12 @@ openness:
       detail: free tier + paid API key) on top of the same OSS core
       raw: r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core
   confidence: high
-  note: 'Apache-2.0 throughout with no enterprise directory and no license key, and the paid tiers buy throughput
-    on the hosted endpoint rather than functionality: jina.ai/reader lists Reader at 20 RPM without a key,
-    500 RPM with a free key and 5,000 RPM on Premium, with PDF, MS-Office, image captioning and search available
-    at every tier. The published branch does have the MongoDB-backed SaaS storage layer stripped out, which
-    the README states plainly, but it is accounting and persistence for the hosted service rather than a piece
-    of the reader the open build needs - the README says the branch "runs in stateless mode out of the box,
-    with optional MinIO/S3-compatible bucket caching". Nothing is withheld from the published source, so core-gated
-    is ungated.'
+  note: 'Jina Reader is Apache-2.0 throughout, with no enterprise directory or license key, and its paid
+    tiers buy request throughput on the hosted endpoint rather than extra features: the free tier, a free
+    API key and Premium all get the same PDF, Office, image-captioning and search support, differing only
+    up to 5,000 requests per minute. The published repository omits the MongoDB-backed storage layer the
+    hosted service uses for accounting, but that layer is not part of the reader itself, so nothing is withheld
+    from the open build.'
   raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no
     enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai
     hosted SaaS (free tier + paid API key) on top of the same OSS core
@@ -67,13 +65,10 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download or API-call volume is published by any primary source: neither the repository
-    nor jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix rather
-    than as a package, so there is no registry artifact to band. That leaves stars - 11,865 stargazers on the
-    one declared repository, which bands at >10K stars, level 3, and a stars-based signal caps the level there
-    because a star is not a use. The hosted r.jina.ai endpoint is widely used but its traffic is not published
-    anywhere. The page the star count comes from carries a live counter, so its content will differ on any
-    later fetch; that is expected drift on this source rather than a signal about the claim.'
+  note: Jina Reader publishes no download, request or user count, and because it is consumed as a URL prefix
+    rather than installed as a package, there is no registry to measure it either. GitHub stars are the
+    only available signal, but a star is not a use, and the hosted endpoint's own traffic is not published
+    anywhere.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader
@@ -88,10 +83,10 @@ capability:
   value: '`r.jina.ai/<url>` converts a named URL to LLM-friendly markdown and `s.jina.ai/<query>` searches
     the web for a query; both are documented as the two things Reader does'
   confidence: medium
-  note: 'Finds and returns the content, and this record is the reason the scoring rule had to be written down.
-    Read at its primary job it is band 1 - a URL-to-markdown converter. Read as the product the vendor documents,
-    it is two endpoints, one of which searches, and the combinations rule bands the pair: the caller runs `s.`
-    then `r.` against the same product. Banded at firecrawl, the band-4 anchor.'
+  note: Jina Reader's core interface, `r.jina.ai/<url>`, only converts a named URL to markdown; on its own
+    that covers content extraction, not discovery. But the vendor also documents `s.jina.ai/<query>`, which
+    searches the web, and using the two together, search then read, puts Jina Reader level with Firecrawl,
+    which sells the same find-plus-content combination in one product.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/jina-ai/reader/main/README.md

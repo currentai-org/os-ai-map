@@ -38,11 +38,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: '236,301 downloads of `linkup-sdk` on PyPI in the trailing 30 days, inside the 100K-1M band for level
-    3. A client package standing in for a hosted service, admitted on the same population argument as `serpapi`:
-    the SDK exists only to call this API, and the product being scored is the whole API rather than one SKU
-    of it, so the package''s users and the product''s users are the same people. Medium confidence because
-    npm adds 154,782 more that this band does not count.'
+  note: 'Linkup''s adoption is measured through PyPI downloads of `linkup-sdk`, the same reasoning used
+    for SerpApi''s client package: the SDK exists only to call this API, so its users and the API''s users
+    are the same population. npm distributes the same package with additional downloads that this count
+    leaves out, which is why confidence is medium rather than high.'
   last_verified: '2026-09-16'
   sources:
   - url: https://pypistats.org/api/packages/linkup-sdk/recent
@@ -59,11 +58,11 @@ capability:
   confidence: high
   relative_to: perplexity-sonar-api
   relation: at
-  note: 'Answers, with citations, and it is the same endpoint rather than a separate product: `sourcedAnswer`
-    is one of three values of the required `outputType` on `/search`, priced at $0.006 against $0.005 for raw
-    results. That is the distinction this category''s scoring rule turns on - Brave, Parallel and Kagi all
-    fence their answer endpoints behind separate plans and stay at 4, while Linkup sells it as a parameter.
-    Banded at perplexity-sonar-api, the other product whose ordinary search call returns a cited answer.'
+  note: Linkup's `/search` endpoint returns a cited natural-language answer when the caller sets `outputType`
+    to `sourcedAnswer`, priced at $0.006 against $0.005 for raw results, rather than routing through a separate
+    product. Brave, Parallel Search API and Kagi each fence the same capability behind its own plan and
+    sit a step lower; Linkup and Perplexity, whose ordinary search call also returns a cited answer, are
+    the only ones that sell it as a parameter of one endpoint.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.linkup.so/pages/documentation/endpoints/search/overview

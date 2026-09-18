@@ -42,14 +42,11 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Around 32,000 GitHub stars, roughly 70 maintained public instances and Docker pull volume well into
-    the high band - concrete deployment volume rather than stars alone. SearXNG is the de facto open web-search
-    backend for self-hosted AI. The band comes from the Docker Hub payload for searxng/searxng, which reports
-    71,581,974 pulls since the repository was registered; across the 63.70 months since then that averages
-    1,123,660 pulls a month, landing in 1M-10M at level 4. A cumulative total is not directly comparable with
-    any other record on this scale, since the axis is monthly, so the figure is treated as a declared floor:
-    a lifetime average understates a growing product, and SearXNG''s pull rate is not flat. Docker is not one
-    of this product''s declared artifacts, so the figure lives in this note rather than in a recorded signal.'
+  note: SearXNG has no download or install channel of its own, so adoption is measured from Docker Hub's
+    pull count for the official searxng/searxng image, averaged over the time since the repository was registered.
+    That average is treated as a floor rather than a precise rate, because a lifetime total understates
+    a growing product whose pull rate has not been flat. Docker is not one of SearXNG's declared artifacts,
+    so this figure is derived here rather than read from a recorded signal.
   last_verified: '2026-08-13'
   sources:
   - url: https://hub.docker.com/r/searxng/searxng
@@ -64,9 +61,9 @@ capability:
   value: '`GET|POST /search?format=json` returns the aggregated results of the engines the instance has enabled,
     as JSON, CSV or RSS'
   confidence: medium
-  note: Finds, and returns references. SearXNG aggregates other engines and returns their results; it fetches
-    no page for the caller, which is what keeps it at 3 rather than 4. Its Answer result type is an instant
-    answer forwarded from an upstream engine, not a composed reply over retrieved sources. Banded at serper.
+  note: SearXNG aggregates other engines and returns their references without fetching the page content
+    itself, which keeps it level with Serper rather than a step higher. Its Answer result type simply forwards
+    an instant answer from an upstream engine rather than composing a reply from retrieved sources.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.searxng.org/dev/search_api.html
