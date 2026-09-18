@@ -10,10 +10,11 @@ This module is the selector for the prose pass that fixes it, and the single own
 detectors, so `tests/test_score_notes.py` ratchets on the same definitions the worklist is
 built from. Five tells per note, one per product:
 
-  vocabulary   a rubric word: rung, ladder, anchor, band N, level N, <name>_rule, formula,
-               abstain, instrument, "rests on", "measured, not inferred"
-  figure       two or more comma-grouped or five-digit figures that also appear in a `shows`
-               on the same axis, so the note is a table set as a sentence
+  vocabulary   a rubric word or the scorer's shorthand: rung, ladder, anchor, band N, level N,
+               <name>_rule, formula, abstain, instrument, "rests on", "measured, not
+               inferred", "holds it at", "stands in", "is read the same way", "a band lower"
+  figure       a usage figure (stars, downloads, users) or a bare comma-grouped count; it is
+               stale the day the source refreshes and belongs in the source line
   opening      a rubric-speak opening a single prompt wrote hundreds of times ("Banded on
                the", "One band below")
   retracting   the note corrects itself in place (`sweep_status.RETRACTING`)
@@ -58,7 +59,12 @@ RUBRIC_VOCABULARY = re.compile(
     r"|\b\w+_rule\b|\bformula\b|\bcheck_\w+"
     r"|\babstain(?:s|ed|ing)?\b|\binstruments?\b"
     r"|\b(?:band|score|level) rests on\b"
-    r"|\bmeasured,? not inferred\b",
+    r"|\bmeasured,? not inferred\b"
+    # The scorer's shorthand a normal writer would not produce, named by the editor who read
+    # the goldens: each is a place where a subject and a verb would have done.
+    r"|\bholds? (?:it|this|the \w+) at\b|\bstands? in\b|\b(?:is|are) read the same way\b"
+    r"|\ba band (?:lower|higher|below|above)\b|\bat this band\b|\bcountable channel\b"
+    r"|\bstar-based\b",
     re.IGNORECASE,
 )
 
@@ -73,10 +79,17 @@ TEMPLATE_OPENINGS = re.compile(
     re.IGNORECASE,
 )
 
-# A figure a reader would take as a measurement: comma-grouped, or five or more digits. Not a
-# decimal, because a benchmark score in the note and in the source is a claim and its evidence,
-# which is the right shape.
-FIGURE = re.compile(r"\b\d{1,3}(?:,\d{3})+\b|\b\d{5,}\b")
+# A usage figure: stars, downloads, pulls, users, customers, with or without a k/M/million
+# shorthand and with up to two words (GitHub, Hugging Face, PyPI) between the number and the
+# noun; or a bare comma-grouped or five-digit count, which in a note is nearly always one. Such
+# a figure is stale the day the source refreshes; it belongs in the source line with its date.
+# A benchmark score, a latency, a parameter count or a context window is a fact about the
+# product and is not matched.
+FIGURE = re.compile(
+    r"\b\d[\d,.]*\s*(?:k|K|M|million|billion|thousand)?\s+(?:[A-Za-z-]+\s+){0,2}"
+    r"(?:stars?|stargazers|downloads?|pulls?|installs?|users?|customers?|deployments?|forks?)\b"
+    r"|\b\d{1,3}(?:,\d{3})+\b|\b\d{5,}\b"
+)
 
 
 def _scores() -> dict[str, dict]:
@@ -106,15 +119,10 @@ def vocabulary_hits(note: str) -> list[str]:
     return [m.group(0) for m in RUBRIC_VOCABULARY.finditer(note or "")]
 
 
-def duplicated_figures(note: str, shows: list[str]) -> list[str]:
-    """Figures in the note that a `shows` on the same axis already carries, verbatim or with
-    the thousands separators removed."""
-    haystack = " ".join(shows)
-    bare = haystack.replace(",", "")
-    return [
-        f for f in FIGURE.findall(note or "")
-        if f in haystack or f.replace(",", "") in bare
-    ]
+def usage_figures(note: str) -> list[str]:
+    """Usage figures stated in the note. The source line beneath carries the number with its
+    date; a note that repeats it goes stale the day the source refreshes."""
+    return [m.group(0) for m in FIGURE.finditer(note or "")]
 
 
 def note_tells(axis_block: dict) -> dict[str, object]:
@@ -122,13 +130,10 @@ def note_tells(axis_block: dict) -> dict[str, object]:
     note = axis_block.get("note") or ""
     if not note:
         return {}
-    shows = [s.get("shows") or "" for s in axis_block.get("sources") or []]
     tells: dict[str, object] = {}
     if (v := vocabulary_hits(note)):
         tells["vocabulary"] = v
-    # One figure restated is a claim with its evidence beneath it, which is the right shape.
-    # Two or more is a table set as a sentence.
-    if len(f := duplicated_figures(note, shows)) >= 2:
+    if (f := usage_figures(note)):
         tells["figure"] = f
     if TEMPLATE_OPENINGS.search(note.strip()):
         tells["opening"] = note.strip().split(".")[0][:40]

@@ -18,7 +18,7 @@ from build.check_prose_diff import allowed, leaf_diffs
 from build.prose_worklist import (
     NOTE_CEILING,
     comments_overlap,
-    duplicated_figures,
+    usage_figures,
     note_tells,
     vocabulary_hits,
 )
@@ -39,6 +39,12 @@ ROOT = Path(__file__).resolve().parents[1]
         ("Level 5 here is measured, not inferred.", ["Level 5", "measured, not inferred"]),
         ("The band rests on stars, which cap at 3.", ["band rests on"]),
         ("No instrument exists for a hosted registry.", ["instrument"]),
+        # The scorer's shorthand the editor named while reading the goldens.
+        ("What holds it at 3 is the data question.", ["holds it at", "at 3"][:1]),
+        ("Its client SDK stands in for the server.", ["stands in"]),
+        ("Qdrant is read the same way through its client.", ["is read the same way"]),
+        ("Blaxel, a band lower, lacks durable functions.", ["a band lower"]),
+        ("A server has no countable channel of its own.", ["countable channel"]),
     ],
 )
 def test_rubric_vocabulary_is_found(note, expected):
@@ -58,17 +64,36 @@ def test_plain_prose_is_not_flagged(note):
     assert vocabulary_hits(note) == []
 
 
-def test_two_restated_figures_are_a_table_set_as_a_sentence():
-    shows = ["downloads: 7806497", "downloads: 2489577"]
-    note = "12,549,679 downloads: 7,806,497 for the 0.6B and 2,489,577 for the 4B."
-    assert duplicated_figures(note, shows) == ["7,806,497", "2,489,577"]
-    assert "figure" in note_tells({"note": note, "sources": [{"shows": s} for s in shows]})
+@pytest.mark.parametrize(
+    "note",
+    [
+        "12,549,679 downloads across the three checkpoints.",
+        "About 76k GitHub stars, the most in this category.",
+        "About 12.5 million Hugging Face downloads a month.",
+        "About 500 GitHub stars is the only signal published.",
+        "pymilvus records about 6 million PyPI downloads a month.",
+        "Roughly 2,962 downloads in the trailing 30 days.",
+    ],
+)
+def test_a_usage_figure_in_a_note_is_flagged(note):
+    """The count is stale the day the source refreshes; it lives in the source line."""
+    assert usage_figures(note)
+    assert "figure" in note_tells({"note": note})
 
 
-def test_one_restated_figure_is_a_claim_with_its_evidence():
-    block = {"note": "About 76,518 GitHub stars, the most in this category.",
-             "sources": [{"shows": "76,518 stargazers"}]}
-    assert "figure" not in note_tells(block)
+@pytest.mark.parametrize(
+    "note",
+    [
+        # Facts about the product, not about its use.
+        "An 8B model with a 32k context window supporting more than 100 languages.",
+        "Harrier-OSS has since overtaken it with a score of 74.3.",
+        "Median time-to-interactive of 1.35 seconds on the independent benchmark.",
+        "Five accelerator vendors plus pure CPU, across three checkpoint sizes.",
+        "The registry stopped at 1.0.4 while the repository is on 2.1.0.",
+    ],
+)
+def test_a_product_fact_with_a_number_is_not_a_usage_figure(note):
+    assert usage_figures(note) == []
 
 
 def test_the_template_openings_and_the_ceiling():

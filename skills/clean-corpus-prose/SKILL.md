@@ -97,9 +97,16 @@ Never load-modify-dump a corpus file, and never hand-splice one; both have shipp
   the same 330-character paragraph with the vendor swapped, lifting the `shows` lines up into
   the note to do it. Identical facts get the same short sentence. A `shows` detail stays in
   `shows`.
-- **Grade a figure.** "Comfortably", "solid", "mid-range", "at the low end" are filler. The
-  figure, what it counts, what it cannot show; and "a star is not a use" is the whole reason a
-  star count reads low, not "caps any reading low".
+- **State a usage figure.** A star, download, pull, user or customer count is stale the day the
+  source refreshes, and "the most in this category" is false the day a product is added. The
+  number is in the source line with its date and in `Reach`; the note says what was measured,
+  why it stands for the product, and what it cannot show. A durable product fact with a number
+  in it (8B parameters, a 32k context, a benchmark score at release) stays. Nor any grading of a
+  figure: "comfortably", "solid", "mid-range" are filler.
+- **Write scorer's shorthand.** "Holds it at", "stands in", "is read the same way", "a band
+  lower", "at this band", "countable channel", "star-based reading", a fragment where a
+  sentence was wanted. Every note is full sentences an editor would publish without noticing
+  the prose; clear but visibly written from a rubric is not good enough.
 
 ## Order and size
 
