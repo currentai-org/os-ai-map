@@ -221,7 +221,7 @@ def description_tells(text: str) -> dict[str, object]:
     tells: dict[str, object] = {}
     if (m := SELF_REFERENCE.findall(text)):
         tells["self_reference"] = m
-    if (m := VOICE.findall(text)):
+    if (m := VOICE.findall(re.sub(r"\bYou\.com\b", "", text))):
         tells["voice"] = m
     if (m := re.findall(r"\b20\d\d-\d\d-\d\d\b", text)):
         tells["date"] = m
@@ -229,7 +229,8 @@ def description_tells(text: str) -> dict[str, object]:
     # recognition" and the benchmark subset "MATH Level 5" are English, not the rubric's nouns.
     plain = re.sub(r"Texas Instruments|\b(?:auto-)?instruments? (?:an?|the|your|any|every|applications?|code|calls|models?|LLM)\b"
                    r"|\bformulas? (?:recognition|extraction|detection|parsing|understanding|and|or)\b"
-                   r"|\b(?:math(?:ematical)?|chemical|table,) formulas?\b|\bMATH Level [1-5]\b",
+                   r"|\b(?:math(?:ematical)?|chemical|table,) formulas?\b|\bMATH Level [1-5]\b"
+                   r"|\b(?:and|these|its|those|onboard|scientific|imaging|the|(?-i:[A-Z]{2,})) instruments'?\b",
                    "", text, flags=re.IGNORECASE)
     if (v := vocabulary_hits(plain)):
         tells["vocabulary"] = v

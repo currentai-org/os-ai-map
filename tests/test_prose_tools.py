@@ -156,9 +156,14 @@ def test_a_plain_description_is_clean():
     "It instruments applications through OpenTelemetry.",
     "Texas Instruments' AM67A vision processor with an 8-TOPS accelerator.",
     "Six benchmarks including GPQA Diamond and MATH Level 5, scored on 40 models.",
+    "Trained on the Solar Dynamics Observatory's AIA and HMI instruments at native resolution.",
 ])
 def test_english_that_shares_a_word_with_the_rubric_is_not_a_tell(text):
     assert "vocabulary" not in description_tells(text)
+
+
+def test_a_product_named_you_com_is_not_second_person():
+    assert "voice" not in description_tells("You.com search API returning web results as JSON.")
 
 
 def test_a_description_is_rewritten_through_the_helper_and_guarded(corpus):
