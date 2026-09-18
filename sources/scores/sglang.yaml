@@ -17,10 +17,9 @@ openness:
       value: LMSYS/PyTorch-ecosystem
       detail: community
   confidence: high
-  note: Apache-2.0 throughout and no functionality withheld from the published source. The repo carries
-    no ee/ or enterprise directory, no license-key gate and no closed dependency; what SGLang offers commercially
-    is consulting and sponsorship, which software.yaml explicitly does not count as gating a core. core-gated
-    is recorded ungated.
+  note: SGLang is Apache-2.0 throughout, with no functionality withheld from the published source. The repository
+    has no enterprise directory, license-key gate or closed dependency; what SGLang sells commercially is
+    consulting and sponsorship, not withheld features.
   last_verified: '2026-08-11'
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise
     directory among its top-level directories, and no paid tier that withholds features; the project offers
@@ -77,12 +76,9 @@ capability:
   relation: at
   value: null
   confidence: high
-  note: In an independent H100 benchmark on Llama-3.3-70B at FP8, SGLang reached 1,920 tokens per second
-    and 112ms to first token, matching vLLM's 1,850 tokens per second and 120ms; vLLM is the broader-purpose
-    default, SGLang the stronger choice for shared-prefix workloads. No SGLang MLPerf submission exists,
-    so this reading also weighs its feature set, RadixAttention prefix caching, a zero-overhead scheduler,
-    prefill-decode disaggregation, speculative decoding and hardware support across NVIDIA, AMD, Intel,
-    TPU and Ascend, putting it level with vLLM.
+  note: An independent H100 benchmark on Llama-3.3-70B put SGLang and vLLM within a few percent of each
+    other on throughput and latency. vLLM remains the broader-purpose default, while SGLang is the stronger
+    choice for shared-prefix workloads.
   basis_detail: RadixAttention prefix-KV reuse, zero-overhead CPU scheduler, prefill-decode disaggregation,
     speculative decoding, structured outputs, and broad hardware support (NVIDIA/AMD/Intel/TPU/Ascend),
     corroborated by a 2026 third-party H100 benchmark against vLLM and TensorRT-LLM.

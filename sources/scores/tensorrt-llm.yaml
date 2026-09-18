@@ -15,11 +15,9 @@ openness:
       detail: vendor-hardware lock, not a license restriction
       raw: runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)
   confidence: high
-  note: Apache-2.0 across the repository. The LICENSE body opens "This project is licensed under the Apache
-    2.0 license" and then appends the terms of bundled third-party code, MIT, BSD-3-Clause and an LTX-2
-    Community License scoped to a single visual-generation model directory, which is why GitHub's classifier
-    reports NOASSERTION. The published tree carries the C++ runtime and kernels in cpp/ rather than a stub,
-    so nothing is held back from the source; NVIDIA sells NIM and enterprise support as separate products.
+  note: The repository is licensed under Apache-2.0, and the published tree includes the C++ runtime and
+    kernels themselves rather than a stub, so nothing is held back from the source. NVIDIA sells NIM and
+    enterprise support as separate products beside it.
   last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency
     appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
@@ -54,11 +52,10 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: GitHub stars (14,342), not a download or user count
-  note: 'Independent comparison write-ups consistently frame TensorRT-LLM as the specialist choice: the
-    highest raw throughput on standardized NVIDIA fleets, but narrower reach than vLLM or SGLang because
-    of its compilation overhead and single-vendor lock-in. No standalone user or download count exists to
-    measure directly, so the rating reflects that specialized, GPU-locked production use rather than a broad
-    count.'
+  note: 'Independent comparisons frame TensorRT-LLM as the specialist choice: the highest raw throughput
+    on standardized NVIDIA fleets, but narrower reach than vLLM or SGLang because of its compilation overhead
+    and single-vendor lock-in. No standalone user or download count exists, so the rating reflects that
+    specialized, GPU-locked production use rather than a broad count.'
   last_verified: '2026-08-09'
   sources:
   - url: https://github.com/NVIDIA/TensorRT-LLM
@@ -86,11 +83,10 @@ capability:
   basis_detail: MLPerf
   value: null
   confidence: high
-  note: NVIDIA's own MLPerf Inference v4.0 recap states that its HGX H100 platform delivered nearly 3x more
-    performance on the GPT-J test compared to the prior round because of TensorRT-LLM. An independent H100
-    benchmark on Llama 3.3 70B at FP8 puts TensorRT-LLM ahead on raw throughput at 2,100 tokens per second,
-    against 1,850 tokens per second for vLLM and 1,920 tokens per second for SGLang, but with a much longer
-    cold start of about 28 minutes versus about a minute for the others.
+  note: NVIDIA's MLPerf Inference v4.0 recap credits TensorRT-LLM with nearly 3x more throughput on the
+    GPT-J test than the prior round. An independent H100 benchmark on Llama 3.3 70B puts it ahead of vLLM
+    and SGLang on raw throughput, though with a cold start of about 28 minutes against roughly a minute
+    for the others.
   last_verified: '2026-08-09'
   sources:
   - url: https://www.hpcwire.com/2024/03/28/mlperf-inference-4-0-results-showcase-genai-nvidia-still-dominates/
