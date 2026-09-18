@@ -111,7 +111,7 @@ Gates              check_*, one module per question. Four families:
 Shared helpers     vocabulary (the one owner of any vocabulary two modules need), rubrics,
                    warehouse (the only supported way to read OSO), fetch_source,
                    product_prose, sweep_status, prose_worklist (which notes read as written
-                   for the auditor; owns the detectors the ratchets use), prose_edit (the
+                   for the auditor; owns the detectors the strict prose gate in tests/test_score_notes.py uses), prose_edit (the
                    guarded way to rewrite one prose field).
 
 Proposers          propose_arxiv, propose_artifacts.

@@ -480,6 +480,16 @@ def _source_span(lines: list[str], bounds: tuple[int, int], position: int) -> tu
         raise ValueError(f"no source entry at position {position}; the axis has {len(items)}")
     first = items[position]
     last = items[position + 1] if position + 1 < len(items) else end
+    # A sibling key after the list (`  last_verified:` written below `sources:`, as a few
+    # records do) is not part of the last entry. Without this the last entry's span ran to the
+    # end of the block and a rewrite of it would have dropped that key; the reparse guard
+    # refused, and the source line could not be edited at all.
+    for j in range(first + 1, last):
+        line = lines[j]
+        if line.strip() and len(line) - len(line.lstrip()) <= indent \
+                and not line.startswith(item_prefix):
+            last = j
+            break
     return first, last
 
 

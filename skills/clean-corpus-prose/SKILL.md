@@ -48,7 +48,9 @@ uv run python -m build.prose_worklist --json > worklist.json
 ```
 
 Each row names a slug, an axis and its tells: `vocabulary`, `figure`, `opening`, `retracting`,
-`length`, or `restates_notes` on a footnote. Work the flagged rows only; a note with no tells is
+`length` on a note; `shows_vocabulary` (with the source index) on a source line; `restates_notes`
+or `vocabulary` on a footnote. All three fields are published, and `tests/test_score_notes.py`
+holds every one of them at zero. Work the flagged rows only; a note with no tells is
 left alone even when a rewrite would be nicer. For each flagged record:
 
 1. **Read the whole score file** and the product file: all three notes, every `shows`,
@@ -129,8 +131,8 @@ uv run python -m build.check_capability                 # recorded comparisons s
 uv run python -m build.prose_worklist --category <slug> # what is left, and why
 ```
 
-Then lower `RUBRIC_VOCABULARY_BACKLOG` and `OVERLONG_NOTE_BACKLOG` in
-`tests/test_score_notes.py` to the new measured counts; the pins must equal the corpus. Before
+`tests/test_score_notes.py` holds every count at zero: a note, source line or footnote in the
+rubric's words, a note over the guard, or a note opening on a template fails the suite. Before
 pushing, `uv run python -m build.preflight`.
 
 **The review bar, per category:** the checks above green; three files read cold at random

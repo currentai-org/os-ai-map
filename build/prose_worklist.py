@@ -6,24 +6,33 @@ rubric's own words (rung, ladder, anchor, band 3), 963 restated an exact figure 
 beneath already showed, and seventy opened with the same three words. Length was not the
 defect; the audience was.
 
-This module is the selector for the prose pass that fixes it, and the single owner of the
-detectors, so `tests/test_score_notes.py` ratchets on the same definitions the worklist is
-built from. Five tells per note, one per product:
+This module was the selector for the pass that fixed it (#620, one commit per category) and
+stays the single owner of the detectors, so `tests/test_score_notes.py` gates on the same
+definitions the worklist is built from. Five tells per note, one per source line, two per
+footnote:
 
   vocabulary   a rubric word or the scorer's shorthand: rung, ladder, anchor, band N, level N,
                <name>_rule, formula, abstain, instrument, "rests on", "measured, not
-               inferred", "holds it at", "stands in", "is read the same way", "a band lower"
+               inferred", "holds it at", "stands in", "is read the same way", "a band lower",
+               "banded at", and the map's machinery named as a noun ("on this dimension",
+               "this axis measures", "the top of the scale", "the next level up")
   figure       a usage figure (stars, downloads, users) or a bare comma-grouped count; it is
-               stale the day the source refreshes and belongs in the source line
+               stale the day the source refreshes and belongs in the source line. A durable
+               product fact with a number (a context window, a benchmark score, a license's
+               user threshold) is exempt where the unit says so and otherwise an accepted
+               misread, listed and left
   opening      a rubric-speak opening a single prompt wrote hundreds of times ("Banded on
                the", "One band below")
-  retracting   the note corrects itself in place (`sweep_status.RETRACTING`)
+  retracting   the note corrects itself in place (`sweep_status.RETRACTING`); a state fact
+               ("superseded by", "withdrawn from circulation") trips it and is left
   length       over the 600-character guard the goldens set
+  shows_vocabulary    a source line written in the rubric's words rather than as an extract
   comments     a product footnote whose vocabulary sits mostly in the notes already
+               (`restates_notes`), or one written in the rubric's words (`vocabulary`)
 
-None of these is a gate on its own. A note can say "anchor" and be fine; the worklist says
-where to look, and the person or agent doing the pass decides. What IS gated, in
-`tests/test_score_notes.py`, is that the vocabulary and length counts only go down.
+Figure and retracting are advisory: the worklist says where to look, and the person or agent
+doing the pass decides. Vocabulary in any of the three published fields, length and opening
+are gated at zero in `tests/test_score_notes.py`.
 
 Usage:
     uv run python -m build.prose_worklist                     # per-category counts
@@ -71,7 +80,8 @@ RUBRIC_VOCABULARY = re.compile(
     r"|\b(?:on|for|along|against) this (?:dimension|scale|axis)\b"
     r"|\b(?:top|middle|bottom) of (?:this|the) (?:\w+ )?scale\b"
     r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b"
-    r"|\bbanded (?:at|on|against)\b",
+    r"|\bbanded (?:at|on|against)\b"
+    r"|\baxis (?:weighs|follows|rests|reads|scores|measures|asks|counts|resolves|abstains)\b",
     re.IGNORECASE,
 )
 
@@ -179,8 +189,9 @@ def comments_overlap(comments: str, notes: list[str]) -> float:
 
 
 def worklist() -> dict[str, list[dict]]:
-    """category -> rows of {slug, axis, tells} for flagged notes, plus {slug, comments} rows
-    for footnotes that restate the notes."""
+    """category -> rows of {slug, axis, tells} for flagged notes, {slug, axis, shows_vocabulary}
+    rows for source lines written in the rubric's words, and {slug, comments} rows for footnotes
+    that restate the notes or use those words. Every one of these fields is published."""
     scores, products, cat_of = _scores(), _products(), _category_of()
     out: dict[str, list[dict]] = defaultdict(list)
     for slug, score in scores.items():
@@ -189,22 +200,35 @@ def worklist() -> dict[str, list[dict]]:
             tells = note_tells(score.get(axis) or {})
             if tells:
                 out[category].append({"slug": slug, "axis": axis, "tells": tells})
+            for i, src in enumerate((score.get(axis) or {}).get("sources") or []):
+                if (v := vocabulary_hits(src.get("shows") or "")):
+                    out[category].append({"slug": slug, "axis": axis,
+                                          "tells": {"shows_vocabulary": [i, v]}})
         comments = (products.get(slug) or {}).get("comments") or ""
         notes = [(score.get(a) or {}).get("note") or "" for a in AXES]
+        ctells: dict[str, object] = {}
         if comments and comments_overlap(comments, notes) > 0.6:
-            out[category].append({"slug": slug, "axis": "comments",
-                                  "tells": {"restates_notes": round(comments_overlap(comments, notes), 2)}})
+            ctells["restates_notes"] = round(comments_overlap(comments, notes), 2)
+        if comments and (v := vocabulary_hits(comments)):
+            ctells["vocabulary"] = v
+        if ctells:
+            out[category].append({"slug": slug, "axis": "comments", "tells": ctells})
     return dict(out)
 
 
 def counts() -> dict[str, int]:
     """Corpus-wide counts per tell, the numbers the ratchet tests pin."""
-    scores = _scores()
+    scores, products = _scores(), _products()
     c: Counter[str] = Counter()
-    for score in scores.values():
+    for slug, score in scores.items():
         for axis in AXES:
             for tell in note_tells(score.get(axis) or {}):
                 c[tell] += 1
+            for src in (score.get(axis) or {}).get("sources") or []:
+                if vocabulary_hits(src.get("shows") or ""):
+                    c["shows_vocabulary"] += 1
+        if vocabulary_hits((products.get(slug) or {}).get("comments") or ""):
+            c["footnote_vocabulary"] += 1
     return dict(c)
 
 
@@ -228,7 +252,8 @@ def main() -> int:
 
     total = counts()
     print("tell        notes")
-    for tell in ("vocabulary", "figure", "opening", "retracting", "length"):
+    for tell in ("vocabulary", "figure", "opening", "retracting", "length",
+                 "shows_vocabulary", "footnote_vocabulary"):
         print(f"  {tell:10}{total.get(tell, 0):6}")
     print(f"\n{'category':32}{'flagged':>8}{'files':>7}")
     for category, rows in sorted(work.items(), key=lambda kv: -len(kv[1])):

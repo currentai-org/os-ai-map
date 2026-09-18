@@ -96,14 +96,12 @@ openness:
     establishes:
     - core-gated
   - url: https://www.nvidia.com/en-us/data-center/products/ai-enterprise/
-    shows: NVIDIA's paid-suite page, read as the pricing-page half of the core-gated question. It describes
-      AI Enterprise as bringing together "microservices, frameworks, and libraries for AI development with
-      advanced GPU orchestration and infrastructure management in a fully supported, production-ready, commercial
-      software suite" whose pitch is to "Deploy leading open source tools and AI models with confidence"
-      — support and packaging around open source rather than functionality withheld from it. A case-insensitive
-      grep for 'megatron' over the saved 675KB body returns 0 matches, so NVIDIA's commercial suite does
-      not claim any Megatron capability of its own. Under the ladder's openpcc rule, a hosted or supported
-      offering alongside an ungated core is not gating.
+    shows: NVIDIA's paid-suite page. It describes AI Enterprise as bringing together "microservices, frameworks,
+      and libraries for AI development with advanced GPU orchestration and infrastructure management in
+      a fully supported, production-ready, commercial software suite" whose pitch is to "Deploy leading
+      open source tools and AI models with confidence" - support and packaging around open source rather
+      than functionality withheld from it. A case-insensitive grep for 'megatron' over the saved 675KB body
+      returns 0 matches, so NVIDIA's commercial suite does not claim any Megatron capability of its own.
     accessed: '2026-09-09'
     http_status: 200
     content_sha256: 17fe5f13624cb6d19081ae7d669e1087c31a078518f8b4b52c1e6f23cb7751c6
@@ -123,9 +121,8 @@ adoption:
   last_verified: '2026-08-08'
   sources:
   - url: https://pypistats.org/api/packages/megatron-core/recent
-    shows: The whole body is {"data":{"last_day":15416,"last_month":223175,"last_week":65951},"package":"megatron-core","type":"recent_downloads"}
-      — 223,175 downloads in the last month for the megatron-core package, which is the band the adoption
-      score rests on and lands inside 100K-1M.
+    shows: 'The whole body is {"data":{"last_day":15416,"last_month":223175,"last_week":65951},"package":"megatron-core","type":"recent_downloads"}:
+      223,175 downloads in the last month for the megatron-core package.'
     accessed: '2026-08-08'
     http_status: 200
     content_sha256: ed79fffa3bf2bb6a9ff088a25d5809442330b2062bac3c6e844feabe0fd6441d
@@ -174,16 +171,15 @@ capability:
     http_status: 200
     content_sha256: 85c0d4238ff0e5fc4b96219981648f8ae09941fc6939bc6f0ba81e34fb3b2874
   - url: https://developer.nvidia.com/megatron-core
-    shows: 'NVIDIA''s own scaling documentation, and the second independent statement of the anchor figure:
-      "In the weak scaling experiments below, with GPT models ranging from 2 billion to 462 billion parameters,
-      Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs." A weak-scaling table follows
-      with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel sizes, GPU counts, per-GPU
-      teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph states near-linear
-      scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence batch.
-      Feature text names "tensor, sequence, pipeline, context, and MoE expert parallelism", activation checkpointing,
-      distributed optimizers and distributed checkpointing, resiliency (automatic restart, fault/hang detection),
-      and "features like FP8 mixed precision and advanced parallelism"; it also cites Nemotron-4 340B trained
-      at up to 6K+ H100 GPU scale.'
+    shows: 'NVIDIA''s own scaling documentation: "In the weak scaling experiments below, with GPT models
+      ranging from 2 billion to 462 billion parameters, Megatron Core demonstrates superlinear scaling up
+      to 6144 H100 GPUs." A weak-scaling table follows with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel
+      sizes, GPU counts, per-GPU teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph
+      states near-linear scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence
+      batch. Feature text names "tensor, sequence, pipeline, context, and MoE expert parallelism", activation
+      checkpointing, distributed optimizers and distributed checkpointing, resiliency (automatic restart,
+      fault/hang detection), and "features like FP8 mixed precision and advanced parallelism"; it also cites
+      Nemotron-4 340B trained at up to 6K+ H100 GPU scale.'
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 03e35b28e69d3dc08983e285e3e7fb7f7a989af9a6c49b31cbebab3d6d9b4e68

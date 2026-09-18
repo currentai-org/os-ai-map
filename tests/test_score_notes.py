@@ -271,46 +271,37 @@ def test_the_date_allowlist_has_not_gone_stale(sources):
 #
 # #619 measured the corpus on 2026-09-17: 960 notes used the rubric's own words (rung, ladder,
 # anchor, band 3, level 5, <name>_rule, abstain, instrument) and 306 ran past the 600-character
-# guard the goldens in docs/reference/product-copy.md set. Both counts are pinned here and may
-# only fall. `build/prose_worklist.py` owns the detectors, so the worklist the pass works from
-# and the ratchet that holds its result cannot disagree about what a tell is.
-#
-# A ratchet rather than a strict gate, because the pass runs one category per commit and the
-# corpus is between states until it finishes. Lower each pin as a category lands; at zero,
-# replace the pair with a strict assertion, the way the verification-line tests did.
-
-RUBRIC_VOCABULARY_BACKLOG = 9
-OVERLONG_NOTE_BACKLOG = 0
+# guard the goldens in docs/reference/product-copy.md set. The pass that followed rewrote every
+# one, category by category, with the two counts pinned as ratchets that could only fall. At
+# zero the ratchets became this strict gate, the way the verification-line tests did.
+# `build/prose_worklist.py` owns the detectors, so the worklist a pass works from and the gate
+# that holds its result cannot disagree about what a tell is; a source line and a footnote are
+# published beside the note, so they are held to the same words.
 
 
-def test_rubric_vocabulary_in_notes_only_goes_down():
-    measured = prose_tell_counts().get("vocabulary", 0)
-    assert measured <= RUBRIC_VOCABULARY_BACKLOG, (
-        f"{measured - RUBRIC_VOCABULARY_BACKLOG} more note(s) use rubric vocabulary than the pin "
-        "allows. Write for the reader who has never seen the rubric: docs/reference/product-copy.md "
-        "has the plain equivalent for each word. `uv run python -m build.prose_worklist --category "
-        "<slug>` lists them."
-    )
-
-
-def test_overlong_notes_only_go_down():
-    measured = prose_tell_counts().get("length", 0)
-    assert measured <= OVERLONG_NOTE_BACKLOG, (
-        f"{measured - OVERLONG_NOTE_BACKLOG} more note(s) run past 600 characters than the pin "
-        "allows. A note argues the rung in two sentences; the detail belongs in `shows` and "
-        "`components[].detail`. See the goldens in docs/reference/product-copy.md."
-    )
-
-
-def test_the_prose_pins_have_not_silently_gone_stale():
-    """Measured must equal recorded, or the slack becomes room for the next regression. Same
-    two-sided shape as the allowlists above."""
+def test_no_published_prose_uses_the_rubric_vocabulary():
     c = prose_tell_counts()
-    assert c.get("vocabulary", 0) == RUBRIC_VOCABULARY_BACKLOG, (
-        f"{c.get('vocabulary', 0)} notes use rubric vocabulary; RUBRIC_VOCABULARY_BACKLOG says "
-        f"{RUBRIC_VOCABULARY_BACKLOG}. Record the new count."
+    offenders = {k: c[k] for k in ("vocabulary", "shows_vocabulary", "footnote_vocabulary") if c.get(k)}
+    assert not offenders, (
+        f"{offenders}: notes, source lines or footnotes written in the rubric's words. Write for "
+        "the reader who has never seen the rubric: docs/reference/product-copy.md has the plain "
+        "equivalent for each word, and `uv run python -m build.prose_worklist --category <slug>` "
+        "lists the rows."
     )
-    assert c.get("length", 0) == OVERLONG_NOTE_BACKLOG, (
-        f"{c.get('length', 0)} notes are over the guard; OVERLONG_NOTE_BACKLOG says "
-        f"{OVERLONG_NOTE_BACKLOG}. Record the new count."
+
+
+def test_no_note_runs_past_the_guard():
+    measured = prose_tell_counts().get("length", 0)
+    assert measured == 0, (
+        f"{measured} note(s) run past 600 characters. A note argues the rung in two sentences; "
+        "the detail belongs in `shows` and `components[].detail`. See the goldens in "
+        "docs/reference/product-copy.md."
+    )
+
+
+def test_no_note_opens_on_a_template():
+    measured = prose_tell_counts().get("opening", 0)
+    assert measured == 0, (
+        f"{measured} note(s) open on the rubric's template (\"Banded on the\", \"One band below\"). "
+        "Open with the product and the fact."
     )

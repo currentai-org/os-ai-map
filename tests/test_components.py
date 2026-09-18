@@ -280,6 +280,32 @@ def test_a_quote_closed_on_the_key_line_is_left_to_the_indentation_walk():
     assert quoted_scalar_end(lines, 1, (1, 4)) == 3
 
 
+TRAILING_KEY_NOTE = """product: widget
+adoption:
+  level: 3
+  note: Short.
+  sources:
+  - url: https://example.com/a
+    shows: first
+  - url: https://example.com/b
+    shows: last, written in the rubric's words
+  last_verified: '2026-08-14'
+capability:
+  score: 2
+"""
+
+
+def test_the_last_source_entry_ends_before_a_trailing_sibling_key():
+    """`librechat` wrote `last_verified` below `sources`; rewriting the final entry took the
+    key with it and the reparse guard refused every edit to that line."""
+    from build.components import set_source
+
+    out = set_source(TRAILING_KEY_NOTE, "adoption", "https://example.com/b", {"shows": "plain"}, index=1)
+    doc = yaml.safe_load(out)
+    assert doc["adoption"]["sources"][1]["shows"] == "plain"
+    assert str(doc["adoption"]["last_verified"]) == "2026-08-14"
+
+
 def test_a_top_level_field_is_replaced_without_touching_its_neighbors():
     from build.components import set_document_field
 
