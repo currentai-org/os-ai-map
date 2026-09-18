@@ -71,8 +71,11 @@ RUBRIC_VOCABULARY = re.compile(
     r"\b(?:rungs?|ladders?|anchors?)\b"
     r"|\b(?:band|level|rung) [0-5]\b"
     r"|\b\w+_rule\b|\bformula\b|\bcheck_\w+"
+    # Field values and instrument names as words: the relation enum, the signal types.
+    r"|\b(?:one|two|three)_(?:below|above)\b|\bat_par\b|\busage_volume\b|\bbanded_quantity\b|\breported_traction\b"
     r"|\babstain(?:s|ed|ing)?\b|\binstruments?\b"
-    r"|\b(?:band|score|level) rests on\b"
+    r"|\brest(?:s|ed|ing)? on\b|\bstanding in for\b"
+    r"|\bthis axis\b|\bone-rung\b|\brung spacing\b"
     r"|\bmeasured,? not inferred\b"
     # The scorer's shorthand a normal writer would not produce, named by the editor who read
     # the goldens: each is a place where a subject and a verb would have done.
@@ -110,7 +113,7 @@ RUBRIC_VOCABULARY = re.compile(
 # that flagged them replaced each with the same 330-character paragraph, name swapped, which
 # was the defect wearing a new coat. A short factual note is left alone.
 TEMPLATE_OPENINGS = re.compile(
-    r"^(?:banded on|one band below|two bands below|one tier below|admitted on the)",
+    r"^(?:banded on|one band below|two bands below|one tier below|admitted on the|verified\b)",
     re.IGNORECASE,
 )
 
@@ -278,6 +281,12 @@ def comments_overlap(comments: str, notes: list[str]) -> float:
     return sum(1 for w in words if w in body) / len(words)
 
 
+def comparison_sources(axis_block: dict) -> list[dict]:
+    """The source lines under a capability comparison; published beside the axis's own."""
+    comparison = axis_block.get("comparison")
+    return list(comparison.get("sources") or []) if isinstance(comparison, dict) else []
+
+
 def worklist() -> dict[str, list[dict]]:
     """category -> rows of {slug, axis, tells} for flagged notes, {slug, axis, shows_vocabulary}
     rows for source lines written in the rubric's words, and {slug, comments} rows for footnotes
@@ -294,6 +303,10 @@ def worklist() -> dict[str, list[dict]]:
                 if (v := vocabulary_hits(src.get("shows") or "")):
                     out[category].append({"slug": slug, "axis": axis,
                                           "tells": {"shows_vocabulary": [i, v]}})
+            for i, src in enumerate(comparison_sources(score.get(axis) or {})):
+                if (v := vocabulary_hits(src.get("shows") or "")):
+                    out[category].append({"slug": slug, "axis": axis,
+                                          "tells": {"comparison_shows_vocabulary": [i, v]}})
         comments = (products.get(slug) or {}).get("comments") or ""
         notes = [(score.get(a) or {}).get("note") or "" for a in AXES]
         ctells: dict[str, object] = {}
@@ -316,7 +329,7 @@ def counts() -> dict[str, int]:
         for axis in AXES:
             for tell in note_tells(score.get(axis) or {}):
                 c[tell] += 1
-            for src in (score.get(axis) or {}).get("sources") or []:
+            for src in list((score.get(axis) or {}).get("sources") or []) + comparison_sources(score.get(axis) or {}):
                 if vocabulary_hits(src.get("shows") or ""):
                     c["shows_vocabulary"] += 1
         if vocabulary_hits((products.get(slug) or {}).get("comments") or ""):

@@ -188,6 +188,10 @@ def test_under_coverage_detector_matches_both_directions():
     assert UNDERSTATES.search("npm is not the product's primary distribution channel")
     assert INFLATED.search("almost certainly CI/mirror-inflated for an OTel SDK")
     assert not UNDERSTATES.search("429,490 downloads in the trailing 30 days, band unchanged")
+    # The affirmative is the opposite claim, not the admission (review of #620: four notes sat
+    # in the pinned set on "PyPI is the primary distribution channel for a Python library").
+    assert not UNDERSTATES.search("PyPI is the primary distribution channel for a Python library")
+    assert not UNDERSTATES.search("the data-designer package is this tool's primary distribution channel")
 
 
 def test_both_worklists_traverse_the_corpus_without_asserting_a_backlog():

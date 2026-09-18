@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from build.components import field_span, format, parse, render, rewrite, set_field
+from build.components import field_span, format, parse, render, rewrite, set_comparison_source, set_field
 
 # `granite-code-instruct`'s real components value, which folds across four lines in the
 # repo. Real rather than invented on purpose: what makes a value fold is spaces inside the
@@ -825,3 +825,39 @@ def test_set_source_does_not_match_a_url_that_is_a_prefix_of_another():
     entries = yaml.safe_load(out)["openness"]["sources"]
     assert entries[0]["accessed"] == "2026-08-11", "the .md entry must not move"
     assert entries[1]["accessed"] == "2026-09-09"
+
+
+COMPARISON_NOTE = """product: widget
+capability:
+  level: 3
+  note: A note.
+  sources:
+  - url: https://example.com/own
+    shows: the product's own line
+  comparison:
+    last_attested: 2026-09-01
+    sources:
+    - url: https://example.com/peer
+      shows: Re-read of the peer this band is placed against.
+      accessed: 2026-09-01
+    - url: https://example.com/peer2
+      shows: second peer line
+  relative_to: peer
+"""
+
+
+def test_a_comparison_source_line_is_rewritten_in_place():
+    new = set_comparison_source(COMPARISON_NOTE, "capability", 0, {"shows": "The peer still makes the claim."})
+    doc, before = yaml.safe_load(new), yaml.safe_load(COMPARISON_NOTE)
+    assert doc["capability"]["comparison"]["sources"][0]["shows"] == "The peer still makes the claim."
+    assert doc["capability"]["comparison"]["sources"][0]["accessed"] == before["capability"]["comparison"]["sources"][0]["accessed"]
+    assert doc["capability"]["comparison"]["sources"][1] == before["capability"]["comparison"]["sources"][1]
+    assert doc["capability"]["sources"] == before["capability"]["sources"]
+    assert doc["capability"]["relative_to"] == "peer"
+    # The last entry ends before the sibling keys that follow the list.
+    last = set_comparison_source(COMPARISON_NOTE, "capability", 1, {"shows": "changed"})
+    assert yaml.safe_load(last)["capability"]["relative_to"] == "peer"
+    with pytest.raises(ValueError):
+        set_comparison_source(COMPARISON_NOTE, "capability", 2, {"shows": "x"})
+    with pytest.raises(ValueError):
+        set_comparison_source(COMPARISON_NOTE, "openness", 0, {"shows": "x"})

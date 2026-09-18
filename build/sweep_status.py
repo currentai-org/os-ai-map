@@ -6,41 +6,9 @@ desyncs the first time a category is finished by hand, or half-finished, or reve
 is no pointer. This module reads `sources/` and works it out. Preliminary categories carry no
 head-product verification work and are excluded until publication.
 
-## What "done" means for a product
-
-The bar agreed on 2026-08-08, and it is per product rather than per axis:
-
-  * every axis carries a real `last_verified`, or abstains deliberately (a null value, which
-    `evidence-and-freshness.md` explains for the axes that have one), or the product is held;
-  * held products count as resolved, not as remaining. A product whose evidence cannot be
-    settled goes into `sources/verification_queue.yaml` with a reason and stops blocking its
-    category, which is what let the pilot ship five of six.
-
-The prose has no part in "done". It used to: `comments` had to end in a dated `Verified … via`
-line, which was the one thing about the prose a checker could see. The line was a third copy
-of the axis dates and read as a footnote about the product, so #619 retired it, and the prose
-half of a refresh is now held by `product-copy.md`'s rules and the reviewer rather than by a
-marker in the field. `build/product_prose.py` checks that the line has not come back.
-
-Deliberately NOT counted as done: an axis whose value is null because nobody looked. The two
-are indistinguishable in the file today, which is the gap the per-axis deferral idea closes.
-Until that exists this over-counts, and `--verbose` prints the null axes so the number can be
-read with that in mind.
-
-## Order
-
-Worst artifact coverage first, so the categories where automation helps least go while the
-sweep is cheapest to change. Coverage is measured locally as the share of a category's products
-carrying a routable artifact block, which is the same thing `check_routing` counts and does not
-need the warehouse.
-
-## Refreshing rather than finishing
-
-Once a category is gate-clean it stays "done" forever, which is wrong the moment a confirmation
-ages: `last_verified` is a claim about a day, and the map keeps moving. `--max-age-days` (or
-`--since`) reads a confirmation older than the window as `stale` rather than `verified`, so the
-same tooling that drove the first pass drives the recurring one. Prose has no date of its own
-and ages with the axes it was written beside.
+What counts as done, the order categories are taken in, and how a confirmation goes stale are
+written up once, in docs/reference/evidence-and-freshness.md under "The verification sweep's
+bookkeeping"; this module implements them and does not restate them.
 
 Usage:
     uv run python -m build.sweep_status
@@ -154,9 +122,11 @@ RETRACTING = re.compile(
 # real use. `docs/reference/adoption.md` names the tell: "a note that describes the signal as
 # understating the product, followed by a band recorded on that signal anyway." Both directions
 # count — a CI-inflated download count is the same defect pointing the other way.
+# The admission that a measured channel does not measure the product. "not the product's
+# primary distribution channel" is the admission; the affirmative "is this tool's primary
+# distribution channel" is the opposite claim and does not match.
 UNDERSTATES = re.compile(
-    r"understates|minority channel|not the (?:product's )?primary (?:channel|distribution)"
-    r"|primary distribution channel",
+    r"understates|minority channel|not (?:the |its |this )?(?:product's |tool's )?primary (?:channel|distribution)",
     re.IGNORECASE,
 )
 INFLATED = re.compile(r"inflated|anomalously high|mirror-inflated|CI/dependency traffic", re.IGNORECASE)

@@ -24,10 +24,17 @@ Refusals, each with its reason on stderr:
     (the under-coverage set is pinned in tests; withdrawing the claim is a re-read, not a
     rewording), or that introduces one the old text did not carry (the set would grow, and a
     prose pass makes no new claim), unless `--allow-phrase-change`;
-  * a note on `tests/test_score_notes.DATES_THAT_ARE_PRODUCT_FACTS` that would lose its date;
+  * a note on `prose_allowlists.DATES_THAT_ARE_PRODUCT_FACTS` that would lose its date;
   * a note that would gain an ISO date it did not have;
-  * a `comments` that carries a dated verification sentence;
-  * a `shows` that would be empty.
+  * a note in the rubric's words (`prose_worklist.vocabulary_hits`), opening on a template, or
+    quoting a usage figure the old note did not carry and
+    `prose_allowlists.FIGURES_THAT_ARE_PRODUCT_FACTS` does not allow;
+  * a `comments` that carries a dated verification sentence, or the rubric's words;
+  * a `shows` that would be empty, or is written in the rubric's words.
+
+These are the same detectors `tests/test_score_notes.py` gates, so a rewrite that this accepts
+is one the suite accepts. A file that never comes through here (a scaffold written by
+`add-product`) meets the same gate in CI.
 """
 
 from __future__ import annotations
@@ -39,20 +46,16 @@ from pathlib import Path
 
 import yaml
 
-from build.components import drop_document_field, set_document_field, set_field, set_source
+from build.components import drop_document_field, set_comparison_source, set_document_field, set_field, set_source
 from build.product_prose import dated_verification
-from build.prose_worklist import NOTE_CEILING, description_tells
+from build.prose_allowlists import DATES_THAT_ARE_PRODUCT_FACTS, FIGURES_THAT_ARE_PRODUCT_FACTS
+from build.prose_worklist import (NOTE_CEILING, TEMPLATE_OPENINGS, comparison_sources, description_tells,
+                                  usage_figures, vocabulary_hits)
 from build.sweep_status import INFLATED, UNDERSTATES
 from build.vocabulary import axes
 
 ROOT = Path(__file__).resolve().parents[1]
 ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
-
-
-def _product_fact_dates() -> set[tuple[str, str]]:
-    from tests.test_score_notes import DATES_THAT_ARE_PRODUCT_FACTS
-
-    return DATES_THAT_ARE_PRODUCT_FACTS
 
 
 def _read_text(path: str) -> str:
@@ -91,25 +94,41 @@ def edit_note(slug: str, axis: str, text: str, allow_phrase_change: bool = False
                     "would grow. A prose pass makes no new claim: reword it, or pass "
                     "--allow-phrase-change if the record already supports the admission")
     had_date, has_date = bool(ISO_DATE.search(old)), bool(ISO_DATE.search(text))
-    if (slug, axis) in _product_fact_dates() and had_date and not has_date:
+    if (slug, axis) in DATES_THAT_ARE_PRODUCT_FACTS and had_date and not has_date:
         return "this axis is on DATES_THAT_ARE_PRODUCT_FACTS; its date is a fact about the product"
     if has_date and not had_date:
         return "the new note states a date the old one did not; when something happened is git's"
+    if (v := vocabulary_hits(text)):
+        return f"the new note is written in the rubric's words: {v!r}; product-copy.md has the plain equivalent"
+    if TEMPLATE_OPENINGS.search(text):
+        return "the new note opens on a template; open on the product and the fact"
+    if (f := usage_figures(text)) and (slug, axis) not in FIGURES_THAT_ARE_PRODUCT_FACTS:
+        if set(f) - set(usage_figures(old)):
+            return (f"the new note quotes a usage figure: {f!r}; the source line carries it with its "
+                    "date, or add the axis to FIGURES_THAT_ARE_PRODUCT_FACTS if it is a product fact")
     new_text = set_field(path.read_text(), text, axis=axis, key="note")
     path.write_text(new_text)
     return None
 
 
-def edit_shows(slug: str, axis: str, index: int, text: str) -> str | None:
+def edit_shows(slug: str, axis: str, index: int, text: str, comparison: bool = False) -> str | None:
+    """`comparison=True` addresses the source lines under the axis's `comparison:` block, which
+    a capability record carries beside its own and the page renders the same way."""
     path = ROOT / "sources" / "scores" / f"{slug}.yaml"
     doc = yaml.safe_load(path.read_text()) or {}
-    sources = (doc.get(axis) or {}).get("sources") or []
+    block = doc.get(axis) or {}
+    sources = comparison_sources(block) if comparison else (block.get("sources") or [])
+    where = f"{axis}.comparison" if comparison else axis
     if not 0 <= index < len(sources):
-        return f"{axis} has {len(sources)} source(s); no index {index}"
+        return f"{where} has {len(sources)} source(s); no index {index}"
     if not text:
         return "a shows may not be emptied"
-    url = sources[index].get("url")
-    new_text = set_source(path.read_text(), axis, url, {"shows": text}, index=index)
+    if (v := vocabulary_hits(text)):
+        return f"the new source line is written in the rubric's words: {v!r}; a shows quotes the source"
+    if comparison:
+        new_text = set_comparison_source(path.read_text(), axis, index, {"shows": text})
+    else:
+        new_text = set_source(path.read_text(), axis, sources[index].get("url"), {"shows": text}, index=index)
     path.write_text(new_text)
     return None
 
@@ -125,6 +144,8 @@ def edit_comments(slug: str, text: str | None) -> str | None:
         return None
     if (sentence := dated_verification(text)):
         return f"comments may not carry a dated verification sentence: {sentence!r}"
+    if (v := vocabulary_hits(text)):
+        return f"the new footnote is written in the rubric's words: {v!r}"
     if "comments" not in doc:
         return "this product has no comments field; a prose pass adds none"
     path.write_text(set_document_field(raw, "comments", text))
@@ -168,6 +189,8 @@ def main() -> int:
     p_shows.add_argument("axis", choices=axes())
     p_shows.add_argument("index", type=int)
     p_shows.add_argument("--text-file", required=True)
+    p_shows.add_argument("--comparison", action="store_true",
+                         help="the line under comparison.sources rather than the axis's own")
 
     p_comments = sub.add_parser("comments")
     p_comments.add_argument("slug")
@@ -185,7 +208,8 @@ def main() -> int:
     elif args.field == "note":
         reason = edit_note(args.slug, args.axis, _read_text(args.text_file), args.allow_phrase_change)
     elif args.field == "shows":
-        reason = edit_shows(args.slug, args.axis, args.index, _read_text(args.text_file))
+        reason = edit_shows(args.slug, args.axis, args.index, _read_text(args.text_file),
+                            comparison=args.comparison)
     else:
         reason = edit_comments(args.slug, None if args.drop else _read_text(args.text_file))
     if reason:

@@ -38,7 +38,7 @@ ROOT = Path(__file__).resolve().parents[1]
         ("One below the anchor on the same table.", ["anchor"]),
         ("multi_sku_rule has nothing restrictive to resolve to.", ["multi_sku_rule"]),
         ("Level 5 here is measured, not inferred.", ["Level 5", "measured, not inferred"]),
-        ("The band rests on stars, which cap at 3.", ["band rests on", "cap at 3"]),
+        ("The band rests on stars, which cap at 3.", ["The band", "rests on", "cap at 3"]),
         ("No instrument exists for a hosted registry.", ["instrument"]),
         # The scorer's shorthand the editor named while reading the goldens.
         ("What holds it at 3 is the data question.", ["holds it at", "at 3"][:1]),
@@ -228,6 +228,9 @@ def test_leaf_diffs_report_paths_and_treat_a_list_length_change_as_one_diff():
         ("scores", ("openness", "sources", 0, "url"), False),
         ("scores", ("openness", "sources", 0, "content_sha256"), False),
         ("scores", ("openness", "sources"), False),
+        ("scores", ("capability", "comparison", "sources", 0, "shows"), True),
+        ("scores", ("capability", "comparison", "sources", 0, "url"), False),
+        ("scores", ("capability", "comparison", "last_attested"), False),
         ("scores", ("openness", "components", "license"), False),
         ("products", ("comments",), True),
         ("products", ("description",), True),
@@ -293,8 +296,8 @@ def _note(root, slug, axis):
 
 
 def test_a_note_is_rewritten_through_the_helper(corpus):
-    new = ("About 76k GitHub stars, the most in this category. Stars are the only signal, and "
-           "that understates a library embedded in a very large amount of other software.")
+    new = ("Stars are the only public signal for the library, and that understates one embedded "
+           "in a very large amount of other software.")
     assert prose_edit.edit_note("tesseract", "adoption", new) is None
     assert _note(corpus, "tesseract", "adoption") == new
     # Nothing else moved: the level, the date and the source are as they were.
@@ -305,11 +308,24 @@ def test_a_note_is_rewritten_through_the_helper(corpus):
 
 
 def test_dropping_a_pinned_under_coverage_phrase_is_refused(corpus):
-    reason = prose_edit.edit_note("tesseract", "adoption", "About 76k GitHub stars, the most here.")
+    reason = prose_edit.edit_note("tesseract", "adoption", "Stars are the only public signal.")
     assert reason and "UNDERSTATES" in reason
     assert _note(corpus, "tesseract", "adoption").startswith("76,518")
-    assert prose_edit.edit_note("tesseract", "adoption", "About 76k GitHub stars, the most here.",
+    assert prose_edit.edit_note("tesseract", "adoption", "Stars are the only public signal.",
                                 allow_phrase_change=True) is None
+
+
+def test_the_editor_refuses_the_rules_the_gate_reads(corpus):
+    """Review of #620: the editor refused an emptied note and a lost date but not the rubric's
+    words, a template opening or a fresh usage figure, so those could come back through it
+    while the suite stayed red. Now what the editor accepts, the gate accepts."""
+    keep = "Stars are the only signal, and that understates a library embedded in other software."
+    assert "rubric" in prose_edit.edit_note("tesseract", "adoption", keep + " The band rests on stars.")
+    assert "template" in prose_edit.edit_note("tesseract", "adoption", "Verified MIT; " + keep)
+    assert "figure" in prose_edit.edit_note("tesseract", "adoption", "About 80k GitHub stars. " + keep)
+    # A figure the old note already carried is not a new one; the pass may keep it.
+    assert prose_edit.edit_note("tesseract", "adoption", "76,518 GitHub stars. " + keep) is None
+    assert "rubric" in prose_edit.edit_shows("tesseract", "openness", 0, "The band rests on this file.")
 
 
 def test_introducing_a_pinned_under_coverage_phrase_is_refused(corpus):

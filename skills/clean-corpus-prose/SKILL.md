@@ -59,8 +59,10 @@ left alone even when a rewrite would be nicer. For each flagged record:
 3. **Rewrite in the two-sentence shape**, from the facts the record already carries. The
    worklist's `shape` tell (over 400 characters or more than two sentences) is advisory, because
    three goldens run past it; a third sentence stays only for a distinction the score turns on. What puts
-   it on this rung; what keeps it off the next. Plain words for every rubric word. Figures
-   rounded, exact ones left to `shows`. Peers named. A capability note that names a peer with
+   it on this rung; what keeps it off the next. Plain words for every rubric word. No usage
+   figure at all: the source line carries it with its date, and `tests/test_score_notes.py`
+   fails a note that quotes one unless the axis is on `FIGURES_THAT_ARE_PRODUCT_FACTS`; a
+   durable product fact with a number in it stays. Peers named. A capability note that names a peer with
    no `relative_to` recorded goes in the findings log; recording the comparison is a structured
    edit with a gate behind it, and `check_prose_diff` fails a prose commit that makes one.
 4. **Move, do not lose.** A detail the note leaned on that no `shows` carries goes into the
@@ -84,7 +86,10 @@ this pass is not allowed to make: emptying a note, running past the 600-characte
 a date, dropping a phrase `check_channel_authority` reads (`understates`, `inflated`, `minority
 channel`), dropping a date on the product-fact allowlist, writing a `Verified … via` sentence
 into a footnote, a description that refers to this record or the map, speaks as "we" or "you",
-or carries a rubric word (the worklist's `description_*` tells). A refusal is a finding for the log, not a reason to reach for a text editor.
+or carries a rubric word (the worklist's `description_*` tells); and, since the review of #620,
+the pass's own rules: a note, source line or footnote in the rubric's words, a note opening on
+a template, a note quoting a usage figure the old one did not carry. What the editor accepts,
+the suite accepts. A refusal is a finding for the log, not a reason to reach for a text editor.
 Never load-modify-dump a corpus file, and never hand-splice one; both have shipped defects here.
 
 ## What a pass may never do
@@ -93,7 +98,7 @@ Never load-modify-dump a corpus file, and never hand-splice one; both have shipp
   score is wrong, log it and move on.
 - **Touch `last_verified`, `accessed`, `http_status`, `content_sha256`, `establishes`, a URL, or
   the `sources` list's length.** `build/check_prose_diff.py` fails the commit if one moved.
-- **Withdraw a claim a gate reads.** The 19 notes that say the signal understates the product
+- **Withdraw a claim a gate reads.** The 15 notes that say the signal understates the product
   are pinned in `tests/test_check_channel_authority.py`; withdrawing the claim is a re-read.
 - **Add a fact.** No source is opened, so no new fact is known.
 - **Leave a note that no longer stands alone.** The vocabulary was sometimes carrying the whole

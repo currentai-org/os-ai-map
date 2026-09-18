@@ -225,11 +225,16 @@ def test_the_prose_leg_holds_at_its_known_count():
     its note says the figure understates the product - what matters about a registry is how many
     clients READ it. That is the tesseract shape rather than a recording choice: there is no channel
     to relabel it to, so it sits here until an instrument exists.
+
+    19 -> 15 with #620: `UNDERSTATES` had matched the bare phrase "primary distribution channel"
+    in either polarity, so aider, llm-guard, nemo-data-designer and nemo-guardrails sat here on
+    notes that AFFIRM the channel ("PyPI is the primary distribution channel for a Python
+    library"). The regex now requires the negation; those four were never admissions.
     """
     # Census now lives in tests/goldens/corpus.json; see build/goldens.py.
     findings = under_coverage()
     assert {f[0] for f in findings} == {
-        "aider", "faiss", "gvisor", "ktransformers", "langflow", "llm-d", "llm-guard",
-        "mistral-large", "mistral-rs", "n8n", "nemo-data-designer", "nemo-guardrails",
+        "faiss", "gvisor", "ktransformers", "langflow", "llm-d",
+        "mistral-large", "mistral-rs", "n8n",
         "mcp-registry", "ollama", "perplexica", "promptfoo", "searxng", "tesseract", "uzu",
     }

@@ -178,7 +178,7 @@ downloads across the three checkpoints, most of them for the 0.6B model", not "1
 downloads". A number that is a durable fact about the product stays: 8B parameters, a 32k
 context window, five accelerator vendors, three checkpoint sizes, a benchmark score at
 release. A `reported_traction` note that cites a magnitude must keep its `banded_quantity` in
-step, and a note whose argument is a gap between two versions keeps both versions.
+step, and a note whose argument is a gap between two versions keeps both versions. `tests/test_score_notes.py` fails a note that quotes one unless the axis is on `build/prose_allowlists.FIGURES_THAT_ARE_PRODUCT_FACTS`, the short list of numbers that are facts about the product (a license threshold, a dataset size, a leaderboard score) rather than about use.
 
 **Full sentences, in an editor's English.** Every note is sentences with a subject and a verb,
 not a fragment that opens with a figure or a license name. The test is whether an editor would
@@ -252,6 +252,9 @@ figure, the sentence in the README. It is an extract, not an argument.
 - **Dates are fine here.** Sources carry dates honestly: a `pushed_at`, a copyright year, a
   leaderboard snapshot date. The no-date rule is for notes.
 - **No re-read narrative.** "Re-fetched, unchanged" is `accessed` and `content_sha256`.
+- **A comparison's source lines are source lines.** A capability record's
+  `comparison.sources[].shows` render beside the axis's own and follow the same rules; the
+  vocabulary gate reads them, and `prose_edit shows --comparison` edits them.
 
 ## Goldens
 

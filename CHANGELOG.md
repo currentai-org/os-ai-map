@@ -74,7 +74,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   usage figure, or ran past the guard was rewritten to it, one commit per category, through a guarded editor
   that could move no score, date, URL or digest; a second pass per category brought the notes still over two
   sentences or 400 characters down to the argument for the rung, and took the reference to "this record",
-  the second person and the over-long paragraph out of the product descriptions. The dated "Verified" line is gone from all 763 product
+  the second person and the over-long paragraph out of the product descriptions. A usage figure in a
+  note now fails the suite unless the axis is on the product-fact allowlist, `prose_edit` refuses the
+  rubric's words, a template opening and a new figure, and `UNDERSTATES` no longer reads the affirmative
+  "is the primary distribution channel" as an admission, which drops four products from the pinned set. The dated "Verified" line is gone from all 763 product
   footnotes, `build/prose_worklist.py`, `build/prose_edit.py` and `build/check_prose_diff.py` are the tools
   for the next pass, `clean-corpus-prose` replaces the `clean-score-notes` skill, and the case law that lived
   as `#` comments in the rubric, registry and config files is under `docs/reference/` and `docs/sweeps/`

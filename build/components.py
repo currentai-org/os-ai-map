@@ -546,6 +546,61 @@ def set_source(text: str, axis: str, url: str, updates: dict, index: int | None 
     return new_text
 
 
+def set_comparison_source(text: str, axis: str, index: int, updates: dict) -> str:
+    """Return `text` with the entry at `index` under `axis.comparison.sources` updated.
+
+    A capability comparison carries its own source lines, two indents deeper than the axis's,
+    and `set_source` cannot reach them. Same shape as `set_source`: the entry is re-rendered
+    whole at its own indent, and the document is reparsed and compared against the expected
+    result, so an edit that lands anywhere else raises instead of being written.
+    """
+    before_doc = yaml.safe_load(text)
+    comparison = (before_doc.get(axis) or {}).get("comparison")
+    if not isinstance(comparison, dict) or not comparison.get("sources"):
+        raise ValueError(f"{axis} has no comparison sources")
+    entries = comparison["sources"]
+    if not 0 <= index < len(entries):
+        raise ValueError(f"no comparison source at position {index}; the axis has {len(entries)}")
+
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    ckey = find_key(lines, bounds, "comparison")
+    if ckey is None:
+        raise ValueError(f"{axis} has no comparison block in the text")
+    cend = bounds[1]
+    for i in range(ckey + 1, bounds[1]):
+        if lines[i].strip() and len(lines[i]) - len(lines[i].lstrip()) <= 2:
+            cend = i
+            break
+    skey = next((i for i in range(ckey + 1, cend) if lines[i].startswith("    sources:")), None)
+    if skey is None:
+        raise ValueError(f"{axis}.comparison has no sources list in the text")
+    item_prefix = "    - "
+    items = [i for i in range(skey + 1, cend) if lines[i].startswith(item_prefix)]
+    if index >= len(items):
+        raise ValueError("comparison sources list is shorter in the text than when parsed")
+    first = items[index]
+    last = items[index + 1] if index + 1 < len(items) else cend
+    for j in range(first + 1, last):
+        line = lines[j]
+        if line.strip() and len(line) - len(line.lstrip()) <= 4 and not line.startswith(item_prefix):
+            last = j
+            break
+
+    entry = dict(entries[index])
+    entry.update(updates)
+    rendered = ["  " + line if line.strip() else line for line in render_source(entry)]
+    new_text = "".join(lines[:first] + rendered + lines[last:])
+
+    expected = copy.deepcopy(before_doc)
+    expected[axis]["comparison"]["sources"][index] = entry
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"rewriting {axis} comparison source {index} changed something else; refusing to write")
+    return new_text
+
+
 def drop_field(text: str, axis: str, key: str) -> str:
     """Return `text` with `axis.key` removed. Raises when it is not there.
 
