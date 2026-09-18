@@ -137,8 +137,12 @@ uv run python -m build.prose_worklist --category <slug> # what is left, and why
 ```
 
 `tests/test_score_notes.py` holds every count at zero: a note, source line or footnote in the
-rubric's words, a note over the guard, or a note opening on a template fails the suite. Before
-pushing, `uv run python -m build.preflight`.
+rubric's words, a note over the guard, or a note opening on a template fails the suite. Zero
+means zero matches to the detector as it stands, not that no sentence written for the auditor
+remains: every pass so far has found a phrasing the last one missed ("one band below", "the top
+level, reserved for"). The detector is the floor; the sample read cold is the standard, and a
+phrasing the sample turns up becomes a pattern before the pass closes. Before pushing,
+`uv run python -m build.preflight`.
 
 **The review bar, per category:** the checks above green; three files read cold at random
 against the goldens, plus every note the pass logged as thin; and the findings log on the PR.

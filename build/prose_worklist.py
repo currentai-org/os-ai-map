@@ -86,6 +86,11 @@ RUBRIC_VOCABULARY = re.compile(
     r"|\b(?:top|middle|bottom) of (?:this|the) (?:\w+ )?scale\b"
     r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b"
     r"|\bbanded (?:at|on|against)\b"
+    # The rung described as a place the product is admitted to: "the top level is reserved
+    # for", "clears the threshold for this reading", "the checkpoint the openness score covers".
+    r"|\b(?:top|next|higher|highest) (?:level|tier|rung|band),? (?:is )?reserved for\b"
+    r"|\bthreshold for (?:this|the|a) (?:reading|score|band|level)\b"
+    r"|\b(?:openness|adoption|capability) score covers\b"
     r"|\baxis (?:weighs|follows|rests|reads|scores|measures|asks|counts|resolves|abstains)\b"
     # The score named as a number in the prose ("Scored 4 rather than 5", "puts this at 1"),
     # the instrument named ("scored on the feature matrix"), and the pass narrating itself

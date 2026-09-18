@@ -25,9 +25,10 @@ while deciding whether the score is right.
 The corpus was written for the second reader. It says "rung 4", "the other half of the
 ladder", "one below the anchor", "level 5 here is measured, not inferred", "the formula has
 nothing to resolve to". Every one of those is a sentence about the scoring machinery, addressed
-to the person auditing the score, sitting in the copy a visitor reads. Measured 2026-09-17,
-879 of 2,289 notes carried that vocabulary, and 963 restated an exact figure that the source
-line directly beneath them already showed.
+to the person auditing the score, sitting in the copy a visitor reads. Before the rewrite,
+more than a third of the notes carried that vocabulary, and nearly half restated an exact
+figure that the source line directly beneath them already showed; `build/prose_worklist.py`
+counts both on any tree.
 
 So the test for every sentence in a published field is: **would a careful reader who has never
 opened `sources/rubrics/` understand it, and does it tell them something the page does not
@@ -120,8 +121,8 @@ Footnotes that earn their place:
 
 Footnotes that do not:
 - **A restatement of an axis note.** "The self-hosted build cannot take screenshots; that is
-  the gate the openness score rests on" is the openness `Why` said again two screens up. Measured
-  2026-09-17, 153 of the 564 non-empty footnotes overlapped a note that heavily. Delete them.
+  the gate the openness score rests on" is the openness `Why` said again two screens up. Before
+  the rewrite about a quarter of the footnotes overlapped a note that heavily. Delete them.
 - **A dated verification sentence.** `Verified 2026-08-13 via the LICENSE body.` used to end
   every `comments` field. The date is `last_verified` on each axis, and the page already prints
   it as `Verified <date>`. The line was a third copy, and the one visitors read as a footnote
@@ -273,13 +274,14 @@ Before:
 
 After:
 
-> All three sizes are released under Apache-2.0, which is unusual for Qwen. The paper describes
-> the training corpus but does not publish it, and the repository includes evaluation and usage
-> code rather than the pipeline used to produce the checkpoints. This makes Qwen3-Embedding an
-> open-weights release rather than a fully open model.
+> All three sizes are released under Apache-2.0. The paper describes the training corpus but
+> does not publish it, and the repository includes evaluation and usage code rather than the
+> pipeline used to produce the checkpoints. This makes Qwen3-Embedding an open-weights release
+> rather than a fully open model.
 
-`multi_sku_rule` and "the other half of the ladder" are the machinery. The reader needs the
-two facts and what they add up to.
+`multi_sku_rule` and "the other half of the ladder" are the machinery, and "unusual for a Qwen
+release" is an aside for someone who follows the vendor, not a fact about this product. The
+reader needs the two facts and what they add up to.
 
 ### 2. `qwen3-embedding` adoption: figures restated from the sources
 

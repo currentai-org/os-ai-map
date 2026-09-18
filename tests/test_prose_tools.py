@@ -174,6 +174,15 @@ def test_band_as_the_name_of_a_score_is_a_tell(text):
 
 
 @pytest.mark.parametrize("text", [
+    "It stops short of the top level, reserved for a platform that hosts its own models.",
+    "Downloads clear the threshold for this reading by a narrow margin.",
+    "Not the voyage-4-nano checkpoint the openness score covers.",
+])
+def test_the_rung_described_as_a_place_is_a_tell(text):
+    assert vocabulary_hits(text)
+
+
+@pytest.mark.parametrize("text", [
     "An Earth Engine ImageCollection of 64-band annual embedding images.",
     "Weights from the wavelengths of whatever bands are supplied.",
     "The stat band still reads 94% of Fortune 100.",
