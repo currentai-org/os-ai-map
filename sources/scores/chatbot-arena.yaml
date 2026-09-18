@@ -22,11 +22,10 @@ openness:
     - ranking methodology + crowd-vote dataset not fully open
   confidence: medium
   last_verified: '2026-08-13'
-  note: 'Chatbot Arena is scored as the hosted arena.ai platform: the live ranking pipeline and its vote
-    data are closed. FastChat, the arena''s original open-source implementation, is Apache-2.0, but its
-    newest release predates the current platform by more than two years, so what is public is a real arena,
-    not the one running today. Arena-Hard-Auto, an Apache-2.0 automatic-eval companion, is also open. Because
-    the operating pipeline itself is never published, the source counts as partial rather than fully open.'
+  note: Chatbot Arena runs as the hosted arena.ai platform, where the live ranking pipeline and vote data
+    are closed. FastChat, its original Apache-2.0 implementation, is more than two years stale, and Arena-Hard-Auto
+    is a separate Apache-2.0 automatic-eval companion - real open code, but not the pipeline that runs the
+    platform today, which keeps the source partial rather than fully open.
   raw: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); source:partial(FastChat
     is a real arena implementation but stale relative to the operating platform; the current ranking pipeline
     does not ship); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb
@@ -102,11 +101,10 @@ capability:
     approximation'
   confidence: medium
   last_verified: '2026-08-13'
-  note: 'The reference platform for human-preference evaluation and the de-facto Elo standard, cited everywhere.
-    Not a 5, because as evaluation code it is largely closed and hosted, and narrower than execution-based
-    harnesses on agentic and task coverage. Judged on the breadth of its evaluation methodology: the hosted
-    arena runs blind pairwise battles, and Arena-Hard-Auto v2.0 ships 500 hard queries plus 250 creative-writing
-    ones with GPT-4.1 and Gemini-2.5 judges.'
+  note: The hosted arena runs blind pairwise human-preference battles across many models, and Arena-Hard-Auto
+    v2.0 adds an automatic-judge companion of 500 hard queries and 250 creative-writing prompts scored by
+    GPT-4.1 and Gemini-2.5. The evaluation code is largely closed and hosted, and narrower on agentic and
+    task-execution coverage than harnesses built around running tasks.
   sources:
   - url: https://github.com/lmarena/arena-hard-auto
     shows: 500 SWE/math queries + 250 creative prompts, GPT-4.1/Gemini-2.5 judges, highest correlation
