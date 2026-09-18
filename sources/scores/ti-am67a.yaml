@@ -28,11 +28,10 @@ openness:
       detail: edge-AI vision SoC, not a board
       raw: chipset (edge-AI vision SoC, not a board)
   confidence: high
-  note: Public datasheet and open SDK/TIDL tools on GitHub, commercially active, but proprietary silicon
-    and firmware keep it short of fully open hardware. TI publishes the "AM67x Processors datasheet (Rev.
-    B)" openly and links Jacinto 7 LPDDR4 board design and layout guidelines rather than the design of any
-    product board, and ships a FIRMWARE-BUILDER-AM67A alongside the Linux SDKs; edgeai-tidl-tools is a public
-    repository.
+  note: TI publishes the AM67x Processors datasheet, Revision B, openly, an open SDK with TIDL tools on
+    GitHub, and sells the chip commercially via TI and partners. But it publishes Jacinto 7 board-design
+    and layout guidelines rather than the design of any product board, and the silicon itself requires proprietary
+    firmware.
   raw: schematics:partial (reference designs (BeagleY-AI board files open));toolchain:open (open SDK + TIDL
     tools + Edge AI Studio);datasheets:public (Rev B);blobs:required (proprietary silicon + TIDL firmware);retail:distributor
     (active via TI and partners);form_factor:chipset (edge-AI vision SoC, not a board)
@@ -84,10 +83,9 @@ capability:
   basis: feature_matrix
   value: 4 TOPS (dual C7x+MMA); quad A53 1.4 GHz; up to 8GB LPDDR4
   confidence: high
-  note: 4 TOPS plus a strong vision/ISP pipeline and 8GB memory make it a capable dedicated edge-AI vision
-    SoC. The part page reads "up to 4 TOPS total" from 2x C7x DSP with MMA, quad Cortex-A53 at up to 1.4GHz,
-    max LPDDR4 size of 8GB and a 600MP/s ISP feeding four cameras. It sits a step above beagley-ai, the
-    4 TOPS board built on it, because the SoC supports 8GB where that board fixes 4GB.
+  note: The dual C7x DSP with matrix-multiply accelerators delivers up to 4 TOPS alongside an ISP feeding
+    four cameras, making the AM67A a capable dedicated edge-AI vision SoC. It sits a step above BeagleY-AI,
+    the board built on it, because the chip supports up to 8GB of LPDDR4 where that board fixes 4GB.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.ti.com/product/AM67A

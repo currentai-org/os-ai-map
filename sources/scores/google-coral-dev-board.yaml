@@ -26,11 +26,10 @@ openness:
       detail: baseboard carrying a Google SoM, sold as one board
       raw: board (baseboard carrying a Google SoM, sold as one board)
   confidence: high
-  note: 'Google publishes the baseboard''s schematic, Altium and Allegro design files under Apache-2.0,
-    plus a public datasheet, and the runtime driver (libedgetpu) is open source. But the system-on-module
-    that carries the i.MX 8M and the Edge TPU chip itself has no published design files, and the Edge TPU
-    Compiler every model must go through ships only as a closed binary with no source anywhere. That leaves
-    the board only partly open: the baseboard is documented, but the module that does the work is not.'
+  note: Google publishes the baseboard's schematic and its Altium and Allegro design files under Apache-2.0,
+    alongside a public datasheet and an open-source runtime driver, libedgetpu. But the system-on-module
+    that carries the Edge TPU chip has no published design files, and the Edge TPU Compiler that every model
+    must go through ships only as a closed binary with no source anywhere.
   raw: schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial
     (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary
     Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable);form_factor:board (baseboard
@@ -103,11 +102,9 @@ adoption:
   reach: niche
   signal_type: reported_traction
   confidence: medium
-  note: 'The Edge TPU software stack is archived: libedgetpu was archived on 2025-10-14, and 33 other Coral
-    repositories are also read-only after being last pushed in 2024. Both board variants are marked discontinued
-    at retail, with the coral.ai product page no longer naming any hardware. Boards already sold remain
-    in use and the archived stack still runs on them, which is why adoption has not fallen further even
-    as the platform winds down.'
+  note: Google archived the Edge TPU software stack on 2025-10-14, and both board variants are now discontinued
+    at retail, with the product page no longer naming any hardware. Boards already in the field keep running
+    the archived stack, which is why adoption has not fallen further even as the platform winds down.
   last_verified: '2026-08-14'
   sources:
   - url: https://api.github.com/orgs/google-coral/repos?per_page=100
@@ -124,11 +121,10 @@ capability:
   basis: feature_matrix
   value: 4 TOPS (2 TOPS/W); int8-quantized models; TensorFlow Lite only
   confidence: high
-  note: Modest 4 TOPS limited to int8 TFLite models; suited to small CNN inference rather than large or
-    generative models. The datasheet (version 1.7) reads "4 trillion operations per second (TOPS)", "2 TOPS
-    per watt" and an Edge TPU that "performs 4 trillion operations per second" with TensorFlow Lite models.
-    That is the lowest AI throughput in this category apart from sipeed-maixcam, and the TFLite-only path
-    is what keeps it below the 6 TOPS RK3588 boards.
+  note: The Edge TPU delivers 4 TOPS at 2 TOPS per watt, limited to int8-quantized TensorFlow Lite models
+    and suited to small CNN inference rather than large or generative models. That is the lowest AI throughput
+    in the category apart from Sipeed MaixCAM, and the TensorFlow-Lite-only path keeps it below the 6 TOPS
+    RK3588 boards.
   last_verified: '2026-08-13'
   sources:
   - url: https://coral.ai/docs/dev-board/datasheet/

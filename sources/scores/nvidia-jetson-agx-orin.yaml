@@ -26,11 +26,10 @@ openness:
       detail: 699-pin Mirror Mezz module for a carrier board
       raw: module (699-pin Mirror Mezz module for a carrier board)
   confidence: high
-  note: Public datasheets and commercially purchasable, but SDK relies on proprietary NVIDIA blobs under
-    license, placing it in the documented tier. The family page publishes module data sheets and points
-    designers at the Product Design Guide rather than releasing the module's own board files, routes buyers
-    through the Jetson partner ecosystem, and Jetson Linux 39.2.1 ships kernel, UEFI bootloader and NVIDIA
-    drivers under the NVIDIA Software License Agreement.
+  note: NVIDIA publishes module datasheets and a Product Design Guide but not the module's own board files,
+    and modules are sold through its distributor network rather than directly. Jetson Linux ships the kernel,
+    bootloader and drivers under the NVIDIA Software License Agreement, keeping the toolchain closed even
+    though the hardware documentation is public.
   raw: schematics:partial (module datasheet + carrier design guide public);toolchain:closed (JetPack/Jetson
     Linux proprietary (NVIDIA SLA));datasheets:public;blobs:required (proprietary drivers/bootloader);retail:distributor
     (via distributors);form_factor:module (699-pin Mirror Mezz module for a carrier board)
@@ -78,10 +77,9 @@ capability:
   value: Up to 275 TOPS; 32GB or 64GB LPDDR5; runs large LLMs/VLMs and multi-model robotics pipelines
     at the edge
   confidence: high
-  note: Top-tier edge-AI compute; the 64GB/275 TOPS variant runs large models that exceed smaller Orin modules.
-    The Orin comparison table reads 275 SPARSE INT8 TOPS and 64GB 256-bit LPDDR5 for AGX Orin against 157
-    TOPS / 16GB for Orin NX and 67 TOPS / 8GB for Orin Nano. It is the top of the Orin line and the highest
-    capability in this category.
+  note: The 64GB, 275 TOPS variant is NVIDIA's highest-capability Orin module, running large language and
+    vision-language models that exceed what the smaller Orin NX and Orin Nano can handle. It tops the Orin
+    line at 275 TOPS and 64GB of LPDDR5, ahead of the Orin NX's 157 TOPS/16GB and the Orin Nano's 67 TOPS/8GB.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin

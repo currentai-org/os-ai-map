@@ -26,10 +26,9 @@ openness:
       detail: M.2 accelerator module, also sold as bare silicon
       raw: module (M.2 accelerator module, also sold as bare silicon)
   confidence: high
-  note: Hailo publishes a public datasheet and specification table for the module, and its GenAI model zoo
-    and HailoRT runtime are open source under MIT and LGPL-2.1. The Dataflow Compiler that turns a model
-    into something the chip can run is closed and available only through a customer relationship, the developer
-    documentation requires registration, and no schematic or board file is published for the module itself.
+  note: Hailo publishes a public datasheet and open-sources its GenAI model zoo and HailoRT runtime under
+    MIT and LGPL-2.1. But the Dataflow Compiler that turns a model into something the chip can run is closed
+    and available only to customers, and no schematic or board file is published for the module.
   raw: schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required
     (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable);form_factor:module (M.2
     accelerator module, also sold as bare silicon)
@@ -105,12 +104,9 @@ capability:
   basis: feature_matrix
   value: 40 TOPS INT4 / 20 TOPS INT8; runs LLMs & VLMs via direct DDR interface
   confidence: high
-  note: Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only
-    edge accelerators. AAEON/UP reproduces the recorded value exactly - "AI Performance 40 TOPS @ INT4 |
-    20 TOPS @ INT8" and "Hailo-10H includes a direct DDR interface, allowing it to scale for large models
-    such as LLMs, VLMs, Stable Diffusion" - and Geniatech independently states up to 40 TOPS running LLMs
-    and VLMs locally. That is one band above the Hailo-8, which is CNN/vision-only and bounded by on-die
-    memory. hailo.ai itself is unfetchable, so both rest on substitutes.
+  note: The DDR interface lets the Hailo-10H run LLMs, VLMs and Stable Diffusion locally, confirmed independently
+    by both AAEON/UP and Geniatech since hailo.ai itself is unfetchable. That puts it a step above the Hailo-8,
+    which is CNN/vision-only and bounded by on-die memory.
   last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/

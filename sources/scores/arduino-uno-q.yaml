@@ -27,10 +27,9 @@ openness:
       raw: board (SBC sold ready to run)
   confidence: high
   note: Arduino publishes the UNO Q's schematics and gerbers under CC-BY-SA 4.0, and the App Lab and App
-    Bricks source that programs the board under GPL-3.0 and MPL-2.0, the same open-design-and-toolchain
-    combination as BeagleY-AI. The Dragonwing QRB2210's boot chain remains closed, but its GPU drivers are
-    open source, so what stays proprietary is limited to boot firmware rather than the software stack that
-    runs on it.
+    Bricks source that runs on it under GPL-3.0 and MPL-2.0. The Dragonwing QRB2210's boot firmware stays
+    closed, but its GPU drivers are open source, so the only proprietary piece is the boot chain rather
+    than the software stack that runs on the board.
   raw: schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks
     MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market
     (global);form_factor:board (SBC sold ready to run)
@@ -113,11 +112,8 @@ capability:
   basis: feature_matrix
   value: QRB2210 quad-core 2.0 GHz + Adreno GPU; up to 4GB RAM; AI acceleration
   confidence: medium
-  note: Capable Linux+MCU hybrid with GPU/ISP-based AI acceleration, but no published TOPS figure so throughput
-    is modest versus dedicated-NPU kits. The product page describes a quad-core Qualcomm Dragonwing QRB2210
-    with a GPU and an STM32U585 MCU, 2GB or 4GB RAM, "integrated AI acceleration" and "lightweight AI",
-    and publishes no TOPS number anywhere. The absence of a figure is what keeps it below every dedicated-NPU
-    part in this category and level with the other general-purpose boards.
+  note: The QRB2210's GPU- and ISP-based acceleration has no published TOPS figure, which keeps the UNO
+    Q level with other general-purpose boards and behind parts built around a dedicated NPU.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.arduino.cc/product-uno-q
