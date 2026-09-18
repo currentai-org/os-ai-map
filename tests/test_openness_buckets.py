@@ -31,6 +31,7 @@ line as finely as it likes, but nothing below the line may enter the `open` buck
 import json
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -214,6 +215,7 @@ def test_validate_vocabulary_is_a_subset_of_the_schema_enum():
     assert permitted <= allowed, f"validate.py permits classes the schema forbids: {sorted(permitted - allowed)}"
 
 
+@pytest.mark.payload
 def test_payload_openness_carries_a_string_components_and_never_raw():
     """The payload's contract with the front end does not change with the record's shape.
 

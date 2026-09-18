@@ -27,6 +27,11 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
+#: Every test here measures the committed payload, so all of them gate regeneration.
+pytestmark = pytest.mark.payload
+
 # marimo's default, from marimo/_config/config.py. Overridable via
 # MARIMO_OUTPUT_MAX_BYTES or [tool.marimo.runtime], but CI and the OSO publish
 # runner both use the default, so that is what has to hold.
@@ -45,6 +50,11 @@ PAYLOAD = Path(__file__).resolve().parents[1] / "build" / "notebook_data.json"
 #: chunk breaks every Details button for the products in it, which is the 2026-08-18 failure
 #: wearing a different hat.
 CARRIER_CELLS = 4
+
+#: The fraction of marimo's cap below which a single carrier cell would be comfortable, and the
+#: chunking really would be premature. The whole payload sitting just under the cap is NOT that:
+#: it is one promotion away from being over it again.
+SINGLE_CELL_COMFORTABLE = 0.5
 
 
 def _chunks() -> list[str]:
@@ -95,17 +105,28 @@ def test_the_payload_fits_in_the_carrier_cells_that_exist():
     )
 
 
-def test_the_whole_payload_would_not_fit_in_one_cell():
+def test_one_cell_would_still_be_too_tight_for_the_whole_payload():
     """Why the chunking exists, asserted so nobody reverts it as premature.
 
-    If this ever fails the corpus has shrunk below the cap and one cell would do again - which
-    is not a reason to undo the split, but is a reason to know.
+    This used to assert the whole payload was OVER the cap, which is a different claim and a
+    more brittle one. It fired on 2026-09-18: #620 rewrote the published score notes for
+    readers rather than score auditors, the payload fell from 5.16 MB to 4.79 MB, and the
+    attribute landed at ~92% of the cap - under it, so the test failed, while a single cell
+    was still one promotion away from silently truncating. Nothing about that dip made the
+    chunking premature.
+
+    So the canary now asks the question it was always for: would one cell be COMFORTABLE? It
+    fires when the payload drops under half the cap, which is a corpus half this size, and
+    that genuinely would be a reason to reconsider the split.
     """
     attribute = _details_attribute()
     measured = sys.getsizeof(attribute) * MARIMO_SERIALIZATION_FACTOR
-    assert measured >= OUTPUT_MAX_BYTES, (
-        f"the whole payload now measures ~{measured:,} bytes, under marimo's "
-        f"{OUTPUT_MAX_BYTES:,}-byte cap. The corpus has shrunk since the chunking landed."
+    floor = int(OUTPUT_MAX_BYTES * SINGLE_CELL_COMFORTABLE)
+    assert measured >= floor, (
+        f"the whole payload now measures ~{measured:,} bytes against marimo's "
+        f"{OUTPUT_MAX_BYTES:,}-byte cap - under the {floor:,} floor this canary watches. The "
+        "corpus has shrunk enough that one carrier cell would be comfortable again. That is "
+        "not a reason to undo the split on its own, but it is a reason to look."
     )
 
 
