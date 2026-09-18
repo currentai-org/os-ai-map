@@ -90,7 +90,20 @@ FIGURE = re.compile(
     # count, and the pilot polish tripped on exactly that.
     r"(?<![A-Za-z0-9.-])\d[\d,.]*\s*(?:k|K|M|million|billion|thousand)?\s+(?:[A-Za-z-]+\s+){0,2}"
     r"(?:stars?|stargazers|downloads?|pulls?|installs?|users?|customers?|deployments?|forks?)\b"
-    r"|\b\d{1,3}(?:,\d{3})+\b|\b\d{5,}\b"
+    # A bare comma-grouped or five-digit count, unless it is a product dimension: a token
+    # limit, a parameter count, an embedding size, a context window.
+    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:token|param|dimension|context|d\b))"
+    r"|\b\d{5,}\b(?![\s-]*(?:token|param|dimension|context))"
+)
+
+# A band range or a band rank stated as prose. The Reach row carries the range; a note that
+# repeats it is the rubric talking, and a rank against the category is false the day a
+# product is added.
+BAND_RANGE = re.compile(
+    r"\b(?:the |a )?(?:top|bottom|lowest|highest|second|middle) (?:adoption |download |star )?band\b"
+    r"|\b[<>]?\d[\dKkMm.,]*(?:\s*(?:-|to)\s*\d[\dKkMm.,]*)?\+?\s+(?:download |adoption |star |usage )?band\b"
+    r"|\bthe most (?:in|of) (?:this|the|its) category\b",
+    re.IGNORECASE,
 )
 
 
@@ -118,7 +131,9 @@ def _category_of() -> dict[str, str]:
 
 
 def vocabulary_hits(note: str) -> list[str]:
-    return [m.group(0) for m in RUBRIC_VOCABULARY.finditer(note or "")]
+    hits = [m.group(0) for m in RUBRIC_VOCABULARY.finditer(note or "")]
+    hits += [m.group(0) for m in BAND_RANGE.finditer(note or "")]
+    return hits
 
 
 def usage_figures(note: str) -> list[str]:

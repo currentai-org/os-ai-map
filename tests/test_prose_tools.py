@@ -45,6 +45,10 @@ ROOT = Path(__file__).resolve().parents[1]
         ("Qdrant is read the same way through its client.", ["is read the same way"]),
         ("Blaxel, a band lower, lacks durable functions.", ["a band lower"]),
         ("A server has no countable channel of its own.", ["countable channel"]),
+        # A band range or rank in prose is the Reach row talking.
+        ("Together they land LightRAG in the 100K-1M download band.", ["100K-1M download band"]),
+        ("That places it in the top adoption band.", ["the top adoption band"]),
+        ("About 76k stars, the most in this category.", ["the most in this category"]),
     ],
 )
 def test_rubric_vocabulary_is_found(note, expected):
@@ -55,9 +59,9 @@ def test_rubric_vocabulary_is_found(note, expected):
     "note",
     [
         "All three sizes ship under Apache-2.0, unusually for a Qwen release.",
-        # "level with" and a band expressed as a range are English, not the rubric.
-        "That puts it level with xLLM and RTP-LLM, in the 1M to 10M band.",
-        "About 76k GitHub stars, the most in this category.",
+        # "level with" is English, not the rubric.
+        "That puts it level with xLLM and RTP-LLM on feature breadth.",
+        "GitHub stars are the only adoption signal published, and a star is not a use.",
     ],
 )
 def test_plain_prose_is_not_flagged(note):
@@ -91,6 +95,8 @@ def test_a_usage_figure_in_a_note_is_flagged(note):
         "Five accelerator vendors plus pure CPU, across three checkpoint sizes.",
         "The registry stopped at 1.0.4 while the repository is on 2.1.0.",
         "Released under Apache-2.0 and installs with pip; GPL-3.0 users need the other build.",
+        "An 8,192-token context window and 1,024-dimension embeddings.",
+        "Embeddings of 1,536 dimensions over a 128,000-token context.",
     ],
 )
 def test_a_product_fact_with_a_number_is_not_a_usage_figure(note):
