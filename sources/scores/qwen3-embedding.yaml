@@ -17,10 +17,10 @@ openness:
       detail: OSI
   confidence: high
   governing_release: Qwen3-Embedding (0.6B/4B/8B)
-  note: 'Apache-2.0 across every distributed size, which is unusual for a Qwen release and means multi_sku_rule
-    has nothing restrictive to resolve to. What holds it at 3 rather than higher is the other half of the ladder:
-    the training corpus is described in the paper but not published, and the repository carries evaluation and
-    usage code rather than the pipeline that produced the checkpoints.'
+  note: All three sizes are released under Apache-2.0, which is unusual for Qwen. The paper describes the
+    training corpus but does not publish it, and the repository includes evaluation and usage code rather
+    than the pipeline used to produce the checkpoints. This makes Qwen3-Embedding an open-weights release
+    rather than a fully open model.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Embedding-8B/raw/main/README.md
@@ -56,10 +56,8 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: '12,549,679 downloads in the trailing 30 days across the three shipped embedding checkpoints - 7,806,497
-    for the 0.6B, 2,489,577 for the 4B and 2,253,605 for the 8B. Excluded from the sum: the vendor''s own GGUF
-    conversions of the same three checkpoints (another 173k) and the separate Qwen3-VL-Embedding line, which is
-    a different product. Level 5 here is measured, not inferred.'
+  note: Adoption is measured as Hugging Face downloads across the three embedding checkpoints, most of them
+    for the 0.6B model. The vendor's GGUF conversions and the separate Qwen3-VL-Embedding line are excluded.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen3-Embedding-0.6B
@@ -85,10 +83,10 @@ capability:
   confidence: high
   relative_to: harrier-oss
   relation: one_below
-  note: Rung 4, the competitive frontier. Qwen3-Embedding-8B held first place on the multilingual MTEB leaderboard
-    at release and still posts 70.58, with 100+ languages, a 32k context and Matryoshka dimensions - everything
-    the rung asks for. It is one below Harrier-OSS because the anchor's 74.3 has since displaced it from the top
-    of the same table, not because anything about the Qwen line has weakened.
+  note: Qwen3-Embedding-8B led the multilingual MTEB leaderboard when it was released and still scores 70.58,
+    while supporting more than 100 languages, a 32k context window and Matryoshka dimensions. Harrier-OSS
+    has since overtaken it with a score of 74.3; otherwise, Qwen3-Embedding remains at the frontier of the
+    category.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Embedding-8B/raw/main/README.md

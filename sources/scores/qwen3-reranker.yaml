@@ -10,8 +10,9 @@ openness:
     - {name: Apache-2.0, detail: OSI}
   raw: weights:open(Apache-2.0 ungated safetensors across the three text cross-encoder checkpoints);data:closed(no training corpus or data-construction scripts released);code:partial(the Qwen3-Embedding repository's docs/training directory holds a single file, SWIFT.md, which documents fine-tuning through the third-party ms-swift framework rather than releasing a pretraining pipeline);license:Apache-2.0(OSI)
   confidence: high
-  note: Apache-2.0 weights and a repository that ships training docs, but no training corpus and no data-construction
-    scripts, so the ladder lands on its open-weights centre of gravity rather than on a data rung.
+  note: Qwen3 Reranker ships Apache-2.0 weights and a repository that documents fine-tuning through a third-party
+    framework, but no training corpus or data-construction scripts are released. That keeps it at open weights
+    rather than a fully open release.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Reranker-4B/raw/main/README.md
@@ -40,13 +41,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: >-
-    3,765,905 downloads in the trailing 30 days across the three text reranker checkpoints -
-    Reranker-4B, Reranker-0.6B and Reranker-8B. The Qwen3-VL-Reranker checkpoints are excluded and
-    are not counted anywhere on the map, which is the same rule qwen3-embedding applies to
-    Qwen3-VL-Embedding: a vision-language line is a separate product from the text line, for a
-    vendor's reranker and its embedder alike. Counting them would give 5,720,864 and the same
-    band. Community seq-cls conversions, GGUF and AWQ re-publishers are excluded.
+  note: Adoption is measured as Hugging Face downloads across the three text reranker checkpoints. The Qwen3-VL-Reranker
+    line is scored as a separate product under the same text/vision-language split this map applies to Qwen3-Embedding,
+    and community seq-cls conversions and GGUF/AWQ re-publishers are excluded.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/api/models/Qwen/Qwen3-Reranker-4B', shows: 'downloads: 2546793; gated:
@@ -65,10 +62,9 @@ capability:
     at 32K context with an instruction-aware interface. The Qwen3-VL-Reranker results are excluded with
     the VL line itself.
   confidence: high
-  note: 'Rung 4, competitive frontier: current generation, multilingual, long-context and strong on published
-    retrieval numbers across both text and visual-document tasks. Held below the category anchor rather
-    than level with it because harrier-oss holds a measured first place on the public MMTEB v2 table and
-    this line does not, on any single instrument the category treats as primary.'
+  note: Qwen3 Reranker is current-generation, multilingual and long-context, with strong published retrieval
+    numbers across both text and visual-document tasks. It sits a step below Harrier-OSS, which holds a
+    measured first place on the public MMTEB v2 leaderboard on the benchmark this category treats as primary.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/Qwen/Qwen3-VL-Reranker-2B/raw/main/README.md', shows: 'Model performance

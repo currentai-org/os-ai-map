@@ -12,13 +12,11 @@ openness:
     - {name: Llama-3.2-Community, detail: named as additional information; built with Llama}
   raw: weights:open(ungated safetensors for the text reranker; the VL sibling is a separate product and is excluded here as it is from the adoption sum);data:closed(800k samples from an unnamed blend of commercially licensed public QA datasets; nothing released);code:partial(card usage and NIM deployment only; no training pipeline);license:OpenMDW-1.1(the governing licence named in the card)+Llama-3.2-Community(named as additional information; built with Llama)
   confidence: medium
-  note: The Hub licence field reads `other`; the card resolves it to the OpenMDW License Agreement v1.1
-    with the Llama 3.2 Community License as additional information, and the shared ladder now names both.
-    OpenMDW-1.1 imposes no cap on who may use the weights or at what scale and sits at permissive_non_osi;
-    the Llama 3.2 Community License carries the same 700M monthly-active-user bound as the 3.1 licence beside
-    it and sits at use_bounded, which is the more restrictive of the two and the one multi_sku_rule lets
-    decide. Confidence is medium because the governing terms are spread across a bare `other` tag and a
-    prose section of the card rather than declared once.
+  note: 'The Hub''s `other` license tag resolves, in the card''s own text, to two licenses at once: the
+    permissive OpenMDW License Agreement v1.1 and the Llama 3.2 Community License, which carries the same
+    700M monthly-active-user cap as the version beside it. The more restrictive of the two governs, and
+    confidence stays medium because the terms are spread across a bare tag and a prose section rather than
+    declared in one place.'
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/nvidia/llama-nemotron-rerank-1b-v2/raw/main/README.md
@@ -37,11 +35,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: >-
-    1,052,707 downloads in the trailing 30 days for llama-nemotron-rerank-1b-v2, the text reranker.
-    The vision-language sibling is excluded under the same rule qwen3-reranker and nemotron-embed
-    follow - a VL line is a separate product from the text line - and it would add about 26K
-    without moving the band. Just over the 1M threshold on the text model alone.
+  note: Adoption is measured as Hugging Face downloads for llama-nemotron-rerank-1b-v2, the text reranker.
+    Its vision-language sibling is scored as a separate product under the category's rule that a VL line
+    is distinct from the text line, and including it would not change this reading.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/api/models/nvidia/llama-nemotron-rerank-1b-v2', shows: 'downloads: 1097075;
@@ -57,12 +53,11 @@ capability:
   value: 73.64% average Recall@5 on the four-dataset QA suite as a reranking stage, 65.80% on multilingual
     MIRACL; 26 languages, 8,192-token documents, 1B parameters.
   confidence: medium
-  note: 'Rung 3, solid workhorse: credible published numbers, real multilingual and long-document coverage,
-    and a production NIM path, but the evaluation is a pipeline Recall@5 rather than a standalone retrieval-quality
-    figure comparable to the frontier, and NVIDIA own table puts the older nv-rerankQA-mistral-4b-v3 pipeline
-    ahead of it at 75.45%. One rung below qwen3-reranker, which publishes frontier BEIR and MMTEB numbers on the
-    instruments this category treats as primary. Confidence is medium because no public leaderboard carries
-    this model.'
+  note: Llama Nemotron Rerank has real multilingual and long-document coverage and a production NIM deployment
+    path, but it is measured as Recall@5 inside NVIDIA's own retrieval pipeline rather than on a standalone
+    retrieval benchmark, and that same pipeline table puts the older nv-rerankQA-mistral-4b-v3 ahead of
+    it at 75.45%. It sits a step below Qwen3-Reranker, which publishes BEIR and MMTEB numbers on the benchmarks
+    this category treats as primary, and no public leaderboard covers this model.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/nvidia/llama-nemotron-rerank-1b-v2/raw/main/README.md', shows: 'Evaluation

@@ -24,23 +24,11 @@ openness:
     a modeling file for inference and the paid tiers ship client SDKs only);license:Apache-2.0(governs
     voyage-4-nano, the only SKU whose weights are distributed; multi_sku_rule excludes the API-only tiers)
   confidence: high
-  note: 'This is the one product in the closed cluster the ladder does not put at 1, and the reason is multi_sku_rule
-    read literally. The rule resolves a family on the most restrictive license among the SKUs whose weights
-    are ACTUALLY DISTRIBUTED and excludes API-only tiers as a different product surface. Voyage distributes
-    exactly one set of weights — voyage-4-nano, ungated safetensors under Apache-2.0 — so the distributed
-    set is Apache and the first rule cannot fire. With a closed corpus and no training pipeline the walk
-    falls through to the open-weights center of gravity at 3. Read as a claim about the flagship this would
-    be wrong; read as the ladder''s own question, which is what you can download, it is right, and the note
-    is here so the difference is visible rather than buried. On the tier question raised in review: this
-    record scores one product line with four tiers, and each axis measures the line the way its own rubric
-    asks. Openness measures the artifact you can download, which the ladder''s multi_sku_rule resolves on
-    distributed SKUs and explicitly excludes API-only tiers from - so it reads voyage-4-nano''s Apache-2.0
-    weights. Capability measures what the line is reported to do, which is voyage-4-large''s published retrieval
-    quality. Adoption measures the line''s reach. Those are different tiers on purpose, and a reader should
-    not take the 3 as a claim that the flagship is downloadable; the note above says so plainly. Splitting
-    nano into its own product was the alternative and the maintainer declined it: a product is one publisher''s
-    line, and the durable fix is the disclosure rule in docs/reference/openness.md, which this note and
-    the capability note satisfy.'
+  note: Of the four Voyage 4 models, only voyage-4-nano ships as Apache-2.0 weights on the Hub; voyage-4-large,
+    voyage-4 and voyage-4-lite are API-only, with Hub repositories that hold a tokenizer and config but
+    no weight file. Because the score reflects what can actually be downloaded, that is voyage-4-nano's
+    open license, not a claim about the flagship. Training data and training code remain undisclosed for
+    every tier, which keeps the family at open weights rather than fully open.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/voyageai/voyage-4-nano
@@ -80,11 +68,10 @@ adoption:
     Hugging Face downloads of voyage-4-nano — one SKU of four, and the only open one — rather than a usage
     figure for the line
   confidence: medium
-  note: Recorded as reported traction rather than downloads because the Hub figure measures only the nano
-    SKU and would misdescribe a line whose flagship is API-only. The level rests on native distribution
-    inside MongoDB Atlas — MongoDB acquired Voyage AI and now serves these models through the Atlas Embedding
-    and Reranking API on a platform it says is trusted by tens of thousands of customers — corroborated
-    by 302,582 monthly Hub downloads on voyage-4-nano.
+  note: Adoption is recorded as reported traction rather than a download count, because the only Hugging
+    Face figure available is for voyage-4-nano alone and would misdescribe a line whose flagship is API-only.
+    The stronger signal is native distribution inside MongoDB Atlas, which acquired Voyage AI and now serves
+    these models through its own Embedding and Reranking API, corroborated by nano's own Hub downloads.
   last_verified: '2026-09-11'
   sources:
   - url: https://www.mongodb.com/company/blog/product-release-announcements/introducing-the-embedding-and-reranking-api-on-mongodb-atlas
@@ -110,15 +97,12 @@ capability:
   relative_to: harrier-oss
   relation: one_below
   confidence: medium
-  note: Rung 4, competitive frontier. It leads the instrument it is measured on, but rung 5 asks for a placement
-    on a public leaderboard read at verification time and RTEB is the publisher's own benchmark, so it stops
-    one short. RTEB is the retrieval-specific benchmark rather than MTEB, and the comparison is publisher-run
-    against publisher-chosen baselines, which is why confidence is medium and not high — but the baselines
-    are the three obvious rivals rather than an in-house suite, and the shared-embedding-space and MoE claims
-    are structural rather than a score. Level with the category anchor microsoft/harrier-oss-v1-27b, which
-    leads MMTEB v2 at 74.3; the two lead different instruments, so neither is placed above the other. The
-    number is read off voyage-4-large, which is served through the API and distributes no weights, so it
-    is a different tier from the voyage-4-nano checkpoint the openness axis scores.
+  note: Voyage-4-large leads RTEB, the benchmark it is measured on, but RTEB is Voyage's own benchmark rather
+    than an independent public leaderboard, so it stops short of the top. Confidence is medium because the
+    comparison is publisher-run against publisher-chosen baselines, even though those baselines are the
+    three obvious rivals. It is placed level with Harrier-OSS, which leads MMTEB v2 at 74.3, since the two
+    lead different benchmarks that cannot be ranked against each other. The number reads voyage-4-large,
+    an API-only tier different from the voyage-4-nano checkpoint the openness score covers.
   last_verified: '2026-09-11'
   sources:
   - url: https://blog.voyageai.com/2026/01/15/voyage-4/
