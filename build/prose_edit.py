@@ -41,7 +41,7 @@ import yaml
 
 from build.components import drop_document_field, set_document_field, set_field, set_source
 from build.product_prose import dated_verification
-from build.prose_worklist import NOTE_CEILING
+from build.prose_worklist import NOTE_CEILING, description_tells
 from build.sweep_status import INFLATED, UNDERSTATES
 from build.vocabulary import axes
 
@@ -131,6 +131,28 @@ def edit_comments(slug: str, text: str | None) -> str | None:
     return None
 
 
+def edit_description(slug: str, text: str) -> str | None:
+    """A description says what the product is, for the reader, once. The guards are the
+    worklist's own tells: nothing about this record or the map, no "we" or "you", no date the
+    old text did not carry, no rubric word, and the same 600-character guard as a note."""
+    path = ROOT / "sources" / "products" / f"{slug}.yaml"
+    raw = path.read_text()
+    doc = yaml.safe_load(raw) or {}
+    old = doc.get("description") or ""
+    if not text:
+        return "a description may not be emptied"
+    if len(text) > NOTE_CEILING:
+        return f"{len(text)} characters is over the {NOTE_CEILING} guard"
+    tells = description_tells(text)
+    for key in ("self_reference", "voice", "vocabulary"):
+        if key in tells:
+            return f"the new description still carries {key}: {tells[key]!r}"
+    if "date" in tells and not ISO_DATE.search(old):
+        return "the new description states a date the old one did not"
+    path.write_text(set_document_field(raw, "description", text))
+    return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     sub = parser.add_subparsers(dest="field", required=True)
@@ -153,8 +175,14 @@ def main() -> int:
     group.add_argument("--text-file")
     group.add_argument("--drop", action="store_true")
 
+    p_desc = sub.add_parser("description")
+    p_desc.add_argument("slug")
+    p_desc.add_argument("--text-file", required=True)
+
     args = parser.parse_args()
-    if args.field == "note":
+    if args.field == "description":
+        reason = edit_description(args.slug, _read_text(args.text_file))
+    elif args.field == "note":
         reason = edit_note(args.slug, args.axis, _read_text(args.text_file), args.allow_phrase_change)
     elif args.field == "shows":
         reason = edit_shows(args.slug, args.axis, args.index, _read_text(args.text_file))

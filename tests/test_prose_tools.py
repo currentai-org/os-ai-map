@@ -18,6 +18,7 @@ from build.check_prose_diff import allowed, leaf_diffs
 from build.prose_worklist import (
     NOTE_CEILING,
     comments_overlap,
+    description_tells,
     usage_figures,
     note_tells,
     vocabulary_hits,
@@ -125,6 +126,38 @@ def test_a_footnote_that_restates_the_notes_is_measured():
     assert comments_overlap("The GGUF conversions and the Qwen3-VL-Embedding line are excluded.", notes) > 0.6
     assert comments_overlap("GitHub's classifier cannot read the split license file.", notes) < 0.3
     assert comments_overlap("", notes) == 0.0
+
+
+def test_a_note_under_the_guard_but_over_the_shape_is_flagged_as_advice():
+    long_two = {"note": "A" * 410 + ". B."}
+    assert "shape" in note_tells(long_two) and "length" not in note_tells(long_two)
+    three = {"note": "One fact. Two facts. Three facts."}
+    assert note_tells(three)["shape"] == [len(three["note"]), 3]
+    assert note_tells({"note": "One fact. Two facts."}) == {}
+
+
+@pytest.mark.parametrize("text, key", [
+    ("This record scores the hosted tier.", "self_reference"),
+    ("The engine we ship to your cluster.", "voice"),
+    ("Released 2026-01-02 as a preview.", "date"),
+    ("A rung-4 framework.", "vocabulary"),
+])
+def test_a_description_written_for_the_wrong_audience_is_flagged(text, key):
+    assert key in description_tells(text)
+
+
+def test_a_plain_description_is_clean():
+    assert description_tells("Self-hosted chat interface with native support for OpenAI, "
+                             "Anthropic and local backends, plus multi-user authentication.") == {}
+
+
+def test_a_description_is_rewritten_through_the_helper_and_guarded(corpus):
+    assert prose_edit.edit_description("mastra", "") is not None
+    assert "self_reference" in prose_edit.edit_description("mastra", "This record covers the SDK.")
+    assert "voice" in prose_edit.edit_description("mastra", "We ship an SDK.")
+    assert prose_edit.edit_description("mastra", "TypeScript agent framework with a workflow engine.") is None
+    doc = yaml.safe_load((corpus / "sources" / "products" / "mastra.yaml").read_text())
+    assert doc["description"] == "TypeScript agent framework with a workflow engine."
 
 
 # --- the diff gate --------------------------------------------------------------------

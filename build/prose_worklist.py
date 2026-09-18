@@ -26,7 +26,12 @@ footnote:
   retracting   the note corrects itself in place (`sweep_status.RETRACTING`); a state fact
                ("superseded by", "withdrawn from circulation") trips it and is left
   length       over the 600-character guard the goldens set
+  shape        under the guard but over 400 characters or two sentences: the issue's "one or two
+               sentences for the rung", advisory because the goldens themselves run longer where
+               the argument needs it
   shows_vocabulary    a source line written in the rubric's words rather than as an extract
+  description  a description that refers to this record or the map, speaks as "we" or to "you",
+               carries a date, a rubric word or a usage figure
   comments     a product footnote whose vocabulary sits mostly in the notes already
                (`restates_notes`), or one written in the rubric's words (`vocabulary`)
 
@@ -122,6 +127,22 @@ FIGURE = re.compile(
     r"|(?<!per )(?<!per-)(?<!/)\b\d{5,}\b(?![\s-]*(?:(?:output |input )?tokens?|RPM|requests?|calls?|pages?|queries|GPUs?|H100|param|dimension|context|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
 )
 
+# The shape the issue asked for: one or two sentences for the rung. The goldens run to 595
+# characters and five sentences where the argument needs them, so this is a selector, not a
+# gate; the pass reads each one and keeps a third sentence that carries a fact.
+SHAPE_CHARS = 400
+SHAPE_SENTENCES = 2
+
+# A description talks about the product. One that talks about this record, the map, or the
+# reader ("we", "you") is written for the wrong audience.
+SELF_REFERENCE = re.compile(
+    r"\bthis (?:record|entry|product record)\b|\b(?:on |across )?(?:this|the) map\b"
+    r"|\bscore note\b|\bscored (?:separately|here)\b|\bproduct scored\b|\bis scored\b"
+    r"|\btime of scoring\b|\bmeasured release\b",
+    re.IGNORECASE,
+)
+VOICE = re.compile(r"\b(?:we|our|ours|you|your|yours)\b", re.IGNORECASE)
+
 # A band range or a band rank stated as prose. The Reach row carries the range; a note that
 # repeats it is the rubric talking, and a rank against the category is false the day a
 # product is added.
@@ -184,6 +205,32 @@ def note_tells(axis_block: dict) -> dict[str, object]:
         tells["retracting"] = m.group(0)
     if len(note) > NOTE_CEILING:
         tells["length"] = len(note)
+    elif len(note) > SHAPE_CHARS or sentence_count(note) > SHAPE_SENTENCES:
+        tells["shape"] = [len(note), sentence_count(note)]
+    return tells
+
+
+def sentence_count(text: str) -> int:
+    return len(re.findall(r"[.!?](?:\s|$)", text or ""))
+
+
+def description_tells(text: str) -> dict[str, object]:
+    """The tells for a product description: written about the product, for the reader, once."""
+    if not text:
+        return {}
+    tells: dict[str, object] = {}
+    if (m := SELF_REFERENCE.findall(text)):
+        tells["self_reference"] = m
+    if (m := VOICE.findall(text)):
+        tells["voice"] = m
+    if (m := re.findall(r"\b20\d\d-\d\d-\d\d\b", text)):
+        tells["date"] = m
+    if (v := vocabulary_hits(text)):
+        tells["vocabulary"] = v
+    if (f := usage_figures(text)):
+        tells["figure"] = f
+    if len(text) > NOTE_CEILING:
+        tells["length"] = len(text)
     return tells
 
 
@@ -221,6 +268,8 @@ def worklist() -> dict[str, list[dict]]:
             ctells["vocabulary"] = v
         if ctells:
             out[category].append({"slug": slug, "axis": "comments", "tells": ctells})
+        if (dtells := description_tells((products.get(slug) or {}).get("description") or "")):
+            out[category].append({"slug": slug, "axis": "description", "tells": dtells})
     return dict(out)
 
 
@@ -237,6 +286,8 @@ def counts() -> dict[str, int]:
                     c["shows_vocabulary"] += 1
         if vocabulary_hits((products.get(slug) or {}).get("comments") or ""):
             c["footnote_vocabulary"] += 1
+        for tell in description_tells((products.get(slug) or {}).get("description") or ""):
+            c[f"description_{tell}"] += 1
     return dict(c)
 
 
@@ -260,8 +311,10 @@ def main() -> int:
 
     total = counts()
     print("tell        notes")
-    for tell in ("vocabulary", "figure", "opening", "retracting", "length",
-                 "shows_vocabulary", "footnote_vocabulary"):
+    for tell in ("vocabulary", "figure", "opening", "retracting", "length", "shape",
+                 "shows_vocabulary", "footnote_vocabulary", "description_self_reference",
+                 "description_voice", "description_date", "description_vocabulary",
+                 "description_figure", "description_length"):
         print(f"  {tell:10}{total.get(tell, 0):6}")
     print(f"\n{'category':32}{'flagged':>8}{'files':>7}")
     for category, rows in sorted(work.items(), key=lambda kv: -len(kv[1])):
