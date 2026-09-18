@@ -97,6 +97,7 @@ def test_a_usage_figure_in_a_note_is_flagged(note):
         "Released under Apache-2.0 and installs with pip; GPL-3.0 users need the other build.",
         "An 8,192-token context window and 1,024-dimension embeddings.",
         "Embeddings of 1,536 dimensions over a 128,000-token context.",
+        "Independent benchmarks report 2,100 tokens per second on an H100 and 1,850 tok/s on a B200.",
     ],
 )
 def test_a_product_fact_with_a_number_is_not_a_usage_figure(note):

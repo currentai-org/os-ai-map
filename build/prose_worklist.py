@@ -90,10 +90,11 @@ FIGURE = re.compile(
     # count, and the pilot polish tripped on exactly that.
     r"(?<![A-Za-z0-9.-])\d[\d,.]*\s*(?:k|K|M|million|billion|thousand)?\s+(?:[A-Za-z-]+\s+){0,2}"
     r"(?:stars?|stargazers|downloads?|pulls?|installs?|users?|customers?|deployments?|forks?)\b"
-    # A bare comma-grouped or five-digit count, unless it is a product dimension: a token
-    # limit, a parameter count, an embedding size, a context window.
-    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:token|param|dimension|context|d\b))"
-    r"|\b\d{5,}\b(?![\s-]*(?:token|param|dimension|context))"
+    # A bare comma-grouped or five-digit count, unless it is a product dimension or a
+    # measured property: a token limit, a parameter count, an embedding size, a context
+    # window, a throughput, a latency, a percentage.
+    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:token|param|dimension|context|d\b|tok/s|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|\b\d{5,}\b(?![\s-]*(?:token|param|dimension|context|tok/s|ms\b|seconds?|per second|%|hours?|steps?))"
 )
 
 # A band range or a band rank stated as prose. The Reach row carries the range; a note that
