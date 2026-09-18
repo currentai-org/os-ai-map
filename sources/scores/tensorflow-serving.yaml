@@ -51,14 +51,11 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 6,360 GitHub stars, which lands in the 1K-10K band of the stars scale, level 2, and a stars-based signal
-    caps at 3 because a star is not a use. Two larger figures exist and neither is this product's. The `tensorflow-serving-api`
-    package draws 4,627,937 downloads in the trailing 30 days, but its own summary is "TensorFlow Serving Python
-    API" - it is the client library for a running server, so its downloads measure client use rather than deployments
-    of the serving system, and it is not declared as an artifact for that reason. The `tensorflow/serving` container
-    image the README's quickstart pulls reports 80,659,067 pulls, which is the product itself, but the count is
-    cumulative since publication while this scale is monthly, so it corroborates without banding. No deployment
-    figure is published, leaving stars as the only honest instrument.
+  note: 'Adoption is read from GitHub stars because the two available download figures don''t fit: the tensorflow-serving-api
+    PyPI package measures a client library''s own use rather than deployments of the serving system itself,
+    and the tensorflow/serving Docker image''s pull count is cumulative since its first release rather than
+    the trailing monthly figure this scale needs. With neither figure usable, stars are the only signal
+    left, and since a star is not a use, this reading is a floor rather than a full account of adoption.'
   last_verified: '2026-08-31'
   sources:
   - url: https://api.github.com/repos/tensorflow/serving
@@ -86,8 +83,9 @@ capability:
   relative_to: vllm
   relation: two_below
   confidence: medium
-  note: Two bands below the vllm anchor. It is a general model server designed before the LLM serving techniques
-    the anchor is banded on - paged attention, continuous batching, tensor parallelism - and documents none of them.
+  note: TensorFlow Serving sits two tiers below vLLM. It is a general model server built before the LLM-specific
+    serving techniques vLLM is judged on, paged attention, continuous batching, tensor parallelism, and
+    it documents none of them.
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/tensorflow/serving/master/README.md

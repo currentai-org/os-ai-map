@@ -51,10 +51,9 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 19,430 GitHub stars, in the >10K band of the stars scale, which caps at level 3. A PyPI package
-    exists and is the project's own, but at 2,223 downloads in the trailing 30 days it is a minority channel
-    for a product installed through hardware-specific source builds, so banding on it would measure the
-    wrong channel; it is left undeclared and the stars route wins.
+  note: GitHub stars are the adoption signal for KTransformers, since the product is installed mainly through
+    hardware-specific source builds. Its PyPI package is confirmed as the project's own, but its downloads
+    are a minority channel next to source installs, so it is left undeclared and stars carry the reading.
   last_verified: '2026-09-01'
   sources:
   - url: https://api.github.com/repos/kvcache-ai/ktransformers
@@ -78,10 +77,10 @@ capability:
   relative_to: vllm
   relation: one_below
   confidence: medium
-  note: One band below the vllm anchor, level with lmdeploy and mistral-rs. It owns a capability the anchor
-    does not have - serving 671B-class MoE models on a single consumer GPU by scheduling experts onto
-    CPU - and spans four accelerator vendors, but it is not the datacenter throughput frontier and its
-    serving path is now partly delivered through SGLang integration rather than standing alone.
+  note: KTransformers sits one tier below vLLM, level with LMDeploy and mistral.rs. It can do something
+    vLLM cannot, serve 671B-class MoE models on a single consumer GPU by scheduling experts onto the CPU,
+    and spans four accelerator vendors, but it is not built for datacenter throughput and increasingly delivers
+    its serving path through an SGLang integration rather than standing alone.
   comparison:
     last_attested: '2026-09-01'
     sources:

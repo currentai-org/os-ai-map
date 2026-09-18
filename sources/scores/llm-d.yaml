@@ -53,11 +53,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,375 GitHub stars, in the 1K-10K band of the stars scale. The product ships through container
-    images and Helm charts, channels that publish no count the pipeline can read, so stars are the last
-    honest route; production deployments named in the README (Tesla/Red Hat, AWS, Oracle, Google benchmarks)
-    indicate standing the star count understates, and raising the level on them would need its own evidenced
-    reported_traction judgment, which this packet does not make.
+  note: llm-d ships through container images and Helm charts, channels with no published download count,
+    leaving GitHub stars as the only readable adoption signal. Production deployments named in the README,
+    at Tesla, Red Hat, AWS, Oracle and in Google's own benchmarks, suggest the star count understates real
+    use, though confirming that would need its own separate read.
   last_verified: '2026-09-01'
   sources:
   - url: https://api.github.com/repos/llm-d/llm-d
@@ -76,10 +75,9 @@ capability:
   relative_to: vllm
   relation: one_below
   confidence: medium
-  note: 'One band below the vllm anchor, level with dynamo, which is the same architectural shape: a serving
-    stack whose forward pass belongs to somebody else''s engine. Its cross-accelerator production benchmarks
-    are the widest validation surface of the orchestration entrants, but without an engine of its own
-    it does not reach the anchor''s band.'
+  note: llm-d sits one tier below vLLM, level with Dynamo, since both are serving stacks whose forward pass
+    belongs to someone else's engine. Its cross-accelerator production benchmarks give it the widest validation
+    surface among the orchestration layers, but without an engine of its own it does not reach vLLM's tier.
   comparison:
     last_attested: '2026-09-01'
     sources:
