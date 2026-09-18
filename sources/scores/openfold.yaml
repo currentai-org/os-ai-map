@@ -10,15 +10,12 @@ openness:
     - {name: Apache-2.0, detail: OSI}
   raw: weights:open(Apache-2.0 OpenFold3 checkpoints behind an auto-approved form, and OpenFold's own AlphaFold 2-reproduction parameters fetched by repository scripts);data:open(OpenProteinSet, some 400,000 MSAs and PDB70 template hit files, on the AWS Registry of Open Data);code:open(train_openfold.py plus a documented end-to-end training guide, not inference alone);license:Apache-2.0(OSI)
   confidence: high
-  note: >-
-    The reason OpenFold exists is the reason it reaches the top rung - it was built to be
-    retrained, and the corpus, the pipeline and the resulting weights all shipped under one
-    OSI license. The evidence is the AlphaFold-2 reproduction SKU specifically - OpenProteinSet
-    on the AWS open-data registry, paired with train_openfold.py and its training guide.
-    OpenFold3-preview ships checkpoints without an equivalent published corpus or pipeline, so
-    it rides on the line's score rather than earning it; the OF2 SKU carries the 5 on its own.
-    The CC-BY-4.0 note in the repository covers DeepMind's parameters, which OpenFold can also
-    load; it does not govern OpenFold's own release.
+  note: 'OpenFold was built to be retrained from the start: the AlphaFold-2 reproduction ships a full training
+    corpus (OpenProteinSet, on AWS''s Registry of Open Data), a training pipeline (train_openfold.py and
+    its guide) and the resulting weights, all under Apache-2.0, which is what makes it fully open source.
+    OpenFold3-preview ships checkpoints without a matching corpus or pipeline of its own, so its openness
+    reading depends on that AlphaFold-2 evidence; a separate CC-BY-4.0 note in the repository covers DeepMind''s
+    own AlphaFold 2 parameters, which OpenFold can optionally load.'
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/OpenFold/OpenFold3
@@ -56,7 +53,8 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: The gated OpenFold3 endpoint reports zero downloads, which measures the gate rather than the reach, so 3,423 GitHub stars are used as the last-resort signal.
+  note: The gated OpenFold3 endpoint reports zero downloads, which measures the gate rather than actual
+    reach, so GitHub stars are used as the fallback signal instead.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/aqlaboratory/openfold

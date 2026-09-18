@@ -11,7 +11,11 @@ openness:
     - {name: ASL, detail: 'MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only'}
   raw: weights:open(ungated foundation checkpoints published as GitHub release assets);data:open(MPTrj, sAlex, OMat, MATPES, and OMol training datasets publicly released);code:open(full data preprocessing, distributed training, and fine-tuning pipeline);license:MIT(code and the MACE-MP-0a, MACE-MP-0b3, and MACE-MPA-0 checkpoints)+ASL(MACE-OMAT-0, MACE-MATPES-PBE-0, MACE-MATPES-r2SCAN-0, MACE-OMOL-0, MACE-OFF23, and MACE-MH-0/1 checkpoints; academic non-commercial only)
   confidence: high
-  note: 'MACE is otherwise the most complete release in this cohort: open corpus, open pretraining pipeline, open weights. The multi-SKU rule resolves it on the most restrictive licence among the checkpoints actually distributed, and the newer foundation models ship under the Academic Software Licence, which says of itself that it is not an open-source licence because it does not allow commercial use. Publishing the corpus does not buy that permission back, so the score caps at restricted.'
+  note: 'MACE is otherwise a complete release: open corpus, open pretraining pipeline, open weights. Where
+    a product ships several checkpoints, the most restrictive license among them governs the score, and
+    the newer MACE foundation models ship under the Academic Software License, which says of itself that
+    it is not an open-source license because it forbids commercial use. Publishing the corpus does not buy
+    that permission back, so the release counts as restricted.'
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/ACEsuit/mace/main/README.md
@@ -38,13 +42,11 @@ adoption:
   signal_type: usage_volume
   confidence: high
   banded_quantity: trailing-30-day PyPI downloads of mace-torch, the declared package that fetches the foundation checkpoints
-  note: >-
-    Re-banded off stars. mace-torch is a declared artifact, and sources/signal_routing.yaml sets
-    the precedence pypi > huggingface > stars, so an authoritative usage route exists and the
-    record may not fall through to a star count. 113,484 downloads in the trailing 30 days puts
-    it at level 3, one above the 1,345 stars it used to carry. Four first-party Hugging Face
-    repositories also exist under mace-foundations and all report zero downloads, so the Hub
-    route is present but empty; PyPI outranks it either way.
+  note: Adoption is measured from PyPI downloads of mace-torch, the declared package that installs the foundation
+    checkpoints, rather than from GitHub stars, because a PyPI channel takes precedence whenever one is
+    declared. Four first-party Hugging Face repositories under mace-foundations also exist but report zero
+    downloads, so the Hub channel is present yet empty, and PyPI remains the authoritative signal either
+    way.
   last_verified: '2026-09-10'
   sources:
   - url: https://pypistats.org/api/packages/mace-torch/recent

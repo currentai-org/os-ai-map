@@ -10,14 +10,12 @@ openness:
     - {name: CC-BY-4.0, detail: 'governs the Figshare-hosted checkpoints; the repository MIT covers the code only'}
   raw: weights:open(ungated 4-layer and 33-layer checkpoints, fetched by the evaluation script or from Figshare);data:documented-not-released(the paper describes the 36-million-cell Integrated Mega-scale Atlas corpus while the repository links processed paper datasets rather than the pretraining corpus);code:partial(embedding and evaluation script only; no pretraining pipeline);license:CC-BY-4.0(governs the Figshare-hosted checkpoints; the repository MIT covers the code only)
   confidence: high
-  note: >-
-    The checkpoints are freely downloadable and the corpus is described in the paper, but the
-    repository ships only the code needed to embed a dataset, so the full-pipeline rungs are out
-    of reach. The licence recorded here is the weights licence, not the repository's: the
-    33-layer checkpoint ships from Figshare item 24320806, whose record states CC BY 4.0, while
-    the repository LICENSE is MIT and covers the code. Under multi_sku_rule the distributed
-    weights govern, which resolves the tier to permissive_non_osi rather than osi. The score is
-    unchanged - the walk reaches the fallthrough either way.
+  note: 'The checkpoints are freely downloadable and the paper describes the training corpus, but the repository
+    ships only the code needed to embed a dataset, not a pretraining pipeline, which keeps this off a fully
+    open release. The license recorded here is the weights'' own license, not the repository''s: the 33-layer
+    checkpoint ships from a Figshare record that states CC BY 4.0, while the repository LICENSE is MIT and
+    covers only the code. Because the distributed weights carry the more restrictive of the two licenses,
+    they govern the score rather than the repository''s MIT.'
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/snap-stanford/UCE/main/README.md
@@ -43,7 +41,9 @@ adoption:
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: No Hugging Face or package artifact is declared, so 338 GitHub stars are the last-resort signal; checkpoints are served from the authors' own hosting and from Figshare, neither of which reports a download count.
+  note: No Hugging Face or package artifact is declared, so GitHub stars are used as the last-resort signal;
+    the checkpoints are served from the authors' own hosting and from Figshare, neither of which reports
+    a download count.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/snap-stanford/UCE
@@ -57,7 +57,10 @@ capability:
   basis_detail: scientific adaptation surface
   value: None of the four attributes is established; the paper states that new cells are embedded with no data labelling, model training, or fine-tuning.
   confidence: high
-  note: The absent adaptation pathway is a positive claim by the publisher rather than a gap in the evidence. The model emits embeddings rather than generated outputs, takes one transcriptomic modality, and operates at one scale; embedding cells from many species is coverage, not a second instrument.
+  note: 'The absent adaptation pathway is a positive claim by the publisher, not a gap in the evidence:
+    UCE is built to embed new cells with no additional training or fine-tuning. It also emits embeddings
+    rather than generated outputs, takes one transcriptomic modality, and works at one scale -- embedding
+    cells from many species broadens coverage of that same modality rather than adding a second one.'
   last_verified: '2026-09-10'
   sources:
   - url: https://www.nature.com/articles/s41586-026-10689-z

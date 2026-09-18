@@ -10,7 +10,9 @@ openness:
     - {name: proprietary, detail: 'no license granted over the model, the embedding layers are licensed separately under CC-BY 4.0'}
   raw: license:proprietary(no license granted over the model, the embedding layers are licensed separately under CC-BY 4.0);weights:closed(no checkpoint distributed, only precomputed annual embedding layers);data:closed(training corpus not released);code:closed(no public implementation, training, or inference code)
   confidence: high
-  note: Both primary sources describe releasing a dataset of embedding layers rather than the model. With no downloadable weights the ladder's first rule applies before any license question, and the CC-BY 4.0 grant on the Earth Engine collection covers the outputs, not the model that produced them.
+  note: Both primary sources describe releasing a dataset of embedding layers, not the model itself. Because
+    no weights are downloadable, the license question does not even arise, and the CC-BY-4.0 grant on the
+    Earth Engine collection covers the output layers, not the model that produced them.
   last_verified: '2026-09-10'
   sources:
   - url: https://arxiv.org/abs/2507.22291
@@ -51,7 +53,12 @@ capability:
   relative_to: prithvi-eo
   relation: two_below
   confidence: high
-  note: 'Only the multi-instrument attribute is stated directly. The publisher''s own claim is that the embeddings are used without re-training, which is the opposite of a documented adaptation pathway, and an embedding is not a generated scientific output. Multi-scale is declined against the abstract''s phrase about production of maps "from local to global scales": that describes what downstream users build from the embeddings, not a model operating at more than one resolution, and the distributed collection fixes a single 10-metre annual grid.'
+  note: AlphaEarth Foundations combines Landsat, Sentinel-1 and Sentinel-2 measurements into a single embedding;
+    that is the model's one documented capability here. The publisher's own description says the embeddings
+    are used without re-training, so there is no documented way to adapt the model, and an embedding is
+    not a generated scientific output. The released collection also fixes one 10-meter annual grid rather
+    than working at several resolutions; the abstract's phrase about producing maps "from local to global
+    scales" describes what downstream users build, not the model itself.
   last_verified: '2026-09-10'
   sources:
   - url: https://arxiv.org/abs/2507.22291

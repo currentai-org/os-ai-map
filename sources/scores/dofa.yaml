@@ -23,13 +23,12 @@ openness:
     no script that rebuilds it end to end);code:open(pretraining entry point, masked-autoencoder engine,
     samplers, and launch script under pretraining/);license:CC-BY-4.0(attribution only, not OSI-approved)
   confidence: medium
-  note: 'The pretraining pipeline is public, the checkpoints are ungated, and the paper documents the corpus
-    well enough to audit the mixture: section 6 Data availability statements names all five subsets with
-    a download link each. That pairs an enumerated corpus with an open pipeline, which is the rung the ladder
-    writes for exactly this case. It is recorded as components-listed rather than open because the constituents
-    are third-party datasets and nothing assembles them — no DOFA corpus is published and no script rebuilds
-    one. The score is 4 on either reading. The repository LICENSE is MIT and covers the code; the weights
-    the Hub distributes are CC-BY-4.0, and that is the license this axis scores.'
+  note: 'The pretraining pipeline is public, the checkpoints are ungated, and the paper''s data-availability
+    section names all five training subsets with a download link each, which is enough to audit the training
+    mixture. The corpus itself is not fully open, though: the five subsets are third-party datasets that
+    nothing in the repository assembles into one release, and no script rebuilds a combined DOFA corpus
+    from the parts. The repository''s own MIT license covers the code, but the weights on Hugging Face carry
+    CC-BY-4.0, which is the license this axis scores.'
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/earthflow/DOFA
@@ -67,7 +66,8 @@ adoption:
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: The Hugging Face mirror reports zero downloads because the checkpoints are pulled as raw files, so 211 GitHub stars are used as a last-resort reach signal.
+  note: The Hugging Face mirror reports zero downloads because the checkpoints are pulled as raw files rather
+    than through the download API, so GitHub stars are used as the last-resort reach signal instead.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/zhu-xlab/DOFA
@@ -83,7 +83,10 @@ capability:
   relative_to: prithvi-eo
   relation: one_below
   confidence: high
-  note: Two attributes are stated directly. The pretraining objective is masked autoencoding, which the category does not count as generative, and the sensor diversity is already counted as multiple instruments rather than a second time as multiple scales.
+  note: 'DOFA earns two capabilities directly: an adaptation pathway through linear-probing and segmentation
+    fine-tuning, and a single checkpoint that accepts five different satellite sensors. Masked autoencoding,
+    its pretraining objective, is not counted as generation, and that same sensor diversity is not counted
+    a second time as multiple scales.'
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/zhu-xlab/DOFA/master/README.md
