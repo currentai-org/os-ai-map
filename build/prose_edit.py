@@ -22,7 +22,8 @@ Refusals, each with its reason on stderr:
   * a note that would be empty, or over `prose_worklist.NOTE_CEILING`;
   * a note that drops a phrase `sweep_status.UNDERSTATES` / `INFLATED` matched in the old text
     (the under-coverage set is pinned in tests; withdrawing the claim is a re-read, not a
-    rewording), unless `--allow-phrase-change`;
+    rewording), or that introduces one the old text did not carry (the set would grow, and a
+    prose pass makes no new claim), unless `--allow-phrase-change`;
   * a note on `tests/test_score_notes.DATES_THAT_ARE_PRODUCT_FACTS` that would lose its date;
   * a note that would gain an ISO date it did not have;
   * a `comments` that carries a dated verification sentence;
@@ -79,6 +80,11 @@ def edit_note(slug: str, axis: str, text: str, allow_phrase_change: bool = False
             return (f"the old note matched sweep_status.{name} ({before.group(0)!r}) and the new "
                     "one does not; the under-coverage set is pinned. Keep the phrase, or pass "
                     "--allow-phrase-change if the claim itself is being withdrawn")
+        if after and not before and not allow_phrase_change:
+            return (f"the new note introduces {after.group(0)!r}, which check_channel_authority "
+                    f"reads as an under-coverage admission (sweep_status.{name}); the pinned set "
+                    "would grow. A prose pass makes no new claim: reword it, or pass "
+                    "--allow-phrase-change if the record already supports the admission")
     had_date, has_date = bool(ISO_DATE.search(old)), bool(ISO_DATE.search(text))
     if (slug, axis) in _product_fact_dates() and had_date and not has_date:
         return "this axis is on DATES_THAT_ARE_PRODUCT_FACTS; its date is a fact about the product"

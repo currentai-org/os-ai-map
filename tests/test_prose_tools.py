@@ -195,6 +195,16 @@ def test_dropping_a_pinned_under_coverage_phrase_is_refused(corpus):
                                 allow_phrase_change=True) is None
 
 
+def test_introducing_a_pinned_under_coverage_phrase_is_refused(corpus):
+    """The other direction: the wave wrote "primary distribution channel" into notes that had
+    never made the admission, and the pinned set grew by six products in one batch."""
+    reason = prose_edit.edit_note(
+        "tesseract", "openness",
+        "Apache-2.0 with no vendor; PyPI is not the product's primary distribution channel.")
+    assert reason and "introduces" in reason
+    assert _note(corpus, "tesseract", "openness").startswith("Apache-2.0 with no vendor")
+
+
 def test_an_empty_or_overlong_note_is_refused(corpus):
     assert "emptied" in prose_edit.edit_note("tesseract", "openness", "")
     assert "over the" in prose_edit.edit_note("tesseract", "openness", "x" * (NOTE_CEILING + 1))
