@@ -16,10 +16,9 @@ openness:
       detail: permissive, no use restrictions
   governing_release: deepseek-v4-pro
   confidence: high
-  note: 'MIT weights across the V4 line, no released training corpus, and inference and serving code only,
-    so 3. DeepSeek-V4-Pro is the current release, and both it and V4-Pro-Base are plain MIT with no acceptable-use
-    restrictions attached. That keeps the score clear of an unsettled question: the older DeepSeek Model
-    License carried acceptable-use terms, and whether those count as use-restricting is still open.'
+  note: DeepSeek releases the V4 line's weights under a plain MIT license, but publishes no training corpus
+    and only inference and serving code rather than a full training pipeline. This makes DeepSeek an open-weights
+    release rather than a fully open model.
   last_verified: '2026-08-13'
   raw: weights:open(MIT, on HF, both Pro and Flash);data:closed;code:partial(inference/serving; no training
     pipeline or data);license:MIT(permissive, no use restrictions)
@@ -47,9 +46,8 @@ openness:
     content_sha256: 8d1a25a796adfe7e4302d989666326119c0f701f742fe1746cc66eb9513d63d5
     establishes: [code]
   - url: https://api-docs.deepseek.com/news/news260424
-    shows: DeepSeek's own V4 release note, describing the line as shipping with 'Open Weights'. It announces
-      weights and serving surfaces and releases no training corpus and no training pipeline, which is what
-      holds the score at open_weights rather than higher.
+    shows: DeepSeek's own V4 release note, describing the line as shipping with 'Open Weights.' It announces
+      weights and serving surfaces but releases no training corpus and no training pipeline.
     accessed: '2026-08-15'
     http_status: 200
     content_sha256: 4abd1cc878b3dd4a4c4dbee6f1096282785f5b06b699ce49d0ac80d2057cf4b2
@@ -64,10 +62,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 5,180,104 downloads in the trailing 30 days across the six declared artifacts (deepseek-ai/DeepSeek-V3.2
-    1,093,344; deepseek-ai/DeepSeek-V3-Base 31,718; deepseek-ai/DeepSeek-V4-Pro 1,411,583; deepseek-ai/DeepSeek-V4-Flash
-    2,283,943; deepseek-ai/DeepSeek-V4-Pro-Base 14,769; deepseek-ai/DeepSeek-V4-Flash-Base 344,747), which
-    bands at level 4 (1M-10M) on the model adoption scale.
+  note: Adoption is measured as Hugging Face downloads summed across the family's six shipped checkpoints,
+    spanning the V3 line and the newer V4-Pro and V4-Flash releases. V4-Flash draws the largest share of
+    that traffic, with the base checkpoints seeing comparatively little use.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V3.2
@@ -112,8 +109,7 @@ capability:
   last_verified: '2026-08-13'
   sources:
   - url: https://benchlm.ai/models/deepseek-v4-pro-high
-    shows: SWE-bench Verified 80.6, MMLU-Pro 87.5, GPQA Diamond 90.1 and LiveCodeBench Pass@1 93.5 all
-      present - the four figures the band rests on.
+    shows: SWE-bench Verified 80.6, MMLU-Pro 87.5, GPQA Diamond 90.1 and LiveCodeBench Pass@1 93.5 all present.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 21dd1a4cab515c7b1986a70fb799d4f34e9f4d86467859bddfb2a8895d9cf8fd
@@ -123,6 +119,5 @@ capability:
     http_status: 200
     content_sha256: 0654905390b5684a1e914f5646453f7c86f5d4128ba1e12a44aaf4f737cc4f33
   - url: https://www.morphllm.com/deepseek-v4
-    shows: Third-party DeepSeek V4 write-up; the host answers HTTP 429, and no part of the band rests on
-      this source alone.
+    shows: Third-party DeepSeek V4 write-up; the host answers HTTP 429.
     accessed: '2026-06-04'

@@ -36,11 +36,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Algolia reports more than 18,000 customers across 150+ countries and more than 1 billion queries every
-    5 seconds at an average response time under 20 milliseconds, with named users including Stripe, Decathlon
-    and Ubisoft. Query volume is enormous, and end-user reach - consumers hitting Algolia-powered search -
-    is effectively mass-scale, but as a B2B tool the direct customer base sits in the heavy-trending band,
-    so the level rests on the verified query volume at 4.
+  note: Algolia's adoption is measured by the volume of end-user queries running through its hosted search
+    across companies such as Stripe, Decathlon and Ubisoft, not by the number of paying accounts. That query
+    volume is why the reading sits high; the smaller, direct B2B customer count on its own would read lower.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.algolia.com/products/ai-search/
@@ -57,14 +55,10 @@ capability:
     retrieval (NeuralSearch), typo tolerance, autocomplete, AI ranking and personalization, served at sub-20ms
     across multiple content types'
   confidence: medium
-  note: 'A complete durable system that is distributed is band 4 on this category''s ladder. Band 5 asks for
-    a platform that hosts and evaluates ranking or embedding models inside the serving path, and the rung''s
-    own examples are Elasticsearch''s in-tree `inference`, `ml` and `ml-package-loader` plugins and Vespa''s
-    evaluation of tensor and ONNX models - facilities an operator puts a model into. Algolia''s NeuralSearch
-    is described as a property of the service, and the page cited does not establish a model-hosting facility
-    of that kind. The band rests on that gap in the evidence rather than on a rule about whose model it is:
-    read NeuralSearch as satisfying the rung and this is a 5, which would make it the third product at this
-    category''s top band, and that is a maintainer''s ruling.'
+  note: Algolia AI Search is a complete, hosted, distributed search platform. What separates the most capable
+    systems in this category is letting the operator host and evaluate their own ranking or embedding models
+    inside the serving path, the way Vespa evaluates ONNX and tensor models; Algolia's NeuralSearch is built
+    into the service rather than exposed as a facility of that kind.
   last_verified: '2026-09-17'
   sources:
   - url: https://www.algolia.com/products/ai-search
@@ -80,10 +74,10 @@ capability:
     last_attested: '2026-09-17'
     sources:
     - url: https://docs.vespa.ai/en/ranking.html
-      shows: Re-read of the peer this band is placed against. Vespa's ranking documentation still describes
+      shows: Re-read of the peer this comparison is placed against. Vespa's ranking documentation still describes
         evaluating ranking expressions and machine-learned models - including ONNX models the operator deploys
-        - inside the serving path, which is the property that separates storage's band 5 from band 4 and the
-        property Algolia's hosted product does not offer.
+        - inside the serving path, which is the property that separates full ranking control from a hosted
+        search API and the property Algolia's hosted product does not offer.
       accessed: '2026-09-17'
       http_status: 200
       content_sha256: f577b6bacf3d08cb57becc3e2e814c84cfed93c32ed997fb2fd2844264196959

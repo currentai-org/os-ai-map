@@ -19,11 +19,10 @@ openness:
       value: ungated
       detail: nothing withheld from the published tree
   confidence: high
-  note: 'Apache-2.0 over the platform, including the authentication machinery that is the product''s whole
-    point - which is what separates it from the closed connector platforms beside it. The `ungated` reading
-    meets the shared software rubric''s acceptance standard for that dimension rather than resting on path
-    absence: the vendor''s own documentation names its commercial offering as a separate thing, and the source
-    cited below carries that statement.'
+  note: Apache-2.0 covers the whole platform, including the multi-tenant OAuth and secrets machinery that
+    is the product's central feature, which sets it apart from the closed connector platforms it competes
+    with. The README documents a separate hosted offering without holding back any part of the published
+    platform, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public(the platform backend and its portal);self-host:yes(run the backend
     and frontend yourself);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
     withheld from the published tree)
@@ -49,8 +48,8 @@ openness:
     shows: 'The README names the hosted offering separately - "Managed Service: aci.dev" - while publishing
       the platform itself: "To run the full ACI.dev platform (backend server and frontend portal) locally,
       follow the individual README files for each component: Backend: backend/README.md Frontend: frontend/README.md".
-      The multi-tenant OAuth machinery the capability band reads is part of that published platform, which
-      is what makes this `ungated` under the acceptance standard rather than a claim from path absence.'
+      That multi-tenant OAuth machinery is part of the published platform, which is what makes this `ungated`
+      under the acceptance standard rather than a claim from path absence.'
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 335ac01919926bcee1be823fc0378ad4f56a927a72804ef92ade31cb7c167354
@@ -62,8 +61,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,891 GitHub stars. The `aci-sdk` PyPI package is the client for the platform rather than the platform,
-    at 2,627 downloads a month, and no customer or request figure is published. Stars cap at 3.
+  note: GitHub stars are the only usable adoption signal, since the aci-sdk package on PyPI measures downloads
+    of a client library rather than the platform itself, and no customer or request count is published.
+    A star is not a use, so this reading stands on a weak signal alone.
   last_verified: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/aipotheosis-labs/aci
@@ -80,10 +80,10 @@ capability:
   confidence: medium
   relative_to: composio
   relation: at
-  note: 'Many systems and credentials the platform runs and stores, which is band 5. The distinguishing detail
-    is in how the caller''s code refers to a grant: not a token but a `linked account owner id`, with the OAuth
-    flow completed in ACI''s own portal. The one secret the caller handles is ACI''s own API key. Banded at
-    composio.'
+  note: 'ACI''s multi-tenant authentication runs entirely in its own portal: the caller addresses a linked
+    account by an owner id rather than a stored end-user token, and its own API key is the only secret the
+    caller ever handles. That places it level with Composio, the other platform built the same way around
+    managed OAuth and secrets.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/aipotheosis-labs/aci/main/README.md

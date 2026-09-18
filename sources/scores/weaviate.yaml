@@ -11,10 +11,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole server,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it - Weaviate Cloud is
-    a hosted service sold beside the BSD-licensed core rather than a piece withheld from it. So source is public
-    and the core ungated.
+  note: Weaviate's BSD-3-Clause core is public, unarchived and builds the whole server, with no paid tier
+    or enterprise edition gating it. Weaviate Cloud is a hosted service sold beside that core rather than
+    a piece withheld from it.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-02'
   sources:
@@ -49,10 +48,9 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 16,776 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. No package artifact is
-    declared - the PyPI weaviate-client package is a client for a running Weaviate instance rather than the server,
-    so it is left undeclared rather than declared and ignored (see the product comments). Weaviate is deployed as a
-    Docker or Kubernetes cluster with no published deployment count, which leaves the stars scale and its cap of 3.
+  note: 'Weaviate declares no package artifact: weaviate-client is a Python client for a running instance,
+    not the server, so it is left out rather than counted and ignored. Weaviate deploys as a Docker or Kubernetes
+    cluster with no published deployment count either, leaving GitHub stars as the adoption signal.'
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/weaviate/weaviate
@@ -70,12 +68,10 @@ capability:
   relative_to: vespa
   relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
-    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a
-    product provides itself, at what scale and over how many retrieval modes. Weaviate's vectorizer and reranker
-    modules are optional integrations that call an external or containerized model rather than the core serving
-    engine hosting and evaluating one itself, which is the line the top rung holds - the same distinction that
-    keeps Milvus's and Qdrant's rerank functions at this band rather than the one above.
+  note: Weaviate is a complete, distributed vector engine, and its optional vectorizer and reranker modules
+    call out to an external or containerized model rather than hosting one inside the core serving engine,
+    which is what keeps it one step below Vespa, the only system that evaluates models inside its own serving
+    path.
   comparison:
     last_attested: '2026-09-02'
     sources:

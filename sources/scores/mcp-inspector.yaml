@@ -13,11 +13,9 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'Fully MIT, no feature-gated core. There is no LICENSE file in the repository at all; MIT is stated
-    in the README''s License section and in package.json ("license": "MIT"). Worth noting beside the sibling
-    repos: typescript-sdk and servers have both moved to the MCP Apache-2.0 transition license and this one
-    has not, so the org is no longer uniform. The whole tool is in the published tree and runs via `npx @modelcontextprotocol/inspector`
-    with no key or paid tier.'
+  note: MCP Inspector is MIT-licensed, stated in the README and in package.json rather than a standalone
+    LICENSE file, with no feature-gated core. The whole tool - web, CLI and terminal clients - is in the
+    published tree and runs via `npx @modelcontextprotocol/inspector` with no key or paid tier.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -49,10 +47,9 @@ adoption:
   level: 4
   signal_type: usage_volume
   confidence: high
-  note: 1,093,328 npm downloads of @modelcontextprotocol/inspector in the trailing 30 days, which bands at
-    1M-10M, level 4 on the software adoption scale. The npm package is the product rather than a client of
-    it - this is the reference MCP debugging tool itself, not an SDK or a transitive dependency of one - so
-    the count measures its own users and the measurement stands with no defence needed against it.
+  note: Downloads are measured directly from the npm package, since it is the debugging tool itself rather
+    than an SDK or a dependency of one. That makes the count a direct measurement of the tool's own users,
+    with no adjustment needed to stand for the product.
   reach: 1M-10M
   last_verified: '2026-09-14'
   sources:
@@ -69,11 +66,10 @@ capability:
     the full primitive set of a server under test, through three surfaces - a web UI, a scriptable CLI and
     a terminal UI - from one binary'
   confidence: medium
-  note: 'One role with that role''s full primitive set, which is band 3. It is a debugging client rather than
-    an SDK, and it is banded as a client implementation because that is what it is: it connects to a server
-    and exercises the protocol. What keeps it below the SDKs is the missing server role, not the absence of
-    a library - the ladder reads the spec''s dimensions and nothing else. The README does not name a specification
-    version, so the band rests on role and primitives alone.'
+  note: MCP Inspector implements the client role only, exercising a server's full primitive set through
+    three surfaces - a web UI, a CLI and a terminal UI - from one binary. What keeps it a step below SDKs
+    such as the MCP Python SDK is the missing server role, not any missing feature, and the README does
+    not state which specification version it targets.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/README.md

@@ -33,7 +33,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from build.product_prose import census, classify
+from build.product_prose import census, dated_verification
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -102,158 +102,79 @@ def test_the_scan_actually_walks_the_corpus():
     assert len(slugs) > 400, f"only walked {len(slugs)} products; the glob has drifted"
 
 
-# --- the verification line -------------------------------------------------------------
+# --- no dated verification sentence in comments -----------------------------------------
 #
-# `docs/reference/product-copy.md` standardizes it on `Verified <date> via <document>.` The
-# 2026-08 closeout brought all 472 products to that form (tag `baseline-472-2026-08-16`).
-# What follows keeps them there: a new product, or an edit to an existing one, can reintroduce
-# any of the four unresolved states, and `sweep_status` reports the state it is told.
-
-
-@pytest.mark.parametrize(
-    "comments, expected",
-    [
-        ("Verified 2026-08-13 via the project README.", "canonical"),
-        ("Verified live 2026-08-13 via the project README.", "named_noncanonical"),
-        ("Verified live 2026-08-13 on huggingface.co/datasets/x.", "named_noncanonical"),
-        ("Verified live 2026-08-13 against the DATASHEET.md.", "named_noncanonical"),
-        # The substantive class: names how somebody looked, not what settled it.
-        ("Verified live 2026-08-13 via primary sources.", "generic"),
-        ("Verified 2026-08-13 via the primary sources.", "generic"),
-        ("Verified 2026-08-13 via substitute sources - hailo.ai 403s.", "generic"),
-        # Dated, not a method, and naming nothing. Defaulting these to `named_noncanonical`
-        # promised a mechanical fix that does not exist.
-        ("Verified 2026-08-13.", "ambiguous_noncanonical"),
-        ("Verified 2026-08-13 via .", "ambiguous_noncanonical"),
-        ("Verified live 2026-08-13, but only the adoption axis could be re-derived.",
-         "ambiguous_noncanonical"),
-        ("verified live 2026-08-13 via primary sources; v1.2.", "generic"),
-        ("Verified live 2026-08-13 via primary-source research.", "generic"),
-        ("Some prose with no verification at all.", "missing"),
-    ],
-)
-def test_classification(comments, expected):
-    assert classify(comments)[0] == expected
+# Every `comments` field used to end in `Verified <date> via <document>.` The date is
+# `last_verified` on each axis and the page prints it as `Verified <date>`; the line was a third
+# copy, and the one visitors read as a footnote about the product. #619 retired it. What follows
+# keeps it out: a new product, or an edit to an existing one, can write it again in any of the
+# spellings the corpus has carried, and `build/product_prose.py` finds them all.
 
 
 @pytest.mark.parametrize(
     "comments",
     [
-        # Canonical in SHAPE, naming a method. `generic` has to outrank `canonical` or the
-        # check grades on shape while the thing it exists to find sits in the payload.
+        "Verified 2026-08-13 via the project README.",
+        "Verified live 2026-08-13 via the project README.",
+        "Verified live 2026-08-13 on huggingface.co/datasets/x.",
+        "verified 2026-08-13 against the DATASHEET.md",
+        "Verified 2026-08-13.",
         "Verified 2026-08-13 via primary sources.",
-        "Verified 2026-08-13 via research.",
-        "Verified 2026-08-13 via web search.",
-        # The live case: removing `live` from this would have promoted it into canonical
-        # form. Four hardware records were rewritten that way before this was caught.
-        "Verified 2026-08-13 via substitute sources - hailo.ai answers 403 to every request.",
+        "Verification status: 2026-08-13.",
+        # Prose before the line does not hide it.
+        "Runs on-device. Verified 2026-08-13 via the model card.",
+        # A date wrapped onto the next line of a hand-wrapped field.
+        "No tagged releases, so this is read against the head. Verified\n  2026-08-13 via GitHub.",
+        # The reverse order is the same claim.
+        "2026-08-13: verified against the model card.",
     ],
 )
-def test_canonical_form_naming_a_method_is_still_generic(comments):
-    assert classify(comments)[0] == "generic"
-
-
-@pytest.mark.parametrize(
-    "comments, why",
-    [
-        # An impossible date. A `\d{4}-\d{2}-\d{2}` shape test passes both of these, which
-        # is a date check answering "does this look like a date". The same defect shipped in
-        # two other modules three days apart; see docs/reference/sibling-invariants.md.
-        ("Verified 2026-99-99 via the README.", "month and day out of range"),
-        ("Verified 2026-02-30 via the README.", "February has no 30th"),
-        ("Verified 2026-02-29 via the README.", "2026 is not a leap year"),
-        # The compact spelling parses in Python 3.11+ and would put a second date format
-        # into a corpus whose schema declares `format: date`.
-        ("Verified 20260813 via the README.", "not the hyphenated form"),
-        # No closing period: the line does not terminate, so a later editor cannot tell
-        # where the document name ends.
-        ("Verified 2026-08-13 via the README", "no closing period"),
-        # The dangerous one. A claim appended after the verification line reads as covered
-        # by it and is not.
-        ("Verified 2026-08-13 via the README. This trailing claim is not covered.",
-         "prose after the line"),
-        ("Verified 2026-08-13 via the README. Adoption is level 4.", "prose after the line"),
-    ],
-)
-def test_a_line_short_of_the_full_contract_is_not_canonical(comments, why):
-    """`canonical` means the whole form — real date, `via`, document, period, end of field.
-
-    An earlier cut enforced only a date-shaped prefix, so the gate accepted lines weaker
-    than the contract its own failure message quotes.
-    """
-    assert classify(comments)[0] != "canonical", why
+def test_a_dated_verification_sentence_is_found_however_it_is_spelled(comments):
+    assert dated_verification(comments)
 
 
 @pytest.mark.parametrize(
     "comments",
     [
-        # The form must BEGIN the field or a sentence. A bare search for `Verified` anywhere
-        # accepted the line's own negations — and the first three assert the opposite of what
-        # the gate would have read them as, which is worse than trailing prose.
-        "Not Verified 2026-08-13 via the README.",
-        "Last Verified 2026-08-13 via the README.",
-        "UnVerified 2026-08-13 via the README.",
-        "Verification status: Verified 2026-08-13 via the README.",
-        "Never Verified 2026-08-13 via the README.",
+        None,
+        "",
+        "A footnote about the reading, with no date in it.",
+        # A date that is a fact about the product, not about the reading.
+        "General availability was 2026-08-13; the preview SKU is a separate entry.",
+        "Service ends 2026-12-31 per the sunset notice.",
+        # The verb far from a date is a different sentence.
+        "The card was verified against the paper. Released 2026-08-13.",
     ],
 )
-def test_a_prefixed_or_negated_form_is_not_canonical(comments):
-    assert classify(comments)[0] != "canonical"
+def test_a_field_without_one_is_clean(comments):
+    assert dated_verification(comments) is None
 
 
-@pytest.mark.parametrize(
-    "comments, document",
-    [
-        # Every one of these is a document name containing a period. The boundary has to keep
-        # them whole, or fixing the trailing-prose hole above reintroduces the sentence-split
-        # bug that once turned `the U.S. AI Safety Institute report` into `the U.S`.
-        ("Verified 2026-08-13 via the U.S. AI Safety Institute report.",
-         "the U.S. AI Safety Institute report"),
-        ("Verified 2026-08-13 via huggingface.co/datasets/x.", "huggingface.co/datasets/x"),
-        ("Verified 2026-08-13 via DATASHEET.md.", "DATASHEET.md"),
-        ("Verified 2026-08-13 via the v1.2.3 release notes.", "the v1.2.3 release notes"),
-        ("Verified 2026-08-13 via the model card at hf.co/a/b.", "the model card at hf.co/a/b"),
-        # Prose before the line is fine; only prose AFTER it breaks the contract.
-        ("Runs on-device. Verified 2026-08-13 via the model card.", "the model card"),
-        # A real leap day.
-        ("Verified 2024-02-29 via the README.", "the README"),
-    ],
-)
-def test_a_document_name_may_contain_periods(comments, document):
-    state, _, trailer = classify(comments)
-    assert state == "canonical"
-    assert trailer == document
+def test_the_whole_sentence_is_returned_so_the_reader_knows_what_to_delete():
+    sentence = dated_verification(
+        "The LICENSE file bundles third-party code. Verified 2026-08-13 via the README. Runs on CPUs."
+    )
+    assert sentence == "Verified 2026-08-13 via the README."
 
 
-def test_an_unparseable_date_is_not_returned_as_a_date():
-    """Handing back `2026-99-99` is how a freshness comparison downstream gets a value it
-    cannot compare. `sweep_status` ages prose on this field."""
-    state, when, _ = classify("Verified 2026-99-99 via the README.")
-    assert state == "named_noncanonical"
-    assert when is None
+def test_no_product_carries_a_dated_verification_sentence():
+    """The corpus-wide invariant, and the one this section exists to hold.
 
-
-def test_every_product_names_a_document_a_reader_can_reopen():
-    """The corpus-wide invariant, and the one this file exists to hold.
-
-    A failure names the products and their state. `generic` needs a document supplied;
-    `named_noncanonical` needs the wording brought to `via`; `ambiguous_noncanonical` and
-    `missing` need somebody to read the record.
+    Strict rather than a ratchet: the corpus was cleared in one scripted pass (#619), so there is
+    no backlog to name, and an allowlist would only give the next instance somewhere to hide.
     """
-    by_state = census()
-    unresolved = {
-        state: slugs for state, slugs in by_state.items() if state != "canonical"
-    }
-    assert not unresolved, (
-        "every verification line must read `Verified <date> via <document>.` — see "
-        f"docs/reference/product-copy.md:\n{unresolved}"
+    found = census()
+    assert not found, (
+        f"{len(found)} product(s) carry a dated verification sentence in comments. The date is "
+        "`last_verified`; the document read belongs on a source entry as `url` and `shows`. "
+        "See docs/reference/product-copy.md:\n"
+        + "\n".join(f"  {slug}: {sentence}" for slug, sentence in list(found.items())[:20])
     )
 
 
 def test_the_census_walks_the_whole_corpus():
-    """Same guard as above, on the other instrument: an empty census satisfies the invariant
-    trivially, and two corpus walks in this repo's history silently narrowed."""
-    by_state = census()
-    assert sum(len(v) for v in by_state.values()) == len(list(_descriptions()))
-    assert set(by_state) <= {"canonical", "named_noncanonical", "ambiguous_noncanonical",
-                             "generic", "missing"}
+    """An empty census satisfies the invariant trivially, and two corpus walks in this repo's
+    history silently narrowed. `products()` has to see what `_descriptions()` sees."""
+    from build.product_prose import products
+
+    assert len(products()) == len(list(_descriptions())) > 400

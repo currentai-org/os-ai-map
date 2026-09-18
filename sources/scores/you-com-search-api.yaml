@@ -39,15 +39,14 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: ABSTAINS for the same reason as `parallel-search`. `youdotcom` records 235,116 PyPI downloads in the
-    trailing 30 days, but the SDK covers all six You.com APIs and this record scores the Web Search SKU, so
-    the package measures a wider population than the product. You.com publishes no request or customer count
-    of its own. The abstention is dated rather than left blank, on the queue's rule that a null somebody looked
-    for and did not find is a confirmed axis; the page below is where it was looked for.
+  note: You.com publishes no request or customer count for the Web Search API on its own, and its `youdotcom`
+    PyPI client covers all six You.com APIs rather than Web Search alone, so its downloads measure a broader
+    population than this product. The Parallel Search API is scored the same way for the same reason, leaving
+    no channel here that measures Web Search specifically.
   sources:
   - url: https://you.com/docs/administration/billing.md
-    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
-      or developer count - which is what the abstention rests on.
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request,
+      customer or developer count - which is why no level is recorded.
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: cfeaa822600c1bb6e1b1bd69971601fbacd0c26593ef5211f23b75fbff5c03c5
@@ -61,11 +60,10 @@ capability:
   confidence: high
   relative_to: firecrawl
   relation: at
-  note: Finds and returns the content, on one endpoint. The extraction mode is a parameter of the Web Search
-    call rather than a different API - it is metered separately at $1 per 1,000 pages, which is the same shape
-    as Kagi's inline extract - so the combinations rule reaches band 4. The Answer API would be band 5 and
-    is a separate SKU at its own price, so it does not lift this record. Banded at brave-search-api, which
-    sells snippets and extracted content under one search product.
+  note: You.com's Web Search endpoint accepts an extraction-mode parameter that swaps snippets for full
+    page content on the same call, priced separately at $1 per 1,000 pages -- the same shape as Kagi's inline
+    extract -- so one endpoint covers both discovery and content, level with Firecrawl. The Answer API composes
+    a cited response but is a separate SKU at its own price.
   last_verified: '2026-09-17'
   sources:
   - url: https://you.com/docs/guides/search.md

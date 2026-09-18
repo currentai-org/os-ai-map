@@ -18,18 +18,10 @@ openness:
         The four modules reading BROWSER_USE_API_KEY - browser/cloud sandbox skills and llm/browser_use - are
         published clients to that hosted product and the local agent needs no key
   confidence: high
-  note: 'The core is ungated: the repo root has one MIT LICENSE and no ee/, enterprise/ or commercial/ path,
-    and neither the repo nor the pricing page shows a feature gate. The pricing page prices hosted capacity
-    only - Dev $29/mo for 25 concurrent sessions and 20 browser profiles, Business $299/mo, Scaleup $999/mo,
-    Enterprise custom, plus pay-as-you-go credits - and states outright that "Cloud usage and the open-source
-    browser-use Python library are separate products with different APIs." The one thing that could have gone
-    the other way is that four library modules read BROWSER_USE_API_KEY: browser_use/browser/cloud/cloud.py,
-    browser_use/sandbox/sandbox.py, browser_use/skills/service.py and browser_use/llm/browser_use/chat.py.
-    Each is a published client to the separate hosted product rather than a withheld feature - SkillService
-    fetches skills from the Browser Use API through the browser_use_sdk package, sandbox posts to the hosted
-    sandbox, and chat.py is the ChatBrowserUse endpoint - and the local agent, browser session and tools run
-    with any LLM and no key at all. Selling a separate hosted product is the langchain/LangSmith shape, which
-    the rubric settles as ungated.'
+  note: The MIT-licensed repository has no enterprise or commercial directory, and the vendor's pricing
+    page states that its hosted cloud and the open-source library are separate products with different APIs.
+    The four modules that read a BROWSER_USE_API_KEY are clients to that hosted service, not a withheld
+    feature; the local agent runs with any LLM and no key at all.
   raw: license:MIT(OSI, library core fully open);source:public;managed-tier:Browser-Use-Cloud(proxies/stealth/captcha/hosted
     browsers, proprietary);core-gated:ungated(one MIT LICENSE and no ee/ path. The pricing page prices hosted
     capacity only and states that cloud usage and the open-source browser-use Python library are separate products
@@ -78,10 +70,8 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: Banded on downloads of the declared browser-use package, one of the most-used agent browser-automation
-    libraries; GitHub stars corroborate but are not the basis. The registry reports 53,142,086 downloads in
-    the last month, more than five times the >10M floor for level 5, and a live measured figure like that takes
-    precedence over a hand-set band.
+  note: Adoption is measured by monthly PyPI downloads of the browser-use package, with GitHub stars serving
+    only as a corroborating signal.
   last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/api/packages/browser-use/recent
@@ -105,9 +95,9 @@ capability:
   value: an agent loop driving a browser - navigate, click, fill forms, extract, multi-step tasks - against
     a local Chrome profile or the vendor's cloud, with model and service keys supplied by the caller
   confidence: medium
-  note: 'A curated surface over one system with caller-supplied credentials: the documented path is your own
-    API key in a `.env` and, for authenticated sites, reusing a Chrome profile you already signed into. The
-    hosted cloud is a separate product surface rather than what this record scores. Banded at playwright-mcp.'
+  note: Browser Use offers a curated surface over a single browser session, authenticated with the caller's
+    own API key in a `.env` file or, for signed-in sites, a Chrome profile the caller already used. The
+    hosted cloud is a separate product surface, leaving its feature set level with Playwright MCP's.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/browser-use/browser-use/main/README.md

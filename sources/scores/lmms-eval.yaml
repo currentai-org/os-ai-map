@@ -16,13 +16,10 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: 'GitHub''s classifier reports NOASSERTION because the LICENSE file is a composite, but the body
-    read this session is two stock OSI texts with a scope note each: "For the main pipeline structure-related
-    code, we maintain the original license provided with lm-evaluation-harness, which is the MIT License",
-    then "For the multimodal models and datasets that we have added (defined as code in the lmms_eval/tasks
-    and lmms_eval/models folders), we apply the Apache License." Both parts resolve to the osi tier —
-    the rubric already names Apache-2.0/MIT verbatim — so the compound governs at osi. Fully public, and
-    the 23KB README documents no pricing, enterprise edition, paid tier or license key.'
+  note: 'GitHub''s license classifier reports NOASSERTION because the LICENSE file mixes two licenses: MIT
+    for the pipeline code inherited from lm-evaluation-harness, and Apache-2.0 for the multimodal code added
+    under lmms_eval/tasks and lmms_eval/models. Both are OSI licenses, the repository and README are fully
+    public, and neither offers a paid tier, enterprise edition or license key.'
   raw: 'license:Apache-2.0/MIT(OSI; split license: MIT for the pipeline code inherited from lm-evaluation-harness,
     Apache-2.0 for the added code in lmms_eval/tasks and lmms_eval/models. Both parts OSI, so the most
     restrictive part is still osi.);source:public(GitHub);core-gated:ungated;no feature-gated core'
@@ -60,12 +57,10 @@ adoption:
   banded_quantity: GitHub stars (4,386) and standing as lm-evaluation-harness's endorsed multimodal counterpart,
     not a download count
   confidence: medium
-  note: 'The de-facto standard multimodal eval harness: lm-evaluation-harness''s own README directs multimodal
-    evaluation to it by name, model teams cite it for reported LMM numbers, and the repo carries 4,386
-    stars with releases through v0.7 (Feb 2026). The PyPI package (lmms-eval, backlink-verified) is genuinely
-    this project but is not the measure used: it sees 7,115 downloads a month against a project whose
-    documented install path is a git clone, so banding on it would read a minority channel rather than
-    the project. Same shape and same remedy as opencompass in this category.'
+  note: 'lm-evaluation-harness''s README recommends lmms-eval by name for multimodal evaluation, and model
+    teams cite it when reporting LMM benchmark numbers, making it the de-facto standard. Its PyPI package
+    is genuine but not this reading''s basis: the documented install path is a git clone, so banding on
+    downloads would read a minority channel rather than the project, the same shape as OpenCompass.'
   last_verified: '2026-09-01'
   sources:
   - url: https://api.github.com/repos/EvolvingLMMs-Lab/lmms-eval
@@ -74,15 +69,14 @@ adoption:
     http_status: 200
     content_sha256: e997d0d0b2d50718495f152b9e1c69df28fbddf642794cf5df49e613d8832ba3
   - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/README.md
-    shows: EleutherAI's README suggests users "check out lmms-eval, a wonderful project originally forking
-      off of the lm-evaluation-harness, for a broader range of multimodal tasks, models, and features"
-      — third-party standing from the category anchor itself.
+    shows: EleutherAI's README for lm-evaluation-harness suggests users "check out lmms-eval, a wonderful
+      project originally forking off of the lm-evaluation-harness, for a broader range of multimodal tasks,
+      models, and features."
     accessed: '2026-09-01'
     http_status: 200
     content_sha256: d24d6ea00c246b9145e5ef6709eed56fbcf4aa4f5863fcb8a74a19b7b8d6eb98
   - url: https://pypistats.org/api/packages/lmms-eval/recent
-    shows: last_month = 7,115 downloads of the lmms-eval package — recorded to document why the registry
-      channel was NOT banded on, not as the level's basis
+    shows: last_month = 7,115 downloads of the lmms-eval package.
     accessed: '2026-09-01'
     http_status: 200
     content_sha256: 862bd6289c1f6f294c08398b56df1e7f6c5a3bed5b44bbf2b447662d02896394
@@ -95,10 +89,10 @@ capability:
   relative_to: lm-evaluation-harness
   relation: one_below
   confidence: medium
-  note: The widest multimodal task and model coverage in the category, and the harness the category anchor's
-    own README recommends for multimodal work — but scoped to LMMs rather than being the cross-domain
-    standardization reference lm-evaluation-harness is, and without the leaderboard-backend role. Sits
-    beside opencompass at 4.
+  note: lmms-eval offers the widest multimodal task and model coverage in the category, and lm-evaluation-harness's
+    own README recommends it by name for multimodal work. It is scoped to multimodal models rather than
+    serving as the cross-domain standardization reference lm-evaluation-harness provides, and it lacks a
+    leaderboard-backend role, which places it alongside OpenCompass.
   comparison:
     last_attested: '2026-09-01'
     sources:

@@ -12,14 +12,10 @@ openness:
       value: public
       detail: the SDK, the agent and the server are all published
   confidence: high
-  note: 'The source is fully public and the licenses are what hold the score down. The SDK is Apache-2.0, but
-    the server the platform actually runs on carries the Server Side Public License, which the shared ladder
-    places in competition_restricted - readable source under terms that forbid a class of use. Most-restrictive-wins
-    applies across the license compound, and it is admissible here rather than an abstention because both names
-    map to a declared tier. Full source plus a competition-restricted license scores 2, beside partial source,
-    because the practical outcome matches: you can read it and not run it freely. The record carries no core-gated
-    component: the ladder settles this product on competition_restricted plus public source before that dimension
-    is read, so recording it would assert something the score does not rest on and no cited source establishes.'
+  note: 'ClearML publishes the full source of its SDK, agent and server, but the server component, clearml-server,
+    carries the Server Side Public License, which forbids running it as a competing hosted service. That
+    license outweighs the Apache-2.0 SDK, so the compound reads the same as if only part of the source were
+    public: readable, not freely runnable.'
   raw: license:Apache-2.0(the clearml SDK repository)+SSPL-1.0(clearml/clearml-server, the server the platform
     runs on, under a ClearML Inc copyright);source:public(the SDK, the agent and the server are all published)
   last_verified: '2026-09-15'
@@ -45,8 +41,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 625,991 downloads of clearml in the trailing 30 days, inside the 100K-1M
-    band for level 3. The declared artifact is the SDK, which is the channel users install.
+  note: Adoption is measured by PyPI downloads of the clearml SDK, the package most users install to run
+    the platform.
   last_verified: '2026-09-15'
   sources:
   - url: https://pypistats.org/api/packages/clearml/recent
@@ -64,11 +60,9 @@ capability:
   confidence: medium
   relative_to: mlrun
   relation: at
-  note: ClearML decides which queue a task joins and, with dynamic GPU allocation, how many GPUs on an agent
-    that queue commands. The agent then pulls the work, so the choice of which machine runs a given task is
-    made by whichever agent polls rather than by a central placement decision - the same reasoning that kept
-    hatchet out of deployment, applied consistently. Band 3 rather than higher for that reason, and the enterprise-only
-    GPU features are counted rather than discounted.
+  note: ClearML assigns a task to a queue and, with its enterprise dynamic GPU allocation, sets how many
+    GPUs an agent on that queue may use, but the ClearML Agent itself decides which machine polls and runs
+    the task. That keeps ClearML level with MLRun rather than above it.
   last_verified: '2026-09-15'
   sources:
   - url: https://clear.ml/docs/latest/docs/clearml_agent/

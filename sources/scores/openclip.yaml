@@ -18,10 +18,10 @@ openness:
       detail: OSI
   raw: weights:open(56 ungated laion/CLIP-* checkpoints on the Hub - 50 MIT, 4 Apache-2.0 and 2 declaring none);data:open(the DataComp-1B corpus behind the DataComp.XL checkpoints is published ungated under CC-BY-4.0; the older LAION-2B English path is weaker - laion/laion2B-en now redirects to the re-filtered laion/relaion2B-en-research-safe behind a gate);code:open(open_clip ships the full contrastive pretraining pipeline - data loading, training loop, distributed launch scripts and ImageNet zero-shot evaluation);license:MIT(OSI)
   confidence: high
-  note: 'The top rung, and the clearest case for it in this set: the corpus, the code that consumed it
-    and an OSI licence over the weights. The one wrinkle is that the corpus these checkpoints were actually
-    trained on was withdrawn in 2023 and the name now resolves to the re-filtered ReLAION release, which
-    is auto-gated - a click-through, not an approval, so it is still released rather than merely documented.'
+  note: OpenCLIP publishes the training corpus, the pipeline that consumed it and an OSI license over the
+    weights, which is the fullest release case in this category. The original LAION-2B corpus these checkpoints
+    were trained on no longer resolves under its own name; it now points to the re-filtered ReLAION release
+    behind a click-through gate, which counts as released rather than merely documented.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/datasets/mlfoundations/datacomp_1b
@@ -72,11 +72,10 @@ adoption:
   signal_type: usage_volume
   banded_quantity: trailing-30-day downloads summed across the 56 laion/CLIP-* checkpoints in the LAION account, which is wider than the single flagship repo this product declares as an artifact
   confidence: medium
-  note: 10,909,706 downloads in the trailing 30 days across the 56 laion CLIP repos (ViT-L-14-laion2B
-    3,950,302; ViT-B-32-laion2B 3,805,524; convnext_base_w 1,386,613). Confidence is medium rather than
-    high only because the figure sits a few per cent above the 10M band edge and moves week to week; the
-    warehouse sweep put it at 10,485,793, on the same side of the line. The timm and apple
-    re-hosts of OpenCLIP checkpoints are excluded as mirrors, so this is if anything an undercount.
+  note: Adoption is measured as Hugging Face downloads summed across the 56 laion/CLIP-* repositories in
+    the LAION account. That total sits close to the top adoption threshold and moves week to week, which
+    keeps confidence at medium rather than high, and third-party re-hosts on the timm and apple accounts
+    are excluded as mirrors, so the reading is, if anything, an undercount.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models?author=laion&search=CLIP&limit=100&sort=downloads&direction=-1
@@ -94,9 +93,9 @@ capability:
   relative_to: siglip
   relation: one_below
   confidence: high
-  note: 'Rung 3, solid workhorse: real published numbers on a named instrument, ahead of the model it
-    reproduced, but a superseded generation - the LAION-2B checkpoints date from 2022-2023 and SigLIP
-    2 clears them by five points on the same measure.'
+  note: OpenCLIP posts real, published zero-shot ImageNet numbers and beats the original CLIP it reproduced,
+    but the LAION-2B checkpoints are from an earlier generation, and SigLIP 2 leads them by five points
+    on the same benchmark.
   last_verified: '2026-09-11'
   sources:
   - url: https://raw.githubusercontent.com/mlfoundations/open_clip/main/README.md

@@ -1,18 +1,10 @@
-# Shared openness ladder for FINE-TUNED / GUARDRAIL model categories.
+# Shared openness ladder for FINE-TUNED / GUARDRAIL model categories, inherited via
+# `scoring_recipe: {extends: model}`. `finetuned_chat` and `safeguards` extend it.
+# See build/rubrics.py for the merge rules and docs/reference/openness.md for the
+# dimensions and license tiers; sources/rubrics/pretrained.yaml is the base model's ladder.
 #
-# Inherited via `scoring_recipe: {extends: model}`. See build/rubrics.py for the merge
-# rules and why the ladder is shared rather than copied per category.
-#
-# Three dimensions carry a tune's openness question: weights, post-training data, code.
-# That is deliberately not base_pretrained's questionnaire — a base model asks about the
-# pretraining corpus and (optionally) checkpoints, which is a different set of facts about
-# a different artifact. base_pretrained does not extend this ladder for exactly that
-# reason: the merge rule replaces a whole key rather than merging into it, so sharing only
-# the license tiers and not the dimensions would buy nothing — the category would still
-# have to restate its own `dimensions` and `formula` in full.
-#
-# As of this extraction, `finetuned_chat` and `safeguards` (its guardrail-model half)
-# extend this ladder.
+# `extends` replaces a whole key rather than merging into it, which is why base_pretrained
+# does not extend this ladder: its `dimensions` differ (pretraining corpus vs. post-training data).
 openness:
   dimensions:
     weights:
@@ -25,10 +17,8 @@ openness:
     data:
       question: Is the POST-TRAINING data released - the SFT, DPO or RL sets this
         tune was built from?
-      # For a base model the data question is the pretraining corpus. For a tune,
-      # that corpus belongs to somebody else's model, and asking about it scores
-      # the base rather than the product. The honest question here is what the
-      # tuner released, which is why `post-training-data` is read first.
+      # `post-training-data` is read first: the base's pretraining corpus isn't this
+      # product's to score, so the honest question is what the tuner released.
       reads: [post-training-data, data]
       values: [open, described_not_released, described, partial, closed]
       evidence:
@@ -51,12 +41,8 @@ openness:
         ladder ever wants the new value, is issue #590.
     code:
       question: Is the fine-tuning pipeline released, not just inference code?
-      # `recipe` is how two products spell this, and it is the more natural word for a
-      # post-training pipeline. `code` stays first: `tulu` records both, and where a product
-      # answers under either key the more widely used one wins. Found by check_recipe --
-      # `ornith` recorded only `recipe:closed`, so the ladder read `code` as unrecorded and
-      # reproduced its 3/open_weights through the `otherwise` rather than through the
-      # evidence. Same score, and now for the right reason.
+      # `code` before `recipe` in `reads:`: where a product answers under either key,
+      # the more widely used name wins.
       reads: [code, recipe]
       values: [open, partial, closed]
       evidence:
@@ -66,13 +52,12 @@ openness:
       machine_signal: partial - repo presence from signal_github.repo_state
 
   license_tier:
-    # base_pretrained's ladder, unchanged, including the declaration order that
-    # `tier_rank` and the multi-SKU rule depend on. Eight licenses added because
-    # this category ships them and the pilot did not.
+    # base_pretrained's ladder, unchanged, including the declaration order that `tier_rank`
+    # and the multi-SKU rule depend on.
     ordered_by: restrictiveness_ascending
-    # A tune records its license under `license`, except where the card
-    # distinguishes a code license from the one attached to the weights, and then
-    # it lands in `model-license`. The weights license governs either way.
+    # A tune records its license under `license`; where the card distinguishes a code
+    # license from the weights license, it lands in `model-license` instead. The weights
+    # license governs either way.
     reads: [license, model-license]
     values:
       osi:
@@ -88,16 +73,10 @@ openness:
           discriminating against a field of endeavor. Settled in issue #117, which was
           opened because the same OpenRAIL family had been scored 3 in one category and
           4 in another.
-        # `zentropi-openrail-m` is a vendor-prefixed OpenRAIL-M, so #117 governs it exactly
-        # as it governs BigCode-OpenRAIL-M. Note the product's own components string calls
-        # it "use-restricted", which is looser language than the tier names use: an
-        # acceptable-use policy is not a use CAP, and #117 was opened precisely because that
-        # conflation had scored one OpenRAIL family two different ways.
-        # `Cohere-Acceptable-Use-Policy` is an acceptable-use policy and nothing else, which
-        # is the case #117 settled: it forbids classes of conduct without capping who may
-        # use the weights or at what scale. It rides alongside CC-BY-NC on `command-r`, and
-        # the compound resolves on the more restrictive half regardless, so its tier decides
-        # nothing there - it is declared so the compound resolves at all.
+        # zentropi-openrail-m: vendor-prefixed OpenRAIL-M, governed by #117 like
+        # BigCode-OpenRAIL-M — despite the product's own string reading "use-restricted".
+        # Cohere-Acceptable-Use-Policy: declared so `command-r`'s compound (paired with
+        # CC-BY-NC) resolves at all; the more restrictive half decides the score either way.
         examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
           zentropi-openrail-m, DeepSeek-Model-License, TII-Falcon-License-2.0,
           Cohere-Acceptable-Use-Policy]
@@ -115,23 +94,11 @@ openness:
           the distinction the map exists to draw. Renamed with the cap change so that a stale
           reference to `use_restricted` fails loudly rather than resolving to a tier whose
           meaning moved underneath it.
-        # This definition read "or an acceptable-use policy" until 2026-09-15, which
-        # contradicted permissive_non_osi's definition a few lines above - that tier says in
-        # its own words that an AUP "caps neither commerce nor reach". The same licence
-        # therefore satisfied both tiers, and they give different scores. sources/rubrics/
-        # pretrained.yaml removed the clause on 2026-09-11 and issue #538 recorded that this
-        # ladder still carried the original wording; the ruling is now applied here so the two
-        # ladders agree. Conduct restrictions alone belong in permissive_non_osi, and this tier
-        # describes scale ceilings or a requirement to ask permission. The clause is removed
-        # here rather than from permissive_non_osi, so issue #117's reading stands.
-        #
-        # No example moves. This tier decides by the names in its `examples` list and none of
-        # them is an AUP-only licence - `Cohere-Acceptable-Use-Policy` is declared one tier up -
-        # so the correction changes no score in either inheriting category.
-        # `InternLM-Free-Commercial-License` is the bound written as a process rather than a
-        # number: commercial use costs nothing and is granted on an application form. Still
-        # a bound, because permission is asked for rather than given, and still well inside
-        # this tier's test - commerce is available, to practically everyone who asks.
+        # An acceptable-use policy alone belongs in `permissive_non_osi`, not here — the #117
+        # ruling in docs/reference/openness.md, "Two places the map deliberately departs from
+        # MOF". (Issue #538 tracked this ladder and pretrained.yaml disagreeing; both now match.)
+        # InternLM-Free-Commercial-License: the bound written as a process (free, granted on
+        # application) rather than a number, and still inside this tier's test.
         examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
           Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
           Qwen-License-Agreement, Jamba-Open-Model-License, InternLM-Free-Commercial-License]
@@ -176,11 +143,8 @@ openness:
       mixed: Apply multi_sku_rule and store the resolved tier instead.
       unknown: Research it or defer the product with a reason.
 
-  # Ordered rules, first match wins. base_pretrained's ladder less one rule: it
-  # carries a `data: documented-not-released, code: open -> 4`, and no product here
-  # pairs a described-but-unreleased mixture with an open pipeline. Declaring it
-  # anyway would add a rule that cannot fire, and a dead rule in a first-match-wins
-  # formula is a place for a later edit to hide.
+  # Ordered rules, first match wins. Omits base_pretrained's `documented-not-released +
+  # open code -> 4` rung: no product here pairs that shape, and an unfireable rule hides bugs.
   formula:
   - when: {weights: closed}
     then: {score: 1, class: closed}
@@ -224,33 +188,17 @@ openness:
       the open-ish bucket so unrecorded evidence never counts as open.
 
 # Adoption bands: which monthly figure maps to which level, for this product type.
+# Declared per type rather than centrally; see docs/reference/adoption.md, "The bands".
 #
-# Declared here rather than in the warehouse because they were hardcoded in
-# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
-# split that check_parity exists to catch, one axis over. The scoring SQL now reads
-# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+# `above` is the exclusive lower bound: the highest level whose `above` the figure exceeds
+# wins. `reach` carries the UNIT the band was read in, not just the label.
 #
-# The scale is a property of the product TYPE, which is what the rubrics are already
-# keyed on, so this is four declarations rather than sixteen.
+# The floor is -1, not 0, so a figure of exactly zero still bands at 1 rather than coming
+# back unbanded. Ruling and precedent: docs/reference/adoption.md, "The floor admits zero".
 #
-# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
-# highest level whose `above` the figure exceeds wins. `reach` is the label a score
-# records, and it carries the UNIT the band was read in - stars and downloads are not
-# the same reach at the same magnitude.
-#
-# The floor band is -1 rather than 0 so that a figure of exactly ZERO still bands at 1.
-# With 0 it did not: `0 > 0` is false, the product matched no band, and it came back
-# unbanded - which asserts "no scale exists for this type" when the truth is "nobody
-# downloaded it". zentropi-cope surfaced it on the first real run.
-#
-# Derived 2026-08-09 from the 75 model products recording both a level and a reach, and
-# identical to software's. That is the finding rather than an assumption: Hugging Face
-# model downloads and PyPI package downloads sit at the same order of magnitude across
-# this corpus (model median 41,344 over 101 artifacts), so one scale serves both.
-#
-# base_pretrained declared exactly these bands inline before this file existed. Its
-# category-level block is the only other place they appeared, and it is now the
-# exception rather than the convention.
+# Model and software share one scale rather than each getting its own: the ruling and the
+# measurement behind it are in docs/reference/adoption.md, "Why `model` and `software`
+# share one scale".
 adoption:
   reach_is_monthly: true
   unit: Hugging Face downloads in the trailing 30 days, summed across the family's SKUs

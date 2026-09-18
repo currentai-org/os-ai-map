@@ -72,9 +72,12 @@ tests/                 pytest suite for build helpers and serializer behavior
 This section maps the stages; it is not an inventory. An earlier version claimed to be
 complete, named a count, and was wrong within a fortnight.
 
-Every module carries a docstring explaining why it exists, and that docstring is the
-authority. **The ones that are CLIs answer `uv run python -m build.<module> --help`** — the
-pipeline stages, the gates, the proposers, `sweep_status`, `fetch_source`, `product_prose`.
+Every module carries a docstring saying why it exists and how to run it, in a paragraph, then
+points at the reference document that is the authority on the rule it implements. The
+docstring is the map; `docs/reference/` is the rule (`docs/reference/product-copy.md`,
+"Unpublished prose", is normative on what a docstring carries). **The ones that are CLIs
+answer `uv run python -m build.<module> --help`** — the pipeline stages, the gates, the
+proposers, `sweep_status`, `fetch_source`, `product_prose`, `prose_worklist`, `prose_edit`.
 The shared helpers are code APIs rather than commands and answer nothing: `vocabulary`,
 `rubrics`, `warehouse`, `components`, `freshness_payload`. Read their docstrings.
 
@@ -99,13 +102,17 @@ Gates              check_*, one module per question. Four families:
                                 check_citations
                      payload    check_payload, check_retirement, check_parity
                      coverage   check_routing, check_artifacts
+                     prose      check_prose_diff (a prose pass moved only prose; run locally,
+                                not in CI), product_prose (no Verified line in comments)
                    `check_verification` runs several sub-gates and its exit covers all of
                    them. A line a gate prints but does not exit on is marked `~` with a
                    written reason; anything else printed is a failure.
 
 Shared helpers     vocabulary (the one owner of any vocabulary two modules need), rubrics,
                    warehouse (the only supported way to read OSO), fetch_source,
-                   product_prose, sweep_status.
+                   product_prose, sweep_status, prose_worklist (which notes read as written
+                   for the auditor; owns the detectors the strict prose gate in tests/test_score_notes.py uses), prose_edit (the
+                   guarded way to rewrite one prose field).
 
 Proposers          propose_arxiv, propose_artifacts.
 ```
@@ -324,9 +331,10 @@ Claude Code session discovers them by name; if yours does not list them, read
 | `migrate-axis` | Change an axis's schema or meaning corpus-wide (script-only) | `docs/workflows/migrate-axis.md` |
 
 **Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
-openness ladder), `add-data-source` (register a fetcher), `refresh-all-categories` (drive the
-whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
-versioned release + changelog; maintainer).
+openness ladder), `clean-corpus-prose` (rewrite published prose to the reader's vocabulary, one
+category per pass, prose only), `add-data-source` (register a fetcher), `refresh-all-categories`
+(drive the whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis),
+`publish-release` (cut a versioned release + changelog; maintainer).
 
 Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary and
 walk through validation + preview steps.

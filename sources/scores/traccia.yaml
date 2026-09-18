@@ -16,14 +16,10 @@ openness:
         app.traccia.ai platform, but that platform is a separate product sold beside the SDK, not a
         withheld part of the tracing SDK itself; no ee/enterprise directory exists in the repository
   confidence: medium
-  note: The tracing, instrumentation and offline-evaluation core is a complete, self-contained Apache-2.0
-    SDK that exports over OTLP to any collector with no account required. Two named functions - `load_prompt`
-    (a prompt registry) and persisted `evaluate()` experiments - require a workspace API key against the
-    hosted Traccia platform, which has no self-hostable equivalent in this repository. That is the same
-    shape the ladder already resolves as ungated for `pydantic-ai`+Logfire and `langchain`+LangSmith - a
-    complete open core with an optional hosted platform sold beside it, not a paid tier carved out of the
-    core's own functionality. Recorded at medium confidence because, unlike those precedents, the optional
-    platform is Traccia's own commercial product rather than an unrelated one.
+  note: Traccia's tracing, instrumentation and offline-evaluation core is a complete, self-contained Apache-2.0
+    SDK that exports over OTLP to any collector with no account required. Its prompt registry and persisted
+    evaluation experiments require a hosted-platform API key with no self-hostable equivalent, but that
+    platform is a separate product sold beside the SDK rather than a paid tier carved from it.
   raw: license:Apache-2.0(OSI, single root LICENSE);source:public(the whole tracing product - init/observe,
     automatic instrumentation, all listed exporters (Grafana Tempo, Jaeger, Zipkin, SigNoz, console, file)
     - ships and runs with no account);core-gated:ungated(prompt-registry fetch (load_prompt) and persisted
@@ -64,10 +60,10 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: The traccia package draws 764 PyPI downloads a month, well inside the <10K band. The package is the
-    scored product - the SDK itself, not a client for the hosted Traccia platform - so its install count is
-    the product's own usage. 108 GitHub stars on a repository created in January 2026 are consistent with a
-    very young product still building adoption.
+  note: Adoption is measured by monthly PyPI downloads of the traccia package, the SDK itself rather than
+    a client for the hosted platform, so its install count is the product's own usage. The repository was
+    created in January 2026, and its GitHub stars are consistent with a very young product still building
+    an audience.
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/traccia/recent
@@ -98,16 +94,16 @@ capability:
     experiment comparison), and guardrail/governance evidence (EU AI Act, HIPAA) that few peers in this
     category carry at all.'
   confidence: medium
-  note: 'Tracing, prompt management and evaluation-with-experiments together cover every dimension this
-    category grades, and the governance/compliance evidence layer is a genuine addition over the anchor.
-    That puts it level with Langfuse at 4, with the caveat that the prompt and persisted-evaluation halves
-    depend on the hosted platform rather than shipping fully self-contained.'
+  note: Traccia's tracing, prompt management and evaluation-with-experiments together cover every dimension
+    this category grades, and its governance and compliance evidence layer is a genuine addition over Langfuse.
+    That keeps it level with Langfuse, though the prompt-management and persisted-evaluation halves depend
+    on the hosted platform rather than shipping fully self-contained.
   comparison:
     last_attested: '2026-09-02'
     sources:
     - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
-      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
-        current feature set, unchanged from when this anchor was set.'
+      shows: README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the current
+        feature set, unchanged from when the comparison to Langfuse was set.
       accessed: '2026-09-02'
       http_status: 200
       content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f

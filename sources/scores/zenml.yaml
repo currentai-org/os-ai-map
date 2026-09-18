@@ -15,16 +15,10 @@ openness:
         GCP Artifact Registry and AWS ECR repositories, with access granted on request;
         the open edition is documented as having no RBAC and no workspaces or projects
   confidence: high
-  note: 'Apache-2.0 source, with functionality withheld from it. ZenML''s own in-repository
-    documentation states the split: the open-source edition has no role-based access
-    control and no workspaces or projects, while Pro adds those plus the Model Control
-    Plane, the Artifact Control Plane and run snapshots. What makes this gating rather
-    than a separate product sold alongside is the packaging - Pro''s container images
-    are privately hosted in ZenML''s own GCP Artifact Registry and AWS ECR repositories
-    with access granted on request, and a self-hosted Pro deployment pulls them with
-    an image-pull secret. That is a closed component of the deployment you run, the
-    langgraph shape, rather than the langchain shape where a hosted platform sits
-    beside a complete open core.'
+  note: ZenML's server and SDK are Apache-2.0 and public, but Pro withholds RBAC, workspaces or projects,
+    the Model Control Plane, Artifact Control Plane and run snapshots. Pro ships only as private container
+    images, with access granted on request even for self-hosting, making it a closed piece of the product
+    rather than a platform sold beside a complete open core.
   raw: license:Apache-2.0(OSI);source:public(zenml-io/zenml is the open-source server
     and SDK);core-gated:gated(ZenML Pro ships as separate container images privately
     hosted in ZenML's GCP Artifact Registry and AWS ECR repositories, with access
@@ -67,9 +61,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 125,127 downloads of zenml in the trailing 30
-    days, inside the 100K-1M band for level 3. PyPI is the product's declared distribution
-    channel.
+  note: Adoption is measured as PyPI downloads of the zenml package in the trailing month, the product's
+    declared distribution channel.
   last_verified: '2026-09-15'
   sources:
   - url: https://pypistats.org/api/packages/zenml/recent
@@ -86,13 +79,10 @@ capability:
     for Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton, SkyPilot VM, HyperAI and Lightning AI that
     hand execution to a system ZenML does not own
   confidence: medium
-  note: 'Band 3, and it was drafted at 1. The floor band says the product schedules nothing and hands the whole
-    pipeline to an orchestrator it does not own, and ZenML does not quite fit that: the local and Docker orchestrators
-    are its own code, and they decide when each step runs and dispatch it, which is band 3''s requirement.
-    Its remote flavors - Airflow, Kubeflow, SageMaker, AzureML, Databricks, Tekton, SkyPilot - do delegate
-    wholly, and that is the product''s point. Banding it at the floor required a distinction the ladder does
-    not make, between scheduling onto a local machine and scheduling onto a remote one, so the honest placement
-    is level with the other products whose scheduler dispatches work and lets something else choose the machine.'
+  note: ZenML's local and Docker orchestrators are its own code, deciding when each step runs and dispatching
+    it, the same shape of decision as Kubeflow Pipelines. Its remote flavors, including Airflow, Kubeflow,
+    SageMaker, AzureML, Databricks, Tekton and SkyPilot, delegate the whole pipeline to that external system
+    instead, which is the point of using them.
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.zenml.io/stacks/stack-components/orchestrators

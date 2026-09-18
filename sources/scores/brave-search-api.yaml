@@ -14,10 +14,9 @@ openness:
       detail: per-request plans, 50 requests per second on the Search plan
       raw: cloud SaaS with API keys, per-request plans, 50 requests per second on the Search plan
   confidence: high
-  note: 'A closed index behind an API key. The one openly licensed artifact is `@brave/brave-search-mcp-server`
-    (MIT), which is a client. The service terms go further than most in this category: clause (xiii) of the
-    Use Restrictions forbids using the results to train, benchmark or improve AI models, which is worth knowing
-    on a map about AI.'
+  note: The index is closed behind an API key; the only openly licensed artifact is `@brave/brave-search-mcp-server`
+    (MIT), a client rather than the service itself. The terms also go further than most competitors, forbidding
+    use of the results to train, benchmark or improve AI models under clause (xiii) of the Use Restrictions.
   raw: license:Proprietary(API-only);source:closed(no self-hostable index; the only published artifact is an
     MCP client wrapper);managed:cloud SaaS with API keys, per-request plans, 50 requests per second on the
     Search plan
@@ -47,17 +46,13 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'ABSTAINS. Brave publishes no request, customer or developer count for the API, and no first-party
-    package measures it: `@brave/brave-search-mcp-server` records 62,956 npm downloads in the trailing month,
-    but an MCP wrapper is one access path among several rather than the channel the service is used through,
-    so banding on it would measure a different population from the product. The same abstention as `serper`
-    and `google-grounding-api`, which are closed search APIs with no countable channel. The abstention is dated
-    rather than left blank, on the queue''s rule that a null somebody looked for and did not find is a confirmed
-    axis; the page below is where it was looked for.'
+  note: Brave publishes no usage figures for the API itself, and the only related package, the @brave/brave-search-mcp-server
+    client, is one access route among several rather than a measure of how the service as a whole is used.
+    Serper and Google's Grounding with Google Search present the same gap and are left unscored too.
   sources:
   - url: https://api-dashboard.search.brave.com/documentation/pricing
-    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
-      or developer count - which is what the abstention rests on.
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request,
+      customer or developer count - which is why no level is recorded.
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: 9b130f9639ab2aefe7449df88b7cacdeb8f6cb1cd6ff0cf612563a0c6a9e22dc
@@ -71,12 +66,10 @@ capability:
   confidence: high
   relative_to: firecrawl
   relation: at
-  note: 'Finds and returns the content. LLM Context is documented as returning "extracted page chunks and source
-    metadata in a shape and length that satisfies the needs of an LLM without need for further scraping", and
-    it is inside the same $5/1,000 Search plan as Web Search, so the combinations rule reaches band 4 on one
-    product. It stops there: AI Answers composes the cited reply, and Answers is a separately activated plan
-    at its own price, which the scoring rule excludes as a different product. Banded at firecrawl, the band-4
-    anchor, which sells the same find-plus-content shape.'
+  note: Brave's Search plan bundles LLM Context, which returns extracted page chunks and source metadata,
+    with Web Search under the same $5-per-1,000-request price, giving one product both discovery and page
+    content. That puts it level with Firecrawl, which sells the same combination; composing a cited answer
+    instead requires the separate Answers plan, priced on its own.
   last_verified: '2026-09-17'
   sources:
   - url: https://api-dashboard.search.brave.com/documentation/services/llm-context

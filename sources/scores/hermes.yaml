@@ -19,17 +19,10 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI
-  note: 'Nous ships one Hermes 4 post-training recipe on four independent base models, and the base determines
-    the license the weights carry: Seed-OSS-36B and Qwen3-14B are Apache-2.0, while the Llama-3.1 405B and
-    70B builds inherit Meta''s Llama 3.1 Community terms (a 700M monthly-active-user commercial cap, an
-    acceptable-use policy, naming requirements). Scored 3 on the Apache builds rather than 2 on the Llama
-    ones, because resolving to the most restrictive SKU is a rule about variants you cannot substitute away
-    from - Qwen 2.5''s restricted 72B caps Qwen because the 7B is no substitute for the flagship - and here
-    the base is a free choice. Anyone wanting Apache-licensed Hermes 4 takes the 36B or 14B build and gets
-    it, so the family genuinely offers open weights. Not 4 or 5: the post-training corpus is proprietary
-    and only inference code ships, so the recipe is not reproducible. The governing release, NousResearch/Hermes-4.3-36B,
-    is Apache-2.0, ungated and built on ByteDance-Seed/Seed-OSS-36B-Base, which is the fact the 3 rests
-    on; neither it nor the 405B Llama-based build releases the post-training corpus.'
+  note: 'The Hermes 4 recipe ships on four base models, and the license follows whichever a user picks:
+    Apache-2.0 on the Seed-OSS-36B and Qwen3-14B builds, Meta''s more restrictive terms on the Llama-3.1
+    builds; since switching to the Apache build is free, the score follows it. Its post-training data is
+    proprietary and only inference code ships, which keeps the family at open weights rather than higher.'
   raw: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample
     corpus);code:partial(inference only);license:Apache-2.0(OSI)
   last_verified: '2026-08-13'
@@ -53,10 +46,9 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: The four declared SKUs sum to 34,445 Hugging Face downloads in the trailing 30 days (Hermes-4.3-36B
-    18,158; Hermes-3-Llama-3.1-70B 10,217; Hermes-4-14B 5,401; Hermes-3-Llama-3.1-405B 669), which is level
-    2 - early-adopter scale. The 36B is the most-downloaded SKU, its small size and permissive license driving
-    the uptake.
+  note: Adoption is measured as Hugging Face downloads summed across the four declared Hermes checkpoints.
+    The smaller, Apache-licensed 36B build draws the most traffic, which tracks its size and permissive
+    license rather than the larger Llama-based builds.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/NousResearch/Hermes-4.3-36B
@@ -76,10 +68,9 @@ capability:
   value: MATH-500 96.2, AIME'24 81.9, AIME'25 78.1, GPQA Diamond 70.6, MMLU-Pro 80.6, LCBv6 61.4, BBH 86.3
     (Hermes 4 technical report, 405B reasoning column)
   confidence: medium
-  note: The strongest Hermes 4 SKU is near-frontier on math and knowledge for an open instruct model, though
-    its coding trails the 2026 frontier coders, so not a category-defining 5 (those are DeepSeek-V4, Qwen3.6
-    and Kimi class). The technical report's coding row is LiveCodeBench v6 at 61.4. The OpenRouter model
-    page carries no benchmark figure, so it evidences distribution rather than capability.
+  note: The strongest Hermes 4 checkpoint is near-frontier on math and knowledge for an open instruct model,
+    scoring 61.4 on LiveCodeBench v6. Its coding still trails the 2026 frontier coders such as DeepSeek-V4,
+    Qwen3.6 and Kimi, which keeps it a step below the top tier.
   last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/pdf/2508.18255

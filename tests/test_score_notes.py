@@ -32,6 +32,8 @@ from pathlib import Path
 
 import pytest
 
+from build.prose_allowlists import DATES_THAT_ARE_PRODUCT_FACTS, FIGURES_THAT_ARE_PRODUCT_FACTS
+from build.prose_worklist import counts as prose_tell_counts, usage_figures
 from build.validate import load_sources
 
 AXES = ("openness", "adoption", "capability")
@@ -160,60 +162,7 @@ def test_no_score_prose_carries_a_verification_log(sources):
 
 ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 
-# Axes whose note states a date that is a fact about the PRODUCT or the SOURCE, not about when
-# somebody looked: a GA or ship date, an archive date, a measurement window, a retirement date.
-# Each was reviewed when the score-history sweep (#323) ran. Adding to this list is a claim that
-# the date would still be true if nobody ever re-read the record.
-DATES_THAT_ARE_PRODUCT_FACTS = {
-    # --- Model Context Protocol specification revisions, added 2026-09-17 with the
-    # agent_protocols category. These dates are the NAMES OF SPECIFICATION VERSIONS -
-    # 2024-11-05, 2025-03-26, 2025-06-18, 2025-11-25, 2026-07-28 - and the category's ladder
-    # requires every implementation to name the revision its coverage was read against, because
-    # band 5 asks for the current one. The date is the product's own version string, true
-    # whether or not anybody re-reads the record, and removing it would delete the denominator
-    # the band is computed from. `mcp-apps` carries its own extension spec version, 2026-01-26.
-    ("mcp-apps", "capability"),
-    ("mcp-go", "capability"),
-    ("mcp-go-sdk", "capability"),
-    ("mcp-java-sdk", "capability"),
-    ("mcp-python-sdk", "capability"),
-    ("mcp-rust-sdk", "capability"),
-    ("mcp-swift-sdk", "capability"),
-    ("mcp-typescript-sdk", "capability"),
-    # `model-context-protocol` states the date its governance moved to the Linux Foundation's
-    # AAIF, which is a fact about the project rather than about the reading.
-    ("model-context-protocol", "capability"),
-    ("amazon-bedrock-evaluations", "adoption"),
-    ("apertus", "adoption"),
-    # A release date on each side of a trailing registry line. The whole reason the band does
-    # not rest on the download figure is that the registry stopped at 1.0.4 in June while the
-    # repository is on 2.1.0 from August; drop the dates and the note asserts a lag it can no
-    # longer show. Both are publication facts, true whether or not anybody re-reads them.
-    ("areal", "adoption"),
-    ("apertus", "openness"),
-    ("atropos", "adoption"),
-    ("claude-haiku", "capability"),
-    ("claude-sonnet", "capability"),
-    ("claude-sonnet", "openness"),
-    ("cloudflare-sandboxes", "adoption"),
-    ("compar-ia", "adoption"),
-    ("cruxeval", "adoption"),
-    ("google-coral-dev-board", "adoption"),
-    ("khoj", "openness"),
-    ("kimi", "adoption"),
-    ("langflow", "adoption"),
-    ("localai", "adoption"),
-    ("mmmu", "openness"),
-    ("n8n", "adoption"),
-    ("open-llm-leaderboard", "adoption"),
-    ("perplexica", "adoption"),
-    ("ragflow", "adoption"),
-    ("sandbox-runtime", "adoption"),
-    ("vercel-sandbox", "adoption"),
-    # Same shape as areal: the PyPI upload of 2025-07-11 and the v1.0.1 release of 2026-05-15
-    # are the two publication dates the 416-day gap is measured between.
-    ("xtuner", "adoption"),
-}
+# The allowlist lives in build/prose_allowlists.py so prose_edit can refuse against it too.
 
 
 def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
@@ -263,4 +212,78 @@ def test_the_date_allowlist_has_not_gone_stale(sources):
     assert not stale, (
         f"{sorted(stale)} no longer state a date - remove them from "
         "DATES_THAT_ARE_PRODUCT_FACTS so the list keeps meaning what it says."
+    )
+
+
+def test_no_note_quotes_a_usage_figure_unless_it_is_a_product_fact(sources):
+    """A star count, a download count, a user count in a note is stale the day the source line
+    beneath it refreshes; the source line carries the figure with its date. The detector also
+    reads a license threshold ("700 million monthly active users") or a dataset size as a
+    figure; those are facts about the product and sit on FIGURES_THAT_ARE_PRODUCT_FACTS. This
+    is the gate the worklist's `figure` tell was missing: without it a count comes back on the
+    next update-product and CI stays green."""
+    offenders = [
+        f"{slug} {axis}: {usage_figures(note)}"
+        for slug, score in sources["scores"].items()
+        for axis in ("openness", "adoption", "capability")
+        if (slug, axis) not in FIGURES_THAT_ARE_PRODUCT_FACTS
+        and usage_figures(((score.get(axis) or {}).get("note")) or "")
+    ]
+    assert not offenders, (
+        f"{len(offenders)} notes quote a usage figure:\n  " + "\n  ".join(sorted(offenders)[:20])
+        + "\n\nThe source line carries the number with its date; the note says what was measured "
+        "and what it cannot show. A durable product fact the detector misreads goes on "
+        "FIGURES_THAT_ARE_PRODUCT_FACTS with its justification."
+    )
+
+
+def test_the_figure_allowlist_has_not_gone_stale(sources):
+    stale = [
+        f"{slug} {axis}"
+        for slug, axis in FIGURES_THAT_ARE_PRODUCT_FACTS
+        if not usage_figures(((sources["scores"].get(slug, {}).get(axis) or {}).get("note")) or "")
+    ]
+    assert not stale, (
+        f"{sorted(stale)} no longer quote a figure - remove them from "
+        "FIGURES_THAT_ARE_PRODUCT_FACTS so the list keeps meaning what it says."
+    )
+
+
+# ── The note is written for the reader, not the auditor ─────────────────────────────────────
+#
+# #619 measured the corpus on 2026-09-17: 960 notes used the rubric's own words (rung, ladder,
+# anchor, band 3, level 5, <name>_rule, abstain, instrument) and 306 ran past the 600-character
+# guard the goldens in docs/reference/product-copy.md set. The pass that followed rewrote every
+# one, category by category, with the two counts pinned as ratchets that could only fall. At
+# zero the ratchets became this strict gate, the way the verification-line tests did.
+# `build/prose_worklist.py` owns the detectors, so the worklist a pass works from and the gate
+# that holds its result cannot disagree about what a tell is; a source line and a footnote are
+# published beside the note, so they are held to the same words.
+
+
+def test_no_published_prose_uses_the_rubric_vocabulary():
+    c = prose_tell_counts()
+    offenders = {k: c[k] for k in ("vocabulary", "shows_vocabulary", "footnote_vocabulary") if c.get(k)}
+    assert not offenders, (
+        f"{offenders}: notes, source lines or footnotes written in the rubric's words. Write for "
+        "the reader who has never seen the rubric: docs/reference/product-copy.md has the plain "
+        "equivalent for each word, and `uv run python -m build.prose_worklist --category <slug>` "
+        "lists the rows."
+    )
+
+
+def test_no_note_runs_past_the_guard():
+    measured = prose_tell_counts().get("length", 0)
+    assert measured == 0, (
+        f"{measured} note(s) run past 600 characters. A note argues the rung in two sentences; "
+        "the detail belongs in `shows` and `components[].detail`. See the goldens in "
+        "docs/reference/product-copy.md."
+    )
+
+
+def test_no_note_opens_on_a_template():
+    measured = prose_tell_counts().get("opening", 0)
+    assert measured == 0, (
+        f"{measured} note(s) open on the rubric's template (\"Banded on the\", \"One band below\"). "
+        "Open with the product and the fact."
     )

@@ -36,18 +36,15 @@ adoption:
   banded_quantity: the OpenAI Responses API surface the tool is enabled on, not a count of web-search tool
     calls
   confidence: medium
-  note: Banded on position rather than a count. The tool is a built-in of the Responses API - OpenAI's main
-    developer surface - enabled per request by any caller of it, and it is the default way a call on that surface
-    reaches the live web. What is banded is that surface, recorded in `banded_quantity`; no claim is made about
-    ChatGPT, which is a different product and is not what this record reads. No count is published for the
-    tool. An earlier draft abstained on the grounds that no package measures it, which is true and is not a
-    reason to record a hyperscaler's default web path as unmeasured when the map already bands `gemini-pro`
-    on the surfaces its tier powers.
+  note: OpenAI Web Search is a built-in tool of the Responses API, OpenAI's main developer surface, enabled
+    per request and the default way a call on that surface reaches the live web. No usage count is published
+    for the tool, and this record reads only that surface, not ChatGPT, which is a separate product.
   last_verified: '2026-09-16'
   sources:
   - url: https://platform.openai.com/docs/guides/tools-web-search
-    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
-      platform surface named in `banded_quantity` and that no usage figure is published for it.
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of
+      the platform surface the record names as the countable surface and that no usage figure is published
+      for it.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 130367f984a95f73b98546ceb780ca5fe496723138499b3092840d9b6a4498a0
@@ -59,10 +56,9 @@ capability:
   confidence: medium
   relative_to: azure-grounding-bing
   relation: at
-  note: Answers, with citations. Like the Azure tool, what comes back is the model's composed answer over sources
-    the product retrieved rather than a result list the caller can read, which is band 5. Confidence is medium
-    rather than high because the guide is rendered client-side and the fetched bytes carry the surrounding
-    documentation shell around the tool description.
+  note: OpenAI Web Search returns the model's composed answer with citations to the sources it retrieved,
+    rather than a list of results for the caller to read, the same shape as Azure's Grounding with Bing
+    Search. That puts the two tools level with each other.
   last_verified: '2026-09-16'
   sources:
   - url: https://platform.openai.com/docs/guides/tools-web-search

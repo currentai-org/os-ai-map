@@ -1,47 +1,8 @@
-# Decisions about candidate repositories that a person has already made.
-#
-# WHY THIS FILE EXISTS. A discovery sweep resolves a repository by hand - "this is the spec repo
-# of a product we already carry", "this is a vendor's MCP surface, not a product", "this is
-# authored content, not software" - and records the reasoning in a pull request. The corpus then
-# holds the DECISION nowhere a machine can read it. The next bulk run re-derives the same
-# candidate from the same pool, finds no artifact that matches, and recreates it.
-#
-# That is not hypothetical. The first corpus expansion recreated `a2aproject/A2A` as a new
-# product called `a2a`, though #413 had resolved it to `agent2agent-protocol` by hand. It
-# recreated `firecrawl/firecrawl-mcp-server`, which #413 had called an MCP surface of
-# `firecrawl` rather than a product. And it created `anthropics/knowledge-work-plugins` and
-# `promptslab/Awesome-Prompt-Engineering` as software, though #413 had parked both as authored
-# content pending an ontology decision.
-#
-# The A2A case is the sharpest, because it was self-inflicted twice over: `agent2agent-protocol`
-# declares no github artifact precisely BECAUSE #415 left it undeclared pending a ruling on
-# adoption routing. Repo-level dedup could not see it, and nothing else in the repo could either.
-#
-# VERDICTS
-#   existing_product      the repository belongs to a product already in the corpus
-#   sku_of                a surface or edition of a product, not a product of its own
-#   excluded_boundary     out of scope for the map, with the boundary named
-#   excluded_maintenance  archived, or unmaintained past the sweep's declared window
-#   unresolved            identity genuinely undecided; needs a person, not a rerun
-#   member_of             this artifact's measurement belongs to `resolves_to` (relation: product_membership)
-#   not_member_of         this artifact's measurement does NOT belong to `resolves_to`, though it
-#                          may look related (relation: product_membership)
-#
-# ARTIFACT and RELATION. An entry names what it is about with either `repo` (legacy shorthand
-# for a GitHub identity) or `artifact: {kind, id}`, which also covers huggingface_model,
-# huggingface_dataset, pypi, npm, crates, arxiv and homepage. `relation` says which question the
-# entry answers: `product_equivalence` ("is this a new product, or does it already belong to
-# one?" - the only question every entry before 2026-09 answered, and the default when `relation`
-# is absent) or `product_membership` ("does this artifact's usage count toward `resolves_to`'s
-# adoption measurement?"). A ruling suppresses only questions of its own relation - a
-# not_member_of on a package never answers a later equivalence question about the same package.
-#
-# A bulk run must consult this file before proposing a product and must never silently
-# overturn an entry. build/validate.py enforces the half that can be enforced: no product may
-# declare an artifact this file resolves elsewhere, under the same relation.
-#
-# Seeded 2026-08-31 from the reviewed decisions in #413. Entries are appended by later sweeps;
-# a verdict is changed only deliberately, by a person, with `decided_in` updated.
+# Decisions about candidate repositories that a person has already made, keyed by artifact and
+# typed by `relation`. Read by build/resolution.py and enforced by build/validate.py, which
+# rejects a product declaring an artifact this file resolves elsewhere under the same relation.
+# Ruling: docs/reference/identity.md, "Rulings are typed by relation" — why the file exists,
+# the verdict definitions, and the append-only rule for changing one.
 version: 1
 resolutions:
 - repo: 0x4m4/hexstrike-ai

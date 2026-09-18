@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from build.components import field_span, format, parse, render, rewrite, set_field
+from build.components import field_span, format, parse, render, rewrite, set_comparison_source, set_field
 
 # `granite-code-instruct`'s real components value, which folds across four lines in the
 # repo. Real rather than invented on purpose: what makes a value fold is spaces inside the
@@ -217,8 +217,93 @@ github:
 - url: https://github.com/org/widget
 pypi:
 - url: https://pypi.org/project/widget
-comments: Verified 2026-08-08 via GitHub.
+comments: No tagged releases, so the entry is read against the repository head.
 """
+
+
+PARAGRAPH_NOTE = """product: widget
+openness:
+  score: 5
+  note: 'First paragraph of the note, which runs on for a while and
+
+    then continues after a blank line, as a quoted scalar may.'
+  sources:
+  - url: https://example.com
+    shows: x
+"""
+
+
+def test_a_quoted_scalar_with_a_paragraph_break_is_one_field():
+    """A blank line inside a quoted scalar used to end the span, so the edit spliced the new
+    value above the old note's second paragraph and the reparse assertion refused it."""
+    from build.components import set_field
+
+    assert "\n" in yaml.safe_load(PARAGRAPH_NOTE)["openness"]["note"]
+    out = set_field(PARAGRAPH_NOTE, "One paragraph now.", axis="openness", key="note")
+    doc = yaml.safe_load(out)
+    assert doc["openness"]["note"] == "One paragraph now."
+    assert doc["openness"]["sources"] == [{"url": "https://example.com", "shows": "x"}]
+
+
+COLUMN_ZERO_NOTE = """product: widget
+openness:
+  score: 5
+  note: 'First paragraph of the note, which runs on for a while and
+
+then continues at column zero, which PyYAML still reads as the same quoted scalar,
+
+    before a final indented line closes it.'
+  sources:
+  - url: https://example.com
+    shows: x
+"""
+
+
+def test_a_quoted_scalar_runs_to_its_closing_quote_whatever_the_indent():
+    """A hand-spliced note carried a continuation line at column zero inside its quotes. The
+    indentation walk ended the span there and the edit left half a scalar behind."""
+    from build.components import set_field
+
+    assert "column zero" in yaml.safe_load(COLUMN_ZERO_NOTE)["openness"]["note"]
+    out = set_field(COLUMN_ZERO_NOTE, "One paragraph now.", axis="openness", key="note")
+    doc = yaml.safe_load(out)
+    assert doc["openness"]["note"] == "One paragraph now."
+    assert doc["openness"]["sources"] == [{"url": "https://example.com", "shows": "x"}]
+
+
+def test_a_quote_closed_on_the_key_line_is_left_to_the_indentation_walk():
+    from build.components import quoted_scalar_end
+
+    lines = ["openness:", "  note: 'short'", "  score: 5"]
+    assert quoted_scalar_end(lines, 1, (1, 3)) is None
+    lines = ["openness:", "  note: 'it''s long", "and closes here.'", "  score: 5"]
+    assert quoted_scalar_end(lines, 1, (1, 4)) == 3
+
+
+TRAILING_KEY_NOTE = """product: widget
+adoption:
+  level: 3
+  note: Short.
+  sources:
+  - url: https://example.com/a
+    shows: first
+  - url: https://example.com/b
+    shows: last, written in the rubric's words
+  last_verified: '2026-08-14'
+capability:
+  score: 2
+"""
+
+
+def test_the_last_source_entry_ends_before_a_trailing_sibling_key():
+    """`librechat` wrote `last_verified` below `sources`; rewriting the final entry took the
+    key with it and the reparse guard refused every edit to that line."""
+    from build.components import set_source
+
+    out = set_source(TRAILING_KEY_NOTE, "adoption", "https://example.com/b", {"shows": "plain"}, index=1)
+    doc = yaml.safe_load(out)
+    assert doc["adoption"]["sources"][1]["shows"] == "plain"
+    assert str(doc["adoption"]["last_verified"]) == "2026-08-14"
 
 
 def test_a_top_level_field_is_replaced_without_touching_its_neighbors():
@@ -247,8 +332,28 @@ def test_a_list_item_in_column_zero_is_not_a_sibling_key():
 def test_the_last_field_can_be_replaced():
     from build.components import set_document_field
 
-    out = set_document_field(PRODUCT, "comments", "Verified 2026-08-09 via the LICENSE body.")
-    assert yaml.safe_load(out)["comments"] == "Verified 2026-08-09 via the LICENSE body."
+    out = set_document_field(PRODUCT, "comments", "The LICENSE file also bundles third-party code.")
+    assert yaml.safe_load(out)["comments"] == "The LICENSE file also bundles third-party code."
+
+
+def test_the_last_field_can_be_removed_outright():
+    """An absent `comments` and an empty one publish differently: `serialize` omits
+    `version_note` only when the key is gone. Retiring the verification line left a fifth
+    of the products with nothing else in the field, so removal is a real operation."""
+    from build.components import drop_document_field
+
+    out = drop_document_field(PRODUCT, "comments")
+    after, before = yaml.safe_load(out), yaml.safe_load(PRODUCT)
+    assert "comments" not in after
+    assert after == {k: v for k, v in before.items() if k != "comments"}
+    assert "comments" not in out
+
+
+def test_removing_a_field_that_is_not_there_raises():
+    from build.components import drop_document_field
+
+    with pytest.raises(ValueError):
+        drop_document_field(PRODUCT, "aliases")
 
 
 def test_a_colon_in_the_value_is_the_dumper_problem():
@@ -720,3 +825,39 @@ def test_set_source_does_not_match_a_url_that_is_a_prefix_of_another():
     entries = yaml.safe_load(out)["openness"]["sources"]
     assert entries[0]["accessed"] == "2026-08-11", "the .md entry must not move"
     assert entries[1]["accessed"] == "2026-09-09"
+
+
+COMPARISON_NOTE = """product: widget
+capability:
+  level: 3
+  note: A note.
+  sources:
+  - url: https://example.com/own
+    shows: the product's own line
+  comparison:
+    last_attested: 2026-09-01
+    sources:
+    - url: https://example.com/peer
+      shows: Re-read of the peer this band is placed against.
+      accessed: 2026-09-01
+    - url: https://example.com/peer2
+      shows: second peer line
+  relative_to: peer
+"""
+
+
+def test_a_comparison_source_line_is_rewritten_in_place():
+    new = set_comparison_source(COMPARISON_NOTE, "capability", 0, {"shows": "The peer still makes the claim."})
+    doc, before = yaml.safe_load(new), yaml.safe_load(COMPARISON_NOTE)
+    assert doc["capability"]["comparison"]["sources"][0]["shows"] == "The peer still makes the claim."
+    assert doc["capability"]["comparison"]["sources"][0]["accessed"] == before["capability"]["comparison"]["sources"][0]["accessed"]
+    assert doc["capability"]["comparison"]["sources"][1] == before["capability"]["comparison"]["sources"][1]
+    assert doc["capability"]["sources"] == before["capability"]["sources"]
+    assert doc["capability"]["relative_to"] == "peer"
+    # The last entry ends before the sibling keys that follow the list.
+    last = set_comparison_source(COMPARISON_NOTE, "capability", 1, {"shows": "changed"})
+    assert yaml.safe_load(last)["capability"]["relative_to"] == "peer"
+    with pytest.raises(ValueError):
+        set_comparison_source(COMPARISON_NOTE, "capability", 2, {"shows": "x"})
+    with pytest.raises(ValueError):
+        set_comparison_source(COMPARISON_NOTE, "openness", 0, {"shows": "x"})

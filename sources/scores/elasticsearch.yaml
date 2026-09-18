@@ -15,12 +15,10 @@ openness:
       detail: the x-pack directory is licensed solely under the Elastic License 2.0 rather than the repository's
         default triple license, so a set of features in the published tree cannot be run under the open terms
   confidence: high
-  note: AGPL-3.0 license body confirmed. The LICENSE body sets a default triple license - AGPL-3.0 only, SSPL-1.0
-    or Elastic License 2.0, at the recipient's choice - so an OSI branch is available for the bulk of the tree,
-    and AGPL-3.0 is the tier this records. It then carves out the x-pack directory as Elastic License 2.0 alone,
-    and that directory is present in the repository. Functionality withheld from the open terms inside the published
-    source is what the ladder calls a gated core, the same shape as litellm's enterprise directory rather than a
-    separate hosted service sold beside a complete core.
+  note: The repository's LICENSE sets a default triple license — AGPL-3.0, SSPL-1.0 or Elastic License 2.0,
+    at the recipient's choice — so an OSI-approved option covers most of the tree. The x-pack directory,
+    though, is licensed solely under Elastic License 2.0, which makes Elasticsearch open core rather than
+    fully open source.
   raw: license:AGPL-3.0(OSI);enterprise-dir:Elastic-License-2.0;source:public;core-gated:gated(the x-pack directory
     is licensed solely under the Elastic License 2.0 rather than the repository's default triple license, so a set
     of features in the published tree cannot be run under the open terms)
@@ -59,10 +57,10 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 77,824 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `elasticsearch`
-    package on PyPI is the Python client (elasticsearch-py), not the server, so its 52.8M monthly downloads measure
-    client installs and cannot be attributed to this product. Elastic publishes no server deployment count, so the
-    stars scale applies and caps the band at 3 despite the size of the install base.
+  note: Elasticsearch's adoption reading is based on GitHub stars, since Elastic publishes no server deployment
+    figure and the `elasticsearch` package on PyPI is the Python client rather than the server. Client downloads
+    measure only client installs, and a star does not confirm production use, so this reading cannot show
+    how widely the server itself is actually deployed.
   last_verified: '2026-08-18'
   sources:
   - url: https://api.github.com/repos/elastic/elasticsearch
@@ -80,14 +78,10 @@ capability:
   relative_to: vespa
   relation: at
   confidence: medium
-  note: 'Level with vespa at the top of the storage feature matrix, which bands on how much of the persist-index-retrieve
-    path a product provides itself, at what scale and over how many retrieval modes. The 5 rung is for a
-    distributed platform that also hosts and evaluates ranking or embedding models inside the serving path,
-    and Elasticsearch does: the `inference`, `ml` and `ml-package-loader` plugins ship in the repository
-    beside `rank-rrf` and `rank-vectors`. That is the line between this rung and the 4 rung the vector databases
-    sit on, which fuse or filter scores but host no model. Worth reading beside the openness score: the
-    plugins that earn this band live in x-pack, the Elastic-License-only directory that makes the product
-    open_core rather than open_source.'
+  note: 'Elasticsearch matches Vespa at the top of the category: it hosts and evaluates its own ranking
+    and embedding models inside the serving path, through the inference, ml and ml-package-loader plugins
+    shipped alongside rank-rrf and rank-vectors. That sets it apart from vector databases, which fuse or
+    filter retrieval scores but do not host a model themselves.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc

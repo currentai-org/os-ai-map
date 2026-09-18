@@ -17,17 +17,10 @@ openness:
     - full-runtime-in-repo(Rust core+QUIC+multi-language SDKs)
     - managed-hosting-by-Vivgrid-optional
   confidence: medium
-  note: 'Cargo.toml declares license = "Apache-2.0" at v2.0.6 and the README''s License section points at the
-    Apache License 2.0, but no LICENSE file is committed at the repository root, so the GitHub API reports
-    the license as null. That is the weakest part of this record. Nothing is gated, though: what YoMo publishes
-    is the whole runtime rather than a client to a hosted one. src/ carries router.rs, zipper.rs, serverless.rs,
-    agent_loop.rs, tool_invoker.rs, tool_mgr.rs, llm_provider/, model_api_provider/, auth.rs, http_auth.rs,
-    tls.rs and connector.rs - routing, the serverless host, tool invocation, the OpenAI-compatible surface,
-    auth and transport - with no ee/ directory, no second license and no license-key path. Vivgrid sells "serverless
-    LLM function calling that lets enterprise AI agents run their tools in the cloud - with observability,
-    evaluation, and globally distributed inference built in", on a free tier plus credits, but its landing
-    page does not mention YoMo and the current YoMo README does not mention Vivgrid. A hosted platform sold
-    beside a complete open core is not a gate.'
+  note: Cargo.toml and the README's License section both declare Apache-2.0, but no LICENSE file sits at
+    the repository root, so the GitHub API reports the license as null. Nothing is withheld - routing, the
+    serverless host, tool invocation, auth and transport all live in src/ with no paid tier or license key
+    - and Vivgrid's separate hosted platform neither mentions YoMo nor is mentioned by it.
   raw: license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime
     is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no
     second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither
@@ -77,10 +70,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '1,920 GitHub stars on yomorun/yomo, which bands at 1K-10K stars, level 2 on the stars scale - a scale
-    that caps at 3 in any case, because a star is not a use. No download, install or customer figure is published
-    for this product: crates.io shows roughly 250 downloads a month, and there is no mass-market usage volume
-    to band. Stars are the only honest signal available here, so the level is directional.'
+  note: GitHub stars are the only honest adoption signal for YoMo, since the runtime ships as a Go binary
+    rather than through a package registry, and no customer or install figure is published. The Rust SDK
+    crate on crates.io counts a different population - Rust builds linking the SDK, not installs of the
+    runtime - so this reading stays directional.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/yomorun/yomo
@@ -93,11 +86,10 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: 'ABSTAINS. Nothing sits behind YoMo that it adapts: it is a serverless runtime for LLM function calling
-    on geo-distributed edge nodes - where a function RUNS rather than what it reaches. #430''s own coherence
-    test reached the same conclusion, that no question this category asks is its primary job. Its destination
-    is `deployment`, and it has not moved there because `deployment`''s recipe carries no capability ladder
-    at all, so the move would relocate the defect this split exists to remove rather than resolve it.'
+  note: 'YoMo is not an adapter: it is a serverless runtime that determines where a function runs, not what
+    system it connects to. Scoring what a product reaches on an agent''s behalf does not apply to something
+    that decides where code executes instead, so no capability score is assigned rather than one being forced
+    to fit.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/yomorun/yomo

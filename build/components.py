@@ -95,6 +95,42 @@ def find_key(lines: list[str], bounds: tuple[int, int], key: str) -> int | None:
     return None
 
 
+def quoted_scalar_end(lines: list[str], start: int, bounds: tuple[int, int]) -> int | None:
+    """End (exclusive) of a quoted scalar opened on `lines[start]` and closed on a later line.
+
+    None when the key's value is not quoted, or the quote closes on the key line itself: those
+    cases are the indentation walk's. `''` inside a single-quoted scalar and `\\"` inside a
+    double-quoted one are escapes, not closers.
+
+    The scan runs past `bounds`: `block_bounds` ends a block at the first column-zero line,
+    and the one case this helper exists for IS a column-zero line inside the scalar. The
+    closing quote, not the block estimate, says where the field ends.
+    """
+    head = lines[start].split(":", 1)[1].lstrip() if ":" in lines[start] else ""
+    if not head or head[0] not in "'\"":
+        return None
+    quote = head[0]
+    text = head[1:]
+    for i in range(start, len(lines)):
+        if i > start:
+            text = lines[i]
+        j = 0
+        while j < len(text):
+            ch = text[j]
+            if quote == "'" and ch == "'":
+                if text[j + 1 : j + 2] == "'":
+                    j += 2
+                    continue
+                return None if i == start else i + 1
+            if quote == '"' and ch == "\\":
+                j += 2
+                continue
+            if quote == '"' and ch == '"':
+                return None if i == start else i + 1
+            j += 1
+    return None
+
+
 def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int, int] | None:
     """[start, end) covering `  key:` AND every folded continuation line.
 
@@ -109,17 +145,35 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
     replacing them — which the re-parse assertion catches as a doubled list rather than
     letting it through, but catching it is not the same as handling it.
 
-    A blank line ends the span. Nothing in `sources/scores/` puts one inside a scalar, and
-    treating it as a terminator fails loudly via the reparse assertion if that ever stops
-    being true, rather than swallowing the rest of the block.
+    A blank line ends the span unless the next non-blank line is still a continuation, more
+    indented than the key. A quoted scalar may hold a paragraph break, which the file carries
+    as a blank line between two indented lines; `laminar`'s adoption note did, and the old rule
+    ("nothing in sources/scores/ puts a blank line inside a scalar") cut the span at the break
+    and the reparse assertion refused the edit. The look-ahead keeps the span whole, and the
+    reparse assertion still guards the result.
+
+    A quoted scalar is bounded by its quotes, not by indentation, and PyYAML reads a
+    continuation line at column zero inside one as more of the scalar. `tensorlake-sandbox`'s
+    capability note carried such a line from an old hand-splice, so the indentation walk ended
+    the span there and the edit produced a file that would not parse. When the key line opens a
+    quote it does not close, the span runs to the line that closes it.
     """
     start = find_key(lines, bounds, key)
     if start is None:
         return None
+    quoted = quoted_scalar_end(lines, start, bounds)
+    if quoted is not None:
+        return start, quoted
     end = start + 1
     while end < bounds[1]:
         line = lines[end]
         if not line.strip():
+            nxt = end + 1
+            while nxt < bounds[1] and not lines[nxt].strip():
+                nxt += 1
+            if nxt < bounds[1] and (len(lines[nxt]) - len(lines[nxt].lstrip())) > len(INDENT):
+                end = nxt
+                continue
             break
         indent = len(line) - len(line.lstrip())
         if indent <= len(INDENT) and not line.startswith(f"{INDENT}- "):
@@ -324,6 +378,29 @@ def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_
     return new_text
 
 
+def drop_document_field(text: str, key: str) -> str:
+    """Return `text` with the top-level `key` removed. Raises when it is not there.
+
+    `set_document_field` cannot express "this product has no footnote": the schema makes
+    `comments` optional and `build/serialize.py` omits `version_note` only when the key is
+    absent, so an empty string would publish an empty footnote. Retiring the verification line
+    (#619) left a fifth of the corpus with nothing else in the field, and those need the key
+    gone rather than blanked. Same reparse assertion as the setter, for the same reason.
+    """
+    lines = text.splitlines(keepends=True)
+    span = document_field_span(lines, key)
+    if span is None:
+        raise ValueError(f"no top-level {key!r} field to remove")
+    new_text = "".join(lines[: span[0]] + lines[span[1] :])
+
+    before = yaml.safe_load(text)
+    expected = copy.deepcopy(before)
+    del expected[key]
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"removing {key} changed something else in the document; refusing to write")
+    return new_text
+
+
 def rewrite(path: Path, value: object, axis: str = "openness", key: str = "components") -> bool:
     """Write the new value into the file. True when the file changed."""
     text = path.read_text()
@@ -403,6 +480,16 @@ def _source_span(lines: list[str], bounds: tuple[int, int], position: int) -> tu
         raise ValueError(f"no source entry at position {position}; the axis has {len(items)}")
     first = items[position]
     last = items[position + 1] if position + 1 < len(items) else end
+    # A sibling key after the list (`  last_verified:` written below `sources:`, as a few
+    # records do) is not part of the last entry. Without this the last entry's span ran to the
+    # end of the block and a rewrite of it would have dropped that key; the reparse guard
+    # refused, and the source line could not be edited at all.
+    for j in range(first + 1, last):
+        line = lines[j]
+        if line.strip() and len(line) - len(line.lstrip()) <= indent \
+                and not line.startswith(item_prefix):
+            last = j
+            break
     return first, last
 
 
@@ -456,6 +543,61 @@ def set_source(text: str, axis: str, url: str, updates: dict, index: int | None 
     expected[axis]["sources"][index] = entry
     if yaml.safe_load(new_text) != expected:
         raise ValueError(f"rewriting {axis} source {url!r} changed something else; refusing to write")
+    return new_text
+
+
+def set_comparison_source(text: str, axis: str, index: int, updates: dict) -> str:
+    """Return `text` with the entry at `index` under `axis.comparison.sources` updated.
+
+    A capability comparison carries its own source lines, two indents deeper than the axis's,
+    and `set_source` cannot reach them. Same shape as `set_source`: the entry is re-rendered
+    whole at its own indent, and the document is reparsed and compared against the expected
+    result, so an edit that lands anywhere else raises instead of being written.
+    """
+    before_doc = yaml.safe_load(text)
+    comparison = (before_doc.get(axis) or {}).get("comparison")
+    if not isinstance(comparison, dict) or not comparison.get("sources"):
+        raise ValueError(f"{axis} has no comparison sources")
+    entries = comparison["sources"]
+    if not 0 <= index < len(entries):
+        raise ValueError(f"no comparison source at position {index}; the axis has {len(entries)}")
+
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    ckey = find_key(lines, bounds, "comparison")
+    if ckey is None:
+        raise ValueError(f"{axis} has no comparison block in the text")
+    cend = bounds[1]
+    for i in range(ckey + 1, bounds[1]):
+        if lines[i].strip() and len(lines[i]) - len(lines[i].lstrip()) <= 2:
+            cend = i
+            break
+    skey = next((i for i in range(ckey + 1, cend) if lines[i].startswith("    sources:")), None)
+    if skey is None:
+        raise ValueError(f"{axis}.comparison has no sources list in the text")
+    item_prefix = "    - "
+    items = [i for i in range(skey + 1, cend) if lines[i].startswith(item_prefix)]
+    if index >= len(items):
+        raise ValueError("comparison sources list is shorter in the text than when parsed")
+    first = items[index]
+    last = items[index + 1] if index + 1 < len(items) else cend
+    for j in range(first + 1, last):
+        line = lines[j]
+        if line.strip() and len(line) - len(line.lstrip()) <= 4 and not line.startswith(item_prefix):
+            last = j
+            break
+
+    entry = dict(entries[index])
+    entry.update(updates)
+    rendered = ["  " + line if line.strip() else line for line in render_source(entry)]
+    new_text = "".join(lines[:first] + rendered + lines[last:])
+
+    expected = copy.deepcopy(before_doc)
+    expected[axis]["comparison"]["sources"][index] = entry
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"rewriting {axis} comparison source {index} changed something else; refusing to write")
     return new_text
 
 

@@ -15,12 +15,9 @@ openness:
       detail: hosted Logfire Cloud platform, with self-host offered only under a purchased enterprise
         license
   confidence: high
-  note: The repository is a genuine, standalone MIT SDK that exports OpenTelemetry data to any compatible
-    backend, but the running platform - the UI and the server that records and displays it - is closed
-    source by the vendor's own statement, with self-hosting sold as a paid enterprise product rather than
-    published. That is the `partial` rung regardless of the SDK's license, the same reading `weave` gets
-    for the same shape, though Logfire publishes less of the server side than weave does - no trace-server
-    library ships here at all.
+  note: Logfire's SDK is a genuine, standalone MIT package that exports OpenTelemetry data to any compatible
+    backend, but the platform that records and displays it, the UI and server, is closed source, and self-hosting
+    it requires a purchased enterprise license.
   raw: license:MIT(covers the Python/TypeScript/Rust SDKs and documentation in this repository only);source:partial(the
     SDK is published; the server application that records and displays the data (the actual Logfire platform)
     is not in this repository or any public one);backend:commercial(hosted Logfire Cloud platform, with
@@ -53,15 +50,10 @@ adoption:
   confidence: low
   banded_quantity: Vendor-published customer roster for the hosted platform, no count behind it; the 13,695,048
     monthly PyPI downloads of the logfire SDK are the instrumentation channel and are not banded
-  note: The scored product is the closed hosted platform, and nothing counts its use. The vendor page names
-    a roster of paying customers - Motorola, Sophos, Weaviate, Nous Research, Airbyte, Vox Media, Pictet and
-    about fifteen more - and publishes no user, account or trace-volume figure, so the level rests on that
-    standing as a real, mid-sized commercial observability platform rather than on a measurement. The logfire
-    package's 13,695,048 PyPI downloads a month are deliberately not the band. The SDK exports to any
-    OpenTelemetry backend and is pulled in as a dependency by Pydantic AI and other instrumentation, so an
-    install of it is not a use of the platform, and reading a level 5 off it would credit the platform with
-    the whole Pydantic ecosystem's install base. The repository's 4,450 stars are consistent with a level of
-    this size and would band lower on the stars scale.
+  note: Logfire's vendor page names a customer roster including Motorola, Sophos, Weaviate and Airbyte but
+    publishes no user, account or trace-volume figure, so the reading reflects that standing rather than
+    a measured count. The SDK's PyPI downloads and GitHub stars measure Pydantic's broader instrumentation
+    ecosystem rather than use of the closed platform, so neither can raise the reading.
   last_verified: '2026-09-02'
   sources:
   - url: https://pydantic.dev/logfire
@@ -75,7 +67,7 @@ adoption:
     content_sha256: e54eaefee2d77cbc64111f54d72bc11f8e18b37d288a8a2c6b0a5de8d67a625a
   - url: https://pypistats.org/api/packages/logfire/recent
     shows: last_month = 13,695,048 downloads for logfire (last_week 2,817,073, last_day 559,383). A measurement
-      of the SDK channel, recorded as context and explicitly not the basis of the band.
+      of the SDK channel, recorded as context and explicitly not the basis of the reading.
     accessed: '2026-09-02'
     http_status: 200
     content_sha256: 30ab6461394bef09bbaec5f63d86381861382ab88d620d32c3994cba46a4adbd
@@ -94,17 +86,17 @@ capability:
     scenario testing) plus a Prompt Playground, and an Evaluate surface (datasets and experiments, live
     evals, human review, run annotation).'
   confidence: high
-  note: 'Covers every dimension this category grades: tracing, prompt management with versioning and
-    rollout, a playground, and evaluation through datasets, experiments, live evals and human review -
-    plus SQL access over the whole recorded corpus and deep Pydantic-specific instrumentation that the
-    anchor does not have. That puts it level with Langfuse at 4.'
+  note: 'Logfire covers every dimension this category grades: tracing, prompt management with versioning
+    and rollout, a playground, and evaluation through datasets, experiments, live evals and human review,
+    plus SQL access over the whole recorded corpus and Pydantic-specific instrumentation that Langfuse does
+    not have. That breadth keeps it level with Langfuse rather than ahead of it.'
   comparison:
     last_attested: '2026-09-02'
     sources:
     - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
-      shows: 'README still lists Tracing, Prompt Management ("centrally manage, version control, and
-        collaboratively iterate on your prompts"), Evaluations, Playground and Datasets as the current
-        feature set, unchanged from when this anchor was set.'
+      shows: README still lists Tracing, Prompt Management ("centrally manage, version control, and collaboratively
+        iterate on your prompts"), Evaluations, Playground and Datasets as the current feature set, unchanged
+        from when the comparison to Langfuse was set.
       accessed: '2026-09-02'
       http_status: 200
       content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f

@@ -14,10 +14,10 @@ openness:
       detail: a 2,504-entry recursive tree carries a root LICENSE plus flyteplugins/LICENSE and flytestdlib/LICENSE,
         and no path matching enterprise, ee, commercial or proprietary
   confidence: high
-  note: 'Apache-2.0 with the orchestrator itself published. Union.ai sells a managed platform alongside, which
-    the ladder does not read as gating a core: the 2,504-entry recursive tree carries a governing Apache-2.0
-    LICENSE plus two component licenses under flyteplugins and flytestdlib, and no enterprise, ee or commercial
-    path.'
+  note: Flyte's orchestrator is published under Apache-2.0, and Union.ai's managed platform sits beside
+    it as a separate commercial product rather than a gate on the core. A full scan of the repository tree
+    finds a governing Apache-2.0 license plus two component licenses under flyteplugins and flytestdlib,
+    and no enterprise, ee or commercial path.
   raw: license:Apache-2.0(OSI);source:public(the control plane and the SDKs both build from this repo);core-gated:ungated(a
     2,504-entry recursive tree carries a root LICENSE plus flyteplugins/LICENSE and flytestdlib/LICENSE, and
     no path matching enterprise, ee, commercial or proprietary)
@@ -55,11 +55,9 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 164,818 downloads of flyte and 574,094 of flytekit
-    in the trailing 30 days, 738,912 summed across the two declared artifacts, inside
-    the 100K-1M band for level 3. The unit is package downloads summed across declared
-    artifacts, so a user who installs both is counted twice; both packages band at
-    3 individually, so the sum does not move the level.
+  note: Adoption is measured as PyPI downloads summed across the flyte and flytekit packages in the trailing
+    month. A user who installs both is counted twice, but each package individually already reads the same
+    as the sum, so the double count does not change the reading.
   last_verified: '2026-09-15'
   sources:
   - url: https://pypistats.org/api/packages/flyte/recent
@@ -83,11 +81,9 @@ capability:
   confidence: medium
   relative_to: kubeflow-pipelines
   relation: at
-  note: Flyte's own control plane decides when each task runs and which cluster and
-    project-domain it goes to, and emits the pod; the Kubernetes scheduler then picks
-    the machine. That is band 3 here. It does the same thing metaflow does under this
-    dimension, and the two are banded together rather than separated on a distinction
-    the evidence does not carry.
+  note: Flyte's own control plane decides when each task runs and which cluster and project-domain it goes
+    to and emits the pod, then the Kubernetes scheduler picks the machine, the same shape of decision as
+    Metaflow. The two sit together because the evidence does not separate them further.
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/flyteorg/flyte

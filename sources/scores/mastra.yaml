@@ -16,15 +16,11 @@ openness:
     - ee/-auth-directories-under-Mastra-Enterprise-License
     - Mastra-Platform-hosted-tier-commercial
   confidence: high
-  note: 'Open core, but in the LangGraph and LlamaIndex shape rather than the n8n one: the framework itself
-    carries a real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to the
-    ee/ auth directories, so the agent, workflow, memory and eval surfaces a user actually builds on are
-    Apache-2.0. The gate is a named mechanism: ee/LICENSE is a separate Enterprise Edition license forbidding
-    production use without a written agreement with Kepler Software, and packages/_internals/auth/src/ee/license.ts
-    disables the EE features unless MASTRA_LICENSE_KEY validates against the Mastra license server, which
-    returns entitlements for RBAC, SSO and FGA. So functionality is withheld from the published source by
-    a license key rather than merely sold beside it, which is why this is not full open source. The managed
-    Mastra Cloud is separate and is not what decides it.'
+  note: Mastra's framework is Apache-2.0 outside a narrow ee/ directory that carries RBAC, SSO and fine-grained
+    authorization, which ships under the separate Mastra Enterprise License and only activates once MASTRA_LICENSE_KEY
+    validates against Mastra's license server. Because that is a real feature withheld from the published
+    source behind a license key, not merely a hosted platform sold beside it, Mastra is open core rather
+    than fully open source.
   last_verified: '2026-08-12'
   raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated(RBAC,
     SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are switched on at
@@ -99,12 +95,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'The npm download API returns 5,264,387 downloads for @mastra/core over the trailing month, which
-    places it in the 1-10M band. Deliberately not summed with the mastra package (2,151,411 a month): npm
-    counts increment for transitively fetched dependencies, and mastra pulls @mastra/core through @mastra/deployer,
-    so adding them would double-count the same installs. @mastra/core is the package everything resolves
-    to and is the better single proxy, and the band is the same either way. Raw download volume includes
-    CI and mirror traffic, so this is install volume rather than a user count.'
+  note: Adoption is measured by npm downloads of @mastra/core, the package everything else in the framework
+    resolves to; the separate mastra package pulls in @mastra/core transitively, so summing the two would
+    double-count the same installs. Raw download volume also includes CI and mirror traffic, so this reading
+    measures install volume rather than a count of individual users.
   last_verified: '2026-08-13'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@mastra/core
@@ -123,18 +117,17 @@ capability:
   basis: feature_matrix
   value: null
   confidence: medium
-  note: Feature coverage comparable to LangChain and Pydantic-AI (both 4) - agents with tools, graph workflows
-    with explicit control flow, memory with semantic recall, model routing across 90+ providers, evals,
-    tracing and human-in-the-loop. Not 5 like LangGraph or LlamaIndex, which have deeper ecosystems and
-    longer track records. Confidence is medium rather than high because no first-party SWE-bench or GAIA
-    result exists for the framework itself, so this is a feature-matrix judgment rather than a measurement.
+  note: Mastra is level with LangChain and Pydantic-AI on feature coverage, and a tier below LangGraph and
+    LlamaIndex, which have deeper ecosystems and longer track records. No first-party SWE-bench or GAIA
+    result exists for the framework, so the score reads from features rather than a measurement.
   relative_to: langchain
   relation: at
   last_verified: '2026-08-13'
   sources:
   - url: https://mastra.ai/
-    shows: agents and workflows in the open source framework, with Observability, Studio and Agent Builder
-      listed as separate platform products; memory, model routing, evals and tracing; no benchmark figure
+    shows: mastra.ai describes agents with tools, graph workflows with explicit control flow, memory with
+      semantic recall, model routing across 90+ providers, evals, tracing and human-in-the-loop, with Observability,
+      Studio and Agent Builder listed as separate platform products; no benchmark figure.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4626f4d57944be8872ede7dfa440beeb933c04b65691cdca6e9d7b6689c6f2e3

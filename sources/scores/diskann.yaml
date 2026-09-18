@@ -46,11 +46,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 1,915 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. No package artifact is
-    declared - the PyPI diskannpy package binds the legacy C++ implementation the repository itself says is no
-    longer actively developed, so its downloads would measure the frozen artifact rather than the current DiskANN3
-    library, and it is left undeclared rather than declared and ignored (see the product comments). The stars scale
-    applies with its cap of 3.
+  note: 'DiskANN declares no package: its only PyPI artifact binds the legacy C++ implementation, which
+    the repository says is no longer actively developed, so its downloads would measure that frozen code
+    rather than the current library. That leaves GitHub stars as the only adoption signal, and a star is
+    not a use, so this reading says little about how many projects actually run DiskANN.'
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/microsoft/DiskANN
@@ -68,9 +67,9 @@ capability:
   relative_to: hnswlib
   relation: at
   confidence: medium
-  note: Banded on the category feature matrix as single index family as a library, level with hnswlib - a single
-    algorithm family shipped as a composable library rather than a store, index server, or a broader index-family
-    toolkit like faiss.
+  note: DiskANN ships one index family, the Vamana graph, as a composable library that callers wire into
+    their own storage rather than a store, index server or broader toolkit like FAISS. That puts it on par
+    with hnswlib, which offers the same single-algorithm-as-library shape.
   comparison:
     last_attested: '2026-09-02'
     sources:

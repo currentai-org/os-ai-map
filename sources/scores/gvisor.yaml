@@ -16,14 +16,10 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully Apache-2.0 application kernel with public source and no gated core. Some files carry MIT or
-    BSD terms noted at the top of each file - both permissive and OSI - so the governing Apache-2.0 stands
-    and the most restrictive part does not move the tier. The untruncated default-branch tree carries one
-    LICENSE and the whole runtime in the open (runsc/, pkg/, shim/, sandboxexec/, webhook/, vdso/) with
-    no ee/, enterprise/, commercial/ or proprietary/ path, and neither the README nor gvisor.dev names a
-    paid or enterprise edition. Google runs gVisor as a hosted service inside Cloud Run and GKE Sandbox
-    but sells no gVisor SKU and withholds no runtime feature from the source, so nothing in the core is
-    gated.
+  note: gVisor is Apache-2.0, and the entire runtime, including the runsc OCI shim, sits in the public tree
+    with no enterprise or paid-tier directory; a handful of files carry their own permissive MIT or BSD
+    notices, but Apache-2.0 governs the project as a whole. Google runs gVisor inside Cloud Run and GKE
+    Sandbox without selling a separate product or withholding any feature from the public source.
   raw: license:Apache-2.0(OSI);source:public(Go);governance:Google-led open project;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -72,18 +68,10 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: Underpins Google Cloud Run ("Powered by gVisor" on gvisor.dev) and is the sandbox layer for GKE
-    Sandbox, App Engine and Cloud Functions, billions of container executions across Google Cloud. gvisor.dev/users
-    states plainly that "there are millions of gVisor sandbox instances running daily", alongside named
-    production users - Anthropic (code execution inside claude.ai), Cloudflare Pages builds, DigitalOcean
-    App Platform, Ant Group, Modal, Beam and Docker for Mac. Reach far exceeds the >10M band, and the 19,073
-    GitHub stars only corroborate it. No package is measured for this level, and that is deliberate. A PyPI
-    package named `gvisor` exists and is genuinely this project’s, but gVisor is a Go application kernel
-    shipped as a binary (runsc) and consumed through container runtimes, and that package sees 223 downloads
-    a month - banding on it would take this record from 5 to 1 on a channel almost nobody uses. Where a
-    package is not the product’s primary distribution channel, banding on it is a substitution rather than
-    a measurement. The level therefore rests on documented reach rather than on a download feed, and cannot
-    be recomputed from one.
+  note: gVisor powers Google Cloud Run, GKE Sandbox, App Engine and Cloud Functions, with production users
+    including Anthropic, Cloudflare and DigitalOcean. A PyPI package named gvisor exists but sees only a
+    trickle of downloads and is not the product's primary distribution channel — it ships as the runsc binary
+    instead — so the reading follows Google's production reach.
   last_verified: '2026-08-13'
   sources:
   - url: https://gvisor.dev/docs/
@@ -108,8 +96,8 @@ adoption:
     http_status: 200
     content_sha256: 258b640a96f495d8fa30b8598f13036437941a2746784a2ecf0907380f4b029b
   - url: https://api.github.com/repos/google/gvisor
-    shows: 'Repo metadata - 19,073 stars, 1,912 forks, not archived, pushed 2026-08-13. Corroborates activity
-      only; the band does not rest on it.'
+    shows: Repo metadata - 19,073 stars, 1,912 forks, not archived, pushed 2026-08-13. Corroborates activity
+      only; the reading does not depend on it.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6311112bdfc83ce139439bd87b72ddc23831bb068cb2e2a02da681e4e0cfa092

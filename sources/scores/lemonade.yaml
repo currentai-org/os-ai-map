@@ -14,12 +14,9 @@ openness:
       detail: free local server; no paid tier, enterprise edition or license key anywhere in the repo
         or README
   confidence: high
-  note: The LICENSE body carries the full unmodified Apache-2.0 text ("Copyright 2026 Lemonade Community"
-    in the appendix slot), followed after END OF TERMS AND CONDITIONS by attribution blocks for vendored
-    components - Lucide icons, amdxdna_accel.h, llama.cpp, Ollama, TurnkeyML (Groq copyright), aixlog
-    - each under its own permissive license. Those are notices about bundled third-party code, not conditions
-    on Lemonade, so the governing license reads as clean Apache-2.0. The product is entirely free and
-    self-hosted; nothing is withheld.
+  note: Lemonade's LICENSE is the unmodified Apache-2.0 text; the attribution blocks that follow it credit
+    vendored third-party components under their own permissive licenses rather than adding any condition
+    to Lemonade itself. The product is entirely free and self-hosted, with nothing withheld.
   raw: license:Apache-2.0(OSI; LICENSE appends third-party MIT/attribution notices for vendored components
     after the unmodified text);source:public;core-gated:ungated(free local server; no paid tier, enterprise
     edition or license key anywhere in the repo or README)
@@ -57,9 +54,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 5,560 GitHub stars, in the 1K-10K band of the stars scale. The product ships as OS installers,
-    Docker images, a Snap and a PPA - channels the pipeline cannot count - and the PyPI package the census
-    named has been removed (404 this session), so stars are the only measurable route.
+  note: Lemonade ships as OS installers, Docker images, a Snap and a PPA, none of which this map's pipeline
+    can count, and the PyPI package once used for adoption no longer exists. That leaves GitHub stars as
+    the only measurable signal, though a star reflects attention rather than actual use.
   last_verified: '2026-09-01'
   sources:
   - url: https://api.github.com/repos/lemonade-sdk/lemonade
@@ -78,16 +75,15 @@ capability:
   relative_to: vllm
   relation: two_below
   confidence: medium
-  note: Two bands below the vllm anchor, level with llamafile and uzu among the local engines. Its NPU
-    coverage and multi-modality are broader than the other single-node locals, but the serving engines
-    underneath are llama.cpp and ONNX Runtime and it carries no distributed or datacenter surface.
+  note: Lemonade sits two tiers below vLLM, level with llamafile and uzu among the local engines. Its NPU
+    support and multi-modal coverage are broader than those other single-node engines, but it runs on llama.cpp
+    and ONNX Runtime underneath and has no distributed or datacenter serving surface.
   comparison:
     last_attested: '2026-09-01'
     sources:
     - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
-      shows: 'The anchor''s README, re-read today: the datacenter parallelism and architecture breadth
-        the two_below spacing is judged against. Digest identical to the anchor''s recorded 2026-08-31
-        source.'
+      shows: 'vLLM''s README, re-read today: the datacenter parallelism and architecture breadth the two-step
+        gap is judged against. Digest identical to the one vLLM''s capability axis recorded on 2026-08-31.'
       accessed: '2026-09-01'
       http_status: 200
       content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026

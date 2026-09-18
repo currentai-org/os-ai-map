@@ -13,9 +13,9 @@ openness:
       value: ungated
       detail: a 15,902-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary
   confidence: high
-  note: Apache-2.0 and governed by a Kubernetes Special Interest Group, so there is no vendor and no paid tier
-    for a core to be withheld from. The 15,902-entry recursive tree carries one governing LICENSE and no enterprise,
-    ee or commercial path.
+  note: Kueue is Apache-2.0 and governed by a Kubernetes Special Interest Group, so there is no vendor and
+    no paid tier for a core to be withheld from. The repository tree carries one governing LICENSE and no
+    enterprise, ee or commercial path.
   raw: license:Apache-2.0(OSI);source:public(kubernetes-sigs/kueue is the whole controller);core-gated:ungated(a
     15,902-entry recursive tree carries no path matching enterprise, ee, commercial or proprietary)
   last_verified: '2026-09-15'
@@ -52,13 +52,13 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 2,971 GitHub stars. The project ships as container images and a Helm chart and publishes no package-registry
-    artifact, so no usage-volume channel exists for it and the band rests on stars, which measure attention
-    rather than use. The stars route caps at level 3 for that reason.
+  note: Kueue ships as container images and a Helm chart rather than through a package registry, so GitHub
+    stars are the only adoption signal available. A star is not a use, so the signal shows attention rather
+    than real usage.
   last_verified: '2026-09-15'
   sources:
   - url: https://github.com/kubernetes-sigs/kueue
-    shows: Repository page showing the star count for kubernetes-sigs/kueue.
+    shows: Repository page showing 2,971 GitHub stars for kubernetes-sigs/kueue.
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: eba1d5116ff87736b06b6cdac2d3b963d31e8ba23c147e157a8c1e7e011bd10a
@@ -71,11 +71,10 @@ capability:
   confidence: medium
   relative_to: volcano
   relation: at
-  note: Banded on Topology-Aware Scheduling rather than on the queueing alone. Kueue's own documentation states
-    that when the lowest topology level is set to node, TAS 'finds a fixed assignment of pods to nodes and
-    injects a NodeSelector to make sure the pods get scheduled on the selected nodes', and podset-required-topology
-    requires every pod of a set to sit in one domain. That is choosing the machines and reserving the set together,
-    which is band 5 here - the Kubernetes bind call executing the choice does not move the decision elsewhere.
+  note: 'Kueue''s Topology-Aware Scheduling does the placing, not its queueing alone: it can fix an assignment
+    of pods to nodes and inject a NodeSelector, and podset-required-topology can bind a whole set to one
+    rack or block. Kueue makes that placement decision itself, with Kubernetes only executing it, which
+    puts it level with Volcano.'
   last_verified: '2026-09-15'
   sources:
   - url: https://kueue.sigs.k8s.io/docs/concepts/topology_aware_scheduling/

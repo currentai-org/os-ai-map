@@ -20,12 +20,9 @@ def score(**axes) -> dict:
     return base
 
 
-VERIFIED = "Verified 2026-08-08 via the LICENSE body."
-
-
-def test_a_product_is_done_when_every_axis_is_dated_and_the_prose_carries_the_line():
+def test_a_product_is_done_when_every_axis_is_dated():
     state = product_state(
-        "p", {"comments": VERIFIED},
+        "p", {},
         score(openness={"last_verified": "2026-08-08"},
               adoption={"last_verified": "2026-08-08"},
               capability={"last_verified": "2026-08-08"}),
@@ -35,23 +32,25 @@ def test_a_product_is_done_when_every_axis_is_dated_and_the_prose_carries_the_li
     assert set(state["axes"].values()) == {"verified"}
 
 
-def test_a_dated_product_with_no_verification_line_is_not_done():
-    """Prose is half the job. The canonical line is the one part a checker can see."""
-    state = product_state(
-        "p", {"comments": "Some note without the line."},
-        score(openness={"last_verified": "2026-08-08"},
-              adoption={"last_verified": "2026-08-08"},
-              capability={"last_verified": "2026-08-08"}),
-        held={},
-    )
-    assert state["done"] is False
-    assert state["prose"] is False
+def test_the_prose_has_no_bearing_on_done():
+    """`done` used to require `comments` to end in a dated `Verified … via` line, the one
+    thing about the prose a checker could see. #619 retired the line, so a footnote, an
+    empty field and a field that still carries the old line all read the same here; the
+    line's absence is asserted by tests/test_product_prose.py instead."""
+    dated = score(openness={"last_verified": "2026-08-08"},
+                  adoption={"last_verified": "2026-08-08"},
+                  capability={"last_verified": "2026-08-08"})
+    for product in ({}, {"comments": "A footnote about the reading."},
+                    {"comments": "Verified 2026-08-08 via GitHub."}):
+        state = product_state("p", product, dated, held={})
+        assert state["done"] is True
+        assert "prose" not in state and "prose_state" not in state
 
 
 def test_a_null_axis_abstains_rather_than_blocking():
-    """46 axes are deliberately null - a hosted feature with no usage figure to band."""
+    """Some axes are deliberately null - a hosted feature with no usage figure to band."""
     state = product_state(
-        "p", {"comments": VERIFIED},
+        "p", {},
         score(openness={"last_verified": "2026-08-08"},
               adoption={"level": None},
               capability={"score": None}),
@@ -69,7 +68,7 @@ def test_a_held_product_is_resolved_not_remaining():
 
 
 def test_an_undated_axis_is_open():
-    state = product_state("p", {"comments": VERIFIED}, score(), held={})
+    state = product_state("p", {}, score(), held={})
     assert set(state["axes"].values()) == {"open"}
     assert state["done"] is False
 
@@ -126,47 +125,27 @@ def _dated(day: str) -> dict:
 
 
 def test_without_a_cutoff_any_confirmation_counts():
-    state = product_state("p", {"comments": "Verified 2020-01-01 via GitHub."},
-                          _dated("2020-01-01"), held={})
+    state = product_state("p", {}, _dated("2020-01-01"), held={})
     assert state["done"] is True
 
 
 def test_a_confirmation_older_than_the_window_is_stale_not_verified():
     """This is what turns the sweep from a one-time pass into a recurring refresh."""
-    state = product_state("p", {"comments": "Verified 2026-06-01 via GitHub."},
-                          _dated("2026-06-01"), held={}, cutoff=date(2026, 7, 1))
+    state = product_state("p", {}, _dated("2026-06-01"), held={}, cutoff=date(2026, 7, 1))
     assert set(state["axes"].values()) == {"stale"}
     assert state["done"] is False
 
 
 def test_a_confirmation_on_the_cutoff_still_counts():
-    state = product_state("p", {"comments": "Verified 2026-07-01 via GitHub."},
-                          _dated("2026-07-01"), held={}, cutoff=date(2026, 7, 1))
+    state = product_state("p", {}, _dated("2026-07-01"), held={}, cutoff=date(2026, 7, 1))
     assert set(state["axes"].values()) == {"verified"}
     assert state["done"] is True
 
 
 def test_a_never_confirmed_axis_is_open_not_stale():
     """Open and stale are different jobs: one has never been read, the other has aged."""
-    state = product_state("p", {"comments": "Verified 2026-08-08 via GitHub."},
-                          score(), held={}, cutoff=date(2026, 7, 1))
+    state = product_state("p", {}, score(), held={}, cutoff=date(2026, 7, 1))
     assert set(state["axes"].values()) == {"open"}
-
-
-def test_the_prose_ages_on_the_same_clock():
-    """The canonical line carries its own date, so it can go stale without going missing."""
-    fresh = product_state("p", {"comments": "Verified 2026-08-08 via GitHub."},
-                          _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
-    assert fresh["prose_state"] == "verified"
-
-    aged = product_state("p", {"comments": "Verified 2026-06-01 via GitHub."},
-                         _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
-    assert aged["prose_state"] == "stale", "a dated line that has aged is stale, not missing"
-    assert aged["done"] is False
-
-    none = product_state("p", {"comments": "No line at all."},
-                         _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
-    assert none["prose_state"] == "missing"
 
 
 def test_a_held_product_stays_resolved_under_any_window():
@@ -209,6 +188,10 @@ def test_under_coverage_detector_matches_both_directions():
     assert UNDERSTATES.search("npm is not the product's primary distribution channel")
     assert INFLATED.search("almost certainly CI/mirror-inflated for an OTel SDK")
     assert not UNDERSTATES.search("429,490 downloads in the trailing 30 days, band unchanged")
+    # The affirmative is the opposite claim, not the admission (review of #620: four notes sat
+    # in the pinned set on "PyPI is the primary distribution channel for a Python library").
+    assert not UNDERSTATES.search("PyPI is the primary distribution channel for a Python library")
+    assert not UNDERSTATES.search("the data-designer package is this tool's primary distribution channel")
 
 
 def test_both_worklists_traverse_the_corpus_without_asserting_a_backlog():

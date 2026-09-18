@@ -291,6 +291,35 @@ package may legitimately be `member_of` one product's measurement and `not_membe
 `product_equivalence` has no such second axis: an artifact either is a new product or belongs to
 exactly one, so its key stays `(artifact, relation)`.
 
+**Why the ledger exists.** A discovery sweep resolves a repository by hand — "this is the spec
+repo of a product already carried", "this is a vendor's MCP surface, not a product", "this is
+authored content, not software" — and records the reasoning in a pull request. Left there, the
+decision sits nowhere a machine can read it, and the next bulk run re-derives the same candidate
+from the same pool, finds no artifact that matches, and recreates it. `a2aproject/A2A` is the
+sharpest case: #413 had resolved it to `agent2agent-protocol` by hand, and the first corpus
+expansion recreated it as a new product anyway, because `agent2agent-protocol` itself declares
+no `github` artifact — #415 had left it undeclared pending a ruling on adoption routing — so
+repo-level dedup could not see the resolution and nothing else in the repo could either.
+
+**Verdicts**, for `product_equivalence`:
+
+| verdict | meaning |
+|---|---|
+| `existing_product` | the artifact belongs to a product already in the corpus |
+| `sku_of` | a surface or edition of a product, not a product of its own |
+| `excluded_boundary` | out of scope for the map, with the boundary named |
+| `excluded_maintenance` | archived, or unmaintained past the sweep's declared window |
+| `unresolved` | identity genuinely undecided; needs a person, not a rerun |
+
+and for `product_membership`: `member_of` (this artifact's measurement belongs to
+`resolves_to`) and `not_member_of` (it does not, though it may look related).
+
+**Consult it before proposing, and never silently overturn it.** A bulk run must consult the
+ledger before proposing a product. `build/validate.py` enforces the half that can be enforced:
+no product may declare an artifact the ledger resolves elsewhere, under the same relation.
+Entries are appended by later sweeps; a verdict is changed only deliberately, by a person, with
+`decided_in` updated.
+
 ## Organizations
 
 Organizations carry aliases for the same reason and under the same rule. The ones that exist are

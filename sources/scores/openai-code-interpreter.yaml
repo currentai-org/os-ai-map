@@ -34,11 +34,10 @@ adoption:
   reach: 1M-10M users
   signal_type: active_users
   confidence: low
-  note: Code Interpreter ships inside ChatGPT (advanced data analysis) and the Assistants and Responses
-    APIs; the ChatGPT surface it rides has roughly 1B weekly users. No standalone Code Interpreter usage
-    figure is disclosed, so adoption is attributed to that surface and placed conservatively at 4, on the
-    reading that only a fraction of ChatGPT users invoke code execution, with low confidence given the absence
-    of any per-tool number.
+  note: Code Interpreter ships inside ChatGPT's advanced data analysis feature and the Assistants and Responses
+    APIs, riding a ChatGPT surface with roughly 1B weekly users. OpenAI discloses no standalone usage figure
+    for the tool itself, so adoption is read conservatively from that surface, on the assumption that only
+    a fraction of ChatGPT users invoke code execution.
   last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
@@ -54,10 +53,10 @@ capability:
     language/runtime breadth: Python only; persistence: per-session file workspace, 512MB file handling;
     scale: OpenAI infra'
   confidence: low
-  note: Reliable Python-only data-analysis sandbox with iterative retry, but single-language, undisclosed
-    isolation, and session-scoped, narrower than general-purpose deployment sandboxes. Mid-tier; capability
-    detail limited because OpenAI does not document the isolation/scale internals. The docs price the tool
-    at $0.03 per session, cap files at 512 MB, default the session to one hour, and name no isolation mechanism.
+  note: Code Interpreter is a reliable Python-only sandbox with iterative retry on failing code, but it
+    is single-language, session-scoped, and OpenAI documents no isolation mechanism or scaling internals.
+    That narrower, less transparent design keeps it behind general-purpose deployment sandboxes that isolate
+    a wider range of runtimes.
   last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter

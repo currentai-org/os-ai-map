@@ -16,25 +16,25 @@ openness:
       detail: 'non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM clause'
   governing_release: llama-4-scout-maverick
   confidence: high
-  note: 'Weights are downloadable under Meta''s Llama-4-Community terms: a 700M-MAU commercial cap, an acceptable-use
-    policy and naming requirements. Llama 4 Scout and Maverick are the current release and Llama 3.1 carried
-    equivalent terms, so nothing about the family''s licensing has shifted. A license that bounds commercial
-    use still permits it, and the scale places that a step above one that forbids commerce outright - CC-BY-NC
-    or Mistral''s Non-Production terms, which sit at 2. Meta''s cap is a bound rather than a prohibition,
-    which is why this lands at 3, the same place every other bounded-commercial license on the map lands.'
+  note: Llama's weights are downloadable, but only under Meta's Llama-4-Community license, which caps commercial
+    use at 700 million monthly active users and adds an acceptable-use policy and naming requirements unchanged
+    since Llama 3.1. That cap still permits commercial use, unlike Mistral's Non-Production terms or CC-BY-NC,
+    which forbid it outright.
   last_verified: '2026-08-13'
   raw: 'weights:open(downloadable on HF);data:closed;code:partial(inference/utils via llama-models, no training
     code);license:Llama-4-Community(non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM
     clause)'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-4-Scout-17B-16E
-    shows: '`gated: manual`, `private: false`, safetensors weight shards listed, 18,815 downloads
-      and 261 likes; `cardData.license` is `other`, so the Llama-4-Community tier rests on Meta''s
-      text rather than on a Hub label.'
+    shows: '`gated: manual`, `private: false`, safetensors weight shards listed, 18,815 downloads and 261
+      likes; `cardData.license` is `other`, so the Llama-4-Community tier is read from Meta''s text rather
+      than from a Hub label.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: e902b7aba05eda623d584e2caa969a1066b16e80419943a5a0ac481755976bb5
-    establishes: [weights, license]
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E
     shows: 'Model card carries the LLAMA 4 COMMUNITY LICENSE AGREEMENT in full - "greater than
       700 million monthly active users in the preceding calendar month, you must request a license
@@ -54,8 +54,8 @@ openness:
     content_sha256: 5731f42b1494cd5ef7970a35c272ef5e1c3e0116ab71f8164e2532a38d46a5df
     establishes: [code]
   - url: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
-    shows: Now answers HTTP 400 to a plain request; it was cited as a corroborating launch post and
-      establishes no dimension, so nothing in the score rests on it.
+    shows: Now answers HTTP 400 to a plain request. It was originally cited as a corroborating launch post
+      for the release.
     accessed: '2026-08-13'
     http_status: 400
     content_sha256: dd43073cac40b5602838549abd73fee8eb3b94209bc393d4f43b4b0d29b3ffc2
@@ -77,11 +77,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: 1,335,865 downloads in the trailing 30 days across the five declared artifacts (meta-llama/Llama-3.1-405B
-    114,146; meta-llama/Llama-3.1-70B 41,103; meta-llama/Llama-3.1-8B 1,158,435; meta-llama/Llama-4-Scout-17B-16E
-    18,815; meta-llama/Llama-4-Maverick-17B-128E 3,366), which bands at level 4 (1M-10M) on the model adoption
-    scale. The Llama 3.1 8B checkpoint still carries most of the family's reach even though the capability
-    reading is taken on Llama 4 - reach and capability sit on different releases of the same family.
+  note: Adoption is measured as Hugging Face downloads summed across the five declared artifacts spanning
+    Llama 3.1 and Llama 4. The older Llama-3.1-8B checkpoint still accounts for most of that reach, even
+    though the capability reading is taken on Llama 4 Maverick -- reach and capability sit on different
+    releases of the same family.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-405B
@@ -117,12 +116,10 @@ capability:
     other open weight non-reasoning models of similar size'' (median 18). The strongest released
     member of the tier - Llama 4 Scout scores 10 on the same index, and Behemoth is unreleased.'
   confidence: medium
-  note: 'Llama 4 Maverick is the strongest released member of the family and so sets the score: Artificial
-    Analysis puts it at 14 on the v4.1.1 Intelligence Index, ranked #26 of 44 and below the median of 18
-    for open-weight non-reasoning models of similar size. Llama 4 Scout scores 10 on the same index, and
-    Behemoth was never released. Artificial Analysis has recalibrated the index, so numbers carried over
-    from earlier versions of it are not comparable with these; on the current scale the family sits below
-    its peer median, which is what a 3 records.'
+  note: Llama 4 Maverick, the strongest released member of the family, scores 14 on Artificial Analysis's
+    Intelligence Index (v4.1.1), ranked 26th of 44 and below the peer median of 18 for open-weight non-reasoning
+    models of similar size. Behemoth was never released, and the index has since been recalibrated, so these
+    numbers are not comparable with earlier versions.
   last_verified: '2026-08-13'
   sources:
   - url: https://artificialanalysis.ai/models/llama-4-maverick

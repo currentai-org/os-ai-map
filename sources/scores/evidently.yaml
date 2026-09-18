@@ -15,11 +15,9 @@ openness:
       detail: no ee/enterprise path in the recursive tree; Evidently Cloud is a separate hosted product
         adding dataset/user management, alerting and no-code evals on top of the same open core
   confidence: high
-  note: Apache-2.0 throughout, with both the evaluation library and the monitoring dashboard published
-    and self-hostable. The README states the choice directly - self-host the open-source Monitoring UI,
-    or sign up for Evidently Cloud - and frames Cloud's extras (dataset/user management, alerting, no-code
-    evals) as additions on top of the open core rather than functionality withheld from it. A recursive
-    tree search found no enterprise, ee or license-key path.
+  note: Evidently is released under Apache-2.0 throughout, and both the evaluation library and the self-hostable
+    monitoring dashboard are published in the same repository. Evidently Cloud adds dataset and user management,
+    alerting and no-code evals on top of that open core, rather than withholding any of it.
   raw: license:Apache-2.0(OSI, single root LICENSE);source:public(the full Monitoring UI service is self-hostable
     from this repository, per the README's own "Self-host the open-source version" option);core-gated:ungated(no
     ee/enterprise path in the recursive tree; Evidently Cloud is a separate hosted product adding dataset/user
@@ -58,11 +56,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: The evidently package draws 1,255,790 PyPI downloads a month, inside the 1M-10M band but close to
-    its floor, so a modest fall would put it at 3. The package is the product - the evaluation library and
-    the self-hostable Monitoring UI service both install from it - which is why its count is the band rather
-    than a proxy for one. 7,877 GitHub stars on a project active since 2020 corroborate without setting the
-    level.
+  note: 'Adoption is measured by PyPI downloads of the evidently package, since installing it delivers the
+    whole product: the evaluation library and the self-hostable Monitoring UI both ship from the same package,
+    so the count is a direct measure of use rather than a proxy. GitHub stars on the project, active since
+    2020, corroborate without adding to the measurement.'
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/evidently/recent
@@ -93,19 +90,15 @@ capability:
     tracking metrics and tests over time (self-hosted or Cloud). No prompt management, no playground, no
     tracing of live production LLM calls as a first-class surface.'
   confidence: high
-  note: 'A deep and broad evaluation and monitoring library - more built-in metrics than any other product
-    in this category - with continuous monitoring as its first-class surface, which is the product-shape
-    ruling that placed it in this category. It has no prompt management and no playground, and its
-    monitoring reads on metrics and test results computed over batches of data rather than live per-call
-    tracing, which is the anchor''s core surface. That combination sits one rung below Langfuse at 4,
-    the same placement as openllmetry and monocle for a category-complete instrument missing prompt and
-    playground breadth.'
+  note: Evidently is a deep evaluation and monitoring library, with an unusually large set of built-in metrics
+    and continuous monitoring as its main surface. Its monitoring reads metrics and test results computed
+    over batches of data rather than live per-call tracing, which keeps it a step behind Langfuse.
   comparison:
     last_attested: '2026-09-02'
     sources:
     - url: https://raw.githubusercontent.com/langfuse/langfuse/main/README.md
-      shows: 'README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the
-        current feature set, unchanged from when this anchor was set.'
+      shows: README still lists Tracing, Prompt Management, Evaluations, Playground and Datasets as the current
+        feature set, unchanged from when the comparison to Langfuse was set.
       accessed: '2026-09-02'
       http_status: 200
       content_sha256: 439722781c20016acc5fffa98a96ed050da0db9ff8ca9db975ae9f8474ac7a5f

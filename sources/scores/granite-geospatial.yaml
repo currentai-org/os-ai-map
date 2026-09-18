@@ -36,7 +36,8 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: 127 downloads in the trailing 30 days for the declared biomass checkpoint.
+  note: Downloads of the declared biomass checkpoint on Hugging Face are the adoption signal here, the model's
+    only counted distribution channel.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/ibm-granite/granite-geospatial-biomass
@@ -52,11 +53,16 @@ capability:
   relative_to: prithvi-eo
   relation: two_below
   confidence: medium
-  note: 'Only the adaptation pathway is stated directly. The multi-instrument decline turns on which HLS member the card names: the declared input is HLS L30, the Landsat-only product, not the S30 Sentinel-2 member, so it is one instrument rather than the two the HLS name suggests. Confidence is medium because the card contradicts itself on that point — the text says L30 while its own Training Data link points at the S30 product page — though both readings leave a single input product. The GEDI lidar is a label source rather than an input, masked-reconstruction pretraining does not count as generative, and no second scale is specified.'
+  note: 'Granite Geospatial documents one capability: a TerraTorch fine-tuning workflow, demonstrated in
+    zero- and few-shot notebooks. Its only input is HLS L30, the Landsat-only half of the Harmonized Landsat/Sentinel-2
+    product; GEDI lidar is a training label rather than a model input, the pretraining objective is masked
+    reconstruction rather than generation, and the release covers one spatial scale.'
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-geospatial-biomass/raw/main/README.md
-    shows: Documents TerraTorch inference from a released config plus notebooks walking zero-shot and few-shot fine-tuning, with HLS L30 optical imagery as the only model input and above-ground biomass regression as the only output.
+    shows: Documents TerraTorch inference and zero-shot/few-shot fine-tuning notebooks, with HLS L30 optical
+      imagery as the model input and above-ground biomass regression as the output; the README's own Training
+      Data link, however, points to the S30 product page.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: c80890eaf65aee0132469dc3507bd949aaa478515846773a720d690a11998b00

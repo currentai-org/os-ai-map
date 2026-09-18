@@ -11,11 +11,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: The LICENSE body is the standard MIT License text; GitHub's classifier resolves it correctly to MIT
-    even though the copyright line names Anthropic, PBC rather than mark3labs, so no NOASSERTION handling was
-    needed here. The repository is public and unarchived and ships the whole SDK - server, client, transports
-    and OAuth support - with no separate paid tier or license-gated build described anywhere in the README,
-    so source is public and the core ungated.
+  note: The LICENSE is the standard MIT License, and the repository is public and unarchived. It ships the
+    whole SDK - server, client, transports and OAuth support - with no separate paid tier or license-gated
+    build described anywhere, so the core is ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-03'
   sources:
@@ -49,9 +47,8 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 9,058 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. mcp-go ships
-    as a Go module with no download-counting package registry, so the band rests on stars as the fallback instrument,
-    capped at 3.
+  note: mcp-go ships as a Go module, and Go's module ecosystem publishes no download counts, so GitHub stars
+    are the only comparable adoption signal here.
   last_verified: '2026-09-03'
   sources:
   - url: https://api.github.com/repos/mark3labs/mcp-go
@@ -68,16 +65,10 @@ capability:
   relative_to: mcp-python-sdk
   relation: at
   confidence: medium
-  note: 'Both roles, the full primitive set and all three transports, which is band 4 - the same coverage as
-    the Python SDK, in Go. It also implements task capabilities beyond the primitive set, which is surface
-    the ladder does not read because the bands are the spec''s own dimensions. Band 5 is out of reach on this
-    evidence rather than on a judgement: it needs the optional features the cited spec version defines for
-    the roles implemented - sampling, roots and elicitation - and none of the documentation read here enumerates
-    them. Closing that is a documentation read, not a product change. Its README enumerates support through
-    the 2025-11-25 specification, backward compatible to 2024-11-05. The newest published version is 2026-07-28,
-    so this record cannot reach band 5 on the version leg alone, whatever its optional-feature coverage - which
-    is a real distinction between it and the two official SDKs above, and the reason to record the version
-    at all.'
+  note: 'MCP Go implements both roles, the full primitive set and all three transports, matching mcp-python-sdk.
+    What is missing is confirmation of the optional features each role can add - sampling, roots and elicitation
+    - and a specification target current with the latest release: its README covers 2025-11-25, one revision
+    behind 2026-07-28.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/mark3labs/mcp-go/main/README.md

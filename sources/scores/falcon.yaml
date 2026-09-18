@@ -13,25 +13,22 @@ openness:
     - name: TII-Falcon-License-2.0
       detail: Apache-based+AUP,non-OSI
   confidence: high
-  note: 'Weights are downloadable and freely usable commercially at any scale, but the corpus is not released
-    and there is no training code, so 3. Not 2: the TII-Falcon-License-2.0 is Apache-based with an acceptable-use
-    policy, and a conduct restriction caps neither who may use the model nor at what scale, so it belongs
-    with permissive non-OSI licenses and attribution requirements rather than with capped ones such as Llama''s
-    700M-MAU ceiling. Not 4 or 5 either, since corpus and pipeline are both closed and the license is non-OSI
-    in any case - the open-source definition forbids discriminating against a field of endeavor. Hugging
-    Face reports the license as ''other'', an abstention rather than an answer, so the reading rests on
-    TII''s published text.'
+  note: Falcon's weights are downloadable and free to use commercially at any scale under the TII Falcon
+    License 2.0, an Apache-based license with an acceptable-use policy rather than a usage cap. TII does
+    not release the training corpus or training code, and the acceptable-use clause keeps the license outside
+    the OSI definition, so the release counts as open weights rather than open source.
   last_verified: '2026-08-13'
   raw: weights:open;data:closed;code:closed;license:TII-Falcon-License-2.0(Apache-based+AUP,non-OSI)
   sources:
   - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
-    shows: '`gated: false`, `private: false`, safetensors weight files, 5,292 downloads and 41 likes;
-      cardData.license is `other`, so the Hub does not name the license and the tier rests on the TII
-      text.'
+    shows: '`gated: false`, `private: false`, safetensors weight files, 5,292 downloads and 41 likes; cardData.license
+      is `other`, so the Hub does not name the license and the tier is read from the TII text.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
-    establishes: [weights, license]
+    establishes:
+    - weights
+    - license
   - url: https://huggingface.co/blog/falcon3
     shows: '"We conducted a single large-scale pretraining run on the 7B model, using 1024 H100 GPU
       chips, leveraging 14 trillion tokens featuring web, code, STEM, and curated high-quality and
@@ -56,10 +53,10 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: 'The single declared artifact tiiuae/Falcon3-10B-Base returns 5,292 downloads in the trailing 30
-    days, alongside 41 likes, which bands at level 1 (<10K) on the model adoption scale. A measured download
-    count outranks a reported-traction read, and here it confirms what the family''s own description already
-    said: relevance has faded against newer small language models.'
+  note: 'The single declared artifact, Falcon3-10B-Base, is scored on measured Hugging Face downloads rather
+    than a reported-traction figure, since a direct count is the stronger signal when one exists. That count
+    confirms what the Falcon 3 family''s own description already says: relevance has faded against newer
+    small language models.'
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
@@ -70,12 +67,12 @@ adoption:
     content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
   - url: https://venturebeat.com/ai/uaes-falcon-3-challenges-open-source-leaders-amid-surging-demand-for-small-ai-models
     shows: VentureBeat piece on Falcon 3 and demand for small models; the host answers HTTP 429, so it is
-      not a live source for the band.
+      not a live source for the reading.
     accessed: '2026-06-04'
   - url: https://huggingface.co/tiiuae/Falcon3-7B-Base
-    shows: 'Model card for tiiuae/Falcon3-7B-Base, licence tag `falcon-llm-license`, reporting 14,911 downloads
-      last month and 152,111 all-time. NOTE: this sibling is not a declared artifact, and its figure alone
-      is above the <10K band this record sits in — see the note on the family sum.'
+    shows: Model card for tiiuae/Falcon3-7B-Base, license tag `falcon-llm-license`, reporting 14,911 downloads
+      last month and 152,111 all-time. This sibling model is not a declared artifact; see the note on the
+      family sum.
     accessed: '2026-08-15'
     http_status: 200
     content_sha256: 8be0677630252ad98de327b38066f49d6df3b74678437cdea48765d673c79a81

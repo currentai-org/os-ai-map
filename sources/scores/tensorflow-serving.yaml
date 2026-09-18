@@ -13,10 +13,10 @@ openness:
       value: ungated
       detail: no enterprise path in the repository root and no paid build of the engine in the README
   confidence: medium
-  note: The LICENSE body is the Apache-2.0 text, read in full rather than taken from the API's label, and carries
-    no appended condition. The repository is public and unarchived and builds the engine itself. Its root tree carries
-    no enterprise, ee or commercial directory and its README describes no licence-gated build, so the core reads
-    as ungated. Confidence is medium because that is a repository-and-README read rather than a pricing-page read.
+  note: TensorFlow Serving's LICENSE is the Apache-2.0 text with no appended condition, and the public repository
+    is the engine itself rather than a wrapper around closed code. Its root carries no enterprise or commercial
+    directory, and the README describes no license-gated build, so nothing in the published source is held
+    back.
   raw: license:Apache-2.0(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
     path in the repository root and no paid build of the engine in the README)
   last_verified: '2026-08-31'
@@ -51,14 +51,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 6,360 GitHub stars, which lands in the 1K-10K band of the stars scale, level 2, and a stars-based signal
-    caps at 3 because a star is not a use. Two larger figures exist and neither is this product's. The `tensorflow-serving-api`
-    package draws 4,627,937 downloads in the trailing 30 days, but its own summary is "TensorFlow Serving Python
-    API" - it is the client library for a running server, so its downloads measure client use rather than deployments
-    of the serving system, and it is not declared as an artifact for that reason. The `tensorflow/serving` container
-    image the README's quickstart pulls reports 80,659,067 pulls, which is the product itself, but the count is
-    cumulative since publication while this scale is monthly, so it corroborates without banding. No deployment
-    figure is published, leaving stars as the only honest instrument.
+  note: 'GitHub stars are the adoption signal because neither alternative fits: the tensorflow-serving-api
+    PyPI package measures a client library''s own use rather than deployments of the server, and the tensorflow/serving
+    Docker pull count is cumulative rather than a trailing monthly figure. A star is not a use, so this
+    is a floor on adoption, not a full account of it.'
   last_verified: '2026-08-31'
   sources:
   - url: https://api.github.com/repos/tensorflow/serving
@@ -86,8 +82,9 @@ capability:
   relative_to: vllm
   relation: two_below
   confidence: medium
-  note: Two bands below the vllm anchor. It is a general model server designed before the LLM serving techniques
-    the anchor is banded on - paged attention, continuous batching, tensor parallelism - and documents none of them.
+  note: TensorFlow Serving sits two tiers below vLLM. It is a general model server built before the LLM-specific
+    serving techniques vLLM is judged on, paged attention, continuous batching, tensor parallelism, and
+    it documents none of them.
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/tensorflow/serving/master/README.md

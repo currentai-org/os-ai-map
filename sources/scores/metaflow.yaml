@@ -14,10 +14,9 @@ openness:
       detail: a 1,255-entry recursive tree carries a root LICENSE and R/LICENSE, every other license file under
         metaflow/_vendor/, and no path matching enterprise, ee, commercial or proprietary
   confidence: high
-  note: Apache-2.0 with the whole framework published. Outerbounds sells a managed platform alongside, which
-    the ladder does not read as gating. The 1,255-entry recursive tree carries one governing LICENSE; every
-    other license file is a vendored third-party dependency under metaflow/_vendor/, and there is no enterprise,
-    ee or commercial path.
+  note: Metaflow's whole framework is published under Apache-2.0, and a full scan of the repository tree
+    finds no enterprise, ee or commercial path. Outerbounds sells a managed platform beside it as a separate
+    product, not a fuller edition of the open framework.
   raw: license:Apache-2.0(OSI);source:public(Netflix/metaflow is the framework you run);core-gated:ungated(a
     1,255-entry recursive tree carries a root LICENSE and R/LICENSE, every other license file under metaflow/_vendor/,
     and no path matching enterprise, ee, commercial or proprietary)
@@ -56,9 +55,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 482,037 downloads of metaflow in the trailing
-    30 days, inside the 100K-1M band for level 3. PyPI is the product's declared distribution
-    channel, so the level can be recomputed from that feed.
+  note: Adoption is measured as PyPI downloads of the metaflow package in the trailing month, the product's
+    declared distribution channel. The figure can be recomputed directly from that feed.
   last_verified: '2026-09-15'
   sources:
   - url: https://pypistats.org/api/packages/metaflow/recent
@@ -76,11 +74,9 @@ capability:
   confidence: medium
   relative_to: flyte
   relation: at
-  note: 'Admitted on the accelerator limb - @resources(gpu=...) is Metaflow''s own
-    decorator, not a pod spec passed through. Band 3: Metaflow decides when a step
-    runs and which queue or cluster it is submitted to, and AWS Batch or the Kubernetes
-    scheduler chooses the machine. Under this dimension it does what flyte does, and
-    the two are banded together.'
+  note: The @resources(gpu=...) decorator is Metaflow's own field, not a pod spec passed through, and Metaflow
+    decides when a step runs and which queue or cluster it goes to; AWS Batch or the Kubernetes scheduler
+    then chooses the machine. That is the same shape of decision as Flyte, and the two sit together.
   last_verified: '2026-09-15'
   sources:
   - url: https://raw.githubusercontent.com/Netflix/metaflow/master/metaflow/plugins/resources_decorator.py

@@ -51,10 +51,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: The crates.io API reports 14,002,418 recent downloads for `rmcp`, which is crates.io's NINETY-DAY figure
-    rather than a monthly one - roughly 4.67 million a month, inside the 1M-10M band for level 4. Reading the
-    90-day number as monthly would band this a level high, which is the trap this note exists to close. Medium
-    confidence because the conversion assumes an even rate across the window.
+  note: Adoption is measured through crates.io downloads for `rmcp`. That figure is a trailing 90-day count
+    rather than a monthly one, so it is converted to a monthly rate on the assumption of a roughly even
+    pace across the window.
   last_verified: '2026-09-17'
   sources:
   - url: https://crates.io/api/v1/crates/rmcp
@@ -72,11 +71,10 @@ capability:
   confidence: high
   relative_to: mcp-go-sdk
   relation: at
-  note: 'Band 5 on the same reading as the official Go SDK, and the transport question is worth stating rather
-    than glossing: `rmcp` ships stdio and Streamable HTTP and deliberately does NOT ship the legacy two-endpoint
-    HTTP+SSE transport from the 2024-11-05 revision, calling it a non-goal. The ladder asks for more than one
-    transport rather than all of them, and declining a transport the current specification has superseded is
-    coverage of that specification rather than a gap against it.'
+  note: 'This SDK matches the official Go SDK''s coverage of the Model Context Protocol: both roles, every
+    primitive and the optional features, each tied to the 2026-07-28 specification. It ships stdio and Streamable
+    HTTP but deliberately not the legacy two-endpoint HTTP+SSE transport, which the current specification
+    does not require.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/modelcontextprotocol/rust-sdk/main/README.md

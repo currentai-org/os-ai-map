@@ -13,17 +13,10 @@ openness:
       value: public
       detail: datalab-to/chandra carries the inference code and the weights are published
   confidence: high
-  note: 'Apache-2.0 covers the CODE and the model WEIGHTS do not: the README carries two badges, ''Code License
-    Apache-2.0'' and ''Model License OpenRAIL-M'', and states that the weights are ''free for research, personal
-    use, and startups under $2M funding/revenue, cannot be used competitively with our API''. A revenue threshold
-    above which a class of use is charged for, plus an anti-compete clause, is the competition_restricted tier''s
-    definition stated directly - the same reading that placed MinerU-Open-Source-License and marker''s funding
-    threshold there. Most-restrictive-wins across the license compound therefore settles this at 2/source_available:
-    the source is fully public and it is the terms on the thing you actually run that hold the score down.
-    The repository label reads Apache-2.0 and is not wrong; it does not describe the weights. The pair is hand-assigned
-    and the category defers it: the shared software tier lists licences by literal name and does not name this
-    one, so the lookup abstains. Extending a shared tier reaches eleven categories and is a maintainer''s ruling
-    rather than part of a promotion.'
+  note: 'Chandra''s code is Apache-2.0 and fully public, but the model weights carry a modified OpenRAIL-M
+    license: free for research, personal use, and startups under $2M in funding or revenue, and barred from
+    competing with Datalab''s own API. That revenue threshold and anti-compete clause, on the weights rather
+    than the code, keep this at source-available rather than fully open.'
   raw: 'license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights: free for research,
     personal use and startups below USD 2M funding or revenue, and not usable competitively with Datalab''s
     API; the Hugging Face card declares the family as openrail);source:public(datalab-to/chandra carries the
@@ -63,9 +56,9 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: The PyPI download API reports 9,116 downloads of chandra-ocr in the trailing 30 days. The level-2 band
-    opens above 10,000, so this sits in the <10K band at level 1 - 884 downloads short of the boundary on the
-    day it was read. Quoted rather than rounded, because the band turns on it.
+  note: Chandra's adoption is read from PyPI downloads of chandra-ocr over the trailing month, the only
+    usage signal recorded for the package. The reading lands just under the threshold for the next reach
+    bracket up.
   last_verified: '2026-09-16'
   sources:
   - url: https://pypistats.org/api/packages/chandra-ocr/recent
@@ -86,20 +79,18 @@ capability:
     last_attested: '2026-09-16'
     sources:
     - url: https://github.com/docling-project/docling
-      shows: Re-read of the peer these bands are placed against. Docling still emits Markdown, HTML and lossless
-        JSON with layout and reading order preserved, which is the amount of a document surviving that the
-        spacing rests on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images - is on the
-        same page and is recorded here for completeness; it is NOT the property these bands are placed on,
-        because the recipe excludes input breadth by name.
+      shows: Re-read of the peer this comparison is placed against. Docling still emits Markdown, HTML and
+        lossless JSON with layout and reading order preserved, which is the amount of a document surviving
+        that the comparison turns on. Its input list - PDF, DOCX, PPTX, XLSX, HTML, EPUB, audio and images
+        - is on the same page and is recorded here for completeness; it is NOT the property the comparison
+        turns on, because the recipe excludes input breadth by name.
       accessed: '2026-09-16'
       http_status: 200
       content_sha256: 69950eb12c50e7599aa655c6329b0a0f3f9ebcb56d74fbcba0d3aa726c0785e5
-  note: 'Structure survives: the product recovers reading order, tables and forms into Markdown and JSON, including
-    handwriting and mathematics, which most converters drop. Banded `at docling` because both recover the same
-    amount of a document, which is what this ladder measures. An earlier draft banded it one below docling
-    on input breadth - docling parses a wider set of file types - and breadth is the second quantity the recipe
-    note excludes by name. Benchmark standing corroborates and does not decide: Chandra now leads olmOCR-Bench,
-    above olmOCR itself, so nothing here suggests it recovers less than the products around it.'
+  note: Chandra recovers reading order, tables, forms, handwriting and mathematical notation into Markdown
+    and JSON, matching Docling's structure-preserving output; Docling's wider range of accepted input formats
+    is a separate measure from how much of one document survives conversion. Chandra currently leads the
+    olmOCR-Bench leaderboard, ahead of olmOCR itself.
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/datalab-to/chandra

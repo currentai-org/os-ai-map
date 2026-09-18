@@ -1,43 +1,12 @@
-# Axes a verification pass reached and could not settle, with the reason and the date.
-#
-# The runbook's definition of done is that every claim either carries a confirmed
-# `last_verified` or sits somewhere with a reason - never silently absent. A category's
-# `scoring_recipe.deferred` block covers products the openness ladder cannot read. This file
-# covers the other case: an axis a re-read opened, worked, and honestly could not close.
-#
-# It is a queue, not an archive. An entry earns its place by naming what would settle it.
+# Axes a verification pass reached and could not settle, with the reason and the date — the
+# queue for an axis a re-read opened and could not close (a category's `scoring_recipe.deferred`
+# covers what the ladder cannot read at all). Read by build/check_freshness.py,
+# build/sweep_status.py and build/axis_assessments.py.
+# Ruling: docs/reference/evidence-and-freshness.md, "A hold is a claim about now, not a record
+# of history".
 version: 1
 
-# EMPTY as of 2026-08-16, and that is a result rather than an oversight.
-#
-# Nine axes were held here since 2026-08-09. Reconciling them at the end of the 472-product
-# closeout found that ALL NINE had already been re-read on 2026-08-13 or 2026-08-14, and that
-# every one of those re-reads was written into the score note while the hold and the missing
-# date were left behind:
-#
-#   verl.capability                 "Re-read 2026-08-13 and unchanged at 5"
-#   openpipe.capability             "Re-read 2026-08-13 and unchanged at 3"
-#   amazon-bedrock-...ne-tuning.cap "Re-read 2026-08-13 and unchanged at 3"
-#   anyscale-fine-tuning.capability "Re-read 2026-08-13 and unchanged at 2"
-#   fireworks-inference.capability  "SCORE UNCHANGED AT 4 ... Re-derived 2026-08-13"
-#   aws-neuron.adoption             "Re-read 2026-08-13 and held at 3 ... The date records that
-#                                    the claim was re-derived from its source"
-#   qualcomm-ai-engine-direct.open  "Re-derived 2026-08-13 ... which is what earns the date"
-#   together-fine-tuning.adoption   "ABSTENTION RE-CONFIRMED 2026-08-13"
-#   falcon.adoption                 "RE-BANDED 2026-08-14 ... A measured count outranks a
-#                                    reported-traction reading"
-#
-# In each case a source carrying exactly that date was already cited on the axis. The dates were
-# restored from the notes' own words and the entries removed. `check_verification`'s invariant
-# passes on all nine, which is the independent check that the evidence really is there.
-#
-# THE LESSON THIS FILE SHOULD CARRY: a hold is a claim about the CURRENT state of an axis, and
-# nothing in the repository forces it to stay true. A later pass that settles the question
-# writes its finding into the score note, where the queue cannot see it. Before adding an entry,
-# read the axis's note and its source dates; before trusting an existing one, do the same.
-#
-# `together-fine-tuning.adoption` is the case worth remembering: its value is null, and that is
-# a DELIBERATE, DATED abstention rather than a gap. A null answer that somebody looked for and
-# did not find is a confirmed axis.
+# Ruling: docs/reference/evidence-and-freshness.md, "A null axis can earn a `last_verified`,
+# and should".
 
 held: {}

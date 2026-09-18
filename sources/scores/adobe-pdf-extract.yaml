@@ -12,8 +12,8 @@ openness:
       value: closed
       detail: no implementation is published
   confidence: high
-  note: A commercial managed service. Nothing about the implementation is published and it cannot be self-hosted,
-    which is the question this dimension asks; the ladder settles it on source alone.
+  note: It is a commercial managed service with no published implementation, and it cannot be self-hosted.
+    There is no source at all to weigh here.
   raw: license:Proprietary;service:proprietary(Adobe commercial API);source:closed(no implementation is published)
   last_verified: '2026-09-16'
   sources:
@@ -49,11 +49,10 @@ capability:
   confidence: medium
   relative_to: chandra
   relation: at
-  note: 'Structure survives: the service reads the PDF''s own object model rather than an image of it and returns
-    tables, figures and reading order as structured JSON, which is band 4. It does not reach band 5 because
-    it returns the document''s structure and not typed entities the customer defines - there is no custom-processor
-    path here. An earlier draft stopped it at 4 because it reads one input format, which is input breadth and
-    is excluded from this ladder by name. Banded at chandra.'
+  note: Adobe PDF Extract reads a PDF's own object model rather than treating it as an image, extracting
+    tables, figures and reading order as structured JSON, matching Chandra's capability. It does not let
+    a customer define custom entity types to extract, which is what a dedicated document processor would
+    add.
   last_verified: '2026-09-16'
   sources:
   - url: https://developer.adobe.com/document-services/docs/overview/pdf-extract-api/

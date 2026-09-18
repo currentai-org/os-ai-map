@@ -48,9 +48,8 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 1,193 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. MIOpen ships inside the ROCm
-    distribution packages (apt, dnf, zypper) and as a source build, and AMD publishes no download count for either, so the
-    stars scale applies with its cap of 3.
+  note: MIOpen ships inside ROCm's own distribution packages (apt, dnf, zypper) and as a source build, and
+    AMD publishes no download count for either channel, leaving GitHub stars as the only adoption signal.
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/ROCm/MIOpen
@@ -67,12 +66,10 @@ capability:
   relative_to: apache-tvm
   relation: two_below
   confidence: medium
-  note: 'Two bands below the apache-tvm anchor. The operator surface is real - convolution, RNN, pooling,
-    normalization and fusion - and wider than most of the roster''s kernel libraries, which is why it is
-    not a 2. It stays at 3 because no qualifying dependency declaration is on file: what is recorded is
-    that it arrives as part of ROCm, where cutlass and composable-kernel are each vendored as a submodule
-    by PyTorch and FlashAttention. Distribution through a vendor SDK does not rule out a consumer declaring
-    it, so this is where the evidence stands rather than a proof of absence.'
+  note: Unlike cutlass and composable-kernel, which PyTorch and FlashAttention vendor directly as submodules,
+    no outside project documents a dependency on MIOpen; it ships bundled inside ROCm instead. That gap
+    in evidence, not a smaller operator surface, is what keeps it well below Apache TVM's retargetable,
+    multi-vendor compilation.
   last_verified: '2026-09-02'
   sources:
   - url: https://github.com/ROCm/MIOpen/blob/develop_deprecated/README.md
@@ -86,8 +83,8 @@ capability:
     last_attested: '2026-09-02'
     sources:
     - url: https://github.com/apache/tvm/blob/main/README.md
-      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
-        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal
+        deployment across backends, unchanged from what this map's comparison to Apache TVM relies on.
       accessed: '2026-09-02'
       http_status: 200
       content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

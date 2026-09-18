@@ -12,11 +12,10 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: MIT-licensed with public source and no feature-gated core. The whole engine ships free - platform
-    installers for macOS, Windows and Linux, an official Docker Hub image, the local REST API on port 11434,
-    and the model library - with no paid edition, license key or enterprise-only build. Ollama sells hosted
-    cloud inference alongside the engine, but that is a separate service rather than a capability withheld
-    from it, so nothing in the core is gated.
+  note: Ollama is MIT-licensed with the whole engine -- platform installers, an official Docker image, the
+    local REST API, and the model library -- available at no cost and with no enterprise-only build. Ollama
+    also sells hosted cloud inference alongside the engine, but that is a separate service rather than a
+    capability withheld from the open core.
   raw: license:MIT;source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -62,19 +61,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'The band rests on model-pull volume rather than on stars: ollama.com/library lists 233 models carrying
-    about 1.0 billion cumulative pulls between them, led by llama3.1 at 118.4M and deepseek-r1 at 91.3M,
-    alongside 178,451 GitHub stars - comfortably inside a 1M-10M active-user reading, and rated 4 conservatively.
-    One figure does not hold up: the "52M+ monthly model pulls" this record’s reach wording carries appears
-    on neither cited page and cannot be derived from them, because the library publishes an all-time cumulative
-    pull counter per model rather than a monthly rate, and the homepage publishes no volume figure at all.
-    No package is measured for this level, and that is deliberate. A PyPI package named `ollama` exists
-    and is genuinely this project’s, but Ollama is distributed as a platform binary and a Docker image,
-    and the PyPI package is a client SDK for talking to a local server rather than how Ollama is obtained
-    - its 20.3M a month is a large number attached to the wrong question. Where a package is not the product’s
-    primary distribution channel, banding on it is a substitution rather than a measurement. The level therefore
-    rests on documented pull volume rather than on a feed that could recompute it, and the sources below
-    are digested so the claim can be checked again and will age.'
+  note: Adoption is measured from cumulative model-pull volume across Ollama's model library, corroborated
+    by GitHub stars on the engine repository. The PyPI package named ollama is a client for talking to a
+    local server, not the product's primary distribution channel, so its own download count is not used
+    and there is no other package to measure adoption from.
   last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/ollama/ollama
@@ -104,14 +94,10 @@ capability:
   basis: feature_matrix
   value: null
   confidence: high
-  note: 'Local model serving with one-command run, an OpenAI-compatible REST API and a broad model library
-    (Llama, Qwen, Gemma, gpt-oss, DeepSeek). It is a serving-layer tool with no MLPerf result to cite, so
-    it is rated on breadth of features and coverage rather than on a benchmark. The surface is wider than
-    a bare serving description suggests: the README documents the local REST API on port 11434 with an OpenAI-compatible
-    chat endpoint, Python and JavaScript clients, and an agent-launcher layer - `ollama launch claude`,
-    codex, copilot-cli, droid, opencode - plus the OpenClaw assistant integration, and the library carries
-    233 model families, several of which the vendor site also serves as cloud models. No benchmark result
-    is published for the runtime itself, which is why the score rests on that feature coverage.'
+  note: Ollama runs models locally through a one-command CLI, an OpenAI-compatible REST API, and Python
+    and JavaScript clients, with a model library spanning Llama, Qwen, Gemma, DeepSeek and gpt-oss and CLI
+    launches for coding agents. No benchmark result is published for the runtime itself, so this reading
+    comes from feature and model breadth rather than measured performance.
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/ollama/ollama/main/README.md

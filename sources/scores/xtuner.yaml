@@ -13,10 +13,8 @@ openness:
       value: ungated
       detail: no enterprise or ee path in the repository root and no paid tier described in the README
   confidence: high
-  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
-    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
-    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
-    and no paid tier described in the readme.'
+  note: XTuner is released under Apache-2.0, an OSI license, with the full source public and no enterprise
+    or paid tier described anywhere in the repository or README.
   last_verified: '2026-08-31'
   raw: license:Apache-2.0(OSI);source:public(InternLM/xtuner);core-gated:ungated(no enterprise or ee path in the
     repository root and no paid tier described in the README)
@@ -44,17 +42,10 @@ adoption:
   confidence: medium
   banded_quantity: 1,159 monthly downloads of xtuner 0.2.0, a release line 416 days old that the repository left
     behind at v1.0.1 - a count of a superseded version rather than a count of use
-  note: 'What changed here is the instrument, not the level. The PyPI package publishes 0.2.0, uploaded 2025-07-11
-    and 416 days old, while the repository has since released v1.0.1 on 2026-05-15 and the README documents XTuner
-    V1. The registry never followed the project onto that line, so a count off 0.2.0 measures the version the
-    documentation has moved past. GitHub labels v1.0.1 a pre-release even though the version string reads stable,
-    which is the publisher''s own checkbox rather than a claim about the version; the documented current release
-    is V1 either way. A usage_volume record claims to be a download count of the product, and this one counted a
-    superseded version, which is the wrong claim rather than a wrong number. The record therefore states no count:
-    reported_traction, no numeric reach, and the 1,159 downloads kept only as corroboration of the trailing
-    channel. The level is deliberately left where the earlier reading put it. Raising it is a separate judgment
-    needing its own standing evidence, and the only other signal available is the star count, which the routing
-    precedence exists to keep out of an adoption band.'
+  note: XTuner's PyPI package has stayed at 0.2.0, uploaded 2025-07-11, while the repository released v1.0.1
+    on 2026-05-15, so a download count from the old package measures a version the project has left behind
+    rather than current use. No stronger usage signal is available, since GitHub stars measure attention
+    rather than use.
   last_verified: '2026-08-31'
   sources:
   - url: https://pypi.org/pypi/xtuner/json
@@ -71,8 +62,8 @@ adoption:
     http_status: 200
     content_sha256: fe5b422a23ab5525be418ff584567b4a17b70848a97918b71bc35a5ea41a2419
   - url: https://pypistats.org/api/packages/xtuner/recent
-    shows: last_month 1159, last_week 112, last_day 11 for the xtuner package. Recorded as a measurement of the
-      trailing registry line, explicitly NOT as the basis of the band.
+    shows: last_month 1159, last_week 112, last_day 11 for the xtuner package. Recorded as a measurement
+      of the trailing registry line, explicitly NOT as the basis of the reading.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: 486948dd5e2d3aca93bb6089fdf10282e435b7488525c34ea1cb838968c6d0e2
@@ -91,23 +82,22 @@ capability:
     MoE above 200B; Ascend A3 Supernode and NVIDIA paths. Specialized to MoE rather than Megatron-LM's composable
     general-purpose parallelism.
   confidence: medium
-  note: XTuner V1's key-features section claims frontier MoE scale - 1T parameters, 200B without expert parallelism,
-    64k sequences without sequence parallelism - which is the scale story that places megatron-lm at 5. It sits
-    one band below because Megatron-LM offers composable DP/TP/PP/CP/EP with Megatron-FSDP across model families
-    and publishes weak- and strong-scaling benchmarks, whereas XTuner is specialized to MoE and its throughput claim
-    is stated in the README rather than in a published scaling study. The same one_below relation places swift and
-    llama-factory.
+  note: XTuner's README claims frontier MoE scale -- 1T parameters, 200B without expert parallelism, 64k
+    sequences without sequence parallelism -- but that throughput claim is stated in the README rather than
+    a published scaling study. Megatron-LM offers composable parallelism across model families with published
+    weak- and strong-scaling benchmarks that XTuner, specialized to MoE, does not match.
   relative_to: megatron-lm
   relation: one_below
   comparison:
     last_attested: '2026-08-31'
     sources:
     - url: https://github.com/NVIDIA/Megatron-LM
-      shows: Megatron Core still advertises composable TP, PP, DP, EP and CP with FP16, BF16, FP8 and FP4 mixed
-        precision, and Performance Benchmarking still reports training from 2B to 462B parameters across thousands
-        of GPUs, a 462B model benchmarked on 6,144 H100 GPUs with MFU rising from 41% to 47-48%, and a GPT-3 of
-        slightly more than 175 billion parameters strong-scaled from 96 to 4,608 H100 GPUs. The composable general-purpose
-        parallelism and the published scaling study are what hold XTuner's MoE-specialized story one band below.
+      shows: Megatron Core still advertises composable TP, PP, DP, EP and CP with FP16, BF16, FP8 and FP4
+        mixed precision, and Performance Benchmarking still reports training from 2B to 462B parameters across
+        thousands of GPUs, a 462B model benchmarked on 6,144 H100 GPUs with MFU rising from 41% to 47-48%,
+        and a GPT-3 of slightly more than 175 billion parameters strong-scaled from 96 to 4,608 H100 GPUs.
+        The composable general-purpose parallelism and the published scaling study are what keep XTuner's
+        MoE-specialized story a step behind.
       accessed: '2026-08-31'
       http_status: 200
       content_sha256: 7c7a75d3ca90f4b9e41eee29630d359164b715fc07ebd8157a6ffffdf924d454

@@ -22,6 +22,30 @@ Adoption is not quality (that is capability) and not availability (that is openn
 closed API with a million developers scores higher here than a permissively licensed library
 nobody installs, and that is the intended reading.
 
+### Routing is by artifact kind, not by product
+
+A signal is authoritative for one **artifact kind**, never for a product as a whole. A model's
+code repository and its weights routinely carry different licenses, and the code repository is
+the wrong answer for the weights dimension — `governs` on each route in `signal_routing.yaml`
+records what the value is a fact *about*, so a license attached to code is never read as a
+license attached to weights.
+
+A cross-check against GitHub's own license field finds it disagreeing with the recorded value on
+a minority of products, and in every model case among the disagreements Hugging Face agreed with
+the recorded value and GitHub was the outlier — `glm-5-2` (recorded MIT, HF `mit`, GitHub
+`Apache-2.0`), `lucie-7b` (recorded Apache-2.0, HF `apache-2.0`, GitHub `GPL-3.0`), and likewise
+`mimo-v2-5-pro`, `zephyr` and `tulu-3`. A naive "refresh license from GitHub" pass would have
+overwritten every one of those correct model scores with the wrong license, each change looking
+like a well-sourced improvement. Routing by artifact kind is what keeps that class of error from
+occurring.
+
+### Abstain rather than substitute
+
+When the authoritative signal for a dimension is missing or unusable, the rule is to produce no
+evidence and leave the dimension to research. Falling through to a less authoritative signal
+silently reintroduces the artifact-kind failure above under a different name, so a missing route
+is never patched by substituting the nearest available one.
+
 ## The three recorded fields
 
 ```yaml
@@ -122,6 +146,21 @@ a scale that cannot discriminate. Shifted down one order it reproduces the corpu
 three levels exactly and spreads like `model`'s.
 
 Older notes in this project said datasets ran *two* orders lower. The data says one.
+
+**Known disagreement, deliberately not resolved by the shift.** Some dataset products record a
+level against a `reach` that would place them one level higher on the shifted scale, because
+they were read in a different unit entirely — a citation count for a benchmark, GitHub stars for
+a corpus shipped as code — and `reach` carries the unit precisely so those are not silently
+treated as comparable. Reading each one against the shifted scale is a work list for a future
+re-read, not evidence against the shift.
+
+### Why `model` and `software` share one scale
+
+Measured, not assumed. Across the model products recording both a level and a reach, model
+downloads sit at a median in the same order of magnitude as PyPI package downloads. Hugging Face
+model downloads and PyPI package downloads are close enough that one scale serves both, which is
+why `model` and `software` share the table in "## The bands" rather than each carrying its own
+row.
 
 ### Why `hardware` declares none
 
@@ -246,6 +285,24 @@ load-bearing rule in this guide:
   number. See the vocabulary below.
 - An `active_users` band claims a count of people, on the scale above. It may be compared only
   against another user count.
+
+### Authority is declared, not inferred
+
+An adoption route's `authority` — `authoritative` or `fallback` — is a routing decision, not a
+property the instrument name can be trusted to carry, so it is declared explicitly on the route
+rather than derived from it. A `usage_volume` count and a hand-read `active_users` disclosure are
+both authoritative because each measures use directly; `stars_fallback` and `reported_traction`
+are both fallback, the last resorts before abstention. `hand_authored` and `confidence` stay
+orthogonal to it: whether a figure was read by a person, and how much to trust it, are separate
+questions from whether the route is authoritative for the dimension.
+
+Route precedence is monotonic in authority: every authoritative route is tried, in list order,
+before either fallback route — so a hand-read `active_users` disclosure precedes
+`stars_fallback` even though it is hand-authored, because authoritative outranks fallback
+regardless of either. Within the authoritative download channels the order follows the ADR-001
+precedence `pypi > huggingface`, so `pypi` leads the two Hugging Face routes, with the unbridged
+npm and crates usage routes ranking after the bridged download channels and still ahead of the
+fallback stars and reported-traction routes.
 
 ### The instrument is itself a claim, and it needs backing
 
@@ -413,9 +470,12 @@ one package), and the hole is latent there rather than closed.
 
 ### Route order, and taking the sum WITHIN the winning route
 
-Adoption routes Hugging Face model → Hugging Face dataset → PyPI → stars, first artifact the
-product has wins. The sum is taken within the winning kind, so a product shipping both a model
-and its training corpus is not credited with the corpus twice.
+Route order follows the precedence declared in `sources/signal_routing.yaml` — PyPI, then
+Hugging Face model, then Hugging Face dataset, then the unbridged npm and crates routes, with
+GitHub stars and reported traction last as fallback; see "Authority is declared, not inferred"
+above for why PyPI leads. First artifact the product has, on the winning route, wins. The sum is
+taken within the winning kind, so a product shipping both a model and its training corpus is not
+credited with the corpus twice.
 
 ## Products with no machine signal
 

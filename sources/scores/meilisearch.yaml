@@ -16,10 +16,10 @@ openness:
         the Business Source License 1.1 or a commercial license, and BUSL permits non-production use only without
         an agreement
   confidence: high
-  note: 'MIT license body confirmed. The LICENSE body reads `SPDX-License-Identifier: MIT AND BUSL-1.1` and splits
-    the work in two: the core search engine is MIT and free for commercial use, while an Enterprise Edition portion
-    is governed by LICENSE-EE or BUSL-1.1. That is functionality withheld from the open terms inside the published
-    tree, so the core is gated - the litellm shape, not the langchain one.'
+  note: 'The LICENSE body reads `SPDX-License-Identifier: MIT AND BUSL-1.1`, splitting the repository in
+    two: the core search engine is MIT and free for commercial use, while an Enterprise Edition portion
+    covering sharding and S3-streaming snapshots is governed by BUSL-1.1. That functionality sits inside
+    the published tree but outside the open terms, which is what gates the core.'
   raw: license:MIT(core);enterprise-dir:BUSL-1.1;source:public;core-gated:gated(advanced features including sharding
     and S3-streaming snapshots ship in the same repository under the Business Source License 1.1 or a commercial
     license, and BUSL permits non-production use only without an agreement)
@@ -59,9 +59,9 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 59,006 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `meilisearch` package
-    on PyPI is the Python client, not the engine, so its downloads measure client installs. No server deployment
-    count is published, so the stars scale applies and caps the band at 3.
+  note: The meilisearch package on PyPI is the Python client, not the engine, so its downloads measure client
+    installs rather than server deployments. With no server deployment count published, GitHub stars are
+    the adoption signal instead.
   last_verified: '2026-08-18'
   sources:
   - url: https://api.github.com/repos/meilisearch/meilisearch
@@ -78,9 +78,9 @@ capability:
   relative_to: vespa
   relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
-    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
-    provides itself, at what scale and over how many retrieval modes.
+  note: Meilisearch is a complete search engine with typo-tolerant full-text, faceted, filtered, geosearch
+    and hybrid semantic search, plus embedding generation and sharding in its enterprise tier. That's one
+    step below Vespa, the category's top-scoring system.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/meilisearch/meilisearch/blob/main/README.md

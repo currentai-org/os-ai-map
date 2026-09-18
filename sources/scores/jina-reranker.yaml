@@ -22,12 +22,9 @@ openness:
     pipeline and no model repository);license:Apache-2.0(OSI, and only the superseded v1-turbo-en and v1-tiny-en)+CC-BY-NC-4.0(non-commercial;
     governs v2, v3 and v3.5)
   confidence: high
-  note: The current SKUs are licensed CC-BY-NC-4.0 and the superseded v1-turbo-en and v1-tiny-en are Apache-2.0,
-    so the compound resolves on the non-commercial half. commercial_forbidden asks one question - does the
-    licence permit commercial use at all - and the card answers no, saying commercial use beyond AWS and
-    Azure requires contacting sales. The m0 multimodal reranker is excluded from this record on every axis
-    under the category's vision-language rule; it reads cc-by-nc-4.0 as well, so its exclusion moves nothing
-    here.
+  note: Jina Reranker's current v2, v3 and v3.5 checkpoints are licensed CC-BY-NC-4.0, which forbids commercial
+    use beyond a narrow AWS and Azure listing without contacting sales; only the older v1-turbo-en and v1-tiny-en
+    checkpoints carry Apache-2.0.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md
@@ -51,10 +48,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: About 2.0M downloads in the trailing 30 days across the text line - v2-base-multilingual 1.16M,
-    v3 780K, v3.5 32K, plus the two v1 checkpoints. The v2 and v3 figures alone clear the 1M band. The m0
-    multimodal reranker is excluded under the category's rule that a vision-language line is a separate
-    product from the text line; counting its 379K gives about 2.4M and the same band.
+  note: Adoption is measured as Hugging Face downloads across the text-only reranker line, most of them
+    for v2-base-multilingual and v3. The multimodal m0 reranker is scored as a separate product under the
+    category's vision-language rule, and including its downloads would not change the reading.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/api/models/jinaai/jina-reranker-v2-base-multilingual', shows: 'downloads:
@@ -71,10 +67,9 @@ capability:
   value: 61.94 BEIR nDCG@10 at 0.6B, plus 66.83 MIRACL, 67.92 MKQA and 70.64 CoIR; listwise over up to
     64 documents in a 131K-token window.
   confidence: high
-  note: 'Rung 4, competitive frontier. Level with qwen3-reranker: 61.94 BEIR against Qwen3-Reranker-4B
-    at 61.16 on the same table, at a sixth of the parameters, and multilingual with a long context in
-    both cases. Note the numbers come from the publisher own card, which is the instrument available for
-    this product and is why the comparison is drawn against a peer scored from the same table.'
+  note: Jina Reranker v3 scores 61.94 BEIR nDCG@10, level with Qwen3-Reranker-4B's 61.16 on the same table
+    despite using a sixth of the parameters, and both are multilingual with a long context. The comparison
+    comes from Jina's own published table, the only one that reports both models together.
   last_verified: '2026-09-11'
   sources:
   - {url: 'https://huggingface.co/jinaai/jina-reranker-v3/raw/main/README.md', shows: 'Card reports jina-reranker-v3

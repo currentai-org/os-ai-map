@@ -17,14 +17,10 @@ openness:
     - no-managed-tier-observed
     - no-feature-gated-core
   confidence: high
-  note: Apache-2.0, fully self-hostable, with no managed or enterprise tier gating the core, which makes
-    it open source rather than open core. Alibaba says it open sourced the sandbox infrastructure it uses
-    internally. The repository has moved from the alibaba org to opensandbox-group, with the old URL redirecting
-    to the new one. The untruncated tree is 2,642 entries with the whole product public - server/, components/,
-    kubernetes/, cli/, sdks/, specs/ - carrying ten LICENSE paths, all Apache-2.0 copies beside per-SDK
-    and per-component roots, and no ee/, enterprise/, commercial/ or proprietary/ path. open-sandbox.ai
-    is a documentation site with no pricing page, no hosted offering and no sign-up, closing with "Released
-    under the Apache 2.0 License", so there is no managed tier to gate against.
+  note: 'OpenSandbox is Apache-2.0 and fully self-hostable: the repository tree covers the whole product,
+    including the server, Kubernetes manifests, CLI and SDKs, with no enterprise or proprietary directory.
+    The project''s site is documentation only, with no pricing page, hosted offering or sign-up, so there
+    is no managed tier for any part of the core to be gated behind.'
   raw: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -75,21 +71,16 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: '12,522 stars and 1,056 forks on the one declared repo, which falls in the >10K star band - the
-    highest level a star-based reading can reach, since a star is not a download. The project is only months
-    old and no download or named-deployment figure has surfaced, so stars are the only signal: rapid early
-    accumulation (3,845 within 72h of launch) with no usage volume behind it yet. A star count moves daily,
-    so the figure is a snapshot; the band depends only on its order of magnitude. One gap is worth naming:
-    a Python SDK is now published on PyPI as `opensandbox`, so a countable channel exists that this record
-    does not yet measure.'
+  note: 'GitHub stars are the only adoption signal for OpenSandbox: the project is only months old, and
+    no download or named-deployment figure has surfaced yet. Stars accumulated quickly after launch, but
+    a star is not a use, so this reads as early visibility rather than measured adoption.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
     shows: 11.3k GitHub stars; released Mar 2026; no usage/download figures
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/opensandbox-group/OpenSandbox
-    shows: 'Repo metadata - 12,522 stars, 1,056 forks, 51 watchers, pushed 2026-08-13. Bands at >10K stars,
-      level 3 on the stars scale in signal_routing.yaml.'
+    shows: 'Repo metadata: 12,522 stars, 1,056 forks, 51 watchers, pushed 2026-08-13.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 013a649819f1ef44a2bf21c8d0db9288478dcf4e98595bc9fcc60fcee159f9f5
@@ -102,18 +93,10 @@ capability:
     language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
     persistence:file ops; scale:K8s'
   confidence: medium
-  note: 'Secure runtime support is shipped rather than proposed, which is what puts this at 4 rather than
-    at container-only isolation: the server’s runtime resolver holds a Docker map (gvisor to runsc, kata
-    to kata-runtime) and a Kubernetes RuntimeClass map (gvisor to gvisor, kata to kata-qemu, firecracker
-    to kata-fc), plus startup validation, under OSEP-0004 "Pluggable Secure Container Runtime Support" at
-    status implementing. A gVisor end-to-end suite with its own RuntimeClass fixtures, and an AKS plus Kata
-    deployment walkthrough with a matching example directory, corroborate that the code is real rather than
-    planned. Two things keep it from going higher. OpenSandbox explicitly does not install the runtimes
-    - an OSEP non-goal - so the microVM tier depends on operator-supplied infrastructure, and one server
-    supports exactly one runtime at a time. And there is no independent latency measurement: the only figures
-    are the OSEP’s own planning estimates (~550ms for gVisor, ~625ms for Kata and Firecracker). That leaves
-    it level with daytona-sandbox, which scores 4 on the same shape - container by default, VM classes opt-in
-    - on a weaker openness story.'
+  note: 'OpenSandbox ships working, not merely proposed, support for pluggable secure runtimes: gVisor,
+    three Kata Containers backends and plain runc as fallback. It does not install those runtimes itself,
+    so the microVM tier depends on infrastructure the operator supplies, and its cold-start figures are
+    the project''s own planning estimates rather than an independent measurement.'
   last_verified: '2026-08-14'
   sources:
   - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py

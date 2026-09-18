@@ -17,16 +17,10 @@ openness:
         repo - the Apache-2.0 tree publishes the SDK, the tl CLI and client crates, which authenticate to
         cloud.tensorlake.ai with an API key
   confidence: medium
-  note: 'Apache-2.0 SDK and CLI with a proprietary managed runtime. The core is gated on a named mechanism:
-    not a carve-out inside the repository, but a component that is in no repository at all. The 2,350-entry
-    tree is entirely client side - the Python SDK around cloud_client.py, the tl CLI, and nine crates that
-    are all clients, codecs or bindings - and the README attributes sub-second creation to "Lattice, a dynamic
-    cluster scheduler", along with snapshots, cloning, auto suspend/resume and live migration, none of which
-    appear in any of the org’s 58 public repos. Onboarding is an API key from cloud.tensorlake.ai. One tension
-    is worth stating plainly: this record describes the source as runtime plus SDK with BYOC self-hosting
-    in your own AWS, GCP or Azure account, and that is not supported - the runtime is not published, and
-    BYOC means the vendor’s closed control plane runs in your account rather than open self-hosting, which
-    would argue for a more restrictive reading than open core. The tension is stated here rather than resolved.'
+  note: Tensorlake publishes its Python SDK and CLI under Apache-2.0, but the Firecracker microVM runtime
+    and the Lattice scheduler that create sandboxes are in no public repository. Getting started requires
+    an API key for Tensorlake's own cloud, and none of the company's other public repositories implement
+    the missing pieces.
   raw: license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake
     hosted cloud + proprietary Lattice scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster
     scheduler that creates sandboxes exist in no public repo - the Apache-2.0 tree publishes the SDK, the
@@ -85,9 +79,9 @@ adoption:
   reach: <1K stars
   signal_type: stars_fallback
   confidence: low
-  note: 986 GitHub stars on tensorlakeai/tensorlake, which falls under 1K and reads at level 1 on a star-based
-    band - capped in any case, because a star is not a use. No download, install or customer figure is published
-    for this product, so stars remain the only honest signal and the level is directional.
+  note: GitHub stars are the only usage signal published for Tensorlake's sandbox repository, since no download,
+    install or customer figure exists. A star is not a use, so this reads as attention rather than adoption
+    volume.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/tensorlakeai/tensorlake
@@ -103,42 +97,12 @@ capability:
     agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported
     thousands of concurrent sandboxes
   confidence: medium
-  note: 'Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for
-    a rich agent-runtime feature set, level with the microVM peers: tensorlake.ai leads on Firecracker isolation
-    with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable
-    volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. The measured
-    half of that picture is in tension with the score. Independent ComputeSDK TTI benchmarks put Tensorlake
-    at 1.35s median time-to-interactive, 1.44s P95, composite 86.1, 15th of 24 providers - roughly three
-    times the ~460ms and 12th-of-19 reading this band was written against, and well short of the vendor’s
-    own sub-second creation claim. Note that 460ms is also the number the vendor site animates in its demo,
-    so the vendor claim and the leaderboard are not two independent measurements. Nothing here asserts sub-second
-    latency as a measured fact: the vendor claim and the measured figure are recorded separately, which
-    is what the two sources support. The 4 stands on isolation and feature depth.
-
-Settled under issue 264, and an earlier draft of this settlement was withdrawn on review
-    for asserting a measurement asymmetry that does not exist. Every near peer here carries an independent
-    ComputeSDK figure, so the claim that this is the only measured provider was simply false.
-
-    The measured field, with recorded capability scores:
-
-      daytona-sandbox      ~140ms median, 4th of 19    capability 4
-      blaxel-sandbox        0.51s median               capability 3
-      e2b-sandbox           0.66s median, 12th of 24   capability 4
-      tensorlake-sandbox    1.35s median, 15th of 24   capability 4
-
-    Latency is the worst of the four here, and it is not what separates 3 from 4 in this category: blaxel
-    is 2.6 times faster and sits a band lower. What blaxel lacks is proven scale, where e2b records 1B+
-    sandboxes started. So the band turns on isolation, feature depth and scale, and latency is a component
-    of the feature matrix rather than the discriminator.
-
-    The 4 rests on Firecracker microVM isolation at the top tier, plus durable-execution orchestration -
-    queues, timers, retries and versioned mountable volumes - which is a feature surface blaxel does not
-    have. That is the positive case and it is what should be argued with.
-
-    The soft spot is scale rather than latency. This record reports thousands of concurrent sandboxes
-    against e2b''s 1B+ started, and those are not the same measure. If this band is revisited, scale
-    evidence is where to press, not the TTI. Confidence stays medium, which is where the vendor''s
-    sub-second claim standing against a measured 1.35s belongs.'
+  note: 'Tensorlake has most of the features expected from a leading sandbox platform: Firecracker microVM
+    isolation for every tool call, snapshots that can be paused, forked and resumed, versioned mountable
+    volumes, and durable functions with queues, timers and retries. Independent ComputeSDK benchmarks put
+    its median time-to-interactive at 1.35 seconds, slower than the vendor''s sub-second claim, although
+    latency is not the main differentiator in this category. Scale is the bigger gap: Tensorlake reports
+    thousands of concurrent sandboxes, while E2B has recorded more than a billion sandbox starts.'
   last_verified: '2026-08-14'
   sources:
   - url: https://www.tensorlake.ai/

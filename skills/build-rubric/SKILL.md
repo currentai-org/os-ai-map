@@ -185,6 +185,11 @@ Then the human checklist, which is only what a machine cannot judge:
   asserted, and the first pass of `sources/scores/` was itself agent-authored, so authorship
   establishes no trust.
 - `components` fields may only ever be edited via `build/components.py`, never by hand.
+- A ruling belongs in `docs/reference/openness.md` (or `adoption.md`), not in a `#` comment
+  beside the key it settles. A rubric file keeps a short header, a one-line clarifier where a
+  key's reading is not obvious, and a one-line pointer to the section that carries the
+  reasoning; the case law itself is written where someone not editing the rubric will find it.
+  `docs/reference/product-copy.md`, "Unpublished prose", is the rule.
 - Never hand-edit `build/notebook_data.json` or anything under `notebooks/` — bot-regenerated,
   and CI blocks PRs that touch them. `build/serialize` writes `notebook_data.json` as a side
   effect, so check `git status` after running it.

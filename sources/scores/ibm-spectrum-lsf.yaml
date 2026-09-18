@@ -13,10 +13,9 @@ openness:
       detail: no implementation is published; IBM's open repositories are API wrappers and integrations around
         the closed scheduler
   confidence: high
-  note: A commercial IBM suite. IBM publishes a Python API wrapper and integration code on GitHub, but those
-    drive the scheduler rather than implement it, and no source for LSF itself is published. Nothing about
-    a license can help where there is no self-hostable implementation, which is why the ladder settles this
-    on source alone.
+  note: IBM Spectrum LSF is a commercial suite with no published implementation. IBM's GitHub repositories
+    are a Python API wrapper and integration code that drive the scheduler rather than implement it, so
+    no license can substitute for the missing source.
   raw: license:Proprietary;service:proprietary(IBM commercial suite, licensed per site);source:closed(no implementation
     is published; IBM's open repositories are API wrappers and integrations around the closed scheduler)
   last_verified: '2026-09-16'
@@ -36,9 +35,9 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No usage figure is published for LSF, and it publishes no countable artifact - no package, repository
-    or registry entry for the scheduler itself. IBM's lsf-python-api repository is a wrapper rather than the
-    product, so its stars would measure a different thing. No level is assigned rather than one being inferred.
+  note: No usage figure is published for LSF, and it has no countable artifact of its own — no package,
+    repository or registry entry for the scheduler itself; IBM's lsf-python-api repository is only a wrapper,
+    so its stars would measure a different thing. No level is assigned rather than one inferred.
   last_verified: '2026-09-16'
   sources:
   - url: https://www.ibm.com/products/hpc-workload-management
@@ -61,18 +60,16 @@ capability:
     last_attested: '2026-09-16'
     sources:
     - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/doc/user-manual.md
-      shows: Re-read of the peer this band is placed against. HiveD still presents as choosing which GPUs on
-        which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
-        reservation - the property both products share at this band.
+      shows: Re-read of the peer this comparison is placed against. HiveD still presents as choosing which
+        GPUs on which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
+        reservation - the property both products share.
       accessed: '2026-09-16'
       http_status: 200
       content_sha256: b4140035b19168633fbdf15d4d2585bdd8d966c173daa4009a0c765d833c73d4
-  note: 'Admitted on the accelerator limb: the GPU request is LSF''s own submit schema, not a backend spec
-    passed through, and LSF''s scheduler consumes it to choose the hosts. Band 4 - it selects the hardware,
-    down to GPU model and memory, and nothing reachable establishes a multi-machine set reserved as one allocation,
-    which is band 5. LSF does have multi-host allocation, but the documentation that would evidence it sits
-    on ibm.com/docs, which this repository cannot fetch; the band records what is citable rather than what
-    is likely.'
+  note: The GPU request is expressed in LSF's own submit schema rather than a backend spec passed through,
+    and LSF's scheduler uses it to select which hosts receive the job, down to GPU model and memory. Nothing
+    reachable establishes a multi-machine set reserved as a single allocation, the property that would lift
+    it above OpenPAI, which selects hardware the same way.
   last_verified: '2026-09-16'
   sources:
   - url: https://raw.githubusercontent.com/IBMSpectrumComputing/lsf-python-api/master/examples/submit_gpu_job.py

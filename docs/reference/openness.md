@@ -134,8 +134,8 @@ on something nobody can run is still a 1.
 | cap | test | tier names |
 |---|---|---|
 | **5** | OSI-approved, or open by the Open Definition for data | `osi`, `open_data` |
-| **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, conduct | `permissive_non_osi` |
-| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling, an acceptable-use policy | `use_bounded` |
+| **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, or an acceptable-use policy on conduct | `permissive_non_osi` |
+| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling | `use_bounded` |
 | **2** | commercial use prohibited or reserved to the vendor, though source or weights are published | `commercial_forbidden`, `competition_restricted`, `noncommercial` |
 | **1** | nothing published to license | `proprietary`, `unstated` |
 
@@ -147,6 +147,30 @@ where MOF draws its own line: Class III, its entry point, requires components us
 
 The tier names still differ per ladder, because a corpus and a codebase carry different
 license families. The **caps** are what is universal.
+
+### License slug and name aliases
+
+A license only caps the score if it resolves to a tier, and two different sources of naming
+drift keep it from resolving on its own.
+
+**Hugging Face publishes a license slug, not the name a rubric's tier examples use.** Without a
+mapping, `gemma` and `llama3.1` match no tier and the signal reads as absent while the license is
+in fact present and use-restricting — the direction of error that overstates openness. A
+meaningful share of base models depend on an alias to route their license at all. The mapping
+(declared in `sources/signal_routing.yaml`'s `license.aliases.huggingface`) says only what a slug
+is *called*; it deliberately does not say what tier it belongs to, which is each category's
+`scoring_recipe`'s own judgment. A slug that aliases to a name absent from the category's tier
+examples abstains, and that abstention is the signal to extend the rubric rather than to guess.
+
+**The same problem recurs one layer over, in what a human typed into a `components` string.**
+`sources/signal_routing.yaml`'s `license.aliases.recorded` canonicalizes a recorded name the way
+the Hub table canonicalizes a published slug — again naming only, never a tier. Left unmapped,
+these read as an absent license while the license is present and use-restricting, the same
+overstatement direction. Porting the rubric to a second category surfaced several products whose
+recorded license mapped to no tier, most of them nothing more than a spelling gap.
+`Gemma-Terms-of-Use` is Google's published name; the alias resolves it to `Gemma-License`, the
+repo's shorthand and the name the Hub alias already produces, so the two stay consistent with
+each other.
 
 ### What it changed, and why it was needed
 
@@ -171,6 +195,31 @@ Two things worth knowing about the shape of it:
 - **`restricted` joined the dataset class vocabulary** for this. Datasets were the only product
   type with no word between `open` and `gated`, which is exactly how a non-commercial corpus
   came to sit in the `open` bucket.
+
+### Creative Commons, vendor terms and other tier extensions
+
+The license tiers in `sources/rubrics/pretrained.yaml` and `model.yaml` grow as new corpora and
+vendor terms reach the map. Each addition is argued on the tiers' own test — does the license
+cap who may use the artifact, or at what scale — not on the license family's reputation.
+
+- **CC-BY-4.0 and CC-BY-SA-4.0** land in `permissive_non_osi`. OSI approves software licenses
+  and has never approved a Creative Commons content license — CC-BY's own deed warns it is "not
+  recommended for software" — so neither is `osi`. Attribution is all CC-BY asks; share-alike
+  binds whoever redistributes rather than capping who may use the weights or at what scale,
+  which is this tier's own test either way. `software.yaml` makes the same call for CC-BY-4.0 on
+  code, for the same reason.
+- **FAIR-Chemistry-License-v1** also lands in `permissive_non_osi`. It grants royalty-free
+  commercial use and asks only for conduct — an acceptable-use policy — plus registration at the
+  download gate. A gate is friction, not a cap on who may use the weights or at what scale, so
+  this is the attribution tier and not `use_bounded`, which is reserved for a real ceiling.
+- **OpenMDW-1.1**, the Linux Foundation's Open Model, Data and Weights License Agreement v1.1,
+  lands in `permissive_non_osi`. Its body grants dealing in the model materials without
+  restriction under copyright, patent, database and trade-secret rights, asks only that the
+  agreement and origin notices travel with a redistribution, and disclaims any restriction on
+  the outputs. Not OSI-approved, and no cap on who may use the weights or at what scale.
+- **CC-BY-NC-4.0 and CC-BY-NC-SA-4.0** land in `commercial_forbidden`, alongside the unversioned
+  `CC-BY-NC`: the NC clause answers this tier's one question — does the license permit
+  commercial use at all — with no.
 
 ### A compound license resolves on all of its parts
 
@@ -209,6 +258,61 @@ application-gated weights license that actually governs the download was never r
 assembled components keep their own terms went unseen. Reading the whole value moved one
 published score — `flan-collection` from 4 to 3 — and left the other two where the analysts
 had already put them by hand.
+
+### The `osi` tier's `examples`: literal spellings, and what's been added to it
+
+The software ladder's tier lists spell out every license name literally rather than
+normalizing them, because whether a given spelling is OSI-approved is a fact to look up, and a
+fact is cheaper to get right than a regex is. A dual license under two OSI-approved terms
+lands on `osi` however it is spelled: `openfn`'s `LGPL-3.0/GPL-3.0` and `megatron-lm`'s
+vendored-component `Apache-2.0/MIT` both resolve because either branch is itself OSI-approved,
+not because the compound-resolution rule above picked the less restrictive one.
+
+Because the list is shared across every software category, adding a name for one product
+tiers every other product that happens to record it, so each addition is checked against the
+corpus before it lands. Two rulings extended `osi` past its founding set:
+
+- **`GPL-2.0`**, for `slurm`. Slurm's `COPYING` body puts all Slurm code and documentation
+  under the GNU General Public License. GPL-2.0 is OSI-approved and copyleft, which the
+  tier's own definition already admits — AGPL sits beside Apache here — so the license was
+  inside the definition and only outside the list. `orange-pi-5` records the same string, but
+  under a `toolchain:` key the hardware ladder reads and this one does not, so the addition
+  reached only `slurm`.
+- **`Apache-2.0-WITH-LLVM-exception`**, for `cuda-tile`. LLVM's exception only widens what a
+  derivative work may do with the Apache-2.0 grant — it drops the patent-notice requirement
+  for object-code-only redistribution — and adds no cap on who may use the software or at
+  what scale, so SPDX and OSI both treat the combination as Apache-2.0. `max` records the
+  identical string under a `repo-license` key this ladder does not read, and carries a
+  separate, non-OSI Modular Community License as its governing terms: the Apache text there
+  covers the repository, not the product's usage terms. `cuda-tile` carries no such wrapper —
+  its `LICENSE` body is the Apache-2.0-WITH-LLVM-exception text and nothing else — so the name
+  resolves cleanly on its own there.
+
+### `components-listed`: naming every component is not releasing the corpus
+
+Between `open` and `documented-not-released` on the pretrained-model data dimension sits
+`components-listed`: every component of the pretraining corpus is named and individually
+resolvable — a link, or a citation identifying that specific dataset — while the mixture or
+the sampling is withheld, so the corpus itself is not reproducible. RWKV is the case it was
+written for: a machine-readable index with a URL column naming every component dataset, with
+no assembled corpus and no reconstruction script (issue #106).
+
+**The discriminator is complete, per-component enumeration, not detail.** A composition
+described in prose stays `documented-not-released` however careful the prose, and so does a
+release that enumerates one stage of a mixture, or names some components while describing the
+rest. Whether each named corpus is itself freely downloadable is not the test — that is a fact
+about third parties, not about this release's own disclosure, and a gate on one component is
+friction rather than withholding, the same reading the evidence store already applies to gated
+weights.
+
+It scores exactly as `documented-not-released` does at every rung, deliberately: the gain is
+descriptive accuracy, not credit. Scoring it higher would reward publishing a list and shipping
+nothing, which is the objection #106 raised against its own proposal.
+
+Shapes that fail the enumeration test rather than the availability one, and so stay at
+`documented-not-released`: a partly synthetic mixture whose generated half is described rather
+than named, a two-stage mixture with only the first stage evidenced, and data-preparation
+documentation naming what the model consumes rather than what it was trained on.
 
 ### `self-host` and `core-gated` are one question
 
@@ -295,6 +399,34 @@ component named. Those predate the rule and have not been re-read.
 A `gated` value is not evidence that somebody applied this rule; check what the record says is
 actually withheld.
 
+### The `ungated` acceptance standard, and why it is prospective
+
+`ungated` is a negative: no document asserts that nothing is withheld, so a reviewer can
+always claim the cited evidence establishes something weaker and be literally right. That
+makes the negative unfalsifiable rather than rigorous unless the standard for accepting it is
+written down.
+
+The standard: a recursive tree showing no `ee/`, `enterprise/`, `commercial/` or
+`proprietary/` path establishes path absence and nothing more, and is never sufficient alone.
+Pair it with a statement from the party that would do the withholding — a vendor naming its
+commercial offering as a separate product, or foundation or academic governance meaning no
+commercial party is positioned to withhold anything. This is a human-reviewed policy: no gate
+enforces it, because whether a page names a separate offering is not mechanically decidable
+from its URL.
+
+What displaces the standard and makes a product `gated` instead is direct evidence of the
+mechanism, which is always citable: a closed package the open one pulls, a license key in the
+published source, or an `ee/` tree under different terms. Gating is provable and `ungated` is
+a negative no document asserts, which is why the burden sits where it does.
+
+The standard applies **prospectively**, not to the existing corpus. Most of today's
+`core-gated` citations are a first-party repository read alone, without a separate vendor or
+governance statement beside it — the standard is stricter than that practice, and applying it
+backward would flag a large share of existing records as under-evidenced on citations nobody
+has re-examined, unsettling foundation projects on evidence that was never in question.
+Sweeping the back catalogue against the new standard is a separate, deliberate migration, not
+something a category promotion does on the side.
+
 ### A product is scored on the artifact it ships, not on what it can load
 
 A harness that runs against a model you supply is scored on the harness. The model it happens to
@@ -318,6 +450,83 @@ The rule does have an edge, and it is worth stating so nobody stretches it. It a
 bundled artifact is *substitutable* — you can point LlamaFirewall at a different model and it
 still works. Where the published thing genuinely cannot run without the restricted component, the
 component is not a bundle but a dependency, and `core_gated` is the dimension that asks about it.
+
+### `permissive_non_osi`: attribution-only licenses, and the artifact they have to attach to
+
+`permissive_non_osi` holds a license that is not OSI-approved but caps neither who may use the
+software nor at what scale — attribution and naming are all it asks. Two rulings populate it
+for software.
+
+**CC-BY-4.0**, for `model-context-protocol`. A protocol may license its documentation under
+Creative Commons on the same reading "Creative Commons, vendor terms and other tier extensions"
+gives the model ladder's copy of this tier: attribution is all CC-BY asks, so it sits above
+`competition_restricted` rather than beside a scale cap. MCP is the only software product that
+reaches it; the CC-BY-4.0 records on `codecontests`, `dclm-baseline`, `gpqa`, `mbpp` and `synth`
+are corpora scored by `dataset.yaml`'s own tier list, not this one.
+
+MCP is also the case for a narrower rule: **a license on the project's documentation is not a
+license on the product.** MCP's CC-BY-4.0 covers documentation other than the specifications,
+and had been recorded inside the `license` compound, where most-restrictive-wins let a license
+over the project's prose decide the score of the artifact people actually run. `autogen`
+records the identical shape the other way — MIT under `license`, CC-BY-4.0 under a `docs:` key
+this ladder does not read — and scores 5. Moving MCP's docs license out of the compound and
+into a key this ladder ignores returned it to 5/open_source.
+
+**`Crawl4AI-Attribution-License`**, for `crawl4ai`. Its `LICENSE` is the stock Apache-2.0 text
+followed, after "END OF TERMS AND CONDITIONS", by an appended Attribution Requirement binding
+"all distributions, publications, or public uses" to carry a credit line. It lands in
+`permissive_non_osi` rather than `osi` because Apache-2.0 section 4(d) binds redistribution of
+the work while this clause binds public *use* of it, and section 4 permits added terms only
+over a contributor's own modifications — so the composite is not the OSI-approved license
+GitHub's classifier reports. It lands here rather than in `competition_restricted` because
+attribution is all it asks: it caps neither who may use the software nor at what scale, which
+is this tier's definition stated directly.
+
+### `competition_restricted`: the vendor licenses that land here, and why
+
+`competition_restricted` holds a published, readable source whose license forbids or charges
+for a class of use — competing hosted services, for-profit production above a threshold, use
+before a delayed conversion date. The reader can audit the code and still not be free to run
+it, which is why it sits below the OSI tiers rather than beside them; it is not `proprietary`
+because the source itself is published.
+
+- **`n8n-Enterprise-License`** covers the `ee/` directories n8n ships inside the same public
+  repository as its Sustainable-Use-License core. The source is published and readable, and
+  running the gated pieces needs a paid license key — this tier's definition almost word for
+  word.
+- **`Modular-Community-License`** caps capacity by device architecture — eight devices on any
+  accelerator other than x86/ARM/NVIDIA-PTX — and grants only "a limited right to redistribute
+  certain components of the SDK". Scale, not attribution.
+- **`Dify-Open-Source-License`** is Apache-2.0 plus a multi-tenant service restriction and
+  branding conditions; the multi-tenant clause is the anti-compete clause.
+- **`Open-WebUI-License`** is BSD-3-Clause plus a branding-retention clause that binds above 50
+  end-users per 30 days unless an enterprise license is bought — a threshold above which
+  production use is charged for.
+- **`LobeHub-Community-License`** is Apache-2.0 plus a requirement to buy a commercial license
+  before distributing a derivative work. It restricts distribution rather than running, the
+  loosest fit of this group, but a paid gate on derivatives is still a class of use charged
+  for, and it is plainly neither OSI nor `permissive_non_osi`, which admits attribution and
+  naming and nothing more.
+- **`PolyForm-Shield`** forbids use in anything competing with the licensor's product — this
+  tier's first clause stated directly. It governs `autogpt_platform/`, AutoGPT's active
+  product; the legacy MIT components do not lift it.
+- **`MinerU-Open-Source-License`**, for `mineru`, and **`AI-Pubs-Open-RAIL-M-Modified`**, for
+  `marker`, are both an Apache or RAIL base with a revenue or funding threshold above which a
+  separate commercial license is required: MinerU is Apache-2.0 "subject to the additional
+  terms below", needing a commercial license above 100M MAU or USD 20M monthly revenue;
+  marker's weights are free below USD 5M funding or revenue and licensed commercially above
+  it. The two other OpenRAIL records on the map, `zentropi-cope` (zentropi-openrail-m) and
+  `starcoder2` (BigCode-OpenRAIL-M), are `type: model`, scored by `model.yaml` against its own
+  tier list, and spell their licenses differently besides.
+- **`NXAI-Community-License`**, for `mlstm-kernels`. The NXAI Community License Agreement is a
+  Llama-3-style base with its own "Additional Commercial Terms": above EUR 100,000,000 in
+  consolidated annual revenue, incorporating the material into a commercial product or service
+  needs a separate license NXAI may grant at its sole discretion — a revenue threshold above
+  which a class of use is charged for, the same shape MinerU and marker hold under different
+  vendor names. It is not `use_bounded` in the sense the model ladder uses that word for
+  Llama-family licenses, because the software ladder has no such tier: `competition_restricted`
+  is where a bounded-commercial license lands for software, the same reading
+  `n8n-Enterprise-License` and `Modular-Community-License` were added under.
 
 ### Where openness and capability rest on different SKUs, say which and why
 
@@ -412,6 +621,85 @@ the Edge TPU has no design files. Publishing a reusable design for half a two-pa
 `published`, not `open` — the same reasoning that makes a partly-mapped SKU set abstain elsewhere
 in the corpus.
 
+### A rule that cannot fire is a place for a later edit to hide
+
+A formula that resolves first-match-wins can declare a rule for a combination no product records,
+and that rule will sit there, untested, until a later edit either fires it by accident or amends
+it without anyone noticing it never ran. Two hardware rulings turn on treating that as a defect
+rather than a completeness feature.
+
+`hardware.yaml`'s `schematics` dimension has no rung for `{schematics: open, toolchain: closed}`
+— open design files paired with a non-open toolchain — on exactly this reasoning: no product on
+the roster records that pair, so a rung for it would be unreachable and therefore untestable.
+
+The same reasoning keeps a `restricted`/1 rung out of the formula entirely, even though the
+category's own prose ladder describes one (an NDA, a design win, or a private-sale-only part) and
+the vocabulary for it — `datasheets: nda`, `retail: restricted` — is fully declared. No product
+on the roster is one, so declaring the rung now would add a rule that cannot fire, which is what
+issue #133 looked like the last time it went wrong. A chipset that would sit on that rung today —
+one recording `datasheets: nda` or `availability: gated` — matches no rung instead, and the
+category defers it with a reason. That is a weaker claim than 1/restricted, and the only one the
+evidence supports: being unable to read a datasheet is not the same finding as a vendor gating the
+part behind an NDA, and one rung cannot tell the two apart. The tier stays written down in
+`sources/rubrics/hardware.yaml`'s comments so the vocabulary is not lost, and becomes a rung the
+first time a part actually needs it.
+
+### Reaching buyers through module partners is a retail channel, not a proxy for one
+
+`hardware.yaml` asks a chipset two questions no board rung reads: are its datasheets public
+(`datasheets`), and can anyone buy one (`retail`, read into a `buyable`/`gated` dimension named
+`availability`). Together they are what the category's own vocabulary means by `documented`:
+"datasheets public + buyable, but no design files of its own." A board's `schematics` answer
+already implies both halves, which is why no board rung asks either one — but a bare chipset has
+no design to read, so both have to be asked directly or the rung would hand out `documented` on
+one fact alone.
+
+**What counts as "buyable" for silicon.** An application-processor SoC does not reach buyers
+through a cut-tape listing of bare die; it reaches them through the module and board partners who
+design it in. `rockchip-rk3588`, `ti-am67a` and `nxp-imx-8m-plus` all record `buyable` on that
+basis — `ti-am67a` has an ACTIVE order path on TI's own product page, `rockchip-rk3588` and
+`nxp-imx-8m-plus` reach buyers through their module partners — and the rung's note names which
+channel was read. Requiring a bare-part purchase would mark almost every SoC in the category
+ungated-and-unbuyable, which is the less true answer; the module/board channel *is* the retail
+channel for application-processor silicon, not a stand-in for one.
+
+**`gated` collapses two different reasons nobody can buy a part**, and does so deliberately: an
+NDA or design-win part (`restricted` in `retail`'s own vocabulary, which nothing on the roster
+records yet) and a withdrawn one (`discontinued`). `google-coral-dev-board` is the `discontinued`
+case: Seeed marks both variants out of stock, and `coral.ai/products/dev-board` redirects to a
+page naming no hardware and linking no purchase route. It fit none of
+`open_market`/`distributor`/`restricted` — `restricted` means gated by NDA or design win, which is
+a part somebody *can* buy under terms, and a withdrawn part is a different fact about a different
+question. The change was deliberately score-neutral: no rung read `retail` at all when it landed,
+and the chipset rung that reads it today asks only whether anybody can buy one, which is the same
+answer either way. A board's own design-file rungs never read `retail`, so `google-coral-dev-board`
+staying at 3/documented on its schematics is not a consequence of this ruling — extending the
+condition to the design rungs would be a separate curation decision, made on purpose rather than
+as a side effect.
+
+### A vocabulary needs definitions before it needs a rung
+
+`hardware.yaml`'s `blobs` dimension — does booting or inference need proprietary firmware — is
+declared, recorded on every product, and tested by no rung: every part in the category runs on a
+proprietary SoC that needs firmware, so it is a caveat on every product in the category and a
+discriminator between none of them. The category's prose ladder once defined level 5 as "open
+schematics + open toolchain, no blobs," which was unreachable for that reason — `beagley-ai`, the
+category's only 5, needs firmware like every other product on the roster. That text was corrected
+in #132.
+
+The values themselves went undefined for longer than they should have, and it showed: without a
+definition, a curator had to guess at where the line between `minimal` and `required` sat, and
+guesses did not agree with each other for the same shape of fact. The test is **necessity, not
+size**, settled in #264:
+
+- `none` — boots and runs inference with no proprietary firmware. Nothing in this category
+  records it, and nothing is expected to.
+- `minimal` — proprietary firmware exists but is *optional*: the part boots and runs inference
+  without it, and the blob buys an extra peripheral or an accelerated path rather than a working
+  system.
+- `required` — booting or inference needs it. The ordinary case: a vendor BSP ships firmware you
+  cannot substitute, whether that is a whole boot chain or a single Wi-Fi blob.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.
@@ -476,6 +764,67 @@ availability rather than a source license, by design, and `open_hardware` sits a
 `open` bucket. The analogue that keeps the rule honest is OSHWA certification plus design
 files under a license permitting reuse, which is what `beagley-ai` has. That analogue should
 be written into the ladder when `edge_hardware` gets a recipe rather than left implicit.
+
+### A corpus has no source or weights to gate
+
+A dataset ladder cannot ask the software question or the model question: there is no runtime
+to self-host and no weights to download, so `source` and `core-gated` have nothing to bind to.
+What decides a dataset's openness instead is whether you can get it, whether the license that
+covers it covers all of it, and whether anything documents what is inside — availability,
+license, documentation, in that order of weight. `sources/rubrics/dataset.yaml` declares all
+three; no dataset or benchmark category asks a fourth.
+
+### An answer withheld is a different limitation from a locked door
+
+A benchmark can hide two different things behind a gate: the questions, or just the answers.
+`availability` records the first. A separate `answers` dimension records the second, and it
+exists only for benchmarks — a training corpus has no answer to withhold, so it is declared and
+never fires for a training-data category. That is a legitimate shape for a *dimension*: one no
+product in a category records is unremarkable. A *rung* nothing reaches is not, which is why the
+ladder still separates the two ideas rather than declaring `answers` unconditionally answered.
+
+`gaia` and `gpqa` are the pair the dimension exists to tell apart. Both are login-walled, so
+`availability` reads them alike. `gaia` publishes its validation split and keeps roughly 300 test
+answers private; `gpqa` is equally gated and explicitly ships no hidden split at all. One of them
+you can run and not grade; the other you can run and grade in full. `availability` cannot see
+that difference, `answers` can, and the two rungs it feeds — `held-out` and `private`, one per
+recorded spelling of the same shape — sit ahead of the gate rungs, because a benchmark you cannot
+score yourself is a bigger limitation than a login wall.
+
+One value was tried here and removed: `public`, declared for a symmetrical-looking rung and
+caught by `check_recipe` because no rung tested it while a dozen other keys — `paper:public`,
+`splits:public` — carry the same word for an unrelated fact. Declaring it made those keys read as
+answer evidence on products that record no answer state at all. A value earns a place in a
+dimension's vocabulary only if it is unambiguous there; `public` was not.
+
+### A card is required at the top rung so unrecorded evidence cannot resolve as clean
+
+The dataset ladder's availability rungs fire on *positive* evidence: every spelling of "there is
+a barrier" is a distinct token, and every spelling of "no barrier" — including simply recording
+nothing — falls through toward the open end. Left alone, that would let "nobody recorded an
+availability key" resolve the same as "ungated," which is not the same finding. Requiring a
+dataset card at the top rung closes that gap: a corpus reaches 5/open only with a license, an
+ungated download, *and* documentation, so silence at the gate can no longer masquerade as an
+open door.
+
+`present` and `card`/`dataset_card` are one fact recorded under `documentation` in
+`training_synthetic_datasets`; `'yes'` and `datasheet` are the same fact, spelled differently, in
+`benchmark_eval_data`. Both spellings carry the top rung, which is why the formula has two
+5/open rules rather than one — a components normalization across the two categories would
+collapse them back into a single rung without moving any score.
+
+### When the local checker and the warehouse must agree on "no license"
+
+`sources/rubrics/dataset.yaml`'s `unstated` tier declares `none`, `closed` and `proprietary`
+explicitly rather than leaving them to `check_rubric`'s definitional fallback, which resolves any
+unmapped license value to a tier *named* `proprietary` whether or not the ladder declares one.
+The dataset ladder does declare `unstated`, and its definition already covers an unpublished eval
+suite that grants nothing — so leaving the three values implicit put the local checker and the
+warehouse in disagreement without either being wrong on its own terms. The local checker invented
+the fallback tier and scored the affected internal-eval products on their `availability` rung
+instead; the warehouse joined a real lookup table, found no row for a tier that was never
+declared, and suppressed the score. Declaring the three values puts both computations on the same
+table and the same answer.
 
 ## Caveats — these are editorial choices
 

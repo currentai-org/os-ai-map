@@ -18,15 +18,10 @@ openness:
       detail: Linux Foundation OpenMDW License Agreement v1.1, governing the current Nemotron-3-Embed release
   confidence: medium
   governing_release: Nemotron-3-Embed (1B and 8B, BF16 and NVFP4)
-  note: 'OpenMDW-1.1 is the Linux Foundation''s Open Model, Data and Weights License Agreement v1.1, and
-    the shared ladder places it at permissive_non_osi: it grants dealing in the model materials without
-    restriction under copyright, patent, database and trade-secret rights, asks only that the agreement
-    and origin notices travel with a redistribution, and explicitly disclaims any restriction on the outputs.
-    Two complications are recorded rather than resolved: the previous generation ships under different terms,
-    and llama-embed-nemotron-8b in particular is governed by an NVIDIA license whose section 3.3 restricts
-    use to non-commercial research. That SKU is a superseded release rather than part of the governing one,
-    so multi_sku_rule is not applied across the generation boundary - but anyone reaching for the 8B model
-    from October 2025 is taking a non-commercial license.'
+  note: 'The current Nemotron-3-Embed release is licensed under OpenMDW-1.1, which permits use of the model
+    materials without restriction beyond retaining the agreement and origin notices in any redistribution.
+    The earlier generation ships under different terms: llama-embed-nemotron-8b carries an NVIDIA license
+    restricted to non-commercial research, more restrictive than the current release.'
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/nvidia/Nemotron-3-Embed-1B-BF16/raw/main/README.md
@@ -74,11 +69,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: '1,691,717 downloads in the trailing 30 days across the five text-embedding checkpoints of both live generations:
-    661,992 for Nemotron-3-Embed-1B-BF16, 507,552 for llama-nemotron-embed-1b-v2, 411,272 for llama-embed-nemotron-8b,
-    98,108 for Nemotron-3-Embed-8B-BF16 and 12,793 for the NVFP4 build. Adoption combines across the tier''s releases,
-    so the superseded generation counts here even though it does not govern openness. The visual-document and
-    Cosmos embedding lines are excluded as separate products.'
+  note: Adoption is measured as Hugging Face downloads summed across the five text-embedding checkpoints
+    spanning both the current and the previous Nemotron generation, most of them for the newest 1B model.
+    The earlier generation counts toward adoption even though a different license governs it, and the separate
+    visual-document and Cosmos embedding lines are excluded.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Embed-1B-BF16
@@ -113,15 +107,10 @@ capability:
   value: 72.38 RTEB and 71.04 MMTEB retrieval for Nemotron-3-Embed-1B-BF16; the previous generation's llama-embed-nemotron-8b
     took first place by Borda rank on MTEB (Multilingual, v2) as of 21 October 2025 at a 69.46 task mean.
   confidence: high
-  note: 'Rung 4, the competitive frontier, and the placement rests on two generations agreeing. The current
-    1B model posts 72.38 on RTEB and 71.04 on MMTEB retrieval, and the line it replaced held the top Borda
-    rank on MMTEB v2 in October 2025 - so this is a publisher that reaches the leaderboard rather than one
-    claiming to be near it. One below Harrier-OSS rather than level with it because the instruments do not
-    line up: NVIDIA reports the retrieval split and RTEB, the anchor reports the full MMTEB v2 mean of 74.3,
-    and the two figures are not comparable. Level 5 would need the same number on the same table. Placed
-    against the rung definition rather than a peer: no single measurement reports this product and a category
-    peer together - RTEB and MMTEB-Retrieval against the anchor''s MMTEB v2 mean - and rule (d) forbids
-    an edge without one.'
+  note: 'Nemotron Embed''s current 1B checkpoint scores 72.38 on RTEB and 71.04 on MMTEB retrieval, and
+    the generation it replaces previously topped the full MMTEB v2 leaderboard by Borda rank. It falls short
+    of Harrier-OSS''s 74.3 MMTEB v2 mean, though the two are not measured on the same table: NVIDIA reports
+    the retrieval split and RTEB.'
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/nvidia/Nemotron-3-Embed-1B-BF16/raw/main/README.md

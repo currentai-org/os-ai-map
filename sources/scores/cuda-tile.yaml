@@ -48,11 +48,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 1,021 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The `cuda-tile` package on PyPI
-    (about 3.7M downloads a month) is cuTile Python, published from the separate nvidia/cutile-python repository and pulled
-    in as a dependency of the CUDA Python stack, so it measures a different project's installs rather than this compiler,
-    which the README builds from source with CMake against an LLVM install. No package channel of its own is published, which
-    leaves the stars scale and its cap of 3.
+  note: GitHub stars are the adoption signal for CUDA Tile IR, which the README says to build from source
+    with CMake against an LLVM install rather than install as a package. The `cuda-tile` name on PyPI belongs
+    to cuTile Python, a separate package from the nvidia/cutile-python repository pulled in by the CUDA
+    Python stack, so its download count measures that different project rather than this compiler.
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/NVIDIA/cuda-tile
@@ -69,8 +68,9 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: 'One band below the apache-tvm anchor: a full compiler infrastructure - IR, bindings, lowering and conformance testing
-    - narrowed to one vendor''s targets (NVIDIA GPUs) rather than apache-tvm''s multi-vendor retargetability.'
+  note: CUDA Tile IR is a full compiler infrastructure - an MLIR dialect, Python bindings, a bytecode format
+    and a conformance suite - for lowering tile-based tensor computations, narrowed to one vendor's targets,
+    NVIDIA GPUs. That single-vendor scope is what keeps it short of Apache TVM's multi-vendor retargetability.
   last_verified: '2026-09-02'
   sources:
   - url: https://github.com/NVIDIA/cuda-tile/blob/main/README.md
@@ -84,8 +84,8 @@ capability:
     last_attested: '2026-09-02'
     sources:
     - url: https://github.com/apache/tvm/blob/main/README.md
-      shows: README still describes Apache TVM as an open machine learning compilation framework with universal deployment
-        across backends, unchanged from the claim this map's apache-tvm band rests on.
+      shows: README still describes Apache TVM as an open machine learning compilation framework with universal
+        deployment across backends, unchanged from what this map's comparison to Apache TVM relies on.
       accessed: '2026-09-02'
       http_status: 200
       content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

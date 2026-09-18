@@ -108,21 +108,22 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~3.81M PyPI downloads last month; standard library for RLHF/post-training in the HF stack, integrated
-    with Transformers/Accelerate and used across labs and open-model post-training pipelines.
+  note: TRL is the standard library for RLHF and post-training in the Hugging Face stack, integrated with
+    Transformers and Accelerate and used across research labs and open-model post-training pipelines. Its
+    PyPI download volume each month is what the reading measures, reflecting how central it has become to
+    that ecosystem.
   last_verified: '2026-08-08'
   sources:
   - url: https://pypistats.org/packages/trl
     shows: 'Package page for trl. "Downloads last day: 139,036 / Downloads last week: 884,630 / Downloads
       last month: 3,677,381". Header block reads "Latest version: 1.9.2" and "Summary: Train transformer
-      language models with reinforcement learning." 3.68M monthly puts the package in the 1M-10M band, level
-      4.'
+      language models with reinforcement learning."'
     accessed: '2026-08-08'
     http_status: 200
     content_sha256: 0e9c80aae1fb749fb34f0e592f3f4fb3cfa9f43335623edd226daf65b0c09e5a
   - url: https://pypistats.org/api/packages/trl/recent
     shows: 'Full JSON body: {"data":{"last_day":139036,"last_month":3677381,"last_week":884630},"package":"trl","type":"recent_downloads"}.
-      Machine-readable form of the same figure the HTML page renders, so the band is re-derivable without
+      Machine-readable form of the same figure the HTML page renders, so the reading is re-derivable without
       parsing HTML.'
     accessed: '2026-08-08'
     http_status: 200
@@ -134,20 +135,19 @@ capability:
     precision BF16/FP8 via Accelerate; broad method coverage but relies on Accelerate for scale rather
     than native frontier-scale parallelism like Megatron-LM (the C5 anchor).'
   confidence: high
-  note: 'The broadest coverage of post-training methods among the open libraries: SFT, the DPO/IPO/KTO/ORPO
-    preference family, PPO, GRPO and reward modeling. It leans on Hugging Face Accelerate (DeepSpeed, FSDP,
-    BF16 and FP8) for distributed training rather than implementing frontier-scale parallelism itself, which
-    places it one tier below Megatron-LM, the library this category treats as the top of the scale.'
+  note: 'TRL covers more post-training methods than the other open libraries in this category: SFT, the
+    DPO/IPO/KTO/ORPO preference family, PPO, GRPO and reward modeling. It relies on Hugging Face Accelerate
+    -- DeepSpeed, FSDP, BF16 and FP8 -- for distributed training rather than implementing large-scale parallelism
+    itself, which leaves it a tier behind Megatron-LM.'
   last_verified: '2026-08-08'
   sources:
   - url: https://huggingface.co/docs/trl/index
-    shows: 'The "Taxonomy" section is the feature matrix the band rests on: "Online methods GRPOTrainer
-      / RLOOTrainer / OnlineDPOTrainer / NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer
-      / PRMTrainer; Offline methods SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer;
-      Knowledge distillation GKDTrainer / MiniLLMTrainer". The Integrations nav lists DeepSpeed, Harbor,
-      Kernels Hub, Liger Kernel, OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM - scale
-      is delegated to integrations rather than a native parallelism engine, which is what keeps this a tier
-      below the Megatron-LM anchor. IPO appears nowhere on the page.'
+    shows: 'The "Taxonomy" section reads: "Online methods GRPOTrainer / RLOOTrainer / OnlineDPOTrainer /
+      NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer / PRMTrainer; Offline methods
+      SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer; Knowledge distillation
+      GKDTrainer / MiniLLMTrainer". The Integrations nav lists DeepSpeed, Harbor, Kernels Hub, Liger Kernel,
+      OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM: scale is delegated to integrations
+      rather than a native parallelism engine like Megatron-LM''s. IPO appears nowhere on the page.'
     accessed: '2026-08-08'
     http_status: 200
     content_sha256: eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04

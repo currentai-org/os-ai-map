@@ -1,30 +1,11 @@
-# Shared openness ladder for FROM-SCRATCH PRETRAINED MODEL categories.
+# Shared openness ladder for FROM-SCRATCH PRETRAINED MODEL categories, inherited via
+# `scoring_recipe: {extends: pretrained}`. `model.yaml` is the tune's counterpart; the two
+# ask different questions because a base model's own corpus is the product, a tune's is not.
+# See build/rubrics.py for the merge rules and docs/reference/openness.md for the dimensions.
 #
-# Inherited via `scoring_recipe: {extends: pretrained}`. See build/rubrics.py for the merge
-# rules and why a ladder is shared rather than copied per category.
-#
-# A model pretrained from scratch asks a different set of questions from a tune. The tune's
-# ladder in `model.yaml` asks what the TUNER released - the SFT/DPO/RL mixture and the
-# post-training recipe - because the corpus underneath belongs to somebody else's model.
-# Here the corpus IS the product's own, so the questions are the pretraining corpus, the
-# pretraining pipeline, and the intermediate checkpoints. `model.yaml` says as much in its
-# own header, and names this difference as the reason base_pretrained did not extend it.
-#
-# Lifted verbatim out of `base_pretrained` on 2026-09-10, where it had been declared inline
-# since it was reverse-engineered from that category's hand-authored scores. Nothing in the
-# ladder changed in the move: all 32 base_pretrained scores reproduce before and after, which
-# is the check this extraction owes and `build/check_rubric.py` is what proves it. It was
-# extracted because a second category needs the same questions (issue #533), and copying
-# it would have drifted the way the two model ladders drifted before `extends` existed.
-#
-# `adoption`, `capability` and `confidence_rule` deliberately did NOT come along. Those are
-# per-category by nature: base_pretrained bands adoption on summed Hugging Face downloads
-# across a family's SKUs and anchors capability on the Artificial Analysis index, and neither
-# instrument travels to a category of scientific models. Only the openness questions are
-# shared, because only they are the same questions.
+# `adoption`, `capability` and `confidence_rule` do NOT come along with `extends`: each is
+# instrument-specific per category (e.g. summed HF downloads, the Artificial Analysis index).
 openness:
-  # Four dimensions were asked of all 47 products; checkpoints of 6. These are
-  # the questions, taken from what the category has actually been scoring.
   dimensions:
     weights:
       question: Are the trained model weights downloadable and runnable locally?
@@ -36,36 +17,8 @@ openness:
       machine_signal: signal_huggingface.hub_state (gated, private, files)
     data:
       question: Is the pretraining corpus released, or reconstructible from released scripts?
-      # `components-listed` was added on 2026-09-15, settling issue #106. It sits between
-      # `open` and `documented-not-released` because naming every component with a resolvable
-      # public source is a materially different disclosure from describing the mixture in
-      # prose: a reader can go and look at what went in, even though nobody can rebuild the
-      # corpus.
-      #
-      # The discriminator is COMPLETE, PER-COMPONENT ENUMERATION, not detail. A composition
-      # described in prose stays `documented-not-released` however careful the prose and however
-      # many sample counts it carries, and so does a release that enumerates one stage of a
-      # mixture, or names some components while describing the rest. This value applies only where
-      # EVERY component is named and individually resolvable - a link, or a citation identifying
-      # that specific dataset - while the mixture or the sampling is withheld, so the corpus is
-      # not reproducible. RWKV is the case it was written for: a machine-readable index with a URL
-      # column naming every component dataset, and no corpus and no reconstruction script.
-      #
-      # Whether each named corpus is itself freely downloadable is NOT the test. That is a fact
-      # about third parties rather than about this release's disclosure, and a gate on one
-      # component is friction rather than withholding - the same reading the evidence store
-      # already applies to gated weights. RWKV's own index includes a gated component and still
-      # names it with a resolvable link, which is the act this value records.
-      #
-      # Three records were held back from this value for failing the enumeration test rather than
-      # the availability one, and they are the shapes to watch: a partly synthetic mixture whose
-      # generated half is described rather than named (nemotron-embed), a two-stage mixture with
-      # only the first stage evidenced (e5), and data-preparation documentation naming what the
-      # model consumes rather than what it was trained on (neuralgcm). All three are on issue #590.
-      #
-      # It scores exactly as `documented-not-released` does at every rung, deliberately. The
-      # gain is descriptive accuracy, not credit. Scoring it higher would reward publishing a
-      # list and shipping nothing, which is the objection #106 raised against its own proposal.
+      # Ruling: docs/reference/openness.md, "`components-listed`: naming every component is
+      # not releasing the corpus" (issue #106). RWKV is the case it was written for.
       values: [open, components-listed, documented-not-released, closed]
       evidence:
       - a released dataset, or scripts that reconstruct the corpus end to end
@@ -93,46 +46,14 @@ openness:
       - intermediate checkpoints on HF branches or a public mirror
       machine_signal: none — requires research
 
-  # The discriminator that decides restricted vs open_weights. OSI approval
-  # alone is too blunt: several non-OSI licenses are permissive in substance.
-  # The line is whether the license restricts USE, not whether OSI blessed it.
-  # MAINTAINER RULING, 2026-09-11. Six license names were added to the tiers below during the
-  # scientific_ai_models promotion, which docs/workflows/promote-category.md step 7 says a
-  # promotion may not do — extending a shared tier reaches every inheriting category and is a
-  # maintainer's call. The call was delegated to an external reviewer and made:
-  #
-  #   CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1  -> permissive_non_osi
-  #   CC-BY-NC-SA-4.0, ASL, AlphaFold-3-Model-...-of-Use  -> commercial_forbidden
-  #
-  # All six upheld, on the tiers' own definitions: attribution and share-alike bind
-  # redistribution rather than capping who may use the weights or at what scale, and the other
-  # three exclude commercial use outright. The one contested call was FAIR-Chemistry-License-v1,
-  # resolved by correcting `use_bounded` rather than by moving the licence — see that tier.
-  #
-  # Measured before the additions and again after: no base_pretrained product records any of
-  # the six names and all 32 of its scores reproduce unchanged, so the blast radius outside
-  # scientific_ai_models is nil.
-  #
-  # SECOND MAINTAINER RULING, 2026-09-11. Three more names, all raised by the
-  # embeddings_retrieval promotion and all DEFERRED there rather than decided inside it, which
-  # is what step 7 asks for. The maintainer took the ruling:
-  #
-  #   OpenMDW-1.1          -> permissive_non_osi   (nemotron-embed, nemotron-rerank)
-  #   Llama-3.2-Community-License -> use_bounded   (nemotron-rerank)
-  #   CC-BY-NC-4.0         -> commercial_forbidden (jina-reranker, jina-embeddings)
-  #
-  # Each is argued at its own tier below. Measured before the ruling by applying it and running
-  # build/check_rubric.py: NOT ONE recorded score moves. Every product it reaches had been
-  # hand-placed at exactly the score its tier now computes, so the ruling converts four
-  # abstentions into computed scores and changes nothing a reader of the map can see. Outside
-  # embeddings_retrieval the blast radius is again nil - base_pretrained 32/32, finetuned_chat
-  # 41/41, safeguards 26/26, all unchanged.
+  # The discriminator between restricted and open_weights: whether the license restricts
+  # USE, not whether OSI approved it. See docs/reference/openness.md, "The license scale".
+  # Non-software license families added to the tiers below (Creative Commons, vendor AUPs,
+  # OpenMDW, etc.) are argued in docs/reference/openness.md, "Creative Commons, vendor terms
+  # and other tier extensions".
   license_tier:
-    # Declaration order below IS restrictiveness order, least restrictive first.
-    # `multi_sku_rule` resolves a family to the most restrictive tier among its
-    # distributed SKUs, which is meaningless without an ordering. Declared here
-    # and emitted as `tier_rank` by build/serialize_rubric.py so the scorer reads
-    # the order rather than inferring it from how the YAML happens to be written.
+    # Declaration order IS restrictiveness order (least restrictive first), emitted as
+    # `tier_rank` by build/serialize_rubric.py rather than inferred from the YAML.
     ordered_by: restrictiveness_ascending
     values:
       osi:
@@ -148,41 +69,10 @@ openness:
           discriminating against a field of endeavor. Settled in issue #117, which was
           opened because the same OpenRAIL family had been scored 3 in one category and
           4 in another.
-        # The Creative Commons attribution family was added on 2026-09-10, when the
-        # scientific_ai_models promotion turned up three weight releases governed by it and
-        # the tier could not name any of them. `software.yaml` already made this ruling for
-        # CC-BY-4.0 on 2026-08-12 and the reasoning carries: OSI approves software licenses
-        # and has never approved a Creative Commons content license — CC-BY's own deed warns
-        # it is "not recommended for software" — so it is not `osi`; and attribution is all
-        # it asks, capping neither who may use the weights nor at what scale, which is this
-        # tier's definition stated directly. CC-BY-SA-4.0 joins it: share-alike binds whoever
-        # redistributes rather than capping who may use the weights or at what scale, which is
-        # this tier's own test. `software.yaml`'s `osi` tier makes the same point about copyleft
-        # in its own words - "a copyleft obligation binds whoever redistributes; it does not cap
-        # who may use the software or at what scale" - though that is a neighbouring ladder's
-        # wording and not this one's, whose `osi` tier says only "OSI-approved license".
-        # Share-alike is that obligation on a non-OSI license, so it lands here rather than a
-        # tier down.
-        #
-        # Measured before adding, as the tier below requires: NO base_pretrained product
-        # records a CC license of any kind, so this moves none of that category's 32 scores.
-        # The fifteen CC records elsewhere on the map are corpora scored by `dataset.yaml`,
-        # which keeps its own tier list. The addition moves exactly the three products it
-        # was ruled for — weathernext, neuralgcm and dofa.
-        #
-        # `FAIR-Chemistry-License-v1` (2026-09-10, for `uma`) is the #117 ruling applied
-        # again rather than a new one. It grants royalty-free commercial use and asks only
-        # for conduct — an acceptable-use policy — plus registration at the download gate. A
-        # gate is friction, not a cap on who may use the weights or at what scale, so this is
-        # the attribution tier and not `use_bounded`, which is reserved for a real ceiling.
-        #
-        # `OpenMDW-1.1` (2026-09-11) is the Linux Foundation's Open Model, Data and Weights
-        # License Agreement v1.1, which nvidia's Nemotron embedding and reranking lines carry
-        # behind a bare `other` on the Hub. Its body grants dealing in the model materials
-        # without restriction under copyright, patent, database and trade-secret rights, asks
-        # only that the agreement and the origin notices travel with a redistribution, and
-        # disclaims any restriction on the outputs. Not OSI-approved, and no cap on who may use
-        # the weights or at what scale, which is this tier's definition stated directly.
+        # CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1 and OpenMDW-1.1 all land here on
+        # the same test — no cap on who may use the artifact or at what scale. Ruling and
+        # per-license reasoning: docs/reference/openness.md, "Creative Commons, vendor terms
+        # and other tier extensions".
         examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License, CDLA-Permissive-2.0,
           CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1, OpenMDW-1.1]
       use_bounded:
@@ -193,57 +83,23 @@ openness:
           commercially without asking. Was `use_restricted` and capped at 2 before the
           universal license scale; see sources/rubrics/model.yaml for why the cap moved and
           why the tier was renamed alongside it.
-        # This definition read "or an acceptable-use policy" until 2026-09-11, which
-        # contradicted permissive_non_osi's definition a few lines above — that tier says in
-        # its own words that an AUP "caps neither commerce nor reach". The same licence
-        # therefore satisfied both tiers, and they give different scores: FAIR-Chemistry-
-        # License-v1 puts `uma` at 4 through permissive_non_osi and at 3 through use_bounded.
-        # Nothing had forced the choice before, because every other AUP-licensed product on
-        # the map reaches 3 down either route. Ruled on the maintainer's behalf: conduct
-        # restrictions alone belong in permissive_non_osi, and this tier describes scale
-        # ceilings or a requirement to ask permission. The clause is removed here rather than
-        # from permissive_non_osi, so issue #117's reading stands. Issue #538 carries the
-        # finding and notes that sources/rubrics/model.yaml still has the original wording;
-        # that ladder was not reviewed and is not changed by this ruling.
-        #
-        # No example moves. This tier decides by the names in its `examples` list and none of
-        # them is an AUP-only licence, so the correction changes no score: base_pretrained
-        # reproduces 32/32 before and after.
-        # `InternLM-Free-Commercial-License` is the bound written as a process rather than
-        # a number: commercial use costs nothing and is granted on an application form.
-        # It reaches the ladder as the second half of `internlm`'s compound license, which
-        # was invisible until compounds resolved on both halves.
-        # `Llama-3.2-Community-License` (2026-09-11) is the 700M-monthly-active-user ceiling
-        # already named twice in this list, on the generation between them. It reaches the ladder
-        # inherited rather than chosen: nvidia's nemotron-rerank fine-tunes Llama-3.2-1B and
-        # carries the base terms as "Additional Information: Built with Llama", so the compound
-        # resolves here on multi_sku_rule. Spelled in full because that is what the recorded-name
-        # alias in sources/signal_routing.yaml resolves `Llama-3.2-Community` to; a tier example
-        # is matched after normalization, so the short form here would never be found.
+        # An acceptable-use policy alone belongs in `permissive_non_osi`, not here — the #117
+        # ruling in docs/reference/openness.md, "Two places the map deliberately departs from
+        # MOF".
+        # InternLM-Free-Commercial-License: the bound written as a process (free, granted on
+        # application) rather than a number.
+        # Llama-3.2-Community-License is spelled in full because sources/signal_routing.yaml's
+        # alias resolves the short form to this name, and a tier example is matched after
+        # normalization.
         examples: [Llama-3.1-Community-License, Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement,
           InternLM-Free-Commercial-License]
       commercial_forbidden:
         definition: >
           Weights are published and commercial use is prohibited, or reserved to the vendor.
           The 3/2 boundary asks one question: does the licence permit commercial use at all?
-        # `CC-BY-NC-SA-4.0` is the spelled-out sibling of the `CC-BY-NC` already here, added
-        # 2026-09-10 for pangu-weather, whose README grants exactly that and states outright
-        # that "commercial use of these models is forbidden". Same tier, same reason: the
-        # NC clause answers this tier's one question.
-        # Two more vendor terms added 2026-09-10, both the same shape as AlphaGenome's and
-        # both answering this tier's one question with a no. `ASL` reaches the ladder as the
-        # restrictive half of `mace`'s compound — MIT covers the code and three checkpoints,
-        # ASL covers four more and its own text says it "is not an open-source licence
-        # because it does not allow commercial use" — so multi_sku_rule resolves the line
-        # here on the most restrictive DISTRIBUTED SKU.
-        # `AlphaFold-3-Model-Parameters-Terms-of-Use` governs the current tier of the
-        # AlphaFold line: parameters only if received directly from Google, non-commercial.
-        # AlphaFold 2's CC-BY-4.0 parameters are the older SKU and do not lift the line.
-        # `CC-BY-NC-4.0` (2026-09-11) is a spelling gap rather than a new ruling. This tier
-        # already names the unversioned `CC-BY-NC` and the share-alike `CC-BY-NC-SA-4.0`; the
-        # plain versioned variant is what Jina's embedding and reranker cards actually carry,
-        # and it answers this tier's one question the same way - commercial use beyond the AWS
-        # and Azure listings requires a sales conversation.
+        # ASL: the restrictive half of a compound (docs/reference/openness.md, "A compound
+        # license resolves on all of its parts").
+        # CC-BY-NC-4.0 is the versioned spelling of CC-BY-NC already listed here; same test.
         examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC, CC-BY-NC-SA-4.0, AlphaGenome-Model-Terms,
           ASL, AlphaFold-3-Model-Parameters-Terms-of-Use, CC-BY-NC-4.0]
       proprietary:

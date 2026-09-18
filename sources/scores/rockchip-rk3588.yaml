@@ -25,14 +25,10 @@ openness:
       detail: application-processor SoC, not a board
       raw: chipset (application-processor SoC, not a board)
   confidence: high
-  note: Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed,
-    but the SDK ships as prebuilt binaries under a proprietary license with closed firmware. The brief datasheet
-    downloads straight from rock-chips.com with no registration or NDA, the RKNN SDK licence in airockchip/rknn-toolkit2
-    is the proprietary "RKNN SDK License" (no reverse engineering, use restricted to Rockchip products),
-    and rkbin distributes the DDR/BL31/OPTEE firmware as prebuilt binaries. The part is not sold from a
-    Rockchip storefront and no distributor page for the bare silicon was reachable, so retail rests on the
-    module partners who build on it. Firefly lists the Core-3588J, a system-on-module carrying this SoC,
-    at $289 with a working order path.
+  note: Rockchip publishes a full technical reference manual and datasheet with no registration or NDA,
+    unusually complete for this class of chip. But the RKNN toolkit that targets its NPU ships under Rockchip's
+    own proprietary license, which bars reverse engineering, and its DDR, BL31 and OPTEE boot firmware ship
+    as prebuilt binaries rather than source.
   raw: toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel
     driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU
     firmware);retail:distributor (commercial through Rockchip's module and board partners);form_factor:chipset
@@ -103,11 +99,9 @@ capability:
   value: 6 TOPS triple-core NPU (INT4-TF32); up to 32GB LPDDR4x/LPDDR5 (board-dependent); runs quantized
     on-device LLMs via RKNN-LLM
   confidence: high
-  note: The 6 TOPS NPU is genuine edge-AI capability and the RKLLM SDK runs quantized LLMs on-chip, but
-    modest versus dedicated accelerators. The RKLLM repository ships an RK3588-series runtime and toolkit
-    with working w8a8 demos for Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR, and Rockchip's
-    own product page reads 6 TOPS triple-core NPU. Generative workloads actually running on-chip is what
-    keeps this a step above the 6 TOPS boards built on it.
+  note: Rockchip's 6 TOPS NPU actually runs generative workloads on-chip, with the RKLLM toolkit shipping
+    working demos for models such as Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR. That keeps
+    the SoC itself a step above the individual boards built on it.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/airockchip/rknn-llm

@@ -39,9 +39,9 @@ adoption:
   level: 3
   signal_type: usage_volume
   confidence: medium
-  note: 111,307 downloads of slack-mcp-server in the trailing 30 days, which bands at 100K-1M, level 3 on the
-    software adoption scale. The figure is for the npm package, whose registry metadata points at korotovsky/slack-mcp-server;
-    the PyPI package of the same name is an unedited template and is a different thing entirely.
+  note: Adoption is measured by npm downloads of slack-mcp-server, whose registry metadata points at korotovsky/slack-mcp-server.
+    A same-named PyPI package is an unedited template and a different thing entirely, so only the npm figure
+    is counted here.
   reach: 100K-1M
   last_verified: '2026-08-12'
   sources:
@@ -57,12 +57,10 @@ capability:
     and user management - working either through OAuth tokens or in a stealth mode that needs no workspace
     permissions
   confidence: medium
-  note: 'A curated surface over one system with the caller supplying the secret, which is band 3. An earlier
-    draft banded this 4 on the README''s mention of OAuth, and the authentication guide settles it the other
-    way: every documented path hands the caller a token to find and paste - `xoxp` or `xoxb` from a Slack app
-    you create, or `xoxc`/`xoxd` extracted from the browser''s own local storage with a snippet pasted into
-    the developer console. The server performs no OAuth flow of its own. That is the same case as postgres-mcp''s
-    DATABASE_URI, and banding it above them applied this category''s own 3-versus-4 rule inconsistently.'
+  note: 'Slack MCP offers a curated tool surface over one workspace, but the caller supplies the credential
+    directly: every documented path ends with a token to find and paste, whether an OAuth token from a Slack
+    app the caller creates or a session token extracted from the browser''s own storage. The server performs
+    no OAuth flow of its own, leaving it level with Playwright MCP.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/docs/01-authentication-setup.md

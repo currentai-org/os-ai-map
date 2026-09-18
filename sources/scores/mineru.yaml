@@ -13,16 +13,10 @@ openness:
       value: ungated
       detail: nothing is withheld from the published tree; the constraint is in the license, not in the build
   confidence: high
-  note: Read from the LICENSE.md body rather than from the badge, and the badge is the thing to distrust here.
-    MinerU is Apache-2.0 'subject to the additional terms below', and those terms require a separate commercial
-    license once an organization and its affiliates exceed 100 million monthly active users or USD 20 million
-    in monthly revenue, oblige anyone offering an online service built on it to say so prominently, and terminate
-    the grant automatically if those terms are violated. That is a license charging for a class of use above
-    a threshold, which is the competition_restricted tier stated directly, and the ladder scores a public source
-    under that tier at 2/source_available. Nothing is withheld from the published tree - the whole pipeline
-    is there and builds - so core-gated is ungated and the cap comes from the license alone. GitHub reports
-    NOASSERTION because the file is a modified Apache text, which is substantive here rather than the usual
-    custom-copyright-line false alarm.
+  note: 'MinerU''s LICENSE.md states it is Apache-2.0 "subject to additional terms": an organization above
+    100 million monthly active users or $20 million in monthly revenue needs a separate commercial license,
+    and the grant ends if that or the required attribution is not met. That clause, not anything withheld
+    from the build, is why the repository reads as source-available rather than fully open.'
   raw: license:MinerU-Open-Source-License(Apache-2.0 plus commercial thresholds; not OSI);source:public(the
     repository builds the extraction pipeline the package installs);core-gated:ungated(nothing is withheld
     from the published tree; the constraint is in the license, not in the build)
@@ -61,8 +55,7 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 269,753 downloads of mineru in the trailing 30 days, which bands at 100K-1M, level 3 on the software
-    adoption scale.
+  note: Adoption is measured as PyPI downloads of the mineru package over the trailing month.
   last_verified: '2026-08-30'
   sources:
   - url: https://pypistats.org/api/packages/mineru/recent
@@ -79,17 +72,16 @@ capability:
   relative_to: docling
   relation: at
   confidence: medium
-  note: 'Structure survives: layout, tables, formulas and reading order are recovered into Markdown and JSON.
-    Banded `at docling` on that quantity, not one below it - the earlier draft''s reason for the gap was docling''s
-    wider format list, which is input breadth and is excluded from this ladder by name. Benchmark standing
-    corroborates: MinerU leads OmniDocBench at 93.04 against olmOCR''s 85.74, and OmniDocBench is published
-    by MinerU''s own maintainers, so it is read as evidence that MinerU is not behind the frontier here rather
-    than as evidence it is ahead.'
+  note: MinerU recovers layout, tables, formulas and reading order into Markdown and JSON, matching Docling's
+    output; Docling's wider input-format support does not affect how much of one document survives conversion.
+    MinerU leads the OmniDocBench leaderboard at 93.04 against olmOCR's 85.74, though that benchmark is
+    maintained by MinerU's own team.
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/opendatalab/MinerU/master/README.md
     shows: README documents conversion of PDFs and Office documents to Markdown and JSON with reading-order
-      reconstruction, multi-column layout handling, table and formula recognition, and OCR for scanned pages.
+      reconstruction, multi-column layout handling, table and equation recognition, and OCR for scanned
+      pages.
     accessed: '2026-08-30'
     http_status: 200
     content_sha256: 60c6ac1e1b824a43a6b09c88d928fd45814a390773e587f0f7aad0a8ea355358

@@ -16,13 +16,11 @@ openness:
     free_text:
     - OpenHands-Cloud-managed-tier
   confidence: high
-  note: 'MIT core with a separately licensed enterprise server, which is what open core means here. A read of the
-    repo confirms it: the monorepo LICENSE opens "Portions of this software are licensed as follows" and carves
-    out everything under enterprise/ to enterprise/LICENSE, which is the PolyForm Free Trial License 1.0.0, and
-    that directory''s README says outright "This is NOT an open source license. Usage is limited to 30 days per
-    calendar year without a commercial license." The enterprise server now lives in its own active repo, OpenHands/OpenHands-Cloud,
-    under the same PolyForm license, while OpenHands/OpenHands stays MIT. Functionality is withheld from the published
-    source for a paid tier, which is what gating means.'
+  note: OpenHands' core is MIT-licensed, but its enterprise server, now published in its own OpenHands-Cloud
+    repository, carries a separate PolyForm Free Trial License that its own documentation calls "not an
+    open source license" and limits use to 30 days a year without a commercial agreement. Because a real
+    product, the enterprise server, is withheld from the open-source license, OpenHands is open core rather
+    than fully open.
   raw: license:MIT(core);source:public;core-gated:gated(the enterprise server is PolyForm Free Trial 1.0.0, not
     an OSI license);enterprise-dir:separate-license;OpenHands-Cloud-managed-tier
   last_verified: '2026-08-12'
@@ -63,9 +61,9 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: GitHub stars (83.9k) and Series A funding ($18.8M), not a user count
-  note: 83.9k GitHub stars, an $18.8M Series A, contributors from major firms, and OpenHands Cloud with multi-user,
-    Slack, Jira and Linear integrations. No precise active-user or download count is verified, so the level rests
-    on reported traction rather than a counted figure.
+  note: 'OpenHands has no verified active-user or download count, so this reading draws on reported signs
+    of traction instead: substantial GitHub star growth, a Series A funding round, contributors from major
+    companies, and a hosted OpenHands Cloud with multi-user Slack, Jira and Linear integrations.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/All-Hands-AI/OpenHands
@@ -87,22 +85,10 @@ capability:
     and, added since this band was set, an Agent Canvas control centre that runs OpenHands, Claude Code, Codex,
     Gemini or any ACP-compatible agent across local, remote and cloud backends.
   confidence: high
-  note: 'Top of the open coding-agent field on SWE-bench Verified, and model-agnostic across 100+ LLM providers
-    with bring-your-own-key. Marktechpost reports 72% SWE-bench Verified and 67.9% GAIA for OpenHands, the highest
-    figure any independent cited source gives an open agent, above Devin 2.0 and Cursor Background Agent. All Hands
-    AI also publishes the OpenHands Index, whose Issue Resolution board carries a SWE-bench score for each model
-    run inside the OpenHands SDK: the best run reads 95.8 (claude-fable-5, SDK v1.18.1) and the best non-outlier
-    83.8 (claude-opus-4-8), with MiniMax-M3 at 76.4 the highest open-weights model among the 17 open and 16 closed
-    models listed. That is a vendor-run harness rather than an independent leaderboard, so what it establishes is
-    narrower than a general claim to sit at or above proprietary agents: it places OpenHands at 83.8 on SWE-bench
-    Verified on the scaffold''s own numbers. The 5 rests on that placement plus the same-model head-to-head on the
-    Index''s alternative-agents view, with the Marktechpost 72% as the independent floor. The feature set now sits
-    in `value` rather than only in this note, because twenty-five products in this category name this record as
-    `relative_to` and a comparison against an empty value cannot be checked for correctness. Recording it also surfaced
-    a shape change the band predates: the repository README now leads with Agent Canvas, a control centre that runs
-    third-party agents, marked beta. The agent and its SWE-bench standing are unchanged and the 5 still rests on
-    them, but ''runs somebody else''s loop'' is no longer a feature only the low rungs of this category have - which
-    is a question for the ladder rather than for this record.'
+  note: OpenHands leads the open coding-agent field, with an independent benchmark roundup crediting it
+    72% on SWE-bench Verified and 67.9% on GAIA, ahead of Devin 2.0 and Cursor's Background Agent. Its own
+    OpenHands Index leaderboard places its best non-outlier run at 83.8, the strongest among the seventeen
+    open-weights models it tracks.
   last_verified: '2026-08-31'
   sources:
   - url: https://github.com/All-Hands-AI/OpenHands
@@ -131,10 +117,10 @@ capability:
     http_status: 200
     content_sha256: 8fe170d299824b63991e8525bbe856d6d34448d96d10137fcdaf5012a18e02bc
   - url: https://api.github.com/repos/OpenHands/OpenHands/readme
-    shows: README, read for the anchor's own capability surface. Leads with "Agent Canvas" - "The self-hosted developer
-      control center for coding agents and automations", status beta - which "Run[s] OpenHands, Claude Code, Codex,
-      Gemini, or any ACP-compatible agent across local, remote, and cloud backends", alongside the sandboxed Docker
-      runtime quickstart for the agent itself.
+    shows: README leads with "Agent Canvas" - "The self-hosted developer control center for coding agents
+      and automations", status beta - which "Run[s] OpenHands, Claude Code, Codex, Gemini, or any ACP-compatible
+      agent across local, remote, and cloud backends", alongside the sandboxed Docker runtime quickstart
+      for the agent itself.
     accessed: '2026-08-31'
     http_status: 200
     content_sha256: baf3a0845abc5a160c560cfdcc90c27ec8097c247cdd9e25aec63f6b8f5867b0

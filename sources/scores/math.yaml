@@ -21,12 +21,10 @@ openness:
     free_text:
     - problems sourced from AMC/AIME competitions, takedown reflects unresolved rights
   confidence: medium
-  note: Declared MIT, but the canonical Hugging Face dataset is access-disabled under a DMCA takedown over
-    AMC/AIME problem rights, so the corpus is no longer distributed from its primary registry. Data that
-    is not distributed at all counts as closed rather than gated, whatever the license says and however
-    it came to be that way. The Hub API reports 0 downloads in the trailing 30 days against 1,034,712 all-time,
-    which is what a disabled repository looks like. Mirrors and eval harnesses still embed the problems,
-    so this is worth revisiting if the takedown is resolved.
+  note: MIT is the declared license, but the canonical Hugging Face repository is disabled under a DMCA
+    takedown over AMC/AIME problem rights, so the corpus is no longer distributed from its primary registry.
+    Undistributed data counts as closed regardless of the license, though mirrors and eval harnesses still
+    embed the problems, so the closed score is worth revisiting if the takedown is resolved.
   raw: license:MIT(declared);access:closed(canonical HF repo access-disabled under a DMCA takedown);data:NOT
     downloadable from canonical HF repo (access disabled, DMCA takedown);datasheet:present(card still documents
     schema);redistributability:BLOCKED on the primary registry;problems sourced from AMC/AIME competitions,
@@ -48,14 +46,10 @@ adoption:
   confidence: medium
   banded_quantity: all-time downloads (1,034,712) of a takedown-walled repo now reporting 0 in the trailing
     30 days
-  note: 'MATH is one of the most-cited math-reasoning standards, and this band rests on its standing in
-    release reports rather than on a download count. The canonical Hugging Face repository is takedown-walled
-    and reports 0 downloads in the trailing 30 days against 1,034,712 all-time, so no usage figure can be
-    obtained from it. The standing is evidenced by OLMo 3''s official model card, whose evaluation table
-    carries MATH as a row - 65.1 through 91.6 across nine compared models - alongside AIME 2024/2025, GPQA,
-    MMLU, IFEval, LiveCodeBench and thirteen others: a frontier open model reporting MATH as a headline
-    metric in its release evaluation. The takedown page is cited beside it because it is what rules a measured
-    download figure out.'
+  note: MATH is one of the most-cited math-reasoning benchmarks; with its canonical Hugging Face repository
+    walled off by a takedown, adoption is read from that citation standing rather than a download count.
+    OLMo 3's model card lists MATH in its evaluation table alongside AIME 2024/2025, GPQA, MMLU, IFEval
+    and LiveCodeBench, evidence that a frontier open model reports it as a headline metric.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct/raw/main/README.md
@@ -66,9 +60,9 @@ adoption:
     http_status: 200
     content_sha256: 9c7c873ea9bd506db7800e61a0535302106bdc393d72b0d2341197330d25a7fe
   - url: https://huggingface.co/datasets/hendrycks/competition_math
-    shows: 'the access-disabled page and its DMCA notice; carries the `license:mit` tag and the card,
-      and reports 0 downloads in the trailing 30 days. This is what rules out a usage_volume band; it
-      establishes nothing about release-report standing'
+    shows: the access-disabled page and its DMCA notice; carries the `license:mit` tag and the card, and
+      reports 0 downloads in the trailing 30 days. This is what rules out treating a download count as the
+      adoption signal; it establishes nothing about release-report standing
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 361599c5136cbd9d8bf46f6ac47b56594c406e411fee9413d1ab4c529d06bb01
@@ -77,7 +71,7 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: A dataset is not 'capable', so this axis is left unscored.
+  note: A dataset is not 'capable', so capability is left unscored.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/hendrycks/competition_math

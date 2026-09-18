@@ -66,10 +66,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 3,221,049 downloads in the trailing 30 days across the two reranker checkpoints on the Hugging Face universe
-    sweep - gte-reranker-modernbert-base 2,728,127 and gte-multilingual-reranker-base 492,922. The ModernBERT
-    cross-encoder alone clears the 1M floor. Live Hub API figures a few days later read 2,638,520 and 372,525 and
-    do not move the band. The gte embedders are the sibling gte product and are not counted here.
+  note: Adoption is measured as Hugging Face downloads across GTE's two reranker checkpoints, most of them
+    for the English-only ModernBERT cross-encoder. The GTE embedding checkpoints are the sibling gte product
+    and are excluded here.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/api/models/Alibaba-NLP/gte-reranker-modernbert-base
@@ -92,12 +91,10 @@ capability:
     only; gte-multilingual-reranker-base is a 306M encoder-only cross-encoder over 70+ languages at the same context,
     evaluated in the mGTE paper.'
   confidence: high
-  note: 'Rung 3, solid workhorse. Heavily used and credibly measured, but a band below the reranking frontier on the
-    same instrument: 56.19 BEIR nDCG@10 against jina-reranker-v3 at 61.94, and the ModernBERT cross-encoder that carries
-    the downloads is English only where the frontier rerankers are multilingual. The multilingual sibling reaches
-    70+ languages but is the 2024 generation. Same placement and the same peer as bge-reranker, which sits one below
-    jina-reranker on the same reading. The gte embedders are scored separately at 4; this edge is about the reranking
-    half only.'
+  note: GTE Reranker's ModernBERT cross-encoder scores 56.19 BEIR nDCG@10, a step below Jina Reranker's
+    61.94 on the same benchmark, and it is English-only where the frontier rerankers are multilingual. The
+    multilingual sibling covers 70-plus languages but is an older generation model; the GTE embedding checkpoints
+    are scored separately, and this reading covers only the reranking half of the family.
   last_verified: '2026-09-11'
   sources:
   - url: https://huggingface.co/Alibaba-NLP/gte-reranker-modernbert-base/raw/main/README.md

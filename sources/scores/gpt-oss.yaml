@@ -15,11 +15,9 @@ openness:
     - name: Apache-2.0
       detail: OSI
   confidence: high
-  note: 'Apache-2.0 weights, downloadable ungated on the Hub in both sizes, with no released training
-    data (the card carries no datasets key and no training-data section beyond the paper''s description)
-    and only inference reference code in the openai/gpt-oss repository. Open weights with a closed recipe
-    is the category''s center of gravity, which is what 3 records. The formula lands on the fallthrough:
-    weights open, license osi, data closed.'
+  note: gpt-oss ships as Apache-2.0 weights, downloadable without a gate in both the 120B and 20B sizes.
+    The training data is not released, and the repository holds only inference reference code rather than
+    a training pipeline, which keeps it at open weights rather than a more open score.
   raw: weights:open(gpt-oss-120b/20b on HF, ungated safetensors);data:closed;code:partial(inference reference
     implementations (PyTorch/Triton) in openai/gpt-oss; no training pipeline);license:Apache-2.0(OSI)
   last_verified: '2026-09-01'
@@ -65,10 +63,9 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 11,896,046 downloads in the trailing 30 days across the two declared artifacts (openai/gpt-oss-20b
-    6,519,052; openai/gpt-oss-120b 5,376,994), which bands at level 5 (>10M) on the model adoption scale.
-    The only open-weight line on the map at level 5 alongside qwen and gemma; the 20b SKU carries slightly
-    more reach than the 120b.
+  note: Adoption is measured as Hugging Face downloads summed across the two declared gpt-oss checkpoints,
+    with the smaller 20B model drawing slightly more traffic than the 120B. Qwen and Gemma are the only
+    other open-weight lines with comparable Hugging Face download volume.
   last_verified: '2026-09-01'
   sources:
   - url: https://huggingface.co/api/models/openai/gpt-oss-20b
@@ -91,10 +88,10 @@ capability:
   relative_to: deepseek-r1
   relation: at
   confidence: medium
-  note: 'A strong open-weight reasoner, clearly above the non-reasoning open mid-field (Llama 4 Maverick
-    at 14.5 on the same index) and clearly below the closed frontier the category''s 5s hold (gpt-5, claude-opus,
-    gemini). That is the deepseek-r1 rung: an open-weight reasoning line competitive on math/reasoning
-    benchmarks without leading the category, so it sits at, not above, R1''s 4.'
+  note: gpt-oss-120b scores 24.1 on the Artificial Analysis Intelligence Index, clearly ahead of non-reasoning
+    open models such as Llama 4 Maverick at 14.5, but well short of closed frontier models scoring near
+    60. That places it level with DeepSeek-R1, another open-weight reasoning line competitive on math and
+    reasoning benchmarks without leading the category.
   comparison:
     last_attested: '2026-09-01'
     sources:

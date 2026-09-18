@@ -20,7 +20,10 @@ re-verifying every product in a category, use [`refresh-category.md`](refresh-ca
 There is **no `litmus` field**. `category.schema.json` sets `additionalProperties: false`, so
 inventing one fails `validate`. The membership boundary test — why a borderline product sits
 here and not next door — is prose: put it in the category's `comments`, and in the product's own
-`comments` for the specific call.
+`comments` for the specific call. Category `comments` and `scoring_recipe.note` are unpublished
+and read by the next editor; `strapline` is published. The rules for both, and for the `#`
+comments in a shared rubric, are in [`../reference/product-copy.md`](../reference/product-copy.md),
+"Unpublished prose".
 
 ## Procedure
 1. **Open** `sources/categories/<slug>.yaml` (or create it). Edit surgically — never

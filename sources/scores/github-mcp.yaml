@@ -13,10 +13,9 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT, first-party GitHub server, no feature-gated core. GitHub also runs a hosted Remote GitHub
-    MCP Server, but that is a managed endpoint for the same server rather than a tier holding features back
-    - the toolset list is the same one, configured by header instead of by flag - which is the langchain shape
-    the ladder settles as ungated.
+  note: The server is MIT-licensed, first-party and ships with no feature-gated core. GitHub's hosted Remote
+    GitHub MCP Server is a managed endpoint for that same server rather than a paid tier holding features
+    back; it offers the same toolset, configured by an HTTP header rather than a command-line flag.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -42,12 +41,10 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: medium
-  note: 'No download metric exists for the channels this server actually ships through: a Go binary, a Docker
-    image and GitHub''s own hosted remote endpoint, none of which publishes a count, and there is no npm or
-    PyPI package to read. Stars are therefore forced rather than chosen as the signal - 32,220 stargazers on
-    the one declared repository, which bands at >10K stars, level 3, though first-party backing implies real
-    usage well above that. The page the count comes from carries a live star counter, so its content will differ
-    on any later fetch; that is expected drift on this source rather than a signal about the claim.'
+  note: GitHub distributes this server as a Go binary, a Docker image and its own hosted remote endpoint,
+    none of which publishes a download count, and there is no npm or PyPI package to read, leaving GitHub
+    stars on the one declared repository as the only available signal. First-party backing from GitHub itself
+    likely means real use well beyond what that star count shows, since a star is not a use.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/github/github-mcp-server
@@ -63,9 +60,9 @@ capability:
     Dependabot, discussions - reached with a personal access token, or through a remote server that performs
     OAuth
   confidence: medium
-  note: 'One system, and the product handles authentication rather than passing a secret through: the remote
-    server does OAuth with the host, and the local server takes a PAT. That is the line between 3 and 4 here.
-    Its earlier band read a different question in a category that no longer exists.'
+  note: GitHub MCP Server covers a single system, but it handles authentication itself rather than simply
+    passing along a caller's secret. The remote server performs OAuth with GitHub, while the local server
+    takes a personal access token as configuration.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/github/github-mcp-server/main/README.md

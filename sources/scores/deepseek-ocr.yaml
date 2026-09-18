@@ -17,12 +17,10 @@ openness:
       value: closed
       detail: inference code is published; no training or data-construction pipeline is
   confidence: high
-  note: MIT on both the code and the weights, and the band is 3 rather than 5 because openness here is about
-    the recipe and not only the licence. The weights download without a gate and the inference code is public;
-    the training corpus and the pipeline that built it are not, so the ladder's data-and-code rung is not reached
-    and it lands on the fallthrough - open weights, closed recipe. A permissive licence does not substitute
-    for a published recipe, which is the whole reason the model ladder checks weights and data before it checks
-    the licence.
+  note: DeepSeek-OCR's code and weights are both released under MIT and download from Hugging Face without
+    a gate, but DeepSeek does not publish or describe the training corpus or the pipeline used to build
+    the model, only the inference code. That makes this an open-weights release rather than a fully open
+    one.
   raw: license:MIT(OSI; the LICENSE body reads MIT License, Copyright (c) 2025 DeepSeek, and the Hugging Face
     card declares mit);weights:open(downloadable from Hugging Face without a gate);data:closed(the training
     corpus is neither published nor described);code:closed(inference code is published; no training or data-construction
@@ -53,11 +51,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: The Hugging Face API reports 2,386,735 downloads of deepseek-ai/DeepSeek-OCR in the trailing 30 days
-    and 3,380 likes, inside the 1M-10M band for level 4. Hugging Face is the declared distribution channel
-    for the weights. An earlier draft called this the most-downloaded product in the category by an order of
-    magnitude; that was false and is withdrawn - docling records 12,493,111 and markitdown 12,755,994, both
-    on PyPI and both a band above.
+  note: DeepSeek-OCR's adoption is measured by Hugging Face downloads over the trailing month, since Hugging
+    Face is the declared distribution channel for the weights. Docling and MarkItDown, both distributed
+    via PyPI, are measured with higher counts on the same reading.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
@@ -71,14 +67,9 @@ capability:
   basis: n/a
   value: null
   confidence: low
-  note: 'ABSTAINS. The band this record carried said text survives and structure does not, and nothing cited
-    establishes the second half: the release documents optical context compression - a page of text carried
-    in vision tokens - and neither the repository nor the model card tests whether tables or reading order
-    survive. An earlier draft asserted they do not, which was an absence of evidence read as evidence of absence;
-    removing the assertion does not rescue the band that rested on it. This abstains rather than guessing,
-    and closes when someone runs a document through it. The abstention is dated rather than left blank: the
-    queue''s own rule is that a null somebody looked for and did not find is a confirmed axis, and the record
-    below is where it was looked for.'
+  note: DeepSeek-OCR converts a page image into text carried in vision tokens, a technique the release calls
+    optical context compression. Neither the repository nor the model card says whether tables or reading
+    order survive that conversion, so no capability score is assigned rather than assumed from silence.
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-OCR
     shows: 'The model''s Hugging Face record: what is published, the declared licence, and - the point of citing

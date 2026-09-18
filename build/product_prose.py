@@ -1,38 +1,26 @@
-"""Classify the verification line every product carries in `comments`.
+"""Find a dated verification sentence in a product's `comments`, which may no longer carry one.
 
-`docs/reference/product-copy.md` standardizes that line on:
+`docs/reference/product-copy.md` used to require every `comments` field to end in
 
     Verified <YYYY-MM-DD> via <document>.
 
-The date is what `sweep_status` ages the prose on. The document is what makes the line
-provenance rather than an assertion: it names something a later editor can reopen. And the
-line occupies a whole sentence at the end of the field — nothing before `Verified` that could
-negate or qualify it, nothing after the period that could ride on it.
+and this module classified the line into five states so `sweep_status` could age the prose on
+it. The line was a third copy of a fact the record already holds twice: each axis carries
+`last_verified`, and the product page prints `Verified <date>` from it. Visitors read the line
+as a footnote about the product. #619 retired it, and the guide now says a `comments` field is
+a footnote about our reading or nothing at all.
 
-## The five states
+So the classifier is inverted. It no longer asks "is the line canonical"; it asks "is there a
+dated verification sentence here at all", in any of the spellings the corpus has carried
+(`Verified live <date> on`, `verified <date> against`, lowercase, no period). A hit is a defect,
+and `tests/test_product_prose.py` holds the corpus at zero.
 
-| state | meaning |
-|---|---|
-| `canonical` | the whole contract: a real calendar date, `via`, a document, a period, end |
-| `named_noncanonical` | names a document, but not in that form — `live` / `on` / `against`, an impossible date, a missing period, a qualifier before `Verified`, or prose after the line |
-| `ambiguous_noncanonical` | dated, but no document identifiable — `Verified 2026-08-13.` |
-| `generic` | names a METHOD — `primary sources`, `research`, `web search` |
-| `missing` | no dated verification line at all |
-
-Only `canonical` passes. The other four are all "go and fix the prose", and they differ in
-what the fix is, which is the whole reason the census reports them separately.
-
-`generic` is the one `product-copy.md` rules out by name: those words "describe how you looked
-rather than what settled it, and leave the next editor nothing to re-open".
-
-The whole corpus was brought to `canonical` in the 2026-08 closeout (tag
-`baseline-472-2026-08-16`). The classifier stays because that is a property new and edited
-products have to keep, not a one-time migration: `sweep_status` reports the state per product,
-and `tests/test_product_prose.py` asserts the corpus-wide invariant.
+What the line named, the document that was read, is not lost. It belongs on the axis that the
+reading settled, as a source entry with `url` and `shows`, where a re-fetch can confirm it.
 
 Usage:
-    uv run python -m build.product_prose          # the five-state census
-    uv run python -m build.product_prose --quiet  # counts only
+    uv run python -m build.product_prose          # list every product still carrying one
+    uv run python -m build.product_prose --quiet  # the count only
 """
 
 from __future__ import annotations
@@ -43,67 +31,25 @@ from pathlib import Path
 
 import yaml
 
-from build.vocabulary import is_iso_date
-
 ROOT = Path(__file__).resolve().parents[1]
 
-# A sentence-terminating "." is one followed by whitespace or end of string; a dot inside a
-# URL or filename is not, and neither is the dot of an initialism.
+# A verification verb, then a date within a short span. The span allows the words the corpus
+# has put between them (`live`, `on HF`, `against the card`) and stops at a sentence end, so a
+# `Verified` in one sentence does not borrow a date from the next.
 #
-# `[^.;]*` alone stopped inside `huggingface.co`. Adding only the whitespace test then split
-# `the U.S. AI Safety Institute report` into `the U.S` + `. AI Safety Institute report`,
-# which is worse than the URL case, because the result reads as grammatical. The lookbehind
-# fires only on a single capital letter at a word boundary, so `U.` is kept and `README.` —
-# whose `D` has no word boundary before it — correctly ends the clause.
-BOUND = r"(?:[^.;]|\.(?!\s|$)|(?<=\b[A-Z])\.(?=\s))*"
-
-# The canonical line, in full, as `product-copy.md` defines it: the verification form starting
-# a sentence, a real date, `via`, a document, a final period, and nothing after it.
-#
-# **Both ends are load-bearing, and each was missing in turn.** An earlier cut enforced only a
-# date-shaped prefix, so `Verified 2026-08-13 via the README` (no period) and
-# `Verified 2026-08-13 via the README. This trailing claim is not covered.` both passed. Fixing
-# the end left the start open, and a bare search for `Verified` anywhere accepted the line's own
-# negations:
-#
-#     Not Verified 2026-08-13 via the README.
-#     Last Verified 2026-08-13 via the README.
-#     UnVerified 2026-08-13 via the README.
-#     Verification status: Verified 2026-08-13 via the README.
-#
-# The first three assert the OPPOSITE of what the gate would have read them as, which is worse
-# than the trailing-prose case. So the form has to begin the field or a sentence.
-#
-# `BOUND` is what lets the document keep its dots while trailing prose is still rejected.
-CANONICAL = re.compile(
-    r"(?:^|(?<=[.;!?]\s))Verified (\d{4}-\d{2}-\d{2}) via (" + BOUND + r")\.\s*$"
+# Deliberately not anchored to the start of a sentence and not requiring `via`: the old
+# classifier's precision about the canonical form is what let `Verified live 2026-08-13 on
+# huggingface.co` count as a different state from the line it was supposed to find. Every
+# spelling is the same defect now.
+DATED_VERIFICATION = re.compile(
+    r"\b[Vv]erif(?:ied|ication)\b[^.;!?]{0,45}?\b(\d{4}-\d{2}-\d{2})\b"
 )
 
-# Any dated verification, however it is worded. The corpus has carried `Verified live <date>
-# via`, `Verified live <date> on`, `... against`, and lowercase `verified`.
-ANY_DATED = re.compile(r"[Vv]erified[^.]{0,45}?(\d{4}-\d{2}-\d{2})")
-# What follows the date, which is where a document name would be. The preposition is
-# REQUIRED here: a line that just says "Verified 2026-08-13." names nothing, and treating the
-# rest of the sentence as a document is how the census would claim more than it checked.
-TRAILER = re.compile(r"[Vv]erified[^.]{0,45}?\d{4}-\d{2}-\d{2}[,;]?\s*(?:via|on|against|using)\s+(.*)")
-
-# Words that name a METHOD rather than a document. product-copy.md forbids these outright.
-# A leading article is allowed because "the primary sources" is the same claim as "primary
-# sources" and would otherwise slip through as a document name.
-#
-# This is the sole definition. A second, narrower copy in a sibling module let `substitute
-# sources` through as a document name; see docs/reference/sibling-invariants.md and
-# tests/test_vocabulary_siblings.py.
-METHOD_WORDS = re.compile(
-    r"^\s*(?:the\s+|a\s+|our\s+)?"
-    r"(primary[- ]sources?|primary-source research|research|web ?search|search|"
-    r"substitute sources|desk research|secondary sources?)\b",
-    re.IGNORECASE,
+# The reverse order, `2026-08-13: verified against the card`, has not appeared in the corpus
+# but is the same claim; catching it costs one alternative.
+DATE_THEN_VERIFIED = re.compile(
+    r"\b(\d{4}-\d{2}-\d{2})\b[^.;!?]{0,45}?\b[Vv]erif(?:ied|ication)\b"
 )
-
-# A document name has to contain an actual word. `Verified 2026-08-13 via .` is canonical in
-# shape and names nothing.
-HAS_WORD = re.compile(r"[A-Za-z0-9]")
 
 
 def products() -> dict[str, dict]:
@@ -113,83 +59,48 @@ def products() -> dict[str, dict]:
     }
 
 
-def classify(comments: str) -> tuple[str, str | None, str | None]:
-    """(state, date, trailer) for one product's comments.
+def dated_verification(comments: object) -> str | None:
+    """The dated verification sentence in `comments`, or None when there is none.
 
-    **The trailer is tested before the form.** An earlier cut checked `CANONICAL` first and
-    returned, so `Verified 2026-08-13 via primary sources.` classified as `canonical` — the
-    correct shape wrapped around the exact thing this classifier exists to find.
-
-    It was latent on the corpus (zero canonical-form lines named a method) and not latent in
-    the migration: an early rewording pass removed `live` from four hardware records reading
-    `via substitute sources`, promoting them into canonical form while they still named a
-    method. `generic` wins over `canonical` whenever the trailer is a method, however the
-    line is worded.
-
-    **`canonical` requires the whole contract**, not a date-shaped prefix of it: a real
-    calendar date, `via`, a document, a closing period, and the end of the field. A line
-    failing any of those is `named_noncanonical` — it names something, it just does not name
-    it in the form `product-copy.md` requires, which is a prose fix rather than a re-read.
-
-    The returned date is `None` unless it parses. `2026-99-99` is not a date this can age
-    prose on, and handing it back as one is how a downstream freshness sum would quietly get
-    a value it cannot compare.
+    Returns the whole sentence rather than the match, so a failure message shows the reader
+    what to delete. Whitespace is normalized first because the corpus is hand-wrapped and a
+    date can sit on the line after its verb.
     """
     text = " ".join(str(comments or "").split())
-    dated = ANY_DATED.search(text)
-    if not dated:
-        return "missing", None, None
-    iso = dated.group(1) if is_iso_date(dated.group(1)) else None
-
-    match = TRAILER.search(text)
-    trailer = match.group(1).strip() if match else ""
-
-    if METHOD_WORDS.match(trailer):
-        return "generic", iso, trailer
-    # A document has to be identifiable before the line can be called one that names one.
-    # `Verified 2026-08-13.` and `Verified live 2026-08-13, but only the adoption axis could
-    # be re-derived` are dated and not methods, and neither names anything to reopen.
-    # Defaulting those to `named_noncanonical` would promise a mechanical fix that does not
-    # exist.
-    if not trailer or not HAS_WORD.search(trailer):
-        return "ambiguous_noncanonical", iso, trailer
-    terminal = CANONICAL.search(text)
-    if terminal and is_iso_date(terminal.group(1)):
-        return "canonical", terminal.group(1), terminal.group(2)
-    return "named_noncanonical", iso, trailer
+    if not text:
+        return None
+    match = DATED_VERIFICATION.search(text) or DATE_THEN_VERIFIED.search(text)
+    if not match:
+        return None
+    start = max(text.rfind(". ", 0, match.start()), text.rfind("; ", 0, match.start()))
+    start = 0 if start < 0 else start + 2
+    end = text.find(". ", match.end())
+    end = len(text) if end < 0 else end + 1
+    return text[start:end].strip()
 
 
-def census() -> dict[str, list[str]]:
-    by_state: dict[str, list[str]] = {}
+def census() -> dict[str, str]:
+    """slug -> the offending sentence, for every product whose comments carry one."""
+    found = {}
     for slug, product in products().items():
-        state, _, _ = classify(product.get("comments"))
-        by_state.setdefault(state, []).append(slug)
-    return by_state
+        sentence = dated_verification(product.get("comments"))
+        if sentence:
+            found[slug] = sentence
+    return found
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--quiet", action="store_true",
-                        help="counts only; do not list the products behind them")
+    parser.add_argument("--quiet", action="store_true", help="the count only")
     args = parser.parse_args()
 
-    by_state = census()
-    total = sum(len(v) for v in by_state.values())
-    print(f"{total} products\n")
-    for state in ("canonical", "named_noncanonical", "ambiguous_noncanonical",
-                  "generic", "missing"):
-        print(f"  {state:22}{len(by_state.get(state, [])):>5}")
-
-    unresolved = sum(
-        len(by_state.get(s, []))
-        for s in ("generic", "ambiguous_noncanonical", "named_noncanonical", "missing")
-    )
-    print(f"\n  {'unresolved':22}{unresolved:>5}")
-    if unresolved and not args.quiet:
-        for state in ("generic", "ambiguous_noncanonical", "named_noncanonical", "missing"):
-            for slug in by_state.get(state, []):
-                print(f"    {state:22}{slug}")
-    return 0
+    total = len(products())
+    found = census()
+    print(f"{len(found)} of {total} products carry a dated verification sentence in comments")
+    if found and not args.quiet:
+        for slug, sentence in found.items():
+            print(f"  {slug:30} {sentence}")
+    return 1 if found else 0
 
 
 if __name__ == "__main__":

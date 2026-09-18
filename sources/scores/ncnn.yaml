@@ -13,12 +13,9 @@ openness:
       value: ungated
       detail: no enterprise path in the repository root and no paid build of the engine in the README
   confidence: medium
-  note: The LICENSE body is a Tencent-authored notice stating that both the ncnn binary and the ncnn source are
-    licensed under the BSD 3-Clause License, followed by the separate terms of third-party components it vendors,
-    read in full rather than taken from the API's label. The repository is public and unarchived and builds the
-    engine itself. Its root tree carries no enterprise, ee or commercial directory and its README describes no licence-gated
-    build, so the core reads as ungated. Confidence is medium because that is a repository-and-README read rather
-    than a pricing-page read.
+  note: The LICENSE body is a Tencent notice licensing both the ncnn binary and source under BSD-3-Clause,
+    followed by the separate terms of the third-party components it vendors. The repository is public, active
+    and builds the engine itself, with no enterprise or paid tier in the root tree or README.
   raw: license:BSD-3-Clause(OSI);source:public(the published repository is the engine);core-gated:ungated(no enterprise
     path in the repository root and no paid build of the engine in the README)
   last_verified: '2026-08-31'
@@ -54,9 +51,9 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 23,768 GitHub stars, which lands in the >10K band of the stars scale, level 3, where the scale caps. An
-    `ncnn` package on PyPI resolves to this repository but pypistats publishes no download figure for it, so no
-    package artifact is declared and the band rests on stars.
+  note: An ncnn package exists on PyPI and resolves to this repository, but pypistats publishes no download
+    figure for it, so no package artifact can be declared. GitHub stars are the only signal left, and they
+    cap the reading because a star is not a use.
   last_verified: '2026-08-31'
   sources:
   - url: https://api.github.com/repos/Tencent/ncnn
@@ -73,9 +70,9 @@ capability:
   relative_to: vllm
   relation: two_below
   confidence: medium
-  note: Two bands below the vllm anchor. Its platform reach is wide, but the anchor is banded on LLM serving - batching,
-    paged attention, parallelism, an OpenAI-compatible surface - and this runtime provides none of that, which is
-    why it sits with the other narrow-purpose runtimes rather than with onnx-runtime at one below.
+  note: ncnn sits two tiers below vLLM. Its platform reach is wide, but vLLM is judged on LLM-serving features,
+    batching, paged attention, parallelism and an OpenAI-compatible surface, none of which ncnn provides,
+    which keeps it with the other narrow-purpose runtimes rather than with ONNX Runtime one tier up.
   last_verified: '2026-08-31'
   sources:
   - url: https://raw.githubusercontent.com/Tencent/ncnn/master/README.md

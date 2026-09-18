@@ -24,14 +24,10 @@ openness:
     training configs and loss code, but its entry point imports google_proprietary_code, a package that
     is not published, so the training path cannot run);license:CC-BY-SA-4.0(permissive non-OSI)
   confidence: high
-  note: >-
-    Apache-2.0 governs the code but the trained weights carry CC-BY-SA-4.0, which is the license
-    that counts here - permissive, share-alike, and not OSI-approved. `code` is partial for a
-    concrete reason rather than the docs' hedge: reference_code ships the per-checkpoint .gin
-    training configs, train_utils.py and the loss code, but experiment.py imports
-    google_proprietary_code, which is not published, so the training path cannot be executed. The
-    docs say the maintainers "would love to support training, modifying and fine-tuning" and are
-    refactoring to make it easier - not that it is unsupported.
+  note: 'Apache-2.0 covers the code, but the trained weights carry CC-BY-SA-4.0, a share-alike, non-OSI
+    license, and that is the license that applies to the released model. The training code is only partly
+    public: the reference code ships per-checkpoint configs, training utilities and loss code, but the experiment
+    script imports an unpublished Google-internal module, so the training path cannot be run.'
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/neuralgcm/neuralgcm/main/README.md
@@ -64,14 +60,9 @@ adoption:
   signal_type: usage_volume
   confidence: high
   banded_quantity: trailing-30-day PyPI downloads of the neuralgcm package, the install path the project's own documentation uses
-  note: >-
-    Re-banded off stars. The record previously said no download count existed; one does. The
-    project's quickstart installs with `pip install -q -U neuralgcm gcsfs`, which makes PyPI
-    provably the product's own channel and its primary one - the two conditions
-    docs/reference/adoption.md sets before a package may band a head product. 8,480 downloads
-    in the trailing 30 days puts it at level 1, one below the 1,014 GitHub stars it used to
-    carry, and adoption.md is explicit that a stars_fallback band re-bands the moment a
-    download signal exists.
+  note: The project's own quickstart installs the package with pip, making PyPI downloads of the neuralgcm
+    package the product's own primary channel, so adoption is measured from PyPI rather than falling back
+    to GitHub stars.
   last_verified: '2026-09-10'
   sources:
   - url: https://pypistats.org/api/packages/neuralgcm/recent

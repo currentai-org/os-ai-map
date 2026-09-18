@@ -48,9 +48,8 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,036 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. oneDNN is consumed
-    as a C++ library vendored into frameworks rather than as a package, so no download channel measures it and the
-    stars scale applies with its cap of 3.
+  note: oneDNN is consumed as a C++ library vendored directly into frameworks rather than installed as its
+    own package, so no download channel measures its use and GitHub stars are the only adoption signal available.
   last_verified: '2026-08-18'
   sources:
   - url: https://api.github.com/repos/uxlfoundation/oneDNN
@@ -68,12 +67,9 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: 'One band below the apache-tvm anchor, on the operator-surface half of that band. Convolution, matmul,
-    RNN, normalization and fusion across x86-64, AMD64 and Arm64 CPUs and Intel GPUs is real coverage, and
-    it clears the dependency test on the strongest form of evidence: OpenVINO declares two oneDNN submodules
-    in its own `.gitmodules`. Its README''s list of ONNX Runtime, OpenVINO, PaddlePaddle, PyTorch and TensorFlow
-    corroborates and does not decide. Short of the anchor because it supplies the operators rather than
-    the path from a framework graph to a target.'
+  note: OpenVINO declares oneDNN as two submodules directly in its own repository, the strongest evidence
+    of dependency recorded for this operator library. It supplies operators rather than the path from a
+    framework graph to a target, which keeps it short of Apache TVM.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
@@ -87,7 +83,7 @@ capability:
     shows: README's "deep learning applications and framework developers" section names the frameworks built
       on oneDNN - ONNX Runtime, OpenVINO toolkit, PaddlePaddle, PyTorch and TensorFlow. A producer-owned
       list with no link to a consumer's own integrating change, so it corroborates the OpenVINO submodule
-      declaration rather than deciding the band.
+      declaration rather than deciding the reading.
     accessed: '2026-09-15'
     http_status: 200
     content_sha256: b11198d0e1344c3e030a5f35e557ed08cefaadef4fbf33ddcf4e8fb6c632f18b

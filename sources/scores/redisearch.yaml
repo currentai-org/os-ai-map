@@ -11,14 +11,11 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: LICENSE.txt states the source in this repository is available, except where a file header says otherwise,
-    under the recipient's choice of the Redis Source Available License 2.0 (RSALv2, not OSI), the Server Side
-    Public License v1 (SSPLv1, not OSI) or the GNU Affero General Public License v3 (AGPLv3, OSI) - the same
-    default-triple-license shape as elasticsearch, and AGPL-3.0 is the tier this records. Unlike elasticsearch's
-    x-pack or meilisearch's Enterprise Edition, no directory in this repository is checked to carry a header
-    naming only the non-OSI branches - the coordinator/clustering code under `src/coord` (Redis's distributed
-    serving layer) carries the identical triple-choice header as the rest of `src/`, so no functionality in the
-    published tree is withheld from the AGPL-3.0 branch. Source is public and the core ungated.
+  note: 'RediSearch offers a choice of three licenses, the same choice as Elasticsearch: the Redis Source
+    Available License, the Server Side Public License, or AGPL-3.0, which is OSI-approved. No directory,
+    including the distributed clustering code, is restricted to only the non-OSI choices, unlike Elasticsearch''s
+    x-pack or Meilisearch''s Enterprise Edition, so nothing in the published tree is withheld from the AGPL-3.0
+    option.'
   raw: license:AGPL-3.0(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-02'
   sources:
@@ -64,9 +61,8 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 6,228 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. RediSearch ships as
-    a Redis module with no standalone package registry artifact and no published deployment count, which leaves
-    the stars scale and its cap of 3.
+  note: RediSearch ships as a Redis module with no standalone package-registry artifact of its own and no
+    published deployment count. That leaves GitHub stars as the adoption signal available for it.
   last_verified: '2026-09-02'
   sources:
   - url: https://api.github.com/repos/RediSearch/RediSearch
@@ -83,9 +79,10 @@ capability:
   relative_to: pgvector
   relation: at
   confidence: medium
-  note: Banded on the category feature matrix as working single-purpose store or index, level with pgvector - the
-    same shape (a search/index module bolted onto a general-purpose store, inheriting that store's persistence
-    and distribution rather than providing its own) with a broader retrieval surface than a vector-only extension.
+  note: RediSearch adds secondary indexing, full-text search, vector similarity search and aggregations
+    as a Redis module, inheriting Redis's own persistence, replication and clustering rather than providing
+    its own. That puts it on par with pgvector, a search extension bolted onto a general-purpose store,
+    though with a broader retrieval surface.
   comparison:
     last_attested: '2026-09-02'
     sources:

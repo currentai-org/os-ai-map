@@ -18,14 +18,10 @@ openness:
     hardware-lock:
       value: AWS-Inferentia/Trainium-only
   confidence: high
-  note: Source-available rather than closed or open. Neuron is not a managed service, since the SDK installs
-    and runs on the customer's own EC2 instance, but it installs from proprietary packages and the headline
-    inference path is not published. The aws-neuron-sdk repository is a documentation and issue-tracker
-    repo whose compiler and neuron-runtime directories hold documentation rather than code, and AWS's own
-    open-source catalog lists six public repositories with neither the Neuron Runtime nor the Neuron Compiler
-    among them. What does ship as source is the GPL-2.0 Linux kernel driver, the NKI kernel library, the
-    Apache-2.0 vLLM-for-Neuron integration and the MIT-0 samples, real open components arranged around a
-    closed core.
+  note: 'AWS Neuron installs and runs on the customer''s own EC2 instances, but the Neuron Runtime and Compiler
+    are not published: AWS''s own open-source catalog lists six public repositories, and neither appears
+    among them. An open kernel driver, kernel library and vLLM integration surround that closed core, rather
+    than the whole SDK being closed.'
   last_verified: '2026-09-09'
   raw: license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker
     repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron
@@ -93,18 +89,15 @@ adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  note: 'AWS publishes no customer count, download count or usage figure for Neuron anywhere on the product
-    page, names no customers and makes no quantified scale claim. What the page does establish is integration
-    breadth: PyTorch and JAX natively, plus Hugging Face Transformers and Optimum Neuron, vLLM, PyTorch
-    Lightning and TorchTitan, "without modifying your code". The band is therefore qualitative and only
-    as good as that description, since nothing here is countable: the breadth can support a level but cannot
-    confirm that 3 is precisely the right one.'
+  note: 'AWS publishes no customer count, download count or usage figure for Neuron, and names no customers.
+    What the page does show is integration breadth: native PyTorch and JAX support, plus Hugging Face Transformers,
+    Optimum Neuron, vLLM, PyTorch Lightning and TorchTitan, without requiring code changes.'
   last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/ai/machine-learning/neuron/
     shows: PyTorch and JAX natively, plus HuggingFace, vLLM, PyTorch Lightning, TorchTitan and Optimum Neuron,
       "without modifying your code". No customer count, download count, usage figure or named customer anywhere
-      on the page - the absence is what the reported_traction instrument rests on.
+      on the page.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4ccd6ea8ed04015f8c2729eec22575613ca21e969c4ff77b7483f5dfcec65965
@@ -114,11 +107,9 @@ capability:
   value: vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative
     decoding; native PyTorch + JAX; compiler/runtime/profiler stack
   confidence: medium
-  note: 'The score rests on the feature set: the Neuron runtime supports the vLLM V1 API on Trainium and
-    Inferentia with expert parallelism for mixture-of-experts models, disaggregated inference architectures
-    and speculative decoding, alongside native PyTorch and JAX and a compiler/runtime/profiler stack. That
-    is a server-class inference feature set, but one locked to AWS Inferentia and Trainium hardware. No
-    MLPerf Inference figure has surfaced for Neuron, so there is no benchmark result behind the score.'
+  note: Neuron delivers a server-class inference feature set on native PyTorch and JAX, but only for AWS's
+    own Inferentia and Trainium hardware, and no MLPerf Inference benchmark result has been published for
+    it.
   basis_detail: vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative
     decoding; native PyTorch + JAX; compiler/runtime/profiler stack
   last_verified: '2026-08-09'

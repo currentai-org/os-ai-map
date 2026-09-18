@@ -10,15 +10,25 @@ openness:
     - {name: MIT, detail: OSI}
   raw: license:MIT(OSI);weights:open(data/default_model.pt shipped in the MIT repository and loaded by the package's load_pretrained helper);data:open(scripts/generate_data.py rebuilds the corpus end to end from Earth Engine, with the tile list, tile statistics and a sample shard shipped in the repository);code:open(self-supervised train.py, eval.py, configs, and the end-to-end data-generation pipeline)
   confidence: high
-  note: The weights, the self-supervised pretraining script, and the pipeline that rebuilds the corpus all ship under a plain MIT license with no added attribution or use clause, which is the ladder's top rung.
+  note: The weights, the self-supervised pretraining script, and the pipeline that rebuilds the corpus all
+    ship under a plain MIT license with no added attribution or use clause, which is a complete open-source
+    release.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/nasaharvest/presto/main/README.md
-    shows: Documents Presto.load_pretrained() reading the state dict from data/default_models.pt, a train.py self-supervised training entry point with a runnable local command, and scripts/generate_data.py generating the training tars from Earth Engine exports, reading the resulting webdataset shards through an authenticated `pipe:gcloud storage cat`. The bucket is not anonymously readable — the object returns 403 and listing returns 401 — so the data dimension rests on the reconstruction scripts rather than on a public download.
+    shows: Documents Presto.load_pretrained() reading the state dict from data/default_models.pt, a train.py
+      self-supervised training entry point with a runnable local command, and scripts/generate_data.py generating
+      the training tars from Earth Engine exports, reading the resulting webdataset shards through an authenticated
+      `pipe:gcloud storage cat`. The bucket is not anonymously readable — the object returns 403 and listing
+      returns 401 — so the data dimension is established by the reconstruction scripts rather than by a
+      public download.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: b023f4f2fc565e15100f50149c19dcd3581a5df8eeddce53be9dc044d7fb6836
-    establishes: [weights, data, code]
+    establishes:
+    - weights
+    - data
+    - code
   - url: https://raw.githubusercontent.com/nasaharvest/presto/main/LICENSE
     shows: Unmodified MIT License text, Copyright (c) 2024 Presto Authors, with no attribution or field-of-use clause added.
     accessed: '2026-09-10'
@@ -48,7 +58,8 @@ adoption:
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: The weights ship inside the repository rather than on a model hub, so no download count exists and 280 GitHub stars are used as a last-resort reach signal.
+  note: The weights ship inside the repository rather than on a model hub, so no download count exists and
+    GitHub stars are used as the last-resort reach signal instead.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/nasaharvest/presto

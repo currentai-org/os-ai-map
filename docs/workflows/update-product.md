@@ -44,8 +44,11 @@ build.check_artifacts`.
 This is a **prose** change: it never touches scores and never writes `last_verified`. Rewrite
 `description`/`comments` to [`../reference/product-copy.md`](../reference/product-copy.md) against
 primary sources, strip any hardcoded star/download count, and keep the load-bearing facts.
-Run standalone, this is the prose pass (formerly the `verify-product` skill). Validate:
-`uv run python -m build.validate`.
+`comments` is a footnote about the reading, or nothing; it does not end in a `Verified … via`
+line (the date is `last_verified` on each axis, and the page prints it). Edit through
+`build/components.py` (`set_document_field`, `drop_document_field`). Validate:
+`uv run python -m build.validate` and `uv run pytest -q tests/test_product_prose.py`. A whole
+category's score notes in rubric vocabulary is the `clean-corpus-prose` skill, not this route.
 
 ### Re-verify the affected axes — a score's evidence or value moved
 A score change is evidence work, and it earns a date. Do **not** just edit the number.

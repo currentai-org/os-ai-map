@@ -50,13 +50,13 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,600 GitHub stars. HAMi ships as container images and a Helm chart and publishes no package-registry
-    artifact, so no usage-volume channel exists and the band rests on stars, which measure attention rather
-    than use. The stars route caps at level 3.
+  note: HAMi ships as container images and a Helm chart rather than through a package registry, so GitHub
+    stars are the only adoption signal available. A star is not a use, so the signal shows attention rather
+    than real usage.
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/Project-HAMi/HAMi
-    shows: Repository page showing the star count for Project-HAMi/HAMi.
+    shows: Repository page showing 4,600 GitHub stars for Project-HAMi/HAMi.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: d62238403b350e7ad65ed2512a97e00122caa76b5ed739943a6a121445a3683b
@@ -73,17 +73,16 @@ capability:
     last_attested: '2026-09-16'
     sources:
     - url: https://raw.githubusercontent.com/microsoft/hivedscheduler/master/doc/user-manual.md
-      shows: Re-read of the peer this band is placed against. HiveD still presents as choosing which GPUs on
-        which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
-        reservation - the property both products share at this band.
+      shows: Re-read of the peer this comparison is placed against. HiveD still presents as choosing which
+        GPUs on which machines a job receives and guaranteeing that set's topology, without an evidenced multi-machine
+        reservation - the property both products share.
       accessed: '2026-09-16'
       http_status: 200
       content_sha256: b4140035b19168633fbdf15d4d2585bdd8d966c173daa4009a0c765d833c73d4
-  note: 'Admitted on the accelerator limb: HAMi registers devices in its own annotation schema and its own
-    scheduler consumes that to choose placement. Band 4 - it selects the node AND the specific devices, which
-    is more than dispatching, and nothing cited shows it reserving a multi-machine set as one allocation, which
-    is what band 5 asks. Repointed from nvidia-run-ai to openpai when Run:ai moved to band 5: a peer must be
-    at the band being claimed, and openpai selects hardware on the same footing this record does.'
+  note: HAMi registers each accelerator in its own annotation schema, and its own scheduler consumes that
+    to choose both the node and the specific devices a pod receives, which is more than simple dispatching.
+    Nothing cited shows it reserving a multi-machine set as a single allocation, which keeps it level with
+    OpenPAI.
   last_verified: '2026-09-16'
   sources:
   - url: https://raw.githubusercontent.com/Project-HAMi/HAMi/master/docs/develop/protocol.md

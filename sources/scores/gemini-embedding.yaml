@@ -23,9 +23,10 @@ openness:
     training or inference implementation; client SDKs and a REST endpoint only);license:proprietary(hosted
     API under Google’s terms; no license granted over the model)
   confidence: high
-  note: API-only across both live SKUs, so the ladder's first rule fires. The published technical report
-    is the one thing that distinguishes this from the rest of the cluster — it makes the numbers auditable
-    — but a paper is not a corpus, weights or a pipeline, and the ladder scores what ships.
+  note: Both gemini-embedding-2 and gemini-embedding-001 are served only through the Gemini API and Vertex
+    AI, with no downloadable weights, training data or code. The published technical report makes the benchmark
+    numbers auditable, but a paper is not a released corpus, checkpoint or pipeline, so the score reflects
+    what actually ships rather than what is described.
   last_verified: '2026-09-11'
   sources:
   - url: https://ai.google.dev/gemini-api/docs/embeddings
@@ -61,10 +62,9 @@ adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  note: 'No artifact to count and no call volume published. The level rests on the distribution surface:
-    general availability across both the Gemini API and Vertex AI, a free tier in Google AI Studio alongside
-    paid limits, and a migration path Google enforced by deprecating embedding-001 and text-embedding-004
-    into this line. Directional, so confidence stops at medium.'
+  note: 'Google publishes no call-volume figure for Gemini Embedding, so adoption is read from distribution:
+    general availability on the Gemini API and Vertex AI, a free tier alongside paid limits, and Google''s
+    migration of users off the deprecated embedding-001 and text-embedding-004 models onto this line.'
   last_verified: '2026-09-11'
   sources:
   - url: https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/
@@ -90,11 +90,10 @@ capability:
   relative_to: cohere-embed
   relation: at
   confidence: high
-  note: 'Rung 4, competitive frontier. The numbers are real, published and multi-instrument, and the multimodal
-    span is wider than any peer''s. It stops short of 5 on two arithmetic facts rather than a judgment:
-    69.9 on MTEB multilingual is below the category anchor''s 74.3 on MMTEB v2, and Voyage''s independent-of-Google
-    RTEB run puts voyage-4-large 3.87% above Gemini Embedding 001. The 68.32 figure the roster carried
-    is -001''s and is now the older of the two.'
+  note: 'Gemini Embedding 2 reports real, published numbers across several benchmarks, and its multimodal
+    span across text, image, video and audio is wider than any peer''s. It falls short of the frontier on
+    two counts: 69.9 on MTEB multilingual trails Harrier-OSS''s 74.3 on MMTEB v2, and Voyage''s independent
+    RTEB benchmark puts voyage-4-large 3.87% ahead of the older gemini-embedding-001.'
   last_verified: '2026-09-11'
   sources:
   - url: https://arxiv.org/abs/2605.27295

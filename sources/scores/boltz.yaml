@@ -10,7 +10,10 @@ openness:
     - {name: MIT, detail: OSI}
   raw: weights:open(MIT weights downloaded by the boltz package, covering Boltz-1 and Boltz-2);data:open(pre-processed RCSB and OpenFold structures and MSAs published for download, with instructions for reprocessing raw data);code:open(training script and structure and confidence model configs under scripts/train, alongside a training guide);license:MIT(OSI)
   confidence: high
-  note: Boltz reaches the top rung on the strength of the Boltz-1 release, where the corpus, the preprocessing pipeline, the training configs and MIT weights all shipped together. The Boltz-2 equivalents are marked coming soon and have not landed, so the pipeline a reader can actually run trails the model they would want to train; the license and the weights, which is what the rung turns on, cover both.
+  note: Boltz-1's full release - training corpus, preprocessing pipeline, training configs and MIT-licensed
+    weights - is what makes this an open-source rather than open-weights entry. Boltz-2's equivalents are
+    announced but not yet published, so the runnable training pipeline trails the model most users would
+    want to retrain; the MIT license and weights, though, cover both versions.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/jwohlwend/boltz/main/README.md
@@ -36,7 +39,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: boltz-community/boltz-1 and boltz-community/boltz-2 are the Hub repositories the package resolves weights from, but both report zero downloads because src/boltz/main.py fetches resolve/main/*.ckpt directly rather than through the Hub API, so the counter measures the API path and not the reach. 4,202 GitHub stars are the last-resort signal, on the same footing as aurora-weather and openfold.
+  note: The Hub repositories boltz-community/boltz-1 and boltz-community/boltz-2 report zero downloads because
+    the package fetches checkpoint files directly rather than through the Hub API that download counters
+    measure, so that path undercounts actual use. GitHub stars are the fallback signal instead.
   last_verified: '2026-09-10'
   sources:
   - url: https://api.github.com/repos/jwohlwend/boltz
@@ -45,7 +50,8 @@ adoption:
     http_status: 200
     content_sha256: 7502ca561e5728327b220861833669513a585a8c763ee5a5715f526d4327b691
   - url: https://huggingface.co/api/models/boltz-community/boltz-2
-    shows: 'downloads: 0; likes: 16; gated: false; license mit — the Hub artifact exists and reports zero, which is what puts this band on stars rather than on usage_volume.'
+    shows: 'downloads: 0; likes: 16; gated: false; license mit. The Hub artifact exists and reports zero
+      downloads.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 1ae227a0a2f6e1f0e8d1ee4f87f8dbb6ffc04020ccfd930dadd95c78dac83c90

@@ -10,15 +10,10 @@ openness:
     - {name: CC-BY-4.0, detail: permissive non-OSI}
   raw: weights:open(CC-BY-4.0 ungated aifs-single-mse-1.0.ckpt);data:documented-not-released(ERA5 1979-2022 for pretraining and operational IFS analyses 2016-2022 for fine-tuning, with the full input and output field list; neither dataset is redistributed);code:partial(config_pretraining.yaml and config_finetuning.yaml ship beside the checkpoint with pinned Anemoi versions and both stage commands, but no data-preparation recipe - the commands begin DATASETS_PATH=??????? and no anemoi-datasets build ships);license:CC-BY-4.0(permissive non-OSI)
   confidence: high
-  note: >-
-    ECMWF publishes both training-stage configs beside the checkpoint - pinned Anemoi versions,
-    learning-rate schedules, step counts and the commands that run them - which is more than
-    most of the category ships. It is recorded as partial rather than open because the rubric's
-    `open` asks for data prep, training recipe and configs, and the data-preparation half does
-    not ship: both commands begin `export DATASETS_PATH=???????` with no anemoi-datasets build
-    to fill it. Against the category's other `open` records - presto's end-to-end
-    data-generation pipeline, mattergen's full preprocessing-to-evaluation pipeline - two YAMLs
-    and a pinned third-party trainer do not reach the same bar.
+  note: ECMWF publishes both the pretraining and fine-tuning configs beside the checkpoint, with pinned
+    library versions and the commands to run them. But both commands point to an undefined dataset path,
+    and no script builds the ERA5 and operational-analysis inputs the checkpoint was trained on, so this
+    reads as open weights with partial code rather than a fully open release.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/ecmwf/aifs-single-1.0/raw/main/README.md
@@ -38,7 +33,8 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: 365 downloads in the trailing 30 days for the declared operational checkpoint, against 53 likes.
+  note: Adoption is measured by Hugging Face downloads of the single published checkpoint over the trailing
+    month, the only usage channel on record for AIFS.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/ecmwf/aifs-single-1.0

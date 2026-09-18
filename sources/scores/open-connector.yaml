@@ -19,11 +19,9 @@ openness:
       value: ungated
       detail: nothing withheld from the published tree
   confidence: high
-  note: 'Apache-2.0 over the gateway itself, which is the unusual part of this record: the hosted alternatives
-    in this category are closed, and this one publishes the thing that holds the credentials. The `ungated`
-    reading meets the shared software rubric''s acceptance standard for that dimension rather than resting
-    on path absence: the vendor''s own documentation names its commercial offering as a separate thing, and
-    the source cited below carries that statement.'
+  note: Apache-2.0 covers the gateway itself, unusual for this category since the hosted alternatives are
+    typically closed and do not publish the part that holds credentials. The README documents a separate
+    hosted offering without holding back any part of the published platform, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public(the gateway, its catalogue and its credential handling);self-host:yes(docker
     compose, Helm, Fly.io or a single binary);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
     withheld from the published tree)
@@ -64,10 +62,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: '5,794 GitHub stars. The npm package `@oomol-lab/open-connector` records ZERO downloads for the trailing
-    month, which is not a signal of disuse: the README distributes the runtime as a GHCR Docker image and names
-    npm only as an embeddable option. A container registry publishes no count this scale can read, so stars
-    are what is left and they cap at 3.'
+  note: 'The npm package @oomol-lab/open-connector shows zero downloads for the trailing month, but that
+    is not a sign of disuse: the README distributes the runtime primarily as a GHCR Docker image and lists
+    npm only as an embeddable option. Container registries publish no download count this map can read,
+    leaving GitHub stars as the only usable signal.'
   last_verified: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/oomol-lab/open-connector
@@ -84,12 +82,10 @@ capability:
   confidence: medium
   relative_to: composio
   relation: at
-  note: 'Many systems, credentials the product holds and refreshes, and a runtime that can be hosted: band
-    5, alongside ACI.dev as the open-source products that reach it here. One qualification the README states
-    plainly and this record repeats rather than smooths: self-hosting means YOU register the OAuth applications
-    with each provider, while the hosted tier supplies them. The gateway performs the flow and stores the grant
-    in both cases, which is what the band reads; who owns the OAuth client is a deployment question. Banded
-    at composio, the closed-source product with the same shape.'
+  note: Open-connector covers many providers and holds and refreshes their credentials itself, with a runtime
+    the caller can self-host or run hosted. Either way the gateway performs the OAuth flow and stores the
+    grant; only who registers the OAuth application changes, matching Composio, the closed-source product
+    built the same way.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md

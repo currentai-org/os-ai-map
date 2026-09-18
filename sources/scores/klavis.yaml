@@ -20,14 +20,10 @@ openness:
       detail: the OAuth brokering the product is sold on is hosted-only; the open-source path documents no
         authentication step
   confidence: high
-  note: 'Apache-2.0 over real, useful software - the MCP servers and the Strata aggregator - with the part
-    the product is SOLD on kept back. What makes Klavis a platform rather than a collection of servers is that
-    it performs OAuth for the end user and holds the grant, and its own documentation puts that on the hosted
-    side: the Open Source tab covers local Strata with no authentication step at all, while the UI and API
-    paths return `oauthUrls` the platform mints. That is functionality withheld from the published tree rather
-    than a managed convenience beside a complete core, which is the litellm shape and lands at 4/open_core.
-    An earlier draft of this record scored 5 by reading the published servers as the whole product, which left
-    its openness and its capability describing two different things.'
+  note: 'Klavis publishes real software under Apache-2.0 - the MCP servers and the Strata aggregator - but
+    withholds the part it is sold on: OAuth performed for the end user, with the resulting grant held by
+    the hosted platform. Local Strata documents no authentication step at all, so that gap between what
+    ships and what the product does makes this open core rather than open source.'
   raw: license:Apache-2.0(OSI; the servers and the Strata aggregator);source:public(the MCP servers and Strata,
     not the platform around them);self-host:yes(docker pull the servers, pipx install strata-mcp);service:primary(the
     hosted platform is where the credential brokering runs);core-gated:gated(the OAuth brokering the product
@@ -55,9 +51,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: '5,804 GitHub stars. Two PyPI packages exist and neither measures the product: `klavis` is the hosted
-    platform''s client SDK at 3,497 downloads a month and `strata-mcp` is the self-hostable aggregator at 653.
-    The platform publishes no customer or request count. Stars cap at 3 and they are the least bad signal here.'
+  note: 'GitHub stars are the least-bad adoption signal available, since neither PyPI package measures the
+    product: `klavis` is the client SDK for the hosted platform, and `strata-mcp` is the self-hostable aggregator.
+    The platform itself publishes no customer or request count, and a star is not a use, so the signal cannot
+    place Klavis higher on its own.'
   last_verified: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/Klavis-AI/klavis
@@ -74,11 +71,10 @@ capability:
   confidence: medium
   relative_to: composio
   relation: at
-  note: 'Many systems, credentials the platform obtains and holds, execution it hosts: band 5. The flow is
-    the platform''s rather than the caller''s - the create-server call returns `oauthUrls` for the user to
-    complete and Klavis keeps the grant, which is why its own documentation warns not to share the resulting
-    token. The open-source half, Strata run locally, has no OAuth step at all; the band reads the product as
-    sold, and the record says which half does what.'
+  note: Klavis performs OAuth for the end user and holds the resulting grant itself, with the create-server
+    call returning authorization links for the user to complete, level with Composio, the other platform
+    built the same way. Strata run locally has no OAuth step, so this reflects the hosted platform as sold
+    rather than the self-hostable aggregator alone.
   last_verified: '2026-09-17'
   sources:
   - url: https://www.klavis.ai/docs/quickstart.md

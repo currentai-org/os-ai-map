@@ -42,18 +42,16 @@ adoption:
   banded_quantity: the Microsoft Foundry Agent Service surface the tool ships in, not a count of grounding
     calls
   confidence: medium
-  note: 'Broad by position rather than by count: web grounding is a first-party tool of Microsoft Foundry Agent
-    Service, one of three ways an agent built on Azure reaches the live web, and it is billed as a First Party
-    Consumption Service rather than sold as a standalone API anyone counts. No usage figure is published. Banded
-    4 rather than 5 on the surface itself, not on a claim about who uses it: this tool is one option inside
-    an enterprise agent product, where `google-grounding-api` is the default web path across the Gemini app,
-    AI Studio and Vertex AI, and `openai-web-search` is the default web path of the Responses API. `azure-ai-model-inference`
-    reads the Azure enterprise base at 4 the same way.'
+  note: Grounding with Bing Search is a first-party Microsoft Foundry Agent Service tool, one of several
+    ways to reach the live web there, and Microsoft publishes no call-volume figure for it. Google's grounding
+    tool is the default web path across the Gemini app, AI Studio and Vertex AI, and OpenAI's is the default
+    in the Responses API; Bing's tool is one option rather than a platform default.
   last_verified: '2026-09-17'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview
-    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of the
-      platform surface named in `banded_quantity` and that no usage figure is published for it.
+    shows: The vendor's own documentation for the tool, establishing that it is a first-party feature of
+      the platform surface the record names as the countable surface and that no usage figure is published
+      for it.
     accessed: '2026-09-17'
     http_status: 200
     content_sha256: be3111c95bfa57b2b447a1f72de5855dc42ab62f708d23f1be4a8c6835d9dc1e
@@ -65,11 +63,10 @@ capability:
   confidence: high
   relative_to: perplexity-sonar-api
   relation: at
-  note: 'Answers, with citations, and it cannot do anything else - the documentation says plainly that "Grounding
-    with Bing Search tool does NOT return the tool output to developers and end users". That makes it the purest
-    band-5 record in the category: the lower steps are not merely unused, they are unavailable, which is also
-    the clearest demonstration that this ladder is ordinal rather than cumulative. Banded at perplexity-sonar-api
-    on what comes back to the caller.'
+  note: 'Grounding with Bing Search returns only an answer with citations: Microsoft''s documentation states
+    directly that developers and end users never receive the tool''s raw output. Nothing about search or
+    retrieval is available beyond that answer, which puts it level with Perplexity''s Sonar API on what
+    a developer gets back.'
   last_verified: '2026-09-17'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry-classic/agents/how-to/tools-classic/bing-grounding

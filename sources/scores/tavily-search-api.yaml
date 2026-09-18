@@ -37,12 +37,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Tavily's own homepage states 2M+ developers and 300M+ monthly requests, billions of pages crawled;
-    it is the default search provider wired into LangChain/CrewAI/LlamaIndex agent stacks. Developer reach
-    solidly in 1-10M band; request volume is far higher. Acquisition by Nebius corroborates enterprise traction.
-    The band is taken on the developer count, which is what puts it at 1M-10M; the request figure would band
-    higher, but requests are not the quantity this scale measures, so it stands as context rather than as the
-    basis.
+  note: Tavily's adoption is measured by its developer count rather than by request volume. The company
+    also reports a much higher monthly request volume, but that counts API calls rather than distinct users,
+    so it stands only as corroborating context.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.tavily.com/
@@ -63,11 +60,10 @@ capability:
   value: '`POST /search` with `include_raw_content` for the page text behind each result and `include_answer`
     for a generated answer over them, plus extract, crawl, map and research endpoints on the same API'
   confidence: medium
-  note: 'Finds and returns the content: `include_raw_content` returns the page text behind each result on the
-    search call itself. It does NOT reach band 5, and the reason is narrow: `include_answer` does return a
-    composed answer - the documented 200 response carries an `answer` string - but nothing in the response
-    attributes that answer to the results beside it, and band 5 requires the citations. An earlier draft banded
-    this 5 on the answer alone. Banded at firecrawl.'
+  note: Tavily's search call can return the page text behind each result directly, through include_raw_content,
+    and include_answer returns a composed answer in the same response. But nothing in that response attributes
+    the answer to the sources beside it, so the answer arrives without citations, which puts it level with
+    Firecrawl.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.tavily.com/documentation/api-reference/endpoint/search

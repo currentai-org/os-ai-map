@@ -42,12 +42,10 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: Google’s own Next '26 announcement states that external active developers and apps on Cloud Run
-    doubled year over year, and that Cloud Run added more new customers and apps in 2025 than in its first
-    six years combined; a Replit VP is quoted there saying Replit hosts more than 1M live projects with
-    Cloud Run as the primary target. Hyperscaler serverless reach is well into the >10M band. Cloud Run
-    publishes no countable artifact - no package or registry entry - so the band rests on those vendor claims
-    rather than on a recomputable count.
+  note: Cloud Run's adoption reading comes from Google's own disclosures rather than a countable package
+    or registry artifact, since the service publishes neither. Those disclosures describe broad growth in
+    the developer and application base and name Replit as a customer running its primary hosting on the
+    platform.
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
@@ -64,13 +62,10 @@ capability:
     OCI container (very broad); persistence: stateless request model + volume mounts; scale: 0 to thousands
     of instances autoscaling on a hyperscaler'
   confidence: medium
-  note: Very broad runtime/language coverage and hyperscaler scale; the built-in agent `sandbox` tool (announced
-    Next '26, still 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command, alongside
-    Cloud Run instances in preview for long-running background agents. gVisor isolation is process/syscall-level
-    rather than full microVM (Sprites/Northflank), so not the top isolation tier. Strong but not the single
-    frontier-definer. Independent ComputeSDK TTI benchmarks corroborate the sub-second cold-start, placing
-    Cloud Run at a 0.65s median time-to-interactive, 13th by composite of 24 sandbox providers - still sub-second
-    and still mid-field.
+  note: Cloud Run runs any OCI container at hyperscaler scale, and Google has previewed both a built-in
+    `sandbox` tool for running AI-generated code and long-running Cloud Run Instances for background agents.
+    Its isolation is gVisor at the process and syscall level rather than a full microVM, and independent
+    benchmarks measure a sub-second cold start that trails the fastest microVM-based sandboxes.
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26

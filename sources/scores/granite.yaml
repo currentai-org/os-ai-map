@@ -18,12 +18,10 @@ openness:
       detail: OSI
   governing_release: granite-4-0
   confidence: high
-  note: Apache-2.0 weights, ungated in every 4.0 SKU read, with training data described in categories
-    rather than released and no training pipeline. That is open weights with a closed recipe, 3 by the
-    fallthrough. The card's data description ("publicly available datasets with permissive license, internal
-    synthetic data, human-curated data") characterizes sources without fully specifying composition, so
-    it does not reach documented-not-released, and the outcome is 3 either way because the documented-not-released
-    rung also requires open code.
+  note: Granite 4.0 ships Apache-2.0 weights, ungated across every SKU, but IBM only describes its training
+    data in broad categories -- public data, internal synthetic data, human-curated data -- without releasing
+    it or specifying the mix, and no pretraining pipeline is published. That combination of open weights
+    with closed data and code keeps Granite at open weights rather than a fuller open release.
   raw: weights:open(Apache-2.0, ungated on HF across the 4.0 line);data:closed(SFT data characterized
     in the card (permissive public + internal synthetic + human-curated) but neither the pretraining corpus
     nor the mixtures are released);code:partial(ibm-granite/granite-4.0-language-models is docs/usage,
@@ -64,9 +62,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 194,509 downloads in the trailing 30 days across the four declared artifacts (granite-4.0-h-tiny
-    88,627; granite-4.0-micro 60,053; granite-4.0-h-small 25,719; granite-4.0-h-micro 20,110), which bands
-    at level 3 (100K-1M) on the model adoption scale. The smaller on-device SKUs carry most of the reach.
+  note: 'Adoption is measured as Hugging Face downloads summed across the four declared Granite 4.0 artifacts:
+    h-tiny, micro, h-small and h-micro. The smaller, on-device-sized SKUs account for most of that reach.'
   last_verified: '2026-09-01'
   sources:
   - url: https://huggingface.co/api/models/ibm-granite/granite-4.0-h-tiny

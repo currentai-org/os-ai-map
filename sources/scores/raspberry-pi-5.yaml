@@ -26,26 +26,12 @@ openness:
       detail: SBC sold ready to run
       raw: board (SBC sold ready to run)
   confidence: high
-  note: 'Raspberry Pi publishes an open Linux kernel tree and public datasheets and the board is on sale
-    worldwide, but it publishes no schematic for the Pi 5 at all. The Pi 4''s reduced schematic is still
-    served at datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf; the matching Pi 5 path
-    returns nothing, and the documentation index offers for the Pi 5 only a mechanical drawing (RP-008347-DS)
-    and two STEP files, one of them with silkscreen. That set is a mechanical spec - what a HAT or a case
-    is designed against - rather than a design, so the published design files count as partial, and a partial
-    design holds the board at 3, documented, however open the kernel tree is. The public documentation rests
-    on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi
-    5''s own I/O controller, served without registration under CC BY-ND and carrying no NDA or confidentiality
-    notice anywhere in it. The firmware position rests on the raspberrypi/firmware README, which splits
-    the tree by licence - "start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader",
-    covered by Broadcom''s licence, against kernel images, device trees and modules under the GPL. Availability
-    rests on The Pi Hut listing all five SKUs in stock with an add-to-cart button and no account gate. The
-    firmware component read minimal until recently and now reads required, resolving an inconsistency
-    this note used to state and leave open. All nineteen other boards describe the same shape of fact as
-    required, beagley-ai included, whose TI DSP and WiFi caveat is the lighter case. What let the two
-    readings coexist was an undefined vocabulary; the rubric now says the test is necessity rather than
-    size, so a small blob you cannot boot without is required, and start*.elf, fixup*.dat and bootcode.bin
-    are not optional on this board. Nothing scored turns on the change, because no rung on the hardware
-    ladder reads the firmware component at all.'
+  note: Raspberry Pi publishes an open kernel tree and register-level datasheets for the RP1 I/O controller,
+    and anyone can buy the board. But it does not publish a schematic for the Pi 5. The documentation includes
+    a mechanical drawing and two STEP files, enough to design a HAT or case around the board but not to
+    reproduce the board itself. That leaves the hardware only partially documented, however open the software
+    stack may be. The GPU firmware and bootloader also remain Broadcom-licensed binaries that the board
+    cannot boot without.
   raw: schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel
     tree + Raspberry Pi OS);datasheets:public;blobs:required (proprietary Broadcom boot chain);retail:open_market (mass-market);form_factor:board
     (SBC sold ready to run)
@@ -118,10 +104,9 @@ adoption:
   reach: mass-market
   signal_type: reported_traction
   confidence: high
-  note: The flagship Raspberry Pi SBC, sold globally through countless distributors and backed by a huge
-    community. raspberrypi.com refuses every automated request, so availability rests on Raspberry Pi's
-    own product brief at datasheets.raspberrypi.com, which lists the full 1GB-16GB price ladder and commits
-    to production until at least January 2036.
+  note: Raspberry Pi 5 is the flagship board in the product line, sold globally through countless distributors
+    and backed by a large community. Raspberrypi.com blocks automated requests, but Raspberry Pi's own product
+    brief confirms the full 1GB to 16GB price range and commits to production until at least January 2036.
   last_verified: '2026-08-13'
   sources:
   - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf
@@ -139,11 +124,8 @@ capability:
   value: No NPU; up to 16GB RAM; Cortex-A76 quad-core + VideoCore VII; runs small quantized LLMs slowly
     on CPU
   confidence: high
-  note: General-purpose SBC with no dedicated AI accelerator; on-device AI is modest unless paired with
-    an accelerator HAT. The product brief's full feature list runs GPU, video, RAM, wireless, storage, USB,
-    Ethernet, MIPI, PCIe, power and header, and names no NPU and no TOPS figure anywhere. That absence is
-    the whole of the band - every other board in this category records an accelerator, and this one records
-    only 16GB of LPDDR4X behind a Cortex-A76.
+  note: Every other board in this category ships some form of built-in AI accelerator; the Pi 5 does not,
+    which keeps its capability score at the bottom of the range.
   last_verified: '2026-08-13'
   sources:
   - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf

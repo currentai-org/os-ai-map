@@ -12,11 +12,9 @@ openness:
       value: closed
       detail: no implementation is published; the SageMaker Python SDK is a client
   confidence: high
-  note: A managed AWS service. AWS publishes a Python SDK that authors and submits
-    pipelines, but the orchestration service itself is unpublished, and AWS states
-    it provisions and manages the orchestration compute on the user's behalf. Nothing
-    about a license can help where there is no self-hostable implementation, which
-    is why the ladder settles this on source alone.
+  note: Amazon SageMaker Pipelines is a managed AWS service with no published implementation. AWS provides
+    a Python SDK to author and submit pipelines, but the orchestration service that runs them is unpublished
+    and provisions its own compute rather than being self-hostable.
   raw: license:Proprietary;service:proprietary(AWS managed service);source:closed(no
     implementation is published; the SageMaker Python SDK is a client)
   last_verified: '2026-09-15'
@@ -60,12 +58,10 @@ capability:
   value: typed ML steps - training, processing, tuning, model registration - as first-class pipeline elements;
     instance type chosen per step and provisioned by the service; visual editor, SDK, API and JSON authoring
   confidence: medium
-  note: 'Admitted on the ML-job-model limb: training and tuning steps are first-class types it schedules and
-    tracks. Band 3, level with the other managed pipeline services. It was drafted at 4 on the reading that
-    Pipelines selects each step''s hardware, and the cited documentation does not show that - it shows AWS
-    provisioning the ORCHESTRATION compute. The multi-instance allocation of a distributed training job belongs
-    to SageMaker Training, which Pipelines invokes as a step. Crediting the pipeline product with its downstream
-    service''s placement is the error this band avoids.'
+  note: SageMaker Pipelines treats training and tuning steps as first-class types that it schedules and
+    tracks, the same shape of decision as Kubeflow Pipelines. AWS provisions the orchestration compute rather
+    than Pipelines choosing each step's hardware, and the multi-instance placement of a training job belongs
+    to SageMaker Training, a separate service Pipelines merely invokes as a step.
   last_verified: '2026-09-15'
   sources:
   - url: https://docs.aws.amazon.com/sagemaker/latest/dg/pipelines.html

@@ -48,13 +48,10 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: medium
-  note: 4,302 PyPI downloads of `oxenai` in the trailing 30 days, which lands in the <10K band of the software
-    usage scale, level 1. oxenai is built from this repository's `oxen-python` directory and compiles liboxen into
-    the wheel, so installing it gives you Oxen itself rather than a client to an Oxen Server, and it is the one
-    declared artifact with a countable channel. It undercounts - the CLI is installed through Homebrew, cargo and
-    a shell script that publish no figures - which is why confidence is medium rather than high. The stars scale
-    would read one level higher (1,183 stars, 1K-10K), but a declared package artifact is the measurement identity
-    and its count is what the warehouse routes to.
+  note: The oxenai PyPI package builds Oxen itself, not a client to a server, and it is the only declared
+    artifact with a countable distribution channel, so its downloads are what this reading uses. That count
+    leaves out installs through Homebrew, cargo and a shell script, none of which publish figures, so it
+    undercounts how many people actually run Oxen.
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/oxenai/recent
@@ -77,9 +74,10 @@ capability:
   relative_to: lakefs
   relation: at
   confidence: medium
-  note: Banded on the category feature matrix as working single-purpose store or index, level with lakefs - a
-    versioned data layer rather than a distributed, cluster-capable system, with no indexing or retrieval beyond
-    file and diff lookups.
+  note: 'Oxen is a versioned data layer for large files, not a distributed or cluster-capable system: content-addressed,
+    git-like versioning (init, add, commit, branch, merge) over its own object store, with a self-hostable
+    server for remotes, but no indexing or retrieval beyond file and diff lookups. That puts it on par with
+    lakeFS, another versioning-only store with the same shape.'
   comparison:
     last_attested: '2026-09-02'
     sources:

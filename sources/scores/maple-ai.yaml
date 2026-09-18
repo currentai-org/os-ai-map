@@ -22,18 +22,10 @@ openness:
       value: paid
       detail: managed-enclaves
   confidence: medium
-  note: 'Both halves of the stack are open under standard OSI licenses - the Maple client under MIT, the
-    OpenSecret platform under AGPL-3.0 - and the served models are open-weight, which is unusually clean
-    for a "private AI" product. It scores as open source because the privacy guarantee is only credible
-    where the code is open and attestable. The paid tier is not a withheld core: the Maple README makes
-    the billing and feature-flag services optional external clients, configured through VITE_MAPLE_BILLING_API_URL
-    and VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says those "server implementations are not part
-    of this repository setup". A self-hosted backend runs without either, so what the subscription buys
-    is usage on the hosted enclaves rather than functionality missing from the source, and neither repository
-    has an enterprise directory or a license key. The one closed-looking artifact is a 15MB continuum-proxy
-    binary vendored into OpenSecret, and that is the third-party trusted-execution proxy from Edgeless Systems,
-    carried alongside a submodule of edgelesssys/privatemode-public rather than anything OpenSecret withholds
-    from a self-hoster.'
+  note: 'Maple AI''s two components are each open under an OSI license: the client under MIT, and the OpenSecret
+    confidential-computing backend under AGPL-3.0, serving open-weight models. The paid tier buys only hosted
+    use of managed enclaves; a self-hosted backend runs without billing or feature-flag services, and neither
+    repository has an enterprise directory or license key gating the source.'
   raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing
     and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)
   last_verified: '2026-08-12'

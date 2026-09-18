@@ -22,14 +22,10 @@ openness:
       value: open
       detail: OLMES
   confidence: high
-  note: 'The released weights inherit Meta''s Llama 3.1 Community License - not OSI-approved, with a 700M
-    monthly-active-user commercial cap - and that license governs what someone downloading this checkpoint
-    is bound by, whatever Ai2 layered on top of it. The post-training layer itself is genuinely open: data,
-    code, RLVR recipe and evaluation framework, all Apache-2.0, and it is credited where it lives - the
-    tulu-3-sft-mixture corpus scores as fully open in its own right among the training and synthetic datasets,
-    and the same recipe produces Olmo 3 Instruct at fully open on an open base. Scoring the method on the
-    checkpoint would score two things at once. A license that bounds commercial use rather than forbidding
-    it caps at 3, in the open-weights class.'
+  note: 'The released weights inherit Meta''s Llama 3.1 Community License, non-OSI and capped at 700 million
+    monthly active users for commercial use, governing the checkpoint regardless of what Ai2 adds. The post-training
+    layer above it is fully open under Apache-2.0: the data, the open-instruct code, the SFT-DPO-RLVR recipe
+    and the OLMES eval framework, which keeps this at open weights rather than open source.'
   raw: weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct
     Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)
   last_verified: '2026-08-13'
@@ -60,11 +56,10 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: Research-scale reach. The three declared model SKUs sum to 10,342 downloads in the trailing 30 days
-    (Llama-3.1-Tulu-3-8B 9,421; -70B 680; -405B 241), which bands at level 2 (10K-100K) on the model scale.
-    The tulu-3-sft-mixture dataset the product also declares reads 36,267, but a product bands on the sum
-    within one kind of artifact and the Hugging Face models win here, so the corpus is scored as its own
-    product among the training and synthetic datasets rather than added in.
+  note: Adoption sums Hugging Face downloads across Tulu's three declared model checkpoints, 8B, 70B and
+    405B, most of the volume on the 8B. The tulu-3-sft-mixture dataset the product also declares is scored
+    separately as its own entry among the training and synthetic datasets, rather than added to the model
+    count.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/allenai/Llama-3.1-Tulu-3-8B
@@ -88,11 +83,10 @@ capability:
   basis_detail: MMLU/GSM8K/IFEval
   value: Tulu-3-405B MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3
   confidence: high
-  note: A 2025 post-training recipe on a Llama 3.1 base, at the top of its own generation and below the
-    2026 frontier. The 405B card's results table gives the Tulu 3 405B column MMLU (5 shot, CoT) 87.0, GSM8K
-    95.5, IFEval 86.0, HumanEval 95.9 and MATH 67.3, against a GPT-4o (11-24) column at 87.9 / 91.7 / 84.8
-    / 97.0 / 68.8 - a comparison set now two model generations old, which is what keeps this at 3 rather
-    than higher.
+  note: Tulu 3 is a 2025 post-training recipe on a Llama 3.1 base, at the top of its own generation but
+    below the 2026 frontier. Its 405B results table gives MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval
+    95.9 and MATH 67.3, against a GPT-4o (11-24) column at 87.9/91.7/84.8/97.0/68.8, a comparison set now
+    two model generations old.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B

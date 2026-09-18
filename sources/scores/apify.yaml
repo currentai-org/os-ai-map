@@ -16,11 +16,11 @@ openness:
     - name: mixed
       detail: platform closed, SDK open
   confidence: high
-  note: The product proper - the Apify platform and its Actor store - is proprietary SaaS. Apify also maintains
-    Crawlee, an Apache-2.0 scraping library, but Crawlee is an adjacent SDK rather than the platform core,
-    so most of the value stays behind the managed cloud. Open core would mean an OSI-licensed core with functionality
-    withheld for a paid tier; there is no open core here, only an open periphery. Publishing a repository while
-    the runtime itself does not ship counts as partial source, which scores 2, source-available.
+  note: Apify's platform and Actor store are proprietary SaaS; Crawlee, its Apache-2.0 scraping library,
+    is an adjacent SDK rather than the platform core, so most of the product's value stays behind the managed
+    cloud. Crawlee's repository is public, but the Actor runtime that runs on the platform is not, which
+    is partial, source-available disclosure rather than open core, which would mean an OSI-licensed core
+    with only paid-tier functionality withheld.
   raw: platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform
     that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK
     open)
@@ -51,11 +51,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: Crawlee at 25,373 GitHub stars (corroborating, not basis); the platform serves named enterprises (T-Mobile,
-    Microsoft, Accenture) and the store advertises 59,817 published Actors, which implies a sizable active
-    developer base. The site links a Discord invite without stating a member count, so no community figure
-    is carried. No precise account, run or API-call count is published, so the level stays an aggregate judgment
-    across platform + OSS SDK and remains 3.
+  note: Named enterprise users such as T-Mobile, Microsoft and Accenture run on the Apify platform, and
+    the open-source Crawlee library draws heavy attention on GitHub. Apify publishes no account, run or
+    API-call count for the platform itself, so adoption here is a judgment made across the platform and
+    Crawlee together rather than one measured figure.
   last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
@@ -75,11 +74,10 @@ capability:
   value: a platform API that runs actors and returns their dataset items synchronously or asynchronously, with
     Apify's own first-party search and crawl actors on top of it
   confidence: high
-  note: 'Finds and returns the content, through the first-party actors Apify itself publishes and the platform
-    API that runs them and hands back the dataset - Google Search Results Scraper is developer "Apify", maintained
-    by Apify, and returns organic SERP results, which is the find step the platform API alone does not establish.
-    Third-party actors in the store do NOT count toward this band: the scoring rule excludes what a product
-    merely hosts, and the count of them is a coverage claim this ladder excludes by name. Banded at firecrawl.'
+  note: Apify's own first-party actors, such as Google Search Results Scraper, call the platform API directly
+    and return organic search results and dataset items, putting search and retrieval on the platform itself
+    rather than only in its marketplace -- third-party actors that the store merely hosts, built by other
+    developers, do not count toward this. That puts Apify level with Firecrawl.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.apify.com/api/v2

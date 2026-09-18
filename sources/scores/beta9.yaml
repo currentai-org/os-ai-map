@@ -18,14 +18,10 @@ openness:
         and even the billing service - with no second license file and no license-key module, and Beam sells
         concurrency, seats and retention on the hosted cloud
   confidence: high
-  note: AGPL-3.0 (OSI copyleft) engine with the managed Beam cloud sold beside it. The 1,281-entry untruncated
-    tree carries one governing LICENSE plus a single vendored one, no enterprise or ee/ directory, and no
-    license-key module; the whole server stack ships - gateway, scheduler, worker, protos, Docker and Kubernetes
-    manifests - and even pkg/gateway/services/compute/billing.go, the metering the hosted product runs on,
-    is inside the AGPL tree. Beam’s pricing tiers concurrency, seats and log retention on the hosted cloud,
-    names no capability the source lacks, and advertises a self-hosted product that "runs entirely in your
-    own environment". That is a separate managed service around a complete open core, which the rubric says
-    does not gate it.
+  note: Beta9 ships under AGPL-3.0, and the entire server stack — gateway, scheduler, worker and billing
+    — sits in the same public tree, with no enterprise directory or license-key gate. Beam's managed cloud
+    adds concurrency, seats and log retention, but withholds no capability and offers a self-hosted option
+    that runs entirely in the customer's environment.
   raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:Beam (beam.cloud) fully-managed GPU cloud
     (proprietary);core-gated:ungated(the whole AGPL-3.0 stack is in the repo - gateway, scheduler, worker,
     proto, deploy manifests and even the billing service - with no second license file and no license-key
@@ -71,22 +67,17 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'No PyPI or usage figure for the open source runtime has surfaced and Beam discloses no customer
-    or usage count, so GitHub stars are the only signal: 1,742 stars and 156 forks on the one declared repo,
-    which falls in the 1K-10K star band. A star is not a download, so a star-based reading is capped at
-    level 3 and describes attention rather than volume; this sits at 2 given the small star base and the
-    absence of any usage signal, and confidence is low. A star count moves daily, so the figure is a snapshot
-    rather than a fixed number - the band depends only on its order of magnitude. One gap is worth naming:
-    the README now installs the SDK with `pip install beam-client`, so a countable channel exists that this
-    record does not yet measure.'
+  note: GitHub stars are the only adoption signal for Beta9, since neither the open-source runtime nor Beam's
+    managed cloud publishes a usage or customer count. A star is not a download, so this reads as attention
+    rather than proven volume, and the README documents a `pip install beam-client` line, a distribution
+    path this record has not yet measured.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/beam-cloud/beta9
     shows: 1.7k stars; no published download/usage figures
     accessed: '2026-06-04'
   - url: https://api.github.com/repos/beam-cloud/beta9
-    shows: 'Repo metadata - 1,742 stars, 156 forks, 6 watchers, pushed 2026-08-13, not archived. Bands at
-      1K-10K stars, level 2 on the stars scale in signal_routing.yaml.'
+    shows: 'Repo metadata: 1,742 stars, 156 forks, 6 watchers, pushed 2026-08-13, not archived.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 3d5d578263892300b4429a31839210e7ca6d62c3a5895c1f11669d3f66ea1fc4
@@ -105,17 +96,10 @@ capability:
     container launch; language/runtime breadth:Python AI workloads + GPU (4090/H100); persistence:volume
     storage; scale:parallelize across hundreds of containers + autoscaling
   confidence: medium
-  note: Capable serverless container runtime with GPU support, volumes, autoscaling and sandbox primitives,
-    but container-level rather than VM or microVM isolation places it below the VM-grade peers on isolation
-    strength; mid-tier. The README claims container launches "in under a second" from a custom runtime,
-    scheduler and embedded cache, fan-out to hundreds of containers, scale-to-zero, distributed volume storage,
-    GPU support on 4090s and H100s or bring-your-own, and a Sandbox primitive for running model-generated
-    code - but it describes containers throughout and names no VM, microVM or application-kernel tier where
-    the category’s frontier-definers do, and that isolation ceiling is what holds the score at 3, two rungs
-    below Firecracker at the frontier. Independent ComputeSDK TTI benchmarks of Beam (the managed beta9
-    cloud) corroborate the fast container launch at a 0.29s median, 4th-fastest by median of 24 providers,
-    up from ~380ms and 8th of 19 on the earlier run; the band turns on isolation strength rather than latency,
-    so a faster benchmark does not move it.
+  note: Beta9 is a serverless container runtime with GPU support, distributed volumes, autoscaling and a
+    sandbox primitive for model-generated code, and independent benchmarks show its containers launching
+    in well under a second. It isolates workloads at the container level rather than with a VM or microVM,
+    two tiers below Firecracker despite that competitive launch speed.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/beam-cloud/beta9

@@ -53,11 +53,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 4,375 GitHub stars, in the 1K-10K band of the stars scale. The product ships through container
-    images and Helm charts, channels that publish no count the pipeline can read, so stars are the last
-    honest route; production deployments named in the README (Tesla/Red Hat, AWS, Oracle, Google benchmarks)
-    indicate standing the star count understates, and raising the level on them would need its own evidenced
-    reported_traction judgment, which this packet does not make.
+  note: llm-d ships through container images and Helm charts, channels with no published download count,
+    leaving GitHub stars as the only readable adoption signal. Production deployments named in the README,
+    at Tesla, Red Hat, AWS, Oracle and in Google's own benchmarks, suggest the star count understates real
+    use, though confirming that would need its own separate read.
   last_verified: '2026-09-01'
   sources:
   - url: https://api.github.com/repos/llm-d/llm-d
@@ -76,18 +75,17 @@ capability:
   relative_to: vllm
   relation: one_below
   confidence: medium
-  note: 'One band below the vllm anchor, level with dynamo, which is the same architectural shape: a serving
-    stack whose forward pass belongs to somebody else''s engine. Its cross-accelerator production benchmarks
-    are the widest validation surface of the orchestration entrants, but without an engine of its own
-    it does not reach the anchor''s band.'
+  note: llm-d sits one tier below vLLM, level with Dynamo, since both are serving stacks whose forward pass
+    belongs to someone else's engine. Its cross-accelerator production benchmarks give it the widest validation
+    surface among the orchestration layers, but without an engine of its own it does not reach vLLM's tier.
   comparison:
     last_attested: '2026-09-01'
     sources:
     - url: https://raw.githubusercontent.com/vllm-project/vllm/main/README.md
-      shows: 'The anchor''s README, re-read today: vLLM is the engine llm-d itself orchestrates ("Model
-        servers like vLLM ... handle efficiently running large language models on accelerators" - llm-d
-        README); the one_below spacing is judged on that dependency. Digest identical to the anchor''s
-        recorded 2026-08-31 source.'
+      shows: 'vLLM''s README, re-read today: vLLM is the engine llm-d itself orchestrates ("Model servers
+        like vLLM ... handle efficiently running large language models on accelerators" - llm-d README); the
+        one-step gap is judged on that dependency. Digest identical to the one vLLM''s capability axis recorded
+        on 2026-08-31.'
       accessed: '2026-09-01'
       http_status: 200
       content_sha256: 8d2e7cd8d120bcd91ddfa85ef957f7246021b4a3f46f2e1f4ccf084ec6c20026

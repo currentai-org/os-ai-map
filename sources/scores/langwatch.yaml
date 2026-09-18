@@ -19,16 +19,10 @@ openness:
     - enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license
       for production
   confidence: high
-  note: 'An explicit open core: an Apache-2.0 platform, MIT SDKs, and an enterprise directory under a commercial
-    license. The gating is read directly from the repository and does not rest on LangWatch selling a hosted
-    tier. The NOTICE file names the split component by component - "platform/app/ee/ LangWatch Enterprise
-    License (platform/app/ee/LICENSE.md)" against MIT for sdks/typescript, sdks/python and mcp/typescript,
-    with everything else Apache-2.0. That license says the enterprise directory "implements the enterprise
-    capabilities of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks,
-    licensing, billing, and back-office tooling" and that "each verifies a license at runtime before it
-    can be used". A runtime license check on shipped features answers this dimension directly. The enterprise
-    license now also names governance, managed providers, event sourcing and webhooks alongside the SCIM,
-    audit-log and billing modules.'
+  note: LangWatch's core platform is Apache-2.0 and its SDKs are MIT, but the platform/app/ee directory,
+    covering single sign-on, SCIM, audit logging, governance and billing, is licensed separately under the
+    LangWatch Enterprise License and checks that license at runtime. That gated directory is what makes
+    this open core rather than fully open source.
   raw: license:Apache-2.0(core)+MIT(SDKs);source:public;core-gated:gated(NOTICE and platform/app/ee/LICENSE.md
     put platform/app/ee under the LangWatch Enterprise License, covering SSO, SCIM, audit-log reading, governance,
     webhooks, billing, licensing, managed providers and back-office admin, each of which "verifies a license
@@ -81,12 +75,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'No download or active-user figure is published for LangWatch, so the only honest signal is GitHub
-    stars: 3,486 on the one declared repository, which bands at 1K-10K stars and level 2. Stars are a weaker
-    instrument than downloads and cannot carry a product above level 3 on their own, and they have their
-    own vocabulary rather than a download range, because a star is not a use. The count is read from the
-    repository API and recorded with its digest; it drifts between reads, and drift on a star count is expected
-    rather than a problem.'
+  note: LangWatch publishes no download or active-user figure, leaving GitHub stars on its one declared
+    repository as the only available adoption signal. A star count cannot carry a product very high, because
+    a star is not a use.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch
@@ -107,11 +98,10 @@ capability:
     testing; prompt management with GitHub integration; dataset creation + annotation; AI Gateway (cost
     control, failover); broad framework/provider integrations.'
   confidence: high
-  note: Covers every dimension this category grades - OpenTelemetry-native tracing, offline evaluations
-    and production monitoring, prompt management with GitHub integration, dataset creation and annotation,
-    cost control through a built-in AI gateway with failover, and broad framework and provider integrations
-    - plus distinctive agent simulation and scenario testing. That puts it level with Langfuse at 4, and
-    it is held there because nothing here is a frontier-definer over the anchors.
+  note: LangWatch covers OpenTelemetry-native tracing, offline evaluation and production monitoring, prompt
+    management with GitHub integration, dataset creation and annotation, cost control through a built-in
+    AI gateway with failover, and broad framework and provider integrations, plus distinctive agent simulation
+    and scenario testing. That matches Langfuse's feature set without going beyond it.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch

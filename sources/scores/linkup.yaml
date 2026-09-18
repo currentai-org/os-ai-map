@@ -14,9 +14,8 @@ openness:
       detail: per-request, $0.005-$0.055 for search depending on depth and output type
       raw: cloud SaaS with API keys, per-request, $0.005-$0.055 for search depending on depth and output type
   confidence: high
-  note: Closed service, MIT clients. `linkup-sdk` is MIT on both PyPI and npm and the MCP servers are MIT;
-    none of that is the index. The repository named `ranking` is the only one that would be, and it declares
-    no licence at all.
+  note: The service is closed; `linkup-sdk` and the MCP servers are MIT, but none of that is the index.
+    The one repository that would be it, `ranking`, declares no licence at all.
   raw: license:Proprietary(API-only);source:closed(no index or ranking code published; the LinkupPlatform repos
     are clients and plugins);managed:cloud SaaS with API keys, per-request, $0.005-$0.055 for search depending
     on depth and output type
@@ -38,11 +37,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: '236,301 downloads of `linkup-sdk` on PyPI in the trailing 30 days, inside the 100K-1M band for level
-    3. A client package standing in for a hosted service, admitted on the same population argument as `serpapi`:
-    the SDK exists only to call this API, and the product being scored is the whole API rather than one SKU
-    of it, so the package''s users and the product''s users are the same people. Medium confidence because
-    npm adds 154,782 more that this band does not count.'
+  note: 'Linkup''s adoption is measured through PyPI downloads of `linkup-sdk`, the same reasoning used
+    for SerpApi''s client package: the SDK exists only to call this API, so its users and the API''s users
+    are the same population. npm distributes the same package with additional downloads that this count
+    leaves out, which is why confidence is medium rather than high.'
   last_verified: '2026-09-16'
   sources:
   - url: https://pypistats.org/api/packages/linkup-sdk/recent
@@ -59,11 +57,10 @@ capability:
   confidence: high
   relative_to: perplexity-sonar-api
   relation: at
-  note: 'Answers, with citations, and it is the same endpoint rather than a separate product: `sourcedAnswer`
-    is one of three values of the required `outputType` on `/search`, priced at $0.006 against $0.005 for raw
-    results. That is the distinction this category''s scoring rule turns on - Brave, Parallel and Kagi all
-    fence their answer endpoints behind separate plans and stay at 4, while Linkup sells it as a parameter.
-    Banded at perplexity-sonar-api, the other product whose ordinary search call returns a cited answer.'
+  note: Linkup's `/search` endpoint returns a cited natural-language answer when the caller sets `outputType`
+    to `sourcedAnswer`, at $0.006 against $0.005 for raw results, rather than through a separate product.
+    Brave, Parallel Search API and Kagi offer the same answer capability only through a separate, pricier
+    plan, leaving Linkup and Perplexity as the only two that sell it as a parameter of one endpoint.
   last_verified: '2026-09-17'
   sources:
   - url: https://docs.linkup.so/pages/documentation/endpoints/search/overview

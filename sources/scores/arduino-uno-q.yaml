@@ -26,25 +26,10 @@ openness:
       detail: SBC sold ready to run
       raw: board (SBC sold ready to run)
   confidence: high
-  note: 'Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is
-    open, which is the same open-design-and-open-toolchain pair that puts beagley-ai at 5. This ladder scores
-    the openness of design files rather than of silicon - the top rung says so in its own terms - and every
-    board in the category runs on proprietary silicon, so the QRB2210 firmware blobs are not a reason to
-    place it lower. The toolchain half rests on published source rather than on a vendor claim: github.com/arduino/arduino-app-lab
-    is public under GPL-3.0, 19MB of Go and TypeScript carrying the app, ui-packages and standalone-apps
-    trees, and github.com/arduino/app-bricks-py is public under MPL-2.0. Arduino''s FAQ is stale on this
-    point: it still answers "Is UNO Q open source?" with schematics and gerbers only, and its App Lab answer
-    still reads "we are working to publish corresponding source code repositories, they will become available
-    soon". The public documentation is the 109-page UNO Q user manual for ABX00162-ABX00173, served from
-    docs.arduino.cc as a plain PDF with no registration, alongside the schematics, pinout, CAD and STEP
-    downloads. The board is on open sale: the FAQ names the channels - "UNO Q is available to order from
-    the official Arduino Store, RS Components, Digikey, Mouser, Macfos" - and the store sells both SKUs
-    at EUR59,90 and EUR82,90. Firmware blobs are still recorded as required, on the proprietary Dragonwing
-    QRB2210 the board is built around, which is what every other part in this category records for the same
-    fact; but the manual narrows what that covers, and the narrowing is worth recording - the Adreno 702
-    graphics stack is open, with "hardware-accelerated 3D graphics rendering through open-source Mesa drivers",
-    freedreno for OpenGL and turnip for Vulkan, and video encode and decode reached through plain V4L2.
-    What remains closed is the SoC boot chain, which Arduino publishes nothing of.'
+  note: Arduino publishes the UNO Q's schematics and gerbers under CC-BY-SA 4.0, and the App Lab and App
+    Bricks source that runs on it under GPL-3.0 and MPL-2.0. The Dragonwing QRB2210's boot firmware stays
+    closed, but its GPU drivers are open source, so the only proprietary piece is the boot chain rather
+    than the software stack that runs on the board.
   raw: schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks
     MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market
     (global);form_factor:board (SBC sold ready to run)
@@ -113,7 +98,7 @@ adoption:
   note: Sold globally through Arduino Store plus Digikey, Mouser, and RS Components, backed by Arduino's
     large maker community. The Arduino Store lists both SKUs at EUR59,90 (2GB) and EUR82,90 (4GB) and carries
     a Distributors link but names no distributor on the page, so the Digikey/Mouser/RS half of the claim
-    rests on the FAQ channel list rather than on the store.
+    comes from the FAQ channel list rather than from the store.
   last_verified: '2026-08-13'
   sources:
   - url: https://store.arduino.cc/pages/uno-q
@@ -127,11 +112,8 @@ capability:
   basis: feature_matrix
   value: QRB2210 quad-core 2.0 GHz + Adreno GPU; up to 4GB RAM; AI acceleration
   confidence: medium
-  note: Capable Linux+MCU hybrid with GPU/ISP-based AI acceleration, but no published TOPS figure so throughput
-    is modest versus dedicated-NPU kits. The product page describes a quad-core Qualcomm Dragonwing QRB2210
-    with a GPU and an STM32U585 MCU, 2GB or 4GB RAM, "integrated AI acceleration" and "lightweight AI",
-    and publishes no TOPS number anywhere. The absence of a figure is what keeps it below every dedicated-NPU
-    part in this category and level with the other general-purpose boards.
+  note: The QRB2210's GPU- and ISP-based acceleration has no published TOPS figure, which keeps the UNO
+    Q level with other general-purpose boards and behind parts built around a dedicated NPU.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.arduino.cc/product-uno-q

@@ -15,8 +15,9 @@ openness:
     - name: MIT
       detail: OSI-style permissive, no use restrictions
   confidence: high
-  note: V4-Flash weights are MIT-licensed and downloadable, matching the V4-Pro flagship, while the training
-    data and code stay closed - open weights rather than open source, on the same rung V4-Pro sits on.
+  note: V4-Flash ships MIT-licensed weights, matching the V4-Pro flagship, but the training data stays closed
+    and only inference and serving code is public. That keeps it an open-weights release rather than open
+    source, the same class as V4-Pro.
   raw: weights:open(MIT, on HF);data:closed;code:partial(inference/serving; no training pipeline or data);license:MIT(OSI-style
     permissive, no use restrictions)
   last_verified: '2026-08-13'
@@ -35,10 +36,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: V4-Flash reads 2,213,519 Hugging Face downloads in the trailing 30 days and the declared V4-Pro
-    repository reads 1,385,596, so both sit inside the 1M-10M band and the level holds whichever SKU the
-    tier is read on. Flash is the cheaper, faster sibling of V4-Pro and attractive for self-hosting, which
-    is what drives the volume.
+  note: Adoption is read from Hugging Face downloads on V4-Flash, which land in the same range as the declared
+    V4-Pro repository, so the reading holds regardless of which sibling SKU is used. Flash is the cheaper,
+    faster sibling of V4-Pro and popular for self-hosting, which drives most of its download volume.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
@@ -53,9 +53,9 @@ capability:
   value: 'Instruct (Max mode): MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR-1M 78.7; base MMLU 88.7, HumanEval 69.5,
     GSM8K 90.8 (HF card)'
   confidence: medium
-  note: Near-frontier capability (MMLU-Pro 86.2, LiveCodeBench 91.6) but deliberately the lighter sibling
-    of the V4-Pro anchor (capability 5); placed at 4 to keep the family curve consistent - Flash trails
-    Pro. Figures DeepSeek-reported on the HF card.
+  note: V4-Flash scores near the frontier on DeepSeek's own benchmarks (MMLU-Pro 86.2, LiveCodeBench 91.6),
+    figures reported on its Hugging Face model card. It is deliberately the lighter, faster sibling of the
+    higher-scoring V4-Pro flagship, so Flash trails Pro rather than matching it.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash

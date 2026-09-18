@@ -17,17 +17,9 @@ openness:
       value: closed
       detail: no training or fine-tuning code is published; the hosted platform is the vendor's product
   confidence: medium
-  note: 'Open weights with a closed recipe, which is the state the model ladder''s fallthrough rung describes.
-    The weights download from Hugging Face without a gate; no training corpus and no training code are published.
-    The licence is the interesting part and it does not change the band: the card declares none at all, so
-    there is no grant to tier. That lands it in the open-ish bucket rather than the open one, which is the
-    right outcome for weights nobody has attached terms to - unrecorded evidence must never count as open.
-    Nanonets sells a hosted platform beside these weights; that is a separate product and not what is scored
-    here. The 3/open_weights pair is HAND-ASSIGNED, not computed, and the category defers it: `none-declared`
-    is in no tier, the model ladder tests the tier before it reaches the fallthrough, and replaying the walk
-    returns no result at all. The 3 is the curator''s reading of the rung the record would land on once a tier
-    exists for an unstated licence, and it stands until that rubric change is made. Giving an unstated licence
-    a rung is a rubric change across every category that inherits the model ladder.'
+  note: Nanonets publishes the weights on Hugging Face without a gate, but the model card declares no license,
+    and no training data or training code accompany the release. An undeclared license does not count as
+    an open grant, so the release is scored as open weights rather than as a fully open model.
   raw: license:none-declared(the Hugging Face model card returns no license field in its metadata, so the weights
     are published without a declared grant);weights:open(downloadable from Hugging Face without a gate);data:closed(no
     training corpus is published or described);code:closed(no training or fine-tuning code is published; the
@@ -52,8 +44,9 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: The Hugging Face API reports 38,340 downloads of nanonets/Nanonets-OCR2-3B in the trailing 30 days,
-    inside the 10K-100K band for level 2.
+  note: Adoption is measured as Hugging Face downloads of the Nanonets-OCR2-3B checkpoint over the trailing
+    month, the only usage signal the release has. That reflects interest in the open-weight model rather
+    than use of the hosted platform Nanonets sells alongside it.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B
@@ -69,11 +62,10 @@ capability:
   confidence: medium
   relative_to: chandra
   relation: at
-  note: 'Structure survives, and further into the hard elements than most: signatures, checkboxes and watermarks
-    come out as tagged elements rather than flattened into text, which few products here do at all. Band 5
-    is out of reach because the tags are the model''s own fixed set and not entity types a customer defines.
-    An earlier draft explained the ceiling by input-format breadth, which is excluded from this ladder by name.
-    Banded at chandra: both emit structured output with the hard elements preserved.'
+  note: 'Nanonets OCR preserves document structure further than most peers: signatures, checkboxes and watermarks
+    come out as tagged elements instead of flattened text, matching Chandra''s output. What it lacks is
+    customer-configurable entity types; its tags are a fixed set the model defines, not a schema a customer
+    can set.'
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/nanonets/Nanonets-OCR2-3B

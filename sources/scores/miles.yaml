@@ -13,10 +13,8 @@ openness:
       value: ungated
       detail: no enterprise or ee path in the repository root and no paid tier described in the README
   confidence: high
-  note: 'Apache-2.0, an OSI licence, with the full source public and the shipped code in this repository. The LICENSE
-    body was read in full: the stock Apache-2.0 text, its core byte-identical to the canonical template, with nothing
-    after END OF TERMS AND CONDITIONS but the standard appendix. No enterprise or ee path in the repository root
-    and no paid tier described in the readme.'
+  note: Apache-2.0, an OSI license, with the full source public in this repository. There is no enterprise
+    or ee path in the repository and no paid tier described in the README.
   last_verified: '2026-08-31'
   raw: license:Apache-2.0(OSI);source:public(radixark/miles);core-gated:ungated(no enterprise or ee path in the
     repository root and no paid tier described in the README)
@@ -44,10 +42,9 @@ adoption:
   signal_type: stars_fallback
   confidence: low
   banded_quantity: 2,293 GitHub stargazers on radixark/miles, the product's only declared artifact
-  note: No package registry carries this product, so stars are the only available signal and the band is capped
-    at 3 by the instrument. 2,293 stargazers places it at level 2. Stars measure attention rather than use, which
-    is why the confidence is low. A PyPI project named `miles` exists but belongs to an unrelated package - version
-    0.1, no summary and no project URLs pointing at this repository - so it is not declared here.
+  note: No package registry carries this product, so GitHub stars are the only available adoption signal.
+    A star is not a use, so the count keeps confidence low; a PyPI project also named `miles` exists but
+    is an unrelated, undocumented package with no link to this repository, so it is not counted here.
   last_verified: '2026-08-31'
   sources:
   - url: https://api.github.com/repos/radixark/miles
@@ -64,21 +61,19 @@ capability:
     trillion-parameter scale (Kimi-K2.6). Frontier-scale RL infrastructure, but a narrower published method catalog
     than verl''s.'
   confidence: medium
-  note: Miles runs RL post-training at trillion-parameter scale on a Megatron-LM training backend with SGLang rollout,
-    and its async design and P2P RDMA weight transfer are the same class of infrastructure verl provides. It sits
-    one band below verl because verl publishes a substantially wider algorithm catalogue (PPO, GRPO, RLOO, ReMax,
-    REINFORCE++, GSPO, PRIME, DAPO, DrGRPO plus SFT/DPO) while Miles documents PPO and GRPO; method breadth is what
-    separates the top two bands in this category.
+  note: Miles's asynchronous design and P2P RDMA weight transfer put it in the same infrastructure class
+    as verl, at the same trillion-parameter scale. It sits a step below verl because verl publishes a substantially
+    wider algorithm catalog, while Miles documents only PPO and GRPO.
   relative_to: verl
   relation: one_below
   comparison:
     last_attested: '2026-08-31'
     sources:
     - url: https://github.com/volcengine/verl
-      shows: Key Features still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO, PRIME,
-        DAPO and DrGRPO, alongside supervised fine-tuning, over FSDP/FSDP2/Megatron-LM training backends with vLLM,
-        SGLang and HF Transformers rollout. That catalog is still substantially wider than the PPO and GRPO Miles
-        documents, which is the spacing this band rests on.
+      shows: Key Features still lists reinforcement learning with PPO, GRPO, GSPO, ReMax, REINFORCE++, RLOO,
+        PRIME, DAPO and DrGRPO, alongside supervised fine-tuning, over FSDP/FSDP2/Megatron-LM training backends
+        with vLLM, SGLang and HF Transformers rollout. That catalog is still substantially wider than the
+        PPO and GRPO Miles documents, which is the gap the comparison to verl relies on.
       accessed: '2026-08-31'
       http_status: 200
       content_sha256: c1ad6b970072c2000b9884f2a7d4d1c834e8b42f8ccb0e19123435e4dd01010e

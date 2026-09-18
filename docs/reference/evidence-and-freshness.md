@@ -31,6 +31,27 @@ is intended:
    earns the date. This is what makes the field fill in as automation lands.
 3. **A date is never derived from `sources[].accessed`.** See below.
 
+## Two evidence grades: dataset and document
+
+Evidence is graded by re-derivability, not by who produced it — the first pass of
+`sources/scores/` was agent-authored, so authorship never established trust and does not now.
+What matters is whether the value can be arrived at again:
+
+| grade | what it is | how it's re-derived |
+|---|---|---|
+| `dataset` | a named field in a machine-readable source | running a query; carries the table, the column and the transform |
+| `document` | a specific URL whose content asserts the value | reading it again; carries the url, what it shows, and when it was read |
+
+`dataset` is preferred wherever it can answer, because a document is an interpretation of prose
+and a dataset field is a lookup. `rwkv` is the case that settled it: its data-openness score of
+5 rested on a paper's claim of a 3.1T open corpus, and what corrected it to 4 was the Hugging
+Face datasets API showing the published repos hold a component index and 100k/1M previews, no
+corpus. The document was plausible, traceable and wrong; the dataset was neither plausible nor
+implausible, it was just checkable.
+
+`sources/signal_routing.yaml` decides *which* source is authoritative per dimension;
+`sources/evidence_policy.yaml` decides *whether* a given observation is admissible at all.
+
 ## Why freshness is not `max(sources[].accessed)`
 
 `accessed: 2026-06-08` says somebody opened that URL that day. `last_verified:
@@ -153,6 +174,14 @@ a queue entry — a hold explains an unconfirmed axis, and its absence does not 
 confirmed. An undated axis with no queue entry is still `partial`, and is separately a finding
 for `check_freshness` and `sweep_status`.
 
+### A hold is a claim about now, not a record of history
+
+A hold in `sources/verification_queue.yaml` is a claim about the CURRENT state of an axis, and
+nothing in the repository forces it to stay true. A later pass that settles the question writes
+its finding into the score note, where the queue cannot see it — so a stale hold does not
+announce itself; it just sits there, contradicted by a note nobody re-read. Before adding an
+entry, read the axis's note and its source dates. Before trusting an existing one, do the same.
+
 ## What it is for
 
 Triage. A category whose oldest axis is 50 days old is a category to go and look at.
@@ -243,7 +272,9 @@ to maintain the copy. Duplicated history drifts; git's does not.
 The public payload publishes `note` and `sources` verbatim, so anything written into a note is
 published. That is the reason this boundary is a rule and not a style preference.
 
-Cleaning the corpus is `skills/clean-score-notes/SKILL.md`, and issue #322 carries the audit.
+The verification log was cleared in one pass under issue #322, which carries the audit. The
+prose pass that succeeded it, for notes written in the rubric's vocabulary rather than the
+reader's, is `skills/clean-corpus-prose/SKILL.md` (#619).
 
 ## Who may write `last_verified`
 
@@ -396,6 +427,29 @@ axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2
 
 That is the gap that makes a re-check unfalsifiable, and closing it is what makes everything
 below possible.
+
+### Why `shows` has no minimum length
+
+A length floor on `shows` was tried and rejected. A 25-character floor would have thrown out
+`'MIT License text'` and `'13,834 monthly downloads'`, both short and completely specific, while
+keeping every filler row like `flagship phase-C verification source`, which is long. Length
+measures verbosity, not specificity.
+
+### Abstention values live on the route, not here
+
+A value that means "this source has no answer" — GitHub's `NOASSERTION`, the Hub's `other` — is
+a fact about a SOURCE, so it is declared once, on that source's route in
+`sources/signal_routing.yaml`, as `abstain_values`. `evidence_policy.yaml` never repeats it: an
+earlier draft declared `NOASSERTION` in both files, alongside the `abstain_when` that
+`signal_routing.yaml` already had, and two declarations of one rule is exactly the drift that
+split exists to prevent.
+
+What `evidence_policy.yaml` owns instead is the abstention policy that is *not* source-specific.
+A null value is an abstention from every source and needs no per-source interpretation. And a
+declared artifact that does not resolve is not a signal, whichever source it came from — five
+base-model artifacts were in this state before PR #109: `gemma-3` (both SKUs 404),
+`mistral-large-3` (404), `gemma-4` (307), `olmo-3`'s 32B SKU (404), and `rwkv`, whose
+`artifact_id` was `RWKV`, an organization rather than a repository.
 
 ### `establishes`: per-dimension attribution
 
@@ -752,6 +806,46 @@ re-fetch's job. Nor does it try to turn `capability.value` into structured compo
 prose by `check_rubric`'s own measure, against the 71% that stopped `edge_hardware`, and with
 four different instruments sharing one field name, there is no shared ladder at the end of that
 work the way openness got four.
+
+## The verification sweep's bookkeeping
+
+`build/sweep_status.py` derives where the sweep has got to from the corpus rather than from a stored pointer, and `/goal` (`refresh-all-categories`) asks it which category is next. The rules it implements, moved here from its docstring so `--help` is a paragraph (#573):
+
+### What "done" means for a product
+
+The bar agreed on 2026-08-08, and it is per product rather than per axis:
+
+  * every axis carries a real `last_verified`, or abstains deliberately (a null value, which
+    `evidence-and-freshness.md` explains for the axes that have one), or the product is held;
+  * held products count as resolved, not as remaining. A product whose evidence cannot be
+    settled goes into `sources/verification_queue.yaml` with a reason and stops blocking its
+    category, which is what let the pilot ship five of six.
+
+The prose has no part in "done". It used to: `comments` had to end in a dated `Verified … via`
+line, which was the one thing about the prose a checker could see. The line was a third copy
+of the axis dates and read as a footnote about the product, so #619 retired it, and the prose
+half of a refresh is now held by `product-copy.md`'s rules and the reviewer rather than by a
+marker in the field. `build/product_prose.py` checks that the line has not come back.
+
+Deliberately NOT counted as done: an axis whose value is null because nobody looked. The two
+are indistinguishable in the file today, which is the gap the per-axis deferral idea closes.
+Until that exists this over-counts, and `--verbose` prints the null axes so the number can be
+read with that in mind.
+
+### Order
+
+Worst artifact coverage first, so the categories where automation helps least go while the
+sweep is cheapest to change. Coverage is measured locally as the share of a category's products
+carrying a routable artifact block, which is the same thing `check_routing` counts and does not
+need the warehouse.
+
+### Refreshing rather than finishing
+
+Once a category is gate-clean it stays "done" forever, which is wrong the moment a confirmation
+ages: `last_verified` is a claim about a day, and the map keeps moving. `--max-age-days` (or
+`--since`) reads a confirmation older than the window as `stale` rather than `verified`, so the
+same tooling that drove the first pass drives the recurring one. Prose has no date of its own
+and ages with the axes it was written beside.
 
 ## Current state
 

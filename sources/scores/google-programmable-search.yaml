@@ -36,15 +36,14 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: ABSTAINS. Google publishes no query, customer or developer count for the Custom Search JSON API, and
-    no first-party package measures it - the client libraries are the general-purpose Google API clients, which
-    serve hundreds of APIs and would measure a population with almost nothing to do with this one. The abstention
-    is dated rather than left blank, on the queue's rule that a null somebody looked for and did not find is
-    a confirmed axis; the page below is where it was looked for.
+  note: Google publishes no query, customer or developer count for the Custom Search JSON API, and its client
+    libraries are general-purpose Google API clients shared across hundreds of APIs, so their download counts
+    would not measure this one. With no other countable artifact to use as a proxy, the product is left
+    unscored rather than assigned a level inferred from a number that measures something else.
   sources:
   - url: https://developers.google.com/custom-search/v1/overview
-    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request, customer
-      or developer count - which is what the abstention rests on.
+    shows: The vendor's own pricing and product documentation, carrying rates and limits and no request,
+      customer or developer count - which is why no level is recorded.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: b53141c492bfcff6d2d5a9c6d51580dc432f62e8399c51ae32fb4ea8e69790b6
@@ -57,9 +56,10 @@ capability:
   confidence: high
   relative_to: serper
   relation: at
-  note: 'Finds, and returns references. The API returns search results and nothing behind them: there is no
-    extraction mode and no answer. Banded at serper, which resells the same index in the same shape. The engine''s
-    site scoping is coverage, which this ladder excludes, so a scoped engine and a whole-web one band alike.'
+  note: The API returns search results and nothing behind them, with no extraction step and no composed
+    answer, which puts it level with Serper, which resells the same index in the same shape. Whether the
+    engine is scoped to specific sites or to the whole web doesn't change this, since that affects coverage
+    rather than what the API gives back.
   last_verified: '2026-09-16'
   sources:
   - url: https://developers.google.com/custom-search/v1/overview
