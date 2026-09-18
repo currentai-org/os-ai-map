@@ -1657,16 +1657,19 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
-staged, not deployed                         <!-- count:staged_assets -->7
+staged, not deployed                         <!-- count:staged_assets -->8
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->39
+logical assets in warehouse/assets.yaml     <!-- count:assets -->40
 ```
 
-The staged seven are `observations.source_runs` and `observations.product_adoption_baseline`
-(both Phase 2), the Phase-3 `registry.axis_assessments` candidate, and the Phase-1 identity
+The staged eight are `observations.source_runs` and `observations.product_adoption_baseline`
+(both Phase 2), the Phase-3 `registry.axis_assessments` candidate, the Phase-1 identity
 outputs `registry.resolution_ledger`, `registry.product_aliases`, `registry.org_handles` and
-`registry.model_families`: tracked assets whose tables do not exist on the platform yet. The
+`registry.model_families`, and `registry.product_score_notes`: tracked assets whose tables do
+not exist on the platform yet. The notes table is the one axis of the notebook payload the
+warehouse could not serve, staged so `notebooks/ai-stack-map.py` can stop inlining 3.8 MB of
+JSON and read its prose from `currentai.registry` like everything else. The
 three `signal_packages` models were staged here until 2026-09-13, when issue #314 deployed
 them; `downloads` and `downloads_daily` are now deployed, and `product_adoption` is deployed
 and marked `compatibility` because it is a third banding model in a signal namespace and
