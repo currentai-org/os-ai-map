@@ -86,7 +86,9 @@ TEMPLATE_OPENINGS = re.compile(
 # A benchmark score, a latency, a parameter count or a context window is a fact about the
 # product and is not matched.
 FIGURE = re.compile(
-    r"\b\d[\d,.]*\s*(?:k|K|M|million|billion|thousand)?\s+(?:[A-Za-z-]+\s+){0,2}"
+    # The lookbehind keeps a version number out: `Apache-2.0 license and installs` is not a
+    # count, and the pilot polish tripped on exactly that.
+    r"(?<![A-Za-z0-9.-])\d[\d,.]*\s*(?:k|K|M|million|billion|thousand)?\s+(?:[A-Za-z-]+\s+){0,2}"
     r"(?:stars?|stargazers|downloads?|pulls?|installs?|users?|customers?|deployments?|forks?)\b"
     r"|\b\d{1,3}(?:,\d{3})+\b|\b\d{5,}\b"
 )

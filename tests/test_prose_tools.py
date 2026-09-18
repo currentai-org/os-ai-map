@@ -90,6 +90,7 @@ def test_a_usage_figure_in_a_note_is_flagged(note):
         "Median time-to-interactive of 1.35 seconds on the independent benchmark.",
         "Five accelerator vendors plus pure CPU, across three checkpoint sizes.",
         "The registry stopped at 1.0.4 while the repository is on 2.1.0.",
+        "Released under Apache-2.0 and installs with pip; GPL-3.0 users need the other build.",
     ],
 )
 def test_a_product_fact_with_a_number_is_not_a_usage_figure(note):
