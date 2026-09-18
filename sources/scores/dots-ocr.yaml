@@ -16,12 +16,10 @@ openness:
       value: partial
       detail: inference code and a loader are published; no training or data-construction pipeline is
   confidence: high
-  note: 'MIT over both the code and the weights, and 3 rather than 5 because the model ladder asks about the
-    recipe and not only the licence: the weights download freely and inference code is public - which the model
-    ladder calls `partial` rather than open, because open means the pipeline that produced the weights - while
-    the training corpus and that pipeline are not published. Same reading, and same band, as deepseek-ocr -
-    which is the point of typing it this way rather than scoring a weights-first release on the software ladder,
-    where the training questions are never asked.'
+  note: MIT covers both the code and the weights, which download freely from Hugging Face. But the repository
+    publishes inference code only, not the training pipeline, and the training corpus is neither published
+    nor described, so this reads as an open-weights release rather than a fully open model. DeepSeek-OCR
+    is scored the same way for the same reason.
   raw: license:MIT(OSI; the LICENSE body reads MIT License, Copyright (c) 2025 rednote-hilab);weights:open(published
     on Hugging Face and downloadable without a gate);data:closed(the training corpus is neither published nor
     described);code:partial(inference code and a loader are published; no training or data-construction pipeline
@@ -45,9 +43,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The Hugging Face API reports 668,858 downloads of dots-studio/dots.ocr in the trailing 30 days, inside
-    the 100K-1M band for level 3. An earlier draft banded this on stars and said no usage-volume channel existed;
-    that was written before the record declared its Hugging Face artifact, and the channel was there all along.
+  note: Adoption is measured as Hugging Face downloads of the dots.ocr checkpoint over the trailing month,
+    the only usage-volume channel this record declares.
   last_verified: '2026-09-16'
   sources:
   - url: https://huggingface.co/api/models/dots-studio/dots.ocr
@@ -64,15 +61,13 @@ capability:
   confidence: medium
   relative_to: chandra
   relation: at
-  note: 'Structure survives: the model card documents layout detection, reading order and table recognition
-    emitted as JSON, which is band 4. Banded `at chandra`, the other single-model parser here, which recovers
-    the same amount. An earlier draft banded it below the converters because it is a model something else calls,
-    which is pipeline position - excluded from this ladder by name, on the same reasoning that settled `surya`.'
+  note: dots.ocr's model card documents layout detection, reading order and table recognition, all emitted
+    as JSON. Its capability matches Chandra's, the other single-model parser here.
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/studio-dots-ai/dots.ocr
-    shows: Repository page and README describing unified layout detection and content recognition in one vision-language
-      model with prompt-based task switching.
+    shows: Repository page and README describing unified layout detection and content recognition in one
+      vision-language model with prompt-based task switching, and table recognition emitted as JSON.
     accessed: '2026-09-16'
     http_status: 200
     content_sha256: 222311bb0e61ffb8c00c57a0d906cbb520bd6bfd34108915c6ec509ffe01a9c3
