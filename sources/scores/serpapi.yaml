@@ -14,10 +14,9 @@ openness:
       detail: metered in searches per month, from $25 for 1,000
       raw: cloud SaaS with API keys, metered in searches per month, from $25 for 1,000
   confidence: high
-  note: 'Closed, and the registry''s licence trap is confirmed: `google-search-results` on PyPI and `serpapi`
-    on npm are both MIT, and both are clients. Nothing of the scraping, parsing or proxy infrastructure is
-    published. Scoring the SDK''s MIT as the product''s licence is the measurement-population error `langfuse`
-    was corrected for, in its licence form.'
+  note: 'SerpApi''s service is closed: the scraping, parsing and proxy infrastructure that produces its
+    results is not published. Its client packages -- `google-search-results` on PyPI and `serpapi` on npm
+    -- are MIT, but they are clients, not the underlying service.'
   raw: license:Proprietary(API-only);source:closed(no index and no parser published; the clients are MIT SDKs
     over the hosted service);managed:cloud SaaS with API keys, metered in searches per month, from $25 for
     1,000
@@ -39,12 +38,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is measured by PyPI downloads of google-search-results, SerpApi's official Python client.
-    A client package is normally a weak proxy for a hosted service, but it holds here because SerpApi sells
-    exactly one metered product and the package exists only to call it, unlike a case such as Langfuse where
-    the same kind of package also measures self-hosted use. Confidence is medium rather than high because
-    the Python client is only one of several ways to call the API, and its npm counterpart adds further,
-    uncounted downloads.
+  note: 'Adoption is measured by PyPI downloads of `google-search-results`, SerpApi''s official Python client:
+    a client package is normally a weak usage proxy, but it holds here because SerpApi sells exactly one
+    metered product the package exists only to call. Confidence stays medium because the Python client is
+    one of several ways to reach the API, and its npm counterpart adds further, uncounted downloads.'
   last_verified: '2026-09-16'
   sources:
   - url: https://pypistats.org/api/packages/google-search-results/recent
@@ -62,10 +59,10 @@ capability:
   confidence: high
   relative_to: serper
   relation: at
-  note: 'SerpApi''s every output mode renders the search engine''s own results page: the documented `organic_results`
-    object carries title, link and snippet, and even its HTML mode returns the raw Google results page rather
-    than the pages behind the links. No endpoint in its catalog returns a result page''s content, which
-    puts it level with Serper, the other product that resells someone else''s SERP as structured data.'
+  note: 'Every SerpApi output mode renders the search engine''s own results page: the `organic_results`
+    object carries title, link and snippet, and even HTML mode returns the raw Google results page rather
+    than the pages behind its links. No endpoint returns a linked page''s content, which puts it level with
+    Serper, the other product that resells someone else''s SERP as structured data.'
   last_verified: '2026-09-17'
   sources:
   - url: https://serpapi.com/search-api
