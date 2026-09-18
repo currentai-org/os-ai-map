@@ -16,12 +16,10 @@ openness:
         a paid subscription for production use, and the proxy gates premium features on a LITELLM_LICENSE
         key verified against license.litellm.ai
   confidence: high
-  note: LiteLLM's MIT core is genuinely open, but the enterprise/ directory in the same repository ships
-    under a separate proprietary BerriAI license that requires a paid, seat-counted subscription before
-    production use, and forbids copying, distributing or selling it. The directory is not a stub, since
-    it ships its own hooks, UI and deployment stack, and the proxy checks a license key against BerriAI's
-    server before enabling those features. A key required for part of the shipped code to run is what makes
-    this open core rather than fully open.
+  note: LiteLLM's MIT core is genuinely open, but the enterprise/ directory ships its own hooks, UI and
+    deployment stack under a separate proprietary BerriAI license that requires a paid, seat-counted subscription
+    before production use. A license key checked against BerriAI's server enforces the gate, which is what
+    makes LiteLLM open core rather than fully open.
   raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/
     directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production
     use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)
@@ -94,10 +92,8 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: Adoption is measured by PyPI downloads of the litellm package, which land far above the mass-market
-    threshold, and the count holds steady across daily, weekly and monthly windows. Much of that volume
-    comes from continuous-integration runs that install litellm on every pipeline touching a model provider,
-    rather than from direct end-user installs; GitHub stars and dependent-repository counts corroborate
-    the reading but are not its basis.
+    threshold. Much of that volume comes from continuous-integration pipelines that install litellm on every
+    run touching a model provider, rather than from direct end-user installs.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/BerriAI/litellm
@@ -116,11 +112,9 @@ capability:
   basis: feature_matrix
   value: null
   confidence: high
-  note: A unified gateway to a very large set of LLM providers in OpenAI format, with cost tracking, guardrails,
-    load balancing, virtual keys and budgets, and logging. No standard benchmark applies to a gateway, so
-    this is rated on breadth of provider coverage and production features. The README and docs now say 100+
-    providers where the recorded feature list says 140+, so the headline count has been restated downward
-    rather than grown; the score does not turn on that number.
+  note: LiteLLM is a unified gateway to a very large set of LLM providers in OpenAI format, with cost tracking,
+    guardrails, load balancing, virtual keys, budgets and logging. No standard benchmark applies to a gateway,
+    so this is rated on the breadth of provider coverage and production features it ships.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/BerriAI/litellm
