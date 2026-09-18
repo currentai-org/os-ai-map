@@ -9,7 +9,7 @@ parsed documents leaf by leaf, and fails on any differing path that is not on th
 
 Allowed, per file kind:
 
-    scores      <axis>.note, <axis>.sources[i].shows
+    scores      <axis>.note, <axis>.sources[i].shows, <axis>.comparison.sources[i].shows
     products    comments (including its removal), description
     categories  comments, strapline, scoring_recipe.note
 
@@ -46,6 +46,10 @@ def allowed(kind: str, path: tuple) -> bool:
         if len(path) == 2 and path[1] == "note":
             return True
         if len(path) == 4 and path[1] == "sources" and isinstance(path[2], int) and path[3] == "shows":
+            return True
+        # A capability comparison's own source lines render beside the axis's and are prose too.
+        if (len(path) == 5 and path[1:3] == ("comparison", "sources") and isinstance(path[3], int)
+                and path[4] == "shows"):
             return True
         return False
     if kind == "products":
