@@ -216,6 +216,13 @@ def test_an_empty_or_overlong_note_is_refused(corpus):
     assert "over the" in prose_edit.edit_note("tesseract", "openness", "x" * (NOTE_CEILING + 1))
 
 
+def test_a_hard_wrapped_draft_is_read_as_one_line(tmp_path):
+    """A reviewer's draft with newlines for readability embedded them in the published note."""
+    draft = tmp_path / "note.txt"
+    draft.write_text("Tesseract is distributed as source\n  and through packages.\n")
+    assert prose_edit._read_text(str(draft)) == "Tesseract is distributed as source and through packages."
+
+
 def test_a_note_may_not_gain_a_date(corpus):
     reason = prose_edit.edit_note("tesseract", "openness", "Apache-2.0 since 2026-08-13, no vendor.")
     assert reason and "date" in reason

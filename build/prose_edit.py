@@ -14,8 +14,8 @@ this puts them in one place and refuses rather than guessing.
     uv run python -m build.prose_edit comments <slug> --drop
 
 The text is read from a file rather than an argument so a worker's shell quoting cannot mangle
-an apostrophe. Trailing whitespace is stripped; internal whitespace is left alone and the YAML
-dumper re-wraps the field.
+an apostrophe. Whitespace is normalized to single spaces, so a hard-wrapped draft does not
+embed its line breaks in the prose; the YAML dumper re-wraps the field.
 
 Refusals, each with its reason on stderr:
 
