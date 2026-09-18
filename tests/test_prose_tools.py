@@ -151,6 +151,15 @@ def test_a_plain_description_is_clean():
                              "Anthropic and local backends, plus multi-user authentication.") == {}
 
 
+@pytest.mark.parametrize("text", [
+    "OCR toolkit with table, formula and seal recognition in more than a hundred languages.",
+    "It instruments applications through OpenTelemetry.",
+    "Texas Instruments' AM67A vision processor with an 8-TOPS accelerator.",
+])
+def test_english_that_shares_a_word_with_the_rubric_is_not_a_tell(text):
+    assert "vocabulary" not in description_tells(text)
+
+
 def test_a_description_is_rewritten_through_the_helper_and_guarded(corpus):
     assert prose_edit.edit_description("mastra", "") is not None
     assert "self_reference" in prose_edit.edit_description("mastra", "This record covers the SDK.")

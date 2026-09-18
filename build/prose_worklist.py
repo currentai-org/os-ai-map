@@ -225,7 +225,13 @@ def description_tells(text: str) -> dict[str, object]:
         tells["voice"] = m
     if (m := re.findall(r"\b20\d\d-\d\d-\d\d\b", text)):
         tells["date"] = m
-    if (v := vocabulary_hits(text)):
+    # "Texas Instruments", the verb "instruments an application" and an OCR product's "formula
+    # recognition" are English, not the rubric's nouns; a description may say all three.
+    plain = re.sub(r"Texas Instruments|\b(?:auto-)?instruments? (?:an?|the|your|any|every|applications?|code|calls|models?|LLM)\b"
+                   r"|\bformulas? (?:recognition|extraction|detection|parsing|understanding|and|or)\b"
+                   r"|\b(?:math(?:ematical)?|chemical|table,) formulas?\b",
+                   "", text, flags=re.IGNORECASE)
+    if (v := vocabulary_hits(plain)):
         tells["vocabulary"] = v
     if (f := usage_figures(text)):
         tells["figure"] = f
