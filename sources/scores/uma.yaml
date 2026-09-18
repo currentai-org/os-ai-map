@@ -48,11 +48,9 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: medium
-  note: 'Adoption is measured as trailing-30-day Hugging Face downloads of the declared Hub repository,
-    with manual gating suppressing the count. fairchem-core is also declared and sees far more traffic,
-    but it is not used here: that package serves every fairchem model, so its download population is not
-    UMA''s population, and only a package that is a product''s own primary channel can be counted here.
-    The Hub repository is UMA''s own channel; the gate is simply what suppresses its count.'
+  note: Adoption is measured as trailing-30-day Hugging Face downloads of the declared Hub repository, with
+    manual gating suppressing the count. fairchem-core also exists and sees far more traffic, but it serves
+    every fairchem model rather than UMA specifically, so the gated Hub repository remains UMA's own channel.
   last_verified: '2026-09-10'
   sources:
   - url: https://huggingface.co/api/models/facebook/UMA
@@ -66,11 +64,10 @@ capability:
   basis_detail: scientific adaptation surface
   value: One model consuming five distinct DFT levels of theory, selected at inference by a task embedding, plus a first-party fine-tuning pathway with a dataset-preparation script and templated configs; no generation, one scale.
   confidence: high
-  note: UMA earns two capabilities directly. It trains on five separate DFT datasets with different functionals
-    and pseudopotentials, which counts as accepting multiple distinct data sources rather than variables
-    of one. It also documents a first-party fine-tuning pathway, complete with a dataset-preparation script
-    and templated configs; the publisher's claim that fine-tuning is usually unnecessary is about convenience,
-    not about whether the pathway exists, so it is still counted.
+  note: UMA trains on five separate DFT datasets with different functionals and pseudopotentials, which
+    counts as multiple distinct data sources rather than variables of one. It also documents a first-party
+    fine-tuning pathway with a dataset-preparation script and templated configs, so the publisher's note
+    that fine-tuning is usually unnecessary does not change that the pathway exists.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/facebookresearch/fairchem/main/docs/core/uma.md
