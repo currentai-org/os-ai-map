@@ -19,11 +19,9 @@ openness:
       value: ungated
       detail: nothing withheld from the published tree
   confidence: high
-  note: 'Apache-2.0 over the gateway itself, which is the unusual part of this record: the hosted alternatives
-    in this category are closed, and this one publishes the thing that holds the credentials. The `ungated`
-    reading meets the shared software rubric''s acceptance standard for that dimension rather than resting
-    on path absence: the vendor''s own documentation names its commercial offering as a separate thing, and
-    the source cited below carries that statement.'
+  note: Apache-2.0 covers the gateway itself, unusual for this category since the hosted alternatives are
+    typically closed and do not publish the part that holds credentials. The README documents a separate
+    hosted offering without holding back any part of the published platform, so the core is ungated.
   raw: license:Apache-2.0(OSI);source:public(the gateway, its catalogue and its credential handling);self-host:yes(docker
     compose, Helm, Fly.io or a single binary);service:optional(the vendor also runs a hosted tier);core-gated:ungated(nothing
     withheld from the published tree)
@@ -84,11 +82,10 @@ capability:
   confidence: medium
   relative_to: composio
   relation: at
-  note: Open-connector covers many providers, holds and refreshes their credentials itself, and its runtime
-    can be self-hosted or run hosted. Self-hosting means the operator registers OAuth applications with
-    each provider, while the hosted tier supplies them; the gateway performs the OAuth flow and stores the
-    grant either way, so ownership of the OAuth client is a deployment choice, not a capability gap. Composio,
-    the closed-source product with the same shape, reaches the same level.
+  note: Open-connector covers many providers and holds and refreshes their credentials itself, with a runtime
+    the caller can self-host or run hosted. Either way the gateway performs the OAuth flow and stores the
+    grant; only who registers the OAuth application changes, matching Composio, the closed-source product
+    built the same way.
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/oomol-lab/open-connector/main/README.md

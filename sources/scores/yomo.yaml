@@ -17,12 +17,10 @@ openness:
     - full-runtime-in-repo(Rust core+QUIC+multi-language SDKs)
     - managed-hosting-by-Vivgrid-optional
   confidence: medium
-  note: 'Cargo.toml declares `license = "Apache-2.0"`, and the README''s License section agrees, but no
-    LICENSE file sits at the repository root, so the GitHub API reports the license as null. That gap is
-    the weakest part of this record. Nothing is withheld: routing, the serverless host, tool invocation,
-    the OpenAI-compatible surface, auth and transport all live in src/, with no paid tier or license key.
-    Vivgrid sells a separate hosted platform that neither mentions YoMo nor is mentioned by it, so that
-    offering beside the framework is not a gate.'
+  note: Cargo.toml and the README's License section both declare Apache-2.0, but no LICENSE file sits at
+    the repository root, so the GitHub API reports the license as null. Nothing is withheld - routing, the
+    serverless host, tool invocation, auth and transport all live in src/ with no paid tier or license key
+    - and Vivgrid's separate hosted platform neither mentions YoMo nor is mentioned by it.
   raw: license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime
     is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no
     second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither
@@ -73,10 +71,9 @@ adoption:
   signal_type: stars_fallback
   confidence: medium
   note: GitHub stars are the only honest adoption signal for YoMo, since the runtime ships as a Go binary
-    rather than through any single package registry. The Rust SDK crate on crates.io counts a different
-    population, Rust builds that link the SDK rather than installs of the runtime itself, and no customer
-    or install figure is published. A star is not a use, so this reading stays directional rather than a
-    measurement of actual usage.
+    rather than through a package registry, and no customer or install figure is published. The Rust SDK
+    crate on crates.io counts a different population - Rust builds linking the SDK, not installs of the
+    runtime - so this reading stays directional.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/yomorun/yomo

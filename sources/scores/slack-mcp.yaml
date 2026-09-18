@@ -57,12 +57,10 @@ capability:
     and user management - working either through OAuth tokens or in a stealth mode that needs no workspace
     permissions
   confidence: medium
-  note: 'Slack MCP offers a curated tool surface over one workspace, with the caller supplying the secret
-    themselves: every documented path ends with a token to find and paste, whether an `xoxp` or `xoxb` token
-    from a Slack app the caller creates, or `xoxc`/`xoxd` session tokens extracted from the browser''s own
-    local storage with a console snippet. The server performs no OAuth flow of its own, which puts it in
-    the same position as postgres-mcp''s database connection string: the caller holds and supplies the credential
-    either way.'
+  note: 'Slack MCP offers a curated tool surface over one workspace, but the caller supplies the credential
+    directly: every documented path ends with a token to find and paste, whether an OAuth token from a Slack
+    app the caller creates or a session token extracted from the browser''s own storage. The server performs
+    no OAuth flow of its own, leaving it level with Playwright MCP.'
   last_verified: '2026-09-17'
   sources:
   - url: https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/docs/01-authentication-setup.md
