@@ -47,10 +47,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 544,320 PyPI downloads of `hnswlib` in the trailing 30 days, which lands in the 100K-1M band of the software
-    usage scale, level 3. The PyPI project's declared source URL points at the author's own hnsw repository rather
-    than nmslib/hnswlib; the package is this library's Python distribution and not a client for something else,
-    so the figure is the product's.
+  note: The hnswlib package on PyPI is this library's own Python distribution, not a client for a different
+    product, so its download count measures hnswlib directly. The package's declared source link happens
+    to point at the maintainer's personal repository rather than nmslib/hnswlib, but that does not change
+    what the downloads count.
   last_verified: '2026-08-18'
   sources:
   - url: https://pypistats.org/api/packages/hnswlib/recent
@@ -67,9 +67,9 @@ capability:
   relative_to: chroma
   relation: two_below
   confidence: medium
-  note: Banded on the category feature matrix as single index family as a library. Placed two bands below the chroma
-    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
-    what scale and over how many retrieval modes.
+  note: hnswlib ships a single index structure, HNSW, as a header-only C++ library with Python bindings
+    supporting insertion, updates and filtered search, with no storage, persistence or query layer of its
+    own. That keeps it two steps below Chroma, which builds a full retrieval system around such an index.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/nmslib/hnswlib/blob/master/README.md

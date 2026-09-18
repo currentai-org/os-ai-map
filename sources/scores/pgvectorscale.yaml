@@ -11,13 +11,12 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: The LICENSE body is the PostgreSQL License, the same OSI-approved terms pgvector records, here
-    carrying a Tiger Data disclaimer rather than the Postgres project's own notices. GitHub's classifier
-    resolves it to `postgresql`, not NOASSERTION. The repository is public and unarchived and builds the
-    whole extension - the StreamingDiskANN index, statistical binary quantization and label-based filtered
-    search - with no separate paid tier or license-gated build in the tree; Tiger Data's hosted Timescale
-    Cloud service sits beside the extension rather than withholding any part of it. So source is public and
-    the core ungated.
+  note: The LICENSE body is the PostgreSQL License, the same OSI-approved terms pgvector uses, carrying
+    a Tiger Data disclaimer rather than the Postgres project's own notices; GitHub's classifier correctly
+    resolves it to `postgresql`. The repository is public, unarchived, and builds the whole extension —
+    the StreamingDiskANN index, statistical binary quantization and label-based filtered search — with no
+    separate paid tier or license-gated build in the tree. Tiger Data's hosted Timescale Cloud service sits
+    beside the extension rather than withholding any part of it.
   raw: license:PostgreSQL(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-03'
   sources:
@@ -54,10 +53,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 3,119 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The extension
-    installs as a Postgres extension via Docker or from source rather than a PyPI or npm package, and no
-    distribution channel publishes a comparable download count, so the stars scale applies with its cap of
-    3.
+  note: pgvectorscale installs as a Postgres extension via Docker or from source rather than through a PyPI
+    or npm package, and no distribution channel publishes a comparable download count, so GitHub stars are
+    the only adoption signal available. A star reflects interest rather than confirmed use, so it cannot
+    show how many databases are actually running pgvectorscale.
   last_verified: '2026-09-03'
   sources:
   - url: https://api.github.com/repos/timescale/pgvectorscale
@@ -75,10 +74,10 @@ capability:
   relative_to: pgvector
   relation: one_below
   confidence: medium
-  note: Banded one rung below pgvector on the storage category's feature matrix. pgvector is rung 3, a
-    working single-purpose store or index; pgvectorscale ships only a faster index type and quantization
-    scheme over columns pgvector already defines and stores, which is rung 2, a single index family shipped
-    as a library with no storage of its own.
+  note: pgvectorscale ships a faster index type, StreamingDiskANN, plus a quantization scheme, over vector
+    columns that pgvector already defines and stores; it holds no storage of its own. That is a narrower
+    scope than pgvector, which is a working single-purpose store and index in its own right, which is why
+    pgvectorscale sits one step behind it.
   last_verified: '2026-09-03'
   sources:
   - url: https://raw.githubusercontent.com/timescale/pgvectorscale/main/README.md

@@ -11,12 +11,11 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: Apache-2.0 license body confirmed. The single root LICENSE covers the whole repository - the Python SDK,
-    the web catalog frontend and the Lambda backend services all in one tree - and the docs describe the "Enterprise
-    Installation" as deploying this same repository's catalog and stack via CloudFormation into the customer's own
-    AWS account, not a separately licensed or closed platform. The technical reference explicitly states the Lambda
-    functions are open-source and independently security-audited. So source is public and the core ungated; the
-    README's own "Enterprise platform" language describes a deployment and support model rather than functionality
+  note: Apache-2.0 license body confirmed. A single root LICENSE covers the whole repository — the Python
+    SDK, the web catalog frontend and the Lambda backend services all in one tree. The documented "Enterprise
+    Installation" deploys this same repository's catalog and stack via CloudFormation into the customer's
+    own AWS account, and the technical reference states the Lambda functions are open-source and independently
+    audited. So the "Enterprise platform" language describes a deployment and support model, not functionality
     withheld from the published source.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-02'
@@ -53,12 +52,11 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: 32,910 PyPI downloads of `quilt3` in the trailing 30 days, which lands in the 10K-100K band of the software
-    usage scale, level 2. quilt3 is the SDK and CLI built from this repository's `api/python`, and it creates,
-    versions and installs Quilt packages against S3 without a catalog, so the count measures Quilt users rather
-    than clients of a separate server. It is a lower bound - people who only browse a deployed catalog never
-    install it - which is why confidence is medium. The stars scale would give the same level (1,370 stars,
-    1K-10K).
+  note: Quilt's adoption reading comes from PyPI downloads of `quilt3`, the SDK and CLI built from this
+    repository that creates, versions and installs Quilt packages against S3 without needing a deployed
+    catalog, so the count reflects Quilt users rather than clients of a separate server. It undercounts
+    people who only browse a deployed catalog and never install the package, which is why confidence is
+    medium, though GitHub stars independently point to the same range.
   last_verified: '2026-09-02'
   sources:
   - url: https://pypistats.org/api/packages/quilt3/recent
@@ -80,11 +78,10 @@ capability:
   relative_to: vespa
   relation: one_below
   confidence: medium
-  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
-    one band below the vespa anchor, alongside juicefs - Quilt provisions its own search cluster and indexing
-    Lambdas as part of the deployed stack rather than versioning over storage it does not itself index, which is
-    what keeps lakefs and dvc at the band below this one. It hosts no ranking or embedding model inside the query
-    path, so it does not reach the top rung.
+  note: Quilt provisions its own search cluster and indexing Lambdas as part of its deployed stack, so it
+    versions data it also indexes and serves itself rather than only versioning storage it does not index.
+    It hosts no ranking or embedding model inside the query path, which is why it sits one step behind Vespa
+    at the top of the category.
   comparison:
     last_attested: '2026-09-02'
     sources:

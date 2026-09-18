@@ -45,11 +45,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: The leading managed vector database. Production deployments are cited at 1.4 billion vectors and
-    5,700 queries per second for a single e-commerce customer, and 135 million vectors at 2,200 queries
-    per second load-tested for another, with a broad enterprise and developer base reached through serverless
-    and AWS Marketplace pay-as-you-go. No single hard user count is published, so the level is a judgment
-    across aggregate production usage. Some churn is visible too - Notion moved off it over cost.
+  note: 'Pinecone publishes no aggregate customer or user count; the level instead reads from production-deployment
+    case studies naming specific companies running large vector workloads through its serverless offering
+    and AWS Marketplace. That evidence shows deployment depth at a handful of named accounts rather than
+    breadth across a customer base, and it is not without churn: Notion moved off Pinecone over cost.'
   last_verified: '2026-08-13'
   sources:
   - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
@@ -75,16 +74,12 @@ capability:
   value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless auto-indexing, dedicated read
     nodes
   confidence: medium
-  note: 'Level with Milvus, which is the 4 rung on the storage feature matrix, which bands on how much of
-    the persist-index-retrieve path a product provides itself, at what scale and over how many retrieval
-    modes: a complete durable system operated at scale, with integrated sparse-dense hybrid search, serverless
-    auto-indexing and dedicated read nodes. It does not reach the 5 rung, which is for a platform that hosts
-    and evaluates ranking or embedding models inside the serving path, because nothing in the recorded evidence
-    shows that. Being a closed system its figures are vendor-reported and no independent submission exists:
-    ann-benchmarks.com lists 38 algorithms and Pinecone is not among them, so the absence is a confirmed
-    finding rather than an assumption, which is what holds confidence at medium. Rebanded on this matrix
-    when the product moved out of agent_tools_protocols; the band did not move. Capability is independent
-    of openness here - this product scores 1/closed and still reaches the same rung as two open engines.'
+  note: 'Pinecone is on par with Milvus: a complete, durable vector database operated at production scale,
+    with serverless auto-indexing, dedicated read nodes and integrated sparse-dense hybrid search. Reported
+    production figures include a P50 latency near 26 milliseconds at 1.4 billion vectors, but as a closed
+    system these are vendor-reported, not independently benchmarked. It stops short of the top level, reserved
+    for a platform that hosts and evaluates ranking or embedding models inside its own serving path, which
+    nothing in the record shows Pinecone doing.'
   last_verified: '2026-08-18'
   sources:
   - url: https://www.infoq.com/news/2025/12/pinecone-drn-vector-workloads/
