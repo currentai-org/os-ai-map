@@ -11,10 +11,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated. GitHub reports NOASSERTION because the LICENSE body opens with an NVIDIA copyright line;
-    the body declares SPDX-License-Identifier BSD-3-Clause and is the verbatim three-clause BSD text.
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole
+    product, and the README describes no paid tier, enterprise edition or license-gated build beside it,
+    so the source is public and the core ungated.
   raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
   last_verified: '2026-08-18'
   sources:
@@ -70,12 +69,9 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: CUTLASS supplies templated GEMM and convolution primitives across the warp, block and device levels
-    of CUDA, with CuTe layout algebra - a wide operator surface. PyTorch and FlashAttention each vendor
-    it directly as a submodule and build against its headers, the strongest evidence of a dependency; NVIDIA's
-    own compatibility testing against TensorRT-LLM, FlashInfer and cuDNN-Frontend corroborates without deciding
-    it. It covers one layer of the stack rather than the full path from a framework graph to a target, which
-    keeps it below Apache TVM.
+  note: PyTorch and FlashAttention each vendor CUTLASS directly as a submodule and build against its headers,
+    the strongest evidence of a dependency in this category. It covers one layer of the kernel stack rather
+    than the full path from a framework graph to a target, which keeps it below Apache TVM.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/NVIDIA/cutlass/blob/main/README.md

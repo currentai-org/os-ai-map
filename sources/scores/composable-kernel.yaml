@@ -11,10 +11,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
-    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
-    the core ungated. GitHub reports NOASSERTION because the LICENSE body carries an AMD copyright header; the body
-    is the verbatim MIT text.
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so the source
+    is public and the core ungated.
   raw: license:MIT(OSI);source:public;core-gated:ungated
   last_verified: '2026-08-18'
   sources:
@@ -51,10 +50,9 @@ adoption:
   signal_type: stars_fallback
   confidence: low
   note: GitHub stars are the only usable adoption signal, since Composable Kernel is vendored into ROCm
-    libraries and built from source rather than distributed as its own package. The count is read from the
-    standalone ROCm/composable_kernel repository, now a read-only mirror; the actively developed ROCm/rocm-libraries
-    monorepo bundles many AMD libraries under one star count, which would measure the whole monorepo rather
-    than this single component.
+    libraries and built from source rather than distributed as its own package. The count comes from the
+    now-frozen ROCm/composable_kernel repository, not the ROCm/rocm-libraries monorepo it moved into, which
+    bundles many AMD libraries under one star count.
   last_verified: '2026-08-18'
   sources:
   - url: https://api.github.com/repos/ROCm/composable_kernel
@@ -72,11 +70,10 @@ capability:
   relative_to: apache-tvm
   relation: one_below
   confidence: medium
-  note: Composable Kernel provides tile-level templates and a codegen dispatcher for GEMM, convolution and
-    fused attention on AMD GPUs, a wide operator surface. Both PyTorch and FlashAttention vendor it directly
-    as a submodule and build against it, the same kind of evidence that supports cutlass's placement, which
-    makes it the ROCm counterpart to cutlass. It covers one layer of the stack rather than the full path
-    from a framework graph to a target, which keeps it below Apache TVM.
+  note: Composable Kernel is vendored directly as a git submodule by both PyTorch and FlashAttention, the
+    same kind of dependency evidence that places cutlass, making it the ROCm counterpart to cutlass. It
+    covers one layer of the kernel stack rather than the full framework-to-target compilation path, which
+    keeps it below Apache TVM.
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
