@@ -63,7 +63,7 @@ RUBRIC_VOCABULARY = re.compile(
     # The scorer's shorthand a normal writer would not produce, named by the editor who read
     # the goldens: each is a place where a subject and a verb would have done.
     r"|\bholds? (?:it|this|the \w+) at\b|\bstands? in\b|\b(?:is|are) read the same way\b"
-    r"|\ba band (?:lower|higher|below|above)\b|\bat this band\b|\bcountable channel\b"
+    r"|\ba band (?:lower|higher|below|above)\b|\b(?:at |of )?this band\b|\badjacent bands\b|\bcountable channel\b"
     r"|\bstar-based\b"
     # The map's own machinery named as a noun: "this dimension asks for", "the top of the
     # scale", "the next level up". A reader sees a product, not an axis.

@@ -17,14 +17,11 @@ openness:
       value: 'yes'
       detail: HF
   confidence: medium
-  note: 'Where a repository license and a distribution-point license differ, the repository license governs,
-    and nuprl/MultiPL-E ships a LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"
-    whose clause 4 says "The contents of this repository may not be used as training data for any machine
-    learning model, including but not limited to neural networks." That is the license recorded here; the
-    MIT on the Hugging Face data artifact is the weaker statement of the two. The dataset openness scale
-    has no rung for a license that permits redistribution while bounding what the corpus may be used for,
-    so the score is a curator judgment rather than a lookup: freely downloadable and redistributable, but
-    carrying a use restriction that stops it short of an unqualified open case.'
+  note: MultiPL-E's GitHub repository ships under a modified BSD 3-Clause license whose fourth clause forbids
+    using the repository's contents as training data for any machine-learning model. The Hugging Face copy
+    of the data is tagged plain MIT, but where the two disagree the repository's own license is the one
+    that governs. That leaves the dataset freely downloadable and redistributable, but not fully open, because
+    of the training-data restriction.
   raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
     repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
     model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
@@ -52,8 +49,7 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: The Hugging Face page reports 33,673 downloads in the trailing 30 days, which puts it in the 10K-100K
-    band, level 3 on the dataset adoption scale.
+  note: Adoption is measured by Hugging Face downloads of nuprl/MultiPL-E, the dataset's only declared artifact.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/nuprl/MultiPL-E
