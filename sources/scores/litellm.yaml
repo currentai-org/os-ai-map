@@ -16,19 +16,12 @@ openness:
         a paid subscription for production use, and the proxy gates premium features on a LITELLM_LICENSE
         key verified against license.litellm.ai
   confidence: high
-  note: 'An MIT core with a proprietary enterprise directory in the same repository - and the gating is
-    in the code, not merely in BerriAI selling a hosted gateway. The root LICENSE is explicitly split: "All
-    content that resides under the ''enterprise/'' directory of this repository, if that directory exists,
-    is licensed under the license defined in ''enterprise/LICENSE''", and everything outside it is MIT.
-    That enterprise license says the software "may only be used in production, if you (and any entity that
-    you represent) have agreed to, and are in compliance with, the BerriAI Subscription Terms of Service
-    ... and otherwise have a valid BerriAI Enterprise license for the correct number of user seats", with
-    copying, distribution and sale forbidden. The directory is not a stub - it ships the enterprise package,
-    hooks, UI and a CloudFormation stack - and the proxy enforces it at runtime, reading a license key from
-    the environment and verifying it against license.litellm.ai before enabling premium features. A license
-    key you must hold for paid features to run is what makes this open core rather than fully open. That
-    is the other side of the line from LangChain, LlamaIndex, Pydantic AI, Zed and Otari, which sell a platform
-    beside a complete open core.'
+  note: LiteLLM's MIT core is genuinely open, but the enterprise/ directory in the same repository ships
+    under a separate proprietary BerriAI license that requires a paid, seat-counted subscription before
+    production use, and forbids copying, distributing or selling it. The directory is not a stub, since
+    it ships its own hooks, UI and deployment stack, and the proxy checks a license key against BerriAI's
+    server before enabling those features. A key required for part of the shipped code to run is what makes
+    this open core rather than fully open.
   raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/
     directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production
     use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)
@@ -100,11 +93,11 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 741,403,911 PyPI downloads in the trailing 30 days for litellm, which is above 10M and lands in
-    the top band. The figure is internally consistent across windows (207,823,088 weekly, 28,463,811 daily)
-    - litellm is a proxy library pulled on nearly every CI run that touches a model provider. GitHub shows
-    21.7k dependent repositories, roughly 49.2k stars and 1,342 releases, none of which is the basis for
-    the band.
+  note: Adoption is measured by PyPI downloads of the litellm package, which land far above the mass-market
+    threshold, and the count holds steady across daily, weekly and monthly windows. Much of that volume
+    comes from continuous-integration runs that install litellm on every pipeline touching a model provider,
+    rather than from direct end-user installs; GitHub stars and dependent-repository counts corroborate
+    the reading but are not its basis.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/BerriAI/litellm
