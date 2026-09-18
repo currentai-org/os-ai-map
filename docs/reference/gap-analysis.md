@@ -144,15 +144,21 @@ assume. `model-context-protocol` is the clearest live case: adoption 5, capabili
 `open_source`, so its overall score computes to 5.0 and it counts as a category-leading
 fully-open product on one axis where a reader might assume two.
 
-**A correction, because this guide got the stakes wrong on first writing.** It claimed that
-`agent_tools_protocols`'s stage rested on that null, on the reasoning that one category-leading fully-open
-product is the entire `stage >= 4` threshold. The rule is real but the inference was not
-checked against the category: it has **several** category-leading fully-open products, not one — MCP, `fastmcp`,
-`qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and most of them
-reach 4.5 from a real adoption *and* a real capability score with no null in the arithmetic.
-That comfortably clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting
-MCP entirely changes nothing. The claim that a stage depended on it was wrong, and was caught by
-re-deriving it against `build/serialize.py` rather than reasoning from the threshold. What the
+**A correction, because this guide got the stakes wrong on first writing.** It claimed that the
+stage of the category then called `agent_tools_protocols` rested on that null, on the reasoning
+that one category-leading fully-open product is the entire `stage >= 4` threshold. The rule is
+real but the inference was not checked against the category, which held several such products
+rather than one. The 2026-09-17 split (#430) has since moved them apart: MCP and the reference
+SDKs into `agent_protocols`, `qdrant` into `storage`, `docling` and `markitdown` into
+`document_conversion`, leaving the renamed `agent_tools_connectors` behind at stage 3.
+
+Re-derived against the current corpus, `agent_protocols` carries six fully-open products at 4.5
+or above: `model-context-protocol`, `ag-ui`, `mcp-apps`, `mcp-python-sdk`, `mcp-typescript-sdk`
+and `fastmcp`. That clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and dropping
+MCP leaves five and changes nothing. Three of the six score a real capability; the other three
+reach 5.0 with capability null, so the null is more common in this category than the first
+correction implied. The claim that a stage depended on any one of them was wrong, and was caught
+by re-deriving it against `build/serialize.py` rather than reasoning from the threshold. What the
 correction left standing — that adoption-only grading reaches categories it was not designed for
 — is the question #547 settled, immediately below.
 
