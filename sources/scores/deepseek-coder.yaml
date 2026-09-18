@@ -16,12 +16,11 @@ openness:
       detail: non-OSI; Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.;
         commercial allowed but use-based restrictions must propagate to derivatives
   confidence: high
-  note: MIT-licensed inference code and downloadable weights under the DeepSeek Model License, with no training
-    corpus released, so this is open weights. The license's Attachment A forbids military, illegal and discriminatory
-    use and requires those terms to propagate to derivatives, but permits commercial use at any scale -
-    a restriction on conduct rather than on commerce, which is why it does not pull the score down to restricted.
-    DeepSeek's pretrained base models are treated the same way on the same license, and the result is consistent
-    with the DeepSeek chat tier, which reaches the same score under plain MIT.
+  note: DeepSeek releases the inference code under MIT and the weights download without a gate, but use
+    of the weights is bound by the DeepSeek Model License, whose Attachment A bars military, illegal and
+    discriminatory use and requires derivatives to carry the same restriction. That is a limit on conduct
+    rather than commerce, so it keeps the model at open weights instead of pulling it down to restricted,
+    but the unpublished training data keeps it from reaching a fully open score.
   raw: weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI;
     Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed
     but use-based restrictions must propagate to derivatives)
@@ -47,10 +46,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: The family bands on the sum of downloads across its SKUs. The flagship 236B SKU reads 7,143 in the
-    trailing 30 days and the Lite SKU declared alongside it reads 587,824, summing to 594,967, which lands
-    in 100K-1M. The line has been superseded by DeepSeek-V2.5/V3/R1 and by the 2026 coders and the flagship
-    is in real decline, so the band rests on the Lite SKU people actually run.
+  note: Adoption is measured as Hugging Face downloads summed across the two declared DeepSeek-Coder-V2
+    checkpoints, and nearly all of that volume goes to the smaller Lite variant rather than the 236B flagship.
+    Later DeepSeek releases and 2026-generation coding models have drawn usage away from this line, and
+    the flagship checkpoint in particular sees little continuing traffic.
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-Coder-V2-Instruct

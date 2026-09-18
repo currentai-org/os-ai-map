@@ -70,7 +70,8 @@ RUBRIC_VOCABULARY = re.compile(
     r"|\bthis (?:dimension|scale|axis) (?:asks|measures|scores|rewards|counts|reads)\b"
     r"|\b(?:on|for|along|against) this (?:dimension|scale|axis)\b"
     r"|\b(?:top|middle|bottom) of (?:this|the) (?:\w+ )?scale\b"
-    r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b",
+    r"|\bthe next (?:level|band|tier|rung) (?:up|down)\b"
+    r"|\bbanded (?:at|on|against)\b",
     re.IGNORECASE,
 )
 
@@ -99,7 +100,7 @@ FIGURE = re.compile(
     # A bare comma-grouped or five-digit count, unless it is a product dimension or a
     # measured property: a token limit, a parameter count, an embedding size, a context
     # window, a throughput, a latency, a percentage.
-    r"|\b\d{1,3}(?:,\d{3})+\b(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|d\b|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
+    r"|\b\d{1,3}(?:,\d{3})+\b(?!,\d)(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|d\b|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
     r"|\b\d{5,}\b(?![\s-]*(?:(?:output |input )?tokens?|param|dimension|context|tok/s|t/s|TFLOP|ms\b|seconds?|per second|%|hours?|steps?))"
 )
 

@@ -167,12 +167,45 @@ def test_only_prose_leaves_are_allowed(kind, path, ok):
 # --- the guarded editor ---------------------------------------------------------------
 
 
+# The tesseract record as it stood before the pass: an adoption note that opens with the star
+# count and carries the pinned "understates" admission, and an openness note without one. A
+# synthetic copy rather than the live file, because the pass rewrote the live note and a test
+# that read it would have failed the day it did.
+OLD_TESSERACT = """product: tesseract
+openness:
+  score: 5
+  class: open_source
+  note: Apache-2.0 with no vendor gate; the whole engine is in the public repository.
+  sources:
+  - url: https://github.com/tesseract-ocr/tesseract
+    shows: LICENSE is Apache-2.0.
+  - url: https://api.github.com/repos/tesseract-ocr/tesseract/git/trees/main?recursive=1
+    shows: The whole tree; one LICENSE file at the root and no enterprise directory.
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 76,518 GitHub stars, the most in this category. Stars are the only comparable adoption
+    signal, and that almost certainly understates a library embedded in a very large amount of
+    other software.
+  last_verified: '2026-09-16'
+  sources:
+  - url: https://github.com/tesseract-ocr/tesseract
+    shows: Repository page showing the star count for tesseract-ocr/tesseract.
+    accessed: '2026-09-16'
+capability:
+  score: 4
+  note: Plain OCR of printed text with layout analysis; no handwriting model.
+"""
+
+
 @pytest.fixture
 def corpus(tmp_path, monkeypatch):
     """A two-file corpus under a temporary ROOT, so the editor writes nowhere real."""
     (tmp_path / "sources" / "scores").mkdir(parents=True)
     (tmp_path / "sources" / "products").mkdir(parents=True)
-    shutil.copy(ROOT / "sources" / "scores" / "tesseract.yaml", tmp_path / "sources" / "scores")
+    (tmp_path / "sources" / "scores" / "tesseract.yaml").write_text(OLD_TESSERACT)
     shutil.copy(ROOT / "sources" / "products" / "mastra.yaml", tmp_path / "sources" / "products")
     monkeypatch.setattr(prose_edit, "ROOT", tmp_path)
     return tmp_path
@@ -189,9 +222,9 @@ def test_a_note_is_rewritten_through_the_helper(corpus):
     assert _note(corpus, "tesseract", "adoption") == new
     # Nothing else moved: the level, the date and the source are as they were.
     doc = yaml.safe_load((corpus / "sources" / "scores" / "tesseract.yaml").read_text())
-    real = yaml.safe_load((ROOT / "sources" / "scores" / "tesseract.yaml").read_text())
+    before = yaml.safe_load(OLD_TESSERACT)
     assert {k: v for k, v in doc["adoption"].items() if k != "note"} == \
-        {k: v for k, v in real["adoption"].items() if k != "note"}
+        {k: v for k, v in before["adoption"].items() if k != "note"}
 
 
 def test_dropping_a_pinned_under_coverage_phrase_is_refused(corpus):

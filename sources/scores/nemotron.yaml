@@ -16,13 +16,11 @@ openness:
     license:
     - name: NVIDIA-Nemotron-Open-Model-License
       detail: permissive,commercial,non-OSI
-  note: 'Unusually open for a post-trained model: NVIDIA releases the weights, the post-training data and
-    the recipes, but under the non-OSI NVIDIA Open Model License, so open weights rather than open source.
-    This category scores the post-training data, which is genuinely released. The pretraining side is thinner
-    than NVIDIA''s "fully open" framing suggests - Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of
-    synthetic data, but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus rather
-    than the corpus itself. That does not change the score, because the post-training answer is what this
-    category asks for.'
+  note: 'NVIDIA releases the weights, the post-training data and the recipes under its own non-OSI Nemotron
+    Open Model License, which is unusually open for a post-trained model even though it falls short of open
+    source. The post-training data genuinely ships in full, but the pretraining side is thinner than NVIDIA''s
+    own "fully open" framing suggests: the specialized corpus ships as real data, while the code corpus
+    ships only metadata describing it rather than the corpus itself.'
   raw: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
     pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
   last_verified: '2026-08-13'
@@ -59,12 +57,10 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: All three shipped repositories resolve ungated, and summing the family's distributed SKUs - which
-    is what this category's adoption recipe asks for - the three BF16 repositories reach 2,226,055 downloads
-    in the trailing 30 days (Nano 914,120; Super 870,782; Ultra 441,153), squarely in the 1M-10M band. The
-    NVFP4, FP8 and GGUF quantizations are excluded to avoid counting the same weights twice. The family
-    is also distributed free through OpenRouter (nemotron-3-super-120b-a12b:free) and NVIDIA build/NIM,
-    which the download count does not capture, so this level is a floor.
+  note: 'Adoption sums Hugging Face downloads across the three ungated BF16 repositories in the Nemotron
+    3 family: Nano, Super and Ultra. Quantized NVFP4, FP8 and GGUF builds are excluded to avoid double-counting
+    the same weights, and the family is also distributed free through OpenRouter and NVIDIA''s build/NIM
+    platform, neither of which this count captures, so the reading is a floor rather than a ceiling.'
   last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
