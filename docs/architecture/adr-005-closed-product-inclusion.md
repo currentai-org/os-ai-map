@@ -11,13 +11,12 @@ Closed and vendor-platform products have always been on the map. Nothing wrote d
 are there or which ones belong, so every borderline case was argued from first principles, and
 the same arguments were had more than once. This ADR writes the guidance down.
 
-Issue #604 opened the question with a table of closed products it said were missing —
-SageMaker, Vertex AI, Azure ML, Triton, Claude, Weights & Biases. **That table is wrong.** All
-of them are present, as `sagemaker-pipelines`, the four `vertex-ai-*` surfaces,
-`azure-machine-learning-pipelines`, `triton`, `claude-ai` and `weave`. The interesting part is
-the shape of what is present: the map carries the *capability surfaces* a platform sells, not
-the platform as a bundle. A rule was already operating. It had simply never been written, which
-is why it could be mistaken for an absence.
+**The map carries the *capability surfaces* a platform sells, not the platform as a bundle.**
+Vertex AI is not a product here; Vertex AI Pipelines is. SageMaker, Vertex AI, Azure ML, Triton,
+Weights & Biases and Claude are each on the map in that form — `sagemaker-pipelines`, the four
+`vertex-ai-*` surfaces, `azure-machine-learning-pipelines`, `triton`, `weave` and `claude-ai` —
+which is easy to read as an absence if you look for the bundle. A rule was already operating. It
+had simply never been written down.
 
 ### Which population this governs, and the two it does not
 
