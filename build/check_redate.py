@@ -140,7 +140,8 @@ def main() -> int:
         for line in bad:
             print(f"  {line}")
         return 1
-    print("\nevery re-dated axis was read on the date it now claims, from a fresher source")
+    print("\nevery re-dated axis is supported: read on the date it now claims from a fresher "
+          "source, or dated by the measurement it derives from")
     return 0
 
 
