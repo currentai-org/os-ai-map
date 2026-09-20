@@ -84,6 +84,7 @@ holds it against the `cron:` lines it quotes.
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
+| `adoption-reconciliation` (re-measures every recorded adoption band against the week's observations: dates the agreements, queues the disagreements) | Monday 05:00 | `.github/workflows/adoption-reconciliation.yml` |
 | `parity` gate | Monday 06:00 | `.github/workflows/parity.yml` |
 | `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
 | `identity-eval` (replay eval against prior human decisions; fails on a floored relation) | Monday 07:30 | `.github/workflows/identity-eval.yml` |

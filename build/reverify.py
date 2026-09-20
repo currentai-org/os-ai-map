@@ -21,10 +21,12 @@ like `free_text`), so this module imports and reuses it rather than keeping a se
 that could drift from the gate.
 
 What it never does: derive a date from `accessed`, record a transient fetch as evidence,
-touch an axis whose evidence changed, or write YAML by any route other than
-build.components. Ruled on #445 (2026-09): a byte-identical re-fetch confirms an openness
-dimension; adoption and capability sources carry numbers that move, so they are excluded
-by default (--axes openness). Ruled again 2026-09-03 (#445 follow-up): shows-match and
+touch an axis whose evidence changed, write an adoption date by any route at all, or write
+YAML by any route other than build.components. Ruled on #445 (2026-09): a byte-identical
+re-fetch confirms an openness dimension; adoption and capability sources carry numbers that
+move, so they are excluded (--axes openness, and the refusal binds the write as well as the
+flag). Adoption's date is earned instead by build.adoption_freshness, from the observation a
+route re-measured the band from. Ruled again 2026-09-03 (#445 follow-up): shows-match and
 SPDX comparison are also acceptable confirmations, since byte identity is the wrong test
 for evidence pages that legitimately re-render on every load. See
 docs/reference/evidence-and-freshness.md.
@@ -437,10 +439,15 @@ def apply(root: Path, slug: str, result: ProductResult, today: date) -> None:
         path.write_text(text)
 
 
-#: The only axis a machine may re-date, ruled 2026-09 (#445). Adoption and capability cite
+#: The only axis a machine may re-date HERE, ruled 2026-09 (#445). Adoption and capability cite
 #: numbers that move. An unchanged body there does not establish that the figure is still
 #: current — it only shows the page has not been rewritten — so re-dating on it would claim a
 #: confirmation nobody made.
+#:
+#: Adoption has its own date-earning path in `build/adoption_freshness.py`, and it is not this
+#: one: it re-measures the band from a warehouse observation and writes the observation's date,
+#: never a fetch of the cited page. Two tools may not write one field on two different grounds,
+#: so this refuses adoption at the flag, in `reverify_product` and again in `apply`.
 MACHINE_REDATABLE_AXES = ("openness",)
 
 
@@ -464,7 +471,8 @@ def axes_refusal(axes: tuple[str, ...]) -> str | None:
         return (f"--axes names {', '.join(sorted(refused))}. Machine re-dating is limited to "
                 f"{', '.join(MACHINE_REDATABLE_AXES)} by the #445 ruling: adoption and capability "
                 f"cite numbers that move, and an unchanged body does not establish that such a "
-                f"figure is still current. Re-verify those through the agent leg "
+                f"figure is still current. Adoption earns its date by re-measurement in "
+                f"build/adoption_freshness.py; re-verify capability through the agent leg "
                 f"(refresh-category).")
     return None
 

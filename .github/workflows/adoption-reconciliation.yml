@@ -1,0 +1,88 @@
+# The weekly adoption reconciliation: what the authoritative route measures against what a
+# curator recorded, one row per product. Two things come out of it, and this workflow is how
+# both reach a person.
+#
+#   * an agreement dates the axis. The route re-measured the recorded band from an observation
+#     the collectors fetched, so `adoption.last_verified` takes that observation's date and the
+#     axis records which snapshot and route produced it. One PR per run, the same shape as
+#     reverify's.
+#   * a disagreement raises the product. The measured band differs, so nothing was confirmed,
+#     the date stays where it is, and the product goes on the tier-change queue — written to the
+#     run summary whether or not any date moved, because a week where nothing is re-dated and
+#     sixty products disagree is the week the queue matters most.
+#
+# Weekly, on the cadence the signal tables run on: the collectors and the observation rollup
+# recompute early Monday, and this reads that table rather than the committed baseline, so it
+# runs behind them. A configured cron is not an observed run — read `triggerType` on the run
+# history before believing the schedule fired. See docs/operations/deploy-models.md.
+name: adoption-reconciliation
+on:
+  schedule:
+    - cron: "0 5 * * 1"      # Monday 05:00 UTC, after the observation chain and before parity
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: adoption-reconciliation
+  cancel-in-progress: false
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the declaration version is resolved against HEAD, and the freshness
+          # report dates each score file from the commit that last changed what it claims.
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Reconcile the deployed observations against the recorded bands
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          uv run python -m build.adoption_freshness --live --apply \
+            --queue tier-change-queue.md | tee reconciliation.txt
+      - name: The tier-change queue, whether or not a date moved
+        run: |
+          {
+            echo "## Adoption tier-change queue"
+            echo
+            echo '```'
+            cat tier-change-queue.md
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Gates on the result
+        run: |
+          uv run python -m build.validate
+          uv run python -m build.check_verification --verbose
+          uv run python -m build.check_redate
+          uv run python -m build.check_adoption --strict
+      - name: Open the re-dating PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain sources/)" ]; then
+            echo "No adoption date moved; the queue is in the run summary."
+            exit 0
+          fi
+          BRANCH="adoption-freshness/$(date -u +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add sources/scores/ sources/snapshots/observation_snapshots.yaml
+          git commit -m "chore(freshness): re-date adoption where the route measured the recorded band"
+          git push -u origin "$BRANCH"
+          {
+            echo "Adoption dates earned by re-measurement. Each re-dated axis records the"
+            echo "observation snapshot and route that produced the same band it already carried;"
+            echo "a product whose measured band differs keeps its date and appears in the queue"
+            echo "below instead."
+            echo
+            echo '```'
+            cat reconciliation.txt
+            echo '```'
+          } > pr-body.md
+          gh pr create --title "chore(freshness): adoption re-dated from the weekly reconciliation $(date -u +%F)" --body-file pr-body.md --label freshness

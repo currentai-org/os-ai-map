@@ -285,6 +285,12 @@ date only when every recorded dimension is covered and nothing drifted, went tra
 skipped. "Machine re-verification" below carries the terms and the axes it may do this on, and it
 is narrower than this paragraph: openness only.
 
+`build/adoption_freshness.py` is the second, and it qualifies on the same test read against a
+different kind of axis. It confirms nothing by computing over the file: the band it compares
+against comes from an observation a collector fetched, and it writes a date only where that
+measurement reproduces the recorded band. "How an adoption date is earned" below carries the
+terms, and it is narrower still: adoption only, and only on the instrument the score records.
+
 `build/apply_scores.py` is the case on the other side of that line. It is the only other thing
 allowed to change a score file without somebody typing the value, and it writes
 `openness.score` and `openness.class` exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
@@ -518,11 +524,66 @@ and otherwise drifts to the agent leg, where a person can read both the sentence
 
 A new verification date records a successful re-evaluation on that date, not a claim that the
 fact was established or the source changed then. A byte-identical re-fetch confirms an openness
-dimension; adoption and capability are excluded from machine re-dating because their sources
-carry numbers that move, and their re-verification stays with the agent leg in
-`refresh-category`. Byte identity is not the only acceptable confirmation, because evidence pages
-legitimately re-render on every load, so shows-match and SPDX comparison also confirm, on the
-terms above.
+dimension; adoption and capability are excluded from re-dating by re-fetch because their sources
+carry numbers that move. Capability's re-verification stays with the agent leg in
+`refresh-category`; adoption's has a mechanism of its own, which re-measures the band instead of
+re-reading the page — see "How an adoption date is earned". Byte identity is not the only
+acceptable confirmation, because evidence pages legitimately re-render on every load, so
+shows-match and SPDX comparison also confirm, on the terms above.
+
+### How an adoption date is earned
+
+Adoption is the one axis a machine can re-derive outright, because the band IS a measurement: a
+usage figure, placed on a declared scale. So its date comes from the measurement, and the
+mechanism is a comparison rather than a re-fetch.
+
+Each week the reconciliation compares what the authoritative route measures for a product
+against the band the score records, and each row reaches one of two outcomes:
+
+* **The measured band equals the recorded one.** The recorded band has been re-derived from
+  outside the repository — a collector fetched the figure, the warehouse recorded it with the
+  time of the fetch, the routing tables banded it — so `adoption.last_verified` takes the date of
+  that observation, and the axis records which snapshot and which route produced it under
+  `derived_from`.
+* **The measured band differs.** Nothing was confirmed. The stored date stays exactly where it
+  is, and the product goes on the tier-change queue naming both levels and the route, for a
+  person to settle. A run that disagrees with a score never writes to that score, and a date it
+  declines to move is the normal outcome rather than a failure.
+
+Three things that date is not.
+
+1. **Not the run's execution date.** The date written is the OLDEST observation behind the
+   aggregate, so a figure is dated when it was observed. A run comparing month-old observations
+   has confirmed a month-old figure, and stamping it with today would claim a currency nobody
+   has.
+2. **Not `sources[].accessed`.** The rule in Part 1 holds here exactly as it holds elsewhere:
+   opening a URL is a weaker claim than re-deriving a conclusion, and this mechanism derives
+   nothing from the dates already in the file.
+3. **Not a comparison across instruments.** A route measuring stars says nothing about a band
+   read from monthly downloads: the two levels neither agree nor disagree, so such a row can
+   never date an axis. Where its levels differ it is queued as a route disagreement, because the
+   finding is that the recorded instrument and the applicable route disagree about what to
+   measure, and that repair is not a re-banding.
+
+**A snapshot id has to resolve to a date.** The observation snapshot is content-addressed: the
+id is a hash of the observations themselves and carries no calendar information at all, so a
+score file recording one would be unauditable on its own. `sources/snapshots/observation_snapshots.yaml`
+resolves each id to the window its observations cover, and the invariant requires a derived date
+to fall inside the window of the snapshot it names. A date outside that window, or a snapshot
+nothing recorded, fails the gate.
+
+**What the counts-endpoint citations are for.** Most adoption citations point at an endpoint
+whose body is a number that moves every day — a downloads count, a star count, a monthly total.
+A digest over such a body proves a fetch really happened and records where the figure came from,
+which is what the sampled re-fetch checks and what keeps a fabricated citation catchable. It is
+not evidence that the figure is current: unchanged bytes on a counts endpoint would mean the
+number had stopped moving, which is a stronger claim than the axis needs and usually a false
+one. So those citations stay, as provenance, and the date rests on the observation instead.
+
+**Who writes it.** `build/adoption_freshness.py`, and nothing else. `build/reverify.py` refuses
+adoption at the flag, in the planner and in the writer, so a machine cannot re-date the axis by
+re-fetching a cited page whatever it is asked to do. Two tools writing one field on two
+different grounds is the state this avoids.
 
 ### Catching fabrication rather than just inconsistency
 
@@ -902,7 +963,7 @@ URL that never resolved as cited, or a dimension claim with no source behind it 
 
 | axis | can a fetch earn the date? |
 |---|---|
-| adoption | **Yes** — the score IS a banded signal, so re-fetching re-derives it |
+| adoption | **Yes** — the band IS a measurement, so a route that re-measures it re-derives the score. "How an adoption date is earned" has the mechanism |
 | capability | **Yes where a benchmark row exists**; feature and internal-eval judgments need a read |
 | openness | **Never fully** — see above |
 

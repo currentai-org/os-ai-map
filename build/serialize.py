@@ -348,7 +348,12 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
         "type": prod["type"],
         "description": prod.get("description", ""),
         "openness": openness,
-        "adoption": score["adoption"],
+        # `derived_from` stays in the repository. It is the provenance of the axis's DATE --
+        # which observation snapshot re-measured the band -- and the payload publishes the date
+        # itself plus the basis beside it. Shipping the record would put a content hash and a
+        # route id in front of every reader of the map to answer a question only the audit
+        # asks, and would grow a payload whose transport is already its tightest constraint.
+        "adoption": {k: v for k, v in (score["adoption"] or {}).items() if k != "derived_from"},
         "capability": score["capability"],
     }
     # The weighted product maturity score (per-category blend of adoption/capability),

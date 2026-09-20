@@ -205,6 +205,32 @@
           "type": "string",
           "format": "date",
           "description": "The most recent date on which everything in this axis's score was confirmed still correct. Written when the axis is re-checked against its sources, whether or not the value changed. Absent means never confirmed, in which case freshness falls back to the score file's last commit date. Never backfill it from source access dates: opening a URL is a weaker claim than re-confirming a conclusion, and no aggregation of accessed dates fixes that. Normative definition in docs/reference/evidence-and-freshness.md."
+        },
+        "derived_from": {
+          "type": "object",
+          "required": [
+            "observation_snapshot_id",
+            "route_id",
+            "measurement_as_of"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "observation_snapshot_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "The observation set the band was re-measured from, content-addressed. It carries no date of its own, so sources/snapshots/observation_snapshots.yaml resolves it to the window it observed, and build/check_verification.py requires measurement_as_of to fall inside that window."
+            },
+            "route_id": {
+              "type": "string",
+              "description": "The route that did the measuring: the instrument and channel the band was read on, as the compiled routing tables name it. A route measuring a different instrument from the one signal_type records can never date this axis, because stars and monthly downloads are different quantities and their levels neither agree nor disagree."
+            },
+            "measurement_as_of": {
+              "type": "string",
+              "format": "date",
+              "description": "The date of the OLDEST observation behind the measurement, and the date last_verified takes. An aggregate is only as current as its stalest part, and the run's own execution date says nothing about the figure it read."
+            }
+          },
+          "description": "How this axis's date was earned by measurement rather than by a reading. Present only when a route re-measured the recorded band from a warehouse observation and produced the same level; written by build/adoption_freshness.py and by nothing else. Its presence changes which evidence supports last_verified: the observation does, in place of a source accessed on or after that date. A citation on this axis is a hashed snapshot of a figure that moves daily, so re-reading it would confirm that a page still renders rather than that a number is current. A disagreement writes nothing here and leaves the date where it was. Normative definition in docs/reference/evidence-and-freshness.md."
         }
       },
       "additionalProperties": false

@@ -320,6 +320,118 @@ def merge_base_canonicalization(base: str = "origin/main") -> dict | None:
     return _parse_canonicalization(source)
 
 
+# --- resolving a snapshot id to the dates it covers -------------------------------
+
+# Where a snapshot id is resolved to a date. A snapshot id is a content hash and carries no
+# date at all, so a date derived from a snapshot is unauditable on its own: nobody reading a
+# score file can tell whether the hash names observations from this week or from March. The
+# ledger is that resolution, and it is the reason a derived date can be checked offline.
+SNAPSHOT_LEDGER = ROOT / "sources/snapshots/observation_snapshots.yaml"
+
+LEDGER_HEADER = """\
+# Which observations a derived adoption date rests on, and when they were observed.
+#
+# `observation_snapshot_id` is a hash of observation CONTENT and carries no date, so a score
+# file recording one cannot be audited against a calendar without this. Each entry resolves an
+# id to the window its observations cover; `build/check_verification.py` requires a derived
+# `adoption.last_verified` to fall inside the window of the snapshot it names.
+#
+# Written by `build/adoption_freshness.py`. An entry is never edited by hand: the id is
+# content-addressed, so changing a window here would claim a hash over observations that do not
+# produce it.
+"""
+
+
+def observed_window(rows: Iterable[dict]) -> tuple[datetime.date, datetime.date]:
+    """The earliest and latest ``observed_at`` in a snapshot, as UTC dates.
+
+    Typed through the same rule the digest uses — an ``observed_at`` that is not a datetime is
+    rejected rather than parsed — so the window and the identity cannot disagree about what a
+    row's timestamp is.
+    """
+    stamps = []
+    for row in rows:
+        value = row.get("observed_at")
+        if not isinstance(value, datetime.datetime):
+            raise TypeError(
+                f"observed_at must be a datetime, got {type(value).__name__!r} ({value!r})"
+            )
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=_UTC)
+        stamps.append(value.astimezone(_UTC))
+    if not stamps:
+        raise ValueError("an empty observation set has no observed window")
+    return min(stamps).date(), max(stamps).date()
+
+
+def snapshot_record(rows: Iterable[dict]) -> dict:
+    """The ledger entry for one observation set: its identity and the window it observed."""
+    rows = list(rows)
+    digest = observation_content_digest(rows)
+    first, last = observed_window(rows)
+    return {
+        "observation_snapshot_id": snapshot_id_from_digest(digest),
+        "observation_content_digest": digest,
+        "canonicalization_version": CANONICALIZATION_VERSION,
+        "row_count": len(rows),
+        "observed_from": first.isoformat(),
+        "observed_to": last.isoformat(),
+    }
+
+
+def load_ledger(path: Path | None = None) -> dict[str, dict]:
+    """The recorded snapshots, keyed by ``observation_snapshot_id``; empty when none are."""
+    import yaml
+
+    target = path or SNAPSHOT_LEDGER
+    if not target.exists():
+        return {}
+    return (yaml.safe_load(target.read_text()) or {}).get("snapshots") or {}
+
+
+def record_snapshot(
+    record: dict, path: Path | None = None, recorded_at: datetime.date | None = None
+) -> bool:
+    """Add a snapshot to the ledger. True when the file changed.
+
+    An id already in the ledger is left exactly as it stands, because the id is content-
+    addressed: a second run that mints the same id read the same observations, so the window
+    is the same window and rewriting it would only move ``recorded_at`` around. A stored entry
+    that disagrees with the record raises instead of being overwritten — two different windows
+    under one content hash means something upstream is not what it says it is.
+    """
+    import yaml
+
+    target = path or SNAPSHOT_LEDGER
+    snapshot_id = record["observation_snapshot_id"]
+    document = (yaml.safe_load(target.read_text()) if target.exists() else None) or {"version": 1}
+    snapshots = document.setdefault("snapshots", {}) or {}
+    document["snapshots"] = snapshots
+    entry = {k: v for k, v in record.items() if k != "observation_snapshot_id"}
+    if snapshot_id in snapshots:
+        stored = {k: v for k, v in snapshots[snapshot_id].items() if k != "recorded_at"}
+        if stored != entry:
+            raise ValueError(
+                f"snapshot {snapshot_id} is already recorded as {stored} but this run computed "
+                f"{entry}; one content hash cannot name two observation sets"
+            )
+        return False
+    snapshots[snapshot_id] = {
+        **entry,
+        "recorded_at": (recorded_at or datetime.datetime.now(_UTC).date()).isoformat(),
+    }
+    target.parent.mkdir(parents=True, exist_ok=True)
+    body = yaml.safe_dump(
+        {"version": document.get("version", 1),
+         "snapshots": {k: snapshots[k] for k in sorted(snapshots)}},
+        sort_keys=False, default_flow_style=False, width=100,
+    )
+    target.write_text(LEDGER_HEADER + body)
+    return True
+
+
+
+
 def rows_from_parquet(path: Path | None = None) -> list[dict]:
     import pyarrow.parquet as pq
 
@@ -329,11 +441,14 @@ def rows_from_parquet(path: Path | None = None) -> list[dict]:
 def resolve_baseline() -> dict:
     rows = rows_from_parquet(BASELINE_PARQUET)
     digest = observation_content_digest(rows)
+    first, last = observed_window(rows)
     return {
         "canonicalization_version": CANONICALIZATION_VERSION,
         "row_count": len(rows),
         "observation_content_digest": digest,
         "observation_snapshot_id": snapshot_id_from_digest(digest),
+        "observed_from": first.isoformat(),
+        "observed_to": last.isoformat(),
         "computed_over": "warehouse/data/observations/product_adoption_baseline.parquet",
     }
 
@@ -351,6 +466,7 @@ def main() -> int:
     print(f"row_count                  {info['row_count']}")
     print(f"observation_content_digest {info['observation_content_digest']}")
     print(f"observation_snapshot_id    {info['observation_snapshot_id']}")
+    print(f"observed_window            {info['observed_from']} .. {info['observed_to']}")
     print(f"computed_over              {info['computed_over']}")
     return 0
 
