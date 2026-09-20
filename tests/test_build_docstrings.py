@@ -80,64 +80,34 @@ def _slugs() -> set[str]:
     return {p.stem for p in (ROOT / "sources" / "products").glob("*.yaml")}
 
 
-# A count that says WHEN it was taken is not the defect this gate exists for. But deciding from
-# English whether a count is dated turned out to be unbounded. Two rounds of adversarial review
-# found six ways through, and every one was answered by widening a vocabulary or moving a
-# boundary:
+# THERE IS NO DATING EXEMPTION, and three rounds of adversarial review are why.
 #
-#   "Latency was measured 2026-08-13. Today 56 products lack artifacts."      unrelated measurement
-#   "Measured 56 products on 2026-08-13."                                     count before its date
-#   "Nothing was measured on 2026-08-13. 56 products ..."                     negation
-#   "Measured 2026-99-99, 56 products ..."                                    impossible date
-#   'The report says "... measured 2026-08-13." Today 56 products ...'        quoted sentence
-#   "Nothing was sampled on 2026-08-13, 56 products ..."                      negation, other verb
+# The intuition was sound: "Four records are excluded this way today" is a second copy of a number
+# the report prints live, while "Measured 2026-08-13, 56 products claim exactly that" records an
+# observation at a moment and cannot go stale. Three mechanisms were built to tell those apart,
+# and every one was talked around:
 #
-# This repository already has a rule for that situation: a line that takes more than two attempts
-# to state consistently is probably not there, and the escape is a COARSER instrument rather than
-# a fourth restatement. So the exemption stops being inferred and becomes declared.
+#   PARAGRAPH scope   an unrelated measurement licensed a later live count ("... measured
+#                     2026-08-13. Today 56 products ..."); a count stated before its date was
+#                     dated by it; a negation licensed; an impossible date licensed.
+#   SENTENCE scope    a quoted sentence ending stopped the split, so the exemption ran on; a
+#                     negation using a verb missing from the guard list licensed.
+#   DECLARED opener   a live count SMUGGLED into a legitimately declared sentence was exempt
+#                     ("Measured 2026-08-13, 56 products did X and today 60 products do Y");
+#                     a markdown list item after a measurement was exempt; an indented code block
+#                     became a declaration; and the claim that a mis-split could only ever REFUSE
+#                     an exemption turned out false - an unsupported closing mark granted one.
 #
-# THE CONVENTION, and the whole of it: a dated measurement is a sentence that OPENS with
-# `Measured <ISO date>`. Nothing else is one. A count that wants the exemption is written that way;
-# a count that cannot be is listed in CENSUS_BACKLOG with a reason. There is no English to parse,
-# so there is nothing to talk around: a quoted sentence does not open with it, a code span does not
-# open with it, and a negation does not open with it.
-_MEASURED_OPENER = re.compile(r"^\s*Measured\s+(?P<date>\d{4}-\d{2}-\d{2})", re.IGNORECASE)
-
-
-def _real_date(text: str) -> bool:
-    """A date the calendar has. `2026-99-99` is a typo, and must not license anything."""
-    try:
-        datetime.date.fromisoformat(text)
-    except ValueError:
-        return False
-    return True
-
-
-def _sentences(doc: str) -> list[tuple[int, str]]:
-    r"""(offset, text) per sentence, split on a full stop followed by whitespace.
-
-    Decimal-safe without a guard: the point in `4.5` is followed by a digit, never a space. An
-    earlier `(?<!\d)` guard, added to protect decimals, instead refused to split after a DATE.
-    The split stays a heuristic, but nothing now rests on it being a correct sentence parser -
-    the opener convention does the work, and a mis-split can only ever REFUSE an exemption.
-    """
-    out, start = [], 0
-    for m in re.finditer(r"\.[\"'`*]*(?:\s|$)", doc):
-        out.append((start, doc[start:m.end()]))
-        start = m.end()
-    if start < len(doc):
-        out.append((start, doc[start:]))
-    return out
-
-
-def _dated_spans(doc: str) -> list[tuple[int, int]]:
-    """Spans a declared measurement licenses: from its date to the end of its own sentence."""
-    spans: list[tuple[int, int]] = []
-    for offset, sentence in _sentences(doc):
-        m = _MEASURED_OPENER.match(sentence)
-        if m and _real_date(m.group("date")):
-            spans.append((offset + m.start("date"), offset + len(sentence)))
-    return spans
+# Each fix was a wider vocabulary, a moved boundary, or a new convention, and each was defeated by
+# the next reader. This repository has a rule for that situation: a line that takes more than two
+# attempts to state consistently is probably not there. It is not there. Deciding from prose
+# whether a number is historical is a judgement, and this gate does not make judgements.
+#
+# So the gate reports every census phrase, and CENSUS_BACKLOG carries the ones a human has read
+# and accepted, each with a reason and a staleness test. That list is longer than a clever rule
+# would have left it. It is also finite, inspectable, and impossible to talk around, because
+# there is no prose being parsed. Do not reintroduce an exemption: the next one will be defeated
+# too, and the failure mode is a live count silently passing.
 
 
 def census_phrases(doc: str, slugs: set[str]) -> list[str]:
@@ -146,18 +116,13 @@ def census_phrases(doc: str, slugs: set[str]) -> list[str]:
     Normalized because these docstrings are hand-wrapped: the same phrase re-wrapped at a
     different width is the same phrase, and the allowlist below has to survive a reflow.
 
-    A phrase inside a dated measurement is not returned — see `_MEASURED`. An undated one is,
-    however old the module.
+    Every phrase is returned, dated or not. Judging that from prose was tried three times and
+    defeated three times — see the note above CENSUS_BACKLOG.
     """
-    dated = _dated_spans(doc)
-
-    def undated(start: int) -> bool:
-        return not any(lo <= start < hi for lo, hi in dated)
-
-    found = [" ".join(m.group(0).split()) for m in CENSUS.finditer(doc) if undated(m.start())]
+    found = [" ".join(m.group(0).split()) for m in CENSUS.finditer(doc)]
     for match in _RUN.finditer(doc):
         tokens = _TOKEN.findall(match.group(0))
-        if all(token in slugs for token in tokens) and undated(match.start()):
+        if all(token in slugs for token in tokens):
             found.append(" ".join(match.group(0).split()))
     return found
 
@@ -180,14 +145,20 @@ CENSUS_BACKLOG: dict[str, dict[str, str]] = {
             "sentence says the backlog is now zero, so it cannot read as current",
     },
     "check_capability.py": {
+        "472 products":
+            "dated in its own sentence — 'measured on 2026-08-08, 79 of 472 products sit at "
+            "capability 5'. Read and accepted; the gate does not parse prose to decide that",
         "two different products":
             "shape, not census — it counts the claims in an argument ('two different claims "
             "about two different products'), not records in the corpus",
     },
     "check_instrument.py": {
+        "56 products":
+            "dated in its own sentence — 'Measured 2026-08-13, 56 products claim exactly that'. "
+            "Read and accepted",
         "55 records":
-            "continues the 2026-08-13 measurement two paragraphs above; the dating rule is "
-            "paragraph-scoped and this is the breakdown, not a second claim",
+            "the breakdown under that same 2026-08-13 measurement, a sentence later. Read and "
+            "accepted",
         "40 records":
             "same 2026-08-13 measurement — '40 records, not 55, are genuinely unbacked' is its "
             "conclusion",
@@ -210,6 +181,20 @@ CENSUS_BACKLOG: dict[str, dict[str, str]] = {
         "five products":
             "historical incident — the promotion that passed a local loop and failed CI, which "
             "is why this module exists",
+    },
+    "propose_artifacts.py": {
+        "472 products":
+            "dated — 'Measured 2026-08-09: 66 of 472 products declared a pypi artifact'. Read "
+            "and accepted",
+    },
+    "prose_worklist.py": {
+        "289 notes":
+            "dated — 'Measured 2026-09-17, a third of the corpus was not: 879 of 2,289 notes'. "
+            "Read and accepted",
+    },
+    "reverify.py": {
+        "25 oldest products":
+            "dated — 'Measured 2026-09-12 over the 25 oldest products'. Read and accepted",
     },
     "serialize_registry.py": {
         "Two structural notes":
@@ -247,46 +232,22 @@ def test_no_help_text_states_a_live_census(slugs):
     )
 
 
-@pytest.mark.parametrize("text", [
-    # Each of these was EXEMPT under the paragraph-scoped first draft, and each was found by
-    # external review rather than by the author. They are kept as tests because the failure they
-    # share is not a regex bug - it is that a two-sided test only covers the cases its writer
-    # imagined, so the cases someone else imagined are worth keeping forever.
-    "Latency was measured 2026-08-13. Today 56 products lack artifacts.",
-    "Measured 56 products on 2026-08-13.",
-    "Nothing was measured on 2026-08-13. 56 products lack artifacts.",
-    "Measured 2026-99-99, 56 products lack artifacts.",
-    "A score of 4.5 is mature. 56 products lack artifacts.",
-])
-def test_the_exemption_cannot_be_talked_around(text, slugs):
-    """A dated measurement licenses the count in its own sentence, and nothing further.
+def test_there_is_no_dating_exemption(slugs):
+    """The absence is the design, so it is asserted rather than left to be re-derived.
 
-    In order: an unrelated measurement must not license a live count after it; a count stated
-    before its date is not dated by it; a negated measurement dates nothing; a date the calendar
-    does not have is a typo; and a decimal point does not end a sentence.
+    Three mechanisms tried to exempt a dated measurement and all three were defeated - the last
+    by a live count smuggled into a legitimately declared sentence. Anything that looks like an
+    exemption is now reported like any other phrase, and a human puts it in CENSUS_BACKLOG with a
+    reason. If this test starts failing, someone has reintroduced an exemption; read the note
+    above CENSUS_BACKLOG before deciding they were right to.
     """
-    assert census_phrases(text, slugs), f"exemption talked around by: {text!r}"
-
-
-def test_a_date_exempts_a_census_and_its_absence_does_not(slugs):
-    """The dating rule, asserted from both sides.
-
-    An exemption with only its permissive half tested is a hole. The same sentence is checked
-    with and without its measurement date: dated it passes, undated it is reported. If this
-    ever fails in the permissive direction, `_MEASURED` has stopped recognising the shape the
-    corpus actually writes; if it fails in the other, the rule has become a way to switch the
-    gate off by writing a date anywhere in the paragraph.
-    """
-    claim = "56 products claim exactly that with no artifact any signal model can read."
-    assert census_phrases(claim, slugs) == ["56 products"]
-    assert census_phrases(f"Measured 2026-08-13, {claim}", slugs) == []
-
-    # The date has to be in the same paragraph, and has to precede the count.
-    assert census_phrases(f"Measured 2026-08-13.\n\n{claim}", slugs) == ["56 products"]
-    assert census_phrases(f"{claim} Measured 2026-08-13.", slugs) == ["56 products"]
-
-    # A bare date is not a measurement. "#328 landed 2026-08-19" must not license a census.
-    assert census_phrases(f"#328 landed 2026-08-19. {claim}", slugs) == ["56 products"]
+    for text in (
+        "Measured 2026-08-13, 56 products claim exactly that.",
+        "Measured 2026-08-13, 56 products did X and today 60 products do Y.",
+        "Latency was measured 2026-08-13. Today 56 products lack artifacts.",
+        "    Measured 2026-08-13, sample output\n\nToday 60 products exist.",
+    ):
+        assert census_phrases(text, slugs), f"a dating exemption is back, and it exempts: {text!r}"
 
 
 def test_every_backlog_entry_says_why_it_is_there(slugs):
