@@ -244,3 +244,58 @@ def test_every_workflow_file_is_registered():
     missing_file = registered - on_disk
     assert not orphan, f"workflow docs not registered in skills/registry.yaml: {sorted(orphan)}"
     assert not missing_file, f"registry names workflows with no file: {sorted(missing_file)}"
+
+
+# The public "suggest a product" issue form hardcodes its category dropdown, and nothing generates
+# it. It drifted quietly: by 2026-09-18 it offered 11 of 24 categories and still named
+# `agent_tools_protocols`, retired in the 2026-09-17 split, so a contributor was choosing from a
+# menu four category additions out of date. It is the one contributor-facing surface that names
+# category slugs by hand, which is why it gets a gate and the prose does not.
+ISSUE_FORM = REPO / ".github" / "ISSUE_TEMPLATE" / "suggest-a-product.yml"
+
+# The escape hatch, which is deliberately not a category.
+NOT_A_CATEGORY = "Not sure"
+
+
+def _dropdown_slugs():
+    form = yaml.safe_load(ISSUE_FORM.read_text())
+    field = next(b for b in form["body"] if b.get("id") == "category")
+    options = field["attributes"]["options"]
+    assert options[-1] == NOT_A_CATEGORY, (
+        f"the category dropdown should end with {NOT_A_CATEGORY!r}, found {options[-1]!r}"
+    )
+    slugs = []
+    for opt in options[:-1]:
+        m = re.search(r"\(([a-z0-9_]+)\)$", opt)
+        assert m, f"dropdown option names no slug in trailing parentheses: {opt!r}"
+        slugs.append(m.group(1))
+    return slugs
+
+
+def _taxonomy_slugs():
+    arcs = yaml.safe_load((REPO / "sources" / "taxonomy.yaml").read_text())["arcs"]
+    return [
+        c if isinstance(c, str) else c["name"]
+        for arc in arcs
+        for c in arc["categories"]
+    ]
+
+
+def test_issue_form_dropdown_covers_the_taxonomy():
+    """Every category is offerable, and no option names a category that no longer exists."""
+    offered, taxonomy = _dropdown_slugs(), _taxonomy_slugs()
+    missing = [s for s in taxonomy if s not in offered]
+    unknown = [s for s in offered if s not in taxonomy]
+    assert not missing, (
+        f"categories a contributor cannot pick in {ISSUE_FORM.name}: {missing}"
+    )
+    assert not unknown, (
+        f"{ISSUE_FORM.name} offers categories that are not in the taxonomy: {unknown}"
+    )
+
+
+def test_issue_form_dropdown_follows_taxonomy_order():
+    """The dropdown reads in map order, so the arcs group the way the map draws them."""
+    assert _dropdown_slugs() == _taxonomy_slugs(), (
+        "the dropdown is complete but out of order; regenerate it in sources/taxonomy.yaml order"
+    )
