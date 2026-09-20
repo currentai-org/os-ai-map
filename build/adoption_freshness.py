@@ -69,6 +69,20 @@ Without a bound read — over the frozen baseline parquet, or when a refresh lan
 nothing is dated at all, and the queue is emitted exactly as it would be otherwise. The
 comparison is diagnostic on its own; it dates only when it can say which run measured what.
 
+## The run has to be the scheduled one
+
+A bound read names the run that materialized the table, and the control plane records how that
+run was started. Only a `SCHEDULED` run may date an axis here. A `MANUAL` run is a person
+pressing refresh, and a date earned from one is that person's date wearing a run id — which is
+the thing this mechanism exists to stop adoption depending on. Requiring the trigger is also
+what makes the weekly claim checkable: a cron that is configured and never fires produces no
+`SCHEDULED` materialization, so no date is earned and the queue says why, rather than the
+schedule being believed because the YAML says so (#376 was closed on an observed `SCHEDULED`
+run for exactly this reason). A run that has not reported `SUCCESS` dates nothing either.
+
+The trigger is recorded in the ledger beside the snapshot, so the gate can ask it of a stored
+date months later without the control plane.
+
 ## One measurement, written down twice
 
 A derived date is recorded in both halves of the evidence, deliberately. The axis carries
@@ -129,7 +143,22 @@ DERIVATION_KEYS = (
 AGREEMENT_KEYS = ("source_run_id", "route_id", "measured_level", "measurement_as_of")
 
 #: What a bound read has to name before a measurement may date anything.
-BINDING_KEYS = ("run_id", "materialization_id", "model", "read_at")
+BINDING_KEYS = (
+    "run_id",
+    "materialization_id",
+    "model",
+    "read_at",
+    "run_trigger_type",
+    "run_status",
+)
+
+#: The fields the ledger keeps per dating run. Recorded once per run rather than per product:
+#: every product a run dates was dated by the same run, and the agreement already says which.
+RUN_KEYS = ("trigger_type", "status", "started_at")
+
+#: The only trigger that may date an axis, and the only status. A MANUAL run is a person.
+DATING_TRIGGER = "SCHEDULED"
+DATING_STATUS = "SUCCESS"
 
 BAND_MATCH = "band_match"
 TIER_CHANGE = "tier_change"
@@ -140,9 +169,11 @@ NOT_COMPARED = "not_compared"
 def binding_problems(binding: Mapping | None) -> list[str]:
     """Why this read cannot attribute its rows to a source run, or an empty list.
 
-    The three ways a read fails to bind are different facts and are reported as such: the baseline
+    The ways a read fails to bind are different facts and are reported as such: the baseline
     carries no binding at all, a bracket that straddled a refresh cannot say which materialization
-    served the rows, and a bound bracket missing its identifiers names a run nobody can look up.
+    served the rows, a bound bracket missing its identifiers names a run nobody can look up, and
+    a bound bracket whose run was started by a person is not the weekly cadence this date is
+    supposed to come from.
     """
     if not binding:
         return ["the read recorded no binding, so no run can be attributed to it"]
@@ -151,6 +182,17 @@ def binding_problems(binding: Mapping | None) -> list[str]:
         missing = [k for k in BINDING_KEYS if not binding.get(k)]
         if missing:
             return [f"the binding names no {' and no '.join(missing)}"]
+        if binding["run_status"] != DATING_STATUS:
+            return [
+                f"the run that materialized the table reports {binding['run_status']}, not "
+                f"{DATING_STATUS}; a run that has not succeeded has not measured anything"
+            ]
+        if binding["run_trigger_type"] != DATING_TRIGGER:
+            return [
+                f"the table was materialized by a {binding['run_trigger_type']} run. Adoption's "
+                f"date comes from the weekly cadence, so only a {DATING_TRIGGER} run may earn "
+                f"one; a person pressing refresh is the thing it is meant not to depend on"
+            ]
         return []
     if status == "unstable":
         return [
@@ -334,6 +376,22 @@ def plan(
     return changes, declined
 
 
+def run_receipt(binding: Mapping) -> dict[str, dict]:
+    """The ledger's record of the run that dated this week's agreements.
+
+    Kept so the trigger can be asked of a stored date long after the control plane has aged the
+    run out of what it will answer for. A date whose run the ledger cannot show was SCHEDULED is
+    a date nobody can now tell from a hand refresh.
+    """
+    return {
+        binding["run_id"]: {
+            "trigger_type": binding.get("run_trigger_type"),
+            "status": binding.get("run_status"),
+            "started_at": binding.get("run_started_at"),
+        }
+    }
+
+
 def agreements(changes: Iterable[Change]) -> dict[str, dict]:
     """The ledger's half of the record: what was measured for each product this run dated."""
     return {
@@ -411,9 +469,10 @@ def derivation_problems(
 
     The questions asked here are the ones a reader of the score file cannot answer alone. Does
     the date equal the observation it names? Is the level still the level that was measured? Is
-    the route one the routing tables compile? Does the snapshot ledger, written by the same run,
-    record this product's agreeing measurement — with the same run, route, level and date? A
-    derivation that only agrees with itself is checked against nothing.
+    the route one the routing tables compile? Was the run that measured it the weekly scheduled
+    one rather than a person? Does the snapshot ledger, written by the same run, record this
+    product's agreeing measurement — with the same run, route, level and date? A derivation that
+    only agrees with itself is checked against nothing.
 
     `known_routes` is the compiled route ids when the caller has them; the route is not checked
     for existence when it is not supplied.
@@ -461,6 +520,25 @@ def derivation_problems(
             f"{key}: the observation date {as_of} is outside snapshot {snapshot_id[:12]}…, "
             f"which observed {entry['observed_from']} .. {entry['observed_to']}"
         )
+    run_id = str(record["source_run_id"])
+    ran = (entry.get("source_runs") or {}).get(run_id)
+    if ran is None:
+        problems.append(
+            f"{key}: snapshot {snapshot_id[:12]}… records nothing about run {run_id}, so there "
+            f"is no way to tell whether the weekly schedule or a person produced this date"
+        )
+    else:
+        if ran.get("status") != DATING_STATUS:
+            problems.append(
+                f"{key}: run {run_id} is recorded as {ran.get('status')!r}, not "
+                f"{DATING_STATUS!r}; a run that did not succeed measured nothing"
+            )
+        if ran.get("trigger_type") != DATING_TRIGGER:
+            problems.append(
+                f"{key}: run {run_id} is recorded as {ran.get('trigger_type')!r}, not "
+                f"{DATING_TRIGGER!r}. Adoption's date comes from the weekly cadence, and a run "
+                f"a person started is not it"
+            )
     agreed = (entry.get("agreements") or {}).get(slug)
     if agreed is None:
         problems.append(
@@ -572,6 +650,8 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
         print(f"source run              NONE — {unbound[0]}")
     else:
         print(f"source run              {binding['run_id']}  "
+              f"{binding['run_trigger_type']}/{binding['run_status']} started "
+              f"{binding['run_started_at']}  "
               f"(materialization {binding['materialization_id']}, read {binding['read_at']})")
     for kind in sorted(counts):
         print(f"  {kind:<20}{counts[kind]:>5}")
@@ -591,6 +671,7 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
         record_snapshot(
             snapshot,
             agreements=agreements(changes),
+            source_runs=run_receipt(binding),
             path=base / "sources/snapshots/observation_snapshots.yaml",
         )
         written = apply(changes, root=base)

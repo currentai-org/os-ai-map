@@ -13,15 +13,33 @@
 #     run summary whether or not any date moved, because a week where nothing is re-dated and
 #     sixty products disagree is the week the queue matters most.
 #
-# Weekly, on the cadence the signal tables run on: the collectors recompute early in the week and
-# the `observations` dataset sweeps Sunday 03:30 UTC, so this slot reads a table the chain has
-# already rebuilt. A configured cron is not an observed run — read the trigger on the run history,
-# here and on the dataset side, before believing the schedule fired. See
-# docs/operations/deploy-models.md and docs/operations/deploy-evaluation.md §5.
+# Weekly, on the cadence the signal tables run on: the collectors recompute Sunday 01:00-03:00 UTC
+# and the `observations` dataset sweeps Sunday 03:30, so this slot reads a table the chain has
+# already rebuilt.
+#
+# The cron below is NOT what makes the date weekly, and nothing here should be read as claiming
+# that it is. A configured cron is a line of YAML; what a date actually rests on is the trigger of
+# the platform run that materialized the table it read. `build/adoption_freshness.py` requires
+# that run to be SCHEDULED and to have succeeded, so a hand-started refresh earns nothing however
+# this job was invoked, and a week where the observation chain did not fire on its schedule earns
+# nothing either and prints the reason. That is the #376 discipline — an observed SCHEDULED run,
+# not a populated cron field — applied where it can be enforced rather than asserted.
+#
+# Two consequences worth knowing before reading a run.
+#
+#   * `workflow_dispatch` is safe. A manual dispatch over a scheduled materialization earns the
+#     same dates the scheduled dispatch would; a manual dispatch over a hand-refreshed table earns
+#     none. The person pressing the button is not what is being checked.
+#   * The slot is nominal. GitHub delays scheduled workflow runs under load — on this repo the
+#     Monday gates have been observed starting five to six hours after their cron — so the
+#     ordering that matters is against the platform's Sunday sweep, which is finished well before
+#     any plausible delay, and not against the other workflows in this directory.
+#
+# See docs/operations/deploy-models.md and docs/operations/deploy-evaluation.md §5.
 name: adoption-reconciliation
 on:
   schedule:
-    - cron: "0 5 * * 1"      # Monday 05:00 UTC, after the observation chain and before parity
+    - cron: "0 5 * * 1"      # Monday 05:00 UTC nominal, after the Sunday observation chain
   workflow_dispatch:
 permissions:
   contents: write
@@ -52,6 +70,10 @@ jobs:
         run: |
           {
             echo "## Adoption reconciliation"
+            echo
+            echo "The \`source run\` line names the platform run the measurements were read from"
+            echo "and its trigger. Only a SCHEDULED, successful run earns a date; anything else"
+            echo "leaves every date where it is and produces the queue alone."
             echo
             echo '```'
             head -4 reconciliation.txt

@@ -46,6 +46,9 @@ BOUND = {
     "run_id": RUN,
     "materialized_at": "2026-09-20T03:30:26Z",
     "read_at": "2026-09-20T05:00:00+00:00",
+    "run_trigger_type": "SCHEDULED",
+    "run_status": "SUCCESS",
+    "run_started_at": "2026-09-20T03:30:16Z",
 }
 #: A read that straddled a refresh: two materializations, so neither one served the rows.
 UNSTABLE = {
@@ -59,6 +62,13 @@ LEDGER = {
     SNAPSHOT: {
         "observed_from": "2026-08-16",
         "observed_to": "2026-08-24",
+        "source_runs": {
+            RUN: {
+                "trigger_type": "SCHEDULED",
+                "status": "SUCCESS",
+                "started_at": "2026-09-20T03:30:16Z",
+            }
+        },
         "agreements": {
             "widget": {
                 "source_run_id": RUN,
@@ -236,6 +246,98 @@ def test_a_missing_binding_is_not_a_binding():
     assert af.binding_problems(BOUND) == []
 
 
+def test_a_table_a_person_refreshed_dates_nothing_and_still_queues(tmp_path):
+    """A MANUAL run is somebody pressing refresh, and adoption's date is not supposed to be that.
+
+    The whole point of moving adoption's freshness onto the weekly cadence is that the date stops
+    being a person's act. A bound read of a table a person materialized is still a bound read —
+    the rows are attributable — so this is not a gap in the binding; it is the cadence rule, and
+    it is the reason a cron that never fires cannot quietly produce dates by hand instead.
+    """
+    root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []}})
+    manual = {**BOUND, "run_trigger_type": "MANUAL"}
+    problems = af.binding_problems(manual)
+    assert problems and "MANUAL" in problems[0]
+
+    changes, declined = af.plan([_row(as_of="2026-08-20")], manual, root=root)
+    assert changes == []
+    assert any("weekly cadence" in line for line in declined)
+    assert _adoption(root, "widget")["last_verified"] == "2026-08-01"
+    # The comparison is still worth having: the queue is what the week produces either way.
+    assert af.queue([_row(recorded=3, measured=5)])[0]["product_slug"] == "widget"
+
+
+def test_a_run_that_has_not_succeeded_dates_nothing():
+    """A materialization exists mid-run too, and a run still going has measured nothing yet."""
+    for status in ("RUNNING", "FAILED"):
+        problems = af.binding_problems({**BOUND, "run_status": status})
+        assert problems and status in problems[0]
+
+
+def test_a_bound_read_carries_the_trigger_of_the_run_that_served_it(monkeypatch):
+    """The trigger comes from the control plane, not from the caller's assumption about it."""
+    monkeypatch.setenv("OSO_API_KEY", "test")
+    scheduled = bound_read(lambda: [{"product_slug": "widget"}],
+                           graphql=_graphql("mat-1", "mat-1"))
+    assert scheduled.binding["run_trigger_type"] == "SCHEDULED"
+    assert af.binding_problems({**scheduled.binding, "read_at": "2026-09-20T05:00:00+00:00"}) == []
+
+    by_hand = bound_read(lambda: [{"product_slug": "widget"}],
+                         graphql=_graphql("mat-1", "mat-1", trigger="MANUAL"))
+    assert by_hand.binding["run_trigger_type"] == "MANUAL"
+    assert af.binding_problems({**by_hand.binding, "read_at": "2026-09-20T05:00:00+00:00"})
+
+
+def test_a_stored_date_whose_run_was_not_the_scheduled_one_fails_the_gate():
+    """Months later the control plane may no longer answer for the run, so the ledger does.
+
+    Three states are distinguished, because they are different faults: a ledger that records
+    nothing about the run (a date nobody can classify), a run it records as MANUAL (a person's
+    date), and a run it records as unsuccessful.
+    """
+    block = {
+        "level": 3,
+        "last_verified": "2026-08-20",
+        "derived_from": af.derivation(_row(), BOUND),
+    }
+    assert af.derivation_problems("widget", block, LEDGER, {ROUTE}) == []
+
+    entry = dict(LEDGER[SNAPSHOT])
+    nothing_recorded = {SNAPSHOT: {k: v for k, v in entry.items() if k != "source_runs"}}
+    assert any("records nothing about run" in problem
+               for problem in af.derivation_problems("widget", block, nothing_recorded, {ROUTE}))
+
+    by_hand = {SNAPSHOT: {**entry, "source_runs": {
+        RUN: {"trigger_type": "MANUAL", "status": "SUCCESS", "started_at": "2026-09-20T03:30:16Z"}}}}
+    assert any("weekly cadence" in problem
+               for problem in af.derivation_problems("widget", block, by_hand, {ROUTE}))
+
+    failed = {SNAPSHOT: {**entry, "source_runs": {
+        RUN: {"trigger_type": "SCHEDULED", "status": "FAILED", "started_at": "2026-09-20T03:30:16Z"}}}}
+    assert any("did not succeed" in problem
+               for problem in af.derivation_problems("widget", block, failed, {ROUTE}))
+
+
+def test_the_ledger_keeps_the_trigger_of_every_run_that_ever_dated_a_product(tmp_path):
+    """A later run must not erase the run an older agreement still points at."""
+    from build.observation_snapshot import load_ledger, record_snapshot
+
+    path = tmp_path / "observation_snapshots.yaml"
+    record = {"observation_snapshot_id": SNAPSHOT, "observation_content_digest": "d" * 64,
+              "canonicalization_version": 1, "row_count": 2,
+              "observed_from": "2026-08-16", "observed_to": "2026-08-24"}
+    first = {"run-a": {"trigger_type": "SCHEDULED", "status": "SUCCESS",
+                       "started_at": "2026-09-13T03:30:16Z"}}
+    second = {"run-b": {"trigger_type": "SCHEDULED", "status": "SUCCESS",
+                        "started_at": "2026-09-20T03:30:16Z"}}
+    record_snapshot(record, agreements={"widget": {"source_run_id": "run-a"}},
+                    source_runs=first, path=path)
+    record_snapshot(record, agreements={"gadget": {"source_run_id": "run-b"}},
+                    source_runs=second, path=path)
+    runs = load_ledger(path)[SNAPSHOT]["source_runs"]
+    assert set(runs) == {"run-a", "run-b"}
+
+
 def test_the_writer_refuses_a_date_with_no_source_run(tmp_path):
     root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []}})
     forged = af.Change(
@@ -247,11 +349,23 @@ def test_the_writer_refuses_a_date_with_no_source_run(tmp_path):
     assert _adoption(root, "widget")["last_verified"] == "2026-08-01"
 
 
-def _graphql(*materialization_ids):
-    """A control plane that names these materializations, one per call, in order."""
+def _graphql(*materialization_ids, trigger="SCHEDULED", status="SUCCESS"):
+    """A control plane that names these materializations, one per call, in order.
+
+    It answers the run query too, since a bound bracket looks the run up to learn how it was
+    started; `trigger` and `status` are what it reports for every run it is asked about.
+    """
     calls = iter(materialization_ids)
 
     def graphql(query, variables, token):
+        if "runs(" in query:
+            return {"runs": {"edges": [{"node": {
+                "id": variables["w"]["id"]["eq"],
+                "triggerType": trigger,
+                "runType": trigger,
+                "status": status,
+                "startedAt": "2026-09-20T03:30:16Z",
+            }}]}}
         mid = next(calls)
         return {
             "dataModels": {

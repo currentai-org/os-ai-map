@@ -342,6 +342,11 @@ LEDGER_HEADER = """\
 # ledger, written by the same run, records the same run, route, level and observation date for
 # that product. An edit to one side and not the other fails.
 #
+# `source_runs` records, once per run, how the platform says that run was started and how it
+# ended. Only a SCHEDULED run may date an adoption axis — a MANUAL one is a person refreshing a
+# table — and the control plane will not answer for a run forever, so the trigger is written
+# down here at the moment it is read rather than looked up again later.
+#
 # Written by `build/adoption_freshness.py`. An entry is never edited by hand: the id is
 # content-addressed, so changing a window here would claim a hash over observations that do not
 # produce it.
@@ -397,7 +402,7 @@ def load_ledger(path: Path | None = None) -> dict[str, dict]:
 
 #: Ledger fields that are per-run rather than per-content, and so are not compared when a
 #: snapshot is recorded twice.
-_LEDGER_MUTABLE = ("recorded_at", "agreements")
+_LEDGER_MUTABLE = ("recorded_at", "agreements", "source_runs")
 
 
 def record_snapshot(
@@ -405,6 +410,7 @@ def record_snapshot(
     agreements: dict | None = None,
     path: Path | None = None,
     recorded_at: datetime.date | None = None,
+    source_runs: dict | None = None,
 ) -> bool:
     """Add a snapshot, and the measurements it dated, to the ledger. True when the file changed.
 
@@ -418,6 +424,10 @@ def record_snapshot(
     each week — most matches change no date at all — and a product this run did not date keeps the
     record of the run that did, which is the record its score file still points at. A product this
     run did date replaces its own entry, since the score file is rewritten in the same breath.
+
+    ``source_runs`` merges for the same reason and on the same grain as the runs themselves: an
+    agreement written weeks ago still points at the run that earned it, so that run's trigger has
+    to survive the next run's write.
     """
     import yaml
 
@@ -428,6 +438,7 @@ def record_snapshot(
     document["snapshots"] = snapshots
     entry = {k: v for k, v in record.items() if k != "observation_snapshot_id"}
     stored_agreements: dict = {}
+    stored_runs: dict = {}
     if snapshot_id in snapshots:
         existing = snapshots[snapshot_id]
         stored = {k: v for k, v in existing.items() if k not in _LEDGER_MUTABLE}
@@ -437,12 +448,16 @@ def record_snapshot(
                 f"{entry}; one content hash cannot name two observation sets"
             )
         stored_agreements = dict(existing.get("agreements") or {})
-        if not agreements or stored_agreements == {**stored_agreements, **agreements}:
+        stored_runs = dict(existing.get("source_runs") or {})
+        unchanged = (not agreements or stored_agreements == {**stored_agreements, **agreements})
+        if unchanged and (not source_runs or stored_runs == {**stored_runs, **source_runs}):
             return False
     merged = {**stored_agreements, **(agreements or {})}
+    runs = {**stored_runs, **(source_runs or {})}
     snapshots[snapshot_id] = {
         **entry,
         "recorded_at": (recorded_at or datetime.datetime.now(_UTC).date()).isoformat(),
+        **({"source_runs": {k: runs[k] for k in sorted(runs)}} if runs else {}),
         **({"agreements": {k: merged[k] for k in sorted(merged)}} if merged else {}),
     }
     target.parent.mkdir(parents=True, exist_ok=True)

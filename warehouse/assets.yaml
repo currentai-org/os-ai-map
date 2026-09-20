@@ -67,7 +67,9 @@ assets:
     derivation compares measured_level against recorded_level directly and never reads status.
     It does not thereby treat an unbound observation as agreement. It requires run-bound evidence
     of its own -- build/read_binding.py brackets the live read, so the rows are attributable to
-    the materialization's run -- and dates nothing without it.
+    the materialization's run -- and dates nothing without it, and nothing where that run was not
+    a successful SCHEDULED one, since adoption's date is supposed to come from the weekly cadence
+    rather than from a person refreshing a table.
   refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
     (build/adoption_reconciliation.py) over evaluation.product_adoption_measurements and the
     recorded sources/scores, stamped with the run-time declaration_version_id +

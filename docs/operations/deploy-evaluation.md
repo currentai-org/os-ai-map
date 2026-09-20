@@ -197,21 +197,36 @@ landed inside — earns no date at all and prints `source run  NONE` with the re
 not a failure, and a week of it in a row is: it means every bracket is straddling a refresh, and
 the job's slot wants moving rather than its rule relaxing.
 
-**A configured cron is not an observed run**, here as much as on the dataset side. Check the run
-list for the workflow and read the trigger: an entry whose event is `schedule` is the evidence
-that it fires, and a page showing only `workflow_dispatch` means it has run because somebody
-pressed the button. The same settling trick works — point the cron a few minutes out, watch for a
-scheduled entry, set the real one back.
+**The run that earns the date has to be the scheduled one.** This is enforced, not trusted. The
+binding carries the platform run's `triggerType` and `status`, and only `SCHEDULED` / `SUCCESS`
+may date an axis; anything else declines every match, prints why, and leaves the queue as the
+week's whole output. So the cadence claim cannot be made by a cron field: if the `observations`
+sweep stops firing on its schedule, no date is earned, whoever runs this job and however often.
+
+That also means a `workflow_dispatch` is safe to press. It reads the same scheduled
+materialization and earns the same dates. What it cannot do is manufacture one by refreshing the
+table first.
+
+**A configured cron is still not an observed run** for this workflow's own slot, which decides
+only when the queue appears, not whether a date is sound. Check the run list and read the trigger:
+an entry whose event is `schedule` is the evidence that it fires, and a page showing only
+`workflow_dispatch` means it has run because somebody pressed the button. The same settling trick
+works — point the cron a few minutes out, watch for a scheduled entry, set the real one back.
+Expect a scheduled entry to start hours after its cron; GitHub delays them under load, and the
+Monday gates on this repo have been observed starting five to six hours late. The job's ordering
+constraint is the Sunday platform sweep, which that delay cannot reach.
 
 Two things to read on a green run, in this order:
 
 1. **The queue in the run summary.** A week that re-dates nothing and queues sixty products is
    the week the queue matters most, which is why it is written whether or not a PR opens.
 2. **The PR diff.** Every re-dated axis carries `derived_from`, and the same measurement appears
-   under the product's slug in `sources/snapshots/observation_snapshots.yaml`. A date that moved
-   without one, one that does not equal its `measurement_as_of`, and one the ledger does not
-   record all fail `build/check_verification.py` before the PR exists, so a green PR is one where
-   every moved date names the observation and the run behind it.
+   under the product's slug in `sources/snapshots/observation_snapshots.yaml`, beside a
+   `source_runs` entry recording that run's trigger. A date that moved without one, one that does
+   not equal its `measurement_as_of`, one the ledger does not record, and one whose run the ledger
+   does not show as a successful `SCHEDULED` run all fail `build/check_verification.py` before the
+   PR exists, so a green PR is one where every moved date names the observation and the scheduled
+   run behind it.
 
 ## Note on the current state
 

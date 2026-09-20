@@ -565,9 +565,20 @@ difference. Where a collector has failed and the table is still serving last wee
 gets written is those figures' own observation date: staleness is recorded rather than laundered
 into currency.
 
+**The run has to be the scheduled one.** Only a run the platform recorded as `SCHEDULED`, and
+as having succeeded, may earn a date. A `MANUAL` run is a person refreshing a table, and a date
+taken from one would be that person's date carrying a run id — which is the dependency this
+mechanism exists to remove. The rule is also what makes the weekly claim checkable rather than
+asserted: a cron that is configured and never fires produces no scheduled materialization, so no
+date is earned and the run says why. A configured schedule is not evidence that a schedule ran;
+an observed `SCHEDULED` run is. The trigger is read from the control plane at the moment of the
+read and written into the snapshot ledger beside the measurement, because the control plane will
+not answer for a run indefinitely and the gate has to be able to ask years later.
+
 **The measurement is recorded twice.** The axis carries `derived_from` — the snapshot, the run,
 the route, the level that was measured and the date it was observed — and the snapshot ledger
-carries the same measurement under the product's slug. The gate requires the two to agree, so a
+carries the same measurement under the product's slug, plus how the run that produced it was
+started. The gate requires the two to agree, so a
 date, a level or a route edited on one side alone fails; a single self-describing record can only
 be checked against itself. The measured level is part of the support for the same reason. The run
 confirmed the band it measured, so once a person re-bands the axis the confirmation describes a
