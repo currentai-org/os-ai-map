@@ -36,16 +36,17 @@ looked wrong. Neither catches `atropos`, a dormant project accurately measured.
   * **A pre-release repo tag.** A beta ahead of the registry is ordinary publishing, not a
     trailing channel, so a repo tag carrying `a`/`b`/`rc`/`alpha`/`beta`/`dev`/`preview` is
     reported as an exclusion rather than a finding. Excluding it is what keeps `qwenpaw`
-    clear. Four records are excluded this way today — `flash-attention`, `khoj`, `lance`,
-    `mineru` — and the report prints the list, so this docstring does not become a second
-    copy of a count that moves.
-  * **A repo tag that does not parse to a version.** Date stamps, model names, per-package
-    monorepo tags. Undecidable is not clean: the comparison could not be made, and saying so
-    is different from saying there is no lag. Two records today: `chroma` and `mlflow`, both
-    tagging `latest`.
+    clear. The report prints the excluded records and their tags on every run, so this
+    docstring does not become a second copy of a count that moves.
+  * **A repo tag that does not parse to a version.** Date stamps and bare moving labels —
+    `latest` is the one this corpus actually produces. A package-prefixed tag is NOT in this
+    bucket: `parse_version` reads `openlit-2.0.0` as 2.0.0, and what to do about a monorepo
+    versioning its package apart from its application is the judgment below, not a parse
+    failure. Undecidable is not clean: the comparison could not be made, and saying so is
+    different from saying there is no lag. The report prints which records landed here.
   * **Everything that is not a registry channel.** A Hugging Face model or dataset repo IS
     the artifact; there is no registry-version-against-source-version gap to measure, which
-    puts four categories out of leg 1's reach entirely. npm and crates gained a download
+    puts the model and dataset categories out of leg 1's reach entirely. npm and crates gained a download
     signal on 2026-09-13, which does not help here: `signal_packages.downloads` carries
     volume, not a published version, and leg 1 needs a registry version to compare against
     a source one.
@@ -54,14 +55,13 @@ looked wrong. Neither catches `atropos`, a dormant project accurately measured.
     counts hands stars a veto instead of a vote, which is the closed failure re-entering one
     level up.
 
-**This split is not the one the #435 simulation reported, on purpose.** The simulation had
-three pre-release exclusions and fourteen undecidable where this gate has four and two, and the
-difference is two widenings rather than a disagreement: this gate falls back to `/tags` where a
-repository publishes no releases at all, which reaches a verdict on most of the simulation's
-undecidable products instead of abandoning them, and `parse_version` reads a version out of a
-decorated tag like `fa4-v4.0.0.beta28`, which the simulation left unparsed. **The seven fires
-are identical** — `areal`, `gpt-researcher`, `langtrace`, `openlit`, `sageattention`,
-`swe-agent`, `xtuner` — and the fires are the part any ruling rests on.
+**This split is not the one the #435 simulation reported, on purpose.** The simulation left
+far more products undecidable and excluded fewer, and the difference is two widenings rather
+than a disagreement: this gate falls back to `/tags` where a repository publishes no releases at
+all, which reaches a verdict on most of the simulation's undecidable products instead of
+abandoning them, and `parse_version` reads a version out of a decorated tag like
+`fa4-v4.0.0.beta28`, which the simulation left unparsed. **The fires are identical** — the run
+prints them, and the fires are the part any ruling rests on.
 
 ## Report, never re-band
 
@@ -131,7 +131,13 @@ _BANDS_ON_THE_REGISTRY = "usage_volume"
 
 
 def is_prerelease(tag: str) -> bool:
-    """True when a tag names a pre-release of the line it belongs to."""
+    """True when a tag names a pre-release of the line it belongs to.
+
+    Examples:
+        `v4.0.0a6` -> True
+        `v2.2.0-beta.5` -> True
+        `v1.0.1` -> False
+    """
     return bool(_PRERELEASE.search((tag or "").strip()))
 
 
@@ -139,8 +145,18 @@ def parse_version(tag: str) -> tuple[int, int, int] | None:
     """(major, minor, patch) from a tag, or None when it does not carry a version.
 
     None is a real answer and is reported as undecidable rather than folded into "clear".
-    A tag like `2026-08-01` or `openlit-2.0.0` is not evidence of an absent lag; it is
-    evidence that this comparison could not be made.
+    A tag like `2026-08-01` is not evidence of an absent lag; it is evidence that this
+    comparison could not be made.
+
+    A package-prefixed tag is not one of those. `_VERSION` anchors on any non-digit before
+    the number rather than on the start of the string, so `openlit-2.0.0` yields a version
+    like any other tag — which is what lets `openlit` reach a verdict at all. Whether that
+    2.0.0 is the package's line or a monorepo's application line is a judgment this module
+    refuses to make; see "Report, never re-band" above.
+
+    Examples:
+        `2026-08-01` -> None
+        `openlit-2.0.0` -> (2, 0, 0)
     """
     matched = _VERSION.search((tag or "").strip())
     if not matched:
@@ -212,7 +228,9 @@ def declared_repo_id(slug: str, root: Path | None = None) -> str | None:
 def newest_pypi_release(package: str) -> tuple[str, str] | None:
     """(version, ISO upload timestamp) for the package's newest release, or None.
 
-    Read off the release history rather than off `info.version`, because the upload date is
+    The version is `info.version`, PyPI's own answer for what the current release is. The
+    release history is then read only to date that version — the earliest file upload under
+    `releases[version]`, which is when the line was published — because the upload date is
     half the finding: "one major behind" and "one major behind for four hundred days" are
     different sentences to a reviewer.
     """
