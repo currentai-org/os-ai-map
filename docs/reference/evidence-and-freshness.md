@@ -550,6 +550,30 @@ against the band the score records, and each row reaches one of two outcomes:
   person to settle. A run that disagrees with a score never writes to that score, and a date it
   declines to move is the normal outcome rather than a failure.
 
+**A match is not an agreement until the run is attributable.** A current-state table cannot show
+that a collector ran: a successful collection, a failed collector whose previous table stayed
+readable, and a source that never ran at all leave the same rows behind. An equal band is a
+comparison until something names the run the rows came from. So the reconciliation reads the
+current observations inside a bracket — the model's newest materialization is read from the
+control plane before the rows and again after — and a read served by one materialization
+throughout is bound to that materialization's run, which is recorded on the axis beside the date.
+A read that cannot be bound, because a refresh landed mid-bracket or because it came from the
+frozen baseline, dates nothing at all, and emits its queue exactly as it otherwise would.
+
+That attribution is of the read rather than of each observation, and the date is what covers the
+difference. Where a collector has failed and the table is still serving last week's figures, what
+gets written is those figures' own observation date: staleness is recorded rather than laundered
+into currency.
+
+**The measurement is recorded twice.** The axis carries `derived_from` — the snapshot, the run,
+the route, the level that was measured and the date it was observed — and the snapshot ledger
+carries the same measurement under the product's slug. The gate requires the two to agree, so a
+date, a level or a route edited on one side alone fails; a single self-describing record can only
+be checked against itself. The measured level is part of the support for the same reason. The run
+confirmed the band it measured, so once a person re-bands the axis the confirmation describes a
+band the score has left, and the date has to be earned again rather than inherited by the new
+level.
+
 Three things that date is not.
 
 1. **Not the run's execution date.** The date written is the OLDEST observation behind the

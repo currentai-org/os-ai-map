@@ -33,9 +33,12 @@ dates a curator reading a counts endpoint, which is a number that changes daily 
 real, and it is evidence of where the figure came from rather than evidence that it is current.
 
 `build/adoption_freshness.py` owns the shape and is the only writer.
-`sources/snapshots/observation_snapshots.yaml` resolves the recorded snapshot id to the window
-it observed, so the claim is checkable here with no warehouse: a date outside that window, or a
-snapshot nothing recorded, fails.
+`sources/snapshots/observation_snapshots.yaml` is the other half of the record: it resolves the
+recorded snapshot id to the window it observed AND carries, per product, the run, route, level
+and date that run measured. So the claim is checkable here with no warehouse, and it is checked
+against something other than itself — a date outside the window, a snapshot nothing recorded, a
+product the ledger records no measurement for, a level the score has since left, a route the
+tables do not compile, or a pair of records that disagree about one measurement.
 
 ## The digest requirement — a claimed date needs a fetch to point at
 
@@ -83,7 +86,12 @@ from pathlib import Path
 import yaml
 
 from build.vocabulary import axes, parse_date
-from build.adoption_freshness import DERIVATION_FIELD, DERIVED_AXIS, derivation_problems
+from build.adoption_freshness import (
+    DERIVATION_FIELD,
+    DERIVED_AXIS,
+    derivation_problems,
+    known_route_ids,
+)
 from build.check_rubric import components_of, license_read_keys, resolve_dimension
 from build.observation_snapshot import load_ledger
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
@@ -178,11 +186,14 @@ def invariant(
     recipes: dict,
     product_types: dict[str, str],
     ledger: dict | None = None,
+    known_routes: set[str] | None = None,
 ) -> list[str]:
     """Every recorded dimension of a dated axis has an establishing source read since.
 
     `ledger` is the observation-snapshot ledger a derived adoption date is resolved against;
-    it is read from the repository when not supplied.
+    it is read from the repository when not supplied. `known_routes` is the compiled route ids,
+    which the caller supplies because compiling them means reading the whole routing source and
+    most corpora have nothing derived to check.
     """
     problems: list[str] = []
     owner = category_of(categories)
@@ -214,7 +225,7 @@ def invariant(
                         f"{slug}:{axis}: carries {DERIVATION_FIELD}, which only "
                         f"{DERIVED_AXIS} may derive"
                     )
-                problems.extend(derivation_problems(slug, block, ledger))
+                problems.extend(derivation_problems(slug, block, ledger, known_routes))
             elif not fresh:
                 # The floor, and it is the whole of the check for adoption and capability:
                 # those axes record one banded value rather than a dimension breakdown, so
@@ -384,8 +395,16 @@ def main() -> int:
 
     scores, categories, recipes = load()
     product_types = load_product_types(ROOT)
+    # Compiling the routes reads the whole routing source, and a corpus with no derived date has
+    # no route to check, so this is paid for only where something derives.
+    derived = any(
+        (score.get(DERIVED_AXIS) or {}).get(DERIVATION_FIELD) for score in scores.values()
+    )
     results = {
-        "invariant": invariant(scores, categories, recipes, product_types),
+        "invariant": invariant(
+            scores, categories, recipes, product_types,
+            known_routes=known_route_ids() if derived else None,
+        ),
         "digests": digests(scores),
         "producible-pairs": producible_pairs(scores, categories, recipes, product_types),
         "placeholder-shows": placeholder_shows(scores),

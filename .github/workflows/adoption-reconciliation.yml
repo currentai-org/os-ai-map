@@ -4,17 +4,20 @@
 #
 #   * an agreement dates the axis. The route re-measured the recorded band from an observation
 #     the collectors fetched, so `adoption.last_verified` takes that observation's date and the
-#     axis records which snapshot and route produced it. One PR per run, the same shape as
-#     reverify's.
+#     axis records which snapshot, run and route produced it. One PR per run, the same shape as
+#     reverify's. This is why the job reads live and never the committed baseline: a measurement
+#     dates an axis only when the read can be bound to the run that served it, and a frozen file
+#     names no run. An unbindable read still produces the queue and simply earns no date.
 #   * a disagreement raises the product. The measured band differs, so nothing was confirmed,
 #     the date stays where it is, and the product goes on the tier-change queue — written to the
 #     run summary whether or not any date moved, because a week where nothing is re-dated and
 #     sixty products disagree is the week the queue matters most.
 #
-# Weekly, on the cadence the signal tables run on: the collectors and the observation rollup
-# recompute early Monday, and this reads that table rather than the committed baseline, so it
-# runs behind them. A configured cron is not an observed run — read `triggerType` on the run
-# history before believing the schedule fired. See docs/operations/deploy-models.md.
+# Weekly, on the cadence the signal tables run on: the collectors recompute early in the week and
+# the `observations` dataset sweeps Sunday 03:30 UTC, so this slot reads a table the chain has
+# already rebuilt. A configured cron is not an observed run — read the trigger on the run history,
+# here and on the dataset side, before believing the schedule fired. See
+# docs/operations/deploy-models.md and docs/operations/deploy-evaluation.md §5.
 name: adoption-reconciliation
 on:
   schedule:
@@ -45,10 +48,16 @@ jobs:
         run: |
           uv run python -m build.adoption_freshness --live --apply \
             --queue tier-change-queue.md | tee reconciliation.txt
-      - name: The tier-change queue, whether or not a date moved
+      - name: The tier-change queue and the binding, whether or not a date moved
         run: |
           {
-            echo "## Adoption tier-change queue"
+            echo "## Adoption reconciliation"
+            echo
+            echo '```'
+            head -4 reconciliation.txt
+            echo '```'
+            echo
+            echo "### Tier-change queue"
             echo
             echo '```'
             cat tier-change-queue.md

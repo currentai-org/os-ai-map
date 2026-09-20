@@ -81,6 +81,7 @@ holds it against the `cron:` lines it quotes.
 |---|---|---|
 | `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
 | `os-ai-map` schema in Neon (the site's serving layer) | same push, one step after the OSO publish | `.github/workflows/registry.yml`, no cron |
+| `observations` dataset (the adoption rollup the reconciliation reads) | Sunday 03:30 | dataset cron, timezone UTC |
 | `identity` dataset | Sunday 05:30 | dataset cron, timezone UTC |
 | `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |

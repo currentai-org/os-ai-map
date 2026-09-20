@@ -329,12 +329,18 @@ def merge_base_canonicalization(base: str = "origin/main") -> dict | None:
 SNAPSHOT_LEDGER = ROOT / "sources/snapshots/observation_snapshots.yaml"
 
 LEDGER_HEADER = """\
-# Which observations a derived adoption date rests on, and when they were observed.
+# Which observations a derived adoption date rests on, when they were observed, and what the
+# run measured for each product it dated.
 #
 # `observation_snapshot_id` is a hash of observation CONTENT and carries no date, so a score
 # file recording one cannot be audited against a calendar without this. Each entry resolves an
 # id to the window its observations cover; `build/check_verification.py` requires a derived
 # `adoption.last_verified` to fall inside the window of the snapshot it names.
+#
+# `agreements` is the second record of each measurement, kept apart from the score file on
+# purpose. A score file's `derived_from` describes itself; the gate believes it only where this
+# ledger, written by the same run, records the same run, route, level and observation date for
+# that product. An edit to one side and not the other fails.
 #
 # Written by `build/adoption_freshness.py`. An entry is never edited by hand: the id is
 # content-addressed, so changing a window here would claim a hash over observations that do not
@@ -389,16 +395,29 @@ def load_ledger(path: Path | None = None) -> dict[str, dict]:
     return (yaml.safe_load(target.read_text()) or {}).get("snapshots") or {}
 
 
-def record_snapshot(
-    record: dict, path: Path | None = None, recorded_at: datetime.date | None = None
-) -> bool:
-    """Add a snapshot to the ledger. True when the file changed.
+#: Ledger fields that are per-run rather than per-content, and so are not compared when a
+#: snapshot is recorded twice.
+_LEDGER_MUTABLE = ("recorded_at", "agreements")
 
-    An id already in the ledger is left exactly as it stands, because the id is content-
-    addressed: a second run that mints the same id read the same observations, so the window
-    is the same window and rewriting it would only move ``recorded_at`` around. A stored entry
-    that disagrees with the record raises instead of being overwritten — two different windows
-    under one content hash means something upstream is not what it says it is.
+
+def record_snapshot(
+    record: dict,
+    agreements: dict | None = None,
+    path: Path | None = None,
+    recorded_at: datetime.date | None = None,
+) -> bool:
+    """Add a snapshot, and the measurements it dated, to the ledger. True when the file changed.
+
+    The CONTENT half of an entry — the window, the digest, the row count — is immutable, because
+    the id is content-addressed: a second run that mints the same id read the same observations,
+    so the window is the same window. A stored entry that disagrees raises instead of being
+    overwritten, because two different windows under one content hash means something upstream is
+    not what it says it is.
+
+    ``agreements`` is the per-product half and it MERGES. A run dates a different set of products
+    each week — most matches change no date at all — and a product this run did not date keeps the
+    record of the run that did, which is the record its score file still points at. A product this
+    run did date replaces its own entry, since the score file is rewritten in the same breath.
     """
     import yaml
 
@@ -408,17 +427,23 @@ def record_snapshot(
     snapshots = document.setdefault("snapshots", {}) or {}
     document["snapshots"] = snapshots
     entry = {k: v for k, v in record.items() if k != "observation_snapshot_id"}
+    stored_agreements: dict = {}
     if snapshot_id in snapshots:
-        stored = {k: v for k, v in snapshots[snapshot_id].items() if k != "recorded_at"}
+        existing = snapshots[snapshot_id]
+        stored = {k: v for k, v in existing.items() if k not in _LEDGER_MUTABLE}
         if stored != entry:
             raise ValueError(
                 f"snapshot {snapshot_id} is already recorded as {stored} but this run computed "
                 f"{entry}; one content hash cannot name two observation sets"
             )
-        return False
+        stored_agreements = dict(existing.get("agreements") or {})
+        if not agreements or stored_agreements == {**stored_agreements, **agreements}:
+            return False
+    merged = {**stored_agreements, **(agreements or {})}
     snapshots[snapshot_id] = {
         **entry,
         "recorded_at": (recorded_at or datetime.datetime.now(_UTC).date()).isoformat(),
+        **({"agreements": {k: merged[k] for k in sorted(merged)}} if merged else {}),
     }
     target.parent.mkdir(parents=True, exist_ok=True)
     body = yaml.safe_dump(

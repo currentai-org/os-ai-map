@@ -186,6 +186,17 @@ a live read, dates every adoption axis whose route re-measured the recorded band
 disagreements to the run summary as the tier-change queue. It opens one PR per run when a date
 moved, and exits quietly with the queue in the summary when none did.
 
+It runs behind the observations it reads. `observations` sweeps Sunday 03:30 UTC, so the Monday
+slot reads a table the chain recomputed the day before.
+
+**Only a live, bound read can date anything.** The job passes `--live`, and the read is bracketed
+between two control-plane lookups of `observations.product_adoption_current`'s newest
+materialization: same materialization at both ends, and the rows are attributable to that
+materialization's run. A read with no run behind it — the frozen baseline, or a bracket a refresh
+landed inside — earns no date at all and prints `source run  NONE` with the reason. That line is
+not a failure, and a week of it in a row is: it means every bracket is straddling a refresh, and
+the job's slot wants moving rather than its rule relaxing.
+
 **A configured cron is not an observed run**, here as much as on the dataset side. Check the run
 list for the workflow and read the trigger: an entry whose event is `schedule` is the evidence
 that it fires, and a page showing only `workflow_dispatch` means it has run because somebody
@@ -196,9 +207,11 @@ Two things to read on a green run, in this order:
 
 1. **The queue in the run summary.** A week that re-dates nothing and queues sixty products is
    the week the queue matters most, which is why it is written whether or not a PR opens.
-2. **The PR diff.** Every re-dated axis carries `derived_from`. A date that moved without one, or
-   one that does not equal its `measurement_as_of`, fails `build/check_verification.py` before the
-   PR exists, so a green PR is one where every moved date names the observation behind it.
+2. **The PR diff.** Every re-dated axis carries `derived_from`, and the same measurement appears
+   under the product's slug in `sources/snapshots/observation_snapshots.yaml`. A date that moved
+   without one, one that does not equal its `measurement_as_of`, and one the ledger does not
+   record all fail `build/check_verification.py` before the PR exists, so a green PR is one where
+   every moved date names the observation and the run behind it.
 
 ## Note on the current state
 

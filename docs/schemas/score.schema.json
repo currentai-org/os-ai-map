@@ -210,7 +210,9 @@
           "type": "object",
           "required": [
             "observation_snapshot_id",
+            "source_run_id",
             "route_id",
+            "measured_level",
             "measurement_as_of"
           ],
           "additionalProperties": false,
@@ -219,6 +221,16 @@
               "type": "string",
               "pattern": "^[0-9a-f]{64}$",
               "description": "The observation set the band was re-measured from, content-addressed. It carries no date of its own, so sources/snapshots/observation_snapshots.yaml resolves it to the window it observed, and build/check_verification.py requires measurement_as_of to fall inside that window."
+            },
+            "source_run_id": {
+              "type": "string",
+              "description": "The platform run whose materialization of observations.product_adoption_current served the read the measurement came from, established by bracketing the read between two control-plane lookups (build/read_binding.py). A measurement with no run behind it is not an agreement: a current-state table cannot tell a successful collection from a failed collector whose previous table stayed readable, so data-architecture.md 4.3 forbids reading it as one. The attribution is at read grain rather than row grain, which is what issue #355 is still open on."
+            },
+            "measured_level": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5,
+              "description": "The level the route measured, which was the level the score recorded at the time. Kept because the confirmation is OF that band: once a person re-bands the axis, the run that agreed with the old band says nothing about the new one, and the gate fails a derived date whose measured_level is no longer the recorded level."
             },
             "route_id": {
               "type": "string",
@@ -230,7 +242,7 @@
               "description": "The date of the OLDEST observation behind the measurement, and the date last_verified takes. An aggregate is only as current as its stalest part, and the run's own execution date says nothing about the figure it read."
             }
           },
-          "description": "How this axis's date was earned by measurement rather than by a reading. Present only when a route re-measured the recorded band from a warehouse observation and produced the same level; written by build/adoption_freshness.py and by nothing else. Its presence changes which evidence supports last_verified: the observation does, in place of a source accessed on or after that date. A citation on this axis is a hashed snapshot of a figure that moves daily, so re-reading it would confirm that a page still renders rather than that a number is current. A disagreement writes nothing here and leaves the date where it was. Normative definition in docs/reference/evidence-and-freshness.md."
+          "description": "How this axis's date was earned by measurement rather than by a reading. Present only when a route re-measured the recorded band from a warehouse observation and produced the same level; written by build/adoption_freshness.py and by nothing else. Its presence changes which evidence supports last_verified: the observation does, in place of a source accessed on or after that date. The same measurement is recorded a second time in sources/snapshots/observation_snapshots.yaml under the product's slug, and the gate requires the two records to agree, so neither is believed on its own. A citation on this axis is a hashed snapshot of a figure that moves daily, so re-reading it would confirm that a page still renders rather than that a number is current. A disagreement writes nothing here and leaves the date where it was. Normative definition in docs/reference/evidence-and-freshness.md."
         }
       },
       "additionalProperties": false
