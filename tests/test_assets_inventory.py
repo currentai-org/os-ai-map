@@ -571,6 +571,13 @@ def test_no_dead_repo_computations():
     assert not violations, "unreachable governed nodes:\n" + "\n".join(violations)
 
 
+def test_mirror_banner_and_the_manifests_agree_on_ownership():
+    """Every `PLATFORM MIRROR (read-only)` file is a dependency contract, and every contract's
+    mirror file carries the banner (#517). The ownership half of the mirror provenance below."""
+    violations = A.mirror_ownership_violations()
+    assert not violations, "mirror ownership disagreements:\n" + "\n".join(violations)
+
+
 def test_dependency_mirror_provenance_holds():
     """Cross-commit provenance for the dependency mirrors is coherent against the merge base,
     including the asset->dependency transition (ADR-003 finding 1)."""

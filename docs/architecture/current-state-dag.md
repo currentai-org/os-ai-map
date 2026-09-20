@@ -45,10 +45,6 @@ graph LR
     registry__resolution_ledger[resolution_ledger]
     registry__tail_products[tail_products]
   end
-  subgraph signal_packages
-    signal_packages__downloads[downloads]
-    signal_packages__downloads_daily[downloads_daily]
-  end
   SRC --> registry__adoption_aggregation_rules
   SRC --> registry__adoption_bands
   SRC --> registry__adoption_route_band_sets
@@ -78,10 +74,6 @@ graph LR
   SRC --> registry__tail_products
   observations__product_adoption_current --> evaluation__product_adoption_measurements
   registry__product_artifacts --> observations__product_adoption_current
-  registry__product_artifacts --> signal_packages__downloads
-  registry__product_artifacts --> signal_packages__downloads_daily
-  signal_packages__downloads --> observations__product_adoption_current
-  signal_packages__downloads_daily --> signal_packages__downloads
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
   class registry__axis_assessments staged;
@@ -128,8 +120,11 @@ graph LR
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_openrouter__models[currentai.signal_openrouter.models]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
+  currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
+  currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
+  currentai__signal_packages__downloads_daily[currentai.signal_packages.downloads_daily]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
   currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
-  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]
+  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
   classDef dep fill:#eee;
   classDef audit fill:#ffd;
   classDef src fill:#def;

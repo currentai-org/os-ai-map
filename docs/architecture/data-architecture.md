@@ -49,7 +49,7 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`** (each carrying a `mirror:` block — the compatibility shims are the exception, governed assets in `assets.yaml`). The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
 - Some tracked assets have no reviewed in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
-- The inventory tracks <!-- count:deployed_tables -->31 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
+- The inventory tracks <!-- count:deployed_tables -->29 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1656,11 +1656,11 @@ lose them the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->29
 staged, not deployed                         <!-- count:staged_assets -->8
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->40
+logical assets in warehouse/assets.yaml     <!-- count:assets -->38
 ```
 
 The staged eight are `observations.source_runs` and `observations.product_adoption_baseline`
@@ -1671,9 +1671,10 @@ not exist on the platform yet. The notes table is the one axis of the notebook p
 warehouse could not serve, staged so `notebooks/ai-stack-map.py` can stop inlining 3.8 MB of
 JSON and read its prose from `currentai.registry` like everything else. The
 three `signal_packages` models were staged here until 2026-09-13, when issue #314 deployed
-them; `downloads` and `downloads_daily` are now deployed, and `product_adoption` is deployed
-and marked `compatibility` because it is a third banding model in a signal namespace and
-retires with its two siblings. The
+them, and none of the three is a governed asset any more: `product_adoption` retired with its
+two `signal_*.product_adoption` siblings on 2026-09-14 (#562), and `downloads` and
+`downloads_daily` became dependency contracts under #517 — they are platform-authored models
+the repo mirrors read-only, which is category 3, not ownership. The
 two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
 **deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
@@ -1893,7 +1894,8 @@ exist.
     test requires one to exist.
 
 **ADR-003 scope-boundary gates.** Implemented in `build/assets.py` (`role_violations`,
-`dependency_violations`, `notebook_root_violations`, `unreachable_repo_computations`) and asserted
+`dependency_violations`, `notebook_root_violations`, `unreachable_repo_computations`,
+`mirror_ownership_violations`) and asserted
 in `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` each governed asset
 carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value, exactly
 as `read_by` is re-derived. A role is one of `governed-output`, `repo-computation` (repo-OWNED

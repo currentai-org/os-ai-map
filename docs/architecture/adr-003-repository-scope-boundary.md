@@ -137,7 +137,8 @@ core DAG nodes**. Three separate views replace the single all-asset graph:
 
 Executable invariants over `assets.yaml` **and** `dependencies.yaml` together — so the manifest
 cannot itself grow into a new organization-wide inventory. Implemented in `build/assets.py`
-(`role_violations`, `dependency_violations`, `notebook_root_violations`) and asserted in
+(`role_violations`, `dependency_violations`, `notebook_root_violations`,
+`mirror_ownership_violations`) and asserted in
 `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`; see `data-architecture.md` §11.5.
 Gate 6 is enforced against the governed set (assets carrying a `role`): `gap_map` is the only
 governed population, so no `long_tail` asset can appear; the 28 externalized tables are recorded in
@@ -162,6 +163,14 @@ peripheral table — from re-entering the governed inventory.
    curator-promoted) is distinct from the OSO long-tail analytics pipeline; both currently say "long
    tail", which obscures ownership — the analytics pipeline externalizes, the tail-candidate registry
    stays and is not `long_tail`.
+7. **The `PLATFORM MIRROR (read-only)` banner and the manifests agree about ownership**
+   (`mirror_ownership_violations`, added 2026-09-20 under #517 — later than the rest of this
+   section). A banner-carrying `warehouse/models/` file is a `dependencies.yaml` contract; it is a
+   violation for it to be a governed asset (except the gate-2 `compatibility-shim`, and only at
+   `authority: platform` with a named `replacement`), and a violation for it to be in neither file.
+   A contract's mirror file without the banner fails the same gate from the other side. This is the
+   ownership half of what `dependency_mirror_provenance_violations` does for bytes: the banner is
+   the file's own claim, and it is the only side of the comparison a manifest edit cannot move.
 
 ## Classification of the peripheral assets (for freeze under platform ownership, not deletion)
 

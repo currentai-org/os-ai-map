@@ -6,6 +6,10 @@
 # warehouse/dependencies.yaml as contracts, never here (a mirror is provenance, not ownership).
 # Tables that merely exist on OSO, or are read only by a standalone notebook or another platform
 # product, are out of scope in both files and stay discoverable through OSO's own UI.
+# A `warehouse/models/` file opening with the `PLATFORM MIRROR (read-only)` banner therefore
+# belongs to a contract, not to an entry here -- mirror_ownership_violations compares the two.
+# The single exception is a `compatibility-shim`, which ADR-003 lets be a mirror because it is
+# transitional by definition, and only at `authority: platform` with a named `replacement`.
 #
 # The ADR-003 externalization is COMPLETE: the long-tail pipelines and the questionable gap_map
 # tables were removed here (steps 5-6) and FROZEN under platform ownership -- the deployed OSO
@@ -1157,69 +1161,3 @@ assets:
     hash: d7b62c33cb51b13235dcb9d7e8b7f57fd7a8c76ec3bf2f8d912c32c145fc41f5
     local_sha256: d2c0ef261ee4af9beda119d14965301fd9f99411d9eddd978ed9aeeb49781b21
     synced_at: '2026-08-15'
-- id: signal_packages.downloads
-  table: currentai.signal_packages.downloads
-  files:
-    model: warehouse/models/signal_packages/downloads.sql
-    schema: null
-    data: null
-  kind: observations
-  authority: repo
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  - table: currentai.signal_packages.downloads_daily
-    scope: internal
-  - table: oso.pypi_downloads.daily_downloads_by_package
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/observations/product_adoption_current.sql
-    build:
-    - build/check_artifacts.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, package) over a 30-day window
-  producer: warehouse/models/signal_packages/downloads.sql
-  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep, ahead of the observation layer at 03:30. 188 rows over 170 pypi, 17 npm and 1 crates artifact; parity against signal_pypi exact at 169 of 170 products.'
-  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
-  status: active
-  materialized: true
-  verified_at: '2026-09-13'
-- id: signal_packages.downloads_daily
-  table: currentai.signal_packages.downloads_daily
-  files:
-    model: warehouse/models/signal_packages/downloads_daily.py
-    schema: null
-    data: null
-  kind: observations
-  authority: repo
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/signal_packages/downloads.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (package, day)
-  producer: warehouse/models/signal_packages/downloads_daily.py
-  refresh: 'Deployed, released and scheduled 2026-09-13 under issue #314. Full-refresh on the platform, Sunday 01:00 UTC on the dataset sweep. Fetches 18 months of npm history and 90 days of crates history; the PyPI leg windows oso.pypi_downloads directly and fetches nothing. 9,326 rows.'
-  dataset_id: c9e4c61f-d6ed-4c7b-bd5a-63846622e58d
-  status: active
-  materialized: true
-  verified_at: '2026-09-13'

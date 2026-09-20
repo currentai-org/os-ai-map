@@ -28,17 +28,25 @@ HEADER_LINES = 10
 DECLARATION = re.compile(r"^-- (currentai\.[a-z_]+\.[a-z_0-9]+)\s*$", re.MULTILINE)
 
 
-def _mirror_assets() -> list[dict]:
-    """Assets that are a platform mirror or its staged successor.
+def _mirrors() -> list[tuple[str, str]]:
+    """(model file, the table it is listed against) for every mirror in either manifest.
 
-    A platform mirror carries a `mirror:` block; the staged `signal_packages` models are
-    the successor mirrored ahead of deployment (issue #314). Both are copies of models the
-    platform owns, so both are held to the header contract below where they are `.sql`.
+    A platform mirror carries a `mirror:` block, and since #517 nearly all of them live in
+    `warehouse/dependencies.yaml` as contracts rather than in `warehouse/assets.yaml`: a mirror
+    is provenance, not ownership. Both files are read here, because which manifest an entry sits
+    in is exactly the thing that moves, and a check that read only one would stop covering a
+    file the day it was reclassified -- which is how the `signal_packages` pair came to be
+    listed as repo-owned computation under a banner saying the platform owns them.
     """
-    return [
-        a for a in A.assets()
-        if a.get("mirror") or a["id"].startswith("signal_packages.")
+    out = [
+        (model, a["table"]) for a in A.assets()
+        if a.get("mirror") and (model := (a.get("files") or {}).get("model"))
     ]
+    out += [
+        (model, d["table"]) for d in A.dependencies()
+        if d.get("mirror") and (model := (d.get("files") or {}).get("model"))
+    ]
+    return out
 
 
 def _declared_table(path: Path) -> str | None:
@@ -75,9 +83,8 @@ def test_a_mirrored_sql_model_declares_the_table_it_is_listed_against():
     convention first.
     """
     problems = []
-    for asset in _mirror_assets():
-        model = (asset.get("files") or {}).get("model")
-        if not model or not model.endswith(".sql"):
+    for model, table in _mirrors():
+        if not model.endswith(".sql"):
             continue
         declared = _declared_table(REPO / model)
         if declared is None:
@@ -85,8 +92,8 @@ def test_a_mirrored_sql_model_declares_the_table_it_is_listed_against():
                 f"{model}: no single `-- currentai.<dataset>.<table>` line in its first "
                 f"{HEADER_LINES} lines, so the inventory cannot be checked against it"
             )
-        elif declared != asset["table"]:
-            problems.append(f"{model} declares {declared}, inventory says {asset['table']}")
+        elif declared != table:
+            problems.append(f"{model} declares {declared}, inventory says {table}")
     assert not problems, (
         "a mirrored model disagrees with the inventory about which table it builds:\n"
         + "\n".join(problems)
@@ -102,15 +109,18 @@ def test_the_package_models_are_all_present():
     source and the table must not repeat it (rule 11.1a.1), so `package_downloads` is
     `downloads` under the mirror layout.
 
-    Presence is the assertion, not status. Both were `staged` until issue #314 deployed them on
-    2026-09-13 and are now `active`. Keying this on `staged` would have made a correct deploy
-    look like a missing model.
+    Presence is the assertion, not status and not which manifest holds them. Both were `staged`
+    until issue #314 deployed them on 2026-09-13, `active` governed assets after it, and
+    dependency contracts since #517 moved them out of `assets.yaml` -- three states in five
+    weeks, none of which changes the thing this test is for. Keying it on `staged`, or on
+    `assets.yaml` membership, would have turned each of those correct changes into a missing
+    model.
 
     `product_adoption` was a third member of this set and is deliberately NOT here any more: it
     was retired with the other two `signal_*.product_adoption` shims on 2026-09-14 (#562), so its
     absence is the expected state and asserting its presence would re-fail the retirement.
     """
-    present = {a["table"] for a in A.assets()}
+    present = {a["table"] for a in A.assets()} | {d["table"] for d in A.dependencies()}
     expected = {
         "currentai.signal_packages.downloads",
         "currentai.signal_packages.downloads_daily",

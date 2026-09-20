@@ -22,22 +22,24 @@
 -- `adoption_level` is deliberately NOT here, and that is the substantive change rather than a
 -- rename. signal_pypi banded per package, and the software / usage_volume unit in
 -- sources/rubrics/software.yaml is "package downloads in the trailing 30 days, summed across
--- declared artifacts" — so a band on one artifact of a product that ships several is a band on
+-- declared artifacts" -- so a band on one artifact of a product that ships several is a band on
 -- part of the product. The band moves one grain up, to
--- build/adoption_measurements.py, which bands it once from the compiled routing.
+-- currentai.signal_packages.product_adoption.
 --
 -- Where each leg's history comes from:
---   * pypi   — oso.pypi_downloads.daily_downloads_by_package, the marketplace dataset holding
---              every package on PyPI at day grain. Nothing to fetch.
---   * npm    — currentai.signal_packages.downloads_daily, which fetches 18 months of
+--   * pypi   -- oso.pypi_downloads.daily_downloads_by_package, the marketplace dataset holding
+--              every package on PyPI at day grain. Nothing to fetch. NOTE it retains only about
+--              103 days (2026-06-01 to 2026-09-11 as measured 2026-09-13), so days_of_history is
+--              far shorter on this leg than on npm's.
+--   * npm    -- currentai.signal_packages.downloads_daily, which fetches 18 months of
 --              daily history per package, because no global npm dataset exists.
---   * crates — the same daily table. crates.io serves 90 days and will not page further back.
+--   * crates -- the same daily table. crates.io serves 90 days and will not page further back.
 --
 -- The 30-day window is anchored per registry on that registry's own latest day, not on
--- CURRENT_DATE and not on the package's own latest day. Per registry, because PyPI's feed lags
--- about six days behind npm's and a shared anchor would silently drop days from the slower
--- leg. Never per package, because then an abandoned package would anchor its window on its own
--- last day of life and read as healthy.
+-- CURRENT_DATE and not on the package's own latest day. Per registry, because the PyPI feed lags
+-- npm by about a day (2026-09-11 against 2026-09-12 on 2026-09-13) and a shared anchor would
+-- silently drop days from the slower leg. Never per package, because then an abandoned package
+-- would anchor its window on its own last day of life and read as healthy.
 --
 -- Counts are raw installer requests everywhere: CI jobs, mirrors and container builds
 -- included. Volume, not unique users.

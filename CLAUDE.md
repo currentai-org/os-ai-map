@@ -20,7 +20,10 @@ This repository governs the **Open Source AI Gap Map's data system**, not the OS
 warehouse. Two files, kept disjoint: a **governed asset** belongs in `warehouse/assets.yaml` only if it
 is a governed output (a published table powering the map), repo-owned computation implementing/auditing
 map semantics, or a temporary compatibility shim with an exit. A **direct OSO input** those depend on
-belongs in `warehouse/dependencies.yaml` as a contract (not owned) — **never in `assets.yaml`**. A table
+belongs in `warehouse/dependencies.yaml` as a contract (not owned) — **never in `assets.yaml`**, and
+the `PLATFORM MIRROR (read-only)` banner on a `warehouse/models/` file is how that file says so
+(gated by `mirror_ownership_violations`; the one exception is a `compatibility-shim`, which ADR-003
+lets be a mirror because it is transitional by definition). A table
 that merely exists on OSO, or is read only by a standalone notebook or another platform product, is
 **out of scope** entirely — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`
 (Accepted; fully implemented). ADR-003 is **done**: the mechanism (the `role` field,
@@ -28,7 +31,7 @@ that merely exists on OSO, or is read only by a standalone notebook or another p
 externalization (the 28 backlog assets removed from this repo's inventory + publisher and frozen under
 platform ownership — disposition `frozen-without-producer`, no OSO deletion; see
 `warehouse/audits/externalization.json`) have both landed. The governed inventory is the Gap Map's own
-data system — 40 governed assets + 17 dependency contracts; `population: long_tail` is retired and the
+data system — 38 governed assets + 19 dependency contracts; `population: long_tail` is retired and the
 gates keep peripheral OSO tables out. The old Phase-5 namespace-move runbooks stay **superseded**.
 
 ## Conventions

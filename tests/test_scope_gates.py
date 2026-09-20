@@ -1031,3 +1031,109 @@ def test_the_live_receipt_records_the_category_rename():
         assert not (ROOT / frm).exists(), f"{frm} still exists; the rename entry is stale"
         assert (ROOT / to).exists(), f"{to} is named by a rename entry and does not exist"
         assert frm != to
+
+
+# --- the banner and the manifests agree about ownership (#517) -------------------
+#
+# `mirror_ownership_violations` is the only gate that reads the FILE's ownership claim rather
+# than a manifest's, so the banner is monkeypatched here and the manifests are synthetic. The
+# contradiction it exists for is invisible from either side alone: each reads correct on its own.
+
+_MIRROR = "warehouse/models/signal_packages/downloads.sql"
+
+
+def _banner(*paths):
+    return lambda: set(paths)
+
+
+def _shim(**over):
+    base = dict(
+        id="signal_github.repo_state", table="currentai.signal_github.repo_state",
+        population="gap_map", release_path=False, role="compatibility-shim",
+        status="compatibility", authority="platform", replacement="signal_github.artifact_state",
+        files={"model": _MIRROR},
+    )
+    base.update(over)
+    return base
+
+
+def test_banner_on_a_governed_asset_is_flagged(monkeypatch):
+    """The #517 case itself: the file says the platform owns it, assets.yaml says the repo does."""
+    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
+    monkeypatch.setattr(A, "assets", lambda: [_governed(
+        id="signal_packages.downloads", table="currentai.signal_packages.downloads",
+        release_path=False, role="repo-computation", authority="repo",
+        files={"model": _MIRROR})])
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    violations = A.mirror_ownership_violations()
+    assert any(_MIRROR in v and "signal_packages.downloads" in v for v in violations)
+    assert any("repo-computation" in v for v in violations)
+
+
+def test_banner_with_no_manifest_entry_is_flagged(monkeypatch):
+    """An uninventoried mirror: a copy of a platform model nothing dates or re-verifies."""
+    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
+    monkeypatch.setattr(A, "assets", lambda: [])
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    assert any("uninventoried mirror" in v for v in A.mirror_ownership_violations())
+
+
+def test_banner_on_a_dependency_contract_is_accepted(monkeypatch):
+    """The intended combination, and the one the other twenty banner files are in."""
+    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
+    monkeypatch.setattr(A, "assets", lambda: [])
+    monkeypatch.setattr(A, "dependencies", lambda: [
+        {"table": "currentai.signal_packages.downloads", "files": {"model": _MIRROR}}])
+    assert A.mirror_ownership_violations() == []
+
+
+def test_compatibility_shim_may_be_a_mirror(monkeypatch):
+    """ADR-003's one carve-out: a shim "may be a platform mirror, since a shim is transitional
+    by definition"."""
+    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
+    monkeypatch.setattr(A, "assets", lambda: [_shim()])
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    assert A.mirror_ownership_violations() == []
+
+
+SHIM_VIOLATIONS = [
+    ("shim_claiming_repo_authority", dict(authority="repo"), "authority 'repo'"),
+    ("shim_with_no_exit", dict(replacement=None), "replacement None"),
+]
+
+
+@pytest.mark.parametrize("label,override,expected", SHIM_VIOLATIONS,
+                         ids=[m[0] for m in SHIM_VIOLATIONS])
+def test_shim_carve_out_is_narrow(monkeypatch, label, override, expected):
+    """The carve-out covers a shim only on the terms that make it transitional. Without them it
+    is the same contradiction wearing a different role."""
+    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
+    monkeypatch.setattr(A, "assets", lambda: [_shim(**override)])
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    assert any(expected in v for v in A.mirror_ownership_violations()), label
+
+
+def test_contract_mirror_without_a_banner_is_flagged(monkeypatch):
+    """The other direction: the contract says owner oso and the file says nothing, so a reader
+    who opens it has no way to know that editing it changes nothing."""
+    monkeypatch.setattr(A, "banner_model_files", _banner())
+    monkeypatch.setattr(A, "assets", lambda: [])
+    monkeypatch.setattr(A, "dependencies", lambda: [
+        {"table": "currentai.signal_packages.downloads", "files": {"model": _MIRROR}}])
+    violations = A.mirror_ownership_violations()
+    assert any("does not open with" in v and "currentai.signal_packages.downloads" in v
+               for v in violations)
+
+
+def test_the_banner_is_read_from_the_first_line_only(tmp_path, monkeypatch):
+    """A `PLATFORM MIRROR` mention further down is prose about a mirror, not a declaration that
+    this file is one -- the same scoping rule test_platform_mirror applies to the table header."""
+    root = tmp_path
+    (root / "warehouse" / "models" / "registry").mkdir(parents=True)
+    mirrored = root / "warehouse" / "models" / "registry" / "a.sql"
+    mirrored.write_text("-- PLATFORM MIRROR (read-only)\nSELECT 1\n")
+    prose = root / "warehouse" / "models" / "registry" / "b.sql"
+    prose.write_text("-- reads a PLATFORM MIRROR of another model\nSELECT 2\n")
+    monkeypatch.setattr(A, "ROOT", root)
+    monkeypatch.setattr(A, "tracked_files", lambda patterns: [mirrored, prose])
+    assert A.banner_model_files() == {"warehouse/models/registry/a.sql"}

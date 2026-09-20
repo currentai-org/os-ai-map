@@ -1958,6 +1958,126 @@ def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[s
     return problems
 
 
+MIRROR_BANNER = "PLATFORM MIRROR (read-only)"
+# The banner as the mirrors actually write it: a comment marker, the box rule, the words. Matched
+# as a shape rather than by substring because "PLATFORM MIRROR" also appears in prose ABOUT
+# mirrors, and a file that merely discusses one is not making a claim about its own ownership.
+MIRROR_BANNER_RE = re.compile(r"^(?:--|#)\s*[\W_]*\s*PLATFORM MIRROR \(read-only\)")
+
+
+def banner_model_files() -> set[str]:
+    """Tracked `warehouse/models/` files whose FIRST line carries the read-only mirror banner.
+
+    Read from the bytes, in the `--` and `#` comment forms the two mirror families use. That is
+    the point of this one: the banner is the file's own claim about who owns it, and it is the
+    only side of the ownership comparison below that no manifest edit can move.
+
+    First line only, matching `build.check_mirror_drift.strip_mirror_banner`, which treats the
+    banner as a header block opening the file. A mention further down is prose about a mirror,
+    not a declaration that this file is one -- the same scoping rule `test_platform_mirror`
+    applies to the `-- currentai.<dataset>.<table>` header line, and for the same reason.
+    """
+    out: set[str] = set()
+    for path in tracked_files(["warehouse/models"]):
+        try:
+            with path.open(encoding="utf-8") as handle:
+                first = handle.readline()
+        except (UnicodeDecodeError, OSError):
+            continue
+        if MIRROR_BANNER_RE.match(first):
+            out.add(str(path.relative_to(ROOT)))
+    return out
+
+
+def _asset_model_files() -> dict[str, dict]:
+    """{model file: the governed asset claiming it} for every entry in assets.yaml."""
+    return {
+        model: a for a in assets()
+        if (model := (a.get("files") or {}).get("model"))
+    }
+
+
+def mirror_ownership_violations() -> list[str]:
+    """The banner and the two manifests must agree about who owns a `warehouse/models/` file.
+
+    Modelled on `dependency_mirror_provenance_violations`, which asserts that a mirror block
+    matches the bytes it claims. This asserts the other half: that the OWNERSHIP claim in the
+    bytes matches the ownership claim in the manifests. Nothing compared them until now, and the
+    contradiction is invisible by construction -- each side reads correct on its own, and a
+    reader who consults one never learns the other disagrees. It had already produced a wrong
+    reading of the board (2026-09-08, #517): four `warehouse/models/` files open with "the
+    platform is the source of truth" while `assets.yaml` records them as repo-owned computation.
+
+    The banner means what ADR-003 says a mirror means -- provenance, not ownership -- so:
+
+      * banner + a contract in `dependencies.yaml`   -- CORRECT. This is what a mirror is for:
+        the repo keeps a read-only copy of a model the platform owns, so the dependency chain
+        stays inspectable and its provenance is gated.
+      * banner + a governed entry in `assets.yaml`   -- VIOLATION. `assets.yaml` is ownership;
+        the banner denies it. The one exception is ADR-003's own carve-out, the
+        `compatibility-shim` role, which "may be a platform mirror, since a shim is transitional
+        by definition" -- and only on the terms that make it transitional: `authority: platform`
+        (so the entry does not itself claim repo ownership) and a named `replacement`. A shim
+        that claims `authority: repo` is the contradiction again under a different role.
+      * banner + neither manifest                    -- VIOLATION. An uninventoried mirror: a
+        copy of a platform model that no contract dates, hashes or re-verifies.
+      * a `dependencies.yaml` contract's model file with NO banner -- VIOLATION in the other
+        direction. The contract says the platform owns the model; the file says nothing, so a
+        reader who opens it has no way to know not to edit it.
+
+    Every message names the file, the asset id or contract table, and which of the two claims it
+    read, because the useful half of the finding is which side to change.
+    """
+    problems: list[str] = []
+    banner = banner_model_files()
+    dep_files = {
+        model: d["table"] for d in dependencies()
+        if (model := (d.get("files") or {}).get("model"))
+    }
+    asset_files = _asset_model_files()
+
+    for path in sorted(banner):
+        if path in dep_files:
+            continue
+        asset = asset_files.get(path)
+        if asset is None:
+            problems.append(
+                f"{path}: opens with the {MIRROR_BANNER} banner (the platform owns it) but no "
+                "entry in warehouse/dependencies.yaml or warehouse/assets.yaml claims it -- an "
+                "uninventoried mirror, whose revision and bytes nothing dates or re-verifies"
+            )
+            continue
+        role = asset.get("role")
+        if role == "compatibility-shim" and asset["authority"] == "platform" and asset.get("replacement"):
+            continue
+        if role == "compatibility-shim":
+            problems.append(
+                f"{path}: opens with the {MIRROR_BANNER} banner (the platform owns it) but "
+                f"warehouse/assets.yaml governs it as {asset['id']} with authority "
+                f"{asset['authority']!r} and replacement {asset.get('replacement')!r}; ADR-003's "
+                "compatibility-shim carve-out covers a mirror only at authority 'platform' with "
+                "a named replacement"
+            )
+            continue
+        problems.append(
+            f"{path}: opens with the {MIRROR_BANNER} banner (the platform is the source of "
+            f"truth) but warehouse/assets.yaml governs it as {asset['id']} "
+            f"(role {role!r}, authority {asset['authority']!r}), which claims the repository "
+            "owns it -- a platform mirror is a dependency contract, not a governed asset "
+            "(ADR-003 category 3)"
+        )
+
+    for path, table in sorted(dep_files.items()):
+        if path in banner:
+            continue
+        problems.append(
+            f"{path}: warehouse/dependencies.yaml records it as the read-only mirror of {table} "
+            f"(owner: oso) but the file does not open with the {MIRROR_BANNER} banner, so "
+            "nothing in the file tells a reader that editing it changes nothing"
+        )
+    return problems
+
+
 COUNT_CLAIMS = {
     "assets": lambda: len(assets()),
     "no_reviewed_consumer": lambda: len(no_reviewed_consumers()),
