@@ -16,7 +16,9 @@ The two checks below are the mechanical residue of those two defects:
      allowlist, and a staleness test so the allowlist cannot outlive what it excuses.
   2. **An example in a docstring is not contradicted by the function.** The value is extracted
      and the function is called. This is the one that would have caught `parse_version` on the
-     day it was written.
+     day it was written — it reads both a declared `Examples:` block and the one prose shape
+     the original false claim was written in, because a gate that only read the block would
+     have found nothing to check in the file it was written for.
 
 Neither reads `sources/`, which is why they live here rather than in `test_score_notes.py` or
 `test_product_prose.py`: those two take the corpus fixture and are about a curator's prose,
@@ -28,6 +30,7 @@ from __future__ import annotations
 
 import ast
 import importlib
+import inspect
 import re
 from pathlib import Path
 
@@ -211,13 +214,76 @@ def docstring_examples(doc: str) -> list[tuple[str, str]]:
     return pairs
 
 
-def _checked_functions(module_name: str):
+# The second extractor, and the reason there is one. The claim that prompted #573 was never
+# written in the block convention above — it was a sentence: "A tag like `2026-08-01` or
+# `openlit-2.0.0` is not evidence of an absent lag". A gate that only reads `Examples:` blocks
+# would have passed that file on the day the false claim was written, because the file had no
+# such block. So one prose shape is read as well, the narrowest one that covers it:
+#
+#     a run of backticked tokens, joined by `,` / `or` / `and`, immediately followed by a
+#     phrase that denies the function finds anything in them
+#
+# and the claim it asserts is always `None` — the tokens are passed one at a time and each
+# return must be `None`. Two guards keep that from becoming a guess:
+#
+#   * the denial vocabulary is closed and listed below, not inferred from the sentence;
+#   * the function must declare `None` in its summary line and take exactly one required
+#     parameter, so a sentence can never assert a return the function cannot produce.
+#
+# Everything else in prose is left alone. A positive claim in prose ("`openlit-2.0.0` yields a
+# version") is NOT read: write it in an `Examples:` block, which is checkable without reading
+# English for the expected value.
+_DENIAL = (
+    r"(?:is|are)\s+not\s+evidence"
+    r"|carr(?:y|ies)\s+no\s+version"
+    r"|do(?:es)?\s+not\s+(?:carry|parse)"
+)
+PROSE_NONE_CLAIM = re.compile(
+    r"(?P<tokens>`[^`\n]+`(?:\s*(?:,|or|and)\s*`[^`\n]+`)+|`[^`\n]+`)\s+(?:" + _DENIAL + r")",
+    re.IGNORECASE,
+)
+_DECLARES_NONE = re.compile(r"\bNone\b")
+
+
+def prose_none_claims(doc: str) -> list[tuple[str, str]]:
+    """(argument, `'None'`) pairs from a docstring sentence that denies a quoted token.
+
+    Whitespace-normalized first: these docstrings are hand-wrapped, and the run of tokens and
+    the denial that follows it routinely land on different lines.
+    """
+    flat = " ".join((doc or "").split())
+    if not flat:
+        return []
+    summary = flat.split(". ")[0]
+    if not _DECLARES_NONE.search(summary):
+        return []
+    pairs: list[tuple[str, str]] = []
+    for match in PROSE_NONE_CLAIM.finditer(flat):
+        for token in _TOKEN.findall(match.group("tokens")):
+            pairs.append((token, "None"))
+    return pairs
+
+
+def _takes_one_required_string(function) -> bool:
+    try:
+        parameters = list(inspect.signature(function).parameters.values())
+    except (TypeError, ValueError):
+        return False
+    return len(parameters) == 1 and parameters[0].default is inspect.Parameter.empty
+
+
+def _checked_functions(module_name: str, *, prose: bool = True):
     module = importlib.import_module(module_name)
     for name in sorted(dir(module)):
         function = getattr(module, name)
         if not callable(function) or getattr(function, "__module__", "") != module_name:
             continue
-        for argument, claimed in docstring_examples(getattr(function, "__doc__", "") or ""):
+        doc = getattr(function, "__doc__", "") or ""
+        for argument, claimed in docstring_examples(doc):
+            yield name, function, argument, claimed
+        if not prose or not _takes_one_required_string(function):
+            continue
+        for argument, claimed in prose_none_claims(doc):
             yield name, function, argument, claimed
 
 
@@ -244,8 +310,13 @@ def test_every_documented_example_is_what_the_function_returns(module_name):
 
 @pytest.mark.parametrize("module_name", CHECKED_MODULES)
 def test_a_checked_module_actually_documents_an_example(module_name):
-    """A module on the list with no examples is a gate that passes by covering nothing."""
-    found = list(_checked_functions(module_name))
+    """A module on the list with no examples is a gate that passes by covering nothing.
+
+    Declared blocks only — `prose=False`. The prose extractor fires on whatever sentences a
+    module happens to contain, so counting its hits as coverage would let a module satisfy
+    this assertion without anyone having written a single checkable example.
+    """
+    found = list(_checked_functions(module_name, prose=False))
     assert found, (
         f"{module_name} is in CHECKED_MODULES but documents no `Examples:` block, so nothing "
         "in it is checked. Write one in the convention above, or take the module off the list."
