@@ -15,27 +15,28 @@ openness:
       detail: LoRA-class, not specified
     base-models:
       value: fixed allowlist
+      detail: narrowed to a single model, llama3.1-8b, per the current page
     access:
       value: Snowflake-account+credits
     data:
       value: user-data stays in account but engine closed
   confidence: high
   note: A fully managed, proprietary fine-tuning feature inside Snowflake, with no source published and
-    no way to self-host.
-  last_verified: '2026-09-09'
+    no way to self-host. The base-model allowlist is a single model, llama3.1-8b.
+  last_verified: '2026-09-16'
   raw: license:Proprietary;service:fully-managed-proprietary(in-Snowflake);source:closed;method:PEFT(LoRA-class,
-    not specified);base-models:fixed allowlist;access:Snowflake-account+credits;data:user-data stays in
-    account but engine closed
+    not specified);base-models:fixed allowlist(narrowed to a single model, llama3.1-8b, per the current
+    page);access:Snowflake-account+credits;data:user-data stays in account but engine closed
   sources:
   - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
     shows: Cortex Fine-tuning is a fully managed service that runs entirely inside Snowflake via the FINETUNE
       SQL function or the Snowsight AI Studio wizard; the page names no published repository, no self-host
-      option, and no license terms for the underlying engine, and exposes only a fixed allowlist of six
-      base models (llama3-8b, llama3-70b, llama3.1-8b, llama3.1-70b, mistral-7b, mixtral-8x7b) through the
-      managed API.
-    accessed: '2026-09-09'
+      option, and no license terms for the underlying engine. The base-models table now lists a single row,
+      "llama3.1-8b", with the expand/collapse controls disabled, confirming the table is complete; the page
+      still notes models available for fine-tuning may be added or removed in the future.
+    accessed: '2026-09-16'
     http_status: 200
-    content_sha256: 54cf815ae91b24936b980dd2a8e3495b501156df4387e84a7b24a5c8ee78997a
+    content_sha256: b86fab533d8a656cde922e0eab4c1bb50b861074e99a4b81fee649c1c06714d1
     establishes:
     - source
     - license
