@@ -132,12 +132,16 @@ repo can read is the repo/warehouse split `check_parity` exists to catch, one ax
 
 ### Why `dataset` sits one order lower
 
-Measured, not assumed. 65 of the 70 dataset products quote a download figure in their recorded
-adoption evidence, 64 of them read from Hugging Face. Measured 2026-09-20 over those 65: median
-28,873, two above 1M, and **none reaching 10M**. Banded on the software scale they put level 5
-out of reach for the entire type and pile 72% of them into levels 2 and 3, which is a scale
-that cannot discriminate. Shifted down one order the same figures spread across all five levels,
-16 of them at 4 or 5.
+Measured, not assumed. 65 of the 70 dataset products quote a trailing-30-day download figure in
+their recorded adoption evidence, 64 of them read from Hugging Face; MATH's is a zero, its
+canonical Hub repository being walled off by a takedown. Each product's figure is the **sum
+across its declared artifacts** on the winning route, per "Sum across the family, not per
+artifact" below — Terminal-Bench is 65,672 across three release mirrors and LiveBench 36,032
+across ten, not the largest single mirror of each. Measured 2026-09-20 over those 65: median
+32,927, two above 1M, and **none reaching 10M**. Banded on the software scale they put level 5
+out of reach for the entire type and pile 49 of them, 75%, into levels 2 and 3, which is a scale
+that cannot discriminate. Shifted down one order the same figures spread across all five levels
+— 4, 10, 35, 14 and 2 — with 16 at 4 or 5.
 
 **Known disagreement, deliberately not resolved by the shift.** Some dataset products record a
 level against a `reach` that would place them one level higher on the shifted scale, because
