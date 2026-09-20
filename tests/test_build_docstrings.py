@@ -79,44 +79,110 @@ def _slugs() -> set[str]:
     return {p.stem for p in (ROOT / "sources" / "products").glob("*.yaml")}
 
 
+# A count that says WHEN it was taken is not the defect this gate exists for. The claim that
+# prompted #573 was "Four records are excluded this way today" — present tense, no date, a
+# second copy of a number the report prints live on every run. "Measured 2026-08-13, 56 products
+# claim exactly that" is a different kind of sentence: it records an observation at a moment,
+# the way every piece of evidence in `sources/` carries `last_verified`. It does not go stale,
+# because it never claimed to be current.
+#
+# Scope is the PARAGRAPH, not the sentence, and that is the deliberate loosening here. A dated
+# measurement in this repo routinely runs to several sentences — the date opens it and the
+# breakdown follows ("... — 12 declare npm or crates, and 44 declare nothing at all. Twelve of
+# the 56 sit at level 5: ..."), so a sentence-scoped rule would exempt the headline and flag its
+# own supporting clauses. The cost is that a date at the top of a paragraph licenses the numbers
+# below it; that is accepted, because the alternative found here was worse and because the date
+# is the thing a reader checks.
+_MEASURED = re.compile(
+    r"\b(?:measured|observed|sampled|counted|surveyed|as\s+of|shipped\s+\w+\s+on)\b[^.]{0,40}?"
+    r"\d{4}-\d{2}-\d{2}",
+    re.IGNORECASE,
+)
+
+
+def _dated_spans(doc: str) -> list[tuple[int, int]]:
+    """Paragraph spans that open a dated measurement, from the date to the paragraph's end."""
+    spans: list[tuple[int, int]] = []
+    offset = 0
+    for paragraph in doc.split("\n\n"):
+        match = _MEASURED.search(paragraph)
+        if match:
+            spans.append((offset + match.start(), offset + len(paragraph)))
+        offset += len(paragraph) + 2
+    return spans
+
+
 def census_phrases(doc: str, slugs: set[str]) -> list[str]:
     """Every phrase in `doc` that states a live count or lists a roster, whitespace-normalized.
 
     Normalized because these docstrings are hand-wrapped: the same phrase re-wrapped at a
     different width is the same phrase, and the allowlist below has to survive a reflow.
+
+    A phrase inside a dated measurement is not returned — see `_MEASURED`. An undated one is,
+    however old the module.
     """
-    found = [" ".join(m.group(0).split()) for m in CENSUS.finditer(doc)]
+    dated = _dated_spans(doc)
+
+    def undated(start: int) -> bool:
+        return not any(lo <= start < hi for lo, hi in dated)
+
+    found = [" ".join(m.group(0).split()) for m in CENSUS.finditer(doc) if undated(m.start())]
     for match in _RUN.finditer(doc):
         tokens = _TOKEN.findall(match.group(0))
-        if all(token in slugs for token in tokens):
+        if all(token in slugs for token in tokens) and undated(match.start()):
             found.append(" ".join(match.group(0).split()))
     return found
 
 
-# The backlog, frozen 2026-09-20 when the gate was written. Every entry is a real count in a
-# real `--help` output; none of them is this PR's to rewrite, and #573 is about `build/
-# check_channel_authority.py`. Named per phrase so that fixing one is a one-line deletion and
-# writing a new one is a failure. Do not add to this list to make the suite pass — that is the
-# failure working.
+# What the detector still reports and why each one stays. Every entry here has been read in
+# context and none of them is a live count of the corpus: they are quotations, dated history,
+# counterfactuals, hypotheticals, or the detector reading a shape as a census. The reason is
+# required — a bare list stops being a backlog and becomes a place for a real census to hide.
 #
-# Two of these are the detector reading a shape as a census: `check_capability`'s "two
-# different products" and `serialize_registry`'s "Two structural notes" count cases in an
-# argument, not records in the corpus. They are listed rather than excused by a looser regex,
-# because every loosening tried here also let a real census through.
-CENSUS_BACKLOG: dict[str, set[str]] = {
-    "check_adoption.py": {"472 products", "14 dataset products", "217 off-scale records"},
-    "check_capability.py": {"472 products", "two different products"},
-    "check_instrument.py": {
-        "56 products", "55 records", "40 records",
-        "`mcp-typescript-sdk`, `openclaw`, `langchain`, `ray`, `firecracker`, `aws-lambda`",
+# This list was ten modules on 2026-09-20, before the dated-measurement rule above existed and
+# before the two genuine defects were fixed. Do not add to it to make the suite pass. If a new
+# phrase belongs here, it needs a sentence saying which of those five kinds it is.
+CENSUS_BACKLOG: dict[str, dict[str, str]] = {
+    "check_adoption.py": {
+        "14 dataset products":
+            "quotation — it is `dataset.yaml`'s own comment, reported here, not this "
+            "docstring's claim about the corpus",
+        "217 off-scale records":
+            "dated history — 'shipped non-strict on 2026-08-11 against 217', and the same "
+            "sentence says the backlog is now zero, so it cannot read as current",
     },
-    "check_parity.py": {"Six products"},
-    "check_rubric.py": {"30 products"},
-    "preflight.py": {"five products"},
-    "propose_artifacts.py": {"472 products", "44 non-closed products"},
-    "prose_worklist.py": {"289 notes"},
-    "reverify.py": {"25 oldest products"},
-    "serialize_registry.py": {"Two structural notes"},
+    "check_capability.py": {
+        "two different products":
+            "shape, not census — it counts the claims in an argument ('two different claims "
+            "about two different products'), not records in the corpus",
+    },
+    "check_instrument.py": {
+        "55 records":
+            "continues the 2026-08-13 measurement two paragraphs above; the dating rule is "
+            "paragraph-scoped and this is the breakdown, not a second claim",
+        "40 records":
+            "same 2026-08-13 measurement — '40 records, not 55, are genuinely unbacked' is its "
+            "conclusion",
+    },
+    "check_parity.py": {
+        "Six products":
+            "counterfactual — what WOULD have scored wrong under a bug that was fixed, not "
+            "what scores wrong now",
+    },
+    "check_rubric.py": {
+        "30 products":
+            "hypothetical threshold — 'if a one-line change moves 30 products, that is the "
+            "signal to stop'. It counts nothing; it sets a tripwire",
+    },
+    "preflight.py": {
+        "five products":
+            "historical incident — the promotion that passed a local loop and failed CI, which "
+            "is why this module exists",
+    },
+    "serialize_registry.py": {
+        "Two structural notes":
+            "shape, not census — it counts the bullets that follow it in the docstring",
+    },
 }
 
 
@@ -147,6 +213,43 @@ def test_no_help_text_states_a_live_census(slugs):
         "the number is a fact about the design rather than about the corpus, say it without a "
         "cardinal, or add the phrase to CENSUS_BACKLOG with that justification."
     )
+
+
+def test_a_date_exempts_a_census_and_its_absence_does_not(slugs):
+    """The dating rule, asserted from both sides.
+
+    An exemption with only its permissive half tested is a hole. The same sentence is checked
+    with and without its measurement date: dated it passes, undated it is reported. If this
+    ever fails in the permissive direction, `_MEASURED` has stopped recognising the shape the
+    corpus actually writes; if it fails in the other, the rule has become a way to switch the
+    gate off by writing a date anywhere in the paragraph.
+    """
+    claim = "56 products claim exactly that with no artifact any signal model can read."
+    assert census_phrases(claim, slugs) == ["56 products"]
+    assert census_phrases(f"Measured 2026-08-13, {claim}", slugs) == []
+
+    # The date has to be in the same paragraph, and has to precede the count.
+    assert census_phrases(f"Measured 2026-08-13.\n\n{claim}", slugs) == ["56 products"]
+    assert census_phrases(f"{claim} Measured 2026-08-13.", slugs) == ["56 products"]
+
+    # A bare date is not a measurement. "#328 landed 2026-08-19" must not license a census.
+    assert census_phrases(f"#328 landed 2026-08-19. {claim}", slugs) == ["56 products"]
+
+
+def test_every_backlog_entry_says_why_it_is_there(slugs):
+    """A phrase with no reason is indistinguishable from one nobody looked at.
+
+    The list before 2026-09-20 was bare, and reading it in context is what showed that most of
+    it was never a census — five modules left the list on the strength of a dated-measurement
+    rule, and two were real defects that had been sitting in the allowlist rather than fixed.
+    """
+    missing = [
+        f"{name}: {phrase!r}"
+        for name, entries in CENSUS_BACKLOG.items()
+        for phrase, reason in entries.items()
+        if not (reason or "").strip()
+    ]
+    assert not missing, f"backlog entries with no justification: {sorted(missing)}"
 
 
 def test_the_census_backlog_has_not_gone_stale(slugs):

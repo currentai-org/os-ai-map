@@ -2,8 +2,8 @@
 
 An "open" product with no declared artifact is a claim nobody can check. The map's
 openness ratings are its differentiator, so those are the worst place to have
-unverifiable evidence — and 44 non-closed products are in exactly that state while
-their own score files cite the URL that would fix it. Apertus is scored 5,
+unverifiable evidence — and non-closed products are in exactly that state while their own
+score files cite the URL that would fix it; the run prints how many. Apertus is scored 5,
 open_source, and cites `huggingface.co/swiss-ai/Apertus-70B-2509` as a source,
 while declaring no `huggingface_model`.
 
