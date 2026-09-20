@@ -8,8 +8,9 @@ SQL. Tests cover the declaration's shape and the serializer's output. Nothing ha
 compared a PRODUCT's recorded `(level, reach)` against them.
 
 So the bands were authoritative for the warehouse and advisory for the corpus, and the two
-drifted in exactly the way `check_parity` exists to catch one axis over. 93 of 472 products
-record a `reach` label that is not a band their own product type declares.
+drifted in exactly the way `check_parity` exists to catch one axis over. Products record a
+`reach` label that is not a band their own product type declares, and nothing compared them
+until this gate; the run prints how many.
 
 The dataset scale is the clearest case. It sits one order of magnitude below software and
 model — deliberately, and measured: across 66 Hugging Face dataset artifacts, the median was
