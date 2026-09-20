@@ -40,8 +40,10 @@ whether the pair exists in the ladder at all. That makes it immune to the escape
 `check_rubric` has, which is `deferred` — a category can defer a product out of
 reproduction, but an impossible pair stays impossible.
 
-Which is how `4 / open_source` survived: no software rule emits 4 with `open_source` (4 is
-`open_core`), and no software rule emits 3 at all, since the ladder's rungs are 1, 2, 4, 5.
+`4 / open_source` is the shape this catches and `check_rubric` cannot: no software rule emits 4
+with `open_source`, since 4 is `open_core` and 5 is `open_source`, and a product deferred out of
+reproduction is still checked here. The message names the pair, never the repair — which of the
+two values moves is a question for the product's recorded components.
 
 ## How the gates ratchet
 

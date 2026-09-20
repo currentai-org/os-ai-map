@@ -132,11 +132,12 @@ repo can read is the repo/warehouse split `check_parity` exists to catch, one ax
 
 ### Why `dataset` sits one order lower
 
-Measured, not assumed. Across the 66 Hugging Face dataset artifacts carrying a figure on
-2026-08-09: median 27,648, exactly one above 1M, and **none above 10M**. On the software scale
-level 5 is unreachable for the entire type and 76% of datasets pile into levels 2-3, which is
-a scale that cannot discriminate. Shifted down one order it reproduces the corpus's own bottom
-three levels exactly and spreads like `model`'s.
+Measured, not assumed. 65 of the 70 dataset products quote a download figure in their recorded
+adoption evidence, 64 of them read from Hugging Face. Measured 2026-09-20 over those 65: median
+28,873, two above 1M, and **none reaching 10M**. Banded on the software scale they put level 5
+out of reach for the entire type and pile 72% of them into levels 2 and 3, which is a scale
+that cannot discriminate. Shifted down one order the same figures spread across all five levels,
+16 of them at 4 or 5.
 
 **Known disagreement, deliberately not resolved by the shift.** Some dataset products record a
 level against a `reach` that would place them one level higher on the shifted scale, because
@@ -187,11 +188,13 @@ than use, so a stars-derived band may never claim levels 4 or 5 however large th
 a level-4 stars band fails the serializer instead of quietly publishing one. The corpus
 already respects this: no `stars_fallback` product records 4 or 5.
 
-Thresholds set 2026-08-10 from the medians the corpus already used — the 71 `stars_fallback`
-products with a live GitHub row sit at medians of ~93, ~1,733 and ~15,801 stars for levels 1,
-2 and 3. The ranges overlap badly (20,901 stars recorded at 2 against 77 recorded at 3), so
-**this scale tightens a loose convention rather than describing one**, and applying it will
-move products.
+The three thresholds are round numbers on the instrument, not a summary of the corpus, and the
+corpus is read against them rather than the other way round. Measured 2026-09-20: of the 169
+`stars_fallback` products, 167 quote a star count in their evidence, and every one of those 167
+sits inside the band its recorded level names — medians of 211, 3,181 and 24,216 stars for
+levels 1, 2 and 3, with the largest count at level 1 at 986 and the smallest at level 3 at
+11,860. The two that do not (`slurm`, `tesseract`) cite the repository page without quoting the
+number off it, which is a `shows` defect rather than a banding one.
 
 #### The active-users scale
 
@@ -488,8 +491,8 @@ it does not make the claim automatic, it makes it falsifiable.
   level 3 by the rubric because stars measure attention rather than use. **Open route.**
 - **Vendor SDK downloads** — `mistralai`, `anthropic`, `cohere` on PyPI are dated proxies for
   API integration, and the trap is attribution. The `cohere` package is the SDK for Cohere's
-  entire API surface, so its 37.9M downloads a month are not `cohere-rerank-api`'s: that product
-  declares no package and bands on multi-cloud distribution instead. Undeclaring the artifact is
+  entire API surface, so its downloads are not `cohere-rerank-api`'s: that product declares no
+  package and bands on multi-cloud distribution instead. Undeclaring the artifact is
   what binds the judgment to routing, which reads declarations rather than prose.
   `not_primary_channel` is the wrong instrument for it — that field keeps an artifact whose
   measurement DOES belong to the product and drops it only from the banded sum, where this is a
@@ -649,15 +652,16 @@ A whole category can carry this: in `storage`, a large minority of products have
 matching their name and in none of them is that package the product. Two shapes, and the second is
 worse:
 
-- **The client of a self-hostable server.** `elasticsearch` on PyPI is elasticsearch-py at 52.8M
-  downloads a month; the product is the Java engine at `elastic/elasticsearch`. `pgvector` is
-  pgvector-python at 36.6M; the product is a Postgres extension written in C. Same shape for
-  `meilisearch`, `typesense`, `lakefs`, `infinity-sdk`, `aistore` and `vearch`. Every one of those
-  figures is a real count of client installs, and none of them measures the server.
+- **The client of a self-hostable server.** `elasticsearch` on PyPI is elasticsearch-py; the
+  product is the Java engine at `elastic/elasticsearch`. `pgvector` on PyPI is pgvector-python; the
+  product is a Postgres extension written in C. Same shape for `meilisearch`, `typesense`,
+  `lakefs`, `infinity-sdk`, `aistore` and `vearch`. Each of those packages draws a real download
+  count and none of those counts measures the server, so both products above band on stars
+  instead — 77,824 and 22,664 in their recorded evidence.
 - **A different project entirely.** `dolt` on PyPI is an unrelated REST wrapper by another author.
-  `flash-attention` is a Huawei Ascend port, not `Dao-AILab/flash-attention`. `juicefs` is a
-  third-party SDK published from another organization's repository, drawing under 200 downloads a
-  month against a product with 14,000 stars.
+  `flash-attention` is a Huawei Ascend port, not `Dao-AILab/flash-attention`; the product declares
+  `flash-attn` and bands on it. `juicefs` on PyPI is a third-party SDK published from another
+  organization's repository, so JuiceFS declares it nowhere and bands on its 14,334 stars.
 
 **`check_artifacts --live` does not catch the first shape, and cannot.** Its `pypi_repo_mismatch`
 check compares the package's declared project URL against the product's repo, and a well-behaved

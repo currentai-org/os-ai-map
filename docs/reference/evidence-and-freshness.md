@@ -628,18 +628,35 @@ score with this class — and it finds things `check_rubric` cannot, because a p
 category's `deferred` block is excluded from reproduction but not from this check. It ignores the
 evidence entirely, so deferring cannot hide a pair.
 
-Three shapes account for most of what it reports, and each has one correct remedy:
+**It reports a pair, not a repair.** The gate's own message says so — one of the two values is
+wrong, and the product settles which. Read the recorded components against the ladder: they are
+what the recipe keys on, so they are what decides whether the score or the class has to move.
+Widening the ladder to admit the pair is never the remedy.
 
-- **`2 / open_core`** → the class is wrong. `open_core` in this ladder means an OSI core with
-  functionality withheld for a paid tier; an open periphery around a closed engine is
-  `source: partial`, which is `source_available`.
-- **A score of 3 from the software ladder** → the score is wrong. That ladder's rungs are 1, 2, 4
-  and 5, so it cannot produce a 3 at all. "You can read it and not run it freely" — a non-OSI
-  restrictive license over public source, or a client standing in for a closed service — is 2.
-- **`4 / open_source`** → the score is wrong. A product publishing the whole self-hostable thing
-  under an OSI license with nothing withheld is 5. A 4 here usually encodes maturity or
-  skepticism about the vendor's marketing, both of which belong on the adoption and capability
-  axes.
+The software ladder emits five pairs and nothing else, and every software category inherits it
+unchanged through `extends: software`:
+
+| score | class | the components that reach it |
+|---|---|---|
+| 1 | `closed` | `source: closed` |
+| 2 | `source_available` | `source: partial`, or a `competition_restricted` license over public source |
+| 3 | `source_available` | a `permissive_non_osi` license over public, ungated source |
+| 4 | `open_core` | an OSI license over public source with a gated core |
+| 5 | `open_source` | an OSI license over public, ungated source |
+
+Two impossible pairs are worth spelling out, because each sits between two rungs that a
+hand-entered value slips across.
+
+- **`2 / open_core`.** `open_core` in this ladder means an OSI core with functionality withheld
+  for a paid tier. An open periphery around a closed engine is `source: partial`, which reaches
+  `2 / source_available`, so here it is the class that moves.
+- **`4 / open_source`.** The two top rungs differ in one component, `core-gated`. Whether the
+  record settles at `4 / open_core` or `5 / open_source` depends on what the vendor's pricing
+  page supports, and either value may be the one that moves.
+
+A mixed category has one ladder per product type, and each product is checked against its own
+rather than against the union of the category's variants. `sources/rubrics/*.yaml` carries each
+formula, and the model, dataset and hardware ladders emit their own pairs.
 
 ### Two shared utilities, so the mechanism cannot be bypassed
 
