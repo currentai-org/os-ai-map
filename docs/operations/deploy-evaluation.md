@@ -178,6 +178,28 @@ Once the tables exist on the platform:
 - Regenerate the derived counts and DAG with `build/assets.py`, and update the staged/deployed
   counts in `docs/architecture/data-architecture.md`.
 
+## 5. The weekly run, and how to know it fired
+
+Publishing the tables is the maintainer's half. The repository half runs on its own:
+`.github/workflows/adoption-reconciliation.yml`, Monday 05:00 UTC, builds the reconciliation from
+a live read, dates every adoption axis whose route re-measured the recorded band, and writes the
+disagreements to the run summary as the tier-change queue. It opens one PR per run when a date
+moved, and exits quietly with the queue in the summary when none did.
+
+**A configured cron is not an observed run**, here as much as on the dataset side. Check the run
+list for the workflow and read the trigger: an entry whose event is `schedule` is the evidence
+that it fires, and a page showing only `workflow_dispatch` means it has run because somebody
+pressed the button. The same settling trick works — point the cron a few minutes out, watch for a
+scheduled entry, set the real one back.
+
+Two things to read on a green run, in this order:
+
+1. **The queue in the run summary.** A week that re-dates nothing and queues sixty products is
+   the week the queue matters most, which is why it is written whether or not a PR opens.
+2. **The PR diff.** Every re-dated axis carries `derived_from`. A date that moved without one, or
+   one that does not equal its `measurement_as_of`, fails `build/check_verification.py` before the
+   PR exists, so a green PR is one where every moved date names the observation behind it.
+
 ## Note on the current state
 
 Every measured reconciliation row is `source_unavailable` until row-to-run binding lands (#355):
