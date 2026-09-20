@@ -4,6 +4,11 @@
 A product belongs on the map and does not exist yet. If the product is already present and
 you want to change it, use [`update-product.md`](update-product.md) instead.
 
+If the product is **closed**, or is one surface of a vendor platform, read
+[`../architecture/adr-005-closed-product-inclusion.md`](../architecture/adr-005-closed-product-inclusion.md)
+first. It is guidance rather than a gate: no check below will stop you, and the reasoning it
+asks for belongs in the score file.
+
 ## Inputs you need
 - The **category** it belongs to (exactly one) and the **organization** that makes it.
 - Its **product type** (`software`, `model`, `dataset`, `hardware`).

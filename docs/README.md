@@ -87,6 +87,7 @@ claims.
 | [`architecture/adr-002-registry-curated-catalog-discovered.md`](architecture/adr-002-registry-curated-catalog-discovered.md) | `registry` versus `catalog`, and which tables are misfiled today |
 | [`architecture/adr-003-repository-scope-boundary.md`](architecture/adr-003-repository-scope-boundary.md) | What this repository governs, and what belongs to the platform |
 | [`architecture/adr-004-machine-proposals-and-the-public-tail.md`](architecture/adr-004-machine-proposals-and-the-public-tail.md) | Machines propose, humans accept: the tail tier and who may merge what |
+| [`architecture/adr-005-closed-product-inclusion.md`](architecture/adr-005-closed-product-inclusion.md) | Why closed products are on the map, and the guidance for the borderline ones |
 | [`architecture/current-state-dag.md`](architecture/current-state-dag.md) | Generated dependency graph |
 
 The inventory those documents specify is [`warehouse/assets.yaml`](../warehouse/assets.yaml),

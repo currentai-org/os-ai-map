@@ -120,6 +120,10 @@ Shared helpers     vocabulary (the one owner of any vocabulary two modules need)
                    guarded way to rewrite one prose field).
 
 Proposers          propose_arxiv, propose_artifacts.
+
+Surveys            closed_inclusion. Reports and exits 0 whatever it finds -- it applies the
+                   inclusion principle in docs/architecture/adr-005-closed-product-inclusion.md,
+                   which is guidance and not a gate. Never wire one into preflight or CI.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2
