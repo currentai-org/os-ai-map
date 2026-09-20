@@ -593,15 +593,16 @@ concept, not a property of the raw fact.
 A single `signal_type` enum of `stars | downloads | usage_volume | customers | other` mixes two
 levels and must not be used. `stars` and `downloads` are metrics; `usage_volume` is a scoring
 instrument; `customers` is a metric that may support more than one instrument depending on
-policy. It also does not match the corpus, whose recorded instruments are (measured
-2026-08-20 across `sources/`):
+policy. It also does not match the corpus, whose recorded instruments are (`signal_type` across
+`sources/scores/*.yaml`, measured 2026-09-20; re-derive with
+`grep -h '^  signal_type:' sources/scores/*.yaml | sort | uniq -c`):
 
 ```text
-usage_volume        292
-reported_traction   111
-stars_fallback       85
-active_users         25
-unknown              20
+usage_volume        405
+stars_fallback      169
+reported_traction   127
+unknown              39
+active_users        23
 ```
 
 Keep the two vocabularies separate and carry both:
@@ -1770,7 +1771,7 @@ number typed into this document by hand is a defect, not a fact.
    `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
    `scope: internal`, or is `scope: external` and names a table this inventory does not cover.
-   Because the inventory deliberately covers the closure rather than all 96 org tables,
+   Because the inventory deliberately covers the closure rather than every table in the org,
    `oso.*` and out-of-scope `currentai.*` reads must be representable rather than errors.
 9. Deprecated assets carry a removal condition; active `compatibility` assets name a
    replacement or state why none exists.

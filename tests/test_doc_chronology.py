@@ -93,19 +93,27 @@ _COMPILED = {name: re.compile(pattern, re.IGNORECASE) for name, pattern in MARKE
 def chronology_phrases(doc: str) -> set[str]:
     """Every phrase in `doc` matching a narration marker, whitespace-normalized.
 
-    Normalized and folded to lower case because these documents are hand-wrapped and a phrase
-    reads differently at the start of a sentence: the same phrase re-wrapped or re-capitalized
-    is the same phrase, and the backlog has to survive a reflow.
+    **The document is flattened before matching, not after.** Every multiword marker is written
+    with literal spaces, and these documents are hand-wrapped, so a marker matched against the
+    raw text is a marker any line wrap turns off: "An earlier\\ndraft claimed the opposite" is
+    the prohibited sentence and nothing would fire on it. Normalizing the match afterwards
+    cannot recover a match that never happened. So the whole document collapses to one
+    whitespace-separated line first, and the markers run over that.
+
+    Folded to lower case for the same reason it is flattened: a phrase reads differently at the
+    start of a sentence, the same phrase re-capitalized is the same phrase, and the backlog has
+    to survive a reflow.
 
     Every match is returned, in prose or in a fenced block. A schema field spelled
     `supersedes_observation_id` is a legitimate match with a one-line reason, and carving out
     code fences would be an exemption rather than a reading — the same trade the census gate
     settled one directory over.
     """
+    flattened = " ".join(doc.split())
     return {
         " ".join(m.group(0).split()).lower()
         for rx in _COMPILED.values()
-        for m in rx.finditer(doc)
+        for m in rx.finditer(flattened)
     }
 
 
@@ -124,7 +132,10 @@ def chronology_phrases(doc: str) -> set[str]:
 #                    a golden's "before" text, an external commit message
 #   open work        a pointer to work that has not happened, which is a fact about now
 #   ADR mechanics    an ADR's own Status / Supersedes header, or its Consequences section
-#                    saying what the decision changes, which is what an ADR is for
+#                    saying what the decision changes, which is what an ADR is for. It does NOT
+#                    cover an issue citation. Where a decision was argued is provenance, and an
+#                    ADR is no more entitled to carry its own provenance than a guide is: the
+#                    ADR states the decision, and git carries where it came from.
 #   vocabulary       a field, enum value or recorded value that happens to spell a marker
 #   plain English    the marker's words used about the subject rather than about the document
 CHRONOLOGY_BACKLOG: dict[str, dict[str, str]] = {
@@ -185,10 +196,6 @@ CHRONOLOGY_BACKLOG: dict[str, dict[str, str]] = {
         "#384":
             "open work — the openness chain the repo will retire. A pointer to work that has "
             "not happened",
-        "#404":
-            "ADR mechanics — step 1 of the ADR's own execution sequence, which is where the "
-            "boundary rule and the role taxonomy were argued. The ADR is the record of a "
-            "decision, and this is the decision's first step",
     },
     "docs/architecture/adr-004-machine-proposals-and-the-public-tail.md": {
         "supersedes":
@@ -283,6 +290,29 @@ def test_the_backlog_names_only_documents_that_exist(live):
     """A path that no longer resolves takes its reasons out of reach of the two tests above."""
     unknown = sorted(set(CHRONOLOGY_BACKLOG) - set(live))
     assert not unknown, f"CHRONOLOGY_BACKLOG names documents that do not exist: {unknown}"
+
+
+@pytest.mark.parametrize(
+    "wrapped, expected",
+    [
+        ("An earlier\ndraft claimed the opposite.", "an earlier draft"),
+        ("The rule is that `self-host` used\nto be an undeclared key.", "used to be"),
+        ("Level 3 got corrected\nto level 4.", "corrected to"),
+        ("This decision supersedes\nADR-002.", "supersedes"),
+        ("The window was open until\n2026-08-13.", "until 2026-08-13"),
+        ("| a table cell |\n| the old shape |", "the old"),
+    ],
+)
+def test_a_marker_fires_through_the_line_wrap_markdown_puts_in_it(wrapped, expected):
+    """A gate ordinary hand-wrapping switches off is not a gate.
+
+    Every multiword marker is written with a literal space. Markdown reflows prose at whatever
+    column the writer's editor uses, so the prohibited sentence arrives with a newline in the
+    middle of the phrase as often as not, and a detector that matches the raw text reports
+    nothing on it. The flattening in `chronology_phrases` is what closes that, and this is the
+    regression test for it: each case below is a real marker split by a wrap.
+    """
+    assert expected in chronology_phrases(wrapped)
 
 
 def test_the_markers_leave_a_hand_written_adr_alone():

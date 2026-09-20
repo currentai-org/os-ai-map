@@ -207,9 +207,10 @@ move products.
 wrong labels; it produces **unfalsifiable** ones. A record carrying a real user figure will wear
 a label borrowed from the download vocabulary, because that is the only vocabulary in the
 building, and a record can invent a band no scale offers — `10M-100M` — with nothing able to say
-so. The level then drifts from the figure beneath it in the one direction nobody is checking:
-`character-ai`'s ~20M MAU clears the top threshold outright, and `claude-ai` cites ~19–30M against
-a `1M-10M` label. A declared scale is what makes a label answerable to its own figure.
+so. The level then drifts from the figure beneath it in the one direction nobody is checking: a
+record citing tens of millions of monthly actives carries a `1M-10M` label and nothing fails,
+because without a declared scale there is nothing for the label to be wrong against. A declared
+scale is what makes a label answerable to its own figure.
 
 **Same thresholds as the download scale**, which is a decision rather than an inheritance. The
 alternative considered was one order higher throughout, so that ChatGPT at ~900M weekly actives
@@ -349,8 +350,10 @@ answer to a missing scale and the wrong answer to a scale nobody has declared ye
 and a disagreement between them is a finding. A vocabulary says only which words exist: the word
 says what *kind* of standing was claimed, the level says *how much*, and neither is derived from
 the other. The words correlate with the levels without determining them — measured 2026-09-20,
-`niche` runs 81% level 3, `broad` 85% level 4 and `mass-market` 77% level 5 — and forcing
-agreement would flatten exactly the residual signal those spreads represent.
+`niche` runs 13 of 16 at level 3, `broad` 6 of 7 at level 4 and `mass-market` 7 of 9 at level 5 —
+and forcing agreement would flatten exactly the residual signal those spreads represent. The
+denominators are small enough that these are counts rather than rates; quoting them as
+percentages would imply a precision three records do not support.
 
 **A numeric label is illegal here.** It is collinear with the level beside it, so it carries
 nothing the level does not, and it carries something false: `1M-10M` beneath a note saying "no
@@ -361,9 +364,8 @@ make, and stripping one leaves the level alone.
 
 **Omitting `reach` is the honest default**, and most records on this instrument do. Record a word only where
 it says something the level does not, which is usually the *shape* of the traction rather than
-its size: `osprey` at 446 GitHub stars but running in production at Discord is `niche` in a way
-that matters. The words are hardware's, which has used exactly these since before this route
-existed; sharing them beats minting a parallel set.
+its size: `osprey` at 462 GitHub stars but running in production at Discord is `niche` in a way
+that matters. The words are hardware's, and sharing a vocabulary beats minting a parallel one.
 
 ### When a re-read may re-band, and when it may not
 
@@ -404,9 +406,11 @@ a pass applies them.
 
 A band exceeding the computed one is usually not a dispute about the measurement. The common
 shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
-exactly — `verl` "~81,606" against 82,200 measured, `haystack` "~883k" against 968,831,
-`mistral-large` "~7.5k/mo" against 5,903 — with a band that does not follow from the evidence the
-score itself records.
+exactly and then bands above where that figure falls — so the disagreement is between the score's
+band and the score's own evidence, not between the score and the warehouse. Name instances by
+running `uv run python -m build.adoption_reconciliation` rather than by quoting a list from here:
+the notes get rewritten, and a product named here as an instance stops being one without this
+sentence noticing.
 
 ## What the machine actually computes today
 

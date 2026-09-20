@@ -63,9 +63,11 @@ implicit: any aggregate of access dates — max, min, per-dimension min — is s
 confirmation claim computed from readings, and changing the aggregation does not fix the
 category error.
 
-It is also the less accurate number. An access-date aggregate reports a file as staler than
-its own revision history says it is, because it dates the oldest page anybody opened rather
-than the day the claim was last reviewed.
+An access date and a review date are also independent quantities, so neither bounds the other.
+A page can be opened without the claim being re-read, and a claim can be re-read without any
+page being fetched. An aggregate of `accessed` is therefore not a conservative `last_verified`
+and not a generous one — it is a different measurement that happens to be a date, and it can
+land on either side of the day the score was last confirmed.
 
 ## The fallback: the score file's last commit date
 

@@ -1,24 +1,25 @@
 # ADR-003: Repository scope boundary — govern the Gap Map, not the OSO org
 
-**Status:** **Accepted; fully implemented (steps 2–6), 2026-08-29.** This document is the plan; it
-has now landed in full. The mechanism (steps 2–4) — the `role` field on governed assets,
-`warehouse/dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction gates — is merged,
-and the externalization (steps 5–6) is complete: the 28 externalized assets (24 long-tail
-pipelines + 4 questionable gap_map tables) were removed from this repo's inventory and publisher and
-**frozen under platform ownership** — disposition `frozen-without-producer`, recorded per asset in
-`warehouse/audits/externalization.json` (archived source hashes, platform IDs, consumers at removal).
-That is the no-orphan disposition, **not** a verified ownership transfer to a named destination repo:
-**no OSO table was deleted** — each deployed table is retained and frozen at its last publish, its
-repo producer removed, and its consumers still resolve against it. The governed inventory is now 42
-governed assets + 18 dependency contracts; the `long_tail` population is retired and the backlog is
-empty, kept so by the gates.
+**Status:** Accepted 2026-08-29. The boundary rule below is in force and every mechanism it names
+is in the tree: the `role` field on governed assets, `warehouse/dependencies.yaml`, the root-scoped
+DAG, and the anti-reintroduction gates.
+
+An asset this boundary puts outside governance is **frozen under platform ownership** —
+disposition `frozen-without-producer`, recorded per asset in `warehouse/audits/externalization.json`
+(archived source hashes, platform IDs, consumers at removal). That is the no-orphan disposition,
+**not** a verified ownership transfer to a named destination repo: **no OSO table is deleted** — each
+deployed table is retained and frozen at its last publish, its repo producer removed, and its
+consumers still resolve against it. `long_tail` is not a governed population, and the gates are what
+keep it from becoming one again. The governed inventory holds <!-- count:governed_assets -->36
+governed assets against <!-- count:dependencies -->19 dependency contracts.
+
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.
 
 ## Context — the root cause
 
-Inventory membership is currently triggered by:
+Without the rule below, inventory membership is triggered by:
 
 ```text
 exists on OSO  OR  is read by any repository notebook
@@ -33,7 +34,7 @@ a graph root; and the DAG renders every inventoried asset. So the repository mod
 organization's warehouse* rather than *the data system governing the Open Source AI Gap Map*.
 
 The ownership test is wrong: **a live OSO notebook reading a table does not make that table part of Gap
-Map governance.** The symptom, from the current inventory (dated reading, 2026-08-29):
+Map governance.** The symptom this rule was decided against, read from the inventory on 2026-08-29:
 
 - <!-- observed:2026-08-29 -->73 total assets, of which only <!-- observed:2026-08-29 -->28 are on the
   Gap Map release path (`release_path: true`).
@@ -41,9 +42,9 @@ Map governance.** The symptom, from the current inventory (dated reading, 2026-0
   `metrics` and analytical `scores` pipelines plus catalog reference inputs. They power the standalone
   `long-tail-explorer` / `oss-ai-trends` notebooks and other platform work, **not** the governed map.
 
-That is why the migration keeps generating namespace moves, schedules, compatibility states, audit
-receipts and retirement obligations: the complexity is produced by the repository's boundary, not by the
-Gap Map. `registry.foundation_model_repos` is the concrete instance — a `population: long_tail`,
+That is what generates the namespace moves, schedules, compatibility states, audit receipts and
+retirement obligations: the complexity is produced by the repository's boundary, not by the Gap
+Map. `registry.foundation_model_repos` is the concrete instance — a `population: long_tail`,
 `release_path: false` table that exists only to feed `entities.models`, carrying a registry
 *publication* responsibility it should never have acquired.
 
@@ -89,11 +90,11 @@ Every governed asset declares a `role`, so membership is asserted, not inferred 
 | `governed-data` | a repo-**owned** data or control artifact that is not a computation — the frozen adoption baseline (bytes, not a query) and the `source_runs` control snapshot | `authority: repo`; not `release_path`; no model file |
 | `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement`; `authority: repo`, enforced like every other role. A shim is transitional by definition, and that is **not** a reason to admit a platform mirror: a role does not change who owns the bytes, so a platform-authored model is a dependency contract however temporary |
 
-External dependencies are **not** governed assets and carry no `role` — they live in the manifest below. Because a mirror is provenance and not ownership, the seven platform-authored mirrors the repo reads — the openness chain (`evidence.product_evidence`, `scores.openness_facts`, `scores.openness_computed`) and the signal ingestion (`signal_github`/`signal_huggingface`.`artifact_state`, `signal_pypi.package_downloads`, `signal_semanticscholar.paper_citations`) — are **dependency contracts**, not governed assets (implemented 2026-08-29).
+External dependencies are **not** governed assets and carry no `role` — they live in the manifest below. Because a mirror is provenance and not ownership, every platform-authored mirror the repo reads is a **dependency contract** rather than a governed asset: the openness chain (`evidence.product_evidence`, `scores.openness_facts`, `scores.openness_computed`), the identity graph (`identity.*`), and the signal ingestion (`signal_github`/`signal_huggingface`.`artifact_state`, `signal_packages.downloads`, `signal_semanticscholar.paper_citations`, and the rest). `warehouse/dependencies.yaml` is the roster; this list is the shape, not the inventory.
 
 ## External dependency manifest — `warehouse/dependencies.yaml`
 
-Category-3 OSO inputs are recorded as **contracts**, not owned models. Proposed schema (per entry):
+Category-3 OSO inputs are recorded as **contracts**, not owned models. The schema, per entry:
 
 ```yaml
 - table: currentai.signal_github.artifact_state   # or an oso.* upstream
@@ -116,7 +117,6 @@ records a `content_contract_sha256` — the fingerprint of the agreed schema (ta
 date, and the gate recomputes it. A dependency entry confers **no** migration status, retirement policy,
 or namespace-cleanup obligation; a `currentai.*` mirror the repo will retire (the openness chain, #384)
 carries a `retirement_context` recording that the repo drives the retirement without owning the model.
-Implemented 2026-08-29.
 
 `owner: oso` means Carl Cervone (`@ccerv1`), an OSO maintainer, maintains the model. The OSO platform
 repository is private, so anyone else who needs a change to an `owner: oso` model opens an issue in this
@@ -133,7 +133,7 @@ core DAG nodes**. Three separate views replace the single all-asset graph:
 2. **Runtime dependencies** — OSO inputs (from `dependencies.yaml`) → map computation.
 3. **Compatibility / retirement appendix** — shims and their exits.
 
-## Anti-reintroduction gates (implemented 2026-08-29)
+## Anti-reintroduction gates
 
 Executable invariants over `assets.yaml` **and** `dependencies.yaml` together — so the manifest
 cannot itself grow into a new organization-wide inventory. Implemented in `build/assets.py`
@@ -192,36 +192,24 @@ verified ownership transfer to a named destination repo.
 | Catalog reference | `catalog.{country_populations,model_benchmarks,model_repos,pypi_downloads,osai_gap_map,osai_subcategory_mapping,taxonomy_crosswalk}` | Externalize or record as a dependency **only** where a (1)/(2) asset provably reads it. |
 | Over-scoped | `registry.foundation_model_repos` + `catalog.foundation_model_repos` | Externalize with the discovery pipeline it feeds. A registry *publication* responsibility for a `population: long_tail`, `release_path: false` table does not survive this boundary. |
 
-Per-asset ownership confirmation happens in the execution PR (step 5); a `long_tail` asset that a
-`governed-output` or `repo-computation` provably reads becomes a category-3 dependency contract instead
-of leaving entirely.
+Ownership is confirmed one asset at a time: a `long_tail` asset that a `governed-output` or
+`repo-computation` provably reads becomes a category-3 dependency contract instead of leaving
+entirely.
 
 ### The 4 questionable `gap_map` assets → resolve individually
 
-None currently participates in the canonical map pipeline (all `release_path: false`):
+None is on the canonical map pipeline (all `release_path: false`):
 
-| Asset | Finding | Proposed |
+| Asset | Finding | Disposition |
 |---|---|---|
-| `catalog.stack_map` | Repo bridge read by `scores.stack_contributors` + the `long-tail-explorer` notebook — neither is the canonical map. | Externalize (it serves the long-tail explorer). **This retires the `stack_map → registry.stack_map` transition** that was otherwise Phase 5's last unit. |
+| `catalog.stack_map` | Repo bridge read by `scores.stack_contributors` + the `long-tail-explorer` notebook — neither is the canonical map. | Externalize (it serves the long-tail explorer). **This retires the `stack_map → registry.stack_map` transition** rather than completing it. |
 | `scores.stack_contributors` | Repo analytical model, no in-repo reader, no reviewed platform consumer. | Externalize. |
 | `signal_artificialanalysis.model_evaluations` | No consumer at all (no repo, no platform, no notebook). | Drop from governed scope; record as a dependency only if a map use emerges. |
 | `signal_lmarena.text_leaderboard` | Read only by `ai_demand_curve.model_capability_current` (an out-of-scope platform product). | Externalize. |
 
 Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory.**
 
-## Execution sequence (all steps landed 2026-08-29)
-
-1. **Plan (#404):** the boundary rule, the role taxonomy, the `dependencies.yaml` spec, the
-   root-scoped-DAG design, the anti-reintroduction-gate design, and the classification above. Amended the
-   charter (`CLAUDE.md`).
-2. Add the `role` field to governed assets and create `warehouse/dependencies.yaml`.
-3. Root-scope the DAG generator and split the three views.
-4. Add the anti-reintroduction gates.
-5. Externalize the 24 (freeze under platform ownership, `frozen-without-producer`; remove from
-   inventory + publisher; **no OSO deletion**).
-6. Resolve the 4 individually.
-
-### No-orphan precondition for step 5
+## The no-orphan rule for leaving governance
 
 One rule, not a checklist (everything here is the same account, so a "responsible owner" field carries
 no signal): **do not leave a consumed table with no producer and no data.** Concretely, before removing
@@ -232,10 +220,10 @@ a source from this repo's inventory and publisher, confirm both:
 
 If a destination reproduces the table, point consumers there; if not, the deployed table simply freezes
 at its last publish, which is acceptable for the curated reference tables here **only while their
-consumers keep resolving**. `registry.foundation_model_repos` was called out as the case that must not
-be shortcut — its deployed table keeps serving `entities.models` — and steps 5–6 resolve it explicitly
-rather than by shortcut. Its sole consumer, `entities.models`, is **itself** one of the externalized
-tables: it too is frozen under platform ownership (`frozen-without-producer`, in the same receipt). So
+consumers keep resolving**. `registry.foundation_model_repos` is the case that must not be shortcut —
+its deployed table keeps serving `entities.models` — and the classification above resolves it
+explicitly. Its sole consumer, `entities.models`, is **itself** one of the externalized tables: it
+too is frozen under platform ownership (`frozen-without-producer`, in the same receipt). So
 this is a **frozen consumer reading a frozen producer** — both deployed tables retained on the platform
 at their last publish, neither with a repository producer, both out of this repo's governance. The
 no-orphan rule holds because the data is retained (the table is frozen, not deleted) and the consumer
@@ -248,10 +236,10 @@ rather than by reversing the platform deployment. (Had the consumer been a *live
 the producer would have had to stay produced until that reader was repointed; it is not, so it does
 not.)
 
-The Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry,
-`stack_map` → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is
-moot: steps 5–6 externalize those tables instead, so the moves have nowhere to run and the runbooks
-describing them do not apply.
+A platform migration that would move one of these tables into `registry` — `osai_subcategory_mapping`,
+`taxonomy_crosswalk`, `stack_map`, or any `entities`/`events`/`metrics`/analytical-`scores`
+consolidation — has nowhere to run under this boundary. The tables are outside governance, so a move
+into repo ownership is exactly what the rule refuses.
 
 ## Consequences
 
@@ -267,7 +255,7 @@ describing them do not apply.
 - The agent stops generating cross-org consistency work, because the boundary does not pull
   unrelated OSO assets into repository governance.
 
-## Addendum — reclaiming a dependency (2026-09-04)
+## Reclaiming a dependency
 
 An externalized table can come back. It becomes a legitimate category-3 input again when an in-scope
 governed asset starts reading it. The boundary rule is unchanged: what
@@ -320,8 +308,7 @@ neither externalized nor reclaimed; that the table is gone from `assets.yaml`, g
 `dependencies.yaml`, and produced by no repository model file; and that every archived hash
 reproduces from the base commit blob while the file is genuinely deleted. Those archived paths are
 also what satisfies the receipt's deleted-file completeness check — **this is the mechanism that
-makes deleting a model file legal at all**, and before it existed there was no honest way to record
-one.
+makes deleting a model file legal at all**, and the only honest way to record one.
 
 Note that the three lists are not pairwise disjoint in general, and are not meant to be: a `reclaims`
 record deliberately points *into* `assets`, because a reclaim is a transition out of a state that

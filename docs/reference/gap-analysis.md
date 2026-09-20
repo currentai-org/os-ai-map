@@ -113,8 +113,9 @@ Worth stating plainly, because the code makes them look alike and they behave op
 
 - **Null adoption abstains.** `_maturity_score` returns `None`, and `_stage_and_gaps` drops the
   product — "we can't judge what we can't measure, so they neither advance nor depress the
-  category's stage." Measured 2026-08-13: 20 products, 19 of them `closed`, which the open-only
-  counting rule already excluded. The abstention is real and costs nothing.
+  category's stage." Measured 2026-09-20: 39 products, 38 of them `closed` and one
+  `source_available`, every one of which the open-only counting rule already excluded. The
+  abstention is real and costs nothing.
 - **Null capability does not abstain.** It falls through to adoption alone, which reweights
   maturity from a blend to a single axis rather than declining to score. The product keeps
   counting toward the stage. It has a second effect worth stating because the code does not:
@@ -214,8 +215,9 @@ line the map is built to expose. Open-weights models therefore never advance a s
 also distinguishes resiliency from a single standout (see Stage 5).
 
 This is consequential but bounded: counting open-weights as fully open would move only a few
-categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2→3,
-`edge_hardware` 3→4), and would leave every infrastructure and tooling verdict unchanged.
+categories, all in the model layer (measured 2026-09-20: `base_pretrained` 3→5,
+`finetuned_chat` 3→4, `edge_hardware` 3→4, `scientific_ai_models` 1→3), and would leave every
+infrastructure and tooling verdict unchanged.
 
 ## Stages
 
@@ -307,8 +309,8 @@ the top of that axis at all.**
 
 The second clause exists because the first could leave a category saying nothing. The cutoffs are
 4 and the maturity bar is 4.5, so a product must reach 5 on an axis to be mature, and one sitting
-at exactly 4 and 4 clears both cutoffs while missing the bar. 32 fully-open products across 12
-categories sit there. Where such a product is its category's best, the category reported a stage
+at exactly 4 and 4 clears both cutoffs while missing the bar. Measured 2026-09-20, 33 fully-open
+products across 13 categories sit there. Where such a product is its category's best, the category reported a stage
 and no gaps, and a reader was told nothing about what was missing. `compilers` is the case: its
 best fully-open option is `coremltools` at 4/4, while `apache-tvm`, `iree` and `xla` reach
 capability 5 and, across 44 products, **nothing reaches adoption 5**. The capability exists in the
@@ -325,9 +327,11 @@ is NOT this state — it silences the per-product reading and leaves the categor
 a capability gap can still fire from a peer that recorded the axis. See the null-capability rule
 above. And a category that has topped both axes,
 but never in the same product, reports nothing — the parts exist and nobody has assembled them,
-which is a real state this vocabulary cannot yet name. That shape exists today in
-`training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
-at Stage 4 or 5, so none currently reaches this branch.
+which is a real state this vocabulary cannot yet name. Measured 2026-09-20 it holds in
+`agent_protocols`, `agent_tools_connectors`, `finetuning_code`, `inference_code`, `storage` and
+`training_synthetic_datasets`, and none of them reaches this branch: all but one are at Stage 4 or
+5, and in `agent_tools_connectors` the per-product reading fires first, so the category-level
+question is never asked.
 
 ### Declaring the disclosure gap
 
