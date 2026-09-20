@@ -26,10 +26,10 @@ Each `sources/scores/<slug>.yaml` carries two separate, analyst-assigned opennes
 | `openness.class` | categorical | An OSI / Model Openness Framework (MOF) label. In use today, by frequency: `open_source`, `closed`, `open`, `open_weights`, `open_core`, `source_available`, `documented`, `gated`, `restricted`, `open_toolchain`, `open_hardware`. [`openness-class-map.json`](../openness-class-map.json) is the authoritative list. |
 | `openness.score` | integer 0–5 | A graded openness score with a `components` breakdown (models: `weights / data / code / checkpoints / license`; software: OSI-class license tests; datasets: access / license / documentation). |
 
-Every non-null value needs a primary `sources:` entry. Both fields were originally assigned
-by hand against MOF/OSI, and that history is why `components`/`note` read as editorial prose.
+Every non-null value needs a primary `sources:` entry. Both are analyst judgments against
+MOF/OSI, which is why `components` and `note` read as editorial prose.
 
-**A deterministic formula now exists for most of the map.** Every category declares a
+**A deterministic formula covers most of the map.** Every category declares a
 `scoring_recipe` that names an ordered rule list over dimension values, and
 `build/check_rubric.py` replays it against each product's recorded `components` to check that
 the recorded score is the one the rules produce. Most recipes `extend` a shared ladder in
@@ -39,27 +39,21 @@ than one kind of product maps `extends` per product type.
 
 Three caveats, because "a formula exists" is easy to over-read:
 
-- **A recipe covers a category, not every product in it.** Every category has carried one since
-  2026-08-01, including compilers and storage, which arrived with theirs on 2026-08-18, and a small number of products are declared in a `deferred:` block, meaning the
-  category has said the ladder does not decide them. Those scores remain editorial.
-  `check_recipe` prints the per-category split and fails if a product abstains without being
-  declared — read its output for the current figure rather than trusting a number typed here.
+- **A recipe covers a category, not every product in it.** Every category declares one, and a
+  small number of products are declared in a `deferred:` block, meaning the category has said the
+  ladder does not decide them. Those scores remain editorial. `check_recipe` prints the
+  per-category split and fails if a product abstains without being declared — read its output for
+  the current figure rather than trusting a number typed here.
 - **A recipe reproducing a score does not validate it.** It shows the rules describe how the
   category was scored. The document-grade evidence the checker reads was parsed out of the
   same files the scores live in, so agreement is a fidelity check on the formula, not on the
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
-  not decide, usually because a dimension is not recorded in a form the ladder can read. As of
-  2026-09-12 there are 4 such products across 3 categories (`benchmark_eval_data` 2, and
-  `dataset_processing_tools` and `training_synthetic_datasets` 1 each). `edge_hardware`'s came
-  off that day: `rockchip-rk3588` was blocked on being asked a board question, and #219 gave the
-  hardware ladder a `form_factor` dimension so it asks a chipset about its datasheets and whether
-  anybody can buy one instead. The
-  compilers and storage promotions each added one and then closed it the same day: `liger-kernel`
-  and `pgvector` recorded `BSD-2-Clause` and the PostgreSQL License, which the shared `osi` tier
-  covers by definition and had never been asked to name. Down
-  from 81 before the August verification sweep. Deferred products publish no openness evidence
-  to the warehouse. `uv run python -m build.check_recipe` prints the live split.
+  not decide, and every entry carries the reason in a `because:` string. Two reasons account for
+  almost all of them: a license the ladder's tier list does not name, and a dimension not recorded
+  in a form the ladder can read. Both are rubric changes rather than per-product fixes, which is
+  why a deferral can be the right long-lived answer. Deferred products publish no openness
+  evidence to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 
 So openness is part computed and part editorial, and which one you are looking at depends on
 the category and the product. `docs/reference/evidence-and-freshness.md` tracks the work to close that gap.
@@ -74,16 +68,15 @@ across all score files shows the overlap:
 |-------|-----------------------------------|
 | 5 | `open_source`, `open`, `open_hardware` |
 | 4 | `open_core`, `open_weights`, `open`, `open_toolchain` |
-| 3 | `open_weights`, `open`, `documented`, `gated` |
+| 3 | `open_weights`, `open`, `source_available`, `documented`, `gated` |
 | 2 | `restricted`, `source_available`, `gated` |
 | 1 | `closed` |
 | 0 | `closed` |
 
-Regenerated 2026-08-14. The overlap is narrower than it was: the producible-pair check added in
-#128 found 17 pairs no rule in any recipe could emit, and correcting them is why `open_core` and
-`source_available` no longer appear at 3 and `open_core` no longer appears at 2. If you are
-reading this table long after that date, regenerate it rather than trusting it — the check is
-a few lines over `sources/scores/*.yaml`.
+Regenerated 2026-09-20; it is a few lines over `sources/scores/*.yaml`, so regenerate it rather
+than trusting it. What holds the overlap down is the producible-pair check, which rejects a
+score/class pair no rule in any recipe can emit — see
+`docs/reference/evidence-and-freshness.md`.
 
 A pretrained model at **2** is genuinely restricted/gated, because the model gradient is
 compressed (open weights typically land around 3, and you only reach 5 with a fully open
@@ -172,18 +165,12 @@ recorded license mapped to no tier, most of them nothing more than a spelling ga
 repo's shorthand and the name the Hub alias already produces, so the two stay consistent with
 each other.
 
-### What it changed, and why it was needed
+### What the scale settles
 
-Before the scale, the same license family was scored two ways. `Llama-3.1-Community` was
-`3/open_weights` on `llama-guard` in `safeguards` and `2/restricted` on `llama-instruct` in
-`finetuned_chat`. `CC-BY-NC` capped `command-r` at 2 while `CC-BY-NC-SA` left `personahub` at
-5. Of the ten products then carrying a bounded commercial license, six were recorded 2 and four
-were recorded 3.
-
-Applying the scale on 2026-08-01 moved seven scores: six from `2/restricted` to
-`3/open_weights` (`llama`, `codellama`, `llama-instruct`, `tulu`, `jamba-large`, `codegemma`)
-and `personahub` from `5/open` to `2/restricted`. Four products deferred in `safeguards`
-resolved without being touched, because they were already recorded where the scale puts them.
+One license family gets one cap wherever it appears. Without that, `Llama-3.1-Community` reads as
+`3/open_weights` in one category and `2/restricted` in another, and `CC-BY-NC` caps one corpus at
+2 while `CC-BY-NC-SA` leaves another at 5 — the same grant, two verdicts, decided by which
+category happened to read it.
 
 Two things worth knowing about the shape of it:
 
@@ -192,9 +179,9 @@ Two things worth knowing about the shape of it:
   fires ahead of the data and code rungs. The recipe is credited where it lives —
   `tulu-3-sft-mixture` is 5/open in `training_synthetic_datasets`, and the same recipe produces
   `olmo-3-instruct` at 5/open_source on an open base.
-- **`restricted` joined the dataset class vocabulary** for this. Datasets were the only product
-  type with no word between `open` and `gated`, which is exactly how a non-commercial corpus
-  came to sit in the `open` bucket.
+- **The dataset class vocabulary carries `restricted`** for this reason. It is otherwise the
+  only product type with no word between `open` and `gated`, which is how a non-commercial corpus
+  comes to sit in the `open` bucket.
 
 ### Creative Commons, vendor terms and other tier extensions
 
@@ -251,13 +238,11 @@ there is nothing in it to decompose. A compound whose operands *are* license nam
 belong in an `examples` list — that is a per-product override, and the operands belong there
 individually instead.
 
-Until 2026-08-11 resolution truncated the recorded value at its first `(` or `,` and so read
-only the first license. `internlm` resolved as `osi` on its Apache-2.0 code while the
-application-gated weights license that actually governs the download was never read;
-`smoltalk` and `flan-collection` both resolved as clean Apache-2.0 while the half saying the
-assembled components keep their own terms went unseen. Reading the whole value moved one
-published score — `flan-collection` from 4 to 3 — and left the other two where the analysts
-had already put them by hand.
+Reading only the first license in a compound is the failure this rule exists to prevent, and it
+overstates openness every time: `internlm` resolves as `osi` on its Apache-2.0 code while the
+application-gated weights license that governs the download goes unread, and `smoltalk` and
+`flan-collection` resolve as clean Apache-2.0 while the half saying the assembled components keep
+their own terms goes unseen.
 
 ### The `osi` tier's `examples`: literal spellings, and what's been added to it
 
@@ -270,7 +255,7 @@ not because the compound-resolution rule above picked the less restrictive one.
 
 Because the list is shared across every software category, adding a name for one product
 tiers every other product that happens to record it, so each addition is checked against the
-corpus before it lands. Two rulings extended `osi` past its founding set:
+corpus before it lands. Two names on the list carry a ruling worth reading:
 
 - **`GPL-2.0`**, for `slurm`. Slurm's `COPYING` body puts all Slurm code and documentation
   under the GNU General Public License. GPL-2.0 is OSI-approved and copyleft, which the
@@ -293,9 +278,9 @@ corpus before it lands. Two rulings extended `osi` past its founding set:
 Between `open` and `documented-not-released` on the pretrained-model data dimension sits
 `components-listed`: every component of the pretraining corpus is named and individually
 resolvable — a link, or a citation identifying that specific dataset — while the mixture or
-the sampling is withheld, so the corpus itself is not reproducible. RWKV is the case it was
+the sampling is withheld, so the corpus itself is not reproducible. RWKV is the case it is
 written for: a machine-readable index with a URL column naming every component dataset, with
-no assembled corpus and no reconstruction script (issue #106).
+no assembled corpus and no reconstruction script.
 
 **The discriminator is complete, per-component enumeration, not detail.** A composition
 described in prose stays `documented-not-released` however careful the prose, and so does a
@@ -307,7 +292,7 @@ weights.
 
 It scores exactly as `documented-not-released` does at every rung, deliberately: the gain is
 descriptive accuracy, not credit. Scoring it higher would reward publishing a list and shipping
-nothing, which is the objection #106 raised against its own proposal.
+nothing.
 
 Shapes that fail the enumeration test rather than the availability one, and so stay at
 `documented-not-released`: a partly synthetic mixture whose generated half is described rather
@@ -318,20 +303,16 @@ documentation naming what the model consumes rather than what it was trained on.
 
 The software ladder asks whether functionality is withheld from the published source for a
 paid tier, and records the answer under `core-gated` with values `gated` and `ungated`. The
-corpus also answered that question 54 times under `self-host`, in a vocabulary of its own:
-`yes`, `primary`, `only` on one side and `no`, `none`, `enterprise-only`, `enterprise-tier`
-on the other. Whether a vendor lets you run the published thing yourself *is* whether the
-core is withheld, so these were never two facts.
+corpus also answers that question under `self-host`, in a vocabulary of its own: `yes`,
+`primary`, `only` on one side and `no`, `none`, `enterprise-only`, `enterprise-tier` on the
+other. Whether a vendor lets you run the published thing yourself *is* whether the core is
+withheld, so these are one dimension recorded under two keys rather than two facts.
 
-Twenty-three records carried both keys at the time of the merge, and they never disagreed — 11
-`yes`/`ungated`, 10 `primary`/`ungated`, 2 `only`/`ungated`, and no contradictions in either
-direction. That agreement is what licensed the merge. Until 2026-08-11 `self-host` was an undeclared key,
-which meant it was dropped before the formula ran, and the 31 records that used it *instead*
-of `core-gated` left the dimension unanswered.
+An undeclared key is dropped before the formula runs, so a record answering only under
+`self-host` leaves the dimension unanswered and the ladder abstains. Two mechanisms carry the
+answer instead, and they do different jobs:
 
-Two mechanisms carry it, and they do different jobs:
-
-- **`reads:`** widens which recorded KEY answers a dimension. `core_gated` now reads
+- **`reads:`** widens which recorded KEY answers a dimension. `core_gated` reads
   `[core-gated, self-host]`, first key whose value lands in the enum winning.
 - **`value_aliases:`** widens which recorded VALUE does. `reads:` selects a key and takes its
   value verbatim, so a synonym key with its own vocabulary still reads as unanswered without
@@ -346,16 +327,12 @@ dimension reads as unanswered, and the formula abstains, which is the same treat
 unmapped license part gets and for the same reason: the software ladder declares no
 `otherwise`, so abstaining is what the ladder does with evidence it does not understand.
 
-The merge is conservative by construction, and the numbers say so. Of the 31 records whose
-answer changed, 28 kept the score they had: 26 of those are hosted products recording
-`source: closed`, where the first rung fires on `source` alone and `core_gated` is never
-read, and the software ladder already says the dimension is "only meaningful where `source`
-is public". This is the case worth being careful about — a hosted service has no core to gate
-— and rule ordering already neutralizes it. The remaining three had been deferred with the
-same sentence, that core-gated is not recorded in a form the ladder can read, while recording
-it under `self-host` all along. Two of them, `syfthub` and `thunderbolt`, reproduce their
-recorded 5/open_source exactly. One published score moved: `otari` from 4/open_core to
-5/open_source.
+Reading the second key is conservative by construction, and rule ordering is why. Most records
+answering under `self-host` alone are hosted products recording `source: closed`, where the first
+rung fires on `source` alone and `core_gated` is never read — the software ladder already says the
+dimension is "only meaningful where `source` is public". That is the case worth being careful
+about, since a hosted service has no core to gate, and the ordering neutralizes it before the
+dimension is consulted.
 
 ### Selling something is not gating a core
 
@@ -386,18 +363,16 @@ picture — one vendor, one paid platform — and they score differently:
 the other side with `langgraph`: its 4 rests on an `enterprise-dir` inside its own repo, not on
 the hosted product beside it.
 
-All five of the ungated cases had recorded 4/open_core on a `commercial:` clause — on the vendor
-selling something at all. `otari` was corrected on 2026-08-11 and the other four followed the
-same day. They were found only because a sweep happened to read `otari`'s record and infer the
-precedent, which is why the rule is now stated here and in `sources/rubrics/software.yaml`
-rather than left to be rediscovered.
+Every one of the ungated cases above is a product a `commercial:` clause would have scored
+4/open_core — on the vendor selling something at all. The rule is stated here and in
+`sources/rubrics/software.yaml` so it is applied from the rule rather than inferred from a
+precedent somebody happened to read.
 
 One caveat for anyone applying it: not every `core-gated: gated` in the corpus was recorded
 against this test. Some products reaching the gated rung record their gate as a managed cloud
 "on top" of a complete OSI core — the shape this section says is *ungated* — with no withheld
-component named. Those predate the rule and have not been re-read.
-A `gated` value is not evidence that somebody applied this rule; check what the record says is
-actually withheld.
+component named, and have not been re-read since. A `gated` value is not evidence that somebody
+applied this rule; check what the record says is actually withheld.
 
 ### The `ungated` acceptance standard, and why it is prospective
 
@@ -433,7 +408,7 @@ A harness that runs against a model you supply is scored on the harness. The mod
 be shipped alongside is a different product with its own score, and scoring the harness down for
 it would count the same license twice.
 
-`llamafirewall` is the case the rule was settled on (2026-08-12). It is an MIT firewall that
+`llamafirewall` is the case the rule is settled on. It is an MIT firewall that
 inspects prompts and code and calls out to whatever guard model you point it at; the PurpleLlama
 monorepo ships it next to Prompt Guard 2 and Llama Guard, which carry the use-restricted Llama
 Community License. The repository makes the split explicit — the root `LICENSE` is the Llama 3.2
@@ -441,7 +416,7 @@ Community License and `LlamaFirewall/LICENSE` is plain MIT — and both guard mo
 scored on this map at 3/open_weights. So the restrictive terms are not being overlooked; they are
 recorded against the artifact they actually govern. `llamafirewall` is 5/open_source.
 
-`openai-evals` was already resolved this way before the rule was written: it records
+`openai-evals` resolves the same way: it records
 `license: MIT`, `source: public(full framework + registry)` and
 `per-dataset-licenses: mixed(CC/CC0/Apache for bundled data)`, and scores 5 on the framework.
 Any further bundle of this shape resolves the same way.
@@ -465,12 +440,11 @@ reaches it; the CC-BY-4.0 records on `codecontests`, `dclm-baseline`, `gpqa`, `m
 are corpora scored by `dataset.yaml`'s own tier list, not this one.
 
 MCP is also the case for a narrower rule: **a license on the project's documentation is not a
-license on the product.** MCP's CC-BY-4.0 covers documentation other than the specifications,
-and had been recorded inside the `license` compound, where most-restrictive-wins let a license
-over the project's prose decide the score of the artifact people actually run. `autogen`
-records the identical shape the other way — MIT under `license`, CC-BY-4.0 under a `docs:` key
-this ladder does not read — and scores 5. Moving MCP's docs license out of the compound and
-into a key this ladder ignores returned it to 5/open_source.
+license on the product.** MCP's CC-BY-4.0 covers documentation other than the specifications, so
+it belongs under a `docs:` key this ladder does not read rather than inside the `license`
+compound, where most-restrictive-wins would let a license over the project's prose decide the
+score of the artifact people actually run. `autogen` records the identical shape — MIT under
+`license`, CC-BY-4.0 under `docs:` — and scores 5.
 
 **`Crawl4AI-Attribution-License`**, for `crawl4ai`. Its `LICENSE` is the stock Apache-2.0 text
 followed, after "END OF TERMS AND CONDITIONS", by an appended Attribution Requirement binding
@@ -542,9 +516,9 @@ capability note names the tier its number came from. One sentence each; the poin
 reader who takes the openness score as a statement about the benchmarked model is corrected by
 the record rather than by a maintainer.
 
-`voyage-embeddings` is the case the rule was settled on (2026-09-11). Openness reads
-voyage-4-nano's Apache-2.0 weights and scores 3/open_weights; capability reads the flagship's
-RTEB result and scores 4, and the flagship is API-only. Both notes now say so.
+`voyage-embeddings` is the case the rule is settled on. Openness reads voyage-4-nano's
+Apache-2.0 weights and scores 3/open_weights; capability reads the flagship's RTEB result and
+scores 4, and the flagship is API-only. Both notes say which tier they read.
 
 It is not split into two products, and the near-miss says why. `esm-3` ships the same shape - a
 1.4B checkpoint you can download beside 7B and 98B tiers served through the Forge API - but its
@@ -561,7 +535,7 @@ so a reader can tell the difference.
 An add-on is not a board, and asking board questions of one answers about the wrong artifact.
 What a builder gets from a HAT or a carrier is the openness of the system it completes.
 
-`raspberry-pi-ai-hat-plus` is the case (2026-08-12). It publishes a HAT+ mechanical specification
+`raspberry-pi-ai-hat-plus` is the case. It publishes a HAT+ mechanical specification
 rather than board design files, and its toolchain is half open — the Pi driver integration is
 open, Hailo's Dataflow Compiler is registration-gated. Both of its own answers are `partial` and
 neither describes the system anyone runs. It plugs into a `raspberry-pi-5`, and takes that board's
@@ -574,24 +548,22 @@ reproduced the number the HAT then held and been non-monotonic: `ti-am67a` and
 strictly weaker evidence strictly higher. An accessory records its host rather than needing a
 rung of its own.
 
-The dimension earned itself on 2026-08-14, sooner than expected. `raspberry-pi-5` was corrected
-from 4 to 3 — it publishes a mechanical drawing and two STEP files and no schematic of the board,
-where the record had claimed reduced schematics, which is a Pi 4 document — and the HAT followed
-it to 3/documented without any new evidence about the HAT. A frozen number would have left the
-accessory reading more open than the system it completes. That is why `accessory_host` now has a
-rung for each host class the corpus has seen, `open_toolchain` and `documented`, and none for
-`open_hardware`, which no accessory has met.
+Tracking the host rather than freezing a number is what keeps the accessory honest when the host
+moves: when `raspberry-pi-5` reads 3/documented, the HAT reads 3/documented with it, without any
+new evidence about the HAT. A frozen number would leave the accessory reading more open than the
+system it completes. `accessory_host` carries a rung for each host class the corpus holds,
+`open_toolchain` and `documented`, and none for `open_hardware`, which no accessory has met.
 
 ### A board question asked of a chipset answers about the wrong artifact
 
-The same lesson one kind of product over, ruled on 2026-09-08 and landed in #219.
+The same lesson one kind of product over.
 
 `edge_hardware` holds boards, modules and bare chipsets, and five of the ladder's eight rungs turn
 on `schematics` — were the board design files published, and may they be reused. A chipset has no
-board, so it records nothing there, correctly, and the ladder abstained. `rockchip-rk3588` sat
-deferred for a month on a question it could not be asked.
+board, so it records nothing there, correctly, and a ladder without a chipset rung abstains on it:
+the product is deferred on a question it cannot be asked.
 
-`form_factor` (`board` / `module` / `chipset`) is recorded on all 20 products and decides which
+`form_factor` (`board` / `module` / `chipset`) is recorded on every product in the category and decides which
 questions apply before any of them are asked. A chipset takes a rung of its own, testing whether
 its datasheets are public and whether anybody can buy one — which is what `documented` means in
 this category, "datasheets public + buyable, but no design files of its own". A module keeps the
@@ -635,8 +607,7 @@ the roster records that pair, so a rung for it would be unreachable and therefor
 The same reasoning keeps a `restricted`/1 rung out of the formula entirely, even though the
 category's own prose ladder describes one (an NDA, a design win, or a private-sale-only part) and
 the vocabulary for it — `datasheets: nda`, `retail: restricted` — is fully declared. No product
-on the roster is one, so declaring the rung now would add a rule that cannot fire, which is what
-issue #133 looked like the last time it went wrong. A chipset that would sit on that rung today —
+on the roster is one, so declaring the rung would add a rule that cannot fire. A chipset that would sit on that rung today —
 one recording `datasheets: nda` or `availability: gated` — matches no rung instead, and the
 category defers it with a reason. That is a weaker claim than 1/restricted, and the only one the
 evidence supports: being unable to read a datasheet is not the same finding as a vendor gating the
@@ -682,15 +653,12 @@ as a side effect.
 `hardware.yaml`'s `blobs` dimension — does booting or inference need proprietary firmware — is
 declared, recorded on every product, and tested by no rung: every part in the category runs on a
 proprietary SoC that needs firmware, so it is a caveat on every product in the category and a
-discriminator between none of them. The category's prose ladder once defined level 5 as "open
-schematics + open toolchain, no blobs," which was unreachable for that reason — `beagley-ai`, the
-category's only 5, needs firmware like every other product on the roster. That text was corrected
-in #132.
+discriminator between none of them. It follows that level 5 cannot ask for "no blobs" — that would
+be unreachable, `beagley-ai` included, and the category's prose ladder does not ask for it.
 
-The values themselves went undefined for longer than they should have, and it showed: without a
-definition, a curator had to guess at where the line between `minimal` and `required` sat, and
-guesses did not agree with each other for the same shape of fact. The test is **necessity, not
-size**, settled in #264:
+The values need definitions, because without one a curator guesses at where the line between
+`minimal` and `required` sits and two guesses disagree on the same shape of fact. The test is
+**necessity, not size**:
 
 - `none` — boots and runs inference with no proprietary firmware. Nothing in this category
   records it, and nothing is expected to.
@@ -725,9 +693,9 @@ So MOF's binary line sits between the `open` bucket and the `open-ish` bucket, e
 MOF puts it, and our 4/3/2/1 subdivide what MOF treats as one undifferentiated
 "source-available" bucket. `render.py` calls this the "strict OSI/MOF cut".
 `tests/test_openness_buckets.py` enforces it against every ladder, and it is a live check
-rather than a comment: `software.yaml` carried two rungs emitting `open_core` and
-`open_source` from its `permissive_non_osi` tier, and they went unnoticed because that tier's
-`examples` list is empty so the rungs could never fire.
+rather than a comment: a rung emitting an `open`-bucket class from a non-OSI license tier breaks
+the rule whether or not it can currently fire, and an empty `examples` list is exactly what keeps
+such a rung from being noticed by reading.
 
 ### Two places the map deliberately departs from MOF
 
@@ -742,11 +710,10 @@ Both are choices, not oversights, and neither moves the binary line.
   training logs — none of which we score.
 - **We rank acceptable-use policies above commercial caps; MOF ranks neither.** MOF excludes
   a release that implements "restrictions or acceptable uses" outright. We put an
-  attribution-or-conduct license at 4 and a 700M-MAU commercial cap at 3, on the reasoning
-  settled in issue #117: a prohibition on illegal or military use caps neither commerce nor
-  reach, and collapsing it into the same bucket as a revenue ceiling discards information the
-  map exists to surface. Both still sit below the `open` bucket, so the outcome agrees with
-  MOF even where the reasoning does not.
+  attribution-or-conduct license at 4 and a 700M-MAU commercial cap at 3: a prohibition on illegal
+  or military use caps neither commerce nor reach, and collapsing it into the same bucket as a
+  revenue ceiling discards information the map exists to surface. Both still sit below the `open`
+  bucket, so the outcome agrees with MOF even where the reasoning does not.
 
 ### Where the boundary is currently weakest
 
@@ -754,7 +721,7 @@ The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `rest
 and `closed`, and `open` is the only word above `gated`, so every corpus classed `open` sits
 in that bucket, including ones scored below 5. A model at 4
 is `open_weights` and open-ish; a corpus at 4 is `open`. `the-pile` (license deferring to
-per-subset terms, Books3 withdrawn) and `stack-edu` (deferring to The Stack v2's gated terms)
+per-subset terms, Books3 removed) and `stack-edu` (deferring to The Stack v2's gated terms)
 are counted as open on that basis. Closing it means giving the vocabulary a middle class and
 re-scoring, so the two rungs involved sit in `KNOWN_VIOLATIONS` in the bucket test with the
 reasoning attached, and the test fails if that list stops being accurate in either direction.
@@ -791,11 +758,11 @@ that difference, `answers` can, and the two rungs it feeds — `held-out` and `p
 recorded spelling of the same shape — sit ahead of the gate rungs, because a benchmark you cannot
 score yourself is a bigger limitation than a login wall.
 
-One value was tried here and removed: `public`, declared for a symmetrical-looking rung and
-caught by `check_recipe` because no rung tested it while a dozen other keys — `paper:public`,
-`splits:public` — carry the same word for an unrelated fact. Declaring it made those keys read as
-answer evidence on products that record no answer state at all. A value earns a place in a
-dimension's vocabulary only if it is unambiguous there; `public` was not.
+`public` is deliberately not a value of this dimension. A dozen other keys — `paper:public`,
+`splits:public` — carry the same word for an unrelated fact, so declaring it would make those keys
+read as answer evidence on products recording no answer state at all, and `check_recipe` reports it
+because no rung tests it. A value earns a place in a dimension's vocabulary only if it is
+unambiguous there.
 
 ### A card is required at the top rung so unrecorded evidence cannot resolve as clean
 
@@ -804,7 +771,7 @@ a barrier" is a distinct token, and every spelling of "no barrier" — including
 nothing — falls through toward the open end. Left alone, that would let "nobody recorded an
 availability key" resolve the same as "ungated," which is not the same finding. Requiring a
 dataset card at the top rung closes that gap: a corpus reaches 5/open only with a license, an
-ungated download, *and* documentation, so silence at the gate can no longer masquerade as an
+ungated download, *and* documentation, so silence at the gate cannot masquerade as an
 open door.
 
 `present` and `card`/`dataset_card` are one fact recorded under `documentation` in

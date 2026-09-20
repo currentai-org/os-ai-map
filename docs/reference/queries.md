@@ -7,11 +7,11 @@ inventories only the tables this repo **governs** — the `registry`, `observati
 datasets. Every `signal_*` table is now a read-only mirror of a platform-owned model, so none of them
 is governed; they are dependency contracts in `warehouse/dependencies.yaml`. `docs/architecture/data-architecture.md` documents both.
 
-The datasets below (`catalog`, `signal_goodailist`, `entities`, `events`, `metrics`, `scores`) were
+The datasets below (`catalog`, `signal_goodailist`, `entities`, `events`, `metrics`, `scores`) are
 **externalized under ADR-003**: they model the OSO organization, not the Gap Map's data system, so they
-are frozen under platform ownership and are no longer repo-maintained. They still exist on the platform
+are frozen under platform ownership and are not repo-maintained. They still exist on the platform
 and can be queried, but treat them as OSO tables, not repo-governed assets. The worked examples further
-down that read them are historical.
+down read frozen data.
 
 | Dataset | Type | Key tables | Scope |
 |---------|------|------------|-------|
@@ -40,7 +40,7 @@ SELECT * FROM currentai.scores.repos_summary WHERE country = 'France' ORDER BY s
 
 **Project-level data,** `scores.project_summary`:
 ```sql
--- FROZEN (ADR-003): historical, no longer refreshed.
+-- FROZEN (ADR-003): historical, not refreshed.
 SELECT * FROM currentai.scores.project_summary ORDER BY total_stars DESC LIMIT 20
 ```
 

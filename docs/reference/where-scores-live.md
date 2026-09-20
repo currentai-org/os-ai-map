@@ -1,7 +1,7 @@
 # Where each axis lives, in the repo and in the warehouse
 
-Written 2026-08-19 from a sweep of every dataset in the `currentai` org: **22 datasets, 95
-tables**, every column name matched against `adopt|capab|combined_score|maturity|overall|score`.
+Every dataset in the `currentai` org, with every column name matched against
+`adopt|capab|combined_score|maturity|overall|score`.
 
 The short answer, and the distinction that gets missed: **`sources/` is the source of truth for
 all three axes, and `currentai.registry.product_scores` is a complete current mirror of it** —
@@ -58,10 +58,10 @@ other three.
 
 Both working names are steady state, not transients. `os-ai-map_staging` exists while a load
 runs. `os-ai-map_previous` exists **between** runs and holds the entire previous corpus —
-tables, rows, enum types, and the `SELECT` grant that travelled with the rename — until the
+tables, rows, enum types, and the `SELECT` grant that travelled with it — until the
 start of the next publish reclaims it. So the database normally carries two readable copies of
 the map: the live one and the one it replaced. Storage is roughly double, and anything that can
-read `os-ai-map` can also read the superseded corpus under `os-ai-map_previous`. Nothing is
+read `os-ai-map` can also read the previous corpus under `os-ai-map_previous`. Nothing is
 meant to, and the publisher does not stop anything from trying — do not build against that
 name.
 
@@ -91,12 +91,12 @@ showing.
 
 **Ids are stable across loads, and the slug is still the identity.** Every surrogate `id` in
 the map group is `stable_id(table, natural_key)` — the first 63 bits of a SHA-256 over the
-table name and the row's own key. Ids used to be positions in a sorted list, so adding one
-product renumbered every row after it and any id that had reached a URL, a cache or a CMS row
-pointed at a different product after the next publish. A hashed id does not move when the
-corpus grows, so it is safe to store as an internal reference. Hashing the table name in as
-well means the same slug in two tables gets two different ids, and a join that crosses tables
-by mistake matches nothing rather than appearing to work.
+table name and the row's own key. A positional id — a row's index in a sorted list — cannot do
+this: adding one product renumbers every row after it, and any id that has reached a URL, a
+cache or a CMS row points at a different product after the next publish. A hashed id does not
+move when the corpus grows, so it is safe to store as an internal reference. Hashing the table
+name in as well means the same slug in two tables gets two different ids, and a join that
+crosses tables by mistake matches nothing rather than appearing to work.
 
 The natural key per table: `products.slug`, `categories.slug`, `layers` and `gaps` by their
 label, `stages` by their stage number, `long_tail_top` by its name, `product_lineage` by
@@ -181,7 +181,7 @@ Four places, all deliberate, all in `build/neon_schema.py`:
 |---|---|
 | `id` and every column referencing one are `bigint`, not `integer` | The ids are 63-bit hashes. 63 rather than 64 because Postgres has no unsigned integer and half the ids would otherwise be negative. |
 | `categories.slug`, which the DBML omits | Every deep link is by slug, and so is every join from the warehouse's registry tables; it carries a `UNIQUE` for the same reason. |
-| `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | The old positional ids carried the layer stack order, the map's curated category order, the long tail's ranking and the stage number — `categories.stage` *was* the stage number, and `stages.id` was the number it pointed at. A hashed id carries none of that, and the model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So it moved into columns of its own; `ORDER BY sort_order` is what `ORDER BY id` used to mean. |
+| `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | A positional id carries an ordering — the layer stack, the map's curated category order, the long tail's ranking, the stage number — and a hashed id carries none of it. The model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So each ordering gets a column of its own, and `ORDER BY sort_order` is the query that means what `ORDER BY id` would have. |
 | `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
 
 ### Two things the designers should know about the data
@@ -212,12 +212,12 @@ lock — one slow reader stalling every reader for as long as it runs. Pure cata
 no table locks. `lock_timeout` is 5s on the session and the swap transaction is retried three
 times with backoff, because the schema's own catalog row can still be contended.
 
-The old schema stays as `os-ai-map_previous` and is reclaimed at the *start* of the next run,
+The previous schema stays as `os-ai-map_previous` and is reclaimed at the *start* of the next run,
 after `pg_depend` is checked for dependents outside the three schemas this publisher manages.
 If any exist the run fails listing them, rather than dropping. `PROTECTED_SCHEMAS` stops the
 publisher naming someone else's schema, but CASCADE follows dependencies, not schema
 membership: a view in `payload` over `os-ai-map.products`, or a foreign key from a CMS table
-into it, still depends on that table after the rename. Without the check, a CASCADE would drop
+into it, still depends on that table after the schema is renamed. Without the check, a CASCADE would drop
 that object too, in its own schema, silently, on every publish.
 
 There is no migration tool, and for now there does not need to be one: every publish rebuilds
@@ -258,9 +258,8 @@ product declares:
 | `pypi` / `npm` / `crates` | 30-day downloads, summed per product | nearly always |
 | `github` | stars, a declared **fallback** | about half the time |
 
-The three per-dataset `signal_*.product_adoption` models that used to carry these bands were
-retired on 2026-09-14 (#562). The raw measurement now lives at artifact grain in
-`currentai.observations.product_adoption_current`, and the band is computed once by
+No per-dataset `signal_*` model carries these bands. The raw measurement lives at artifact grain
+in `currentai.observations.product_adoption_current`, and the band is computed once by
 `build/adoption_measurements.py` from the compiled `registry.adoption_*` routing. Note that
 its published table, `currentai.evaluation.product_adoption_measurements`, is uploaded by a
 manual runbook and carries no schedule, so it is not a live read.
@@ -275,10 +274,10 @@ That is the fallback behaving like a fallback: stars are a weaker proxy than dow
 lower on their own scale, and `docs/reference/adoption.md` is explicit that a band is only comparable
 within its `signal_type`. So the disagreements are not errors. They are products whose adoption
 rests on the weakest instrument the map has, banded above what that instrument alone would
-support, with no gate over any of it. Worth a pass, not a correction sweep.
+support, with no gate over any of it. Worth a pass rather than a sweep.
 
 **A newly promoted product has no signal rows until the next cron.** The signal crons are
-Sunday, so the batch promoted on 2026-08-19 was first measurable on 2026-08-23.
+Sunday, so a batch promoted midweek is first measurable the following Sunday.
 
 ## Capability — mirrored, never recomputed
 
@@ -297,7 +296,7 @@ Four things carry columns named like ours and answer a different question.
 |---|---|---|
 | `currentai.stack_map.product_scores` | The **v1 hand-scored upload**: `adoption_level`, `capability_score`, `capability_value`, `combined_score` per product | **Frozen.** 282 products, 11 categories, newest `last_verified` 2026-05-29, keyed on `product_name` rather than slug. **No deployed model reads it.** |
 | `currentai.catalog.stack_map` | The repo→warehouse taxonomy bridge, carrying `adoption`, `capability`, `maturity` per product | **Externalized and frozen (ADR-003).** Out of the Gap Map's data system; removed from this repo's inventory and its producer archived, frozen under platform ownership at its last publish. Its former reader `scores.stack_contributors` was externalized with it. Not a repo-maintained table. |
-| `currentai.catalog.osai_gap_map` | The **external** OSAI gap map: `ease_of_adoption`, `maturity`, `overall_score` | **Externalized and frozen (ADR-003).** A different organisation's taxonomy and scale — not our products, not our axes — and no longer repo-maintained, so it is frozen at its last publish as well as being the wrong scale to compare against. |
+| `currentai.catalog.osai_gap_map` | The **external** OSAI gap map: `ease_of_adoption`, `maturity`, `overall_score` | **Externalized and frozen (ADR-003).** A different organisation's taxonomy and scale — not our products, not our axes — and not repo-maintained, so it is frozen at its last publish as well as being the wrong scale to compare against. |
 | `currentai.ai_demand_curve.*` | `capability_score`, `adoption_level` against **OpenRouter/LMArena models** | Keyed to model names from a leaderboard, not to gap-map product slugs. |
 
 `currentai.stack_map.category_scores` and `.gap` are the same v1 freeze at category grain.

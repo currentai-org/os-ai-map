@@ -43,9 +43,9 @@ Map governance.** The symptom, from the current inventory (dated reading, 2026-0
 
 That is why the migration keeps generating namespace moves, schedules, compatibility states, audit
 receipts and retirement obligations: the complexity is produced by the repository's boundary, not by the
-Gap Map. Recent `registry.foundation_model_repos` work (#397/#400) is a concrete instance — a
-`population: long_tail`, `release_path: false` table that exists only to feed `entities.models` became a
-registry *publication* responsibility. It should not have.
+Gap Map. `registry.foundation_model_repos` is the concrete instance — a `population: long_tail`,
+`release_path: false` table that exists only to feed `entities.models`, carrying a registry
+*publication* responsibility it should never have acquired.
 
 ## Decision — the boundary rule
 
@@ -87,7 +87,7 @@ Every governed asset declares a `role`, so membership is asserted, not inferred 
 | `governed-output` | a **published Gap Map artifact whose schema and publication lifecycle are owned here** — regardless of whether its rows come exclusively from `sources/` (so the `evaluation.*` release-path publications, derived partly from `observations`, qualify) | `release_path: true`; `authority: repo` |
 | `repo-computation` | repo-**owned** SQL/Python implementing or auditing map semantics | has a model file; `authority: repo`. A `mirror:` block proves provenance, not ownership, so a platform-authored mirror is **not** a repo-computation — it is a dependency contract |
 | `governed-data` | a repo-**owned** data or control artifact that is not a computation — the frozen adoption baseline (bytes, not a query) and the `source_runs` control snapshot | `authority: repo`; not `release_path`; no model file |
-| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement`; `authority: repo`, enforced like every other role — **amended 2026-09-20 (#517)**: this row used to add "may be a platform mirror, since a shim is transitional by definition", which let a platform-authored model be governed here on the strength of being temporary. A role does not change who owns the bytes. The carve-out had exactly two instances, `signal_github.repo_state` and `signal_huggingface.hub_state`, and both were retired the day it was withdrawn |
+| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement`; `authority: repo`, enforced like every other role. A shim is transitional by definition, and that is **not** a reason to admit a platform mirror: a role does not change who owns the bytes, so a platform-authored model is a dependency contract however temporary |
 
 External dependencies are **not** governed assets and carry no `role` — they live in the manifest below. Because a mirror is provenance and not ownership, the seven platform-authored mirrors the repo reads — the openness chain (`evidence.product_evidence`, `scores.openness_facts`, `scores.openness_computed`) and the signal ingestion (`signal_github`/`signal_huggingface`.`artifact_state`, `signal_pypi.package_downloads`, `signal_semanticscholar.paper_citations`) — are **dependency contracts**, not governed assets (implemented 2026-08-29).
 
@@ -150,8 +150,8 @@ peripheral table — from re-entering the governed inventory.
 2. **Every external table a repo computation reads appears in `dependencies.yaml` exactly once** — a
    platform-authored input is a dependency contract, not a governed asset. A repo-authored
    `compatibility-shim` is a governed asset by design and so is not an exception to this; a
-   platform-authored one is a contract like any other platform-authored model (amended 2026-09-20,
-   #517 — see the role table and gate 7).
+   platform-authored one is a contract like any other platform-authored model (see the role table
+   and gate 7).
 3. **A dependency cannot also appear in `assets.yaml`** (and a governed asset cannot appear in
    `dependencies.yaml`) — the two files are disjoint.
 4. **Every dependency is referenced by at least one named repo computation** (`required_by`), and
@@ -166,16 +166,14 @@ peripheral table — from re-entering the governed inventory.
    tail", which obscures ownership — the analytics pipeline externalizes, the tail-candidate registry
    stays and is not `long_tail`.
 7. **The `PLATFORM MIRROR (read-only)` banner and the manifests agree about ownership**
-   (`mirror_ownership_violations`, added 2026-09-20 under #517 — later than the rest of this
-   section). A banner-carrying `warehouse/models/` file is a `dependencies.yaml` contract; it is a
-   violation for it to be a governed asset, with **no exemption for any role**, and a violation for
-   it to be in neither file. A contract's mirror file without the banner fails the same gate from
-   the other side. This is the ownership half of what `dependency_mirror_provenance_violations`
-   does for bytes: the banner is the file's own claim, and it is the only side of the comparison a
-   manifest edit cannot move. The gate was written with a `compatibility-shim` exemption and it
-   was taken out before the gate first ran green, because the exemption's only two instances were
-   being retired in the same change — an exemption with no instance is an exemption available to
-   the next file that wants one.
+   (`mirror_ownership_violations`). A banner-carrying `warehouse/models/` file is a
+   `dependencies.yaml` contract; it is a violation for it to be a governed asset, with **no
+   exemption for any role**, and a violation for it to be in neither file. A contract's mirror file
+   without the banner fails the same gate from the other side. This is the ownership half of what
+   `dependency_mirror_provenance_violations` does for bytes: the banner is the file's own claim,
+   and it is the only side of the comparison a manifest edit cannot move. The gate carries no
+   `compatibility-shim` exemption, because an exemption with no instance is an exemption available
+   to the next file that wants one.
 
 ## Classification of the peripheral assets (for freeze under platform ownership, not deletion)
 
@@ -192,7 +190,7 @@ verified ownership transfer to a named destination repo.
 | Activity pipeline | `events.github_events`, `metrics.daily` | Externalize. Feeds `oss-ai-trends` + platform products. |
 | Analytical scores | `scores.{dependency_graph,fragility,ossd_coverage,project_summary,repos_summary,investment_ranking,taxonomy}` | Externalize. Platform analytics; none is `release_path`. |
 | Catalog reference | `catalog.{country_populations,model_benchmarks,model_repos,pypi_downloads,osai_gap_map,osai_subcategory_mapping,taxonomy_crosswalk}` | Externalize or record as a dependency **only** where a (1)/(2) asset provably reads it. |
-| Recently over-scoped | `registry.foundation_model_repos` + `catalog.foundation_model_repos` | Externalize with the discovery pipeline it feeds. **This partly unwinds #397/#400** — noted honestly; the registry publication was created under the old boundary and should not persist under this one. |
+| Over-scoped | `registry.foundation_model_repos` + `catalog.foundation_model_repos` | Externalize with the discovery pipeline it feeds. A registry *publication* responsibility for a `population: long_tail`, `release_path: false` table does not survive this boundary. |
 
 Per-asset ownership confirmation happens in the execution PR (step 5); a `long_tail` asset that a
 `governed-output` or `repo-computation` provably reads becomes a category-3 dependency contract instead
@@ -244,16 +242,16 @@ no-orphan rule holds because the data is retained (the table is frozen, not dele
 still resolves against it; there is no repo-side staleness because neither table is regenerated here.
 **This ADR authorizes that frozen dependency explicitly, accepting its staleness and availability
 risk:** `registry.foundation_model_repos` and `entities.models` are static at their last platform
-publish, and the platform maintainer owns keeping them live or retiring the pair together — the
-repository no longer does. This is why the `#397`/`#400` registry publication is unwound by freezing the
-deployed table, not by reversing the platform deployment. (Had the consumer been a *live governed*
-asset, the producer would have had to stay produced until that reader was repointed; it is not, so it
-does not.)
+publish, and the platform maintainer owns keeping them live or retiring the pair together; the
+repository does not. That is why a registry publication is unwound by freezing the deployed table
+rather than by reversing the platform deployment. (Had the consumer been a *live governed* asset,
+the producer would have had to stay produced until that reader was repointed; it is not, so it does
+not.)
 
-The Phase-5 platform migration those runbooks described (`osai_subcategory_mapping`/`taxonomy_crosswalk`
-→ registry, `stack_map` → registry, and any `entities`/`events`/`metrics`/analytical-`scores`
-consolidation) was never executed: steps 5–6 externalized those tables instead, so the moves are moot
-and their runbooks stay superseded.
+The Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry,
+`stack_map` → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is
+moot: steps 5–6 externalize those tables instead, so the moves have nowhere to run and the runbooks
+describing them do not apply.
 
 ## Consequences
 
@@ -261,13 +259,13 @@ and their runbooks stay superseded.
   outputs, the openness/adoption computation and its real OSO dependencies, plus compatibility shims).
 - Parts of ADR-002 are superseded: catalog reference tables it routed *into* `registry` are instead
   **externalized**, because ownership follows the scope rule, not the provenance shape.
-- Recent `foundation_model_repos` work (#397/#400) is unwound **by freezing the deployed table, not by
-  reversing the platform deployment** (see the no-orphan precondition): its repo producer/publisher are
-  removed and the deployed `registry.foundation_model_repos` keeps serving `entities.models` frozen at
-  its last publish (disposition `frozen-without-producer`). The honest cost of having migrated under the
-  old boundary — a freeze, not a completed ownership transfer.
-- The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
-  OSO assets into repository governance.
+- `foundation_model_repos` is unwound **by freezing the deployed table, not by reversing the
+  platform deployment** (see the no-orphan precondition): its repo producer and publisher are
+  removed and the deployed `registry.foundation_model_repos` keeps serving `entities.models` frozen
+  at its last publish (disposition `frozen-without-producer`). That is a freeze rather than a
+  completed ownership transfer, which is the honest cost of the table having been migrated at all.
+- The agent stops generating cross-org consistency work, because the boundary does not pull
+  unrelated OSO assets into repository governance.
 
 ## Addendum — reclaiming a dependency (2026-09-04)
 
@@ -280,7 +278,7 @@ The transition is recorded, not erased. `warehouse/audits/externalization.json` 
 the disposition history reads **in-scope → externalized (`frozen-without-producer` or `transferred`)
 → `reclaimed-as-dependency`**: the original entry in `assets` is left byte-identical, and a `reclaims`
 record is appended alongside it carrying `table`, `prior_disposition`, `prior_date`,
-`new_disposition`, `date`, `reason`, and `governed_reader` — the in-repo file that now reads the
+`new_disposition`, `date`, `reason`, and `governed_reader` — the in-repo file that reads the
 table.
 
 `reclaimed-as-dependency` means the table is **still platform-owned and still not deployed from this
@@ -315,7 +313,7 @@ because they are not the same thing to a reader deciding whether they can still 
 - **`deleted`** — the dataset or model was removed; the table does not resolve.
 - **`archived`** — the deployed table is retained and readable, but nothing refreshes it.
 - **`irrelevant`** — still live and possibly still refreshing, but nothing here reads it and the repo
-  no longer asserts anything about it.
+  asserts nothing about it.
 
 `build.assets.retirement_violations()` enforces it: shape and a real ISO date; that a retired table is
 neither externalized nor reclaimed; that the table is gone from `assets.yaml`, gone from
