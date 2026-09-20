@@ -66,6 +66,19 @@ jobs:
       - name: Notebook structure check
         run: |
           uv run marimo check notebooks/ai-stack-map.py
+
+      # The tests whose INPUT is the file this workflow just rewrote. validate.yml runs the
+      # whole suite on every PR, but it runs it on the PR's commit - and the payload is not
+      # regenerated until after merge, by this workflow, which until 2026-09-18 ran no tests at
+      # all. So a payload that fails its own tests could land on main with every check green,
+      # and on 2026-09-18 one did: #620 shrank the corpus, the bot committed the smaller
+      # payload, and no `validate` run ever existed for that SHA.
+      #
+      # Marker rather than a list of files, so a new payload-reading test is gated by declaring
+      # itself rather than by somebody remembering to edit this step.
+      - name: Gate the regenerated payload against its own tests
+        run: uv run pytest -q -m payload
+
       - name: Commit regenerated artifacts
         run: |
           ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md tests/goldens/corpus.json"
