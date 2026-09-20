@@ -186,8 +186,9 @@ CHRONOLOGY_BACKLOG: dict[str, dict[str, str]] = {
             "open work — the openness chain the repo will retire. A pointer to work that has "
             "not happened",
         "#404":
-            "open work — the planning issue the ADR's own execution sequence is keyed to, and "
-            "the only place the role taxonomy's derivation is recorded",
+            "ADR mechanics — step 1 of the ADR's own execution sequence, which is where the "
+            "boundary rule and the role taxonomy were argued. The ADR is the record of a "
+            "decision, and this is the decision's first step",
     },
     "docs/architecture/adr-004-machine-proposals-and-the-public-tail.md": {
         "supersedes":
