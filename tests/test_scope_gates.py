@@ -945,6 +945,55 @@ def test_retired_table_that_a_repository_file_still_produces_is_flagged(monkeypa
     assert any("still produces it" in v for v in A.retirement_violations())
 
 
+def test_retired_table_that_is_still_a_platform_model_consumer_is_flagged(monkeypatch):
+    """A live asset's `platform_model_consumers` is an assertion about a deployed model, so a
+    retired table's name there is the repo asserting what it has just withdrawn.
+
+    This surface only became reachable on 2026-09-20 (#517). The three earlier retirements had
+    their platform models DELETED, so they left the audit receipt that field derives from on the
+    next audit; `signal_github.repo_state` and `signal_huggingface.hub_state` are kept
+    deployed-but-disabled on purpose and do not leave it.
+    """
+    r = _real_receipt()
+    rec = _retirement(r)
+    _serve(monkeypatch, r)
+    monkeypatch.setattr(A, "dependencies", lambda: [])
+    monkeypatch.setattr(A, "assets", lambda: [
+        {"id": "registry.product_artifacts", "table": "currentai.registry.product_artifacts",
+         "files": {}, "platform_model_consumers": [rec["table"]]}])
+    assert any("still listed as a platform_model_consumer" in v
+               for v in A.retirement_violations())
+
+
+def test_a_governed_asset_can_be_retired(monkeypatch):
+    """The receipt's membership check must not read a retired GOVERNED asset as an unrecorded
+    externalization.
+
+    The first retirement (`signal_pypi.package_downloads`) was a dependency contract, so it was
+    never in the base commit's `assets.yaml` and the membership check never saw it; the carve-out
+    for a governed one was therefore never exercised. #517 retires two governed assets, so it is
+    exercised here against a base-commit asset, deliberately, rather than being discovered by the
+    next person who tries.
+    """
+    table = "currentai.signal_github.repo_state"
+    base = A._assets_at_commit(A.externalization_receipt()["externalization_base_commit"])
+    assert table in base, "the base commit governed this table"
+    assert table.removeprefix("currentai.") not in set(A.by_table()), "and it is gone now"
+
+    # With its retirement record, the membership check accounts for it and says nothing.
+    assert A.externalization_receipt_violations() == []
+
+    # Drop only that record: it is now a table removed from the base inventory with nothing
+    # recording where it went, which is exactly what the membership check exists to catch. That
+    # this fires proves the pass above is the retirement carve-out doing the work.
+    r = _real_receipt()
+    r["retirements"] = [x for x in r["retirements"] if x["table"] != table]
+    r["retired_count"] = len(r["retirements"])
+    _serve(monkeypatch, r)
+    assert any(table in v and "not in the externalization receipt" in v
+               for v in A.externalization_receipt_violations())
+
+
 def test_retirement_archiving_a_file_that_still_exists_is_flagged(monkeypatch):
     # The archival is what excuses the deletion, so a file still on disk must not pass as archived.
     r = _real_receipt()
@@ -1087,30 +1136,30 @@ def test_banner_on_a_dependency_contract_is_accepted(monkeypatch):
     assert A.mirror_ownership_violations() == []
 
 
-def test_compatibility_shim_may_be_a_mirror(monkeypatch):
-    """ADR-003's one carve-out: a shim "may be a platform mirror, since a shim is transitional
-    by definition"."""
+@pytest.mark.parametrize("authority", ["platform", "repo"], ids=["platform", "repo"])
+def test_a_shim_gets_no_carve_out(monkeypatch, authority):
+    """There is no role that lets a banner-carrying file be a governed asset.
+
+    ADR-003 used to add "may be a platform mirror, since a shim is transitional by definition" to
+    the `compatibility-shim` row, and the gate was first written to honour it. Both were withdrawn
+    on 2026-09-20 (#517), on the day the carve-out's only two instances were retired: a role says
+    how long the repo means to keep an asset, not who wrote the bytes.
+    """
     monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
-    monkeypatch.setattr(A, "assets", lambda: [_shim()])
+    monkeypatch.setattr(A, "assets", lambda: [_shim(authority=authority)])
     monkeypatch.setattr(A, "dependencies", lambda: [])
-    assert A.mirror_ownership_violations() == []
+    violations = A.mirror_ownership_violations()
+    assert any("signal_github.repo_state" in v and "compatibility-shim" in v for v in violations)
 
 
-SHIM_VIOLATIONS = [
-    ("shim_claiming_repo_authority", dict(authority="repo"), "authority 'repo'"),
-    ("shim_with_no_exit", dict(replacement=None), "replacement None"),
-]
-
-
-@pytest.mark.parametrize("label,override,expected", SHIM_VIOLATIONS,
-                         ids=[m[0] for m in SHIM_VIOLATIONS])
-def test_shim_carve_out_is_narrow(monkeypatch, label, override, expected):
-    """The carve-out covers a shim only on the terms that make it transitional. Without them it
-    is the same contradiction wearing a different role."""
-    monkeypatch.setattr(A, "banner_model_files", _banner(_MIRROR))
-    monkeypatch.setattr(A, "assets", lambda: [_shim(**override)])
-    monkeypatch.setattr(A, "dependencies", lambda: [])
-    assert any(expected in v for v in A.mirror_ownership_violations()), label
+def test_a_platform_authored_shim_fails_the_role_gate_too(monkeypatch):
+    """The role layer refuses it as well, so the contradiction cannot come back through an asset
+    whose mirror file simply never got a banner. `repo-computation` and `governed-data` already
+    demanded `authority: repo`; `compatibility-shim` was the one role that did not ask."""
+    monkeypatch.setattr(A, "assets", lambda: [_shim(authority="platform")])
+    assert any("compatibility-shim but authority is 'platform'" in v for v in A.role_violations())
+    monkeypatch.setattr(A, "assets", lambda: [_shim(authority="repo")])
+    assert not [v for v in A.role_violations() if "authority" in v]
 
 
 def test_contract_mirror_without_a_banner_is_flagged(monkeypatch):

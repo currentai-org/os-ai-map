@@ -46,10 +46,10 @@ No warehouse model or agent may silently replace an accepted assessment in `sour
 - `currentai.catalog` and the other peripheral OSO pipelines are out of scope (ADR-003): they model the OSO organization, not the Gap Map's data system, so they were externalized — frozen under platform ownership and removed from this repo's inventory and publisher.
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
-- Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`** (each carrying a `mirror:` block — the compatibility shims are the exception, governed assets in `assets.yaml`). The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
+- Platform model source is mirrored read-only under `warehouse/models/<dataset>/`; those mirrors are **dependency contracts in `warehouse/dependencies.yaml`**, each carrying a `mirror:` block, with no exception — `mirror_ownership_violations` compares the file's `PLATFORM MIRROR (read-only)` banner against both manifests and fails either way round. The platform remains authoritative for the deployed models; a mirror binds provenance, not ownership.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired; `last_observed_trigger` in `assets.yaml` records what actually did, and `build/assets.py` derives which schedules remain unobserved.
 - Some tracked assets have no reviewed in-repo consumer. The set is derived, not listed here: `build/assets.py::no_reviewed_consumers()`.
-- The inventory tracks <!-- count:deployed_tables -->29 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
+- The inventory tracks <!-- count:deployed_tables -->27 deployed tables in the datasets this repository maintains or reads from, derived from `assets.yaml` on every run; the rest of the org's tables are separate analytical products. Enumerate the org from `ListDataModels` rather than `ListDatasets`, which omits a dataset holding deployed models but no materialized tables. See section 11.3 for how that figure reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1349,7 +1349,7 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-<!-- count:tracked_warehouse_files -->32 files are tracked under `warehouse/`, and the mirror
+<!-- count:tracked_warehouse_files -->30 files are tracked under `warehouse/`, and the mirror
 layout of 11.1 is in place. Alongside the models sit the audit receipts —
 `warehouse/audits/platform_models.json` (the deployed-model audit) and
 `warehouse/audits/source_runs.json` (the `source_runs` attestation, §4.3) — the frozen adoption
@@ -1560,7 +1560,8 @@ registries this file replaces.
                                   #                     not ownership.
                                   #   governed-data     a repo-owned data/control artifact, not a computation
                                   #                     (the frozen baseline bytes, the source-runs snapshot)
-                                  #   compatibility-shim  a temporary shim for a governed asset (has `replacement`)
+                                  #   compatibility-shim  a temporary repo-owned shim for a governed
+                                  #                     asset (has `replacement`; authority: repo)
                                   # There is NO `owner` field — every governed asset is repo-owned, so a
                                   # uniform owner carried no signal (a dependency records owner: oso instead).
   grain: one row per (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
@@ -1583,18 +1584,19 @@ registries this file replaces.
   verified_at: '2026-08-25'
 ```
 
-For `authority: platform`, a `mirror:` block is required (the compatibility shims, whose `status:
-compatibility` makes a platform mirror legitimate). This replaces
-`platform-mirror/manifest.yaml`, including its per-entry `synced_at` discipline — the date
-must move only for the entry actually refetched.
+No governed asset carries `authority: platform`, so `assets.yaml` holds no `mirror:` block. The
+two that did — `signal_github.repo_state` and `signal_huggingface.hub_state` — were retired on
+2026-09-20 (#517). The `mirror:` block below is the shape a **dependency contract** in
+`warehouse/dependencies.yaml` carries; it replaces `platform-mirror/manifest.yaml`, including its
+per-entry `synced_at` discipline — the date must move only for the entry actually refetched.
 
 ```yaml
-  mirror:
-    model_id: a50ce375-4b91-43c6-b1ce-1fc60911b513
+  mirror:                          # currentai.signal_github.artifact_state, in dependencies.yaml
+    model_id: fed14549-c660-44fc-a6cc-c859795bde7f
     revision: 4
-    hash: efbd5ce1104d2f028c123f5f490fa9e5439be14489e8e069be50e0ecf545e4fd
-    local_sha256: a11300a0a4c1a697a217202a43c230af3e00dc9595000c2f73cae74e615b9c66
-    synced_at: '2026-08-15'
+    hash: 7edc4f8225e9261852dd8c0bb7b81b57e438d6b896bcccf7ee02124bba48878a
+    local_sha256: 910b4b2d26b45b341a206fb8c6d2b09c1926101a7ae1bdb39da102ff5697fb48
+    synced_at: '2026-09-15'
 ```
 
 #### Retirement is derived from more than an empty reader list
@@ -1656,11 +1658,11 @@ lose them the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->29
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->27
 staged, not deployed                         <!-- count:staged_assets -->8
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->38
+logical assets in warehouse/assets.yaml     <!-- count:assets -->36
 ```
 
 The staged eight are `observations.source_runs` and `observations.product_adoption_baseline`
@@ -1736,7 +1738,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->21   (13 models, 3 ingest, 16 mirror)
+  of which SQL/Python models   <!-- count:model_files -->19   (18 platform mirrors + `observations/product_adoption_current.sql`)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
@@ -1899,7 +1901,8 @@ exist.
 in `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` each governed asset
 carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value, exactly
 as `read_by` is re-derived. A role is one of `governed-output`, `repo-computation` (repo-OWNED
-model, authority repo), `governed-data` (repo-owned data/control artifact), or `compatibility-shim`.
+model, authority repo), `governed-data` (repo-owned data/control artifact), or `compatibility-shim`
+(a temporary repo-owned shim naming its `replacement`). Every role requires `authority: repo`.
 Every asset in `assets.yaml` is governed and carries a role; there is no roleless/backlog state (the ADR-003 externalization backlog drained in steps 5-6) and `population` is always `gap_map`.
 
 - **G1 governed-output ⇔ release_path.** A `governed-output` is `release_path: true`, and a
@@ -1996,7 +1999,7 @@ Resolved by decision:
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
 | `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |
 | `catalog.model_repos` -> `hf_model_repo_links` | Same — WITHDRAWN with the collision that triggered it. `catalog.model_repos` keeps its name. | no action |
-| `repo_state` / `hub_state` -> `artifact_state` | Do it, with the observations adapters that repoint the same SQL | Phase 2 |
+| `repo_state` / `hub_state` -> `artifact_state` | Done. The rename rode the Phase 2 repoint; the two old tables were retired from this repo's inventory on 2026-09-20 (#517) and left deployed-but-disabled on the platform, because `sta-grantmaker-view` still reads `repo_state` | Phase 2, closed |
 | Untracked notebook audit | Added to Phase 0. Sixteen of twenty notebooks are not in the repository | Phase 0 |
 | `catalog.stack_map` archive note | WITHDRAWN. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models. Two different tables were conflated | no action |
 

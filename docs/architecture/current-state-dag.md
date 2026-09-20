@@ -134,8 +134,7 @@ graph LR
 
 ```mermaid
 graph LR
-  signal_github__repo_state[signal_github.repo_state]:::compat --> signal_github__artifact_state[signal_github.artifact_state]
-  signal_huggingface__hub_state[signal_huggingface.hub_state]:::compat --> signal_huggingface__artifact_state[signal_huggingface.artifact_state]
+  none[no compatibility shims]:::src
   classDef compat stroke-width:3px;
   classDef src fill:#def;
 ```

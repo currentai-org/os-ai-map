@@ -786,7 +786,7 @@
     }
   ],
   "retirement_note": "A table can also stop being live. 'retired' is the terminal state and is NOT an externalization: every entry in 'assets' records a table LEFT LIVE on the platform under platform ownership, so a table that was deleted outright cannot be recorded there without claiming to be something it is not -- and need never have been a governed asset at all, since a dependency contract can be retired too. platform_state says which kind of not-live this is: 'deleted' (the dataset/model was removed; the table does not resolve), 'archived' (the deployed table is retained and readable but nothing refreshes it), or 'irrelevant' (still live, but nothing here reads it and the repo no longer asserts anything about it). Each record archives the repository files it removes, with hashes reproduced against externalization_base_commit exactly as an 'assets' entry does, and those paths are what satisfy the receipt's deleted-file completeness check -- this is the mechanism that makes deleting a model file legal. build.assets.retirement_violations() checks shape, that the three populations (externalized / reclaimed / retired) do not overlap, that the table is gone from assets.yaml, dependencies.yaml and every repository producer, and that every archived file reproduces and is really deleted. Retirement is TERMINAL: there is no reclaim out of it, because reviving a retired table means deploying something new and contracting it, which is a fresh entry in the graph rather than a transition. 'successor' is recorded so a reader who finds the table missing knows where the answer moved to; it is never what satisfies the gate.",
-  "retired_count": 4,
+  "retired_count": 6,
   "retirements": [
     {
       "table": "currentai.signal_pypi.package_downloads",
@@ -867,6 +867,46 @@
       },
       "recorded_at": "2026-09-14",
       "evidence_basis": "Three checks, because the first two were not enough on their own: a repository scan for readers (none outside the three themselves), and the platform lineage graph read read-only (GetLineage DOWNSTREAM returned only signal_github.product_adoption, which is one of the three). Lineage does NOT traverse notebooks, so all 22 published notebooks were downloaded and scanned as well; that found the one real consumer, gap-map-packages, which was migrated before any deletion. The archived hashes reproduce from the base commit blob. The deletions are not reproducible from this repo and were verified with ListDataModels afterwards.",
+      "owner": "oso"
+    },
+    {
+      "table": "currentai.signal_github.repo_state",
+      "disposition": "retired",
+      "platform_state": "archived",
+      "date": "2026-09-20",
+      "reason": "The compatibility half of the Phase-2 repo_state -> artifact_state rename, superseded by currentai.signal_github.artifact_state, which is code-identical and is the table every live reader uses: evidence.product_evidence and observations.product_adoption_current both read artifact_state, and it is already a dependency contract in warehouse/dependencies.yaml. The shim outlived the rename as a governed asset in assets.yaml while its mirror file carried the PLATFORM MIRROR (read-only) banner, which says the platform owns it -- the contradiction #517 gates. A shim is not a third kind of ownership, so it is retired here rather than moved into dependencies.yaml: nothing in this repository reads it, so there is no contract to write.",
+      "successor": "currentai.signal_github.artifact_state, contracted in warehouse/dependencies.yaml and mirrored at warehouse/models/signal_github/artifact_state.py.",
+      "platform": {
+        "dataset_id": "cc74e8db-7718-4615-a004-7f27cabaf967",
+        "model_id": "a50ce375-4b91-43c6-b1ce-1fc60911b513",
+        "deleted_dataset": false,
+        "deleted_model": false
+      },
+      "archived_source_sha256": {
+        "warehouse/models/signal_github/repo_state.py": "a11300a0a4c1a697a217202a43c230af3e00dc9595000c2f73cae74e615b9c66"
+      },
+      "recorded_at": "2026-09-20",
+      "evidence_basis": "No platform action was taken and none is proposed. platform_state is 'archived', not 'deleted', and the deployed table is deliberately kept readable: the external notebook sta-grantmaker-view still queries it, which is why the model was disabled rather than dropped. Read read-only from the platform on 2026-09-20: the model is isEnabled=false (since 2026-09-03), its modelContext records the same reasoning, GetLineage DOWNSTREAM returns the table itself and nothing else, and the table answers a query -- 307 rows, max(fetched_at) 2026-08-30, so it is frozen rather than refreshing, which is what 'archived' means. A repository scan found no model, build module, notebook or workflow that reads it; the remaining mentions are prose (rubric machine_signal strings, mirror comments, the rename runbook), not reads. The archived hash reproduces from the base commit blob.",
+      "owner": "oso"
+    },
+    {
+      "table": "currentai.signal_huggingface.hub_state",
+      "disposition": "retired",
+      "platform_state": "archived",
+      "date": "2026-09-20",
+      "reason": "The compatibility half of the Phase-2 hub_state -> artifact_state rename, superseded by currentai.signal_huggingface.artifact_state, which is code-identical and is what evidence.product_evidence and observations.product_adoption_current read; it is already a dependency contract in warehouse/dependencies.yaml. Retired for the same reason as its GitHub sibling and on the same date, because the two shims were created, deployed and disabled as a pair: the mirror file's PLATFORM MIRROR (read-only) banner said the platform owned it while assets.yaml governed it as a repository asset.",
+      "successor": "currentai.signal_huggingface.artifact_state, contracted in warehouse/dependencies.yaml and mirrored at warehouse/models/signal_huggingface/artifact_state.py.",
+      "platform": {
+        "dataset_id": "6108e4d6-868f-4cba-8df5-ee64f8fb301e",
+        "model_id": "014a0641-605f-4e57-831b-d24a1304437f",
+        "deleted_dataset": false,
+        "deleted_model": false
+      },
+      "archived_source_sha256": {
+        "warehouse/models/signal_huggingface/hub_state.py": "d2c0ef261ee4af9beda119d14965301fd9f99411d9eddd978ed9aeeb49781b21"
+      },
+      "recorded_at": "2026-09-20",
+      "evidence_basis": "No platform action was taken and none is proposed. Read read-only from the platform on 2026-09-20: the model is isEnabled=false (since 2026-09-03), its modelContext says the table is left queryable rather than deleted, GetLineage DOWNSTREAM returns the table itself and nothing else, and the table answers a query -- 197 rows, max(fetched_at) 2026-08-30, frozen rather than refreshing, which is what 'archived' means. This one carries external_consumers: none_confirmed rather than a named external reader, so 'archived' is a floor on what is known, not a claim that something depends on it. A repository scan found no model, build module, notebook or workflow that reads it. The archived hash reproduces from the base commit blob.",
       "owner": "oso"
     }
   ],

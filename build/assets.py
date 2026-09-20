@@ -765,6 +765,18 @@ def retirement_violations() -> list[str]:
             problems.append(
                 f"{tbl}: retired but a repository model file still produces it "
                 f"({', '.join(sorted(still))})")
+        # A live asset's `platform_model_consumers` is an assertion about a deployed model, so a
+        # retired table's name there is the repo asserting something it has just withdrawn. Added
+        # 2026-09-20 (#517): the three earlier retirements had their platform models deleted and so
+        # dropped out of the audit receipt that field derives from, which hid this surface. These
+        # two are kept deployed-but-disabled on purpose, so they do not drop out.
+        claimed = sorted(
+            a["id"] for a in assets() if tbl in (a.get("platform_model_consumers") or [])
+        )
+        if claimed:
+            problems.append(
+                f"{tbl}: retired but still listed as a platform_model_consumer of "
+                f"{', '.join(claimed)} in assets.yaml")
 
         # PROVENANCE -- archived hashes reproduce from the base blobs and the files are gone.
         for path, h in (r.get("archived_source_sha256") or {}).items():
@@ -1159,12 +1171,21 @@ def role_violations() -> list[str]:
             if not (files.get("data") or str(a.get("producer", "")).startswith("build/")):
                 problems.append(f"{aid}: role governed-data but no data file or build/ producer")
 
-        # compatibility-shim must name its exit target.
+        # compatibility-shim must name its exit target, and is repo-owned like every other role.
+        # The authority check is the one this role used to be missing, and it is why the two
+        # platform-authored shims sat in assets.yaml under a banner saying the platform owned
+        # them: `repo-computation` and `governed-data` both refuse `authority: platform`, and
+        # being transitional was treated as a reason not to ask (#517, both retired 2026-09-20).
         if role == "compatibility-shim":
             if a["status"] != "compatibility":
                 problems.append(f"{aid}: role compatibility-shim but status is {a['status']!r}")
             if not a.get("replacement"):
                 problems.append(f"{aid}: role compatibility-shim but no `replacement` exit target")
+            if a["authority"] != "repo":
+                problems.append(
+                    f"{aid}: role compatibility-shim but authority is {a['authority']!r}; a "
+                    "platform-authored model is a dependency contract however temporary it is"
+                )
 
     return problems
 
@@ -2013,12 +2034,13 @@ def mirror_ownership_violations() -> list[str]:
       * banner + a contract in `dependencies.yaml`   -- CORRECT. This is what a mirror is for:
         the repo keeps a read-only copy of a model the platform owns, so the dependency chain
         stays inspectable and its provenance is gated.
-      * banner + a governed entry in `assets.yaml`   -- VIOLATION. `assets.yaml` is ownership;
-        the banner denies it. The one exception is ADR-003's own carve-out, the
-        `compatibility-shim` role, which "may be a platform mirror, since a shim is transitional
-        by definition" -- and only on the terms that make it transitional: `authority: platform`
-        (so the entry does not itself claim repo ownership) and a named `replacement`. A shim
-        that claims `authority: repo` is the contradiction again under a different role.
+      * banner + a governed entry in `assets.yaml`   -- VIOLATION, with no exception. ADR-003
+        used to let a `compatibility-shim` be a platform mirror "since a shim is transitional by
+        definition". A role does not change who owns the bytes: a transitional platform-authored
+        model is still a platform-authored model, so it is a contract with an end date, not a
+        governed asset. The carve-out had exactly two instances and both were retired on
+        2026-09-20 (#517); it is withdrawn from the ADR rather than kept as a branch here,
+        because an exemption nothing uses is an exemption waiting to hide the next one.
       * banner + neither manifest                    -- VIOLATION. An uninventoried mirror: a
         copy of a platform model that no contract dates, hashes or re-verifies.
       * a `dependencies.yaml` contract's model file with NO banner -- VIOLATION in the other
@@ -2048,17 +2070,6 @@ def mirror_ownership_violations() -> list[str]:
             )
             continue
         role = asset.get("role")
-        if role == "compatibility-shim" and asset["authority"] == "platform" and asset.get("replacement"):
-            continue
-        if role == "compatibility-shim":
-            problems.append(
-                f"{path}: opens with the {MIRROR_BANNER} banner (the platform owns it) but "
-                f"warehouse/assets.yaml governs it as {asset['id']} with authority "
-                f"{asset['authority']!r} and replacement {asset.get('replacement')!r}; ADR-003's "
-                "compatibility-shim carve-out covers a mirror only at authority 'platform' with "
-                "a named replacement"
-            )
-            continue
         problems.append(
             f"{path}: opens with the {MIRROR_BANNER} banner (the platform is the source of "
             f"truth) but warehouse/assets.yaml governs it as {asset['id']} "

@@ -87,7 +87,7 @@ Every governed asset declares a `role`, so membership is asserted, not inferred 
 | `governed-output` | a **published Gap Map artifact whose schema and publication lifecycle are owned here** — regardless of whether its rows come exclusively from `sources/` (so the `evaluation.*` release-path publications, derived partly from `observations`, qualify) | `release_path: true`; `authority: repo` |
 | `repo-computation` | repo-**owned** SQL/Python implementing or auditing map semantics | has a model file; `authority: repo`. A `mirror:` block proves provenance, not ownership, so a platform-authored mirror is **not** a repo-computation — it is a dependency contract |
 | `governed-data` | a repo-**owned** data or control artifact that is not a computation — the frozen adoption baseline (bytes, not a query) and the `source_runs` control snapshot | `authority: repo`; not `release_path`; no model file |
-| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`); may be a platform mirror, since a shim is transitional by definition | carries `replacement` |
+| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement`; `authority: repo`, enforced like every other role — **amended 2026-09-20 (#517)**: this row used to add "may be a platform mirror, since a shim is transitional by definition", which let a platform-authored model be governed here on the strength of being temporary. A role does not change who owns the bytes. The carve-out had exactly two instances, `signal_github.repo_state` and `signal_huggingface.hub_state`, and both were retired the day it was withdrawn |
 
 External dependencies are **not** governed assets and carry no `role` — they live in the manifest below. Because a mirror is provenance and not ownership, the seven platform-authored mirrors the repo reads — the openness chain (`evidence.product_evidence`, `scores.openness_facts`, `scores.openness_computed`) and the signal ingestion (`signal_github`/`signal_huggingface`.`artifact_state`, `signal_pypi.package_downloads`, `signal_semanticscholar.paper_citations`) — are **dependency contracts**, not governed assets (implemented 2026-08-29).
 
@@ -148,8 +148,10 @@ peripheral table — from re-entering the governed inventory.
 1. **Governed-output ⇔ release_path.** A `governed-output` asset must be `release_path: true`, and a
    `release_path: true` asset must be a `governed-output`.
 2. **Every external table a repo computation reads appears in `dependencies.yaml` exactly once** — a
-   platform-authored input is a dependency contract, not a governed asset; the only exception is a
-   `compatibility-shim`, which is a governed asset by design.
+   platform-authored input is a dependency contract, not a governed asset. A repo-authored
+   `compatibility-shim` is a governed asset by design and so is not an exception to this; a
+   platform-authored one is a contract like any other platform-authored model (amended 2026-09-20,
+   #517 — see the role table and gate 7).
 3. **A dependency cannot also appear in `assets.yaml`** (and a governed asset cannot appear in
    `dependencies.yaml`) — the two files are disjoint.
 4. **Every dependency is referenced by at least one named repo computation** (`required_by`), and
@@ -166,11 +168,14 @@ peripheral table — from re-entering the governed inventory.
 7. **The `PLATFORM MIRROR (read-only)` banner and the manifests agree about ownership**
    (`mirror_ownership_violations`, added 2026-09-20 under #517 — later than the rest of this
    section). A banner-carrying `warehouse/models/` file is a `dependencies.yaml` contract; it is a
-   violation for it to be a governed asset (except the gate-2 `compatibility-shim`, and only at
-   `authority: platform` with a named `replacement`), and a violation for it to be in neither file.
-   A contract's mirror file without the banner fails the same gate from the other side. This is the
-   ownership half of what `dependency_mirror_provenance_violations` does for bytes: the banner is
-   the file's own claim, and it is the only side of the comparison a manifest edit cannot move.
+   violation for it to be a governed asset, with **no exemption for any role**, and a violation for
+   it to be in neither file. A contract's mirror file without the banner fails the same gate from
+   the other side. This is the ownership half of what `dependency_mirror_provenance_violations`
+   does for bytes: the banner is the file's own claim, and it is the only side of the comparison a
+   manifest edit cannot move. The gate was written with a `compatibility-shim` exemption and it
+   was taken out before the gate first ran green, because the exemption's only two instances were
+   being retired in the same change — an exemption with no instance is an exemption available to
+   the next file that wants one.
 
 ## Classification of the peripheral assets (for freeze under platform ownership, not deletion)
 

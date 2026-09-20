@@ -197,10 +197,21 @@ def consumers_from_receipt(receipt: dict) -> dict[str, list[str]]:
     # platform_model_consumers is an assets.yaml field, so attribute only reads that resolve to
     # a GOVERNED ASSET. A read of a dependency contract (dependencies.yaml) or of an externalized
     # table is not a governed-asset consumer and carries no such field.
+    #
+    # Nor is a RETIRED one. Retirement says the repo no longer asserts anything about that table,
+    # so writing its name into a live asset's consumer list is the repo asserting something it
+    # just withdrew -- the same rule the retirement gate's GONE check applies to assets.yaml,
+    # dependencies.yaml and producers, which now covers this field too. It only started to bite
+    # on 2026-09-20 (#517): the three earlier retirements had their platform models DELETED, so
+    # they left the receipt on the next audit, while `signal_github.repo_state` and
+    # `signal_huggingface.hub_state` are deliberately kept deployed-but-disabled and stay in it.
+    # A disabled model reads nothing, and reviving a retired table is a new deployment and a new
+    # contract, never a resumption of this edge.
     governed = set(A.by_table())
+    retired = A.retired_tables()
     out: dict[str, set[str]] = {}
     for m in receipt["models"]:
-        if m["has_repository_source"]:
+        if m["has_repository_source"] or m["table"] in retired:
             continue
         for ref in m["in_scope_reads"]:
             stripped = ref.removeprefix("currentai.")
