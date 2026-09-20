@@ -1,20 +1,20 @@
 # Marimo Notebook Design Guide
 
-This document translates the Current AI website design system into concrete values for the Marimo notebook (`ai-stack-map.py`). The goal is visual alignment without a pixel-perfect match — the notebook is a data environment, the site is a marketing/editorial one, so some adaptation is expected.
+This document translates the Current AI website design system into concrete values for the Marimo notebook (`ai-stack-map.py`). The goal is visual alignment without a pixel-perfect match — the notebook is a data environment, the site is a marketing/editorial one, so some adaptation is expected. The values below are what `build/render.py` carries; where a notebook diverges from the site deliberately, "Where the notebooks diverge from the site" says so and why.
 
 ---
 
 ## Fonts
 
-The site uses three typefaces. Replace the notebook's current fonts with these:
+Three typefaces, one per role:
 
-| Role | Notebook (current) | Site equivalent | Google Fonts import |
-|------|--------------------|-----------------|---------------------|
-| Headlines / category names | Fraunces | **Noto Serif** | `family=Noto+Serif:ital,wght@0,400;0,600;1,400` |
-| Body / UI text | Inter | **Plus Jakarta Sans** | `family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800` |
-| Monospace / labels / metadata | JetBrains Mono | **DM Mono** | `family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500` |
+| Role | Typeface | Google Fonts import |
+|------|----------|---------------------|
+| Headlines / category names | **Noto Serif** | `family=Noto+Serif:ital,wght@0,400;0,600;1,400` |
+| Body / UI text | **Plus Jakarta Sans** | `family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800` |
+| Monospace / labels / metadata | **DM Mono** | `family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500` |
 
-Update the `F` dict and the `load_fonts` cell:
+The `F` dict and the `load_fonts` cell carry them:
 
 ```python
 # load_fonts cell
@@ -40,29 +40,29 @@ F = {
 
 ## Color Palette
 
-Replace the warm sepia palette in the `C` dict with the site's palette:
+The `C` dict is the site's palette, named by role:
 
 ```python
 C = {
     # Backgrounds
-    "paper":    "#f7f6f6",   # site --paper  (was #f5f1ea)
-    "paper_2":  "#f2f1f1",   # site --light-grey (was #ede7dc)
+    "paper":    "#f7f6f6",   # site --paper
+    "paper_2":  "#f2f1f1",   # site --light-grey
     "white":    "#ffffff",   # pure white for cards / modal backgrounds
 
     # Text
-    "ink":      "#0b252f",   # site --dark-blue — primary text (was #1a1814)
-    "ink_2":    "#272726",   # site --dark-grey — secondary text (was #3a342b)
-    "ink_3":    "#a5bbbe",   # site --light-blue — muted/disabled (was #6b6253)
+    "ink":      "#0b252f",   # site --dark-blue — primary text
+    "ink_2":    "#272726",   # site --dark-grey — secondary text
+    "ink_3":    "#a5bbbe",   # site --light-blue — muted/disabled
 
     # Borders / rules
-    "rule":     "#edecec",   # site --grid-line (was #c9bfac)
-    "border":   "#a5bbbe",   # site --light-blue for heavier borders (was #c9bfac)
+    "rule":     "#edecec",   # site --grid-line
+    "border":   "#a5bbbe",   # site --light-blue for heavier borders
 
     # Semantic / data colors
-    "signal":   "#f88376",   # site --salmon — open / highlight (was #c8341d red)
-    "healthy":  "#f88376",   # same salmon — site doesn't use a separate green
-    "warm":     "#fbc7bf",   # site --pink — open-ish / secondary (was #d97c2a)
-    "accent":   "#0b252f",   # site --dark-blue — active states (was #2a3d8f)
+    "signal":   "#f88376",   # site --salmon — open / highlight
+    "healthy":  "#f88376",   # same salmon — the site has no separate green
+    "warm":     "#fbc7bf",   # site --pink — open-ish / secondary
+    "accent":   "#0b252f",   # site --dark-blue — active states
 
     # Gaps
     "gap_red":  "#ff0d0d",   # site --bright-red — gap diamond icons
@@ -71,15 +71,15 @@ C = {
 
 ### Openness color mapping
 
-The site encodes openness through **shape** (full square vs. triangle) rather than color. For the notebook's color-coded approach, align the three buckets to the site palette:
+The site encodes openness through **shape** (full square vs. triangle) rather than color. The notebook's color-coded equivalent maps the three buckets onto the site palette:
 
-| Bucket | Notebook (current) | Updated value | Hex |
-|--------|-------------------|---------------|-----|
-| Open | `healthy` #1b6b5e (green) | `signal` | `#f88376` (salmon) |
-| Open-ish | `warm` #d97c2a (orange) | `warm` | `#fbc7bf` (pink) |
-| Closed | `ink_3` #6b6253 (brown) | `ink_2` | `#272726` (dark grey) |
+| Bucket | Token | Hex |
+|--------|-------|-----|
+| Open | `signal` | `#f88376` (salmon) |
+| Open-ish | `warm` | `#fbc7bf` (pink) |
+| Closed | `ink_2` | `#272726` (dark grey) |
 
-Update `_ocolor()` to match:
+`_ocolor()` carries it:
 
 ```python
 def _ocolor(score):
@@ -100,39 +100,37 @@ Bullet chips (● open / open-ish / closed) should use the same three colors.
 
 ## Typography Scale
 
-The site's type is slightly larger and more spaced than the notebook's current settings. Recommended adjustments:
+| Context | Setting |
+|---------|---------|
+| Page / notebook title (h1) | 2.2rem, Noto Serif **600**, tracking `-0.025em` |
+| Section headings (h2) | 1.6rem, Noto Serif **600**, tracking `-0.015em` |
+| Category label | 1.05rem, Noto Serif 600 |
+| Modal title | 1.4rem, Noto Serif 600 |
+| Body / descriptions | 0.95rem, Plus Jakarta Sans |
+| Control labels | 10px, DM Mono, `uppercase`, `0.08em` tracking |
+| Table column headers | 9px, DM Mono, `uppercase` |
+| Monospace metadata (arc labels, scores) | 10–11px, DM Mono |
+| Verdict pills | 0.72rem, DM Mono |
 
-| Context | Current | Updated |
-|---------|---------|---------|
-| Page / notebook title (h1) | 2.2rem, Fraunces 400 | 2.2rem, Noto Serif **600**, tracking `-0.025em` |
-| Section headings (h2) | 1.6rem, Fraunces 500 | 1.6rem, Noto Serif **600**, tracking `-0.015em` |
-| Category label | 1.05rem, Fraunces 500 | 1.05rem, Noto Serif 600 |
-| Modal title | 1.4rem, Fraunces 500 | 1.4rem, Noto Serif 600 |
-| Body / descriptions | 0.95rem, Inter | 0.95rem, Plus Jakarta Sans |
-| Control labels | 10px, JetBrains Mono, `uppercase`, `0.08em` tracking | same size, **DM Mono**, keep uppercase + tracking |
-| Table column headers | 9px, mono, `uppercase` | same, DM Mono |
-| Monospace metadata (arc labels, scores) | 10–11px, JetBrains Mono | same size, DM Mono |
-| Verdict pills | 0.72rem, mono | 0.72rem, DM Mono |
-
-The site uses `font-weight: 600` on headings (Noto Serif), **not** 500. Update headline weights accordingly.
+Headings are `font-weight: 600` on Noto Serif, **not** 500.
 
 ---
 
 ## Backgrounds & Surfaces
 
-| Surface | Current | Updated |
-|---------|---------|---------|
-| Page / notebook background | `#f5f1ea` | `#f7f6f6` (--paper) |
-| Row / card background | `#ede7dc` | `#f2f1f1` (--light-grey) |
-| Modal / detail panels | `#ffffff` | `#ffffff` (unchanged) |
-| Active nav / selected button | `#2a3d8f` | `#0b252f` (--dark-blue) |
-| Modal backdrop | `rgba(26,24,20,0.55)` | `rgba(11,37,47,0.55)` (dark-blue tint) |
+| Surface | Value |
+|---------|-------|
+| Page / notebook background | `#f7f6f6` (--paper) |
+| Row / card background | `#f2f1f1` (--light-grey) |
+| Modal / detail panels | `#ffffff` |
+| Active nav / selected button | `#0b252f` (--dark-blue) |
+| Modal backdrop | `rgba(11,37,47,0.55)` (dark-blue tint) |
 
 ---
 
 ## Interactive Controls (buttons, filter bar)
 
-The site's button style is minimal with `--light-blue` borders and `--dark-blue` text. Update button CSS:
+The site's button style is minimal with `--light-blue` borders and `--dark-blue` text:
 
 ```css
 /* Resting state */
@@ -213,12 +211,12 @@ Note the **`border-radius: 0`** — the site uses sharp corners throughout, not 
 
 ## Score Bars
 
-Keep the 5-segment bar structure. Update colors:
+Five segments, filled to the value:
 
 ```python
 def _bars(value, on_color):
     v = int(value) if isinstance(value, (int, float)) else 0
-    empty = "#edecec"   # --grid-line (was paper_2 #ede7dc)
+    empty = "#edecec"   # --grid-line
     return "".join(
         f'<span style="display:inline-block; width:6px; height:14px; margin-right:2px; '
         f'vertical-align:middle; background:{on_color if j < v else empty};"></span>'
@@ -230,7 +228,7 @@ def _bars(value, on_color):
 
 ## Gap Icons
 
-The site renders gap indicators as **rotated squares** (diamonds) in `--bright-red` with a white letter. Match this in the notebook:
+The site renders gap indicators as **rotated squares** (diamonds) in `--bright-red` with a white letter, and the notebook matches it:
 
 ```python
 def _gap_icon(letter):
@@ -253,49 +251,28 @@ def _gap_icon(letter):
 
 ## Borders & Dividers
 
-The site uses a very light `--grid-line` (`#edecec`) for all internal dividers and a slightly heavier `--light-blue` (`#a5bbbe`) for component borders. Replace all uses of the notebook's `C["rule"]` (`#c9bfac`) accordingly:
+The site uses a very light `--grid-line` (`#edecec`) for all internal dividers and a slightly heavier `--light-blue` (`#a5bbbe`) for component borders:
 
 - Row dividers, table borders → `#edecec`
 - Component / card borders → `#a5bbbe`
 
 ---
 
-## Summary of key value swaps
+## Where the notebooks diverge from the site
 
-| What | Old | New |
-|------|-----|-----|
-| Page background | `#f5f1ea` | `#f7f6f6` |
-| Card/row bg | `#ede7dc` | `#f2f1f1` |
-| Primary text | `#1a1814` | `#0b252f` |
-| Secondary text | `#3a342b` | `#272726` |
-| Muted text | `#6b6253` | `#a5bbbe` |
-| Dividers | `#c9bfac` | `#edecec` |
-| Component borders | `#c9bfac` | `#a5bbbe` |
-| Active / accent | `#2a3d8f` | `#0b252f` |
-| Open (data) | `#1b6b5e` | `#f88376` |
-| Open-ish | `#d97c2a` | `#fbc7bf` |
-| Gap icons | `#c8341d` | `#ff0d0d` |
-| Headline font | Fraunces | Noto Serif |
-| Body font | Inter | Plus Jakarta Sans |
-| Mono font | JetBrains Mono | DM Mono |
-| Border radius | 4–10px | 0 (sharp corners) |
+Typography, neutrals, surfaces, sharp corners, the navy structural accent and the
+single-salmon brand highlight are the site's, applied as written — that is what
+carries the resemblance.
 
----
-
-## Implementation notes — where the notebooks diverge from this guide
-
-Everything above (typography, neutrals, surfaces, sharp corners, the navy
-structural accent, the single-salmon brand highlight) is applied as written —
-that is what carries the "looks like the site" resemblance.
-
-The one place we adapted is **data color**. The site encodes openness through
-*shape* (square vs triangle) and uses salmon as a sparing editorial accent. The
-notebooks are dense data instruments: they color-encode an ordinal 0–5 openness
-scale, three independent axes, a 4-way distribution, and verdict states. Mapping
-those onto the site's two data hues 1:1 collapsed distinct values (open read the
-same as restricted) and produced low-contrast / heavy-black bars. Per this
-guide's own note that "some adaptation is expected," we made these deliberate,
-reviewed changes (signed off by Carl; worth confirming with the CF design team):
+**Data color is the one place the notebooks depart**, and deliberately. The site
+encodes openness through *shape* (square vs triangle) and uses salmon as a sparing
+editorial accent. The notebooks are dense data instruments: they color-encode an
+ordinal 0–5 openness scale, three independent axes, a 4-way distribution, and
+verdict states. Mapping those onto the site's two data hues one to one collapses
+distinct values — open reads the same as restricted — and produces low-contrast
+and heavy-black bars. Per this guide's own note that "some adaptation is
+expected," the notebooks carry purpose-built data scales instead (Carl's call;
+worth confirming with the CF design team):
 
 **Openness → a single-hue salmon *sequential* ramp** (deepest = most open,
 fading to a pale-but-legible coral for closed). One ordered intensity scale, so
@@ -319,8 +296,7 @@ states. The verdict is categorical, not ordinal, so color-coding it on the
 salmon ramp made "open-ish leads" and "closed leads" look alike; the color
 story already lives in the open / open-ish / closed chips beside it.
 
-**Header eyebrow** trimmed from `Current AI · Open Source AI Map · v3` to just
-`Current AI`.
+**Header eyebrow** is `Current AI` alone, not a product-and-version string.
 
 These values live in the `C` dict of `build/render.py` (ai-stack-map, generated).
 

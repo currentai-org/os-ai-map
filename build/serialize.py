@@ -156,8 +156,9 @@ def _unreached_axes(fully_open: list[dict]) -> list[str]:
     has reached, and dropping it would report "nobody topped capability" because the product
     that did lacks an adoption band.
 
-    32 fully-open products across 12 categories sit at exactly 4/4, so the dead zone this
-    covers is structural. Today it leaves exactly one category silent.
+    33 fully-open products across 13 categories sit at exactly 4/4, so the dead zone this
+    covers is structural. Two categories reach this branch today -- compilers and
+    search_retrieval -- and it names an axis for both.
     """
     gaps: list[str] = []
     for name, block, key in (("capability", "capability", "score"),

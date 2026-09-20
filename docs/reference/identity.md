@@ -27,11 +27,11 @@ aliases:
 - claude-opus-4-x
 ```
 
-They were held in a single `sources/slug_aliases.yaml` until 2026-08-08. Two things were wrong
-with that. A duplicate key kept only the last value, silently, because PyYAML does not error on
-one — so a second rename of the same retired slug disappeared. And the file had accumulated four
-other top-level keys that looked like alias maps and were not, three of which are now fields on
-the records they actually describe.
+They live on the record rather than in a central alias file, and two properties of a central
+file are why. A duplicate key there keeps only the last value, silently, because PyYAML does not
+error on one — so a second rename of the same retired slug disappears. And a file whose job is
+"the alias map" accumulates other top-level keys that look like alias maps and are not, each of
+which belongs on the record it describes.
 
 ## How far to collapse: what the vendor sells
 
@@ -55,23 +55,18 @@ checked, because there the version genuinely is the identity: `oscar-2301` is a 
 `raspberry-pi-5` is a specific board, and the next one is a different product rather than an
 update.
 
-### The 2026-07-29 collapse was a one-off
-
-Slugs had been recorded at release level and churned with every point release. They were
-collapsed to tier level before deep linking shipped, which was the only moment it was free — the
-front end keyed links on display names, so nothing pointed at a product slug yet. **After links
-exist, a rename costs an alias forever.** Sixty-three aliases date from that batch.
-
 ### A rename made before anything linked owes no redirect
 
-Two renames happened while it was still free, and neither carries an alias. That is not an
-oversight, and re-adding them would be a bug: **`grok` was renamed to `grok-app` and the slug has
-since been reused** for a different live product, xAI's Grok 4.20 model tier. An alias would
-redirect a live page onto an unrelated one. `github-copilot-github-microsoft` → `github-copilot-ide`
-is the other, and its target sits beside a still-live `github-copilot`.
+**An alias is a promise to anyone holding an old link.** Where no such link could exist, make no
+promise, and leave the slug free to be reused. That is why a batch of slug collapses done before
+deep linking shipped carries aliases while two individual renames from the same period do not,
+and re-adding those two would be a bug: `grok` became `grok-app` and the slug is now reused by a
+different live product, xAI's Grok 4.20 model tier, so an alias would redirect a live page onto
+an unrelated one. `github-copilot-github-microsoft` → `github-copilot-ide` is the
+other, and its target sits beside a still-live `github-copilot`.
 
-The rule: an alias is a promise to anyone holding an old link. Where no such link could exist,
-make no promise, and leave the slug free to be reused.
+**Once links exist, a rename costs an alias forever**, which is the reason the slug is pitched at
+the tier a vendor sells rather than at a release.
 
 ## A product that is ending
 
@@ -171,8 +166,8 @@ carrying one are closed or API-only, with no artifact to date. A derivation woul
 products and not others, and a reader could not tell which kind they were looking at.
 
 Confirming it still points at the current release is a re-read's job, which is why it sits inside
-the axis a `last_verified` covers. Held outside the score, as it was until 2026-08-08, no
-freshness mechanism reached it: a vendor could ship a new release and nothing would notice.
+the axis a `last_verified` covers. Held outside the score, no freshness mechanism reaches it: a
+vendor ships a new release and nothing notices.
 
 ### Most-restrictive across SKUs, and where it stops
 
@@ -190,10 +185,11 @@ case: Nous ships one recipe on four bases, two Apache-licensed and two Llama-lic
 wanting Apache takes the Seed-OSS or Qwen build and gets it. Treating those as SKUs would have
 published the family as restricted while open weights were freely available.
 
-Measured 2026-08-08, three products have SKUs under genuinely different named licenses — `gemma`
-(Gemma and Apache-2.0), `hermes` (Apache-2.0 and Llama-3), `zephyr` (Apache-2.0 and MIT). Another
-four differ only because one SKU records the Hub's `other`, which `signal_routing.yaml` treats as
-an abstention rather than a license.
+Genuinely different named licenses across the SKUs of one product are rare — `gemma` (Gemma and
+Apache-2.0), `hermes` (Apache-2.0 and Llama-3) and `zephyr` (Apache-2.0 and MIT) are the shape.
+More common is a set that differs only because one SKU records the Hub's `other`, which
+`signal_routing.yaml` treats as an abstention rather than a license, so the set does not differ at
+all.
 
 ## A declared artifact is a measurement identity
 
@@ -235,8 +231,8 @@ likewise not the core product's adoption.
 ### A package whose name matches and whose project does not
 
 Registry names collide, and the collision is usually silent — the package exists, installs, and
-reports downloads for something else entirely. Five cases in twelve candidates during the
-2026-08-31 passes: PyPI `miles` is version 0.1 with no summary and no project URL and is not
+reports downloads for something else entirely. It is common enough to expect in any batch of
+candidates: PyPI `miles` is version 0.1 with no summary and no project URL and is not
 `radixark/miles`; `privategpt` belongs to `vietanhdev/pautobot`; `pgpt` to
 `hackedbyagirl/programengineergpt`; npm `airi` is a 0.0.1 stub with no repository field. The
 check is cheap and mandatory: does the package's `project_urls` or `home_page` point back at the
@@ -248,11 +244,10 @@ Here the artifact genuinely relates to the product and still measures the wrong 
 third-party language binding, a client SDK for a server, a platform wrapper: its downloads count
 its own users, not the product's.
 
-`abetlen/llama-cpp-python` and `software-mansion/react-native-executorch` were un-declared for
-this reason in #424 and kept as ledger entries instead. The client-SDK form closed PR #425,
-where five records had been re-banded off packages that were all clients — and two of the notes
-being overwritten already said so, which is the warning that this shape is easy to re-introduce
-while reading quickly.
+`abetlen/llama-cpp-python` and `software-mansion/react-native-executorch` are undeclared for
+this reason and kept as ledger entries instead. The shape is easy to re-introduce while reading
+quickly: a batch re-banding several records off packages that are all clients will often be
+overwriting notes that already said so.
 
 ### Discovery may be automated; promotion may not
 
@@ -274,8 +269,8 @@ arXiv paper, or a homepage - and answers one typed question, its `relation`:
 
 - **`product_equivalence`** - is this artifact a new product, or does it already belong to one?
   Verdicts: `existing_product`, `sku_of`, `excluded_boundary`, `excluded_maintenance`,
-  `unresolved`. Every entry written before 2026-09 answered this question, and `relation` may be
-  omitted for it - absent reads as `product_equivalence`.
+  `unresolved`. It is the default relation: `relation` may be omitted, and absent reads as
+  `product_equivalence`.
 - **`product_membership`** - does this artifact's measurement belong to `resolves_to`'s adoption
   number? Verdicts: `member_of`, `not_member_of`. A `resolves_to` is required.
 
@@ -296,10 +291,9 @@ repo of a product already carried", "this is a vendor's MCP surface, not a produ
 authored content, not software" — and records the reasoning in a pull request. Left there, the
 decision sits nowhere a machine can read it, and the next bulk run re-derives the same candidate
 from the same pool, finds no artifact that matches, and recreates it. `a2aproject/A2A` is the
-sharpest case: #413 had resolved it to `agent2agent-protocol` by hand, and the first corpus
-expansion recreated it as a new product anyway, because `agent2agent-protocol` itself declares
-no `github` artifact — #415 had left it undeclared pending a ruling on adoption routing — so
-repo-level dedup could not see the resolution and nothing else in the repo could either.
+sharpest case: it resolves to `agent2agent-protocol`, but `agent2agent-protocol` declares no
+`github` artifact, so repo-level dedup cannot see the resolution and nothing else in the repo
+can either.
 
 **Verdicts**, for `product_equivalence`:
 
@@ -406,9 +400,9 @@ the resolver behaving perfectly. On a `--edges` run the row reads `recall invari
 (fixture)` and the run cannot fail on it. Precision floors are graded in both modes: a wrong edge
 stays wrong however old the snapshot is, which is exactly what a floor asks.
 
-Coverage is measured separately, per route, and carries **no target floor yet** — the `huggingface`
-route's numbers are pending the handle review in issue #483, and a floor set before that lands
-would be a guess. What it carries instead is a **baseline ratchet**:
+Coverage is measured separately, per route, and carries **no target floor** — a floor set before
+the `huggingface` route's handles have been reviewed would be a guess. What it carries instead is
+a **baseline ratchet**:
 `tests/fixtures/identity_coverage_baseline.json` pins today's `(orgs with a handle, orgs with
 artifacts)` per route, and any run exits 1 if a route's live ratio falls below its pinned ratio.
 Coverage can only go up. Read the pinned ratios from that file rather than from a copy here; the
@@ -448,7 +442,7 @@ identity graph already infers the same `(namespace, org)` pair at confidence ≥
 
 **The one exception to the tick is the weekly digest's auto-adopt rule.** A ranked digest item at
 confidence 1.0 whose name agrees *and* whose graph agrees is adopted by `build/identity_adopt.py`
-without a human tick (ruling 2026-09-08); the threshold is exact, so a confidence that merely
+without a human tick; the threshold is exact, so a confidence that merely
 rounds to 1.0 is held, and everything below 1.0, and any 1.0 item that fails either test, stays a
 review item. For an `org` item, name agreement means the account handle agrees with
 the org slug or a handle the org already declares (the same `name_agrees` test the proposer's
@@ -477,11 +471,11 @@ naming the same `pattern` with different products, and requires `pattern` to equ
 not a scoring declaration, so it changes no product's `openness`, `adoption` or `capability` and
 is excluded from `declaration_version_id`'s digest (`build/declaration_version.py`).
 
-The initial 25 families were derived mechanically — every `type: model` product whose `aliases`
-already carry a version-token variant of its own slug — and then reviewed and confirmed by a
-person in #474 before merge, which is what `decided_in` records for each. A mechanical
-derivation is a candidate list, not a ruling on its own; a future addition follows the same
-path, proposed and then confirmed in the PR that adds it.
+A mechanical derivation — every `type: model` product whose `aliases` already carry a
+version-token variant of its own slug — is a candidate list, not a ruling. Every family in the
+file was reviewed and confirmed by a person before merge, which is what `decided_in` records for
+each, and an addition follows the same path: proposed, then confirmed in the pull request that
+adds it.
 
 **Overlapping patterns: the longest match wins.** Two families can legitimately overlap —
 `deepseek-*` → `deepseek` and `deepseek-coder-*` → `deepseek-coder` are both real, because

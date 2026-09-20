@@ -7,9 +7,9 @@ deterministically from the scores of the products in that category:
   toward parity with the best available option, and
 - a **set of gaps** — what is missing for it to advance.
 
-"Maturity" names the category-level stage and nothing else. The per-product number that used to
-share the word is the **overall score** (see below); the two were never a roll-up of each other,
-and one word for both is what made the old `maturity` gap ambiguous.
+"Maturity" names the category-level stage and nothing else. The per-product number is the
+**overall score** (see below), and the two are not a roll-up of each other. One word for both is
+what makes a `maturity` gap ambiguous, which is why neither carries it.
 
 Both are recomputed from source on every build, so they never drift from the underlying
 product scores. They are emitted per category into `build/notebook_data.json` as
@@ -113,8 +113,9 @@ Worth stating plainly, because the code makes them look alike and they behave op
 
 - **Null adoption abstains.** `_maturity_score` returns `None`, and `_stage_and_gaps` drops the
   product — "we can't judge what we can't measure, so they neither advance nor depress the
-  category's stage." Measured 2026-08-13: 20 products, 19 of them `closed`, which the open-only
-  counting rule already excluded. The abstention is real and costs nothing.
+  category's stage." Measured 2026-09-20: 39 products, 38 of them `closed` and one
+  `source_available`, every one of which the open-only counting rule already excluded. The
+  abstention is real and costs nothing.
 - **Null capability does not abstain.** It falls through to adoption alone, which reweights
   maturity from a blend to a single axis rather than declining to score. The product keeps
   counting toward the stage. It has a second effect worth stating because the code does not:
@@ -131,9 +132,10 @@ Worth stating plainly, because the code makes them look alike and they behave op
 
   A genuinely empty gap set at Stages 1-3 therefore needs the category-level reading to be silent
   too, which happens only when an axis is unrecorded across the whole fully-open population or has
-  been topped somewhere in it. That is narrow and no category is in it today; `benchmark_eval_data`
-  was, during the #319 calibration, before that issue resolved toward abstention. The shape is
-  general, which is why it is documented rather than left to be rediscovered.
+  been topped somewhere in it. That is narrow and no category is in it today;
+  `benchmark_eval_data` is the category that reaches it whenever its capability recipe is live
+  rather than abstaining. The shape is general, which is why it is documented rather than left to
+  be rediscovered.
 
 That fallback is right for the case it was written for. Most null-capability products
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
@@ -213,8 +215,9 @@ line the map is built to expose. Open-weights models therefore never advance a s
 also distinguishes resiliency from a single standout (see Stage 5).
 
 This is consequential but bounded: counting open-weights as fully open would move only a few
-categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2→3,
-`edge_hardware` 3→4), and would leave every infrastructure and tooling verdict unchanged.
+categories, all in the model layer (measured 2026-09-20: `base_pretrained` 3→5,
+`finetuned_chat` 3→4, `edge_hardware` 3→4, `scientific_ai_models` 1→3), and would leave every
+infrastructure and tooling verdict unchanged.
 
 ## Stages
 
@@ -286,18 +289,18 @@ open ecosystem.
 
 **`resiliency` fires at Stage 4 only.** Stage 4 means a category has proven category-leading open options but
 not enough for redundancy, so the shortfall is genuinely count rather than quality. Defining
-resiliency as "no category-leading open product at all" would extend it over the weaker categories and
-rebuild the problem this taxonomy replaced: the old `maturity` gap fired in 12 of 16 categories
-and so distinguished between none of them. Below Stage 4 the stage number already says no
+resiliency as "no category-leading open product at all" would extend it over the weaker categories
+and rebuild the problem this taxonomy exists to avoid: a gap that fires in three quarters of the
+map distinguishes between none of it. Below Stage 4 the stage number already says no
 category-leading open option exists, and `capability` and `adoption` say why.
 
 **At Stages 1–3 the drivers are read off the best fully-open product** — the one with the
 highest overall score. Its capability is a `capability` gap when it falls below the capability
 cutoff, its adoption is an `adoption` gap when it falls below the adoption cutoff, and **both
-fire where both apply.** There is no longer a rule emitting a single diagnostic per category.
-That rule checked openness first, which is why `capability` was unreachable and never once
-appeared: `edge_hardware`'s only fully-open board is genuinely underpowered, and the category
-reported an openness gap instead, so nobody reading the map could see it.
+fire where both apply.** No rule emits a single diagnostic per category, because a rule that
+emits one has to pick, and picking openness first makes `capability` unreachable:
+`edge_hardware`'s only fully-open board is genuinely underpowered, and a category reporting an
+openness gap instead leaves nobody reading the map able to see it.
 
 **A driver gap says its axis is short for the category, and that is true in two ways.** The
 per-product reading above is the first: the best fully-open product is below the axis cutoff. The
@@ -306,28 +309,29 @@ the top of that axis at all.**
 
 The second clause exists because the first could leave a category saying nothing. The cutoffs are
 4 and the maturity bar is 4.5, so a product must reach 5 on an axis to be mature, and one sitting
-at exactly 4 and 4 clears both cutoffs while missing the bar. 32 fully-open products across 12
-categories sit there. Where such a product is its category's best, the category reported a stage
+at exactly 4 and 4 clears both cutoffs while missing the bar. Measured 2026-09-20, 33 fully-open
+products across 13 categories sit there. Where such a product is its category's best, the category reported a stage
 and no gaps, and a reader was told nothing about what was missing. `compilers` is the case: its
 best fully-open option is `coremltools` at 4/4, while `apache-tvm`, `iree` and `xla` reach
 capability 5 and, across 44 products, **nothing reaches adoption 5**. The capability exists in the
 open and has not been adopted, so the category reports `adoption`.
 
-This widens the contract set in #318, which read the drivers off the best product alone. It is a
-widening rather than a new gap type because both readings answer the question a reader is actually
-asking — which axis is holding this category back — and a seventh chip would buy precision at the
-cost of a vocabulary nobody asked to learn.
+Both readings are the same gap type rather than two, because both answer the question a reader is
+actually asking — which axis is holding this category back — and a seventh chip would buy
+precision at the cost of a vocabulary nobody asked to learn.
 
 **Two states still carry no driver gap, deliberately.** An axis that **no** fully-open product
 records is unmeasured rather than deficient, and is never named: a category graded on adoption
 alone must not be told it has a capability shortfall. A null on the *best* fully-open product alone
 is NOT this state — it silences the per-product reading and leaves the category-level one intact, so
 a capability gap can still fire from a peer that recorded the axis. See the null-capability rule
-above, which #547 settled rather than changed. And a category that has topped both axes,
+above. And a category that has topped both axes,
 but never in the same product, reports nothing — the parts exist and nobody has assembled them,
-which is a real state this vocabulary cannot yet name. That shape exists today in
-`training_synthetic_datasets`, `finetuning_code`, `inference_code` and `storage`, all of which are
-at Stage 4 or 5, so none currently reaches this branch.
+which is a real state this vocabulary cannot yet name. Measured 2026-09-20 it holds in
+`agent_protocols`, `agent_tools_connectors`, `finetuning_code`, `inference_code`, `storage` and
+`training_synthetic_datasets`, and none of them reaches this branch: all but one are at Stage 4 or
+5, and in `agent_tools_connectors` the per-product reading fires first, so the category-level
+question is never asked.
 
 ### Declaring the disclosure gap
 

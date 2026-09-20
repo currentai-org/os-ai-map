@@ -22,13 +22,13 @@ then per axis the components, the note as `Why` or `Detail`, and the source list
 reads them as one page about one product. An editor reads the same strings in the score file
 while deciding whether the score is right.
 
-The corpus was written for the second reader. It says "rung 4", "the other half of the
-ladder", "one below the anchor", "level 5 here is measured, not inferred", "the formula has
-nothing to resolve to". Every one of those is a sentence about the scoring machinery, addressed
-to the person auditing the score, sitting in the copy a visitor reads. Before the rewrite,
-more than a third of the notes carried that vocabulary, and nearly half restated an exact
-figure that the source line directly beneath them already showed; `build/prose_worklist.py`
-counts both on any tree.
+Prose written for the second reader says "rung 4", "the other half of the ladder", "one below
+the anchor", "level 5 here is measured, not inferred", "the formula has nothing to resolve to".
+Every one of those is a sentence about the scoring machinery, addressed to the person auditing
+the score, sitting in the copy a visitor reads. It is the default a rubric produces, and the two
+failures travel together: the rubric's vocabulary, and a figure restated from the source line
+directly beneath it. `build/prose_worklist.py` counts both on any tree, and
+`tests/test_score_notes.py` holds both at zero.
 
 So the test for every sentence in a published field is: **would a careful reader who has never
 opened `sources/rubrics/` understand it, and does it tell them something the page does not
@@ -121,14 +121,13 @@ Footnotes that earn their place:
 
 Footnotes that do not:
 - **A restatement of an axis note.** "The self-hosted build cannot take screenshots; that is
-  the gate the openness score rests on" is the openness `Why` said again two screens up. Before
-  the rewrite about a quarter of the footnotes overlapped a note that heavily. Delete them.
-- **A dated verification sentence.** `Verified 2026-08-13 via the LICENSE body.` used to end
-  every `comments` field. The date is `last_verified` on each axis, and the page already prints
-  it as `Verified <date>`. The line was a third copy, and the one visitors read as a footnote
-  about the product. It is gone, `tests/test_product_prose.py` keeps it gone, and no workflow
-  writes it. What it named (the document that was read) belongs on the source entry as `url`
-  and `shows`.
+  the gate the openness score rests on" is the openness `Why` said again two screens up. Delete
+  it.
+- **A dated verification sentence.** `Verified 2026-08-13 via the LICENSE body.` is the shape,
+  and it is banned. The date is `last_verified` on each axis, and the page already prints it as
+  `Verified <date>`, so the line is a third copy and the one visitors read as a footnote about
+  the product. `tests/test_product_prose.py` fails it and no workflow writes it. What it names
+  (the document that was read) belongs on the source entry as `url` and `shows`.
 - **A product fact.** Move it to `description`.
 - **The license.** It is `openness.components`, rendered in larger type directly below.
 
@@ -202,10 +201,10 @@ not record is listed by `check_capability --candidates`.
 findings are pinned. A note that says the signal *understates* the product, or is *inflated*,
 or counts a *minority channel*, is making a claim the map records deliberately. Rewriting such a
 note keeps that phrase verbatim (`build/sweep_status.py`, `UNDERSTATES` and `INFLATED`, is the
-list) unless the claim itself is being withdrawn, which is a re-read, not a prose edit.
+list) unless the claim itself is being retracted, which is a re-read, not a prose edit.
 
 **No dates, no chronology.** A note states what is true until the score changes. When it was
-checked is `last_verified`; what it used to say is `git log -p --follow`. "Corrected from level
+checked is `last_verified`; its earlier wording is in `git log -p --follow`. "Corrected from level
 4", "the note this replaces", "settled under issue 264", "an earlier draft was withdrawn" are all
 history, and they leave. The exception is a date that is a fact about the product or the source,
 a spec revision named by its date or a GA date, and each such axis is listed in
@@ -561,7 +560,7 @@ parse-identical.
 
 **Module docstrings** in `build/` say why the module exists and how to run it, in a paragraph,
 then point at the reference document that is the authority on the rule. A docstring is not the
-normative home of a rule; `docs/reference/` is. Two constraints from #573: no live census in a
+normative home of a rule; `docs/reference/` is. Two constraints hold it: no live census in a
 docstring that prints as `--help` ("four records today" is wrong within a fortnight), and an
 example a docstring quotes must be one the function actually handles the way the prose says.
 The comments inside a function that settle a live question stay; that volume was measured and
@@ -653,8 +652,7 @@ date, not a prose clause.
 `last_verified` lives in the score file, per axis, and confirms that a *score* is still correct
 and re-derivable from its sources. Only a person writes it, and only per the rules in
 `evidence-and-freshness.md`. Nothing in prose earns one, and prose carries no date of its own:
-the `comments` verification line that used to serve as one is retired, so a description ages
-silently. That is acceptable because a prose refresh is coupled to the axis re-read in
+`comments` carries no verification line to serve as one, so a description ages silently. That is acceptable because a prose refresh is coupled to the axis re-read in
 `refresh-category.md`; it is not acceptable to write a date into prose to compensate. If a
 prose re-read turns up a fact that moves a score, that is a score change: stop and follow
 `evidence-and-freshness.md`.
@@ -718,8 +716,8 @@ For a product refresh (the `update-product` and `refresh-category` skills):
 - `skills/clean-corpus-prose/SKILL.md`: the prose-only pass, one category per unit of work
 - `skills/update-product/SKILL.md` and `skills/refresh-category/SKILL.md`: prose inside a re-read
 - `docs/reference/evidence-and-freshness.md`: normative on how a score earns `last_verified`
-- `docs/reference/openness.md` and `docs/reference/adoption.md`: the rulings the notes used to
-  carry as vocabulary
+- `docs/reference/openness.md` and `docs/reference/adoption.md`: the rulings a note argues from
+  without naming
 - `docs/methodology.md`: the register these fields borrow
 - `docs/schemas/product.schema.json` and `docs/schemas/score.schema.json`: the field definitions
 - `tests/test_product_prose.py`, `tests/test_score_notes.py`: the guards

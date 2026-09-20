@@ -47,8 +47,8 @@ evidence, and a checker that could not tell them apart could not route or gate t
 - **`benchmark`** — a published number (a leaderboard placement, an eval score). Re-reading
   it is the confirmation; the number is a property of a harness-plus-model pairing, not of
   the product alone, so a benchmark band does not claim the benchmark was re-run.
-- **`feature_matrix`** — a judgment over what the product does. The dominant basis: measured
-  2026-08-08, 322 of 472 products sit here.
+- **`feature_matrix`** — a judgment over what the product does, and the basis most bands on
+  the map carry. `uv run python -m build.check_capability` prints the live split.
 - **`training_value`** — ablation or downstream-model evidence that a dataset or recipe
   improves what is trained on it (`basis_detail` names it `ablation` or `superseded`).
 - **`n/a`** — an honest abstention. By convention it pairs with a null score, but nothing gates
@@ -58,14 +58,13 @@ evidence, and a checker that could not tell them apart could not route or gate t
 
 ## The real instrument is a peer comparison
 
-Many bands are not measured at all. As of 2026-08-14, 114 products record a peer comparison
-(with perhaps another ~36 candidates that still live in prose) — "one tier below the Megatron-LM
-anchor", "mid-tier next to langfuse" — and in `finetuning_code` every note does it.
-Peer comparison is **a major capability instrument**, not demonstrably most of the axis, and until
-2026-08-08 it lived inside an English sentence where nothing could check it, refresh it, or notice
-when the product it named moved.
+Many bands are not measured at all. A large share of the corpus places a product against a peer
+in its own category — "one tier below the Megatron-LM anchor", "mid-tier next to langfuse" — and in
+`finetuning_code` every note does it. Peer comparison is **a major capability instrument**, not
+demonstrably most of the axis. Written as an English sentence it is unreachable: nothing can check
+it, refresh it, or notice when the product it names moves.
 
-`relative_to` and `relation` record it as data:
+`relative_to` and `relation` record it as data instead:
 
 ```yaml
 capability:
@@ -113,8 +112,7 @@ Transitive freshness as written binds the dependent's **whole-axis** date to the
 **whole-axis** date, and those are two claims about two different products. The consequence
 shows up as the corpus grows: every new product's natural peer was confirmed before the
 product existed, so a tranche can compare its own members to each other and to nothing else.
-That happened three times in one week in August 2026, and the comparisons were dropped into
-prose rather than asserted on a re-derivation nobody performed.
+The comparison then either goes unrecorded or rests on a re-derivation nobody performed.
 
 `capability.comparison` records the edge's own confirmation:
 
@@ -149,7 +147,7 @@ What the gate then asks, and why each one:
   the peer, and without this requirement the first pass under time pressure attests off the
   peer's `value` as this repository already recorded it, which confirms nothing.
 
-In exchange, the peer's whole-axis date no longer bounds the dependent's. Where the peer *has*
+In exchange, the peer's whole-axis date does not bound the dependent's. Where the peer *has*
 been re-read since the spacing was judged, `check_capability` reports the edge rather than
 failing it: the arithmetic check already fires if the peer's score moved, and this catches the
 case where its `value` moved and its score did not.
@@ -157,8 +155,9 @@ case where its `value` moved and its score did not.
 One fetch attests every edge against the same peer, so a tranche pays per peer rather than per
 product. And an attestation may not re-date the peer's own `capability.last_verified` as a side
 effect — unless the read happened to cover every source that axis cites, in which case the peer
-really has been re-derived and the curator may date it. Nine of thirteen peers in the August
-backlog cited exactly one source, so that is common rather than exotic.
+really has been re-derived and the curator may date it. That is the common case rather than the
+exotic one: measured 2026-09-20, 63 of the 110 peers named by a `relative_to` cite exactly one
+source.
 
 ### Do not force every comparison through the category anchor
 
@@ -190,14 +189,17 @@ different: a null score makes the subtraction meaningless, an empty or placehold
 leaves "one below X" pointing at nothing a reader can see, and an unsourced value is an
 assertion nobody can re-open.
 
-On 2026-08-31 `langfuse` was named by 22 records and `openhands` by 25, and neither recorded a
-`value`. The arithmetic invariant held on all 47 bands — a `one_below` against a 4 really was a
-3 — so `check_capability` was green while the thing being compared to was unstated. **Consistent
-is not correct.** Recording `openhands`'s surface then exposed a second problem the bands
-predated: its README now leads with a control centre that runs third-party agents, so "runs
-somebody else's loop" had quietly stopped being the low-rung discriminator nine bands in that
-category rested on. Nothing could notice the product had moved, which is the exact failure
-recording comparisons as data was meant to prevent.
+A peer with no `value` satisfies the arithmetic on every band that names it — a `one_below`
+against a 4 really is a 3 — while the thing being compared to is unstated, so `check_capability`
+reads green over a fan-out of bands resting on nothing a reader can see. **Consistent is not
+correct.**
+
+An unrecorded surface fails a second way. A category's discriminating rung is usually a claim
+about what a peer does, and a peer can stop doing it: a product whose README comes to lead with a
+control centre running third-party agents is not the product that "runs somebody else's loop"
+describes, and every band in that category resting on the distinction moves with it.
+Nothing in the corpus can notice the product moved unless its surface is written down, which is
+the failure recording comparisons as data exists to prevent.
 
 `build/check_capability.py` reports weak roots with their fan-out, so remediation runs in the
 order that clears the most dependent bands.
@@ -205,40 +207,31 @@ order that clears the most dependent bands.
 ## Writing the rungs
 
 The bands are per category, so somebody writes their definitions, and that writing is where the
-axis is won or lost. One rule and one diagnostic, both learned on 2026-08-18 while banding
-`compilers` and `storage`. The diagnostic was a rule until 2026-09-16; see below for why it is not.
+axis is won or lost. One rule and one diagnostic.
 
 **Count the products per rung before you accept the wording, and re-read the wording when one
 rung is wide.** A wide rung is a PROMPT, not a verdict: sometimes the definition is satisfiable by
-almost everything, and sometimes the products really do share a capability. `storage`'s top rung was first
-written as "a distributed retrieval platform that also ranks or runs inference in the serving
-path", which on that day admitted seven of the twenty-seven products then in the category - Vespa
-and Elasticsearch, but also every vector database that fuses scores, since Qdrant has RRF and DBSF,
-Infinity has tensor reranking and Milvus has rerank functions. Reworded to "hosts and evaluates
-ranking or embedding models inside the serving path" it admitted two. Nothing about the products
-changed; the definition stopped admitting products whose only qualifying feature was score fusion.
-The distribution is the diagnostic, and it costs one query.
+almost everything, and sometimes the products really do share a capability. A definition can be
+satisfied incidentally, and `storage` is the shape to recognize. "A distributed retrieval platform
+that also ranks or runs inference in the serving path" admits Vespa and Elasticsearch and also every
+vector database that fuses scores, since Qdrant has RRF and DBSF, Infinity has tensor reranking and
+Milvus has rerank functions. "Hosts and evaluates ranking or embedding models inside the serving
+path" admits the ones that host a model. The products are the same under either wording; the second
+stops admitting products whose only qualifying feature is score fusion. The distribution is the
+diagnostic, and it costs one query.
 
-An earlier version of this section made that diagnostic a RULE - a rung holding a third of the
-category was unacceptable - and the rule is withdrawn as of 2026-09-16. Not because the corpus fails
-it, which would be an argument for fixing the corpus, but because a distribution cannot decide the
-question the rule asked it to decide. Two things produce a wide rung and the count cannot tell them
-apart: a definition loose enough that nearly everything satisfies it, and a category whose products
-genuinely share a capability. The first is a defect in the wording. The second is a fact about the
-world, and splitting it would mean recording a distinction no evidence supports - which is the error
-this whole document exists to prevent, arriving from the other direction.
+**A width threshold does not decide the question, and must not be written as if it did.** Two
+things produce a wide rung and a count cannot tell them apart: a definition loose enough that
+nearly everything satisfies it, and a category whose products genuinely share a capability. The
+first is a defect in the wording. The second is a fact about the world, and splitting it would mean
+recording a distinction no evidence supports - which is the error this whole document exists to
+prevent, arriving from the other direction. What made `storage`'s wide rung wrong was found by
+reading the definition against the products, not by comparing a percentage to a constant.
 
-The threshold was also never calibrated. The `storage` case above is the evidence this section was
-built on, and the rung it condemns admitted 7 of 27 products - 26%, under the third the rule went on
-to forbid. The founding example never breached the line drawn from it. What made that rung wrong was
-that its qualifying feature was satisfied incidentally by every vector database with score fusion,
-which a curator found by reading the definition against the products, not by comparing a percentage
-to a constant.
-
-For scale, the corpus measured on 2026-09-16: of the 21 published categories with at least one
-banded product, 19 have a widest rung above a third, the median widest rung is 50%, and the range
-runs from `base_pretrained` at 28% to `document_conversion` at 83%. That is the reason the line was
-being quoted selectively - at whichever category was under review - rather than the reason it goes.
+A wide rung is also ordinary rather than exceptional, so a threshold read as a verdict would
+condemn most of the map. Measured 2026-09-20: of the 23 categories with at least one banded
+product, 21 have a widest rung above a third, the median widest rung is 50%, and the range runs
+from `base_pretrained` at 28% to `document_conversion` at 83%.
 
 **A wide rung still triggers a review, and the review has to leave a record.** Above a third is the
 trigger, kept as a number so it fires the same way for everyone. What it demands is not a
@@ -251,7 +244,8 @@ the distribution and an unverified reword has not been shown to.
 `document_conversion` is the clustering case and reports it that way: 15 of its 18 banded products
 recover reading order, tables and formulas into Markdown or JSON, the ends of the ladder are narrow
 by construction, and the differences inside the middle are input breadth against structure depth,
-which trade off against each other and which vendor feature lists cannot order.
+which trade off against each other and which vendor feature lists cannot order. (Counts measured
+2026-09-20; re-run the count against the category rather than quoting them.)
 
 **Prefer a definition stated as a capability the product either has or has not, over one stated as
 an outcome.** "Ranks results" is an outcome, and outcomes generalize until they are vacuous -
@@ -263,13 +257,13 @@ performs, which is why a kernel library tops out at 3 there - it supplies the pr
 targets and transforms nothing itself. That is a fact about the product, not a judgment about its
 quality.
 
-A corollary for the evidence: **`basis_detail` is per product, never per cluster.** Three products
-moved into `storage` carrying `basis_detail: ANN-Benchmarks` from their old category, and it was
-wrong on all three - Pinecone is not in ANN-Benchmarks at all and its own note said so, while
-Milvus and Qdrant are listed but the harness publishes recall-versus-QPS plots with no ranking
-table, so it corroborates inclusion while their headline numbers come from their vendors' own
-harnesses. One name for a group of products reads as a shared measurement that does not exist.
-**Moving a product between categories re-opens the instrument, not just the band.**
+A corollary for the evidence: **`basis_detail` is per product, never per cluster.** One harness
+name written across a group of products reads as a shared measurement, and the shared measurement
+usually does not exist. `ANN-Benchmarks` over the vector databases in `storage` is the case:
+Pinecone is not in it at all, and Milvus and Qdrant are listed but the harness publishes
+recall-versus-QPS plots with no ranking table, so it corroborates their inclusion while their
+headline numbers come from their vendors' own harnesses. **Moving a product between categories
+re-opens the instrument, not just the band.**
 
 ## What it does not do
 
@@ -277,10 +271,10 @@ harnesses. One name for a group of products reads as a shared measurement that d
   unroutable: the external anchors (Artificial Analysis, LMArena) rank *models*, so neither
   can say anything about a training framework or a sandbox. A fetch can re-derive a
   `benchmark` band; a `feature_matrix` or internal-eval judgment needs a human read.
-- **`value` is not structured into components.** At 61% prose by `check_rubric`'s own measure,
-  against the 71% that stopped `edge_hardware`, and with four instruments sharing one field,
-  there is no shared ladder at the end of that work the way openness got four. The peer
-  comparison, not a component structure, is what was made checkable instead.
+- **`value` is not structured into components.** Most of the field is prose, on the same measure
+  that stopped `edge_hardware`'s ladder, and four instruments share the one field, so there is no
+  shared ladder at the end of that work the way openness has four. The peer comparison, not a
+  component structure, is what is checkable instead.
 
 ## Checklist
 

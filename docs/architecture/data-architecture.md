@@ -238,15 +238,12 @@ correct. A hold is by definition an axis "a re-read opened, worked, and honestly
 settle" (`build/check_freshness.py`), so no such date exists. A held axis reaches the payload
 as `basis: partial`, not through the fallback and not as `verified`.
 
-An earlier draft of this section claimed the opposite, citing the queue line
-"aws-neuron.adoption — Re-read 2026-08-13 and held at 3" as evidence that a held axis keeps its
-date. That reading is backwards twice over. "Held at 3" means the score remained 3, not that the
-axis remains in a verification hold — and the entry was removed from the queue precisely because
-the value HAD been re-derived, which made the axis `confirmed`. Worse, `aws-neuron` is named in
-`evidence-and-freshness.md` as one of three products — with `falcon` and
-`qualcomm-ai-engine-direct` — that shipped `basis: verified` over an axis parked in the queue.
-That was the live defect the `partial` state was added to fix on 2026-08-15. The one product
-cited as proof was the documented example of the bug.
+A queue line of the form "*slug*.adoption — Re-read and held at 3" is not evidence that a held
+axis keeps its date. "Held at 3" says the score remained 3, not that the axis remains in a
+verification hold, and an entry leaves the queue precisely when the value HAS been re-derived,
+which makes the axis `confirmed`. The products `evidence-and-freshness.md` names as having
+shipped `basis: verified` over a parked axis are examples of the defect `partial` exists to fix,
+not counter-examples to the rule.
 
 Two related rules follow from the same document and must not be re-derived:
 
@@ -410,7 +407,7 @@ The following do not belong in `catalog` long term:
 - repo-derived bridges presented as external inventory;
 - frozen historical tables without an explicit historical label.
 
-ADR-003 settled `currentai.catalog.stack_map`, which this section previously said must still be classified and migrated. It was externalized: removed from this repo's inventory, its producer archived, and the deployed table left frozen under platform ownership at its last publish. Its only reader, `scores.stack_contributors`, was externalized with it, so the compatibility view this section once called for has nothing left to serve. The curated identity and membership fields it carried live in `registry`. Nothing in this repo migrates it now, and a doc that asks someone to is asking them to redo ADR-003.
+`currentai.catalog.stack_map` is **externalized** under ADR-003: out of this repo's inventory, its producer archived, and the deployed table frozen under platform ownership at its last publish. Its only reader, `scores.stack_contributors`, was externalized with it, so no compatibility view is owed. The curated identity and membership fields it carried live in `registry`. Nothing in this repo migrates it, and a doc asking someone to is asking them to redo ADR-003.
 
 ### 4.3 `currentai.observations`
 
@@ -593,18 +590,19 @@ concept, not a property of the raw fact.
 
 #### Metric is not instrument
 
-The earlier draft used a single `signal_type` enum of
-`stars | downloads | usage_volume | customers | other`, which mixes two levels. `stars` and
-`downloads` are metrics; `usage_volume` is a scoring instrument; `customers` is a metric that
-may support more than one instrument depending on policy. Worse, that enum does not match the
-corpus. Measured 2026-08-20 across `sources/`, the recorded instruments are:
+A single `signal_type` enum of `stars | downloads | usage_volume | customers | other` mixes two
+levels and must not be used. `stars` and `downloads` are metrics; `usage_volume` is a scoring
+instrument; `customers` is a metric that may support more than one instrument depending on
+policy. It also does not match the corpus, whose recorded instruments are (`signal_type` across
+`sources/scores/*.yaml`, measured 2026-09-20; re-derive with
+`grep -h '^  signal_type:' sources/scores/*.yaml | sort | uniq -c`):
 
 ```text
-usage_volume        292
-reported_traction   111
-stars_fallback       85
-active_users         25
-unknown              20
+usage_volume        405
+stars_fallback      169
+reported_traction   127
+unknown              39
+active_users        23
 ```
 
 Keep the two vocabularies separate and carry both:
@@ -1136,9 +1134,9 @@ sources/*.yaml
   → advance the public release pointer
 ```
 
-Projection generation and parity happen BEFORE the commit point, not after. An earlier draft
-of this section published the manifest and then regenerated projections, which contradicted
-12.1: a manifest cannot be valid while the outputs it vouches for do not yet exist.
+Projection generation and parity happen BEFORE the commit point, not after. Publishing the
+manifest and then regenerating projections contradicts 12.1: a manifest cannot be valid while
+the outputs it vouches for do not yet exist.
 
 Initial implementation may keep existing GitHub and OSO jobs separate, but every job must declare which edge it protects and pass forward an explicit release identifier.
 
@@ -1371,13 +1369,13 @@ warehouse/
 
   models/
     catalog/                             static reference (STATIC_MODEL dataset)
-      model_benchmarks.py                Open LLM Leaderboard; rename WITHDRAWN (#393)
-      model_repos.py                     HF-to-GitHub links; rename WITHDRAWN (#393)
-    entities/                            kind: catalog, but a scheduled USER_MODEL dataset — stays put (#393)
+      model_benchmarks.py                Open LLM Leaderboard; keeps its name (11.6)
+      model_repos.py                     HF-to-GitHub links; keeps its name (11.6)
+    entities/                            kind: catalog, but a scheduled USER_MODEL dataset — stays put (11.1)
       repos.sql projects.sql packages.sql models.sql
-    events/                              kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+    events/                              kind: observations, own USER_MODEL sweep — deferred, stays put (11.1)
       github_events.sql
-    metrics/                             kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+    metrics/                             kind: observations, own USER_MODEL sweep — deferred, stays put (11.1)
       daily.sql
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
@@ -1390,7 +1388,7 @@ warehouse/
       axis_facts.sql
       axis_rule_matches.sql
       axis_results.sql
-    scores/                              kind: evaluation, but a scheduled USER_MODEL dataset — stays put (#393)
+    scores/                              kind: evaluation, but a scheduled USER_MODEL dataset — stays put (11.1)
       dependency_graph.sql fragility.sql investment_ranking.sql ossd_coverage.sql
       project_summary.sql repos_summary.sql stack_contributors.sql taxonomy.sql
     releases/
@@ -1399,12 +1397,12 @@ warehouse/
       category_scores.sql
       category_gaps.sql
     signal_github/
-      artifact_state.py                  renamed from repo_state in Phase 2
+      artifact_state.py                  the Phase 2 successor to repo_state
       product_adoption.sql               COMPATIBILITY, retired with the set
     signal_huggingface/
-      artifact_state.py                  renamed from hub_state in Phase 2
+      artifact_state.py                  the Phase 2 successor to hub_state
       product_adoption.sql               COMPATIBILITY, retired with the set
-    signal_packages/                     replaces signal_pypi — issue #314
+    signal_packages/                     the successor to the retired signal_pypi
       downloads.sql
       downloads_daily.py
       product_adoption.sql               COMPATIBILITY, retired with the set
@@ -1419,8 +1417,8 @@ warehouse/
 
   data/
     catalog/
-      model_benchmarks.csv               rename WITHDRAWN (#393)
-      model_repos.csv                    rename WITHDRAWN (#393)
+      model_benchmarks.csv               keeps its name (11.6)
+      model_repos.csv                    keeps its name (11.6)
       foundation_model_repos.csv
       top_models.csv                     fetcher interface, not an orphan
       tracked_models.csv                 fetcher interface, not an orphan
@@ -1428,19 +1426,10 @@ warehouse/
       product_adoption_baseline.parquet   the baseline IS these bytes
 ```
 
-`product_adoption_baseline` appears under `data/`, not `models/`. An earlier draft of this tree
-showed it as a `.sql` file, which contradicts 4.3 — a model that selects from live upstream
-tables produces a different result on every run, which is the opposite of an immutable snapshot.
-Add a presentation view only if something actually needs one.
-
-#### [Superseded by ADR-003 — historical] The long-tail chain
-
-> An earlier plan kept the `entities`, `events`, `metrics` and analytical `scores` chain in this
-> repository, mapping its tables onto the five semantic kinds and reasoning about which OSO dataset
-> type/schedule each needed. ADR-003 (steps 5–6) **externalized** the whole chain instead — it
-> models the OSO organization, not the Gap Map — so those tables are frozen under platform ownership
-> and gone from this inventory, and the `population: long_tail` classification is retired. None of
-> that mapping or namespace analysis binds any asset today. Current state: ADR-003, §11.2 and §11.5.
+`product_adoption_baseline` appears under `data/`, not `models/`, and it is not a `.sql` file: a
+model that selects from live upstream tables produces a different result on every run, which is
+the opposite of the immutable snapshot 4.3 requires. Add a presentation view only if something
+actually needs one.
 
 Three consequences worth stating, because each is a true claim the layout makes on its own:
 
@@ -1471,17 +1460,16 @@ That is the concrete instance of the AD-1 violation in 4.1. `registry.adoption_r
 capture that precedence BEFORE these three tables retire, or the ordering is lost silently and
 nothing fails.
 
-The layout also retires three directories whose names encoded authority implicitly —
-`ingest/` ran in CI, `models/` was repo-authored and deployed, `platform-mirror/` was
-read-only copy — and two partial registries, `sources.yaml` and
-`platform-mirror/manifest.yaml`. Authority is a declared, validated field in `assets.yaml`;
-encoding it a second time in the directory tree is the drift this migration exists to
-remove. Dataset is not authority, so mirroring the dataset does not reintroduce it.
+**No directory name encodes authority**, and none of `ingest/` (runs in CI), `models/`
+(repo-authored and deployed) or `platform-mirror/` (read-only copy) exists, nor any partial
+registry beside `assets.yaml`. Authority is a declared, validated field there; encoding it a
+second time in the directory tree is the drift this layout exists to prevent. Dataset is not
+authority either, so mirroring the dataset does not reintroduce it.
 
 ### 11.1a Table naming rules
 
-These bind new tables. Deployed tables that violate them are listed in 11.6 as a separate
-migration decision, not silently renamed.
+These bind new tables. A deployed table that violates one is a separate migration decision,
+recorded in 11.6, never a silent rename.
 
 1. **The dataset names the source; the table must not repeat it.**
    `signal_packages.downloads`, not `signal_packages.package_downloads`.
@@ -1493,8 +1481,8 @@ migration decision, not silently renamed.
 3. **A grain shared across sibling tables is named consistently or not at all.**
    The three trace tables in `evaluation/` are all keyed on
    `(declaration_version_id, product_slug, category_slug, axis)`, so all three lead with `axis_`:
-   `axis_facts`, `axis_rule_matches`, `axis_results`. The earlier draft had
-   `score_facts`, `rule_matches`, `product_axis_results` — three patterns for one grain.
+   `axis_facts`, `axis_rule_matches`, `axis_results`. `score_facts`, `rule_matches`,
+   `product_axis_results` would be three patterns for one grain.
 4. **A reused basename must mean the same thing.** Reusing a name across namespaces is
    correct when the tables implement a common interface and a compatible grain — the namespace
    is what distinguishes them. `signal_github.artifact_state` and
@@ -1505,20 +1493,21 @@ migration decision, not silently renamed.
    plausible wrong numbers in silence. `registry.product_scores` stays as the front-end
    contract per 12.3, so the release projection is `releases.product_axis_scores` rather than a
    second `product_scores`.
-   An earlier draft stated this as a blanket ban on reuse, which forbade the architecture's own
-   `artifact_state` and `product_adoption` naming.
+   Stated as a blanket ban on reuse, this rule would forbid the architecture's own
+   `artifact_state` and `product_adoption` naming, which is why it is a ban on reuse over
+   different data rather than on reuse.
 5. **A table named for a generic category must be specific enough to distinguish its
    siblings.** `catalog.model_benchmarks` is Open LLM Leaderboard v2, and it sits beside
    `signal_artificialanalysis.model_evaluations` and `signal_lmarena.text_leaderboard`.
 
 ### 11.2 Asset entry
 
-`kind` uses the namespace vocabulary of section 4 rather than a second parallel enum. The
-`declaration | discovery | observation | evaluation | release` set of the earlier draft was
-the same five concepts under different names; `compatibility` and `historical` are states,
-not kinds, and belong to `status`.
+`kind` uses the namespace vocabulary of section 4 rather than a second parallel enum. A
+`declaration | discovery | observation | evaluation | release` set would be the same five
+concepts under different names; `compatibility` and `historical` are states, not kinds, and
+belong to `status`.
 
-Three properties of the schema are load-bearing and were wrong in the first draft:
+Three properties of the schema are load-bearing and easy to get wrong:
 
 **An asset has several files, not one.** A mirrored SQL model has a `.sql` and a
 `.schema.json`. A fetcher has a `.py` and the `.csv` it produces. The baseline has a model
@@ -1584,9 +1573,9 @@ registries this file replaces.
   verified_at: '2026-08-25'
 ```
 
-No governed asset carries `authority: platform`, so `assets.yaml` holds no `mirror:` block. The
-two that did — `signal_github.repo_state` and `signal_huggingface.hub_state` — were retired on
-2026-09-20 (#517). The `mirror:` block below is the shape a **dependency contract** in
+No governed asset carries `authority: platform`, so `assets.yaml` holds no `mirror:` block: a
+platform-authored model is a dependency contract whatever its role (ADR-003, role table). The
+`mirror:` block below is the shape a **dependency contract** in
 `warehouse/dependencies.yaml` carries; it replaces `platform-mirror/manifest.yaml`, including its
 per-entry `synced_at` discipline — the date must move only for the entry actually refetched.
 
@@ -1670,18 +1659,17 @@ The staged eight are `observations.source_runs` and `observations.product_adopti
 outputs `registry.resolution_ledger`, `registry.product_aliases`, `registry.org_handles` and
 `registry.model_families`, and `registry.product_score_notes`: tracked assets whose tables do
 not exist on the platform yet. The notes table is the one axis of the notebook payload the
-warehouse could not serve, staged so `notebooks/ai-stack-map.py` can stop inlining 3.8 MB of
-JSON and read its prose from `currentai.registry` like everything else. The
-three `signal_packages` models were staged here until 2026-09-13, when issue #314 deployed
-them, and none of the three is a governed asset any more: `product_adoption` retired with its
-two `signal_*.product_adoption` siblings on 2026-09-14 (#562), and `downloads` and
-`downloads_daily` became dependency contracts under #517 — they are platform-authored models
-the repo mirrors read-only, which is category 3, not ownership. The
-two Phase-3 evaluation candidates that were staged here,
-`evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
-**deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
-was later **externalized** under ADR-003 — frozen under platform ownership and removed from this
-inventory — so it is no longer a governed asset here.)
+warehouse cannot serve, staged so `notebooks/ai-stack-map.py` can stop inlining 3.8 MB of
+JSON and read its prose from `currentai.registry` like everything else.
+`evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation` are
+**deployed** and count among the deployed tables.
+
+The `signal_packages` models are not governed assets at all: `downloads` and `downloads_daily`
+are dependency contracts, platform-authored models the repo mirrors read-only, which is category
+3 rather than ownership. `registry.foundation_model_repos` is **externalized** under ADR-003 —
+frozen under platform ownership and removed from this inventory — so it is not a governed asset
+here either.
+
 `observations.source_runs`, `observations.product_adoption_baseline` and
 `registry.axis_assessments` were staged for a reason the `signal_packages` three never were — they
 are repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
@@ -1689,20 +1677,21 @@ declaration-keyed release-builder candidate whose row a maintainer publishes), a
 records only that no platform table carries their name.
 Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
 authoritative; `registry.axis_assessments` awaits its maintainer publish in
-`docs/operations/deploy-axis-assessments.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
-now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
-the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
-`adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and
-`adoption_aggregation_rules` — were staged during Phase 2A and are now **deployed** (materialized
-2026-08-23, PR #353). The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
-whose platform table is absent only because the last serialization had no rows.
+`docs/operations/deploy-axis-assessments.md`. `observations.product_adoption_current` is
+**deployed**, and its deploy is what created the `observations` namespace, so it counts among the
+deployed tables rather than the staged ones. So are the four `registry.adoption_*` routing tables
+— `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and
+`adoption_aggregation_rules`. The dormant one is `registry.tail_products`, declared by
+`build.publish_registry.TABLES`, whose platform table is absent only because the last
+serialization had no rows.
 
 Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
 11.5 — but neither is current deployed state. A count that mixes them misrepresents the
 warehouse, so `status` separates them and `build.assets.deployed_tables()` is what to count
 when the question is "what exists on the platform right now".
 
-An earlier draft quoted a single "49 of 96" figure that matched none of the three.
+A single figure for "how many tables" matches none of the three questions, which is why the
+document quotes none.
 
 The tables outside those datasets are separate analytical products that the gap-map pipeline
 neither feeds nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_live`, `openrouter_snapshot`,
@@ -1711,137 +1700,31 @@ neither feeds nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_liv
 `assets.yaml`. Keeping them out is what allows `kind` to remain the five semantic kinds of
 section 4 with no sixth catch-all.
 
-The closure is mechanical, so it must be recomputed rather than assumed. (Under the old rule it
-also pulled in tables only a standalone notebook read — `catalog.country_populations` and
-`catalog.pypi_downloads` via `pypi-geo-trends.py` — which is exactly the over-scope ADR-003
-corrected: those tables are now externalized and out of scope, and a notebook read no longer
-confers membership.)
+The closure is mechanical, so it must be recomputed rather than assumed. A closure that counts
+a standalone notebook's reads pulls in tables like `catalog.country_populations` and
+`catalog.pypi_downloads` via `pypi-geo-trends.py`, which is the over-scope ADR-003 rules out:
+those tables are externalized, and a notebook read confers no membership.
 
-### 11.4 File manifest
+### 11.4 Layout invariants the tree carries
 
-DONE. This manifest was executed: the moves below have landed, `warehouse/ingest/`,
-`warehouse/models/*.sql` at the top level and `warehouse/platform-mirror/` no longer exist,
-and `warehouse/assets.yaml` carries the new paths. The tables below are the record of what
-moved where.
+The layout is the record: `warehouse/models/<dataset>/<table>.<ext>` beside `warehouse/data/`,
+with `warehouse/assets.yaml` naming every file. There is no `warehouse/ingest/`, no
+`warehouse/models/*.sql` at the top level and no `warehouse/platform-mirror/`, and each of those
+absences is a claim — see "no directory name encodes authority" in 11.1.
 
-The diff from 2026-08-20 state. Because the mirror layout keeps each file's base name and
-only changes its directory, almost every move is a pure `git mv` — reviewable as a rename
-rather than a rewrite. The one place a base name changed a table identity is
-`signal_packages`: rule 11.1a.1 strips the redundant source prefix, so the staged
-`signal_packages.package_downloads` / `package_downloads_daily` become `.downloads` /
-`.downloads_daily` (nothing deployed; repository-only).
+Two facts about the tree are worth stating because a reader would otherwise mistake them for
+untidiness:
 
-Counts, stated once and correctly. The manifest arithmetic runs from the PRE-Phase-0
-baseline, which is why that figure is an `observed:` reading rather than a derived one: Phase 0
-itself adds `warehouse/assets.yaml`, so the live count is already one higher than the number
-this diff starts from.
+- **`top_models.csv` and `tracked_models.csv` are a fetcher interface, not orphans.**
+  `model_repos.py` writes both and `model_benchmarks.py` reads both, so deleting them breaks the
+  benchmark fetcher. They live under `data/catalog/` and carry asset entries like anything else.
+- **A predecessor and its successor are both legible in the tree while both exist**, which is why
+  a migration in progress looks duplicated here rather than tidy.
 
-```text
-warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->19   (18 platform mirrors + `observations/product_adoption_current.sql`)
-warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
-repository-wide             +6 created, -5 deleted   = +1
-```
-
-An earlier draft of this section claimed "44 become 40", which double-counted the five created
-files that live under `docs/` and `tests/`, and separately claimed 27 current model files
-against an actual 30. These numbers must be generated, not typed — see the closing note in
-11.1.
-
-**Create (6)**
-
-| Path | Contents |
-|---|---|
-| `warehouse/assets.yaml` | The registry. Absorbs `sources.yaml` and `platform-mirror/manifest.yaml`. |
-| `docs/architecture/data-architecture.md` | Sections 1-13 and 17-18 of this specification. |
-| `docs/architecture/adr-001-repo-owns-scoring-semantics.md` | AD-1. |
-| `docs/architecture/adr-002-registry-curated-catalog-discovered.md` | AD-3. |
-| `tests/test_assets_inventory.py` | The checks in 11.5. |
-
-**Move, base name unchanged (24)** — the dataset prefix becomes the directory
-
-Every file below already carries its dataset as a filename prefix, so the move strips the
-prefix into a directory and nothing else changes.
-
-| From | To |
-|---|---|
-| `models/entities_models.sql` | `models/entities/models.sql` |
-| `models/entities_packages.sql` | `models/entities/packages.sql` |
-| `models/entities_projects.sql` | `models/entities/projects.sql` |
-| `models/entities_repos.sql` | `models/entities/repos.sql` |
-| `models/events_github_events.sql` | `models/events/github_events.sql` |
-| `models/metrics_daily.sql` | `models/metrics/daily.sql` |
-| `models/scores_dependency_graph.sql` | `models/scores/dependency_graph.sql` |
-| `models/scores_fragility.sql` | `models/scores/fragility.sql` |
-| `models/scores_ossd_coverage.sql` | `models/scores/ossd_coverage.sql` |
-| `models/scores_project_summary.sql` | `models/scores/project_summary.sql` |
-| `models/scores_repos_summary.sql` | `models/scores/repos_summary.sql` |
-| `models/scores_stack_contributors.sql` | `models/scores/stack_contributors.sql` |
-| `platform-mirror/evidence_product_evidence.sql` | `models/evidence/product_evidence.sql` |
-| `platform-mirror/evidence_product_evidence.schema.json` | `models/evidence/product_evidence.schema.json` |
-| `platform-mirror/scores_openness_facts.sql` | `models/scores/openness_facts.sql` |
-| `platform-mirror/scores_openness_facts.schema.json` | `models/scores/openness_facts.schema.json` |
-| `platform-mirror/scores_openness_computed.sql` | `models/scores/openness_computed.sql` |
-| `platform-mirror/scores_openness_computed.schema.json` | `models/scores/openness_computed.schema.json` |
-| `platform-mirror/github_repo_state.py` | `models/signal_github/repo_state.py` |
-| `platform-mirror/github_product_adoption.sql` | `models/signal_github/product_adoption.sql` |
-| `platform-mirror/huggingface_hub_state.py` | `models/signal_huggingface/hub_state.py` |
-| `platform-mirror/huggingface_product_adoption.sql` | `models/signal_huggingface/product_adoption.sql` |
-| `platform-mirror/lmarena_leaderboard.py` | `models/signal_lmarena/text_leaderboard.py` |
-| `platform-mirror/semanticscholar_paper_citations.py` | `models/signal_semanticscholar/paper_citations.py` |
-
-**Move, base name corrected (5)** — the old name did not match the table it produces
-
-| From | To | Table |
-|---|---|---|
-| `platform-mirror/artificialanalysis_models.py` | `models/signal_artificialanalysis/model_evaluations.py` | `.model_evaluations` |
-| `platform-mirror/goodailist_repos.py` | `models/signal_goodailist/repo_catalog.py` | `.repo_catalog` |
-| `platform-mirror/pypi_package_downloads.sql` | `models/signal_pypi/package_downloads.sql` | unchanged; retired by #314 |
-| `platform-mirror/packages_package_downloads.sql` | `models/signal_packages/downloads.sql` | staged; rule 11.1a.1 |
-| `platform-mirror/packages_package_downloads_daily.py` | `models/signal_packages/downloads_daily.py` | staged; rule 11.1a.1 |
-
-`platform-mirror/packages_product_adoption.sql` moves to
-`models/signal_packages/product_adoption.sql` with its name intact.
-
-**Move and rename (3)** — `ingest/` fetchers, named for the table they load
-
-| From | To | Loads |
-|---|---|---|
-| `ingest/fetch_model_benchmarks.py` | `models/catalog/model_benchmarks.py` | `catalog.model_benchmarks` |
-| `ingest/fetch_huggingface.py` | `models/catalog/model_repos.py` | `catalog.model_repos` |
-| `ingest/build_stack_map.py` | `models/catalog/stack_map.py` | `catalog.stack_map` |
-
-**Move (6)** — `catalog/` to `data/<dataset>/<table>.csv`
-
-| From | To |
-|---|---|
-| `catalog/huggingface/model_benchmarks.csv` | `data/catalog/model_benchmarks.csv` |
-| `catalog/huggingface/model_repos.csv` | `data/catalog/model_repos.csv` |
-| `catalog/huggingface/foundation_model_repos.csv` | `data/catalog/foundation_model_repos.csv` |
-| `catalog/stack_map/repos.csv` | `data/catalog/stack_map.csv` |
-| `catalog/huggingface/top_models.csv` | `data/catalog/top_models.csv` |
-| `catalog/huggingface/tracked_models.csv` | `data/catalog/tracked_models.csv` |
-
-**Delete (5)**
-
-| Path | Reason |
-|---|---|
-| `warehouse/sources.yaml` | Absorbed into `assets.yaml`. Its prose on why `goodailist` and `aiid` have no fetcher carries over verbatim. |
-| `warehouse/platform-mirror/manifest.yaml` | Absorbed as the nested `mirror:` block. |
-| `warehouse/platform-mirror/README.md` | Content to `docs/architecture/data-architecture.md`. |
-| `warehouse/models/README.md` | Per-table detail to `assets.yaml`; enduring prose to `docs/architecture/data-architecture.md`, which avoids creating a seventh file that was never in the Create list. Its inventory was stale — a dataset count of 25 against an actual 22, and 5 `catalog` tables documented against an actual 10 — and it recorded `catalog.goodailist_repos` as retired while the table is live. |
-| `warehouse/catalog/.gitkeep` | Directory retired. |
-
-`top_models.csv` and `tracked_models.csv` are NOT deleted. An earlier draft listed them as
-orphans loading no table; they are the interface between the two fetchers —
-`model_repos.py` writes both and `model_benchmarks.py` reads both at line 91.
-Deleting them would have broken the benchmark fetcher. They move with the rest to
-`data/catalog/`.
-
-The `signal_pypi/` directory is created by this move and retired by issue #314 once
-`signal_packages` is deployed. Keeping it visible through the transition is deliberate: the
-staged successor and the live predecessor should both be readable in the tree while both
-exist.
+**Every count about this tree is generated, not typed.** The figures in section 11 carry a
+`<!-- count:… -->` marker and are rewritten from `warehouse/assets.yaml` on every build;
+`build.assets.deployed_tables()` is what answers "what exists on the platform right now". A
+number typed into this document by hand is a defect, not a fact.
 
 ### 11.5 CI checks
 
@@ -1850,8 +1733,8 @@ exist.
    same dataset directory, no path signals which is which; this check plus 3 carries that
    weight.
 1b. The path derives the table: `models/<dataset>/<table>.<ext>` must equal the declared
-   `table` as `currentai.<dataset>.<table>`. This replaces a filename-convention check —
-   a misplaced file fails rather than being silently accepted under a plausible name.
+   `table` as `currentai.<dataset>.<table>`. A filename convention is not enough: this way a
+   misplaced file fails rather than being silently accepted under a plausible name.
 1c. Every managed file appears in exactly one `files:` role across the whole inventory. Roles
    are checked for consistency with `authority` and `kind`: a `data` role requires a fetcher or
    a frozen asset. A `schema` role is available to any model, mirrored or repository-owned —
@@ -1888,7 +1771,7 @@ exist.
    `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
    `scope: internal`, or is `scope: external` and names a table this inventory does not cover.
-   Because the inventory deliberately covers the closure rather than all 96 org tables,
+   Because the inventory deliberately covers the closure rather than every table in the org,
    `oso.*` and out-of-scope `currentai.*` reads must be representable rather than errors.
 9. Deprecated assets carry a removal condition; active `compatibility` assets name a
    replacement or state why none exists.
@@ -1976,10 +1859,10 @@ not pull request (ADR-003, "External dependency manifest"). A contract confers *
 namespace-cleanup obligation. G2/G3/G4 (§11.5) keep the manifest reachable and disjoint so it cannot
 grow into a second org-wide inventory.
 
-### 11.6 Decisions resolved 2026-08-20, and what remains
+### 11.6 Settled questions
 
-Resolved by looking, not by asking. Each was an open question in an earlier draft that the
-repository or the platform already answered:
+Each of these is answered by the repository or the platform rather than by a ruling, and the
+evidence column is where to look if the answer is doubted.
 
 | Question | Answer | Evidence |
 |---|---|---|
@@ -1987,40 +1870,35 @@ repository or the platform already answered:
 | Is `registry.tail_products` misfiled? | No, correctly in `registry`. The platform table is absent because it is empty. | `publish_registry.py`: "94 bytes of header on a push where every tail row was promoted or rejected" — promotion and rejection are curator acts |
 | May a `held` axis retain its value? | Yes, with the hold reason and date. | `verification_queue.yaml`: "held at 3" |
 | Is a dated null `held` or `not_applicable`? | Neither — it is `confirmed`. | `verification_queue.yaml`: "a null answer that somebody looked for and did not find is a confirmed axis" |
-| Is the long-tail chain retired? | **Superseded by ADR-003 (2026-08-29): externalized.** The long-tail pipelines are out of the Gap Map's data system, so they were removed from this repo's inventory/publisher and frozen under platform ownership (steps 5-6). They keep serving `oss-ai-trends` / `long-tail-explorer` on the platform, but this repo no longer governs them. | superseded |
+| Where does the long-tail chain live? | Outside this repo. ADR-003 externalized it: the pipelines are frozen under platform ownership and keep serving `oss-ai-trends` / `long-tail-explorer`, and this repo governs none of it. | ADR-003, steps 5–6 |
 | Does the platform support release-scoped tables? | No. Each static-model publish replaces in place. | No version or revision field; `registry.product_scores` has `createdAt == updatedAt` |
 
-Resolved by decision:
+And these are decisions rather than observations:
 
 | Decision | Resolution | Lands in |
 |---|---|---|
-| Sixth `kind` for the long-tail chain | **Moot under ADR-003 (2026-08-29): the long-tail chain is externalized**, so no sixth kind and no namespace decision is needed — `entities.*`, `events`/`metrics` and the analytical `scores.*` left this repo's inventory (frozen under platform ownership, steps 5-6). Historically they were `not_planned` in their own namespaces because a scheduled `USER_MODEL` cannot be hosted in a static dataset (#393); the scope reset made the question irrelevant. | superseded |
+| A sixth `kind` for the long-tail chain | Not needed. The chain is externalized, so there is no namespace to decide. | ADR-003 |
 | Gates over two populations | Key on `release_path`, not namespace | Section 7 |
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
-| `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |
-| `catalog.model_repos` -> `hf_model_repo_links` | Same — WITHDRAWN with the collision that triggered it. `catalog.model_repos` keeps its name. | no action |
-| `repo_state` / `hub_state` -> `artifact_state` | Done. The rename rode the Phase 2 repoint; the two old tables were retired from this repo's inventory on 2026-09-20 (#517) and left deployed-but-disabled on the platform, because `sta-grantmaker-view` still reads `repo_state` | Phase 2, closed |
-| Untracked notebook audit | Added to Phase 0. Sixteen of twenty notebooks are not in the repository | Phase 0 |
-| `catalog.stack_map` archive note | WITHDRAWN. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models. Two different tables were conflated | no action |
+| Renaming a deployed table | Only as part of a change that already repoints the same SQL. **No pull request exists purely to rename a deployed table**, which is why `catalog.model_benchmarks` and `catalog.model_repos` keep their names: the `catalog.models` collision that would have justified renaming them never arises, because the `entities → catalog` move is cancelled by the §11.1 dataset-type constraint. | no action |
+| `repo_state` / `hub_state` → `artifact_state` | Done, riding the Phase 2 repoint. The two predecessor tables are out of this repo's inventory and left deployed-but-disabled on the platform, because `sta-grantmaker-view` still reads `repo_state`. | Phase 2, closed |
+| Untracked notebook audit | In Phase 0. Most of the org's notebooks are not in the repository. | Phase 0 |
+| A `catalog.stack_map` archive note | Not needed. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models; the two tables are different. | no action |
 
-No rename is performed as a standalone change. Each rides a phase that already repoints the
-same SQL, so no PR exists purely to rename a deployed table.
+#### Three tables with no in-repo consumer
 
-#### Resolved by the Phase 0b deployed-model audit
-
-These three tables had no in-repo consumer and could not be judged on that basis while
-`consumer_checks.platform_models` was `unknown`. Phase 0b read all 41 deployed model
-definitions in the org and set it to `checked`; none of the three is a retirement candidate.
+These have no in-repo reader, so nothing in this repository can judge them. The Phase 0b audit
+read every deployed model definition in the org and set `consumer_checks.platform_models` to
+`checked`; none of the three is a retirement candidate, because each has a platform consumer.
 
 | Table | Finding |
 |---|---|
-| `catalog.goodailist_repos` | Documented retired, table live, superseded by `signal_goodailist.repo_catalog`; retained by the `ai-safety-incidents` notebook consumer. Not a candidate. |
-| `scores.investment_ranking` | No repository source and no in-repo reader; read only by the Deprecated `ai-potluck-partners` notebook. The audit also found it is itself a reader of `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping`, `entities.repos` and `scores.fragility`. |
-| `scores.taxonomy` | Same shape; read by `ai-potluck-partners` (Deprecated) and the non-deprecated `state-of-os-ai`. The audit's self-check reproduced: it reads `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping` and `catalog.taxonomy_crosswalk`, which removed those three from the "no reviewed consumer" list. |
+| `catalog.goodailist_repos` | Documented retired, table live, with `signal_goodailist.repo_catalog` as its successor; retained by the `ai-safety-incidents` notebook consumer. Not a candidate. |
+| `scores.investment_ranking` | No repository source and no in-repo reader; read only by the Deprecated `ai-potluck-partners` notebook. It is itself a reader of `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping`, `entities.repos` and `scores.fragility`. |
+| `scores.taxonomy` | Same shape; read by `ai-potluck-partners` (Deprecated) and the non-deprecated `state-of-os-ai`. It reads `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping` and `catalog.taxonomy_crosswalk`, which is what gives those three a reviewed consumer. |
 
-`oss-ai-gaps` and `stack_map_category_maps` were the plausible readers named before the audit.
-The deployed-model read that actually mattered was `scores.taxonomy`'s, now recorded as those
-three tables' `platform_model_consumers`.
+A deployed model's reads are the thing to check here, not a plausible-looking notebook name:
+`scores.taxonomy`'s reads are recorded as those three tables' `platform_model_consumers`.
 
 ## 12. Release mechanics
 
@@ -2179,7 +2057,7 @@ The architecture migration is complete when:
   A kind maps onto **one or more** physical OSO datasets (a dataset carries one immutable type and one
   sweep schedule), so a scheduled or differently-typed pipeline of a given kind stays in its own
   dataset rather than being forced into a shared namespace; the migration requires correct-kind
-  classification and type/schedule-valid placement, **not** one dataset per kind (§11.1, #393);
+  classification and type/schedule-valid placement, **not** one dataset per kind (§11.1);
 - adoption observations retain history and reconcile through route-aware rules;
 - fresh authoritative adoption disagreement cannot enter a release silently;
 - fallback and cross-instrument differences are represented honestly rather than forced into equality;

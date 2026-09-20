@@ -13,9 +13,11 @@ drifted in exactly the way `check_parity` exists to catch one axis over. Product
 until this gate; the run prints how many.
 
 The dataset scale is the clearest case. It sits one order of magnitude below software and
-model — deliberately, and measured: across 66 Hugging Face dataset artifacts, the median was
-27,648 downloads and NONE exceeded 10M, so on the software scale level 5 is unreachable. Its
-top band is therefore `>1M`. Thirteen benchmark corpora nonetheless record `1M-10M` or `>10M`,
+model — deliberately, and measured: the median recorded dataset download sits below 30,000 a
+month and NONE reaches 10M, so on the software scale level 5 is unreachable for the whole type.
+Its top band is therefore `>1M`. The derivation, with its date and its denominator, is in
+`docs/reference/adoption.md` under "Why `dataset` sits one order lower"; this docstring does not
+carry a second copy of it. Thirteen benchmark corpora nonetheless record `1M-10M` or `>10M`,
 which are labels off the software scale, and `mmlu` recorded level 5 against 477,890 monthly
 downloads — a level the dataset scale reserves for figures its own note does not claim.
 

@@ -8,10 +8,6 @@ the code follow.
 > `docs/reference/evidence-and-freshness.md`, which owns how any axis earns a `last_verified`. This guide
 > owns the adoption axis: the bands, the instrument vocabulary, and what may be compared to
 > what.
->
-> Adoption had no guide until 2026-08-10 while openness had a whole one, and the cost was
-> visible: the bands lived in a warehouse CASE expression nothing in the repo could see, and
-> 71 products carried a band that contradicted their own recorded evidence.
 
 ## What the axis measures
 
@@ -66,9 +62,8 @@ adoption:
 
 ### `banded_quantity` — say what you banded, as a field
 
-Added 2026-08-15. A level read off something other than the product is not a defect on its
-own — often it is the most honest reading available — but it has to be legible. Record what
-the figure counts:
+A level read off something other than the product is not a defect on its own — often it is the
+most honest reading available — but it has to be legible. Record what the figure counts:
 
 ```yaml
 adoption:
@@ -91,13 +86,12 @@ Four shapes recur, and they are worth telling apart:
 | a proxy of another kind entirely | `claude-code`'s ~$2.5B run-rate; `openhands`'s 83.9k stars |
 | nothing, where the note cites a figure only to reject it | `perspective-api` — Jigsaw has never published one |
 
-**Why a field and not better prose.** The prose was already good. Every one of the 19
-parent-platform records described its own substitution in its note, several in capitals
-(`WHAT WAS BANDED`), and it changed nothing: a consumer reading `level: 4` off the warehouse
-got a number about Replit with nothing attached saying so. `active_users` had solved this
-first — the `attribution_note` on its route in `sources/signal_routing.yaml` requires a
-record to name a figure that is not an active count, and three records do. This is that rule
-generalized to the instrument that needed it most.
+**Why a field and not better prose.** Prose does not travel. A parent-platform record can
+describe its own substitution in its note, in capitals if it likes, and a consumer reading
+`level: 4` off the warehouse still gets a number about Replit with nothing attached saying so.
+`active_users` states the same rule one instrument over — the `attribution_note` on its route in
+`sources/signal_routing.yaml` requires a record to name a figure that is not an active count — and
+`banded_quantity` is that rule as a field, on the instrument that needs it most.
 
 **The gate covers the decidable half.** `tests/test_banded_quantity.py` requires a
 `banded_quantity` wherever a `reported_traction` note cites a **magnitude** — a figure with a
@@ -107,11 +101,10 @@ reader mistakes for a measurement. What no regex can catch is a parent-platform 
 no figure at all; those were backfilled by hand and nothing enforces them, which is the same
 ratchet `check_capability` uses.
 
-Strict from day one, unlike `check_adoption` and `check_instrument`, because there was no
-backlog to meet: all 57 records needing one were filled in by a
-one-off migration in the change that added the field.
+The gate is strict rather than a ratchet, unlike `check_adoption` and `check_instrument`, because
+there is no backlog for it to meet: every record needing a `banded_quantity` carries one.
 
-**`reach` is not `level` restated, and deleting it has been tried and reverted.** 20,000 stars
+**`reach` is not `level` restated.** 20,000 stars
 and 20,000 downloads are not the same reach, and the same level maps to a different label
 depending on what was counted. A hardware product's reach is `mass-market`; a dataset's is
 `10K-100K`. Without the unit, two products at level 3 look comparable when one was read on a
@@ -134,18 +127,21 @@ what the thing IS, which is what the rubrics are already keyed on.
 
 All figures are **monthly**, in the unit the type's `unit:` field names.
 
-**Never hardcode these anywhere else.** They lived only in `currentai.signal_pypi` until
-2026-08-09, which is the repo/warehouse split `check_parity` exists to catch, one axis over.
+**Never hardcode these anywhere else.** A band table living in warehouse SQL and nowhere the
+repo can read is the repo/warehouse split `check_parity` exists to catch, one axis over.
 
 ### Why `dataset` sits one order lower
 
-Measured, not assumed. Across the 66 Hugging Face dataset artifacts carrying a figure on
-2026-08-09: median 27,648, exactly one above 1M, and **none above 10M**. On the software scale
-level 5 is unreachable for the entire type and 76% of datasets pile into levels 2-3, which is
-a scale that cannot discriminate. Shifted down one order it reproduces the corpus's own bottom
-three levels exactly and spreads like `model`'s.
-
-Older notes in this project said datasets ran *two* orders lower. The data says one.
+Measured, not assumed. 65 of the 70 dataset products quote a trailing-30-day download figure in
+their recorded adoption evidence, 64 of them read from Hugging Face; MATH's is a zero, its
+canonical Hub repository being walled off by a takedown. Each product's figure is the **sum
+across its declared artifacts** on the winning route, per "Sum across the family, not per
+artifact" below — Terminal-Bench is 65,672 across three release mirrors and LiveBench 36,032
+across ten, not the largest single mirror of each. Measured 2026-09-20 over those 65: median
+32,927, two above 1M, and **none reaching 10M**. Banded on the software scale they put level 5
+out of reach for the entire type and pile 49 of them, 75%, into levels 2 and 3, which is a scale
+that cannot discriminate. Shifted down one order the same figures spread across all five levels
+— 4, 10, 35, 14 and 2 — with 16 at 4 or 5.
 
 **Known disagreement, deliberately not resolved by the shift.** Some dataset products record a
 level against a `reach` that would place them one level higher on the shifted scale, because
@@ -196,13 +192,15 @@ than use, so a stars-derived band may never claim levels 4 or 5 however large th
 a level-4 stars band fails the serializer instead of quietly publishing one. The corpus
 already respects this: no `stars_fallback` product records 4 or 5.
 
-Thresholds set 2026-08-10 from the medians the corpus already used — the 71 `stars_fallback`
-products with a live GitHub row sit at medians of ~93, ~1,733 and ~15,801 stars for levels 1,
-2 and 3. The ranges overlap badly (20,901 stars recorded at 2 against 77 recorded at 3), so
-**this scale tightens a loose convention rather than describing one**, and applying it will
-move products.
+The three thresholds are round numbers on the instrument, not a summary of the corpus, and the
+corpus is read against them rather than the other way round. Measured 2026-09-20: of the 169
+`stars_fallback` products, 167 quote a star count in their evidence, and every one of those 167
+sits inside the band its recorded level names — medians of 211, 3,181 and 24,216 stars for
+levels 1, 2 and 3, with the largest count at level 1 at 986 and the smallest at level 3 at
+11,860. The two that do not (`slurm`, `tesseract`) cite the repository page without quoting the
+number off it, which is a `shows` defect rather than a banding one.
 
-#### The active-users scale, declared 2026-08-13
+#### The active-users scale
 
 | level | monthly active users |
 |---|---|
@@ -212,17 +210,14 @@ move products.
 | 2 | 10K-100K users |
 | 1 | <10K users |
 
-**Why it did not exist, which is the more useful half.** All 23 products carrying this
-instrument had a real user figure, and 22 of them wore a label off the *download* vocabulary
-— because that was the only vocabulary in the building, and nothing had ever declared it
-applied here. So the labels were not so much wrong as **unfalsifiable**. `character-ai` had
-invented `10M-100M`, a band no scale offered, and nobody could say so.
-
-`character-ai` is the case worth keeping. Its ~20M MAU clears the top threshold outright, but
-the record sat at level **4** — held down by a label with no scale behind it to check the
-label against. Declaring the scale raised it to 5. The same thing had happened to `claude-ai`,
-recording `1M-10M` over a cited figure of ~19–30M. Both were the map disagreeing with itself
-in a place nothing was looking.
+**Why the scale has to be declared.** An instrument with no declared scale does not produce
+wrong labels; it produces **unfalsifiable** ones. A record carrying a real user figure will wear
+a label borrowed from the download vocabulary, because that is the only vocabulary in the
+building, and a record can invent a band no scale offers — `10M-100M` — with nothing able to say
+so. The level then drifts from the figure beneath it in the one direction nobody is checking: a
+record citing tens of millions of monthly actives carries a `1M-10M` label and nothing fails,
+because without a declared scale there is nothing for the label to be wrong against. A declared
+scale is what makes a label answerable to its own figure.
 
 **Same thresholds as the download scale**, which is a decision rather than an inheritance. The
 alternative considered was one order higher throughout, so that ChatGPT at ~900M weekly actives
@@ -250,8 +245,8 @@ all-time or cumulative user total, a device installed base, a paid-seat count. T
 label. The records that carry one name the substitution in the note:
 `github-copilot` and `github-copilot-ide` (20M **all-time**, not active) and
 `apple-core-ml-runtime` (2.5B active **devices** — a person with an iPhone and a Mac is two of
-it). `doubao` used to be a fourth, banding on ~330M *total* users; a measured 382M MAU now
-exists and is *higher* than the total it had been leaning on.
+it). `doubao` is not one of them: it bands on a measured 382M MAU, which is higher than the
+all-time total a substitution would have reached for.
 
 All three scales share `registry.adoption_bands`, distinguished by `signal_type`. A consumer
 that joins without filtering on it will band a package's downloads against the stars scale.
@@ -259,9 +254,8 @@ that joins without filtering on it will band a package's downloads against the s
 ### The floor admits zero
 
 Level 1's threshold is `above: -1`, not `0`. With `0` a product measuring exactly zero
-downloads matched no band and came back unbanded — which asserts *no scale exists for this
-type*, the thing hardware deliberately says, rather than *nobody downloaded it*. `zentropi-cope`
-surfaced it on the first real run of the Hugging Face banding.
+downloads matches no band and comes back unbanded — which asserts *no scale exists for this
+type*, the thing hardware deliberately says, rather than *nobody downloaded it*.
 
 ## The instrument vocabulary
 
@@ -326,11 +320,11 @@ None of it is hardcoded in the checker. `signal_routing.yaml` declares which sou
 instrument and whether it is `bridged`; `artifact_key` names what a product must declare for
 that source to have anything to read, and `requires_evidence` carries the re-fetch fields.
 
-**The first draft required recomputation for `usage_volume` outright, and its own test caught
-the error.** A sizable minority of the unrouted records already carried a digested source —
-`agent-infra-sandbox` cites `api.npmjs.org/downloads/point/last-month` showing 4,670 downloads,
-with a digest. That claim is perfectly checkable; it just is not re-derivable by a pipeline that
-reads no npm. Failing it would have told those authors their careful evidence did not count.
+**Requiring recomputation for `usage_volume` outright would reject real evidence.** A sizable
+minority of unrouted records carry a digested source — `agent-infra-sandbox` cites
+`api.npmjs.org/downloads/point/last-month` showing 4,670 downloads, with a digest. That claim is
+perfectly checkable; it is simply not re-derivable by a pipeline that reads no npm, and failing it
+would tell those authors their careful evidence did not count.
 
 **Why the escape hatch stays shut.** Without the re-fetch leg, an unbacked record could pass by
 relabelling itself `reported_traction` — moving an unverifiable claim into the one instrument
@@ -342,24 +336,17 @@ reasons.
 **A known cost of the re-fetch route.** A digest over a *count* endpoint drifts every time the
 count moves, so `check_refetch` reports drift that means nothing. Drift on a vendor claim page
 is informative; drift on `api.npmjs.org/downloads/point/last-month` is just Tuesday. That is an
-argument for bridging npm (#163), not for rejecting the evidence.
+argument for bridging npm, not for rejecting the evidence.
 
-Measured 2026-08-13, the backlog: **40** `usage_volume` records failing both routes, **95**
-`reported_traction` and **20** `active_users` with no digest, **6** `stars_fallback` with no
-repo. Every one passes `check_adoption --strict` green, because their labels are valid. The
-label was checkable; the claim underneath it was not.
+A record failing both routes still passes `check_adoption --strict` green, because its label is
+valid. The label is what `check_adoption` can see; the claim underneath it is what
+`check_instrument` is for. `uv run python -m build.check_instrument` prints the live backlog.
 
-This class had been written down before. The section below recorded it as **48** products on
-2026-08-10, and it grew to 55 in prose. Hence a gate.
-
----
-
-Both of the latter were skipped entirely by `check_adoption` until 2026-08-13, on the ground
-that comparing them against a download count is a category error. That was correct, and it is
-also what hid the problem — 22 of 23 `active_users` records and 68 of 110 `reported_traction`
-ones were wearing download labels, and a checker that declines to look never says so.
-**Abstention is the right answer to a missing scale and the wrong answer to a scale nobody has
-declared yet.**
+A checker that declines to look at an instrument never reports what is wrong with it, and
+`reported_traction` and `active_users` are the two where that costs most: comparing either
+against a download count is a category error, so skipping them is defensible and it is also how
+a whole instrument comes to wear another instrument's labels unnoticed. **Abstention is the right
+answer to a missing scale and the wrong answer to a scale nobody has declared yet.**
 
 ### `reported_traction` records a word, never a number
 
@@ -369,29 +356,28 @@ declared yet.**
 **A vocabulary, not a scale, and the difference is the point.** A scale maps a label to a level
 and a disagreement between them is a finding. A vocabulary says only which words exist: the word
 says what *kind* of standing was claimed, the level says *how much*, and neither is derived from
-the other. Measured 2026-08-13, `niche` ran 85% level 3, `broad` 80% level 4, `mass-market` 67%
-level 5 — forcing agreement would flatten exactly the residual signal those spreads represent.
+the other. The words correlate with the levels without determining them — measured 2026-09-20,
+`niche` runs 13 of 16 at level 3, `broad` 6 of 7 at level 4 and `mass-market` 7 of 9 at level 5 —
+and forcing agreement would flatten exactly the residual signal those spreads represent. The
+denominators are small enough that these are counts rather than rates; quoting them as
+percentages would imply a precision three records do not support.
 
-**Numeric labels are illegal here, and 68 of 110 records carried one.** They were perfectly
-collinear with the level beside them: `100K-1M` was level 3 on all 33 of its records, `1M-10M`
-level 4 on all 23, `10K-100K` level 2 on all 7. So they carried nothing the level did not —
-and they carried something false. `amazon-nova` read `1M-10M` beneath a note saying "no
-standalone per-model user count published"; `aws-neuron` read `100K-1M` beneath "no
-download/user count is published for Neuron". A reader sees a numeric band and concludes
-somebody counted something. **Nobody did.** A number here is a measurement claim the instrument
-is defined by being unable to make. All 68 were stripped on 2026-08-13; the levels stand.
+**A numeric label is illegal here.** It is collinear with the level beside it, so it carries
+nothing the level does not, and it carries something false: `1M-10M` beneath a note saying "no
+standalone per-model user count published", or `100K-1M` beneath "no download/user count is
+published for Neuron". A reader sees a numeric band and concludes somebody counted something.
+**Nobody did.** A number here is a measurement claim the instrument is defined by being unable to
+make, and stripping one leaves the level alone.
 
-**Omitting `reach` is the honest default** — 15 records already did. Record a word only where
+**Omitting `reach` is the honest default**, and most records on this instrument do. Record a word only where
 it says something the level does not, which is usually the *shape* of the traction rather than
-its size: `osprey` at 446 GitHub stars but running in production at Discord is `niche` in a way
-that matters. The words are hardware's, which has used exactly these since before this route
-existed; sharing them beats minting a parallel set.
+its size: `osprey` at 462 GitHub stars but running in production at Discord is `niche` in a way
+that matters. The words are hardware's, and sharing a vocabulary beats minting a parallel one.
 
 ### When a re-read may re-band, and when it may not
 
-Settled 2026-08-14, at the end of the verification sweep, because the same five questions
-arrived once per category and got answered from scratch each time. These are curation rules and
-no gate enforces them; `docs/workflows/refresh-category.md` is where a pass applies them.
+These are curation rules and no gate enforces them; `docs/workflows/refresh-category.md` is where
+a pass applies them.
 
 - **A measured signal on an already-declared artifact beats a hand-set band.** The artifact was
   declared, so the count is the instrument the record already claims to have been read with, and
@@ -403,35 +389,35 @@ no gate enforces them; `docs/workflows/refresh-category.md` is where a pass appl
   was wrong is the claim to have counted something, not the reading of the product's standing.
   Re-deriving the level is a separate judgment and needs its own evidence.
 - **Declaring a NEW artifact requires it to be provably the product's own AND its primary
-  channel.** Both, not either. Refused on 2026-08-14 for `gvisor`, `ollama`, `promptfoo` and
-  `opencompass`: each has a findable package, and banding on it would have moved a level on a
-  minority channel. That is the under-coverage error below, met from the other direction.
+  channel.** Both, not either. `gvisor`, `ollama`, `promptfoo` and `opencompass` each have a
+  findable package, and declaring it would move a level on a minority channel. That is the
+  under-coverage error below, met from the other direction.
 - **A package's usage bands the head product only when installing that package is itself a
   meaningful unit of use of the scored product.** A client or component package whose population
   can vary independently from the head product measures its own users, and is not attributed to
   the head product merely because it is first-party or required to reach it. The question is
   measurement-population identity, not whether the package is an SDK; `docs/reference/identity.md`
   ("A declared artifact is a measurement identity") is the rule this one applies to adoption.
-  Settled 2026-09-02 in the Round 2 promotion (#453), **superseding** the 2026-08-14 rule that an
-  SDK's downloads band the hosted platform it talks to. That rule was too broad, and the tranche
-  showed both sides of the line: the package IS the product for `evidently`, `monocle` (the SDK is
-  the whole product), `axon` (the CLI installs and runs it) and `quilt` (a substantive product
-  surface of its own); it is a client or a component for `weaviate-client` (a server's client),
-  `openmldb` (a cluster's client), `ragaai-catalyst` (a closed platform's client), the `logfire`
-  SDK (a closed platform's open SDK, and a transitive dependency of Pydantic AI) and
-  `latitude-telemetry` (one component of a self-hosted platform). The two earlier exceptions
-  follow from the same test rather than standing beside it: a package pulled in as a transitive
-  dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK spanning N
-  products (`cohere-rerank-api` banded on the whole `cohere` package) both count something other
-  than the product. Records banded under the superseded rule are not re-banded by the rule change;
-  `langfuse`, banded on the `langfuse` client, is the known case and is flagged for its own
-  `update-product` pass.
+  The test cuts both ways and being first-party decides nothing. The package IS the product for
+  `evidently` and `monocle` (the SDK is the whole product), `axon` (the CLI installs and runs it)
+  and `quilt` (a substantive product surface of its own); it is a client or a component for
+  `weaviate-client` (a server's client), `openmldb` (a cluster's client), `ragaai-catalyst` (a
+  closed platform's client), the `logfire` SDK (a closed platform's open SDK, and a transitive
+  dependency of Pydantic AI) and `latitude-telemetry` (one component of a self-hosted platform).
+  Two shapes that look like exceptions follow from the same test: a package pulled in as a
+  transitive dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK
+  spanning N products (`cohere-rerank-api` banded on the whole `cohere` package) both count
+  something other than the product. A band predating this test is not re-banded by it; `langfuse`,
+  banded on the `langfuse` client, is the known case and is flagged for its own `update-product`
+  pass.
 
-Measured 2026-08-10, 49 of the 60 products whose recorded band exceeded the computed one
-declared `usage_volume` while their own notes cited figures that matched the warehouse almost
-exactly — `verl` "~81,606" against 82,200 measured, `haystack` "~883k" against 968,831,
-`mistral-large` "~7.5k/mo" against 5,903. The measurement was never in dispute. The band did
-not follow from the evidence the score itself recorded.
+A band exceeding the computed one is usually not a dispute about the measurement. The common
+shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
+exactly and then bands above where that figure falls — so the disagreement is between the score's
+band and the score's own evidence, not between the score and the warehouse. Name instances by
+running `uv run python -m build.adoption_reconciliation` rather than by quoting a list from here:
+the notes get rewritten, and a product named here as an instance stops being one without this
+sentence noticing.
 
 ## What the machine actually computes today
 
@@ -440,8 +426,9 @@ not follow from the evidence the score itself recorded.
 | observe | `currentai.observations.product_adoption_current` | **artifact** | every declared artifact on a machine route, band-free |
 | evaluate | `build/adoption_measurements.py` | **product** | the winning route per product, banded once |
 
-The per-dataset `signal_*.product_adoption` models that used to do both at once were retired on
-2026-09-14 (#562). The evaluator reads the bands from `registry.adoption_bands` and bands on the
+Observation and evaluation are two stages on purpose: the raw figure is per artifact and the
+band is per product, so a model that did both at once would band a product on whichever artifact
+it happened to read. The evaluator reads the bands from `registry.adoption_bands` and bands on the
 product's declared type. It writes nothing back to `sources/`: **a computed band is an
 observation, never a score.** Only a person sets `level`, and only per
 `evidence-and-freshness.md`.
@@ -479,24 +466,23 @@ credited with the corpus twice.
 
 ## Products with no machine signal
 
-Measured 2026-08-10: **168 non-hardware products record adoption ≥ 3 with no computed band at
-all.** They are not one problem, and each class has a different answer:
+A non-hardware product can record a substantive adoption level with no computed band behind it at
+all. Those are not one problem, and each class has a different answer:
 
-1. **48 claim `usage_volume`.** These are misfiled rather than unmeasured. If a band claims a
-   download count then a countable artifact exists — declare it and the existing machinery
-   bands it. If none exists, the instrument is wrong and the band should be
-   `reported_traction`.
-2. **64 have a live `signal_github` row.** Stars are fetched weekly and banded nowhere. This is
+1. **It claims `usage_volume`.** Misfiled rather than unmeasured. If a band claims a download
+   count then a countable artifact exists — declare it and the existing machinery bands it. If
+   none exists, the instrument is wrong and the band should be `reported_traction`.
+2. **It has a live `signal_github` row.** Stars are fetched weekly and banded nowhere. This is
    the cheapest coverage available and needs no key, subscription or bridge — see the open
    route below.
-3. **104 have no signal of any kind** — hosted APIs, closed models, `mistral-large`. For these
+3. **It has no signal of any kind** — hosted APIs, closed models, `mistral-large`. For these
    the answer is *not* to invent a number.
 
 ### For the genuinely unmeasurable, make the claim decay
 
 A `reported_traction` band should cite the vendor page carrying the figure, with a URL, an
-`accessed` date and a `content_sha256`, exactly as every other axis does after the
-verification sweep. It is then re-checkable rather than machine-derived, and it ages against
+`accessed` date and a `content_sha256`, exactly as every other axis does. It is then
+re-checkable rather than machine-derived, and it ages against
 the refresh window in `evidence-and-freshness.md` so an unconfirmed vendor claim decays visibly instead
 of sitting unfalsifiable forever.
 
@@ -508,15 +494,15 @@ it does not make the claim automatic, it makes it falsifiable.
 - **GitHub stars** — real, already fetched wherever a repo is declared, banded nowhere yet. Capped at
   level 3 by the rubric because stars measure attention rather than use. **Open route.**
 - **Vendor SDK downloads** — `mistralai`, `anthropic`, `cohere` on PyPI are dated proxies for
-  API integration, and the trap is attribution. `cohere-rerank-api` was banded on 37.9M downloads of the
-  `cohere` package, which is the SDK for Cohere's entire API surface rather than the rerank
-  product. It no longer is: its level rests on multi-cloud distribution, and the
-  package is no longer declared at all. Removing the declaration is what binds the correction to
-  routing, which reads declarations rather than prose. `not_primary_channel` would have been the
-  wrong instrument — that field keeps an artifact whose measurement DOES belong to the product and
-  drops it only from the banded sum, where this is a membership failure. **An SDK covering N products may not be attributed wholly to
-  one** — the rule is in "When a re-read may re-band" above, along with the
-  transitive-dependency case it did not originally anticipate.
+  API integration, and the trap is attribution. The `cohere` package is the SDK for Cohere's
+  entire API surface, so its downloads are not `cohere-rerank-api`'s: that product declares no
+  package and bands on multi-cloud distribution instead. Undeclaring the artifact is
+  what binds the judgment to routing, which reads declarations rather than prose.
+  `not_primary_channel` is the wrong instrument for it — that field keeps an artifact whose
+  measurement DOES belong to the product and drops it only from the banded sum, where this is a
+  membership failure. **An SDK covering N products may not be attributed wholly to one** — the
+  rule is in "When a re-read may re-band" above, along with the transitive-dependency case beside
+  it.
 - **OpenRouter rankings** — the only true API-channel signal, via
   `/api/v1/datasets/rankings-daily`. Two limits: it returns the top 50 models per day, and its
   `hugging_face_id` bridge is empty for exactly the closed and API-first models that need it
@@ -533,12 +519,12 @@ it serves. The opposite is **under**-coverage, and it is the more common one:
 > **If the declared artifact is not the product's primary distribution channel, banding on it is
 > a substitution, not a measurement.**
 
-`n8n` is the case that established the rule. It records `usage_volume`, and its declared artifact
+`n8n` is the case the rule is written from. It records `usage_volume`, and its declared artifact
 is the npm package at 393,738 downloads a month, which bands at level 3. But n8n is deployed
 overwhelmingly as a self-hosted Docker container, and Docker Hub reports **246 million cumulative
 pulls** — averaging about 2.9 million a month over the image's lifetime. Banding on npm alone
-published a precise number for the wrong channel, and the note said so in its own second sentence
-before recording the band anyway.
+publishes a precise number for the wrong channel, and the tell is a note that says so in its own
+second sentence and records the band anyway.
 
 That is exactly what `sources/signal_routing.yaml` forbids: "Abstain rather than substitute. When
 the authoritative signal for a dimension is missing or unusable, the rule is to produce NO
@@ -557,7 +543,7 @@ than an absent one, because it carries a `last_verified` date asserting that som
 3. Where the primary channel publishes nothing at all, use `reported_traction` and abstain on
    `reach`, rather than banding on the minority channel that happens to be countable.
 
-`langflow` is the same shape and moved with it: PyPI alone gave level 2, PyPI plus the Docker
+`langflow` is the same shape: PyPI alone gives level 2, PyPI plus the Docker
 average gives about 166,000 a month and level 3. `semantic-kernel` is a third — its Python package
 reaches level 4 on its own, and the .NET/NuGet channel is larger and uncounted, so its band is a
 floor and its note says so.
@@ -598,8 +584,8 @@ What it does and does not touch:
   declaration, the product has no figure on that kind and falls through to its next route — remedy
   3, reached by declaration rather than by hand. `hexabot` (an embeddable widget, not the
   self-hosted platform) and `yomo` (a Rust SDK crate for a runtime shipped as a Go binary) are the
-  two cases, and both land on stars at the level 2 the 2026-08-14 ruling gave them. Banding them on
-  the package instead put both at level 1.
+  two cases, and both land on stars at level 2. Banding them on the package instead puts both at
+  level 1.
 
 Declaring one is a curation judgment with the same test as the ruling above: what the package IS,
 and whether installing it is a meaningful unit of use of the scored product. It is never a way to
@@ -607,13 +593,12 @@ drop a number that reads low.
 
 ### The gate: `build/check_channel_authority.py`
 
-The ladder above was a habit for its first two weeks, and habits are not applied evenly. Some
-products had already taken remedy 3 — `helm`, `laminar` and `swe-bench` among them record
-`reported_traction` with `reach` omitted while their winning route is a bridged usage channel —
-(`laminar` still does, and as of 2026-09-14 records why its bridged figure cannot band it, which is
-the measurement-population rule above rather than the ladder)
-and nothing said whether the ones that had not were exceptions or oversights. The gate is what
-makes the ladder answerable.
+A ladder applied by habit is not applied evenly, and nothing in the corpus distinguishes a
+product that took remedy 3 deliberately from one nobody reached. `helm`, `laminar` and `swe-bench`
+each record `reported_traction` with `reach` omitted while their winning route is a bridged usage
+channel; `laminar` records why its bridged figure cannot band it, which is the
+measurement-population rule above rather than the ladder. The gate is what makes the ladder
+answerable.
 
 It reports two legs and re-bands nothing.
 
@@ -641,12 +626,12 @@ only other signal either has is its star count, which is exactly what the gate's
 forbids substituting. A relabel that also raises the level is policy C arriving through the back
 door, one product at a time.
 
-**Why it reports rather than abstains**, which is the #435 answer in one line: abstention moves
-no published number — `_stage_and_gaps` reads `L` off a count at ≥ 4.5 and `B` off a `max()`,
-and this trigger only ever fires at the bottom of a distribution — while applied to the prose
-tell as written it erases `gvisor`'s real adoption and demotes `deployment` from stage 5 to 4 on
-the strength of an honest note. Understating remains the safer error; the remedy is to say what
-was counted, not to stop counting.
+**Why it reports rather than abstains.** Abstention moves no published number in the direction
+anyone wants — `_stage_and_gaps` reads `L` off a count at ≥ 4.5 and `B` off a `max()`, and this
+trigger only ever fires at the bottom of a distribution — while applied to the prose tell it
+erases `gvisor`'s real adoption and demotes `deployment` from stage 5 to 4 on the strength of an
+honest note. Understating remains the safer error; the remedy is to say what was counted, not to
+stop counting.
 
 **The narrowness is the point.** Leg 1 is the only mechanical form of "this channel is not how
 the product ships", and it is undefined for a Hugging Face model or dataset, where the repo IS
@@ -667,19 +652,20 @@ earlier, at IDENTIFICATION, and it is the one a gate cannot catch.
 > **A registry package sharing the product's name is not evidence that it is the product.** Before
 > banding on it, establish that the package CONTAINS the product rather than talking to it.
 
-Measured on 2026-08-18 while promoting the `storage` category: ten of twenty-seven products have a
-PyPI package matching their name, and in none of the ten is that package the product. Two shapes,
-and the second is worse:
+A whole category can carry this: in `storage`, a large minority of products have a PyPI package
+matching their name and in none of them is that package the product. Two shapes, and the second is
+worse:
 
-- **The client of a self-hostable server.** `elasticsearch` on PyPI is elasticsearch-py at 52.8M
-  downloads a month; the product is the Java engine at `elastic/elasticsearch`. `pgvector` is
-  pgvector-python at 36.6M; the product is a Postgres extension written in C. Same shape for
-  `meilisearch`, `typesense`, `lakefs`, `infinity-sdk`, `aistore` and `vearch`. Every one of those
-  figures is a real count of client installs, and none of them measures the server.
+- **The client of a self-hostable server.** `elasticsearch` on PyPI is elasticsearch-py; the
+  product is the Java engine at `elastic/elasticsearch`. `pgvector` on PyPI is pgvector-python; the
+  product is a Postgres extension written in C. Same shape for `meilisearch`, `typesense`,
+  `lakefs`, `infinity-sdk`, `aistore` and `vearch`. Each of those packages draws a real download
+  count and none of those counts measures the server, so both products above band on stars
+  instead — 77,824 and 22,664 in their recorded evidence.
 - **A different project entirely.** `dolt` on PyPI is an unrelated REST wrapper by another author.
-  `flash-attention` is a Huawei Ascend port, not `Dao-AILab/flash-attention`. `juicefs` is a
-  third-party SDK published from another organization's repository, drawing under 200 downloads a
-  month against a product with 14,000 stars.
+  `flash-attention` is a Huawei Ascend port, not `Dao-AILab/flash-attention`; the product declares
+  `flash-attn` and bands on it. `juicefs` on PyPI is a third-party SDK published from another
+  organization's repository, so JuiceFS declares it nowhere and bands on its 14,334 stars.
 
 **`check_artifacts --live` does not catch the first shape, and cannot.** Its `pypi_repo_mismatch`
 check compares the package's declared project URL against the product's repo, and a well-behaved
@@ -706,10 +692,11 @@ before an adoption sweep.
 
 Where the package turns out to be a client, the server usually has no countable channel at all, so
 the honest outcome is `stars_fallback` and its cap of 3 - understating a widely deployed system,
-and saying so in the note. A large share of `storage`'s bands are there for this reason,
-the highest on the map after `dataset_processing_tools`, and it is a property of the
-category rather than a defect in it. Docker pull counts would fix most of them; there is no
-`docker` artifact kind to declare, which is the platform-side ask.
+and saying so in the note. The categories holding self-hostable servers carry the highest
+`stars_fallback` shares on the map for this reason - measured 2026-09-20, `dataset_processing_tools`
+at 11 of 20, `scientific_ai_models` at 17 of 34 and `storage` at 20 of 41 - and that is a property
+of those categories rather than a defect in them. Docker pull counts would fix most of them; there
+is no `docker` artifact kind to declare, which is the platform-side ask.
 
 ## Checklist
 

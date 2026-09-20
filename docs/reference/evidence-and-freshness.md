@@ -5,8 +5,7 @@ axis **earns** one, and the gates that keep the two honest. For the reader-facin
 of the three axes see `docs/methodology.md`; when a rule here changes, change it here first
 and make the code follow.
 
-This document merges the former `freshness.md` (what the date means) and `verification.md`
-(how it is earned). Part 1 is the meaning, Part 2 the mechanism, Part 3 the coverage rules.
+Part 1 is the meaning, Part 2 the mechanism, Part 3 the coverage rules.
 
 ---
 
@@ -59,13 +58,16 @@ implausible, it was just checkable.
 claim, and deriving it from the first upgrades weak evidence into strong evidence
 across every axis at once.
 
-This was tried and reverted deliberately (#102). It is worth restating because the
-mistake is easy to re-invent: any aggregate of access dates — max, min, per-dimension
-min — is still a confirmation claim computed from readings. Changing the aggregation
-does not fix the category error.
+The mistake is easy to re-invent, which is why it is stated as a rule rather than left
+implicit: any aggregate of access dates — max, min, per-dimension min — is still a
+confirmation claim computed from readings, and changing the aggregation does not fix the
+category error.
 
-It is also, as it happens, the less accurate number. `max(accessed)` reported a median
-staleness of 55 days when the files had in fact been revised a median of 35 days ago.
+An access date and a review date are also independent quantities, so neither bounds the other.
+A page can be opened without the claim being re-read, and a claim can be re-read without any
+page being fetched. An aggregate of `accessed` is therefore not a conservative `last_verified`
+and not a generous one — it is a different measurement that happens to be a date, and it can
+land on either side of the day the score was last confirmed.
 
 ## The fallback: the score file's last commit date
 
@@ -73,8 +75,8 @@ Where an axis carries no `last_verified`, freshness falls back to **the date of 
 commit that changed what `sources/scores/<slug>.yaml` claims**.
 
 Somebody committed that file on that date and left the score standing, which is a
-review rather than a reading. Git records it, and nobody can inflate it. As #102 put
-it, the git history of a score file *is* its verification record.
+review rather than a reading. Git records it, and nobody can inflate it: the git history of
+a score file *is* its verification record.
 
 **When the fallback applies**, rather than how many axes are on it today: an axis with no
 `last_verified` at all. Two things put an axis in that state — it is explicitly held in
@@ -89,13 +91,12 @@ A held axis reaches the payload as `basis: partial` rather than through the fall
 "What the payload publishes" below. The fallback covers products with **no** dated axis at all.
 
 **Changed what it claims, not merely touched.** Some commits move a file without
-reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
-mapping in every score file, carrying a byte-identical `raw:` copy of the string it
-replaced, so no published value moves — and dating by touch would have republished 78 of
-the first batch's 84 products as reviewed on the migration day. A commit date is only
-defensible here because it dates a review, so a commit that reviewed nothing must not
-supply one. Otherwise the fallback makes the same category error as `sources[].accessed`:
-a weak signal promoted into a confirmation claim.
+reviewing it. A storage migration is the clearest case: reshaping `openness.components` from
+a string into a mapping carries a byte-identical `raw:` copy of the string, so no published
+value moves, and dating by touch would republish a whole batch as reviewed on the migration
+day. A commit date is only defensible here because it dates a review, so a commit that
+reviewed nothing must not supply one. Otherwise the fallback makes the same category error as
+`sources[].accessed`: a weak signal promoted into a confirmation claim.
 
 `build/check_freshness.py` decides this by content rather than by convention. It walks a
 file's history newest-first and skips any commit whose two revisions of that file have
@@ -112,13 +113,12 @@ file order — while the date stands still. It is the right call on the rule as 
 since clause order is storage rather than claim, but it is a real gap between what a reader
 sees change and what the date says changed.
 
-**A `git mv` of a score file resets its date to the rename commit.** Attribution runs with
-`--no-renames`, so a rename reads as a delete plus an add, and an add is where a slug's
-history starts. A rename is exactly the kind of structural touch this fix exists to skip,
-so the exception is deliberate rather than an oversight: with rename detection on, a pure
-rename is score-neutral for the new path and the walk runs off the end of its history with
-nothing to date it from. The cost is bounded because slugs are tier-level and immutable, so
-a score file should not be renamed in the normal course of things.
+**A `git mv` of a score file resets its date to that commit.** Attribution runs with
+`--no-renames`, so moving a file reads as a delete plus an add, and an add is where a slug's
+history starts. That is deliberate rather than an oversight: with rename detection on, a pure
+move is score-neutral for the new path and the walk runs off the end of its history with nothing
+to date it from. The cost is bounded because slugs are tier-level and immutable, so a score file
+should not move in the normal course of things.
 
 **What the fallback does not claim.** For a file untouched since it was added, the
 commit date dates the import, not a review. That is still the answer to the question
@@ -148,16 +148,13 @@ the stronger one:
 | `partial` | some axes are confirmed and at least one deliberately is not. The date is the oldest **confirmed** axis; `unconfirmed_axes` names the rest, and `verification_holds` carries the queue's reason where there is one. |
 | `commit` | no axis carries a date. Falls back to the score file's last claim-changing commit — and still carries `unconfirmed_axes` and any holds, because a fully unconfirmed product is exactly where a hold most needs to be visible. |
 
-**`partial` was added 2026-08-15, and its absence was a live defect.** The reduction took
-`max()` over the axes that *had* a date and ignored the ones that did not, under a comment
-claiming the result was "the date on which everything in the score was last standing". For a
-product with a held axis that sentence is false, and three shipped that way — `falcon`,
-`qualcomm-ai-engine-direct` and `aws-neuron` each published `basis: verified` over an axis
-parked in `sources/verification_queue.yaml`.
-
-The holds were honest inside the repo and invisible outside it. A held axis is a real
-editorial state and must not be forced into a score to make a label tidy, so the payload
-carries the state instead: **a product with a hold is publishable and visibly caveated.**
+**`partial` is what keeps a hold visible outside the repo.** A reduction that takes `max()`
+over the axes that *have* a date and ignores the ones that do not cannot mean "the date on
+which everything in the score was last standing": for a product with a held axis that sentence
+is false, and the product publishes `basis: verified` over an axis parked in
+`sources/verification_queue.yaml`. A held axis is a real editorial state and must not be forced
+into a score to make a label tidy, so the payload carries the state instead: **a product with a
+hold is publishable and visibly caveated.**
 
 **The product date is the oldest confirmed axis, not the newest.** The rule at the top of this
 document is that `last_verified` is the date on which *everything* was confirmed. Reduced to
@@ -165,9 +162,9 @@ one product-level date, "everything" is the constraint: a product whose axes wer
 the 9th, 11th and 13th is defensibly current only through the **9th**. Publishing the 13th
 says "at least one axis was confirmed then", which is a weaker claim wearing the stronger
 one's label — the same overstatement as publishing a held axis as verified, in a less obvious
-form. It was `max()` until 2026-08-15, and products whose axes carry differing dates are the
-common case rather than an edge. `latest_axis_confirmation` carries the newest
-date for anyone who wants "when was this last touched", emitted only where it differs.
+form. Products whose axes carry differing dates are the common case rather than an edge.
+`latest_axis_confirmation` carries the newest date for anyone who wants "when was this last
+touched", emitted only where it differs.
 
 Note what `partial` does *not* depend on. It follows from an axis being unconfirmed, not from
 a queue entry — a hold explains an unconfirmed axis, and its absence does not make one
@@ -226,9 +223,10 @@ a pass can never quietly be resting on the weaker signal.
 
 ## The note is not the log
 
-A score `note` says why the score is what it is. Between 2026-04 and 2026-08 the re-read passes
-appended their own narrative to it — "Re-read 2026-08-13 - the source still says X … No change."
-— until that text was 44% of all note prose, in 1,035 of 1,416 notes across 446 of 472 files.
+A score `note` says why the score is what it is. A re-read pass that appends its own narrative
+to it — "Re-read 2026-08-13 - the source still says X … No change." — grows without bound,
+because every pass adds a line and no pass removes one, and it ends up as the bulk of the prose a
+visitor reads.
 
 Every fact those clauses state is already a field on the same record:
 
@@ -271,10 +269,8 @@ to maintain the copy. Duplicated history drifts; git's does not.
 
 The public payload publishes `note` and `sources` verbatim, so anything written into a note is
 published. That is the reason this boundary is a rule and not a style preference.
-
-The verification log was cleared in one pass under issue #322, which carries the audit. The
-prose pass that succeeded it, for notes written in the rubric's vocabulary rather than the
-reader's, is `skills/clean-corpus-prose/SKILL.md` (#619).
+`tests/test_score_notes.py` holds it, and `skills/clean-corpus-prose/SKILL.md` is the pass that
+rewrites a note found carrying one.
 
 ## Who may write `last_verified`
 
@@ -283,15 +279,11 @@ establishing source behind the axis and found each still says what it was cited 
 never write the field is a computation over already-recorded values, which confirms nothing by
 construction — the rule under "What may never write it" below.
 
-`build/reverify.py` is the tool that qualifies, and has since the #445 ruling of 2026-09. It
-re-fetches every establishing source, accepts a confirmation only on a byte-identical body, a
-shows-match or an SPDX comparison, and stamps the date only when every recorded dimension is
-covered and nothing drifted, went transient or was skipped. "Machine re-verification" below
-carries the terms and the axes it may do this on. This section used to open "a person, and only
-a person; no tool in this repo writes the field", which stopped being true when that ruling
-shipped on 2026-09-03 and was left standing here — a reader had to reach the machine
-re-verification section, two hundred lines further down, to find out that the rule at the top
-had been superseded.
+`build/reverify.py` is the tool that qualifies. It re-fetches every establishing source, accepts
+a confirmation only on a byte-identical body, a shows-match or an SPDX comparison, and stamps the
+date only when every recorded dimension is covered and nothing drifted, went transient or was
+skipped. "Machine re-verification" below carries the terms and the axes it may do this on, and it
+is narrower than this paragraph: openness only.
 
 `build/apply_scores.py` is the case on the other side of that line. It is the only other thing
 allowed to change a score file without somebody typing the value, and it writes
@@ -303,47 +295,34 @@ GitHub code route carries `settles_dimension = false`, so both resolve to docume
 into the score file — so for those dimensions the pipeline is reading the repo back to itself,
 which confirms nothing.
 
-Nothing hardcodes that any more, which is worth stating because the older wording said the
-scoring model pinned `data` and `code` to document grade by name. It does not: a dataset row
-wins wherever its route carries `settles_dimension`, and those two routes do not. The
-conclusion is unchanged and now rests on a declaration rather than on a special case.
+Nothing hardcodes that: no dimension is pinned to document grade by name. A dataset row wins
+wherever its route carries `settles_dimension`, and those two routes do not, so the conclusion
+rests on a declaration rather than on a special case.
 `all_recorded_dims_from_dataset` in `currentai.scores.openness_computed` reports the outcome
 per axis, and it is the column a guarded write-when-fully-confirmed branch would have to read.
 
 Since "everything confirmed" can never be true of a pipeline run, there is no date for
 it to write.
 
-## Both earlier divergences, and how they were closed
+## A derived date is removed, not kept
 
-Kept because the mistake is easy to re-invent, and was, twice.
+Two constructions re-invent themselves and both are forbidden: a pipeline writing an
+aggregate of `accessed` into `last_verified`, and a per-dimension `freshness_floor` that is the
+same aggregate under another name. Neither is refined into something acceptable. The writer is
+deleted and what it wrote is removed, because a derived date was never a confirmation record in
+the first place.
 
-- **`apply_scores` wrote a derived date into the field.** #108 wrote the freshness bound
-  (MIN `accessed`); #115 replaced it with `last_checked` (MAX over the same dates).
-  Between them they put a derived date on **19 of the 26 axes** that carried one. Six
-  overwrote a date a person had established: `apertus`, `lucie-7b`, `olmo` and `pythia`
-  each lost their #105 verification date to a signal fetch one day later.
+**The rule that a stored date is never moved backwards protects a person's observation; it does
+not protect a tool's arithmetic.** Where a tool has overwritten a hand-set date, the hand-set
+date is restored; where no constituent was ever hand-confirmed, the date is removed and the axis
+falls back to its commit date, correctly labeled `commit` rather than `verified`. Coverage falls
+when this is done, and the smaller number is the honest one. A merge confirms nothing, so a tier
+merge cannot originate a date either.
 
-  Closed by deleting the writer, and reverting what it had written. Tracing every stored
-  date to the commit that set it put the 26 into three groups: **2** set by hand (#105
-  `rwkv`, #113 `mastra`) and kept; **4** restored to the #105 date the tool had
-  overwritten; **20** removed, because no constituent had ever been hand-confirmed. The
-  20 are 15 the tool wrote outright plus 5 the #121 tier merge carried forward from
-  tool-written release files — a merge confirms nothing, so it cannot originate a date.
-
-  Coverage went 26 → 6 axes, which is the honest number: six axes have actually been
-  checked by somebody. The other 20 fall back to their commit date, correctly labeled
-  `commit` rather than `verified`.
-
-  Restoring rather than keeping was the right call because these were never confirmation
-  records. The rule that a stored date is never moved backwards protects a person's
-  observation; it does not protect a tool's arithmetic.
-- **`freshness_floor`** was a per-dimension aggregate of access dates — the reverted
-  backfill under another name. Removed from the model rather than refined.
-
-Where a tier had absorbed several release-level products, the restored date is the
-**oldest** constituent confirmation, because the tier's score covers all of them and one
-stale member bounds the whole thing. That is an aggregate over confirmations, not over
-readings, so it is consistent with the rule above.
+Where a tier absorbs several release-level products, its date is the **oldest** constituent
+confirmation, because the tier's score covers all of them and one stale member bounds the whole
+thing. That is an aggregate over confirmations, not over readings, so it is consistent with the
+rule above.
 
 
 ---
@@ -362,8 +341,7 @@ Three consequences, and no other reading is intended:
 
 1. **A re-check must be evidence-producing.** It records what was read and what that
    source showed, the way `sources[].shows` already does. A date that cannot be traced to
-   a fresh observation is indistinguishable from a rubber stamp, and we have twice shipped
-   the rubber stamp by accident (#108, #115).
+   a fresh observation is indistinguishable from a rubber stamp.
 2. **An agent re-reading a cited URL is a confirmation. The pipeline reading recorded
    values is not.** This is the distinction the whole plan below rests on, so it is worth
    stating precisely. When an agent fetches `https://…/model-card` and re-derives that the
@@ -420,40 +398,38 @@ terms` as a single part because that phrase is one declared name and neither ope
 license. Every part must map to a tier or the whole value abstains, since an unmapped part
 can only be more restrictive than the ones that mapped.
 
-Three of those four links hold today. **The third does not.** `sources` is a flat list per
-axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2026-07-30:
-324 of 470 openness axes cite exactly one source, asserted to establish `weights`, `data`,
-`code` and `license` together. A reader cannot check that, and neither can a tool.
+Three of those four links hold unconditionally. **The third holds only where `establishes` is
+populated.** `sources` is otherwise a flat list per axis, so nothing records WHICH source
+establishes WHICH dimension, and an axis citing one source is asserting that it establishes
+`weights`, `data`, `code` and `license` together. A reader cannot check that, and neither can a
+tool.
 
-That is the gap that makes a re-check unfalsifiable, and closing it is what makes everything
-below possible.
+That is the gap that makes a re-check unfalsifiable, and `establishes` below is what closes it.
 
 ### Why `shows` has no minimum length
 
-A length floor on `shows` was tried and rejected. A 25-character floor would have thrown out
-`'MIT License text'` and `'13,834 monthly downloads'`, both short and completely specific, while
-keeping every filler row like `flagship phase-C verification source`, which is long. Length
-measures verbosity, not specificity.
+Length measures verbosity, not specificity. A 25-character floor throws out `'MIT License text'`
+and `'13,834 monthly downloads'`, both short and completely specific, while keeping every filler
+row like `flagship phase-C verification source`, which is long.
 
 ### Abstention values live on the route, not here
 
 A value that means "this source has no answer" — GitHub's `NOASSERTION`, the Hub's `other` — is
 a fact about a SOURCE, so it is declared once, on that source's route in
-`sources/signal_routing.yaml`, as `abstain_values`. `evidence_policy.yaml` never repeats it: an
-earlier draft declared `NOASSERTION` in both files, alongside the `abstain_when` that
-`signal_routing.yaml` already had, and two declarations of one rule is exactly the drift that
-split exists to prevent.
+`sources/signal_routing.yaml`, as `abstain_values`. `evidence_policy.yaml` never repeats it. Two
+declarations of one rule is exactly the drift this split exists to prevent, and `NOASSERTION`
+declared in both files alongside `signal_routing.yaml`'s own `abstain_when` is the shape it
+takes.
 
 What `evidence_policy.yaml` owns instead is the abstention policy that is *not* source-specific.
 A null value is an abstention from every source and needs no per-source interpretation. And a
-declared artifact that does not resolve is not a signal, whichever source it came from — five
-base-model artifacts were in this state before PR #109: `gemma-3` (both SKUs 404),
-`mistral-large-3` (404), `gemma-4` (307), `olmo-3`'s 32B SKU (404), and `rwkv`, whose
-`artifact_id` was `RWKV`, an organization rather than a repository.
+declared artifact that does not resolve is not a signal, whichever source it came from — a 404, a
+redirect, or an `artifact_id` naming an organization rather than a repository all produce nothing
+rather than something weak.
 
 ### `establishes`: per-dimension attribution
 
-A source item gains an optional list naming the dimensions it settles:
+A source item may carry a list naming the dimensions it settles:
 
 ```yaml
 sources:
@@ -467,7 +443,7 @@ sources:
   establishes: [code, data]
 ```
 
-Optional and forward-populated, so existing data is not retroactively invalid. The re-check
+It is optional, so an axis written without it is not retroactively invalid. The re-check
 tooling writes it; the gates below apply only to axes that claim a confirmation.
 
 ### The invariant that makes a rubber stamp fail
@@ -481,9 +457,10 @@ what the content check below verifies.
 
 **This validates a claimed date. It never derives one.** The distinction is the whole point
 and it is easy to erode: someone will eventually notice that the invariant mentions
-`accessed` and "simplify" it into `last_verified = max(accessed)`, which is #115 exactly.
+`accessed` and "simplify" it into `last_verified = max(accessed)`, which is the derived-date
+error above.
 Deriving the date asserts a confirmation nobody made; validating it rejects a confirmation
-nobody could have made. the freshness rule above forbids the first and requires the second.
+nobody could have made. The freshness rule above forbids the first and requires the second.
 
 Note the aggregation direction, which is also load-bearing: the check is over EVERY recorded
 dimension, so the binding constraint is the *least* recently re-read one. `max(accessed)`
@@ -530,8 +507,8 @@ because the short quoted material in this corpus is overwhelmingly JSON key name
 ids — `license`, `spdx_id`, `MIT` — which occur on every page of the kind being cited and so
 prove nothing; a short fragment must still be present, it simply cannot be what earns the
 date. A `shows` that quotes nothing keeps the whole-sentence test and nothing else, so saying
-less never makes a source easier to confirm. Measured on 2026-09-12 across the 25 oldest
-products, 72 sources drifted and whole-sentence match confirmed 4 of them.
+less never makes a source easier to confirm. The whole-sentence test confirms a small minority of
+drifted sources on its own, which is why the fragment path exists at all.
 
 A sentence whose quote marks do not pair off gets no fragment test at all. The unclosed quote
 opens a claim whose text cannot be recovered — *the banner reads "Archived* — and confirming on
@@ -540,13 +517,12 @@ against a page that need not carry the missing claim anywhere. It keeps the whol
 and otherwise drifts to the agent leg, where a person can read both the sentence and the page.
 
 A new verification date records a successful re-evaluation on that date, not a claim that the
-fact was established or the source changed then. Ruling on #445
-(2026-09): a byte-identical re-fetch confirms an openness dimension; adoption and
-capability are excluded from machine re-dating because their sources carry numbers that
-move. Their re-verification stays with the agent leg in `refresh-category`. Ruled again
-2026-09-03 (#445 follow-up): byte identity is the wrong test for evidence pages that
-legitimately re-render on every load, so shows-match and SPDX comparison are also
-acceptable confirmations, on the terms above.
+fact was established or the source changed then. A byte-identical re-fetch confirms an openness
+dimension; adoption and capability are excluded from machine re-dating because their sources
+carry numbers that move, and their re-verification stays with the agent leg in
+`refresh-category`. Byte identity is not the only acceptable confirmation, because evidence pages
+legitimately re-render on every load, so shows-match and SPDX comparison also confirm, on the
+terms above.
 
 ### Catching fabrication rather than just inconsistency
 
@@ -570,9 +546,9 @@ failure, because it means the tool did not fetch anything.
 **A digest is only ever the output of a fetch, and there is no other way to obtain one.** A
 fabricated digest is worse than an absent one: an absent one fails the gate, while a fabricated
 one passes it and then defeats the sampled re-fetch, which is the only thing that ever goes back
-and checks whether a cited page says what it was recorded as saying. Three were fabricated on
-2026-08-13 by padding truncated prefixes out to 64 characters, which is why this is stated here
-rather than assumed. `docs/workflows/refresh-category.md` carries the command that produces one.
+and checks whether a cited page says what it was recorded as saying. Padding a truncated prefix
+out to 64 characters produces a digest of exactly that kind, which is why this is stated rather
+than assumed. `docs/workflows/refresh-category.md` carries the command that produces a real one.
 
 ### Which arXiv URL to cite
 
@@ -584,10 +560,9 @@ page itself carries: the abstract's own wording, the authorship, a withdrawal no
 goes stale.
 
 A digest over a PDF is a digest over a binary, so reading one back means `pdftotext` first. That
-cost is why the convention was not free, and it is the smaller cost: twelve sources cited an
-abstract page for a table or a figure a reader could not find there (#263), and a claim whose
-cited page cannot carry it is unfalsifiable as recorded. `build/check_citations.py` gates it, on
-the record's own words rather than on a fetch, so it is free and runs per pull request.
+is the smaller cost: an abstract page cited for a table or a figure it does not carry is a claim
+that is unfalsifiable as recorded. `build/check_citations.py` gates it, on the record's own words
+rather than on a fetch, so it is free and runs per pull request.
 
 ## The gates, and why they ratchet
 
@@ -605,31 +580,25 @@ gate every PR. The ones needing the network run periodically.
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
 | age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45`, scheduled weekly | free, weekly |
 
-These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
-
-The age gate is the last one on this table to arrive (2026-08-14) and the only one that fails on
-the passage of time rather than on something in a diff. That is why it is scheduled rather than
-per-pull-request: a contributor adding one product cannot re-read a category to turn it green, and
-a gate nobody in front of it can act on is a gate that gets ignored. Step 5 below has the window
-and its owner; the freshness rule above has the shape.
+The age gate is the only one that fails on the passage of time rather than on something in a
+diff. That is why it is scheduled rather than per-pull-request: a contributor adding one product
+cannot re-read a category to turn it green, and a gate nobody in front of it can act on is a gate
+that gets ignored. "The age gate" below has the window and its owner; the freshness rule above has
+the shape.
 
 **They ratchet rather than switch on.** The invariant and the digest requirement apply only to
 axes that carry a `last_verified`. So they cover exactly what has been done, never block progress,
 and never permit a regression on ground already taken. A big-bang gate over every axis at once
 would have failed on day one and been switched off, which is how gates die.
 
-**The ratchet has closed.** That count was 137 when this section was written. The 08-13/14
-sweep dated every axis, an audit then removed the confirmations it could not support, and the
-08-16 reconciliation settled the last of those: as of the `baseline-472-2026-08-16` tag all
-1,416 axes are confirmed and the queue is empty. So the invariant and the digest requirement
-now cover every axis. The age gate above became possible only because coverage got this close:
-gating on age while most axes carried no date would have measured the backlog rather than
-staleness.
+**The ratchet is closed.** Every axis in the corpus carries a confirmation and the hold queue is
+empty, so the invariant and the digest requirement cover every axis rather than a subset. The age
+gate is only meaningful at that coverage: gating on age while most axes carried no date would
+measure the backlog rather than staleness.
 
-The queue being empty is a state, not a property. A hold is still the correct answer when
-evidence contradicts a value, and the queue-consistency gate governs one when it exists — a
-held axis may not carry a date at all. Read the live counts from `check_freshness`, not from
-this paragraph.
+An empty queue is a state, not a property. A hold is still the correct answer when evidence
+contradicts a value, and the queue-consistency gate governs one when it exists — a held axis may
+not carry a date at all. Read the live counts from `check_freshness`, not from this paragraph.
 
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
@@ -654,26 +623,40 @@ that is not a drift.
 For a check now, refresh the three models by hand and run `check_parity`
 (`docs/operations/deploy-models.md`).
 
-The producible-pair check found 17 impossible pairs on its first run, not the two that were
-known. `vellum`, `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule
-emits because 4 is `open_core`; five more were `2 / open_core`, which no rule emits either; and
-nine carried a score of 3, which the software ladder cannot produce **at all**, its rungs being
-1, 2, 4 and 5. All 17 were corrected by reading the products, in three groups:
+The producible-pair check asks one question — can any rule in the category's recipe emit this
+score with this class — and it finds things `check_rubric` cannot, because a product in a
+category's `deferred` block is excluded from reproduction but not from this check. It ignores the
+evidence entirely, so deferring cannot hide a pair.
 
-- `2 / open_core` → `2 / source_available`. The class was wrong. `open_core` in this ladder
-  means an OSI core with functionality withheld for a paid tier; these five have an open
-  periphery around a closed engine, which is `source: partial`.
-- score 3 → 2. The score was wrong. Every one of the nine is "you can read it and not run
-  it freely" — a non-OSI restrictive license over public source, or a client standing in
-  for a closed service — which the ladder scores at 2.
-- `4 / open_source` → `5 / open_source`. The score was wrong. Each of the three publishes
-  the whole self-hostable product under an OSI license with nothing withheld. The 4s
-  encoded maturity or skepticism about the vendor's marketing, both of which belong on the
-  adoption and capability axes and were already recorded there.
+**It reports a pair, not a repair.** The gate's own message says so — one of the two values is
+wrong, and the product settles which. Read the recorded components against the ladder: they are
+what the recipe keys on, so they are what decides whether the score or the class has to move.
+Widening the ladder to admit the pair is never the remedy.
 
-The producible-pair check caught something `check_rubric` could not: 16 of the 17 were sitting
-in a category's `deferred` block, which excludes a product from reproduction. The check ignores
-the evidence and asks only whether the pair exists in the ladder, so deferring cannot hide it.
+The software ladder emits five pairs and nothing else, and every software category inherits it
+unchanged through `extends: software`:
+
+| score | class | the components that reach it |
+|---|---|---|
+| 1 | `closed` | `source: closed` |
+| 2 | `source_available` | `source: partial`, or a `competition_restricted` license over public source |
+| 3 | `source_available` | a `permissive_non_osi` license over public, ungated source |
+| 4 | `open_core` | an OSI license over public source with a gated core |
+| 5 | `open_source` | an OSI license over public, ungated source |
+
+Two impossible pairs are worth spelling out, because each sits between two rungs that a
+hand-entered value slips across.
+
+- **`2 / open_core`.** `open_core` in this ladder means an OSI core with functionality withheld
+  for a paid tier. An open periphery around a closed engine is `source: partial`, which reaches
+  `2 / source_available`, so here it is the class that moves.
+- **`4 / open_source`.** The two top rungs differ in one component, `core-gated`. Whether the
+  record settles at `4 / open_core` or `5 / open_source` depends on what the vendor's pricing
+  page supports, and either value may be the one that moves.
+
+A mixed category has one ladder per product type, and each product is checked against its own
+rather than against the union of the category's variants. `sources/rubrics/*.yaml` carries each
+formula, and the model, dataset and hardware ladders emit their own pairs.
 
 ### Two shared utilities, so the mechanism cannot be bypassed
 
@@ -713,19 +696,18 @@ Less than the other two axes, and the difference is worth stating before dates g
 across adoption and capability in step 3 — a paragraph now, rather than an audit of every one
 of those dates later.
 
-Capability is not measured on this map. Measured on 2026-08-08, 322 of 472 products record
-`basis: feature_matrix` against 86 `benchmark`, and `value` is prose in every one of the 372
-cases where it is populated — not a single bare number. There is no capability ladder in any of
-the four rubrics, and `signal_routing.yaml` records the axis as effectively unroutable: both
-external anchors are unbridged, and both rank *models*, so neither can say anything about a
-training framework or a sandbox.
+Capability is not measured on this map. Most bands carry `basis: feature_matrix` rather than
+`benchmark`, `value` is prose wherever it is populated rather than a bare number, there is no
+capability ladder in any of the four rubrics, and `signal_routing.yaml` records the axis as
+effectively unroutable: both external anchors are unbridged, and both rank *models*, so neither
+can say anything about a training framework or a sandbox.
 
 What actually places many bands is a comparison to a peer. Many products in the
 corpus put themselves against another product in their own category — "one tier below the
 Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every note does
-it. That comparison was the instrument, and it lived in an English sentence.
+it. That comparison is the instrument, and in an English sentence it is unreachable.
 
-So it is recorded instead:
+So it is recorded as data:
 
 ```yaml
 capability:
@@ -774,12 +756,13 @@ peer's axis date, and pays for that with its own evidence requirement: a source 
 reproduces from a live body is proof the fetch was real — SHA-256 preimages are not guessable, so
 those bytes could only have come from that body. Where **every** source an axis cites reproduces,
 that is a defensible basis for re-dating that axis's own `last_verified`, and it is now built:
-`build/reverify.py` does exactly this. The permission is narrower than the principle, on purpose.
-The #445 ruling limits machine re-dating to **openness**, because adoption and capability cite
-numbers that move — there, unchanged bytes would confirm a figure that has gone stale rather than
-a fact that has stayed put. The tool enforces that limit rather than describing it. `--axes` refuses any axis but
-openness, and refuses a name that is not an axis at all — which previously planned nothing and
-reported a clean run over zero dimensions. The check binds to the write as well as to the flag:
+`build/reverify.py` does exactly this. The permission is narrower than the principle, on purpose:
+machine re-dating is limited to **openness**, because adoption and capability cite numbers that
+move — there, unchanged bytes would confirm a figure that has gone stale rather than a fact that
+has stayed put. The tool enforces that limit rather than describing it. `--axes` refuses any axis
+but openness, and refuses a name that is not an axis at all, since a name matching no axis plans
+nothing and reports a clean run over zero dimensions. The check binds to the write as well as to
+the flag:
 `reverify_product` refuses a policy-breaking axis, and `apply`, the function that actually
 writes the field, refuses a result stamped for one however it was assembled. It is
 never a basis for dating a comparison. Not when the peer's sources reproduce, not
@@ -800,20 +783,20 @@ number is a property of a harness-plus-model pairing rather than of the product 
 
 Two things this deliberately does not do. It does not make capability derivable from evidence,
 and the comparison itself still carries no cited source — recording it converts an
-unfalsifiable claim into a falsifiable one, which is what `establishes` did for openness, and
+unfalsifiable claim into a falsifiable one, which is what `establishes` does for openness, and
 `establishes` does not verify that a source says what it claims either. That is the sampled
-re-fetch's job. Nor does it try to turn `capability.value` into structured components: at 61%
-prose by `check_rubric`'s own measure, against the 71% that stopped `edge_hardware`, and with
-four different instruments sharing one field name, there is no shared ladder at the end of that
-work the way openness got four.
+re-fetch's job. Nor does it try to turn `capability.value` into structured components: the field
+is mostly prose, on the same measure that stopped `edge_hardware`'s ladder, and four different
+instruments share the one field name, so there is no shared ladder at the end of that work the
+way openness has four.
 
 ## The verification sweep's bookkeeping
 
-`build/sweep_status.py` derives where the sweep has got to from the corpus rather than from a stored pointer, and `/goal` (`refresh-all-categories`) asks it which category is next. The rules it implements, moved here from its docstring so `--help` is a paragraph (#573):
+`build/sweep_status.py` derives where the sweep has got to from the corpus rather than from a stored pointer, and `/goal` (`refresh-all-categories`) asks it which category is next. The rules it implements:
 
 ### What "done" means for a product
 
-The bar agreed on 2026-08-08, and it is per product rather than per axis:
+The bar is per product rather than per axis:
 
   * every axis carries a real `last_verified`, or abstains deliberately (a null value, which
     `evidence-and-freshness.md` explains for the axes that have one), or the product is held;
@@ -821,11 +804,11 @@ The bar agreed on 2026-08-08, and it is per product rather than per axis:
     settled goes into `sources/verification_queue.yaml` with a reason and stops blocking its
     category, which is what let the pilot ship five of six.
 
-The prose has no part in "done". It used to: `comments` had to end in a dated `Verified … via`
-line, which was the one thing about the prose a checker could see. The line was a third copy
-of the axis dates and read as a footnote about the product, so #619 retired it, and the prose
-half of a refresh is now held by `product-copy.md`'s rules and the reviewer rather than by a
-marker in the field. `build/product_prose.py` checks that the line has not come back.
+The prose has no part in "done". A dated `Verified … via` line in `comments` is the one thing
+about the prose a checker can see, and it is a third copy of the axis dates rendered as a
+footnote about the product, so the field carries no such marker: the prose half of a refresh is
+held by `product-copy.md`'s rules and the reviewer. `build/product_prose.py` checks that the line
+has not come back.
 
 Deliberately NOT counted as done: an axis whose value is null because nobody looked. The two
 are indistinguishable in the file today, which is the gap the per-axis deferral idea closes.
@@ -851,17 +834,17 @@ and ages with the axes it was written beside.
 
 | | count |
 |---|---|
-| axes total (472 products × 3) | 1416 |
-| deliberately null — not claims | 46 (26 capability, 20 adoption) |
-| **real claims to verify** | **1370** |
-| of those, citing at least one source URL | 1370 |
-| carrying a real `last_verified` | 1416 |
+| axes total (763 products × 3) | 2289 |
+| deliberately null — not claims | 84 (45 capability, 39 adoption) |
+| **real claims to verify** | **2205** |
+| of those, citing at least one source URL | 2205 |
+| carrying a real `last_verified` | 2289 |
 | explicitly held in `verification_queue.yaml` | 0 |
-| distinct source URLs behind all of it | 1827 |
+| distinct source URLs behind all of it | 2963 |
 
-Read 2026-08-16. `check_freshness` reported median age 3d, oldest 8d, with no axis resting on
-the commit-date fallback. Regenerate these rather than trusting them; the corpus grows most
-weeks, and the figures in this table have already been wrong twice for exactly that reason.
+Read 2026-09-20. Regenerate these rather than trusting them; the corpus grows most weeks, and a
+number typed into a guide is stale the week after it is typed. The shape is what the table is
+for: every axis is dated, every real claim cites something, and nothing is held.
 
 The null axes are two different abstentions and both are deliberate. Capability is null where
 the axis does not apply — datasets and a wire protocol are not capable of anything a benchmark
@@ -871,13 +854,11 @@ Vertex, Bedrock — none of which publishes a standalone number, plus the intern
 which have no users outside the lab that wrote them. Banding those on vendor prose would be
 inventing the number, so the axis abstains instead.
 
-Every real claim already cites a source. The work is not finding evidence; it is re-reading
-what is cited. And the re-read surface is 1106 fetches, not 1370, because sources are shared.
+Every real claim cites a source. The work is not finding evidence; it is re-reading what is
+cited, and the re-read surface is smaller than the claim count because sources are shared across
+axes and across products.
 
 ### A null axis can earn a `last_verified`, and should
-
-Settled 2026-08-13, because practice had diverged from silence: 9 of the 46 null axes carried
-a date and 37 did not, with nothing saying which was right.
 
 The table above excludes nulls from "real claims to verify", and that framing is correct about
 one thing and misleading about another. A null is not a **claim** — nobody asserted a level. But
@@ -894,8 +875,9 @@ the one answer that cannot be confirmed.
 
 **It is also load-bearing for coverage.** Products carrying at least one null axis are a real
 slice of the corpus. If a null can never be dated, none of them can ever be fully verified,
-however carefully anyone reads them — and the unreachable set is not random. It is almost entirely the hosted features sold
-inside a larger platform, which is a real and interesting part of the map, not a rounding error.
+however carefully anyone reads them — and the unreachable set is not random. It is almost entirely
+the hosted features sold inside a larger platform, which is a real and interesting part of the
+map, not a rounding error.
 
 Two things a dated abstention must still do:
 
@@ -910,28 +892,22 @@ What this does NOT license is abstaining to avoid work. `signal_routing.yaml`'s 
 governs which way the doubt runs: abstain rather than substitute, but never abstain rather than
 measure. If a figure exists and is countable, the axis owes a band.
 
-**None of the 6 satisfied the invariant as first written**, which is worth recording because it
-is the clearest evidence the invariant does something. `establishes` did not exist when those
-dates were set, and beyond that the 2026-07-28 pass on the four model flagships re-read only
-the dataset endpoint: `apertus`, `olmo`, `pythia` and `lucie-7b` all claimed a whole-axis
-confirmation while citing 2026-06 reads for weights, code, checkpoints and license. Refetching
-the 23 cited sources cleared it and turned up two things an exemption would have hidden — a
-Lucie source URL that had never resolved as cited (missing the `/datasets/` segment, so the
-Hub answered 401), and an `rwkv` `weights:open` claim with no source behind it at all.
+**A whole-axis claim resting on a partial re-read is what the invariant exists to catch**, and
+it is the failure a hand-dated axis falls into most easily: a pass re-reads the dataset endpoint,
+dates the axis, and leaves the weights, code, checkpoint and license citations months behind. The
+remedy is refetching every cited source, and it turns up things no exemption would have — a source
+URL that never resolved as cited, or a dimension claim with no source behind it at all.
 
 ### What automation can and cannot earn, per axis
 
-Counted 2026-07-30, before the corpus reached 472 products. The per-axis totals have moved a
-little since; the split has not.
+| axis | can a fetch earn the date? |
+|---|---|
+| adoption | **Yes** — the score IS a banded signal, so re-fetching re-derives it |
+| capability | **Yes where a benchmark row exists**; feature and internal-eval judgments need a read |
+| openness | **Never fully** — see above |
 
-| axis | axes | all sources signal-backed | can a fetch earn the date? |
-|---|---|---|---|
-| adoption | 470 | 204 (+68 partial) | **Yes** — the score IS a banded signal, so re-fetching re-derives it |
-| capability | 446 | 198 (+55 partial) | **Yes where a benchmark row exists**; feature and internal-eval judgments need a read |
-| openness | 470 | 272 (+86 partial) | **Never fully** — see above |
-
-"Signal-backed" means every source the axis cites is on a host a fetcher already re-derives
-automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis, OpenRouter.
+What decides it per axis is whether every source the axis cites sits on a host a fetcher already
+re-derives automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis, OpenRouter.
 
 ## The age gate
 
@@ -940,20 +916,20 @@ automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis, OpenRoute
 category whose oldest axis is older than the window is a category to go and look at. A held
 axis rides the commit-date fallback rather than evading the gate.
 
-**The window is 45 days, temporarily, and returns to 30 four weeks after 2026-09-03 (#457).**
-It is a judgment about how much re-reading the map is worth rather than anything derivable, so
-it is owned here and not re-argued per category. Owner: Carl.
+**The window is 45 days, narrowing to 30 on 2026-10-01.** It is a judgment about how
+much re-reading the map is worth rather than anything derivable, so it is owned here and not
+re-argued per category. Owner: Carl.
 
-The raise exists because the whole corpus was dated in one August sweep and would have crossed
-the 30-day gate together, between 09-07 and 09-12. The rolling re-verifier spreads those dates
-over four weekly batches; once it has, the window reverts.
+The wider window covers a corpus dated in a single sweep, which crosses a 30-day gate all at
+once. The rolling re-verifier spreads those dates over four weekly batches, and the window
+narrows when it has.
 
-At 45 days the re-read is continuous rather than occasional: every category inside forty-five days is roughly three a week. Two things follow. A whole category shares one confirmation
-date, because a category is re-read in a single run, so categories expire in cliffs rather
-than drifting past the line one product at a time — that is the shape of the work, not a
-backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;
-at this window that drift is noise, and a digest that *matches* remains the only thing it
-positively proves.
+At 45 days the re-read is continuous rather than occasional: every category inside forty-five
+days is roughly three a week. Two things follow. A whole category shares one confirmation date,
+because a category is re-read in a single run, so categories expire in cliffs rather than
+drifting past the line one product at a time — that is the shape of the work, not a backlog. And
+the sampled re-fetch will keep reporting drift on pages that change daily; at this window that
+drift is noise, and a digest that *matches* remains the only thing it positively proves.
 
 The cliff is also why the gate is scheduled rather than per-pull-request, and weekly rather than
 daily. Part 1 above has that argument and the shape of the workflow.
