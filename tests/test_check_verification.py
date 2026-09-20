@@ -305,12 +305,26 @@ def test_the_repo_passes_all_three_gates():
 @pytest.mark.parametrize("axis", ["openness", "adoption", "capability"])
 def test_every_dated_axis_in_the_repo_carries_establishing_evidence(axis):
     """Restates the invariant's scope as data rather than logic: whatever carries a date must
-    be covered, so a new date cannot land without the gate having an opinion about it."""
-    from build.check_verification import ROOT
+    be covered, so a new date cannot land without the gate having an opinion about it.
 
+    Two supports, because there are two ways to earn a date, and neither is optional. A reading
+    is evidenced by a source accessed on or after the date, carrying the digest only a fetch
+    produces. A measurement is evidenced by the observation the band was re-measured from,
+    recorded as `derived_from` and resolved against the snapshot ledger. An axis carrying a date
+    and neither support is what this exists to catch.
+    """
+    from build.adoption_freshness import DERIVATION_FIELD, DERIVED_AXIS, derivation_problems
+    from build.check_verification import ROOT
+    from build.observation_snapshot import load_ledger
+
+    ledger = load_ledger()
     for path in sorted((ROOT / "sources" / "scores").glob("*.yaml")):
         block = (yaml.safe_load(path.read_text()) or {}).get(axis) or {}
         if not block.get("last_verified"):
+            continue
+        if block.get(DERIVATION_FIELD):
+            assert axis == DERIVED_AXIS, f"{path.name}:{axis} may not derive its date"
+            assert derivation_problems(path.stem, block, ledger) == [], f"{path.name}:{axis}"
             continue
         fresh = [
             s for s in block.get("sources") or []

@@ -429,9 +429,15 @@ sentence noticing.
 Observation and evaluation are two stages on purpose: the raw figure is per artifact and the
 band is per product, so a model that did both at once would band a product on whichever artifact
 it happened to read. The evaluator reads the bands from `registry.adoption_bands` and bands on the
-product's declared type. It writes nothing back to `sources/`: **a computed band is an
+product's declared type. It writes no BAND back to `sources/`: **a computed band is an
 observation, never a score.** Only a person sets `level`, and only per
 `evidence-and-freshness.md`.
+
+What a measurement may write is the axis's DATE. Where the route re-measures the band a person
+recorded, `adoption.last_verified` takes the date of the observation behind that measurement;
+where it measures a different band, the product is queued for a person rather than re-scored, and
+its date does not move. `evidence-and-freshness.md`, under "How an adoption date is earned", owns
+that rule and `build/adoption_freshness.py` implements it.
 
 ### Partial coverage abstains
 

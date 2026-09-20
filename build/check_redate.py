@@ -18,6 +18,14 @@ The converse is deliberately not checked. A source may be re-read without the ax
 — a fetch is a weaker act than a re-confirmation — and `last_verified` is never backfilled from
 `accessed`, so an `accessed` that moves alone is correct behavior, not a violation.
 
+An adoption date that moved because a route re-measured the band is asked for the measurement
+instead. Both requirements above are about a reading a person made, and neither applies to a
+date whose support is an observation: the axis carries `derived_from`, the date must equal the
+observation date recorded there, and no `accessed` needs to have moved at all — the counts
+endpoint a curator cited was not what confirmed anything. `build/check_verification.py` is what
+resolves that record against the snapshot ledger; this asks only that the moved date is the one
+the record supports.
+
 Usage:
     uv run python -m build.check_redate                    # working tree against HEAD
     uv run python -m build.check_redate --base main        # a branch against its base
@@ -32,6 +40,13 @@ from pathlib import Path
 
 import yaml
 
+from build.adoption_freshness import (
+    DERIVATION_FIELD,
+    DERIVED_AXIS,
+    derivation_problems,
+    known_route_ids,
+)
+from build.observation_snapshot import load_ledger
 from build.vocabulary import axes
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,15 +57,44 @@ def _date(value: object) -> str:
     return "" if value is None else str(value)
 
 
-def axis_violations(rel: str, axis: str, before: dict, after: dict) -> list[str]:
+def axis_violations(
+    rel: str,
+    axis: str,
+    before: dict,
+    after: dict,
+    ledger: dict | None = None,
+    known_routes: set[str] | None = None,
+) -> list[str]:
     """Why this axis's re-dating is unsupported, or an empty list when it is supported.
 
     `before` and `after` are one axis's parsed mappings. An axis whose `last_verified` did not
     move forward is never a violation, whatever its sources did.
+
+    `ledger` is the observation-snapshot ledger. Supplied, a derived move is put to the full
+    derivation check as well — the same one `check_verification` runs — so a move whose evidence
+    the ledger does not carry fails here too, at the point the move is visible as a diff.
     """
     was, now = _date(before.get("last_verified")), _date(after.get("last_verified"))
     if not (was and now and now > was):
         return []
+
+    derived = after.get(DERIVATION_FIELD)
+    if derived is not None:
+        if axis != DERIVED_AXIS:
+            return [f"{rel}: {axis} carries {DERIVATION_FIELD}, which only {DERIVED_AXIS} "
+                    f"may derive"]
+        as_of = _date((derived or {}).get("measurement_as_of"))
+        if as_of != now:
+            return [
+                f"{rel}: {axis}.last_verified moved to {now} but the measurement it derives "
+                f"from was observed {as_of or 'on no recorded date'}"
+            ]
+        if ledger is None:
+            return []
+        return [
+            f"{rel}: {problem}"
+            for problem in derivation_problems(Path(rel).stem, after, ledger, known_routes)
+        ]
 
     seen_before = [_date(s.get("accessed")) for s in before.get("sources") or [] if s.get("accessed")]
     seen_after = [_date(s.get("accessed")) for s in after.get("sources") or [] if s.get("accessed")]
@@ -85,6 +129,8 @@ def changed_files(base: str) -> list[str]:
 def redated(base: str = "HEAD") -> tuple[list[tuple[str, str, str, str]], list[str]]:
     """Axes whose `last_verified` moved forward since `base`, and the ones that cannot support it."""
     moved, bad = [], []
+    ledger = load_ledger()
+    routes: set[str] | None = None
     for rel in changed_files(base):
         before_text = _at_ref(base, rel)
         after_path = ROOT / rel
@@ -99,7 +145,9 @@ def redated(base: str = "HEAD") -> tuple[list[tuple[str, str, str, str]], list[s
             was, now = _date(a.get("last_verified")), _date(b.get("last_verified"))
             if was and now and now > was:
                 moved.append((rel, axis, was, now))
-            bad.extend(axis_violations(rel, axis, a, b))
+            if b.get(DERIVATION_FIELD) is not None and routes is None:
+                routes = known_route_ids()
+            bad.extend(axis_violations(rel, axis, a, b, ledger, routes))
     return moved, bad
 
 
@@ -118,7 +166,8 @@ def main() -> int:
         for line in bad:
             print(f"  {line}")
         return 1
-    print("\nevery re-dated axis was read on the date it now claims, from a fresher source")
+    print("\nevery re-dated axis is supported: read on the date it now claims from a fresher "
+          "source, or dated by the measurement it derives from")
     return 0
 
 
