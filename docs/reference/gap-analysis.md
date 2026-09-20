@@ -139,36 +139,25 @@ That fallback is right for the case it was written for. Most null-capability pro
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
 everyone evaluates against is, by that fact, a good corpus.
 
-**It reaches every other category too**, and that is the part #547 had to rule on rather than
-assume. `model-context-protocol` is the clearest live case: adoption 5, capability null,
-`open_source`, so its overall score computes to 5.0 and it counts as a category-leading
-fully-open product on one axis where a reader might assume two.
+**It reaches every other category too.** `model-context-protocol` is the clearest live case:
+adoption 5, capability null, `open_source`, so its overall score computes to 5.0 and it counts as
+a category-leading fully-open product on one axis where a reader might assume two.
 
-**A correction, because this guide got the stakes wrong on first writing.** It claimed that the
-stage of the category then called `agent_tools_protocols` rested on that null, on the reasoning
-that one category-leading fully-open product is the entire `stage >= 4` threshold. The rule is
-real but the inference was not checked against the category, which held several such products
-rather than one. The 2026-09-17 split (#430) has since moved them apart: MCP and the reference
-SDKs into `agent_protocols`, `qdrant` into `storage`, `docling` and `markitdown` into
-`document_conversion`, leaving the renamed `agent_tools_connectors` behind at stage 3.
+`agent_protocols` shows what that looks like at category scale. Six fully-open products sit at
+4.5 or above — `model-context-protocol`, `ag-ui`, `mcp-apps`, `mcp-python-sdk`,
+`mcp-typescript-sdk` and `fastmcp`. Three carry a real capability score; three reach 5.0 on
+adoption with capability null. Six clears `_STAGE5_MIN_MATURE = 4` with room, so the category is
+**stage 5** and no single product carries it: drop any one and five remain. A category-leading
+fully-open product is not by itself a stage, and reading the threshold without reading the
+roster will suggest otherwise.
 
-Re-derived against the current corpus, `agent_protocols` carries six fully-open products at 4.5
-or above: `model-context-protocol`, `ag-ui`, `mcp-apps`, `mcp-python-sdk`, `mcp-typescript-sdk`
-and `fastmcp`. That clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and dropping
-MCP leaves five and changes nothing. Three of the six score a real capability; the other three
-reach 5.0 with capability null, so the null is more common in this category than the first
-correction implied. The claim that a stage depended on any one of them was wrong, and was caught
-by re-deriving it against `build/serialize.py` rather than reasoning from the threshold. What the
-correction left standing — that adoption-only grading reaches categories it was not designed for
-— is the question #547 settled, immediately below.
-
-**Both effects are the settled behavior, and neither is a bug (#547).** A category whose best
+**Both effects are the settled behavior, and neither is a bug.** A category whose best
 fully-open product abstains on capability is graded on adoption alone: the product is NOT dropped
 from the stage computation the way a null adoption drops it, and the empty gap set is not marked.
 The reasoning is that these categories genuinely lack a capability signal worth grading on, so
-adoption alone is the honest reading rather than a fallback that happens to be reachable — the
-answer the map has now arrived at more than once, most recently when `benchmark_eval_data`
-rejected a capability recipe for its corpora and returned to abstaining (#546).
+adoption alone is the honest reading rather than a fallback that happens to be reachable.
+`benchmark_eval_data` is the standing example: a capability recipe was written for its corpora,
+tested, and rejected, and the category returned to abstaining.
 
 Grading on adoption alone is therefore a **convention of this methodology**, not a per-category
 declaration and not a flag a reader sees. It follows from the axis being null, which is itself a
@@ -185,8 +174,8 @@ reader of the map should know:
   it, where both axes have been topped but never in the same product. Which one a category is in
   is answered by reading its products, not by the empty set.
 
-This closes the question the earlier draft of this section left open, which asked whether
-adoption-only grading should become a per-category declaration like `disclosure`. It should not.
+Adoption-only grading is not a per-category declaration like `disclosure`, and does not become
+one: it follows from the axis being null, which is already recorded per product.
 
 ## Dataset categories
 
