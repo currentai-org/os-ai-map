@@ -163,11 +163,24 @@ def test_the_three_states_partition_the_closed_population(corpus):
 def test_every_census_row_carries_a_stage_rebuilt_with_the_product_withheld(corpus):
     """The defect this guards is a row asserting 'no effect' without having rebuilt anything.
 
-    Derived, not pinned: it walks whatever the census returns today.
+    Derived, not pinned: it walks whatever the census returns today, and it does **not**
+    assert the census is non-empty. An earlier draft opened with a bare `assert rows`. That
+    reads as a sanity check and is really a claim about where the corpus sits against the
+    line -- it goes red on the day nothing is below the line, which is the day the principle
+    has been fully acted on, and a test that goes red for that reason is the gate this job
+    must not write. The census is checked against the survey it was drawn from instead,
+    which holds at any count including zero.
     """
     sources, frozen, baseline = corpus
+    rosters_before = {cid: list(cat["products"]) for cid, cat in sources["categories"].items()}
+    surveyed = survey(baseline)
     rows = census(sources, frozen, baseline=baseline)
-    assert rows, "the census returned nothing at all, which is not a result"
+    # The census covers exactly the two non-above states, one row per placement. True at
+    # 64 rows and true at 0.
+    assert len(rows) == surveyed["counts"][BELOW] + surveyed["counts"][UNMEASURED]
+    assert {(r["category"], r["slug"]) for r in rows} == {
+        (cid, row["slug"]) for state in (BELOW, UNMEASURED)
+        for cid, row in surveyed["states"][state]}
     for r in rows:
         assert r["stage_withheld"] is not None, r["slug"]
         assert isinstance(r["gaps_withheld"], list), r["slug"]
@@ -177,6 +190,10 @@ def test_every_census_row_carries_a_stage_rebuilt_with_the_product_withheld(corp
         differs = (r["stage_with_product"] != r["stage_withheld"]
                    or r["gaps_with_product"] != r["gaps_withheld"])
         assert differs == (r["category"] in r["withheld_moves"])
+    # Withholding mutates the rosters and restores them. A lossy restore would leave the
+    # survey measuring a corpus it had eaten, and every later row would be read off it.
+    assert {cid: list(cat["products"])
+            for cid, cat in sources["categories"].items()} == rosters_before
 
 
 def test_the_survey_reports_and_never_signals_a_failure(capsys):
@@ -195,6 +212,19 @@ def test_the_json_form_is_machine_readable(capsys):
     assert set(payload["counts"]) == {ABOVE, BELOW, UNMEASURED}
 
 
+def test_the_all_form_widens_the_census_and_says_so(capsys):
+    """`--all` puts every closed product in the census, so the heading has to widen with it.
+
+    Not a count assertion: it reads which population the heading claims, which is the part
+    that can be wrong while every number under it is right.
+    """
+    assert main(["--all"]) == 0
+    report = capsys.readouterr().out
+    assert "the whole population" in report
+    assert "products not above the line" not in report
+    assert ABOVE in report
+
+
 def test_the_survey_is_not_wired_into_any_gate():
     """No gate for any of the three tests — including by accident, later.
 
@@ -202,8 +232,9 @@ def test_the_survey_is_not_wired_into_any_gate():
     survey appearing in either would make the principle enforceable, which ADR-005 says it
     is not.
     """
+    workflows = ROOT / ".github" / "workflows"
     surfaces = [ROOT / "build" / "preflight.py"] + sorted(
-        (ROOT / ".github" / "workflows").glob("*.yml"))
+        list(workflows.glob("*.yml")) + list(workflows.glob("*.yaml")))
     offenders = [str(p.relative_to(ROOT)) for p in surfaces
                  if "closed_inclusion" in p.read_text(encoding="utf-8")]
     assert not offenders, f"the survey is wired into a gate surface: {offenders}"

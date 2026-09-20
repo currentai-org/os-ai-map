@@ -269,7 +269,8 @@ def _stage_str(stage: dict | None, gaps: list[str] | None) -> str:
     return f"stage {stage['num']} {stage['name']} [{', '.join(gaps or []) or 'no gaps'}]"
 
 
-def _report(surveyed: dict, rows: list[dict]) -> str:
+def _report(surveyed: dict, rows: list[dict],
+            states: tuple[str, ...] = (BELOW, UNMEASURED)) -> str:
     d = surveyed["detail"]
     out = [
         "Closed-product inclusion survey",
@@ -291,7 +292,13 @@ def _report(surveyed: dict, rows: list[dict]) -> str:
         f" no capability: {d['null_with_no_capability']})",
         "",
         "=" * 78,
-        f"Census — {len(rows)} products not above the line, grouped by category.",
+        # `--all` censuses the whole closed population, so the heading has to say which
+        # population is under it. A heading that says "not above the line" over a list that
+        # includes the products above it is the small kind of wrong that gets quoted.
+        f"Census — {len(rows)} "
+        + ("closed products, the whole population" if ABOVE in states
+           else "products not above the line")
+        + ", grouped by category.",
         "",
         "This is advisory and it is not a removal list. Each product carries the values it",
         "was read on, how its category looks around it, and the category's stage and gap set",
@@ -383,7 +390,7 @@ def main(argv: list[str] | None = None) -> int:
                           "counts": surveyed["counts"], "detail": surveyed["detail"],
                           "census": rows}, indent=2, ensure_ascii=False))
     else:
-        print(_report(surveyed, rows))
+        print(_report(surveyed, rows, states))
     # Always 0. This is a survey; there is no finding it could make that should fail a build.
     return 0
 

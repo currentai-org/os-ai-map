@@ -89,9 +89,14 @@ curatorial and one evidential.
 
 ### 3. Evidenceable
 
-At least one axis is evidenced from a primary source. This too **codifies existing practice**:
-it is what `check_citations` and the verification workflow already require of every product,
-closed ones included.
+At least one axis carries a source a reader can open and check. This too **codifies existing
+practice**, and it is worth being exact about what holds it up, because no check does.
+`docs/schemas/score.schema.json` requires the three axis blocks and not one `sources` entry
+under any of them, and the evidence gates — `check_verification`, `check_citations`,
+`check_freshness` — constrain the evidence a score *records* rather than requiring that it
+record any. What makes this a description of practice rather than an aspiration is the corpus:
+measured on 2026-09-20, every closed product on the map carries at least one source on at least
+one axis, with nothing enforcing it. The test writes down a convention curation already keeps.
 
 ## Why there is no gate
 
