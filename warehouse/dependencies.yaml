@@ -4,9 +4,14 @@
 # A `mirror:` block proves provenance, NOT operational ownership: the platform is authoritative,
 # so these are contracts, never governed assets. See docs/architecture/adr-003-repository-scope-boundary.md.
 #
+# Every `files.model` here opens with the `PLATFORM MIRROR (read-only)` banner, and
+# mirror_ownership_violations gates that in both directions: a banner-carrying file under
+# warehouse/models/ is a contract here and not a governed asset, and a contract's mirror file
+# without the banner fails too.
+#
 # This file is NOT an org-wide inventory and cannot become one. The gates (build/assets.py
-# dependency_violations + dependency_mirror_provenance_violations, tests/test_scope_gates.py) fail
-# CLOSED:
+# dependency_violations + dependency_mirror_provenance_violations + mirror_ownership_violations,
+# tests/test_scope_gates.py) fail CLOSED:
 #   * disjoint from assets.yaml (gate 3);
 #   * every entry is REACHABLE from a CLOSED root set -- governed producer files + named audit
 #     roots only, never "any build/*.py" -- re-derived from the tree, not trusted from required_by;
@@ -410,6 +415,47 @@ dependencies:
     hash: 089872d00b819b57aab4a406d35813e785a03231938832aebc723a957320cff3
     local_sha256: 33ac3eb3197fdca384bd9d15f9340e9cec369a50a4ea8ac586a4afda9ab0d534
     synced_at: '2026-09-15'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: SCHEDULED
+- table: currentai.signal_packages.downloads
+  purpose: package_adoption_signal
+  expected_grain: one row per (product_slug, artifact_kind, package) over a 30-day window
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - build/check_artifacts.py
+  - warehouse/models/observations/product_adoption_current.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/signal_packages/downloads.sql
+  mirror:
+    model_id: 444e9e8f-a21c-4de1-a08b-bf4a009dfab5
+    revision: 3
+    hash: 64c19d98eeeb96dc5b9fbc287bfc7a920401051ff1de47ae76f7a3272690f03e
+    local_sha256: 92cec475019eab969c7fe762fe79630afa67bbaaaf756067fd721543b35c9fb4
+    synced_at: '2026-09-20'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: SCHEDULED
+- table: currentai.signal_packages.downloads_daily
+  purpose: package_download_history
+  expected_grain: one row per (product_slug, artifact_kind, package, day)
+  freshness_requirement: <= 8 days (weekly platform refresh)
+  required_by:
+  - warehouse/models/signal_packages/downloads.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/signal_packages/downloads_daily.py
+  mirror:
+    model_id: ef473295-4c8d-4523-aea6-a992b035c77c
+    revision: 3
+    hash: 96541b1c15045c2cd50dcb96a1a734917cea6a8541fcb4d9aba00219a5003b11
+    local_sha256: 07652abbff06663d60bbcde7ef02f596f9df74e22702a9a412575e8960d1fad2
+    synced_at: '2026-09-20'
   platform_schedule:
     cron: 0 1 * * 0
     timezone: UTC

@@ -13,8 +13,8 @@ the whole reason this model exists.
 
 Roster comes from `currentai.registry.product_artifacts`, filtered to those two
 kinds — the repo's own declaration, pushed out by CI, so coverage tracks the map
-rather than a hand-maintained package list. 14 artifacts across 13 products on
-2026-08-14: 13 npm (`mastra` declares both `@mastra/core` and `mastra`) and one
+rather than a hand-maintained package list. 18 artifacts across 17 products on
+2026-09-13: 17 npm (`mastra` declares both `@mastra/core` and `mastra`) and one
 crate (`yomo`). One request per artifact.
 
 Grain: one row per (product, artifact_kind, package, day). `artifact_kind` uses the
@@ -33,20 +33,19 @@ measuring May. The two reads never disagreed. `llama-factory` is still in
 `sources/verification_queue.yaml` for the same reason: "settling it needs the
 download history rather than two point reads."
 
-## What the two APIs actually do, measured 2026-08-14
+## What the two APIs actually do, measured 2026-08-14 and re-confirmed 2026-09-13
 
 npm, `https://api.npmjs.org/downloads/range/<start>:<end>/<package>`:
 
   * Serves at most 18 months and **silently clips a longer request rather than
-    erroring**. Asking 2024-08-14 to 2026-08-13 returned 547 days beginning
-    2025-02-13. So a requested window is not evidence of a served window, and every
+    erroring**. The 2026-09-13 run asked for 547 days and got exactly 547, starting
+    2025-03-15. So a requested window is not evidence of a served window, and every
     date here comes from the response.
   * A scoped name goes through unencoded: `range/.../@mastra/core` answers, and
     percent-encoding the slash returns 404.
   * The `last-month` and `last-year` aliases lag about five days behind today and an
-    explicit end date does not. `last-year` ended 2026-08-09 while an explicit range
-    returned full days through 2026-08-13. That is the second reason to ask for a
-    range: it is fresher, not only longer.
+    explicit end date does not. That is the second reason to ask for a range: it is
+    fresher, not only longer.
   * Zero is a value npm reports for a day it has no data for, and those zeros are
     inside the totals it publishes: `n8n` has two in a 30-day window, both Sundays.
     They are kept as rows, so a total depressed by a gap can be told from a total
@@ -54,20 +53,18 @@ npm, `https://api.npmjs.org/downloads/range/<start>:<end>/<package>`:
 
 crates.io, `https://crates.io/api/v1/crates/<crate>/downloads`:
 
-  * Serves **90 days and no more**. `before_date` does not page further back — asked
-    for 2026-05-01 it returned the same trailing 90 days. So crates history is three
-    months, full stop, and a trend over a longer window is not available at any
-    price.
+  * Serves **90 days and no more**. `before_date` does not page further back, so
+    crates history is three months, full stop.
   * Downloads arrive per version, plus a `meta.extra_downloads` roll-up for versions
     the response does not enumerate. Both are summed; reading only
     `version_downloads` undercounts any crate old enough to have retired a version.
   * Days with no downloads are omitted rather than reported as zero, which is the
-    opposite of npm's habit. A missing day here is a real zero.
+    opposite of npm's habit. A missing day here is a real zero — the 2026-09-13 run
+    returned 27 rows for `yomo` inside its 90-day ceiling.
   * `/api/v1/crates/<crate>` is NOT fetched. Its `recent_downloads` covers 90 days
     while looking like a monthly figure — `yomo` reports 347 there, and its series
     sums to exactly 347 across 90 days against 96 in the trailing 30 — so banding it
-    monthly would overstate the crate by 3.6x. The series answers the same question
-    without the trap, and `signal_routing.yaml` records the rule.
+    monthly would overstate the crate by 3.6x.
 
 Both APIs are unauthenticated. crates.io asks for a descriptive User-Agent and gets
 one; npm asks for nothing.
@@ -80,14 +77,13 @@ rather than missing. Both registries answer 404 with a JSON body for an unknown
 name.
 
 That distinction is load-bearing because the roster runs ahead of the signal between
-runs — the registry declared 106 PyPI artifacts while `signal_pypi` held 98 — so
-"declared, not fetched yet" must not read the same as "fetched and gone". The
-`playwright-mcp` record carried `@anthropic-ai/mcp-playwright` for weeks, which
+runs, so "declared, not fetched yet" must not read the same as "fetched and gone".
+The `playwright-mcp` record carried `@anthropic-ai/mcp-playwright` for weeks, which
 api.npmjs.org answers 404 for, and nothing in the pipeline could say so.
 
 Counts are raw registry requests: CI jobs, mirrors and container builds included.
 Volume, not unique users. No band here — bands are declared in the repo and applied
-in `build/adoption_measurements.py`.
+in `signal_packages.product_adoption`.
 """
 
 import asyncio
@@ -241,9 +237,24 @@ def rows_for(
 
 
 @oso.model(
+    capabilities=oso.Capabilities(fetch=True),
     environment_name="Default",
     depends_on=["currentai.registry.product_artifacts"],
     external_origins=["https://api.npmjs.org", "https://crates.io"],
+    # Declared so this model is schema-deterministic rather than a boundary sink:
+    # signal_packages.downloads reads it from inside the same dataset, and without
+    # this the whole chain resolves non-deterministic and nothing downstream of it
+    # can be released. Order and types must match the returned frame exactly.
+    columns=[
+        oso.Column(name="product_slug", type="varchar"),
+        oso.Column(name="product_type", type="varchar"),
+        oso.Column(name="artifact_kind", type="varchar"),
+        oso.Column(name="package", type="varchar"),
+        oso.Column(name="day", type="date"),
+        oso.Column(name="downloads", type="bigint"),
+        oso.Column(name="http_status", type="bigint"),
+        oso.Column(name="fetched_at", type="timestamp"),
+    ],
 )
 async def package_downloads_daily(context: oso.AsyncContext) -> oso.DataFrame:
     headers: dict[str, str] = {"User-Agent": USER_AGENT, "Accept": "application/json"}
@@ -279,38 +290,34 @@ async def package_downloads_daily(context: oso.AsyncContext) -> oso.DataFrame:
         request_url(artifact_kind, package, period)
         for _, _, artifact_kind, package in artifacts
     ]
-    unroutable = [url is None for url in urls]
-    if all(unroutable):
+    if all(url is None for url in urls):
         raise RuntimeError("no declared artifact belongs to a registry this model reads")
 
     responses = await asyncio.gather(
-        *(
-            context.fetch(url, headers=headers)
-            for url in urls
-            if url is not None
-        )
+        *(context.fetch(url, headers=headers) for url in urls if url is not None)
     )
-    # Put the responses back beside their artifacts, so an unroutable kind still
-    # produces a row rather than shifting every row after it onto the wrong package.
-    answered: list[object] = []
-    cursor = 0
-    for url in urls:
-        if url is None:
-            answered.append(None)
-        else:
-            answered.append(responses[cursor])
-            cursor += 1
 
-    if not any(
-        response is not None and response.status == 200 for response in answered
-    ):
+    if not any(response.status == 200 for response in responses):
         raise RuntimeError(f"every one of {len(artifacts)} registry calls failed")
 
+    # Walk the artifacts and the gathered responses together. The cursor only
+    # advances on a routable artifact, so an unroutable kind still produces its own
+    # row rather than shifting every row after it onto the wrong package. This is
+    # the same alignment guarantee the parallel-list version gave, written so the
+    # response never has to widen to `object` — which is what the release gate's
+    # type-checker rejects.
     rows: list[dict] = []
+    cursor = 0
     for index, (slug, product_type, artifact_kind, package) in enumerate(artifacts):
-        response = answered[index]
-        status = response.status if response is not None else 0
-        payload = response.json() if response is not None and status == 200 else None
+        if urls[index] is None:
+            rows.extend(
+                rows_for(slug, product_type, artifact_kind, package, None, 0, fetched_at)
+            )
+            continue
+        response = responses[cursor]
+        cursor += 1
+        status = response.status
+        payload = response.json() if status == 200 else None
         rows.extend(
             rows_for(
                 slug, product_type, artifact_kind, package, payload, status, fetched_at

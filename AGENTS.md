@@ -37,8 +37,10 @@ sources/rubrics/       Shared scoring ladders. A category inherits one with
                        license-to-tier lives here, because whether AGPL is `osi` is
                        a fact about AGPL, not about one category.
 warehouse/assets.yaml  The GOVERNED asset inventory: governed outputs (Gap Map publications),
-                       repo-owned computation, and temporary compatibility shims only — NOT one
-                       entry per platform table (ADR-003). OSO existence or standalone-notebook
+                       repo-owned computation and data, and temporary repo-owned compatibility
+                       shims only — NOT one entry per platform table (ADR-003).
+                       Everything here is repo-owned: `authority: platform` is refused under
+                       every role, so a platform mirror can never be an entry. OSO existence or standalone-notebook
                        use never confers membership. Direct external OSO inputs live in
                        warehouse/dependencies.yaml as contracts, never here. Carries authority,
                        grain, provenance and derived reads/read_by. The only registry.
@@ -47,11 +49,14 @@ warehouse/dependencies.yaml  External OSO inputs a governed asset reads — depe
                        Not owned; no migration/retirement/mirror obligations. (Introduced by the
                        ADR-003 execution PRs; specified in adr-003-repository-scope-boundary.md.)
 warehouse/models/      SQL and Python model files, models/<dataset>/<table> mapping to
-                       currentai.<dataset>.<table>. NOT an organization-wide platform mirror. Most
-                       are GOVERNED (editable models, the compatibility shims, fetchers), claimed by
-                       assets.yaml; the rest are READ-ONLY mirrors of platform-owned models, claimed
-                       by dependencies.yaml as contracts (a mirror binds provenance, not ownership).
-                       Authority is the declared field, not the directory name.
+                       currentai.<dataset>.<table>. NOT an organization-wide platform mirror. Almost
+                       all of them are READ-ONLY mirrors of platform-owned models, claimed by
+                       dependencies.yaml as contracts (a mirror binds provenance, not ownership);
+                       each opens with a `PLATFORM MIRROR (read-only)` banner, and
+                       `mirror_ownership_violations` fails if the banner and the manifests disagree
+                       about who owns the file. `observations/product_adoption_current.sql` is the
+                       one governed model file left. Authority is the declared field, not the
+                       directory name.
 warehouse/data/        Frozen CSV inputs, data/<dataset>/<table>.csv (HF model catalog,
                        benchmarks, stack-map bridge)
 build/                 Python pipeline, see below
@@ -395,8 +400,8 @@ normative `docs/reference/evidence-and-freshness.md`.
 
 `docs/architecture/` carries the data architecture: what each namespace means, which tables
 are misfiled, and what the gates protect. `warehouse/assets.yaml` is the **governed** inventory
-it specifies — governed outputs, repo-owned computation, and compatibility shims, with grain,
-authority, producer, and derived `reads`/`read_by`. It is **not** a mirror of the OSO org:
+it specifies — governed outputs, repo-owned computation and data, with grain, authority,
+producer, and derived `reads`/`read_by`. It is **not** a mirror of the OSO org:
 membership follows the scope boundary in `adr-003-repository-scope-boundary.md`, and external
 OSO inputs live in `warehouse/dependencies.yaml` as contracts, not here.
 

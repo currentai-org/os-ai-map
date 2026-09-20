@@ -227,14 +227,30 @@ twin as `replacement`
 in the census until step 6. This is what lets the external consumer and any unaudited reader move
 on their own schedule instead of breaking on the flip.
 
-### 6. Retire the old tables
+### 6. Retire the old tables — DONE 2026-09-20, without the platform drop
 
-Drop `currentai.signal_github.repo_state` and `currentai.signal_huggingface.hub_state` from the
-platform, and remove their compatibility assets from `assets.yaml`, **only after** the consumer
-inventory confirms nothing reads them — the in-repo `read_by` is empty for both, `sta-grantmaker-view`
-has confirmed its move off `repo_state`, and `consumer_checks` is clean. An empty in-repo reader
-list is not by itself evidence a table is unused (§11 opens with exactly that trap); the external
-consumer is the reason retirement is a separate, later step and not part of the flip.
+**What this step said.** Drop `currentai.signal_github.repo_state` and
+`currentai.signal_huggingface.hub_state` from the platform, and remove their compatibility assets
+from `assets.yaml`, **only after** the consumer inventory confirms nothing reads them — the
+in-repo `read_by` is empty for both, `sta-grantmaker-view` has confirmed its move off
+`repo_state`, and `consumer_checks` is clean. An empty in-repo reader list is not by itself
+evidence a table is unused (§11 opens with exactly that trap); the external consumer is the reason
+retirement is a separate, later step and not part of the flip.
+
+**What was done, and why it is less.** The repository half ran on 2026-09-20 under #517: both
+assets were removed from `assets.yaml`, their mirror files deleted, and both tables recorded in
+the `retirements` block of `warehouse/audits/externalization.json` with `platform_state:
+archived`. **The platform drop was deliberately NOT performed and is not pending.** It was the
+half this step could not have, because the external consumer never confirmed a move:
+`sta-grantmaker-view` still reads `repo_state`, so the deployed table is kept queryable on
+purpose. Both models were set `isEnabled: false` on 2026-09-03, so neither refreshes, which is
+exactly what `archived` means in `RETIREMENT_PLATFORM_STATES` — "the deployed table is retained
+and readable but nothing refreshes it". Retirement does not require deletion, and nothing here
+should propose one.
+
+Read read-only from the platform on 2026-09-20 to justify that: both models `isEnabled: false`,
+`GetLineage DOWNSTREAM` returning each table and nothing else, and both tables answering a query
+(307 and 197 rows, `max(fetched_at)` 2026-08-30 for both).
 
 ## Rollback
 
