@@ -1,0 +1,2336 @@
+# Which observations a derived adoption date rests on, when they were observed, and what the
+# run measured for each product it dated.
+#
+# `observation_snapshot_id` is a hash of observation CONTENT and carries no date, so a score
+# file recording one cannot be audited against a calendar without this. Each entry resolves an
+# id to the window its observations cover; `build/check_verification.py` requires a derived
+# `adoption.last_verified` to fall inside the window of the snapshot it names.
+#
+# `agreements` is the second record of each measurement, kept apart from the score file on
+# purpose. A score file's `derived_from` describes itself; the gate believes it only where this
+# ledger, written by the same run, records the same run, route, level and observation date for
+# that product. An edit to one side and not the other fails.
+#
+# `source_runs` records, once per run, how the platform says that run was started and how it
+# ended. Only a SCHEDULED run may date an adoption axis — a MANUAL one is a person refreshing a
+# table — and the control plane will not answer for a run forever, so the trigger is written
+# down here at the moment it is read rather than looked up again later.
+#
+# Written by `build/adoption_freshness.py`. An entry is never edited by hand: the id is
+# content-addressed, so changing a window here would claim a hash over observations that do not
+# produce it.
+version: 1
+snapshots:
+  36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6:
+    observation_content_digest: 071f7d9e319b75be0cf86890bfbaa6e0ade6eff68abdd7f195f25fd62068d16c
+    canonicalization_version: 1
+    row_count: 1111
+    observed_from: '2026-09-08'
+    observed_to: '2026-09-20'
+    recorded_at: '2026-09-20'
+    source_runs:
+      980a87f1-3274-408e-928e-70eee35dd8a2:
+        trigger_type: SCHEDULED
+        status: SUCCESS
+        started_at: '2026-09-20T03:30:16.737Z'
+    agreements:
+      accelerate:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      aegis-guard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      agent-client-protocol:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: crates.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      agent-infra-sandbox:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-19'
+      agenta:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      agentdojo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      agentops:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      ai-toolkit:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      ai2-arc:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      aider:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      aifs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      aimet:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      airi:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      aistore:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      alia-40b:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      all-minilm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      alpacaeval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      alphafold:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      annoy:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      apps:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      arctic-embed:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      arm-compute-library:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      armada:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      atropos:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      attention-gym:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      auto-round:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      autogpt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      aws-mcp-servers:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      axolotl:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      axon:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-19'
+      aya-collection:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      beeai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      beta9:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      bge:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      bge-reranker:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      bigcode-dataset:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      bigcodebench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      bitsandbytes:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      blaxel-sandbox:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      block-sparse-attention:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      browser-use:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      c4:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      ccnet:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      chai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      chandra:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      chitu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      clay:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      clearml:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      clip:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      codecontests:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      codegemma:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      coder-oss:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      colbert:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      comma:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      command-r:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      compar-ia-datasets:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      composable-kernel:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      composio:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      context7:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      coremltools:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      cosmopedia:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      crawl4ai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      crewai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      cuda-tile:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      cula:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      culturax:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      cutlass:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      data-juicer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      datamap-rs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      datatrove:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      dclm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      dclm-baseline:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      ddgs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      decon:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      deep-lake:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      deepchat:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      deepeval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      deepgemm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      deepseek:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      deepseek-coder:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      deepseek-ocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      deepspeed:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      deepteam:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      desktop-commander-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-19'
+      determined-ai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      devstral:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      diffusers:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      dify:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      diskann:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      distilabel:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      dlrover:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      dolci:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      dolma:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      dolma-3:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      dolt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      dots-ocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      ds4:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      dspy:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      dstack:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      duplodocus:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      dvc:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      dynamo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      e2b-sandbox:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      e5:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      elasticsearch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      embeddinggemma:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      esm-2:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      esm-3:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      euroeval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      eurollm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      evalscope:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      evo-2:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      faiss:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      falcon:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      fastapi-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      fastdeploy:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      fastmcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      feast:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      feluda:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      filesystem-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      finch-jl:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      finemath:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      fineweb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      fineweb-2:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      fineweb-edu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      flan-collection:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      flash-attention:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      flash-sparse-attention:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      flashinfer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      flashkda:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      flashmla:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      flashqla:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      flax:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      flyte:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      freetensor:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      garak:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      gemini-cli:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      gemma:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      geneformer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      ggml:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      giskard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      github-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      gnome:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      goose:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      gpqa:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      gpt-oss:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      gpt-researcher:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      gptqmodel:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      granite:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      granite-code-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      granite-embedding:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      granite-geospatial:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      granite-guardian:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      graphrag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      gsm8k:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      gte:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      gte-reranker:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      guardrails-ai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      hami:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      harmbench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      harrier-oss:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      haystack:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      helicone:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      helixdb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      hellaswag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      hermes:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      hermes-3-dataset:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      hexabot:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      hf-datasets:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      hh-rlhf:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      hnswlib:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      htcondor:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      huggingface-hub:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      humaneval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      humanitys-last-exam:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      ifeval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      infinity:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      inkling:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      intel-neural-compressor:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      internlm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      iree:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      jax:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      jina-embeddings:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      jina-reader:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      jina-reranker:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      juicefs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      kai-scheduler:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      katib:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      keras:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      khoj:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      kimi:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      ktransformers:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      kubeflow-pipelines:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      kubeflow-trainer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      kueue:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      lakefs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      lakesoul:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      lamindb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      lance:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      langchain:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      langfuse:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      langgraph:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      langtrace:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      languagebench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      langwatch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      latitude-llm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      lemonade:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      librechat:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      liger-kernel:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      lighteval:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      lightllm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      lightonocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      lightpanda:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      lightrag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      linkup:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      litellm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      litert-lm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      litgpt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      livebench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      llama-factory:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      llama-index:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      llama-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      llama-prompt-guard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      llamafile:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      llamafirewall:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      llm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      llm-d:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      llm-guard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      lm-evaluation-harness:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      lmdeploy:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      lobe-chat:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      lucie-7b:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      luciole:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      mace:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      madlad-400:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      magistral:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      marin-framework:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      marker:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      markitdown:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      mastra:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      mattersim:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      max:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      mbpp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      mcp-apps:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-19'
+      mcp-csharp-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-go:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-go-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-inspector:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      mcp-java-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-kotlin-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-python-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      mcp-registry:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-rust-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: crates.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      mcp-swift-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mcp-typescript-sdk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-19'
+      mcpb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-19'
+      megatron-lm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      meilisearch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      metaflow:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      miles:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      milvus:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      mimo-pro:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mineru:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      minicpm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      minimax:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      miopen:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mistral-7b-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      mistral-large:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      mistral-rs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      mixedbread-rerank:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      mlc-llm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      mlflow:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      mlrun:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      mlstm-kernels:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      mlx:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      mlx-vlm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      mmlu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      mmlu-pro:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      mmmu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      morphic:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      ms-marco-cross-encoder:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      mt-bench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      multipl-e:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      mxbai-embed:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      nano-graphrag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      nanonets-ocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      nasa-ibm-lunar-foundation-model:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      ncnn:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      nemo-curator:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      nemo-data-designer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      nemo-guardrails:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      nemo-rl:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      nemotron:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      nemotron-cc:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      nemotron-embed:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      neuralgcm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      nextchat:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      nomic-embed:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      nono:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      notion-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-19'
+      nvidia-model-optimizer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      nvidia-tensor-ir:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      oasst1:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      ogam:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      ogx:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      olmes:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      olmo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      olmocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      olmoe-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      onednn:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      onemath:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      onetrainer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      onnx:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      onnx-runtime:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      onnx-simplifier:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      open-connector:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      openai-evals:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      openclaw:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-19'
+      opencode:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      openhermes-2-5:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      openlake:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      openlit:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      openllmetry:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      openmanus:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      openmldb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      openpai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      openpipe:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      openrag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      opensandbox:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      openvino:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      openwebmath:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      opik:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      optimum:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      orama:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-19'
+      orb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      otari:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      oxen:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      paddle:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      paddleocr:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      pangu-weather:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      paradedb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      pathway:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      personahub:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      pes2o:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      pgvector:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      pgvectorscale:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      phi:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      phi-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      phoenix:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      pinecone:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      pixeltable:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      playwright-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-19'
+      polyaxon:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      postgres-mcp:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      presto:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      prithvi-eo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      prithvi-wxc:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      private-gpt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      promptlayer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      puppeteer:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-19'
+      pyrit:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      pythia:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      pytorch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      pytorch-lightning:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      qdrant:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      quilt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      qwen-coder:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      qwen-instruct:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      qwen3-embedding:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-20'
+      qwen3-reranker:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      qwen3guard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      qwenpaw:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      ragas:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      ray:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      redisearch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      redpajama-data:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      refinedweb:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      reward-bench:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      rfdiffusion:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      risuai:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      rtp-llm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      rwkv:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      safetensors:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      sageattention:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      scgpt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      seed-oss:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      selenium:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      sentencepiece:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      serpapi:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      sillytavern:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      simple-evals:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      simpleaudit:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      skypilot:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      slurm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      smallpond:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      smolagents:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      smollm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      smoltalk:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      sonar:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      sptag:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-16'
+      stack-edu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      starcoder2:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      starcoderdata:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      steel-browser:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      suna:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      surfsense:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      surya:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      surya-heliophysics:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      swe-bench-verified:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      syfthub:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      synth:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      taco:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      tensorflow:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      tensorflow-serving:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      tensorlake-sandbox:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      tensorrt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      terramind:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      tesseract:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      tf2onnx:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      the-pile:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      the-pile-pipeline:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      thunderkittens:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      tinyllama-chat:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      tokenizers:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      torch-tensorrt:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      torchao:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      torchtune:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      traccia:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-17'
+      transformers:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      triton:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 5
+        measurement_as_of: '2026-09-17'
+      trl:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      truthfulqa:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-20'
+      tulu-3-sft-mixture:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      txt360-pipeline:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      typesense:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      uce:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      ungoliant:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 1
+        measurement_as_of: '2026-09-20'
+      unsloth:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      usearch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      uzu:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      vearch:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      vellum:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      verl:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
+      vespa:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      vllm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 4
+        measurement_as_of: '2026-09-17'
+      volcano:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      weathernext:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      weaviate:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      whylabs:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      wildchat-1m:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_dataset.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      wildguard:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      xla:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      xllm:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      yomo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      yylo:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-19'
+      yylo-benchmark:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: npm.downloads_30d
+        measured_level: 1
+        measurement_as_of: '2026-09-19'
+      zenml:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-17'
+      zerank:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: huggingface_model.downloads_30d
+        measured_level: 3
+        measurement_as_of: '2026-09-20'
+      zml:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: github.stargazers_count
+        measured_level: 2
+        measurement_as_of: '2026-09-20'
+      zvec:
+        source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+        route_id: pypi.downloads_30d
+        measured_level: 2
+        measurement_as_of: '2026-09-17'
