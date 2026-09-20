@@ -163,9 +163,8 @@ CENSUS_BACKLOG: dict[str, dict[str, str]] = {
             "same 2026-08-13 measurement — '40 records, not 55, are genuinely unbacked' is its "
             "conclusion",
         "`mcp-typescript-sdk`, `openclaw`, `langchain`, `ray`, `firecracker`, `aws-lambda`":
-            "the roster under the same 2026-08-13 measurement, one sentence after the date that "
-            "dates it. Scope is the sentence on purpose — see _sentences — so a continuation is "
-            "listed here rather than licensed by a wider exemption",
+            "the roster under the same 2026-08-13 measurement — the names rather than the "
+            "number. Read and accepted",
     },
     "check_parity.py": {
         "Six products":
@@ -241,13 +240,21 @@ def test_there_is_no_dating_exemption(slugs):
     reason. If this test starts failing, someone has reintroduced an exemption; read the note
     above CENSUS_BACKLOG before deciding they were right to.
     """
-    for text in (
-        "Measured 2026-08-13, 56 products claim exactly that.",
-        "Measured 2026-08-13, 56 products did X and today 60 products do Y.",
-        "Latency was measured 2026-08-13. Today 56 products lack artifacts.",
-        "    Measured 2026-08-13, sample output\n\nToday 60 products exist.",
+    for text, expected in (
+        ("Measured 2026-08-13, 56 products claim exactly that.", ["56 products"]),
+        # The case that ended the third mechanism. Asserting truthiness here would pass while
+        # "60 products" escaped, which is the whole failure it is meant to catch.
+        ("Measured 2026-08-13, 56 products did X and today 60 products do Y.",
+         ["56 products", "60 products"]),
+        ("Latency was measured 2026-08-13. Today 56 products lack artifacts.", ["56 products"]),
+        ("    Measured 2026-08-13, sample output\n\nToday 60 products exist.", ["60 products"]),
     ):
-        assert census_phrases(text, slugs), f"a dating exemption is back, and it exempts: {text!r}"
+        found = census_phrases(text, slugs)
+        for phrase in expected:
+            assert phrase in found, (
+                f"a dating exemption is back: {phrase!r} was not reported in {text!r} "
+                f"(reported: {found})"
+            )
 
 
 def test_every_backlog_entry_says_why_it_is_there(slugs):
