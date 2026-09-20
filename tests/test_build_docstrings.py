@@ -80,36 +80,28 @@ def _slugs() -> set[str]:
     return {p.stem for p in (ROOT / "sources" / "products").glob("*.yaml")}
 
 
-# A count that says WHEN it was taken is not the defect this gate exists for. The claim that
-# prompted #573 was "Four records are excluded this way today" - present tense, no date, a second
-# copy of a number the report prints live on every run. "Measured 2026-08-13, 56 products claim
-# exactly that" records an observation at a moment, the way every piece of evidence in `sources/`
-# carries `last_verified`. It cannot go stale, because it never claimed to be current.
+# A count that says WHEN it was taken is not the defect this gate exists for. But deciding from
+# English whether a count is dated turned out to be unbounded. Two rounds of adversarial review
+# found six ways through, and every one was answered by widening a vocabulary or moving a
+# boundary:
 #
-# SCOPE IS THE SENTENCE, and the first draft of this got it wrong. It scoped to the PARAGRAPH, on
-# the reasoning that a dated measurement runs to several sentences. External review broke that in
-# four ways, all reproduced before this rewrite:
+#   "Latency was measured 2026-08-13. Today 56 products lack artifacts."      unrelated measurement
+#   "Measured 56 products on 2026-08-13."                                     count before its date
+#   "Nothing was measured on 2026-08-13. 56 products ..."                     negation
+#   "Measured 2026-99-99, 56 products ..."                                    impossible date
+#   'The report says "... measured 2026-08-13." Today 56 products ...'        quoted sentence
+#   "Nothing was sampled on 2026-08-13, 56 products ..."                      negation, other verb
 #
-#   "Latency was measured 2026-08-13. Today 56 products lack artifacts."  -> exempt. An unrelated
-#       measurement licensed a live count, in the same breath as the word "Today".
-#   "Measured 56 products on 2026-08-13."                                 -> exempt, with the count
-#       BEFORE the date, which the rule's own docstring said it required.
-#   "Nothing was measured on 2026-08-13. 56 products lack artifacts."     -> exempt.
-#   "Measured 2026-99-99, 56 products lack artifacts."                    -> exempt.
+# This repository already has a rule for that situation: a line that takes more than two attempts
+# to state consistently is probably not there, and the escape is a COARSER instrument rather than
+# a fourth restatement. So the exemption stops being inferred and becomes declared.
 #
-# Widening a regex to patch those makes it cleverer and no more sound. The sentence is the unit a
-# reader actually judges: a date earns the count it sits beside, and earns nothing two sentences
-# later. Where a dated measurement genuinely spans sentences - the breakdown under
-# `check_instrument`'s headline - the continuation goes in CENSUS_BACKLOG with a reason, which is
-# what that list is for. An explicit exception beats an exemption nobody can bound.
-_MEASURED = re.compile(
-    r"\b(?:measured|observed|sampled|counted|surveyed|as\s+of)\b"
-    r"(?![^.]{0,30}\b(?:not|never|nothing|no)\b)"
-    r"[^.]{0,40}?(?P<date>\d{4}-\d{2}-\d{2})",
-    re.IGNORECASE,
-)
-_NEGATED = re.compile(r"\b(?:not|never|nothing|no)\b[^.]{0,30}?\b(?:measured|observed|counted)\b",
-                      re.IGNORECASE)
+# THE CONVENTION, and the whole of it: a dated measurement is a sentence that OPENS with
+# `Measured <ISO date>`. Nothing else is one. A count that wants the exemption is written that way;
+# a count that cannot be is listed in CENSUS_BACKLOG with a reason. There is no English to parse,
+# so there is nothing to talk around: a quoted sentence does not open with it, a code span does not
+# open with it, and a negation does not open with it.
+_MEASURED_OPENER = re.compile(r"^\s*Measured\s+(?P<date>\d{4}-\d{2}-\d{2})", re.IGNORECASE)
 
 
 def _real_date(text: str) -> bool:
@@ -122,15 +114,15 @@ def _real_date(text: str) -> bool:
 
 
 def _sentences(doc: str) -> list[tuple[int, str]]:
-    r"""(offset, text) per sentence.
+    r"""(offset, text) per sentence, split on a full stop followed by whitespace.
 
-    Split on a full stop followed by whitespace. That is already decimal-safe: the point in `4.5`
-    is followed by a digit, never a space. An earlier guard of `(?<!\d)` was added to protect
-    decimals and instead refused to split after a DATE - so "measured 2026-08-13. Today 56
-    products ..." stayed one sentence and the measurement licensed the live count after it.
+    Decimal-safe without a guard: the point in `4.5` is followed by a digit, never a space. An
+    earlier `(?<!\d)` guard, added to protect decimals, instead refused to split after a DATE.
+    The split stays a heuristic, but nothing now rests on it being a correct sentence parser -
+    the opener convention does the work, and a mis-split can only ever REFUSE an exemption.
     """
     out, start = [], 0
-    for m in re.finditer(r"\.(?:\s|$)", doc):
+    for m in re.finditer(r"\.[\"'`*]*(?:\s|$)", doc):
         out.append((start, doc[start:m.end()]))
         start = m.end()
     if start < len(doc):
@@ -139,19 +131,12 @@ def _sentences(doc: str) -> list[tuple[int, str]]:
 
 
 def _dated_spans(doc: str) -> list[tuple[int, int]]:
-    """Spans a dated measurement licenses: from the DATE to the end of its own sentence.
-
-    From the date, not from the verb - "Measured 56 products on 2026-08-13" must not exempt the
-    count it states before saying when. And only to the end of that sentence, so a measurement
-    cannot license a claim made after it about something else.
-    """
+    """Spans a declared measurement licenses: from its date to the end of its own sentence."""
     spans: list[tuple[int, int]] = []
     for offset, sentence in _sentences(doc):
-        if _NEGATED.search(sentence):
-            continue
-        for m in _MEASURED.finditer(sentence):
-            if _real_date(m.group("date")):
-                spans.append((offset + m.start("date"), offset + len(sentence)))
+        m = _MEASURED_OPENER.match(sentence)
+        if m and _real_date(m.group("date")):
+            spans.append((offset + m.start("date"), offset + len(sentence)))
     return spans
 
 

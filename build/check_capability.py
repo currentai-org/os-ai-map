@@ -9,7 +9,7 @@ Openness earned its gates by making the thing the score rests on into data. Its 
 `components` in itself, it was that a judgment became a recorded structure, attributable to a
 source and walkable by a ladder.
 
-Capability's scores rest on something else, and the corpus says so plainly: measured on
+Capability's scores rest on something else, and the corpus says so plainly. Measured
 2026-08-08, 79 of 472 products sit at capability 5 and roughly a hundred place themselves
 against a named peer in the same category — "one tier below the Megatron-LM anchor", "not the
 frontier multi-node-scale anchor". That comparison IS the instrument for most of the axis. It
