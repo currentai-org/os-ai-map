@@ -2145,3 +2145,50 @@ resolutions:
     read the platform''s license off the client, and the repository''s 16,157 stars and the matching
     PyPI package''s 2,711 monthly downloads measure the client''s users rather than the platform''s.
     The repository stays cited as openness evidence, which is what it is evidence of.'
+- artifact:
+    kind: huggingface_model
+    id: comfy-org/gemma-4
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: gemma
+  decided_in: '#580'
+  decided_on: '2026-09-20'
+  note: Google's Gemma 4, repackaged by Comfy-Org for ComfyUI - the README names
+    google/gemma-4-E2B-it and -E4B-it as its base models. Repackaging does not transfer the model,
+    so the weights are Google's and the artifact resolves to gemma. Whether to DECLARE it for
+    measurement is a separate question this ruling does not answer - the repo bundles three
+    upstream sizes, ships int8 conversions beside bf16, and is installed as a ComfyUI text encoder
+    rather than run as the chat model gemma is scored as.
+- artifact:
+    kind: huggingface_model
+    id: minimaxai/minimax-m2.5
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: minimax
+  decided_in: '#580'
+  decided_on: '2026-09-20'
+  note: MiniMax's own release of M2.5, published under its own MiniMaxAI namespace. The product
+    already aliases minimax-m2-5 and model_families maps minimax-*, so a later release is the same
+    product rather than a new one.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/llama-3.1-8b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#580'
+  decided_on: '2026-09-20'
+  note: Meta's Llama 3.1 8B Instruct, mirrored by Unsloth. The upload declares
+    meta-llama/Llama-3.1-8B-Instruct as its base model and carries the full-precision sharded
+    safetensors with no quantised files, so it is the same weights under a different host.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/qwen2.5-14b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: qwen-instruct
+  decided_in: '#580'
+  decided_on: '2026-09-20'
+  note: Alibaba's Qwen2.5 14B Instruct, mirrored by Unsloth. The upload declares
+    Qwen/Qwen2.5-14B-Instruct as its base model and carries the full-precision sharded safetensors
+    with no quantised files, so it is the same weights under a different host.
