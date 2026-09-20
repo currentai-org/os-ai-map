@@ -29,6 +29,7 @@ docstring argues about notes-under-axes would have made both files harder to rea
 from __future__ import annotations
 
 import ast
+import datetime
 import importlib
 import inspect
 import re
@@ -80,35 +81,77 @@ def _slugs() -> set[str]:
 
 
 # A count that says WHEN it was taken is not the defect this gate exists for. The claim that
-# prompted #573 was "Four records are excluded this way today" — present tense, no date, a
-# second copy of a number the report prints live on every run. "Measured 2026-08-13, 56 products
-# claim exactly that" is a different kind of sentence: it records an observation at a moment,
-# the way every piece of evidence in `sources/` carries `last_verified`. It does not go stale,
-# because it never claimed to be current.
+# prompted #573 was "Four records are excluded this way today" - present tense, no date, a second
+# copy of a number the report prints live on every run. "Measured 2026-08-13, 56 products claim
+# exactly that" records an observation at a moment, the way every piece of evidence in `sources/`
+# carries `last_verified`. It cannot go stale, because it never claimed to be current.
 #
-# Scope is the PARAGRAPH, not the sentence, and that is the deliberate loosening here. A dated
-# measurement in this repo routinely runs to several sentences — the date opens it and the
-# breakdown follows ("... — 12 declare npm or crates, and 44 declare nothing at all. Twelve of
-# the 56 sit at level 5: ..."), so a sentence-scoped rule would exempt the headline and flag its
-# own supporting clauses. The cost is that a date at the top of a paragraph licenses the numbers
-# below it; that is accepted, because the alternative found here was worse and because the date
-# is the thing a reader checks.
+# SCOPE IS THE SENTENCE, and the first draft of this got it wrong. It scoped to the PARAGRAPH, on
+# the reasoning that a dated measurement runs to several sentences. External review broke that in
+# four ways, all reproduced before this rewrite:
+#
+#   "Latency was measured 2026-08-13. Today 56 products lack artifacts."  -> exempt. An unrelated
+#       measurement licensed a live count, in the same breath as the word "Today".
+#   "Measured 56 products on 2026-08-13."                                 -> exempt, with the count
+#       BEFORE the date, which the rule's own docstring said it required.
+#   "Nothing was measured on 2026-08-13. 56 products lack artifacts."     -> exempt.
+#   "Measured 2026-99-99, 56 products lack artifacts."                    -> exempt.
+#
+# Widening a regex to patch those makes it cleverer and no more sound. The sentence is the unit a
+# reader actually judges: a date earns the count it sits beside, and earns nothing two sentences
+# later. Where a dated measurement genuinely spans sentences - the breakdown under
+# `check_instrument`'s headline - the continuation goes in CENSUS_BACKLOG with a reason, which is
+# what that list is for. An explicit exception beats an exemption nobody can bound.
 _MEASURED = re.compile(
-    r"\b(?:measured|observed|sampled|counted|surveyed|as\s+of|shipped\s+\w+\s+on)\b[^.]{0,40}?"
-    r"\d{4}-\d{2}-\d{2}",
+    r"\b(?:measured|observed|sampled|counted|surveyed|as\s+of)\b"
+    r"(?![^.]{0,30}\b(?:not|never|nothing|no)\b)"
+    r"[^.]{0,40}?(?P<date>\d{4}-\d{2}-\d{2})",
     re.IGNORECASE,
 )
+_NEGATED = re.compile(r"\b(?:not|never|nothing|no)\b[^.]{0,30}?\b(?:measured|observed|counted)\b",
+                      re.IGNORECASE)
+
+
+def _real_date(text: str) -> bool:
+    """A date the calendar has. `2026-99-99` is a typo, and must not license anything."""
+    try:
+        datetime.date.fromisoformat(text)
+    except ValueError:
+        return False
+    return True
+
+
+def _sentences(doc: str) -> list[tuple[int, str]]:
+    r"""(offset, text) per sentence.
+
+    Split on a full stop followed by whitespace. That is already decimal-safe: the point in `4.5`
+    is followed by a digit, never a space. An earlier guard of `(?<!\d)` was added to protect
+    decimals and instead refused to split after a DATE - so "measured 2026-08-13. Today 56
+    products ..." stayed one sentence and the measurement licensed the live count after it.
+    """
+    out, start = [], 0
+    for m in re.finditer(r"\.(?:\s|$)", doc):
+        out.append((start, doc[start:m.end()]))
+        start = m.end()
+    if start < len(doc):
+        out.append((start, doc[start:]))
+    return out
 
 
 def _dated_spans(doc: str) -> list[tuple[int, int]]:
-    """Paragraph spans that open a dated measurement, from the date to the paragraph's end."""
+    """Spans a dated measurement licenses: from the DATE to the end of its own sentence.
+
+    From the date, not from the verb - "Measured 56 products on 2026-08-13" must not exempt the
+    count it states before saying when. And only to the end of that sentence, so a measurement
+    cannot license a claim made after it about something else.
+    """
     spans: list[tuple[int, int]] = []
-    offset = 0
-    for paragraph in doc.split("\n\n"):
-        match = _MEASURED.search(paragraph)
-        if match:
-            spans.append((offset + match.start(), offset + len(paragraph)))
-        offset += len(paragraph) + 2
+    for offset, sentence in _sentences(doc):
+        if _NEGATED.search(sentence):
+            continue
+        for m in _MEASURED.finditer(sentence):
+            if _real_date(m.group("date")):
+                spans.append((offset + m.start("date"), offset + len(sentence)))
     return spans
 
 
@@ -163,6 +206,10 @@ CENSUS_BACKLOG: dict[str, dict[str, str]] = {
         "40 records":
             "same 2026-08-13 measurement — '40 records, not 55, are genuinely unbacked' is its "
             "conclusion",
+        "`mcp-typescript-sdk`, `openclaw`, `langchain`, `ray`, `firecracker`, `aws-lambda`":
+            "the roster under the same 2026-08-13 measurement, one sentence after the date that "
+            "dates it. Scope is the sentence on purpose — see _sentences — so a continuation is "
+            "listed here rather than licensed by a wider exemption",
     },
     "check_parity.py": {
         "Six products":
@@ -213,6 +260,27 @@ def test_no_help_text_states_a_live_census(slugs):
         "the number is a fact about the design rather than about the corpus, say it without a "
         "cardinal, or add the phrase to CENSUS_BACKLOG with that justification."
     )
+
+
+@pytest.mark.parametrize("text", [
+    # Each of these was EXEMPT under the paragraph-scoped first draft, and each was found by
+    # external review rather than by the author. They are kept as tests because the failure they
+    # share is not a regex bug - it is that a two-sided test only covers the cases its writer
+    # imagined, so the cases someone else imagined are worth keeping forever.
+    "Latency was measured 2026-08-13. Today 56 products lack artifacts.",
+    "Measured 56 products on 2026-08-13.",
+    "Nothing was measured on 2026-08-13. 56 products lack artifacts.",
+    "Measured 2026-99-99, 56 products lack artifacts.",
+    "A score of 4.5 is mature. 56 products lack artifacts.",
+])
+def test_the_exemption_cannot_be_talked_around(text, slugs):
+    """A dated measurement licenses the count in its own sentence, and nothing further.
+
+    In order: an unrelated measurement must not license a live count after it; a count stated
+    before its date is not dated by it; a negated measurement dates nothing; a date the calendar
+    does not have is a typo; and a decimal point does not end a sentence.
+    """
+    assert census_phrases(text, slugs), f"exemption talked around by: {text!r}"
 
 
 def test_a_date_exempts_a_census_and_its_absence_does_not(slugs):
