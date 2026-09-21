@@ -139,12 +139,39 @@ an edge to an org that declares no matching handle is either wrong (a real false
 graph capability this eval has no business hiding.
 
 Two things keep the exclusion legible in the output. `Metrics.n_truth_unrecoverable`
-(in the table for every relation, 0 except `org`) counts the pairs dropped from the recall
+(in the table for every relation; `org` and `equivalence` are the two that report a non-zero
+count, for different reasons -- see "Equivalence recall is measured over declared candidates")
+counts the pairs dropped from the recall
 denominator, and `Metrics.unrecoverable_by_kind` breaks that down per artifact kind, printed
 under the table -- so a structural exclusion (`pypi`) and a curation gap (a `github` artifact
 whose org declares no `github` handle) are two readable numbers rather than one lump. And
 `org_handle_coverage` is now per route: for each route, how many of the orgs that actually have
 artifacts on it declare the handle it needs.
+
+## Equivalence recall is measured over declared candidates
+
+`_score_tiered` scores `head`/`tail` candidates and sends `pool` candidates to
+`n_emitted_at_threshold` only. Equivalence recall therefore restricts its denominator to truth
+whose candidate the corpus DECLARES (`Truth.declared_candidates`), on the same principle as
+`org`: recoverability is defined by the route the graph is graded on, and a `pool` candidate is
+not on it.
+
+Counting pool truth in the denominator made the relation's recall unreachable rather than
+unmet. Most equivalence truth is pool -- resolving an undeclared artifact to an existing product
+is what the relation is FOR -- so the achievable ceiling sat well under the floor being asked
+for. The relation had been abstaining under `MIN_TRUTH`, so the contradiction stayed invisible
+until the ledger grew past it and armed a floor no resolver could clear.
+
+Excluding pool truth is not a coverage excuse. Most of the excluded pairs are emitted at
+confidence 1.0 by `resolution_ledger`: the graph proposes them BECAUSE a human decided them, so
+scoring them against that decision is the same one-sided guard `load_truth` drops auto-adopted
+entries to avoid. Grading them would read high and mean nothing -- the failure mode this module
+already corrected once for `org` recall.
+
+What this does NOT measure is whether the graph can resolve a pool candidate on its own
+evidence. Pool pairs that are not ledger-derived (`model_family` / `product_alias`) are
+proposals sitting below the emit threshold, which is a real signal about identity automation and
+has no metric here. That is a gap in the eval, not in the graph.
 
 ## Recall is an invariant; handle coverage is the coverage metric
 
@@ -382,6 +409,17 @@ FLOORS: dict[str, tuple[float, float | None]] = {
 # (same `MIN_TRUTH` gate, same exit 1), and labeled `recall invariant` in the table so a 1.000
 # is never misread as coverage.
 RECALL_INVARIANTS: dict[str, float] = {"org": 0.99}
+
+# Why a relation's truth was excluded from its recall denominator, phrased for the table's
+# breakdown line. Each relation restricts recall to what the route it is GRADED on could
+# recover, but the route differs, so one shared sentence would be wrong for one of them.
+UNRECOVERABLE_REASON: dict[str, str] = {
+    "org": "with no handle route",
+    "equivalence": "whose candidate the corpus does not declare",
+    "membership_scoring": "excluded from recall",
+    "membership_non_scoring": "excluded from recall",
+    "artifact_identity": "excluded from recall",
+}
 
 # Below this many truth items, a floor cannot mean anything -- see the module docstring on
 # `artifact_identity`, 0 in the corpus today.
@@ -707,6 +745,12 @@ class Truth:
     recall denominator (see the module docstring "Org recall is measured per handle route").
     `org` precision truth is unrestricted.
 
+    `declared_candidates`: `candidate_key` for every artifact DECLARED by a head product or a
+    tail row. It is what `equivalence` recall's denominator is restricted to, for the same
+    reason `org_handles` restricts `org`'s: `_score_tiered` scores only `head`/`tail`
+    candidates, so a `pool` candidate cannot be recovered by the route that is graded and does
+    not belong in the denominator. Equivalence precision truth is unrestricted.
+
     The four `*_tier` maps carry the declaring tier (`"head"`/`"tail"`) of each truth item, so
     the table can report the split. A key absent from one of them has no known tier -- a ledger
     ruling naming a product slug that is neither a head product nor a tail row, say -- and
@@ -721,6 +765,7 @@ class Truth:
     identity_pairs: set[tuple[str, str, str]] = field(default_factory=set)
     route_kinds: frozenset[str] = field(default_factory=frozenset)
     org_handles: dict[str, dict[str, frozenset[str]]] = field(default_factory=dict)
+    declared_candidates: set[str] = field(default_factory=set)
     equivalence_tier: dict[str, str] = field(default_factory=dict)
     membership_tier: dict[tuple[Key, str], str] = field(default_factory=dict)
     org_tier: dict[tuple[str, str], str] = field(default_factory=dict)
@@ -733,8 +778,9 @@ class Metrics:
     recall: float | None
     n_truth: int
     n_emitted_at_threshold: int
-    # Truth pairs excluded from `n_truth`/recall because no handle route could recover them --
-    # only meaningful for `org`; 0 for every other relation. `unrecoverable_by_kind` breaks the
+    # Truth pairs excluded from `n_truth`/recall because the graded route could not recover
+    # them -- a missing handle route for `org`, an undeclared (`pool`) candidate for
+    # `equivalence`; 0 for every other relation. `unrecoverable_by_kind` breaks the
     # same count down per artifact kind, which is what separates a structural exclusion (`pypi`
     # has no owner in its identifier) from a curation gap (a `github` artifact whose org
     # declares no `github` handle).
@@ -1282,6 +1328,10 @@ def load_truth(
         if ident:
             by_key.setdefault((kind, fold_for_proposal(kind, ident)), {}).setdefault(ident, "tail")
 
+    # Every declared artifact, as a candidate_key. `by_key` is already folded exactly the way
+    # `candidate_key` folds, so this is the same key space equivalence truth is keyed in.
+    declared_candidates = {f"{kind}:{folded}" for kind, folded in by_key}
+
     identity_pairs: set[tuple[str, str, str]] = set()
     identity_tier: dict[tuple[str, str, str], str] = {}
     for (kind, _folded), spellings in by_key.items():
@@ -1375,6 +1425,7 @@ def load_truth(
         identity_pairs=identity_pairs,
         route_kinds=_route_kinds(),
         org_handles=_org_handles(org_handles_path or ORG_HANDLES_PATH),
+        declared_candidates=declared_candidates,
         equivalence_tier=equivalence_tier,
         membership_tier=membership_tier,
         org_tier=org_tier,
@@ -1412,15 +1463,40 @@ def _tier_counts(keys: Iterable, tiers: dict) -> tuple[int, int]:
 
 
 def _score_equivalence(emitted: list[dict], truth: Truth) -> Metrics:
+    """Recall truth is restricted to candidates the corpus DECLARES; precision truth is not.
+
+    `_score_tiered` scores only `head`/`tail` candidates -- a `pool` candidate reaches
+    `n_emitted_at_threshold` and nothing else. So a truth item whose candidate is undeclared
+    cannot be recovered by the route that is graded, however good the resolver is, and counting
+    it in the denominator measures the corpus's shape rather than the resolver. This is the same
+    restriction `_score_org` applies via `org_pair_recoverable`, for the same stated reason:
+    recoverability is defined by the route the graph is graded on.
+
+    Ten of the excluded pairs are emitted at confidence 1.0 by `resolution_ledger` -- the graph
+    proposes them BECAUSE a human already decided them, so scoring them against that decision
+    would be a guard whose two sides come from one source, which is what `load_truth` drops
+    auto-adopted entries to avoid.
+
+    `correct_fn` returns `tk = None` for a correct-but-undeclared match, keeping it out of
+    recall while it still counts toward precision -- `is_correct` is `True` either way.
+    """
+
     def correct_fn(e: dict):
         ck, slug = e.get("candidate_key"), e.get("product_slug")
         if ck in truth.equivalence_negatives:
             return False, None
         ok = truth.equivalence.get(ck) == slug
-        return ok, (ck if ok else None)
+        declared = ok and ck in truth.declared_candidates
+        return ok, (ck if declared else None)
 
-    metrics = _score(emitted, _equivalence_key, correct_fn, len(truth.equivalence))
-    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(truth.equivalence, truth.equivalence_tier)
+    recoverable = {ck: slug for ck, slug in truth.equivalence.items() if ck in truth.declared_candidates}
+    metrics = _score(emitted, _equivalence_key, correct_fn, len(recoverable))
+    metrics.n_truth_unrecoverable = len(truth.equivalence) - len(recoverable)
+    unrecoverable = set(truth.equivalence) - set(recoverable)
+    metrics.unrecoverable_by_kind = dict(
+        sorted(Counter(ck.partition(":")[0] for ck in unrecoverable).items())
+    )
+    metrics.n_truth_head, metrics.n_truth_tail = _tier_counts(recoverable, truth.equivalence_tier)
     return metrics
 
 
@@ -1913,7 +1989,7 @@ def print_table(metrics: dict[str, Metrics], live: bool = True) -> None:
         m = metrics.get(relation)
         if m and m.unrecoverable_by_kind:
             breakdown = ", ".join(f"{kind} {count}" for kind, count in m.unrecoverable_by_kind.items())
-            print(f"\n{relation} truth with no handle route ({m.n_truth_unrecoverable}): {breakdown}")
+            print(f"\n{relation} truth {UNRECOVERABLE_REASON[relation]} ({m.n_truth_unrecoverable}): {breakdown}")
 
 
 def main(argv: list[str] | None = None) -> int:

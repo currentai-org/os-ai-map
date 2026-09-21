@@ -186,7 +186,7 @@ def test_precision_recall_computed_over_declared_tier_only():
     """A `pool`-tier edge, even a perfectly correct-looking one, must not count toward
     precision or recall -- truth is built from declared (head/tail) artifacts only, so a pool
     edge is out of population by construction (F1)."""
-    truth = Truth(equivalence={"github:a/b": "p"})
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates={"github:a/b"})
     edges = {"equivalence": [
         {"candidate_key": "github:a/b", "candidate_tier": "pool", "product_slug": "p",
          "confidence": 1.0, "method": ["resolution_ledger"]},
@@ -200,7 +200,7 @@ def test_n_emitted_at_threshold_computed_over_pool_tier_only():
     """A `head`-tier edge, however many of them pass `emits`, must not inflate
     `n_emitted_at_threshold` -- that field answers "how many NEW things would launch",
     and a declared artifact has nothing to discover (F1)."""
-    truth = Truth(equivalence={"github:a/b": "p"})
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates={"github:a/b"})
     edges = {"equivalence": [
         {"candidate_key": "github:a/b", "candidate_tier": "head", "product_slug": "p",
          "confidence": 1.0, "method": ["resolution_ledger"]},
@@ -244,7 +244,8 @@ def test_membership_unaffected_by_tier_split_no_candidate_tier_column():
 
 
 def test_precision_recall_math():
-    truth = Truth(equivalence={"github:a2aproject/a2a": "agent2agent-protocol"})
+    truth = Truth(equivalence={"github:a2aproject/a2a": "agent2agent-protocol"},
+                  declared_candidates={"github:a2aproject/a2a"})
     edges = {
         "equivalence": [
             {"candidate_key": "github:a2aproject/a2a", "candidate_tier": "head",
@@ -262,7 +263,7 @@ def test_precision_recall_math():
 def test_duplicate_head_tail_edges_collapse_in_precision_and_recall():
     """M7: two rows for one logical edge (a head/tail `product_tier` duplicate) must count
     once in both precision's denominator and recall's numerator, not inflate recall past 1.0."""
-    truth = Truth(equivalence={"github:a/b": "p"})
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates={"github:a/b"})
     edges = {
         "equivalence": [
             {"candidate_key": "github:a/b", "candidate_tier": "head", "product_tier": "head",
@@ -289,7 +290,7 @@ def test_recall_cannot_exceed_one():
 
 
 def test_wrong_target_counts_as_both_false_positive_and_miss():
-    truth = Truth(equivalence={"github:a/b": "p"})
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates={"github:a/b"})
     edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "head",
                                "product_slug": "wrong", "confidence": 1.0, "method": ["resolution_ledger"]}]}
     m = replay(edges, truth)["equivalence"]
@@ -494,12 +495,44 @@ def test_main_prints_a_coverage_line_per_route(tmp_path, capsys):
     assert "homepage handles" in out
 
 
-def test_non_org_relations_carry_zero_n_truth_unrecoverable():
-    truth = Truth(equivalence={"github:a/b": "p"})
+def test_a_declared_equivalence_candidate_is_recoverable():
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates={"github:a/b"})
     edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "head",
                               "product_slug": "p", "confidence": 1.0, "method": ["m"]}]}
     m = replay(edges, truth)["equivalence"]
     assert m.n_truth_unrecoverable == 0
+    assert m.n_truth == 1
+
+
+def test_an_undeclared_equivalence_candidate_leaves_the_recall_denominator():
+    """A `pool` candidate is scored by no tier, so counting it in recall's denominator would
+    make the floor unreachable rather than unmet -- the defect that armed a 0.90 floor against
+    a 7/21 ceiling. It leaves `n_truth` and is reported as unrecoverable instead.
+    """
+    truth = Truth(equivalence={"github:a/b": "p"}, declared_candidates=set())
+    edges = {"equivalence": [{"candidate_key": "github:a/b", "candidate_tier": "pool",
+                              "product_slug": "p", "confidence": 1.0, "method": ["resolution_ledger"]}]}
+    m = replay(edges, truth)["equivalence"]
+    assert m.n_truth == 0
+    assert m.n_truth_unrecoverable == 1
+    assert m.unrecoverable_by_kind == {"github": 1}
+
+
+def test_membership_and_identity_carry_zero_n_truth_unrecoverable():
+    """Only `org` and `equivalence` restrict a recall denominator; the rest must report 0 so a
+    non-zero count in the table always names a restriction someone chose.
+    """
+    truth = Truth(
+        membership={(("github", "a/b"), "p"): True},
+        declared_candidates={"github:a/b"},
+    )
+    edges = {"membership": [{"artifact_kind": "github", "artifact_id": "a/b",
+                             "candidate_tier": "head", "product_slug": "p",
+                             "scoring_bearing": False, "confidence": 1.0, "method": ["m"]}]}
+    for relation, m in replay(edges, truth).items():
+        if relation in ("org", "equivalence"):
+            continue
+        assert m.n_truth_unrecoverable == 0, relation
 
 
 # ---------------------------------------------------------------------------
@@ -893,15 +926,46 @@ def _thirty_recoverable_github_pairs() -> Truth:
 
 
 def test_floor_status_insufficient_truth_below_min():
-    truth = Truth(equivalence={f"github:{i}/x": "p" for i in range(5)})
+    """`declared_candidates` is populated so this abstains on five ELIGIBLE truth items, which
+    is the case the name claims. Left empty, the restriction would zero the denominator and the
+    assertion would pass for a reason that has nothing to do with `MIN_TRUTH`.
+    """
+    truth = Truth(
+        equivalence={f"github:{i}/x": "p" for i in range(5)},
+        declared_candidates={f"github:{i}/x" for i in range(5)},
+    )
     edges = {"equivalence": [
         {"candidate_key": f"github:{i}/x", "candidate_tier": "head", "product_slug": "p",
          "confidence": 1.0, "method": ["resolution_ledger"]}
         for i in range(5)
     ]}
     metrics = replay(edges, truth)
+    assert metrics["equivalence"].n_truth == 5
     assert floor_status("equivalence", metrics).startswith("insufficient truth")
     assert floor_failures(metrics) == []
+
+
+def test_mixed_declared_and_pool_equivalence_truth_scores_each_correctly():
+    """One declared truth item and one pool item, both emitted correctly. Recall is measured
+    over the declared one alone; precision is unrestricted but sees only the declared edge,
+    because `_score_tiered` never scores a pool edge.
+    """
+    truth = Truth(
+        equivalence={"github:a/b": "p", "github:c/d": "q"},
+        declared_candidates={"github:a/b"},
+    )
+    edges = {"equivalence": [
+        {"candidate_key": "github:a/b", "candidate_tier": "head", "product_slug": "p",
+         "confidence": 1.0, "method": ["resolution_ledger"]},
+        {"candidate_key": "github:c/d", "candidate_tier": "pool", "product_slug": "q",
+         "confidence": 1.0, "method": ["resolution_ledger"]},
+    ]}
+    m = replay(edges, truth)["equivalence"]
+    assert m.n_truth == 1
+    assert m.recall == 1.0
+    assert m.precision == 1.0
+    assert m.n_truth_unrecoverable == 1
+    assert m.unrecoverable_by_kind == {"github": 1}
 
 
 def test_floor_status_no_floor_for_membership_scoring():
