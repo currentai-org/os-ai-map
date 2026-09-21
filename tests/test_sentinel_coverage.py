@@ -74,11 +74,13 @@ def _as_list(value: object) -> list[str]:
     return [str(item) for item in value]
 
 
-#: Characters in a branch filter that `fnmatch` does not read the way GitHub does. `+` is a
-#: quantifier there (`ma+in` matches `main`) and `!` negates, with order mattering across the
-#: list. Rather than reimplement GitHub's pattern language for a gate, a filter using either is
-#: treated as possibly reaching `main` -- see `_push_can_reach_main` for why that direction.
-_UNREADABLE_PATTERN = ("!", "+")
+#: Characters in a branch filter that `fnmatch` does not read the way GitHub does. `+` and `?`
+#: are quantifiers there, applying to the PRECEDING character -- `ma+in` and `ma?in` both match
+#: `main`, while `fnmatch` reads `?` as exactly one character of any kind and so matches neither.
+#: `!` negates, with order mattering across the list. Rather than reimplement GitHub's pattern
+#: language for a gate, a filter using any of them is treated as possibly reaching `main` -- see
+#: `_push_can_reach_main` for why that is the safe direction.
+_UNREADABLE_PATTERN = ("!", "+", "?")
 
 
 def _matches_main(patterns: list[str]) -> bool | None:
@@ -216,6 +218,7 @@ def test_the_scheduled_gates_are_all_covered():
         "on:\n  push:\n    branches: main",           # scalar branch
         "on:\n  push:\n    paths: ['src/**']",          # a path filter does not stop a branch push
         "on:\n  push:\n    branches: ['ma+in']",        # GitHub quantifier: unreadable, so assumed yes
+        "on:\n  push:\n    branches: ['ma?in']",        # `?` is zero-or-one there, one-char here
         "on:\n  push:\n    branches: ['**', '!main']",  # ordered negation: unreadable, so assumed yes
         "on:\n  push:\n    branches-ignore: ['dev+']",  # unreadable exclusion, so assumed yes
     ],
@@ -280,6 +283,7 @@ def test_an_unreadable_branch_filter_is_assumed_to_reach_main():
     workflow failing on main with nothing to say so.
     """
     assert _matches_main(["ma+in"]) is None
+    assert _matches_main(["ma?in"]) is None
     assert _matches_main(["**", "!main"]) is None
     assert _matches_main(["develop"]) is False
     assert _matches_main(["**"]) is True
@@ -308,3 +312,19 @@ def test_both_extensions_are_scanned_independently_of_this_repo(tmp_path, monkey
     monkeypatch.setattr(mod, "WORKFLOWS", folder)
     assert {p.name for p in mod._workflow_files()} == {"a.yml", "b.yaml"}
     assert set(mod.unattended_workflows()) == {"a", "b"}
+
+
+def test_the_reporter_fires_only_on_a_schedule_or_a_main_push():
+    """The reporter's condition is the other half of this file's rule, and nothing else pins it.
+
+    `workflow_dispatch` must stay out: somebody pressed the button, so the failure is already in
+    front of them, and the coverage gate does not require a dispatch-only workflow to be watched.
+    """
+    doc = yaml.safe_load(SENTINEL.read_text()) or {}
+    condition = " ".join(doc["jobs"]["report"]["if"].split())
+    assert "workflow_run.conclusion == 'failure'" in condition
+    assert "workflow_run.event == 'schedule'" in condition
+    assert "workflow_run.event == 'push'" in condition
+    assert "workflow_run.head_branch == 'main'" in condition
+    assert "pull_request" not in condition
+    assert "workflow_dispatch" not in condition
