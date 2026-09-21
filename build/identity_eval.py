@@ -1995,6 +1995,14 @@ def pool_resolution(edges: list[dict], truth: Truth) -> dict:
     Edges whose methods are all in `DECIDED_BY_A_PERSON` are excluded from the numerator and named
     separately: the graph proposes them because the ledger says so, and counting them would report
     a number that means the ledger agrees with itself.
+
+    The confidence reported is the MAX over a candidate's usable edges, which is the best the
+    graph did on that pair -- not necessarily the confidence of the edge that would emit if the
+    threshold moved. For a threshold argument the best case is the right reading, since a
+    threshold set below it reaches the pair; do not read it as "this is what would emit".
+
+    The unreached bucket is "no matching proposal" rather than "not proposed": a candidate the
+    graph proposed against the WRONG product falls here too, and that is not silence.
     """
     # The denominator is pool TRUTH, so the numerator has to be keyed on it too. Counting any
     # pool-tier edge that matches a ruling would let a declared candidate carrying a pool edge
@@ -2032,6 +2040,8 @@ def pool_resolution(edges: list[dict], truth: Truth) -> dict:
         "reached_independently": len(independent),
         "name_match_only": len(name_match_only),
         "ledger_only": len(ledger_only),
+        # "no matching proposal", not "not proposed": a candidate the graph proposed against the
+        # WRONG product lands here too, and it is not the same thing as silence.
         "unreached": len(pool_truth) - len(independent) - len(name_match_only) - len(ledger_only),
         "confidences": sorted(confidences, reverse=True),
     }
@@ -2049,7 +2059,7 @@ def print_pool_resolution(report: dict) -> None:
         f"{report['reached_independently']} of {report['pool_truth']} reached on evidence the "
         f"graph may act on, {report['name_match_only']} on name-match alone (which may never "
         f"emit), {report['ledger_only']} proposed only from the ledger, "
-        f"{report['unreached']} not proposed at all"
+        f"{report['unreached']} with no matching proposal"
     )
     if report["confidences"]:
         shown = ", ".join(f"{c:.2f}" for c in report["confidences"][:12])
