@@ -1,16 +1,53 @@
-# Turns a failed scheduled gate into something a human sees. workflow_run fires on the
+# Turns a failed unattended workflow into something a human sees. workflow_run fires on the
 # default branch after the named workflow completes, so this also catches a workflow that
 # failed before its own steps could run. One open issue per workflow; repeats comment.
+#
+# The list below has to be literal -- `workflow_run` cannot compute it -- so it is maintained by
+# hand and kept honest by tests/test_sentinel_coverage.py, which fails when a workflow runs
+# unattended (a schedule, or a push to main) and no entry here watches it. That test exists
+# because the list was forgotten: `regenerate` failed on main and opened nothing (#631), and
+# `adoption-reconciliation` shipped scheduled and unwatched, which would have failed silently
+# into an empty queue.
+#
+# Push-to-main workflows are watched as well as scheduled ones. A failure there has nobody
+# looking at a pull request either, which is the whole condition this job exists for.
 name: report-failure
 on:
   workflow_run:
-    workflows: [freshness, parity, artifacts, channel-authority, refetch, reverify, identity-eval, identity-digest, mirror-drift]
+    workflows:
+      - adoption-reconciliation
+      - artifacts
+      - channel-authority
+      - contradiction-sweep
+      - freshness
+      - identity-digest
+      - identity-eval
+      - mirror-drift
+      - parity
+      - refetch
+      - regenerate
+      - registry
+      - reverify
+      - validate
     types: [completed]
 permissions:
   issues: write
 jobs:
   report:
-    if: github.event.workflow_run.conclusion == 'failure'
+    # Unattended failures only. `workflow_run` fires for EVERY run of a watched workflow,
+    # including pull-request runs -- the default-branch rule governs where this listener lives,
+    # not which runs reach it. Without the event/branch test below, watching `validate` would
+    # open or comment a sentinel issue on every failed PR, which is how a notification channel
+    # earns itself muted. A PR failure is already in front of the person who caused it.
+    #
+    # `workflow_dispatch` is deliberately absent. Somebody pressed the button, so the failure is
+    # already in front of them, and the coverage gate does not require a dispatch-only workflow
+    # to be watched -- reporting one would be the reverse of the rule this job enforces.
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' &&
+      (github.event.workflow_run.event == 'schedule' ||
+       (github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == 'main'))
     runs-on: ubuntu-latest
     steps:
       - name: Open or comment on the sentinel issue
@@ -19,11 +56,12 @@ jobs:
           NAME: ${{ github.event.workflow_run.name }}
           URL: ${{ github.event.workflow_run.html_url }}
           WHEN: ${{ github.event.workflow_run.run_started_at }}
+          EVENT: ${{ github.event.workflow_run.event }}
         run: |
           TITLE="sentinel: $NAME failed"
           EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
           BODY=$(cat <<EOF
-          Scheduled run of \`$NAME\` failed at $WHEN.
+          Unattended run of \`$NAME\` (\`$EVENT\`) failed at $WHEN.
 
           Run: $URL
 
