@@ -168,10 +168,16 @@ scoring them against that decision is the same one-sided guard `load_truth` drop
 entries to avoid. Grading them would read high and mean nothing -- the failure mode this module
 already corrected once for `org` recall.
 
-What this does NOT measure is whether the graph can resolve a pool candidate on its own
-evidence. Pool pairs that are not ledger-derived (`model_family` / `product_alias`) are
-proposals sitting below the emit threshold, which is a real signal about identity automation and
-has no metric here. That is a gap in the eval, not in the graph.
+What recall does NOT measure is whether the graph can resolve a pool candidate on its own
+evidence. `pool_resolution` reports that, under the table and never graded: of the pool truth,
+how much the graph reaches by a method that is neither a human's ruling nor `name_match`, with
+the confidence it reached it at. Three buckets and an unreached count, summing to the pool truth,
+because a report that does not account for what nobody proposed reads as coverage.
+
+It is an observation rather than a floor on purpose. A floor needs a track record and this has
+none, and the number it produces is the input to a threshold decision rather than a verdict on
+one -- every pair the graph reaches today sits at one confidence, which is exactly the shape of
+evidence a threshold argument needs and exactly what a pass/fail would hide.
 
 ## Recall is an invariant; handle coverage is the coverage metric
 
@@ -1962,6 +1968,94 @@ def invariant_failures(metrics: dict[str, Metrics], live: bool = True) -> list[s
     return failures
 
 
+#: Methods that carry a human's decision rather than the graph's own inference. An edge whose
+#: methods are entirely these was proposed BECAUSE somebody already ruled, so scoring it against
+#: that ruling is a guard whose two sides come from one source.
+DECIDED_BY_A_PERSON = frozenset({"resolution_ledger", "declared"})
+
+#: Evidence the graph is forbidden to act on by itself. `name_match` is independent of the ruling
+#: but it is the signal this repo distrusts most -- `test_name_match_never_auto_emits` pins that
+#: it may not emit at any confidence -- so counting it as "the graph got there on its own" would
+#: report a capability that governance says may never be used. Counted, and counted separately.
+FORBIDDEN_ALONE = frozenset({"name_match"})
+
+
+def pool_resolution(edges: list[dict], truth: Truth) -> dict:
+    """How often the graph reaches a human's equivalence ruling on evidence that is not the ruling.
+
+    Equivalence recall is measured over DECLARED candidates, because a `pool` edge is scored by no
+    tier (see "Equivalence recall is measured over declared candidates"). That leaves the question
+    the relation exists to answer unmeasured: resolving an undeclared artifact to an existing
+    product is the whole job, and most equivalence truth is pool.
+
+    This reports it rather than grading it. For pool truth the graph reaches by at least one method
+    that is not a human's own ruling, it gives the count and the confidence distribution -- which
+    is what a threshold decision needs and what no floor can supply before there is a track record.
+
+    Edges whose methods are all in `DECIDED_BY_A_PERSON` are excluded from the numerator and named
+    separately: the graph proposes them because the ledger says so, and counting them would report
+    a number that means the ledger agrees with itself.
+    """
+    # The denominator is pool TRUTH, so the numerator has to be keyed on it too. Counting any
+    # pool-tier edge that matches a ruling would let a declared candidate carrying a pool edge
+    # into the numerator while the denominator excluded it, and the buckets would not sum.
+    pool_truth = [k for k in truth.equivalence if k not in truth.declared_candidates]
+    wanted = set(pool_truth)
+
+    by_key: dict[str, list[dict]] = {}
+    for edge in edges:
+        if edge.get("candidate_tier") != "pool":
+            continue
+        key = edge.get("candidate_key")
+        if key in wanted and truth.equivalence.get(key) == edge.get("product_slug"):
+            by_key.setdefault(key, []).append(edge)
+    independent, name_match_only, ledger_only, confidences = [], [], [], []
+    for key, found in by_key.items():
+        best, saw_name_match = None, False
+        for edge in found:
+            methods = set(edge.get("method") or ())
+            usable = methods - DECIDED_BY_A_PERSON - FORBIDDEN_ALONE
+            if methods & FORBIDDEN_ALONE:
+                saw_name_match = True
+            if usable:
+                confidence = edge.get("confidence")
+                best = confidence if best is None else max(best, confidence or 0.0)
+        if best is not None:
+            independent.append(key)
+            confidences.append(best)
+        elif saw_name_match:
+            name_match_only.append(key)
+        else:
+            ledger_only.append(key)
+    return {
+        "pool_truth": len(pool_truth),
+        "reached_independently": len(independent),
+        "name_match_only": len(name_match_only),
+        "ledger_only": len(ledger_only),
+        "unreached": len(pool_truth) - len(independent) - len(name_match_only) - len(ledger_only),
+        "confidences": sorted(confidences, reverse=True),
+    }
+
+
+def print_pool_resolution(report: dict) -> None:
+    """The observation under the table. Printed even when nothing is reached, because a zero is
+    the answer to the same question and a line that appears only when it is interesting is a line
+    nobody learns to look for.
+    """
+    if not report["pool_truth"]:
+        return
+    print(
+        f"\npool equivalence (not graded -- see the module docstring): "
+        f"{report['reached_independently']} of {report['pool_truth']} reached on evidence the "
+        f"graph may act on, {report['name_match_only']} on name-match alone (which may never "
+        f"emit), {report['ledger_only']} proposed only from the ledger, "
+        f"{report['unreached']} not proposed at all"
+    )
+    if report["confidences"]:
+        shown = ", ".join(f"{c:.2f}" for c in report["confidences"][:12])
+        print(f"  confidence of those reached, highest first: {shown}")
+
+
 def print_table(metrics: dict[str, Metrics], live: bool = True) -> None:
     """The per-relation table, then the `org` unrecoverable breakdown under it.
 
@@ -2125,6 +2219,7 @@ def main(argv: list[str] | None = None) -> int:
     truth = load_truth()
     metrics = replay(edges, truth)
     print_table(metrics, live=args.from_warehouse)
+    print_pool_resolution(pool_resolution(edges.get("equivalence") or [], truth))
 
     coverage = org_handle_coverage(truth)
     try:
