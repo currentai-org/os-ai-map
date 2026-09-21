@@ -121,6 +121,52 @@ def test_the_noassertion_flag_abstains_even_when_an_id_is_present():
     assert found == []
 
 
+def test_a_detail_naming_a_specific_license_file_abstains():
+    """GitHub classifies ONE repository-level file. A record that deliberately reads a different
+    one is not contradicted when the classifier reports the file it did read -- the case that
+    made this sweep's first run report a product whose own note already explained the difference.
+    """
+    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "code,via LICENSE-CODE"}]}}}
+    found = cc.license_findings(
+        [_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}
+    )
+    assert found == []
+
+
+def test_a_detail_that_qualifies_the_license_abstains():
+    """A bespoke license built from a standard one: the classifier reporting the base license is
+    expected, and the record's own detail says so.
+    """
+    score = {"openness": {"components": {"license": [
+        {"name": "Widget-Attribution-License", "detail": "Apache-2.0 text plus an appended condition"}]}}}
+    found = cc.license_findings(
+        [_row(license_spdx_id="Apache-2.0")], {"widget": _product()}, {"widget": score}
+    )
+    assert found == []
+
+
+@pytest.mark.parametrize("detail", ["", "OSI", "OSI, copyleft", "permissive non-OSI"])
+def test_a_plain_detail_stays_comparable(detail):
+    """The abstentions must not swallow the ordinary case, or the leg checks nothing."""
+    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": detail}]}}}
+    found = cc.license_findings(
+        [_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}
+    )
+    assert len(found) == 1, detail
+
+
+def test_a_code_scoped_part_is_compared_even_on_a_dataset():
+    """The product type is a proxy for 'does the repository license the product'. Where a part
+    says outright that it covers the code, it is a claim about the same artifact the SPDX id
+    describes, and excluding it by type would hide a real repository-license contradiction.
+    """
+    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "code"}]}}}
+    found = cc.license_findings(
+        [_row(license_spdx_id="GPL-3.0")], {"widget": _product(type="dataset")}, {"widget": score}
+    )
+    assert len(found) == 1
+
+
 def test_a_compound_recorded_license_abstains():
     """Two recorded parts and there is no single thing for one SPDX id to disagree with."""
     score = {"openness": {"components": {"license": [{"name": "MIT"}, {"name": "Apache-2.0"}]}}}
@@ -133,6 +179,49 @@ def test_a_product_with_no_recorded_license_abstains():
         [_row()], {"widget": _product()}, {"widget": {"openness": {"components": {}}}}
     )
     assert found == []
+
+
+def test_a_missing_archived_flag_is_not_a_finding():
+    """`warehouse.query` converts through pandas and a null boolean arrives as `nan`, for which
+    `bool(nan)` is True. Read naively, a product whose flag was never populated reports as
+    archived. A missing observation is not a contradiction.
+    """
+    assert cc.retirement_findings([_row(is_archived=float("nan"))], {"widget": _product()}) == []
+    assert cc.retirement_findings([_row(is_archived=None)], {"widget": _product()}) == []
+    assert len(cc.retirement_findings([_row(is_archived=True)], {"widget": _product()})) == 1
+
+
+# ---------------------------------------------------------------------------
+# settlement
+# ---------------------------------------------------------------------------
+
+
+def test_a_settled_observation_stops_being_raised():
+    settled = [{"leg": cc.RETIREMENT, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "archived", "note": "the models outlived the repository"}]
+    assert cc.sweep([_row(is_archived=True)], {"widget": _product()}, {}, settled) == []
+
+
+def test_a_settlement_with_no_reason_is_ignored():
+    """A ruling with no reason is indistinguishable from a finding somebody wanted to stop
+    seeing, and honouring it would make the ledger the place a real contradiction hides.
+    """
+    settled = [{"leg": cc.RETIREMENT, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "archived", "note": "  "}]
+    assert len(cc.sweep([_row(is_archived=True)], {"widget": _product()}, {}, settled)) == 1
+
+
+def test_a_settlement_does_not_cover_a_different_observation():
+    """Bound to what was observed, so it expires when the world says something different --
+    the difference between settling a question and silencing it.
+    """
+    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "OSI"}]}}}
+    settled = [{"leg": cc.LICENSE, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "CC-BY-4.0", "note": "docs license, code is MIT"}]
+    quiet = cc.sweep([_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}, settled)
+    assert quiet == []
+    moved = cc.sweep([_row(license_spdx_id="GPL-3.0")], {"widget": _product()}, {"widget": score}, settled)
+    assert len(moved) == 1
 
 
 # ---------------------------------------------------------------------------
@@ -195,7 +284,10 @@ def test_the_queue_names_what_to_do_about_each_leg(tmp_path):
 def test_an_empty_queue_says_so_rather_than_writing_a_bare_heading(tmp_path):
     out = tmp_path / "queue.md"
     cc.main(["--queue", str(out)], root=_corpus_root(tmp_path), rows=[_row()])
-    assert "Nothing" in out.read_text()
+    text = out.read_text()
+    assert "No contradiction within this sweep's coverage" in text
+    # It must not read as "everything was checked": the sweep covers two signals, not the corpus.
+    assert "not a statement that every record was checked" in text
 
 
 def _corpus_root(tmp_path):

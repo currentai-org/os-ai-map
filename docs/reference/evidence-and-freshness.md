@@ -19,10 +19,12 @@ residue of a failed refutation, not the objective. Everything in Part 1 still de
 where the two suggest different designs, this one decides.
 
 The distinction is not academic, because the two framings build different machinery. A check
-built to confirm has to establish sameness, and the only general way to establish sameness about
-a web page is to compare its bytes — which is why most re-fetches return "drift", why a page
-carrying a number that changes daily can never be stable, and why the cost of re-checking came to
-look like a reason to do less of it. A check built to refute asks a narrower question with a
+built to confirm has to establish sameness, and where a source exposes no structured field the
+only general way to do that is to compare its bytes — which is why most re-fetches return
+"drift", why a page carrying a number that changes daily can never be stable, and why the cost of
+re-checking came to look like a reason to do less of it. Machine re-verification already escapes
+this where it can, accepting a recorded fragment or an SPDX id in place of byte equality; Part 0
+is the general statement of why those are the right shape and byte comparison is the fallback. A check built to refute asks a narrower question with a
 cheaper answer: **does anything we already collect disagree with the record?**
 
 That question is cheap because the signal tables already carry the answers. A repository's
@@ -36,7 +38,7 @@ Keep the two apart, in reports and in the queue a person works through.
 
 | | What it says | What it is about | What to do |
 |---|---|---|---|
-| **Drift** | the source no longer reads byte-for-byte as it did | the fetch | usually nothing — re-record the reading |
+| **Drift** | the source no longer reads byte-for-byte as it did | the fetch | read what changed, *then* re-record — a changed source is evaluated before its baseline is replaced, and a light sweep never authorizes that replacement |
 | **Contradiction** | a collected signal disagrees with the record | the score | settle it: correct the record, or record why the signal is not it |
 
 A re-check that cannot tell the difference reports both as the same event, and then the real

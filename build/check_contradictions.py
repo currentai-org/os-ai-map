@@ -96,6 +96,13 @@ class Finding:
     artifact: str
     source_column: str
     as_of: str
+    #: The observed value a settlement is bound to -- `archived`, or the SPDX id seen. A ruling
+    #: covers this value and nothing else, so a different observation raises the finding again.
+    settles: str = ""
+
+    @property
+    def key(self) -> tuple[str, str, str, str]:
+        return (self.leg, self.product_slug, self.artifact, self.settles)
 
     def line(self) -> str:
         return (
@@ -108,11 +115,34 @@ def _text(value: object) -> str:
     return "" if value is None else str(value).strip()
 
 
+#: Spellings of true that reach here as text. Anything not in this set, and not a real boolean,
+#: is treated as MISSING rather than as false-because-falsy.
+_TRUE_TEXT = frozenset({"true", "t", "1", "yes", "y"})
+
+
 def _truthy(value: object) -> bool:
-    """A warehouse boolean that may arrive as a numpy bool, a string or None."""
+    """A warehouse boolean, where a missing value is false rather than whatever `bool()` says.
+
+    `warehouse.query` converts through pandas, and a null boolean column arrives as `nan` -- for
+    which `bool(nan)` is **True**. Read naively, a product whose archived flag was never
+    populated reports as archived and lands in the queue as a retirement finding with nothing
+    behind it. The producer permits a null flag, so this is reachable rather than theoretical.
+
+    A missing value is not a contradiction: it is the absence of an observation, and this sweep
+    only ever fires on something a signal actually said.
+    """
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
     if isinstance(value, str):
-        return value.strip().lower() in {"true", "t", "1", "yes"}
-    return bool(value)
+        return value.strip().lower() in _TRUE_TEXT
+    if isinstance(value, float) and value != value:  # nan, including pandas' null boolean
+        return False
+    try:
+        return bool(value)
+    except (TypeError, ValueError):  # pandas.NA raises rather than answering
+        return False
 
 
 #: `GPLv3` and `GPL-3.0` are one license spelled two ways. Recognised here rather than in the
@@ -151,15 +181,60 @@ def same_license(recorded: str, spdx: str) -> bool:
     return any(_spelling(part) == target for part in recorded.split("/") if part.strip())
 
 
-def recorded_license(score: Mapping) -> str | None:
-    """The single recorded openness license name, or `None` where there is not exactly one.
+#: A `detail` that only says where the license sits on the openness scale, rather than qualifying
+#: WHICH license the record means. Everything else -- a scope, a named license file, an appended
+#: condition, a carve-out -- changes what the name is a claim about, and a repository-level
+#: classifier cannot be compared against it.
+_PLAIN_DETAIL = re.compile(r"^(osi\b.*|permissive.*|copyleft.*)?$", re.IGNORECASE)
 
-    `None` is an abstention and not a finding: no recorded license at all, or a compound one, is
-    not something a single SPDX id can disagree with.
+#: A `detail` that binds the component to the repository's code. Such a component is comparable
+#: whatever the product type, because it is a claim about the same artifact the SPDX id describes.
+_CODE_SCOPED = re.compile(r"^(code|repository|repo)\b", re.IGNORECASE)
+
+#: A `detail` naming the specific license file the record was read from. GitHub classifies ONE
+#: repository-level file, so a record that deliberately points at a different one is not being
+#: contradicted when the classifier reports the file it did read.
+_NAMES_A_FILE = re.compile(r"\bvia\b|license-", re.IGNORECASE)
+
+
+def comparable_license(score: Mapping, product_type: str) -> str | None:
+    """The recorded license name a repository's SPDX id may be compared against, or `None`.
+
+    `None` is an abstention, and this function is mostly abstentions on purpose. The corpus does
+    not record a license as a bare name: `detail` carries the scope and the qualification, and
+    discarding it is what makes an explained difference look like a contradiction. Two findings
+    in the first run of this sweep were exactly that -- one product recording its code license
+    from `LICENSE-CODE` while GitHub classified the documentation license at the repository root,
+    another recording a bespoke license whose own detail says GitHub still reports the base
+    license it was built from. Both records were right, both were already explained in the file,
+    and both would have returned every week forever.
+
+    So a part is comparable only when it says nothing that changes what its name claims:
+
+      * exactly one part, since a single id cannot disagree with a compound;
+      * a `detail` that grades the license (`OSI`, `permissive`, `copyleft`) or is empty, rather
+        than one that scopes it (`core`, `API-only`, `SaaS`), names the file it came from, or
+        describes a modification of a standard license;
+      * a product whose repository licenses the product itself, which is `software` -- or any
+        product whose part is explicitly bound to the code, since that part is a claim about the
+        artifact the SPDX id describes however the product is classified.
     """
     components = (score.get("openness") or {}).get("components") or {}
-    names = [part.get("name") for part in license_parts_of(components.get("license")) if part.get("name")]
-    return names[0] if len(names) == 1 else None
+    parts = license_parts_of(components.get("license"))
+    if len(parts) != 1:
+        return None
+    name = (parts[0].get("name") or "").strip()
+    if not name:
+        return None
+    detail = (parts[0].get("detail") or "").strip()
+    if _NAMES_A_FILE.search(detail):
+        return None
+    code_scoped = bool(_CODE_SCOPED.match(detail))
+    if not code_scoped and not _PLAIN_DETAIL.match(detail):
+        return None
+    if product_type != COMPARABLE_TYPE and not code_scoped:
+        return None
+    return name
 
 
 def retirement_findings(rows: Iterable[Mapping], products: Mapping[str, Mapping]) -> list[Finding]:
@@ -182,6 +257,7 @@ def retirement_findings(rows: Iterable[Mapping], products: Mapping[str, Mapping]
                 artifact=_text(row.get("repo")),
                 source_column="is_archived",
                 as_of=_text(row.get("fetched_at"))[:10],
+                settles="archived",
             )
         )
     return sorted(out, key=lambda f: (f.product_slug, f.artifact))
@@ -195,7 +271,7 @@ def license_findings(
     for row in rows:
         slug = _text(row.get("product_slug"))
         product = products.get(slug)
-        if product is None or product.get("type") != COMPARABLE_TYPE:
+        if product is None:
             continue
         spdx = _text(row.get("license_spdx_id"))
         if spdx.lower() in ABSTAIN_SPDX or _truthy(row.get("license_is_noassertion")):
@@ -203,7 +279,7 @@ def license_findings(
         score = scores.get(slug)
         if score is None:
             continue
-        recorded = recorded_license(score)
+        recorded = comparable_license(score, _text(product.get("type")))
         if recorded is None or same_license(recorded, spdx):
             continue
         out.append(
@@ -215,17 +291,43 @@ def license_findings(
                 artifact=_text(row.get("repo")),
                 source_column="license_spdx_id",
                 as_of=_text(row.get("fetched_at"))[:10],
+                settles=spdx,
             )
         )
     return sorted(out, key=lambda f: (f.product_slug, f.artifact))
 
 
+def settled_keys(settled: Iterable[Mapping]) -> set[tuple[str, str, str, str]]:
+    """The observations a person has ruled on, keyed the way a `Finding` keys itself.
+
+    An entry with no `note` is ignored rather than honoured. A settlement is a ruling, and a
+    ruling with no reason is indistinguishable from a finding somebody wanted to stop seeing;
+    honouring it would make this file the place a real contradiction goes to hide.
+    """
+    out = set()
+    for entry in settled or ():
+        if not str(entry.get("note") or "").strip():
+            continue
+        out.add((
+            str(entry.get("leg") or ""),
+            str(entry.get("product_slug") or ""),
+            str(entry.get("artifact") or ""),
+            str(entry.get("settles") or ""),
+        ))
+    return out
+
+
 def sweep(
-    rows: Iterable[Mapping], products: Mapping[str, Mapping], scores: Mapping[str, Mapping]
+    rows: Iterable[Mapping],
+    products: Mapping[str, Mapping],
+    scores: Mapping[str, Mapping],
+    settled: Iterable[Mapping] = (),
 ) -> list[Finding]:
-    """Every leg, over one read of the state table."""
+    """Every leg, over one read of the state table, minus what a person has already ruled on."""
     rows = list(rows)
-    return retirement_findings(rows, products) + license_findings(rows, products, scores)
+    found = retirement_findings(rows, products) + license_findings(rows, products, scores)
+    ruled = settled_keys(settled)
+    return [f for f in found if f.key not in ruled]
 
 
 def _load(directory: Path) -> dict[str, dict]:
@@ -235,10 +337,12 @@ def _load(directory: Path) -> dict[str, dict]:
     }
 
 
-def corpus(root: Path | None = None) -> tuple[dict[str, dict], dict[str, dict]]:
-    """`(products, scores)` keyed by slug."""
+def corpus(root: Path | None = None) -> tuple[dict[str, dict], dict[str, dict], list[dict]]:
+    """`(products, scores, settled)`."""
     base = root or ROOT
-    return _load(base / "sources" / "products"), _load(base / "sources" / "scores")
+    ledger = base / "sources" / "contradictions_settled.yaml"
+    settled = (yaml.safe_load(ledger.read_text()) or {}).get("settled") or [] if ledger.exists() else []
+    return _load(base / "sources" / "products"), _load(base / "sources" / "scores"), settled
 
 
 def queue_markdown(findings: Sequence[Finding]) -> str:
@@ -248,13 +352,21 @@ def queue_markdown(findings: Sequence[Finding]) -> str:
     re-running the sweep or opening the warehouse.
     """
     if not findings:
-        return "# Contradiction queue\n\nNothing the collected signals contradict.\n"
+        return (
+            "# Contradiction queue\n\n"
+            "No contradiction within this sweep's coverage: GitHub archival, and license ids for "
+            "records that do not qualify what they name. Other collected signals -- Hub gating, "
+            "weights availability, a disabled or vanished artifact -- are not examined here, so "
+            "this is not a statement that every record was checked.\n"
+        )
     lines = ["# Contradiction queue", ""]
     for leg, heading, action in (
         (RETIREMENT, "Archived repository, no recorded end of life",
-         "Record `end_of_life` on the product, or say why the product outlived the repository."),
+         "Record `end_of_life` on the product, or settle it in `sources/contradictions_settled.yaml` "
+         "with the reason the product outlived its repository."),
         (LICENSE, "Repository license disagrees with the record",
-         "Correct the recorded license, or record why the repository's own SPDX id is not it."),
+         "Correct the recorded license, or settle it in `sources/contradictions_settled.yaml` "
+         "with the reason the repository's own SPDX id is not the product's license."),
     ):
         rows = [f for f in findings if f.leg == leg]
         if not rows:
@@ -287,8 +399,8 @@ def main(argv: list[str] | None = None, root: Path | None = None, rows: Iterable
         from build.warehouse import query
 
         rows = query(STATE_QUERY)
-    products, scores = corpus(root)
-    findings = sweep(rows, products, scores)
+    products, scores, settled = corpus(root)
+    findings = sweep(rows, products, scores, settled)
 
     if args.json:
         print(json.dumps([dataclasses.asdict(f) for f in findings], indent=2))
