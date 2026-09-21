@@ -827,6 +827,54 @@ def test_set_source_does_not_match_a_url_that_is_a_prefix_of_another():
     assert entries[1]["accessed"] == "2026-09-09"
 
 
+_FIELD_AFTER_SOURCES = """product: widget
+adoption:
+  level: 4
+  sources:
+  - url: https://a/one
+    accessed: '2026-08-01'
+  - url: https://a/two
+    accessed: '2026-08-02'
+  banded_quantity: 12345
+  last_verified: '2026-08-02'
+"""
+
+
+def test_the_last_source_entry_stops_at_the_next_field_not_at_the_end_of_the_axis():
+    """`sources:` is the last field of every OPENNESS axis, and of nothing else. Two adoption
+    axes carry a field after it (`dynamo`'s `banded_quantity`, `librechat`'s `last_verified`) and
+    twenty-two capability axes carry `comparison`.
+
+    Bounded by the end of the axis instead, the final entry's span swallows those fields and
+    rewriting it drops them. The reparse guard in `set_source` catches that and raises, so it was
+    a crash rather than corruption — and it only stayed hidden because `reverify` defaults to
+    `--axes openness`, the one axis where the assumption holds (#529).
+    """
+    from build.components import set_source
+
+    out = set_source(_FIELD_AFTER_SOURCES, "adoption", "https://a/two",
+                     {"accessed": "2026-09-21"}, index=1)
+    axis = yaml.safe_load(out)["adoption"]
+    assert axis["sources"][1]["accessed"] == "2026-09-21"
+    assert axis["sources"][0]["accessed"] == "2026-08-01", "the first entry must not move"
+    assert axis["banded_quantity"] == 12345, "the field after sources was swallowed"
+    assert axis["last_verified"] == "2026-08-02", "the field after sources was swallowed"
+
+
+def test_a_field_after_sources_survives_editing_the_first_entry_too():
+    """The bound matters for the LAST entry, so the first is the control: if this ever fails the
+    span logic has broken somewhere other than where #529 was.
+    """
+    from build.components import set_source
+
+    out = set_source(_FIELD_AFTER_SOURCES, "adoption", "https://a/one",
+                     {"accessed": "2026-09-21"}, index=0)
+    axis = yaml.safe_load(out)["adoption"]
+    assert axis["sources"][0]["accessed"] == "2026-09-21"
+    assert axis["banded_quantity"] == 12345
+    assert axis["last_verified"] == "2026-08-02"
+
+
 COMPARISON_NOTE = """product: widget
 capability:
   level: 3

@@ -55,9 +55,16 @@ def _score_with_sources(tmp_path, sources, dims=("license", "source"), recipe=No
     # Structured shape (`{value: ...}`), matching the real corpus — see
     # sources/scores/accelerate.yaml — so `build.check_rubric.components_of` can read it.
     data["openness"]["components"] = {d: {"value": "x"} for d in dims}
-    # `sources:` is the last field of an axis block throughout the corpus (see
-    # sources/scores/accelerate.yaml); drop and re-add it after `components` so this
-    # fixture matches that convention instead of leaving `sources` ahead of `components`.
+    # `sources:` is the last field of an OPENNESS axis throughout the corpus, which is what
+    # this fixture exercises; drop and re-add it after `components` so the fixture matches that
+    # rather than leaving `sources` ahead of `components`.
+    #
+    # It is not true of every axis, and the earlier version of this comment said it was. Two
+    # adoption axes carry a field after `sources` (`dynamo`'s `banded_quantity`, `librechat`'s
+    # `last_verified`) and twenty-two capability axes carry `comparison` there. Anything relying
+    # on "sources is always last" would be wrong for those; `build.components._source_span`
+    # bounds the final entry by the next sibling key at the axis indent rather than by the end of
+    # the block, so they are handled (#529).
     data["openness"].pop("sources", None)
     data["openness"]["sources"] = sources
     path.write_text(yaml.safe_dump(data, sort_keys=False, width=100))
