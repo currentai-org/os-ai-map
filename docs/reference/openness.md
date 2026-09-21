@@ -299,6 +299,14 @@ Shapes that fail the enumeration test rather than the availability one, and so s
 than named, a two-stage mixture with only the first stage evidenced, and data-preparation
 documentation naming what the model consumes rather than what it was trained on.
 
+**A corpus that IS one public archive does not qualify.** Naming ERA5, or HLS V2, is naming the
+input rather than itemizing a mixture, and there is no disclosure decision behind it: a reader
+learns what the model consumed, which the ladder's other values already record. The value marks
+a release that chose to list the parts of an assembled mixture, so it needs parts to list.
+`pangu-weather` and `prithvi-eo` rest on one archive each, `aifs` and `granite-geospatial` on
+two, and all four are `documented-not-released`. `clay` is the shape that qualifies: six imagery
+sources named one by one with coverage and ground resolution, and the assembled sample withheld.
+
 ### `self-host` and `core-gated` are one question
 
 The software ladder asks whether functionality is withheld from the published source for a

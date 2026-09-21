@@ -3,23 +3,48 @@ openness:
   score: 4
   class: open_weights
   components:
-    weights: {value: open, detail: Apache-2.0 checkpoint}
-    data: {value: documented-not-released, detail: source imagery and metadata schema documented; training sample not redistributed}
-    code: {value: open, detail: 'trainer, data module, configs, and model implementation released'}
+    weights:
+      value: open
+      detail: Apache-2.0 checkpoint
+    data:
+      value: components-listed
+      detail: Landsat 8/9, Sentinel-2 L2A, Sentinel-1 RTC, NAIP, LINZ and MODIS named one by one with bands
+        and resolution; the 33.8TB assembled sample is not redistributed
+    code:
+      value: open
+      detail: trainer, data module, configs, and model implementation released
     license:
-    - {name: Apache-2.0, detail: OSI}
-  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 checkpoint);data:documented-not-released(source imagery and metadata schema documented; training sample not redistributed);code:open(trainer, data module, configs, and model implementation released)
+    - name: Apache-2.0
+      detail: OSI
+  raw: license:Apache-2.0(OSI);weights:open(Apache-2.0 checkpoint);data:components-listed(Landsat 8/9, Sentinel-2
+    L2A, Sentinel-1 RTC, NAIP, LINZ and MODIS named one by one with bands and resolution; the 33.8TB assembled
+    sample is not redistributed);code:open(trainer, data module, configs, and model implementation released)
   confidence: high
-  note: The full training machinery - trainer, data module and configs - is public, and the source imagery
-    is documented but not redistributed, which keeps Clay at open weights rather than fully open.
+  note: The full training machinery - trainer, data module and configs - is public, and the training-data
+    page names each imagery source in turn rather than describing the corpus in prose. The assembled
+    33.8TB sample is not redistributed, which keeps Clay at open weights rather than fully open.
   last_verified: '2026-09-10'
   sources:
   - url: https://raw.githubusercontent.com/Clay-foundation/model/main/README.md
-    shows: States that code and trained weights use Apache, and documents trainer.py, ClayDataModule, and configuration-driven training.
+    shows: States that code and trained weights use Apache, and documents trainer.py, ClayDataModule, and
+      configuration-driven training.
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 1cbf3557d249a2ce92b07b3b9cafafc0c3f7195be74a313da034e62d5d42bb0e
-    establishes: [weights, data, code, license]
+    establishes:
+    - weights
+    - code
+    - license
+  - url: https://clay-foundation.github.io/model/release-notes/data_sampling.html
+    shows: The training-data page names each imagery source in turn with its coverage and ground resolution
+      - Landsat 8/9 at 30m, Sentinel-2 L2A at 10m, Sentinel-1 RTC at 10m, NAIP under 1m, LINZ under 0.5m
+      and MODIS at 500m - and gives the assembled scale as 33.8TB across about 70 million chips, with the
+      sampling index and stacchip processing code published but no download for the assembled corpus.
+    accessed: '2026-09-21'
+    http_status: 200
+    content_sha256: e2d44fcbe7c9be824021becbfbc34d080494fff2e77de6845cac02cfcf1b3df9
+    establishes:
+    - data
 adoption:
   level: 1
   reach: <10K
