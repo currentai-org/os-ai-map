@@ -28,6 +28,53 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   on any other qualification, on a compound with no single code-scoped part, and on a product with
   more than one repository row, and reports those abstentions grouped by rule so a quiet run can
   show it looked ([#640](https://github.com/currentai-org/os-ai-map/issues/640)).
+- Four published categories from the two roster splits. `ml_orchestration` (29 products) took `ray`
+  and the pipeline and scheduling tools out of the frameworks roster
+  ([#429](https://github.com/currentai-org/os-ai-map/issues/429),
+  [#596](https://github.com/currentai-org/os-ai-map/pull/596)). `agent_tools_protocols` then came
+  apart into four rather than the three the issue proposed — `document_conversion` (20),
+  `search_retrieval` (21), `agent_protocols` (20) and the remainder renamed
+  `agent_tools_connectors` (21) — because the products separated that way once the peer sets were
+  built ([#430](https://github.com/currentai-org/os-ai-map/issues/430),
+  [#607](https://github.com/currentai-org/os-ai-map/pull/607),
+  [#610](https://github.com/currentai-org/os-ai-map/pull/610),
+  [#614](https://github.com/currentai-org/os-ai-map/pull/614),
+  [#616](https://github.com/currentai-org/os-ai-map/pull/616),
+  [#618](https://github.com/currentai-org/os-ai-map/pull/618)). The warehouse's scoring chain has
+  not been rebuilt against the new taxonomy and `check_parity` reports the lag
+  ([#647](https://github.com/currentai-org/os-ai-map/issues/647)).
+- ADR-005, the inclusion principle for closed and platform products: they are on the map to mark the
+  frontier, not to be catalogued, with a score of 4 or higher as an initial screen. It is guidance a
+  curator applies rather than a predicate a build evaluates, and nothing in `build/` or `tests/`
+  fails because a product sits below the line. The tail was surveyed against it — 81 above, 61
+  below, 3 unmeasured of 145 ([#628](https://github.com/currentai-org/os-ai-map/pull/628)).
+- A contradiction sweep, `build/check_contradictions.py`, and the weekly `contradiction-sweep`
+  workflow. It asks whether anything already collected disagrees with a record, rather than whether
+  a source still reads the way it did, so it is a warehouse read and fetches nothing. One leg today:
+  a repository marked archived under a product that records no `end_of_life`. It raises and does not
+  decide — `main` exits 0 with findings present — and `sources/contradictions_settled.yaml` records a
+  ruling that an observation is not a defect, bound to the observed value so it expires when the
+  observation changes ([#641](https://github.com/currentai-org/os-ai-map/pull/641)).
+- Part 0 of `docs/reference/evidence-and-freshness.md`: a check exists to **refute** a score, and
+  confirmation is what is left when refutation fails. It separates drift, which is about a fetch,
+  from a contradiction, which is about a score, and separates the light corpus-wide pass from the
+  heavy per-category refresh — only the second can confirm an axis
+  ([#641](https://github.com/currentai-org/os-ai-map/pull/641)).
+- A weekly `adoption-reconciliation` workflow, and adoption's `last_verified` now derives from the
+  observation behind the scheduled run that re-measured it rather than from a person. 460 adoption
+  axes gained a `derived_from` block naming the snapshot, the source run, the route and the measured
+  level; a disagreement leaves the date where it was and raises the product on a tier-change queue
+  instead. Only a SCHEDULED, successful materialization no older than two weekly cycles may date an
+  axis ([#637](https://github.com/currentai-org/os-ai-map/pull/637)).
+- `registry.product_score_notes`, publishing each axis's note to the warehouse — 2,289 rows, verified
+  byte-identical to the notebook payload
+  ([#623](https://github.com/currentai-org/os-ai-map/pull/623)).
+- `components-listed` on the pretraining-data ladder: every component named and each resolving to a
+  public source, while the mixture or sampling is withheld. Applied to the seven records whose cited
+  evidence already states the discriminator
+  ([#591](https://github.com/currentai-org/os-ai-map/pull/591)).
+- `yylo-benchmark` to `evaluation_code`
+  ([#582](https://github.com/currentai-org/os-ai-map/pull/582)).
 - `yylo` (`yylo-dev/yylo`) to `orchestration_agents`, with the JUNO AI organization
   ([#561](https://github.com/currentai-org/os-ai-map/pull/561)).
 - `not_primary_channel`, a per-artifact declaration on a product's artifact entries: the presence of
@@ -87,6 +134,35 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   product missing from a category the warehouse does publish is still drift. The workflow now
   checks out full history, without which every lag reads as undatable and the bound never bites
   ([#647](https://github.com/currentai-org/os-ai-map/issues/647)).
+- Equivalence recall in the identity eval is measured over candidates the corpus declares. A `pool`
+  candidate is scored by no tier, so counting it in the denominator made the relation's recall floor
+  unreachable rather than unmet — it armed for the first time when the ledger crossed `MIN_TRUTH`
+  and failed at a value it had held all along. Recall over declared candidates now reads 1.000. What
+  the relation exists to do — resolve an undeclared artifact to an existing product — is reported
+  separately and never graded ([#638](https://github.com/currentai-org/os-ai-map/pull/638),
+  [#646](https://github.com/currentai-org/os-ai-map/pull/646)).
+- `docs/reference/` and `docs/architecture/` read as canonical reference rather than as a changelog.
+  111 issue references were removed along with the passages narrating why a rule changed; what a
+  document states is what is true now, and the history is git's
+  ([#629](https://github.com/currentai-org/os-ai-map/pull/629)).
+- A route abstains where its coverage is short rather than banding on a partial measurement
+  ([#588](https://github.com/currentai-org/os-ai-map/pull/588)).
+- An acceptable-use policy is conduct rather than a use bound on the model ladder, which settles the
+  two ladders against each other ([#589](https://github.com/currentai-org/os-ai-map/pull/589)).
+- `compilers` capability bands on surface and dependence rather than on pipeline depth. Separating
+  CUTLASS from Composable Kernel would have scored CUDA's install base against ROCm's
+  ([#592](https://github.com/currentai-org/os-ai-map/pull/592)).
+- Adoption-only grading is documented as the intended behaviour rather than as a fallback
+  ([#593](https://github.com/currentai-org/os-ai-map/pull/593)).
+- The third-of-a-category rung rule withdrawn from `docs/reference/capability.md`
+  ([#611](https://github.com/currentai-org/os-ai-map/pull/611)).
+- `laminar` adoption 3 to 5, banded on its own measured downloads
+  ([#572](https://github.com/currentai-org/os-ai-map/pull/572)); `mcp-inspector` adoption to 4 on the
+  same basis ([#581](https://github.com/currentai-org/os-ai-map/pull/581)); `opencode` relabelled to
+  `usage_volume`, with Cohere's SDK trap named
+  ([#570](https://github.com/currentai-org/os-ai-map/pull/570)).
+- The suggest-a-product form offers all 24 categories, re-derived rather than hardcoded
+  ([#622](https://github.com/currentai-org/os-ai-map/pull/622)).
 - The published prose is written for the reader rather than the score auditor. `docs/reference/product-copy.md`
   is now the guide for every hand-written string on the map, with eleven goldens and a 600-character note
   guard; every score note, source line and footnote in the corpus that used the rubric's own words, quoted a
@@ -161,6 +237,27 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Fixed
 
+- The Details payload crossed marimo's 8&nbsp;MB per-cell cap and is now delivered across four
+  carrier cells; the canary that asserted it was over the cap was asking the wrong question once the
+  prose rewrite brought it back under, and the regenerating workflow now runs the payload tests it
+  had never run ([#615](https://github.com/currentai-org/os-ai-map/pull/615),
+  [#623](https://github.com/currentai-org/os-ai-map/pull/623)).
+- The failure sentinel watches every workflow that runs unattended on `main`. It watched nine and
+  four ran without it, including the weekly adoption reconciliation, whose entire output is a queue
+  somebody reads — a silent failure there looks exactly like a week with nothing to report. The list
+  must be literal, so a test now holds it answerable to the workflows
+  ([#631](https://github.com/currentai-org/os-ai-map/issues/631),
+  [#642](https://github.com/currentai-org/os-ai-map/pull/642)).
+- `build/prose_edit.py` warns when a note says what the **record** used to say rather than what the
+  product used to be. It warns and does not refuse: the distinction cannot be drawn by pattern, since
+  the phrase in the one real instance is also an ordinary verb phrase
+  ([#632](https://github.com/currentai-org/os-ai-map/issues/632),
+  [#643](https://github.com/currentai-org/os-ai-map/pull/643)).
+- The `PLATFORM MIRROR` banner is gated against the manifests, so a file claiming platform ownership
+  and a manifest claiming repo ownership can no longer disagree silently
+  ([#626](https://github.com/currentai-org/os-ai-map/pull/626)).
+- A record disputing GitHub's licence classifier must cite the licence text it read
+  ([#613](https://github.com/currentai-org/os-ai-map/pull/613)).
 - Both Jina records scoped to the text line on every axis. `jina-embeddings` declared v4 and v5-omni
   in its scope while its artifacts, license compound and download sum excluded them; `jina-reranker`
   had the mirror-image defect and counted the multimodal `m0`. Neither score moved
