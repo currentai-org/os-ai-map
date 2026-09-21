@@ -1,10 +1,33 @@
-# Turns a failed scheduled gate into something a human sees. workflow_run fires on the
+# Turns a failed unattended workflow into something a human sees. workflow_run fires on the
 # default branch after the named workflow completes, so this also catches a workflow that
 # failed before its own steps could run. One open issue per workflow; repeats comment.
+#
+# The list below has to be literal -- `workflow_run` cannot compute it -- so it is maintained by
+# hand and kept honest by tests/test_sentinel_coverage.py, which fails when a workflow runs
+# unattended (a schedule, or a push to main) and no entry here watches it. That test exists
+# because the list was forgotten: `regenerate` failed on main and opened nothing (#631), and
+# `adoption-reconciliation` shipped scheduled and unwatched, which would have failed silently
+# into an empty queue.
+#
+# Push-to-main workflows are watched as well as scheduled ones. A failure there has nobody
+# looking at a pull request either, which is the whole condition this job exists for.
 name: report-failure
 on:
   workflow_run:
-    workflows: [freshness, parity, artifacts, channel-authority, refetch, reverify, identity-eval, identity-digest, mirror-drift]
+    workflows:
+      - adoption-reconciliation
+      - artifacts
+      - channel-authority
+      - freshness
+      - identity-digest
+      - identity-eval
+      - mirror-drift
+      - parity
+      - refetch
+      - regenerate
+      - registry
+      - reverify
+      - validate
     types: [completed]
 permissions:
   issues: write
