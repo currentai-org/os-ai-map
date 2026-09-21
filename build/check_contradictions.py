@@ -157,7 +157,11 @@ class Finding:
 
     @property
     def key(self) -> tuple[str, str, str, str]:
-        return (self.leg, self.product_slug, self.artifact, self.settles)
+        # `settles` is case-folded because the license leg's own comparison is: it treats an
+        # observed `MIT` and `mit` as the same observation, so a settlement bound to one has to
+        # cover the other. Without this, a spelling change in what GitHub returns reopens a
+        # question a person already answered. Harmless for `archived`, which has one spelling.
+        return (self.leg, self.product_slug, self.artifact, self.settles.strip().lower())
 
     def line(self) -> str:
         return (
@@ -296,6 +300,12 @@ def license_findings(
 
     out: list[Finding] = []
     for slug, product_rows in sorted(seen.items()):
+        if not slug:
+            # Rows carrying no product slug all group under the empty key, so without this they
+            # would collapse into a single "more than one repository row" and report one
+            # abstention for what is really N malformed rows.
+            abstained["the row carries no product slug"] += len(product_rows)
+            continue
         if len(product_rows) > 1:
             abstained["the product has more than one repository row"] += 1
             continue
@@ -382,7 +392,7 @@ def settled_keys(settled: Iterable[Mapping]) -> set[tuple[str, str, str, str]]:
             str(entry.get("leg") or ""),
             str(entry.get("product_slug") or ""),
             str(entry.get("artifact") or ""),
-            str(entry.get("settles") or ""),
+            str(entry.get("settles") or "").strip().lower(),
         ))
     return out
 

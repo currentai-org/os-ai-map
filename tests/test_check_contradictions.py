@@ -374,3 +374,22 @@ def test_only_the_scope_prefix_is_stripped_not_the_whole_alias_table():
         {"widget": _product()},
         scores={"widget": _licensed(_part("custom weights license", "code"))},
     ) == []
+
+
+def test_a_settlement_covers_the_same_license_spelled_differently():
+    """The comparison folds case, so the settlement binding has to as well. Otherwise a change
+    in how GitHub spells an spdx id reopens a question a person already answered, while the
+    comparison that raised it treats the two spellings as identical."""
+    settled = [{"leg": cc.LICENSE, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "AGPL-3.0", "note": "the SDK was relicensed, the core was not"}]
+    scores = {"widget": _licensed(_part("MIT", "OSI"))}
+    assert _sweep([_row(license_spdx_id="agpl-3.0")], {"widget": _product()}, settled, scores) == []
+
+
+def test_rows_with_no_product_slug_are_counted_individually():
+    """They all group under the empty key, so without their own branch N malformed rows report
+    as one product with more than one repository row."""
+    rows = [_row(product_slug=None), _row(product_slug=""), _row(product_slug="   ")]
+    findings, abstained = cc.sweep(rows, {}, {})
+    assert findings == []
+    assert abstained["the row carries no product slug"] == 3
