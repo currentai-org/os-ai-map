@@ -348,6 +348,7 @@ def test_a_missing_row_fails(monkeypatch, capsys):
 def test_a_category_the_warehouse_has_not_computed_is_lag_not_drift(monkeypatch, capsys):
     """The #430 split: five new categories, 113 products, no warehouse rows for any of them."""
     monkeypatch.setattr(parity, "category_changed_days_ago", lambda slug, kind: 3)
+    monkeypatch.setattr(parity, "history_is_shallow", lambda: False)
     computed, deferred = local_scores("embeddings_retrieval")
     assert computed or deferred, "pick a category with a resolvable ladder"
     assert run(monkeypatch, {}, "embeddings_retrieval") == 0
@@ -362,6 +363,7 @@ def test_a_lag_past_the_window_fails(monkeypatch, capsys):
     """The window buys a maintainer time to run the recompute. It does not let the published
     map serve a taxonomy the repo no longer has for a month."""
     monkeypatch.setattr(parity, "category_changed_days_ago", lambda slug, kind: 30)
+    monkeypatch.setattr(parity, "history_is_shallow", lambda: False)
     assert run(monkeypatch, {}, "embeddings_retrieval") == 1
     out = capsys.readouterr().out
     assert "unpublished for more than 14 days" in out
@@ -372,6 +374,7 @@ def test_rows_under_a_category_the_repo_deleted_are_lag(monkeypatch, capsys):
     """The other half of the split: 36 rows still filed under `agent_tools_protocols`, a
     category with no file in `sources/categories/` any more."""
     monkeypatch.setattr(parity, "category_changed_days_ago", lambda slug, kind: 2)
+    monkeypatch.setattr(parity, "history_is_shallow", lambda: False)
     gone = "agent_tools_protocols"
     assert not (parity.ROOT / "sources" / "categories" / f"{gone}.yaml").exists()
     published = {
@@ -384,12 +387,38 @@ def test_rows_under_a_category_the_repo_deleted_are_lag(monkeypatch, capsys):
     assert "2 product(s) not reflected in the warehouse" in out
 
 
-def test_an_undatable_lag_does_not_fail_the_gate(monkeypatch, capsys):
+def test_an_undatable_lag_on_a_shallow_clone_does_not_fail_the_gate(monkeypatch, capsys):
     """A shallow clone cannot date a category file. Failing on a property of the checkout
     tells nobody anything about the warehouse."""
     monkeypatch.setattr(parity, "category_changed_days_ago", lambda slug, kind: None)
+    monkeypatch.setattr(parity, "history_is_shallow", lambda: True)
     assert run(monkeypatch, {}, "embeddings_retrieval") == 0
-    assert "created in the repo undatable" in capsys.readouterr().out
+    assert "undatable, shallow clone" in capsys.readouterr().out
+
+
+def test_an_undatable_lag_on_a_complete_history_fails(monkeypatch, capsys):
+    """The hole the shallow-clone leniency left open: a warehouse category slug this repo has
+    no record of ever having had is classified as a deleted-category lag, cannot be dated,
+    and was therefore exempt FOREVER rather than for a window.
+
+    On a complete history an undatable category is not lag. No commit explains it, so the
+    warehouse is serving a category the repo never had, and that is drift.
+    """
+    monkeypatch.setattr(parity, "category_changed_days_ago", lambda slug, kind: None)
+    monkeypatch.setattr(parity, "history_is_shallow", lambda: False)
+    gone = "a-category-this-repo-never-had"
+    published = {("widget", gone): row("widget", gone, 5, "open_source", rule=0)}
+    assert run(monkeypatch, published, gone) == 1
+    out = capsys.readouterr().out
+    assert "explained by no commit" in out
+    assert "read it as drift rather than lag" in out
+
+
+def test_history_is_shallow_answers_from_git():
+    """The probe itself, against the real checkout. A failing probe reads as shallow, which is
+    the lenient direction - a gate that hard fails because it could not run git reports its own
+    environment rather than the warehouse."""
+    assert isinstance(parity.history_is_shallow(), bool)
 
 
 def test_an_empty_warehouse_fails_on_a_whole_corpus_run(monkeypatch, capsys):

@@ -69,6 +69,29 @@ file, and a lag older than LAG_WINDOW_DAYS fails the gate exactly as drift does.
 buys a maintainer time to run the recompute; it does not let a taxonomy change sit unpublished
 indefinitely while the published map serves a taxonomy that no longer exists.
 
+## An undatable lag fails, unless the clone is shallow
+
+A lagging category no commit explains is not lag. The warehouse is publishing rows under a slug
+this repository has no record of ever having had, and exempting it would be a permanent silent
+pass on the one case that is certainly not a taxonomy change.
+
+So an undatable lag fails, with one exception: a shallow clone genuinely cannot answer the
+question, and failing there reports a property of the checkout rather than anything about the
+warehouse. The workflow fetches full history for this reason, so in CI there is no exception.
+
+## What this still cannot see
+
+Two limits worth stating rather than discovering later.
+
+  * A whole category's rows can vanish for a reason that is not a taxonomy change - a roster
+    regression, a query that lost them. This reads as lag. The dating is what bounds it: an
+    established category reads as many days old and fails at once, so the exposure is a category
+    created inside the window, where the two are genuinely indistinguishable from here.
+  * While a category is lagging, its products are not compared at all. A scoring drift that
+    predates the split is therefore invisible until the recompute lands. It cannot be otherwise:
+    the warehouse row was computed by the ladder of a category the repo has replaced, and
+    comparing it against the new category's ladder would be comparing two different questions.
+
 Requires OSO_API_KEY, and reads through `build/warehouse.py` so the query carries a
 cache-busting nonce. A parity gate that can read a cached result is not a gate: the
 warehouse's SQL API caches on query TEXT, and a fixed verification query returns its first
@@ -182,18 +205,42 @@ def repo_categories() -> set[str]:
     return {path.stem for path in (ROOT / "sources" / "categories").glob("*.yaml")}
 
 
+def history_is_shallow() -> bool:
+    """Whether this checkout's history is truncated.
+
+    The difference between "git cannot answer" and "the answer is no". On a shallow clone an
+    undatable category file is an artifact of the checkout; on a complete one it means no commit
+    in this repository's history ever created or deleted that category, and a warehouse
+    publishing rows under it is not waiting for a recompute.
+
+    A probe that fails is treated as shallow, which is the lenient direction: a gate that hard
+    fails because it could not run `git` reports its own environment rather than the warehouse.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--is-shallow-repository"],
+            cwd=ROOT, capture_output=True, text=True, timeout=30, check=True,
+        )
+    except (subprocess.SubprocessError, OSError):
+        return True
+    return result.stdout.strip() != "false"
+
+
 def category_changed_days_ago(slug: str, kind: str) -> int | None:
     """Days since the commit that added (`kind="A"`) or deleted (`kind="D"`) a category file.
 
     The most recent such commit in both cases: a category deleted and recreated should date
-    from the recreation, not from the original. Returns None when git cannot date it - a
-    shallow clone, or a category file that was never committed - and an undatable lag counts
-    as inside the window, because failing on a property of the checkout tells nobody anything
-    about the warehouse.
+    from the recreation, not from the original. Returns None when git cannot date it, which the
+    caller reads against `history_is_shallow()`: on a complete history an undatable category is
+    one no commit explains, and that is a failure rather than a lag.
     """
     try:
         result = subprocess.run(
-            ["git", "log", f"--diff-filter={kind}", "--format=%cI", "--",
+            # `R` alongside the requested filter: with rename detection on, a file moved INTO
+            # this path is reported as a rename rather than an addition, and one moved OUT as a
+            # rename rather than a deletion. Either way the path was created or removed, which
+            # is the only thing being dated here.
+            ["git", "log", f"--diff-filter={kind}R", "--format=%cI", "--",
              f"sources/categories/{slug}.yaml"],
             cwd=ROOT,
             capture_output=True,
@@ -315,20 +362,28 @@ def main() -> int:
         f"{lagged} behind the taxonomy ({len(published)} rows published)"
     )
 
+    shallow = history_is_shallow()
     overdue: list[str] = []
+    unexplained: list[str] = []
     for (category, kind) in sorted(lagging):
         products = lagging[(category, kind)]
         age = category_changed_days_ago(category, kind)
         change = "created" if kind == "A" else "deleted"
-        when = "undatable" if age is None else f"{age}d ago"
+        if age is None:
+            when = "undatable, shallow clone" if shallow else "explained by no commit"
+        else:
+            when = f"{change} in the repo {age}d ago"
         print(
-            f"  ~ {category}: {change} in the repo {when}, "
+            f"  ~ {category}: {when}, "
             f"{len(products)} product(s) not reflected in the warehouse"
         )
         if args.verbose:
             for line in products:
                 print(f"      {line}")
-        if age is not None and age > LAG_WINDOW_DAYS:
+        if age is None:
+            if not shallow:
+                unexplained.append(category)
+        elif age > LAG_WINDOW_DAYS:
             overdue.append(f"{category} ({change} {age}d ago)")
 
     for line in drifted:
@@ -338,6 +393,14 @@ def main() -> int:
         print(
             "\nThe repo and the warehouse disagree. Neither is automatically right: fix "
             "whichever is wrong, and add the case to this file's list if it is a new shape."
+        )
+        return 1
+    if unexplained:
+        print(
+            "\nNo commit in this repository's history creates or deletes: "
+            + ", ".join(sorted(unexplained))
+            + ".\nThat is not a taxonomy change waiting to publish. The warehouse is serving a "
+            "category this repo has no record of, so read it as drift rather than lag."
         )
         return 1
     if overdue:
