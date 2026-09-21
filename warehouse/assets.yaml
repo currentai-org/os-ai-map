@@ -62,7 +62,14 @@ assets:
   producer: build/adoption_reconciliation.py
   classification_note: report-first reconciliation of measured vs recorded adoption; keys on both
     release identities and carries no release_id (§4.4). Every measured row is source_unavailable
-    until row-to-run binding lands (#355); an abstaining route is abstained.
+    until row-to-run binding lands (#355); an abstaining route is abstained. The status vocabulary
+    is about run binding and says nothing about whether the two levels match, so the freshness
+    derivation compares measured_level against recorded_level directly and never reads status.
+    It does not thereby treat an unbound observation as agreement. It requires run-bound evidence
+    of its own -- build/read_binding.py brackets the live read, so the rows are attributable to
+    the materialization's run -- and dates nothing without it, and nothing where that run was not
+    a successful SCHEDULED one, since adoption's date is supposed to come from the weekly cadence
+    rather than from a person refreshing a table.
   refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
     (build/adoption_reconciliation.py) over evaluation.product_adoption_measurements and the
     recorded sources/scores, stamped with the run-time declaration_version_id +
@@ -72,12 +79,17 @@ assets:
     2026-08-25 (522 rows, declaration 8d3e9d8df10d / snapshot 9bd4d93a6fc6). override_id is absent
     from the deployed table: it is null in every row and the loader types columns from records.
     Publishing to OSO is a maintainer step, runbook at docs/operations/deploy-evaluation.md.'
-  retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
-    its consumer does not exist yet: the Phase-4 blocking gate is deliberately not enabled while
-    every measured row is source_unavailable (#355) -- the accepted interim state. Its authoritative
-    row-to-run binding is blocked follow-up (mechanism may come from OSO incremental / OSO-4705;
-    #355 closes on its own evidence), and the gate stays required by AD-5. This is
-    a "nothing uses it yet" finding, not a
+  retirement_reason: 'no reviewed consumer of the DEPLOYED table, and that is now the whole of the
+    finding. The rows themselves are consumed weekly by build/adoption_freshness.py, which reads
+    the candidate rows in-repo rather than the published static model -- the same shape as
+    evaluation.product_adoption_measurements below -- and turns an agreement into an
+    adoption last_verified and a disagreement into the tier-change queue
+    (.github/workflows/adoption-reconciliation.yml, Monday 05:00 UTC). A platform reader arrives
+    with the Phase-4 blocking gate, which is deliberately not enabled while every measured row is
+    source_unavailable (#355) -- the accepted interim state. Its authoritative row-to-run binding
+    is blocked follow-up (mechanism may come from OSO incremental / OSO-4705; #355 closes on its
+    own evidence), and the gate stays required by AD-5. This is
+    a "nothing on the platform reads it yet" finding, not a
     "nobody wants it" one, and the derived predicate cannot tell those apart -- which is why the
     label is required here rather than the entry being exempt. NOT a deletion candidate.'
   retirement_issue: '#355'

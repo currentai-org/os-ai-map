@@ -22,6 +22,24 @@ recorded dimension, so the binding constraint is the LEAST recently re-read one.
 three were last seen in June — and that is not hypothetical, it is what the 2026-07-28 pass
 on the model flagships produced by re-reading only the dataset endpoint.
 
+## The one axis whose support is an observation
+
+An adoption date may instead rest on the measurement that earned it, recorded on the axis as
+`derived_from`. The invariant over `accessed` is unchanged for everything else, and this is not
+a weaker test of the same thing: it asks the same question of a stronger fact. The route
+re-measured the usage figure from an observation a collector fetched, with the date it was
+fetched, and banded it to the level the score already records. An `accessed` on such an axis
+dates a curator reading a counts endpoint, which is a number that changes daily — the reading is
+real, and it is evidence of where the figure came from rather than evidence that it is current.
+
+`build/adoption_freshness.py` owns the shape and is the only writer.
+`sources/snapshots/observation_snapshots.yaml` is the other half of the record: it resolves the
+recorded snapshot id to the window it observed AND carries, per product, the run, route, level
+and date that run measured. So the claim is checkable here with no warehouse, and it is checked
+against something other than itself — a date outside the window, a snapshot nothing recorded, a
+product the ledger records no measurement for, a level the score has since left, a route the
+tables do not compile, or a pair of records that disagree about one measurement.
+
 ## The digest requirement — a claimed date needs a fetch to point at
 
 Same scope. Every source read as part of the confirmation carries `http_status` and
@@ -68,7 +86,14 @@ from pathlib import Path
 import yaml
 
 from build.vocabulary import axes, parse_date
+from build.adoption_freshness import (
+    DERIVATION_FIELD,
+    DERIVED_AXIS,
+    derivation_problems,
+    known_route_ids,
+)
 from build.check_rubric import components_of, license_read_keys, resolve_dimension
+from build.observation_snapshot import load_ledger
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -156,11 +181,23 @@ def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, s
 
 
 def invariant(
-    scores: dict, categories: dict, recipes: dict, product_types: dict[str, str]
+    scores: dict,
+    categories: dict,
+    recipes: dict,
+    product_types: dict[str, str],
+    ledger: dict | None = None,
+    known_routes: set[str] | None = None,
 ) -> list[str]:
-    """Every recorded dimension of a dated axis has an establishing source read since."""
+    """Every recorded dimension of a dated axis has an establishing source read since.
+
+    `ledger` is the observation-snapshot ledger a derived adoption date is resolved against;
+    it is read from the repository when not supplied. `known_routes` is the compiled route ids,
+    which the caller supplies because compiling them means reading the whole routing source and
+    most corpora have nothing derived to check.
+    """
     problems: list[str] = []
     owner = category_of(categories)
+    ledger = load_ledger() if ledger is None else ledger
     for slug, score in sorted(scores.items()):
         variants = recipes.get(owner.get(slug, ""), {})
         recipe, _ = recipe_for(variants, product_types.get(slug, ""))
@@ -176,7 +213,20 @@ def invariant(
 
             sources = [s for s in (block.get("sources") or []) if isinstance(s, dict)]
             fresh = [s for s in sources if (parse_date(s.get("accessed")) or date.min) >= claimed]
-            if not fresh:
+            if block.get(DERIVATION_FIELD) is not None:
+                # A derived adoption date rests on the observation the route measured, not on a
+                # citation. That is not a hole in the floor below: the observation is a fetch
+                # somebody's collector made, recorded with the date it was made, and the band it
+                # produced matched the recorded one. The citation on such an axis is a hashed
+                # snapshot of a figure that moves daily, so an `accessed` on it would date the
+                # reading of a page rather than the currency of a number.
+                if axis != DERIVED_AXIS:
+                    problems.append(
+                        f"{slug}:{axis}: carries {DERIVATION_FIELD}, which only "
+                        f"{DERIVED_AXIS} may derive"
+                    )
+                problems.extend(derivation_problems(slug, block, ledger, known_routes))
+            elif not fresh:
                 # The floor, and it is the whole of the check for adoption and capability:
                 # those axes record one banded value rather than a dimension breakdown, so
                 # there is nothing to attribute among, but a confirmation still cannot rest
@@ -345,8 +395,16 @@ def main() -> int:
 
     scores, categories, recipes = load()
     product_types = load_product_types(ROOT)
+    # Compiling the routes reads the whole routing source, and a corpus with no derived date has
+    # no route to check, so this is paid for only where something derives.
+    derived = any(
+        (score.get(DERIVED_AXIS) or {}).get(DERIVATION_FIELD) for score in scores.values()
+    )
     results = {
-        "invariant": invariant(scores, categories, recipes, product_types),
+        "invariant": invariant(
+            scores, categories, recipes, product_types,
+            known_routes=known_route_ids() if derived else None,
+        ),
         "digests": digests(scores),
         "producible-pairs": producible_pairs(scores, categories, recipes, product_types),
         "placeholder-shows": placeholder_shows(scores),

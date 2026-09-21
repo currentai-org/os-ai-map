@@ -1,0 +1,123 @@
+# The weekly adoption reconciliation: what the authoritative route measures against what a
+# curator recorded, one row per product. Two things come out of it, and this workflow is how
+# both reach a person.
+#
+#   * an agreement dates the axis. The route re-measured the recorded band from an observation
+#     the collectors fetched, so `adoption.last_verified` takes that observation's date and the
+#     axis records which snapshot, run and route produced it. One PR per run, the same shape as
+#     reverify's. This is why the job reads live and never the committed baseline: a measurement
+#     dates an axis only when the read can be bound to the run that served it, and a frozen file
+#     names no run. An unbindable read still produces the queue and simply earns no date.
+#   * a disagreement raises the product. The measured band differs, so nothing was confirmed,
+#     the date stays where it is, and the product goes on the tier-change queue — written to the
+#     run summary whether or not any date moved, because a week where nothing is re-dated and
+#     sixty products disagree is the week the queue matters most.
+#
+# Weekly, on the cadence the signal tables run on: the collectors recompute Sunday 01:00-03:00 UTC
+# and the `observations` dataset sweeps Sunday 03:30, so this slot reads a table the chain has
+# already rebuilt.
+#
+# The cron below is NOT what makes the date weekly, and nothing here should be read as claiming
+# that it is. A configured cron is a line of YAML; what a date actually rests on is the trigger of
+# the platform run that materialized the table it read. `build/adoption_freshness.py` requires
+# that run to be SCHEDULED and to have succeeded, so a hand-started refresh earns nothing however
+# this job was invoked, and a week where the observation chain did not fire on its schedule earns
+# nothing either and prints the reason. That is the #376 discipline — an observed SCHEDULED run,
+# not a populated cron field — applied where it can be enforced rather than asserted.
+#
+# Two consequences worth knowing before reading a run.
+#
+#   * `workflow_dispatch` is safe. A manual dispatch over a scheduled materialization earns the
+#     same dates the scheduled dispatch would; a manual dispatch over a hand-refreshed table earns
+#     none. The person pressing the button is not what is being checked.
+#   * The slot is nominal. GitHub delays scheduled workflow runs under load — on this repo the
+#     Monday gates have been observed starting five to six hours after their cron — so the
+#     ordering that matters is against the platform's Sunday sweep, which is finished well before
+#     any plausible delay, and not against the other workflows in this directory.
+#
+# See docs/operations/deploy-models.md and docs/operations/deploy-evaluation.md §5.
+name: adoption-reconciliation
+on:
+  schedule:
+    - cron: "0 5 * * 1"      # Monday 05:00 UTC nominal, after the Sunday observation chain
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: adoption-reconciliation
+  cancel-in-progress: false
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the declaration version is resolved against HEAD, and the freshness
+          # report dates each score file from the commit that last changed what it claims.
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Reconcile the deployed observations against the recorded bands
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would
+        # succeed and the step would pass over a reconciliation that crashed after writing
+        # the queue.
+        run: |
+          set -o pipefail
+          uv run python -m build.adoption_freshness --live --apply \
+            --queue tier-change-queue.md | tee reconciliation.txt
+      - name: The tier-change queue and the binding, whether or not a date moved
+        run: |
+          {
+            echo "## Adoption reconciliation"
+            echo
+            echo "The \`source run\` line names the platform run the measurements were read from"
+            echo "and its trigger. Only a SCHEDULED, successful run earns a date; anything else"
+            echo "leaves every date where it is and produces the queue alone."
+            echo
+            echo '```'
+            head -4 reconciliation.txt
+            echo '```'
+            echo
+            echo "### Tier-change queue"
+            echo
+            echo '```'
+            cat tier-change-queue.md
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Gates on the result
+        run: |
+          uv run python -m build.validate
+          uv run python -m build.check_verification --verbose
+          uv run python -m build.check_redate
+          uv run python -m build.check_adoption --strict
+      - name: Open the re-dating PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain sources/)" ]; then
+            echo "No adoption date moved; the queue is in the run summary."
+            exit 0
+          fi
+          BRANCH="adoption-freshness/$(date -u +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add sources/scores/ sources/snapshots/observation_snapshots.yaml
+          git commit -m "chore(freshness): re-date adoption where the route measured the recorded band"
+          git push -u origin "$BRANCH"
+          {
+            echo "Adoption dates earned by re-measurement. Each re-dated axis records the"
+            echo "observation snapshot and route that produced the same band it already carried;"
+            echo "a product whose measured band differs keeps its date and appears in the queue"
+            echo "below instead."
+            echo
+            echo '```'
+            cat reconciliation.txt
+            echo '```'
+          } > pr-body.md
+          gh pr create --title "chore(freshness): adoption re-dated from the weekly reconciliation $(date -u +%F)" --body-file pr-body.md --label freshness

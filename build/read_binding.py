@@ -30,6 +30,16 @@ differ, a refresh landed mid-bracket and the read is honestly `unstable`: both i
 and NO run id is claimed. An unstable bracket is a report, never an error — the caller decides
 whether to re-read.
 
+## The trigger is part of the binding
+
+A materialization names the run that produced it, and the run says how it was started. That
+matters here because adoption's date is supposed to come from the weekly cadence rather than
+from somebody pressing a button: a `MANUAL` run is a person refreshing a table, and a date
+earned from one would be a person's date wearing a run id. So the binding carries the run's
+`triggerType`, `status` and `startedAt` alongside the ids, and the caller decides what to
+require of them. Looking the run up is a second control-plane read; when it fails, the binding
+says so and names no trigger, which is the same posture as an unstable bracket.
+
 ## What this is NOT
 
   * Not row-to-run binding for the observations themselves. The bound run is the run of
@@ -65,6 +75,12 @@ GRAPHQL_QUERY = """query($w: JSON) {
   }
 }"""
 
+RUN_QUERY = """query($w: JSON) {
+  runs(where: $w, first: 2) {
+    edges { node { id triggerType runType status startedAt } }
+  }
+}"""
+
 MODEL_NAME = "product_adoption_current"
 DATASET_NAME = "observations"
 
@@ -84,11 +100,59 @@ class Materialization:
 
 
 @dataclasses.dataclass(frozen=True)
+class Run:
+    """How the run that produced a materialization was started, and how it ended."""
+
+    run_id: str
+    trigger_type: str | None
+    status: str | None
+    started_at: str | None
+
+
+@dataclasses.dataclass(frozen=True)
 class BoundRead:
     """The rows of one read plus the binding verdict for that read."""
 
     rows: list[dict]
     binding: dict
+
+
+def _control_plane(graphql: Callable[..., Mapping] | None) -> tuple[Callable[..., Mapping], str]:
+    """The reader to issue control-plane queries with, and the token to issue them under."""
+    if graphql is None:
+        from build.publish_registry import graphql as live_graphql
+
+        def graphql(query: str, variables: Mapping, token: str) -> Mapping:  # type: ignore[misc]
+            return live_graphql(query, dict(variables), token)
+
+    token = os.environ.get("OSO_API_KEY", "")
+    if not token:
+        raise BindingLookupError("OSO_API_KEY must be set to read the control plane")
+    return graphql, token
+
+
+def run_record(run_id: str, graphql: Callable[..., Mapping] | None = None) -> Run:
+    """How the run behind a materialization was started, from the control plane.
+
+    Raises `BindingLookupError` when the id names no run or names more than one. A run id came
+    out of the materialization the bracket already proved, so a control plane that cannot resolve
+    it is a control plane disagreeing with itself — reporting that as "trigger unknown" would let
+    the caller treat a contradiction as a missing optional field.
+    """
+    reader, token = _control_plane(graphql)
+    response = reader(RUN_QUERY, {"w": {"id": {"eq": run_id}}}, token)
+    nodes = [edge["node"] for edge in response["runs"]["edges"]]
+    if not nodes:
+        raise BindingLookupError(f"the control plane names no run {run_id}")
+    if len(nodes) > 1:
+        raise BindingLookupError(f"{len(nodes)} runs answer to id {run_id}; refusing to guess")
+    node = nodes[0]
+    return Run(
+        run_id=node["id"],
+        trigger_type=node.get("triggerType"),
+        status=node.get("status"),
+        started_at=node.get("startedAt"),
+    )
 
 
 def latest_materialization(
@@ -103,17 +167,8 @@ def latest_materialization(
     is missing, ambiguous, or has no materialization: a caller asking to bind a read of a model
     that the control plane cannot name has a configuration problem, not an unstable bracket.
     """
-    if graphql is None:
-        from build.publish_registry import graphql as live_graphql
-
-        def graphql(query: str, variables: Mapping, token: str) -> Mapping:  # type: ignore[misc]
-            return live_graphql(query, dict(variables), token)
-
-    token = os.environ.get("OSO_API_KEY", "")
-    if not token:
-        raise BindingLookupError("OSO_API_KEY must be set to read the control plane")
-
-    response = graphql(GRAPHQL_QUERY, {"w": {"name": {"eq": model_name}}}, token)
+    reader, token = _control_plane(graphql)
+    response = reader(GRAPHQL_QUERY, {"w": {"name": {"eq": model_name}}}, token)
     nodes = [edge["node"] for edge in response["dataModels"]["edges"]]
     matches = [node for node in nodes if (node.get("dataset") or {}).get("name") == dataset_name]
     if not matches:
@@ -146,7 +201,8 @@ def bound_read(
     """Run `reader` inside a materialization bracket and report what the read was bound to.
 
     The binding dict always carries `binding_status` (`bound` | `unstable`) and the model
-    coordinates. `bound` adds the proven `materialization_id` / `run_id` / `materialized_at`;
+    coordinates. `bound` adds the proven `materialization_id` / `run_id` / `materialized_at`,
+    and how that run was started and ended — `run_trigger_type`, `run_status`, `run_started_at`.
     `unstable` records both bracket ends and claims nothing.
     """
     before = latest_materialization(model_name, dataset_name, graphql=graphql)
@@ -158,12 +214,16 @@ def bound_read(
         "model_id": before.model_id,
     }
     if before.materialization_id == after.materialization_id:
+        run = run_record(before.run_id, graphql=graphql)
         binding = {
             **coordinates,
             "binding_status": "bound",
             "materialization_id": before.materialization_id,
             "run_id": before.run_id,
             "materialized_at": before.created_at,
+            "run_trigger_type": run.trigger_type,
+            "run_status": run.status,
+            "run_started_at": run.started_at,
         }
     else:
         binding = {

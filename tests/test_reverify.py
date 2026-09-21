@@ -599,3 +599,31 @@ def test_the_unknown_axis_message_says_which_axis_may_be_re_dated():
     msg = reverify.axes_refusal(("opennes",))
     assert "only openness" in msg
 
+
+
+def test_adoption_cannot_be_re_dated_by_a_re_fetch_on_any_route(tmp_path):
+    """Adoption's date has an owner, and it is not this tool.
+
+    `build/adoption_freshness.py` earns the date by re-measuring the band from a warehouse
+    observation. What this tool would offer instead is an unchanged counts endpoint, which shows
+    that a page still renders rather than that a figure is still current. Two writers on one
+    field with two different standards of proof is the state being refused, so every route into
+    the write refuses adoption by name: the flag, the planner, and the writer.
+    """
+    import pytest
+
+    assert "adoption" not in reverify.MACHINE_REDATABLE_AXES
+    assert "limited to openness" in (reverify.axes_refusal(("adoption",)) or "")
+    assert reverify.main(["--axes", "adoption", "--dry-run", "--limit", "1"]) == 2
+    with pytest.raises(ValueError, match="limited to openness"):
+        reverify.reverify_product(tmp_path, "anything", date(2026, 9, 12), axes=("adoption",))
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    before = yaml.safe_dump({"product": "p", "adoption": {"level": 3, "sources": []}})
+    (scores / "p.yaml").write_text(before)
+    result = reverify.ProductResult(slug="p")
+    result.stamped = ["adoption"]
+    with pytest.raises(ValueError, match="limited to openness"):
+        reverify.apply(tmp_path, "p", result, date(2026, 9, 12))
+    assert (scores / "p.yaml").read_text() == before

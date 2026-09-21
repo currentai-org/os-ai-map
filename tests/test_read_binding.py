@@ -24,6 +24,14 @@ def _control_plane(materialization_lists):
     listings = list(materialization_lists)
 
     def graphql(query, variables, token):
+        if "runs(" in query:
+            return {"runs": {"edges": [{"node": {
+                "id": variables["w"]["id"]["eq"],
+                "triggerType": "SCHEDULED",
+                "runType": "SCHEDULED",
+                "status": "SUCCESS",
+                "startedAt": "2026-09-20T03:30:16Z",
+            }}]}}
         assert variables == {"w": {"name": {"eq": "product_adoption_current"}}}
         current = listings.pop(0) if len(listings) > 1 else listings[0]
         return {
