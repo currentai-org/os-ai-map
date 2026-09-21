@@ -68,6 +68,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `check_parity` now separates taxonomy **lag** from drift. A divergence attributable to a whole
+  category that exists on one side only — every product of a category the warehouse has no rows
+  for, or every row under a category with no file in `sources/categories/` — is the scoring chain
+  not having been re-materialized since a taxonomy change, which nothing in the repo can trigger.
+  Those are reported and dated from the commit that created or deleted the category file rather
+  than failed on, and fail like drift past fourteen days. Both tests are whole-category: one
+  product missing from a category the warehouse does publish is still drift. The workflow now
+  checks out full history, without which every lag reads as undatable and the bound never bites
+  ([#647](https://github.com/currentai-org/os-ai-map/issues/647)).
 - The published prose is written for the reader rather than the score auditor. `docs/reference/product-copy.md`
   is now the guide for every hand-written string on the map, with eleven goldens and a 600-character note
   guard; every score note, source line and footnote in the corpus that used the rubric's own words, quoted a
