@@ -57,6 +57,27 @@ from build.vocabulary import axes
 ROOT = Path(__file__).resolve().parents[1]
 ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 
+# Chronology that may be about the record rather than the product. The date rule above cannot see
+# it -- "narrowed from the six models recorded previously" carries no date and rode through
+# cleanly (#632) -- so this looks for a past-tense marker standing next to the record's own
+# vocabulary.
+#
+# It WARNS and does not refuse, and that is the whole design rather than a softening of it. The
+# distinction it is reaching for is whose past the sentence describes, and no pattern can draw
+# it: "the six models recorded previously" names the record, "The SDK previously recorded audio
+# locally" names the product, and they share the phrase. Blocking on this matches ordinary prose
+# -- "the free tier no longer includes API access", "the previously released classifier", "the
+# license class was formerly open_core" -- all of which are product facts a note exists to state.
+#
+# So the tool says what it noticed and lets the writer decide, which is the one thing a reader
+# can do here and a gate cannot.
+RECORD_WORD = r"(?:recorded|noted|on file|the record|this note|the score|the entry|logged|scored)"
+PAST_MARKER = r"(?:previously|formerly|earlier|used to|no longer|narrowed from|down from|up from|had been)"
+RECORD_CHRONOLOGY = re.compile(
+    rf"(?:{PAST_MARKER}[^.]{{0,30}}{RECORD_WORD}|{RECORD_WORD}[^.]{{0,30}}{PAST_MARKER})",
+    re.IGNORECASE,
+)
+
 
 def _read_text(path: str) -> str:
     """The file's text with its whitespace normalized to single spaces.
@@ -98,6 +119,14 @@ def edit_note(slug: str, axis: str, text: str, allow_phrase_change: bool = False
         return "this axis is on DATES_THAT_ARE_PRODUCT_FACTS; its date is a fact about the product"
     if has_date and not had_date:
         return "the new note states a date the old one did not; when something happened is git's"
+    if (chron := RECORD_CHRONOLOGY.search(text)) and not RECORD_CHRONOLOGY.search(old):
+        print(
+            f"note: {chron.group(0)!r} reads as chronology about the RECORD rather than the "
+            "product. If it is about the record, it belongs in git, not the note -- a note "
+            "states what is true now. If it is about the product, it is fine as written. "
+            "Warned rather than refused: no pattern separates the two (#632).",
+            file=sys.stderr,
+        )
     if (v := vocabulary_hits(text)):
         return f"the new note is written in the rubric's words: {v!r}; product-copy.md has the plain equivalent"
     if TEMPLATE_OPENINGS.search(text):

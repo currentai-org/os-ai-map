@@ -196,6 +196,77 @@ def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
     )
 
 
+# ── Chronology with no date in it ───────────────────────────────────────────────────────────
+
+# The date rule above rests on a premise that turned out to be false: that "a note about when
+# something happened has to say when". It does not. "narrowed from the six models recorded
+# previously" is chronology with no date in it and it rode through cleanly (#632).
+#
+# There is no gate here, and the absence is the finding. The distinction that matters is whose
+# past a sentence describes -- the product's, which a note exists to state, or the record's,
+# which belongs in git -- and no pattern draws it. The phrase in the violation above is the same
+# phrase as in "The SDK previously recorded audio locally". A rule built on it also refuses "the
+# free tier no longer includes API access" and "the previously released classifier", which are
+# ordinary product facts.
+#
+# So `build.prose_edit` WARNS at the point of writing and the corpus carries no gate. What is
+# tested here is that the warning fires on the real instance and stays quiet on product facts,
+# which is all a heuristic of this shape can honestly promise.
+
+from build.prose_edit import RECORD_CHRONOLOGY  # noqa: E402
+
+
+def test_the_chronology_warning_fires_on_the_instance_that_prompted_it():
+    """#632's counterexample. The warning is advisory, so this pins its sensitivity rather than
+    any enforcement.
+    """
+    assert RECORD_CHRONOLOGY.search(
+        "The base-model allowlist is now a single model, llama3.1-8b, narrowed from the six "
+        "models recorded previously."
+    )
+
+
+def test_the_chronology_warning_stays_quiet_on_product_facts():
+    """Each of these appears in the corpus and each is a fact about the world changing, which is
+    what a note is for. A warning that fires on them is a warning people learn to ignore.
+    """
+    for allowed in (
+        "the repository is no longer actively maintained",
+        "CursorBench at 70% (up from 58% for Opus 4.6)",
+        "Cosmopedia v2 has since superseded it",
+        "Vercel, Dropbox and Replit no longer appear there",
+        "Development responsibility has since passed from the original authors",
+    ):
+        assert not RECORD_CHRONOLOGY.search(allowed), allowed
+
+
+def test_the_warning_is_not_a_gate_and_the_corpus_is_not_held_to_it():
+    """Stated as a test so the decision is not quietly reversed by somebody reading the pattern
+    and assuming it should block.
+
+    Narrowing the record vocabulary did most of the work: dropping `band`, `tier`, `class` and
+    `level N` stopped it matching "the free tier no longer includes API access", "the previously
+    released classifier" and "Bandwidth is no longer limited", all of which are product facts.
+
+    What survives is the one that cannot be fixed. "recorded" is both the record's word and an
+    ordinary verb, so the phrase in #632's violation -- "the six models recorded previously" --
+    is the same phrase as in "The SDK previously recorded audio locally". Separating them needs
+    to know what the verb takes as its object, which is parsing, not matching. One false positive
+    class that no narrowing removes is enough to keep this advisory.
+    """
+    ordinary_prose_that_still_matches = "The SDK previously recorded audio locally"
+    assert RECORD_CHRONOLOGY.search(ordinary_prose_that_still_matches), (
+        "the verb ambiguity has gone; if `recorded` can no longer match an ordinary verb phrase, "
+        "re-examine whether this can be a gate after all"
+    )
+    for fixed_by_narrowing in (
+        "The free tier no longer includes API access",
+        "The previously released classifier supports French",
+        "Bandwidth is no longer limited",
+    ):
+        assert not RECORD_CHRONOLOGY.search(fixed_by_narrowing), fixed_by_narrowing
+
+
 def test_the_date_allowlist_has_not_gone_stale(sources):
     """An axis whose note no longer states a date must leave the allowlist, not linger in it.
 
@@ -287,3 +358,22 @@ def test_no_note_opens_on_a_template():
         f"{measured} note(s) open on the rubric's template (\"Banded on the\", \"One band below\"). "
         "Open with the product and the fact."
     )
+
+
+def test_prose_edit_warns_but_still_writes(tmp_path, monkeypatch, capsys):
+    """The warning must not block the write. An advisory that refuses is a gate with a softer
+    error message, and this one cannot be a gate -- see above.
+    """
+    import build.prose_edit as pe
+
+    root = tmp_path
+    (root / "sources" / "scores").mkdir(parents=True)
+    path = root / "sources" / "scores" / "widget.yaml"
+    path.write_text("openness:\n  note: The allowlist is a single model.\n")
+    monkeypatch.setattr(pe, "ROOT", root)
+
+    result = pe.edit_note("widget", "openness",
+                          "The allowlist is now a single model, narrowed from the six recorded previously.")
+    assert result is None, f"the warning must not refuse the write: {result}"
+    assert "narrowed" in path.read_text(), "the note should have been written"
+    assert "chronology about the RECORD" in capsys.readouterr().err
