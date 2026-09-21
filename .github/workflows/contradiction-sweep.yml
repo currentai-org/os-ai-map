@@ -1,0 +1,70 @@
+# The weekly contradiction sweep: does anything we already collect say a record is wrong?
+#
+# The other freshness jobs ask whether a source still reads the way it did. This one asks the
+# opposite question — whether a signal the collectors already fetched disagrees with what the
+# corpus claims — and it is cheap for the same reason that question is worth asking: the answer
+# is already in `signal_github.artifact_state`, so the sweep is one warehouse read and a pass
+# over `sources/`. Nothing is fetched here.
+#
+# It raises; it does not decide, and it does not gate. `build/check_contradictions.py` exits 0
+# with findings present, on purpose: every finding is a question for a person (an archived
+# repository is a fact about a repository, an `end_of_life` is a claim about a product), and a
+# job that fails the branch on an unanswered question stops being read and starts being worked
+# around. `--strict` exists for the day a leg's queue is empty and someone wants to keep it that
+# way; it is deliberately not used here.
+#
+# So the queue is the output, and it goes to the run summary every week whether or not anything
+# was found — an empty queue is the result that says the sweep ran, and a queue that only appears
+# when something is wrong is a queue nobody learns to look at.
+#
+# Monday 06:00 UTC nominal, after the Sunday collector chain (01:00-03:00) has rebuilt the table
+# it reads, and an hour after `adoption-reconciliation` so the two weekly freshness jobs' logs
+# stay apart. The slot is nominal: GitHub delays scheduled runs under load, and what matters is
+# the ordering against the platform's own Sunday sweep, not against the other workflows here.
+#
+# Findings are self-clearing — recording the `end_of_life`, correcting the license — so there is
+# no acknowledgement file to keep in step with the corpus and no second place a finding can be
+# marked handled without being handled.
+name: contradiction-sweep
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: contradiction-sweep
+  cancel-in-progress: false
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+
+      - name: Sweep the corpus for records the collected signals contradict
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would
+        # succeed and the step would pass over a sweep that crashed after writing the queue.
+        run: |
+          set -o pipefail
+          uv run python -m build.check_contradictions \
+            --queue contradiction-queue.md | tee sweep.txt
+
+      - name: The queue, whether or not anything was found
+        run: |
+          cat contradiction-queue.md >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo
+            echo '<details><summary>Sweep output</summary>'
+            echo
+            echo '```'
+            cat sweep.txt
+            echo '```'
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -5,7 +5,83 @@ axis **earns** one, and the gates that keep the two honest. For the reader-facin
 of the three axes see `docs/methodology.md`; when a rule here changes, change it here first
 and make the code follow.
 
-Part 1 is the meaning, Part 2 the mechanism, Part 3 the coverage rules.
+Part 1 is the meaning, Part 2 the mechanism, Part 3 the coverage rules. Part 0 is why any of it
+runs, and it governs the rest: a check exists to **refute** a score, and confirmation is what is
+left when refutation fails.
+
+---
+
+# Part 0 — A check tries to refute a score
+
+**The purpose of re-checking a score is to find out whether it is wrong.** Confirmation is the
+residue of a failed refutation, not the objective. Everything in Part 1 still defines what
+`last_verified` means and when an axis earns one; this part says what a check is *for*, and
+where the two suggest different designs, this one decides.
+
+The distinction is not academic, because the two framings build different machinery. A check
+built to confirm has to establish sameness, and where a source exposes no structured field the
+only general way to do that is to compare its bytes — which is why most re-fetches return
+"drift", why a page carrying a number that changes daily can never be stable, and why the cost of
+re-checking came to look like a reason to do less of it. Machine re-verification already escapes
+this where it can, accepting a recorded fragment or an SPDX id in place of byte equality; Part 0
+is the general statement of why those are the right shape and byte comparison is the fallback. A check built to refute asks a narrower question with a
+cheaper answer: **does anything we already collect disagree with the record?**
+
+That question is cheap because the signal tables already carry the answers. A repository's
+archived flag, its SPDX license id, a package's download volume, a model's gated flag — all
+collected on a weekly cadence, all structured, none requiring a fetch when the question is asked. A
+sweep over them costs a warehouse read.
+
+## Drift is not a finding; a contradiction is
+
+Keep the two apart, in reports and in the queue a person works through.
+
+| | What it says | What it is about | What to do |
+|---|---|---|---|
+| **Drift** | the source does not read byte-for-byte as it did | the fetch | read what changed, *then* re-record — a changed source is evaluated before its baseline is replaced, and a light sweep never authorizes that replacement |
+| **Contradiction** | a collected signal disagrees with the record | the score | settle it: correct the record, or record why the signal is not it |
+
+A re-check that cannot tell the difference reports both as the same event, and then the real
+finding is indistinguishable from the noise. `build/reverify.py`'s SPDX comparison is the older
+example of getting this right — it compares a structured field rather than a page — and
+`build/check_contradictions.py` is the general form.
+
+A leg of such a sweep is only worth having once its abstentions are right, and that is the hard
+part rather than the comparison. The license comparison is the standing example: the corpus
+records a license as a name plus a qualification, and the qualification appears in the detail, in
+the detail after the grade, inside the name, and as one scoped part of a compound. A comparison
+that misses any of those reports records that were already correct, and a queue that does it
+twice is a queue nobody reads. Abstain until the comparison can see everything the record says.
+
+## Two passes, and they are not the same job
+
+**The light pass** runs often, over the whole corpus, and asks only what the collected signals
+can answer. It settles nothing and dates nothing; it raises. `build/check_contradictions.py` and
+the weekly `contradiction-sweep` workflow are this pass, and
+`evaluation.adoption_reconciliation` is the same shape for adoption, where a disagreement
+explicitly leaves the date where it was.
+
+**The heavy pass** takes one category and re-reads everything in it, including what no signal
+covers — the prose, the components, the judgment calls. It is expensive, it is scheduled
+deliberately rather than continuously, and it is the only pass that can move an axis it did not
+already have a measurement for. `docs/workflows/refresh-category.md` is that procedure.
+
+A light pass is not a cheap heavy pass. It cannot confirm an axis, because the signals it reads
+cover a fraction of what a score records, and treating a clean light pass as confirmation would
+date an axis on evidence that never looked at most of it.
+
+## What a light pass must not do
+
+- **Decide.** A signal disagreeing with a record is a question. An archived repository is a fact
+  about a repository; `end_of_life` is a claim about a product, and a project may be archived
+  because it moved, was absorbed, or ended — only the last of those ends the product.
+- **Date anything.** See above: it has not looked at enough to confirm.
+- **Fire on a comparison it cannot make.** An abstention rule is not a weakness of such a check,
+  it is most of its value. A sweep that reports every difference between a record and a signal
+  produces a queue nobody reads by its second week. The known abstentions: a signal describing a
+  different artifact than the record does (a repository's license id against a model's weights
+  license), a compound record with no single value to disagree with, and a source that reports it
+  could not classify something, which is not the source disagreeing.
 
 ---
 
@@ -27,7 +103,10 @@ is intended:
    license cannot carry a stale corpus claim.
 2. **Confirmation means the axis was re-checked against its sources**, whether or not
    the value moved. A re-check that changes nothing is still a confirmation and still
-   earns the date. This is what makes the field fill in as automation lands.
+   earns the date. This is what makes the field fill in as automation lands. It is the
+   definition of the field, not the purpose of running a check — see Part 0 — and it applies
+   to a pass that looked at everything the axis records, which a light contradiction sweep
+   by construction does not.
 3. **A date is never derived from `sources[].accessed`.** See below.
 
 ## Two evidence grades: dataset and document
