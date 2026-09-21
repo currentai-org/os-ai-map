@@ -750,7 +750,7 @@ gate every PR. The ones needing the network run periodically.
 | digests | a claimed date with no fetch digest | required on axes claiming a confirmation | free |
 | producible-pairs | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
-| parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
+| parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential; a whole category present on one side only is reported as taxonomy lag and fails only past 14 days | network, weekly |
 | citations | an arXiv `/abs` cited for a claim only the paper body carries | `build/check_citations.py`, on the record's own locator | free |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
 | age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 45`, scheduled weekly | free, weekly |

@@ -282,12 +282,28 @@ carries, and what it deliberately does not have.
 ## The parity gate
 
 `build/check_parity.py` compares `check_rubric`'s local verdict against
-`currentai.scores.openness_computed` per product and fails on any divergence. It runs weekly in
+`currentai.scores.openness_computed` per product. It runs weekly in
 `.github/workflows/parity.yml`, Monday 06:00 UTC, behind the models it grades — deliberately
 **not** chained onto a publish, because that would compare fresh rules against a warehouse that
 has not recomputed and fail for a reason that is not a drift. Because the repo does not verify
 that the weekly recompute fired (see "The schedule" above), read a red parity as "check the
 datasets' run history first" — it can mean the warehouse is stale rather than that a rule drifted.
+
+**Drift fails; taxonomy lag is reported and dated.** A divergence attributable to a whole
+category that exists on one side only — every product of a category the warehouse has no rows
+for, or every row under a category with no file in `sources/categories/` — is the chain not
+having been re-materialized since a taxonomy change, which is a maintainer action nothing in the
+repo can trigger. The gate names those categories and how long they have been waiting instead of
+failing on them. Past `LAG_WINDOW_DAYS` (14, two Mondays) it fails like drift: the window exists
+to give a maintainer time to run the recompute, not to let the published map serve a taxonomy the
+repo no longer has.
+
+The tests are narrow on purpose. A single product missing from a category the warehouse **does**
+publish is drift, not lag — that is how a roster built on the wrong table shows up, and it once
+hid 36 deferrals.
+
+So the action on a red parity is: re-materialize the scoring chain for a lag, and find out which
+side is wrong for a drift.
 
 ## Related
 

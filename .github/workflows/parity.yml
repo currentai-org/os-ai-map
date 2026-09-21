@@ -21,6 +21,12 @@ name: parity
 # The gate is weekly because the intended chain is weekly, and the two must move together: a daily gate over a
 # weekly chain fails six days out of seven with "the warehouse has not caught up", which is not
 # what a parity gate is for.
+#
+# For the same reason the gate separates DRIFT from taxonomy LAG (#647). A merged category split
+# reaches the warehouse only when a maintainer re-materializes the chain by hand, so the run after
+# a split reports every product of every new category as a divergence — 149 of them after #430,
+# not one of which was a scoring disagreement. Those are reported as lag and do not fail, until
+# the lag runs past the window in build/check_parity.py, at which point they fail like any drift.
 
 on:
   schedule:
@@ -35,6 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: check_parity dates a lagging category from the commit that created or
+          # deleted its file, and on the default shallow clone every lag reads as undatable —
+          # which is treated as inside the window, so the bound would never bite.
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
