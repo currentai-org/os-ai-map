@@ -134,16 +134,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   product missing from a category the warehouse does publish is still drift. The workflow now
   checks out full history, without which every lag reads as undatable and the bound never bites
   ([#647](https://github.com/currentai-org/os-ai-map/issues/647)).
-- Equivalence recall in the identity eval is measured over candidates the corpus declares. A `pool`
-  candidate is scored by no tier, so counting it in the denominator made the relation's recall floor
-  unreachable rather than unmet — it armed for the first time when the ledger crossed `MIN_TRUTH`
-  and failed at a value it had held all along. Recall over declared candidates now reads 1.000. What
-  the relation exists to do — resolve an undeclared artifact to an existing product — is reported
-  separately and never graded ([#638](https://github.com/currentai-org/os-ai-map/pull/638),
-  [#646](https://github.com/currentai-org/os-ai-map/pull/646)).
 - `docs/reference/` and `docs/architecture/` read as canonical reference rather than as a changelog.
-  111 issue references were removed along with the passages narrating why a rule changed; what a
-  document states is what is true now, and the history is git's
+  111 issue references were removed, along with the passages narrating why a rule changed
   ([#629](https://github.com/currentai-org/os-ai-map/pull/629)).
 - A route abstains where its coverage is short rather than banding on a partial measurement
   ([#588](https://github.com/currentai-org/os-ai-map/pull/588)).
@@ -154,12 +146,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   ([#592](https://github.com/currentai-org/os-ai-map/pull/592)).
 - Adoption-only grading is documented as the intended behaviour rather than as a fallback
   ([#593](https://github.com/currentai-org/os-ai-map/pull/593)).
-- The third-of-a-category rung rule withdrawn from `docs/reference/capability.md`
-  ([#611](https://github.com/currentai-org/os-ai-map/pull/611)).
 - `laminar` adoption 3 to 5, banded on its own measured downloads
-  ([#572](https://github.com/currentai-org/os-ai-map/pull/572)); `mcp-inspector` adoption to 4 on the
-  same basis ([#581](https://github.com/currentai-org/os-ai-map/pull/581)); `opencode` relabelled to
-  `usage_volume`, with Cohere's SDK trap named
+  ([#572](https://github.com/currentai-org/os-ai-map/pull/572)).
+- `mcp-inspector` adoption to 4, on the same basis
+  ([#581](https://github.com/currentai-org/os-ai-map/pull/581)).
+- `opencode` relabelled to `usage_volume`, with Cohere's SDK trap named
   ([#570](https://github.com/currentai-org/os-ai-map/pull/570)).
 - The suggest-a-product form offers all 24 categories, re-derived rather than hardcoded
   ([#622](https://github.com/currentai-org/os-ai-map/pull/622)).
@@ -237,14 +228,22 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Fixed
 
+- Equivalence recall in the identity eval counted `pool` candidates, which no tier scores, in its
+  denominator. That made the relation's recall floor unreachable rather than unmet: the gate armed
+  for the first time when the ledger crossed `MIN_TRUTH` and failed at a value it had held all
+  along. Measured over the candidates the corpus declares, recall reads 1.000. Resolving an
+  undeclared artifact to an existing product is now reported separately and never graded
+  ([#638](https://github.com/currentai-org/os-ai-map/pull/638),
+  [#646](https://github.com/currentai-org/os-ai-map/pull/646)).
 - The Details payload crossed marimo's 8&nbsp;MB per-cell cap and is now delivered across four
   carrier cells; the canary that asserted it was over the cap was asking the wrong question once the
   prose rewrite brought it back under, and the regenerating workflow now runs the payload tests it
   had never run ([#615](https://github.com/currentai-org/os-ai-map/pull/615),
   [#623](https://github.com/currentai-org/os-ai-map/pull/623)).
 - The failure sentinel watches every workflow that runs unattended on `main`. It watched nine and
-  four ran without it, including the weekly adoption reconciliation, whose entire output is a queue
-  somebody reads — a silent failure there looks exactly like a week with nothing to report. The list
+  four ran without it, including the weekly adoption reconciliation, which dates adoption axes and
+  raises a tier-change queue; a silent failure there looks exactly like a week with nothing to
+  report. The list
   must be literal, so a test now holds it answerable to the workflows
   ([#631](https://github.com/currentai-org/os-ai-map/issues/631),
   [#642](https://github.com/currentai-org/os-ai-map/pull/642)).
@@ -273,6 +272,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Removed
 
+- The third-of-a-category rung rule, from `docs/reference/capability.md`
+  ([#611](https://github.com/currentai-org/os-ai-map/pull/611)).
 - The `refresh-data` workflow and its weekly cron. Both fetchers it ran were deleted when ADR-003
   externalized the `catalog.*` tables, so every scheduled run since had failed
   ([#509](https://github.com/currentai-org/os-ai-map/issues/509)).
