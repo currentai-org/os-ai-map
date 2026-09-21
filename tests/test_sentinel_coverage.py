@@ -20,13 +20,22 @@ that grows whenever somebody wants the suite to pass.
 
 from __future__ import annotations
 
+import fnmatch
 from pathlib import Path
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 WORKFLOWS = ROOT / ".github/workflows"
 SENTINEL = WORKFLOWS / "report-failure.yml"
+
+
+def _workflow_files() -> list[Path]:
+    """Every workflow file. GitHub accepts `.yaml` as well as `.yml`, and a gate that reads only
+    one of them is a gate a new file can be added past without noticing.
+    """
+    return sorted([*WORKFLOWS.glob("*.yml"), *WORKFLOWS.glob("*.yaml")])
 
 #: Unattended workflows the sentinel deliberately does not watch, and why. Every entry needs a
 #: reason that says how its failure reaches a person by another route.
@@ -42,26 +51,64 @@ def _triggers(doc: dict) -> dict:
     """A workflow's `on:` block, whatever shape YAML gave it.
 
     `on` is the YAML 1.1 boolean `True`, so a plain `doc["on"]` misses it under safe_load and the
-    check would silently pass on every workflow. A list form (`on: [push]`) carries no branch
-    filter and is normalized to a dict so callers have one shape to read.
+    check would silently pass on every workflow. The value takes three shapes and all of them
+    normalize to a dict so callers read one: a bare string (`on: push`), a list (`on: [push]`)
+    -- neither of which carries a branch filter -- and a mapping.
     """
     on = doc.get("on", doc.get(True)) or {}
+    if isinstance(on, str):
+        return {on: None}
     if isinstance(on, list):
         return {key: None for key in on}
     return on if isinstance(on, dict) else {}
 
 
+MAIN = "main"
+
+
+def _as_list(value: object) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value]
+    return [str(item) for item in value]
+
+
+def _push_can_reach_main(on: dict) -> bool:
+    """Could a push to `main` run this workflow?
+
+    Asked this way round on purpose. The first version asked whether `branches` literally
+    contained `main`, which answered no for five shapes that all reach it: `on: push`,
+    `on: [push]`, a `push:` mapping with no filter, `branches-ignore` naming some other branch,
+    and `branches: ['**']`. A workflow written any of those ways would run unattended on main
+    while the coverage gate reported it covered.
+
+    So the default is that a push event reaches `main`, and only an explicit filter that
+    excludes it says otherwise. `fnmatch` because a branch filter is a glob, and `**` and `*`
+    both match a branch with no `/` in it.
+    """
+    if "push" not in on:
+        return False
+    push = on.get("push")
+    if not isinstance(push, dict):
+        return True  # `on: push` / `on: [push]` -- no filter at all
+    ignored = _as_list(push.get("branches-ignore"))
+    if any(fnmatch.fnmatch(MAIN, pattern) for pattern in ignored):
+        return False
+    allowed = _as_list(push.get("branches"))
+    if not allowed:
+        return True  # a push mapping with no branch filter
+    return any(fnmatch.fnmatch(MAIN, pattern) for pattern in allowed)
+
+
 def _runs_unattended(doc: dict) -> bool:
     """Does this workflow run where no one is watching a pull request?
 
-    Two ways: a schedule, or a push to `main`. A pull-request-only workflow is excluded because
-    its failure is already in front of the person who caused it.
+    Two ways: a schedule, or a push that can reach `main`. A pull-request-only workflow is
+    excluded because its failure is already in front of the person who caused it.
     """
     on = _triggers(doc)
-    if "schedule" in on:
-        return True
-    push = on.get("push") or {}
-    return isinstance(push, dict) and "main" in (push.get("branches") or [])
+    return "schedule" in on or _push_can_reach_main(on)
 
 
 def _name(path: Path, doc: dict) -> str:
@@ -70,7 +117,7 @@ def _name(path: Path, doc: dict) -> str:
 
 def unattended_workflows() -> dict[str, Path]:
     out: dict[str, Path] = {}
-    for path in sorted(WORKFLOWS.glob("*.yml")):
+    for path in _workflow_files():
         doc = yaml.safe_load(path.read_text()) or {}
         if _runs_unattended(doc):
             out[_name(path, doc)] = path
@@ -96,7 +143,7 @@ def test_the_sentinel_watches_nothing_that_does_not_exist():
     """A watched name that matches no workflow is a typo doing nothing, and it reads as coverage."""
     unattended = unattended_workflows()
     every = {}
-    for path in sorted(WORKFLOWS.glob("*.yml")):
+    for path in _workflow_files():
         doc = yaml.safe_load(path.read_text()) or {}
         every[_name(path, doc)] = path
     unknown = sorted(set(watched_workflows()) - set(every))
@@ -121,3 +168,71 @@ def test_the_scheduled_gates_are_all_covered():
     assert scheduled, "no scheduled workflow found, so this is checking nothing"
     uncovered = sorted(scheduled - set(watched_workflows()) - set(UNWATCHED))
     assert not uncovered, f"scheduled gates with no sentinel: {uncovered}"
+
+
+# ---------------------------------------------------------------------------
+# what counts as reaching main
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "on: push",                                   # scalar, no filter
+        "on: [push]",                                 # list, no filter
+        "on:\n  push: {}",                            # mapping, no filter
+        "on:\n  push:\n    branches: [main]",
+        "on:\n  push:\n    branches: [main, develop]",
+        "on:\n  push:\n    branches: ['**']",         # glob covering everything
+        "on:\n  push:\n    branches: ['*']",
+        "on:\n  push:\n    branches-ignore: [dev]",   # excludes something else
+        "on:\n  push:\n    branches: main",           # scalar branch
+    ],
+)
+def test_these_push_shapes_reach_main(source):
+    """Each of these runs on a push to main. The first version of this check asked whether
+    `branches` literally contained `main`, and answered no for five of them -- a workflow written
+    any of those ways would have run unattended while the gate reported it covered.
+    """
+    assert _runs_unattended(yaml.safe_load(source)), source
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "on:\n  push:\n    branches: [develop]",
+        "on:\n  push:\n    branches-ignore: [main]",
+        "on:\n  push:\n    branches-ignore: ['ma*']",
+        "on:\n  pull_request:\n    branches: [main]",  # a PR is attended by definition
+        "on:\n  workflow_call: {}",
+    ],
+)
+def test_these_do_not(source):
+    """The gate has to be able to answer no, or the cases above prove nothing."""
+    assert not _runs_unattended(yaml.safe_load(source)), source
+
+
+def test_a_schedule_counts_however_the_push_is_filtered():
+    assert _runs_unattended(yaml.safe_load("on:\n  schedule:\n    - cron: '0 6 * * 1'"))
+    assert _runs_unattended(
+        yaml.safe_load("on:\n  schedule:\n    - cron: '0 6 * * 1'\n  push:\n    branches: [develop]")
+    )
+
+
+def test_the_yaml_boolean_trap_is_handled():
+    """`on` is the YAML 1.1 boolean True, so a plain doc["on"] finds nothing and every check
+    would pass on every workflow.
+    """
+    doc = yaml.safe_load("on:\n  schedule:\n    - cron: '0 6 * * 1'")
+    assert "on" not in doc and True in doc, "safe_load no longer folds `on` to True; simplify _triggers"
+    assert _triggers(doc), "the boolean key is not being read"
+
+
+def test_both_workflow_extensions_are_scanned():
+    """GitHub accepts .yaml as well as .yml, and a gate reading one of them is a gate a new file
+    can be added past.
+    """
+    suffixes = {path.suffix for path in _workflow_files()}
+    assert suffixes <= {".yml", ".yaml"}
+    globbed = {p.name for p in WORKFLOWS.glob("*.yml")} | {p.name for p in WORKFLOWS.glob("*.yaml")}
+    assert {p.name for p in _workflow_files()} == globbed
