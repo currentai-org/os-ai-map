@@ -47,11 +47,23 @@ example of getting this right — it compares a structured field rather than a p
 `build/check_contradictions.py` is the general form.
 
 A leg of such a sweep is only worth having once its abstentions are right, and that is the hard
-part rather than the comparison. The license comparison is the standing example: the corpus
-records a license as a name plus a qualification, and the qualification appears in the detail, in
-the detail after the grade, inside the name, and as one scoped part of a compound. A comparison
-that misses any of those reports records that were already correct, and a queue that does it
-twice is a queue nobody reads. Abstain until the comparison can see everything the record says.
+part rather than the comparison. The license comparison is the worked example: the corpus records
+a license as a name plus a qualification, and the qualification appears in the detail, in the
+detail after the grade, inside the name, and as one scoped part of a compound. A comparison that
+misses any of those reports records that were already correct, and a queue that does it twice is
+a queue nobody reads. Abstain until the comparison can see everything the record says.
+
+That leg now ships, and what finally made it possible was naming what the observation is ABOUT.
+A repository license is a statement about code, so it may only be compared against a recorded
+license that also covers that code. An explicit scope on the part decides it; where the record
+states none, the product's type supplies the default, because a model's or a dataset's
+unqualified license is about the weights or the data. Under a naive comparison every finding the
+leg produced was a model or a dataset whose recorded license and repository license are supposed
+to differ. Under the scope rule there are none.
+
+A leg that abstains this often has to prove it looked, so the sweep reports its abstentions
+grouped by the rule that fired. A run finding nothing and a run whose comparison silently broke
+print the same line otherwise.
 
 ## Two passes, and they are not the same job
 
