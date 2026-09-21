@@ -25,6 +25,7 @@ import build.identity_eval as identity_eval_module
 import build.warehouse as warehouse_module
 from build.identity import fold_for_proposal
 from build.identity_eval import (
+    pool_resolution,
     COVERAGE_BASELINE_PATH,
     COVERAGE_MARGIN_POINTS,
     LOWERED_BECAUSE_KEY,
@@ -1970,3 +1971,86 @@ def test_load_truth_excludes_auto_adopted_entries_from_both_files(tmp_path):
     assert truth.equivalence.get(candidate_key("github", "acme/acme")) == "acme"
     assert candidate_key("github", "beta/beta") not in truth.equivalence
     assert truth.org_handles["acme"] == {"github": frozenset({"acme"})}
+
+
+# ---------------------------------------------------------------------------
+# pool resolution: reported, never graded
+# ---------------------------------------------------------------------------
+
+
+def _pool_edge(key, slug, methods, confidence=0.9):
+    return {"candidate_key": key, "product_slug": slug, "candidate_tier": "pool",
+            "method": list(methods), "confidence": confidence}
+
+
+def _pool_truth(*keys):
+    return Truth(equivalence={k: "p" for k in keys}, declared_candidates=set())
+
+
+def test_a_pool_pair_the_graph_reaches_on_its_own_evidence_is_counted():
+    truth = _pool_truth("hf:a/b")
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["product_alias"])], truth)
+    assert report["pool_truth"] == 1
+    assert report["reached_independently"] == 1
+    assert report["confidences"] == [0.9]
+
+
+def test_an_edge_proposed_only_from_the_ledger_is_not_the_graph_reaching_anything():
+    """It is emitted BECAUSE a human ruled, so counting it would report that the ledger agrees
+    with itself -- the same one-sided guard `load_truth` drops auto-adopted entries to avoid.
+    """
+    truth = _pool_truth("hf:a/b")
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["resolution_ledger"], 1.0)], truth)
+    assert report["reached_independently"] == 0
+    assert report["ledger_only"] == 1
+    assert report["confidences"] == []
+
+
+def test_name_match_alone_is_counted_separately_because_it_may_never_emit():
+    """`name_match` is independent of the ruling, and the graph is pinned against ever acting on
+    it. Counting it as "reached" would report a capability governance forbids using.
+    """
+    truth = _pool_truth("hf:a/b")
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["name_match", "resolution_ledger"], 1.0)], truth)
+    assert report["reached_independently"] == 0
+    assert report["name_match_only"] == 1
+    assert report["ledger_only"] == 0
+
+
+def test_a_usable_method_alongside_name_match_still_counts_as_reached():
+    truth = _pool_truth("hf:a/b")
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["name_match", "model_family"])], truth)
+    assert report["reached_independently"] == 1
+    assert report["name_match_only"] == 0
+
+
+def test_pool_truth_the_graph_never_proposed_is_visible_as_unreached():
+    """The three buckets have to account for every pool truth item, or the report reads as
+    coverage while quietly dropping what nobody proposed at all.
+    """
+    truth = _pool_truth("hf:a/b", "hf:c/d")
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["product_alias"])], truth)
+    assert report["unreached"] == 1
+    total = (report["reached_independently"] + report["name_match_only"]
+             + report["ledger_only"] + report["unreached"])
+    assert total == report["pool_truth"]
+
+
+def test_a_declared_candidate_is_not_pool_truth():
+    """Declared candidates are what equivalence recall already grades; counting them here would
+    report the same pairs twice under two different questions.
+    """
+    truth = Truth(equivalence={"hf:a/b": "p"}, declared_candidates={"hf:a/b"})
+    report = pool_resolution([_pool_edge("hf:a/b", "p", ["product_alias"])], truth)
+    assert report["pool_truth"] == 0
+    assert report["reached_independently"] == 0
+
+
+def test_a_wrong_pool_edge_is_not_counted_as_reached():
+    """The edge has to agree with the ruling. An edge resolving the same candidate to a different
+    product is the graph being wrong, not the graph getting there.
+    """
+    truth = _pool_truth("hf:a/b")
+    report = pool_resolution([_pool_edge("hf:a/b", "wrong", ["product_alias"])], truth)
+    assert report["reached_independently"] == 0
+    assert report["unreached"] == 1
