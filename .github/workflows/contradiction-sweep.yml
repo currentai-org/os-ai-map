@@ -6,6 +6,12 @@
 # is already in `signal_github.artifact_state`, so the sweep is one warehouse read and a pass
 # over `sources/`. Nothing is fetched here.
 #
+# Two legs: archival against `end_of_life`, and the repository license against the license the
+# openness score records. The license leg abstains wherever the recorded license is not about the
+# repository's code, so it prints its abstentions grouped by rule — a leg that refuses more often
+# than it fires has to be able to show it looked, or a silently broken comparison reads exactly
+# like a clean week.
+#
 # It raises; it does not decide, and it does not gate. `build/check_contradictions.py` exits 0
 # with findings present, on purpose: every finding is a question for a person (an archived
 # repository is a fact about a repository, an `end_of_life` is a claim about a product), and a

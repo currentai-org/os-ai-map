@@ -18,6 +18,16 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- A license leg on the contradiction sweep (`build/check_contradictions.py`): the repository
+  license `signal_github` collects, against the license the openness score records. Built and
+  withdrawn twice before, because the corpus records a license as a name plus a qualification and
+  a comparison that misses the qualification reports records that were already right. It now
+  reuses the rubric's own parsing and compares only where the recorded license covers the
+  repository's code — an explicit `code` scope decides it, and otherwise the product's type does,
+  since a model's or dataset's unqualified license is about the weights or the data. It abstains
+  on any other qualification, on a compound with no single code-scoped part, and on a product with
+  more than one repository row, and reports those abstentions grouped by rule so a quiet run can
+  show it looked ([#640](https://github.com/currentai-org/os-ai-map/issues/640)).
 - `yylo` (`yylo-dev/yylo`) to `orchestration_agents`, with the JUNO AI organization
   ([#561](https://github.com/currentai-org/os-ai-map/pull/561)).
 - `not_primary_channel`, a per-artifact declaration on a product's artifact entries: the presence of

@@ -378,6 +378,13 @@ def recorded_license_aliases() -> dict[str, str]:
     return _RECORDED_ALIASES
 
 
+#: The `code `/`model ` scope prefix a recorded license NAME may carry. Named rather than inlined
+#: because `normalize_license` is not its only reader: `check_contradictions` has to strip the same
+#: prefix before it can judge whether what remains is a bare license id, and a second spelling of
+#: this rule is the kind of hand-mirrored logic this repo keeps being bitten by.
+SCOPE_PREFIX = re.compile(r"(?i)^\s*(code|model)\s+")
+
+
 def normalize_license(raw: str) -> str:
     """Reduce ONE recorded license NAME to the spelling the tier examples use.
 
@@ -405,7 +412,7 @@ def normalize_license(raw: str) -> str:
 
     Purely mechanical. Anything needing judgment is left alone to be flagged.
     """
-    value = re.sub(r"(?i)^\s*(code|model)\s+", "", raw.strip()).strip()
+    value = SCOPE_PREFIX.sub("", raw.strip()).strip()
     value = re.sub(r"(?i)^assumed-", "", value).strip()
     return recorded_license_aliases().get(value.lower(), value)
 
