@@ -160,13 +160,57 @@ RUN_KEYS = ("trigger_type", "status", "started_at")
 DATING_TRIGGER = "SCHEDULED"
 DATING_STATUS = "SUCCESS"
 
+#: How old the materialization behind a read may be before it stops counting as this cycle's
+#: measurement. The observations refresh weekly, so two cycles tolerates one missed run while
+#: still catching a schedule that has stopped: without it, a successful SCHEDULED run from
+#: months ago satisfies every other check forever, and a stalled refresh reads as a healthy one
+#: because nothing about a stale table looks different from a fresh one that found no change.
+MAX_BINDING_AGE_DAYS = 14
+
 BAND_MATCH = "band_match"
 TIER_CHANGE = "tier_change"
 ROUTE_DISAGREEMENT = "route_disagreement"
 NOT_COMPARED = "not_compared"
 
 
-def binding_problems(binding: Mapping | None) -> list[str]:
+def _utcnow() -> "datetime.datetime":
+    """Now, in UTC. A named seam so a test can pin the clock in one place: the age check would
+    otherwise make every fixture with a fixed `materialized_at` expire on a wall-clock date.
+    """
+    return datetime.datetime.now(datetime.timezone.utc)
+
+
+def _staleness(binding: Mapping, now: "datetime.datetime | None") -> str | None:
+    """The complaint about how old this materialization is, or `None` if it is current enough.
+
+    Read from `materialized_at` — when the table was BUILT, not when it was read, which is always
+    now and would make every read look fresh. An unparseable or absent timestamp is refused
+    rather than waved through: a binding that cannot say when it was built cannot show it is
+    current, and defaulting that to "fine" is how the check would come to pass on everything.
+    """
+    raw = binding.get("materialized_at")
+    if not raw:
+        return "the binding does not say when the table was materialized, so its age cannot be checked"
+    try:
+        built = datetime.datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+    except ValueError:
+        return f"the binding's materialized_at ({raw!r}) is not a timestamp, so its age cannot be checked"
+    if built.tzinfo is None:
+        built = built.replace(tzinfo=datetime.timezone.utc)
+    current = now or _utcnow()
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=datetime.timezone.utc)
+    age = (current - built).days
+    if age > MAX_BINDING_AGE_DAYS:
+        return (
+            f"the table was materialized {age} days ago, past the {MAX_BINDING_AGE_DAYS}-day "
+            f"limit. The observations refresh weekly, so a read this old is not this cycle's "
+            f"measurement and cannot date anything; check whether the schedule is still running"
+        )
+    return None
+
+
+def binding_problems(binding: Mapping | None, now: "datetime.datetime | None" = None) -> list[str]:
     """Why this read cannot attribute its rows to a source run, or an empty list.
 
     The ways a read fails to bind are different facts and are reported as such: the baseline
@@ -174,6 +218,12 @@ def binding_problems(binding: Mapping | None) -> list[str]:
     served the rows, a bound bracket missing its identifiers names a run nobody can look up, and
     a bound bracket whose run was started by a person is not the weekly cadence this date is
     supposed to come from.
+
+    Age is the last of them. A run's trigger and status say how the table was built, never when,
+    so a successful SCHEDULED materialization stays valid by those tests however long ago it ran.
+    A read older than `MAX_BINDING_AGE_DAYS` is refused for dating, which is what separates "the
+    weekly measurement found no change" from "the weekly measurement stopped happening". `now`
+    is a parameter so a test can state the age it is exercising rather than depend on the clock.
     """
     if not binding:
         return ["the read recorded no binding, so no run can be attributed to it"]
@@ -193,6 +243,9 @@ def binding_problems(binding: Mapping | None) -> list[str]:
                 f"date comes from the weekly cadence, so only a {DATING_TRIGGER} run may earn "
                 f"one; a person pressing refresh is the thing it is meant not to depend on"
             ]
+        stale = _staleness(binding, now)
+        if stale:
+            return [stale]
         return []
     if status == "unstable":
         return [
@@ -327,7 +380,10 @@ def _already_supported(block: Mapping, derived: Mapping) -> bool:
 
 
 def plan(
-    rows: Iterable[Mapping], binding: Mapping | None = None, root: Path | None = None
+    rows: Iterable[Mapping],
+    binding: Mapping | None = None,
+    root: Path | None = None,
+    now: "datetime.datetime | None" = None,
 ) -> tuple[list[Change], list[str]]:
     """The dates this run earns, and a line for every match it declined to date.
 
@@ -341,7 +397,7 @@ def plan(
     base = root or ROOT
     changes: list[Change] = []
     declined: list[str] = []
-    unbound = binding_problems(binding)
+    unbound = binding_problems(binding, now)
     for row in rows:
         if verdict(row) != BAND_MATCH:
             continue

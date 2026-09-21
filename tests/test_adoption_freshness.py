@@ -34,6 +34,16 @@ from build.read_binding import bound_read
 SNAPSHOT = "a" * 64
 OTHER_SNAPSHOT = "b" * 64
 RUN = "980a87f1-3274-408e-928e-70eee35dd8a2"
+
+#: The clock every test in this module runs against, pinned two days after `BOUND`'s
+#: materialization. The binding age check reads the real clock otherwise, which would make every
+#: fixture below start failing on a wall-clock date rather than on a code change.
+NOW = datetime.datetime(2026, 9, 22, tzinfo=datetime.timezone.utc)
+
+
+@pytest.fixture(autouse=True)
+def _pin_the_clock(monkeypatch):
+    monkeypatch.setattr(af, "_utcnow", lambda: NOW)
 ROUTE = "pypi.downloads_30d"
 _UTC = datetime.timezone.utc
 
@@ -244,6 +254,46 @@ def test_a_missing_binding_is_not_a_binding():
     assert af.binding_problems({"binding_status": "bound", "model": "m"})
     assert af.binding_problems({"binding_status": "who-knows"})
     assert af.binding_problems(BOUND) == []
+
+
+def test_a_materialization_older_than_the_window_dates_nothing(tmp_path):
+    """A SUCCESS/SCHEDULED run stays SUCCESS/SCHEDULED forever, so trigger and status alone
+    cannot tell this cycle's measurement from one that stopped happening months ago. Without the
+    age check a stalled refresh reads exactly like a healthy one that found no change, and keeps
+    earning dates off a table nobody rebuilt.
+    """
+    root = _corpus(tmp_path, {"widget": {"last_verified": "2026-08-01", "sources": []}})
+    stale = {**BOUND, "materialized_at": "2026-06-01T03:30:26Z"}
+
+    problems = af.binding_problems(stale, NOW)
+    assert problems and str(af.MAX_BINDING_AGE_DAYS) in problems[0]
+
+    changes, declined = af.plan([_row(as_of="2026-08-20")], stale, root=root)
+    assert changes == []
+    assert declined
+    assert _adoption(root, "widget")["last_verified"] == "2026-08-01"
+
+
+def test_a_binding_that_cannot_say_when_it_was_built_dates_nothing():
+    """Refused rather than waved through. A binding with no `materialized_at` cannot show it is
+    current, and treating an absent timestamp as acceptable is how an age check comes to pass on
+    everything it is meant to catch.
+    """
+    undated = {k: v for k, v in BOUND.items() if k != "materialized_at"}
+    problems = af.binding_problems(undated, NOW)
+    assert problems and "cannot be checked" in problems[0]
+
+    unparseable = {**BOUND, "materialized_at": "last Tuesday"}
+    assert af.binding_problems(unparseable, NOW)
+
+
+def test_the_age_check_passes_a_fresh_materialization():
+    """The boundary in the direction that matters: a read inside the window is not refused, so
+    the gate cannot pass its own tests by rejecting everything.
+    """
+    assert af.binding_problems(BOUND, NOW) == []
+    edge = {**BOUND, "materialized_at": "2026-09-09T03:30:26Z"}  # 13 days before NOW
+    assert af.binding_problems(edge, NOW) == []
 
 
 def test_a_table_a_person_refreshed_dates_nothing_and_still_queues(tmp_path):
