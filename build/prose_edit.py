@@ -57,16 +57,22 @@ from build.vocabulary import axes
 ROOT = Path(__file__).resolve().parents[1]
 ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
 
-# Chronology that names the record rather than the product. The date rule above cannot see it --
-# "narrowed from the six models recorded previously" carries no date and rode through cleanly
-# (#632) -- so this is the other half, refused here as well as in tests/test_score_notes.py so an
-# agent writing prose is told at the point of writing rather than by the suite afterwards.
+# Chronology that may be about the record rather than the product. The date rule above cannot see
+# it -- "narrowed from the six models recorded previously" carries no date and rode through
+# cleanly (#632) -- so this looks for a past-tense marker standing next to the record's own
+# vocabulary.
 #
-# A past-tense marker alone is not enough: "no longer actively maintained" and "up from 58% for
-# Opus 4.6" are product facts and a note is for exactly those. It is a violation only when the
-# marker stands next to a word naming the record.
-RECORD_WORD = r"(?:recorded|noted|on file|the record|this note|the score|the entry|logged|scored|level \d|band|tier|class)"
-PAST_MARKER = r"(?:previously|formerly|earlier|used to|no longer|narrowed from|down from|up from|had been|before)"
+# It WARNS and does not refuse, and that is the whole design rather than a softening of it. The
+# distinction it is reaching for is whose past the sentence describes, and no pattern can draw
+# it: "the six models recorded previously" names the record, "The SDK previously recorded audio
+# locally" names the product, and they share the phrase. Blocking on this matches ordinary prose
+# -- "the free tier no longer includes API access", "the previously released classifier", "the
+# license class was formerly open_core" -- all of which are product facts a note exists to state.
+#
+# So the tool says what it noticed and lets the writer decide, which is the one thing a reader
+# can do here and a gate cannot.
+RECORD_WORD = r"(?:recorded|noted|on file|the record|this note|the score|the entry|logged|scored)"
+PAST_MARKER = r"(?:previously|formerly|earlier|used to|no longer|narrowed from|down from|up from|had been)"
 RECORD_CHRONOLOGY = re.compile(
     rf"(?:{PAST_MARKER}[^.]{{0,30}}{RECORD_WORD}|{RECORD_WORD}[^.]{{0,30}}{PAST_MARKER})",
     re.IGNORECASE,
@@ -113,12 +119,14 @@ def edit_note(slug: str, axis: str, text: str, allow_phrase_change: bool = False
         return "this axis is on DATES_THAT_ARE_PRODUCT_FACTS; its date is a fact about the product"
     if has_date and not had_date:
         return "the new note states a date the old one did not; when something happened is git's"
-    if RECORD_CHRONOLOGY.search(text) and not RECORD_CHRONOLOGY.search(old):
-        return ("the new note says what the RECORD used to say; that is git's, not the note's. A "
-                "note states what is true now. If the sentence is about the product changing "
-                "rather than the record changing, say it without naming the record -- \"the "
-                "allowlist is a single model\" rather than \"narrowed from the six recorded "
-                "previously\"")
+    if (chron := RECORD_CHRONOLOGY.search(text)) and not RECORD_CHRONOLOGY.search(old):
+        print(
+            f"note: {chron.group(0)!r} reads as chronology about the RECORD rather than the "
+            "product. If it is about the record, it belongs in git, not the note -- a note "
+            "states what is true now. If it is about the product, it is fine as written. "
+            "Warned rather than refused: no pattern separates the two (#632).",
+            file=sys.stderr,
+        )
     if (v := vocabulary_hits(text)):
         return f"the new note is written in the rubric's words: {v!r}; product-copy.md has the plain equivalent"
     if TEMPLATE_OPENINGS.search(text):
