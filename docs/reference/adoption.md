@@ -407,9 +407,13 @@ a pass applies them.
   Two shapes that look like exceptions follow from the same test: a package pulled in as a
   transitive dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK
   spanning N products (`cohere-rerank-api` banded on the whole `cohere` package) both count
-  something other than the product. A band predating this test is not re-banded by it; `langfuse`,
-  banded on the `langfuse` client, is the known case and is flagged for its own `update-product`
-  pass.
+  something other than the product. A band predating this test is not re-banded by it; it is
+  flagged for its own `update-product` pass. `langfuse` was that case and is now worked: its
+  `langfuse` client banded it at 5 under the superseded rule, and re-read against this one it
+  carries `reported_traction` at 4, on the vendor's own figures for the server rather than the
+  client. Re-reading it also corrected the evidence: the acquisition announcement the record cited
+  as containing no usage figure now reports Docker pulls and a Fortune 500 roster, which is what
+  the level rests on.
 
 A band exceeding the computed one is usually not a dispute about the measurement. The common
 shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
