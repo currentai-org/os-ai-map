@@ -29,7 +29,7 @@ cheaper answer: **does anything we already collect disagree with the record?**
 
 That question is cheap because the signal tables already carry the answers. A repository's
 archived flag, its SPDX license id, a package's download volume, a model's gated flag — all
-collected on a weekly cadence, all structured, none requiring a fetch at the time of asking. A
+collected on a weekly cadence, all structured, none requiring a fetch when the question is asked. A
 sweep over them costs a warehouse read.
 
 ## Drift is not a finding; a contradiction is
@@ -38,7 +38,7 @@ Keep the two apart, in reports and in the queue a person works through.
 
 | | What it says | What it is about | What to do |
 |---|---|---|---|
-| **Drift** | the source no longer reads byte-for-byte as it did | the fetch | read what changed, *then* re-record — a changed source is evaluated before its baseline is replaced, and a light sweep never authorizes that replacement |
+| **Drift** | the source does not read byte-for-byte as it did | the fetch | read what changed, *then* re-record — a changed source is evaluated before its baseline is replaced, and a light sweep never authorizes that replacement |
 | **Contradiction** | a collected signal disagrees with the record | the score | settle it: correct the record, or record why the signal is not it |
 
 A re-check that cannot tell the difference reports both as the same event, and then the real

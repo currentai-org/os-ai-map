@@ -172,6 +172,13 @@ POLICY_INPUTS: dict[str, dict[str, object]] = {
 
 # Non-declaration inputs — authored nowhere as a scoring declaration.
 NON_DECLARATION_INPUTS: dict[str, str] = {
+    "contradictions_settled.yaml": (
+        "a ruling that an observation does not contradict a record, read only by "
+        "build/check_contradictions.py to decide what to RAISE. It changes no product's "
+        "identity, artifacts or score - settling a finding is the decision not to change a "
+        "declaration, so folding it into the digest would re-key declarations on the strength "
+        "of somebody deciding nothing needed doing."
+    ),
     "resolution_ledger.yaml": (
         "governance over what MAY become a product, not a declaration of what is one. An entry "
         "records that a candidate artifact was already resolved - to an existing product, to a "
