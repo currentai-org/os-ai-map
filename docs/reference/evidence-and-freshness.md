@@ -46,6 +46,13 @@ finding is indistinguishable from the noise. `build/reverify.py`'s SPDX comparis
 example of getting this right — it compares a structured field rather than a page — and
 `build/check_contradictions.py` is the general form.
 
+A leg of such a sweep is only worth having once its abstentions are right, and that is the hard
+part rather than the comparison. The license comparison is the standing example: the corpus
+records a license as a name plus a qualification, and the qualification appears in the detail, in
+the detail after the grade, inside the name, and as one scoped part of a compound. A comparison
+that misses any of those reports records that were already correct, and a queue that does it
+twice is a queue nobody reads. Abstain until the comparison can see everything the record says.
+
 ## Two passes, and they are not the same job
 
 **The light pass** runs often, over the whole corpus, and asks only what the collected signals

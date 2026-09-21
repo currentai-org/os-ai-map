@@ -18,31 +18,35 @@ because it moved, because it was folded into something larger, or because it is 
 and only the first two leave the product alive. The sweep's job is to make sure that judgment is
 never skipped for want of noticing.
 
-Findings are self-clearing. Acting on one -- recording the `end_of_life`, correcting the license
--- removes it from the next run, so there is no acknowledgement ledger to keep in step with the
-corpus, and no second place where a finding can be marked handled without being handled.
+Acting on a finding -- recording the `end_of_life` -- removes it from the next run. Where the
+answer is that the record was right all along, `sources/contradictions_settled.yaml` carries the
+ruling, bound to the observed value so it expires if the observation changes. Without that file
+the only way to clear a finding would be to write something untrue, since a product can outlive
+the repository somebody archived.
 
-## Two legs
+## One leg today: retirement
 
-**Retirement.** `signal_github.artifact_state.is_archived` against the product's `end_of_life`.
-A repository its owner marked read-only, under a product that records no end of life. This leg
-has no abstention rules because it needs none: both sides are booleans about the same artifact.
+`signal_github.artifact_state.is_archived` against the product's `end_of_life`. A repository its
+owner marked read-only, under a product that records no end of life. Both sides are booleans
+about the same artifact, which is what makes the comparison safe to automate.
 
-**License.** The recorded openness license against `license_spdx_id` from the same table. This
-leg abstains far more than it fires, and the abstentions are what make it worth reading:
+A license leg belongs here and is not here yet. The obvious form of it -- the recorded openness
+license against `license_spdx_id` -- was built, reviewed twice, and withdrawn both times for the
+same reason in different clothes: the corpus records a license as a NAME plus a qualification,
+and the qualification lives in more places than a comparison can guess at. It sits in the detail
+(`code,via LICENSE-CODE`), after the grade in the detail (`OSI, client SDKs only`), inside the
+name (`Apache-2.0-WITH-LLVM-exception`), and as one scoped part of a compound whose other part
+covers the weights. A comparison that misses any of them reports a record that was already right,
+every week, until people stop reading the queue. Getting it right means reusing the rubric's own
+parsing rather than re-deriving scope from punctuation, which is its own piece of work.
 
-  * **Product type.** A repository's SPDX id describes its CODE. For a `model` or a `dataset`
-    the recorded openness license describes weights or data -- a different artifact, which may
-    legitimately carry a different license, and comparing the two measures nothing. The corpus
-    already draws this line: `normalize_license` strips `code `/`model ` scope prefixes because
-    "the scope is which artifact the license covers". Only `software` products are compared.
-  * **A compound recorded license.** More than one license part and there is no single thing for
-    one SPDX id to disagree with. Abstains, exactly as `build.reverify._spdx_confirms` does.
-  * **An SPDX id that declines to answer.** `NOASSERTION`, `other`, a blank, or the API's own
-    no-license sentinel. GitHub saying "I could not classify this" is not GitHub disagreeing.
+## What a finding is, and is not
 
-Both legs report the artifact and the column they read, so a finding can be checked against its
-source without rerunning the sweep.
+A finding is one observation disagreeing with one record. It is not a statement that the record
+is wrong -- that is the question being raised, not its answer -- and it is not a statement that
+anything else was checked. The sweep covers what the signal tables carry, which is a fraction of
+what a score records.
+
 """
 
 from __future__ import annotations
@@ -50,33 +54,20 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
-import re
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
 import yaml
 
-from build.check_rubric import license_parts_of, normalize_license
-
 ROOT = Path(__file__).resolve().parent.parent
 
 RETIREMENT = "retirement"
-LICENSE = "license"
 
-#: SPDX ids that mean "not classified", not "classified as this". A license-detection API
-#: reporting that it could not tell is not the API contradicting the record.
-ABSTAIN_SPDX = frozenset({"", "noassertion", "other", "none", "null"})
-
-#: The only product type whose repository license describes the product itself. See the module
-#: docstring: for a model or a dataset the openness license covers a different artifact.
-COMPARABLE_TYPE = "software"
 
 STATE_QUERY = """
 SELECT
   product_slug,
   repo,
-  license_spdx_id,
-  license_is_noassertion,
   is_archived,
   http_status,
   pushed_at,
@@ -145,96 +136,7 @@ def _truthy(value: object) -> bool:
         return False
 
 
-#: `GPLv3` and `GPL-3.0` are one license spelled two ways. Recognised here rather than in the
-#: recorded-name alias table because `normalize_license` also feeds the rubric's tier matching,
-#: and a name that resolves differently there resolves to a different tier -- a score change,
-#: made by a read-only sweep, for the sake of a comparison. Putting it in the alias table is the
-#: better durable fix and is a scoring decision, so it belongs to a person.
-_VERSIONED_FAMILY = re.compile(r"^(a?gpl|lgpl)v(\d+)(?:\.(\d+))?$", re.IGNORECASE)
 
-
-def _spelling(name: str) -> str:
-    """One license name reduced to the spelling two records of it can be compared in.
-
-    `normalize_license` first, for the recorded-name aliases, then case folding -- that function
-    does NOT fold case, so it answers `'mit' != 'MIT'` and a lowercase record would never match
-    an SPDX id. Then the `GPLv3`/`GPL-3.0` family, which no alias covers.
-    """
-    value = normalize_license(name).strip().casefold()
-    match = _VERSIONED_FAMILY.match(value)
-    if match:
-        family, major, minor = match.group(1), match.group(2), match.group(3) or "0"
-        return f"{family}-{major}.{minor}"
-    return value
-
-
-def same_license(recorded: str, spdx: str) -> bool:
-    """Do these name the same license?
-
-    A recorded name may offer alternatives -- `LGPL-3.0/GPL-3.0` is one declared name meaning
-    either, because `license_segments` splits on `+` only and a compound the curator meant as one
-    name deliberately stays one part. A repository reporting ONE of the alternatives agrees with
-    such a record; it does not contradict it, and reading it as a contradiction would turn every
-    dual-licensed product into a standing false finding.
-    """
-    target = _spelling(spdx)
-    return any(_spelling(part) == target for part in recorded.split("/") if part.strip())
-
-
-#: A `detail` that only says where the license sits on the openness scale, rather than qualifying
-#: WHICH license the record means. Everything else -- a scope, a named license file, an appended
-#: condition, a carve-out -- changes what the name is a claim about, and a repository-level
-#: classifier cannot be compared against it.
-_PLAIN_DETAIL = re.compile(r"^(osi\b.*|permissive.*|copyleft.*)?$", re.IGNORECASE)
-
-#: A `detail` that binds the component to the repository's code. Such a component is comparable
-#: whatever the product type, because it is a claim about the same artifact the SPDX id describes.
-_CODE_SCOPED = re.compile(r"^(code|repository|repo)\b", re.IGNORECASE)
-
-#: A `detail` naming the specific license file the record was read from. GitHub classifies ONE
-#: repository-level file, so a record that deliberately points at a different one is not being
-#: contradicted when the classifier reports the file it did read.
-_NAMES_A_FILE = re.compile(r"\bvia\b|license-", re.IGNORECASE)
-
-
-def comparable_license(score: Mapping, product_type: str) -> str | None:
-    """The recorded license name a repository's SPDX id may be compared against, or `None`.
-
-    `None` is an abstention, and this function is mostly abstentions on purpose. The corpus does
-    not record a license as a bare name: `detail` carries the scope and the qualification, and
-    discarding it is what makes an explained difference look like a contradiction. Two findings
-    in the first run of this sweep were exactly that -- one product recording its code license
-    from `LICENSE-CODE` while GitHub classified the documentation license at the repository root,
-    another recording a bespoke license whose own detail says GitHub still reports the base
-    license it was built from. Both records were right, both were already explained in the file,
-    and both would have returned every week forever.
-
-    So a part is comparable only when it says nothing that changes what its name claims:
-
-      * exactly one part, since a single id cannot disagree with a compound;
-      * a `detail` that grades the license (`OSI`, `permissive`, `copyleft`) or is empty, rather
-        than one that scopes it (`core`, `API-only`, `SaaS`), names the file it came from, or
-        describes a modification of a standard license;
-      * a product whose repository licenses the product itself, which is `software` -- or any
-        product whose part is explicitly bound to the code, since that part is a claim about the
-        artifact the SPDX id describes however the product is classified.
-    """
-    components = (score.get("openness") or {}).get("components") or {}
-    parts = license_parts_of(components.get("license"))
-    if len(parts) != 1:
-        return None
-    name = (parts[0].get("name") or "").strip()
-    if not name:
-        return None
-    detail = (parts[0].get("detail") or "").strip()
-    if _NAMES_A_FILE.search(detail):
-        return None
-    code_scoped = bool(_CODE_SCOPED.match(detail))
-    if not code_scoped and not _PLAIN_DETAIL.match(detail):
-        return None
-    if product_type != COMPARABLE_TYPE and not code_scoped:
-        return None
-    return name
 
 
 def retirement_findings(rows: Iterable[Mapping], products: Mapping[str, Mapping]) -> list[Finding]:
@@ -258,40 +160,6 @@ def retirement_findings(rows: Iterable[Mapping], products: Mapping[str, Mapping]
                 source_column="is_archived",
                 as_of=_text(row.get("fetched_at"))[:10],
                 settles="archived",
-            )
-        )
-    return sorted(out, key=lambda f: (f.product_slug, f.artifact))
-
-
-def license_findings(
-    rows: Iterable[Mapping], products: Mapping[str, Mapping], scores: Mapping[str, Mapping]
-) -> list[Finding]:
-    """Software products whose repository reports a license the record disagrees with."""
-    out: list[Finding] = []
-    for row in rows:
-        slug = _text(row.get("product_slug"))
-        product = products.get(slug)
-        if product is None:
-            continue
-        spdx = _text(row.get("license_spdx_id"))
-        if spdx.lower() in ABSTAIN_SPDX or _truthy(row.get("license_is_noassertion")):
-            continue
-        score = scores.get(slug)
-        if score is None:
-            continue
-        recorded = comparable_license(score, _text(product.get("type")))
-        if recorded is None or same_license(recorded, spdx):
-            continue
-        out.append(
-            Finding(
-                leg=LICENSE,
-                product_slug=slug,
-                recorded=recorded,
-                observed=spdx,
-                artifact=_text(row.get("repo")),
-                source_column="license_spdx_id",
-                as_of=_text(row.get("fetched_at"))[:10],
-                settles=spdx,
             )
         )
     return sorted(out, key=lambda f: (f.product_slug, f.artifact))
@@ -325,7 +193,7 @@ def sweep(
 ) -> list[Finding]:
     """Every leg, over one read of the state table, minus what a person has already ruled on."""
     rows = list(rows)
-    found = retirement_findings(rows, products) + license_findings(rows, products, scores)
+    found = retirement_findings(rows, products)
     ruled = settled_keys(settled)
     return [f for f in found if f.key not in ruled]
 
@@ -354,19 +222,16 @@ def queue_markdown(findings: Sequence[Finding]) -> str:
     if not findings:
         return (
             "# Contradiction queue\n\n"
-            "No contradiction within this sweep's coverage: GitHub archival, and license ids for "
-            "records that do not qualify what they name. Other collected signals -- Hub gating, "
-            "weights availability, a disabled or vanished artifact -- are not examined here, so "
-            "this is not a statement that every record was checked.\n"
+            "No contradiction within this sweep's coverage, which today is GitHub archival. "
+            "Other collected signals -- license ids, Hub gating, weights availability, a disabled "
+            "or vanished artifact -- are not examined here, so this is not a statement that every "
+            "record was checked.\n"
         )
     lines = ["# Contradiction queue", ""]
     for leg, heading, action in (
         (RETIREMENT, "Archived repository, no recorded end of life",
          "Record `end_of_life` on the product, or settle it in `sources/contradictions_settled.yaml` "
          "with the reason the product outlived its repository."),
-        (LICENSE, "Repository license disagrees with the record",
-         "Correct the recorded license, or settle it in `sources/contradictions_settled.yaml` "
-         "with the reason the repository's own SPDX id is not the product's license."),
     ):
         rows = [f for f in findings if f.leg == leg]
         if not rows:
@@ -407,9 +272,7 @@ def main(argv: list[str] | None = None, root: Path | None = None, rows: Iterable
     else:
         for finding in findings:
             print(finding.line())
-        print(f"\n{len(findings)} contradicted: "
-              f"{len([f for f in findings if f.leg == RETIREMENT])} retirement, "
-              f"{len([f for f in findings if f.leg == LICENSE])} license")
+        print(f"\n{len(findings)} contradicted")
     if args.queue:
         args.queue.write_text(queue_markdown(findings))
     return 1 if (args.strict and findings) else 0

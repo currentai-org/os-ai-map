@@ -34,8 +34,8 @@ def _product(**over):
     return product
 
 
-def _score(license_name="MIT"):
-    return {"openness": {"components": {"license": [{"name": license_name, "detail": "OSI"}]}}}
+def _score():
+    return {"openness": {"components": {}}}
 
 
 # ---------------------------------------------------------------------------
@@ -71,116 +71,6 @@ def test_retirement_does_not_depend_on_product_type():
     assert len(found) == 1
 
 
-# ---------------------------------------------------------------------------
-# license: what it raises
-# ---------------------------------------------------------------------------
-
-
-def test_a_software_repo_whose_spdx_differs_is_raised():
-    found = cc.license_findings(
-        [_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": _score("MIT")}
-    )
-    assert len(found) == 1
-    assert (found[0].recorded, found[0].observed) == ("MIT", "CC-BY-4.0")
-
-
-# ---------------------------------------------------------------------------
-# license: what it abstains on
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.parametrize("product_type", ["model", "dataset", "hardware"])
-def test_a_non_software_product_is_never_compared(product_type):
-    """The repository's SPDX id describes CODE. A model's openness license describes weights, a
-    different artifact that may legitimately carry a different license, so comparing them
-    measures nothing. This is the filter that took the raw finding count down by an order of
-    magnitude, and without it the leg reports mostly category errors.
-    """
-    found = cc.license_findings(
-        [_row(license_spdx_id="Apache-2.0")],
-        {"widget": _product(type=product_type)},
-        {"widget": _score("Llama-3.1-Community")},
-    )
-    assert found == []
-
-
-@pytest.mark.parametrize("spdx", ["NOASSERTION", "other", "", "NONE", "noassertion"])
-def test_an_spdx_id_that_declines_to_answer_is_not_a_contradiction(spdx):
-    found = cc.license_findings(
-        [_row(license_spdx_id=spdx)], {"widget": _product()}, {"widget": _score("MIT")}
-    )
-    assert found == []
-
-
-def test_the_noassertion_flag_abstains_even_when_an_id_is_present():
-    found = cc.license_findings(
-        [_row(license_spdx_id="Apache-2.0", license_is_noassertion=True)],
-        {"widget": _product()},
-        {"widget": _score("MIT")},
-    )
-    assert found == []
-
-
-def test_a_detail_naming_a_specific_license_file_abstains():
-    """GitHub classifies ONE repository-level file. A record that deliberately reads a different
-    one is not contradicted when the classifier reports the file it did read -- the case that
-    made this sweep's first run report a product whose own note already explained the difference.
-    """
-    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "code,via LICENSE-CODE"}]}}}
-    found = cc.license_findings(
-        [_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}
-    )
-    assert found == []
-
-
-def test_a_detail_that_qualifies_the_license_abstains():
-    """A bespoke license built from a standard one: the classifier reporting the base license is
-    expected, and the record's own detail says so.
-    """
-    score = {"openness": {"components": {"license": [
-        {"name": "Widget-Attribution-License", "detail": "Apache-2.0 text plus an appended condition"}]}}}
-    found = cc.license_findings(
-        [_row(license_spdx_id="Apache-2.0")], {"widget": _product()}, {"widget": score}
-    )
-    assert found == []
-
-
-@pytest.mark.parametrize("detail", ["", "OSI", "OSI, copyleft", "permissive non-OSI"])
-def test_a_plain_detail_stays_comparable(detail):
-    """The abstentions must not swallow the ordinary case, or the leg checks nothing."""
-    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": detail}]}}}
-    found = cc.license_findings(
-        [_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}
-    )
-    assert len(found) == 1, detail
-
-
-def test_a_code_scoped_part_is_compared_even_on_a_dataset():
-    """The product type is a proxy for 'does the repository license the product'. Where a part
-    says outright that it covers the code, it is a claim about the same artifact the SPDX id
-    describes, and excluding it by type would hide a real repository-license contradiction.
-    """
-    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "code"}]}}}
-    found = cc.license_findings(
-        [_row(license_spdx_id="GPL-3.0")], {"widget": _product(type="dataset")}, {"widget": score}
-    )
-    assert len(found) == 1
-
-
-def test_a_compound_recorded_license_abstains():
-    """Two recorded parts and there is no single thing for one SPDX id to disagree with."""
-    score = {"openness": {"components": {"license": [{"name": "MIT"}, {"name": "Apache-2.0"}]}}}
-    found = cc.license_findings([_row(license_spdx_id="GPL-3.0")], {"widget": _product()}, {"widget": score})
-    assert found == []
-
-
-def test_a_product_with_no_recorded_license_abstains():
-    found = cc.license_findings(
-        [_row()], {"widget": _product()}, {"widget": {"openness": {"components": {}}}}
-    )
-    assert found == []
-
-
 def test_a_missing_archived_flag_is_not_a_finding():
     """`warehouse.query` converts through pandas and a null boolean arrives as `nan`, for which
     `bool(nan)` is True. Read naively, a product whose flag was never populated reports as
@@ -213,43 +103,14 @@ def test_a_settlement_with_no_reason_is_ignored():
 
 def test_a_settlement_does_not_cover_a_different_observation():
     """Bound to what was observed, so it expires when the world says something different --
-    the difference between settling a question and silencing it.
+    the difference between settling a question and silencing it. Here the ruling covers one
+    repository; a second archived repository under the same product is a separate question.
     """
-    score = {"openness": {"components": {"license": [{"name": "MIT", "detail": "OSI"}]}}}
-    settled = [{"leg": cc.LICENSE, "product_slug": "widget", "artifact": "acme/widget",
-                "settles": "CC-BY-4.0", "note": "docs license, code is MIT"}]
-    quiet = cc.sweep([_row(license_spdx_id="CC-BY-4.0")], {"widget": _product()}, {"widget": score}, settled)
-    assert quiet == []
-    moved = cc.sweep([_row(license_spdx_id="GPL-3.0")], {"widget": _product()}, {"widget": score}, settled)
-    assert len(moved) == 1
-
-
-# ---------------------------------------------------------------------------
-# same_license: the comparisons that must not read as disagreement
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.parametrize(
-    "recorded,spdx",
-    [
-        ("mit", "MIT"),                    # normalize_license does not fold case
-        ("apache-2.0", "Apache-2.0"),
-        ("GPLv3", "GPL-3.0"),              # one license, two spellings, covered by no alias
-        ("AGPLv3", "AGPL-3.0"),
-        ("LGPLv2.1", "LGPL-2.1"),
-        ("LGPL-3.0/GPL-3.0", "LGPL-3.0"),  # one declared name offering alternatives
-        ("LGPL-3.0/GPL-3.0", "GPL-3.0"),
-    ],
-)
-def test_these_are_the_same_license(recorded, spdx):
-    assert cc.same_license(recorded, spdx), f"{recorded!r} vs {spdx!r}"
-
-
-@pytest.mark.parametrize("recorded,spdx", [("MIT", "CC-BY-4.0"), ("Apache-2.0", "GPL-3.0"),
-                                           ("MIT", "Apache-2.0")])
-def test_these_are_not(recorded, spdx):
-    """The gate has to be able to fail, or the parametrized agreements above prove nothing."""
-    assert not cc.same_license(recorded, spdx)
+    settled = [{"leg": cc.RETIREMENT, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "archived", "note": "the published models outlived the repository"}]
+    assert cc.sweep([_row(is_archived=True)], {"widget": _product()}, {}, settled) == []
+    other = _row(is_archived=True, repo="acme/widget-tools")
+    assert len(cc.sweep([other], {"widget": _product()}, {}, settled)) == 1
 
 
 # ---------------------------------------------------------------------------
