@@ -196,6 +196,84 @@ def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
     )
 
 
+# ── Chronology with no date in it ───────────────────────────────────────────────────────────
+
+# The date rule above rests on a premise that turned out to be false: that "a note about when
+# something happened has to say when". It does not. "narrowed from the six models recorded
+# previously" is chronology with no date in it, and it rode through the date rule cleanly (#632).
+#
+# This is the other half, and it is NOT a verb list -- the date rule's docstring is right that a
+# vocabulary gets escaped by picking a new word. It is a rule about what the chronology is ABOUT.
+#
+# A note may say the world changed: "the repository is no longer actively maintained", "up from
+# 58% for Opus 4.6", "Cosmopedia v2 has since superseded it". Those are product facts, which is
+# what a note is for. What it may not say is that THE RECORD changed -- "recorded previously",
+# "down from level 4", "the score formerly said" -- because that is the git history wearing
+# prose, and it rots the moment the score moves again.
+#
+# So a past-tense marker is a violation only when it stands next to a word naming the record.
+# Measured over the corpus: the marker alone matches 54 notes, almost all of them product facts;
+# the pair matches none. That gap is the rule.
+# Imported, not restated. The same rule refuses an edit in `build/prose_edit.py`, and two copies
+# of a pattern drift silently -- which is how this repo has been bitten before.
+from build.prose_edit import RECORD_CHRONOLOGY  # noqa: E402
+
+
+def test_no_note_says_what_the_record_used_to_say(sources):
+    """A note states what is true until the score changes; what it used to say is `git log`.
+
+    Strict rather than a ratchet, because the corpus carries none: the one instance was corrected
+    by hand in #630 before this existed. An allowlist here would only give the next one somewhere
+    to hide, and there is no backlog to name.
+
+    **What this deliberately does not catch.** "was six, now one" is chronology about the record
+    with no word naming the record in it, and no rule of this shape can see it. Proximity to the
+    record's vocabulary is a strong signal, not a complete one, and the honest statement is that
+    this narrows the gap the date rule left rather than closing it. A reader still catches what
+    neither rule does.
+    """
+    offenders = [
+        f"{slug} {axis}"
+        for slug, score in sources["scores"].items()
+        for axis in ("openness", "adoption", "capability")
+        if RECORD_CHRONOLOGY.search(((score.get(axis) or {}).get("note")) or "")
+    ]
+    assert not offenders, (
+        f"{len(offenders)} notes say what the record used to say:\n  "
+        + "\n  ".join(sorted(offenders)[:20])
+        + "\n\nA note states what is true now. What the record said before is git's: `git log -p "
+        "--follow sources/scores/<slug>.yaml`. If the sentence is about the PRODUCT changing "
+        "rather than the record changing, say so without naming the record -- \"the allowlist is "
+        "a single model\" rather than \"narrowed from the six recorded previously\"."
+    )
+
+
+def test_the_record_chronology_rule_catches_the_instance_that_prompted_it(sources):
+    """#632's counterexample, pinned. A rule introduced at zero violations proves nothing about
+    its own sensitivity, so the case it was written for is asserted directly.
+    """
+    assert RECORD_CHRONOLOGY.search(
+        "The base-model allowlist is now a single model, llama3.1-8b, narrowed from the six "
+        "models recorded previously."
+    )
+    assert RECORD_CHRONOLOGY.search("down from level 4")
+    assert RECORD_CHRONOLOGY.search("the score previously recorded a higher band")
+
+
+def test_the_record_chronology_rule_leaves_product_facts_alone(sources):
+    """The distinction the rule turns on. Each of these is a fact about the world changing, which
+    is exactly what a note is for, and each appears in the corpus today.
+    """
+    for allowed in (
+        "the repository is no longer actively maintained",
+        "CursorBench at 70% (up from 58% for Opus 4.6)",
+        "Cosmopedia v2 has since superseded it",
+        "Vercel, Dropbox and Replit no longer appear there",
+        "Development responsibility has since passed from the original authors",
+    ):
+        assert not RECORD_CHRONOLOGY.search(allowed), allowed
+
+
 def test_the_date_allowlist_has_not_gone_stale(sources):
     """An axis whose note no longer states a date must leave the allowlist, not linger in it.
 
@@ -287,3 +365,26 @@ def test_no_note_opens_on_a_template():
         f"{measured} note(s) open on the rubric's template (\"Banded on the\", \"One band below\"). "
         "Open with the product and the fact."
     )
+
+
+def test_prose_edit_refuses_a_note_that_says_what_the_record_used_to_say(tmp_path, monkeypatch):
+    """The rule has to refuse the WRITE, not only fail the suite afterwards. An agent writing
+    prose gets told at the point of writing; a suite failure arrives after the file is on disk
+    and after whatever else the pass wrote alongside it.
+    """
+    import build.prose_edit as pe
+
+    root = tmp_path
+    (root / "sources" / "scores").mkdir(parents=True)
+    path = root / "sources" / "scores" / "widget.yaml"
+    path.write_text("openness:\n  note: The allowlist is a single model.\n")
+    monkeypatch.setattr(pe, "ROOT", root)
+
+    refused = pe.edit_note("widget", "openness",
+                           "The allowlist is now a single model, narrowed from the six recorded previously.")
+    assert refused and "RECORD used to say" in refused
+    assert "narrowed" not in path.read_text(), "the refusal must not have written the file"
+
+    accepted = pe.edit_note("widget", "openness", "The allowlist is a single model, llama3.1-8b.")
+    assert accepted is None, accepted
+    assert "llama3.1-8b" in path.read_text()
