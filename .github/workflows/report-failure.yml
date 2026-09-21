@@ -39,10 +39,13 @@ jobs:
     # not which runs reach it. Without the event/branch test below, watching `validate` would
     # open or comment a sentinel issue on every failed PR, which is how a notification channel
     # earns itself muted. A PR failure is already in front of the person who caused it.
+    #
+    # `workflow_dispatch` is deliberately absent. Somebody pressed the button, so the failure is
+    # already in front of them, and the coverage gate does not require a dispatch-only workflow
+    # to be watched -- reporting one would be the reverse of the rule this job enforces.
     if: >-
       github.event.workflow_run.conclusion == 'failure' &&
       (github.event.workflow_run.event == 'schedule' ||
-       github.event.workflow_run.event == 'workflow_dispatch' ||
        (github.event.workflow_run.event == 'push' &&
         github.event.workflow_run.head_branch == 'main'))
     runs-on: ubuntu-latest

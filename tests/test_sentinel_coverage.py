@@ -74,6 +74,20 @@ def _as_list(value: object) -> list[str]:
     return [str(item) for item in value]
 
 
+#: Characters in a branch filter that `fnmatch` does not read the way GitHub does. `+` is a
+#: quantifier there (`ma+in` matches `main`) and `!` negates, with order mattering across the
+#: list. Rather than reimplement GitHub's pattern language for a gate, a filter using either is
+#: treated as possibly reaching `main` -- see `_push_can_reach_main` for why that direction.
+_UNREADABLE_PATTERN = ("!", "+")
+
+
+def _matches_main(patterns: list[str]) -> bool | None:
+    """Does any pattern match `main`? `None` when the filter cannot be read faithfully."""
+    if any(char in pattern for pattern in patterns for char in _UNREADABLE_PATTERN):
+        return None
+    return any(fnmatch.fnmatch(MAIN, pattern) for pattern in patterns)
+
+
 def _push_can_reach_main(on: dict) -> bool:
     """Could a push to `main` run this workflow?
 
@@ -83,9 +97,15 @@ def _push_can_reach_main(on: dict) -> bool:
     and `branches: ['**']`. A workflow written any of those ways would run unattended on main
     while the coverage gate reported it covered.
 
-    So the default is that a push event reaches `main`, and only an explicit filter that
-    excludes it says otherwise. `fnmatch` because a branch filter is a glob, and `**` and `*`
-    both match a branch with no `/` in it.
+    So the default is that a push event reaches `main`, and only a filter that demonstrably
+    excludes it says otherwise. Where a filter cannot be read faithfully -- GitHub's pattern
+    language has `+` and ordered `!` negation, which `fnmatch` does not -- this answers YES.
+    The two errors are not equal: over-reporting costs somebody a watch entry or a written
+    exemption, and under-reporting is a workflow failing on main with nothing to say so, which
+    is the defect this whole file exists to prevent.
+
+    A push filtered to tags only is the one shape that does NOT reach a branch push. GitHub runs
+    no branch push when `tags`/`tags-ignore` is the only filter given.
     """
     if "push" not in on:
         return False
@@ -93,12 +113,19 @@ def _push_can_reach_main(on: dict) -> bool:
     if not isinstance(push, dict):
         return True  # `on: push` / `on: [push]` -- no filter at all
     ignored = _as_list(push.get("branches-ignore"))
-    if any(fnmatch.fnmatch(MAIN, pattern) for pattern in ignored):
-        return False
+    if ignored:
+        excluded = _matches_main(ignored)
+        if excluded:
+            return False
+        if excluded is None:
+            return True  # cannot read it; assume it reaches main
     allowed = _as_list(push.get("branches"))
-    if not allowed:
-        return True  # a push mapping with no branch filter
-    return any(fnmatch.fnmatch(MAIN, pattern) for pattern in allowed)
+    if allowed:
+        reached = _matches_main(allowed)
+        return True if reached is None else reached
+    if not ignored and (push.get("tags") is not None or push.get("tags-ignore") is not None):
+        return False  # tags only: no branch push runs this
+    return True
 
 
 def _runs_unattended(doc: dict) -> bool:
@@ -187,6 +214,10 @@ def test_the_scheduled_gates_are_all_covered():
         "on:\n  push:\n    branches: ['*']",
         "on:\n  push:\n    branches-ignore: [dev]",   # excludes something else
         "on:\n  push:\n    branches: main",           # scalar branch
+        "on:\n  push:\n    paths: ['src/**']",          # a path filter does not stop a branch push
+        "on:\n  push:\n    branches: ['ma+in']",        # GitHub quantifier: unreadable, so assumed yes
+        "on:\n  push:\n    branches: ['**', '!main']",  # ordered negation: unreadable, so assumed yes
+        "on:\n  push:\n    branches-ignore: ['dev+']",  # unreadable exclusion, so assumed yes
     ],
 )
 def test_these_push_shapes_reach_main(source):
@@ -205,6 +236,8 @@ def test_these_push_shapes_reach_main(source):
         "on:\n  push:\n    branches-ignore: ['ma*']",
         "on:\n  pull_request:\n    branches: [main]",  # a PR is attended by definition
         "on:\n  workflow_call: {}",
+        "on:\n  push:\n    tags: ['v*']",               # tags only: no branch push runs it
+        "on:\n  push:\n    tags-ignore: ['v*']",
     ],
 )
 def test_these_do_not(source):
@@ -236,3 +269,42 @@ def test_both_workflow_extensions_are_scanned():
     assert suffixes <= {".yml", ".yaml"}
     globbed = {p.name for p in WORKFLOWS.glob("*.yml")} | {p.name for p in WORKFLOWS.glob("*.yaml")}
     assert {p.name for p in _workflow_files()} == globbed
+
+
+def test_an_unreadable_branch_filter_is_assumed_to_reach_main():
+    """GitHub's filter language has `+` as a quantifier and ordered `!` negation; `fnmatch` has
+    neither. The gate does not reimplement it -- it answers yes and makes somebody write the
+    watch entry or the exemption.
+
+    The two errors are not equal. Over-reporting costs a line of YAML. Under-reporting is a
+    workflow failing on main with nothing to say so.
+    """
+    assert _matches_main(["ma+in"]) is None
+    assert _matches_main(["**", "!main"]) is None
+    assert _matches_main(["develop"]) is False
+    assert _matches_main(["**"]) is True
+
+
+def test_a_tag_only_push_is_not_a_branch_push():
+    """GitHub runs no branch push when tags are the only filter, so requiring a watch entry for
+    a release workflow would be a false demand.
+    """
+    assert not _push_can_reach_main({"push": {"tags": ["v*"]}})
+    assert not _push_can_reach_main({"push": {"tags-ignore": ["v*"]}})
+    # but a tag filter alongside a branch filter still reaches main through the branch
+    assert _push_can_reach_main({"push": {"tags": ["v*"], "branches": ["main"]}})
+
+
+def test_both_extensions_are_scanned_independently_of_this_repo(tmp_path, monkeypatch):
+    """The corpus has no `.yaml` workflow today, so a test asserting against it would pass a
+    `.yml`-only implementation. This one supplies both.
+    """
+    import tests.test_sentinel_coverage as mod
+
+    folder = tmp_path / "workflows"
+    folder.mkdir()
+    (folder / "a.yml").write_text("name: a\non:\n  schedule:\n    - cron: '0 6 * * 1'\n")
+    (folder / "b.yaml").write_text("name: b\non:\n  schedule:\n    - cron: '0 7 * * 1'\n")
+    monkeypatch.setattr(mod, "WORKFLOWS", folder)
+    assert {p.name for p in mod._workflow_files()} == {"a.yml", "b.yaml"}
+    assert set(mod.unattended_workflows()) == {"a", "b"}
