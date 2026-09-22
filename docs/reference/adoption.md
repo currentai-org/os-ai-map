@@ -408,13 +408,12 @@ a pass applies them.
   transitive dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK
   spanning N products (`cohere-rerank-api` banded on the whole `cohere` package) both count
   something other than the product. A band predating this test is not re-banded by it; it is
-  flagged for its own `update-product` pass. `langfuse` was that case and is now worked: its
-  `langfuse` client banded it at 5 under the superseded rule, and re-read against this one it
-  carries `reported_traction` at 4, on the vendor's own figures for the server rather than the
-  client. Re-reading it also corrected the evidence: the acquisition announcement the record cited
-  as containing no usage figure does report pulls of the server image and a Fortune 500 roster,
-  which is what the level rests on. Whether the page changed or the first reading missed them is
-  not established, so the record says what it says today and claims nothing about why.
+  flagged for its own `update-product` pass. `langfuse` is the worked example: the
+  `langfuse` client measures installs of the client, so the record bands on the vendor's own
+  figures for the server instead and carries `reported_traction` at 4. Those figures are in the
+  acquisition announcement the record already cited — pulls of the server image and a Fortune 500
+  roster — which is the second thing this case shows: a record's own summary can say its source
+  carries no usage figure while the source carries one.
 
 A band exceeding the computed one is usually not a dispute about the measurement. The common
 shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
