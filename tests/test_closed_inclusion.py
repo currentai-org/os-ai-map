@@ -75,7 +75,7 @@ def _synthetic_sources():
     return {
         "organizations": {"o": {"name": "o", "display_name": "O", "type": "unknown",
                                 "products": ["weak-open", "big-closed"]}},
-        "taxonomy": {"arcs": [{"name": "Arc", "layer": "lyr", "categories": ["cat"]}]},
+        "taxonomy": {"arcs": [{"name": "Arc", "layer": "lyr", "groups": [{"name": "Group", "slug": "group", "categories": ["cat"]}]}]},
         "categories": {"cat": {"name": "cat", "display_name": "Cat",
                                "products": ["weak-open", "big-closed"],
                                "weights": {"adopt": 0.5, "cap": 0.5}, "comments": ""}},

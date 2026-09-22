@@ -111,7 +111,7 @@ def _sources():
         "organizations": {"meta": {"name": "meta", "display_name": "Meta",
                                    "type": "unknown", "products": ["llama-4"]}},
         "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
-                               "categories": ["base_pretrained"]}]},
+                               "groups": [{"name": "Group", "slug": "group", "categories": ["base_pretrained"]}]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained",
                                 "display_name": "Base / pretrained models",
@@ -162,7 +162,7 @@ def test_preliminary_categories_are_excluded_from_the_public_payload():
         "display_name": "Storage",
         "products": [],
     }
-    src["taxonomy"]["arcs"][0]["categories"].append(
+    src["taxonomy"]["arcs"][0]["groups"][0]["categories"].append(
         {"name": "storage", "status": "preliminary"}
     )
     payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
@@ -216,7 +216,7 @@ def test_long_tail_keeps_rows_for_products_in_preliminary_categories():
     """
     src = _sources()
     src["products"]["llama-4"]["github"] = [{"url": "https://github.com/meta-llama/llama"}]
-    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    src["taxonomy"]["arcs"][0]["groups"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
     frozen = {"counts": {}, "top": [
         {"name": "meta-llama/llama", "type": "repo", "usage_label": "", "description": ""},
     ]}
@@ -237,13 +237,13 @@ def test_preliminary_products_reach_no_public_index():
     src = _sources()
     src["products"]["llama-4"]["aliases"] = ["llama-4-scout"]
     src["organizations"]["meta"]["aliases"] = ["facebook"]
-    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    src["taxonomy"]["arcs"][0]["groups"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
     payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
     assert payload["organizations"] == {}, "an org whose only product is unpublished is not shipped"
     assert payload["aliases"] == {"products": {}, "organizations": {}}
 
     # and with the same category published, all three indexes carry it
-    src["taxonomy"]["arcs"][0]["categories"] = ["base_pretrained"]
+    src["taxonomy"]["arcs"][0]["groups"][0]["categories"] = ["base_pretrained"]
     payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
     assert payload["organizations"]["meta"]["products"] == ["llama-4"]
     assert payload["aliases"]["products"] == {"llama-4-scout": "llama-4"}
@@ -443,7 +443,7 @@ def _multi_org_sources():
                           "products": ["alpha-x"]},
         },
         "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
-                               "categories": ["base_pretrained"]}]},
+                               "groups": [{"name": "Group", "slug": "group", "categories": ["base_pretrained"]}]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained",
                                 "display_name": "Base / pretrained models",
@@ -819,3 +819,35 @@ def test_a_fully_open_product_with_no_adoption_still_counts_toward_the_axis_maxi
     rows = [_p("open_source", 4, 4), _p("open_source", None, 5)]
     sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
     assert sg["gaps"] == ["adoption"], "capability 5 is recorded, so only adoption is unreached"
+
+
+# --- #621: the group tier reaches the payload -----------------------------------------
+
+def test_payload_carries_the_group_and_its_order():
+    """`group` and `group_slug` on each category, `group_order` beside `layer_order`.
+
+    A consumer rendering groups in order should not have to re-derive that order from the
+    per-category `group_slug`, which is the same reason `layer_order` exists.
+    """
+    src = _sources()
+    src["taxonomy"]["arcs"][0]["groups"][0]["name"] = "Models"
+    src["taxonomy"]["arcs"][0]["groups"][0]["slug"] = "models"
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-09-22")
+    assert payload["group_order"] == ["models"]
+    assert payload["categories"]["base_pretrained"]["group"] == "Models"
+    assert payload["categories"]["base_pretrained"]["group_slug"] == "models"
+
+
+def test_group_order_omits_a_group_with_no_published_category():
+    """`group_order` lists what the payload actually contains.
+
+    A group holding only preliminary categories contributes nothing to `categories`, so
+    listing it would promise a section with no rows behind it.
+    """
+    src = _sources()
+    src["taxonomy"]["arcs"][0]["groups"].append(
+        {"name": "Later", "slug": "later",
+         "categories": [{"name": "preliminary_only", "status": "preliminary"}]}
+    )
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-09-22")
+    assert "later" not in payload["group_order"]

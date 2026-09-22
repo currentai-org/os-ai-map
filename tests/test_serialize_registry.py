@@ -48,13 +48,15 @@ def test_huggingface_model_pattern_does_not_swallow_datasets():
 def test_category_layer_is_derived_from_the_arc():
     taxonomy = {
         "arcs": [
-            {"name": "Model components", "layer": "model_components", "categories": ["base"]},
-            {"name": "Infrastructure", "layer": "infrastructure", "categories": ["deployment"]},
+            {"name": "Model components", "layer": "model_components",
+             "groups": [{"name": "Models", "slug": "models", "categories": ["base"]}]},
+            {"name": "Infrastructure", "layer": "infrastructure",
+             "groups": [{"name": "Platform", "slug": "platform", "categories": ["deployment"]}]},
         ]
     }
     layers = category_layers(taxonomy)
-    assert layers["base"] == ("Model components", "model_components")
-    assert layers["deployment"] == ("Infrastructure", "infrastructure")
+    assert layers["base"] == ("Model components", "model_components", "Models", "models")
+    assert layers["deployment"] == ("Infrastructure", "infrastructure", "Platform", "platform")
 
 
 def test_category_layer_accepts_lifecycle_entries():
@@ -63,11 +65,13 @@ def test_category_layer_accepts_lifecycle_entries():
             {
                 "name": "Infrastructure",
                 "layer": "infrastructure",
-                "categories": [{"name": "storage", "status": "preliminary"}],
+                "groups": [{"name": "Platform", "slug": "platform",
+                            "categories": [{"name": "storage", "status": "preliminary"}]}],
             }
         ]
     }
-    assert category_layers(taxonomy)["storage"] == ("Infrastructure", "infrastructure")
+    assert category_layers(taxonomy)["storage"] == (
+        "Infrastructure", "infrastructure", "Platform", "platform")
 
 
 def test_membership_is_inverted_into_join_tables():
@@ -75,7 +79,7 @@ def test_membership_is_inverted_into_join_tables():
         products={"olmo": {"display_name": "OLMo", "type": "model"}},
         organizations={"ai2": {"display_name": "Ai2", "type": "nonprofit", "products": ["olmo"]}},
         categories={"base": {"display_name": "Base", "weights": {}, "products": ["olmo"]}},
-        taxonomy={"arcs": [{"name": "Model components", "layer": "model_components", "categories": ["base"]}]},
+        taxonomy={"arcs": [{"name": "Model components", "layer": "model_components", "groups": [{"name": "Group", "slug": "group", "categories": ["base"]}]}]},
     )
     tables, errors, warnings = build_registry(sources)
     assert errors == []
@@ -89,7 +93,7 @@ def test_dangling_references_are_errors():
         products={},
         organizations={"ai2": {"products": ["ghost"]}},
         categories={"base": {"weights": {}, "products": ["ghost"]}},
-        taxonomy={"arcs": [{"name": "A", "layer": "a", "categories": ["base"]}]},
+        taxonomy={"arcs": [{"name": "A", "layer": "a", "groups": [{"name": "Group", "slug": "group", "categories": ["base"]}]}]},
     )
     _, errors, _ = build_registry(sources)
     assert any("unknown product 'ghost'" in e for e in errors)
@@ -116,7 +120,7 @@ def test_unaddressable_artifact_is_a_warning_not_an_error():
         products={"lm-studio": {"type": "software", "github": [{"url": "https://github.com/lmstudio-ai"}]}},
         organizations={"lms": {"products": ["lm-studio"]}},
         categories={"ui": {"weights": {}, "products": ["lm-studio"]}},
-        taxonomy={"arcs": [{"name": "Product / UX", "layer": "product_ux", "categories": ["ui"]}]},
+        taxonomy={"arcs": [{"name": "Product / UX", "layer": "product_ux", "groups": [{"name": "Group", "slug": "group", "categories": ["ui"]}]}]},
     )
     tables, errors, warnings = build_registry(sources)
     assert errors == []
@@ -145,7 +149,7 @@ def test_shared_display_name_is_a_warning_naming_both_products_and_categories():
                 {
                     "name": "Model",
                     "layer": "model",
-                    "categories": ["base_pretrained", "finetuned_chat"],
+                    "groups": [{"name": "Group", "slug": "group", "categories": ["base_pretrained", "finetuned_chat"]}],
                 }
             ]
         },
@@ -177,7 +181,7 @@ def test_tail_products_serialize_without_becoming_head_products():
                 {
                     "name": "Infrastructure",
                     "layer": "infrastructure",
-                    "categories": [{"name": "storage", "status": "preliminary"}],
+                    "groups": [{"name": "Group", "slug": "group", "categories": [{"name": "storage", "status": "preliminary"}]}],
                 }
             ]
         },
@@ -223,7 +227,7 @@ def test_tail_row_with_only_crates_serializes_with_the_crate_id():
                 {
                     "name": "Infrastructure",
                     "layer": "infrastructure",
-                    "categories": [{"name": "storage", "status": "preliminary"}],
+                    "groups": [{"name": "Group", "slug": "group", "categories": [{"name": "storage", "status": "preliminary"}]}],
                 }
             ]
         },
@@ -280,7 +284,7 @@ def test_not_primary_channel_rides_along_on_the_artifact_row():
         },
         organizations={"widgetco": {"products": ["widgetco"]}},
         categories={"ui": {"products": ["widgetco"]}},
-        taxonomy={"arcs": [{"name": "Applications", "layer": "applications", "categories": ["ui"]}]},
+        taxonomy={"arcs": [{"name": "Applications", "layer": "applications", "groups": [{"name": "Group", "slug": "group", "categories": ["ui"]}]}]},
     )
     tables, errors, _ = build_registry(sources)
     assert errors == []
@@ -347,7 +351,7 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
         },
         organizations={"openai": {"products": ["gsm8k"]}},
         categories={"bench": {"weights": {}, "products": ["gsm8k"]}},
-        taxonomy={"arcs": [{"name": "Model components", "layer": "model_components", "categories": ["bench"]}]},
+        taxonomy={"arcs": [{"name": "Model components", "layer": "model_components", "groups": [{"name": "Group", "slug": "group", "categories": ["bench"]}]}]},
     )
     tables, errors, _ = build_registry(sources)
     assert errors == []
@@ -496,3 +500,25 @@ def test_product_aliases_table_matches_the_payload_alias_map():
     assert {(r["alias"], r["product_slug"]) for r in tables["product_aliases"]} == set(
         payload_aliases.items()
     )
+
+
+def test_categories_export_carries_the_group_columns():
+    """`group_name` and `group_slug` land beside `arc_name` and `layer`.
+
+    All four are derived from where the category sits rather than stored on it, so they
+    travel together or the export can describe a category's arc without its group.
+    """
+    sources = _sources(
+        products={"olmo": {"display_name": "OLMo", "type": "model"}},
+        organizations={"ai2": {"display_name": "Ai2", "type": "nonprofit", "products": ["olmo"]}},
+        categories={"base": {"display_name": "Base", "weights": {}, "products": ["olmo"]}},
+        taxonomy={"arcs": [{
+            "name": "Model components", "layer": "model_components",
+            "groups": [{"name": "Models", "slug": "models", "categories": ["base"]}],
+        }]},
+    )
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    row = next(r for r in tables["categories"] if r["slug"] == "base")
+    assert (row["arc_name"], row["layer"]) == ("Model components", "model_components")
+    assert (row["group_name"], row["group_slug"]) == ("Models", "models")

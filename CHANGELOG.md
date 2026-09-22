@@ -125,6 +125,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- A group tier between arc and category in `sources/taxonomy.yaml`: each arc now declares an
+  ordered list of groups, each holding its categories. A category's group is derived from where
+  it sits, as its arc and layer already are. The payload gains `group`/`group_slug` per category
+  and a `group_order` list; `registry.categories` gains `group_name` and `group_slug`. Additive
+  throughout, so `PAYLOAD_CONTRACT` stays at 1. ([#621](https://github.com/currentai-org/os-ai-map/issues/621))
+
 - `check_parity` now separates taxonomy **lag** from drift. A divergence attributable to a whole
   category that exists on one side only — every product of a category the warehouse has no rows
   for, or every row under a category with no file in `sources/categories/` — is the scoring chain
