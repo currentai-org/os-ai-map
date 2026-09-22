@@ -613,7 +613,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         for gname, gslug, cid, status in arc_grouped_categories(arc):
             if status != "published":
                 continue
-            if gslug not in group_order:
+            # A pre-group ref yields an empty group slug (see build/taxonomy.py). The
+            # category still belongs in the payload -- what a cross-ref diff compares is
+            # stage, gaps, products and tiers -- it simply has no group to order by.
+            if gslug and gslug not in group_order:
                 group_order.append(gslug)
             order.append(cid)
             cid_arc[cid] = arc["name"]

@@ -1020,3 +1020,16 @@ def test_the_pre_group_taxonomy_shape_fails_by_name():
     arc["categories"] = [c for g in arc.pop("groups") for c in g["categories"]]
     errs = validate_sources(d)
     assert any("sit directly on the arc" in e for e in errs)
+
+
+def test_the_pre_group_shape_still_reads_for_cross_ref_tools():
+    """`validate` rejects it; the READER tolerates it.
+
+    check_corpus_diff builds the base payload from a worktree at the base commit using
+    current code, so across the migration it walks a pre-group tree. Without the fallback
+    it found nothing and reported every product in the corpus as newly appeared.
+    """
+    from build.taxonomy import arc_categories
+    legacy = {"name": "A", "layer": "a",
+              "categories": ["x", {"name": "y", "status": "preliminary"}]}
+    assert list(arc_categories(legacy)) == [("x", "published"), ("y", "preliminary")]

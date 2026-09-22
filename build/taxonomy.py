@@ -32,7 +32,22 @@ def arc_groups(arc: dict) -> Iterator[tuple[str, str, list]]:
     labour ``category_entry`` already uses: this module normalizes the shape, the
     validator is what fails the build.
     """
-    for group in arc.get("groups") or []:
+    groups = arc.get("groups")
+    if groups is None and arc.get("categories") is not None:
+        # READING AN OLDER REF. Before the group tier, categories sat directly on the arc.
+        # Tools that compare two refs -- build/check_corpus_diff.py builds the base payload
+        # from a worktree at the base commit, with THIS code -- would otherwise walk a
+        # pre-group tree, find no groups, and yield nothing, producing an empty payload and
+        # a diff claiming every product in the corpus had just appeared. That is what the
+        # gate reported before this fallback existed, and "everything appeared" is not a
+        # diagnosis anybody reaches from.
+        #
+        # This tolerance is for READING history only. `build/validate.py` rejects the shape
+        # in the repository's own sources, so it cannot come back by the front door, and the
+        # fallback stops mattering once no ref in range predates the migration.
+        yield "", "", arc["categories"]
+        return
+    for group in groups or []:
         if not isinstance(group, dict):
             continue
         name, slug = group.get("name"), group.get("slug")
