@@ -1,0 +1,97 @@
+# The weekly scoring-trace publish: replay the openness ladder over every product and publish
+# the three `currentai.evaluation.*` tables that make the ADR-001 dual-run agreement queryable.
+#
+# Why this workflow exists. `build/publish_scoring_trace.py` was written as the maintainer half
+# of the Phase-6 deploy and nothing ever called it on a schedule. The consequence, measured on
+# 2026-09-22 (#384): `evaluation.axis_results` held exactly ONE `source_git_sha`, from
+# 2026-08-27, covering 522 products against a corpus of 763. Phase 7 retires the duplicate
+# warehouse computation only once the trace and the repo evaluator agree "across multiple
+# releases", and with one generation in the table that condition could not be reached by
+# waiting — there was no mechanism by which a second generation would ever appear.
+#
+# So this workflow is not a deploy convenience. It is the thing that makes the Phase-7 condition
+# reachable at all, and the run summary is where the agreement is read.
+#
+# What a generation is. The trace keys on `declaration_version_id` and carries no `release_id`
+# and no `observation_snapshot_id` — a deterministic evaluation of the declarations depends on
+# no measurement. A run over unchanged sources therefore reproduces the same ids, and the
+# publisher's read-back is what proves it rather than a fresh row. Generations accumulate when
+# the declarations move, which is what "across releases" means here.
+#
+# Ordering. This reads the working tree and nothing from the signal chain, so it does not need
+# the Sunday sweep and is deliberately slotted AFTER the Monday gates rather than among them —
+# a trace built from a tree that a gate is about to change is a generation nobody wants to
+# reason about.
+#
+# See docs/operations/deploy-scoring-trace.md.
+name: scoring-trace
+on:
+  schedule:
+    - cron: "0 7 * * 1"      # Monday 07:00 UTC nominal, after the Monday gates
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "build/axis_scoring_trace.py"
+      - "build/publish_scoring_trace.py"
+      - ".github/workflows/scoring-trace.yml"
+permissions:
+  contents: read
+concurrency:
+  group: scoring-trace
+  cancel-in-progress: false
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the trace stamps `source_git_sha` and resolves the declaration
+          # version against HEAD, and a shallow clone collapses every product onto the tip.
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Build the three trace CSVs from the working tree
+        run: uv run python -m build.axis_scoring_trace --out build/evaluation
+      - name: Validate the plan offline
+        run: uv run python -m build.publish_scoring_trace --plan --dir build/evaluation
+      - name: Report the dual-run agreement
+        # The agreement is the point of the run, so it goes in the summary whether or not the
+        # publish leg runs. A week where agreement slips is the week this matters most, and on
+        # a pull_request this is the only leg that executes.
+        run: |
+          {
+            echo "## Scoring trace"
+            echo
+            echo "ADR-001 dual-run agreement, replayed over the working tree. Phase 7 (#384)"
+            echo "retires the duplicate warehouse computation once this holds across releases."
+            echo
+            echo '```'
+            uv run python -m build.axis_scoring_trace
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    # Never from a pull request: the `currentai.evaluation.*` static models are org-wide and a
+    # branch must not overwrite them. Same rule as registry.yml's publish job.
+    if: github.event_name != 'pull_request'
+    needs: trace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Rebuild the CSVs in this job
+        # Rebuilt rather than carried across jobs: the id is derived from the tree, so a
+        # rebuild proves the publish and the reported agreement describe the same evaluation.
+        run: uv run python -m build.axis_scoring_trace --out build/evaluation
+      - name: Publish the trace to OSO
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+          OSO_ORG_ID: ${{ secrets.OSO_ORG_ID }}
+        run: uv run python -m build.publish_scoring_trace --dir build/evaluation
