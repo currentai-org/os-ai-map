@@ -14,6 +14,18 @@
 # to make it stop.
 #
 # A ruling needs a reason. A bare entry is a place for a real contradiction to hide.
+#
+# ## Two classes of ruling, and the second one must not read like the first
+#
+# Most entries say the finding is NOT a defect: the record was right and the observation does not
+# contradict it. Those carry no `class`.
+#
+# A few say the opposite -- the finding is real and the schema cannot represent the answer. Those
+# carry `class: representation-gap`, and the distinction is load-bearing. Filed as an ordinary
+# settlement, a confirmed unresolved case would leave the queue looking exactly like a vindicated
+# record, which is the silencing this file exists to prevent. `build/check_contradictions.py`
+# prints them on every run for that reason: they are suppressed from the queue and not from view,
+# and each one is a standing argument for changing the schema rather than a closed question.
 version: 1
 settled:
   - leg: retirement
@@ -67,6 +79,29 @@ settled:
       Repository archived, dataset live. cruxeval-org/cruxeval is still served on Hugging Face and
       still downloaded - 16,051 in the month before this ruling - with the leaderboard and sample
       explorer still reachable.
+  - leg: retirement
+    product_slug: google-coral-dev-board
+    artifact: google-coral/libedgetpu
+    settles: archived
+    class: representation-gap
+    ruled_on: '2026-09-22'
+    read_by: Carl Cervone, 2026-09-22, from the PCN linked below
+    source: https://www.mouser.com/PCN/Coral_CORAL_DEV_BOARD(4G)__SOM(4G)_EOL_Notice.pdf
+    note: >-
+      NOT a vindicated record. The one finding of the ten where the product really did end, kept
+      here because the schema cannot represent the answer rather than because the answer is no.
+      Google's EOL notice for the Coral Dev Board (4G) and its SoM, linked above, is dated July
+      2024 and gives the end of life as "2024" - the maintainer read it and reports no month or
+      day; the page is served behind a bot wall and could not be fetched for a digest.
+      Independently, coral.ai's product pages now redirect to a developer page that sells no
+      hardware, and distributors list the board discontinued and out of stock. `end_of_life.date`
+      is a full ISO date meaning the last day the product works as the announcement states it, and
+      a year cannot be narrowed to a day without inventing one; the field's own description rules
+      out substituting the announcement's date. This says only that the CITED notice supplies a
+      year - another announcement may give a day, and finding one closes this properly. It is also
+      the case to cite if the field is ever widened, though a wider date would still not settle
+      when a discontinued board stops working, which is a different question from when it stopped
+      being sold.
   - leg: retirement
     product_slug: granite-code-instruct
     artifact: ibm-granite/granite-code-models

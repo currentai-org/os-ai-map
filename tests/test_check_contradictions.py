@@ -393,3 +393,28 @@ def test_rows_with_no_product_slug_are_counted_individually():
     findings, abstained = cc.sweep(rows, {}, {})
     assert findings == []
     assert abstained["the row carries no product slug"] == 3
+
+
+def test_a_representation_gap_is_reported_rather_than_silently_suppressed():
+    """The distinction the ledger turns on. Most settlements say the record was right; a few say
+    the finding is real and no field can record the answer. Filed as an ordinary settlement, the
+    second kind leaves the queue looking exactly like a vindicated record.
+    """
+    settled = [
+        {"leg": cc.RETIREMENT, "product_slug": "widget", "artifact": "acme/widget",
+         "settles": "archived", "note": "the product outlived the repository"},
+        {"leg": cc.RETIREMENT, "product_slug": "gadget", "artifact": "acme/gadget",
+         "settles": "archived", "class": "representation-gap",
+         "note": "it ended, and the announcement gives a year where the field wants a day"},
+    ]
+    gaps = cc.representation_gaps(settled)
+    assert [g["product_slug"] for g in gaps] == ["gadget"]
+
+
+def test_a_representation_gap_still_suppresses_its_finding():
+    """Reported is not the same as raised. It stays out of the queue; it does not stay out of
+    sight."""
+    settled = [{"leg": cc.RETIREMENT, "product_slug": "widget", "artifact": "acme/widget",
+                "settles": "archived", "class": "representation-gap",
+                "note": "the schema cannot record the answer"}]
+    assert _sweep([_row(is_archived=True)], {"widget": _product()}, settled) == []

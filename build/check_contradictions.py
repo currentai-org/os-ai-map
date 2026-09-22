@@ -397,6 +397,18 @@ def settled_keys(settled: Iterable[Mapping]) -> set[tuple[str, str, str, str]]:
     return out
 
 
+def representation_gaps(settled: Iterable[Mapping]) -> list[Mapping]:
+    """Settlements that suppress a finding the schema cannot represent, rather than a defect.
+
+    Most settlements say the record was right. A few say the opposite: the finding is real and
+    there is no field to record the answer in. Filed as an ordinary settlement, one of those
+    leaves the queue looking exactly like a vindicated record, which is the silencing this ledger
+    exists to prevent. They are printed on every run so the suppression stays visible, and each is
+    a standing argument for changing the schema rather than a closed question.
+    """
+    return [entry for entry in settled or () if entry.get("class") == "representation-gap"]
+
+
 def sweep(
     rows: Iterable[Mapping],
     products: Mapping[str, Mapping],
@@ -503,6 +515,12 @@ def main(argv: list[str] | None = None, root: Path | None = None, rows: Iterable
             print(f"\nlicense leg: {total} product(s) abstained on")
             for reason, count in abstained.most_common():
                 print(f"  {count:4}  {reason}")
+        gaps = representation_gaps(settled)
+        if gaps:
+            print(f"\n{len(gaps)} finding(s) suppressed because the schema cannot record the answer:")
+            for entry in gaps:
+                print(f"  ~ {entry.get('product_slug')} [{entry.get('leg')}]")
+            print("  These are real and unresolved. Each is an argument for a schema change.")
     if args.queue:
         args.queue.write_text(queue_markdown(findings))
     return 1 if (args.strict and findings) else 0
