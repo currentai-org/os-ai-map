@@ -255,6 +255,39 @@ into repo ownership is exactly what the rule refuses.
 - The agent stops generating cross-org consistency work, because the boundary does not pull
   unrelated OSO assets into repository governance.
 
+## Changing a dependency
+
+A governed asset sometimes needs something an `owner: oso` contract does not carry — a column
+the collector already receives and discards, or an endpoint it does not yet call. The boundary
+says this repository does not own that model, and it is right; what it does not say is what to
+do instead, which left such requests with no addressee.
+
+**The route.** The request is filed as an issue *here*, against the contract it concerns, and
+actioned on the platform by the maintainer who holds OSO write access. One issue per request,
+not one per requesting gate: two gates wanting fields on the same model is one change to that
+model.
+
+An issue asking for this states four things, because they are what make it actionable without a
+second round trip:
+
+- the contract, by its `warehouse/dependencies.yaml` table name, verified to still exist —
+  requests have been filed against tables that had already been renamed away;
+- the exact fields or endpoint, and whether the collector already calls it;
+- the governed asset that will read the result, which is what qualifies the request under the
+  boundary rule at all;
+- what the requesting side does meanwhile — whether the gate is written against absent columns
+  and skipped, or held.
+
+**While a request is outstanding**, the contract in `warehouse/dependencies.yaml` records
+nothing. A contract describes what a table *carries*, and a pending request is not a property of
+the table; writing it there would make the manifest a wish list and the `expected_columns` block
+stop meaning what it says. The issue is the record.
+
+**What does not change.** The repository still does not own the model, a request is not a claim
+on it, and nothing here lets a governed asset read a table no contract covers. A request that is
+declined leaves the gate in whatever interim state its issue declared, which is the honest
+outcome and not a blocked one.
+
 ## Reclaiming a dependency
 
 An externalized table can come back. It becomes a legitimate category-3 input again when an in-scope
