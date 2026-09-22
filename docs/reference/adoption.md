@@ -708,6 +708,40 @@ at 11 of 20, `scientific_ai_models` at 17 of 34 and `storage` at 20 of 41 - and 
 of those categories rather than a defect in them. Docker pull counts would fix most of them; there
 is no `docker` artifact kind to declare, which is the platform-side ask.
 
+## Reading a pypi-routed band as a trend, not a point
+
+A trailing-30-day figure cannot tell a collapse from a step change that happened months ago, and
+a note that guesses which one it is saying is the note that ages worst. The series is already
+available: `oso.pypi_downloads.daily_downloads_by_package` is a contract in
+`warehouse/dependencies.yaml` at day grain, covering every package on PyPI, and
+`warehouse/models/signal_packages/downloads.sql` reads it to build the trailing windows the
+bands use.
+
+Roll it to months before writing a sentence about direction:
+
+```sql
+SELECT date_trunc('month', day) AS month, sum(downloads) AS downloads
+FROM oso.pypi_downloads.daily_downloads_by_package
+WHERE package = '<the declared package>'
+GROUP BY 1 ORDER BY 1
+```
+
+Two things to hold onto.
+
+**Bound the claim to the window that exists.** The upstream series starts 2026-06-01, a little
+over a hundred days. It answers "has this held for a quarter". It cannot answer "what did this do
+last year", and a note that implies otherwise is asserting more than the data carries.
+
+**The last month is partial.** Reading the current month as a level, rather than as a month in
+progress, turns every product into a decline.
+
+**A direction claim ages, and nothing catches it.** A note saying a product has settled, or is
+fading, was true of the months its author could see. Later months can reverse it without any
+source changing, so re-verification confirms the citation and leaves the sentence standing: a
+`last_verified` date attests that the sources still read as recorded, never that a conclusion
+drawn from them still holds, and no gate checks the difference. So a direction sentence is
+written from the series above, or it is not written.
+
 ## Checklist
 
 - [ ] `level` is 1-5 and follows the band table for the product's **type**.
@@ -729,6 +763,9 @@ is no `docker` artifact kind to declare, which is the platform-side ask.
       active count (an all-time total, a device base, a paid-seat count).
 - [ ] The band follows from the figure in the note, in the same direction and order of
       magnitude.
+- [ ] A note claiming a direction — rising, settled, fading, healthy — was written from the
+      monthly series above rather than from two point reads, and bounds itself to the window
+      that series covers.
 - [ ] No band was copied from a computed signal — those are observations, not scores.
 - [ ] The registry release the band was read off is on the line the repository is publishing.
       `check_channel_authority --live` asks this; a band a whole major line behind needs the
