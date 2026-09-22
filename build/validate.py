@@ -166,14 +166,17 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         arc_name = arc.get("name")
         if arc.get("layer") not in LAYERS:
             errors.append(f"taxonomy arc {arc_name!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
-        # The pre-group shape put categories directly on the arc. Read by the group-aware
-        # walk that spelling yields NOTHING rather than erroring, so a stale file builds an
-        # empty payload and every downstream count silently goes to zero. Caught here, by
-        # name, because "0 products" is not a diagnosis anybody reaches from.
+        # The pre-group shape put categories directly on the arc. `build/taxonomy.py` reads
+        # it deliberately, so that tools comparing two refs can walk a commit predating the
+        # migration; this rejects it in the repository's OWN sources, which is the other half
+        # of that split. The obsolete spelling is not an alternative to declaring groups: a
+        # category in it carries no group, and so reaches the payload and the registry export
+        # with an empty `group_slug`.
         if "categories" in arc and "groups" not in arc:
             errors.append(
                 f"taxonomy arc {arc_name!r}: categories sit directly on the arc. They belong "
-                f"in a `groups:` entry — an arc with no groups contributes no categories at all."
+                f"in a `groups:` entry — the obsolete spelling still reads, for history, but "
+                f"a category declared that way carries no group."
             )
         for group in arc.get("groups", []):
             if not isinstance(group, dict):

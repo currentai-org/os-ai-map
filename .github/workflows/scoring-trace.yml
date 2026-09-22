@@ -9,14 +9,20 @@
 # releases", and with one generation in the table that condition could not be reached by
 # waiting — there was no mechanism by which a second generation would ever appear.
 #
-# So this workflow is not a deploy convenience. It is the thing that makes the Phase-7 condition
-# reachable at all, and the run summary is where the agreement is read.
+# What this does and does not buy. It keeps the trace CURRENT: without it the tables sat 289
+# commits and 241 products behind the corpus, and an agreement figure read off them described
+# a corpus that no longer existed. The agreement is also re-checked and reported every week.
 #
-# What a generation is. The trace keys on `declaration_version_id` and carries no `release_id`
-# and no `observation_snapshot_id` — a deterministic evaluation of the declarations depends on
-# no measurement. A run over unchanged sources therefore reproduces the same ids, and the
-# publisher's read-back is what proves it rather than a fresh row. Generations accumulate when
-# the declarations move, which is what "across releases" means here.
+# It does NOT make the Phase-7 condition reachable, which an earlier version of this comment
+# claimed. `axis_results` holds one `source_git_sha` after any publish, because the static
+# model replaces in place (#412), and this workflow does not commit or upload the publisher's
+# archive — that defaults to ephemeral runner storage. So generations do not accumulate
+# anywhere, and "agreement across multiple releases" cannot become true by running this more
+# often. Closing that needs release-scoped tables or a durable per-publish record; see #384.
+#
+# The trace keys on `declaration_version_id` and carries no `release_id` and no
+# `observation_snapshot_id` — a deterministic evaluation of the declarations depends on no
+# measurement.
 #
 # Ordering. This reads the working tree and nothing from the signal chain, so it does not need
 # the Sunday sweep and is deliberately slotted AFTER the Monday gates rather than among them —
