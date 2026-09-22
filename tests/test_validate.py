@@ -1010,10 +1010,12 @@ def test_a_group_missing_its_slug_fails():
 
 
 def test_the_pre_group_taxonomy_shape_fails_by_name():
-    """Categories directly on the arc yield nothing from the group-aware walk.
+    """The obsolete spelling reads, for history, but is rejected in our own sources.
 
-    Silently: the payload builds with no categories and every derived count goes to zero,
-    which is not a diagnosis anybody reaches from. The error names the arc.
+    `build/taxonomy.py` tolerates it so cross-ref tools can walk a pre-migration commit.
+    That tolerance must not become a second supported way to declare a category here: one
+    declared that way carries no group, and reaches the payload and the registry export
+    with an empty `group_slug`. The error names the arc.
     """
     d = _fixture()
     arc = d["taxonomy"]["arcs"][0]
