@@ -20,10 +20,14 @@ UTC nominal, after the Monday gates) and on `workflow_dispatch`, and publishes o
 a pull request. The steps below are the same sequence by hand, for a publish outside that
 cadence or when a run needs to be reproduced locally.
 
-The cadence exists because the Phase-7 condition needs it. `axis_results.reproduces_recorded` is
-the ADR-001 dual-run agreement, and retirement asks for agreement across releases; generations
-accumulate only if something publishes them, so a publisher with no caller makes the condition
-unreachable rather than merely unmet (#384).
+The cadence keeps the trace current. Without it the tables drifted 289 commits and 241 products
+behind the corpus, so an agreement figure read off them described a corpus that no longer
+existed.
+
+It does not, by itself, satisfy Phase 7. `axis_results` holds one `source_git_sha` after any
+publish — the static model replaces in place (#412) — and the workflow does not persist the
+publisher's archive, so generations accumulate nowhere and "agreement across releases" stays
+unobservable however often this runs. #384 carries the options.
 
 "Only a maintainer materializes them" still holds and is about editor sessions: the workflow
 carries the maintainer's `OSO_API_KEY` and `OSO_ORG_ID` as repository secrets, the same way
