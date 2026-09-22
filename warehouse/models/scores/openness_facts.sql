@@ -365,6 +365,11 @@ license_fact AS (
     MIN(CASE
       WHEN grade = 'dataset' AND admitted AND tier IS NOT NULL THEN source_accessed END
     ) AS ds_accessed,
+    -- The winning ranks, carried so the two readings can be COMPARED rather than one simply
+    -- overriding the other. Same grade filters as the MAX_BY aggregates, so each rank belongs
+    -- to the tier that won its own side.
+    MAX(CASE WHEN grade = 'dataset' AND tier IS NOT NULL THEN tier_rank END) AS ds_rank,
+    MAX(CASE WHEN grade = 'document' AND tier IS NOT NULL THEN tier_rank END) AS doc_rank,
     COUNT_IF(grade = 'document') AS doc_parts,
     COUNT_IF(grade = 'document' AND tier IS NOT NULL) AS doc_parts_mapped,
     -- Same -1 / -2 convention as the SKU aggregate above: an unmapped part cannot win the
@@ -396,6 +401,39 @@ license_resolved AS (
       AS doc_tier
   FROM license_fact
 ),
+-- Most restrictive of the two readings, rather than whichever one is available.
+--
+-- The SKU reading used to override the recorded parts outright wherever the family was fully
+-- covered. A fully covered family can still be an incomplete description of the licence,
+-- because the Hub's `license` field is SINGLE-VALUED: a compound licence has to pick one of
+-- its parts to put there. `colpali` is the case. Both its declared checkpoints are tagged
+-- MIT, while `vidore/colpali-v1.3`'s own card says "ColPali's vision language backbone model
+-- (PaliGemma) is under `gemma` license ... The adapters attached to the model are under MIT
+-- license". The curator read the card and recorded both parts; the tag reports only the
+-- permissive one. Overriding published the family two rungs high - 5/open_source against the
+-- repo's 3/open_weights - and dropping the restrictive part is the direction that overstates
+-- openness, which feeds a category's mature count and so its stage.
+--
+-- So where both readings resolve, the more restrictive wins. That is the rule the repo
+-- already applies across parts, and the rule this file already applies WITHIN each reading.
+-- Where only one resolves it governs alone, as before. A tag MORE restrictive than the record
+-- still wins on the same comparison: `gemma` and `hermes` read that way and are unaffected,
+-- because the max was already theirs.
+license_governing AS (
+  SELECT
+    *,
+    CASE
+      WHEN NOT dataset_governs THEN doc_tier
+      WHEN doc_tier IS NOT NULL AND doc_rank > ds_rank THEN doc_tier
+      ELSE most_restrictive_tier
+    END AS governing_tier,
+    CASE
+      WHEN NOT dataset_governs THEN 'document'
+      WHEN doc_tier IS NOT NULL AND doc_rank > ds_rank THEN 'document'
+      ELSE 'dataset'
+    END AS governing_grade
+  FROM license_resolved
+),
 
 -- One authoritative fact per key ---------------------------------------------
 resolved AS (
@@ -403,18 +441,24 @@ resolved AS (
     g.product_slug,
     g.category_slug,
     'license_tier' AS fact_key,
-    CASE WHEN f.dataset_governs THEN f.most_restrictive_tier ELSE f.doc_tier END AS fact_value,
-    CASE WHEN f.dataset_governs THEN 'dataset' ELSE 'document' END AS fact_grade,
-    CASE WHEN f.dataset_governs THEN true ELSE COALESCE(f.doc_admitted, false) END
+    f.governing_tier AS fact_value,
+    -- COALESCE for the LEFT JOIN miss only. A product with no licence evidence at all matches
+    -- no row here, and the CASE this replaced fell through to 'document' on that null. Keeping
+    -- that fallback holds the change to the one verdict it is about: without it, thirteen
+    -- products with a null licence tier would also move their grade to null, which is arguably
+    -- tidier and is not this fix.
+    COALESCE(f.governing_grade, 'document') AS fact_grade,
+    CASE WHEN f.governing_grade = 'dataset' THEN true ELSE COALESCE(f.doc_admitted, false) END
       AS fact_admitted,
-    CASE WHEN f.dataset_governs THEN f.ds_accessed ELSE f.doc_accessed END AS fact_accessed,
+    CASE WHEN f.governing_grade = 'dataset' THEN f.ds_accessed ELSE f.doc_accessed END
+      AS fact_accessed,
     -- The license as it was named before the tier lookup, so an unmapped one can be read off
     -- this table instead of reconstructed. check_rubric prints exactly this in its finding.
     -- All of it, for a compound: the part that failed to map is the one worth seeing, and it
     -- is not always the first.
     f.doc_license_name AS fact_input,
     CASE
-      WHEN f.dataset_governs THEN CAST(NULL AS VARCHAR)
+      WHEN f.governing_grade = 'dataset' THEN CAST(NULL AS VARCHAR)
       WHEN f.tiers_seen > 1
         THEN 'dataset abstained on the family: its ' || CAST(f.skus_mapped AS VARCHAR)
              || ' mapped SKUs span ' || CAST(f.tiers_seen AS VARCHAR)
@@ -440,7 +484,7 @@ resolved AS (
   JOIN ladder_tiers lt
     ON lt.category_slug = g.category_slug
    AND lt.product_type = g.ladder_type
-  LEFT JOIN license_resolved f
+  LEFT JOIN license_governing f
     ON f.product_slug = g.product_slug AND f.category_slug = g.category_slug
 
   UNION ALL
