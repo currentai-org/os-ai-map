@@ -1,0 +1,60 @@
+name: long-tail-sync
+
+# Recompute the numbers the map publishes about its own coverage, and commit them.
+#
+# `sources/snapshots/long_tail.json` says how many repositories, models and packages the map
+# tracks. Those used to be typed in by hand after a batch, and they drifted a long way while the
+# published sentence went on stating them in the present tense. The rule that came out of #545
+# is that a number the repo states about itself is computed and compared, never typed — and that
+# refreshing one by hand on a cadence has the same defect as leaving it stale.
+#
+# So this is the computing half. `build/check_long_tail.py` is the other half and runs on every
+# pull request: it cannot reach the warehouse, so it checks the stamp instead, and fails when
+# this job has not run for two cycles.
+#
+# Monday 07:00 UTC: after `signal_hfhub.model_universe` rebuilds (Sunday 01:30) and after the
+# GoodAI List catalogue refreshes, so the three sources are the same week's. An hour behind
+# `parity` so the two warehouse-reading jobs' logs stay apart.
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Serialized: this commits and pushes to main, and two overlapping runs race on the push.
+concurrency:
+  group: long-tail-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Recompute the long-tail counts
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: uv run python -m build.sync_long_tail --write
+
+      - name: The counts must pass their own gate before they are committed
+        run: uv run python -m build.check_long_tail
+
+      - name: Commit the snapshot
+        run: |
+          if git diff --quiet sources/snapshots/long_tail.json; then
+            echo "No change to the long-tail counts."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sources/snapshots/long_tail.json
+          git commit -m "chore(sources): recompute the long-tail universe counts [bot]"
+          git push

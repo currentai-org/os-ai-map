@@ -286,18 +286,31 @@ def _catalog_ids(prods: dict) -> dict:
 def derived_long_tail_counts(frozen: dict, published: set[str]) -> dict:
     """Counts that depend on the roster are derived here, never read from the file.
 
-    `scored` is the published head count; `scored_outside` and `uncategorized` follow from
-    it and the frozen `overlap` and `total`. Only the frozen universe numbers (repos,
-    models, packages, total, overlap, universe) still live in long_tail.json, so adding a
-    product no longer edits that file. See #329 for making the universe itself live.
+    `scored` is the published head count. The other two are each a subtraction, and they
+    subtract different things because they are not the same grain:
+
+      * `scored_outside` = scored PRODUCTS minus the products that came out of the universe
+        (`overlap`). What is left is the closed and proprietary products the map went looking
+        for rather than discovered.
+      * `uncategorized` = universe ARTIFACTS minus the artifacts a scored product already
+        declares (`matched`). What is left is the tail nobody has scored yet.
+
+    Subtracting `overlap` from `total` mixes products into an artifact count, which is what
+    this did until the universe gained its model and package slices: every scored product's
+    Hugging Face model and published package stayed in the universe and was published as not
+    yet scored. `matched` is the artifact-grain figure, and `build/sync_long_tail.py` measures
+    both.
+
+    The universe numbers themselves (repos, models, packages, total, matched, overlap) are
+    measured from the warehouse by that script and committed by the weekly sync, so adding a
+    product never edits long_tail.json.
     """
     counts = dict(frozen.get("counts") or {})
     scored = len(published)
-    overlap = int(counts.get("overlap", 0))
     total = int(counts.get("total", 0))
     counts["scored"] = scored
-    counts["scored_outside"] = scored - overlap
-    counts["uncategorized"] = total - overlap
+    counts["scored_outside"] = scored - int(counts.get("overlap", 0))
+    counts["uncategorized"] = total - int(counts.get("matched", counts.get("overlap", 0)))
     return counts
 
 

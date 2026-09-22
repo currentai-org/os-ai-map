@@ -58,6 +58,7 @@ PLAN: dict[str, tuple[str, str]] = {
     "Capability gate (recorded comparisons hold)": (RUN, ""),
     "Recipe gate (structure, deferral completeness, discarded evidence)": (RUN, ""),
     "Components gate (a structured mapping matches its raw string)": (RUN, ""),
+    "Long-tail counts gate (measured, and measured recently)": (RUN, ""),
     "Rubric gate (recorded scores reproduce)": (RUN, ""),
     "Adoption gate (every band exists on its instrument's scale)": (RUN, ""),
     "Instrument gate (every signal_type claim has what it needs to be falsifiable)": (RUN, ""),

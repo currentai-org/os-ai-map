@@ -98,7 +98,6 @@ def _methodology_numbers(d):
         "total": f'{_c["total"]:,}',
         "scored": f'{_c["scored"]:,}',
         "uncategorized": f'{_c["uncategorized"]:,}',
-        "universe": f'{_c["universe"]:,}',
         "disc_repos": f'{_c["repos"]:,}',
         "disc_models": f'{_c["models"]:,}',
         "disc_packages": f'{_c["packages"]:,}',
@@ -1033,7 +1032,7 @@ def uncategorized_long_tail(C, DATA, F, mo):
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The long tail</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
-        f'margin:0 0 12px; letter-spacing:-0.015em;">{_c["uncategorized"]:,} more products, tracked but not yet scored</h2>'
+        f'margin:0 0 12px; letter-spacing:-0.015em;">{_c["uncategorized"]:,} more artifacts, tracked but not yet scored</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
         f'We track <strong>{_c["total"]:,}</strong> open source AI artifacts in total: '
         f'<strong>{_c["repos"]:,}</strong> repositories, <strong>{_c["models"]:,}</strong> models, and '

@@ -59,6 +59,14 @@ jobs:
       - name: Components gate (a structured mapping matches its raw string)
         run: uv run python -m build.check_components
 
+      # Are the numbers the map publishes about its own coverage still true? This cannot reach
+      # the warehouse from a pull request, so it checks the stamp `build/sync_long_tail.py`
+      # leaves instead. It fails when the weekly sync has not run for two cycles, which is the
+      # failure this file has actually had: stored counts sitting unchanged while their sources
+      # moved, published in the present tense with nothing beside them to say when they were read.
+      - name: Long-tail counts gate (measured, and measured recently)
+        run: uv run python -m build.check_long_tail
+
       # Does the recorded score match what the category's own rubric produces? This is the
       # only gate that compares a published number against the rule meant to generate it,
       # and it ran in no workflow until now. Safe to gate on: products a category has
