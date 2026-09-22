@@ -412,8 +412,9 @@ a pass applies them.
   `langfuse` client banded it at 5 under the superseded rule, and re-read against this one it
   carries `reported_traction` at 4, on the vendor's own figures for the server rather than the
   client. Re-reading it also corrected the evidence: the acquisition announcement the record cited
-  as containing no usage figure now reports Docker pulls and a Fortune 500 roster, which is what
-  the level rests on.
+  as containing no usage figure does report pulls of the server image and a Fortune 500 roster,
+  which is what the level rests on. Whether the page changed or the first reading missed them is
+  not established, so the record says what it says today and claims nothing about why.
 
 A band exceeding the computed one is usually not a dispute about the measurement. The common
 shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
