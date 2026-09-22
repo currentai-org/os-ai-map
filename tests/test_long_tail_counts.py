@@ -154,3 +154,45 @@ def test_uncategorized_falls_back_to_overlap_when_matched_is_absent():
 
     frozen = {"counts": {"total": 35, "overlap": 4}}
     assert derived_long_tail_counts(frozen, {"a"})["uncategorized"] == 31
+
+
+# ---------------------------------------------------------------------------
+# what the gate must refuse, from a Codex pass over the first version
+# ---------------------------------------------------------------------------
+
+
+def test_overlap_spans_the_same_slices_as_matched():
+    """A product discovered only through a package belongs in both. Counting repositories and
+    models alone reported two real products as found outside the catalogue."""
+    assert "package_owners_v0" in sync.OVERLAP
+    assert "repo_catalog" in sync.OVERLAP
+    assert "model_universe" in sync.OVERLAP
+
+
+def test_a_boolean_is_not_a_count():
+    """`isinstance(True, int)` is True in Python, so a bool reaches the arithmetic and passes it."""
+    snap = snapshot()
+    snap["counts"]["repos"] = True
+    problems = gate.check(snap, date(2026, 9, 21))
+    assert any("repos" in p for p in problems)
+
+
+@pytest.mark.parametrize("key", ["repos", "models", "packages", "total", "matched", "overlap"])
+def test_a_negative_count_is_refused(key):
+    snap = snapshot()
+    snap["counts"][key] = -1
+    assert gate.check(snap, date(2026, 9, 21))
+
+
+def test_matched_above_the_universe_is_refused():
+    """`uncategorized` is total - matched, so this publishes a negative tail. It is the shape a
+    roster moving under a snapshot produces, not one a curator would type."""
+    problems = gate.check(snapshot(matched=999), date(2026, 9, 21))
+    assert any("uncategorized remainder would be negative" in p for p in problems)
+
+
+def test_a_future_stamp_is_refused():
+    """The age test only rejects `age > MAX_AGE_DAYS`, so a date a month out would pass for a
+    month and a half. Reachable from a hand edit and from `--today`."""
+    problems = gate.check(snapshot("2026-10-30"), date(2026, 9, 21))
+    assert any("in the future" in p for p in problems)

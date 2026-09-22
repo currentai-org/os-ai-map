@@ -44,23 +44,46 @@ MAX_AGE_DAYS = 14
 REQUIRED = ("repos", "models", "packages", "total", "matched", "overlap")
 
 
+def _count(value: object) -> int | None:
+    """`value` as a count, or None when it is not one.
+
+    `isinstance(True, int)` is True in Python, so a bool reaches an arithmetic check and passes
+    it. A count is also never negative. Both are cheap to reject here and expensive to notice
+    downstream, where they surface as a published negative rather than as a bad snapshot.
+    """
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        return None
+    return value
+
+
 def check(snapshot: dict, today: date) -> list[str]:
     """Every reason this snapshot is not publishable, in the order a reader would find them."""
     problems: list[str] = []
     counts = snapshot.get("counts") or {}
 
-    missing = [key for key in REQUIRED if not isinstance(counts.get(key), int)]
+    missing = [key for key in REQUIRED if _count(counts.get(key)) is None]
     if missing:
         problems.append(
-            f"counts is missing {', '.join(missing)} — run `uv run python -m build.sync_long_tail --write`"
+            f"counts is missing or is not a count: {', '.join(missing)} — run "
+            "`uv run python -m build.sync_long_tail --write`"
         )
 
-    total = counts.get("total")
-    parts = [counts.get(k) for k in ("repos", "models", "packages")]
-    if isinstance(total, int) and all(isinstance(p, int) for p in parts) and total != sum(parts):
+    total = _count(counts.get("total"))
+    parts = [_count(counts.get(k)) for k in ("repos", "models", "packages")]
+    if total is not None and all(p is not None for p in parts) and total != sum(parts):
         # Cheap, and it catches the one way a hand edit still slips in: changing a slice and
         # leaving the sum, which is how a typed number used to hide.
         problems.append(f"total is {total:,} but the three slices sum to {sum(parts):,}")
+
+    # The two subtractions `serialize` makes must stay possible. `uncategorized` is
+    # total - matched, so a matched above total publishes a negative tail, which is the shape a
+    # roster moving under a snapshot produces rather than anything a curator would type.
+    matched = _count(counts.get("matched"))
+    if total is not None and matched is not None and matched > total:
+        problems.append(
+            f"matched is {matched:,} against a universe of {total:,}: more artifacts are claimed "
+            "by scored products than exist, so the uncategorized remainder would be negative"
+        )
 
     stamp = snapshot.get("measured_on")
     if not stamp:
@@ -73,6 +96,12 @@ def check(snapshot: dict, today: date) -> list[str]:
         return problems
 
     age = (today - measured).days
+    if age < 0:
+        # A future stamp would otherwise buy itself the window twice over: the age test only
+        # rejects `age > MAX_AGE_DAYS`, so a date a month out passes for a month and a half.
+        # Reachable from a hand edit and from `sync_long_tail --today`, which takes any date.
+        problems.append(f"measured_on {stamp} is in the future, so the window cannot be read")
+        return problems
     if age > MAX_AGE_DAYS:
         problems.append(
             f"counts were measured {age} days ago ({stamp}), past the {MAX_AGE_DAYS}-day window. "

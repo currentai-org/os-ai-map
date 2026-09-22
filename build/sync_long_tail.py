@@ -37,7 +37,19 @@ number because they are not the same grain.
     slices. It is what the uncategorized remainder subtracts.
   * **overlap** counts scored PRODUCTS that came out of the universe. It is what lets the
     published sentence separate products the map found by discovery from the closed and
-    proprietary ones it went looking for deliberately.
+    proprietary ones it went looking for deliberately. It spans the same three slices as
+    `matched`: two products in the corpus are discovered through a package and through nothing
+    else, and counting only repositories and models reported them as found outside the catalogue.
+
+## What binds these to the roster, and what does not
+
+`matched` and `overlap` are measured against `registry.product_artifacts` when the sync runs;
+`scored` is counted from the published roster when the payload is built. Nothing binds the two to
+one revision, so a roster that moves between a sync and a build makes the subtractions slightly
+wrong in a direction that depends on which way it moved. The weekly cadence bounds it, and
+`build/check_long_tail.py` refuses a set whose arithmetic has gone impossible, but a snapshot and
+a roster from different days are not reconciled here. Binding a snapshot to a roster revision is
+the real fix and is not this change.
 
 Subtracting `overlap` from `total` mixes products into an artifact count. That was survivable
 while repositories were the only slice; with three it leaves every scored product's model and
@@ -127,6 +139,12 @@ WHERE (a.artifact_kind = 'github' AND LOWER(a.artifact_id) IN
         (SELECT LOWER(repo) FROM currentai.signal_goodailist.repo_catalog))
    OR (a.artifact_kind = 'huggingface_model' AND LOWER(a.artifact_id) IN
         (SELECT LOWER(hf_id) FROM currentai.signal_hfhub.model_universe))
+   OR (a.artifact_kind IN ('pypi', 'npm', 'crates') AND LOWER(a.artifact_id) IN (
+        SELECT LOWER(p.package_artifact_name)
+        FROM oso.package_owners_v0 AS p
+        JOIN currentai.signal_goodailist.repo_catalog AS r
+          ON LOWER(p.package_owner_artifact_namespace || '/' || p.package_owner_artifact_name)
+           = LOWER(r.repo)))
 """
 
 
