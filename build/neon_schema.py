@@ -834,7 +834,19 @@ def _groups(payload: dict) -> list[dict]:
         layer_of[slug] = layer
     out = []
     for slug, ident in ids.items():
-        layer = layer_of.get(slug, "")
+        if slug not in layer_of:
+            # Cannot arise from a payload `build/serialize.py` built: it appends to
+            # `group_order` only inside the published-category loop, so a group reaches it
+            # with at least one published category, and an all-preliminary group is left out
+            # (tests/test_serialize.py pins that). Reachable only from a hand-assembled
+            # payload, and named rather than left to surface as an empty-layer error, which
+            # says nothing about the actual problem.
+            raise UnmappedValue(
+                f"group {slug!r} is in group_order but no category names it, so it has no "
+                f"label or layer to carry; group_order lists the groups the payload's "
+                f"categories are in"
+            )
+        layer = layer_of[slug]
         if layer not in layers:
             raise UnmappedValue(
                 f"group {slug!r} names layer {layer!r}, which is not in layer_order"

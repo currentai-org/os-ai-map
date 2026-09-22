@@ -1403,3 +1403,17 @@ def test_groups_carry_their_order_and_resolve_into_layers():
     assert group["label"] == "A Group"
     assert group["layer"] == layer["id"]
     assert category["group_id"] == group["id"]
+
+
+def test_a_group_in_group_order_that_no_category_names_is_named_not_left_to_surface():
+    """Unreachable from a built payload, and diagnosable if it ever is reached.
+
+    `build/serialize.py` appends to `group_order` inside its published-category loop, so a
+    group gets there only with a published category behind it. A hand-assembled payload can
+    still break that, and the old code surfaced it as `names layer '', which is not in
+    layer_order` — true, and not the problem.
+    """
+    payload = _fixture_payload()
+    payload["group_order"] = ["a_group", "ghost_group"]
+    with pytest.raises(UnmappedValue, match="no category names it"):
+        build_site_tables(payload)
