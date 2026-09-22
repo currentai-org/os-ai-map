@@ -453,6 +453,69 @@ def render_source(entry: dict, width: int = WIDTH) -> list[str]:
     return [f"{SOURCE_INDENT}{line}\n" if line.strip() else "\n" for line in dumped.splitlines()]
 
 
+def _rewrite_scalar_keys(span: list[str], updates: dict) -> list[str] | None:
+    """`span` with only the keys in `updates` rewritten, or None if that is not safe here.
+
+    Why this exists. `render_source` rebuilds an entry from its parsed dict, so an entry that
+    is re-confirmed comes back in PyYAML's style for EVERY field -- flow lists become block
+    lists and hand-wrapped prose rewraps at a different column. The content is identical and
+    the diff is not: about a quarter of the lines in a weekly freshness PR were the renderer
+    rather than the re-verification (#674).
+
+    The narrow case is the one that matters. `reverify.apply` updates exactly three keys --
+    `accessed`, `http_status`, `content_sha256` -- all single-line scalars that already exist
+    on the entry. Rewriting just those lines leaves every other byte alone, including the
+    `shows` prose and a compact `establishes: [...]`.
+
+    Returns None rather than guessing whenever the assumption does not hold: a key that is
+    absent (an insertion, not a substitution), a key whose value spans lines (a folded or
+    literal block), or a new value that does not render on one line. The caller then falls
+    back to the full re-render, which is always correct and merely noisy.
+    """
+    if not span:
+        return None
+    dash = span[0].index("- ") if "- " in span[0] else -1
+    if dash < 0:
+        return None
+    key_indent = " " * (dash + 2)
+
+    # key -> index within `span`. Only lines that OPEN a key at the entry's own indent
+    # count; a continuation line of a folded scalar is deeper, and a nested mapping's keys
+    # are deeper still, so neither is mistaken for one of the entry's fields.
+    at: dict[str, int] = {}
+    for i, line in enumerate(span):
+        body = line[dash + 2:] if i == 0 else (
+            line[len(key_indent):] if line.startswith(key_indent) else None
+        )
+        if body is None or not body.strip() or body[:1].isspace():
+            continue
+        head = body.split(":", 1)
+        if len(head) != 2 or not head[0] or head[0] != head[0].strip():
+            continue
+        at.setdefault(head[0], i)
+
+    if any(key not in at for key in updates):
+        return None
+    # A key whose value continues onto the next line is not a single-line scalar. The line
+    # after it belongs to that value unless it opens a key of its own.
+    for key in updates:
+        nxt = at[key] + 1
+        if nxt < len(span) and nxt not in at.values():
+            return None
+
+    out = list(span)
+    for key, value in updates.items():
+        rendered = yaml.safe_dump({key: value}, default_flow_style=False,
+                                  allow_unicode=True, width=10**6, sort_keys=False)
+        body = rendered.splitlines()
+        if len(body) != 1:
+            return None
+        i = at[key]
+        prefix = span[i][:dash + 2] if i == 0 else key_indent
+        out[i] = f"{prefix}{body[0]}\n"
+    return out
+
+
 def _source_span(lines: list[str], bounds: tuple[int, int], position: int) -> tuple[int, int]:
     """The line span of the `sources:` entry at `position`, within an axis block.
 
@@ -536,7 +599,10 @@ def set_source(text: str, axis: str, url: str, updates: dict, index: int | None 
     entry = dict(entries[index])
     entry.update(updates)
 
-    rendered = render_source(entry)
+    # Preserve the entry's own spelling where the change allows it, and fall back to the
+    # full re-render where it does not. Both go through the reparse guard below, so the
+    # cheap path cannot be wrong in a way the expensive path would have caught (#674).
+    rendered = _rewrite_scalar_keys(lines[first:last], updates) or render_source(entry)
     new_text = "".join(lines[:first] + rendered + lines[last:])
 
     expected = copy.deepcopy(before_doc)

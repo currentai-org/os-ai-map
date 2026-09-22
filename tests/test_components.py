@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 import yaml
 
+from build import components
 from build.components import field_span, format, parse, render, rewrite, set_comparison_source, set_field
 
 # `granite-code-instruct`'s real components value, which folds across four lines in the
@@ -909,3 +910,71 @@ def test_a_comparison_source_line_is_rewritten_in_place():
         set_comparison_source(COMPARISON_NOTE, "capability", 2, {"shows": "x"})
     with pytest.raises(ValueError):
         set_comparison_source(COMPARISON_NOTE, "openness", 0, {"shows": "x"})
+
+
+# --- #674: a re-confirmed entry keeps its own spelling ---------------------------------
+
+_ENTRY = """openness:
+  level: 3
+  sources:
+  - url: https://example.com/readme
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: aaa
+    establishes: [weights, data, code, license]
+  last_verified: '2026-08-13'
+"""
+
+
+def test_updating_scalars_rewrites_only_those_lines():
+    """The churn #674 is about: re-rendering the entry reflowed every field in it.
+
+    `establishes` came back as a four-line block list and `shows` rewrapped at a different
+    column, so a weekly freshness diff carried the renderer as well as the dates.
+    """
+    out = components.set_source(_ENTRY, "openness", "https://example.com/readme", {
+        "accessed": "2026-09-22", "http_status": 200, "content_sha256": "bbb",
+    })
+    changed = [
+        (a, b) for a, b in zip(_ENTRY.splitlines(), out.splitlines()) if a != b
+    ]
+    assert len(changed) == 2
+    assert "establishes: [weights, data, code, license]" in out
+    # The hand-wrapping survives: the prose still breaks where the author broke it.
+    assert "published\n      repo;" in out
+
+
+def test_a_key_that_must_be_inserted_falls_back_to_the_full_render():
+    """Insertion is not substitution. The fallback is correct and merely noisy, and the
+    reparse guard covers both paths, so falling back can never be wrong."""
+    out = components.set_source(_ENTRY, "openness", "https://example.com/readme", {
+        "accessed": "2026-09-22", "note": "added",
+    })
+    assert yaml.safe_load(out)["openness"]["sources"][0]["note"] == "added"
+    assert yaml.safe_load(out)["openness"]["sources"][0]["accessed"] == "2026-09-22"
+
+
+def test_rewriting_a_multiline_value_falls_back_rather_than_truncating_it():
+    """`shows` here spans three lines. Replacing only its first would silently drop the
+    rest, which is the one way a line-level rewrite can destroy content."""
+    out = components.set_source(_ENTRY, "openness", "https://example.com/readme", {
+        "shows": "one line now",
+    })
+    entry = yaml.safe_load(out)["openness"]["sources"][0]
+    assert entry["shows"] == "one line now"
+    assert entry["establishes"] == ["weights", "data", "code", "license"]
+
+
+def test_the_preserving_path_never_changes_what_the_file_parses_to():
+    """The invariant both paths share. `set_source` reparses and refuses a write that moved
+    anything else; this pins that the cheap path agrees with the parsed expectation too."""
+    out = components.set_source(_ENTRY, "openness", "https://example.com/readme", {
+        "accessed": "2026-09-22", "content_sha256": "bbb",
+    })
+    before, after = yaml.safe_load(_ENTRY), yaml.safe_load(out)
+    before["openness"]["sources"][0]["accessed"] = "2026-09-22"
+    before["openness"]["sources"][0]["content_sha256"] = "bbb"
+    assert after == before
