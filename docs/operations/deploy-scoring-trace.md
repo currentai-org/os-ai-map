@@ -13,6 +13,23 @@ UDMs — a platform SQL model cannot compute `declaration_version_id`, which enc
 git SHA and the `sources/` content digest the warehouse has no access to. They are cut by the
 builder, at a commit, from the working tree.
 
+## 0. When this runs
+
+`.github/workflows/scoring-trace.yml` runs the build and the offline plan weekly (Monday 07:00
+UTC nominal, after the Monday gates) and on `workflow_dispatch`, and publishes on everything but
+a pull request. The steps below are the same sequence by hand, for a publish outside that
+cadence or when a run needs to be reproduced locally.
+
+The cadence exists because the Phase-7 condition needs it. `axis_results.reproduces_recorded` is
+the ADR-001 dual-run agreement, and retirement asks for agreement across releases; generations
+accumulate only if something publishes them, so a publisher with no caller makes the condition
+unreachable rather than merely unmet (#384).
+
+"Only a maintainer materializes them" still holds and is about editor sessions: the workflow
+carries the maintainer's `OSO_API_KEY` and `OSO_ORG_ID` as repository secrets, the same way
+`registry.yml` publishes the `currentai.registry.*` static models, and a pull-request run is
+restricted to the offline `--plan` leg because these tables are org-wide.
+
 ## 1. Preconditions
 
 - The commit you are publishing from is on `main` and the worktree is clean. The builder derives
