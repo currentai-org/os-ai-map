@@ -73,6 +73,14 @@ _HF_MODEL_RE = re.compile(r"^https://huggingface\.co/api/models/.+$")
 
 _ABSTAIN_SPDX = {"", "noassertion", "other"}
 
+#: What a licence re-read concluded. `_spdx_verdict` returns one of these; the two-valued
+#: predicate it replaced collapsed REFUTES and ABSTAINS into a single `False`, so the
+#: strongest finding the function can reach -- a repository that now classifies as something
+#: else entirely -- was reported as the same event as a page whose bytes moved. That is the
+#: distinction `docs/reference/evidence-and-freshness.md` opens on: drift is the source not
+#: reading as it did, a contradiction is a collected signal disagreeing with the record.
+CONFIRMS, REFUTES, ABSTAINS = "confirms", "refutes", "abstains"
+
 
 def _published_slugs(root: Path) -> list[str]:
     taxonomy = yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text())
@@ -135,6 +143,11 @@ class ProductResult:
     reconfirmed_by_shows: list[tuple[str, str]] = field(default_factory=list)
     reconfirmed_by_spdx: list[tuple[str, str]] = field(default_factory=list)
     drifted: list[tuple[str, str]] = field(default_factory=list)
+    # A licence the source now contradicts, as (axis, url, recorded, found). Separate from
+    # `drifted` because the two want different handling: drift asks whether the page still
+    # says what it said, a refutation says the page says something else and names both
+    # values, so a reader can act on it without refetching.
+    refuted: list[tuple[str, str, str, str]] = field(default_factory=list)
     transient: list[tuple[str, str]] = field(default_factory=list)
     skipped: list[tuple[str, str]] = field(default_factory=list)
 
@@ -323,33 +336,61 @@ def _shows_confirms(src: dict, fetched: dict) -> bool:
     return _fragments_confirm(str(shows), body)
 
 
-def _spdx_confirms(url: str, fetched: dict, recorded_license: str) -> bool:
-    """A GitHub license/repo API or HF model-info source whose fresh spdx id normalizes
-    to the recorded license. Abstains (falls through to shows-match, then drift) on a
-    compound license, a missing/NOASSERTION/other spdx id, or a non-matching source URL."""
+def _spdx_verdict(url: str, fetched: dict, recorded_license: str) -> tuple[str, str]:
+    """CONFIRMS, REFUTES or ABSTAINS on a licence, from a GitHub license/repo API or an HF
+    model-info source.
+
+    CONFIRMS: a fresh spdx id that normalizes to the recorded licence.
+    REFUTES:  a fresh, usable spdx id that normalizes to something else. The source is
+              readable and it disagrees, which is a finding rather than noise.
+    ABSTAINS: everything the function cannot conclude from -- a compound licence, an
+              unreadable or non-JSON body, a missing/NOASSERTION/other spdx id, or a source
+              URL that is not one of the recognized API endpoints.
+
+    Returns `(verdict, found)`, where `found` is the fresh spdx id the source carried and is
+    `""` on anything but REFUTES. It comes back from here rather than from a second reader so
+    that the value reported and the value compared cannot drift apart -- two functions
+    mirroring one parse by hand is the failure `check_rubric` and the scoring SQL already
+    demonstrate.
+
+    ABSTAINS is the only verdict that may fall through to the shows-match. A REFUTES must
+    not: falling through would let a page whose `shows` string still appears confirm a
+    licence the same page now contradicts.
+
+    The source URL has to be one of those API endpoints, not merely the same host. A
+    `github.com/<owner>/<repo>` or `huggingface.co/<org>/<model>` web page returns HTML, so
+    it fails the JSON parse below and abstains -- 293 products in the corpus cite the right
+    host in a form this function cannot read. Reaching those means fetching the API endpoint
+    corresponding to a recorded web URL, which is a different resource from the one the score
+    cites, and comparing a licence to an artifact that may not carry it (an HF *dataset*
+    endpoint cited as evidence for a `data` dimension produced five false refutations when
+    tried). Both are rulings, tracked separately; this function deliberately does neither.
+    """
     if not recorded_license:
-        return False
+        return ABSTAINS, ""
     segments = license_segments(recorded_license)
     if len(segments) != 1:
-        return False
+        return ABSTAINS, ""
     body = _read_body(fetched)
     if body is None:
-        return False
+        return ABSTAINS, ""
     try:
         payload = json.loads(body)
     except json.JSONDecodeError:
-        return False
+        return ABSTAINS, ""
     if _GITHUB_LICENSE_RE.match(url) or _GITHUB_REPO_RE.match(url):
         spdx = (payload.get("license") or {}).get("spdx_id") if isinstance(payload, dict) else None
     elif _HF_MODEL_RE.match(url):
         card = payload.get("cardData") if isinstance(payload, dict) else None
         spdx = (card or {}).get("license") or (payload.get("license") if isinstance(payload, dict) else None)
     else:
-        return False
+        return ABSTAINS, ""
     if not isinstance(spdx, str) or spdx.strip().lower() in _ABSTAIN_SPDX:
-        return False
+        return ABSTAINS, ""
     recorded_name = license_part(segments[0])["name"]
-    return normalize_license(spdx.strip()) == normalize_license(recorded_name)
+    if normalize_license(spdx.strip()) == normalize_license(recorded_name):
+        return CONFIRMS, ""
+    return REFUTES, spdx.strip()
 
 
 def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] = ("openness",),
@@ -394,9 +435,21 @@ def reverify_product(root: Path, slug: str, today: date, axes: tuple[str, ...] =
                 if got["content_sha256"] == src["content_sha256"]:
                     confirmed[position] = Confirmation(url, got)
                     continue
-                if dim == "license" and _spdx_confirms(url, got, recorded_license):
+                verdict, found = (
+                    _spdx_verdict(url, got, recorded_license)
+                    if dim == "license"
+                    else (ABSTAINS, "")
+                )
+                if verdict == CONFIRMS:
                     confirmed[position] = Confirmation(url, got)
                     result.reconfirmed_by_spdx.append((axis, url))
+                    continue
+                if verdict == REFUTES:
+                    # Recorded separately and NOT offered to the shows-match: a page whose
+                    # `shows` string survives while its spdx id changed would otherwise
+                    # confirm a licence that same page contradicts.
+                    result.refuted.append((axis, url, recorded_license, found))
+                    ok = False
                     continue
                 if _shows_confirms(src, got):
                     confirmed[position] = Confirmation(url, got)
@@ -504,16 +557,27 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
             apply(root, slug, result, today)
         report["products"].append({
             "slug": slug, "stamped": result.stamped, "drifted": result.drifted,
+            "refuted": result.refuted,
             "transient": result.transient, "skipped": result.skipped,
             "reconfirmed_by_shows": result.reconfirmed_by_shows,
             "reconfirmed_by_spdx": result.reconfirmed_by_spdx,
         })
         print(f"{slug}: stamped={result.stamped} drifted={len(result.drifted)} "
+              f"refuted={len(result.refuted)} "
               f"transient={len(result.transient)} skipped={len(result.skipped)}")
+        # Printed per product AND counted at the end: a refutation names two licences and is
+        # the one outcome here a person has to act on, so it does not belong only in a JSON
+        # report nobody opens on a green run.
+        for _axis, url, recorded, found in result.refuted:
+            print(f"  REFUTED {slug}: records {recorded!r}, {url} now reads {found!r}")
     if args.report:
         args.report.write_text(json.dumps(report, indent=2))
     stamped = sum(1 for r in report["products"] if r["stamped"])
+    refuted = sum(len(r["refuted"]) for r in report["products"])
     print(f"{stamped}/{len(report['products'])} products re-dated on {','.join(axes)}")
+    if refuted:
+        print(f"{refuted} licence refutation(s): a source read cleanly and disagreed with the "
+              f"record. These are findings, not drift.")
     return 0
 
 
