@@ -38,8 +38,9 @@ number because they are not the same grain.
   * **overlap** counts scored PRODUCTS that came out of the universe. It is what lets the
     published sentence separate products the map found by discovery from the closed and
     proprietary ones it went looking for deliberately. It spans the same three slices as
-    `matched`: two products in the corpus are discovered through a package and through nothing
-    else, and counting only repositories and models reported them as found outside the catalogue.
+    `matched`, because a product can be discovered through a package and through nothing else,
+    and counting only repositories and models reported such a product as found outside the
+    catalogue.
 
 ## What binds these to the roster, and what does not
 
