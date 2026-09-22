@@ -489,6 +489,14 @@ def _rewrite_scalar_keys(span: list[str], updates: dict) -> list[str] | None:
         )
         if body is None or not body.strip() or body[:1].isspace():
             continue
+        # A sequence item at the entry's own indent is a continuation of the key above it,
+        # not a field of the entry. `establishes:` followed by `- weights: yes` would
+        # otherwise register `- weights` as a sibling key, which both hides the multiline
+        # value from the guard below and leaves the orphaned item behind when the key above
+        # is replaced. The reparse guard catches the result, but it raises rather than
+        # falling back, so a legitimate update fails instead of taking the slow path.
+        if body.startswith("-"):
+            continue
         head = body.split(":", 1)
         if len(head) != 2 or not head[0] or head[0] != head[0].strip():
             continue

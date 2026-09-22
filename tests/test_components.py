@@ -978,3 +978,46 @@ def test_the_preserving_path_never_changes_what_the_file_parses_to():
     before["openness"]["sources"][0]["accessed"] = "2026-09-22"
     before["openness"]["sources"][0]["content_sha256"] = "bbb"
     assert after == before
+
+
+def test_a_block_list_under_a_key_is_not_mistaken_for_a_sibling_key():
+    """A sequence item at the entry's own indent continues the key above it.
+
+    Registering `- weights` as a field both hid the multiline value from the guard and left
+    the orphaned item behind when `establishes` was replaced, so the reparse guard raised a
+    ParserError instead of the update falling back to the full render. Found in review.
+    """
+    text = (
+        "openness:\n"
+        "  sources:\n"
+        "  - url: https://example.com/x\n"
+        "    accessed: '2026-08-13'\n"
+        "    establishes:\n"
+        "    - weights: yes\n"
+        "  last_verified: '2026-08-13'\n"
+    )
+    out = components.set_source(text, "openness", "https://example.com/x",
+                                {"establishes": "scalar now"})
+    entry = yaml.safe_load(out)["openness"]["sources"][0]
+    assert entry["establishes"] == "scalar now"
+    assert entry["accessed"] == "2026-08-13"
+
+
+def test_a_block_list_entry_still_takes_the_preserving_path_for_scalars():
+    """The fallback above must not become the common case: an entry carrying a block list
+    still keeps its spelling when only the scalar fields change."""
+    text = (
+        "openness:\n"
+        "  sources:\n"
+        "  - url: https://example.com/x\n"
+        "    accessed: '2026-08-13'\n"
+        "    establishes:\n"
+        "    - weights\n"
+        "    - data\n"
+        "  last_verified: '2026-08-13'\n"
+    )
+    out = components.set_source(text, "openness", "https://example.com/x",
+                                {"accessed": "2026-09-22"})
+    assert "    - weights\n    - data\n" in out
+    changed = [(a, b) for a, b in zip(text.splitlines(), out.splitlines()) if a != b]
+    assert len(changed) == 1
