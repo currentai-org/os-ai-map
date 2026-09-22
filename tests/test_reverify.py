@@ -302,6 +302,37 @@ def test_an_unreadable_source_abstains_rather_than_refuting(tmp_path):
     assert result.reconfirmed_by_shows == [("openness", "https://api.github.com/repos/o/r/license")]
 
 
+def test_hub_cc_abstains_rather_than_refuting(tmp_path):
+    """Bare `cc` names a licence family with no version and no terms.
+
+    `sources/signal_routing.yaml` declares it an abstention for the Hub alongside `other`.
+    A flat abstention set shared across sources missed it, and under three valued logic that
+    turned an absence of information into a refutation — the one error mode this change must
+    not introduce. Abstaining, it still reaches the shows-match.
+    """
+    body_path = _body(tmp_path, "model.json", json.dumps({"cardData": {"license": "cc"}}))
+    root = _score_with_license(tmp_path, "CC-BY-4.0", [
+        _src("https://huggingface.co/api/models/o/m", "a" * 64, ["license"],
+             shows="cardData"),
+    ])
+    fake = lambda url, **kw: {"url": url, "http_status": 200, "content_sha256": "b" * 64,  # noqa: E731
+                              "body_path": str(body_path)}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
+    assert result.refuted == []
+    assert result.reconfirmed_by_shows == [("openness", "https://huggingface.co/api/models/o/m")]
+
+
+def test_abstentions_are_read_per_source_from_the_routing_declaration():
+    """The Hub and GitHub declare different abstentions, and the code must not flatten them."""
+    values = reverify._abstain_values(str(reverify.ROOT))
+    assert "cc" in values["huggingface_model"]
+    assert "other" in values["huggingface_model"]
+    # GitHub declares NOASSERTION only; `other` is not its escape hatch and must not be
+    # borrowed from the Hub's route.
+    assert "noassertion" in values["github"]
+    assert "other" not in values["github"]
+
+
 def test_noassertion_spdx_does_not_confirm(tmp_path):
     body_path = _body(tmp_path, "license.json", json.dumps({"license": {"spdx_id": "NOASSERTION"}}))
     root = _score_with_license(tmp_path, "Apache-2.0", [

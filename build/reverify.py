@@ -71,7 +71,32 @@ _GITHUB_LICENSE_RE = re.compile(r"^https://api\.github\.com/repos/[^/]+/[^/]+/li
 _GITHUB_REPO_RE = re.compile(r"^https://api\.github\.com/repos/[^/]+/[^/]+/?$")
 _HF_MODEL_RE = re.compile(r"^https://huggingface\.co/api/models/.+$")
 
-_ABSTAIN_SPDX = {"", "noassertion", "other"}
+#: Values that mean "this source has no answer", per route source, read from
+#: `sources/signal_routing.yaml` rather than written out here. That file owns source
+#: semantics and already declares them per source — `[other, cc]` for the Hub, where bare
+#: `cc` names a licence family with no version and no terms, and `[NOASSERTION]` for GitHub.
+#: A flat set applied to every source got this wrong in both directions: it abstained on
+#: GitHub's `other`, which GitHub does not declare, and it did NOT abstain on the Hub's `cc`,
+#: which is an absence of information and would otherwise be read as a disagreement.
+#: `serialize_rubric.evidence_abstentions` flattens the same declaration for the warehouse,
+#: for the same reason — one declaration, or they diverge.
+@functools.lru_cache(maxsize=None)
+def _abstain_values(root_str: str) -> dict[str, frozenset[str]]:
+    routing = yaml.safe_load(
+        (Path(root_str) / "sources" / "signal_routing.yaml").read_text()
+    ) or {}
+    out: dict[str, set[str]] = {}
+    for dimension in (routing.get("dimensions") or {}).values():
+        if not isinstance(dimension, dict):
+            continue
+        for route in dimension.get("routes") or []:
+            if not isinstance(route, dict) or not route.get("source"):
+                continue
+            values = {str(v).strip().lower() for v in (route.get("abstain_values") or [])}
+            out.setdefault(str(route["source"]), set()).update(values)
+    # The empty string is not a declared abstention anywhere and does not need to be: it is
+    # "the field was present and blank", which no source means as an answer.
+    return {k: frozenset(v | {""}) for k, v in out.items()}
 
 #: What a licence re-read concluded. `_spdx_verdict` returns one of these; the two-valued
 #: predicate it replaced collapsed REFUTES and ABSTAINS into a single `False`, so the
@@ -380,12 +405,15 @@ def _spdx_verdict(url: str, fetched: dict, recorded_license: str) -> tuple[str, 
         return ABSTAINS, ""
     if _GITHUB_LICENSE_RE.match(url) or _GITHUB_REPO_RE.match(url):
         spdx = (payload.get("license") or {}).get("spdx_id") if isinstance(payload, dict) else None
+        source = "github"
     elif _HF_MODEL_RE.match(url):
         card = payload.get("cardData") if isinstance(payload, dict) else None
         spdx = (card or {}).get("license") or (payload.get("license") if isinstance(payload, dict) else None)
+        source = "huggingface_model"
     else:
         return ABSTAINS, ""
-    if not isinstance(spdx, str) or spdx.strip().lower() in _ABSTAIN_SPDX:
+    abstain = _abstain_values(str(ROOT)).get(source, frozenset({""}))
+    if not isinstance(spdx, str) or spdx.strip().lower() in abstain:
         return ABSTAINS, ""
     recorded_name = license_part(segments[0])["name"]
     if normalize_license(spdx.strip()) == normalize_license(recorded_name):
