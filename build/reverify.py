@@ -369,8 +369,10 @@ def _spdx_verdict(url: str, fetched: dict, recorded_license: str) -> tuple[str, 
     REFUTES:  a fresh, usable spdx id that normalizes to something else. The source is
               readable and it disagrees, which is a finding rather than noise.
     ABSTAINS: everything the function cannot conclude from -- a compound licence, an
-              unreadable or non-JSON body, a missing/NOASSERTION/other spdx id, or a source
-              URL that is not one of the recognized API endpoints.
+              unreadable or non-JSON body, a source URL that is not one of the recognized
+              API endpoints, or a value that source declares as "no answer". Which values
+              those are is SOURCE-SPECIFIC and read from `sources/signal_routing.yaml`:
+              GitHub declares `NOASSERTION`, the Hub declares `other` and bare `cc`.
 
     Returns `(verdict, found)`, where `found` is the fresh spdx id the source carried and is
     `""` on anything but REFUTES. It comes back from here rather than from a second reader so
