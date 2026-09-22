@@ -299,13 +299,24 @@ Shapes that fail the enumeration test rather than the availability one, and so s
 than named, a two-stage mixture with only the first stage evidenced, and data-preparation
 documentation naming what the model consumes rather than what it was trained on.
 
-**A corpus that IS one public archive does not qualify.** Naming ERA5, or HLS V2, is naming the
-input rather than itemizing a mixture, and there is no disclosure decision behind it: a reader
-learns what the model consumed, which the ladder's other values already record. The value marks
-a release that chose to list the parts of an assembled mixture, so it needs parts to list.
-`pangu-weather` and `prithvi-eo` rest on one archive each, `aifs` and `granite-geospatial` on
-two, and all four are `documented-not-released`. `clay` is the shape that qualifies: six imagery
-sources named one by one with coverage and ground resolution, and the assembled sample withheld.
+**The release must publish an ENUMERATION, not name its inputs in prose.** This is the part of
+the test that a reader can check without knowing what anybody intended, and it is what separates
+the remaining held records from the ones that qualify. An enumeration is a listing with one entry
+per component, carrying something per entry: a link, an identifier, a count, a scope. Prose that
+names the archives a model trained on is a description of the inputs, however accurate, and the
+ladder's other values already record that.
+
+Counting sources does not decide it. `clay` qualifies on a training-data page that lists six
+imagery sources one per row with coverage and ground resolution, and `rwkv` on a machine-readable
+index with a URL column. `aifs` and `granite-geospatial` each name two archives, in prose
+describing what the training consumed, and do not; neither do `pangu-weather` and `prithvi-eo` on
+one archive each. Two entries listed as entries would pass; two archives named in a sentence do
+not.
+
+The three failure shapes above are the same test applied to a partial listing: a mixture whose
+synthetic half is described rather than listed, a two-stage mixture with one stage listed, and
+data-preparation documentation in place of a corpus listing. In each the enumeration exists and
+does not cover the corpus.
 
 ### `self-host` and `core-gated` are one question
 
