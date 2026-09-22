@@ -13,7 +13,7 @@ rename either heading freely, but keep it to these two top-level sections. The
 numbers therefore refresh on every build and cannot drift; edit the prose and commit.
 
 Placeholders (filled from the payload at build time):
-  {total} {scored} {uncategorized} {universe}
+  {total} {scored} {uncategorized}
   {n_software} {n_models} {n_datasets} {n_hardware}
   {n_orgs} {n_categories} {n_layers} {n_citations} {n_domains}
   {n_openness_gaps} {disc_repos} {disc_models} {disc_packages}
@@ -43,7 +43,7 @@ The framework has two levels of analysis:
 
 The discovery step identifies the universe of candidate products and artifacts; the scoring step enriches and grades a curated subset of them.
 
-The discovery step draws on large-scale open data from the software supply chain compiled by [Open Source Observer](https://www.oso.xyz/). We seeded it from [Chip Huyen's Good AI List](https://goodailist.com/), a catalog of AI-focused repositories, then broadened it through analysis of the [Hugging Face Hub](https://huggingface.co/), the [Open LLM Leaderboard](https://huggingface.co/open-llm-leaderboard), the [AI Incident Database](https://incidentdatabase.ai/), package registries and SBOMs, and academic and industry publications. From these sources we assembled approximately {universe} candidate products, including {disc_repos} GitHub repositories, {disc_models} models and datasets, and {disc_packages} package entries. We ranked the candidates by adoption signal (repository stars, package and model downloads, and related measures) and enriched the most prominent first.
+The discovery step draws on large-scale open data from the software supply chain compiled by [Open Source Observer](https://www.oso.xyz/). We seeded it from [Chip Huyen's Good AI List](https://goodailist.com/), a catalog of AI-focused repositories, then broadened it through analysis of the [Hugging Face Hub](https://huggingface.co/), the [Open LLM Leaderboard](https://huggingface.co/open-llm-leaderboard), the [AI Incident Database](https://incidentdatabase.ai/), package registries and SBOMs, and academic and industry publications. From these sources we assembled approximately {total} candidate artifacts: {disc_repos} GitHub repositories, {disc_models} Hugging Face model repositories at or above a 1,000-download floor, and {disc_packages} packages published by those repositories. We ranked the candidates by adoption signal (repository stars, package and model downloads, and related measures) and enriched the most prominent first.
 
 The scoring step enriched and graded {scored} products in depth: {n_software} software tools and libraries, {n_models} models, {n_datasets} datasets, and {n_hardware} hardware projects, produced by {n_orgs} organizations. We organize these products into {n_categories} categories across {n_layers} layers of the stack (model components, product / UX, and infrastructure), though we do not cover the stack exhaustively. The remaining {uncategorized} artifacts constitute the uncategorized long tail: they are tracked by usage signal but carry no openness, adoption, or capability score until they are researched and cited.
 
