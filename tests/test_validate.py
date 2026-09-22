@@ -1007,3 +1007,16 @@ def test_a_group_missing_its_slug_fails():
     del d["taxonomy"]["arcs"][0]["groups"][0]["slug"]
     errs = validate_sources(d)
     assert any("missing `name` or `slug`" in e for e in errs)
+
+
+def test_the_pre_group_taxonomy_shape_fails_by_name():
+    """Categories directly on the arc yield nothing from the group-aware walk.
+
+    Silently: the payload builds with no categories and every derived count goes to zero,
+    which is not a diagnosis anybody reaches from. The error names the arc.
+    """
+    d = _fixture()
+    arc = d["taxonomy"]["arcs"][0]
+    arc["categories"] = [c for g in arc.pop("groups") for c in g["categories"]]
+    errs = validate_sources(d)
+    assert any("sit directly on the arc" in e for e in errs)

@@ -166,6 +166,15 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
         arc_name = arc.get("name")
         if arc.get("layer") not in LAYERS:
             errors.append(f"taxonomy arc {arc_name!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
+        # The pre-group shape put categories directly on the arc. Read by the group-aware
+        # walk that spelling yields NOTHING rather than erroring, so a stale file builds an
+        # empty payload and every downstream count silently goes to zero. Caught here, by
+        # name, because "0 products" is not a diagnosis anybody reaches from.
+        if "categories" in arc and "groups" not in arc:
+            errors.append(
+                f"taxonomy arc {arc_name!r}: categories sit directly on the arc. They belong "
+                f"in a `groups:` entry — an arc with no groups contributes no categories at all."
+            )
         for group in arc.get("groups", []):
             if not isinstance(group, dict):
                 errors.append(f"taxonomy arc {arc_name!r}: a group is not a mapping")
