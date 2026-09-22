@@ -1,7 +1,8 @@
 """Compile sources/ (+ frozen long-tail) into the notebook_data.json payload.
 
 Reproduces the exact structure the live notebook consumes:
-  { descriptions, layer_order[], categories: {cid: {label, arc, layer, products[]}},
+  { descriptions, layer_order[], group_order[],
+    categories: {cid: {label, arc, layer, group, group_slug, products[]}},
     order[], n_total, generated, version, released, contract, long_tail }
 """
 from datetime import date
@@ -12,7 +13,7 @@ import tomllib
 import yaml
 
 from build.check_rubric import components_string
-from build.taxonomy import arc_categories
+from build.taxonomy import arc_grouped_categories
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -597,16 +598,31 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     # sequence in sources/taxonomy.yaml (one layer per arc). Consumers use it to
     # render layers in order without re-deriving it from the per-category `layer`.
     layer_order: list[str] = []
+    # group_order is the group slugs in display order, carried for the same reason
+    # layer_order is: a consumer rendering groups in order should not have to re-derive
+    # that order from the per-category `group_slug`. A group whose categories are all
+    # preliminary contributes no category here, and so does not appear -- the order lists
+    # what the payload actually contains.
+    group_order: list[str] = []
+    cid_group: dict[str, str] = {}
+    cid_group_slug: dict[str, str] = {}
     for arc in taxonomy["arcs"]:
         lyr = arc.get("layer")
         if lyr and lyr not in layer_order:
             layer_order.append(lyr)
-        for cid, status in arc_categories(arc):
+        for gname, gslug, cid, status in arc_grouped_categories(arc):
             if status != "published":
                 continue
+            # A pre-group ref yields an empty group slug (see build/taxonomy.py). The
+            # category still belongs in the payload -- what a cross-ref diff compares is
+            # stage, gaps, products and tiers -- it simply has no group to order by.
+            if gslug and gslug not in group_order:
+                group_order.append(gslug)
             order.append(cid)
             cid_arc[cid] = arc["name"]
             cid_layer[cid] = lyr
+            cid_group[cid] = gname
+            cid_group_slug[cid] = gslug
     out_cats = {}
     n = 0
     published_slugs: set[str] = set()
@@ -628,7 +644,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             n += 1
         sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
-                         "layer": cid_layer[cid], "stage": {"num": sg["num"], "name": sg["name"]},
+                         "layer": cid_layer[cid], "group": cid_group[cid],
+                         "group_slug": cid_group_slug[cid],
+                         "stage": {"num": sg["num"], "name": sg["name"]},
                          "gaps": sg["gaps"], "products": rows}
     # Editable legend for the derived attributes, carried at the top of the payload.
     # Stage/gap text are methodology constants (above); the per-category one-liner is
@@ -644,6 +662,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
     return {"descriptions": descriptions, "layer_order": layer_order,
+            "group_order": group_order,
             "categories": out_cats, "order": order,
             "organizations": organizations,
             "aliases": _aliases(prods, orgs, published_slugs, set(organizations)),

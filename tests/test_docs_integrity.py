@@ -12,6 +12,8 @@ from pathlib import Path
 
 import yaml
 
+from build.taxonomy import arc_categories
+
 REPO = Path(__file__).resolve().parent.parent
 WORKFLOWS = REPO / "docs" / "workflows"
 
@@ -273,12 +275,15 @@ def _dropdown_slugs():
 
 
 def _taxonomy_slugs():
+    """Every category slug in map order.
+
+    Walks via `build.taxonomy.arc_categories` rather than reaching into the manifest, so
+    that a shape change there — categories moving under a `groups:` tier, as in #621 — is
+    absorbed in the one place that owns the flattening instead of silently reading nothing
+    here and passing an empty comparison.
+    """
     arcs = yaml.safe_load((REPO / "sources" / "taxonomy.yaml").read_text())["arcs"]
-    return [
-        c if isinstance(c, str) else c["name"]
-        for arc in arcs
-        for c in arc["categories"]
-    ]
+    return [slug for arc in arcs for slug, _status in arc_categories(arc)]
 
 
 def test_issue_form_dropdown_covers_the_taxonomy():

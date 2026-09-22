@@ -3,45 +3,82 @@
 # Each arc declares its Columbia `layer` slug; serialize derives both the display
 # arc name and the machine layer slug from here, so a category's layer is never a
 # separate hand-maintained field -- it is whichever arc the category sits in.
+#
+# Within an arc, categories are grouped by function. A category belongs to exactly
+# one group, and a group to exactly one arc, so a category's group is derived the
+# same way its arc is -- by where it sits, never by a field on the category.
+#
+# Group slugs are unique across the WHOLE file, not just within an arc: the serving
+# layer keys a group on its slug alone, so two arcs cannot each carry a `platform`.
+#
+# Display order is position: arcs in file order, groups in file order within an arc,
+# categories in file order within a group.
 arcs:
 - name: Model components
   layer: model_components
-  categories:
-  - base_pretrained
-  - name: embeddings_retrieval
-    status: published
-  - name: scientific_ai_models
-    status: published
-  - finetuned_chat
-  - inference_code
-  - finetuning_code
-  - evaluation_code
-  - benchmark_eval_data
-  - training_synthetic_datasets
-  - dataset_processing_tools
-  - name: document_conversion
-    status: published
+  groups:
+  - name: Models
+    slug: models
+    categories:
+    - base_pretrained
+    - finetuned_chat
+    - name: embeddings_retrieval
+      status: published
+    - name: scientific_ai_models
+      status: published
+  - name: Data
+    slug: data
+    categories:
+    - training_synthetic_datasets
+    - benchmark_eval_data
+    - dataset_processing_tools
+    - name: document_conversion
+      status: published
+  - name: Pipeline code
+    slug: pipeline_code
+    categories:
+    - finetuning_code
+    - inference_code
+    - evaluation_code
 - name: Product / UX
   layer: product_ux
-  categories:
-  - orchestration_agents
-  - ui_api
-  - telemetry_observability
-  - safeguards
-  - agent_tools_connectors
-  - name: agent_protocols
-    status: published
-  - name: search_retrieval
-    status: published
+  groups:
+  - name: Interfaces
+    slug: interfaces
+    categories:
+    - ui_api
+    - orchestration_agents
+  - name: Agent interop
+    slug: agent_interop
+    categories:
+    - name: agent_protocols
+      status: published
+    - agent_tools_connectors
+    - name: search_retrieval
+      status: published
+  - name: Observability
+    slug: observability
+    categories:
+    - safeguards
+    - telemetry_observability
 - name: Infrastructure
   layer: infrastructure
-  categories:
-  - ml_frameworks
-  - name: compilers
-    status: published
-  - name: storage
-    status: published
-  - deployment
-  - name: ml_orchestration
-    status: published
-  - edge_hardware
+  groups:
+  - name: Compute & runtime
+    slug: compute_runtime
+    categories:
+    - ml_frameworks
+    - name: compilers
+      status: published
+  - name: Platform
+    slug: platform
+    categories:
+    - name: ml_orchestration
+      status: published
+    - deployment
+    - name: storage
+      status: published
+  - name: Hardware
+    slug: hardware
+    categories:
+    - edge_hardware

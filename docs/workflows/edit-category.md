@@ -14,7 +14,8 @@ re-verifying every product in a category, use [`refresh-category.md`](refresh-ca
 
 ## Files this changes
 - `sources/categories/<slug>.yaml` — the category record.
-- `sources/taxonomy.yaml` — only when **creating** a category (assign it to an arc) or regrouping.
+- `sources/taxonomy.yaml` — only when **creating** a category (assign it to a group, which
+  determines its arc) or regrouping.
 - `sources/registry/<slug>.yaml` — optional signal-only seed roster for a preliminary category.
 
 There is **no `litmus` field**. `category.schema.json` sets `additionalProperties: false`, so
@@ -49,8 +50,10 @@ comments in a shared rubric, are in [`../reference/product-copy.md`](../referenc
    means published and owes a description, weights, a ladder, a strapline and ten products.
    Researching a seed roster into those products is its own job: see
    [`promote-category.md`](promote-category.md).
-7. **Regrouping / reordering across arcs** happens in `sources/taxonomy.yaml` only — a category
-   file no longer carries `arc` or cross-category `order`.
+7. **Regrouping / reordering** happens in `sources/taxonomy.yaml` only — a category file
+   carries neither `arc`, nor `group`, nor cross-category `order`. Moving a category between
+   groups is moving its line; moving it between arcs is moving its line into a group in the
+   other arc, since a group belongs to one arc.
 
 ## Validation
 

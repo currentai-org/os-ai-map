@@ -2,42 +2,92 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Taxonomy",
   "type": "object",
-  "required": ["arcs"],
+  "required": [
+    "arcs"
+  ],
   "additionalProperties": false,
   "properties": {
     "arcs": {
       "type": "array",
-      "description": "The whole file. An arc is one layer of the Columbia openness ontology (the GPAIS tech stack) plus a display label for it and an ordered list of the categories that sit in it; three arcs hold 18 categories, all published as of 2026-08-18. This is the ONLY place a category's position and lifecycle status are declared, and it is hand-edited: whoever adds, publishes, or reorders a category writes it, never a tool. Historical scalar entries mean published; a mapping declares preliminary or published explicitly. build/serialize.py includes published entries in the public payload, while build/serialize_registry.py exports both states. The real cross-file invariants live in build/validate.py: every category file appears in exactly one arc, every slug listed resolves to a categories/<slug>.yaml, and explicitly published categories meet the publication gate. The taxonomy descends from the 2024 Columbia Convening on Openness in AI; see docs/methodology.md.",
+      "description": "The whole file. An arc is one layer of the Columbia openness ontology (the GPAIS tech stack) plus a display label for it and an ordered list of the groups that sit in it, each group holding an ordered list of categories. This is the ONLY place a category's position and lifecycle status are declared, and it is hand-edited: whoever adds, publishes, or reorders a category writes it, never a tool. Historical scalar entries mean published; a mapping declares preliminary or published explicitly. build/serialize.py includes published entries in the public payload, while build/serialize_registry.py exports both states. The real cross-file invariants live in build/validate.py: every category file appears in exactly one arc, every slug listed resolves to a categories/<slug>.yaml, and explicitly published categories meet the publication gate. The taxonomy descends from the 2024 Columbia Convening on Openness in AI; see docs/methodology.md.",
       "items": {
         "type": "object",
-        "required": ["name", "layer", "categories"],
+        "required": [
+          "name",
+          "layer",
+          "groups"
+        ],
         "additionalProperties": false,
         "properties": {
           "name": {
             "type": "string",
             "minLength": 1,
-            "description": "The arc's display label — \"Model components\", \"Product / UX\", \"Infrastructure\" — and the human half of the pair `layer` completes. Written by hand here and nowhere else: category files carry no `arc` field, so this string reaches a reader only by way of the arc its category sits in. build/serialize.py copies it onto every category in the arc as `arc`; build/render.py prints it as the small uppercase rule above each notebook section and as the group heading in the at-a-glance roster; the front end (currentai-org/aipotluck.org, web/src/lib/data/loadProducts.ts) uses it as the label on the layer tab, taking it from whichever category in that layer it reaches first. One quirk to know before renaming or splitting an arc: the `{n_layers}` figure in docs/methodology.md is computed in build/render.py from the count of DISTINCT arc names, not from `layer`, so two arcs sharing a layer would render as two sections and be counted as two layers by the prose while `layer_order` deduplicated them to one. Nothing checks that arcs and layers stay one-to-one."
+            "description": "The arc's display label \u2014 \"Model components\", \"Product / UX\", \"Infrastructure\" \u2014 and the human half of the pair `layer` completes. Written by hand here and nowhere else: category files carry no `arc` field, so this string reaches a reader only by way of the arc its category sits in. build/serialize.py copies it onto every category in the arc as `arc`; build/render.py prints it as the small uppercase rule above each notebook section and as the group heading in the at-a-glance roster; the front end (currentai-org/aipotluck.org, web/src/lib/data/loadProducts.ts) uses it as the label on the layer tab, taking it from whichever category in that layer it reaches first. One quirk to know before renaming or splitting an arc: the `{n_layers}` figure in docs/methodology.md is computed in build/render.py from the count of DISTINCT arc names, not from `layer`, so two arcs sharing a layer would render as two sections and be counted as two layers by the prose while `layer_order` deduplicated them to one. Nothing checks that arcs and layers stay one-to-one."
           },
           "layer": {
             "description": "Which layer of the Columbia openness ontology (the GPAIS tech stack) this arc IS. The machine half of the arc, where `name` is the label, and the slug every consumer joins on. The three values come from the framework rather than from us, and the map's own prose commits to three (\"three layers of the stack\" in docs/methodology.md), so adding a fourth is a taxonomy decision rather than a schema edit, and it means editing three places: this enum, the `LAYERS` set hardcoded at build/validate.py:43 that checks the same three a second time so the error can name the offending arc, and the methodology prose. Derived from here and never stored again: build/serialize.py writes it onto each category in the arc and emits the arc sequence as the payload's `layer_order`, which the front end uses to order its layer tabs; build/serialize_registry.py emits it as `categories.layer` for the warehouse. A category file deliberately does not carry its own layer. Stored in two places the two drift, and the arc is the copy that already has to be correct for the display order to work.",
-            "enum": ["product_ux", "model_components", "infrastructure"]
+            "enum": [
+              "product_ux",
+              "model_components",
+              "infrastructure"
+            ]
           },
-          "categories": {
+          "groups": {
             "type": "array",
-            "description": "The categories in this arc, in display order. A historical scalar slug means published; a mapping carries `name` plus `status: preliminary | published`. The order is load-bearing for published categories, while preliminary categories remain registry-only. Slugs are underscored (`base_pretrained`) and each must equal the `name` of a sources/categories/<slug>.yaml. Edited by hand alongside creating the category file; build/validate.py checks both directions and lifecycle publication requirements.",
+            "description": "The groups in this arc, in display order. A group gathers categories by function inside an arc, and a category belongs to exactly one group, so a category's group is derived from where it sits exactly as its arc and layer already are -- category files carry no `group` field. build/serialize.py copies `name` onto each category as `group` and `slug` as `group_slug`, and emits the slugs in display order as the payload's `group_order`, the way `layer_order` carries the layers. build/serialize_registry.py exports both as columns on currentai.registry.categories. Group slugs are unique across the WHOLE file rather than within an arc, because the serving layer keys a group on its slug alone; build/validate.py enforces that, along with every group having at least one category and every category sitting in exactly one group.",
+            "minItems": 1,
             "items": {
-              "oneOf": [
-                { "type": "string", "pattern": "^[a-z0-9_]+$" },
-                {
-                  "type": "object",
-                  "required": ["name", "status"],
-                  "additionalProperties": false,
-                  "properties": {
-                    "name": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-                    "status": { "enum": ["preliminary", "published"] }
+              "type": "object",
+              "required": [
+                "name",
+                "slug",
+                "categories"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The group's display label -- \"Pipeline code\", \"Agent interop\". The human half of the pair `slug` completes, written by hand here and nowhere else."
+                },
+                "slug": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]+$",
+                  "description": "The group's machine identifier, unique across the whole file. Part 2 of #621 derives the serving layer's groups.id from this alone, which is why uniqueness is global rather than per-arc: two arcs each carrying a `platform` group would collide there."
+                },
+                "categories": {
+                  "type": "array",
+                  "description": "The categories in this group, in display order. A historical scalar slug means published; a mapping carries `name` plus `status: preliminary | published`. The order is load-bearing for published categories, while preliminary categories remain registry-only. Slugs are underscored (`base_pretrained`) and each must equal the `name` of a sources/categories/<slug>.yaml. Edited by hand alongside creating the category file; build/validate.py checks both directions and lifecycle publication requirements.",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+$"
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "status"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]+$"
+                          },
+                          "status": {
+                            "enum": [
+                              "preliminary",
+                              "published"
+                            ]
+                          }
+                        }
+                      }
+                    ]
                   }
                 }
-              ]
+              }
             }
           }
         }

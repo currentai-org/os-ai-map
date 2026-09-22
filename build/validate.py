@@ -158,20 +158,59 @@ def validate_sources(data: dict, *, ledger_path: Path = LEDGER) -> list[str]:
     # Arcs are the Columbia ontology layers; each must declare a valid `layer`
     # slug, since serialize derives every category's layer from its arc.
     tax_count: dict[str, int] = {}
+    # Group slugs are unique across the WHOLE file, not per arc: the serving layer keys a
+    # group on its slug alone, so two arcs each carrying a `platform` would collide there
+    # rather than here, which is the wrong place to find out.
+    group_slugs: dict[str, str] = {}
     for arc in taxonomy.get("arcs", []):
+        arc_name = arc.get("name")
         if arc.get("layer") not in LAYERS:
-            errors.append(f"taxonomy arc {arc.get('name')!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
-        for raw in arc.get("categories", []):
-            cid, status = category_entry(raw)
-            if cid is None or status is None:
+            errors.append(f"taxonomy arc {arc_name!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
+        # The pre-group shape put categories directly on the arc. Read by the group-aware
+        # walk that spelling yields NOTHING rather than erroring, so a stale file builds an
+        # empty payload and every downstream count silently goes to zero. Caught here, by
+        # name, because "0 products" is not a diagnosis anybody reaches from.
+        if "categories" in arc and "groups" not in arc:
+            errors.append(
+                f"taxonomy arc {arc_name!r}: categories sit directly on the arc. They belong "
+                f"in a `groups:` entry — an arc with no groups contributes no categories at all."
+            )
+        for group in arc.get("groups", []):
+            if not isinstance(group, dict):
+                errors.append(f"taxonomy arc {arc_name!r}: a group is not a mapping")
                 continue
-            tax_count[cid] = tax_count.get(cid, 0) + 1
-            if cid not in cats:
-                errors.append(f"taxonomy arc {arc.get('name')!r}: category {cid!r} has no categories/{cid}.yaml")
+            gname, gslug = group.get("name"), group.get("slug")
+            if not isinstance(gname, str) or not isinstance(gslug, str):
+                errors.append(f"taxonomy arc {arc_name!r}: a group is missing `name` or `slug`")
+                continue
+            if gslug in group_slugs:
+                errors.append(
+                    f"taxonomy group slug {gslug!r} is used twice: in arc "
+                    f"{group_slugs[gslug]!r} and arc {arc_name!r}. Group slugs are unique "
+                    f"across the file, not within an arc."
+                )
+            else:
+                group_slugs[gslug] = arc_name if isinstance(arc_name, str) else ""
+            entries = group.get("categories") or []
+            if not entries:
+                errors.append(
+                    f"taxonomy arc {arc_name!r}: group {gname!r} has no categories. An empty "
+                    f"group renders as a heading with nothing under it."
+                )
+            for raw in entries:
+                cid, status = category_entry(raw)
+                if cid is None or status is None:
+                    continue
+                tax_count[cid] = tax_count.get(cid, 0) + 1
+                if cid not in cats:
+                    errors.append(
+                        f"taxonomy arc {arc_name!r}, group {gname!r}: category {cid!r} has "
+                        f"no categories/{cid}.yaml"
+                    )
     for cid in cats:
         n = tax_count.get(cid, 0)
         if n != 1:
-            errors.append(f"category {cid!r}: must appear in exactly one taxonomy arc (found in {n})")
+            errors.append(f"category {cid!r}: must appear in exactly one taxonomy group (found in {n})")
 
     # --- category contract, by lifecycle status ---
     # Applied on the NORMALIZED status, so both taxonomy spellings are held to the same

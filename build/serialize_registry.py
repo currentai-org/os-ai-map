@@ -12,7 +12,8 @@ Emitted tables (one CSV each, written to build/registry/):
   products              slug, display_name, type, description, comments
   organizations         slug, display_name, type, homepage, github, country
   categories            slug, display_name, description, strapline,
-                        weight_adopt, weight_cap, arc_name, layer, status
+                        weight_adopt, weight_cap, arc_name, layer, group_name,
+                        group_slug, status
   tail_products          slug, display_name, product_type, org_slug,
                         category_slug, artifact_kind, artifact_id, artifact_url
   product_artifacts     product_slug, product_type, artifact_kind, artifact_id,
@@ -64,7 +65,7 @@ from build.resolution import artifact_of as _ledger_artifact_of
 from build.resolution import load as load_resolution_ledger
 from build.resolution import relation_of as _ledger_relation_of
 from build.serialize import _aliases
-from build.taxonomy import arc_categories, category_statuses
+from build.taxonomy import arc_grouped_categories, category_statuses
 from build.validate import load_sources, published_products
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -93,6 +94,8 @@ TABLES: dict[str, tuple[str, ...]] = {
         "weight_cap",
         "arc_name",
         "layer",
+        "group_name",
+        "group_slug",
         "status",
     ),
     "tail_products": (
@@ -194,17 +197,22 @@ def artifact_id(kind: str, url: str) -> str | None:
     return None
 
 
-def category_layers(taxonomy: dict) -> dict[str, tuple[str, str]]:
-    """Map category slug -> (arc name, layer slug), derived from the arcs."""
-    out: dict[str, tuple[str, str]] = {}
+def category_layers(taxonomy: dict) -> dict[str, tuple[str, str, str, str]]:
+    """Map category slug -> (arc name, layer slug, group name, group slug).
+
+    All four are derived from where the category sits rather than stored on it, which is
+    why one function returns them together: a category file carries no `arc`, no `layer`
+    and no `group`, and the manifest is the only declaration of any of them.
+    """
+    out: dict[str, tuple[str, str, str, str]] = {}
     for arc in taxonomy.get("arcs") or []:
         if not isinstance(arc, dict):
             continue
         name = arc.get("name")
         layer = arc.get("layer")
-        for slug, _status in arc_categories(arc):
+        for gname, gslug, slug, _status in arc_grouped_categories(arc):
             if isinstance(name, str) and isinstance(layer, str):
-                out[slug] = (name, layer)
+                out[slug] = (name, layer, gname, gslug)
     return out
 
 
@@ -419,7 +427,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
         )
 
     for slug, category in sorted(categories.items()):
-        arc_name, layer = layers.get(slug, ("", ""))
+        arc_name, layer, group_name, group_slug = layers.get(slug, ("", "", "", ""))
         if not layer:
             errors.append(f"category '{slug}' sits in no arc in taxonomy.yaml")
         weights = category.get("weights") or {}
@@ -433,6 +441,8 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 "weight_cap": weights.get("cap", ""),
                 "arc_name": arc_name,
                 "layer": layer,
+                "group_name": group_name,
+                "group_slug": group_slug,
                 "status": statuses.get(slug, ""),
             }
         )

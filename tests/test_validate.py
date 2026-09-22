@@ -32,7 +32,7 @@ def _fixture():
         "organizations": {"meta": {"name": "meta", "display_name": "Meta",
                                    "products": list(FIXTURE_PRODUCTS)}},
         "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
-                               "categories": ["base_pretrained"]}]},
+                               "groups": [{"name": "Group", "slug": "group", "categories": ["base_pretrained"]}]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
                                 "description": "Base / pretrained models.",
@@ -112,7 +112,7 @@ def test_head_products_in_a_preliminary_category_are_not_an_error():
     allowed and the count follows the published roster instead.
     """
     d = _fixture()
-    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    d["taxonomy"]["arcs"][0]["groups"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
     # A preliminary category still owes a description, weights and a ladder; only the strapline
     # and the ten-product floor wait for publication, so a thinner roster would pass here too.
     d["long_tail"] = {"counts": {"scored": 0}}
@@ -131,7 +131,7 @@ def test_a_scalar_taxonomy_entry_is_held_to_the_published_contract():
     d = _fixture()
     d["categories"]["empty_new"] = {"name": "empty_new", "display_name": "Empty New",
                                     "products": []}
-    d["taxonomy"]["arcs"][0]["categories"].append("empty_new")  # scalar, so published
+    d["taxonomy"]["arcs"][0]["groups"][0]["categories"].append("empty_new")  # scalar, so published
     errs = [e for e in validate_sources(d) if "empty_new" in e]
     for owed in ("needs a description", "needs axis weights", "needs a scoring_recipe",
                  "needs a strapline", "at least 10 scored products"):
@@ -148,19 +148,22 @@ def test_category_missing_from_taxonomy_fails():
     d = _fixture()
     d["taxonomy"]["arcs"] = []  # base_pretrained no longer listed in any arc
     errs = validate_sources(d)
-    assert any("exactly one taxonomy arc" in e for e in errs)
+    assert any("exactly one taxonomy group" in e for e in errs)
 
 def test_category_listed_in_two_arcs_fails():
     d = _fixture()
+    # A distinct group slug, so this exercises the two-places check rather than tripping
+    # the duplicate-slug check on the way.
     d["taxonomy"]["arcs"].append({"name": "Other", "layer": "infrastructure",
-                                  "categories": ["base_pretrained"]})
+                                  "groups": [{"name": "Other group", "slug": "other_group",
+                                              "categories": ["base_pretrained"]}]})
     errs = validate_sources(d)
-    assert any("exactly one taxonomy arc" in e for e in errs)
+    assert any("exactly one taxonomy group" in e for e in errs)
 
 
 def test_preliminary_category_may_have_no_head_products_but_needs_business_logic():
     d = _fixture()
-    d["taxonomy"]["arcs"][0]["categories"].append(
+    d["taxonomy"]["arcs"][0]["groups"][0]["categories"].append(
         {"name": "storage", "status": "preliminary"}
     )
     d["categories"]["storage"] = {
@@ -180,7 +183,7 @@ def test_explicitly_published_category_requires_publication_fields_and_head_dept
     # Trimmed back to one product and stripped of its strapline, since the shared fixture now
     # satisfies the published contract - which is the point of the test one level up.
     d = _fixture()
-    d["taxonomy"]["arcs"][0]["categories"] = [
+    d["taxonomy"]["arcs"][0]["groups"][0]["categories"] = [
         {"name": "base_pretrained", "status": "published"}
     ]
     d["categories"]["base_pretrained"].pop("strapline")
@@ -957,3 +960,76 @@ def test_hostless_url_fails_schema_naming_the_field_and_real_url_passes(place, f
         d = _fixture()
         setter(d, good)
         assert [e for e in validate_sources(d) if "schema" in e] == [], good
+
+
+# --- #621: the group tier between arc and category ------------------------------------
+
+def test_a_duplicate_group_slug_across_arcs_fails():
+    """Group slugs are unique across the file, not within an arc.
+
+    The serving layer keys a group on its slug alone, so two arcs each carrying a
+    `platform` would collide there — after the payload had been built and published,
+    which is the wrong place to discover it.
+    """
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["groups"][0]["slug"] = "platform"
+    d["taxonomy"]["arcs"].append({
+        "name": "Other", "layer": "infrastructure",
+        "groups": [{"name": "Platform", "slug": "platform", "categories": []}],
+    })
+    errs = validate_sources(d)
+    assert any("used twice" in e and "platform" in e for e in errs)
+
+
+def test_an_empty_group_fails():
+    """A group with no categories renders as a heading with nothing under it."""
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["groups"].append(
+        {"name": "Empty", "slug": "empty", "categories": []}
+    )
+    errs = validate_sources(d)
+    assert any("has no categories" in e for e in errs)
+
+
+def test_a_category_in_two_groups_of_one_arc_fails():
+    """One arc is not enough: the count is per group, so a category duplicated inside a
+    single arc has to fail too. The pre-group check could not see this case at all."""
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["groups"].append(
+        {"name": "Second", "slug": "second", "categories": ["base_pretrained"]}
+    )
+    errs = validate_sources(d)
+    assert any("exactly one taxonomy group" in e for e in errs)
+
+
+def test_a_group_missing_its_slug_fails():
+    d = _fixture()
+    del d["taxonomy"]["arcs"][0]["groups"][0]["slug"]
+    errs = validate_sources(d)
+    assert any("missing `name` or `slug`" in e for e in errs)
+
+
+def test_the_pre_group_taxonomy_shape_fails_by_name():
+    """Categories directly on the arc yield nothing from the group-aware walk.
+
+    Silently: the payload builds with no categories and every derived count goes to zero,
+    which is not a diagnosis anybody reaches from. The error names the arc.
+    """
+    d = _fixture()
+    arc = d["taxonomy"]["arcs"][0]
+    arc["categories"] = [c for g in arc.pop("groups") for c in g["categories"]]
+    errs = validate_sources(d)
+    assert any("sit directly on the arc" in e for e in errs)
+
+
+def test_the_pre_group_shape_still_reads_for_cross_ref_tools():
+    """`validate` rejects it; the READER tolerates it.
+
+    check_corpus_diff builds the base payload from a worktree at the base commit using
+    current code, so across the migration it walks a pre-group tree. Without the fallback
+    it found nothing and reported every product in the corpus as newly appeared.
+    """
+    from build.taxonomy import arc_categories
+    legacy = {"name": "A", "layer": "a",
+              "categories": ["x", {"name": "y", "status": "preliminary"}]}
+    assert list(arc_categories(legacy)) == [("x", "published"), ("y", "preliminary")]

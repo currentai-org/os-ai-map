@@ -175,10 +175,12 @@ registry, plus the single `sources/taxonomy.yaml` manifest:
   OSO but excluded from the public scored map until promoted to the full records above.
 - **taxonomy.yaml**: owns arc grouping + cross-category display order. The three arcs
   ARE the Columbia openness-ontology layers (`product_ux`, `model_components`,
-  `infrastructure`); each arc declares its `layer` slug and an ordered category list.
-  `serialize.py` derives order, the display `arc`, and the machine `layer` from here, so
-  a category's layer is never a separate hand-maintained field -- it is whichever arc the
-  category sits in. A mapping entry may also declare `status: preliminary | published`;
+  `infrastructure`); each arc declares its `layer` slug and an ordered list of GROUPS,
+  each group an ordered list of categories. A group gathers categories by function inside
+  an arc, carries a display `name` and a `slug` unique across the whole file, and a
+  category belongs to exactly one. `serialize.py` derives order, the display `arc`, the
+  machine `layer`, and the `group`/`group_slug` pair from here, so none of them is a
+  separate hand-maintained field -- each is whichever arc and group the category sits in. A mapping entry may also declare `status: preliminary | published`;
   historical scalar entries mean published. Preliminary categories are registry-visible but
   omitted from the notebook payload. Validate enforces that every category appears in exactly
   one arc and that every arc declares a valid layer.
