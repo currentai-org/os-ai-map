@@ -125,6 +125,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- The Neon serving layer gains a `groups` table and a NOT NULL `categories.group_id`
+  referencing it, so the `os-ai-map` schema carries the arc / group / category hierarchy the
+  taxonomy declares. `SCHEMA_VERSION` is 4. The column is `group_id` because GROUP is reserved
+  in Postgres. ([#621](https://github.com/currentai-org/os-ai-map/issues/621))
+
 - A group tier between arc and category in `sources/taxonomy.yaml`: each arc now declares an
   ordered list of groups, each holding its categories. A category's group is derived from where
   it sits, as its arc and layer already are. The payload gains `group`/`group_slug` per category

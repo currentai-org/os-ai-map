@@ -441,11 +441,14 @@ def _fixture_payload(extra_slug: str | None = None) -> dict:
         "generated": "2026-09-04",
         "order": ["a_category"],
         "layer_order": ["model_components"],
+        "group_order": ["a_group"],
         "categories": {
             "a_category": {
                 "label": "A Category",
                 "arc": "build",
                 "layer": "model_components",
+                "group": "A Group",
+                "group_slug": "a_group",
                 "stage": {"num": 2},
                 "gaps": [],
                 "products": products,
@@ -1148,10 +1151,19 @@ _DBML_CONSTRAINTS: dict[str, set[str]] = {
     "layers": {'PRIMARY KEY ("id")'},
     "stages": {'PRIMARY KEY ("id")'},
     "gaps": {'PRIMARY KEY ("id")'},
+    # Not in the DBML: the designers' model has no group tier (#621). Added here with the
+    # same shape the other lookup tables have, and recorded as a departure in
+    # docs/reference/where-scores-live.md.
+    "groups": {
+        'PRIMARY KEY ("id")',
+        'UNIQUE ("slug")',
+        'FOREIGN KEY ("layer") REFERENCES {schema}."layers" ("id")',
+    },
     "categories": {
         'PRIMARY KEY ("id")',
         'UNIQUE ("slug")',
         'FOREIGN KEY ("layer") REFERENCES {schema}."layers" ("id")',
+        'FOREIGN KEY ("group_id") REFERENCES {schema}."groups" ("id")',
         'FOREIGN KEY ("stage") REFERENCES {schema}."stages" ("id")',
     },
     "gaps_categories": {
@@ -1341,3 +1353,53 @@ def test_a_header_that_has_drifted_from_the_declared_columns_is_refused():
     which Postgres accepts wherever the types happen to line up."""
     with pytest.raises(ValueError, match="does not match the declared columns"):
         plan_table(_write_csv("drifted", "slug,name\na,A\n"), declared=_DECLARED)
+
+
+# --- #621 Part 2: the group tier -------------------------------------------------------
+
+def test_a_category_whose_group_is_not_in_group_order_fails_the_load():
+    """`categories.group_id` is NOT NULL and references `groups.id`.
+
+    A category naming a group the payload does not list has no valid parent, so the load
+    must refuse rather than write an id that resolves to nothing.
+    """
+    payload = _fixture_payload()
+    payload["categories"]["a_category"]["group_slug"] = "not_declared"
+    with pytest.raises(UnmappedValue, match="not_declared"):
+        build_site_tables(payload)
+
+
+def test_a_group_spanning_two_layers_fails_rather_than_picking_one():
+    """`groups.layer` denormalizes what its categories carry, so they have to agree.
+
+    A group sits in exactly one arc, so this cannot arise from a valid taxonomy. If it
+    arises anyway the payload was assembled some other way, and choosing either layer would
+    write a foreign key that looks right and is arbitrary.
+    """
+    payload = _fixture_payload()
+    payload["layer_order"] = ["model_components", "infrastructure"]
+    payload["order"] = ["a_category", "b_category"]
+    payload["categories"]["b_category"] = {
+        "label": "B Category",
+        "arc": "run",
+        "layer": "infrastructure",
+        "group": "A Group",
+        "group_slug": "a_group",
+        "stage": {"num": 2},
+        "gaps": [],
+        "products": [],
+    }
+    with pytest.raises(UnmappedValue, match="spans layers"):
+        build_site_tables(payload)
+
+
+def test_groups_carry_their_order_and_resolve_into_layers():
+    payload = _fixture_payload()
+    tables = build_site_tables(payload)
+    group = next(r for r in tables["groups"] if r["slug"] == "a_group")
+    layer = next(r for r in tables["layers"] if r["label"] == "model_components")
+    category = next(r for r in tables["categories"] if r["slug"] == "a_category")
+    assert group["sort_order"] == 1
+    assert group["label"] == "A Group"
+    assert group["layer"] == layer["id"]
+    assert category["group_id"] == group["id"]
