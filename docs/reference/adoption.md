@@ -407,9 +407,13 @@ a pass applies them.
   Two shapes that look like exceptions follow from the same test: a package pulled in as a
   transitive dependency of a *different* product (`langsmith` via `langchain-core`) and one SDK
   spanning N products (`cohere-rerank-api` banded on the whole `cohere` package) both count
-  something other than the product. A band predating this test is not re-banded by it; `langfuse`,
-  banded on the `langfuse` client, is the known case and is flagged for its own `update-product`
-  pass.
+  something other than the product. A band predating this test is not re-banded by it; it is
+  flagged for its own `update-product` pass. `langfuse` is the worked example: the
+  `langfuse` client measures installs of the client, so the record bands on the vendor's own
+  figures for the server instead and carries `reported_traction` at 4. Those figures are in the
+  acquisition announcement the record already cited — pulls of the server image and a Fortune 500
+  roster — which is the second thing this case shows: a record's own summary can say its source
+  carries no usage figure while the source carries one.
 
 A band exceeding the computed one is usually not a dispute about the measurement. The common
 shape is a `usage_volume` record whose own note cites a figure matching the warehouse almost
