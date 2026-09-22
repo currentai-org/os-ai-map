@@ -71,7 +71,7 @@ something in use today. A publish that dropped the information would destroy it,
 it costs four integers per row.
 
 **Neon serves the site's tables, and nothing else.** The target model from CLEVER FRANKE,
-with Carl's amendments: `products`, `organizations`, `categories`, `layers`, `stages`, `gaps`,
+with Carl's amendments: `products`, `organizations`, `categories`, `groups`, `layers`, `stages`, `gaps`,
 `gaps_categories`, `openness`, `adoption`, `capability`, `sources`, `product_lineage`,
 `aliases`, `long_tail_top`, `long_tail_counts`. Every row is derived from
 `build/notebook_data.json`, so what Postgres serves is what the repo published.
@@ -175,13 +175,14 @@ Read the map's tables directly, or materialize a copy CMS-side.
 
 ### Where this departs from the designers' model
 
-Four places, all deliberate, all in `build/neon_schema.py`:
+Five places, all deliberate, all in `build/neon_schema.py`:
 
 | Departure | Why |
 |---|---|
 | `id` and every column referencing one are `bigint`, not `integer` | The ids are 63-bit hashes. 63 rather than 64 because Postgres has no unsigned integer and half the ids would otherwise be negative. |
 | `categories.slug`, which the DBML omits | Every deep link is by slug, and so is every join from the warehouse's registry tables; it carries a `UNIQUE` for the same reason. |
 | `layers.sort_order`, `categories.sort_order`, `long_tail_top.sort_order`, `stages.num` | A positional id carries an ordering — the layer stack, the map's curated category order, the long tail's ranking, the stage number — and a hashed id carries none of it. The model has nowhere else for it: `layers` is `{id, label}`, `stages` has no number, and neither `categories` nor `long_tail_top` has an ordering field. So each ordering gets a column of its own, and `ORDER BY sort_order` is the query that means what `ORDER BY id` would have. |
+| `groups`, and the `categories.group_id` that references it | The map's hierarchy is arc &rarr; group &rarr; category; the designers' model has only the layer above the category. A group gathers categories by function inside an arc and is what the taxonomy declares them under, so a serving layer with no group tier cannot render the hierarchy the repo publishes. The column is `group_id` rather than `group` because GROUP is a reserved word in Postgres. `groups.layer` denormalizes what each category in the group already carries, and the loader refuses a group whose categories disagree rather than picking one. |
 | `gallery`, `gallery_products`, `gallery_gaps` and their three enums are absent | The CMS owns authored content; a schema rebuilt from source can only hold rows it produced. See below. |
 
 ### Two things the designers should know about the data

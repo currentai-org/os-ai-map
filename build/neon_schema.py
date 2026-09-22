@@ -178,7 +178,12 @@ PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 #      when the corpus grows; id and foreign-key columns widened from INTEGER to BIGINT to
 #      hold them; the ordinal those ids used to carry moved into `layers.sort_order`,
 #      `categories.sort_order`, `long_tail_top.sort_order` and `stages.num`.
-SCHEMA_VERSION = 3
+#   4: the `groups` tier added between `layers` and `categories` — a `groups` table keyed on
+#      the taxonomy group slug, and a NOT NULL `categories.group_id` referencing it. The
+#      column is `group_id` because GROUP is a reserved word in Postgres. `groups.layer`
+#      denormalizes what each category in the group already carries, and the loader refuses
+#      a group whose categories disagree rather than choosing one of them.
+SCHEMA_VERSION = 4
 
 class UnmappedValue(ValueError):
     """A payload value with no place in the target enum. Fails the load, names the value."""
@@ -460,6 +465,15 @@ def layer_order(payload: dict) -> dict[str, int]:
     return {layer: index for index, layer in enumerate(payload.get("layer_order") or [], start=1)}
 
 
+def group_ids(payload: dict) -> dict[str, int]:
+    return _id_map("groups", payload.get("group_order") or [])
+
+
+def group_order(payload: dict) -> dict[str, int]:
+    """group slug -> position in display order, 1-based."""
+    return {slug: index for index, slug in enumerate(payload.get("group_order") or [], start=1)}
+
+
 def gap_ids(payload: dict) -> dict[str, int]:
     """Gap kind -> id, over the legend rather than over what categories happen to carry.
 
@@ -737,6 +751,7 @@ def _categories(payload: dict) -> list[dict]:
     cats = category_ids(payload)
     order = category_order(payload)
     layers = layer_ids(payload)
+    groups = group_ids(payload)
     stages = stage_ids()
     legend = (payload.get("descriptions") or {}).get("categories") or {}
     out = []
@@ -746,6 +761,12 @@ def _categories(payload: dict) -> list[dict]:
         if layer not in layers:
             raise UnmappedValue(
                 f"category {cid!r} names layer {layer!r}, which is not in layer_order"
+            )
+        group_slug = category.get("group_slug") or ""
+        if group_slug not in groups:
+            raise UnmappedValue(
+                f"category {cid!r} names group {group_slug!r}, which is not in group_order; "
+                f"categories.group_id is NOT NULL and references groups.id"
             )
         stage_num = (category.get("stage") or {}).get("num")
         if stage_num not in stages:
@@ -763,6 +784,7 @@ def _categories(payload: dict) -> list[dict]:
                 "label": category.get("label") or "",
                 "arc": category.get("arc") or "",
                 "layer": layers[layer],
+                "group_id": groups[group_slug],
                 "description": legend.get(cid) or "",
                 "stage": stages[stage_num],
             }
@@ -774,6 +796,71 @@ def _layers(payload: dict) -> list[dict]:
     ids = layer_ids(payload)
     order = layer_order(payload)
     return [{"id": ident, "sort_order": order[layer], "label": layer} for layer, ident in ids.items()]
+
+
+def _groups(payload: dict) -> list[dict]:
+    """The group tier, read from `group_order` and the categories that sit in each group.
+
+    Label and layer come from the first category found in the group rather than from a
+    declaration of their own, because the payload carries no group record -- a group exists
+    in it only through the categories that name it. `group_order` is the authority on which
+    groups exist and in what order; this loop only supplies their attributes.
+
+    Every category in a group must agree on the layer. They cannot disagree in a payload
+    built from a valid taxonomy, since a group sits in exactly one arc, so a disagreement
+    here means the payload was assembled some other way and the FK into `layers` would be
+    arbitrary rather than wrong-looking.
+    """
+    ids = group_ids(payload)
+    order = group_order(payload)
+    layers = layer_ids(payload)
+    label: dict[str, str] = {}
+    layer_of: dict[str, str] = {}
+    for cid, category in (payload.get("categories") or {}).items():
+        slug = category.get("group_slug") or ""
+        if not slug:
+            continue
+        if slug not in ids:
+            raise UnmappedValue(
+                f"category {cid!r} names group {slug!r}, which is not in group_order"
+            )
+        layer = category.get("layer") or ""
+        if slug in layer_of and layer_of[slug] != layer:
+            raise UnmappedValue(
+                f"group {slug!r} spans layers {layer_of[slug]!r} and {layer!r}; a group sits "
+                f"in exactly one arc, so groups.layer cannot be derived"
+            )
+        label.setdefault(slug, category.get("group") or "")
+        layer_of[slug] = layer
+    out = []
+    for slug, ident in ids.items():
+        if slug not in layer_of:
+            # Cannot arise from a payload `build/serialize.py` built: it appends to
+            # `group_order` only inside the published-category loop, so a group reaches it
+            # with at least one published category, and an all-preliminary group is left out
+            # (tests/test_serialize.py pins that). Reachable only from a hand-assembled
+            # payload, and named rather than left to surface as an empty-layer error, which
+            # says nothing about the actual problem.
+            raise UnmappedValue(
+                f"group {slug!r} is in group_order but no category names it, so it has no "
+                f"label or layer to carry; group_order lists the groups the payload's "
+                f"categories are in"
+            )
+        layer = layer_of[slug]
+        if layer not in layers:
+            raise UnmappedValue(
+                f"group {slug!r} names layer {layer!r}, which is not in layer_order"
+            )
+        out.append(
+            {
+                "id": ident,
+                "sort_order": order[slug],
+                "slug": slug,
+                "label": label.get(slug) or "",
+                "layer": layers[layer],
+            }
+        )
+    return out
 
 
 def _stages(payload: dict) -> list[dict]:
@@ -862,6 +949,26 @@ SITE_TABLES: dict[str, SiteTable] = {
         _gaps,
         constraints=('PRIMARY KEY ("id")',),
     ),
+    "groups": SiteTable(
+        # Declared BEFORE categories so the FK target exists when the schema is built in
+        # order. `layer` denormalizes what every category in the group already carries;
+        # `_groups` refuses a group whose categories disagree rather than picking one.
+        (
+            ("id", "BIGINT"),
+            ("sort_order", "INTEGER NOT NULL"),
+            # NOT NULL as well as UNIQUE, for the reason categories.slug is: a nullable
+            # unique column admits any number of NULLs.
+            ("slug", "VARCHAR NOT NULL"),
+            ("label", "VARCHAR"),
+            ("layer", "BIGINT NOT NULL"),
+        ),
+        _groups,
+        constraints=(
+            'PRIMARY KEY ("id")',
+            'UNIQUE ("slug")',
+            references("layer", "layers", "id"),
+        ),
+    ),
     "categories": SiteTable(
         (
             ("id", "BIGINT"),
@@ -874,6 +981,9 @@ SITE_TABLES: dict[str, SiteTable] = {
             ("label", "VARCHAR"),
             ("arc", "VARCHAR"),
             ("layer", "BIGINT NOT NULL"),
+            # `group_id`, not `group`: GROUP is a reserved word in Postgres and would need
+            # quoting in every query that touched it.
+            ("group_id", "BIGINT NOT NULL"),
             ("description", "TEXT"),
             ("stage", "BIGINT NOT NULL"),
         ),
@@ -882,6 +992,7 @@ SITE_TABLES: dict[str, SiteTable] = {
             'PRIMARY KEY ("id")',
             'UNIQUE ("slug")',
             references("layer", "layers", "id"),
+            references("group_id", "groups", "id"),
             references("stage", "stages", "id"),
         ),
     ),
