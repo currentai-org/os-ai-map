@@ -164,8 +164,13 @@ What it reports rather than fails on is worth reading. `clauses dropped` counts 
 clauses with no key — `split_components` discards those silently, and 168 of 472 products have
 at least one. Most are harmless free-text tails or prose restating a properly keyed value, but
 a clause that is the *only* record of a dimension is lost evidence, and that cost
-`dataset.yaml` five of its eight deferrals. Same for `undeclared keys`: 118 exist across the
-map, and the gate fails only when one demonstrably holds an answer the ladder wanted.
+`dataset.yaml` five of its eight deferrals. Same for `unread keys`: these are recorded under
+`components.context`, and the gate fails only when one demonstrably holds an answer the ladder
+wanted.
+
+**Changing a ladder's `reads` or dimensions moves keys across `context`.** Run
+`uv run python -m build.route_context --write` after the edit, or `check_components` fails every
+record whose placement the change invalidated. The move leaves `raw` and every score untouched.
 
 Then the human checklist, which is only what a machine cannot judge:
 

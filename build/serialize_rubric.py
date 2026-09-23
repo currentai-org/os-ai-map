@@ -69,6 +69,7 @@ import yaml
 
 from build.vocabulary import axes
 from build.check_rubric import (
+    CONTEXT,
     components_of,
     dimension_read_map,
     license_parts_of,
@@ -742,13 +743,18 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                             )
                         continue
                     bare, detail = split_value(raw)
-                    # A component no dimension declares and no `reads` list names is
-                    # vocabulary drift. It cannot affect a score, so it is a curation
-                    # finding rather than a failure — but left unreported it is an
-                    # observation nobody will ever act on. `marin` records
-                    # `reproducibility:bit-for-bit`, a real openness fact the rubric has
-                    # no question for.
-                    if key not in license_keys and key not in read_map:
+                    # A component no dimension declares and no `reads` list names cannot
+                    # affect a score. Recorded under `context`, that is the record saying so
+                    # on purpose, and the row still goes out for traceability. At the top
+                    # level it is the silent drop #188 closed, which check_components now
+                    # fails on; the warning stays as a backstop for a run that skips the gate.
+                    # `marin` records `reproducibility:bit-for-bit`, a real openness fact the
+                    # rubric has no question for.
+                    if (
+                        key not in license_keys
+                        and key not in read_map
+                        and key not in (structured.get(CONTEXT) or {})
+                    ):
                         warnings.append(
                             f"product '{product_slug}' records {key!r}, which "
                             f"'{slug}' does not declare as a dimension"

@@ -178,3 +178,21 @@ def load_product_types(root: Path) -> dict[str, str]:
         record = yaml.safe_load(path.read_text()) or {}
         types[path.stem] = str(record.get("type") or "")
     return types
+
+
+def load_product_recipes(root: Path) -> dict[str, dict | None]:
+    """product slug -> the resolved recipe governing it, or None when no ladder covers it.
+
+    A product sits in exactly one category, so this is a function rather than a relation.
+    `build/check_components.py` and `build/route_context.py` both need it, and deriving it
+    twice is how the gate and the tool that satisfies it would come to disagree.
+    """
+    shared = load_shared(root)
+    product_types = load_product_types(root)
+    out: dict[str, dict | None] = {}
+    for path in sorted((root / "sources" / "categories").glob("*.yaml")):
+        category = yaml.safe_load(path.read_text()) or {}
+        variants, _ = resolve_recipe_variants(category, shared)
+        for product in category.get("products") or []:
+            out[product], _ = recipe_for(variants, product_types.get(product, ""))
+    return out

@@ -125,6 +125,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `openness.components` gained a reserved `context` mapping for the keys a product's ladder does
+  not read, such as `service`, `commercial` and `governance`. The 394 such clauses on 266 records
+  moved into it, `raw` and every score unchanged, and `check_components` now fails a record whose
+  top level holds an unread key or whose `context` holds a read one. Before this, an unread key
+  dropped out of the score silently and `serialize_rubric` warned about it 389 times a run
+  ([#188](https://github.com/currentai-org/os-ai-map/issues/188),
+  [#683](https://github.com/currentai-org/os-ai-map/pull/683)).
 - The Neon serving layer gains a `groups` table and a NOT NULL `categories.group_id`
   referencing it, so the `os-ai-map` schema carries the arc / group / category hierarchy the
   taxonomy declares. `SCHEMA_VERSION` is 4. The column is `group_id` because GROUP is reserved
