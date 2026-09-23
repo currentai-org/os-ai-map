@@ -1,0 +1,33 @@
+name: language_specific_datasets
+display_name: Language-specific datasets
+description: "Datasets assembled to make one language, or a set of related underrepresented
+  languages, usable for AI: pretraining text, speech, instruction and dialogue data, and
+  evaluation sets. General multilingual corpora that happen to include a language live in
+  Training & Synthetic Datasets."
+weights:
+  adopt: 0.5
+  cap: 0.5
+scoring_recipe:
+  version: 1
+  note: >-
+    Inherits the shared dataset ladder unchanged. The roster mixes training corpora, speech
+    corpora and evaluation sets, and the dataset ladder already reads both the training case
+    (availability, card, license) and the benchmark case (answers held out), so nothing here
+    yet needs a rung of its own. Revisit when the seed roster is promoted: the one rung this
+    category may need that its neighbors do not is a community-governed license such as Te
+    Hiku Media's Kaitiakitanga License, which permits use by the community it serves and
+    withholds it from everyone else.
+  extends: dataset
+products: []
+comments: >-
+  Proposed in issue #686. Membership test: is the dataset defined by the languages it serves
+  rather than by its task or scale? A general multilingual crawl that happens to include a
+  language (FineWeb-2, CulturaX, MADLAD-400, OSCAR, Common Corpus) stays in
+  training_synthetic_datasets, and Aya Collection stays there too. A dataset assembled for a
+  language or a region belongs here, whichever modality it is: pretraining text, speech,
+  instruction data or an evaluation set. Language-targeted evaluation sets live here rather
+  than in benchmark_eval_data, so the question "what does this language have" is answered in
+  one place; a general benchmark that has been translated into many languages is not
+  language-targeted and stays in benchmark_eval_data. Speech data is in scope; speech models
+  are not (issue #602). Catalogs such as ATLAS (AI Singapore) and Lanfrica are discovery
+  sources for this category, not products in it.
