@@ -16,7 +16,11 @@ scoring_recipe:
     yet needs a rung of its own. Revisit when the seed roster is promoted: the one rung this
     category may need that its neighbors do not is a community-governed license such as Te
     Hiku Media's Kaitiakitanga License, which permits use by the community it serves and
-    withholds it from everyone else.
+    withholds it from everyone else. The seed also carries a handful of closed and paid
+    corpora - the LDC's IARPA Babel and LORELEI packs, Meta's unreleased MMS recordings,
+    Sarvam-2T - for the same reason benchmark_eval_data carries lab-internal evals: they
+    are the frontier the open rows are measured against, and several have no artifact
+    beyond a catalog page, so availability will do the work on them.
   extends: dataset
 products: []
 comments: >-
@@ -27,7 +31,11 @@ comments: >-
   language or a region belongs here, whichever modality it is: pretraining text, speech,
   instruction data or an evaluation set. Language-targeted evaluation sets live here rather
   than in benchmark_eval_data, so the question "what does this language have" is answered in
-  one place; a general benchmark that has been translated into many languages is not
-  language-targeted and stays in benchmark_eval_data. Speech data is in scope; speech models
+  one place. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
+  and FLEURS were built to give underrepresented languages a test set and belong here, while
+  a general benchmark machine- or human-translated into the major languages (Global-MMLU)
+  is defined by its task and stays in benchmark_eval_data. The same purpose test separates
+  Glot500-c, assembled from existing low-resource sources, from a crawl such as GlotCC,
+  which sits with MADLAD-400. Speech data is in scope; speech models
   are not (issue #602). Catalogs such as ATLAS (AI Singapore) and Lanfrica are discovery
   sources for this category, not products in it.
