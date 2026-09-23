@@ -1,12 +1,12 @@
 name: language_specific_datasets
 display_name: Language-specific datasets
-description: "Datasets assembled to make one language, or a set of related underrepresented
-  languages, usable for AI: pretraining text, speech, instruction and dialogue data, and
-  evaluation sets. General multilingual corpora that happen to include a language live in
-  Training & Synthetic Datasets."
+description: "Datasets assembled to make an underrepresented language, or a set of related
+  underrepresented languages, usable for AI: pretraining text, speech, instruction and
+  dialogue data, and evaluation sets. General multilingual corpora that happen to include
+  a language live in Training & Synthetic Datasets."
 weights:
-  adopt: 0.5
-  cap: 0.5
+  adopt: 0.3
+  cap: 0.7
 scoring_recipe:
   version: 1
   note: >-
@@ -20,7 +20,10 @@ scoring_recipe:
     corpora - the LDC's IARPA Babel and LORELEI packs, Meta's unreleased MMS recordings,
     Sarvam-2T - for the same reason benchmark_eval_data carries lab-internal evals: they
     are the frontier the open rows are measured against, and several have no artifact
-    beyond a catalog page, so availability will do the work on them.
+    beyond a catalog page, so availability will do the work on them. Weighted 0.3 adoption
+    to 0.7 capability because download counts for a low-resource corpus are small by
+    construction: the population that could download it is small, so adoption measures the
+    language before it measures the dataset.
   extends: dataset
 products: []
 comments: >-
@@ -29,13 +32,23 @@ comments: >-
   language (FineWeb-2, CulturaX, MADLAD-400, OSCAR, Common Corpus) stays in
   training_synthetic_datasets, and Aya Collection stays there too. A dataset assembled for a
   language or a region belongs here, whichever modality it is: pretraining text, speech,
-  instruction data or an evaluation set. Language-targeted evaluation sets live here rather
-  than in benchmark_eval_data, so the question "what does this language have" is answered in
-  one place. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
+  instruction data or an evaluation set. The language has to be underrepresented in AI data:
+  a corpus or benchmark built for Chinese, Japanese, Korean, Spanish or Portuguese passes the
+  first half of the test and fails this one, and goes to training_synthetic_datasets or
+  benchmark_eval_data (KMMLU, TMMLU+, CMMLU, ChineseWebText, Carolina and the LatamGPT
+  Corpus were routed there from the seed sweep). The smaller European languages - Basque,
+  Catalan, Galician, Maltese, the Nordic languages, Sámi, Ukrainian - are in.
+  Language-targeted evaluation sets live here rather than in benchmark_eval_data, so the
+  question "what does this language have" is answered in one place. The line for a many-language set is its purpose: FLORES+, Belebele, SIB-200
   and FLEURS were built to give underrepresented languages a test set and belong here, while
   a general benchmark machine- or human-translated into the major languages (Global-MMLU)
   is defined by its task and stays in benchmark_eval_data. The same purpose test separates
   Glot500-c, assembled from existing low-resource sources, from a crawl such as GlotCC,
-  which sits with MADLAD-400. Speech data is in scope; speech models
-  are not (issue #602). Catalogs such as ATLAS (AI Singapore) and Lanfrica are discovery
+  which sits with MADLAD-400. A benchmark suite that redistributes other datasets is the
+  product, and the datasets it carries are not separate rows: AfroBench carries IrokoBench,
+  AfriSenti, MasakhaNER, MAFAND-MT and SALT, and SEACrowd carries NusaX and PhoMT. A suite's
+  record describes its members, including the training splits several of them ship. The
+  exception is a global set a regional suite borrows a slice of - AfroBench's African
+  slices of Belebele, FLORES+ and SIB-200 - which stays its own product. Speech data is in
+  scope; speech models are not (issue #602). Catalogs such as ATLAS (AI Singapore) and Lanfrica are discovery
   sources for this category, not products in it.

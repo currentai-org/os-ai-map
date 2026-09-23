@@ -8,7 +8,7 @@ serves rather than by its task or scale. A general multilingual crawl that happe
 language stays in `training_synthetic_datasets`, and Aya Collection stays there too. Every modality is
 in scope: pretraining text, speech, instruction and dialogue data, parallel text, and evaluation sets.
 
-Two boundary rules were needed during the sweep, and both are recorded in the category's `comments`
+Three boundary rules were needed during the sweep, and all three are recorded in the category's `comments`
 so the next editor applies them rather than re-deriving them:
 
 - **A many-language set belongs here when it was built to reach underrepresented languages.**
@@ -16,10 +16,18 @@ so the next editor applies them rather than re-deriving them:
   benchmark translated into the major languages (Global-MMLU, Greek MMLU) is defined by its task and
   stays in `benchmark_eval_data`. A Common Crawl corpus filtered by language ID (GlotCC) sits with
   MADLAD-400 in `training_synthetic_datasets`, even when its stated purpose is minority languages.
-- **High-resource languages pass the litmus, and are flagged rather than excluded.** KMMLU, TMMLU+,
-  CMMLU, ChineseWebText, Carolina and the LatamGPT Corpus are assembled for one language or region,
-  which is the written test. They are not what the category's scarcity argument is about. They sit
-  in their own registry section so promotion can keep or drop them as a group.
+- **The language has to be underrepresented.** KMMLU, TMMLU+, CMMLU, ChineseWebText, Carolina and
+  the LatamGPT Corpus are assembled for one language or region, but the language is Korean,
+  Chinese, Portuguese or Spanish. They were routed to the seed rosters of their neighbors, the
+  three evaluation sets to `benchmark_eval_data` and the three corpora to
+  `training_synthetic_datasets`. The smaller European languages stay in.
+- **A benchmark suite that redistributes other datasets is the product.** AfroBench carries
+  IrokoBench, AfriSenti, MasakhaNER, MAFAND-MT and SALT, and SEACrowd's dataloaders carry NusaX and
+  PhoMT, so those seven are parked as members of their suites. Membership was read from AfroBench's
+  published Hugging Face collection and SEACrowd's `seacrowd/sea_datasets` directory (401
+  dataloaders). The exception is a global set a regional suite borrows a slice of: Belebele,
+  FLORES+ and SIB-200 are in AfroBench's collection for their African languages and stay their own
+  rows.
 
 No row was scored. Each row carries identity and artifacts only, as the registry schema requires.
 
@@ -51,17 +59,19 @@ secondary list for that reason: each is the only evaluation set found for its la
 
 A raw signal is one input naming one candidate. A duplicate is a candidate named by more than one
 input, including the same product arriving under a superseded or stub identifier (`facebook/flores`
-for FLORES+, the Common Voice Hub stubs, Common Voice's regional collections).
+for FLORES+, the Common Voice Hub stubs, Common Voice's regional collections). Accepted counts every
+row the sweep emitted: 65 into `language_specific_datasets` and 6 routed to neighboring
+categories.
 
 ```text
 raw_signals       = 211
 duplicate_signals = 41
 unique_candidates = 170
-accepted          = 78
-parked            = 92
+accepted          = 71
+parked            = 99
 
 211 = 41 + 170
-170 = 78 + 92
+170 = 71 + 99
 ```
 
 No candidate collided with a head product, a retired alias, an existing registry row, or a
@@ -96,14 +106,15 @@ availability evidence at promotion.
 
 ## What the seed lets the map say
 
-A first cut of the per-region answer the issue asks for. It is a preview; the `languages` field that
-would make it computable does not exist yet (see the open questions).
+A first cut of the per-region answer the issue asks for, assembled by hand from this sweep. A
+`languages` field would make it computable; that was judged a nice-to-have and deferred (see the
+decisions below).
 
 | Region | Open pretraining text | Open speech | Open instruction data | Open evaluation |
 |---|---|---|---|---|
-| Africa | WURA, Vuk'uzenzele; Inkuba-Mono (no license) | WAXAL, Afrivoice, ZA African Next Voices, BibleTTS; NaijaVoices (NC) | none found beyond machine-translated sets | IrokoBench, MasakhaNER 2.0, AfriSenti, AfroBench |
+| Africa | WURA, Vuk'uzenzele; Inkuba-Mono (no license) | WAXAL, Afrivoice, ZA African Next Voices, BibleTTS; NaijaVoices (NC) | none found beyond machine-translated sets | AfroBench (carrying IrokoBench, MasakhaNER, AfriSenti) |
 | South Asia | Sangraha, TituLM (Bangla), Nepali Text Corpus | IndicVoices, Vaani | IndicAlign; Updesh (non-commercial) | MILU, IndicGenBench |
-| Southeast Asia | SEA-PILE v2, Mangosteen (Thai) | Khmer ASR; Burmese and Lao have none found | SEA-Instruct, Cendol, WangchanThaiInstruct | SEA-HELM, SeaExam, NusaX, ThaiExam, VMLU, LaoBench |
+| Southeast Asia | SEA-PILE v2, Mangosteen (Thai) | Khmer ASR; Burmese and Lao have none found | SEA-Instruct, Cendol, WangchanThaiInstruct | SEA-HELM, SeaExam, SEACrowd (carrying NusaX), ThaiExam, VMLU, LaoBench |
 | Arabic and Persian | 101 Billion Arabic Words, naab | none found | CIDAR | ArabicMMLU, DarijaMMLU |
 | Central Asia | none found | Kazakh Speech Corpus 2 | none found | none (KazMMLU parked) |
 | Smaller European languages | Latxa, CATalog, CorpusNós, Dynaword, NCC, IGC, Sámi web, UberText; Korpus Malti (NC) | none found beyond Common Voice | none found | none found |
@@ -141,11 +152,6 @@ would make it computable does not exist yet (see the open questions).
 | WURA | `wura` | AP | pretraining text | 16 African languages plus en, fr, pt | Apache-2.0 | open | https://huggingface.co/datasets/castorini/wura |
 | Inkuba-Mono | `inkuba-mono` | AP | pretraining text | sw, ha, zu, xh, yo | none declared | gated (auto) | https://huggingface.co/datasets/lelapa/Inkuba-Mono |
 | Vuk'uzenzele corpus | `vukuzenzele` | A | monolingual and parallel text | 11 South African official languages | CC-BY-4.0 | open | https://huggingface.co/datasets/dsfsi/vukuzenzele-monolingual |
-| SALT | `sunbird-salt` | A | parallel text and speech | English plus 8 Ugandan languages | CC-BY-SA-4.0 | gated (auto) | https://huggingface.co/datasets/Sunbird/salt |
-| MAFAND-MT | `mafand-mt` | AP | MT (news) | 21 African languages | CC-BY-NC-4.0 | open | https://huggingface.co/datasets/masakhane/mafand |
-| MasakhaNER 2.0 | `masakhaner-2` | IAP | NER | 20 African languages | disputed: AFL-3.0 (card) vs CC-BY-NC (repo) | open | https://huggingface.co/datasets/masakhane/masakhaner2 |
-| AfriSenti | `afrisenti` | AP | sentiment | 14 African languages | disputed: CC-BY-4.0 (repo) vs CC-BY-NC-SA-2.0 (card) | open | https://huggingface.co/datasets/masakhane/afrisenti |
-| IrokoBench | `irokobench` | AP | LLM eval (AfriMMLU, AfriXNLI, AfriMGSM) | 17 African languages | Apache-2.0 | open | https://huggingface.co/datasets/masakhane/afrimmlu |
 | AfroBench | `afrobench` | A | eval suite (15 tasks, 22 datasets) | 64 African languages | per component | open | https://github.com/McGill-NLP/AfroBench |
 
 ### South Asia
@@ -173,12 +179,10 @@ would make it computable does not exist yet (see the open questions).
 | SEA-Instruct | `sea-instruct` | EP | instruction data | 11 including en and zh | ODC-By | gated (auto) | https://huggingface.co/datasets/aisingapore/SEA-Instruct-2602 |
 | SEA-HELM | `sea-helm` | EP | eval suite | fil, id, ta, th, vi, jv, su, ms, my, lo | per dataset | gated (auto; some manual) | https://github.com/aisingapore/SEA-HELM |
 | SeaExam | `seaexam` | E | exam eval (with SeaBench) | en, zh, id, vi, th | Apache-2.0 | open | https://huggingface.co/datasets/SeaLLMs/SeaExam |
-| NusaX | `nusax` | EP | sentiment and MT | Indonesian, English and 10 local languages | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/indonlp/NusaX-senti |
 | Cendol Collection | `cendol-collection` | E | instruction data | Indonesian and local languages | Apache-2.0 | open | https://huggingface.co/datasets/indonlp/cendol_collection_v2 |
 | Mangosteen | `mangosteen` | E | pretraining text | Thai | ODC-By | open | https://huggingface.co/datasets/aisingapore/WangchanLION-Web |
 | WangchanThaiInstruct | `wangchan-thai-instruct` | E | human-written instructions | Thai | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/airesearch/WangchanThaiInstruct |
 | ThaiExam | `thai-exam` | E | exam eval | Thai | Apache-2.0 | open | https://huggingface.co/datasets/typhoon-ai/thai_exam |
-| PhoMT | `phomt` | P | parallel text | Vietnamese and English | none declared on the card | gated (auto) | https://huggingface.co/datasets/vinai/PhoMT |
 | Khmer ASR Cultural Dataset | `khmer-speech-dataset` | E | speech (ASR) | Khmer | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset |
 | VMLU | `vmlu` | E | knowledge eval | Vietnamese | not yet stated (README: TBU) | download; test answers withheld | https://vmlu.ai |
 | LaoBench | `laobench` | E | eval | Lao | Apache-2.0 | open | https://huggingface.co/datasets/BAAI/LaoBench |
@@ -203,17 +207,6 @@ would make it computable does not exist yet (see the open questions).
 | Northern Sámi web corpus | `saami-web` | M | pretraining text | Northern Sámi | CC0-1.0 | open | https://huggingface.co/datasets/ltg/saami-web |
 | UberText | `ubertext` | M | pretraining text | Ukrainian | none stated | open download | https://lang.org.ua/en/ubertext/ |
 
-### East Asia and Latin America: language-specific, not low-resource
-
-| Candidate | Slug | Inputs | Modality | Languages | License as stated | Access | Primary source |
-|---|---|---|---|---|---|---|---|
-| KMMLU | `kmmlu` | E | knowledge eval | Korean | CC-BY-ND-4.0 | open | https://huggingface.co/datasets/HAERAE-HUB/KMMLU |
-| TMMLU+ | `tmmlu-plus` | E | knowledge eval | Traditional Chinese (Taiwan) | MIT | open | https://huggingface.co/datasets/ikala/tmmluplus |
-| CMMLU | `cmmlu` | E | knowledge eval | Simplified Chinese | disputed: CC-BY-NC-SA-4.0 (repo) vs CC-BY-NC-4.0 (card) | open | https://github.com/haonan-li/CMMLU |
-| ChineseWebText | `chinesewebtext` | P | pretraining text | Chinese | Apache-2.0 (v2.0) | open | https://huggingface.co/datasets/CASIA-LM/ChineseWebText2.0 |
-| Carolina Corpus | `carolina-corpus` | P | pretraining text | Brazilian Portuguese | CC-BY-4.0 | open | https://huggingface.co/datasets/carolina-c4ai/corpus-carolina |
-| LatamGPT Corpus | `latamgpt-corpus` | X | pretraining text | es, pt, en across 20 countries | per document | gated (terms; >USD 1B entities need authorization) | https://huggingface.co/datasets/latam-gpt/LatamGPT-Corpus-1.0 |
-
 ### Indigenous Americas
 
 | Candidate | Slug | Inputs | Modality | Languages | License as stated | Access | Primary source |
@@ -231,10 +224,24 @@ would make it computable does not exist yet (see the open questions).
 | MMS-lab data | `mms-lab-data` | X | speech (New Testament recordings) | 1,130 languages, about 49K hours | not released | closed | https://arxiv.org/abs/2305.13516 |
 | Sarvam-2T | `sarvam-2t` | S | pretraining text | 10 Indic languages, about 2T tokens | not released | closed | https://www.sarvam.ai/blogs/sarvam-1 |
 
-Where a product line spans several Hub repositories (Afrivoice, AfriVoices-KE, IrokoBench,
-IndicGenBench, SEA-HELM, Bloom Library), the row carries its most representative repository and
-promotion adds the rest to the head record. Licenses marked *disputed* disagree between the Hub card
-and the repository; promotion settles them against the primary source rather than picking one here.
+### Routed to neighboring categories
+
+Language-specific but not low-resource. Emitted as rows in the named category's registry file.
+
+| Candidate | Slug | Routed to | Inputs | Modality | License as stated | Primary source |
+|---|---|---|---|---|---|---|
+| KMMLU | `kmmlu` | `benchmark_eval_data` | E | knowledge eval, Korean | CC-BY-ND-4.0 | https://huggingface.co/datasets/HAERAE-HUB/KMMLU |
+| TMMLU+ | `tmmlu-plus` | `benchmark_eval_data` | E | knowledge eval, Traditional Chinese (Taiwan) | MIT | https://huggingface.co/datasets/ikala/tmmluplus |
+| CMMLU | `cmmlu` | `benchmark_eval_data` | E | knowledge eval, Simplified Chinese | disputed: CC-BY-NC-SA-4.0 (repo) vs CC-BY-NC-4.0 (card) | https://github.com/haonan-li/CMMLU |
+| ChineseWebText | `chinesewebtext` | `training_synthetic_datasets` | P | pretraining text, Chinese | Apache-2.0 (v2.0) | https://huggingface.co/datasets/CASIA-LM/ChineseWebText2.0 |
+| Carolina Corpus | `carolina-corpus` | `training_synthetic_datasets` | P | pretraining text, Brazilian Portuguese | CC-BY-4.0 | https://huggingface.co/datasets/carolina-c4ai/corpus-carolina |
+| LatamGPT Corpus | `latamgpt-corpus` | `training_synthetic_datasets` | X | pretraining text, es, pt, en across 20 countries | per document | https://huggingface.co/datasets/latam-gpt/LatamGPT-Corpus-1.0 |
+
+Where a product line spans several Hub repositories (Afrivoice, AfriVoices-KE, IndicGenBench,
+SEA-HELM, Bloom Library, and the AfroBench and SEACrowd suites), the row carries its most
+representative artifact and promotion adds the rest to the head record. Licenses marked *disputed*
+disagree between the Hub card and the repository; promotion settles them against the primary source
+rather than picking one here.
 
 ## Parked candidates
 
@@ -332,22 +339,29 @@ and the repository; promotion settles them against the primary source rather tha
 | Karya | X | a data vendor, a bundle rather than a product (ADR-005) | https://www.karya.in |
 | MAP-CC | P | the alternative Chinese corpus; ChineseWebText 2.0 carries the more open license (MAP-CC is CC-BY-NC-ND-4.0) | https://huggingface.co/datasets/m-a-p/MAP-CC |
 | VoxPopuli | P | boundary: parliamentary speech in 16 mostly major European languages, a general multilingual corpus | https://huggingface.co/datasets/facebook/voxpopuli |
+| IrokoBench | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; LLM eval (AfriMMLU, AfriXNLI, AfriMGSM), 17 African languages, Apache-2.0 | https://huggingface.co/datasets/masakhane/afrimmlu |
+| AfriSenti | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; sentiment, 14 African languages, disputed: CC-BY-4.0 (repo) vs CC-BY-NC-SA-2.0 (card) | https://huggingface.co/datasets/masakhane/afrisenti |
+| MasakhaNER 2.0 | IAP | carried by the `afrobench` suite, which is the product under the bundle ruling; NER, 20 African languages, disputed: AFL-3.0 (card) vs CC-BY-NC (repo) | https://huggingface.co/datasets/masakhane/masakhaner2 |
+| MAFAND-MT | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; MT (news), 21 African languages, CC-BY-NC-4.0 | https://huggingface.co/datasets/masakhane/mafand |
+| SALT | A | carried by the `afrobench` suite, which is the product under the bundle ruling; parallel text and speech, English plus 8 Ugandan languages, CC-BY-SA-4.0 | https://huggingface.co/datasets/Sunbird/salt |
+| NusaX | EP | carried by the `seacrowd` suite, which is the product under the bundle ruling; sentiment and MT, Indonesian, English and 10 local languages, CC-BY-SA-4.0 | https://huggingface.co/datasets/indonlp/NusaX-senti |
+| PhoMT | P | carried by the `seacrowd` suite, which is the product under the bundle ruling; parallel text, Vietnamese and English, none declared on the card | https://huggingface.co/datasets/vinai/PhoMT |
 
-## Open questions for review
+## Decisions recorded before promotion
 
-1. **A `languages` field.** The per-language answer is the reason for the category, and it cannot be
-   computed from the corpus today: every schema sets `additionalProperties: false`, so neither a
-   registry row nor a product record can carry one. The table above is hand-assembled from this
-   sweep. Adding the field is a schema change (`migrate-axis` territory, or a new optional product
-   key) and belongs in its own PR before promotion, so promoted products are written with it.
-2. **Dual-homing evaluation sets.** The seed puts language-targeted evaluation sets here rather than
-   in `benchmark_eval_data`, which is what the issue argues for. The map's one-product-one-category
-   rule means that choice is exclusive. It needs a maintainer's ruling before promotion.
-3. **The high-resource section.** Keep, trim to one per language family, or drop.
-4. **Aggregators.** SEACrowd and AfroBench bundle datasets that appear here as their own rows
-   (NusaX inside SEACrowd, MasakhaNER 2.0, AfriSenti and IrokoBench inside AfroBench). Promotion
-   should decide whether the bundle or its members are the products.
-5. **Weights.** The category starts at `adopt: 0.5, cap: 0.5`, matching `training_synthetic_datasets`.
-   Download counts for a low-resource corpus are small by construction, so the adoption axis will
-   read most of this roster as low. Whether to weight capability more heavily is a call to make
-   with the ladder at promotion.
+Taken on review of the first draft of this seed, 2026-09-23:
+
+1. **No `languages` field for now.** It would make the per-language gap computable rather than
+   hand-assembled, and it is a schema change. Judged a nice-to-have; the category works without it.
+2. **Language-targeted evaluation sets stay in this category**, not `benchmark_eval_data`.
+3. **High-resource languages are out.** The six such rows were routed to their neighbors.
+4. **Bundles are the product.** AfroBench and SEACrowd stand for the datasets they carry.
+5. **Weights are `adopt: 0.3, cap: 0.7`.** Download counts for a low-resource corpus are small by
+   construction, so adoption carries less of the overall score than in the neighboring categories.
+
+## Still open for promotion
+
+- **Whether the dataset ladder needs a rung for a community-governed license** such as Te Hiku
+  Media's Kaitiakitanga License (see the category's `scoring_recipe.note`).
+- **The disputed licenses** on MasakhaNER 2.0, AfriSenti and CMMLU, and the undeclared ones on
+  Inkuba-Mono, PhoMT, UberText and VMLU, which promotion has to read at the source.
