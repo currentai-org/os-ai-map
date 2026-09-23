@@ -20,25 +20,25 @@ openness:
       # `post-training-data` is read first: the base's pretraining corpus isn't this
       # product's to score, so the honest question is what the tuner released.
       reads: [post-training-data, data]
-      values: [open, described_not_released, described, partial, closed]
+      values: [open, documented-not-released, described, partial, closed]
       evidence:
       - a released SFT/DPO/RL mixture, or scripts that reconstruct it
       - '`described` where the mixture is named in the card but not published'
       - naming the datasets used is NOT sufficient for `open`
       machine_signal: none - requires research
       vocabulary_note: >
-        `described_not_released` here is `documented-not-released` on the
-        pretrained ladder. Same concept, two spellings, and neither category
-        should be the one that unilaterally renames it. Issue #106 settled a
-        different half of that question on 2026-09-15 - it added
-        `components-listed` to `sources/rubrics/pretrained.yaml`, between `open`
-        and `documented-not-released`, for a corpus whose every component is named
-        and publicly resolvable while the mixture is withheld. It did not touch
-        the spelling here, and no rung was added to this ladder: the question a
-        tune answers is what the TUNER released, and no tune in the corpus pairs
-        an enumerated-but-unreproducible post-training mixture with anything, so
-        the rung could not fire. Unifying the spelling, and deciding whether this
-        ladder ever wants the new value, is issue #590.
+        `documented-not-released` is the same value the pretrained ladder uses,
+        spelled the same way, so a reader crossing between the two ladders does
+        not have to translate and a migration does not have to special-case one
+        of them.
+        It sits next to `described`, and the two are not the same claim.
+        `documented-not-released` is a composition given fully enough to be
+        audited while nothing ships. `described` is the weaker case the evidence
+        line below names: the mixture is mentioned in the card and no more.
+        This ladder carries no `components-listed`. That rung means every
+        component is individually resolvable while the mixture is withheld, and
+        no tune in the corpus pairs an enumerated post-training mixture with
+        anything, so declaring it here would declare a rung that cannot fire.
     code:
       question: Is the fine-tuning pipeline released, not just inference code?
       # `code` before `recipe` in `reads:`: where a product answers under either key,
