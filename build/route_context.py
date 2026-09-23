@@ -46,7 +46,10 @@ def plan(root: Path = ROOT) -> dict[Path, tuple[dict, list[str], list[str]]]:
         components = openness.get("components")
         if recipe is None or not isinstance(components, dict):
             continue
-        routed = route_context(components, recipe)
+        try:
+            routed = route_context(components, recipe)
+        except ValueError as error:
+            raise ValueError(f"{path.stem}: {error}") from None
         # Equality ignores order on purpose: a record with nothing to move is left alone rather
         # than re-sorted into route_context's canonical order.
         if routed == components:

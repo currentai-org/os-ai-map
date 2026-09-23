@@ -91,6 +91,13 @@ def check(root: Path = ROOT) -> list[str]:
             failures.append(f"{slug}: components is a mapping with no openness.raw to check it against")
             continue
 
+        malformed = malformed_entries(slug, components)
+        if malformed:
+            # Rendering one of these raises, and a traceback here would abort the gate for
+            # every other record too.
+            failures += malformed
+            continue
+
         expected = split_components(raw)
         actual = recompose(components)
         if actual != expected:
@@ -122,6 +129,34 @@ def check(root: Path = ROOT) -> list[str]:
 
         failures += context_failures(slug, components, recipes.get(slug))
 
+    return failures
+
+
+def malformed_entries(slug: str, components: dict) -> list[str]:
+    """Entries neither `{value, ...}` nor a list of `{name, ...}` parts, top level or context.
+
+    The schema rejects these, but this gate may run without it, and `render_entry` crashes on
+    them rather than reporting.
+    """
+    context = components.get(CONTEXT)
+    placed = [(key, entry) for key, entry in components.items() if key not in RESERVED]
+    if isinstance(context, dict):
+        placed += [(f"{CONTEXT}.{key}", entry) for key, entry in context.items()]
+    failures = []
+    for where, entry in placed:
+        if isinstance(entry, dict):
+            ok = isinstance(entry.get("value"), str)
+        elif isinstance(entry, list):
+            ok = bool(entry) and all(
+                isinstance(part, dict) and isinstance(part.get("name"), str) for part in entry
+            )
+        else:
+            ok = False
+        if not ok:
+            failures.append(
+                f"{slug}.{where}: {entry!r} is neither a {{value, detail?, raw?}} mapping nor a "
+                f"non-empty list of {{name, detail?, raw?}} license parts"
+            )
     return failures
 
 

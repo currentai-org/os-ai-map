@@ -125,6 +125,22 @@ def test_the_gate_fails_a_key_in_both_places_an_empty_context_and_a_reserved_nam
     assert any("reserved" in f for f in context_failures("p", reserved, RECIPE))
 
 
+def test_a_malformed_entry_is_reported_not_raised(tmp_path):
+    # Top level and context alike: render_entry raises on these, which used to abort the gate.
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    bad = {
+        "service": None,
+        "license": [{"detail": "no name"}],
+        CONTEXT: {"governance": "a bare string"},
+    }
+    (scores / "p.yaml").write_text(
+        yaml.safe_dump({"openness": {"components": bad, "raw": "service:x"}})
+    )
+    failures = check(tmp_path)
+    assert {f.split(":")[0] for f in failures} == {"p.service", "p.license", "p.context.governance"}
+
+
 def test_the_gate_passes_a_routed_record_and_skips_one_with_no_ladder():
     assert context_failures("p", route_context(structure(RAW), RECIPE), RECIPE) == []
     assert context_failures("p", structure(RAW), None) == []
