@@ -5,18 +5,19 @@ openness:
   components:
     license:
     - name: Proprietary
-    service:
-      value: proprietary
-      detail: Fly.io managed
     source:
       value: closed
-    clients:
-      value: CLI/REST/JS/Go SDKs
-      detail: client libs only, no open runtime
-      raw: CLI/REST/JS/Go SDKs (client libs only, no open runtime)
-    isolation:
-      value: Firecracker
-      detail: Firecracker itself is OSS/AWS, but the Sprites product/orchestration is proprietary
+    context:
+      service:
+        value: proprietary
+        detail: Fly.io managed
+      clients:
+        value: CLI/REST/JS/Go SDKs
+        detail: client libs only, no open runtime
+        raw: CLI/REST/JS/Go SDKs (client libs only, no open runtime)
+      isolation:
+        value: Firecracker
+        detail: Firecracker itself is OSS/AWS, but the Sprites product/orchestration is proprietary
   confidence: high
   note: Fly Sprites is a proprietary managed sandbox SaaS; only client SDKs are open, not the runtime. The
     underlying Firecracker hypervisor is open source, but Fly.io's orchestration and control plane are closed,
