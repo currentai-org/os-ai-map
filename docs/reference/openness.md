@@ -370,10 +370,9 @@ sits under `components.context` rather than beside the dimensions. The rule is m
 per-key ruling. Any key the product's ladder neither declares nor names in a `reads` list goes
 there, and `build/check_components.py` fails a record where it does not, in either direction. So a
 ladder that starts reading a key forces the key out of `context`, and a new key nobody has ruled
-on lands in `context` until someone does. Before this, such a key sat at the top level and dropped
-out of the score without a word, on 394 clauses across 266 records
-([#188](https://github.com/currentai-org/os-ai-map/issues/188)). Moving a key across the line
-changes nothing a reader sees: `raw` is untouched, and `components_of` lifts `context` back in.
+on lands in `context` until someone does. A top-level key no ladder reads would drop out of the
+score without a word, which is what the gate prevents. Moving a key across the line changes
+nothing a reader sees: `raw` is untouched, and `components_of` lifts `context` back in.
 `uv run python -m build.route_context --write` does the move.
 
 What gates a core is a piece of the product *itself* being withheld: a closed package the open
