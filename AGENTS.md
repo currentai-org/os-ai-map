@@ -97,7 +97,9 @@ Scores back in     apply_scores. Reads computed openness score and class from OS
                    nothing else. The ONLY inbound data path, and it writes no dates.
 
 Editing library    components, the only supported way to edit openness.components in place.
-                   Never load-modify-dump a corpus file.
+                   Never load-modify-dump a corpus file. route_context uses it to keep
+                   components.context holding exactly the keys the product's ladder does not
+                   read; rerun it with --write after changing a ladder's `reads`.
 
 Gates              check_*, one module per question. Four families:
                      scoring    check_rubric, check_recipe, check_capability, check_adoption,

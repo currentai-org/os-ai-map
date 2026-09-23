@@ -3,21 +3,22 @@ openness:
   score: 2
   class: source_available
   components:
-    core-platform:
-      value: closed
-      detail: proprietary post-training stack + turbo serving
     source:
       value: partial
       detail: LoRAX and Ludwig are adjacent OSS; the fine-tuning platform does not ship
-    OSS-components:
-      value: LoRAX
-      detail: open source multi-LoRA serving)+Ludwig(open source
-    runs-on:
-      value: Predibase-SaaS-or-customer-VPC
     license:
     - name: Proprietary
       detail: managed) with Apache-licensed LoRAX/Ludwig adjuncts
       raw: Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts
+    context:
+      core-platform:
+        value: closed
+        detail: proprietary post-training stack + turbo serving
+      OSS-components:
+        value: LoRAX
+        detail: open source multi-LoRA serving)+Ludwig(open source
+      runs-on:
+        value: Predibase-SaaS-or-customer-VPC
   confidence: high
   note: 'Predibase''s founders still maintain LoRAX, the open-source multi-LoRA serving stack, and Ludwig,
     but the fine-tuning and reinforcement-fine-tuning platform itself is proprietary managed SaaS running

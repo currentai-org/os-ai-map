@@ -277,8 +277,8 @@ Triage. A category whose oldest axis is 50 days old is a category to go and look
 product. `--max-age-days N` turns that report into a gate: it exits non-zero if any
 category's oldest axis is older than N days.
 
-**The window is 45 days, temporarily.** The age-gate section below owns the number and holds
-the reasoning; it is not restated here.
+**The window is 45 days.** The age-gate section below owns the number and holds the reasoning;
+it is not restated here.
 
 ### Where the gate runs, and why not in `validate.yml`
 
@@ -1103,13 +1103,20 @@ re-derives automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis
 category whose oldest axis is older than the window is a category to go and look at. A held
 axis rides the commit-date fallback rather than evading the gate.
 
-**The window is 45 days, narrowing to 30 on 2026-10-01.** It is a judgment about how
-much re-reading the map is worth rather than anything derivable, so it is owned here and not
-re-argued per category. Owner: Carl.
+**The window is 45 days.** It is a judgment about how much re-reading the map is worth rather
+than anything derivable, so it is owned here and not re-argued per category. Owner: Carl.
 
-The wider window covers a corpus dated in a single sweep, which crosses a 30-day gate all at
-once. The rolling re-verifier spreads those dates over four weekly batches, and the window
-narrows when it has.
+It is the steady state, not a raise waiting to be reverted. Forty-five is what the re-reading
+rate can actually hold: the rolling re-verifier reads 150 products a week and re-dates roughly
+one in eight, because most cited pages have moved and a moved page confirms nothing. Against
+2,289 axes that is not enough throughput to keep a 30-day line, and measuring it says so
+plainly — at a 30-day window more than half the corpus would sit outside it, with the median
+at 35 days and nothing older than 45.
+
+Narrowing the window is therefore a decision about throughput, not about the number. It needs
+either more re-reads that confirm — which means attacking why a re-read fails, not the batch
+size — or a narrower scope for what the window governs. Changing the number alone would move
+the whole corpus out of policy on the day it changed and report a backlog nobody created.
 
 At 45 days the re-read is continuous rather than occasional: every category inside forty-five
 days is roughly three a week. Two things follow. A whole category shares one confirmation date,

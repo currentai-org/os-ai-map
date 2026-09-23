@@ -20,7 +20,7 @@ from build.components import field_span, format, parse, render, rewrite, set_com
 # stop folding. `test_the_folded_fixture_really_folds` asserts it still does.
 GRANITE = (
     "weights:open(Apache-2.0,on HF);code:partial(inference + fine-tune sample scripts via "
-    "Dolomite Engine; no full training pipeline in repo);data:described_not_released("
+    "Dolomite Engine; no full training pipeline in repo);data:documented-not-released("
     "CommitPackFT/MathInstruct/Glaive/HelpSteer/Open-Platypus named in card but processed corpus "
     "not redistributable);post-training-data:described(SFT mixture named, not released);"
     "paper:open(arXiv 2405.04324);model_card:open;license:Apache-2.0(OSI)"

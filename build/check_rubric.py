@@ -36,7 +36,13 @@ from typing import NamedTuple
 
 import yaml
 
-from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
+from build.rubrics import (
+    load_product_types,
+    load_shared,
+    recipe_for,
+    recipe_vocabulary,
+    resolve_recipe_variants,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -144,6 +150,16 @@ def split_value(raw: str) -> tuple[str, str]:
 
 
 FREE_TEXT = "free_text"
+
+# Keyed clauses the product's ladder neither declares nor `reads`: recorded, serialized as
+# traceability evidence, and deliberately not scored. Before this existed such a key sat beside
+# the dimensions and was dropped from the score without a word, which the schema called this
+# corpus's recurring bug (#188). `commercial:` and `service:` are the bulk of it, and
+# docs/reference/openness.md already rules that the ladder reads neither. Membership is
+# mechanical — `unread_keys` decides it and `check_components` enforces it in both directions —
+# so a key never needs its own ruling before it can be recorded.
+CONTEXT = "context"
+RESERVED = (FREE_TEXT, CONTEXT)
 
 
 def is_license_key(key: str) -> bool:
@@ -302,13 +318,61 @@ def structure(text: str) -> dict:
     return out
 
 
+def entries(mapping: dict) -> dict:
+    """Every keyed entry, `context` lifted back to the top level, reserved keys dropped.
+
+    `context` is a statement about the ladder, not about the evidence, so anything that reads
+    the evidence itself — the raw-agreement gate, the license-shape gate, the contradiction
+    leg counting license keys — reads through it. A key recorded in both places is a defect
+    `check_components` reports; here the top level wins so the result is still defined.
+    """
+    out = {key: entry for key, entry in mapping.items() if key not in RESERVED}
+    context = mapping.get(CONTEXT)
+    # A malformed `context` is check_components' to report, so reading past it must not crash.
+    for key, entry in (context.items() if isinstance(context, dict) else ()):
+        out.setdefault(key, entry)
+    return out
+
+
 def recompose(mapping: dict) -> dict[str, str]:
     """The mapping back to the key -> raw-clause dict `split_components` produces.
 
     This is the join that makes the migration score-neutral: every reader keeps seeing the
-    exact strings it saw before the shape changed.
+    exact strings it saw before the shape changed. `context` flattens back in, so routing a
+    key there changes nothing a reader sees either. What keeps a context key out of a score
+    is that no ladder reads it, and `check_components` asserts that, not this function.
     """
-    return {key: render_entry(entry) for key, entry in mapping.items() if key != FREE_TEXT}
+    return {key: render_entry(entry) for key, entry in entries(mapping).items()}
+
+
+def unread_keys(mapping: dict, recipe: dict) -> set[str]:
+    """The keyed entries this ladder neither declares nor reads — what belongs in `context`."""
+    vocabulary = recipe_vocabulary(recipe)
+    return {key for key in entries(mapping) if key not in vocabulary}
+
+
+def route_context(mapping: dict, recipe: dict) -> dict:
+    """The mapping with every unread key under `context` and every read key out of it.
+
+    Deterministic and idempotent. Read keys keep their recorded order; unread keys keep theirs
+    inside `context`; `free_text` then `context` come last. A read key found in `context` is
+    moved back out, which is what a ladder gaining a `reads` entry needs.
+    """
+    doubled = set(mapping) & set(mapping.get(CONTEXT) or {})
+    if doubled:
+        # Two entries for one key is conflicting evidence, and picking one is a curator's call.
+        raise ValueError(f"recorded both at the top level and under {CONTEXT}: {sorted(doubled)}")
+    unread = unread_keys(mapping, recipe)
+    flat = entries(mapping)
+    order = [key for key in mapping if key not in RESERVED]
+    order += [key for key in (mapping.get(CONTEXT) or {}) if key not in order]
+    out: dict = {key: flat[key] for key in order if key not in unread}
+    if mapping.get(FREE_TEXT):
+        out[FREE_TEXT] = mapping[FREE_TEXT]
+    context = {key: flat[key] for key in order if key in unread}
+    if context:
+        out[CONTEXT] = context
+    return out
 
 
 def components_of(openness: dict) -> dict[str, str]:
