@@ -2,7 +2,7 @@ name: freshness
 
 # The age gate: no category's oldest axis may be more than 45 days old.
 #
-# The window is 45 days (temporary, see the revert issue). docs/reference/evidence-and-freshness.md "The age gate" owns the number
+# The window is 45 days. docs/reference/evidence-and-freshness.md "The age gate" owns the number
 # and the reasoning; it is a judgment about how much re-reading the map is worth rather than
 # something derivable, and it is not re-argued per category.
 #
@@ -17,7 +17,7 @@ name: freshness
 #
 # Weekly rather than daily for the same reason parity is weekly — the cadence has to match the
 # work it polices. A category is re-read in one run, so all of its axes carry one date and all of
-# them age out together; eighteen categories on a 45-day window (temporary, see the revert issue) is about four crossing the line
+# them age out together; eighteen categories on a 45-day window is about four crossing the line
 # per week. A daily gate would re-report the same cliff every day until the re-read landed, which
 # is nagging rather than information.
 #
@@ -33,7 +33,7 @@ on:
   workflow_dispatch:
     inputs:
       max-age-days:
-        description: "Window in days. 45 until the rolling re-verifier has spread the August sweep dates; revert to 30 four weeks after 2026-09-03."
+        description: "Window in days. 45 is the steady state; see docs/reference/evidence-and-freshness.md \"The age gate\" before changing it."
         default: "45"
 
 jobs:
