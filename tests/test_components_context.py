@@ -7,6 +7,7 @@ score, payload or evidence row can move. What `context` changes is what the gate
 
 from pathlib import Path
 
+import pytest
 import yaml
 
 from build.check_components import check, context_failures
@@ -113,6 +114,13 @@ def test_the_gate_fails_a_key_in_both_places_an_empty_context_and_a_reserved_nam
     assert context_failures("p", {CONTEXT: {}}, RECIPE) == [
         "p: context must be a non-empty mapping of key -> entry, or absent"
     ]
+    for malformed in (None, ["service:x"]):
+        # Reported rather than crashing the raw-agreement check or passing as absent.
+        assert recompose({CONTEXT: malformed}) == {}
+        assert "non-empty mapping" in context_failures("p", {CONTEXT: malformed}, RECIPE)[0]
+    with pytest.raises(ValueError, match="both at the top level"):
+        route_context(both, RECIPE)
+
     reserved = {CONTEXT: {FREE_TEXT: {"value": "x"}}}
     assert any("reserved" in f for f in context_failures("p", reserved, RECIPE))
 

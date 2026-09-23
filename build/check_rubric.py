@@ -327,7 +327,9 @@ def entries(mapping: dict) -> dict:
     `check_components` reports; here the top level wins so the result is still defined.
     """
     out = {key: entry for key, entry in mapping.items() if key not in RESERVED}
-    for key, entry in (mapping.get(CONTEXT) or {}).items():
+    context = mapping.get(CONTEXT)
+    # A malformed `context` is check_components' to report, so reading past it must not crash.
+    for key, entry in (context.items() if isinstance(context, dict) else ()):
         out.setdefault(key, entry)
     return out
 
@@ -356,6 +358,10 @@ def route_context(mapping: dict, recipe: dict) -> dict:
     inside `context`; `free_text` then `context` come last. A read key found in `context` is
     moved back out, which is what a ladder gaining a `reads` entry needs.
     """
+    doubled = set(mapping) & set(mapping.get(CONTEXT) or {})
+    if doubled:
+        # Two entries for one key is conflicting evidence, and picking one is a curator's call.
+        raise ValueError(f"recorded both at the top level and under {CONTEXT}: {sorted(doubled)}")
     unread = unread_keys(mapping, recipe)
     flat = entries(mapping)
     order = [key for key in mapping if key not in RESERVED]

@@ -127,10 +127,9 @@ def check(root: Path = ROOT) -> list[str]:
 
 def context_failures(slug: str, components: dict, recipe: dict | None) -> list[str]:
     """Whether `context` holds exactly the keys this product's ladder does not read."""
-    context = components.get(CONTEXT)
-    if context is None:
+    if CONTEXT not in components:
         context = {}
-    elif not isinstance(context, dict) or not context:
+    elif not isinstance(context := components[CONTEXT], dict) or not context:
         return [f"{slug}: {CONTEXT} must be a non-empty mapping of key -> entry, or absent"]
 
     failures = [
