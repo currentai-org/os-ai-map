@@ -728,7 +728,7 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                         # A key that shares a dimension's name but lost the `reads`
                         # preference is answering a different question under a name this
                         # category has already spent. granite records
-                        # `data:described_not_released` about its BASE corpus while
+                        # `data:documented-not-released` about its BASE corpus while
                         # `post-training-data` answers the category's data question, so the
                         # base fact has nowhere to go and would be dropped without a word.
                         # Reported so it can be relabeled — starcoder2 already uses
