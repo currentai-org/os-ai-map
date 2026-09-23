@@ -27,6 +27,19 @@ recorded as a `{value, detail}` mapping rather than a list of `{name, detail?, r
 license left in the dimension shape is a compound nobody decomposed — which is the failure
 this repo has now had twice, once per reader.
 
+A FIFTH thing is a failure since #188 gave a keyed clause somewhere to go when no ladder reads
+it: the split between the top level and the reserved `context` mapping must match the product's
+resolved ladder, in both directions.
+
+  * A key at the top level that the ladder neither declares nor `reads` is dropped from the score
+    without a word. `serialize_rubric` used to warn about it, 394 times across 266 records, and a
+    warning that fires 394 times is read by nobody.
+  * A key under `context` that the ladder DOES read is the opposite claim — "deliberately not
+    scored" on evidence the formula consumes. That is what a ladder gaining a `reads` entry would
+    leave behind, so the gate names it rather than letting the record contradict itself.
+
+`build/route_context.py --write` repairs both, through `build/components.py`.
+
 Exit status is 1 on any failure, so CI can gate on it.
 """
 
@@ -37,13 +50,25 @@ from pathlib import Path
 
 import yaml
 
-from build.check_rubric import FREE_TEXT, _clauses, is_license_key, recompose, split_components
+from build.check_rubric import (
+    CONTEXT,
+    FREE_TEXT,
+    RESERVED,
+    _clauses,
+    entries,
+    is_license_key,
+    recompose,
+    split_components,
+    unread_keys,
+)
+from build.rubrics import load_product_recipes
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def check(root: Path = ROOT) -> list[str]:
     failures: list[str] = []
+    recipes = load_product_recipes(root)
     for path in sorted((root / "sources" / "scores").glob("*.yaml")):
         block = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
         components = block.get("components")
@@ -76,8 +101,8 @@ def check(root: Path = ROOT) -> list[str]:
                         f"raw says {expected.get(key)!r}"
                     )
 
-        for key, entry in components.items():
-            if key == FREE_TEXT or not is_license_key(key):
+        for key, entry in entries(components).items():
+            if not is_license_key(key):
                 continue
             if not isinstance(entry, list):
                 failures.append(
@@ -95,6 +120,48 @@ def check(root: Path = ROOT) -> list[str]:
         if keyless != recorded:
             failures.append(f"{slug}: free_text is {recorded!r}, raw's keyless clauses are {keyless!r}")
 
+        failures += context_failures(slug, components, recipes.get(slug))
+
+    return failures
+
+
+def context_failures(slug: str, components: dict, recipe: dict | None) -> list[str]:
+    """Whether `context` holds exactly the keys this product's ladder does not read."""
+    context = components.get(CONTEXT)
+    if context is None:
+        context = {}
+    elif not isinstance(context, dict) or not context:
+        return [f"{slug}: {CONTEXT} must be a non-empty mapping of key -> entry, or absent"]
+
+    failures = [
+        f"{slug}.{CONTEXT}.{key}: `{key}` is reserved and cannot be recorded as context"
+        for key in context
+        if key in RESERVED
+    ]
+    failures += [
+        f"{slug}.{key}: recorded both at the top level and under {CONTEXT}"
+        for key in context
+        if key in components
+    ]
+    if recipe is None:
+        # No ladder governs it, so "unread" is undefined. validate and check_recipe report the
+        # missing ladder; this gate has nothing to compare against.
+        return failures
+
+    unread = unread_keys(components, recipe)
+    fix = "Run `uv run python -m build.route_context --write`."
+    failures += [
+        f"{slug}.{key}: the product's ladder neither declares nor reads `{key}`, so at the top "
+        f"level it is dropped from the score silently. It belongs under {CONTEXT}. {fix}"
+        for key in components
+        if key in unread
+    ]
+    failures += [
+        f"{slug}.{CONTEXT}.{key}: the product's ladder reads `{key}`, so recording it as "
+        f"context contradicts the formula that consumes it. Move it to the top level. {fix}"
+        for key in context
+        if key not in unread and key not in RESERVED
+    ]
     return failures
 
 
@@ -102,7 +169,7 @@ def main() -> int:
     failures = check()
     for line in failures:
         print(f"  x {line}")
-    print(f"\ncomponents gate  a structured mapping that disagrees with its raw string  "
+    print(f"\ncomponents gate  a mapping that disagrees with its raw string or its ladder  "
           f"{'[OK]' if not failures else f'{len(failures)} failure(s)'}")
     return 1 if failures else 0
 

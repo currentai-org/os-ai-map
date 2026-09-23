@@ -365,6 +365,17 @@ costs. A `commercial:` or `service:` clause is therefore not evidence either way
 reads neither key — where that is all a product records, the dimension is unanswered and the
 formula abstains.
 
+Such a clause is still worth recording, and the record says outright that it is not scored: it
+sits under `components.context` rather than beside the dimensions. The rule is mechanical, not a
+per-key ruling. Any key the product's ladder neither declares nor names in a `reads` list goes
+there, and `build/check_components.py` fails a record where it does not, in either direction. So a
+ladder that starts reading a key forces the key out of `context`, and a new key nobody has ruled
+on lands in `context` until someone does. Before this, such a key sat at the top level and dropped
+out of the score without a word, on 394 clauses across 266 records
+([#188](https://github.com/currentai-org/os-ai-map/issues/188)). Moving a key across the line
+changes nothing a reader sees: `raw` is untouched, and `components_of` lifts `context` back in.
+`uv run python -m build.route_context --write` does the move.
+
 What gates a core is a piece of the product *itself* being withheld: a closed package the open
 one depends on, an enterprise or `ee/` directory under a different license, a license key that
 unlocks functionality.

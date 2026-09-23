@@ -324,6 +324,11 @@ def undeclared_keys_holding_evidence(
     So the loose warning stays in `serialize_rubric` where it belongs, and this gates the six
     cases where the key demonstrably holds an answer the ladder wanted. That is a ratchet.
 
+    Since #188 every such key is recorded under `components.context`, and `check_components`
+    gates the placement. That makes the other cases deliberate rather than silent; it does not
+    retire this check, which asks a different question: whether a context key is really an
+    answer the ladder should be reading.
+
     `ornith` was the one non-deferred instance: it recorded `recipe:closed` and nothing under
     `code`, so its 3/open_weights came from the `otherwise` rather than from its evidence.
     Fixed by adding `recipe` to `code`'s `reads` list, which changed no score.
@@ -577,8 +582,8 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
         f"  impossible pairs ......... {impossible}",
         f"  clauses .................. {dropped_total} dropped, "
         f"{len([f for f in failures if 'has no key so the parser' in f])} blocking",
-        f"  undeclared keys .......... {undeclared_total} "
-        f"(context, reported by serialize_rubric)",
+        f"  unread keys .............. {undeclared_total} "
+        f"(recorded under `context`, gated by check_components)",
         f"  scored with no tier ...... {len(tierless):<4}"
         f"(context, itemized by check_rubric)",
     ]

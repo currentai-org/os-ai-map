@@ -94,7 +94,13 @@ from typing import Iterable, Mapping, Sequence
 
 import yaml
 
-from build.check_rubric import SCOPE_PREFIX, is_license_key, license_parts_of, normalize_license
+from build.check_rubric import (
+    SCOPE_PREFIX,
+    entries,
+    is_license_key,
+    license_parts_of,
+    normalize_license,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -323,12 +329,15 @@ def license_findings(
         if not isinstance(components, dict):
             abstained["components are not structured"] += 1
             continue
-        keys = [key for key in components if is_license_key(key)]
+        # Counted across `context` too. `max` records its repository license there because no
+        # ladder reads it, and it is still the second license that makes this leg abstain.
+        recorded_entries = entries(components)
+        keys = [key for key in recorded_entries if is_license_key(key)]
         if len(keys) != 1:
             abstained["not exactly one recorded license key"] += 1
             continue
 
-        part, why = comparable_license(components[keys[0]], _text(product.get("type")))
+        part, why = comparable_license(recorded_entries[keys[0]], _text(product.get("type")))
         if part is None:
             abstained[why] += 1
             continue
