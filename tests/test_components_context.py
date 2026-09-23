@@ -133,6 +133,7 @@ def test_a_malformed_entry_is_reported_not_raised(tmp_path):
         "service": None,
         "license": [{"detail": "no name"}],
         "source": {"value": "public", "raw": None},
+        1: {"value": "an integer key"},
         CONTEXT: {
             "governance": "a bare string",
             "repo-license": [{"name": "MIT", "raw": 7}],
@@ -143,7 +144,8 @@ def test_a_malformed_entry_is_reported_not_raised(tmp_path):
     )
     failures = check(tmp_path)
     assert {f.split(":")[0] for f in failures} == {
-        "p.service", "p.license", "p.source", "p.context.governance", "p.context.repo-license"
+        "p.service", "p.license", "p.source", "p.1", "p.context.governance",
+        "p.context.repo-license",
     }
 
 

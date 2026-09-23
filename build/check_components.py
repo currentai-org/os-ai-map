@@ -139,9 +139,11 @@ def malformed_entries(slug: str, components: dict) -> list[str]:
     them rather than reporting.
     """
     context = components.get(CONTEXT)
-    placed = [(key, entry) for key, entry in components.items() if key not in RESERVED]
+    # (where, key, entry): `where` is the label a failure prints, `key` the key as parsed.
+    placed = [(key, key, entry) for key, entry in components.items() if key not in RESERVED]
     if isinstance(context, dict):
-        placed += [(f"{CONTEXT}.{key}", entry) for key, entry in context.items()]
+        placed += [(f"{CONTEXT}.{key}", key, entry) for key, entry in context.items()]
+
     def fields_ok(item: object, required: str) -> bool:
         # Every field rendering touches must be a string, not only the required one: a non-string
         # `raw` on a license part breaks the `+` join just as a missing `name` does.
@@ -151,7 +153,14 @@ def malformed_entries(slug: str, components: dict) -> list[str]:
             and all(isinstance(item[f], str) for f in ("detail", "raw") if f in item)
         )
 
-    failures = []
+    # A non-string key (YAML reads `1:` as an int, `2026-01-01:` as a date) breaks the sorted
+    # raw comparison, so it is reported and its entry left unexamined.
+    failures = [
+        f"{slug}.{where}: the key must be a string, not {type(key).__name__}"
+        for where, key, _ in placed
+        if not isinstance(key, str)
+    ]
+    placed = [(where, entry) for where, key, entry in placed if isinstance(key, str)]
     for where, entry in placed:
         if isinstance(entry, list):
             ok = bool(entry) and all(fields_ok(part, "name") for part in entry)
