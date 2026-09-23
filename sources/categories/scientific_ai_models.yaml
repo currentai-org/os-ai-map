@@ -53,6 +53,20 @@ scoring_recipe:
 
   adoption:
     signal_preference:
+    # A model whose documented way to obtain the weights is a package is measured on that
+    # package. The Hub is the default channel for a model, not the definition of one, and a
+    # product distributed elsewhere otherwise lands on the wrong instrument rather than on a
+    # wider error bar: `uma` read level 1 against a gated Hub repo while `fairchem-core`
+    # drew 57K installs a month, and `boltz` read stars because its Hub repos report zero --
+    # the package fetches checkpoints directly. The model and software download bands are
+    # numerically identical, so this selects an instrument and recalibrates nothing.
+    # Ruling on #536. The package must be DECLARED on the product and be the documented
+    # install path; a client, a wrapper or an SDK for a hosted service fails the
+    # measurement-population test in docs/reference/adoption.md exactly as it does elsewhere.
+    - signal_type: usage_volume
+      source: package downloads where the declared package is the documented way to obtain
+        the weights
+      machine_signal: signal_packages.downloads
     - signal_type: usage_volume
       source: Hugging Face downloads, summed across the product line's shipped checkpoints
       machine_signal: signal_huggingface.hub_state
