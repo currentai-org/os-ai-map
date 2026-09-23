@@ -132,13 +132,19 @@ def test_a_malformed_entry_is_reported_not_raised(tmp_path):
     bad = {
         "service": None,
         "license": [{"detail": "no name"}],
-        CONTEXT: {"governance": "a bare string"},
+        "source": {"value": "public", "raw": None},
+        CONTEXT: {
+            "governance": "a bare string",
+            "repo-license": [{"name": "MIT", "raw": 7}],
+        },
     }
     (scores / "p.yaml").write_text(
         yaml.safe_dump({"openness": {"components": bad, "raw": "service:x"}})
     )
     failures = check(tmp_path)
-    assert {f.split(":")[0] for f in failures} == {"p.service", "p.license", "p.context.governance"}
+    assert {f.split(":")[0] for f in failures} == {
+        "p.service", "p.license", "p.source", "p.context.governance", "p.context.repo-license"
+    }
 
 
 def test_the_gate_passes_a_routed_record_and_skips_one_with_no_ladder():

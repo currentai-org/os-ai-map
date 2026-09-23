@@ -142,16 +142,21 @@ def malformed_entries(slug: str, components: dict) -> list[str]:
     placed = [(key, entry) for key, entry in components.items() if key not in RESERVED]
     if isinstance(context, dict):
         placed += [(f"{CONTEXT}.{key}", entry) for key, entry in context.items()]
+    def fields_ok(item: object, required: str) -> bool:
+        # Every field rendering touches must be a string, not only the required one: a non-string
+        # `raw` on a license part breaks the `+` join just as a missing `name` does.
+        return (
+            isinstance(item, dict)
+            and isinstance(item.get(required), str)
+            and all(isinstance(item[f], str) for f in ("detail", "raw") if f in item)
+        )
+
     failures = []
     for where, entry in placed:
-        if isinstance(entry, dict):
-            ok = isinstance(entry.get("value"), str)
-        elif isinstance(entry, list):
-            ok = bool(entry) and all(
-                isinstance(part, dict) and isinstance(part.get("name"), str) for part in entry
-            )
+        if isinstance(entry, list):
+            ok = bool(entry) and all(fields_ok(part, "name") for part in entry)
         else:
-            ok = False
+            ok = fields_ok(entry, "value")
         if not ok:
             failures.append(
                 f"{slug}.{where}: {entry!r} is neither a {{value, detail?, raw?}} mapping nor a "
