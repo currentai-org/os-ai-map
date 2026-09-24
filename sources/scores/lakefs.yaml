@@ -1,49 +1,74 @@
 product: lakefs
 openness:
-  score: 5
-  class: open_source
+  score: 2
+  class: source_available
   components:
     license:
-    - name: Apache-2.0
-      detail: OSI
+    - name: BSL-1.1
+      detail: 'non-OSI: production use only of the unmodified release and only for internal use, no hosting
+        for third parties; each version converts to Apache-2.0 four years after release'
     source:
       value: public
     core-gated:
-      value: ungated
+      value: gated
+      detail: RBAC, SSO, SCIM, auditing, lakeFS Mount and the Iceberg REST Catalog ship only in lakeFS Enterprise
   confidence: high
-  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
-    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
-    and the core ungated.
-  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
-  last_verified: '2026-08-18'
+  note: lakeFS moved from Apache-2.0 to the Business Source License 1.1 with v1.87.0, and a delayed-conversion
+    license is scored on its terms today. Its Additional Use Grant allows production use only of the unmodified
+    release, only for an organization's internal purposes, and never as something offered to a third party, so
+    the full published source can be read and built but not freely run. lakeFS Enterprise also carries RBAC,
+    SSO, SCIM and auditing that the Community edition does not. Releases before v1.87.0 stay under Apache-2.0.
+  raw: 'license:BSL-1.1(non-OSI: production use only of the unmodified release and only for internal use, no hosting
+    for third parties; each version converts to Apache-2.0 four years after release);source:public;core-gated:gated(RBAC,
+    SSO, SCIM, auditing, lakeFS Mount and the Iceberg REST Catalog ship only in lakeFS Enterprise)'
+  last_verified: '2026-09-24'
   sources:
   - url: https://github.com/treeverse/lakeFS/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache-2.0 text
-    accessed: '2026-08-18'
+    shows: 'LICENSE is the Business Source License 1.1 with Licensed Work "lakeFS 1.87.0", an Additional Use
+      Grant limiting production use to the "Unmodified Licensed Work" and to "the internal business purposes
+      of Your organization", and Change License "Apache License, Version 2.0" four years after each version
+      is first made publicly available.'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    content_sha256: f2a08ee5c7cbe51f6cbdda08f470e05a5a355943073010dc9ade988ed6485bf5
     establishes:
     - license
   - url: https://api.github.com/repos/treeverse/lakeFS
-    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch master - for
       treeverse/lakeFS.
-    accessed: '2026-08-18'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: 9e9b14a87407f73957cac5bd45bfeb32eb3b4e05b43cede108f6b8e6abc43998
+    content_sha256: 0e768297864f3365ce0a0a0f254c71c83068a49fa9b87975d238e525c4aa782a
+    establishes:
+    - source
+  - url: https://github.com/treeverse/lakeFS/blob/master/README.md
+    shows: 'README now calls lakeFS "a source-available tool" and says it "is licensed under the [Business Source
+      License 1.1](LICENSE) (BUSL-1.1)", with free production use limited to "the unmodified software for your
+      organization''s internal business purposes".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9be184df7d48a99f7fadc15fd4abfa4aeaaa10e18882d34b952f56b1fa9e45b8
     establishes:
     - license
     - source
-  - url: https://github.com/treeverse/lakeFS/blob/master/README.md
-    shows: README describes transformation of object storage into a Git-like repository giving repeatable, atomic
-      and versioned data lake operations over AWS S3, Azure Blob Storage and Google Cloud Storage, S3-API compatible
-      and working with Spark, Hive and other data frameworks, with no paid tier, enterprise edition or license-key-gated
-      build beside it.
-    accessed: '2026-08-18'
+  - url: https://docs.lakefs.io/editions/
+    shows: 'Editions page lists "lakeFS Enterprise, self-managed" with "Enterprise features, including RBAC, SSO,
+      SCIM, auditing" and describes lakeFS Community as "the source-available distribution, free to use under the"
+      Business Source License.'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: 8f6c248a58c56f774704b5ffe4f84c0f92ad2a267aa1557e94dd558bc6d8e83c
+    content_sha256: 6e8dd913e86983ff29d02f08ec6f4ba453ff7e639ff2bb293e43ff796b2765e1
     establishes:
-    - source
     - core-gated
+  - url: https://lakefs.io/blog/lakefs-business-source-license
+    shows: 'Treeverse announcement dated September 22, 2026: "Starting with lakeFS v1.87.0, the lakeFS open source
+      project (the lakeFS Community edition) moves from Apache 2.0 to the" Business Source License, and "Every
+      release published before that stays under Apache 2.0, permanently."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 918a30594ee60feaba2e8fd09dde7f791074b3102299463a3147eaa995c6e98d
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
