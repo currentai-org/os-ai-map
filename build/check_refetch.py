@@ -34,16 +34,24 @@ is the signal rather than the ratio: an agent that fetched nothing would confirm
 stable URLs included.
 
 So the report separates *confirmed* from *drifted* and never fails on drift. What it does
-fail on is the small set of things that admit no innocent reading:
+fail on is the small set of things that admit no innocent reading, and there are exactly two
+(below). A digest shared across URLs is NOT one of them any more; see the note after the list.
 
-- **A digest reused across two different URLs whose bodies genuinely differ.** The claim is
-  tested rather than assumed — see `resolve_duplicates`. The old rule failed on the mere
-  fact of a shared digest, reasoning that byte-identical bodies are "possible but rare", and
-  that failed `main` on 2026-08-13 against five repos sharing one digest for their Apache-2.0
-  LICENSE. A standard license IS the same bytes everywhere; that is what standard means.
-  Re-fetching the group settles it either way, and only a real difference is fabrication.
+- **A recorded digest that reproduces over a bot wall.** The recorded bytes are a challenge
+  page, so nothing behind any source carrying that digest was ever read.
 - **A malformed digest.** `validate.py` enforces the schema pattern, so this should be
   unreachable — it is here because a gate that trusts another gate is how both stop working.
+
+**Shared digests warn, they never fail.** Three rules for failing on them have each been wrong.
+The first failed on the mere fact of a shared digest and failed `main` on 2026-08-13 against
+five repos whose Apache-2.0 LICENSE is, correctly, the same bytes. The second failed whenever
+the group's live bodies disagreed and failed the run on 2026-09-24 when lakeFS relicensed to
+BSL-1.1, five weeks after its source was read. Attempts to prove the negative from GitHub
+history (commit dates, revision walks, the activity log) each had a hole, because nothing
+GitHub documents guarantees a complete history. So `resolve_duplicates` looks only for
+positive evidence: a revision of the file that hashes to the recorded digest clears the
+member as drift. When none is found, the member is a SUSPECTED COPY: printed in its own
+section and raised as a workflow warning for a human to confirm by hand, never a failure.
 
 Status regressions (recorded `200`, now `404`) are reported as findings rather than
 failures: a page can legitimately die between the read and the check. That is still exactly
@@ -75,13 +83,14 @@ import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -381,52 +390,231 @@ def duplicate_digest_groups(sources: list[Source]) -> list[tuple[str, list[str]]
     return [(d, sorted(u)) for d, u in sorted(by_digest.items()) if len(u) > 1]
 
 
-def resolve_duplicates(
-    groups: list[tuple[str, list[str]]], timeout: float
-) -> tuple[list[str], list[str]]:
-    """(failures, benign) — decided by fetching, not by guessing.
+# The access window around a recorded `accessed` date: the day before through the day after,
+# in UTC. `accessed` is a calendar date written in whatever timezone the fetcher ran, and the
+# raw CDN caches a branch URL for a few minutes, so a tip just across midnight still counts.
+ACCESS_WINDOW_BEFORE = timedelta(days=1)
+ACCESS_WINDOW_AFTER = timedelta(days=2)
 
-    THE HEURISTIC THIS REPLACES WAS WRONG, and it failed `main` on 2026-08-13.
+# Pages of activity (100 entries each) walked back from now before giving up; a busy default
+# branch sees a few dozen updates a week, so ten pages reach back months.
+MAX_ACTIVITY_PAGES = 10
 
-    The old rule read: a digest against two URLs is fabrication, because "two distinct pages
-    with byte-identical bodies is possible but rare." Both halves of that turned out false in
-    the corpus, in two different ways:
+ZERO_SHA = "0" * 40
 
-    - **Canonical texts.** Five repos — NeMo RL, peft, FastChat, ms-swift, vllm — recorded one
-      digest for their LICENSE. Fetching all five live reproduced it exactly over an identical
-      11,357-byte body: the unmodified Apache-2.0 text. A standard license IS the same bytes
-      everywhere; that is what "standard" means, and a repo that changed it would no longer be
-      under that license. Byte-identical is the expected result, not a rare coincidence.
-    - **Host aliases.** `docs.developer.apple.com/…/coreml.md` 301s to
-      `developer.apple.com/…/coreml.md`. Two URLs, one document. Nothing was pasted; the
-      fetcher followed a redirect, which is what it is supposed to do.
+# raw.githubusercontent.com/{owner}/{repo}/{ref...}/{path...}, the form `canonical` produces.
+RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/(.+)$")
 
-    A gate that fails on both of those is not detecting fabrication, it is detecting the
-    internet. And a gate whose failures are usually wrong stops being read, which costs more
-    than the check was ever worth.
 
-    So the claim is now TESTED rather than assumed. The old message asserted "it means at
-    least one was not fetched" — that is a falsifiable statement, so falsify it: fetch every
-    URL in the group and compare. If the bodies really are identical, the recorded digest is
-    exactly what an honest fetch produces and there is nothing to report. If they differ, at
-    least one digest could not have come from its URL, and that is fabrication with no
-    innocent reading left.
+def _api_get(url: str, timeout: float, params: dict | None = None):
+    """One GitHub API GET, or None on a network error."""
+    try:
+        return requests.get(url, params=params, headers=_headers(url), timeout=timeout)
+    except requests.RequestException:
+        return None
+
+
+def _resolve_branch(owner: str, repo: str, rest: str, timeout: float) -> tuple[str, str] | str:
+    """(branch, path) for the URL's ref, or a reason it could not be settled.
+
+    BEST EFFORT, and only ever used to look for positive evidence. The ref may contain slashes,
+    so each candidate split is checked against the repo's CURRENT heads and tags and a single
+    branch match is accepted. Refs change: `feature/x/LICENSE` may have named branch `feature/x`
+    at access time, since deleted. A wrong split can only fail to find a match, which is never
+    read as a negative.
     """
-    failures, benign = [], []
+    segments = rest.split("/")
+    candidates = {"/".join(segments[:k]): "/".join(segments[k:]) for k in range(1, len(segments))}
+    found: list[tuple[str, str]] = []
+    for kind in ("heads", "tags"):
+        response = _api_get(
+            f"https://api.github.com/repos/{owner}/{repo}/git/matching-refs/{kind}/{segments[0]}",
+            timeout,
+        )
+        try:
+            names = [r["ref"].split(f"refs/{kind}/", 1)[1] for r in response.json()]
+        except (AttributeError, ValueError, LookupError, TypeError):
+            code = "network error" if response is None else f"HTTP {response.status_code}"
+            return f"the ref lookup failed ({code})"
+        found += [(kind, name) for name in names if name in candidates]
+    if len(found) != 1 or found[0][0] != "heads":
+        refs = ", ".join(f"{k}/{n}" for k, n in found) or "none"
+        return f"the URL's ref does not resolve to exactly one current branch (matches: {refs})"
+    return found[0][1], candidates[found[0][1]]
+
+
+def _window_tips(
+    owner: str, repo: str, branch: str, windows: list[tuple[date, datetime, datetime]],
+    timeout: float,
+) -> dict[str, set[date]] | str:
+    """{sha: access dates whose window recorded it} for the branch, or a reason.
+
+    Every update inside a window records its `after` directly, under that window's access
+    date. The tip entering a window is INFERRED (an empty set unless another window records it) from the `before` of the first update after its start, or the `after`
+    of the last update before it, and an inference across a log GitHub does not promise is
+    complete is weaker evidence. The log is read only for tips to hash, never as proof that no
+    other tip existed.
+    """
+    since = windows[0][1]
+    url: str | None = f"https://api.github.com/repos/{owner}/{repo}/activity"
+    params: dict | None = {"ref": f"refs/heads/{branch}", "per_page": 100}
+    entries: list[dict] = []
+    for _ in range(MAX_ACTIVITY_PAGES):
+        response = _api_get(url, timeout, params)
+        try:
+            page = [(parse_timestamp(e["timestamp"]), e["before"], e["after"]) for e in response.json()]
+        except (AttributeError, ValueError, LookupError, TypeError):
+            code = "network error" if response is None else f"HTTP {response.status_code}"
+            return f"the activity lookup failed ({code})"
+        if response.status_code != 200 or any(when is None for when, _, _ in page):
+            return f"the activity lookup failed (HTTP {response.status_code})"
+        entries += page
+        url = (getattr(response, "links", None) or {}).get("next", {}).get("url")
+        params = None  # GitHub's next link carries the full query string, ref filter included
+        if not url or any(when < since for when, _, _ in page):
+            break
+    else:
+        return f"the activity log runs past {MAX_ACTIVITY_PAGES} pages before the access window"
+    entries.sort()
+    tips: dict[str, set[date]] = {}
+    for accessed_on, start, end in windows:
+        prior = [e for e in entries if e[0] < start]
+        later = [e for e in entries if e[0] >= start]
+        entering = later[0][1] if later else prior[-1][2] if prior else None
+        if entering:
+            tips.setdefault(entering, set())
+        for when, _, after in later:
+            if when < end:
+                tips.setdefault(after, set()).add(accessed_on)
+    tips.pop(ZERO_SHA, None)
+    return tips or f"the activity log shows no tip for {branch} around the access"
+
+
+def served_on_access_verdict(
+    url: str, digest: str, accessed: set[date], timeout: float = 20.0
+) -> tuple[str, str]:
+    """Look for positive evidence that this URL served `digest`. (verdict, detail).
+
+    Only a plain `{branch}/{file}` URL, with no slash in the branch, gets any verdict but
+    unresolved: a deeper path splits more than one way, and today's refs cannot say which split
+    the URL meant when it was read.
+
+    - `served`: a tip RECORDED by an activity entry inside the access window serves a copy of
+      the file that hashes to the digest, fetched from
+      `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}` through `http_get` exactly as
+      `build/fetch_source` fetched the branch URL. Drift.
+    - `compatible`: the match is on the tip INFERRED to be entering the window. The file held
+      the digest there, which is benign, but that the branch served it on the date is not
+      established. Drift-compatible.
+    - `unmatched`: tips were found and every one was checked, and none matches. That is what a copied digest looks like, and it
+      is also what an incomplete log looks like, so it is a warning for a human, never a failure.
+    - `unresolved`: not a GitHub file, no access date, a ref that does not resolve, a failed
+      lookup, no tips found, or a tip that could not be checked.
+
+    A tip that cannot be fetched does not stop the search: a match on any later tip still wins.
+    """
+    match = RAW.match(canonical(url))
+    if not match:
+        return "unresolved", f"{urlparse(url).hostname} has no ref history this check can read"
+    if not accessed:
+        return "unresolved", "no recorded access date"
+    owner, repo, rest = match.groups()
+    if rest.count("/") != 1:
+        # `feature/x/LICENSE` splits more than one way, and today's refs cannot say which one the
+        # URL meant when it was read. A match under the wrong split is as misleading as a miss.
+        return "unresolved", "only a plain {branch}/{file} URL gets a history verdict"
+    resolved = _resolve_branch(owner, repo, rest, timeout)
+    if isinstance(resolved, str):
+        return "unresolved", resolved
+    branch, path = resolved
+    windows = [
+        (d, datetime.combine(d - ACCESS_WINDOW_BEFORE, datetime.min.time(), timezone.utc),
+         datetime.combine(d + ACCESS_WINDOW_AFTER, datetime.min.time(), timezone.utc))
+        for d in sorted(accessed)
+    ]
+    tips = _window_tips(owner, repo, branch, windows, timeout)
+    if isinstance(tips, str):
+        return "unresolved", tips
+
+    dates = ", ".join(str(d) for d in sorted(accessed))
+    unchecked, compatible = [], None
+    for sha in sorted(tips):
+        try:
+            body = http_get(f"https://raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}", timeout=timeout)
+        except requests.RequestException:
+            unchecked.append(sha[:10])
+            continue
+        if body.status_code != 200:
+            unchecked.append(sha[:10])
+        elif hashlib.sha256(body.content).hexdigest() != digest:
+            continue
+        elif tips[sha]:
+            on = ", ".join(str(d) for d in sorted(tips[sha]))
+            return "served", f"{branch} was at {sha[:10]} around the access on {on}, and its {path} hashes to the recorded digest"
+        else:
+            compatible = (
+                f"{path} held the recorded digest at {sha[:10]}, the nearest recorded tip of "
+                f"{branch}; that the branch served it on {dates} is not established"
+            )
+    if compatible:
+        return "compatible", compatible
+    if unchecked:
+        return "unresolved", f"no checked tip matches, and {len(unchecked)} of {len(tips)} could not be fetched ({', '.join(unchecked)})"
+    recorded = sum(1 for on in tips.values() if on)
+    return "unmatched", (
+        f"checked {len(tips)} candidate commit(s) of {branch} for the access on {dates} "
+        f"({recorded} recorded inside the window, {len(tips) - recorded} inferred from the nearest "
+        f"recorded updates, per GitHub's activity log, whose completeness GitHub does not "
+        f"guarantee), and none has a {path} hashing to it"
+    )
+
+
+def access_dates(sources: list[Source]) -> dict[tuple[str, str], set[date]]:
+    """(digest, url) -> every date a record claims that URL served that digest."""
+    out: dict[tuple[str, str], set[date]] = defaultdict(set)
+    for source in sources:
+        when = parse_date(source.accessed)
+        if when is not None:
+            out[(source.digest, source.url)].add(when)
+    return dict(out)
+
+
+def resolve_duplicates(
+    groups: list[tuple[str, list[str]]],
+    timeout: float,
+    accessed: dict[tuple[str, str], set[date]] | None = None,
+    history=served_on_access_verdict,
+) -> tuple[list[str], list[str], list[str]]:
+    """(failures, benign, suspected) — decided by fetching and positive evidence only.
+
+    A digest recorded against several URLs is usually innocent: standard license texts are the
+    same bytes everywhere, and host aliases serve one document at two addresses. Every URL is
+    re-fetched through `canonical`, the way `build/fetch_source` fetched it. The first draft
+    skipped that and read a rendered blob page against a raw digest, calling `maple-ai`
+    fabrication when its digests were right.
+
+    Then, per group:
+
+    - a member reproducing the digest over a bot wall: FAILURE. The recorded bytes are a
+      challenge page, so nothing behind the group was ever read;
+    - every member reproduces the digest: benign, the bodies really are identical;
+    - a member now serves something else: `history` looks for a revision that hashed to the
+      digest. Found is drift, or drift-compatible when the matching tip was inferred rather
+      than recorded (benign). Checked and not found is a SUSPECTED COPY, returned
+      separately so the caller can put it in front of a human. Could not look is unresolved
+      (benign).
+
+    A suspected copy is never a failure. Every rule that failed on shared digests has been
+    wrong (see the module docstring), and a miss cannot be told apart from an incomplete
+    history.
+    """
+    failures, benign, suspected = [], [], []
     for digest, urls in groups:
-        seen: dict[str, list[str]] = defaultdict(list)
+        live_by_url: dict[str, str] = {}
         unreachable = []
         walled: list[tuple[str, str, str]] = []
         for url in urls:
             try:
-                # Through `canonical`, exactly as build/fetch_source does. A GitHub blob URL
-                # rewrites to its raw form, and comparing a rendered HTML page against the
-                # plain file it points at is comparing two different documents. The first
-                # draft of this resolver skipped that and reported `maple-ai` as fabrication:
-                # its recorded digests were right all along, and the resolver was reading the
-                # blob page. fetch_source's own docstring warns about precisely this —
-                # "a digest taken with curl and re-checked with requests differs for reasons
-                # that have nothing to do with whether anybody read the page."
                 response = http_get(url, timeout=timeout)
             except requests.RequestException:
                 unreachable.append(url)
@@ -437,16 +625,15 @@ def resolve_duplicates(
             live = hashlib.sha256(response.content).hexdigest()
             marker = bot_wall(response)
             if marker:
-                # The wall is the reason this group looked like fabrication. If its digest is
-                # the RECORDED one, that is positive evidence the original fetch was walled
-                # too: the recorded bytes are a challenge page, so nothing behind this source
-                # was ever read.
                 walled.append((url, live, marker))
                 continue
-            seen[live].append(url)
+            live_by_url[url] = live
 
         listed = ", ".join(urls)
         walls_matching = [w for w in walled if w[1] == digest]
+        reproducing = [u for u, live in live_by_url.items() if live == digest]
+        changed = [u for u, live in live_by_url.items() if live != digest]
+
         if walls_matching:
             wall_urls = ", ".join(u for u, _, _ in walls_matching)
             failures.append(
@@ -456,22 +643,30 @@ def resolve_duplicates(
                 f"({listed}) were digested behind the wall and never read. Re-verify them "
                 f"against a source the host will serve."
             )
-        elif len(seen) > 1:
-            split = " | ".join(
-                f"{d[:12]}…: {', '.join(u)}" for d, u in sorted(seen.items())
-            )
-            failures.append(
-                f"digest {digest[:12]}… is recorded for {len(urls)} URLs ({listed}), and "
-                f"re-fetching them returns DIFFERENT bodies ({split}). At least one digest "
-                f"could not have come from the URL it is recorded against."
-            )
-        elif seen:
-            live = next(iter(seen))
-            note = "" if live == digest else f" (both now hash to {live[:12]}…, so the pair has drifted together)"
-            benign.append(
-                f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
-                f"re-fetching confirms their bodies really are identical{note}."
-            )
+        else:
+            if reproducing and not changed:
+                benign.append(
+                    f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
+                    f"re-fetching {len(reproducing)} of them confirms their bodies really are "
+                    f"identical."
+                )
+            for url in changed:
+                verdict, detail = history(url, digest, (accessed or {}).get((digest, url), set()))
+                head = (
+                    f"digest {digest[:12]}…: {url} now serves {live_by_url[url][:12]}…, and "
+                    f"{len(reproducing)} of {len(urls)} URLs sharing the digest still reproduce it."
+                )
+                if verdict == "served":
+                    benign.append(f"{head} Drift: {detail}. Re-check that source.")
+                elif verdict == "compatible":
+                    benign.append(f"{head} Drift-compatible: {detail}. Re-check that source.")
+                elif verdict == "unmatched":
+                    suspected.append(
+                        f"{head} The recorded digest matched no revision this check could find "
+                        f"at that URL: {detail}. Confirm by hand whether it was ever read."
+                    )
+                else:
+                    benign.append(f"{head} Unresolved: {detail}.")
         if walled and not walls_matching:
             benign.append(
                 f"digest {digest[:12]}…: {', '.join(u for u, _, _ in walled)} answered with a "
@@ -482,7 +677,7 @@ def resolve_duplicates(
                 f"digest {digest[:12]}…: could not re-fetch {', '.join(unreachable)} this "
                 f"run, so the group is unresolved rather than cleared."
             )
-    return failures, benign
+    return failures, benign, suspected
 
 
 def refetch(source: Source, timeout: float, sleep=time.sleep) -> tuple[str, str]:
@@ -553,11 +748,10 @@ def main() -> int:
 
     failures = offline_failures(sources)
 
-    # Duplicate digests are resolved by fetching rather than assumed to be fabrication. See
-    # resolve_duplicates: the old heuristic failed main on canonical LICENSE texts and on a
-    # host alias, neither of which is anybody pasting anything.
-    dup_failures, dup_benign = resolve_duplicates(
-        duplicate_digest_groups(sources), args.timeout
+    # Duplicate digests are resolved by fetching and positive evidence, and a miss is a warning.
+    # See resolve_duplicates and the module docstring for the three rules that were wrong.
+    dup_failures, dup_benign, suspected = resolve_duplicates(
+        duplicate_digest_groups(sources), args.timeout, accessed=access_dates(sources)
     )
     failures.extend(dup_failures)
 
@@ -575,6 +769,13 @@ def main() -> int:
         for line in dup_benign:
             print(f"  {line}")
 
+    if suspected:
+        print("\nSUSPECTED COPIES — no revision found that matches; confirm by hand, not a failure")
+        for line in suspected:
+            print(f"  {line}")
+            if os.environ.get("GITHUB_ACTIONS") == "true":
+                print(f"::warning title=refetch: suspected copied digest::{line}")
+
     for outcome, label in (
         ("gone", "DEAD — recorded as reachable, now an error"),
         ("unreachable", "UNREACHABLE — could not be checked this run"),
@@ -588,7 +789,7 @@ def main() -> int:
                     print(f"  {'':38s}   {detail}")
 
     if failures:
-        print("\nFABRICATION — no innocent reading")
+        print("\nFAILURES — no innocent reading")
         for problem in failures:
             print(f"  {problem}")
 

@@ -12,8 +12,11 @@ name: refetch
 # change: the first full run confirmed 4 of 24 digests and drifted on the other 20, because
 # every GitHub and Hugging Face API endpoint carries a star or download count in its body.
 # Failing on drift would fail 83% on day one, and a gate that fails on ordinary behavior gets
-# switched off — which is how gates die. What it DOES fail on is fabrication: a digest reused
-# across two URLs, or one that is not a SHA-256 at all. Those admit no innocent reading.
+# switched off — which is how gates die. What it DOES fail on is two things only: a digest
+# that is not a SHA-256 at all, and one that reproduces over a bot wall. A digest shared across
+# URLs never fails. When a member's body changed and no revision of its file can be found that
+# hashes to the recorded digest, it is printed as a SUSPECTED COPY and raised as a ::warning::
+# annotation for a human to confirm by hand (#692).
 #
 # The count of confirmations is the signal, not the ratio. An agent that fetched nothing
 # would confirm zero, stable URLs included.
@@ -45,6 +48,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
       - name: Re-fetch a sample and compare digests
+        # The built-in token only raises GitHub's rate limit; it does not change the bytes a
+        # public repo serves. The shared-digest resolver reads a changed file's branch tips
+        # from the activity API, and a rate-limited lookup leaves the member unresolved.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ inputs.all }}" = "true" ]; then
             uv run python -m build.check_refetch --all
