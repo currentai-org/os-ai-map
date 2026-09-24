@@ -14,9 +14,10 @@ name: refetch
 # Failing on drift would fail 83% on day one, and a gate that fails on ordinary behavior gets
 # switched off — which is how gates die. What it DOES fail on is fabrication: a digest that is
 # not a SHA-256 at all, one that reproduces over a bot wall, or a digest shared across URLs
-# where a member's body changed and no revision in its file's history ever hashed to it. A
-# shared digest alone is not that (identical license texts share one), and neither is a
-# member whose file changed after it was read (lakeFS relicensing, #692).
+# where a member's body changed and no branch tip it held around its recorded access (per
+# GitHub's activity log) serves it. A shared digest alone is not that (identical license texts
+# share one), and neither is a member whose file changed after it was read (lakeFS
+# relicensing, #692).
 #
 # The count of confirmations is the signal, not the ratio. An agent that fetched nothing
 # would confirm zero, stable URLs included.
@@ -49,8 +50,8 @@ jobs:
         run: uv sync --locked
       - name: Re-fetch a sample and compare digests
         # The built-in token only raises GitHub's rate limit; it does not change the bytes a
-        # public repo serves. The shared-digest resolver walks a changed file's revisions
-        # through the commits API, and a rate-limited lookup leaves the member unresolved,
+        # public repo serves. The shared-digest resolver reads a changed file's branch tips
+        # from the activity API, and a rate-limited lookup leaves the member unresolved,
         # which would quietly stop the check from ever reaching a verdict.
         env:
           GITHUB_TOKEN: ${{ github.token }}

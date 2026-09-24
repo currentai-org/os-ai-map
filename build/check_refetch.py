@@ -44,9 +44,9 @@ fail on is the small set of things that admit no innocent reading:
   The second rule failed whenever the group's live bodies disagreed, and that failed the run
   on 2026-09-24 when lakeFS relicensed to BSL-1.1 two days before: 51 repos still served the
   Apache-2.0 text and one had changed its file. A body that differs today says nothing about
-  what the URL served on its `accessed` date. The file's own revision history does, so a
-  member whose body changed is fabrication only when no revision of its file ever hashed to
-  the recorded digest.
+  what the URL served on its `accessed` date. GitHub's activity log does: it records every tip
+  the branch held, so a member whose body changed is fabrication only when the log covers
+  its access window and no tip's copy of the file hashes to the recorded digest.
 - **A recorded digest that reproduces over a bot wall.** The recorded bytes are a challenge
   page, so nothing behind any source carrying that digest was ever read.
 - **A malformed digest.** `validate.py` enforces the schema pattern, so this should be
@@ -82,13 +82,14 @@ import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -388,94 +389,235 @@ def duplicate_digest_groups(sources: list[Source]) -> list[tuple[str, list[str]]
     return [(d, sorted(u)) for d, u in sorted(by_digest.items()) if len(u) > 1]
 
 
-# How many revisions of one file the history walk will hash before giving up. A LICENSE has a
-# handful; a README can have hundreds. Past the cap with no match the member is UNRESOLVED, not
-# drift and not fabrication: the version it served may sit further back than we looked. The
-# walk goes newest first and stops at the first match, so a file that changed once since it
-# was read (lakeFS) costs two raw fetches.
-MAX_REVISIONS = 50
+# GitHub's repository activity API (`GET /repos/{owner}/{repo}/activity`) records every update
+# to a ref: pushes, force pushes, PR and merge-queue merges, branch creation and deletion, each
+# with the `before` and `after` SHA. Probed 2026-09-24, it is not a rolling window: its earliest
+# record is 2023-03-07 on every repo tried (treeverse/lakeFS, huggingface/peft,
+# vllm-project/vllm, torvalds/linux), whatever the repo's age, and a repo with no pushes since
+# (octocat/Hello-World) returns an empty list. So the log is complete from that date on, and an
+# access window must start after it with margin, or the member is unresolved.
+ACTIVITY_LOG_START = date(2023, 4, 1)
 
-# raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}, the form `canonical` produces. A ref
-# containing a slash parses wrong, the commits API then lists nothing for that path, and the
-# member is reported unresolved. That is the safe direction.
-RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$")
+# The access window around a recorded `accessed` date: the day before through the day after,
+# in UTC. `accessed` is a calendar date written by whoever fetched, in whatever timezone, and
+# the raw CDN caches a branch URL for a few minutes, so a tip that landed just across midnight
+# must still count.
+ACCESS_WINDOW_BEFORE = timedelta(days=1)
+ACCESS_WINDOW_AFTER = timedelta(days=2)
+
+# Pages of activity (100 entries each) walked back from now before giving up. A busy repo's
+# default branch sees a few dozen updates a week, so ten pages reach back months. Past the cap
+# before reaching the window, the member is UNRESOLVED.
+MAX_ACTIVITY_PAGES = 10
+
+ZERO_SHA = "0" * 40
+
+# raw.githubusercontent.com/{owner}/{repo}/{ref...}/{path...}, the form `canonical` produces.
+# The ref may itself contain slashes, so where it ends is resolved against the repo's refs in
+# `_resolve_branch`, never guessed from the URL.
+RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/(.+)$")
 
 
-def file_history_verdict(url: str, digest: str, timeout: float = 20.0) -> tuple[str, str]:
-    """Did any revision of this file ever hash to `digest`? (verdict, detail).
+def _api_get(url: str, timeout: float, params: dict | None = None):
+    """One GitHub API GET, or None on a network error. Callers treat None as unresolved."""
+    try:
+        return requests.get(url, params=params, headers=_headers(url), timeout=timeout)
+    except requests.RequestException:
+        return None
 
-    Verdict is one of:
 
-    - `served`: a revision on the URL's ref hashes to the recorded digest, so the URL really
-      served those bytes at some point. A body that differs now is drift.
-    - `never`: the whole path history on that ref was walked (within `MAX_REVISIONS`) and no
-      revision hashes to it. The URL could not have produced the recorded digest.
-    - `unresolved`: not a GitHub file, the history lookup failed or was rate-limited, a
-      revision could not be fetched, or the history is longer than the cap. None of these is
-      evidence either way.
+def _resolve_branch(
+    owner: str, repo: str, rest: str, timeout: float
+) -> tuple[str, str] | str:
+    """(branch, path), or a reason string when the ref/path boundary cannot be settled.
 
-    Each revision is fetched from `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}` through
-    `http_get` and hashed over its raw bytes, the same operation `build/fetch_source` performs
-    on the branch URL, so a revision that was on the branch tip when the source was read hashes
-    to exactly what the writer recorded.
+    `main/LICENSE` splits one way, but `feature/x/LICENSE` could be branch `feature/x` with path
+    `LICENSE` or branch `feature` with path `x/LICENSE`, and if both exist the wrong split hashes
+    a different file. So every candidate split is checked against the repo's real refs (heads
+    AND tags, via `git/matching-refs`, which prefix-matches), and only a single resolution that
+    is a branch is accepted. A tag can be moved without a trace in the branch activity log, and
+    a commit SHA has no activity at all, so both are unresolved rather than guessed at.
+    """
+    segments = rest.split("/")
+    if len(segments) < 2:
+        return "the URL has no path after its ref"
+    candidates = {"/".join(segments[:k]): "/".join(segments[k:]) for k in range(1, len(segments))}
+    found: list[tuple[str, str]] = []
+    for kind in ("heads", "tags"):
+        response = _api_get(
+            f"https://api.github.com/repos/{owner}/{repo}/git/matching-refs/{kind}/{segments[0]}",
+            timeout,
+        )
+        if response is None or response.status_code != 200:
+            code = "network error" if response is None else f"HTTP {response.status_code}"
+            return f"the ref lookup failed ({code})"
+        try:
+            names = [r["ref"].split(f"refs/{kind}/", 1)[1] for r in response.json()]
+        except (ValueError, LookupError, TypeError, AttributeError):
+            return "the ref lookup returned something other than a ref list"
+        found += [(kind, name) for name in names if name in candidates]
+    if not found:
+        return f"no branch or tag of {owner}/{repo} matches the URL's ref"
+    if len(found) > 1:
+        refs = ", ".join(f"{k}/{n}" for k, n in found)
+        return f"the URL's ref is ambiguous ({refs} all match), so which file it names is not known"
+    kind, name = found[0]
+    if kind != "heads":
+        return f"the URL names tag {name}, which can move without a trace in the activity log"
+    return name, candidates[name]
 
-    Renames need no special handling: the URL names a path, and the commits API's path history
-    on that ref covers every version that path ever held, including the commit that created
-    it by rename. What the path held under an older name was never served at this URL. The
-    listing can include side-branch commits that never sat on the branch tip; that only widens
-    the set of versions tried, which errs toward drift. What it cannot see is history rewritten
-    by a force push, and a digest recorded from a revision that was later rewritten away would
-    read `never`. That is a known limit, stated here rather than left to be discovered.
+
+def _branch_activity(
+    owner: str, repo: str, branch: str, since: datetime, timeout: float
+) -> list[dict] | str:
+    """Every activity entry on the branch from `since` to now, oldest first, plus the newest
+    entry before `since` if there is one (it pins the tip entering the window). A reason string
+    when the log cannot be read that far back."""
+    url: str | None = f"https://api.github.com/repos/{owner}/{repo}/activity"
+    params: dict | None = {"ref": f"refs/heads/{branch}", "per_page": 100}
+    entries: list[dict] = []
+    for _ in range(MAX_ACTIVITY_PAGES):
+        response = _api_get(url, timeout, params)
+        if response is None or response.status_code != 200:
+            code = "network error" if response is None else f"HTTP {response.status_code}"
+            return f"the activity lookup failed ({code})"
+        try:
+            page = [
+                {"when": parse_timestamp(e["timestamp"]), "before": e["before"], "after": e["after"],
+                 "type": e["activity_type"]}
+                for e in response.json()
+            ]
+        except (ValueError, LookupError, TypeError):
+            return "the activity lookup returned something other than an activity list"
+        if any(e["when"] is None for e in page):
+            return "the activity log carries an unreadable timestamp"
+        entries += page
+        if any(e["when"] < since for e in page):
+            break
+        url = (getattr(response, "links", None) or {}).get("next", {}).get("url")
+        params = None  # the next link carries its own query string
+        if not url:
+            break  # the log ends; it starts on ACTIVITY_LOG_START, which the caller checked
+    else:
+        return f"the activity log is longer than {MAX_ACTIVITY_PAGES} pages back to the access window"
+    entries.sort(key=lambda e: e["when"])
+    before = [e for e in entries if e["when"] < since]
+    return before[-1:] + [e for e in entries if e["when"] >= since]
+
+
+def served_on_access_verdict(
+    url: str, digest: str, accessed: set[date], timeout: float = 20.0
+) -> tuple[str, str]:
+    """Did this URL serve `digest` on (one of) its recorded access dates? (verdict, detail).
+
+    Rebuilds what the URL served rather than inferring it. For a GitHub file on a branch, the
+    repository activity log gives every SHA the branch tip held during the access window: the
+    tip entering the window, and the `after` of every update inside it. Each tip's copy of the
+    file is fetched from `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}` through
+    `http_get` and hashed over its raw bytes, the same operation `build/fetch_source` performed
+    on the branch URL. A force push, a deleted and recreated branch or a rewritten history
+    changes nothing here: the log records the tips the branch actually held, before and after.
+
+    - `served`: a tip during the window hashes to the digest. Drift.
+    - `never`: the log covers the whole window and no tip's copy hashes to it. The URL could not
+      have served it on any recorded access date. Fabrication.
+    - `unresolved`: anything short of that. Not a GitHub file; a ref that is a tag, a SHA,
+      ambiguous or gone; a failed or rate-limited lookup; a window that predates
+      ACTIVITY_LOG_START or lies beyond MAX_ACTIVITY_PAGES; a tip whose file cannot be fetched;
+      no recorded access date.
+
+    A tip whose copy answers 404 counts as "did not have the file" only once the commit itself is
+    confirmed to exist; a tip that is gone (force-pushed away and collected) is unresolved. Every
+    other error is unresolved.
+
+    Known limit: the verdict is about the URL as parsed. If the live fetch was redirected (a
+    renamed repo, say), the API calls follow the same redirect but nothing checks that the
+    redirect landed on the same path.
     """
     match = RAW.match(canonical(url))
     if not match:
-        host = urlparse(url).hostname
-        return "unresolved", f"{host} has no revision history this check can walk"
-    owner, repo, ref, path = match.groups()
-    api = f"https://api.github.com/repos/{owner}/{repo}/commits"
-    try:
-        response = requests.get(
-            api,
-            params={"path": path, "sha": ref, "per_page": MAX_REVISIONS + 1},
-            headers=_headers(api),
-            timeout=timeout,
-        )
-    except requests.RequestException as exc:
-        return "unresolved", f"the history lookup failed ({type(exc).__name__})"
-    if response.status_code != 200:
-        return "unresolved", f"the history lookup failed (HTTP {response.status_code})"
-    try:
-        commits = [(c["sha"], c["commit"]["committer"]["date"][:10]) for c in response.json()]
-    except (ValueError, LookupError, TypeError):
-        return "unresolved", "the history lookup returned something other than a commit list"
-    if not commits:
-        return "unresolved", f"the commits API lists no commits touching {path} on {ref}"
+        return "unresolved", f"{urlparse(url).hostname} has no ref history this check can read"
+    if not accessed:
+        return "unresolved", "no recorded access date to rebuild"
+    owner, repo, rest = match.groups()
+    resolved = _resolve_branch(owner, repo, rest, timeout)
+    if isinstance(resolved, str):
+        return "unresolved", resolved
+    branch, path = resolved
 
-    for sha, when in commits[:MAX_REVISIONS]:
+    windows = [
+        (datetime.combine(d - ACCESS_WINDOW_BEFORE, datetime.min.time(), timezone.utc),
+         datetime.combine(d + ACCESS_WINDOW_AFTER, datetime.min.time(), timezone.utc))
+        for d in sorted(accessed)
+    ]
+    since = windows[0][0]
+    if since.date() < ACTIVITY_LOG_START:
+        return "unresolved", f"the access window predates the activity log ({ACTIVITY_LOG_START})"
+    entries = _branch_activity(owner, repo, branch, since, timeout)
+    if isinstance(entries, str):
+        return "unresolved", entries
+
+    tips: set[str] = set()
+    for start, end in windows:
+        prior = [e for e in entries if e["when"] < start]
+        later = [e for e in entries if e["when"] >= start]
+        if later:
+            tips.add(later[0]["before"])  # the tip entering the window
+        elif prior:
+            tips.add(prior[-1]["after"])  # nothing since, so the latest update is still the tip
+        else:
+            head = _api_get(f"https://api.github.com/repos/{owner}/{repo}/branches/{branch}", timeout)
+            try:
+                tips.add(head.json()["commit"]["sha"])  # no update since the log began
+            except (AttributeError, ValueError, LookupError, TypeError):
+                return "unresolved", "the branch head lookup failed"
+        tips.update(e["after"] for e in later if e["when"] < end)
+    tips.discard(ZERO_SHA)  # a deleted branch, or one not yet created, served nothing
+
+    for sha in sorted(tips):
         revision = f"https://raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}"
         try:
             body = http_get(revision, timeout=timeout)
         except requests.RequestException as exc:
-            return "unresolved", f"revision {sha[:10]} could not be fetched ({type(exc).__name__})"
+            return "unresolved", f"tip {sha[:10]} could not be fetched ({type(exc).__name__})"
         if body.status_code == 404:
-            continue  # the commit that deleted the path; nothing was served at this revision
+            # Either the file did not exist at that tip, and the URL served a 404 then, or the
+            # commit itself is gone (a force-pushed-away tip GitHub has since collected). Only
+            # the first is evidence, so ask which.
+            commit = _api_get(f"https://api.github.com/repos/{owner}/{repo}/commits/{sha}", timeout)
+            if commit is not None and commit.status_code == 200:
+                continue
+            return "unresolved", f"tip {sha[:10]} no longer exists on GitHub, so what it served cannot be rebuilt"
         if body.status_code >= 400:
-            return "unresolved", f"revision {sha[:10]} could not be fetched (HTTP {body.status_code})"
+            return "unresolved", f"tip {sha[:10]} could not be fetched (HTTP {body.status_code})"
         if hashlib.sha256(body.content).hexdigest() == digest:
-            return "served", f"revision {sha[:10]} of {when} hashes to the recorded digest"
+            dates = ", ".join(str(d) for d in sorted(accessed))
+            return "served", f"{branch} was at {sha[:10]} around the access on {dates}, and its {path} hashes to the recorded digest"
+    return "never", (
+        f"the activity log covers every tip {branch} held around the recorded access "
+        f"({len(tips)} of them), and none of their copies of {path} hashes to it"
+    )
 
-    if len(commits) > MAX_REVISIONS:
-        return "unresolved", (
-            f"none of the latest {MAX_REVISIONS} revisions matches and the history is longer "
-            f"than that, so an older one might"
-        )
-    return "never", f"none of the {len(commits)} revision(s) of {path} on {ref} hashes to it"
+
+def access_dates(sources: list[Source]) -> dict[tuple[str, str], set[date]]:
+    """(digest, url) -> every date a record claims that URL served that digest.
+
+    All of them, and the verdict is `served` if ANY of them rebuilds to the digest. That errs
+    toward drift, which is the side a fabrication claim has to err on.
+    """
+    out: dict[tuple[str, str], set[date]] = defaultdict(set)
+    for source in sources:
+        when = parse_date(source.accessed)
+        if when is not None:
+            out[(source.digest, source.url)].add(when)
+    return dict(out)
 
 
 def resolve_duplicates(
     groups: list[tuple[str, list[str]]],
     timeout: float,
-    history=file_history_verdict,
+    accessed: dict[tuple[str, str], set[date]] | None = None,
+    history=served_on_access_verdict,
 ) -> tuple[list[str], list[str]]:
     """(failures, benign) — decided by fetching and by revision history, not by guessing.
 
@@ -501,17 +643,19 @@ def resolve_duplicates(
     2026-09-22, five weeks after its source was read on 2026-08-18. The inference compared
     two bodies fetched TODAY and drew a conclusion about what one URL served back THEN.
 
-    Dates do not settle it either. A first fix compared the file's last commit date with the
-    recorded access, and a merge commit breaks that: a PR commit dated two weeks before the
-    access and merged after it reports a pre-access date for a change the reader never saw.
-    What settles it is the content. So for every member whose live body differs from the
-    recorded digest, `history` walks that file's revisions and hashes each one:
+    Neither dates nor revision walks settle it. A first fix compared the file's last commit date
+    with the recorded access, and a merge commit breaks that: a PR commit dated before the
+    access and merged after it reports a pre-access date for a change the reader never saw. A
+    second walked the file's revision history, and that breaks too: a match on a side branch
+    shows the bytes existed in the repo, not that the branch URL served them, and a miss after
+    a force push is a hole in the history, not proof. What settles it is the tips the branch
+    actually held on the access date, which `history` rebuilds from GitHub's activity log:
 
-    - some revision hashes to the digest: the URL served it once, and the change is drift;
-    - no revision ever did: FABRICATION, whether or not another member reproduces the digest,
-      because the digest could not have come from this URL;
-    - the history could not be walked (not GitHub, a failed or rate-limited lookup, longer
-      than the cap): UNRESOLVED, reported and never a failure.
+    - a tip around the access hashes to the digest: the URL served it, and the change is drift;
+    - the log covers the whole window and no tip does: FABRICATION, whether or not another
+      member reproduces the digest, because this URL could not have served it then;
+    - anything short of that (not GitHub, a tag or ambiguous ref, a failed lookup, a window
+      the log cannot reach): UNRESOLVED, reported and never a failure.
 
     Only members that changed are walked, so a group that still reproduces costs nothing.
     """
@@ -569,7 +713,7 @@ def resolve_duplicates(
                 )
             for url in changed:
                 live = live_by_url[url]
-                verdict, detail = history(url, digest)
+                verdict, detail = history(url, digest, (accessed or {}).get((digest, url), set()))
                 head = (
                     f"digest {digest[:12]}…: {url} now serves {live[:12]}…, and "
                     f"{len(reproducing)} of {len(urls)} URLs sharing the digest still "
@@ -669,7 +813,7 @@ def main() -> int:
     # to be fabrication. See resolve_duplicates: earlier heuristics failed on canonical LICENSE
     # texts, a host alias and a relicensed repo, none of which is anybody pasting anything.
     dup_failures, dup_benign = resolve_duplicates(
-        duplicate_digest_groups(sources), args.timeout
+        duplicate_digest_groups(sources), args.timeout, accessed=access_dates(sources)
     )
     failures.extend(dup_failures)
 
