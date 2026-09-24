@@ -36,16 +36,25 @@ openness:
     establishes: [data, code]
 adoption:
   level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: medium
-  note: The Hub repositories boltz-community/boltz-1 and boltz-community/boltz-2 report zero downloads because
-    the package fetches checkpoint files directly rather than through the Hub API that download counters
-    measure, so that path undercounts actual use. GitHub stars are the fallback signal instead.
-  last_verified: '2026-09-10'
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of boltz, the declared package that fetches the Boltz-1 and Boltz-2 checkpoints
+  note: Adoption is measured from PyPI downloads of boltz, the declared package that installs the model and
+    fetches its checkpoints, because PyPI takes precedence over Hugging Face and GitHub stars whenever a
+    package is declared. The Hub repositories boltz-community/boltz-1 and boltz-community/boltz-2 report
+    zero downloads because the package fetches checkpoint files directly rather than through the Hub API
+    that download counters measure.
+  last_verified: '2026-09-17'
+  derived_from:
+    observation_snapshot_id: 36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6
+    source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+    route_id: pypi.downloads_30d
+    measured_level: 2
+    measurement_as_of: '2026-09-17'
   sources:
   - url: https://api.github.com/repos/jwohlwend/boltz
-    shows: 'stargazers_count: 4202; archived: false; fork: false.'
+    shows: 'stargazers_count: 4202; archived: false; fork: false — recorded so the superseded stars signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 7502ca561e5728327b220861833669513a585a8c763ee5a5715f526d4327b691
