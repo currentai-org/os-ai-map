@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- The Language-specific datasets category, published with 97 scored products: datasets built for
+  underrepresented languages across speech, pretraining text, instruction data, parallel text and
+  evaluation, three withheld corpora included
+  ([#689](https://github.com/currentai-org/os-ai-map/pull/689)).
 - A license leg on the contradiction sweep (`build/check_contradictions.py`): the repository
   license `signal_github` collects, against the license the openness score records. Built and
   withdrawn twice before, because the corpus records a license as a name plus a qualification and
@@ -125,6 +129,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- The shared dataset ladder names four more licenses: cc-by-nc-4.0 and cc-by-nc-sa-3.0 as
+  noncommercial, cc-by-2.5 and cc-by as open data; no existing score moved
+  ([#689](https://github.com/currentai-org/os-ai-map/pull/689)).
 - `openness.components` gained a reserved `context` mapping for the keys a product's ladder does
   not read, such as `service`, `commercial` and `governance`. The 394 such clauses on 266 records
   moved into it, `raw` and every score unchanged, and `check_components` now fails a record whose
