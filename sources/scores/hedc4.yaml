@@ -1,0 +1,81 @@
+product: hedc4
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no license in the card, the API tags, or any repository file (the repo holds only HeDC4.csv and
+        README.md)
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: partial
+      detail: two-sentence summary and a citation; collection is described only in the paper
+  confidence: high
+  note: The corpus downloads without a sign-up, but no license is stated anywhere, so the terms of reuse are
+    unknown. The card is a two-line summary, and how the crawl was cleaned is explained only in the HeRo paper.
+  raw: license:not-clearly-stated-on-card(no license in the card, the API tags, or any repository file (the
+    repo holds only HeDC4.csv and README.md));access:public(ungated on the Hub);dataset_card:partial(two-sentence
+    summary and a citation; collection is described only in the paper)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/HeNLP/HeDC4/raw/main/README.md
+    shows: 'Full card: "A Hebrew Deduplicated and Cleaned Common Crawl Corpus. A thoroughly cleaned and approximately
+      deduplicated dataset for unsupervised learning." No license field.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: cdd5b121adca722c927269b9c28ab01ad208d6e343480b182697e0de3d4f8ac2
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HeNLP/HeDC4
+    shows: 'API JSON: "gated": false; no license tag; files .gitattributes, HeDC4.csv, README.md.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 30bd463ced687e62efd149f169d968b63676e8ab1858a35658b3fd16bdcb279e
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single repository. The figure cannot show how many of the Hebrew models
+    listed as trained on it drew from this copy.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/HeNLP/HeDC4
+    shows: 54 downloads in the trailing 30 days for HeNLP/HeDC4
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 30bd463ced687e62efd149f169d968b63676e8ab1858a35658b3fd16bdcb279e
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Hebrew pretraining text
+  value: 910,000 documents (47.6 GB) of cleaned, deduplicated Hebrew Common Crawl text, described in a paper,
+    with HeRo, LongHeRo and a community HebrewGPT model trained on it.
+  confidence: medium
+  note: 'HeDC4 was the largest Hebrew pretraining set when its paper introduced it, and HeRo, LongHeRo and
+    a community HebrewGPT model are trained on it. It is a step below naab, the Farsi corpus with a detailed
+    card and published preprocessing code: HeDC4 comes from a single source, Common Crawl, and its card is
+    two sentences with no stated license.'
+  relative_to: naab
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2304.11077
+    shows: 'Abstract: "providing it with the largest so far pre-train dataset HeDC4, a state-of-the-art pre-trained
+      language model HeRo ... and an efficient transformer LongHeRo".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fd8641c73b365fed645150f618168293cdf7716b0906d1aa299ed2a04b687c76
+  - url: https://huggingface.co/datasets/HeNLP/HeDC4
+    shows: 'Hub page: "Number of rows: 910,000"; "Total file size: 47.6 GB"; models listed include Slasky/HebrewGPT-1B,
+      HeNLP/HeRo, HeNLP/LongHeRo.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 19e81980c64dfe435a28468d5b58aca7a508e65d6a54c0eafbabccbd7b2389fc

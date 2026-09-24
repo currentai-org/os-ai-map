@@ -1,0 +1,108 @@
+product: cidar
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata and body; the GitHub README says "CIDAR is released under Apache 2.0" and the repository
+        LICENSE is the Apache 2.0 text
+    access:
+      value: public
+      detail: all three Hub repositories ungated
+    dataset_card:
+      value: present
+      detail: card describes sources, translation and review
+  confidence: high
+  note: The data, the annotation app and the paper are all public under a permissive license. The card asks
+    that it be used for research only, but that request is not a term of the license.
+  raw: license:apache-2.0(card metadata and body; the GitHub README says "CIDAR is released under Apache 2.0"
+    and the repository LICENSE is the Apache 2.0 text);access:public(all three Hub repositories ungated);dataset_card:present(card
+    describes sources, translation and review)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/arbml/CIDAR/raw/main/README.md
+    shows: 'Card metadata "license: apache-2.0"; body: "CIDAR is intended for research purposes only."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c7ed614f1286b5db3326cb190dbf3891ad24a07e14281c5c2e52849b70d0d12e
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/ARBML/CIDAR/main/README.md
+    shows: '"CIDAR is released under Apache 2.0."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 68d2661f1fbf7692d4dd7428b04f915168e2df43ec8e2a4efd9737b54fb8c1bb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ARBML/CIDAR/main/LICENSE
+    shows: Apache License, Version 2.0, January 2004, full text.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/arbml/CIDAR
+    shows: 'API JSON: "gated": false, "private": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 911774f60da036c77827db81deff15b80b4cffbf839dd034db37d5f8ef7f782e
+    establishes:
+    - availability
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the instruction set and its two evaluation sets, nearly all of them
+    for the instruction set. Downloads do not show which of them fed a released model.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/arbml/CIDAR
+    shows: 386 downloads in the trailing 30 days for arbml/CIDAR
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 911774f60da036c77827db81deff15b80b4cffbf839dd034db37d5f8ef7f782e
+  - url: https://huggingface.co/api/datasets/arbml/cidar-eval-100
+    shows: 35 downloads in the trailing 30 days for arbml/CIDAR-EVAL-100
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 168cc6afa3ed428dcc28e74c83d2a76fc8d715bd7a6e9c34dfed9dc45234e1f5
+  - url: https://huggingface.co/api/datasets/arbml/cidar-mcq-100
+    shows: 33 downloads in the trailing 30 days for arbml/CIDAR-MCQ-100
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 900e06a27ab1a66f33b36283ede93dfe2173424007c6725ebcbfc7069a8189af
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Arabic instruction data
+  value: CIDAR holds 10,000 Arabic instruction pairs, about 9,100 of them machine-translated with ChatGPT from
+    Alpagasus and the rest native grammar questions, all reviewed by people, documented in an ACL Findings
+    paper, with small community fine-tunes listed as trained on it.
+  confidence: medium
+  note: CIDAR is documented and every pair was reviewed by people for cultural fit, but most of it began as
+    machine translation from English, and at 10,000 pairs it is small. Only small community fine-tunes use
+    it, whereas WangchanThaiInstruct was written in Thai by people from the start.
+  relative_to: wangchan-thai-instruct
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2402.03177
+    shows: 'Abstract: "the first open Arabic instruction-tuning dataset culturally-aligned by human reviewers.
+      CIDAR contains 10,000 instruction and output pairs".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a7009bbc131d4a80bc811cc9b60056da3de7456a1f759ee677222b3ccf5bccc8
+  - url: https://huggingface.co/datasets/arbml/CIDAR/raw/main/README.md
+    shows: '"selecting around 9,109 samples from Alpagasus dataset then translating it to Arabic using ChatGPT
+      ... around 891 Arabic grammar instructions ... reviewed by around 12 reviewers."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c7ed614f1286b5db3326cb190dbf3891ad24a07e14281c5c2e52849b70d0d12e
+  - url: https://huggingface.co/datasets/arbml/CIDAR
+    shows: Hub page "Models trained or fine-tuned on arbml/CIDAR" lists VohoAI/voho-saudi-chat-4b and Ruqiya/Fine-Tuning-Gemma-2b-it-for-Arabic.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: be5a35bbb0572acedb630e97c5a8726ff69a6c95d73d9b9eacb5ee9d3cc19f55

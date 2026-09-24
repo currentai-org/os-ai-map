@@ -1,0 +1,124 @@
+product: indicgenbench
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: cc-by-sa-4.0
+      detail: Flores-IN and XQuAD-IN
+    - name: mit
+      detail: XorQA-IN
+    - name: cc-by-nc-sa-4.0
+      detail: CrossSum-IN
+    access:
+      value: public
+      detail: 'all four Hugging Face repositories gated: false; also in the GitHub repository'
+    dataset_card:
+      value: present
+      detail: GitHub README and per-task cards describe tasks, fields and splits
+  confidence: high
+  note: Each task set keeps the license of the dataset it extends, so the summarization set is non-commercial
+    while the translation and question-answering sets allow commercial use. All four download without a gate.
+  raw: 'license:cc-by-sa-4.0(Flores-IN and XQuAD-IN)+mit(XorQA-IN)+cc-by-nc-sa-4.0(CrossSum-IN);access:public(all
+    four Hugging Face repositories gated: false; also in the GitHub repository);dataset_card:present(GitHub
+    README and per-task cards describe tasks, fields and splits)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/README.md
+    shows: '"XQuAD-IN, Flores-IN: Under CC BY-SA 4.0 license ... XorQA-IN: Under MIT license ... CrossSum-IN:
+      Under CC BY-NC-SA 4.0 license".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2b36a3735001317d99551905243bf8b6b1165876f0511c52e34880a7a892bea1
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/google-research-datasets/indic-gen-bench/main/LICENSE
+    shows: '"The different datasets distributed as part of this repository are subject to different licenses
+      based on the license of the source dataset they were derived from."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 49a1c9cbe599a7f69dc1dd56bda2458db7833baa11a22b8d4f744e41a8b9bc37
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_flores_in
+    shows: '"gated": false; license tag cc-by-sa-4.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 06e1cbd58d438bbba4fe678441933c7983953d0a6132bef21ea97cfb8b684fc1
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_xquad_in
+    shows: '"gated": false; license tag cc-by-sa-4.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 14794b9a866aa6e211049ee570e6c3a3c8857ae745972f606ada0e4a86118cac
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_xorqa_in
+    shows: '"gated": false; license tag mit.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 96ac23b3b10a4eb89e9397da5acbd8bf92e36763e24d73bc0f681456701e28d0
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_crosssum_in
+    shows: '"gated": false; license tag cc-by-nc-sa-4.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8e1b517052ea22e257a34350884a5d88db217793946415b35bcfbb39c37fa476
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the four task repositories. The same data is also cloned from GitHub,
+    which publishes no count.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_flores_in
+    shows: 1093 downloads in the trailing 30 days for google/IndicGenBench_flores_in
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 06e1cbd58d438bbba4fe678441933c7983953d0a6132bef21ea97cfb8b684fc1
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_xquad_in
+    shows: 802 downloads in the trailing 30 days for google/IndicGenBench_xquad_in
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 14794b9a866aa6e211049ee570e6c3a3c8857ae745972f606ada0e4a86118cac
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_xorqa_in
+    shows: 465 downloads in the trailing 30 days for google/IndicGenBench_xorqa_in
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 96ac23b3b10a4eb89e9397da5acbd8bf92e36763e24d73bc0f681456701e28d0
+  - url: https://huggingface.co/api/datasets/google/IndicGenBench_crosssum_in
+    shows: 711 downloads in the trailing 30 days for google/IndicGenBench_crosssum_in
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8e1b517052ea22e257a34350884a5d88db217793946415b35bcfbb39c37fa476
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for an Indic generation benchmark
+  value: IndicGenBench holds four generation tasks human-translated from English benchmarks into 29 Indic languages,
+    documented in a paper and README, with no use found beyond that paper's model evaluations.
+  confidence: medium
+  note: IndicGenBench is documented and reaches 29 Indic languages with human translations. No leaderboard
+    or model report built on it outside its own paper was found, whereas IndicXTREME was released with the
+    IndicBERT v2 models it evaluates.
+  relative_to: indicxtreme
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2404.16816
+    shows: 'Abstract: "the largest benchmark for evaluating LLMs on user-facing generation tasks across a diverse
+      set 29 of Indic languages covering 13 scripts".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 979f9f83362039e3e0f3ee506579aee534e54722c086553ccf66d257055a37b4

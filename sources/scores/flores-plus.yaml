@@ -1,0 +1,91 @@
+product: flores-plus
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-sa-4.0
+    access:
+      value: auto
+      detail: 'Automatic Hugging Face gate: agree not to re-host where crawlers can reach it and to keep its
+        contents out of training data when evaluating.'
+    dataset_card:
+      value: present
+  confidence: high
+  note: The sentences carry a share-alike license and the gate approves anyone who accepts its terms. Those
+    terms ask users not to re-host the files where crawlers can find them and to keep them out of training
+    data, to protect the benchmark from contamination.
+  raw: 'license:cc-by-sa-4.0;access:auto(Automatic Hugging Face gate: agree not to re-host where crawlers can
+    reach it and to keep its contents out of training data when evaluating.);dataset_card:present'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
+    shows: '"FLORES+ is a multilingual machine translation benchmark released under CC BY-SA 4.0"; "It should
+      not be used as training data."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 1705559fd30478c9dd011d5ed54b54c5b4784ac7b81e3c4710ef664789679d1a
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/openlanguagedata/flores_plus
+    shows: 'gated: "auto"; gate fields: "I agree not to re-host FLORES+ in places where it could be picked
+      up by web crawlers"; "If I evaluate using FLORES+, I will ensure that its contents are not in the training
+      data".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e28922efe3c48d9b7036230389356ee0fb9f7fa80df55262f7f057c115fe57b7
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month for the one FLORES+ repository. Copies bundled inside
+    evaluation harnesses and earlier FLORES-200 downloads from Meta are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/openlanguagedata/flores_plus
+    shows: 12666 downloads in the trailing 30 days for openlanguagedata/flores_plus
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e28922efe3c48d9b7036230389356ee0fb9f7fa80df55262f7f057c115fe57b7
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for multilingual translation evaluation
+  value: Human-translated benchmark of 997 dev and 1,012 devtest sentences in each of 230 language varieties,
+    documented in the FLORES-101 and NLLB papers, on which FLEURS and Belebele are built and against which
+    NLLB-200 was evaluated.
+  confidence: medium
+  note: FLORES+ is the reference translation benchmark for low-resource languages, with the same human-translated
+    sentences in 230 varieties and documentation in the FLORES and NLLB papers. Meta evaluated NLLB-200 on
+    it, and other benchmarks reuse its sentences, among them FLEURS for speech and Belebele for reading comprehension.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/openlanguagedata/flores_plus
+    shows: '"For each language, the dataset has 997 sentences for the dev split and 1012 sentences for the
+      devtest split"; "Currently 230 language varieties".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 1705559fd30478c9dd011d5ed54b54c5b4784ac7b81e3c4710ef664789679d1a
+  - url: https://arxiv.org/abs/2205.12446
+    shows: FLEURS "is an n-way parallel speech dataset in 102 languages built on top of the machine translation
+      FLoRes-101 benchmark".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5677a7c4030171b138ba33fd90ab63034b24e816aea4a7febd99038f4b13dafe
+  - url: https://raw.githubusercontent.com/facebookresearch/belebele/main/README.md
+    shows: '"Each question has four multiple-choice answers and is linked to a short passage from the FLORES-200
+      dataset."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f7a9aead9af9056c96837eeb8eafa301ec37a4512e52520f1c3d7903b69ce145
+  - url: https://arxiv.org/abs/2207.04672
+    shows: '"we evaluated the performance of over 40,000 different translation directions using a human-translated
+      benchmark, Flores-200".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: eb8f68814e4e67675fb2a90e01e2a25931b64d3bf674fc6223dee700c46e8b48

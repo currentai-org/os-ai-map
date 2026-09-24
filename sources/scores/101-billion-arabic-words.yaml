@@ -1,0 +1,79 @@
+product: 101-billion-arabic-words
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: 'card metadata and the card body ("License: Apache 2.0")'
+    access:
+      value: public
+      detail: ungated on the Hugging Face Hub
+    dataset_card:
+      value: present
+      detail: card and paper describe the Common Crawl extraction and cleaning
+  confidence: high
+  note: The full corpus downloads from the Hub without a sign-up, and its card and paper describe how the web
+    text was extracted and cleaned. The text itself is crawled web content, so the terms of the original pages
+    still sit behind the permissive grant on the compilation.
+  raw: 'license:apache-2.0(card metadata and the card body ("License: Apache 2.0"));access:public(ungated on
+    the Hugging Face Hub);dataset_card:present(card and paper describe the Common Crawl extraction and cleaning)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ClusterlabAi/101_billion_arabic_words_dataset/raw/main/README.md
+    shows: 'Card metadata "license: apache-2.0"; body: "License: Apache 2.0"; "gathered data from specified
+      sources, primarily Common Crawl, and extracted Arabic content from WET files".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 148360bd329ec8f00993b5103e17734b0247f4aa615a3f0875cf249a74f8888c
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/ClusterlabAi/101_billion_arabic_words_dataset
+    shows: 'API JSON: "gated": false, "private": false; tag license:apache-2.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e404181d794c86f747e7a67d885f7802dffec32f38d6b42c4123e11b7c08e6df
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single Hub repository. Downloads of a corpus this size mostly count partial
+    fetches of its shards and cannot show how many training runs used it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ClusterlabAi/101_billion_arabic_words_dataset
+    shows: 1904 downloads in the trailing 30 days for ClusterlabAi/101_billion_arabic_words_dataset
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e404181d794c86f747e7a67d885f7802dffec32f38d6b42c4123e11b7c08e6df
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Arabic pretraining text
+  value: The corpus holds about 101 billion words in 33 million documents of cleaned and deduplicated Arabic
+    Common Crawl text, is documented in a paper, and ModernAraBERT is listed as trained on it.
+  confidence: medium
+  note: The corpus is documented in a paper, its authors call it the largest Arabic dataset available, and
+    ModernAraBERT is trained on it. Like naab for Farsi, it is a big documented corpus for one language, but
+    the only model named as trained on it is a single encoder release from outside its publisher, and it draws
+    on a single source, Common Crawl.
+  relative_to: naab
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2405.01590
+    shows: 'Abstract: "extracting a substantial volume of text from the Common Crawl WET files ... The result
+      is the 101 Billion Arabic Words Dataset, the largest Arabic dataset available to date".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: eade9783613614f05c024ca9038653b43ca7740a74b3e51d355627b36804c3ba
+  - url: https://huggingface.co/datasets/ClusterlabAi/101_billion_arabic_words_dataset
+    shows: 'Hub page: "Number of rows: 33,059,988"; "Models trained or fine-tuned on" lists gizadatateam/ModernAraBERT.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 553da80b0538175311487de1fd5ea04ee0bf9bffe9fc3d775dbc7de13d899f9f

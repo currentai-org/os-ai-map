@@ -1,0 +1,101 @@
+product: kazakh-speech-corpus-2
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: ISSAI corpus page; the Hub card metadata says mit; the GitHub LICENSE.md is the CC BY 4.0 text
+    access:
+      value: public
+      detail: ungated on the Hub, also downloadable from the ISSAI site
+    dataset_card:
+      value: partial
+      detail: short card with summary and paper link; the Interspeech paper describes collection
+  confidence: medium
+  note: The audio and transcripts download freely for research and commercial use, with an attribution line
+    the publisher asks commercial products to carry. The Hub card is a short summary, so the details of collection
+    come from the paper and ISSAI's page.
+  raw: license:cc-by-4.0(ISSAI corpus page; the Hub card metadata says mit; the GitHub LICENSE.md is the CC
+    BY 4.0 text);access:public(ungated on the Hub, also downloadable from the ISSAI site);dataset_card:partial(short
+    card with summary and paper link; the Interspeech paper describes collection)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://issai.nu.edu.kz/kz-speech-corpus/
+    shows: '"the KSC2 dataset is freely available to both academic researchers and industry practitioners ...
+      available under a Creative Commons Attribution 4.0 International License."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b5fb7cc0fd96c7a63f6ba39b3da82a989606b959bdd3f27f774797ab20e5eeef
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/issai/Kazakh_Speech_Corpus_2/raw/main/README.md
+    shows: 'Card metadata "license: mit"; summary of sources and "around 1.2k hours of high-quality transcribed
+      data comprising over 600k utterances".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 30f89f8bf0b9d17d4c3a683b648bc068d9a2aaf97097a15d31b58e67d866646f
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/IS2AI/Kazakh_ASR/main/LICENSE.md
+    shows: Creative Commons "Attribution 4.0 International" license text.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d95c09c2f353e472d55b72c563b99a55d4e89caa507fd5c3d28398ea87994ea9
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/issai/Kazakh_Speech_Corpus_2
+    shows: 'API JSON: "gated": false, "private": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6ad2bebfe72db97f232b4ee88ae8227dafd452886bd224863f64e40d28b4d7db
+    establishes:
+    - availability
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the Hub repository, which holds the corpus as split archive parts, so one
+    full download counts several times. Downloads from the ISSAI site are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/issai/Kazakh_Speech_Corpus_2
+    shows: 1866 downloads in the trailing 30 days for issai/Kazakh_Speech_Corpus_2
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6ad2bebfe72db97f232b4ee88ae8227dafd452886bd224863f64e40d28b4d7db
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Kazakh speech recognition data
+  value: KSC2 holds about 1,200 hours of transcribed Kazakh speech in over 600,000 utterances from earlier
+    corpora plus broadcast, Senate and podcast audio, documented in an Interspeech paper, with community Whisper
+    fine-tunes listed as trained on it.
+  confidence: medium
+  note: KSC2 is a documented 1,200-hour Kazakh speech corpus that its publisher calls the first large open
+    one for the language, and several Whisper fine-tunes for Kazakh are trained on it. Those are community
+    releases, whereas IndicVoices' own publisher trained a named recognizer on it, and KSC2 serves only speech
+    recognition in one language.
+  relative_to: indicvoices
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://issai.nu.edu.kz/kz-speech-corpus/
+    shows: '"Kazakh Speech Corpus 2 (KSC2) is the first industrial-scale open-source Kazakh speech corpus ...
+      contains utterances with the Kazakh-Russian code-switching".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b5fb7cc0fd96c7a63f6ba39b3da82a989606b959bdd3f27f774797ab20e5eeef
+  - url: https://huggingface.co/datasets/issai/Kazakh_Speech_Corpus_2
+    shows: Hub page "Models trained or fine-tuned on" lists shyngys879/kazakh-whisper-large-v3-turbo and abilmansplus/whisper-turbo-ksc2.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 61eea1f8c36344a81893b18129b4934425670d497bc15d5938b491b0de562b6e
+  - url: https://raw.githubusercontent.com/IS2AI/Kazakh_ASR/main/README.md
+    shows: '"This repository provides the recipe for the paper KSC2"; "Our code builds upon ESPnet".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4a236c3c644a1291ffc25c4a886dc464de7cf6dc5621932963d7060d7b0e41a1

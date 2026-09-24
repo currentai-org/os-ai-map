@@ -1,0 +1,100 @@
+product: icelandic-gigaword-corpus
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: Applies to the Hugging Face release. IGC-Books and IGC-News2 (913.6M words in IGC-2022) are under
+        the restricted IGC (MIM) license, which forbids republishing the texts, and are not in the repository;
+        Twitter data is also excluded.
+    access:
+      value: public
+      detail: 'Hugging Face gated: false. Restricted subcorpora require accepting a user license with email
+        registration.'
+    dataset_card:
+      value: present
+      detail: Subcorpus sizes, format, domains and quality grading; homepage documents tagging and versions.
+  confidence: high
+  note: The Hugging Face release holds only the subcorpora published under CC BY 4.0 and downloads without
+    a gate. Published books and part of the news, over a third of the full corpus, sit under a custom license
+    that allows building models but forbids republishing the text, so they are left out.
+  raw: 'license:cc-by-4.0(Applies to the Hugging Face release. IGC-Books and IGC-News2 (913.6M words in IGC-2022)
+    are under the restricted IGC (MIM) license, which forbids republishing the texts, and are not in the repository;
+    Twitter data is also excluded.);access:public(Hugging Face gated: false. Restricted subcorpora require
+    accepting a user license with email registration.);dataset_card:present(Subcorpus sizes, format, domains
+    and quality grading; homepage documents tagging and versions.)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/arnastofnun/IGC-2024/raw/main/README.md
+    shows: '"This package contains those subcorpora ... that have been published with an open licence (CC-BY)";
+      restricted licence table: IGC-Books 13.8, IGC-News2 899.8 (millions of words).'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 1e3cf47ed3a824e4a67b59f39592a34a402e14595aa99a9b89d595997a91a848
+    establishes:
+    - documentation
+    - license
+  - url: https://igc.arnastofnun.is/
+    shows: '"The main difference between the licenses is that the texts published under a custom license can
+      not be republished. Both licenses allow building language models"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e2c9346c21651a790f0b98afa57700d24aea7a90696f388cba224cace74fae5f
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/arnastofnun/IGC-2024
+    shows: '"gated":false, license cc-by-4.0'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c4d57a238968ec3f4526ec1e377220e55474cda6ed4bc1cd07538c3af2e90936
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the dataset repository over the trailing 30 days. A download is a file fetch
+    rather than a trained model, and copies mirrored elsewhere are not counted. The restricted subcorpora and
+    the tagged TEI release on CLARIN-IS are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/arnastofnun/IGC-2024
+    shows: 190 downloads in the trailing 30 days for arnastofnun/IGC-2024
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c4d57a238968ec3f4526ec1e377220e55474cda6ed4bc1cd07538c3af2e90936
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Icelandic pretraining text
+  value: The Icelandic Gigaword Corpus holds about 2.4 billion running words of tagged and lemmatized Icelandic
+    text written by people, about 1.46 billion of it in the open release, documented on a detailed homepage
+    and card, with one community model listed as trained on it.
+  confidence: medium
+  note: The IGC is the largest documented corpus of Icelandic, built from news, parliament, law, books and
+    more and released in yearly versions, and Icelandic Dynaword repackages its open parts. It plays the role
+    for Icelandic that Danish Dynaword plays for Danish, but the only model on Hugging Face that lists it as
+    training data is a community release, and a third of its text is outside the open release.
+  relative_to: danish-dynaword
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://igc.arnastofnun.is/
+    shows: '"IGC 2022 contains texts from until the end of the year 2021, in total 2429 million running words."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e2c9346c21651a790f0b98afa57700d24aea7a90696f388cba224cace74fae5f
+  - url: https://huggingface.co/datasets/arnastofnun/IGC-2024/raw/main/README.md
+    shows: '"It contains around 1,457 million running words."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 1e3cf47ed3a824e4a67b59f39592a34a402e14595aa99a9b89d595997a91a848
+  - url: https://huggingface.co/api/models?filter=dataset:arnastofnun/IGC-2024
+    shows: 'One model tagged with the dataset: Magnuss85/Norn-v3-Icelandic-9B.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 588a210925d3224eab91033135dbf138037a7933dd3dc1543233d194044d2c49

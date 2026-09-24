@@ -1,0 +1,109 @@
+product: common-voice
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc0-1.0
+      detail: Per-language dataset pages on Mozilla Data Collective list CC0-1.0; the cv-dataset repo's MPL-2.0
+        LICENSE covers its metadata and helper scripts, not the audio.
+    access:
+      value: terms-acceptance+contact-info
+      detail: Downloads go through a Mozilla Data Collective account and API key after agreeing to each dataset's
+        conditions, which forbid re-hosting and speaker identification.
+    dataset_card:
+      value: present
+      detail: Per-language datasheets on MDC plus release documentation in cv-dataset.
+  confidence: medium
+  note: The recordings are dedicated to the public domain, so any use is allowed. Getting them takes a Mozilla
+    Data Collective account and agreement to conditions that forbid re-sharing the files or trying to identify
+    speakers.
+  raw: license:cc0-1.0(Per-language dataset pages on Mozilla Data Collective list CC0-1.0; the cv-dataset repo's
+    MPL-2.0 LICENSE covers its metadata and helper scripts, not the audio.);access:terms-acceptance+contact-info(Downloads
+    go through a Mozilla Data Collective account and API key after agreeing to each dataset's conditions, which
+    forbid re-hosting and speaker identification.);dataset_card:present(Per-language datasheets on MDC plus
+    release documentation in cv-dataset.)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://mozilladatacollective.com/datasets/cmu5o9t9r00xfmh078ono52dr
+    shows: 'Per-language page: "License: CC0-1.0"; "It is forbidden to attempt to determine the identity of
+      speakers... It is forbidden to re-host or re-share this dataset."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b2714773be38ae43f6d20df79fe2a1c8240a7d0cdb5d2bd26a0ed62a8621d126
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://mozilladatacollective.com/organization/cmfh0j9o10006ns07jq45h7xk
+    shows: Mozilla Data Collective lists every Common Voice release by language, each with "CC0-1.0" as the
+      dataset license.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 82f4d76db8569c63310d5d1fe2b8e5e6dd0b485f99e4759ed525ae0aa421efa6
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/Mozilla-Data-Collective/datacollective-python/main/README.md
+    shows: '"Before trying to access any dataset, make sure you have thoroughly read and agreed to the specific
+      dataset''s conditions & licensing terms." "Get your API key from the Mozilla Data Collective dashboard".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: be9ece6e45570791966db31906b58352f0121478c22843e46a95937a81ec6302
+    establishes:
+    - availability
+  - url: https://raw.githubusercontent.com/common-voice/cv-dataset/main/README.md
+    shows: '"Please visit the Mozilla Data Collective Common Voice section to download the latest datasets."
+      Documents dataset types, fields and the data pipeline.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: ba719bd62d826dcff9ea52c4de6b713ba38286a9eb4dc03220965d81f9adfcc3
+    establishes:
+    - availability
+    - documentation
+  - url: https://raw.githubusercontent.com/common-voice/cv-dataset/main/LICENSE
+    shows: Mozilla Public License Version 2.0 for the cv-dataset repository.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5
+    establishes:
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: high
+  note: The corpus is downloaded only through Mozilla Data Collective, whose counter is cumulative and covers
+    every Common Voice release together, so no trailing-month figure could be read.
+  last_verified: '2026-09-24'
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for crowdsourced multilingual speech
+  value: Crowdsourced read speech recorded and validated by volunteers, about 42,600 hours (29,300 validated)
+    in 295 languages, documented in an LREC paper and per-language datasheets, with DeepSpeech experiments
+    and the comparison models in Meta's MMS paper trained on it.
+  confidence: medium
+  note: Common Voice is the largest public-domain speech corpus by hours and languages, recorded and checked
+    by volunteers and documented language by language. Mozilla's DeepSpeech experiments and the comparison
+    recognizers in Meta's MMS work are trained on it, and the MMS paper found those models did better on FLEURS
+    than ones trained on Bible readings.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/common-voice/cv-dataset/main/README.md
+    shows: 'Scripted Speech: 27 releases, latest v27.0, 295 languages; hours chart ends at 42,593 total and
+      29,295 validated.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: ba719bd62d826dcff9ea52c4de6b713ba38286a9eb4dc03220965d81f9adfcc3
+  - url: https://arxiv.org/abs/1912.06670
+    shows: '"the largest audio corpus in the public domain for speech recognition, both in terms of number
+      of hours and number of languages"; DeepSpeech experiments.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 10be178e1b95570f0b6547083eac083e3c65bb09ba886b8ab6b0ba3bbe86517c
+  - url: https://arxiv.org/pdf/2305.13516
+    shows: '"models trained on CommonVoice perform better on 18 languages of FLEURS (average CER 9.3 vs. 12.2)".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f83bf79e989b901b8fbf344d5940b1820534d67fd4bb3af5695d844825fbe490

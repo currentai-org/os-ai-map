@@ -1,0 +1,99 @@
+product: sangraha
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: Hugging Face card metadata; the MIT LICENSE in IndicLLMSuite covers the pipeline code
+    access:
+      value: public
+      detail: 'Hugging Face gated: false'
+    dataset_card:
+      value: present
+      detail: card lists sources, components and per-language token counts
+  confidence: high
+  note: Sangraha downloads without a gate under CC BY 4.0, and its card, paper and GitHub repository document
+    every source and the cleaning code. The MIT license in that repository applies to the pipeline, not to
+    the text.
+  raw: 'license:cc-by-4.0(Hugging Face card metadata; the MIT LICENSE in IndicLLMSuite covers the pipeline
+    code);access:public(Hugging Face gated: false);dataset_card:present(card lists sources, components and
+    per-language token counts)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ai4bharat/sangraha
+    shows: 'Card header "License: cc-by-4.0"; describes Verified, Unverified and Synthetic components and a
+      per-language token table totaling 251,321.0 million.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 50f93f553e537ecf36ae841ab99cc7c402a4102ce5c02f2f1f847976d4754131
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/sangraha
+    shows: '"gated": false; cardData license "cc-by-4.0".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 82b2c10b579ec6e682b2f7e4cb148c1ae8dfe443e75cf243dc385c76d0057d27
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicLLMSuite/master/README.md
+    shows: 'README: "We open-source our pre-training dataset Sangraha" and "all the code and other resources
+      used for curating these datasets, including Setu".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: adc0e59730913833de75c9577c3ff01f763574ce9f4adaffb48fcf056611a93c
+    establishes:
+    - documentation
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicLLMSuite/master/LICENSE
+    shows: MIT License, Copyright (c) AI4Bharat, for the repository code.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 445ceab9bc0c0a256664bad9e5d5aa79c6c710af9b85dda8df71e9e00d32e3ad
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single Sangraha repository. A download is one fetch of some files, often
+    a single language split, and says nothing about which models were trained on it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/sangraha
+    shows: 40034 downloads in the trailing 30 days for ai4bharat/sangraha
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 82b2c10b579ec6e682b2f7e4cb148c1ae8dfe443e75cf243dc385c76d0057d27
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Indic pretraining text
+  value: About 251 billion tokens of pretraining text in 22 Indic languages and English, combining verified
+    web, OCR and transcribed text, filtered existing corpora, and machine-translated Wikimedia, documented
+    in a paper, with IndicBERT v3 and Pragna-1B trained on it.
+  confidence: medium
+  note: Sangraha is the largest open pretraining corpus for Indian languages, about twelve times IndicCorp
+    v2, and AI4Bharat's IndicBERT v3 models and Soket's Pragna-1B list it as training data. About two thirds
+    of its tokens are machine-translated Wikimedia text rather than writing produced in the languages themselves.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ai4bharat/sangraha
+    shows: 'Token table: Verified 64,306.1M, Synthetic 162,707.9M, Unverified 24,307.7M, total 251,321.0M;
+      "Models trained or fine-tuned on" lists IndicBERT-v3-270M, Cadence, pragna-1b.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 50f93f553e537ecf36ae841ab99cc7c402a4102ce5c02f2f1f847976d4754131
+  - url: https://arxiv.org/abs/2403.06350
+    shows: 'Abstract: "covering 22 languages, containing a total of 251B tokens and 74.8M instruction-response
+      pairs".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 82976ed365962034dc58c4458a6d122ba808cd76c0c97e0d4417e024c5caa5ec
+  - url: https://arxiv.org/abs/2212.05409
+    shows: 'IndicCorp abstract: "20.9B tokens covering 24 languages".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5d7600658aae7c5231ded0b8e2c258ae8455d5e0a8956951defdd1bd02dce210

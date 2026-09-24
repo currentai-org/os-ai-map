@@ -1,0 +1,82 @@
+product: naab
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: mit
+      detail: card metadata and API tag; the card's Licensing Information section reads "mit?"
+    access:
+      value: public
+      detail: both repositories ungated
+    dataset_card:
+      value: present
+      detail: card lists each source corpus and the cleaning process
+  confidence: medium
+  note: The corpus, its raw version and the cleaning code are all downloadable, and the card names every source
+    it merged. The license line on the card ends in a question mark, and the merged sources carry their own
+    terms, so the grant is less certain than the metadata tag suggests.
+  raw: license:mit(card metadata and API tag; the card's Licensing Information section reads "mit?");access:public(both
+    repositories ungated);dataset_card:present(card lists each source corpus and the cleaning process)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/SLPL/naab/raw/main/README.md
+    shows: Card metadata license "mit"; "### Licensing Information\n\nmit?"; source sections for Persian NLP,
+      AGP, OSCAR-fa, Telegram and LSCP.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6afc6d364c29c7a4e043c1103c47248e227051e954cb805b245f9d663ec31a13
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/SLPL/naab
+    shows: 'API JSON: "gated": false, "private": false; tag license:mit.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 94822ecb8a405bc1ee94165b7124c535ba4043e24312746bebef8474db7ad882
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the cleaned and raw repositories, most of them for the cleaned one.
+    Shard fetches of a large corpus are counted individually, so the figure is not a count of training runs.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/SLPL/naab
+    shows: 2560 downloads in the trailing 30 days for SLPL/naab
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 94822ecb8a405bc1ee94165b7124c535ba4043e24312746bebef8474db7ad882
+  - url: https://huggingface.co/api/datasets/SLPL/naab-raw
+    shows: 155 downloads in the trailing 30 days for SLPL/naab-raw
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 08c7ad057b26e28ab8c74df8b592a0e1d1eb035818a8e85d309d7b55d88a3a47
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Farsi pretraining text
+  value: About 15 billion words (130 GB) of cleaned Farsi text compiled from existing corpora, web and Telegram
+    sources, documented in a journal paper and card, with a Farsi T5 and a Persian ALBERT trained on it.
+  confidence: medium
+  note: naab is the largest cleaned public Farsi pretraining corpus, at about 15 billion words, documented
+    in a paper with its raw version and preprocessing code, and a Farsi T5 and a Persian ALBERT are trained
+    on it. Its text is compiled from web and messaging sources rather than newly collected.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2208.13486
+    shows: 'Abstract: "the largest publicly available, cleaned, and ready-to-use Farsi textual corpus. naab
+      consists of 130GB of data, comprising over 250 million paragraphs and 15 billion words".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: df998bad5ed7b51931cbc1938eb005a1251195c4a55644fe5da56daa513b66d9
+  - url: https://huggingface.co/datasets/SLPL/naab
+    shows: Hub page "Models trained or fine-tuned on SLPL/naab" lists shekar-ai/albert-base-v2-persian-zwnj-naab-mlm
+      and SLPL/t5-fa.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 22309319f6b1f3e5cd8a5b19a6e35f4a41e84279796990b219caa11e45496500

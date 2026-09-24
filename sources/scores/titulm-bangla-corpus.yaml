@@ -1,0 +1,79 @@
+product: titulm-bangla-corpus
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: Hugging Face card metadata; the card text has no license section
+    access:
+      value: public
+      detail: 'Hugging Face gated: false'
+    dataset_card:
+      value: present
+      detail: card describes extraction, filtering thresholds, translation and per-category counts
+  confidence: medium
+  note: The corpus downloads without a gate and its card metadata sets CC BY 4.0. The card explains how each
+    part was extracted, filtered and translated, but says nothing about the rights in the crawled pages.
+  raw: 'license:cc-by-4.0(Hugging Face card metadata; the card text has no license section);access:public(Hugging
+    Face gated: false);dataset_card:present(card describes extraction, filtering thresholds, translation and
+    per-category counts)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/hishab/titulm-bangla-corpus
+    shows: '"gated": false; cardData license "cc-by-4.0".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a783153b9e0859ad217577595d89d076b301ac9e798f847b1ba01bcf8e5d3fb2
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/hishab/titulm-bangla-corpus
+    shows: 'Card: Common Crawl Filtered 24.3M documents, 14.80B tokens; Translated 1.47B; Romanized 3.87B;
+      total 31.21M documents, 20.14B tokens; Gopher-style quality thresholds.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4111fa2ec2b2c33f04646270fb2660c05fa5268c2e9bbaaafb071ef8529adf3f
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single corpus repository. A download does not show whether the data was
+    used to train a released model.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/hishab/titulm-bangla-corpus
+    shows: 1660 downloads in the trailing 30 days for hishab/titulm-bangla-corpus
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a783153b9e0859ad217577595d89d076b301ac9e798f847b1ba01bcf8e5d3fb2
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Bangla pretraining text
+  value: The corpus holds about 20 billion Bangla tokens in 31 million documents, mostly filtered Common Crawl
+    with about a quarter machine-translated or romanized, documented in a card and paper, and only a small
+    third-party model lists it as training data.
+  confidence: medium
+  note: The TituLM corpus is a large, documented Bangla pretraining set, but its sources do not say the TituLLMs
+    models were trained on this release, and only a small third-party model lists it. About a quarter of its
+    tokens are machine-translated or romanized, and Sangraha, a documented corpus across 22 Indic languages,
+    is far larger.
+  relative_to: sangraha
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2502.11187
+    shows: 'Abstract: "To train TituLLMs, we collected a pretraining dataset of approximately ~37 billion tokens."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 194a9712f2f691c6206f6cf6c7be7815151ba36bbd08f99e07e7068223c3113f
+  - url: https://huggingface.co/datasets/hishab/titulm-bangla-corpus
+    shows: '"This dataset is associated with the paper TituLLMs"; "Models trained or fine-tuned on" lists spitfire4794/Alo-70m-Base
+      and Alo-50M-Base-Retied.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4111fa2ec2b2c33f04646270fb2660c05fa5268c2e9bbaaafb071ef8529adf3f

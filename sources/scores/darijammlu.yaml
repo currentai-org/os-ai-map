@@ -1,0 +1,81 @@
+product: darijammlu
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: mit
+      detail: card metadata; Licensing Information links MMLU's LICENSE, although part of the questions come
+        from ArabicMMLU, released for noncommercial use
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+      detail: card describes sources, translation model and review
+  confidence: medium
+  note: The questions download freely and the card states where each one came from and how it was translated.
+    Whether the permissive grant can cover the ArabicMMLU-derived questions is unclear, since the source benchmark
+    forbids commercial use.
+  raw: license:mit(card metadata; Licensing Information links MMLU's LICENSE, although part of the questions
+    come from ArabicMMLU, released for noncommercial use);access:public(ungated on the Hub);dataset_card:present(card
+    describes sources, translation model and review)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/MBZUAI-Paris/DarijaMMLU/raw/main/README.md
+    shows: 'Card metadata "license: mit"; Licensing Information: "[MIT License](https://github.com/hendrycks/test/blob/master/LICENSE)";
+      each row has a "source" field (MMLU or ArabicMMLU).'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/MBZUAI-Paris/DarijaMMLU
+    shows: 'API JSON: "gated": false, "private": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7d8043045d9080d56d801c10e983af857019143079adca0c18c6a75bd492a353
+    establishes:
+    - availability
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the Hub repository. Evaluation harnesses fetch a benchmark on each run, so
+    the figure counts runs, not the groups using it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/MBZUAI-Paris/DarijaMMLU
+    shows: 3008 downloads in the trailing 30 days for MBZUAI-Paris/DarijaMMLU
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7d8043045d9080d56d801c10e983af857019143079adca0c18c6a75bd492a353
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for a Moroccan Darija knowledge benchmark
+  value: DarijaMMLU holds 22,027 multiple-choice questions machine-translated into Moroccan Darija from MMLU
+    and ArabicMMLU with manual review, documented in a card and the Atlas-Chat paper, which evaluates its own
+    models on it.
+  confidence: medium
+  note: DarijaMMLU gives Moroccan Darija a broad knowledge benchmark and is the main test for the Atlas-Chat
+    models. Its questions are machine translations of MMLU and ArabicMMLU with manual review, not material
+    written in Darija, whereas KazMMLU is built from native educational material.
+  relative_to: kazmmlu
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/MBZUAI-Paris/DarijaMMLU/raw/main/README.md
+    shows: '"The selected subsets were translated into Darija using Claude 3.5 Sonnet." "created through a
+      combination of machine translation and manual review".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3
+  - url: https://arxiv.org/abs/2409.17912
+    shows: 'Abstract: "our 9B model gains a 13% performance boost over a larger 13B model on DarijaMMLU, in
+      our newly introduced evaluation suite for Darija".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c0645a2d40e8684c3aa94ba1935c4a321c1d556bd507333e4dd49bde8c5833c1

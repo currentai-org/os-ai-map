@@ -1,0 +1,87 @@
+product: thai-exam
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata
+    access:
+      value: public
+      detail: ungated, answers included
+    dataset_card:
+      value: present
+      detail: per-exam description, versions and HELM note
+  confidence: high
+  note: The questions and answers download without a gate under Apache-2.0, and the card describes each exam
+    and the dataset's revisions. Nothing is held back for private scoring.
+  raw: license:apache-2.0(card metadata);access:public(ungated, answers included);dataset_card:present(per-exam
+    description, versions and HELM note)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
+    shows: 'license: apache-2.0; five exam splits with train (5 examples) and test files'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 860459e28fcaf606f68f1fb40bbdb9bd6b47e74c62fb390e37ac133c0b53b3ff
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/typhoon-ai/thai_exam
+    shows: 'gated: false; license:apache-2.0'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 693ccbf42f30eb90700717774fbfa3509619653c8ab906b92efa6ef3707b8bc2
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the repository. Leaderboards that bundle the test, such as HELM
+    and SEA-HELM, may run it from their own copies, which this count does not see.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/typhoon-ai/thai_exam
+    shows: 2167 downloads in the trailing 30 days for typhoon-ai/thai_exam
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 693ccbf42f30eb90700717774fbfa3509619653c8ab906b92efa6ef3707b8bc2
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Thai exam evaluation
+  value: 590 multiple-choice questions from five real Thai national and professional exams, documented in the
+    Typhoon report, and built into Stanford's HELM Thai leaderboard, SEA-HELM and the Thai LLM leaderboard.
+  confidence: medium
+  note: ThaiExam uses real Thai exam questions and is built into Stanford's HELM Thai leaderboard, the Thai
+    LLM leaderboard and SEA-HELM. It is a single-language set of 590 questions, and SEA-HELM, which includes
+    it, covers many more tasks and languages.
+  relative_to: sea-helm
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/typhoon-ai/thai_exam/raw/main/README.md
+    shows: '"This dataset has been integrated into the HELM leaderboard by Stanford CRFM"; ONET 167, IC 100,
+      TGAT 70, TPAT-1 121, A-Level 132 questions'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 860459e28fcaf606f68f1fb40bbdb9bd6b47e74c62fb390e37ac133c0b53b3ff
+  - url: https://huggingface.co/datasets/typhoon-ai/thai_exam
+    shows: 'Number of rows: 590; Space using typhoon-ai/thai_exam: ThaiLLM-Leaderboard/leaderboard'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 89a1a1cf2099db39c5555f26623add1be1e89d9f42e80467fc2b710b383a8951
+  - url: https://raw.githubusercontent.com/aisingapore/SEA-HELM/main/docs/datasets_and_prompts.md
+    shows: 'Knowledge table: "Thai | Thai Exam | Native | General | Apache 2.0"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3cb8b1610ffe510997301fb267f6717bf63c574596a7aa4472a1f2f94d20135f
+  - url: https://arxiv.org/abs/2312.13951
+    shows: '"we develop ThaiExam, a benchmark based on examinations for high-school students and investment
+      professionals in Thailand"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d5f35c1696e017decedd1d1305669e3b2302cb7d2e8dd3e2301a5e1ac4a09a47

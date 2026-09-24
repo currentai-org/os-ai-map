@@ -1,0 +1,90 @@
+product: typhoon-s-sovereign-capability
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: odc-by
+      detail: card metadata; source datasets keep their own terms
+    access:
+      value: public
+      detail: ungated
+    dataset_card:
+      value: partial
+      detail: lists files, example counts and original sources, but not how the splits were derived
+  confidence: high
+  note: The files download without a gate under a permissive license and name the datasets they were cut from.
+    The card lists files rather than explaining how they were built, so the method has to be read from the
+    Typhoon-S report.
+  raw: license:odc-by(card metadata; source datasets keep their own terms);access:public(ungated);dataset_card:partial(lists
+    files, example counts and original sources, but not how the splits were derived)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset/raw/main/README.md
+    shows: 'license: odc-by; "Training and evaluation datasets for Section 3, Thai language models used in
+      the Typhoon-S project"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9ca513194c59c5cf17d46b4d885deaa120c6ca5f2544b2929383fbec9af47cf4
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset
+    shows: 'gated: false; license:odc-by'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3a8b862fad85d280abfc3f4f8b472f75a3bfbf12fb4d3f523970ddde8c554018
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the repository. It cannot separate reproductions of the Typhoon-S
+    experiments from other uses.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset
+    shows: 137 downloads in the trailing 30 days for typhoon-ai/typhoon-s-sovereign-capability-dataset
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3a8b862fad85d280abfc3f4f8b472f75a3bfbf12fb4d3f523970ddde8c554018
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Thai post-training data
+  value: The release holds 30,053 Thai and English rows re-split from existing legal and retrieval datasets
+    for the Typhoon-S study, documented in a paper and a card listing each file, and used by that project's
+    own models.
+  confidence: medium
+  note: This release packages training and test splits cut from existing Thai legal and retrieval datasets
+    for the Typhoon-S study. It is small and derivative and serves that one project's experiments, unlike WangchanThaiInstruct,
+    a general Thai instruction set written by people across four domains.
+  relative_to: wangchan-thai-instruct
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset/raw/main/README.md
+    shows: '"nitibench_train_rl.parquet - RL training set (8,211 examples)"; "Original source: airesearch/WangchanX-Legal-ThaiCCL-RAG,
+      VISAI-AI/nitibench"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9ca513194c59c5cf17d46b4d885deaa120c6ca5f2544b2929383fbec9af47cf4
+  - url: https://huggingface.co/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset
+    shows: 'Number of rows: 30,053; Collection including it: Typhoon S'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 407e3c86c3283c00d55cd4c962b692e8c90b65e376344e48e6a5557579ff9dc3
+  - url: https://huggingface.co/collections/typhoon-ai/typhoon-s
+    shows: Typhoon S collection lists typhoon-s-sovereign-capability-dataset, typhoon-s-instruct-post-training
+      and typhoon-s-4b-nitibench-ccl-legal-agent-research-preview
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 90fab271a2a75c4bc1be15412ba3469ab7debdc82e22d68e49f15975f2c07ea6
+  - url: https://arxiv.org/abs/2601.18129
+    shows: '"small-scale RFT with InK-GRPO ... improves Thai legal reasoning and Thai-specific knowledge"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4adacbf3a7b70f7d08fa3593eee795bd4555177578e1e31a222df0edac213619

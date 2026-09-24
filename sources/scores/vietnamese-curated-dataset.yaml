@@ -1,0 +1,79 @@
+product: vietnamese-curated-dataset
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no license in card metadata, card text or API tags; the repository has no LICENSE file
+    access:
+      value: public
+      detail: ungated
+    dataset_card:
+      value: present
+      detail: sources, curation steps and statistics
+  confidence: medium
+  note: The corpus downloads without a gate and the card lists its sources and cleaning steps, but no license
+    is given for the release. Its component corpora each carry their own terms, which a user would have to
+    trace.
+  raw: license:not-clearly-stated-on-card(no license in card metadata, card text or API tags; the repository
+    has no LICENSE file);access:public(ungated);dataset_card:present(sources, curation steps and statistics)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/VTSNLP/vietnamese_curated_dataset/raw/main/README.md
+    shows: Card metadata has dataset_info and configs only, no license field; lists C4, OSCAR 23.01, Wikipedia
+      and Binhvq news as sources
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 81aea8b701691b880fd3b95e14ec95f6043a91c02a4be8a9e3e881951cbb99b0
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/VTSNLP/vietnamese_curated_dataset
+    shows: 'gated: false; no license tag; files are .gitattributes, README.md and data/ only'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 869d01494733700776951694ed750cacc13a98c7a5e3b6cbca1fecaf0cbd194a
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the repository. A pretraining corpus is usually fetched once
+    per project, so the count understates reuse of local copies.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/VTSNLP/vietnamese_curated_dataset
+    shows: 1204 downloads in the trailing 30 days for VTSNLP/vietnamese_curated_dataset
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 869d01494733700776951694ed750cacc13a98c7a5e3b6cbca1fecaf0cbd194a
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Vietnamese pretraining text
+  value: The corpus holds about 12.2 million Vietnamese documents (65.5 GB) re-filtered from C4, OSCAR, Wikipedia
+    and a news corpus with NeMo Curator, documented by its card and an NVIDIA blog post, and Llama3-ViettelSolutions-8B
+    is trained on it.
+  confidence: medium
+  note: The corpus is documented by its card and an NVIDIA technical post, and Viettel Solutions trained Llama3-ViettelSolutions-8B
+    on it. It re-filters existing public corpora rather than adding new text, and SEA-PILE is larger, drawing
+    fresh CommonCrawl text for Vietnamese and eight other languages.
+  relative_to: sea-pile
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/VTSNLP/vietnamese_curated_dataset
+    shows: 'Number of rows: 12,169,131; Models trained or fine-tuned: VTSNLP/Llama3-ViettelSolutions-8B'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b1b2e4184f1fc166deb7d31129e998325ed2ed6b0527775ca0f8e3346bd6441f
+  - url: https://huggingface.co/datasets/VTSNLP/vietnamese_curated_dataset/raw/main/README.md
+    shows: '"This dataset is collected from multiple open Vietnamese datasets, and curated with NeMo Curator";
+      dataset_size: 65506190827'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 81aea8b701691b880fd3b95e14ec95f6043a91c02a4be8a9e3e881951cbb99b0

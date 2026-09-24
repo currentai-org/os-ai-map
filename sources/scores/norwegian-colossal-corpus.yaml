@@ -1,0 +1,113 @@
+product: norwegian-colossal-corpus
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: 'License per doc_type: NLOD 2.0 (government, parliament, Målfrid), CC0 1.0 (books, library newspapers),
+        CC BY-NC 2.0 (online newspapers), CC BY-SA 3.0 (Wikipedia, OpenSubtitles). Hugging Face tag: cc. The
+        notram Apache-2.0 LICENSE covers the code.'
+    access:
+      value: public
+      detail: 'Hugging Face gated: false. Språkbank-agreement newspapers no longer distributed since December
+        2024.'
+    dataset_card:
+      value: present
+      detail: Per-source word and document counts, languages, decades, license table; creation method deferred
+        to the papers.
+  confidence: high
+  note: The corpus downloads without a gate, and each document's source type maps to a license, from CC0 and
+    the Norwegian public-data license to a non-commercial license for online newspapers. Users who cannot accept
+    one of them filter that source type out.
+  raw: 'license:mixed-per-subset(License per doc_type: NLOD 2.0 (government, parliament, Målfrid), CC0 1.0
+    (books, library newspapers), CC BY-NC 2.0 (online newspapers), CC BY-SA 3.0 (Wikipedia, OpenSubtitles).
+    Hugging Face tag: cc. The notram Apache-2.0 LICENSE covers the code.);access:public(Hugging Face gated:
+    false. Språkbank-agreement newspapers no longer distributed since December 2024.);dataset_card:present(Per-source
+    word and document counts, languages, decades, license table; creation method deferred to the papers.)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/NbAiLab/NCC/raw/main/README.md
+    shows: '"Various licences applies to different parts of the corpus. Every document in the corpus has a
+      tag telling what doc_type it belongs to. If you are unable to accept any of the licenses, you should
+      filter out the doc_type"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: da62b2659b71f858accd6c571f4692014c7283716fee4acbf8e5baaa2db1b9aa
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/NbAiLab/NCC/raw/main/README.md
+    shows: '"As of December 2024, at the request of media houses, we have ceased distributing newspapers under
+      this agreement, including the Norsk Aviskorpus."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: da62b2659b71f858accd6c571f4692014c7283716fee4acbf8e5baaa2db1b9aa
+    establishes:
+    - availability
+  - url: https://huggingface.co/api/datasets/NbAiLab/NCC
+    shows: '"gated":false, license cc'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 67d43fa015c9bb597f121e446e6e038fb435a373dc919c4bba896c16caab55ba
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/NbAiLab/notram/master/LICENSE
+    shows: Apache License, Version 2.0 (repository of corpus scripts and model code).
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 160a5e80bcb47f46af3d41da3668eb85a47b68d304a38d25fe9626d0298a922f
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the dataset repository over the trailing 30 days. A download is a file fetch
+    rather than a trained model, and copies mirrored elsewhere are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/NbAiLab/NCC
+    shows: 543 downloads in the trailing 30 days for NbAiLab/NCC
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 67d43fa015c9bb597f121e446e6e038fb435a373dc919c4bba896c16caab55ba
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Norwegian pretraining text
+  value: About 4.6 billion words in 8.2 million documents of Norwegian text, largely OCR of National Library
+    books and newspapers plus public-sector sources, documented in LREC and NoDaLiDa papers, and used to train
+    NB-BERT, NB-GPT-J, NorMistral and NorBLOOM.
+  confidence: medium
+  note: The Norwegian Colossal Corpus is behind the National Library's NB-BERT and NB-GPT-J models and is a
+    training source for NorMistral and NorBLOOM, with an LREC paper and a detailed card. Withdrawing the agreement-licensed
+    newspapers cut it from over 7 billion words to about 4.6 billion.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/NbAiLab/NCC/raw/main/README.md
+    shows: 'Summary table: 4,629,683,886 words, 8,176,399 documents; LREC abstract: "comprises 49GB of clean
+      Norwegian textual data containing over 7B words"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: da62b2659b71f858accd6c571f4692014c7283716fee4acbf8e5baaa2db1b9aa
+  - url: https://huggingface.co/api/models?filter=dataset:NbAiLab/NCC
+    shows: Models tagged with the dataset include NbAiLab/nb-gpt-j-6B, ltg/normistral-7b-scratch, ltg/norbloom-7b-scratch
+      and vesteinn/ScandiBERT.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d905fffedb05900f484925368eb43f257f515bacaa1b8119e82712e29b12c0c6
+  - url: https://raw.githubusercontent.com/NbAiLab/notram/master/README.md
+    shows: Pretrained Models table lists nb-bert-base and other NB models alongside the Norwegian Colossal
+      Corpus.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 547ec35b537888d192ef5bb9532e0aecefb40f2ae1f2c8ac00ec650068ba0aaf
+  - url: https://arxiv.org/abs/2104.09617
+    shows: 'arXiv abstract page for "Operationalizing a National Digital Library: The Case for a Norwegian
+      Transformer Model".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d850793a550216960f1f289112bbc258ffddfde623c47c3f11b78c6c053157cd

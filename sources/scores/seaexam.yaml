@@ -1,0 +1,103 @@
+product: seaexam
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata for both SeaExam and SeaBench
+    access:
+      value: public
+      detail: both repos ungated
+    dataset_card:
+      value: present
+      detail: describes the M3Exam adjustments and the MMLU translation; SeaBench card is brief
+  confidence: high
+  note: Both sets download without a gate under Apache-2.0, answers included, and the SeaExam card explains
+    how each part was built. The SeaBench card says little beyond its languages and purpose.
+  raw: license:apache-2.0(card metadata for both SeaExam and SeaBench);access:public(both repos ungated);dataset_card:present(describes
+    the M3Exam adjustments and the MMLU translation; SeaBench card is brief)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    shows: 'license: apache-2.0; "All answers have been mapped to a numerical value"; "translated ... using
+      Google Translate"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/SeaLLMs/SeaExam
+    shows: 'gated: false; license:apache-2.0'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3871fea8a3518b41906d4459588c1234552035a1fec8c9a2354912fa47f0af42
+    establishes:
+    - availability
+  - url: https://huggingface.co/datasets/SeaLLMs/SeaBench/raw/main/README.md
+    shows: 'license: apache-2.0; "SeaBench evaluates models'' multi-turn and instruction-following abilities
+      across Indonesian, Thai, and Vietnamese"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 73786bcb607c5a34872d8cdaee63141d2eda819467db33a828d3be02957a2266
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads summed over SeaExam and SeaBench, most of them for SeaExam. Evaluations
+    run through the project's own leaderboard code or local copies are not separately counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/SeaLLMs/SeaExam
+    shows: 447 downloads in the trailing 30 days for SeaLLMs/SeaExam
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3871fea8a3518b41906d4459588c1234552035a1fec8c9a2354912fa47f0af42
+  - url: https://huggingface.co/api/datasets/SeaLLMs/SeaBench
+    shows: 87 downloads in the trailing 30 days for SeaLLMs/SeaBench
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 966dc5117bf305918a05e764b8e0d8b2bed726bc88da620646da7333af4cc4bc
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and how the content was made, for Southeast Asian exam evaluation
+  value: 23,813 multiple-choice rows in five languages, combining human exam questions adapted from M3Exam
+    with MMLU questions machine-translated by Google Translate, documented in a NAACL Findings paper, and backing
+    the SeaExam leaderboard.
+  confidence: medium
+  note: SeaExam backs a public leaderboard for Indonesian, Thai, Vietnamese, Chinese and English, and its paper
+    appeared at NAACL. Part of it is MMLU run through Google Translate and the rest adapts the earlier M3Exam,
+    and it tests exam knowledge only, where SEA-HELM spans many task types in more languages.
+  relative_to: sea-helm
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/SeaLLMs/SeaExam/raw/main/README.md
+    shows: '"The original M3Exam dataset is constructed with real human exam questions"; "We randomly selected
+      50 questions from each subject, totaling 2850 questions"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 951aabb036aa594cfe7d991889fe775c88ca94abc8d75e55f8d006cedaae8c7b
+  - url: https://huggingface.co/datasets/SeaLLMs/SeaExam
+    shows: 'Number of rows: 23,813; Space using SeaLLMs/SeaExam: SeaLLMs/LLM_Leaderboard_for_SEA'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d51af9e55eb9a87bfc4771695487ba79f285dfed436d598571fb236fb2add41c
+  - url: https://raw.githubusercontent.com/DAMO-NLP-SG/SeaExam/main/README.md
+    shows: '"The leaderboard showcases results from two complementary benchmarks: SeaExam and SeaBench"; cites
+      Findings of NAACL 2025 paper'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3ae9329ba76379b14f3299ccf8cfc1e67ef3b6786256806132b9c26939062e31
+  - url: https://aclanthology.org/2025.findings-naacl.341/
+    shows: 'SeaExam and SeaBench: Benchmarking LLMs with Local Multilingual Questions in Southeast Asia, Liu
+      et al.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 12dde30798ec5cd8f0c58ae2777e4870bcc99dea341a299a018f112960bce179
