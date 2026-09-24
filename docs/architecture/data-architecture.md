@@ -1870,7 +1870,7 @@ evidence column is where to look if the answer is doubted.
 | Is `registry.tail_products` misfiled? | No, correctly in `registry`. The platform table is absent because it is empty. | `publish_registry.py`: "94 bytes of header on a push where every tail row was promoted or rejected" — promotion and rejection are curator acts |
 | May a `held` axis retain its value? | Yes, with the hold reason and date. | `verification_queue.yaml`: "held at 3" |
 | Is a dated null `held` or `not_applicable`? | Neither — it is `confirmed`. | `verification_queue.yaml`: "a null answer that somebody looked for and did not find is a confirmed axis" |
-| Where does the long-tail chain live? | Outside this repo. ADR-003 externalized it: the pipelines are frozen under platform ownership and keep serving `oss-ai-trends` / `long-tail-explorer`, and this repo governs none of it. | ADR-003, steps 5–6 |
+| Where does the long-tail chain live? | Outside this repo. ADR-003 externalized it: the pipelines are frozen under platform ownership and keep serving `oss-ai-trends`, and this repo governs none of it. `long-tail-explorer` does not read it: it computes the long tail from `signal_goodailist.repo_catalog`, `signal_hfhub.model_universe`, `oso.package_owners_v0` and `registry.product_artifacts`, the same definitions `build/sync_long_tail.py` publishes. | ADR-003, steps 5–6 |
 | Does the platform support release-scoped tables? | No. Each static-model publish replaces in place. | No version or revision field; `registry.product_scores` has `createdAt == updatedAt` |
 
 And these are decisions rather than observations:

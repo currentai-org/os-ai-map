@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "unknown"
-app = marimo.App(width="full")
+app = marimo.App()
 
 
 @app.cell(hide_code=True)
@@ -17,7 +17,7 @@ def setup_pyoso():
 @app.cell(hide_code=True)
 def imports():
     import pandas as pd
-    return (pd,)
+    return
 
 
 @app.cell(hide_code=True)
@@ -87,6 +87,8 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
     import json as _json
     import html as _html
     import math as _math
+    import gzip as _gzip
+    import base64 as _base64
 
     def _s(x):
         return "" if x is None or (isinstance(x, float) and _math.isnan(x)) else str(x)
@@ -128,7 +130,11 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
                    "pale": C["slate_lt"], "border": C["border"]},
         "fonts": {"mono": F["mono"], "body": F["body"]},
     }
-    _cfg_js = _json.dumps(_cfg, separators=(",", ":")).replace("</", "<\\/")
+    # ~60k rows as raw JSON lands close to marimo's 5MB output_max_bytes cap
+    # (and an escaped iframe srcdoc attribute inflates every quote 6x on top of
+    # that), so the payload ships gzipped + base64 instead of inline JSON.
+    _cfg_json = _json.dumps(_cfg, separators=(",", ":"))
+    _gz_b64 = _base64.b64encode(_gzip.compress(_cfg_json.encode("utf-8"), 9)).decode("ascii")
 
     _css = (
         '<style>'
@@ -163,20 +169,20 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
         '</style>'
     )
     _js = """
-    const CFG = window.__LT__;
+    let CFG;
     const TC = ['Repo','Model','Pkg'];
-    const TCOL = [CFG.colors.slate, CFG.colors.salmon, CFG.colors.pale];
     const fmt = (x) => x>=1e6 ? (x/1e6).toFixed(1)+'M' : x>=1e3 ? (x/1e3).toFixed(0)+'k' : (''+x);
+    function tcol(i){ return [CFG.colors.slate, CFG.colors.salmon, CFG.colors.pale][i]; }
     function url(row){
         const name=row[1], src=CFG.cats[row[2]];
         if(row[0]===0) return 'https://github.com/'+name;
         if(row[0]===1) return 'https://huggingface.co/'+name;
-        const m={'PYPI':'https://pypi.org/project/','NPM':'https://www.npmjs.com/package/','NUGET':'https://www.nuget.org/packages/','CRATES':'https://crates.io/crates/','GO':'https://pkg.go.dev/'};
+        const m={'PIP':'https://pypi.org/project/','NPM':'https://www.npmjs.com/package/','NUGET':'https://www.nuget.org/packages/','RUST':'https://crates.io/crates/','GO':'https://pkg.go.dev/','MAVEN':'https://search.maven.org/artifact/','GEM':'https://rubygems.org/gems/'};
         return (m[src]||'#')==='#' ? '#' : m[src]+name;
     }
     function useCell(row){
         if(row[0]===0) return fmt(row[3])+' ★';
-        if(row[0]===1) return fmt(row[3])+' dl';
+        if(row[0]===1) return fmt(row[3])+' dl/30d';
         return CFG.cats[row[2]];
     }
     const ROWH=38, BUF=10;
@@ -215,7 +221,7 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
         for(let i=start;i<end;i++){
             const r=filtered[i];
             h+='<div class="row">'
-              +'<div class="c-type"><span class="badge" style="background:'+TCOL[r[0]]+'">'+TC[r[0]]+'</span></div>'
+              +'<div class="c-type"><span class="badge" style="background:'+tcol(r[0])+'">'+TC[r[0]]+'</span></div>'
               +'<div class="c-name ell"><a href="'+url(r)+'" target="_blank" rel="noopener">'+r[1]+'</a></div>'
               +'<div class="c-cat ell">'+CFG.cats[r[2]]+'</div>'
               +'<div class="c-use">'+useCell(r)+'</div>'
@@ -230,7 +236,23 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
     tf.addEventListener('change', ()=>{fillCats(); apply();});
     cf.addEventListener('change', apply);
     scroll.addEventListener('scroll', render);
-    fillCats(); apply();
+
+    async function boot(){
+        try {
+            const b64 = document.getElementById('ltdata').textContent;
+            const bin = atob(b64);
+            const bytes = new Uint8Array(bin.length);
+            for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+            const ds = new DecompressionStream('gzip');
+            const stream = new Blob([bytes]).stream().pipeThrough(ds);
+            CFG = JSON.parse(await new Response(stream).text());
+        } catch (e) {
+            scroll.innerHTML = '<div style="padding:24px;color:#a33328;font-size:12px;">Could not unpack data: '+String(e)+'</div>';
+            return;
+        }
+        fillCats(); apply();
+    }
+    boot();
     """
     _body = (
         '<div id="bar">'
@@ -243,17 +265,28 @@ def table(C, F, df_models, df_pkgs, df_repos, mo):
         '<div class="c-cat">Category</div><div class="c-use">Usage</div>'
         '<div class="c-meta">Lang / Lib</div><div class="c-desc">Description</div></div>'
         '<div id="scroll"><div id="sizer"><div id="vp"></div></div></div>'
+        '<script id="ltdata" type="application/octet-stream">' + _gz_b64 + '</script>'
     )
     _inner = (
         '<!DOCTYPE html><html><head><meta charset="utf-8">' + _css + '</head><body>'
-        + _body + '<script>window.__LT__=' + _cfg_js + ';' + _js + '</script></body></html>'
+        + _body + '<script>' + _js + '</script></body></html>'
     )
     _src = _html.escape(_inner, quote=True)
+
+    _MAX_OUTPUT_BYTES = 5_000_000
+    _out_bytes = len(_src.encode("utf-8"))
+    if _out_bytes > _MAX_OUTPUT_BYTES:
+        raise AssertionError(
+            f"long-tail table output is {_out_bytes:,} bytes, over marimo's "
+            f"output_max_bytes cap of {_MAX_OUTPUT_BYTES:,}. Apply a stars/"
+            f"downloads floor to cut row count before publishing."
+        )
+
     mo.Html(
         '<div style="font-family:' + F["headline"] + ';font-size:15px;color:' + C["ink"]
         + ';margin:0 0 2px;">Browse the uncategorized long tail</div>'
         '<div style="font-family:' + F["mono"] + ';font-size:11px;color:' + C["ink_3"]
-        + ';margin:0 0 8px;">Filter by type and category, sort is by usage (stars for repos, downloads for models).</div>'
+        + ';margin:0 0 8px;">Filter by type and category, sort is by usage (stars for repos, 30-day downloads for models).</div>'
         '<iframe srcdoc="' + _src + '" style="width:100%;height:710px;border:none;" scrolling="no"></iframe>'
     )
     return
@@ -266,23 +299,28 @@ def methodology(C, F, mo):
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["ink_3"]}; '
         f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Methodology</div>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; line-height:1.55;">'
-        f'The long tail is every artifact in the discovery universe that is not part of a scored gap-map '
+        f'The long tail is every artifact in the discovery universe that is not yet part of a scored gap-map '
         f'product. Repositories come from <span style="font-family:{F["mono"]};font-size:0.9em;">'
-        f'currentai.scores.repos_summary</span> (the GoodAI List catalog, all at or above 500 GitHub stars), '
-        f'models from <span style="font-family:{F["mono"]};font-size:0.9em;">currentai.entities.models</span> '
-        f'(Hugging Face Hub), and packages from <span style="font-family:{F["mono"]};font-size:0.9em;">'
-        f'currentai.entities.packages</span>. Artifacts whose repository is already in the gap map are '
-        f'excluded via <span style="font-family:{F["mono"]};font-size:0.9em;">currentai.catalog.stack_map</span>. '
-        f'Categories are the source taxonomies as published: GoodAI List categories for repositories, '
-        f'Hugging Face pipeline tags for models, and the registry for packages. Usage is GitHub stars for '
-        f'repositories and Hugging Face downloads for models.</p>'
+        f'currentai.signal_goodailist.repo_catalog</span> (the GoodAI List catalog, all at or above 500 GitHub '
+        f'stars), models from <span style="font-family:{F["mono"]};font-size:0.9em;">'
+        f'currentai.signal_hfhub.model_universe</span> (Hugging Face Hub, at or above 1,000 downloads in the '
+        f'trailing 30 days), and packages from <span style="font-family:{F["mono"]};font-size:0.9em;">'
+        f'oso.package_owners_v0</span> joined to the repo catalog — every package published by a catalog '
+        f'repository, not a dependency of one. An artifact is excluded once <span style="font-family:'
+        f'{F["mono"]};font-size:0.9em;">currentai.registry.product_artifacts</span> records it as scored: a '
+        f'repository by its GitHub identifier, a model by its Hugging Face ID, and a package by its registry '
+        f'name (PyPI, npm, or crates.io). Categories are the source taxonomies as published: GoodAI List '
+        f'categories for repositories, Hugging Face pipeline tags for models, and the package registry for '
+        f'packages. Usage is GitHub stars for repositories and Hugging Face downloads in the trailing 30 days '
+        f'for models.</p>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; margin-top:8px;">'
         f'<strong>Sources:</strong> '
         f'<a href="https://www.oso.xyz" style="color:{C["ink"]}">OSO</a>, '
         f'<a href="https://goodailist.com" style="color:{C["ink"]}">GoodAI List</a>, '
         f'<a href="https://huggingface.co" style="color:{C["ink"]}">Hugging Face Hub</a>, '
         f'<a href="https://pypi.org" style="color:{C["ink"]}">PyPI</a>, '
-        f'<a href="https://www.npmjs.com" style="color:{C["ink"]}">npm</a></p>'
+        f'<a href="https://www.npmjs.com" style="color:{C["ink"]}">npm</a>, '
+        f'<a href="https://crates.io" style="color:{C["ink"]}">crates.io</a></p>'
         f'</div>'
     )
     return
@@ -291,13 +329,20 @@ def methodology(C, F, mo):
 @app.cell(hide_code=True)
 def load_repos(mo, pyoso_db_conn):
     df_repos = mo.sql(
-        """
-        SELECT repo AS name, category, CAST(stars AS DOUBLE) AS stars,
-               language AS meta, description AS descr
-        FROM currentai.scores.repos_summary
-        WHERE LOWER(repo) NOT IN (SELECT repo FROM currentai.catalog.stack_map)
+        f"""
+        SELECT
+            r.repo AS name, r.category AS category,
+            CAST(r.stars AS DOUBLE) AS stars,
+            r.language AS meta, r.description AS descr
+        FROM currentai.signal_goodailist.repo_catalog r
+        WHERE NOT EXISTS (
+            SELECT 1 FROM currentai.registry.product_artifacts pa
+            WHERE pa.artifact_kind = 'github'
+              AND LOWER(pa.artifact_id) = LOWER(r.repo)
+        )
         """,
-        output=False, engine=pyoso_db_conn,
+        output=False,
+        engine=pyoso_db_conn
     )
     return (df_repos,)
 
@@ -305,13 +350,20 @@ def load_repos(mo, pyoso_db_conn):
 @app.cell(hide_code=True)
 def load_models(mo, pyoso_db_conn):
     df_models = mo.sql(
-        """
-        SELECT model_id AS name, pipeline_tag AS category,
-               CAST(downloads AS DOUBLE) AS downloads, library_name AS meta
-        FROM currentai.entities.models
-        WHERE repo IS NULL OR LOWER(repo) NOT IN (SELECT repo FROM currentai.catalog.stack_map)
+        f"""
+        SELECT
+            m.hf_id AS name, m.pipeline_tag AS category,
+            CAST(m.downloads_30d AS DOUBLE) AS downloads,
+            m.library_name AS meta
+        FROM currentai.signal_hfhub.model_universe m
+        WHERE NOT EXISTS (
+            SELECT 1 FROM currentai.registry.product_artifacts pa
+            WHERE pa.artifact_kind = 'huggingface_model'
+              AND LOWER(pa.artifact_id) = LOWER(m.hf_id)
+        )
         """,
-        output=False, engine=pyoso_db_conn,
+        output=False,
+        engine=pyoso_db_conn
     )
     return (df_models,)
 
@@ -319,12 +371,29 @@ def load_models(mo, pyoso_db_conn):
 @app.cell(hide_code=True)
 def load_packages(mo, pyoso_db_conn):
     df_pkgs = mo.sql(
-        """
-        SELECT package_name AS name, package_source AS category
-        FROM currentai.entities.packages
-        WHERE repo IS NULL OR LOWER(repo) NOT IN (SELECT repo FROM currentai.catalog.stack_map)
+        f"""
+        WITH pkgs AS (
+            SELECT DISTINCT
+                p.package_artifact_source AS category,
+                p.package_artifact_name AS name
+            FROM oso.package_owners_v0 p
+            JOIN currentai.signal_goodailist.repo_catalog r
+              ON LOWER(p.package_owner_artifact_namespace || '/' || p.package_owner_artifact_name) = LOWER(r.repo)
+        )
+        SELECT pk.name AS name, pk.category AS category
+        FROM pkgs pk
+        WHERE NOT EXISTS (
+            SELECT 1 FROM currentai.registry.product_artifacts pa
+            WHERE LOWER(pa.artifact_id) = LOWER(pk.name)
+              AND (
+                  (pk.category = 'PIP' AND pa.artifact_kind = 'pypi') OR
+                  (pk.category = 'NPM' AND pa.artifact_kind = 'npm') OR
+                  (pk.category = 'RUST' AND pa.artifact_kind = 'crates')
+              )
+        )
         """,
-        output=False, engine=pyoso_db_conn,
+        output=False,
+        engine=pyoso_db_conn
     )
     return (df_pkgs,)
 
