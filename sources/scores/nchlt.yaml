@@ -1,0 +1,89 @@
+product: nchlt
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: cc-by-2.5
+      detail: Hugging Face card metadata; the card body says "[More Information Needed]"
+    access:
+      value: public
+      detail: ungated loader; data downloaded from SADiLaR
+    dataset_card:
+      value: partial
+      detail: paper abstract only; every structure and creation section reads "[More Information Needed]"
+  confidence: medium
+  note: The loader is ungated and pulls openly downloadable archives from SADiLaR under an attribution license.
+    The card itself documents almost nothing beyond the paper abstract.
+  raw: license:cc-by-2.5(Hugging Face card metadata; the card body says "[More Information Needed]");access:public(ungated
+    loader; data downloaded from SADiLaR);dataset_card:partial(paper abstract only; every structure and creation
+    section reads "[More Information Needed]")
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/nwu-ctext/nchlt/raw/main/README.md
+    shows: 'Front matter "license: cc-by-2.5", nine languages, "named-entity-recognition".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2cc975dd6c8fb6ca61198f3d88c6c166f6eed9faea571dba7f53b9c414e55050
+    establishes:
+    - license
+  - url: https://huggingface.co/datasets/nwu-ctext/nchlt/raw/main/nchlt.py
+    shows: Configs download e.g. "https://repo.sadilar.org/bitstream/handle/20.500.12185/299/nchlt_afrikaans_named_entity_annotated_corpus.zip".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9e9a2c07cfbe721f76094ee35f794fc0077c6e92a327df7087957741da0bc402
+    establishes:
+    - availability
+  - url: https://huggingface.co/datasets/nwu-ctext/nchlt
+    shows: Card sections read "[More Information Needed]"; curator "Martin.Puttkammer@nwu.ac.za".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d92038685f47988f76857b7ec0af91242c76ec04057ce92a5ab14d2e2c1fb1c6
+    establishes:
+    - documentation
+  - url: https://huggingface.co/api/datasets/nwu-ctext/nchlt
+    shows: '"gated": false; repository files .gitattributes, README.md, nchlt.py.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: ba85f9ecf355b2b2b69ec2b638ea7082e49aa3006a0aa598619b2a2e76a050b7
+    establishes:
+    - availability
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the loader repository only; direct downloads from SADiLaR are not counted.
+    Downloads count loader fetches, not users.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/nwu-ctext/nchlt
+    shows: 166 downloads in the trailing 30 days for nwu-ctext/nchlt
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: ba85f9ecf355b2b2b69ec2b638ea7082e49aa3006a0aa598619b2a2e76a050b7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for South African annotated text
+  value: The Hugging Face entry loads the expert-annotated NCHLT named-entity corpora for nine South African
+    languages, cited to an LREC paper with an empty card, and dsfsi/PuoBERTa is listed as trained on it.
+  confidence: medium
+  note: The NCHLT corpora are an established resource for South African languages, described in an LREC paper,
+    and PuoBERTa lists them among its training data. The Hugging Face entry exposes only the named-entity subset
+    through a loader with an empty card, so it offers far less text than WURA, a documented African web corpus
+    that trained the AfriTeVa V2 models.
+  relative_to: wura
+  relation: at
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/nwu-ctext/nchlt/raw/main/README.md
+    shows: config af train num_examples 8961; NER tag set B-PERS, B-ORG, B-LOC, B-MISC.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2cc975dd6c8fb6ca61198f3d88c6c166f6eed9faea571dba7f53b9c414e55050
+  - url: https://huggingface.co/datasets/nwu-ctext/nchlt
+    shows: Models trained or fine-tuned list includes dsfsi/PuoBERTa.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d92038685f47988f76857b7ec0af91242c76ec04057ce92a5ab14d2e2c1fb1c6

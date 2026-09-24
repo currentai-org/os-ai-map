@@ -1,0 +1,82 @@
+product: lahaja
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card License section
+    - name: mit
+      detail: card metadata tag; conflicts with the License section
+    access:
+      value: auto
+      detail: Hugging Face gate asks for contact information and approves automatically
+    dataset_card:
+      value: present
+      detail: card and GitHub README describe the recordings and metadata fields
+  confidence: medium
+  note: Both licenses the card names allow commercial reuse with attribution, and the Hugging Face form approves
+    requests automatically. The card should say which one governs.
+  raw: license:cc-by-4.0(card License section)+mit(card metadata tag; conflicts with the License section);access:auto(Hugging
+    Face gate asks for contact information and approves automatically);dataset_card:present(card and GitHub
+    README describe the recordings and metadata fields)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ai4bharat/Lahaja
+    shows: 'License: mit (header); "This dataset is released under the CC BY 4.0."; "You need to agree to share
+      your contact information to access this dataset"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 036cf2bc1fe959611cb77847b5cbe0abdd9afa60d78a13eddff0ba74d5d197ce
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/Lahaja
+    shows: 'gated: auto; cardData license: mit'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e69ca66ce9323b6d011d7cdcea32663573cada86a027dec6b4829d607265c1ef
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/Lahaja/master/README.md
+    shows: 'Metadata CSV fields: verbatim, normalized, native_language, native_district, occupation; links
+      to models M1-M4'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d0aee8fe0a5c9d8374f1a92552f93a691b04decfbb1f3318ca214c1af65f0a14
+    establishes:
+    - documentation
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the benchmark repository through the automatic gate. An evaluation set is
+    downloaded once per evaluation setup, so downloads say little about how often scores on it are reported.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/Lahaja
+    shows: 232 downloads in the trailing 30 days for ai4bharat/Lahaja
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e69ca66ce9323b6d011d7cdcea32663573cada86a027dec6b4829d607265c1ef
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for a Hindi accent test set
+  value: Lahaja holds 12.5 hours of read and extempore Hindi speech from 132 speakers in 83 districts, documented
+    in a paper, with no use found beyond that paper's baselines.
+  confidence: medium
+  note: Lahaja is a documented test set for one language and one question, how Hindi recognition copes with
+    regional accents. No benchmark or model outside its paper reports on it, and Kathbath covers 12 languages
+    with far more speech.
+  relative_to: kathbath
+  relation: at
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2408.11440
+    shows: '"a total of 12.5 hours of Hindi audio, sourced from 132 speakers spanning 83 districts of India"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: cc181d301e92bfc7dfa87f9aedbf42d6806ee427bc47e48778fc5cb94e4a23f6

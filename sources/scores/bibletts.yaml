@@ -1,0 +1,85 @@
+product: bibletts
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-sa-4.0
+      detail: OpenSLR resource page; the GitHub repository has no LICENSE file
+    access:
+      value: public
+      detail: direct .tgz downloads from OpenSLR mirrors
+    dataset_card:
+      value: present
+      detail: OpenSLR page and paper describe contents and alignment
+  confidence: high
+  note: The six aligned languages download directly from OpenSLR under a share-alike license that allows commercial
+    use. The recordings are a derivative of Biblica's open.bible project rather than new recordings.
+  raw: license:cc-by-sa-4.0(OpenSLR resource page; the GitHub repository has no LICENSE file);access:public(direct
+    .tgz downloads from OpenSLR mirrors);dataset_card:present(OpenSLR page and paper describe contents and
+    alignment)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://www.openslr.org/129/
+    shows: 'License: "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"; downloads
+      akuapem-twi.tgz, asante-twi.tgz, ewe.tgz, hausa.tgz, lingala.tgz, yoruba.tgz.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5aa83fa974cc6414fdf47e4738b019539cc149bb4acdea998e2df9197090c687
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/masakhane-io/bibleTTS/gh-pages/README.md
+    shows: README links the project website, paper, alignment code and Coqui TTS training; no license stated.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 75c0d0839ec17e2e9d81d3726f1ced942c982e66a4b40e349b7cc2853b72b765
+    establishes:
+    - documentation
+  - url: https://arxiv.org/abs/2207.03546
+    shows: 'Abstract: "a derivative work of Bible recordings made and released by the open.bible project from
+      Biblica"; "released under a commercial-friendly CC-BY-SA license".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5ad8abc792d8d0e09a591a6b1bf871924b6006a58e4b85cf715c22571e5c48b6
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the BibleTTS repository; the audio itself is downloaded from OpenSLR, which publishes
+    no count, and a star is attention rather than use.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://ungh.cc/repos/masakhane-io/bibleTTS
+    shows: 'GitHub repository record for masakhane-io/bibleTTS (via the ungh.cc mirror of the GitHub API):
+      14 stargazers, last push 2022-09-20.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 713ae04d90f171c58c431bf8c42a7b22689742384381d694035101a76f3044b2
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for African text-to-speech data
+  value: BibleTTS offers up to 86 hours per language of studio-quality single-speaker Bible readings, aligned
+    for six African languages, documented in an Interspeech paper, with no use found beyond the VITS models
+    in that paper.
+  confidence: medium
+  note: BibleTTS provides studio-quality single-speaker Bible readings for six African languages, with a paper
+    on alignment and speech synthesis baselines, though no model beyond that paper uses it. At a few hundred
+    hours of Bible text it is small beside English speech corpora of hundreds of thousands of hours, and Afrivoice
+    records more varied speech across eighteen languages, Lingala among them.
+  relative_to: afrivoice
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2207.03546
+    shows: 'Abstract: "up to 86 hours of aligned, studio quality 48kHz single speaker recordings per language";
+      results for TTS models with Coqui TTS.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5ad8abc792d8d0e09a591a6b1bf871924b6006a58e4b85cf715c22571e5c48b6

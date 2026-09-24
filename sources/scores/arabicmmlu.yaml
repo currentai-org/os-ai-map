@@ -1,0 +1,92 @@
+product: arabicmmlu
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: cc-by-nc-4.0
+      detail: Hub card metadata; the GitHub README License section says CC BY-NC-SA 4.0
+    access:
+      value: public
+      detail: ungated on the Hub; also in the GitHub data folder
+    dataset_card:
+      value: present
+      detail: card and README describe sources, construction and statistics
+  confidence: medium
+  note: Anyone can download the questions and the evaluation code, and the card and paper explain how they
+    were collected. The noncommercial license keeps it out of commercial evaluation pipelines, and the Hub
+    and GitHub copies disagree on whether a share-alike condition applies.
+  raw: license:cc-by-nc-4.0(Hub card metadata; the GitHub README License section says CC BY-NC-SA 4.0);access:public(ungated
+    on the Hub; also in the GitHub data folder);dataset_card:present(card and README describe sources, construction
+    and statistics)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/MBZUAI/ArabicMMLU/raw/main/README.md
+    shows: 'Card metadata: "license: cc-by-nc-4.0".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 898f444b923bd933f1030c76238d0fe008a4667fb21e30a3f7d5cb79af86e939
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+    shows: '"The ArabicMMLU dataset is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike
+      4.0 International License."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/MBZUAI/ArabicMMLU
+    shows: 'API JSON: "gated": false, "private": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e93f9b1dd7c0ba4747422a2a88d4409bfaae1f5b2100175bec144b1cf68a2f76
+    establishes:
+    - availability
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the Hub copy. Evaluation harnesses often fetch a benchmark on every run,
+    so the figure counts evaluation runs as much as users, and it misses copies taken from the GitHub data
+    folder.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/MBZUAI/ArabicMMLU
+    shows: 3727 downloads in the trailing 30 days for MBZUAI/ArabicMMLU
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e93f9b1dd7c0ba4747422a2a88d4409bfaae1f5b2100175bec144b1cf68a2f76
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Arabic knowledge evaluation
+  value: 14,575 multiple-choice questions in Modern Standard Arabic across 40 tasks, taken from school exams
+    by ten native speakers, documented in an ACL Findings paper, and reused to build DarijaMMLU.
+  confidence: medium
+  note: ArabicMMLU was the first multi-task knowledge benchmark for Arabic, built from school exams across
+    North Africa, the Levant and the Gulf rather than translated tests, and DarijaMMLU reuses its questions.
+    It covers Modern Standard Arabic only, so dialect evaluation needs a companion set.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2402.12840
+    shows: 'Abstract: "the first multi-task language understanding benchmark for the Arabic language, sourced
+      from school exams ... 40 tasks and 14,575 multiple-choice questions in Modern Standard Arabic (MSA)".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b14ea0cec0300308613e3e2354a5d56dedd47081bc619a1547d28f1db3adb613
+  - url: https://raw.githubusercontent.com/mbzuai-nlp/ArabicMMLU/main/README.md
+    shows: '"The data construction process involved a total of 10 Arabic native speakers from different countries".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9280990c19279487cd01cfff2bfbee6813e92aafdea1174995e852e9cde7b439
+  - url: https://huggingface.co/datasets/MBZUAI-Paris/DarijaMMLU/raw/main/README.md
+    shows: '"translated from selected subsets of the Massive Multitask Language Understanding (MMLU) and ArabicMMLU
+      benchmarks".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a8fc1cad343e5f3bc627875aaa17b4e6df608af5c873ba1a07f9d6bb053e8fd3

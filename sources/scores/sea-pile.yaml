@@ -1,0 +1,106 @@
+product: sea-pile
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: odc-by
+      detail: SEA-PILE-v2; card adds that users should abide by the CommonCrawl terms of use
+    - name: mit
+      detail: SEA-PILE-v1 card metadata
+    access:
+      value: public
+      detail: both repos ungated
+    dataset_card:
+      value: present
+      detail: per-language token table, pipeline and limitations for v2; source table for v1
+  confidence: high
+  note: Both releases download without a gate under permissive licenses, and the v2 card describes the crawl
+    snapshots and filtering steps. The expanded pool used for later SEA-LION models is not published, so the
+    open release is a subset of what the models saw.
+  raw: license:odc-by(SEA-PILE-v2; card adds that users should abide by the CommonCrawl terms of use)+mit(SEA-PILE-v1
+    card metadata);access:public(both repos ungated);dataset_card:present(per-language token table, pipeline
+    and limitations for v2; source table for v1)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v2/raw/main/README.md
+    shows: '"This dataset is made available under ODC-By 1.0 license; users should also abide by the CommonCrawl
+      ToU"; "This public repository contains the initial 120B/122B token open-source release"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 220cc11d5b41f8b0e33acce402c8ce4704332e2de05928be41c047fbe84690c5
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/SEA-PILE-v2
+    shows: 'gated: false; license:odc-by'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2421b512f408a974546a1a15a8ef06440e0e644af6ce9d5573c16aa6c1eb3e29
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v1/raw/main/README.md
+    shows: 'license: mit; "This repository contains the cleaned mC4 portion of the SEA-LION-Pile"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a5ffa531856dde26dcbf74fbd9f41b8aaff6e9db51a5792a0c51f5026c2a774e
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/aisingapore/SEA-PILE-v1
+    shows: 'gated: false; license:mit'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f3cf1fdacb95069b3d97df0b164c39deab8d2cefa88df4987357d1679f48e16e
+    establishes:
+    - availability
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads summed over the v1 and v2 repositories, most of them for v2. A pretraining
+    corpus is typically fetched once and reused, so repeat downloads understate how widely a copy is used.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/aisingapore/SEA-PILE-v2
+    shows: 2766 downloads in the trailing 30 days for aisingapore/SEA-PILE-v2
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2421b512f408a974546a1a15a8ef06440e0e644af6ce9d5573c16aa6c1eb3e29
+  - url: https://huggingface.co/api/datasets/aisingapore/SEA-PILE-v1
+    shows: 697 downloads in the trailing 30 days for aisingapore/SEA-PILE-v1
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f3cf1fdacb95069b3d97df0b164c39deab8d2cefa88df4987357d1679f48e16e
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Southeast Asian pretraining text
+  value: About 120 billion tokens of CommonCrawl text in nine Southeast Asian languages, filtered with native-speaker
+    input and documented in a detailed card, with its v1 named as the pretraining data for SEA-LION.
+  confidence: medium
+  note: SEA-PILE offers filtered web text across nine Southeast Asian languages, more than any other open corpus
+    for the region here, and the SEA-LION models were trained on this line of data, with Vietnamese and Indonesian
+    holding most of the tokens and Khmer, Lao and Burmese under a billion each. At about a hundred and twenty
+    billion tokens it is among the larger non-English pretraining sets, though English web corpora such as
+    FineWeb run to trillions.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v2/raw/main/README.md
+    shows: 'Token table: Vietnamese 51.4B, Indonesian 41.9B ... Khmer 0.6B, Lao 0.6B, Burmese 0.2B; "extracting
+      text from 24 CommonCrawl snapshots"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 220cc11d5b41f8b0e33acce402c8ce4704332e2de05928be41c047fbe84690c5
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v2
+    shows: 'Number of rows: 186,809,986; Total file size: 334 GB'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 76568bda08cbcea1040ae5da76f56b19878012d570db26fc9fcea72251ad1c52
+  - url: https://huggingface.co/datasets/aisingapore/SEA-PILE-v1/raw/main/README.md
+    shows: '"SEA-LION-Pile is the pretraining data set for SEA-LION"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a5ffa531856dde26dcbf74fbd9f41b8aaff6e9db51a5792a0c51f5026c2a774e

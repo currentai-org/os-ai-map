@@ -1,0 +1,90 @@
+product: laobench
+openness:
+  score: 2
+  class: gated
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata; applies to the open subset
+    access:
+      value: public
+      detail: open subset ungated; held-out subset evaluated only through a controlled service
+    dataset_card:
+      value: partial
+      detail: README has YAML metadata only, no prose
+    answers:
+      value: held-out
+      detail: 'paper: held-out portion enables black-box evaluation via a controlled service; the open 7k rows
+        include answers'
+  confidence: medium
+  note: The open subset downloads without a gate under Apache-2.0, while part of the benchmark is kept private
+    and scored by BAAI's service. The repository card has no description, so how the data was made is documented
+    only in the paper.
+  raw: 'license:apache-2.0(card metadata; applies to the open subset);access:public(open subset ungated; held-out
+    subset evaluated only through a controlled service);dataset_card:partial(README has YAML metadata only,
+    no prose);answers:held-out(paper: held-out portion enables black-box evaluation via a controlled service;
+    the open 7k rows include answers)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/BAAI/LaoBench/raw/main/README.md
+    shows: 'YAML only: license: apache-2.0; language: lo; pretty_name: LaoBench; size_categories 1K<n<10K'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 67c0bb406712bd135a431b69258ea37b1235b680c213a29f0cd81aeb509d83ce
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/BAAI/LaoBench
+    shows: 'gated: false; files: Lao-7k/test-00000-of-00001.parquet'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b05185c19c0b9d769cd08b6bd9710f07abdfdb106c0eb05294d85ce203329366
+    establishes:
+    - availability
+  - url: https://arxiv.org/abs/2511.11334
+    shows: '"It includes open-source and held-out subsets, where the held-out portion enables secure black-box
+      evaluation via a controlled service"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 84fb1e36802bd5d0d275996bea72b626eb2b451aa4c3beaedb59f36cb8371d07
+    establishes:
+    - answers
+    - documentation
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the open subset. Evaluations on the held-out portion go through
+    BAAI's service and are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/BAAI/LaoBench
+    shows: 154 downloads in the trailing 30 days for BAAI/LaoBench
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b05185c19c0b9d769cd08b6bd9710f07abdfdb106c0eb05294d85ce203329366
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for a Lao benchmark
+  value: LaoBench holds more than 17,000 expert-written Lao items in knowledge, schooling and translation,
+    about 7,000 of them open, documented in a paper, with no named downstream use.
+  confidence: medium
+  note: LaoBench is documented in a paper and offers expert-written Lao items in knowledge, schooling and translation.
+    No outside leaderboard or model report using it was found, less than half of it is openly downloadable,
+    and SEA-HELM tests Lao among eleven Southeast Asian languages on its own leaderboard.
+  relative_to: sea-helm
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2511.11334
+    shows: '"LaoBench contains 17,000+ expert-curated samples across three dimensions"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 84fb1e36802bd5d0d275996bea72b626eb2b451aa4c3beaedb59f36cb8371d07
+  - url: https://huggingface.co/datasets/BAAI/LaoBench
+    shows: Split (1) test · 7k rows
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2e812bdca6b81513b02f43ef4e22c62c637e7fe867435c298fb733ee953f881e

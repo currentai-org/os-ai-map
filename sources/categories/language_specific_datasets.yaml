@@ -4,31 +4,274 @@ description: "Datasets assembled to make an underrepresented language, or a set 
   underrepresented languages, usable for AI: pretraining text, speech, instruction and
   dialogue data, and evaluation sets. General multilingual corpora that happen to include
   a language live in Training & Synthetic Datasets."
+strapline: >-
+  No open corpus for an underrepresented language comes near English scale. The largest here,
+  Sangraha, holds about a quarter of a trillion tokens in 22 Indian languages and English, against
+  FineWeb's 18.5 trillion in English alone. Coverage is regional as well: Indic and Southeast Asian languages
+  have open text, speech, instruction and evaluation data, the Indigenous Americas small parallel
+  corpora, and the Pacific nothing of its own. The largest labeled low-resource speech collection,
+  Meta's MMS recordings, is withheld.
 weights:
   adopt: 0.3
   cap: 0.7
 scoring_recipe:
   version: 1
-  note: >-
-    Inherits the shared dataset ladder unchanged. The roster mixes training corpora, speech
-    corpora and evaluation sets, and the dataset ladder already reads both the training case
-    (availability, card, license) and the benchmark case (answers held out), so nothing here
-    yet needs a rung of its own. Revisit when the seed roster is promoted: the one rung this
-    category may need that its neighbors do not is a community-governed license such as Te
-    Hiku Media's Kaitiakitanga License, which permits use by the community it serves and
-    withholds it from everyone else. The seed also carries three closed corpora - Meta's
-    unreleased MMS recordings, Sarvam-2T and Te Hiku Media's te reo Māori corpus - for the
-    same reason benchmark_eval_data carries lab-internal evals: they are the frontier the
-    open rows are measured against. The rule that picked them: a closed row is a corpus a
-    frontier lab or national program built and withheld, or one its community governs.
-    Items sold from a vendor or consortium catalog (the LDC, ELRA, LDC-IL, Appen,
-    Defined.ai, Karya) are the closed long tail ADR-005 declines, and a catalog's product
-    line (every IARPA Babel pack) is a bundle rather than a product. Weighted 0.3 adoption
-    to 0.7 capability because download counts for a low-resource corpus are small by
-    construction: the population that could download it is small, so adoption measures the
-    language before it measures the dataset.
+  note: |-
+    Inherits the shared dataset ladder for openness. This PR extended the shared license tiers
+    with four clear-cut names (cc-by-nc-4.0 and cc-by-nc-sa-3.0 as noncommercial, cc-by-2.5 and
+    cc-by as open_data); custom, community-governed and no-derivatives licenses were left for a
+    maintainer's ruling and their products are deferred below.
+
+    Capability is one ladder for every modality, because the category's question is what a
+    language has, not what kind of file it is. The rungs are stated as facts a reader can check
+    against the cited pages. 5: no other open row in this category covers the same languages in
+    the same modality at comparable scale, the resource is documented, and its publisher or a
+    paper names a model or benchmark built on it. 4: documented and used downstream by name, but
+    a peer here is larger or broader for the same languages; or the largest for its languages
+    with only community fine-tunes listed on the Hub. A single-task set (NER, sentiment, hate
+    speech, transliteration) tops out at 4. 3: documented, with no downstream model or benchmark
+    beyond its own paper's experiments; or superseded by the same publisher's newer release; or
+    a narrow single-task set. 2: thin documentation, or machine-generated, machine-translated or
+    re-hosted content. 1: a fragment. Closed corpora are judged on the same facts as their
+    owners describe them. Roots carry no relative_to; every other band names a same-modality
+    peer where one exists.
+
+    Size caps then bound every band by how much data a corpus holds, measured against the
+    largest English and Chinese datasets of the same kind, one order of magnitude per step.
+    Pretraining text: 5 needs a trillion tokens (FineWeb and DCLM scale), 4 a hundred billion, 3
+    ten billion, 2 one billion, and anything smaller is 1. Speech, counted in transcribed hours:
+    5 needs a hundred thousand (Emilia and YODAS scale), 4 ten thousand, 3 a thousand, 2 a
+    hundred. Parallel text, in sentence pairs: 5 needs a billion, 4 a hundred million, 3 ten
+    million, 2 one million. A product's band is the lower of what the rungs above give it and
+    what its size allows; a cap never raises a band. Words are counted as tokens, which
+    understates token counts, and a size known only in bytes is estimated at four bytes a token;
+    each estimate says so in the product's capability value. Evaluation sets, instruction data,
+    the SEACrowd hub and task annotations such as NCHLT carry no cap, because their size is a
+    count of items rather than a measure of how much of a language they hold, and ArabicMMLU
+    already outnumbers English MMLU. The caps are the category's central finding rather than a
+    penalty: no open corpus here reaches the scale a frontier English or Chinese model is
+    trained on, and the only one that does, Sarvam-2T, is withheld.
+
+    Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
+    at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
+    over the one-third review trigger; it is where the caps put most national corpora and speech
+    collections of a few thousand hours, which is the category's shape rather than loose
+    wording, and two review passes and the caps moved bands in both directions before this
+    count. Top rows per modality: Sangraha (pretraining text), Common Voice (speech), BPCC
+    (parallel text), FLORES+ (evaluation), WangchanThaiInstruct (instruction data).
+
+    The category carries three corpora held back from open release - Meta's unreleased MMS
+    recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
+    under a community license - for the same reason benchmark_eval_data carries lab-internal
+    evals: they are the frontier the open rows are measured against. A closed row is a corpus a
+    frontier lab or national program built and withheld, or one its community governs. Items
+    sold from a vendor or consortium catalog (the LDC, ELRA, LDC-IL, Appen, Defined.ai, Karya)
+    are the closed long tail ADR-005 declines, and a catalog's product line (every IARPA Babel
+    pack) is a bundle rather than a product.
+
+    Weighted 0.3 adoption to 0.7 capability because download counts for a low-resource corpus
+    are small by construction: the population that could download it is small, so adoption
+    measures the language before it measures the dataset. Five products carry no adoption
+    reading, each a dated abstention whose cited page shows there is nothing to count: the three
+    held-back corpora, UberText (served as plain files), and Common Voice (its Mozilla Data
+    Collective page shows no download figure). Seven are banded on GitHub stars, read through
+    the ungh.cc mirror of the GitHub API: the six releases published only on GitHub, and
+    AfroBench, whose member datasets are marked not_primary_channel because their downloads are
+    not runs of the suite.
   extends: dataset
-products: []
+  deferred:
+    americasnlp-shared-task-data:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    chren:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    hedc4:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    indicxtreme:
+      because: >-
+        A suite of per-task repositories whose licenses differ: IndicCOPA and IndicQA are CC-
+        BY-4.0, Naamapadam CC0, and IndicXParaphrase and IndicSentiment state none. The unstated
+        members leave the whole value unmapped, so the ladder declines; 3/gated follows the
+        openhermes-2-5 precedent for downloadable, unlicensed data.
+    jojajovai:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    khayyam-challenge:
+      because: >-
+        CC-BY-ND-4.0 names no tier on the shared ladder, and whether no-derivatives data is open
+        is a shared-rubric ruling not taken here. The manual gate adds noncommercial, academic-
+        only terms, so the record carries 2/restricted, where a noncommercial license would put
+        it.
+    sold:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    spring-inx:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    te-hiku-media-reo-maori-corpus:
+      because: >-
+        The Kaitiakitanga License is a community-governed license the shared ladder does not
+        name, and the unmapped license stops the formula before its availability rungs are read.
+        Access is by request to Te Hiku Media and the license bars commercial use without an
+        explicit grant, so the record carries 2/restricted, where a noncommercial license would
+        put it; placing the license in a tier is a maintainer's ruling.
+    turkishmmlu:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    ubertext:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    updesh:
+      because: >-
+        The Microsoft Research License is a custom license the shared ladder does not name. It
+        allows noncommercial research use only and forbids redistributing the data, so the
+        record carries 2/restricted, where the noncommercial tier would put it; naming the
+        license in a tier is a maintainer's ruling.
+    vietnamese-curated-dataset:
+      because: >-
+        No license is stated anywhere the publisher could state one - the card, the API
+        metadata, the repository and the paper were read - while the files download without a
+        gate. The ladder has no rung that tests the unstated tier on its own, so it declines;
+        the record carries 3/gated on the openhermes-2-5 precedent, because files nobody has
+        licensed are not open and not closed.
+    vixsd:
+      because: >-
+        The Esethu License is a custom license the shared ladder does not name: research use and
+        commercial use by African entities are free, and other commercial users pay a fee. The
+        Hub gate is automatic, so the record carries 3/gated, where every gated shape lands;
+        placing the license in a tier is a maintainer's ruling.
+products:
+- common-voice
+- flores-plus
+- oldi-seed
+- smol
+- fleurs
+- belebele
+- sib-200
+- include-benchmark
+- bloom-library-datasets
+- glot500-c
+- waxal
+- naijavoices
+- afrivoice
+- za-african-next-voices
+- afrivoices-ke
+- bibletts
+- wura
+- inkuba-mono
+- vukuzenzele
+- afrobench
+- afrihate
+- kencorpus
+- african-ultrachat
+- afridocmt
+- nchlt
+- inkuba-instruct
+- vixsd
+- sangraha
+- indicvoices
+- bpcc
+- indicalign
+- milu
+- vaani
+- indicgenbench
+- updesh
+- titulm-bangla-corpus
+- nepali-text-corpus
+- l3cube-mahacorpus
+- indiccorp-v2
+- kathbath
+- shrutilipi
+- indicvoices-r
+- rasa
+- aksharantar
+- pralekha
+- indicxtreme
+- lahaja
+- samvaad-hi
+- iitb-english-hindi
+- sold
+- urduspeech
+- spring-inx
+- seacrowd
+- sea-pile
+- sea-instruct
+- sea-helm
+- seaexam
+- cendol-collection
+- wangchan-thai-instruct
+- thai-exam
+- khmer-speech-dataset
+- vmlu
+- laobench
+- indonlu
+- vietnamese-curated-dataset
+- wangchanx-flan
+- typhoon-s-sovereign-capability
+- 101-billion-arabic-words
+- arabicmmlu
+- cidar
+- darijammlu
+- naab
+- kazakh-speech-corpus-2
+- latxa-corpus
+- catalog-catalan-corpus
+- corpusnos
+- korpus-malti
+- danish-dynaword
+- norwegian-colossal-corpus
+- icelandic-gigaword-corpus
+- saami-web
+- ubertext
+- turkishmmlu
+- arabicweb24
+- hedc4
+- kazmmlu
+- khayyam-challenge
+- atlaset
+- smugri-data
+- icelandic-dynaword
+- americasnlp-shared-task-data
+- chren
+- jojajovai
+- llamacha-quechua
+- te-hiku-media-reo-maori-corpus
+- mms-lab-data
+- sarvam-2t
 comments: >-
   Proposed in issue #686. Membership test: is the dataset defined by the languages it serves
   rather than by its task or scale? A general multilingual crawl that happens to include a

@@ -1,0 +1,91 @@
+product: milu
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata and README "License" section; the repository LICENSE.md is EleutherAI's MIT license
+        for the harness code
+    access:
+      value: auto
+      detail: 'Hugging Face gated: auto'
+    dataset_card:
+      value: present
+      detail: card gives per-language statistics, subjects and splits
+  confidence: high
+  note: The benchmark carries CC BY 4.0, and the Hugging Face copy needs an access request that is approved
+    automatically. The MIT license file in the GitHub repository belongs to the EleutherAI harness code, not
+    the questions.
+  raw: 'license:cc-by-4.0(card metadata and README "License" section; the repository LICENSE.md is EleutherAI''s
+    MIT license for the harness code);access:auto(Hugging Face gated: auto);dataset_card:present(card gives
+    per-language statistics, subjects and splits)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/AI4Bharat/MILU/master/README.md
+    shows: 'README: "This dataset is released under the CC BY 4.0." Code evaluates models "using the lm-eval-harness
+      framework".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8482ea65256652d03fcc45d6bbad78219166005958ea8648d4f0367094173355
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/MILU/master/LICENSE.md
+    shows: '"MIT License / Copyright (c) 2020 EleutherAI".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a806e42547620dffbc2ec0333322c8b3523b4af11e059be14ef81aa5b1ae021f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/MILU
+    shows: '"gated": "auto"; cardData license "cc-by-4.0".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fd6790ea9a89ff31af1996b8e638fff6e1f8d321b4ecb41d5704b9ab6c1837ce
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/ai4bharat/MILU
+    shows: 'Per-language table: 79,617 questions, 19,915 translated; 8,933-sample validation set for few-shot
+      use.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e6480b39f719fa2e5aa2c125f100b82c1ecdd6fb551c041c29afb337c453e06d
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the MILU repository. Evaluation runs through the harness also fetch from
+    here, but a download does not show which published results used it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/MILU
+    shows: 1343 downloads in the trailing 30 days for ai4bharat/MILU
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fd6790ea9a89ff31af1996b8e638fff6e1f8d321b4ecb41d5704b9ab6c1837ce
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for an Indic knowledge benchmark
+  value: MILU holds about 80,000 multiple-choice questions from regional and state exams in 10 Indic languages
+    and English, about a quarter translated, documented in a NAACL paper, with no use found beyond that paper's
+    evaluation of 42 models.
+  confidence: medium
+  note: MILU is a documented knowledge benchmark built from Indian exam questions in 11 languages, and its
+    paper evaluates more than 40 models on it. No leaderboard or model report outside that paper was found,
+    whereas IndicXTREME was released with the IndicBERT v2 models it tests.
+  relative_to: indicxtreme
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2411.02538
+    shows: 'Abstract: "MILU spans 8 domains and 41 subjects across 11 Indic languages ... We evaluate over
+      42 LLMs".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3abed011ccc039955c04d92dbd23cc154fdfc857e9013df1709eb9784b5b8839

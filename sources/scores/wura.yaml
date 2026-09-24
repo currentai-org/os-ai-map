@@ -1,0 +1,85 @@
+product: wura
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: Hugging Face card metadata; the GitHub repository has no LICENSE file
+    access:
+      value: public
+      detail: Hugging Face repository is not gated
+    dataset_card:
+      value: present
+      detail: short card naming sources (audited mC4, crawled news); paper linked
+  confidence: medium
+  note: The card applies Apache-2.0 to the corpus, which downloads without a gate. The text is crawled from
+    the web and news sites, and the card does not address the original publishers' terms.
+  raw: license:apache-2.0(Hugging Face card metadata; the GitHub repository has no LICENSE file);access:public(Hugging
+    Face repository is not gated);dataset_card:present(short card naming sources (audited mC4, crawled news);
+    paper linked)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/castorini/wura/raw/main/README.md
+    shows: 'Front matter "license: apache-2.0"; 20 language configs with headline, content, category and url
+      fields.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 12364833a33c894e232240693d5d56296ea071727935429f664becf47c8a3c38
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/castorini/wura
+    shows: '"gated": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 37fa283e7f7c09566875d61c2bb56efab235ec0a0238c95cdbfce226b2ed95ab
+    establishes:
+    - availability
+  - url: https://huggingface.co/datasets/castorini/wura
+    shows: '"This dataset was created by auditing mC4 and crawling additional verified news sources. It was
+      first used to train AfriTeVa V2."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 0661948fec67ed31b73a18a81e42c5de4abf5c98679b63b4997f2f194cd37587
+    establishes:
+    - documentation
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single WURA repository. Downloads count file fetches and cannot show
+    how many models were pretrained on it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/castorini/wura
+    shows: 1532 downloads in the trailing 30 days for castorini/wura
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 37fa283e7f7c09566875d61c2bb56efab235ec0a0238c95cdbfce226b2ed95ab
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for African-language pretraining text
+  value: Audited mC4 text and crawled news in 16 African languages plus four others, about 49 GB of whole documents,
+    documented in an EMNLP paper, and used to pretrain the AfriTeVa V2 models.
+  confidence: medium
+  note: WURA is a documented web corpus for sixteen African languages whose builders audited Google's multilingual
+    web crawl by hand and added verified news, and the second-generation AfriTeVa models are pretrained on
+    it, though it is crawled text rather than new writing and several languages have only tens of thousands
+    of documents. At roughly ten billion tokens, estimated from its size on disk, it is a small fraction of
+    English web corpora such as FineWeb, which reach trillions.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/castorini/AfriTeVa-keji/asiwaju/README.md
+    shows: '"AfriTeVa-Keji was pretrained on the Wúrà dataset"; releases AfriTeVa V2 Base (428M) and Large
+      (1B).'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8809362e8dba56bfcf944cd2da1911e51623786ef008f7dd9133d7ced28be039
+  - url: https://huggingface.co/datasets/castorini/wura/raw/main/README.md
+    shows: Per-language example counts, e.g. orm train 20,169 and ibo train 51,386 documents.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 12364833a33c894e232240693d5d56296ea071727935429f664becf47c8a3c38

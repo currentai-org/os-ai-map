@@ -1,0 +1,132 @@
+product: latxa-corpus
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: No dataset-level license on either card or in the Hugging Face metadata; each document carries
+        its source license in its meta field. The MIT LICENSE in the GitHub repository covers the training
+        code.
+    access:
+      value: public
+      detail: 'Hugging Face gated: false on both repositories.'
+    dataset_card:
+      value: present
+      detail: Sources, per-source document counts and funding on both cards.
+  confidence: high
+  note: 'Both repositories download without a gate, but the corpus has no license of its own: each document
+    keeps the terms of the crawl or public dataset it came from. The maintainers removed documents they lacked
+    permission to redistribute, so the public copy is a curated subset of what the models saw.'
+  raw: 'license:mixed-per-subset(No dataset-level license on either card or in the Hugging Face metadata; each
+    document carries its source license in its meta field. The MIT LICENSE in the GitHub repository covers
+    the training code.);access:public(Hugging Face gated: false on both repositories.);dataset_card:present(Sources,
+    per-source document counts and funding on both cards.)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/HiTZ/latxa-corpus-v2/raw/main/README.md
+    shows: '"For detailed information regarding the licenses associated with each individual corpus and document
+      ... please refer to the ''license'' field within ''meta''"; notice that "Some data points have been removed
+      to ensure permission compliance."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: aa92506bbc4a1a76868795f99eb710ad3be7850f2d401f79a4aea8b130f70583
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/HiTZ/latxa-corpus-v1.1/raw/main/README.md
+    shows: v1.1 card lists five sources and says to consult each corpus's references for licenses; same permission-compliance
+      notice.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 724f04bf5c98620f1aaf895a50b08ff07f68d5f37de91edda9782fb957a6c322
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/HiTZ/latxa-corpus-v2
+    shows: '"gated":false, no license in cardData'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8f0ddfbd3320341888461abde76fe576d3b099340501a9c5e8b6243c584fa3d4
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/HiTZ/latxa-corpus-v1.1
+    shows: '"gated":false, no license in cardData'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6a0ff4a8da945aacd5bbac95794d4f2b680e515eb74079cc86a3c1d1ee5c0701
+    establishes:
+    - availability
+    - license
+  - url: https://raw.githubusercontent.com/hitz-zentroa/latxa/main/LICENSE
+    shows: MIT License, Copyright (c) 2024 HiTZ zentroa; the README describes the repository as training code.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: afc19cc7779def473bfeba12dd405ef429997518c1aabab0b4a5408dc27d24d2
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across the v1.1 and v2 repositories. A download
+    is a file fetch rather than a trained model, and copies mirrored elsewhere are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/HiTZ/latxa-corpus-v2
+    shows: 328 downloads in the trailing 30 days for HiTZ/latxa-corpus-v2
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8f0ddfbd3320341888461abde76fe576d3b099340501a9c5e8b6243c584fa3d4
+  - url: https://huggingface.co/api/datasets/HiTZ/latxa-corpus-v1.1
+    shows: 565 downloads in the trailing 30 days for HiTZ/latxa-corpus-v1.1
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6a0ff4a8da945aacd5bbac95794d4f2b680e515eb74079cc86a3c1d1ee5c0701
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Basque pretraining text
+  value: About 4.2 billion tokens in 4.3 million documents of Basque web and institutional text in its first
+    version, documented in an ACL paper and cards for both versions, and used to train every Latxa model from
+    the Llama 2 to the Qwen3.5 releases.
+  confidence: medium
+  note: Latxa Corpus is the pretraining set behind the whole Latxa family of Basque models, from the first
+    Llama-based releases to the Qwen versions, joining a new Basque web crawl and institutional text with the
+    Basque parts of large multilingual web corpora, and an ACL paper and both dataset cards document its sources
+    and sizes. Its roughly four billion tokens are ample for Basque but a tiny share of the trillions in English
+    pretraining corpora.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2403.20266
+    shows: '"we continue pretraining on a new Basque corpus comprising 4.3M documents and 4.2B tokens"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e92471bd1181f7694999c900960e3409702882df50b66bf3db29d3bb237f05b2
+  - url: https://huggingface.co/datasets/HiTZ/latxa-corpus-v1.1/raw/main/README.md
+    shows: '"This is the training corpus of Latxa v1.1, a family of large language models for Basque based
+      on Llama 2."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 724f04bf5c98620f1aaf895a50b08ff07f68d5f37de91edda9782fb957a6c322
+  - url: https://huggingface.co/api/models?filter=dataset:HiTZ/latxa-corpus-v1.1
+    shows: Models tagged with the dataset include HiTZ/latxa-7b-v1.1, latxa-13b-v1.1, latxa-70b-v1.1 and the
+      v1.2 releases.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: df56d31d7f7667a6a602dc6203baa0416bf2c607dac8615a0043f23670c41ece
+  - url: https://huggingface.co/api/models?filter=dataset:HiTZ/latxa-corpus-v2
+    shows: Models tagged with the dataset include HiTZ/Latxa-Llama-3.1-70B-Instruct-v2, HiTZ/Latxa-Qwen3.5-4B
+      and HiTZ/Latxa-Qwen3.5-2B.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 15f515c013e5d655970ff388c9192a592426e675f9e03b159960817776c6a3f3
+  - url: https://huggingface.co/datasets/HiTZ/latxa-corpus-v2/raw/main/README.md
+    shows: 'Data Statistics table: per-source train/valid/test document counts for 14 sources, EusCrawl v2
+      largest at 1,636,010 train documents.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: aa92506bbc4a1a76868795f99eb710ad3be7850f2d401f79a4aea8b130f70583

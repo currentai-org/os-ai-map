@@ -467,8 +467,12 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     assert inputs.non_primary_artifacts["hexabot"] == {("npm", "@hexabot-ai/widget")}
     assert inputs.declared_artifacts["yomo"] == {"github"}
     assert inputs.non_primary_artifacts["yomo"] == {("crates", "yomo")}
+    # AfroBench (#689) declares its member datasets: they are downloaded on their own, so their
+    # downloads are not runs of the suite, and it keeps only its GitHub and arXiv routes.
+    assert inputs.declared_artifacts["afrobench"] == {"github", "arxiv"}
+    assert {kind for kind, _ in inputs.non_primary_artifacts["afrobench"]} == {"huggingface_dataset"}
     # Nothing else declares one, so nothing else can have moved.
-    assert set(inputs.non_primary_artifacts) == {"hexabot", "yomo"}
+    assert set(inputs.non_primary_artifacts) == {"hexabot", "yomo", "afrobench"}
 
 
 def test_the_two_declared_products_band_on_stars_at_two(measurement_rows):

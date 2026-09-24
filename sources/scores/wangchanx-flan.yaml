@@ -1,0 +1,87 @@
+product: wangchanx-flan
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: card metadata says 'other' with a LICENSE link, but the LICENSE file is empty; the card table
+        and a per-row license column give each source's license (MIT, Apache-2.0, CC BY-SA 4.0, CC BY 4.0 and
+        others)
+    access:
+      value: public
+      detail: ungated
+    dataset_card:
+      value: present
+      detail: per-source table of origin, size, task, domain and license
+  confidence: high
+  note: The mixture downloads without a gate, and each source dataset's license is recorded in the card table
+    and on every row. The release adds no license of its own, since its LICENSE file is empty.
+  raw: license:mixed-per-subset(card metadata says 'other' with a LICENSE link, but the LICENSE file is empty;
+    the card table and a per-row license column give each source's license (MIT, Apache-2.0, CC BY-SA 4.0,
+    CC BY 4.0 and others));access:public(ungated);dataset_card:present(per-source table of origin, size, task,
+    domain and license)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/README.md
+    shows: 'license: other; license_link: LICENSE; "Each dataset is accompanied by its source, size, intended
+      task, and licensing information"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 806bcc03796ace9447564e2a3a59d608f97db74446eefefe412b6d33d1b95809
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/LICENSE
+    shows: Empty file (0 bytes)
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/airesearch/WangchanX-FLAN-v6.1
+    shows: 'gated: false; license:other'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 34785444354b69c47a869c02f290641e9f975d4d174964a19749449ffe748faa
+    establishes:
+    - availability
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the v6.1 repository. Earlier versions of the mixture and local
+    rebuilds from the public script are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/airesearch/WangchanX-FLAN-v6.1
+    shows: 159 downloads in the trailing 30 days for airesearch/WangchanX-FLAN-v6.1
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 34785444354b69c47a869c02f290641e9f975d4d174964a19749449ffe748faa
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Thai instruction data
+  value: WangchanX-FLAN holds about 3.6 million Thai-centered instruction examples reformatted from more than
+    two dozen existing datasets, documented by a detailed card and build script, and the WangchanLION v2 instruct
+    model is trained on it.
+  confidence: medium
+  note: WangchanX-FLAN lists every source and license, and the WangchanLION v2 instruct model is trained on
+    it. All of it is reformatted from existing datasets, some of them machine-generated, which places it below
+    WangchanThaiInstruct, whose Thai examples annotators and domain experts wrote from scratch.
+  relative_to: wangchan-thai-instruct
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/README.md
+    shows: 'num_examples: 3619450; source table rows ThaiSum 359k, scb-mt-en-th-2020 801k, xP3x 299k ...'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 806bcc03796ace9447564e2a3a59d608f97db74446eefefe412b6d33d1b95809
+  - url: https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1
+    shows: 'Models trained or fine-tuned on airesearch/WangchanX-FLAN-v6.1: aisingapore/Gemma2-9b-WangchanLIONv2-instruct'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7c73e274707b802588862ab5f66ce3e7f9f2ff2c55c552c3d50d98ec0c975e72

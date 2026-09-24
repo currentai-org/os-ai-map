@@ -1,0 +1,77 @@
+product: saami-web
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc0-1.0
+    access:
+      value: public
+      detail: 'Hugging Face gated: false.'
+    dataset_card:
+      value: present
+      detail: 'Short card: crawl seeding, language filter, extraction and deduplication; no size statistics.'
+  confidence: high
+  note: The corpus is dedicated to the public domain under CC0 and downloads without a gate. The crawl kept
+    only pages whose robots.txt allowed it, and the card says the license adds no constraints on the crawled
+    content.
+  raw: 'license:cc0-1.0;access:public(Hugging Face gated: false.);dataset_card:present(Short card: crawl seeding,
+    language filter, extraction and deduplication; no size statistics.)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ltg/saami-web/raw/main/README.md
+    shows: 'license: cc0-1.0; "Our license does not impose any additional constraints on the contents of this
+      corpus."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a71b6dd680fdf074d0b9a499faee04fd349ddfefd0eb4a4c3c67b1636e92f1e6
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/ltg/saami-web
+    shows: '"gated":false, license cc0-1.0'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 42657adf4f3cd311ef0e5c30a2a064873a29e305720e7703cdff16497c070d65
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the dataset repository over the trailing 30 days. A download is a file fetch
+    rather than a trained model, and copies mirrored elsewhere are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ltg/saami-web
+    shows: 26 downloads in the trailing 30 days for ltg/saami-web
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 42657adf4f3cd311ef0e5c30a2a064873a29e305720e7703cdff16497c070d65
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Northern Sámi pretraining text
+  value: The corpus holds 33,064 crawled Northern Sámi web documents (about 113 MB), documented by a short
+    card and no paper, and TurkuNLP's Finnish ModernBERT models list it as training data.
+  confidence: medium
+  note: The corpus gives Northern Sámi a crawled web collection whose short card explains how the crawl was
+    seeded, filtered and deduplicated, and TurkuNLP lists it among the training data of its Finnish ModernBERT
+    models. At a few tens of millions of tokens at most it is tiny beside English pretraining corpora of trillions
+    of tokens, and far from a documented multi-source corpus such as Danish Dynaword.
+  relative_to: danish-dynaword
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://datasets-server.huggingface.co/size?dataset=ltg/saami-web
+    shows: 'num_rows: 33064; num_bytes_original_files: 113497001'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c656ce72a8e6ae48081e87f6d74d20bfef2163f96c0ac5857a2151292c04510f
+  - url: https://huggingface.co/api/models?filter=dataset:ltg/saami-web
+    shows: Models tagged with the dataset include TurkuNLP/finnish-modernbert-large, -base and -tiny.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 965b04b393b9e90ba4b226a9d869d366b61ad54edd41608f200409a18f3d7919

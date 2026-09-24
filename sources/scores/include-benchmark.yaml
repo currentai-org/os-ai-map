@@ -1,0 +1,90 @@
+product: include-benchmark
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+    access:
+      value: public
+    dataset_card:
+      value: present
+  confidence: high
+  note: Both repositories download from Hugging Face without a gate under Apache-2.0, and the full question
+    set including answers is published.
+  raw: license:apache-2.0;access:public;dataset_card:present
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/CohereLabs/include-base-44
+    shows: 'gated: false; license tag apache-2.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8fac5bd555d51babc3971c7fa2ccff0141fabf359e97cc9b658e6dde4af996aa
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/CohereLabs/include-lite-44
+    shows: 'gated: false; license tag apache-2.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 173cb75d28681bc42e1259353438254cd1f84cec6a9d8f03f156d8b0d6995c09
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/CohereLabs/include-base-44/raw/main/README.md
+    shows: '"It contains 22,637 4-option multiple-choice-questions (MCQ) extracted from academic and professional
+      exams, covering 57 topics"; schema includes "answer".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 47002160b4dfeaea142eb8e11c85d601d4e6f02d2b5e931899e4047b1aa382ab
+    establishes:
+    - documentation
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month for the base and lite repositories combined. Runs through
+    evaluation harnesses that cache the data are counted only when they download it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/CohereLabs/include-base-44
+    shows: 12370 downloads in the trailing 30 days for CohereLabs/include-base-44
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8fac5bd555d51babc3971c7fa2ccff0141fabf359e97cc9b658e6dde4af996aa
+  - url: https://huggingface.co/api/datasets/CohereLabs/include-lite-44
+    shows: 2614 downloads in the trailing 30 days for CohereLabs/include-lite-44
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 173cb75d28681bc42e1259353438254cd1f84cec6a9d8f03f156d8b0d6995c09
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for multilingual regional-knowledge evaluation
+  value: 22,637 multiple-choice questions from local academic, professional and licensing exams in 44 languages,
+    documented in a paper and card, and included as a task in EleutherAI's lm-evaluation-harness.
+  confidence: medium
+  note: INCLUDE draws its questions from each region's own exams rather than translated English tests, is documented
+    in its paper, and ships as a task in EleutherAI's evaluation harness. Its 44 languages are fewer than the
+    122 variants of Belebele.
+  relative_to: belebele
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/include/README.md
+    shows: '"INCLUDE is a comprehensive knowledge- and reasoning-centric benchmark across 44 languages"; points
+      to CohereForAI/include-base-44.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2a0f49b3aa41ebea2f616b41e0ef50bb0546c2c4b09205e2ed5e07e22b98f19a
+  - url: https://arxiv.org/abs/2411.19799
+    shows: '"we construct an evaluation suite of 197,243 QA pairs from local exam sources".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a60e455c0790afe01aaf7089e6ca8aba7b791a4f4bc77b4d0f49dac54a48e513
+  - url: https://huggingface.co/datasets/CohereLabs/include-base-44/raw/main/README.md
+    shows: 'Model performance table: Llama3.1-70B-Instruct 70.6, Qwen2.5-14B 62.3, Aya-expanse-32b 59.1.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 47002160b4dfeaea142eb8e11c85d601d4e6f02d2b5e931899e4047b1aa382ab

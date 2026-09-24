@@ -1,0 +1,80 @@
+product: nepali-text-corpus
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: mit
+      detail: Hugging Face card metadata only; the card text has no license section
+    access:
+      value: public
+      detail: 'Hugging Face gated: false'
+    dataset_card:
+      value: present
+      detail: brief card naming sources, article count and size
+  confidence: medium
+  note: The corpus downloads without a gate, and its card metadata tags it MIT, a software license, with no
+    further terms for the scraped news and blog text. The card itself is a short summary, with collection details
+    left to the paper.
+  raw: 'license:mit(Hugging Face card metadata only; the card text has no license section);access:public(Hugging
+    Face gated: false);dataset_card:present(brief card naming sources, article count and size)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus
+    shows: '"gated": false; cardData license "mit".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: dddb8db3a61b90760c6e451cfba6e1eb22794c19fa685c89d81e9c0def912309
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus
+    shows: '"Total Articles: ~6.4 million; Language: Nepali; Size: 27.5 GB (in csv); Source: Collected from
+      various Nepali news websites, blogs, and other online platforms."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: cf1423cb1bdd074e1c13c36f4a80af4ab2596442f5aae32ecdda0f2b26ffc4e7
+    establishes:
+    - documentation
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single corpus repository. A download does not show whether the data was
+    used to train a released model.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus
+    shows: 996 downloads in the trailing 30 days for IRIIS-RESEARCH/Nepali-Text-Corpus
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: dddb8db3a61b90760c6e451cfba6e1eb22794c19fa685c89d81e9c0def912309
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Nepali pretraining text
+  value: The corpus holds about 6.4 million crawled Nepali articles (27.5 GB), documented in a paper and a
+    short card, and its publisher's own BERT, RoBERTa and GPT-2 models are the only ones known to be trained
+    on it.
+  confidence: medium
+  note: The corpus gives Nepali a crawled article collection larger than earlier Nepali corpora, described
+    in a paper, and IRIIS Research trained its Nepali BERT, RoBERTa and GPT models on it, though no outside
+    model is known to use it. At several billion tokens, estimated from its size on disk, it is far below the
+    trillions of tokens in English pretraining corpora, and Sangraha, a documented corpus across twenty-two
+    Indic languages, is far larger.
+  relative_to: sangraha
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2411.15734
+    shows: 'Abstract: "we have collected 27.5 GB of Nepali text data, approximately 2.4x larger than any previously
+      available Nepali language corpus".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 13c55975729d5c8ef98c0fea5c9b9dee8c7cfbd4b05bfb22c8d4da873860d6c2
+  - url: https://huggingface.co/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus
+    shows: '"Models trained or fine-tuned on" lists IRIIS-RESEARCH/RoBERTa_Nepali_125M and dinesh-bk/NepGPT2.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: cf1423cb1bdd074e1c13c36f4a80af4ab2596442f5aae32ecdda0f2b26ffc4e7

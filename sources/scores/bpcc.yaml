@@ -1,0 +1,84 @@
+product: bpcc
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: cc0-1.0
+      detail: mined corpora, existing seed corpora (NLLB-Seed, ILCI, MASSIVE) and back-translation data
+    - name: cc-by-4.0
+      detail: new human-translated BPCC-H-Wiki and BPCC-H-Daily sets
+    access:
+      value: auto
+      detail: 'Hugging Face gated: auto'
+    dataset_card:
+      value: present
+      detail: card lists every source and subset with pair counts and licenses
+  confidence: high
+  note: AI4Bharat waives its rights to the mined, existing and back-translated parts and licenses its new human
+    translations with attribution, while stating that it does not own the underlying source text. The Hugging
+    Face copy needs an access request that is approved automatically.
+  raw: 'license:cc0-1.0(mined corpora, existing seed corpora (NLLB-Seed, ILCI, MASSIVE) and back-translation
+    data)+cc-by-4.0(new human-translated BPCC-H-Wiki and BPCC-H-Daily sets);access:auto(Hugging Face gated:
+    auto);dataset_card:present(card lists every source and subset with pair counts and licenses)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicTrans2/main/README.md
+    shows: 'LICENSE table: mined corpora, existing seed corpora and BPCC-BT under CC0; "Newly Added Seed Corpora
+      (BPCC-H-Wiki & BPCC-H-Daily) | CC-BY-4.0"; model checkpoints MIT. "We do not own any of the text".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: be2736641ba492bbd0fa15daceee6c4381542ce572d01187983f8368f73be8cb
+    establishes:
+    - license
+  - url: https://huggingface.co/datasets/ai4bharat/BPCC
+    shows: Card repeats the license table and lists BPCC-Mined (Samanantar 19.4M, NLLB 85M, Samanantar++ 121.6M,
+      Comparable 4.3M) and BPCC-Human subsets.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 249212b15313ae7e103520f736e2629ced689fd5f4b7ca8d85c0fdf34a2991d9
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/BPCC
+    shows: '"gated": "auto"; no license tag in cardData.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 18b28c2ec900598ee4cde34fb9e1c38fbecfc87e6ad6381cc2712e7776a27c32
+    establishes:
+    - availability
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the BPCC repository. The IndicTrans2 README also links a full zip of the
+    data from the same repository, and newer seed data from the AI4Bharat website is not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/BPCC
+    shows: 906 downloads in the trailing 30 days for ai4bharat/BPCC
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 18b28c2ec900598ee4cde34fb9e1c38fbecfc87e6ad6381cc2712e7776a27c32
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for English-Indic parallel text
+  value: About 230 million English-Indic sentence pairs across all 22 scheduled languages, mostly mined or
+    drawn from existing corpora with 2.2 million human-translated pairs, documented in a TMLR paper, and used
+    to train IndicTrans2.
+  confidence: medium
+  note: The Bharat Parallel Corpus Collection is the largest public parallel corpus for Indian languages, mostly
+    mined from the web around a human-translated core of a couple of million pairs, and its builders trained
+    IndicTrans, the first translation model to cover all twenty-two scheduled languages, on it. Its few hundred
+    million sentence pairs are still a fraction of the largest parallel collections, which run to billions
+    of pairs.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2305.16307
+    shows: 'Abstract: BPCC is "the largest publicly available parallel corpora for Indic languages. BPCC contains
+      a total of 230M bitext pairs"; IndicTrans2 is "the first model to support all 22 languages".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 78a0e2cdb120fce704b786be01ee1ecb888e480700204b5bd9b3bb5d4617b2a3

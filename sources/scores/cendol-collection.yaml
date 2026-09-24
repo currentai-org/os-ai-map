@@ -1,0 +1,103 @@
+product: cendol-collection
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: apache-2.0
+      detail: card metadata on both repos; the card text applies Apache 2.0 to 'use of Cendol'
+    access:
+      value: public
+      detail: both repos ungated
+    dataset_card:
+      value: partial
+      detail: cards reproduce the model card and name the subset but do not describe sources or composition
+  confidence: medium
+  note: Both versions download without a gate under Apache-2.0. Their cards describe the Cendol models rather
+    than the prompts, so how the data was assembled has to be read from the paper.
+  raw: license:apache-2.0(card metadata on both repos; the card text applies Apache 2.0 to 'use of Cendol');access:public(both
+    repos ungated);dataset_card:partial(cards reproduce the model card and name the subset but do not describe
+    sources or composition)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/indonlp/cendol_collection_v2/raw/main/README.md
+    shows: 'license: apache-2.0; "This is the repository for the NusaT2T v2 - General and Human Centric Prompts"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 281dab5ce551c7cef1df5ec95652295b15a2ff964870cac4e376f7fb93045f57
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/datasets/indonlp/cendol_collection_v1/raw/main/README.md
+    shows: 'license: apache-2.0; "This is the repository for the NusaT2T v2 - Task-Specific Prompts"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6b143d860335e13eeec23fd0ca3c7215c74051df080ddcd3ec77f66a4e4b6e4e
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v2
+    shows: 'gated: false'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6e19be935954222e72c408534b6adf0a80330d0ccd13f3ef71944fc601b47967
+    establishes:
+    - availability
+  - url: https://raw.githubusercontent.com/IndoNLP/cendol/main/LICENSE
+    shows: Apache License, Version 2.0 (repository LICENSE)
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads summed over the v1 and v2 repositories. Fine-tunes that reuse a
+    local copy are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v2
+    shows: 203 downloads in the trailing 30 days for indonlp/cendol_collection_v2
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6e19be935954222e72c408534b6adf0a80330d0ccd13f3ef71944fc601b47967
+  - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v1
+    shows: 526 downloads in the trailing 30 days for indonlp/cendol_collection_v1
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7a33f245d24ffee6ef8ecb5eb2cf6b09db42bd39e5d6aa3a26646cd62fed9e8a
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Indonesian instruction data
+  value: Instruction data for Indonesian and local languages, templated over existing NLP datasets (v1) and
+    extended with general and human-centric prompts (v2), documented in the Cendol paper, and used to train
+    the Cendol Instruct and Chat models.
+  confidence: medium
+  note: The collection trained IndoNLP's Cendol Instruct and Chat models, from 300 million to 13 billion parameters,
+    and the Cendol paper documents it. Like WangchanThaiInstruct it has a paper and named models trained on
+    it, but its task prompts are rebuilt from existing labeled datasets and its cards do not describe the contents.
+  relative_to: wangchan-thai-instruct
+  relation: at
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/IndoNLP/cendol/main/README.md
+    shows: 'Model table: "Cendol mT5-small Instruct | Cendol Collection v1" ... "Cendol mT5-small Chat | Cendol
+      Collection v2"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 59b1f368ebd94da867a970715633e8e55f5e9ac9e6b14fdd461d68d4acc89911
+  - url: https://arxiv.org/abs/2404.06138
+    shows: '"we introduce Cendol, a collection of Indonesian LLMs encompassing both decoder-only and encoder-decoder
+      architectures"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c0a2e84c19ef38a6be7ea4552e49e26d55e8228c622f996b9e7169376df96487
+  - url: https://huggingface.co/api/datasets/indonlp/cendol_collection_v1
+    shows: size_categories:10M<n<100M
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7a33f245d24ffee6ef8ecb5eb2cf6b09db42bd39e5d6aa3a26646cd62fed9e8a

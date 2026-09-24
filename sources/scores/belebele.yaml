@@ -1,0 +1,74 @@
+product: belebele
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-sa-4.0
+      detail: Covers the benchmark; the assembled English training set is mostly CC-BY-NC per the README.
+    access:
+      value: public
+      detail: Ungated on Hugging Face and as a zip from Meta's file server.
+    dataset_card:
+      value: present
+  confidence: high
+  note: The benchmark carries a share-alike license and downloads without a gate. The optional English training
+    set assembled from other datasets is mostly non-commercial, but that part is not the benchmark.
+  raw: license:cc-by-sa-4.0(Covers the benchmark; the assembled English training set is mostly CC-BY-NC per
+    the README.);access:public(Ungated on Hugging Face and as a zip from Meta's file server.);dataset_card:present
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/belebele/main/README.md
+    shows: '"The Belebele dataset is licensed under the license found in the LICENSE_CC-BY-SA4.0 file"; "The
+      majority of the training set (data and code) is licensed under CC-BY-NC".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f7a9aead9af9056c96837eeb8eafa301ec37a4512e52520f1c3d7903b69ce145
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/facebook/belebele
+    shows: 'gated: false; license tag cc-by-sa-4.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 99c3a5ae25ccaaaea4402825b9c7b843ca7d3f8acd7d2243f84a9a8ae2de51fa
+    establishes:
+    - availability
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month for the Belebele repository. Downloads of the zip from
+    Meta's file server are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/facebook/belebele
+    shows: 84563 downloads in the trailing 30 days for facebook/belebele
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 99c3a5ae25ccaaaea4402825b9c7b843ca7d3f8acd7d2243f84a9a8ae2de51fa
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for multilingual reading comprehension evaluation
+  value: Human-written multiple-choice reading comprehension set of 900 questions in each of 122 language variants
+    (109,800 questions), documented in its paper and included as a task in EleutherAI's lm-evaluation-harness.
+  confidence: medium
+  note: Belebele asks the same 900 questions in 122 language variants, so reading comprehension scores compare
+    directly across languages, and no other open reading test here reaches that many. It is documented in its
+    paper and ships as a task in EleutherAI's evaluation harness.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/belebele/main/README.md
+    shows: '"900 questions per language variant"; "122 language/language variants"; "900 x 122 = 109,800 total
+      questions".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f7a9aead9af9056c96837eeb8eafa301ec37a4512e52520f1c3d7903b69ce145
+  - url: https://raw.githubusercontent.com/EleutherAI/lm-evaluation-harness/main/lm_eval/tasks/README.md
+    shows: 'Task table row: "belebele ... Language understanding tasks in a variety of languages and scripts
+      ... Multiple (122 languages)".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6f62438bcd17d5495171621fae9e38bd4446c934f75138f27fa1f455372fb7c3

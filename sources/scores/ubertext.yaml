@@ -1,0 +1,98 @@
+product: ubertext
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: No license on the UberText 2.0 page, the lang.org.ua corpora card, or the UNLP 2023 paper; the
+        paper lists "Freely available for download under a permissive license" as a design goal and argues
+        fair use.
+    access:
+      value: public
+      detail: Direct download links on lang.org.ua, no registration.
+    dataset_card:
+      value: present
+      detail: Corpus page with composition and download layers; UNLP 2023 paper.
+  confidence: medium
+  note: The corpus downloads directly with no registration, but neither its page nor its paper names a license;
+    the paper argues that the use of the texts falls within fair use and Ukrainian copyright law. The maintainers
+    offer to remove texts at a rights holder's request.
+  raw: license:not-clearly-stated-on-card(No license on the UberText 2.0 page, the lang.org.ua corpora card,
+    or the UNLP 2023 paper; the paper lists "Freely available for download under a permissive license" as a
+    design goal and argues fair use.);access:public(Direct download links on lang.org.ua, no registration.);dataset_card:present(Corpus
+    page with composition and download layers; UNLP 2023 paper.)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://lang.org.ua/en/ubertext/
+    shows: Composition of five subcorpora and download links for base, cleansed, sentence-split and tokenized
+      layers; no license statement.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 20ef7c56576f80549386263a1fb6077eea7bcbe2da843ac43c8043bb4c15d31e
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://lang.org.ua/static/downloads/preprints/ubertext_paper.pdf
+    shows: '"We believe that our use of these texts falls within the bounds of fair use and Ukrainian copyright
+      law ... we are willing to remove any texts from our corpus upon request"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: dd8e6e5e344957557bf9fc704c380dd368f575b23b0a96216efb87245a64f449
+    establishes:
+    - license
+  - url: https://lang.org.ua/en/corpora/
+    shows: 'Corpora card: "A 3.27-billion-token corpus of modern Ukrainian: news, Wikipedia, fiction, court
+      decisions and social media"; no license field for UberText 2.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 90930c871edfe8328f80b6fd60f1b0fcd6c6bcdf1f8d5c48448487177a7f8f5d
+    establishes:
+    - documentation
+    - license
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: medium
+  note: No download figure could be read. The corpus is published as files on lang.org.ua, which shows no download
+    count, and there is no Hugging Face repository or package to count instead.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://lang.org.ua/en/ubertext/
+    shows: The corpus page lists direct download links for each subcorpus and shows no download counter
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 20ef7c56576f80549386263a1fb6077eea7bcbe2da843ac43c8043bb4c15d31e
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Ukrainian pretraining text
+  value: About 3.27 billion tokens in 8.59 million Ukrainian texts from news, fiction, Telegram, Wikipedia
+    and court decisions, documented in a UNLP paper, with Flair, fastText, Electra and GPT-2 models built on
+    it and the Malyuk corpus folding it in.
+  confidence: medium
+  note: UberText is the large corpus of modern Ukrainian, documented at the Ukrainian NLP workshop, and lang-uk
+    lists Flair and fastText embeddings and Electra and GPT models built on it, while the Malyuk pretraining
+    corpus folds it in, though its named uses are smaller models rather than a large language model. At about
+    three billion tokens it is a small fraction of the trillions in English pretraining corpora.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://aclanthology.org/2023.unlp-1.1/
+    shows: '"It has 3.274 billion tokens, consists of 8.59 million texts and takes up 32 gigabytes of space."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 813698c296815e0c75b4151d2bd574a9b916392a8d22e0dfe0eedf927e479df2
+  - url: https://lang.org.ua/en/ubertext/
+    shows: '"Projects using UberText 2.0": flair embeddings, fastText vectors, GPT-2 models of different sizes,
+      Electra embeddings trained on UberText 2.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 20ef7c56576f80549386263a1fb6077eea7bcbe2da843ac43c8043bb4c15d31e
+  - url: https://lang.org.ua/en/corpora/
+    shows: '"Malyuk — Ukrainian LM pre-training corpus. Combined corpus of Ukrainian texts (UberText 2.0, Oscar,
+      Wikipedia and more)"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 90930c871edfe8328f80b6fd60f1b0fcd6c6bcdf1f8d5c48448487177a7f8f5d

@@ -1,0 +1,103 @@
+product: vmlu
+openness:
+  score: 2
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: 'README ''Licenses: TBU''; repo LICENSE.txt is MIT for ''the Software''; vmlu.ai names no data
+        license'
+    access:
+      value: public
+      detail: zip downloads offered on vmlu.ai; not on Hugging Face
+    dataset_card:
+      value: present
+      detail: README gives subject table, format and examples; site describes sources
+    answers:
+      value: held-out
+      detail: test predictions are submitted as an id,answer CSV to vmlu.ai/submit after login; dev examples
+        carry answers
+  confidence: medium
+  note: 'Questions can be downloaded from the project site, and test scoring runs through a submission page
+    that requires login. No license for the data itself is published: the repository''s MIT file covers the
+    code, and its license section is unfinished.'
+  raw: 'license:not-clearly-stated-on-card(README ''Licenses: TBU''; repo LICENSE.txt is MIT for ''the Software'';
+    vmlu.ai names no data license);access:public(zip downloads offered on vmlu.ai; not on Hugging Face);dataset_card:present(README
+    gives subject table, format and examples; site describes sources);answers:held-out(test predictions are
+    submitted as an id,answer CSV to vmlu.ai/submit after login; dev examples carry answers)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/ZaloAI-Jaist/VMLU/main/README.md
+    shows: '"## Licenses TBU"; "Download the zip file: Please visit our website"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: df64aac6d70eb3eda30de301101b370fab19706aa4f12ece357886f59d0464a4
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/ZaloAI-Jaist/VMLU/main/LICENSE.txt
+    shows: MIT License, Copyright (c) 2023 Zalo AI and JAIST; grants rights to 'the Software'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a6705e57beac8344483bd45bbef6c8c2befc1a9a223b588196072824d9aca4f7
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ZaloAI-Jaist/VMLU/main/README.md
+    shows: '"prepare a UTF-8 encoded CSV file ... id,answer"; "submit the prepared csv file here (https://vmlu.ai/submit),
+      note that you need to first log in"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: df64aac6d70eb3eda30de301101b370fab19706aa4f12ece357886f59d0464a4
+    establishes:
+    - answers
+  - url: https://vmlu.ai
+    shows: '"The VMLU datasets can be downloaded as shown below: Vi-MQA v1.5, Vi-SQuAD v1.0, Vi-Drop v1.0,
+      Vi-Dialog v1.0"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 456827d78fde3f7d22380875a949be44f33b3548703b8cf6acce245405141878
+    establishes:
+    - availability
+    - documentation
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the VMLU repository; the benchmark is also served from vmlu.ai, which publishes no
+    download count, and a star is attention rather than use.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://ungh.cc/repos/ZaloAI-Jaist/VMLU
+    shows: 'GitHub repository record for ZaloAI-Jaist/VMLU (via the ungh.cc mirror of the GitHub API): 83 stargazers,
+      last push 2024-05-04.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 32bf4c9f54ae37cdd5d46da131e1882b16b0f518351d0724fded8edaa1fb628f
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Vietnamese knowledge evaluation
+  value: 10,880 multiple-choice questions across 58 subjects from Vietnamese school, university and national
+    exams, documented in a README and website, and scored on a public leaderboard at vmlu.ai.
+  confidence: medium
+  note: VMLU gathers Vietnamese exam questions in 58 subjects and runs a public leaderboard that scores open
+    and API models. It covers one language and one kind of task, where SEA-HELM spans many task types across
+    eleven languages, and its documentation is a README and website rather than a paper.
+  relative_to: sea-helm
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://raw.githubusercontent.com/ZaloAI-Jaist/VMLU/main/README.md
+    shows: '"VMLU dataset covers 58 subjects including 10,880 multiple-choice questions and answers in Vietnamese
+      language"; zero-shot leaderboard table'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: df64aac6d70eb3eda30de301101b370fab19706aa4f12ece357886f59d0464a4
+  - url: https://vmlu.ai
+    shows: '"The dataset primarily originates from examinations administered by a diverse array of esteemed
+      educational institutions"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 456827d78fde3f7d22380875a949be44f33b3548703b8cf6acce245405141878

@@ -1,0 +1,121 @@
+product: afrobench
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: 'afrimmlu: apache-2.0; afrixnli: apache-2.0; afrimgsm: apache-2.0; afrisenti: cc-by-nc-sa-2.0;
+        masakhaner-x: unknown; masakhanews: afl-3.0; masakhapos: afl-3.0; afriqa-gold-passages: cc-by-sa-4.0;
+        mafand: cc-by-nc-4.0; uhura-arc-easy: mit; InjongoIntent: apache-2.0; ntrex_african: cc-by-sa-4.0;
+        AfriADR: apache-2.0; salt: cc-by-sa-4.0; the GitHub repository has no LICENSE file'
+    access:
+      value: public
+      detail: Masakhane member repositories ungated; Sunbird/salt behind an automatic gate
+    dataset_card:
+      value: present
+      detail: README, project site and paper describe tasks and datasets; each member has its own card
+  confidence: medium
+  note: Each member dataset keeps its own license, from Apache-2.0 and MIT to non-commercial terms on MAFAND-MT
+    and AfriSenti, and MasakhaNER-X lists its license as unknown. Everything but SALT downloads without a gate.
+  raw: 'license:mixed-per-subset(afrimmlu: apache-2.0; afrixnli: apache-2.0; afrimgsm: apache-2.0; afrisenti:
+    cc-by-nc-sa-2.0; masakhaner-x: unknown; masakhanews: afl-3.0; masakhapos: afl-3.0; afriqa-gold-passages:
+    cc-by-sa-4.0; mafand: cc-by-nc-4.0; uhura-arc-easy: mit; InjongoIntent: apache-2.0; ntrex_african: cc-by-sa-4.0;
+    AfriADR: apache-2.0; salt: cc-by-sa-4.0; the GitHub repository has no LICENSE file);access:public(Masakhane
+    member repositories ungated; Sunbird/salt behind an automatic gate);dataset_card:present(README, project
+    site and paper describe tasks and datasets; each member has its own card)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/collections/masakhane/afrobench-67dbf553ebf5701c2207f883
+    shows: Collection items include masakhane/afrimmlu, afrixnli, afrimgsm, afrisenti, masakhaner-x, masakhanews,
+      masakhapos, afriqa-gold-passages, mafand, uhura-arc-easy, InjongoIntent, ntrex_african, AfriADR and Sunbird/salt.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 0140b2df725e3dd7747b7051fbd039850a72a7c636ae93e375a827d329392dd9
+    establishes:
+    - availability
+    - documentation
+  - url: https://raw.githubusercontent.com/McGill-NLP/AfroBench/main/README.md
+    shows: '"All scripts, prompts and datasets are opensource and available"; run via LM-Harness or API; no
+      license section.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 173b591f1336ff7a02c54de3fdb987422e005ba405f70849233fd5045f8e7e1b
+    establishes:
+    - availability
+    - documentation
+  - url: https://huggingface.co/api/datasets/masakhane/mafand
+    shows: 'cardData license ["cc-by-nc-4.0"]; "gated": false.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 83fc079e2d945339a9fde0dea918bf4de94484972695a9976146b20050f89eed
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/api/datasets/masakhane/afrisenti
+    shows: cardData license "cc-by-nc-sa-2.0".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: e4105f2247e24728e8de93646bdc0070adc0dc8e10d72027f64448ba8c190b1f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/masakhane/masakhaner-x
+    shows: cardData license ["unknown"].
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d96c721f873aee60c4611843ddd6ff71a81bcac9e4c7c9651883c7492841576a
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/Sunbird/salt
+    shows: '"gated": "auto"; cardData license "cc-by-sa-4.0".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6f5ee0fed71488fa0c1713293253598142928cfb58f5f3dbd8479eb4a9a2cf94
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the AfroBench repository. The member datasets it evaluates are also downloaded on their
+    own, but those downloads are not runs of the suite, so they are left out; a star is attention rather than
+    use.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://ungh.cc/repos/McGill-NLP/AfroBench
+    shows: 'GitHub repository record for McGill-NLP/AfroBench (via the ungh.cc mirror of the GitHub API): 24
+      stargazers, last push 2025-07-28.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 6303db251c777abac735057ea9163c20361a227878ab206bf94d5e47620d3fba
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for African-language model evaluation
+  value: Evaluation suite of 22 mostly human-annotated datasets across 15 tasks and 64 African languages, documented
+    in a paper and per-member cards, with lm-evaluation-harness tasks, a public leaderboard, and results reported
+    by InkubaLM.
+  confidence: medium
+  note: AfroBench brings 22 datasets across 64 African languages into one evaluation with harness tasks and
+    a public leaderboard, and models such as InkubaLM report on its members. No other open suite here covers
+    as many African languages and tasks. Its breadth comes from bundling existing Masakhane and partner benchmarks.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://mcgill-nlp.github.io/AfroBench/
+    shows: '"Evaluating 64 African languages across 15 NLP tasks and 22 Datasets"; leaderboard and lm-eval-harness
+      scripts.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: f85a45db10d5c58c17662013b986247ea836204be4493c605844d83de8612386
+  - url: https://raw.githubusercontent.com/McGill-NLP/AfroBench/main/README.md
+    shows: Run with "LM-Harness (lm_eval/tasks/afrobench)"; results submitted to "the official leaderboard".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 173b591f1336ff7a02c54de3fdb987422e005ba405f70849233fd5045f8e7e1b
+  - url: https://arxiv.org/abs/2408.17024
+    shows: InkubaLM abstract reports performance on "AfriMMLU, and the AfriXnli task".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 99750d1fb2f4f0bc744a9606ce1514cc4eaca935fbc49e01cf239ae14b815030

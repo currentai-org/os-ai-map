@@ -1,0 +1,78 @@
+product: atlaset
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no license in the card, the API tags, or a LICENSE file; the card does not state the terms of
+        its component sources
+    access:
+      value: auto
+      detail: automatic approval after agreeing to share contact information
+    dataset_card:
+      value: present
+      detail: card lists every source with its row count
+  confidence: high
+  note: Access is granted automatically once a user shares contact details, but no license is given for the
+    compilation or its many sources, so reuse terms are unknown. The card does document where each part came
+    from.
+  raw: license:not-clearly-stated-on-card(no license in the card, the API tags, or a LICENSE file; the card
+    does not state the terms of its component sources);access:auto(automatic approval after agreeing to share
+    contact information);dataset_card:present(card lists every source with its row count)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/atlasia/Atlaset
+    shows: '"You need to agree to share your contact information to access this dataset"; card lists training
+      and test sources with counts; no license shown.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 05186cab430fff71c2b6879ef3b085e089e28511a1479fa6a359ac94f5469c96
+    establishes:
+    - availability
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/atlasia/Atlaset
+    shows: 'API JSON: "gated": "auto"; no license tag in cardData or tags.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b771d7cad13b9a042e09a7df7039b4e9e9b44b5ba3e563e3396e86f0375e1651
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the gated repository. The figure cannot show use through the Al-Atlas models
+    trained on it.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/atlasia/Atlaset
+    shows: 60 downloads in the trailing 30 days for atlasia/Atlaset
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b771d7cad13b9a042e09a7df7039b4e9e9b44b5ba3e563e3396e86f0375e1651
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Moroccan Darija training text
+  value: Atlaset compiles about 155 million training tokens of Moroccan Darija from dozens of existing sources,
+    including social media, Wikipedia, subtitles and translated instruction sets, documented by a detailed
+    card, and AtlasIA's Al-Atlas-0.5B and a Moroccan XLM-RoBERTa are trained on it.
+  confidence: medium
+  note: Atlaset gathers most openly available Moroccan Darija text, from social media and subtitles to translated
+    instruction sets, into one documented corpus, and AtlasIA trained its Al-Atlas language model and a Moroccan
+    XLM-RoBERTa on it. At under two hundred million tokens it is tiny beside English pretraining corpora of
+    trillions of tokens, and small even beside naab, which merges billions of words of Farsi.
+  relative_to: naab
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/atlasia/Atlaset
+    shows: '"For the training set: 155,501,098 tokens"; "It combines various sources"; models listed: atlasia/Al-Atlas-0.5B,
+      atlasia/XLM-RoBERTa-Morocco.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 05186cab430fff71c2b6879ef3b085e089e28511a1479fa6a359ac94f5469c96

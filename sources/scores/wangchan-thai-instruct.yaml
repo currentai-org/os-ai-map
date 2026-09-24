@@ -1,0 +1,89 @@
+product: wangchan-thai-instruct
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: card metadata says cc-by-sa-4.0, but the card states rows carry NC or SA licenses according to
+        their source, recorded in a per-row License column
+    access:
+      value: public
+      detail: ungated
+    dataset_card:
+      value: present
+      detail: domains, tasks, subsets and paper link
+  confidence: high
+  note: 'The data downloads without a gate, but its license varies row by row: some rows allow commercial use
+    under share-alike terms and others are non-commercial. Anyone reusing it has to filter on the per-row license
+    field.'
+  raw: license:mixed-per-subset(card metadata says cc-by-sa-4.0, but the card states rows carry NC or SA licenses
+    according to their source, recorded in a per-row License column);access:public(ungated);dataset_card:present(domains,
+    tasks, subsets and paper link)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/airesearch/WangchanThaiInstruct/raw/main/README.md
+    shows: '"We have both NC and SA licenses. Please adhere to the license terms. Each row has its license
+      according to its source."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: edbcf7b4ab413b28fc5ff4a29c0be4dd27b827998423f8e6646a408639b6040a
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/airesearch/WangchanThaiInstruct
+    shows: 'gated: false; license:cc-by-sa-4.0'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4894b0e891dffec6aab6cc7ab34bb57b65e3971f8ec3fb4cd7e63afdb418df0c
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the single repository. It serves as both a training set and a
+    test set, and the count does not distinguish the two uses.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/airesearch/WangchanThaiInstruct
+    shows: 394 downloads in the trailing 30 days for airesearch/WangchanThaiInstruct
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4894b0e891dffec6aab6cc7ab34bb57b65e3971f8ec3fb4cd7e63afdb418df0c
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: how the content was made and downstream use, for Thai instruction data
+  value: About 40,000 human-authored Thai instruction rows across four professional domains and seven task
+    types, documented in an EMNLP paper, with models such as WangchanLION v2 trained on it.
+  confidence: medium
+  note: WangchanThaiInstruct is written entirely by Thai annotators and domain experts rather than translated
+    or generated, it is documented in an EMNLP paper, and models such as WangchanLION v2 are trained on it.
+    It covers four professional domains in one language, and the models the Hub lists as trained on it include
+    quantized copies of WangchanLION v2 and a Llama 3.1 Thai fine-tune.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2508.15239
+    shows: '"a human-authored Thai dataset for evaluation and instruction tuning, covering four professional
+      domains and seven task types"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fde9e1eabd801cc5c6de56c0a34279cb1b6e668154b13ba74f854d1ade029782
+  - url: https://huggingface.co/datasets/airesearch/WangchanThaiInstruct
+    shows: '"Browse 11 models trained on this dataset"; mradermacher/Gemma2-9b-WangchanLIONv2-instruct-i1-GGUF'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a1af7b9707e4ebc42c7f30645722985c242f67838fc8055c0ee467aa026270ba
+  - url: https://huggingface.co/datasets/airesearch/WangchanThaiInstruct/raw/main/README.md
+    shows: 'train num_examples: 32207; test num_examples: 7793'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: edbcf7b4ab413b28fc5ff4a29c0be4dd27b827998423f8e6646a408639b6040a
+  - url: https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1/raw/main/README.md
+    shows: 'source table row: WangchanThaiInstruct, airesearch/WangchanThaiInstruct_7.24, 12.2k'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 806bcc03796ace9447564e2a3a59d608f97db74446eefefe412b6d33d1b95809

@@ -296,9 +296,32 @@ def test_not_primary_channel_rides_along_on_the_artifact_row():
     assert "not_primary_channel" in TABLES["product_artifacts"]
 
 
-def test_the_declared_non_primary_artifacts_are_the_two_that_were_ruled_on():
-    """`hexabot`'s npm widget and `yomo`'s crate, and nothing else. A third would be a curation
-    decision, not a serializer change, and this is where it would show up."""
+AFROBENCH_MEMBERS = (
+    "Sunbird/salt",
+    "masakhane/AfriADR",
+    "masakhane/InjongoIntent",
+    "masakhane/afrimgsm",
+    "masakhane/afrimmlu",
+    "masakhane/afriqa-gold-passages",
+    "masakhane/afrisenti",
+    "masakhane/afrixnli",
+    "masakhane/mafand",
+    "masakhane/masakhaner-x",
+    "masakhane/masakhanews",
+    "masakhane/masakhapos",
+    "masakhane/ntrex_african",
+    "masakhane/uhura-arc-easy",
+)
+
+
+def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
+    """`hexabot`'s npm widget, `yomo`'s crate, and AfroBench's member datasets, and nothing else.
+    A further one would be a curation decision, not a serializer change, and this is where it
+    would show up.
+
+    AfroBench (#689) is the third such decision: the suite redistributes fourteen Masakhane and
+    Sunbird datasets that people also download on their own, so their downloads are not runs of
+    the suite and it bands on its own repository's stars instead."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -311,7 +334,7 @@ def test_the_declared_non_primary_artifacts_are_the_two_that_were_ruled_on():
     assert declared == {
         ("hexabot", "npm", "@hexabot-ai/widget"),
         ("yomo", "crates", "yomo"),
-    }
+    } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS}
 
 
 def test_real_sources_serialize_without_structural_errors():

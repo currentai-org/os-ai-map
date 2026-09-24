@@ -1,0 +1,86 @@
+product: sib-200
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-sa-4.0
+      detail: Hugging Face license tag; the card text says "CC 4.0 Commercial" and the GitHub LICENSE is Apache-2.0
+        for the code.
+    access:
+      value: public
+    dataset_card:
+      value: present
+      detail: Describes composition and splits, but several sections are unfilled template text that wrongly
+        calls the source news.
+  confidence: medium
+  note: The data downloads from Hugging Face without a gate under a share-alike license tag. The card's own
+    wording of the license is loose and the GitHub license covers the code, so the tag is the clearest statement.
+  raw: license:cc-by-sa-4.0(Hugging Face license tag; the card text says "CC 4.0 Commercial" and the GitHub
+    LICENSE is Apache-2.0 for the code.);access:public;dataset_card:present(Describes composition and splits,
+    but several sections are unfilled template text that wrongly calls the source news.)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/Davlan/sib200
+    shows: 'gated: false; license tag cc-by-sa-4.0.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3b655e7bda8b40509c4c33ffce9202a4b182a162a51408613dacb85ab1b92ba7
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/Davlan/sib200/raw/main/README.md
+    shows: '"The licensing status of the data is CC 4.0 Commercial"; "Annotators were recruited from Masakhane".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 73afd1b67ee71b07e28d52b52374de8bf40f884dd6a475be8fde20821cae1838
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/dadelani/sib-200/main/LICENSE
+    shows: Apache License, Version 2.0.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing month for the SIB-200 repository. Rebuilding it from FLORES
+    with the GitHub script is not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/Davlan/sib200
+    shows: 22383 downloads in the trailing 30 days for Davlan/sib200
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 3b655e7bda8b40509c4c33ffce9202a4b182a162a51408613dacb85ab1b92ba7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for a multilingual topic classification set
+  value: SIB-200 labels 1,004 FLORES-200 sentences per language with seven topics across 205 languages, documented
+    in a paper, with no named model or benchmark found beyond its own baselines.
+  confidence: medium
+  note: SIB-200 is documented in its paper and covers more languages than Belebele. It is a single topic-labeling
+    task over FLORES sentences, and no named model or leaderboard beyond its own baselines was found to use
+    it.
+  relative_to: belebele
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/Davlan/sib200/raw/main/README.md
+    shows: '"SIB-200 is the largest publicly available topic classification dataset based on Flores-200 covering
+      205 languages and dialects"; English split 701/99/204.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 73afd1b67ee71b07e28d52b52374de8bf40f884dd6a475be8fde20821cae1838
+  - url: https://arxiv.org/abs/2309.07445
+    shows: '"We annotated the English portion of the dataset and extended the ... annotation to the remaining
+      203 languages covered in the corpus".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b2601dc14aa72468241a9d8f132636ff7f6b575cf7767878d8ed4ac592bbb82c

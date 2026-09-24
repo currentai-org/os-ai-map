@@ -1,0 +1,85 @@
+product: sold
+openness:
+  score: 3
+  class: gated
+  components:
+    license:
+    - name: not-clearly-stated-on-card
+      detail: no license in the Hugging Face card, API metadata or GitHub README; no LICENSE file on the master
+        branch
+    access:
+      value: public
+    dataset_card:
+      value: present
+      detail: card describes the annotation scheme and columns
+  confidence: medium
+  note: The posts and labels download freely, but no license appears anywhere the release is published, so
+    reuse terms are unknown. The data also carries Twitter post IDs and text, which the platform's own terms
+    govern.
+  raw: license:not-clearly-stated-on-card(no license in the Hugging Face card, API metadata or GitHub README;
+    no LICENSE file on the master branch);access:public;dataset_card:present(card describes the annotation
+    scheme and columns)
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/sinhala-nlp/SOLD
+    shows: 'gated: false; no license in cardData'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 09a3e55a3528a36e164e61574fd94a42a5b3a939844ebc69c17996a1590e8ff5
+    establishes:
+    - availability
+    - license
+  - url: https://huggingface.co/datasets/sinhala-nlp/SOLD/raw/main/README.md
+    shows: Card metadata has task_categories and language only; columns include post_id (Twitter ID) and text
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 53d4a4b30ee66fdca2646d6d69da4c87e479e0e6cb116f5eab66f94c7a658878
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/Sinhala-NLP/SOLD/master/README.md
+    shows: README text with annotation scheme and experiments; no license section
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 41177c3b1d617dd76ec0729524fddae9b4a2558b59821bd35108d0aa95ad368c
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over SOLD and SemiSOLD. Clones of the experiment code on GitHub are not
+    counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/sinhala-nlp/SOLD
+    shows: 254 downloads in the trailing 30 days for sinhala-nlp/SOLD
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 09a3e55a3528a36e164e61574fd94a42a5b3a939844ebc69c17996a1590e8ff5
+  - url: https://huggingface.co/api/datasets/sinhala-nlp/SemiSOLD
+    shows: 41 downloads in the trailing 30 days for sinhala-nlp/SemiSOLD
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2d4e736e3d8ab43e0c4ac987482e80ba13e99bf265df9c26c9d3620a809409fb
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Sinhala offensive language data
+  value: SOLD holds 10,000 hand-labeled Sinhala tweets plus 145,000 model-labeled ones for offensive language
+    detection, documented in a journal paper, with no use found beyond that paper's experiments.
+  confidence: medium
+  note: SOLD is a documented, hand-labeled set for a single task in one language, offensive language in Sinhala
+    tweets. Nothing outside its paper builds on it, whereas AfroBench, for African languages, gathers 22 datasets
+    into a suite with a public leaderboard.
+  relative_to: afrobench
+  relation: two_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2212.00851
+    shows: '"SOLD is a manually annotated dataset containing 10,000 posts from Twitter"; "SemiSOLD, a larger
+      dataset containing more than 145,000 Sinhala tweets"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2c29d4d69cc7537ce89d8302caf40ac73ebc27f25210650f24080061037e1b11

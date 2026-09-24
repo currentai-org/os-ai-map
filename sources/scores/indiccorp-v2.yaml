@@ -1,0 +1,93 @@
+product: indiccorp-v2
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: cc0-1.0
+      detail: 'card and IndicBERT README: "All the datasets created as part of this work will be released under
+        a CC-0 license"; no license tag in Hugging Face metadata'
+    access:
+      value: public
+      detail: 'Hugging Face gated: false'
+    dataset_card:
+      value: partial
+      detail: card gives usage, license and citation but no source or size breakdown; composition is in the
+        paper
+  confidence: medium
+  note: The card and README release the corpus under CC0 and it downloads without a gate. The card itself only
+    shows how to load it, and what the corpus contains is described only in the paper.
+  raw: 'license:cc0-1.0(card and IndicBERT README: "All the datasets created as part of this work will be released
+    under a CC-0 license"; no license tag in Hugging Face metadata);access:public(Hugging Face gated: false);dataset_card:partial(card
+    gives usage, license and citation but no source or size breakdown; composition is in the paper)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/ai4bharat/IndicCorpV2
+    shows: '"All the datasets created as part of this work will be released under a CC-0 license and all models
+      & code will be release under an MIT license"; card shows loading example and citation.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9d6c31431f0d8359670a6853d07d7aa53ab9f3f244370962ff7e8a983095c77e
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/AI4Bharat/IndicBERT/main/README.md
+    shows: LICENSE section repeats the CC-0 statement; "The dataset is now available on HuggingFace".
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 311e34d655f447993299b9f4f0e2b8d739b233b0abfd747439aaa02031f71816
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicCorpV2
+    shows: '"gated": false; no license tag.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9fad07d1b4433e717faa02452e7eac6ee4ba65e176d4b88ee0cf1f39032569d8
+    establishes:
+    - availability
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single corpus repository, fetched per language split. A download does
+    not show whether the data went into a released model.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/ai4bharat/IndicCorpV2
+    shows: 3945 downloads in the trailing 30 days for ai4bharat/IndicCorpV2
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9fad07d1b4433e717faa02452e7eac6ee4ba65e176d4b88ee0cf1f39032569d8
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Indic pretraining text
+  value: IndicCorp v2 holds about 20.9 billion tokens across 24 Indic languages, documented in an ACL paper
+    with a minimal card, and AI4Bharat trained IndicBERT v2 on it, with IndicBERT v3 and Cadence also listing
+    it.
+  confidence: medium
+  note: AI4Bharat trained IndicBERT v2 on IndicCorp v2, and its newer IndicBERT v3 and Cadence models still
+    list it as training data. The same team's newer Sangraha is about twelve times larger, which makes IndicCorp
+    v2 the superseded one of AI4Bharat's two pretraining corpora.
+  relative_to: sangraha
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2212.05409
+    shows: 'Abstract: "we curate the largest monolingual corpora, IndicCorp, with 20.9B tokens covering 24
+      languages from 4 language families".'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 5d7600658aae7c5231ded0b8e2c258ae8455d5e0a8956951defdd1bd02dce210
+  - url: https://huggingface.co/datasets/ai4bharat/IndicCorpV2
+    shows: '"Models trained or fine-tuned on ai4bharat/IndicCorpV2" lists Cadence-Fast, Cadence, IndicBERT-v3-270M,
+      IndicBERT-v3-4B, IndicBERT-v3-1B.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 9d6c31431f0d8359670a6853d07d7aa53ab9f3f244370962ff7e8a983095c77e
+  - url: https://huggingface.co/datasets/ai4bharat/Kathbath
+    shows: '"The text data comes from the IndicCorp dataset which is a crawl of publicly available websites."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 2107b52fd19c4dc12777bbe40849f0a09db5c22fc812659ba16e0320c707ec84

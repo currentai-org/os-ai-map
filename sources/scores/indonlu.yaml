@@ -1,0 +1,105 @@
+product: indonlu
+openness:
+  score: 2
+  class: gated
+  components:
+    license:
+    - name: mit
+      detail: 'HF card: ''The licensing status of the IndoNLU benchmark datasets is under MIT License''; repo
+        LICENSE file is Apache-2.0'
+    access:
+      value: public
+      detail: ungated
+    dataset_card:
+      value: present
+      detail: per-task descriptions; creation and annotation sections are marked 'Needs More Information'
+    answers:
+      value: held-out
+      detail: GitHub test-set labels are masked; predictions are scored on CodaLab
+  confidence: medium
+  note: The task data downloads freely under a permissive license, but the official test labels are masked
+    and scored through a CodaLab competition. The Hugging Face card leaves its collection and annotation sections
+    unfilled, so provenance comes from the paper.
+  raw: 'license:mit(HF card: ''The licensing status of the IndoNLU benchmark datasets is under MIT License'';
+    repo LICENSE file is Apache-2.0);access:public(ungated);dataset_card:present(per-task descriptions; creation
+    and annotation sections are marked ''Needs More Information'');answers:held-out(GitHub test-set labels
+    are masked; predictions are scored on CodaLab)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md
+    shows: '"The licensing status of the IndoNLU benchmark datasets is under MIT License."; Source Data: "[Needs
+      More Information]"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2
+    establishes:
+    - documentation
+    - license
+  - url: https://raw.githubusercontent.com/IndoNLP/indonlu/master/LICENSE
+    shows: Apache License, Version 2.0 (repository LICENSE)
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: bd9d250c0f04338b3d3570e3ccbfba8d821d1d767f929e2f5884a250fe51dff0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/IndoNLP/indonlu/master/README.md
+    shows: '"The labels of the test set are masked (no true labels) in order to preserve the integrity of the
+      evaluation. Please submit your predictions to the submission portal at CodaLab"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 4761f00d5fed354b5ded15aeb3fa969d7c27ba5a206a41f42627bbc91b608f54
+    establishes:
+    - answers
+    - availability
+  - url: https://huggingface.co/api/datasets/indonlp/indonlu
+    shows: 'gated: false; license:mit'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246
+    establishes:
+    - availability
+adoption:
+  level: 1
+  reach: <1K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is Hugging Face downloads of the repository. Users of the GitHub copies and of the CodaLab
+    test sets are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/indonlp/indonlu
+    shows: 571 downloads in the trailing 30 days for indonlp/indonlu
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: fb625286261d1e116ce5b9e7a0a489a925c4c88a955f3f2fd5552eabb677c246
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for an Indonesian understanding benchmark
+  value: IndoNLU has twelve Indonesian understanding tasks from crawled text labeled partly by linguists, documented
+    in an AACL-IJCNLP paper, released with the IndoBERT models, and used for published Indonesian classifier
+    fine-tunes.
+  confidence: medium
+  note: IndoNLU is documented in a paper, shipped with the IndoBERT models, and many Indonesian classifiers
+    are fine-tuned on its tasks. It covers only Indonesian and only understanding tasks, while SEA-HELM tests
+    Indonesian alongside other Southeast Asian languages and adds generative, cultural and safety tasks.
+  relative_to: sea-helm
+  relation: one_below
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://arxiv.org/abs/2009.05387
+    shows: '"we introduce the first-ever vast resource for the training, evaluating, and benchmarking on Indonesian
+      natural language understanding (IndoNLU) tasks. IndoNLU includes twelve tasks"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: b378035932ea5136de29bb72619ce99fbda935bb9b56f4de7a7a111f2a003244
+  - url: https://huggingface.co/datasets/indonlp/indonlu
+    shows: 'Models trained or fine-tuned on indonlp/indonlu: w11wo/indonesian-roberta-base-posp-tagger, w11wo/indonesian-roberta-base-sentiment-classifier'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: a3c55a6518962adee613587830851a5e0a0e5df725a413442739b3bdbcaed0b8
+  - url: https://huggingface.co/datasets/indonlp/indonlu/raw/main/README.md
+    shows: '"SmSA ... The text was crawled and then annotated by several Indonesian linguists"'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 8a65fff733365b2fd1d5a026e89dd35a027abab79a13b9ec43e49420e8b8a4e2

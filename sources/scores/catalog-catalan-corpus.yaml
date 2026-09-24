@@ -1,0 +1,83 @@
+product: catalog-catalan-corpus
+openness:
+  score: 4
+  class: open
+  components:
+    license:
+    - name: mixed-per-subset
+      detail: 'Card: "The dataset as a whole does not carry a unified license"; sources range from CC0-1.0
+        and CC-BY-4.0 to CC-BY-NC-ND-4.0 and private data sharing agreements, listed in licenses.json. No license
+        in the Hugging Face metadata.'
+    access:
+      value: public
+      detail: 'Hugging Face gated: false.'
+    dataset_card:
+      value: present
+      detail: Per-source table with license and word count; pipeline and scoring described.
+  confidence: high
+  note: 'The corpus downloads without a gate, but it has no license of its own: each of its 26 sources keeps
+    its original terms, which run from CC0 to CC BY-NC-ND and private data sharing agreements. Anyone redistributing
+    it must ship the per-source license list with the data.'
+  raw: 'license:mixed-per-subset(Card: "The dataset as a whole does not carry a unified license"; sources range
+    from CC0-1.0 and CC-BY-4.0 to CC-BY-NC-ND-4.0 and private data sharing agreements, listed in licenses.json.
+    No license in the Hugging Face metadata.);access:public(Hugging Face gated: false.);dataset_card:present(Per-source
+    table with license and word count; pipeline and scoring described.)'
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/projecte-aina/CATalog/raw/main/README.md
+    shows: '"The dataset as a whole does not carry a unified license. The use, reuse, and redistribution of
+      each part of this dataset is governed by the license of its original source."'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7268f12c2e6ebd72c618627d8c61a9c3f01e657669fcf7163a985b3c9cb3b998
+    establishes:
+    - documentation
+    - license
+  - url: https://huggingface.co/api/datasets/projecte-aina/CATalog
+    shows: '"gated":false, no license in cardData'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 87c4d588c412a6a159681cc65b35a5dfa251e39c84014b5bd5566630c15788f2
+    establishes:
+    - availability
+    - license
+adoption:
+  level: 2
+  reach: 1K-10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the dataset repository over the trailing 30 days. A download is a file fetch
+    rather than a trained model, and copies mirrored elsewhere are not counted.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/api/datasets/projecte-aina/CATalog
+    shows: 3947 downloads in the trailing 30 days for projecte-aina/CATalog
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 87c4d588c412a6a159681cc65b35a5dfa251e39c84014b5bd5566630c15788f2
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: coverage and downstream use for Catalan pretraining text
+  value: About 17.45 billion words of Catalan from 26 sources, mostly filtered Common Crawl plus media, library
+    and government text, documented in a card with per-source licenses, and used to train Salamandra, ALIA-40b
+    and FLOR-6.3B.
+  confidence: medium
+  note: CATalog is the Catalan pretraining corpus behind the Barcelona Supercomputing Center's Salamandra and
+    ALIA models and the earlier FLOR model, its card documents every source with its license and word count,
+    and each document carries a quality score so users can filter at their own threshold. At under twenty billion
+    words it is large for Catalan yet far below the trillions of tokens in English web corpora such as FineWeb.
+  last_verified: '2026-09-24'
+  sources:
+  - url: https://huggingface.co/datasets/projecte-aina/CATalog/raw/main/README.md
+    shows: '"It consists of text documents from 26 different sources ... totaling in 17.45 billion words";
+      num_examples: 34314510.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 7268f12c2e6ebd72c618627d8c61a9c3f01e657669fcf7163a985b3c9cb3b998
+  - url: https://huggingface.co/api/models?filter=dataset:projecte-aina/CATalog
+    shows: Models tagged with the dataset include projecte-aina/FLOR-6.3B, BSC-LT/salamandra-7b, BSC-LT/salamandra-2b
+      and BSC-LT/ALIA-40b.
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 353d88cea2d0d1104cc31e7b280562708d725b11ec6936ad35dfce8b33e80f79
