@@ -58572,18 +58572,32 @@
           },
           "adoption": {
             "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "usage_volume",
+            "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Browserbase publishes no usage figure for the managed service itself, so adoption is read from Stagehand, its companion SDK, whose GitHub stars and weekly downloads are the best available proxy for developer reach. Because that figure belongs to a companion product rather than the platform itself, the reading is discounted below what the SDK's downloads alone would support.",
-            "last_verified": "2026-08-13",
+            "banded_quantity": "none. The figures behind the level are the vendor's own, 35m+ browser sessions a month across 10,000 customers, and 100,000 developers with no period stated, and the downloads of Stagehand, a separate SDK, are not banded.",
+            "note": "Browserbase is a hosted service, and Stagehand, the browser agent SDK it maintains, is a separate product that also drives local browsers, so Stagehand's downloads and stars count that SDK rather than use of the service. The vendor's homepage is the evidence that speaks to the service, with a monthly session count and customer and developer totals, naming Ramp, Microsoft and Lovable. Those are the vendor's claims rather than counts made here, and the level is left as it was set.",
+            "last_verified": "2026-09-24",
             "sources": [
               {
-                "url": "https://docs.browserbase.com/",
-                "shows": "\"The SDK for browser agents. Natural language selectors, self-healing actions, and caching at scale. 22k GitHub stars, 700k+ weekly downloads. Built by Browserbase.\" No session, request, user or customer figure for the Browserbase platform itself appears anywhere in the docs.",
-                "accessed": "2026-08-13",
+                "url": "https://www.browserbase.com/",
+                "shows": "\"Browserbase runs 35m+ browser sessions a month across 10,000 customers, including Ramp, Microsoft, and Lovable.\" A stats row lists Weekly SDK Downloads 800,000, Developers 100,000 and Companies 10,000. The sessions and customer figures are the ones that count the hosted service rather than the SDK.",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "7134c34322beae8ecc5e5f7861058d5c37e0c891318a809215edd0ff7e21765b"
+                "content_sha256": "9128bc0f52c0adce9cbe24a95e5aa8e6f80732139486de4f744dfa7e13da2366"
+              },
+              {
+                "url": "https://docs.browserbase.com/",
+                "shows": "Stagehand listed as a separate SDK: \"The SDK for browser agents. Natural language selectors, self-healing actions, and caching at scale. 22k GitHub stars, 700k+ weekly downloads. Built by Browserbase.\" These figures count the SDK and are not banded.",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "ea1000f7df180b3e9df0a7c632f520e68deaf31b8a9d6b5c5cae83b8a0529638"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/browserbase/stagehand/main/README.md",
+                "shows": "Stagehand's quickstart launches a local browser, \"const browser = await localBrowser.launch({ userDataDir: \"./browser-data\" })\", with \"Local runs need Chrome installed\", and a later section, \"Run it on Browserbase\", points the same script at the hosted service. Installing the SDK does not require the service.",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "60617663866cfb312ba1bc0bd2601e0b9f2bdb7e2782972c81af398c7579b72a"
               }
             ]
           },
@@ -58613,7 +58627,7 @@
           "freshness": {
             "date": "2026-08-13",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-24"
           }
         },
         {
@@ -64639,19 +64653,41 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 1,
+            "reach": "<10K",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "Adoption is measured by monthly PyPI downloads of langtrace-python-sdk, the project's own instrumentation package. GitHub stars on the repository corroborate a real but still small footprint, consistent with an early-adopter tier.",
-            "last_verified": "2026-09-17",
+            "confidence": "low",
+            "banded_quantity": "Docker Hub pulls of the scale3labs/langtrace-client server image averaged over the image's lifetime, a floor that leaves out the hosted Langtrace Cloud; langtrace-python-sdk downloads count the client and are not banded",
+            "note": "Langtrace is a self-hostable server with a hosted cloud beside it. Its Python SDK is left out because applications install it to send traces, so its downloads count instrumented applications rather than Langtrace deployments. The score comes from Docker Hub pulls of the server image that the repository's docker-compose file runs, averaged over the image's lifetime, so for a growing product it is a floor. The hosted cloud publishes no usage figure and is not counted.",
+            "last_verified": "2026-09-24",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/langtrace-python-sdk",
-                "shows": "Downloads last month 34,666 for langtrace-python-sdk (last week 6,846)",
-                "accessed": "2026-08-13",
+                "url": "https://hub.docker.com/v2/repositories/scale3labs/langtrace-client/",
+                "shows": "\"pull_count\": 21148 cumulative pulls of scale3labs/langtrace-client, \"date_registered\": \"2024-03-28\", \"last_updated\": \"2025-04-17\", about 700 a month over the image's lifetime",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "061e06953abd37f208f630c07f4019bd4846be1110387b56214de498b4f6ea8c"
+                "content_sha256": "4acef05f64194fe7001597d077658c13c32ec2a0e7eb7d8ca0b984d91c17903f"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Scale3-Labs/langtrace/main/docker-compose.yaml",
+                "shows": "The self-hosting compose file. Its langtrace-app service runs \"image: scale3labs/langtrace-client:latest\" beside postgres and clickhouse, so the Docker Hub image is the server a self-hosted install pulls.",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "634e41551d59fae39ebe1b152d35b37497ca4da6500e8e0915de6055e073226b"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/langtrace-python-sdk/recent",
+                "shows": "\"last_month\":15156 downloads of langtrace-python-sdk, the client package left out of the level",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "3200d2cdb4264bcf1c9ad8afd08daeda8c31f260b6ab34ec6fef39504106504e"
+              },
+              {
+                "url": "https://ungh.cc/repos/Scale3-Labs/langtrace",
+                "shows": "\"stars\":1232 for Scale3-Labs/langtrace. Corroboration only; a star count is not a use.",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "b40c621b07f98f6e12e7cf2f536454de08c253fe52565c15aee46b66c520ca57"
               }
             ]
           },
@@ -64674,14 +64710,14 @@
               }
             ]
           },
-          "overall_score": 2.5,
+          "overall_score": 2.0,
           "tier": null,
-          "maturity": 2.5,
+          "maturity": 2.0,
           "mature": false,
           "freshness": {
             "date": "2026-08-12",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-24"
           }
         },
         {
