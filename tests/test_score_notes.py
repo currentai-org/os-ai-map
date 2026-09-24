@@ -294,11 +294,11 @@ def test_no_note_quotes_a_usage_figure_unless_it_is_a_product_fact(sources):
     is the gate the worklist's `figure` tell was missing: without it a count comes back on the
     next update-product and CI stays green."""
     offenders = [
-        f"{slug} {axis}: {usage_figures(note)}"
+        f"{slug} {axis}: {figures}"
         for slug, score in sources["scores"].items()
         for axis in ("openness", "adoption", "capability")
         if (slug, axis) not in FIGURES_THAT_ARE_PRODUCT_FACTS
-        and usage_figures(((score.get(axis) or {}).get("note")) or "")
+        and (figures := usage_figures(((score.get(axis) or {}).get("note")) or ""))
     ]
     assert not offenders, (
         f"{len(offenders)} notes quote a usage figure:\n  " + "\n  ".join(sorted(offenders)[:20])

@@ -38,22 +38,39 @@ openness:
     - core-gated
 adoption:
   level: 3
-  reach: 100K-1M
-  signal_type: usage_volume
+  signal_type: reported_traction
   confidence: medium
-  note: Browserbase publishes no usage figure for the managed service itself, so adoption is read from Stagehand,
-    its companion SDK, whose GitHub stars and weekly downloads are the best available proxy for developer
-    reach. Because that figure belongs to a companion product rather than the platform itself, the reading
-    is discounted below what the SDK's downloads alone would support.
-  last_verified: '2026-08-13'
+  banded_quantity: none. The figures behind the level are the vendor's own, 35m+ browser sessions a month
+    across 10,000 customers, and 100,000 developers with no period stated, and the downloads of Stagehand, a
+    separate SDK, are not banded.
+  note: Browserbase is a hosted service, and Stagehand, the browser agent SDK it maintains, is a separate product
+    that also drives local browsers, so Stagehand's downloads and stars count that SDK rather than use of the
+    service. The vendor's homepage is the evidence that speaks to the service, with a monthly session count
+    and customer and developer totals, naming Ramp, Microsoft and Lovable. Those are the vendor's claims
+    rather than counts made here, and the level is left as it was set.
+  last_verified: '2026-09-24'
   sources:
-  - url: https://docs.browserbase.com/
-    shows: '"The SDK for browser agents. Natural language selectors, self-healing actions, and caching at scale.
-      22k GitHub stars, 700k+ weekly downloads. Built by Browserbase." No session, request, user or customer
-      figure for the Browserbase platform itself appears anywhere in the docs.'
-    accessed: '2026-08-13'
+  - url: https://www.browserbase.com/
+    shows: '"Browserbase runs 35m+ browser sessions a month across 10,000 customers, including Ramp, Microsoft,
+      and Lovable." A stats row lists Weekly SDK Downloads 800,000, Developers 100,000 and Companies 10,000.
+      The sessions and customer figures are the ones that count the hosted service rather than the SDK.'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: 7134c34322beae8ecc5e5f7861058d5c37e0c891318a809215edd0ff7e21765b
+    content_sha256: 9128bc0f52c0adce9cbe24a95e5aa8e6f80732139486de4f744dfa7e13da2366
+  - url: https://docs.browserbase.com/
+    shows: 'Stagehand listed as a separate SDK: "The SDK for browser agents. Natural language selectors, self-healing
+      actions, and caching at scale. 22k GitHub stars, 700k+ weekly downloads. Built by Browserbase." These
+      figures count the SDK and are not banded.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: ea1000f7df180b3e9df0a7c632f520e68deaf31b8a9d6b5c5cae83b8a0529638
+  - url: https://raw.githubusercontent.com/browserbase/stagehand/main/README.md
+    shows: 'Stagehand''s quickstart launches a local browser, "const browser = await localBrowser.launch({ userDataDir:
+      "./browser-data" })", with "Local runs need Chrome installed", and a later section, "Run it on Browserbase",
+      points the same script at the hosted service. Installing the SDK does not require the service.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 60617663866cfb312ba1bc0bd2601e0b9f2bdb7e2782972c81af398c7579b72a
 capability:
   score: 4
   basis: feature_matrix
