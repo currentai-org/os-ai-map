@@ -44,9 +44,9 @@ fail on is the small set of things that admit no innocent reading:
   The second rule failed whenever the group's live bodies disagreed, and that failed the run
   on 2026-09-24 when lakeFS relicensed to BSL-1.1 two days before: 51 repos still served the
   Apache-2.0 text and one had changed its file. A body that differs today says nothing about
-  what the URL served on its `accessed` date. What does is the file's own change history, so
-  a member is fabrication only when the digest is proven real (another member still
-  reproduces it) AND that member's file has not changed since before its recorded access.
+  what the URL served on its `accessed` date. The file's own revision history does, so a
+  member whose body changed is fabrication only when no revision of its file ever hashed to
+  the recorded digest.
 - **A recorded digest that reproduces over a bot wall.** The recorded bytes are a challenge
   page, so nothing behind any source carrying that digest was ever read.
 - **A malformed digest.** `validate.py` enforces the schema pattern, so this should be
@@ -82,14 +82,13 @@ import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 import yaml
 
-from build.vocabulary import axes, parse_date, parse_timestamp
+from build.vocabulary import axes
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -389,72 +388,96 @@ def duplicate_digest_groups(sources: list[Source]) -> list[tuple[str, list[str]]
     return [(d, sorted(u)) for d, u in sorted(by_digest.items()) if len(u) > 1]
 
 
-# How far a commit's committer date may trail the moment it reached the branch. A commit made
-# locally and pushed days later carries the earlier date, so "unchanged since before the
-# access" is only claimed with this much room to spare. Merges through the GitHub UI stamp the
-# merge time and need none of it; the slack exists for the direct-push case, and it errs
-# toward calling a change drift, which is the side a fabrication claim has to err on.
-COMMIT_DATE_SLACK = timedelta(days=7)
+# How many revisions of one file the history walk will hash before giving up. A LICENSE has a
+# handful; a README can have hundreds. Past the cap with no match the member is UNRESOLVED, not
+# drift and not fabrication: the version it served may sit further back than we looked. The
+# walk goes newest first and stops at the first match, so a file that changed once since it
+# was read (lakeFS) costs two raw fetches.
+MAX_REVISIONS = 50
 
 # raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}, the form `canonical` produces. A ref
-# containing a slash parses wrong, the history lookup then finds no commits, and the member
-# is reported as drift. That is the safe direction.
+# containing a slash parses wrong, the commits API then lists nothing for that path, and the
+# member is reported unresolved. That is the safe direction.
 RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$")
 
 
-def github_last_changed(url: str, timeout: float = 20.0) -> date | None:
-    """The committer date of the last commit touching this file on its ref, or None.
+def file_history_verdict(url: str, digest: str, timeout: float = 20.0) -> tuple[str, str]:
+    """Did any revision of this file ever hash to `digest`? (verdict, detail).
 
-    None means "no history available": not a GitHub file, a ref that does not parse, an API
-    error or a rate limit. Every one of those reads as drift downstream, never as evidence.
+    Verdict is one of:
+
+    - `served`: a revision on the URL's ref hashes to the recorded digest, so the URL really
+      served those bytes at some point. A body that differs now is drift.
+    - `never`: the whole path history on that ref was walked (within `MAX_REVISIONS`) and no
+      revision hashes to it. The URL could not have produced the recorded digest.
+    - `unresolved`: not a GitHub file, the history lookup failed or was rate-limited, a
+      revision could not be fetched, or the history is longer than the cap. None of these is
+      evidence either way.
+
+    Each revision is fetched from `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}` through
+    `http_get` and hashed over its raw bytes, the same operation `build/fetch_source` performs
+    on the branch URL, so a revision that was on the branch tip when the source was read hashes
+    to exactly what the writer recorded.
+
+    Renames need no special handling: the URL names a path, and the commits API's path history
+    on that ref covers every version that path ever held, including the commit that created
+    it by rename. What the path held under an older name was never served at this URL. The
+    listing can include side-branch commits that never sat on the branch tip; that only widens
+    the set of versions tried, which errs toward drift. What it cannot see is history rewritten
+    by a force push, and a digest recorded from a revision that was later rewritten away would
+    read `never`. That is a known limit, stated here rather than left to be discovered.
     """
     match = RAW.match(canonical(url))
     if not match:
-        return None
+        host = urlparse(url).hostname
+        return "unresolved", f"{host} has no revision history this check can walk"
     owner, repo, ref, path = match.groups()
     api = f"https://api.github.com/repos/{owner}/{repo}/commits"
     try:
         response = requests.get(
             api,
-            params={"path": path, "sha": ref, "per_page": 1},
+            params={"path": path, "sha": ref, "per_page": MAX_REVISIONS + 1},
             headers=_headers(api),
             timeout=timeout,
         )
-    except requests.RequestException:
-        return None
+    except requests.RequestException as exc:
+        return "unresolved", f"the history lookup failed ({type(exc).__name__})"
     if response.status_code != 200:
-        return None
+        return "unresolved", f"the history lookup failed (HTTP {response.status_code})"
     try:
-        stamp = parse_timestamp(response.json()[0]["commit"]["committer"]["date"])
+        commits = [(c["sha"], c["commit"]["committer"]["date"][:10]) for c in response.json()]
     except (ValueError, LookupError, TypeError):
-        return None
-    return stamp.date() if stamp else None
+        return "unresolved", "the history lookup returned something other than a commit list"
+    if not commits:
+        return "unresolved", f"the commits API lists no commits touching {path} on {ref}"
 
+    for sha, when in commits[:MAX_REVISIONS]:
+        revision = f"https://raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}"
+        try:
+            body = http_get(revision, timeout=timeout)
+        except requests.RequestException as exc:
+            return "unresolved", f"revision {sha[:10]} could not be fetched ({type(exc).__name__})"
+        if body.status_code == 404:
+            continue  # the commit that deleted the path; nothing was served at this revision
+        if body.status_code >= 400:
+            return "unresolved", f"revision {sha[:10]} could not be fetched (HTTP {body.status_code})"
+        if hashlib.sha256(body.content).hexdigest() == digest:
+            return "served", f"revision {sha[:10]} of {when} hashes to the recorded digest"
 
-def latest_access(sources: list[Source]) -> dict[tuple[str, str], date]:
-    """(digest, url) -> the latest date any record claims that URL served that digest.
-
-    The latest, because every record is its own claim: if the file was already in its
-    current form on the most recent claimed access, that claim is the impossible one.
-    """
-    out: dict[tuple[str, str], date] = {}
-    for source in sources:
-        when = parse_date(source.accessed)
-        if when is None:
-            continue
-        key = (source.digest, source.url)
-        if key not in out or when > out[key]:
-            out[key] = when
-    return out
+    if len(commits) > MAX_REVISIONS:
+        return "unresolved", (
+            f"none of the latest {MAX_REVISIONS} revisions matches and the history is longer "
+            f"than that, so an older one might"
+        )
+    return "never", f"none of the {len(commits)} revision(s) of {path} on {ref} hashes to it"
 
 
 def resolve_duplicates(
     groups: list[tuple[str, list[str]]],
     timeout: float,
-    accessed: dict[tuple[str, str], date] | None = None,
-    last_changed=github_last_changed,
+    history=file_history_verdict,
 ) -> tuple[list[str], list[str]]:
-    """(failures, benign) — decided by fetching and by change history, not by guessing.
+    """(failures, benign) — decided by fetching and by revision history, not by guessing.
 
     TWO HEURISTICS HAVE BEEN WRONG HERE, and each failed a run.
 
@@ -476,26 +499,22 @@ def resolve_duplicates(
     digest `c71d239df917…` is recorded on 52 LICENSE URLs; 51 still reproduce it, and
     treeverse/lakeFS returned a different body because lakeFS relicensed to BSL-1.1 on
     2026-09-22, five weeks after its source was read on 2026-08-18. The inference compared
-    two bodies fetched TODAY and drew a conclusion about what one URL served back THEN. A
-    changed body is drift everywhere else in this module (`refetch` says so in as many
-    words), and sharing a digest with other files does not make it anything else.
+    two bodies fetched TODAY and drew a conclusion about what one URL served back THEN.
 
-    So what can actually show that a digest never came from its URL? Two facts together:
+    Dates do not settle it either. A first fix compared the file's last commit date with the
+    recorded access, and a merge commit breaks that: a PR commit dated two weeks before the
+    access and merged after it reports a pre-access date for a change the reader never saw.
+    What settles it is the content. So for every member whose live body differs from the
+    recorded digest, `history` walks that file's revisions and hashes each one:
 
-    1. **The digest is real.** Some member still reproduces it through today's fetch path,
-       so it is the hash of a body that exists, not a fetch-mode artifact or random hex.
-    2. **This member could not have served it.** Its file has not changed since before its
-       recorded access (the last commit touching it, less `COMMIT_DATE_SLACK`), and it serves
-       a different body now. Then it served that different body on the access date too, and
-       the recorded digest was copied from elsewhere.
+    - some revision hashes to the digest: the URL served it once, and the change is drift;
+    - no revision ever did: FABRICATION, whether or not another member reproduces the digest,
+      because the digest could not have come from this URL;
+    - the history could not be walked (not GitHub, a failed or rate-limited lookup, longer
+      than the cap): UNRESOLVED, reported and never a failure.
 
-    That pair is the only thing that fails here besides a bot wall. The history comes from
-    `last_changed`, which answers for GitHub-hosted files and returns None for everything
-    else. A member with no history, or one whose file changed after its access, is drift:
-    reported, queued for a re-check, never a failure. The lakeFS LICENSE is the second
-    case; the same group with a LICENSE last touched in 2020 would be a failure.
+    Only members that changed are walked, so a group that still reproduces costs nothing.
     """
-    accessed = accessed or {}
     failures, benign = [], []
     for digest, urls in groups:
         live_by_url: dict[str, str] = {}
@@ -532,7 +551,6 @@ def resolve_duplicates(
         walls_matching = [w for w in walled if w[1] == digest]
         reproducing = [u for u, live in live_by_url.items() if live == digest]
         changed = [u for u, live in live_by_url.items() if live != digest]
-        distinct = set(live_by_url.values())
 
         if walls_matching:
             wall_urls = ", ".join(u for u, _, _ in walls_matching)
@@ -543,46 +561,29 @@ def resolve_duplicates(
                 f"({listed}) were digested behind the wall and never read. Re-verify them "
                 f"against a source the host will serve."
             )
-        elif len(distinct) == 1:
-            live = next(iter(distinct))
-            note = "" if live == digest else f" (both now hash to {live[:12]}…, so the pair has drifted together)"
-            benign.append(
-                f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
-                f"re-fetching confirms their bodies really are identical{note}."
-            )
-        elif changed:
+        else:
+            if reproducing and not changed:
+                benign.append(
+                    f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
+                    f"re-fetching confirms their bodies really are identical."
+                )
             for url in changed:
                 live = live_by_url[url]
-                when = accessed.get((digest, url))
-                # Only asked when it could matter: without a reproducing member the digest is
-                # not proven real, and without an access date there is nothing to compare to.
-                since = last_changed(url) if reproducing and when else None
-                if since is not None and since + COMMIT_DATE_SLACK < when:
-                    failures.append(
-                        f"digest {digest[:12]}… is recorded for {url} as read on {when}, but "
-                        f"that file has not changed since {since} and serves a different body "
-                        f"({live[:12]}…). "
-                        f"The recorded digest is real ({len(reproducing)} other URL(s) in the "
-                        f"group still reproduce it, e.g. {reproducing[0]}), so it was copied "
-                        f"onto a URL that could not have produced it."
-                    )
-                    continue
-                if not reproducing:
-                    why = "no member reproduces the recorded digest, so every member has drifted"
-                elif since is not None and since >= when:
-                    why = f"the file changed on {since}, after the recorded access on {when}"
-                elif since is not None:
-                    why = (
-                        f"the file last changed on {since}, within {COMMIT_DATE_SLACK.days} "
-                        f"days of the recorded access on {when}, too close to rule out"
-                    )
-                else:
-                    why = "no change history is available for it"
-                benign.append(
-                    f"digest {digest[:12]}…: {url} now serves {live[:12]}… while "
+                verdict, detail = history(url, digest)
+                head = (
+                    f"digest {digest[:12]}…: {url} now serves {live[:12]}…, and "
                     f"{len(reproducing)} of {len(urls)} URLs sharing the digest still "
-                    f"reproduce it. Drift, not fabrication: {why}. Re-check that source."
+                    f"reproduce it."
                 )
+                if verdict == "never":
+                    failures.append(
+                        f"{head} FABRICATION: {detail}, so the recorded digest could not have "
+                        f"come from this URL."
+                    )
+                elif verdict == "served":
+                    benign.append(f"{head} Drift, not fabrication: {detail}. Re-check that source.")
+                else:
+                    benign.append(f"{head} Unresolved: {detail}. Neither cleared nor failed.")
         if walled and not walls_matching:
             benign.append(
                 f"digest {digest[:12]}…: {', '.join(u for u, _, _ in walled)} answered with a "
@@ -664,11 +665,11 @@ def main() -> int:
 
     failures = offline_failures(sources)
 
-    # Duplicate digests are resolved by fetching and by change history rather than assumed to
-    # be fabrication. See resolve_duplicates: earlier heuristics failed on canonical LICENSE
+    # Duplicate digests are resolved by fetching and by revision history rather than assumed
+    # to be fabrication. See resolve_duplicates: earlier heuristics failed on canonical LICENSE
     # texts, a host alias and a relicensed repo, none of which is anybody pasting anything.
     dup_failures, dup_benign = resolve_duplicates(
-        duplicate_digest_groups(sources), args.timeout, accessed=latest_access(sources)
+        duplicate_digest_groups(sources), args.timeout
     )
     failures.extend(dup_failures)
 

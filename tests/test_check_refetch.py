@@ -1,14 +1,14 @@
 """Tests for the sampled re-fetch.
 
-The two that matter are `test_a_member_whose_file_never_changed_is_still_fabrication` and
+The two that matter are `test_a_copied_digest_no_revision_ever_matched_is_fabrication` and
 `test_rate_limit_is_not_reported_dead`.
 
 The first is the gate's whole reason to exist: the invariant and the digest requirement read
 what the writer wrote, so the only thing that catches an invented digest is noticing it could
-not have come from a body. A real digest recorded against a file that has not changed since
-before the access, and serves something else, is that. A shared digest alone is not, and
-neither is a member that changed after it was read
-(`test_a_relicensed_member_of_a_shared_license_digest_is_drift`).
+not have come from a body. A shared digest recorded against a file none of whose revisions
+ever hashed to it is that. A shared digest alone is not, and neither is a member whose file
+changed after it was read
+(`test_a_relicensed_member_whose_history_holds_the_digest_is_drift`).
 
 The second pins a bug the first real run produced. The sampled re-fetch reported a live
 Mastra LICENSE as dead because GitHub answered 429, and a gate that reports rate limiting as
@@ -17,7 +17,6 @@ findings bucket.
 """
 
 import hashlib
-from datetime import date
 from unittest.mock import Mock, patch
 
 import pytest
@@ -81,154 +80,185 @@ def _serve(monkeypatch, bodies: dict[str, bytes]):
 
 
 def test_identical_bodies_clear_the_group(monkeypatch):
+    digest = hashlib.sha256(b"same").hexdigest()
     mod = _serve(monkeypatch, {"https://a.example/x": b"same", "https://b.example/y": b"same"})
     failures, benign = mod.resolve_duplicates(
-        [(DIGEST_A, ["https://a.example/x", "https://b.example/y"])], 5.0
+        [(digest, ["https://a.example/x", "https://b.example/y"])], 5.0,
+        history=lambda url, digest: pytest.fail("a group that reproduces walks no history"),
     )
     assert failures == [] and len(benign) == 1
     assert "really are identical" in benign[0]
 
 
-def test_differing_bodies_without_history_are_drift_not_fabrication(monkeypatch):
-    """The second heuristic this module retired: "bodies differ today, so one was never read."
-
-    Two bodies fetched now say nothing about what either URL served on its access date. With
-    no change history to consult, a member that differs is drift like any other.
-    """
-    apache = b"Apache License 2.0 text"
-    digest = hashlib.sha256(apache).hexdigest()
-    mod = _serve(monkeypatch, {"https://a.example/x": apache, "https://b.example/y": b"different"})
-    failures, benign = mod.resolve_duplicates(
-        [(digest, ["https://a.example/x", "https://b.example/y"])],
-        5.0,
-        accessed={(digest, "https://b.example/y"): date(2026, 8, 18)},
-        last_changed=lambda url: None,
-    )
-    assert failures == []
-    assert len(benign) == 1 and "Drift, not fabrication" in benign[0]
-    assert "no change history" in benign[0]
-
-
+APACHE = b"                                 Apache License\n  Version 2.0, January 2004\n"
+BSL = b"Business Source License 1.1\n"
+APACHE_DIGEST = hashlib.sha256(APACHE).hexdigest()
 LICENSE_URLS = [
     "https://raw.githubusercontent.com/huggingface/peft/main/LICENSE",
     "https://raw.githubusercontent.com/vllm-project/vllm/main/LICENSE",
     "https://github.com/treeverse/lakeFS/blob/master/LICENSE",
 ]
 LAKEFS_RAW = "https://raw.githubusercontent.com/treeverse/lakeFS/master/LICENSE"
-APACHE = b"                                 Apache License\n  Version 2.0, January 2004\n"
-BSL = b"Business Source License 1.1\n"
+LAKEFS_API = "https://api.github.com/repos/treeverse/lakeFS/commits"
 
 
-def _license_group(monkeypatch, lakefs_last_changed: date):
-    """The #692 shape: one Apache-2.0 digest on three LICENSE URLs, lakeFS now serving BSL."""
-    digest = hashlib.sha256(APACHE).hexdigest()
+class _Api:
+    def __init__(self, payload, status=200):
+        self.payload, self.status_code = payload, status
+
+    def json(self):
+        return self.payload
+
+
+def _github(monkeypatch, bodies: dict[str, bytes], histories: dict[str, list[tuple[str, bytes]]],
+            api_status: int = 200):
+    """A fake GitHub. `histories` maps a commits-API URL to (sha, body) newest first; each
+    revision is served at raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}."""
+    import build.check_refetch as mod
+
+    calls = {"api": 0, "raw": 0}
+    served = dict(bodies)
+    for api, revisions in histories.items():
+        owner, repo = api.split("/repos/")[1].split("/")[:2]
+        for sha, body in revisions:
+            served[f"https://raw.githubusercontent.com/{owner}/{repo}/{sha}/LICENSE"] = body
+
+    def get(url, params=None, **kw):
+        if url in histories:
+            calls["api"] += 1
+            if api_status != 200:
+                return _Api(None, api_status)
+            per_page = params["per_page"]
+            return _Api([
+                {"sha": sha, "commit": {"committer": {"date": "2026-09-22T13:49:51Z"}}}
+                for sha, _ in histories[url][:per_page]
+            ])
+        if "/raw.githubusercontent.com/" in url and len(url.split("/")[5]) == 40:
+            calls["raw"] += 1
+        return _Resp(served[url])
+
+    monkeypatch.setattr(mod.requests, "get", get)
+    return mod, calls
+
+
+def _lakefs_group(monkeypatch, lakefs_history, api_status=200):
     bodies = {canonical(u): APACHE for u in LICENSE_URLS}
     bodies[LAKEFS_RAW] = BSL
-    mod = _serve(monkeypatch, bodies)
-    asked = []
-
-    def last_changed(url):
-        asked.append(url)
-        return lakefs_last_changed
-
-    failures, benign = mod.resolve_duplicates(
-        [(digest, sorted(LICENSE_URLS))],
-        5.0,
-        accessed={(digest, u): date(2026, 8, 18) for u in LICENSE_URLS},
-        last_changed=last_changed,
-    )
-    return failures, benign, asked
+    mod, calls = _github(monkeypatch, bodies, {LAKEFS_API: lakefs_history}, api_status)
+    failures, benign = mod.resolve_duplicates([(APACHE_DIGEST, sorted(LICENSE_URLS))], 5.0)
+    return failures, benign, calls
 
 
-def test_a_relicensed_member_of_a_shared_license_digest_is_drift(monkeypatch):
+def test_a_relicensed_member_whose_history_holds_the_digest_is_drift(monkeypatch):
     """#692: lakeFS relicensed to BSL-1.1 on 2026-09-22, after its 2026-08-18 read.
 
-    The other members still reproduce the Apache-2.0 digest, so the digest is real, and the
-    lakeFS file changed after it was read. That is ordinary drift. The old resolver called it
+    The previous revision of its LICENSE is the Apache-2.0 text, which hashes to the recorded
+    digest, so the URL really served it. That is drift. The old resolver called it
     "FABRICATION — no innocent reading" and failed the weekly run.
     """
-    failures, benign, asked = _license_group(monkeypatch, date(2026, 9, 22))
-    assert failures == []
-    assert asked == ["https://github.com/treeverse/lakeFS/blob/master/LICENSE"], (
-        "history is looked up only for the member that changed"
+    failures, benign, calls = _lakefs_group(
+        monkeypatch, [("b" * 40, BSL), ("a" * 40, APACHE)]
     )
+    assert failures == []
     assert len(benign) == 1
     assert "treeverse/lakeFS" in benign[0] and "2 of 3 URLs" in benign[0]
-    assert "changed on 2026-09-22, after the recorded access on 2026-08-18" in benign[0]
+    assert "Drift, not fabrication" in benign[0] and "revision aaaaaaaaaa" in benign[0]
+    assert calls == {"api": 1, "raw": 2}, "only the changed member is walked, newest first"
 
 
-def test_a_member_whose_file_never_changed_is_still_fabrication(monkeypatch):
-    """The case the class exists for, kept intact.
-
-    Same group, but the lakeFS LICENSE was last touched in 2020. It served the BSL body on
-    2026-08-18 too, so the Apache-2.0 digest recorded against it could only have been copied
-    from one of the other members.
-    """
-    failures, benign, _asked = _license_group(monkeypatch, date(2020, 8, 2))
-    assert len(failures) == 1 and benign == []
-    assert "treeverse/lakeFS" in failures[0]
-    assert "has not changed since 2020-08-02" in failures[0]
-    assert "copied" in failures[0]
-
-
-def test_a_change_inside_the_commit_date_slack_is_not_called_fabrication(monkeypatch):
-    """A committer date can predate the push, so a change close to the access is drift."""
-    failures, benign, _asked = _license_group(monkeypatch, date(2026, 8, 14))
-    assert failures == []
-    assert "too close to rule out" in benign[0]
-
-
-def test_an_unproven_digest_is_never_called_fabrication(monkeypatch):
-    """If no member reproduces the digest, it is not shown to be a real body at all.
-
-    It could be a digest of a fetch mode this module no longer uses (a rendered blob page,
-    say), so an unchanged file serving something else proves nothing about copying. The
-    history is not even consulted.
-    """
-    mod = _serve(monkeypatch, {"https://a.example/x": b"one", "https://b.example/y": b"two"})
-    asked = []
-    failures, benign = mod.resolve_duplicates(
-        [(DIGEST_A, ["https://a.example/x", "https://b.example/y"])],
-        5.0,
-        accessed={(DIGEST_A, "https://a.example/x"): date(2026, 8, 18),
-                  (DIGEST_A, "https://b.example/y"): date(2026, 8, 18)},
-        last_changed=lambda url: asked.append(url) or date(2020, 1, 1),
+def test_a_copied_digest_no_revision_ever_matched_is_fabrication(monkeypatch):
+    """The case the class exists for. Other members reproduce the digest, but no revision of
+    this file ever hashed to it, so it was copied onto a URL that could not produce it."""
+    failures, benign, _calls = _lakefs_group(
+        monkeypatch, [("b" * 40, BSL), ("c" * 40, b"an older non-Apache text")]
     )
-    assert failures == [] and asked == []
-    assert len(benign) == 2 and all("every member has drifted" in b for b in benign)
+    assert len(failures) == 1 and benign == []
+    assert "treeverse/lakeFS" in failures[0] and "FABRICATION" in failures[0]
+    assert "none of the 2 revision(s)" in failures[0]
 
 
-def test_latest_access_keeps_the_most_recent_claim():
-    from build.check_refetch import latest_access
+def test_a_digest_neither_member_reproduces_still_fails_when_history_proves_it(monkeypatch):
+    """Codex finding 1 on #699: a fabricated digest pasted onto two URLs, neither reproducing
+    it. Whether some member reproduces the digest is not the test; the history is."""
+    fake = "f" * 64
+    urls = [
+        "https://raw.githubusercontent.com/o/one/main/LICENSE",
+        "https://raw.githubusercontent.com/o/two/main/LICENSE",
+    ]
+    mod, _calls = _github(
+        monkeypatch,
+        {urls[0]: b"one", urls[1]: b"two"},
+        {
+            "https://api.github.com/repos/o/one/commits": [("1" * 40, b"one")],
+            "https://api.github.com/repos/o/two/commits": [("2" * 40, b"two"), ("3" * 40, b"old")],
+        },
+    )
+    failures, benign = mod.resolve_duplicates([(fake, urls)], 5.0)
+    assert len(failures) == 2 and benign == []
+    assert all("0 of 2 URLs" in f and "FABRICATION" in f for f in failures)
 
-    old = Source("p", "openness", "https://a.example/x", DIGEST_A, 200, "2026-07-01")
-    new = Source("q", "openness", "https://a.example/x", DIGEST_A, 200, date(2026, 8, 18))
-    assert latest_access([old, new]) == {(DIGEST_A, "https://a.example/x"): date(2026, 8, 18)}
+
+def test_a_late_merged_commit_is_judged_by_content_not_date(monkeypatch):
+    """Codex finding 2 on #699: a true merge brings in a PR commit dated two weeks BEFORE the
+    access, merged after it. Every commit here carries a pre-access date, which the date rule
+    read as "unchanged since before the access" and so as fabrication. The walk hashes the
+    revisions instead, finds the Apache text the reader actually saw, and calls it drift."""
+    failures, benign, _calls = _lakefs_group(
+        monkeypatch,
+        [("d" * 40, BSL), ("e" * 40, BSL), ("a" * 40, APACHE)],  # merge, PR commit, original
+    )
+    assert failures == []
+    assert "Drift, not fabrication" in benign[0]
 
 
-def test_github_last_changed_reads_the_commit_history(monkeypatch):
+@pytest.mark.parametrize("status", [403, 429, 500])
+def test_a_failed_history_lookup_is_unresolved(monkeypatch, status):
+    """A rate limit says nothing about the file. It must not read as drift either."""
+    failures, benign, _calls = _lakefs_group(
+        monkeypatch, [("b" * 40, BSL)], api_status=status
+    )
+    assert failures == []
+    assert f"Unresolved: the history lookup failed (HTTP {status})" in benign[0]
+    assert "Drift" not in benign[0]
+
+
+def test_a_history_past_the_cap_is_unresolved(monkeypatch):
+    import build.check_refetch as mod
+
+    history = [(f"{i:040d}", f"version {i}".encode()) for i in range(mod.MAX_REVISIONS + 5)]
+    failures, benign, calls = _lakefs_group(monkeypatch, history)
+    assert failures == []
+    assert "Unresolved" in benign[0] and f"latest {mod.MAX_REVISIONS} revisions" in benign[0]
+    assert calls["raw"] == mod.MAX_REVISIONS, "the cap bounds the walk"
+
+
+def test_a_non_github_member_is_unresolved_not_drift(monkeypatch):
+    apache = b"Apache License 2.0 text"
+    digest = hashlib.sha256(apache).hexdigest()
+    mod = _serve(monkeypatch, {"https://a.example/x": apache, "https://b.example/y": b"different"})
+    failures, benign = mod.resolve_duplicates(
+        [(digest, ["https://a.example/x", "https://b.example/y"])], 5.0
+    )
+    assert failures == []
+    assert len(benign) == 1
+    assert "Unresolved: b.example has no revision history this check can walk" in benign[0]
+
+
+def test_the_history_walk_asks_for_one_more_than_the_cap(monkeypatch):
+    """One extra commit in the listing is how the walk knows the history runs past the cap."""
     import build.check_refetch as mod
 
     seen = {}
 
-    class Api:
-        status_code = 200
-
-        def json(self):
-            return [{"commit": {"committer": {"date": "2026-09-22T13:49:51Z"}}}]
-
     def get(url, params=None, **kw):
-        seen["url"], seen["params"] = url, params
-        return Api()
+        seen.update(url=url, params=params)
+        return _Api([])
 
     monkeypatch.setattr(mod.requests, "get", get)
-    assert mod.github_last_changed(LICENSE_URLS[2]) == date(2026, 9, 22)
-    assert seen["url"] == "https://api.github.com/repos/treeverse/lakeFS/commits"
-    assert seen["params"] == {"path": "LICENSE", "sha": "master", "per_page": 1}
-
-    assert mod.github_last_changed("https://example.com/LICENSE") is None
-    Api.status_code = 403  # a rate limit is "no history", never evidence
-    assert mod.github_last_changed(LICENSE_URLS[2]) is None
+    verdict, detail = mod.file_history_verdict(LICENSE_URLS[2], APACHE_DIGEST)
+    assert seen["url"] == LAKEFS_API
+    assert seen["params"] == {"path": "LICENSE", "sha": "master", "per_page": mod.MAX_REVISIONS + 1}
+    assert verdict == "unresolved" and "lists no commits" in detail
 
 
 def test_the_resolver_fetches_through_canonical_like_every_other_fetch():
