@@ -321,7 +321,10 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
 
     AfroBench (#689) is the third such decision: the suite redistributes fourteen Masakhane and
     Sunbird datasets that people also download on their own, so their downloads are not runs of
-    the suite and it bands on its own repository's stars instead."""
+    the suite and it bands on its own repository's stars instead.
+
+    qdrant and milvus (#658) are the fourth and fifth: each declares its Python client, which
+    counts client installs rather than deployments of the server."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -334,6 +337,8 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     assert declared == {
         ("hexabot", "npm", "@hexabot-ai/widget"),
         ("yomo", "crates", "yomo"),
+        ("qdrant", "pypi", "qdrant-client"),
+        ("milvus", "pypi", "pymilvus"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS}
 
 

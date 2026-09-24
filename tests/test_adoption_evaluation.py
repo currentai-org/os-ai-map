@@ -104,7 +104,10 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # rename moves it exactly as a product move does. Measured rather than asserted: 378 rows
 # before and after, six rows different, and on each the only field that differs is the slug
 # itself. No product changed category and no band moved.
-MEASUREMENTS_DIGEST = "a9356bb01c5b8d2754ff8448df8bbfa11713780dc8e0c7ab8793654617666a12"
+# Moved by #658: qdrant and milvus declare their Python clients not_primary_channel, so both
+# fall through from pypi.downloads_30d to github.stargazers_count. Measured rather than
+# asserted: 378 rows before and after, and those two are the only rows that differ.
+MEASUREMENTS_DIGEST = "c01d2817a0d27a6ff8b1c08458600a30c1169eabfe5dec22115d85bd1564069f"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -471,8 +474,12 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # downloads are not runs of the suite, and it keeps only its GitHub and arXiv routes.
     assert inputs.declared_artifacts["afrobench"] == {"github", "arxiv"}
     assert {kind for kind, _ in inputs.non_primary_artifacts["afrobench"]} == {"huggingface_dataset"}
+    # qdrant and milvus (#658) declare their Python clients: a server's client counts client
+    # installs, not deployments of the server.
+    assert inputs.non_primary_artifacts["qdrant"] == {("pypi", "qdrant-client")}
+    assert inputs.non_primary_artifacts["milvus"] == {("pypi", "pymilvus")}
     # Nothing else declares one, so nothing else can have moved.
-    assert set(inputs.non_primary_artifacts) == {"hexabot", "yomo", "afrobench"}
+    assert set(inputs.non_primary_artifacts) == {"hexabot", "yomo", "afrobench", "qdrant", "milvus"}
 
 
 def test_the_two_declared_products_band_on_stars_at_two(measurement_rows):
@@ -490,7 +497,7 @@ def test_the_two_declared_products_band_on_stars_at_two(measurement_rows):
 def test_no_other_product_carries_an_exclusion(measurement_rows):
     """The column is empty everywhere else, so a reader can tell an exclusion from an absence."""
     carrying = {r["product_slug"] for r in measurement_rows if r["non_primary_artifacts"]}
-    assert carrying == {"hexabot", "yomo"}
+    assert carrying == {"hexabot", "yomo", "qdrant", "milvus"}
 
 
 # --- measurements: aggregation, numbers, banding ---------------------------------
