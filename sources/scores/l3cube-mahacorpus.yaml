@@ -38,32 +38,32 @@ openness:
     - availability
     - documentation
 adoption:
-  level: null
-  reach: null
-  signal_type: unknown
-  confidence: medium
-  note: The corpus is distributed as Google Drive files linked from its GitHub README, with no Hugging Face
-    copy or package whose downloads could be counted. Its GitHub stars could not be read in this pass, so no
-    usage figure is recorded.
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the MarathiNLP repository, which links the corpus alongside the group's Marathi models
+    and other datasets, so the stars are not the corpus's alone; a star is attention rather than use.
   last_verified: '2026-09-24'
   sources:
-  - url: https://raw.githubusercontent.com/l3cube-pune/MarathiNLP/main/README.md
-    shows: The data is released from this GitHub repository; the README links no Hugging Face dataset or package
-      to count
+  - url: https://ungh.cc/repos/l3cube-pune/MarathiNLP
+    shows: 'GitHub repository record for l3cube-pune/MarathiNLP (via the ungh.cc mirror of the GitHub API):
+      164 stargazers, last push 2025-09-14.'
     accessed: '2026-09-24'
     http_status: 200
-    content_sha256: fa5025a15576cf7aba49c56cfe54f1866d538d36447016068b58853a476a0d38
+    content_sha256: 25e55e9d0f73b47a63ed56863e7e2766865667462532cc758405b3f063813598
 capability:
-  score: 4
+  score: 1
   basis: feature_matrix
   basis_detail: coverage and downstream use for Marathi pretraining text
   value: 289 million tokens in 24.8 million Marathi sentences crawled from news and other sites, documented
     in a workshop paper, and used with existing sources to train the MahaBERT, MahaAlBERT and MahaRoBERTa models.
   confidence: medium
-  note: MahaCorpus is documented in its paper, and L3Cube's MahaBERT family of Marathi models was trained on
-    it together with existing sources. At 289 million tokens it is much smaller than the Marathi portion of
-    Sangraha, which covers 22 Indian languages.
-  relative_to: sangraha
+  note: MahaCorpus gives Marathi news and web sentences documented in a workshop paper, and the MahaBERT family
+    of Marathi models was trained on it together with existing sources. At under three hundred million tokens
+    it is far smaller than single-language sets such as the Basque Latxa Corpus and a tiny fraction of the
+    trillions in English pretraining corpora.
+  relative_to: latxa-corpus
   relation: one_below
   last_verified: '2026-09-24'
   sources:

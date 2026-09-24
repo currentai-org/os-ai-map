@@ -267,7 +267,7 @@ def test_local_scores_matches_check_rubrics_split():
     # Recording an increase rather than hiding one: each closes on a tier ruling, not on more work.
     #
     # 7 -> 21 with the language_specific_datasets promotion (#686), 97 products in. All fourteen
-    # are licence-tier gaps of the kinds above, recorded rather than hand-closed: ten downloadable
+    # are licence-tier gaps of the kinds above, recorded rather than hand-closed: nine downloadable
     # datasets that state no licence (the `unstated` question openhermes-2-5 already sits on), one
     # suite with an unlicensed member, one CC-BY-ND set, and three custom licences - Microsoft
     # Research, Esethu and the community-governed Kaitiakitanga License. The same change ruled four
