@@ -44,17 +44,25 @@ openness:
     content_sha256: 5e8a5edbd2035bb65d1e440e586d20aa238a8f91b9515f59a9ed82a6cc499068
     establishes: [code]
 adoption:
-  level: 1
-  reach: <10K
+  level: 2
+  reach: 10K-100K
   signal_type: usage_volume
-  confidence: medium
-  note: Adoption is measured as trailing-30-day Hugging Face downloads of the declared Hub repository, with
-    manual gating suppressing the count. fairchem-core also exists and sees far more traffic, but it serves
-    every fairchem model rather than UMA specifically, so the gated Hub repository remains UMA's own channel.
-  last_verified: '2026-09-10'
+  confidence: high
+  banded_quantity: trailing-30-day PyPI downloads of fairchem-core, the declared package that installs UMA and fetches its checkpoints
+  note: Adoption is measured from PyPI downloads of fairchem-core, the declared package that installs UMA
+    and fetches its checkpoints, because a package that is the documented way to obtain the weights takes
+    precedence over the Hub. The gated facebook/UMA Hub repository reports far fewer downloads, since manual
+    approval suppresses its count.
+  last_verified: '2026-09-17'
+  derived_from:
+    observation_snapshot_id: 36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6
+    source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
+    route_id: pypi.downloads_30d
+    measured_level: 2
+    measurement_as_of: '2026-09-17'
   sources:
   - url: https://huggingface.co/api/models/facebook/UMA
-    shows: 'downloads: 83; likes: 374; gated: manual.'
+    shows: 'downloads: 83; likes: 374; gated: manual — recorded so the superseded Hub signal stays visible.'
     accessed: '2026-09-10'
     http_status: 200
     content_sha256: 774114cf81953f1f4ec2928e48353f1ba2cbcabca2db6c9dd4fb970cb61ac207
