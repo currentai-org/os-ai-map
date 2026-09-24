@@ -31,6 +31,9 @@ When in doubt about which door, start there.
   [`operations/artifact-state-rename.md`](operations/artifact-state-rename.md). Editors do not
   run these (see `AGENTS.md` on the read-only boundary).
 - **`schemas/`** is the machine-readable JSON Schema for the source files.
+- **`briefs/`** holds dated gap reports on questions the map answers without scoring, such as
+  public AI compute, which is not product-shaped. Like the sweep records in `sweeps/`, each brief
+  is a record of what its sources said on its date. It gets refreshed by a new brief, not edited.
 
 ## What belongs in a doc
 
