@@ -129,6 +129,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `langtrace` adoption now comes from Docker Hub pulls of its server image, averaged over the
+  image's lifetime as a floor, instead of downloads of its Python SDK, which is declared
+  `not_primary_channel`. It moved from 2 to 1, with no telemetry_observability stage move.
+  `browserbase` moved to `reported_traction` on the vendor's own session and customer figures
+  rather than Stagehand's downloads, with its level unchanged at 3
+  ([#695](https://github.com/currentai-org/os-ai-map/issues/695)).
 - `qdrant` and `milvus` adoption now comes from Docker Hub pulls of the server image, averaged over
   the image's lifetime as a floor, instead of downloads of their Python clients. Their pypi
   artifacts are declared `not_primary_channel`. qdrant moved from 5 to 3 and milvus from 4 to 3,

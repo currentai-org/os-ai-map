@@ -324,7 +324,10 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     the suite and it bands on its own repository's stars instead.
 
     qdrant and milvus (#658) are the fourth and fifth: each declares its Python client, which
-    counts client installs rather than deployments of the server."""
+    counts client installs rather than deployments of the server.
+
+    langtrace (#695) is the sixth: its Python SDK counts instrumented applications rather than
+    deployments of the platform."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -339,6 +342,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("yomo", "crates", "yomo"),
         ("qdrant", "pypi", "qdrant-client"),
         ("milvus", "pypi", "pymilvus"),
+        ("langtrace", "pypi", "langtrace-python-sdk"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS}
 
 
