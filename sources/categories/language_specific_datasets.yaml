@@ -4,11 +4,13 @@ description: "Datasets assembled to make an underrepresented language, or a set 
   underrepresented languages, usable for AI: pretraining text, speech, instruction and
   dialogue data, and evaluation sets. General multilingual corpora that happen to include
   a language live in Training & Synthetic Datasets."
-strapline: Open data for underrepresented languages is regional. Indic and Southeast Asian languages
-  have open pretraining text, speech, instruction data and evaluation sets from national programs,
-  while the Indigenous Americas have small parallel corpora and one shared-task benchmark, and the
-  Pacific has no open dataset of its own. The largest labeled low-resource speech collection, Meta's
-  MMS recordings, is withheld, and te reo Māori's is granted only on its community's terms.
+strapline: >-
+  No open corpus for an underrepresented language comes near English scale. The largest here,
+  Sangraha, holds about a quarter of a trillion tokens in 22 Indian languages and English, against
+  FineWeb's 18.5 trillion in English alone. Coverage is regional as well: Indic and Southeast Asian languages
+  have open text, speech, instruction and evaluation data, the Indigenous Americas small parallel
+  corpora, and the Pacific nothing of its own. The largest labeled low-resource speech collection,
+  Meta's MMS recordings, is withheld.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -34,14 +36,29 @@ scoring_recipe:
     owners describe them. Roots carry no relative_to; every other band names a same-modality
     peer where one exists.
 
-    Distribution at promotion (97 banded): 23 at 5, 30 at 4, 33 at 3, 11 at 2, 0 at 1. The
-    widest rung, 3, holds 33 of 97, over the one-third review trigger. It is the clustering case
-    rather than a loose definition: it collects documented sets with no downstream model outside
-    their own paper, superseded releases and narrow single-task sets, which is the common state
-    of low-resource data, and every member names its reason in its note. Two review passes moved
-    twelve bands in both directions against the rung text before this count. Top anchors per
-    modality: Common Voice (speech), FLORES+ (evaluation), Sangraha (pretraining text), BPCC
-    (parallel text), WangchanThaiInstruct (instruction data).
+    Size caps then bound every band by how much data a corpus holds, measured against the
+    largest English and Chinese datasets of the same kind, one order of magnitude per step.
+    Pretraining text: 5 needs a trillion tokens (FineWeb and DCLM scale), 4 a hundred billion, 3
+    ten billion, 2 one billion, and anything smaller is 1. Speech, counted in transcribed hours:
+    5 needs a hundred thousand (Emilia and YODAS scale), 4 ten thousand, 3 a thousand, 2 a
+    hundred. Parallel text, in sentence pairs: 5 needs a billion, 4 a hundred million, 3 ten
+    million, 2 one million. A product's band is the lower of what the rungs above give it and
+    what its size allows; a cap never raises a band. Words are counted as tokens, which
+    understates token counts, and a size known only in bytes is estimated at four bytes a token;
+    each estimate says so in the product's capability value. Evaluation sets, instruction data,
+    the SEACrowd hub and task annotations such as NCHLT carry no cap, because their size is a
+    count of items rather than a measure of how much of a language they hold, and ArabicMMLU
+    already outnumbers English MMLU. The caps are the category's central finding rather than a
+    penalty: no open corpus here reaches the scale a frontier English or Chinese model is
+    trained on, and the only one that does, Sarvam-2T, is withheld.
+
+    Distribution at promotion (97 banded): 6 at 5, 16 at 4, 36 at 3, 25 at 2, 14 at 1. The six
+    at 5 are all evaluation sets, which carry no size cap. The widest rung, 3, holds 36 of 97,
+    over the one-third review trigger; it is where the caps put most national corpora and speech
+    collections of a few thousand hours, which is the category's shape rather than loose
+    wording, and two review passes and the caps moved bands in both directions before this
+    count. Top rows per modality: Sangraha (pretraining text), Common Voice (speech), BPCC
+    (parallel text), FLORES+ (evaluation), WangchanThaiInstruct (instruction data).
 
     The category carries three corpora held back from open release - Meta's unreleased MMS
     recordings, Sarvam-2T, and Te Hiku Media's te reo Māori corpus, which is granted on request
