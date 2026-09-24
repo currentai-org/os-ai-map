@@ -36013,22 +36013,22 @@
             "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "LlamaFactory's PyPI downloads spiked for two months and settled back near their starting level, a healthy pattern rather than a fading one, while GitHub stars grew steadily throughout. Real use likely runs higher, since many people run the project from a git clone and its bundled web UI rather than a PyPI install.",
+            "note": "LlamaFactory's PyPI downloads climbed to a sharp peak in mid-2026 and have fallen every month since, so its score reflects current package-download volume rather than the peak. The package is a floor rather than a full measure, since many people run the project from a git clone and its bundled web UI rather than a PyPI install.",
             "last_verified": "2026-09-17",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/llamafactory/overall?mirrors=false",
-                "shows": "daily download series; summed by month it gives 14,311 (Feb), 27,761 (Mar), 30,043 (Apr), 233,960 (May), 779,461 (Jun) and 100,640 (Jul) for 2026",
-                "accessed": "2026-08-09",
+                "shows": "daily download series; summed by month it gives 30,043 (Apr), 233,960 (May), 779,461 (Jun), 100,640 (Jul), 23,511 (Aug) and 11,990 (Sep, through the 23rd) for 2026",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "dfc2e82ec9df7847f79eda038449a4ab10f74242fb81899e73f8ccc533aefe42"
+                "content_sha256": "f655946501b2c16c5d145e0d9b9890c498c01030a2471eaab908dde9a9d92a92"
               },
               {
                 "url": "https://pypistats.org/api/packages/llamafactory/recent",
-                "shows": "\"last_month\":21867",
-                "accessed": "2026-08-09",
+                "shows": "\"last_month\":19183",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "691a9ea38be0daf95cb946a25299cef27d0a0bcff977e1732a322f2c94229bba"
+                "content_sha256": "7948d6fe7fdb05c5ac30d33678584844267db808c553ec96c273b9edbcc210e6"
               },
               {
                 "url": "https://api.github.com/repos/hiyouga/LLaMA-Factory/releases",
@@ -65211,10 +65211,10 @@
           },
           "adoption": {
             "level": 4,
-            "reach": "1M-10M",
-            "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "Adoption is measured by PyPI downloads of the braintrust package, the platform's own client library. The homepage currently names Notion and Coursera as customers, while Vercel, Dropbox and Replit no longer appear there, so the reading is based on the download count rather than the customer list.",
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "banded_quantity": "none. The vendor's homepage names customers but publishes no count, and the monthly PyPI downloads of the braintrust SDK are the platform's client channel and are not banded.",
+            "note": "Braintrust is a hosted platform, and the braintrust package on PyPI is its client, installed by every application that sends it logs or evaluations, so its downloads count client installs rather than use of the platform. The vendor publishes no user or account figure, and its homepage names Notion and Coursera as customers. The level is left as it was set; raising or lowering it would need standing evidence about the platform itself.",
             "last_verified": "2026-08-13",
             "sources": [
               {
@@ -80233,33 +80233,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "Milvus is a server, so there is no direct package-download count for the product itself. Instead, its official Python client, pymilvus, provides the closest measurable signal through its PyPI downloads. Qdrant is measured the same way through qdrant-client. Zilliz publishes no comparable server-side deployment figure, and GitHub stars measure something different.",
-            "last_verified": "2026-09-17",
+            "confidence": "medium",
+            "banded_quantity": "Docker Hub pulls of the milvusdb/milvus server image averaged over the image's lifetime, a floor for a growing product; pymilvus downloads count the client and are not banded",
+            "note": "Milvus is a server. Its Python client, pymilvus, is left out because client installs can vary independently of server deployments. The score comes from Docker Hub pulls of the server image averaged over the image's lifetime, so for a product still growing it is a floor rather than a ceiling. Zilliz's own round figure for Docker pulls runs higher than the registry's count and does not say what it adds.",
+            "last_verified": "2026-09-24",
             "sources": [
               {
+                "url": "https://hub.docker.com/v2/repositories/milvusdb/milvus/",
+                "shows": "\"pull_count\": 79015004 cumulative pulls of milvusdb/milvus, \"date_registered\": \"2019-06-16\", about 905,000 a month over the image's lifetime",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "d52aa3aafc072fbcfeb78eedea59943e3e6c49e90d5f892238fb3adae829ab3a"
+              },
+              {
                 "url": "https://pypistats.org/api/packages/pymilvus/recent",
-                "shows": "last_month = 5,976,463 downloads for pymilvus (last_week 1,484,328, last_day 241,978).",
-                "accessed": "2026-08-14",
+                "shows": "\"last_month\":3601454 downloads of pymilvus, the client package left out of the level",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "e62537e90c3437d4fd801680c6c1d923160f60a3627162e363c29c09d471fcfc"
+                "content_sha256": "12ccd6817df3b2c9c657668e808c79e4057b590c46120c608efa984adbcd002d"
               },
               {
-                "url": "https://github.com/milvus-io/milvus",
-                "shows": "Repo page, 45,627 stargazers. No download, deployment or customer figure of any kind.",
-                "accessed": "2026-08-13",
+                "url": "https://ungh.cc/repos/milvus-io/milvus",
+                "shows": "\"stars\":46245 for milvus-io/milvus. Corroboration only; a star count is not a use.",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "35f8f51c1fec1c38b1261ac74d373d403a03f7626275874277e2adbfece05d31"
-              },
-              {
-                "url": "https://zilliz.com/what-is-milvus",
-                "shows": "\"Open-source vector database built for billion-scale vector similarity search\"; LF AI & Data trademark attribution in the footer. No published adoption count.",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "3ec5137502914fb4bb8e54a2908950c6e70c9db60441133d3b76f7ffde223338"
+                "content_sha256": "6f456667093b4b9232ac80791fe2ce8965bd171924413ac83559d7af816f84ee"
               }
             ]
           },
@@ -80290,14 +80291,14 @@
               }
             ]
           },
-          "overall_score": 4.0,
-          "tier": "strong",
-          "maturity": 4.0,
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-24"
           }
         },
         {
@@ -80362,19 +80363,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 5,
-            "reach": ">10M",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "Qdrant is a server, so there is no direct package-download count for the database itself. Its official Python client, qdrant-client, provides the closest measurable signal through its PyPI downloads, the same way Milvus is measured through pymilvus.",
-            "last_verified": "2026-09-17",
+            "confidence": "medium",
+            "banded_quantity": "Docker Hub pulls of the qdrant/qdrant server image averaged over the image's lifetime, a floor for a growing product; qdrant-client downloads count the client and are not banded",
+            "note": "Qdrant is a server. Its Python client, qdrant-client, is left out because client installs can vary independently of server deployments. The score comes from Docker Hub pulls of the server image averaged over the image's lifetime, so for a product still growing it is a floor rather than a ceiling.",
+            "last_verified": "2026-09-24",
             "sources": [
               {
-                "url": "https://pypistats.org/api/packages/qdrant-client/recent",
-                "shows": "last_month = 19,077,155 downloads for qdrant-client (last_week 4,271,948, last_day 681,811).",
-                "accessed": "2026-08-13",
+                "url": "https://hub.docker.com/v2/repositories/qdrant/qdrant/",
+                "shows": "\"pull_count\": 47050807 cumulative pulls of qdrant/qdrant, \"date_registered\": \"2022-02-03\", about 845,000 a month over the image's lifetime",
+                "accessed": "2026-09-24",
                 "http_status": 200,
-                "content_sha256": "1a02e7e2d8e098c2eeace43ebe454d513986d5564f20dea113fb621ca0a4d08b"
+                "content_sha256": "f52d98b55a861663ea56cbc09d44a6afc6824465dc124575a2fb812074901069"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/qdrant-client/recent",
+                "shows": "\"last_month\":11277295 downloads of qdrant-client, the client package left out of the level",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "25155252dcabafd77946524b09ffef1626182881cd909ddb0370c7d0bc08af1c"
+              },
+              {
+                "url": "https://ungh.cc/repos/qdrant/qdrant",
+                "shows": "\"stars\":34774 for qdrant/qdrant. Corroboration only; a star count is not a use.",
+                "accessed": "2026-09-24",
+                "http_status": 200,
+                "content_sha256": "452d1df3c721f50ef3deb583a0255d224787f3e987366630544ed173429dbbcb"
               }
             ]
           },
@@ -80405,14 +80421,14 @@
               }
             ]
           },
-          "overall_score": 4.6,
-          "tier": "leading",
-          "maturity": 4.6,
-          "mature": true,
+          "overall_score": 3.4,
+          "tier": null,
+          "maturity": 3.4,
+          "mature": false,
           "freshness": {
             "date": "2026-08-12",
             "basis": "verified",
-            "latest_axis_confirmation": "2026-09-17"
+            "latest_axis_confirmation": "2026-09-24"
           }
         },
         {
