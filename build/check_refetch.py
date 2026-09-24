@@ -445,12 +445,14 @@ def _resolve_branch(owner: str, repo: str, rest: str, timeout: float) -> tuple[s
 
 def _window_tips(
     owner: str, repo: str, branch: str, windows: list[tuple[datetime, datetime]], timeout: float
-) -> set[str] | str:
-    """SHAs the branch tip held during the windows, per GitHub's activity log, or a reason.
+) -> dict[str, bool] | str:
+    """{sha: recorded inside a window} for the branch around the accesses, or a reason.
 
-    The tip entering a window is the `before` of the first update at or after its start (or
-    the `after` of the last update before it); every update inside adds its `after`. The log
-    is read only for tips to hash, never as proof that no other tip existed.
+    Every update inside a window records its `after` directly (True). The tip entering a window
+    is INFERRED (False) from the `before` of the first update after its start, or the `after`
+    of the last update before it, and an inference across a log GitHub does not promise is
+    complete is weaker evidence. The log is read only for tips to hash, never as proof that no
+    other tip existed.
     """
     since = windows[0][0]
     url: str | None = f"https://api.github.com/repos/{owner}/{repo}/activity"
@@ -473,16 +475,17 @@ def _window_tips(
     else:
         return f"the activity log runs past {MAX_ACTIVITY_PAGES} pages before the access window"
     entries.sort()
-    tips: set[str] = set()
+    tips: dict[str, bool] = {}
     for start, end in windows:
         prior = [e for e in entries if e[0] < start]
         later = [e for e in entries if e[0] >= start]
-        if later:
-            tips.add(later[0][1])
-        elif prior:
-            tips.add(prior[-1][2])
-        tips.update(after for when, _, after in later if when < end)
-    tips.discard(ZERO_SHA)
+        entering = later[0][1] if later else prior[-1][2] if prior else None
+        if entering:
+            tips.setdefault(entering, False)
+        for when, _, after in later:
+            if when < end:
+                tips[after] = True
+    tips.pop(ZERO_SHA, None)
     return tips or f"the activity log shows no tip for {branch} around the access"
 
 
@@ -491,11 +494,18 @@ def served_on_access_verdict(
 ) -> tuple[str, str]:
     """Look for positive evidence that this URL served `digest`. (verdict, detail).
 
-    - `served`: a tip the branch held around a recorded access serves a copy of the file that
-      hashes to the digest, fetched from `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}`
-      through `http_get` exactly as `build/fetch_source` fetched the branch URL. Drift.
-    - `unmatched`: the URL is a plain `{ref}/{file}` (one possible split), tips were found and
-      every one was checked, and none matches. That is what a copied digest looks like, and it
+    Only a plain `{branch}/{file}` URL, with no slash in the branch, gets any verdict but
+    unresolved: a deeper path splits more than one way, and today's refs cannot say which split
+    the URL meant when it was read.
+
+    - `served`: a tip RECORDED by an activity entry inside the access window serves a copy of
+      the file that hashes to the digest, fetched from
+      `raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}` through `http_get` exactly as
+      `build/fetch_source` fetched the branch URL. Drift.
+    - `compatible`: the match is on the tip INFERRED to be entering the window. The file held
+      the digest there, which is benign, but that the branch served it on the date is not
+      established. Drift-compatible.
+    - `unmatched`: tips were found and every one was checked, and none matches. That is what a copied digest looks like, and it
       is also what an incomplete log looks like, so it is a warning for a human, never a failure.
     - `unresolved`: not a GitHub file, no access date, a ref that does not resolve, a failed
       lookup, no tips found, or a tip that could not be checked.
@@ -508,6 +518,10 @@ def served_on_access_verdict(
     if not accessed:
         return "unresolved", "no recorded access date"
     owner, repo, rest = match.groups()
+    if rest.count("/") != 1:
+        # `feature/x/LICENSE` splits more than one way, and today's refs cannot say which one the
+        # URL meant when it was read. A match under the wrong split is as misleading as a miss.
+        return "unresolved", "only a plain {branch}/{file} URL gets a history verdict"
     resolved = _resolve_branch(owner, repo, rest, timeout)
     if isinstance(resolved, str):
         return "unresolved", resolved
@@ -522,7 +536,7 @@ def served_on_access_verdict(
         return "unresolved", tips
 
     dates = ", ".join(str(d) for d in sorted(accessed))
-    unchecked = []
+    unchecked, compatible = [], None
     for sha in sorted(tips):
         try:
             body = http_get(f"https://raw.githubusercontent.com/{owner}/{repo}/{sha}/{path}", timeout=timeout)
@@ -531,14 +545,19 @@ def served_on_access_verdict(
             continue
         if body.status_code != 200:
             unchecked.append(sha[:10])
-        elif hashlib.sha256(body.content).hexdigest() == digest:
+        elif hashlib.sha256(body.content).hexdigest() != digest:
+            continue
+        elif tips[sha]:
             return "served", f"{branch} was at {sha[:10]} around the access on {dates}, and its {path} hashes to the recorded digest"
+        else:
+            compatible = (
+                f"{path} held the recorded digest at {sha[:10]}, the nearest recorded tip of "
+                f"{branch}; that the branch served it on {dates} is not established"
+            )
+    if compatible:
+        return "compatible", compatible
     if unchecked:
         return "unresolved", f"no checked tip matches, and {len(unchecked)} of {len(tips)} could not be fetched ({', '.join(unchecked)})"
-    if rest.count("/") > 1:
-        # More than one way to split ref from path, settled against today's refs. That is good
-        # enough to FIND a match, not to report the absence of one.
-        return "unresolved", f"no tip matches, but {branch} was resolved against current refs, so the miss is not reported"
     return "unmatched", (
         f"none of the {len(tips)} tip(s) {branch} held around the access on {dates} (per GitHub's "
         f"activity log, whose completeness GitHub does not guarantee) serves a {path} hashing "
@@ -576,7 +595,8 @@ def resolve_duplicates(
       challenge page, so nothing behind the group was ever read;
     - every member reproduces the digest: benign, the bodies really are identical;
     - a member now serves something else: `history` looks for a revision that hashed to the
-      digest. Found is drift (benign). Checked and not found is a SUSPECTED COPY, returned
+      digest. Found is drift, or drift-compatible when the matching tip was inferred rather
+      than recorded (benign). Checked and not found is a SUSPECTED COPY, returned
       separately so the caller can put it in front of a human. Could not look is unresolved
       (benign).
 
@@ -623,7 +643,8 @@ def resolve_duplicates(
             if reproducing and not changed:
                 benign.append(
                     f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
-                    f"re-fetching confirms their bodies really are identical."
+                    f"re-fetching {len(reproducing)} of them confirms their bodies really are "
+                    f"identical."
                 )
             for url in changed:
                 verdict, detail = history(url, digest, (accessed or {}).get((digest, url), set()))
@@ -633,6 +654,8 @@ def resolve_duplicates(
                 )
                 if verdict == "served":
                     benign.append(f"{head} Drift: {detail}. Re-check that source.")
+                elif verdict == "compatible":
+                    benign.append(f"{head} Drift-compatible: {detail}. Re-check that source.")
                 elif verdict == "unmatched":
                     suspected.append(
                         f"{head} The recorded digest matched no revision this check could find "

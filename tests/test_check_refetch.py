@@ -90,6 +90,20 @@ def test_identical_bodies_clear_the_group(monkeypatch):
     assert "really are identical" in benign[0]
 
 
+def test_the_identical_message_counts_only_the_members_it_checked(monkeypatch):
+    import build.check_refetch as mod
+
+    digest = hashlib.sha256(b"same").hexdigest()
+    bodies = {"https://a.example/x": _Resp(b"same"), "https://b.example/y": _Resp(b"same"),
+              "https://c.example/z": _Api(status=404)}
+    monkeypatch.setattr(mod.requests, "get", lambda url, **kw: bodies[url])
+    _failures, benign, _suspected = mod.resolve_duplicates(
+        [(digest, sorted(bodies))], 5.0, history=lambda *a: pytest.fail("nothing changed")
+    )
+    assert "shared by 3 URLs" in benign[0] and "re-fetching 2 of them confirms" in benign[0]
+    assert "could not re-fetch https://c.example/z" in benign[1]
+
+
 APACHE = b"                                 Apache License\n  Version 2.0, January 2004\n"
 BSL = b"Business Source License 1.1\n"
 APACHE_DIGEST = hashlib.sha256(APACHE).hexdigest()
@@ -183,12 +197,15 @@ RELICENSE = [("2026-08-16T07:46:56Z", T0, T1), ("2026-09-22T15:16:16Z", T1, T2)]
 
 
 def test_a_relicensed_member_whose_tip_served_the_digest_is_drift(monkeypatch):
-    """#692: lakeFS relicensed to BSL-1.1 on 2026-09-22, after its 2026-08-18 read. Master was
-    at T1 on the access date and T1's LICENSE is Apache-2.0, so the URL served the digest."""
+    """#692: lakeFS relicensed to BSL-1.1 on 2026-09-22, after its 2026-08-18 read. The last
+    update before the access (08-16) left master at T1, whose LICENSE is Apache-2.0. T1 is
+    INFERRED to be the tip on the access date, since no entry inside the window records it,
+    so this is drift-compatible: benign, but worded without claiming what was served."""
     failures, benign, suspected, fake = _lakefs(monkeypatch, RELICENSE, {T1: APACHE, T2: BSL})
     assert failures == [] and suspected == []
     assert len(benign) == 1 and "treeverse/lakeFS" in benign[0] and "2 of 3 URLs" in benign[0]
-    assert "Drift" in benign[0] and f"master was at {T1[:10]}" in benign[0]
+    assert "Drift-compatible" in benign[0] and "the nearest recorded tip" in benign[0]
+    assert "is not established" in benign[0] and "master was at" not in benign[0]
     assert not any("peft" in u and "api.github.com" in u for u, _ in fake.calls), (
         "only the changed member is looked up"
     )
@@ -229,6 +246,15 @@ def test_neither_member_reproducing_is_two_suspected_copies_not_failures(monkeyp
         [("f" * 64, urls)], 5.0, accessed={("f" * 64, u): ACCESSED for u in urls}
     )
     assert failures == [] and benign == [] and len(suspected) == 2
+
+
+def test_a_match_on_a_tip_recorded_inside_the_window_is_proven_drift(monkeypatch):
+    """Codex blocking 2 on 8fe16179: only a SHA an activity entry records inside the access
+    window supports "the branch was at <sha> around the access"."""
+    activity = [("2026-08-01T00:00:00Z", T0, T1), ("2026-08-18T12:00:00Z", T1, T2)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T1: BSL, T2: APACHE})
+    assert failures == [] and suspected == []
+    assert "Drift: master was at " + T2[:10] in benign[0]
 
 
 def test_a_late_merged_commit_is_judged_by_the_tip_not_its_date(monkeypatch):
@@ -301,7 +327,7 @@ def test_an_ambiguous_slash_ref_is_unresolved(monkeypatch):
     url = "https://raw.githubusercontent.com/o/r/feature/x/LICENSE"
     mod = _install(monkeypatch, FakeGitHub({url: b"x"}, heads=["feature", "feature/x"]))
     verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "unresolved" and "exactly one current branch" in detail
+    assert verdict == "unresolved" and "plain {branch}/{file}" in detail
 
 
 def test_a_deleted_branch_shape_never_yields_a_suspected_copy(monkeypatch):
@@ -313,16 +339,20 @@ def test_a_deleted_branch_shape_never_yields_a_suspected_copy(monkeypatch):
                       activity=[("2026-08-01T00:00:00Z", T0, T1)], files={("o/r", T1): b"other"})
     mod = _install(monkeypatch, fake)
     verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "unresolved" and "current refs" in detail
+    assert verdict == "unresolved" and "plain {branch}/{file}" in detail
 
 
-def test_an_unambiguous_slash_ref_still_finds_positive_evidence(monkeypatch):
+def test_a_slash_path_gets_no_verdict_even_on_a_match(monkeypatch):
+    """Codex blocking 1 on 8fe16179: today `feature/x/LICENSE` resolves to branch `feature` and
+    file `x/LICENSE`, which matches. The URL may have meant branch `feature/x` when it was read,
+    so a match is as unreliable as a miss. No ref or activity lookup is even made."""
     url = "https://raw.githubusercontent.com/o/r/feature/x/LICENSE"
-    fake = FakeGitHub({url: b"x"}, heads=["feature/x", "featurex"],
-                      activity=[("2026-08-01T00:00:00Z", T0, T1)], files={("o/r", T1): APACHE})
+    fake = FakeGitHub({url: b"x"}, heads=["feature"],
+                      activity=[("2026-08-18T12:00:00Z", T0, T1)], files={("o/r", T1): APACHE})
     mod = _install(monkeypatch, fake)
     verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "served" and "feature/x was at" in detail
+    assert verdict == "unresolved" and "plain {branch}/{file}" in detail
+    assert fake.calls == []
 
 
 def test_a_tag_ref_is_unresolved(monkeypatch):
