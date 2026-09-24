@@ -418,7 +418,12 @@ def _spdx_verdict(url: str, fetched: dict, recorded_license: str) -> tuple[str, 
     if not isinstance(spdx, str) or spdx.strip().lower() in abstain:
         return ABSTAINS, ""
     recorded_name = license_part(segments[0])["name"]
-    if normalize_license(spdx.strip()) == normalize_license(recorded_name):
+    # Case folds after normalizing, as tier matching does (`check_rubric.resolve_license_parts`) and as
+    # the sweep's licence leg does. `normalize_license` returns an unaliased id with its case
+    # intact, and the Hub serves `apache-2.0` where the corpus records `Apache-2.0`, so without
+    # the fold a spelling difference would be reported as a refutation. It is folded here, not
+    # inside `normalize_license`, because the warehouse mirrors that function by hand.
+    if normalize_license(spdx.strip()).lower() == normalize_license(recorded_name).lower():
         return CONFIRMS, ""
     return REFUTES, spdx.strip()
 

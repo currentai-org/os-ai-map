@@ -440,6 +440,10 @@ Seventy notes opened "Banded on the". The opening is the fingerprint of one prom
 all of them, and it says nothing a reader wants first. The download count stays in the source
 line; the note says what was measured and why that stands in for the server.
 
+This entry is an example of prose, not of measurement. The reasoning in its "after" fails the
+measurement-population test in [`adoption.md`](adoption.md): a server's client counts client
+installs, not deployments, so the `milvus` record rests on Docker pulls of the server image.
+
 ### 9. `chitu` capability: "One band below the anchor"
 
 Before:

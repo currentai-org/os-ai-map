@@ -129,6 +129,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `qdrant` and `milvus` adoption now comes from Docker Hub pulls of the server image, averaged over
+  the image's lifetime as a floor, instead of downloads of their Python clients. Their pypi
+  artifacts are declared `not_primary_channel`. qdrant moved from 5 to 3 and milvus from 4 to 3,
+  with no storage stage move. `braintrust` moved to `reported_traction` with its level unchanged
+  ([#658](https://github.com/currentai-org/os-ai-map/issues/658),
+  [#690](https://github.com/currentai-org/os-ai-map/pull/690)).
 - The shared dataset ladder names four more licenses: cc-by-nc-4.0 and cc-by-nc-sa-3.0 as
   noncommercial, cc-by-2.5 and cc-by as open data; no existing score moved
   ([#689](https://github.com/currentai-org/os-ai-map/pull/689)).
@@ -253,6 +259,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Fixed
 
+- `build/reverify.py` reported a licence that differed from the record only in case, such as the
+  Hub's `apache-2.0` against a recorded `Apache-2.0`, as a refutation. It now folds case the way
+  tier matching does ([#655](https://github.com/currentai-org/os-ai-map/issues/655),
+  [#690](https://github.com/currentai-org/os-ai-map/pull/690)).
 - Equivalence recall in the identity eval counted `pool` candidates, which no tier scores, in its
   denominator. That made the relation's recall floor unreachable rather than unmet: the gate armed
   for the first time when the ledger crossed `MIN_TRUTH` and failed at a value it had held all

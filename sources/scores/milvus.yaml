@@ -46,38 +46,34 @@ openness:
     establishes:
     - license
 adoption:
-  level: 4
-  reach: 1M-10M
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
-  confidence: high
-  note: Milvus is a server, so there is no direct package-download count for the product itself. Instead,
-    its official Python client, pymilvus, provides the closest measurable signal through its PyPI downloads.
-    Qdrant is measured the same way through qdrant-client. Zilliz publishes no comparable server-side deployment
-    figure, and GitHub stars measure something different.
-  last_verified: '2026-09-17'
-  derived_from:
-    observation_snapshot_id: 36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6
-    source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
-    route_id: pypi.downloads_30d
-    measured_level: 4
-    measurement_as_of: '2026-09-17'
+  confidence: medium
+  banded_quantity: Docker Hub pulls of the milvusdb/milvus server image averaged over the image's lifetime, a
+    floor for a growing product; pymilvus downloads count the client and are not banded
+  note: Milvus is a server. Its Python client, pymilvus, is left out because client installs can vary
+    independently of server deployments. The score comes from Docker Hub pulls of the server image averaged
+    over the image's lifetime, so for a product still growing it is a floor rather than a ceiling. Zilliz's
+    own round figure for Docker pulls runs higher than the registry's count and does not say what it adds.
+  last_verified: '2026-09-24'
   sources:
+  - url: https://hub.docker.com/v2/repositories/milvusdb/milvus/
+    shows: '"pull_count": 79015004 cumulative pulls of milvusdb/milvus, "date_registered": "2019-06-16", about
+      905,000 a month over the image''s lifetime'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: d52aa3aafc072fbcfeb78eedea59943e3e6c49e90d5f892238fb3adae829ab3a
   - url: https://pypistats.org/api/packages/pymilvus/recent
-    shows: last_month = 5,976,463 downloads for pymilvus (last_week 1,484,328, last_day 241,978).
-    accessed: '2026-08-14'
+    shows: '"last_month":3601454 downloads of pymilvus, the client package left out of the level'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: e62537e90c3437d4fd801680c6c1d923160f60a3627162e363c29c09d471fcfc
-  - url: https://github.com/milvus-io/milvus
-    shows: Repo page, 45,627 stargazers. No download, deployment or customer figure of any kind.
-    accessed: '2026-08-13'
+    content_sha256: 12ccd6817df3b2c9c657668e808c79e4057b590c46120c608efa984adbcd002d
+  - url: https://ungh.cc/repos/milvus-io/milvus
+    shows: '"stars":46245 for milvus-io/milvus. Corroboration only; a star count is not a use.'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: 35f8f51c1fec1c38b1261ac74d373d403a03f7626275874277e2adbfece05d31
-  - url: https://zilliz.com/what-is-milvus
-    shows: '"Open-source vector database built for billion-scale vector similarity search"; LF AI & Data
-      trademark attribution in the footer. No published adoption count.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 3ec5137502914fb4bb8e54a2908950c6e70c9db60441133d3b76f7ffde223338
+    content_sha256: 6f456667093b4b9232ac80791fe2ce8965bd171924413ac83559d7af816f84ee
 capability:
   score: 4
   basis: benchmark

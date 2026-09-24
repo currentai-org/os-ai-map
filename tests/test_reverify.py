@@ -322,6 +322,24 @@ def test_hub_cc_abstains_rather_than_refuting(tmp_path):
     assert result.reconfirmed_by_shows == [("openness", "https://huggingface.co/api/models/o/m")]
 
 
+def test_a_case_only_difference_confirms_rather_than_refuting(tmp_path):
+    """The Hub returns licence ids in lower case as a matter of course, and the corpus records
+    the SPDX spelling. `normalize_license` returns an id with no alias unchanged, so comparing
+    through it alone read `apache-2.0` against `Apache-2.0` as a different licence, and under
+    three-valued logic that is a refutation rather than drift (#655). Tier matching already
+    folds case after normalizing, so the comparison here folds it the same way.
+    """
+    body_path = _body(tmp_path, "model.json", json.dumps({"cardData": {"license": "apache-2.0"}}))
+    root = _score_with_license(tmp_path, "Apache-2.0", [
+        _src("https://huggingface.co/api/models/o/m", "a" * 64, ["license"]),
+    ])
+    fake = lambda url, **kw: {"url": url, "http_status": 200, "content_sha256": "b" * 64,  # noqa: E731
+                              "body_path": str(body_path)}
+    result = reverify.reverify_product(root, "p", date(2026, 9, 3), axes=("openness",), fetch=fake)
+    assert result.refuted == []
+    assert result.reconfirmed_by_spdx == [("openness", "https://huggingface.co/api/models/o/m")]
+
+
 def test_abstentions_are_read_per_source_from_the_routing_declaration():
     """The Hub and GitHub declare different abstentions, and the code must not flatten them."""
     values = reverify._abstain_values(str(reverify.ROOT))

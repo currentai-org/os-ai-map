@@ -90,4 +90,35 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $ARTIFACTS
           git commit -m "chore(build): regenerate notebook data, notebooks, README badges [bot]"
-          git push
+          # The concurrency group serializes this workflow's own runs, but not merges: a PR
+          # that lands on main while this run is building makes the push non-fast-forward.
+          # These artifacts were built from BASE, so a rebase is only safe when main has not
+          # changed anything they are built from. INPUTS must match the `paths` filter above:
+          # a merge that touched one of them has queued its own run behind this one, which
+          # regenerates from the newer tree, so this run stands down rather than push bytes
+          # built from older inputs (a changed build/notebook_data.json would also reach the
+          # warehouse through registry.yml before the queued run could repair it). A merge
+          # that touched a generated file itself is the one case left to fail loudly.
+          BASE=$(git rev-parse HEAD~1)
+          INPUTS="sources docs/methodology.md build :!build/notebook_data.json tests/test_serialize_rubric.py"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              break
+            fi
+            git fetch origin main
+            if ! git diff --quiet "$BASE" origin/main -- $ARTIFACTS; then
+              echo "main changed a generated artifact since $BASE; refusing to overwrite it." >&2
+              exit 1
+            fi
+            if ! git diff --quiet "$BASE" origin/main -- $INPUTS; then
+              echo "main changed regenerate inputs since $BASE; its own queued run regenerates from them. Not pushing."
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt); main moved without touching inputs, rebasing."
+            git rebase origin/main
+          done
+          echo "Push still rejected after three attempts." >&2
+          exit 1
