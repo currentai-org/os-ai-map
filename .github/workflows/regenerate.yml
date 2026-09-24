@@ -90,4 +90,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $ARTIFACTS
           git commit -m "chore(build): regenerate notebook data, notebooks, README badges [bot]"
-          git push
+          # The concurrency group serializes this workflow's own runs, but not merges: a PR
+          # that lands on main while this run is building makes the push non-fast-forward.
+          # Rebasing onto it is safe. If that merge touched a trigger path, its own run is queued
+          # behind this one and regenerates from its inputs; if it did not, the artifacts built
+          # here are already current for it. A conflict means the merge edited a generated file,
+          # which is the one case left to fail loudly.
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push rejected (attempt $attempt); rebasing onto origin/main."
+            git pull --rebase origin main
+          done
+          echo "Push still rejected after three rebases." >&2
+          exit 1
