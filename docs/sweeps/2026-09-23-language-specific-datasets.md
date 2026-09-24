@@ -8,7 +8,7 @@ serves rather than by its task or scale. A general multilingual crawl that happe
 language stays in `training_synthetic_datasets`, and Aya Collection stays there too. Every modality is
 in scope: pretraining text, speech, instruction and dialogue data, parallel text, and evaluation sets.
 
-Three boundary rules were needed during the sweep, and all three are recorded in the category's `comments`
+Four boundary rules came out of the sweep, and all four are recorded in the category's `comments`
 so the next editor applies them rather than re-deriving them:
 
 - **A many-language set belongs here when it was built to reach underrepresented languages.**
@@ -16,18 +16,17 @@ so the next editor applies them rather than re-deriving them:
   benchmark translated into the major languages (Global-MMLU, Greek MMLU) is defined by its task and
   stays in `benchmark_eval_data`. A Common Crawl corpus filtered by language ID (GlotCC) sits with
   MADLAD-400 in `training_synthetic_datasets`, even when its stated purpose is minority languages.
-- **The language has to be underrepresented.** KMMLU, TMMLU+, CMMLU, ChineseWebText, Carolina and
-  the LatamGPT Corpus are assembled for one language or region, but the language is Korean,
-  Chinese, Portuguese or Spanish. They were routed to the seed rosters of their neighbors, the
-  three evaluation sets to `benchmark_eval_data` and the three corpora to
-  `training_synthetic_datasets`. The smaller European languages stay in.
-- **A benchmark suite that redistributes other datasets is the product.** AfroBench carries
-  IrokoBench, AfriSenti, MasakhaNER, MAFAND-MT and SALT, and SEACrowd's dataloaders carry NusaX and
-  PhoMT, so those seven are parked as members of their suites. Membership was read from AfroBench's
-  published Hugging Face collection and SEACrowd's `seacrowd/sea_datasets` directory (401
-  dataloaders). The exception is a global set a regional suite borrows a slice of: Belebele,
-  FLORES+ and SIB-200 are in AfroBench's collection for their African languages and stay their own
-  rows.
+- **The language has to be underrepresented.** Corpora and benchmarks for Chinese, Japanese, Korean,
+  Spanish and Portuguese pass the first test and fail this one. The 11 such candidates were routed
+  to the seed rosters of their neighbors. The smaller European languages stay in. The line is an
+  enumerated list today rather than a derived rule; see the open items.
+- **Accent is not language.** AfriSpeech-200 and Svarah are English speech defined by accent, and are
+  out on the same rule.
+- **A benchmark suite that redistributes other datasets is the product.** AfroBench carries ten of
+  the African candidates, IndicXTREME carries IndicSentiment, and SEACrowd carries NusaX and PhoMT,
+  so those members are parked as bundled. Membership was read from AfroBench's published Hugging
+  Face collection and SEACrowd's `seacrowd/sea_datasets` directory (401 dataloaders). A global set a
+  regional suite borrows a slice of (Belebele, FLORES+ and SIB-200 in AfroBench) stays its own row.
 
 No row was scored. Each row carries identity and artifacts only, as the registry schema requires.
 
@@ -50,75 +49,92 @@ Each sweep read the Hugging Face dataset API (`id`, `gated`, `cardData.license`,
 the arXiv abstract page (title matched). Discovery catalogs consulted for candidates: ATLAS
 (https://atlas-data.ai), Lanfrica (https://lanfrica.com), and the SEACrowd catalogue.
 
-Retrieval cutoff, declared before triage: each regional sweep returned its 8 to 14 strongest
-candidates and listed the rest as secondary. A secondary candidate is parked below with that reason,
-and nothing was rejected for low downloads. VMLU and LaoBench were promoted from a sweep's
-secondary list for that reason: each is the only evaluation set found for its language.
+**No retrieval cutoff.** The regional sweeps were targeted searches, not walks down a ranked source,
+so there was no ordering a cutoff could bound. Every candidate a sweep surfaced was decided on its
+merits: accepted, or parked with one of the workflow's reasons (duplicate, superseded, new SKU of an
+existing product, bundled into a suite, boundary, no addressable artifact, unverifiable identity,
+ambiguous org mapping, unmaintained, or the closed long tail). Nothing was parked for low downloads
+or for ranking below other candidates. The coverage this leaves is the searches' coverage, which is
+not exhaustive; a later sweep that wants a reproducible bound should walk the Hub's dataset listing
+per language tag, ordered by downloads, and declare its N before it starts.
 
 ## Reconciled counts
 
 A raw signal is one input naming one candidate. A duplicate is a candidate named by more than one
 input, including the same product arriving under a superseded or stub identifier (`facebook/flores`
 for FLORES+, the Common Voice Hub stubs, Common Voice's regional collections). Accepted counts every
-row the sweep emitted: 65 into `language_specific_datasets` and 6 routed to neighboring
+row the sweep emitted: 97 into `language_specific_datasets` and 11 routed to neighboring
 categories.
 
 ```text
-raw_signals       = 211
+raw_signals       = 215
 duplicate_signals = 41
-unique_candidates = 170
-accepted          = 71
-parked            = 99
+unique_candidates = 174
+accepted          = 108
+parked            = 66
 
-211 = 41 + 170
-170 = 71 + 99
+215 = 41 + 174
+174 = 108 + 66
 ```
 
 No candidate collided with a head product, a retired alias, an existing registry row, or a
 resolution-ledger ruling (`build.validate`, 0 errors).
 
+## Organizations and handles
+
+Every row's organization has a `sources/organizations/` file, and every account a row's artifacts
+live under is declared in `sources/org_handles.yaml` in this PR. Hub handles were checked against
+the Hub's organization or user overview (the account's full name), GitHub handles against a live
+repository, and homepage domains against the row's own URL. Where the account is a person or a
+user account run by a group rather than an organization account, the handle carries a note saying
+so. The handle-coverage baseline went **up** on every route as a result and was re-pinned upward;
+nothing was lowered.
+
+Candidates whose organization could not be settled were held rather than guessed: Mangosteen
+(VISTEC's corpus in AI Singapore's Hub namespace), AmericasNLI (a lab account on the Hub, a personal
+account on GitHub) and AraBench (ARBML's re-host of a QCRI dataset). BibleTTS's OpenSLR page was
+dropped from its row, since OpenSLR hosts it and does not publish it; its GitHub repository and
+paper remain.
+
 ## Should closed datasets be represented?
 
 Yes, a few, on the terms ADR-005 sets for closed products: to mark the frontier, not to catalog the
 long tail. The precedent is `benchmark_eval_data`, which carries lab-internal evaluation suites at
-openness 0. Here the closed side has three different shapes, and each is worth one or two rows:
+openness 0. The rule used here, also written into the category's `scoring_recipe.note`: **a closed
+row is a corpus a frontier lab or national program built and withheld, or one its community
+governs.**
 
-- **Paid catalogs that hold the classic low-resource collections.** The LDC's IARPA Babel and
-  LORELEI language packs underpin a large share of published low-resource speech and text
-  research, and they cost a membership or a license fee. Seeded as two rows.
-- **Corpora a frontier lab or national champion built and did not release.** Meta's MMS-lab data
-  (about 49K hours of New Testament recordings in 1,130 languages, models released and data not)
-  and Sarvam-2T (about 2T Indic tokens behind Sarvam-1). Seeded as two rows. The Jais pretraining
-  data is the same case, parked because its only artifact is the paper a Jais model product would
-  claim.
-- **Community-governed data.** Te Hiku Media's te reo Māori corpus is held under the Kaitiakitanga
-  License, which grants use to the community the data came from and generally not outside it. It is
-  closed by design rather than by commercial choice, and the map should be able to say that. Seeded
-  as one row. The category's `scoring_recipe.note` flags that the dataset ladder may need a rung
-  for this license at promotion.
+- **Built and withheld:** Meta's MMS-lab data (about 49K hours of New Testament recordings in 1,130
+  languages; the models were released and the data was not) and Sarvam-2T (about 2T Indic tokens
+  behind Sarvam-1). The Jais pretraining data is the same case, parked because its only artifact is
+  the paper a Jais model product would claim.
+- **Community-governed:** Te Hiku Media's te reo Māori corpus, held under the Kaitiakitanga License,
+  which grants use to the community the data came from and generally not outside it. The ladder may
+  need a rung for this license at promotion.
 
-Vendor catalogs (Appen, Defined.ai, ELRA, Karya) are parked: each is a bundle rather than a product
-(ADR-005, surface not bundle), and entering them one by one would be the long tail ADR-005 declines.
+Items sold from a vendor or consortium catalog are the closed long tail ADR-005 declines. That covers
+the LDC (Arabic Gigaword and the IARPA Babel and LORELEI packs), ELRA, LDC-IL, Appen, Defined.ai and
+Karya. A catalog's product line is also a bundle rather than a product: every Babel pack is a
+separately licensed item with its own language, so one pack's page cannot stand for the line.
 Restricted parts of open products (the SEA-PILE v2 internal pool of about 1T tokens, Latxa's
 unfiltered original, the Norwegian newspapers withdrawn in 2024, the Icelandic Gigaword restricted
-subcorpora, the LatamGPT research tier) are not separate products. They belong in those products'
+subcorpora, the LatamGPT research tier) are not separate products; they belong in those products'
 availability evidence at promotion.
 
 ## What the seed lets the map say
 
 A first cut of the per-region answer the issue asks for, assembled by hand from this sweep. A
-`languages` field would make it computable; that was judged a nice-to-have and deferred (see the
-decisions below).
+structured `languages` field would make it computable; see the open items.
 
 | Region | Open pretraining text | Open speech | Open instruction data | Open evaluation |
 |---|---|---|---|---|
-| Africa | WURA, Vuk'uzenzele; Inkuba-Mono (no license) | WAXAL, Afrivoice, ZA African Next Voices, BibleTTS; NaijaVoices (NC) | none found beyond machine-translated sets | AfroBench (carrying IrokoBench, MasakhaNER, AfriSenti) |
-| South Asia | Sangraha, TituLM (Bangla), Nepali Text Corpus | IndicVoices, Vaani | IndicAlign; Updesh (non-commercial) | MILU, IndicGenBench |
-| Southeast Asia | SEA-PILE v2, Mangosteen (Thai) | Khmer ASR; Burmese and Lao have none found | SEA-Instruct, Cendol, WangchanThaiInstruct | SEA-HELM, SeaExam, SEACrowd (carrying NusaX), ThaiExam, VMLU, LaoBench |
-| Arabic and Persian | 101 Billion Arabic Words, naab | none found | CIDAR | ArabicMMLU, DarijaMMLU |
-| Central Asia | none found | Kazakh Speech Corpus 2 | none found | none (KazMMLU parked) |
-| Smaller European languages | Latxa, CATalog, CorpusNós, Dynaword, NCC, IGC, Sámi web, UberText; Korpus Malti (NC) | none found beyond Common Voice | none found | none found |
-| Indigenous Americas | none found | none found beyond Common Voice | none | AmericasNLI, AmericasNLP data |
+| Africa | WURA, Vuk'uzenzele, NCHLT, Kencorpus; Inkuba-Mono (no license) | WAXAL, Afrivoice, ZA African Next Voices, AfriVoices-KE, BibleTTS, ViXSD; NaijaVoices (NC) | Inkuba-Instruct, African UltraChat (machine-translated) | AfroBench, AfriHate, AfriDocMT |
+| South Asia | Sangraha, IndicCorp v2, TituLM (Bangla), Nepali Text Corpus, L3Cube-MahaCorpus | IndicVoices, Kathbath, Shrutilipi, IndicVoices-R, Rasa, Vaani, SPRING-INX, UrduSpeech | IndicAlign, Samvaad-Hi; Updesh (non-commercial) | MILU, IndicXTREME, IndicGenBench, Lahaja, SOLD |
+| Southeast Asia | SEA-PILE v2, Vietnamese Curated Dataset | Khmer ASR; none found for Burmese or Lao | SEA-Instruct, Cendol, WangchanThaiInstruct, WangchanX-FLAN | SEA-HELM, SeaExam, SEACrowd, IndoNLU, ThaiExam, Typhoon-S, VMLU, LaoBench |
+| Arabic, Persian, Hebrew, Turkish | 101 Billion Arabic Words, ArabicWeb24, Atlaset (Darija), naab, HeDC4 | none found | CIDAR | ArabicMMLU, DarijaMMLU, Khayyam Challenge, TurkishMMLU |
+| Central Asia | none found | Kazakh Speech Corpus 2 | none found | KazMMLU |
+| Smaller European languages | Latxa, CATalog, CorpusNós, Dynaword, NCC, IGC, Icelandic Dynaword, Sámi web, SMUGRI, UberText; Korpus Malti (NC) | none found beyond Common Voice | none found | none found |
+| Indigenous Americas | Llamacha Quechua; parallel text in ChrEn (Cherokee) and Jojajovai (Guaraní) | none found beyond Common Voice | none | AmericasNLP shared-task data |
 | Pacific | none open; te reo Māori is community-governed | none open | none | only as languages inside FLORES+, SMOL and Bloom Library |
 
 ## Accepted candidates
@@ -153,6 +169,13 @@ decisions below).
 | Inkuba-Mono | `inkuba-mono` | AP | pretraining text | sw, ha, zu, xh, yo | none declared | gated (auto) | https://huggingface.co/datasets/lelapa/Inkuba-Mono |
 | Vuk'uzenzele corpus | `vukuzenzele` | A | monolingual and parallel text | 11 South African official languages | CC-BY-4.0 | open | https://huggingface.co/datasets/dsfsi/vukuzenzele-monolingual |
 | AfroBench | `afrobench` | A | eval suite (15 tasks, 22 datasets) | 64 African languages | per component | open | https://github.com/McGill-NLP/AfroBench |
+| AfriHate | `afrihate` | A | hate-speech classification | 15 African languages | Apache-2.0 | gated (auto) | https://huggingface.co/datasets/afrihate/afrihate |
+| Kencorpus | `kencorpus` | A | text and speech corpora | Swahili, Dholuo, Luhya | CC-BY-4.0 | open | https://huggingface.co/datasets/Kencorpus/KenCorpus_text |
+| African UltraChat | `african-ultrachat` | A | instruction data (machine-translated) | African languages | MIT | open | https://huggingface.co/datasets/masakhane/african-ultrachat |
+| AfriDocMT | `afridocmt` | A | document-level MT | African languages | none declared | open | https://huggingface.co/datasets/masakhane/AfriDocMT |
+| NCHLT text corpora | `nchlt` | A | text corpora and annotation | South African languages | CC-BY-2.5 | open | https://huggingface.co/datasets/nwu-ctext/nchlt |
+| Inkuba-Instruct | `inkuba-instruct` | AP | instruction data | sw, ha, zu, xh, yo | none declared | gated (auto) | https://huggingface.co/datasets/lelapa/Inkuba-instruct |
+| Vuk'uzenzele isiXhosa Speech Dataset (ViXSD) | `vixsd` | A | speech | isiXhosa | Esethu License (other) | gated (auto) | https://huggingface.co/datasets/lelapa/Vukuzenzele_isiXhosa_Speech_Dataset_ViXSD |
 
 ### South Asia
 
@@ -169,6 +192,20 @@ decisions below).
 | TituLM Bangla corpus | `titulm-bangla-corpus` | S | pretraining text | Bengali | CC-BY-4.0 | open | https://huggingface.co/datasets/hishab/titulm-bangla-corpus |
 | Nepali Text Corpus | `nepali-text-corpus` | S | pretraining text | Nepali | MIT | open | https://huggingface.co/datasets/IRIIS-RESEARCH/Nepali-Text-Corpus |
 | L3Cube-MahaCorpus | `l3cube-mahacorpus` | S | pretraining text | Marathi | CC-BY-NC-SA-4.0 | open (Google Drive) | https://github.com/l3cube-pune/MarathiNLP |
+| IndicCorp v2 | `indiccorp-v2` | IS | pretraining text | 24 Indic languages | CC0 (card text) | open | https://huggingface.co/datasets/ai4bharat/IndicCorpV2 |
+| Kathbath | `kathbath` | S | speech (ASR) | 12 Indic languages | CC-BY-4.0 | gated (auto) | https://huggingface.co/datasets/ai4bharat/Kathbath |
+| Shrutilipi | `shrutilipi` | S | speech (ASR, All India Radio) | 12 Indic languages | CC-BY-4.0 | gated (auto) | https://huggingface.co/datasets/ai4bharat/Shrutilipi |
+| IndicVoices-R | `indicvoices-r` | S | speech (TTS) | 22 Indic languages | CC-BY-4.0 | gated (auto) | https://huggingface.co/datasets/ai4bharat/indicvoices_r |
+| Rasa | `rasa` | S | speech (expressive TTS) | Indic languages | CC-BY-4.0 | gated (auto) | https://huggingface.co/datasets/ai4bharat/Rasa |
+| Aksharantar | `aksharantar` | S | transliteration | 21 Indic languages | CC (card) | open | https://huggingface.co/datasets/ai4bharat/Aksharantar |
+| Pralekha | `pralekha` | S | document alignment | 11 Indic languages | CC-BY-4.0 | open | https://huggingface.co/datasets/ai4bharat/Pralekha |
+| IndicXTREME | `indicxtreme` | SP | NLU eval suite | 20 Indic languages | per task (IndicCOPA CC-BY-4.0) | open | https://huggingface.co/datasets/ai4bharat/IndicCOPA |
+| Lahaja | `lahaja` | S | speech eval (Hindi, many accents) | Hindi | MIT | gated (auto) | https://huggingface.co/datasets/ai4bharat/Lahaja |
+| Samvaad-Hi | `samvaad-hi` | S | dialogue data | Hindi, Hinglish | Apache-2.0 | open | https://huggingface.co/datasets/sarvamai/samvaad-hi-v1 |
+| IIT Bombay English-Hindi corpus | `iitb-english-hindi` | S | parallel text | Hindi and English | none declared on the card | open | https://huggingface.co/datasets/cfilt/iitb-english-hindi |
+| SOLD (Sinhala Offensive Language Dataset) | `sold` | S | offensive-language classification | Sinhala | none declared on the card | open | https://huggingface.co/datasets/sinhala-nlp/SOLD |
+| UrduSpeech | `urduspeech` | S | speech (ASR) | Urdu | none declared | open | https://huggingface.co/datasets/ASLP-lab/UrduSpeech |
+| SPRING-INX | `spring-inx` | S | speech (ASR) | 10 Indic languages | none declared | open | https://huggingface.co/datasets/SPRINGLab/SPRING_INX_Malayalam_R1 |
 
 ### Southeast Asia
 
@@ -180,12 +217,15 @@ decisions below).
 | SEA-HELM | `sea-helm` | EP | eval suite | fil, id, ta, th, vi, jv, su, ms, my, lo | per dataset | gated (auto; some manual) | https://github.com/aisingapore/SEA-HELM |
 | SeaExam | `seaexam` | E | exam eval (with SeaBench) | en, zh, id, vi, th | Apache-2.0 | open | https://huggingface.co/datasets/SeaLLMs/SeaExam |
 | Cendol Collection | `cendol-collection` | E | instruction data | Indonesian and local languages | Apache-2.0 | open | https://huggingface.co/datasets/indonlp/cendol_collection_v2 |
-| Mangosteen | `mangosteen` | E | pretraining text | Thai | ODC-By | open | https://huggingface.co/datasets/aisingapore/WangchanLION-Web |
 | WangchanThaiInstruct | `wangchan-thai-instruct` | E | human-written instructions | Thai | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/airesearch/WangchanThaiInstruct |
 | ThaiExam | `thai-exam` | E | exam eval | Thai | Apache-2.0 | open | https://huggingface.co/datasets/typhoon-ai/thai_exam |
 | Khmer ASR Cultural Dataset | `khmer-speech-dataset` | E | speech (ASR) | Khmer | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/Digital-Divide-Data/khmer-speech-dataset |
 | VMLU | `vmlu` | E | knowledge eval | Vietnamese | not yet stated (README: TBU) | download; test answers withheld | https://vmlu.ai |
 | LaoBench | `laobench` | E | eval | Lao | Apache-2.0 | open | https://huggingface.co/datasets/BAAI/LaoBench |
+| IndoNLU | `indonlu` | E | NLU benchmark | Indonesian | MIT | open | https://huggingface.co/datasets/indonlp/indonlu |
+| Vietnamese Curated Dataset | `vietnamese-curated-dataset` | E | pretraining text | Vietnamese | none declared | open | https://huggingface.co/datasets/VTSNLP/vietnamese_curated_dataset |
+| WangchanX-FLAN | `wangchanx-flan` | E | instruction data | Thai | other | open | https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1 |
+| Typhoon-S sovereign capability dataset | `typhoon-s-sovereign-capability` | E | instruction and eval data | Thai | ODC-By | open | https://huggingface.co/datasets/typhoon-ai/typhoon-s-sovereign-capability-dataset |
 
 ### Middle East, Central Asia and Europe
 
@@ -206,21 +246,29 @@ decisions below).
 | Icelandic Gigaword Corpus | `icelandic-gigaword-corpus` | M | pretraining text | Icelandic | CC-BY-4.0 (open subset); restricted subcorpora | open subset | https://huggingface.co/datasets/arnastofnun/IGC-2024 |
 | Northern Sámi web corpus | `saami-web` | M | pretraining text | Northern Sámi | CC0-1.0 | open | https://huggingface.co/datasets/ltg/saami-web |
 | UberText | `ubertext` | M | pretraining text | Ukrainian | none stated | open download | https://lang.org.ua/en/ubertext/ |
+| TurkishMMLU | `turkishmmlu` | M | knowledge eval | Turkish | none declared; full set by email | open subset (1,845 rows) | https://huggingface.co/datasets/AYueksel/TurkishMMLU |
+| ArabicWeb24 | `arabicweb24` | M | pretraining text | Arabic | ODC-By | gated (auto) | https://huggingface.co/datasets/lightonai/ArabicWeb24 |
+| HeDC4 | `hedc4` | M | pretraining text | Hebrew | none declared | open | https://huggingface.co/datasets/HeNLP/HeDC4 |
+| KazMMLU | `kazmmlu` | M | knowledge eval | Kazakh | CC-BY-NC-4.0 | open | https://huggingface.co/datasets/MBZUAI/KazMMLU |
+| Khayyam Challenge | `khayyam-challenge` | M | knowledge eval | Persian | CC-BY-ND-4.0 | gated (manual) | https://huggingface.co/datasets/raia-center/khayyam-challenge |
+| Atlaset | `atlaset` | M | pretraining text | Moroccan Arabic | none declared | gated (auto) | https://huggingface.co/datasets/atlasia/Atlaset |
+| SMUGRI data | `smugri-data` | M | parallel and monolingual text | low-resource Finno-Ugric languages | CC-BY-4.0 | open | https://huggingface.co/datasets/tartuNLP/smugri-data |
+| Icelandic Dynaword | `icelandic-dynaword` | M | pretraining text | Icelandic | CC0-1.0 | open | https://huggingface.co/datasets/danish-foundation-models/icelandic-dynaword |
 
 ### Indigenous Americas
 
 | Candidate | Slug | Inputs | Modality | Languages | License as stated | Access | Primary source |
 |---|---|---|---|---|---|---|---|
-| AmericasNLI | `americasnli` | PX | NLI eval | 10 Indigenous languages of the Americas | CC-BY-SA-4.0 | open | https://huggingface.co/datasets/nala-cub/americas_nli |
 | AmericasNLP shared-task data | `americasnlp-shared-task-data` | X | MT, speech translation | 13 Indigenous languages (2025) | per sub-corpus | open | https://github.com/AmericasNLP/americasnlp2021 |
+| ChrEn | `chren` | X | parallel and monolingual text | Cherokee | none found for the data | open | https://github.com/ZhangShiyue/ChrEn |
+| Jojajovai | `jojajovai` | X | parallel text | Guaraní | not checked | open | https://github.com/pln-fing-udelar/jojajovai |
+| Llamacha monolingual Quechua corpus | `llamacha-quechua` | X | pretraining text | Quechua | Apache-2.0 | open | https://huggingface.co/datasets/Llamacha/monolingual-quechua-iic |
 
 ### Closed and restricted: the frontier the open rows are measured against
 
 | Candidate | Slug | Inputs | Modality | Languages | License as stated | Access | Primary source |
 |---|---|---|---|---|---|---|---|
 | Te Hiku Media te reo Māori corpus | `te-hiku-media-reo-maori-corpus` | X | speech and text | te reo Māori | Kaitiakitanga License | restricted (permission tied to tikanga) | https://papareo.io |
-| IARPA Babel language packs | `iarpa-babel-language-packs` | X | conversational telephone speech | about 25 languages, one pack each | LDC IARPA Babel agreement | paid | https://catalog.ldc.upenn.edu/LDC2016S10 |
-| LORELEI language packs | `lorelei-language-packs` | X | text, annotation, lexicons | one pack per language | LDC user agreement | paid | https://catalog.ldc.upenn.edu/LDC2023T02 |
 | MMS-lab data | `mms-lab-data` | X | speech (New Testament recordings) | 1,130 languages, about 49K hours | not released | closed | https://arxiv.org/abs/2305.13516 |
 | Sarvam-2T | `sarvam-2t` | S | pretraining text | 10 Indic languages, about 2T tokens | not released | closed | https://www.sarvam.ai/blogs/sarvam-1 |
 
@@ -236,132 +284,108 @@ Language-specific but not low-resource. Emitted as rows in the named category's 
 | ChineseWebText | `chinesewebtext` | `training_synthetic_datasets` | P | pretraining text, Chinese | Apache-2.0 (v2.0) | https://huggingface.co/datasets/CASIA-LM/ChineseWebText2.0 |
 | Carolina Corpus | `carolina-corpus` | `training_synthetic_datasets` | P | pretraining text, Brazilian Portuguese | CC-BY-4.0 | https://huggingface.co/datasets/carolina-c4ai/corpus-carolina |
 | LatamGPT Corpus | `latamgpt-corpus` | `training_synthetic_datasets` | X | pretraining text, es, pt, en across 20 countries | per document | https://huggingface.co/datasets/latam-gpt/LatamGPT-Corpus-1.0 |
-
-Where a product line spans several Hub repositories (Afrivoice, AfriVoices-KE, IndicGenBench,
-SEA-HELM, Bloom Library, and the AfroBench and SEACrowd suites), the row carries its most
-representative artifact and promotion adds the rest to the head record. Licenses marked *disputed*
-disagree between the Hub card and the repository; promotion settles them against the primary source
-rather than picking one here.
+| JMMLU | `jmmlu` | `benchmark_eval_data` | E | knowledge eval, Japanese | CC-BY-NC-ND-4.0 | https://huggingface.co/datasets/nlp-waseda/JMMLU |
+| CCI3-HQ | `cci3-hq` | `training_synthetic_datasets` | E | pretraining text, Chinese | none declared | https://huggingface.co/datasets/BAAI/CCI3-HQ |
+| MAP-CC | `map-cc` | `training_synthetic_datasets` | P | pretraining text, Chinese | CC-BY-NC-ND-4.0 | https://huggingface.co/datasets/m-a-p/MAP-CC |
+| CHOCLO | `choclo` | `benchmark_eval_data` | X | eval, Spanish (Latin America) | MIT | https://huggingface.co/datasets/latam-gpt/CHOCLO |
+| Trueque Benchmark | `trueque-benchmark` | `benchmark_eval_data` | X | eval, Spanish (Latin America) | Apache-2.0 | https://huggingface.co/datasets/latam-gpt/Trueque-Benchmark-beta-0.1 |
 
 ## Parked candidates
 
 | Candidate | Inputs | Reason | Source |
 |---|---|---|---|
 | AfriBERTa corpus | A | superseded by WURA from the same group | https://huggingface.co/datasets/castorini/afriberta-corpus |
-| MasakhaNEWS | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/masakhane/masakhanews |
-| MasakhaPOS | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/masakhane/masakhapos |
-| AfriQA | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/masakhane/afriqa |
-| AfriHate | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/afrihate/afrihate |
-| Kencorpus | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/Kencorpus/KenCorpus_text |
+| MasakhaNEWS | A | bundled: carried by `afrobench` | https://huggingface.co/datasets/masakhane/masakhanews |
+| MasakhaPOS | A | bundled: carried by `afrobench` | https://huggingface.co/datasets/masakhane/masakhapos |
+| AfriQA | A | bundled: carried by `afrobench` | https://huggingface.co/datasets/masakhane/afriqa-gold-passages |
 | AfriSpeech-200 | A | boundary: African-accented English, so defined by region and accent rather than language | https://huggingface.co/datasets/intronhealth/afrispeech-200 |
-| Masakhane machine-translated SFT sets | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; machine-translated | https://huggingface.co/datasets/masakhane/african-ultrachat |
-| Inkuba-Instruct | AP | sibling of Inkuba-Mono; review with it at promotion | https://huggingface.co/datasets/lelapa/Inkuba-instruct |
 | Lacuna Fund | A | a funder, not a dataset | https://lacunafund.org |
-| ALFFA | A | legacy (about 2016) and superseded by WAXAL and Afrivoice | https://github.com/getalp/ALFFA_PUBLIC |
-| NCHLT / SADiLaR corpora | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/nwu-ctext/nchlt |
+| ALFFA | A | unmaintained: last released around 2016 | https://github.com/getalp/ALFFA_PUBLIC |
 | Open Bible African subset | A | a re-host of another dataset | https://huggingface.co/datasets/AfriSpeech/open-bible-speech-african |
-| Individual Amharic uploads | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/yordanoswuletaw/amharic-pretraining-corpus |
-| Other Digital Umuganda repos | A | siblings of Afrivoice, folded into that row | https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili |
+| Individual Amharic uploads | A | unverifiable identity: personal uploads with no card saying what the corpus contains or where it came from | https://huggingface.co/datasets/yordanoswuletaw/amharic-pretraining-corpus |
+| Other Digital Umuganda repos | A | new SKU of an existing product: Afrivoice's regional releases (Swahili, Ethiopia, V2) | https://huggingface.co/datasets/DigitalUmuganda/Afrivoice_Swahili |
 | MasakhaNER 1.0 | A | superseded by MasakhaNER 2.0 | https://github.com/masakhane-io/masakhane-ner |
-| AfriDocMT, Uhura, InjongoIntent | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; covered by AfroBench | https://huggingface.co/masakhane |
-| Lelapa ViXSD (Esethu License) | A | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; the Esethu License is a model worth recording at promotion | https://huggingface.co/datasets/lelapa/Vukuzenzele_isiXhosa_Speech_Dataset_ViXSD |
 | Intron Health clinical speech | A | closed and has no addressable artifact of its own; only press coverage | https://www.intron.io/research/ |
 | N-ATLaS training data | A | closed; only the model is published, and that is a model artifact | https://techcabal.com/2025/09/25/nigerian-government-awarri-launch-n-atlas/ |
-| IndicCorp v2 | IS | a distinct, earlier corpus that Sangraha succeeds for LLM use; revisit at promotion | https://huggingface.co/datasets/ai4bharat/IndicCorpV2 |
-| Kathbath | S | part of AI4Bharat's IndicVoices speech line | https://huggingface.co/datasets/ai4bharat/Kathbath |
-| Shrutilipi | S | part of AI4Bharat's IndicVoices speech line | https://huggingface.co/datasets/ai4bharat/Shrutilipi |
-| IndicVoices-R | S | derived from IndicVoices | https://huggingface.co/datasets/ai4bharat/indicvoices_r |
-| Rasa | S | sibling of IndicVoices (expressive TTS) | https://huggingface.co/datasets/ai4bharat/Rasa |
-| Aksharantar | S | task-defined (transliteration) | https://arxiv.org/abs/2205.03018 |
-| Pralekha | S | task-defined (document alignment) | https://arxiv.org/abs/2411.19096 |
-| IndicSentiment | S | part of IndicXTREME | https://github.com/AI4Bharat/IndicBERT |
+| IndicSentiment | S | bundled: carried by `indicxtreme` | https://huggingface.co/datasets/ai4bharat/IndicSentiment |
 | Samanantar | SP | superseded by BPCC | https://huggingface.co/datasets/ai4bharat/samanantar |
 | IN22 | S | the BPCC test set, part of that row | https://github.com/AI4Bharat/IndicTrans2 |
-| IndicXTREME | SP | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; no single artifact, split across per-task repos | https://github.com/AI4Bharat/IndicBERT |
-| Lahaja | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/ai4bharat |
-| Svarah | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/ai4bharat |
-| Sarvam samvaad-hi | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/sarvamai/samvaad-hi-v1 |
 | SPRINGLab IndicTTS mirrors | S | re-hosts of the IIT Madras Indic TTS database | https://huggingface.co/datasets/SPRINGLab/IndicTTS-Hindi |
-| SPRING-INX | S | per-language repos with no umbrella identifier, and no data license found | https://huggingface.co/datasets/SPRINGLab/SPRING_INX_Malayalam_R1 |
 | XL-Sum (Bangla) | S | boundary: a 43-language task set | https://huggingface.co/datasets/csebuetnlp/xlsum |
 | Open large Bengali ASR data | S | an aggregation of other corpora | https://huggingface.co/datasets/SKNahin/open-large-bengali-asr-data |
 | OOD-Speech | S | its training split is distributed inside Common Voice Bangla | https://arxiv.org/abs/2305.09688 |
-| IIT Bombay English-Hindi | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/cfilt/iitb-english-hindi |
-| Sinhala sets (SOLD and others) | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/sinhala-nlp/SOLD |
-| UrduSpeech | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/ASLP-lab/UrduSpeech |
-| Pashto community uploads | S | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets?search=pashto |
-| Bangla2B+ | S | restricted (request form, non-commercial); a candidate for the closed tier at promotion | https://github.com/csebuetnlp/banglabert |
-| LDC-IL corpora | S | restricted government corpora; a candidate for the closed tier at promotion | https://data.ldcil.org/accessing-data |
-| Indic TTS database | S | license page unreachable on the sweep date (timeout); retry | https://www.iitm.ac.in/donlab/indictts/ |
+| Pashto community uploads | S | no addressable artifact: the sweep found accounts but no specific dataset to emit | https://huggingface.co/datasets?search=pashto |
+| Bangla2B+ | S | no artifact of its own: released by request form, and the repository is the BanglaBERT model's | https://github.com/csebuetnlp/banglabert |
+| LDC-IL corpora | S | closed long tail: a government catalog of separately licensed corpora, a bundle (ADR-005) | https://data.ldcil.org/accessing-data |
+| Indic TTS database | S | held: the homepage timed out on both attempts on 2026-09-23, a transient failure and not a finding; re-check before the next sweep | https://www.iitm.ac.in/donlab/indictts/ |
 | Bhashini / ULCA / AIKosh | S | platforms and catalogs, not datasets | https://github.com/bhashini-dibd/ulca |
-| IndoNLU / Indo4B | E | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://github.com/IndoNLP/indonlu |
 | FilBench | E | boundary: an evaluation harness over existing datasets, so evaluation_code | https://github.com/filbench/filbench-eval |
 | SEA-VL | E | boundary: image-text data, outside the category's modalities | https://huggingface.co/datasets/SEACrowd/sea-vl_crawling |
 | SeaEval | E | boundary: a cross-lingual mix not scoped to one region | https://huggingface.co/datasets/SeaEval/SeaEval_datasets |
-| Viettel Vietnamese curated dataset | E | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/VTSNLP/vietnamese_curated_dataset |
 | LLM-jp Corpus | EP | boundary: 17.8T of v4's 19.5T tokens are English, so not language-defined | https://gitlab.llm-jp.nii.ac.jp/datasets/llm-jp-corpus-v4 |
-| JMMLU | E | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/nlp-waseda/JMMLU |
-| BAAI CCI3 | E | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/BAAI/CCI3-HQ |
-| Other Thai sets (WangchanX-FLAN, Typhoon-S) | E | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/airesearch/WangchanX-FLAN-v6.1 |
 | Swallow Corpus | E | closed: the build code is public and the corpus is not, so there is no data artifact | https://github.com/swallow-llm/swallow-corpus |
-| Sahabat-AI Javanese and Sundanese piles | E | unreleased as far as the sweep could establish; unconfirmed | https://huggingface.co/GoToCompany |
+| Sahabat-AI Javanese and Sundanese piles | E | no addressable artifact: named in the Sahabat-AI model card, no release found | https://huggingface.co/GoToCompany |
 | SEALD | IEP | no dataset released under the name; its public output so far is the ATLAS catalog | https://aisingapore.org/aiproducts/southeast-asian-languages-in-one-network-data-seald/ |
 | ATLAS | IEXP | a catalog, a discovery source for this category, not a product | https://atlas-data.ai |
-| TurkishMMLU | M | full set by email only; 1,845 rows on the Hub; no license | https://huggingface.co/datasets/AYueksel/TurkishMMLU |
-| ArabicWeb24 | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; overlaps 101 Billion Arabic Words | https://huggingface.co/datasets/lightonai/ArabicWeb24 |
-| HeDC4 | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/HeNLP/HeDC4 |
 | Greek MMLU | M | boundary: a translation of MMLU | https://huggingface.co/datasets/ilsp/mmlu_greek |
-| KazMMLU | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/MBZUAI/KazMMLU |
-| Khayyam Challenge | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/raia-center/khayyam-challenge |
-| Atlaset | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/atlasia/Atlaset |
 | Irish FineWeb-Edu | M | boundary: derived from FineWeb | https://huggingface.co/datasets/ReliableAI/irish_fineweb_edu |
-| Estonian and Uzbek sets (smugri-data and others) | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/tartuNLP/smugri-data |
 | EusCrawl | MP | folded into the Latxa Corpus, which includes it | https://huggingface.co/datasets/HiTZ/euscrawl |
 | Danish Gigaword | M | superseded by Danish Dynaword | https://huggingface.co/datasets/danish-foundation-models/danish-gigaword |
-| Icelandic Dynaword | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; overlaps the Icelandic Gigaword Corpus | https://huggingface.co/datasets/danish-foundation-models/icelandic-dynaword |
-| AraBench | M | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/arbml/AraBench |
+| AraBench | M | held, org mapping ambiguous: the only artifact is ARBML's re-host of a dataset QCRI published | https://huggingface.co/datasets/arbml/AraBench |
 | Jais pretraining data | M | closed; its only artifact is the Jais paper, which a Jais model product would claim | https://arxiv.org/abs/2308.16149 |
-| LDC Arabic Gigaword | M | paid; the LDC is represented by its Babel and LORELEI rows | https://catalog.ldc.upenn.edu/LDC2011T11 |
+| LDC Arabic Gigaword | M | closed long tail: a single paid LDC catalog item (ADR-005) | https://catalog.ldc.upenn.edu/LDC2011T11 |
 | Malyuk | M | derived from UberText and others | https://huggingface.co/datasets/lang-uk/malyuk |
-| ChrEn (Cherokee-English) | X | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected; no data license found | https://github.com/ZhangShiyue/ChrEn |
-| Jojajovai (Guaraní-Spanish) | X | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://github.com/pln-fing-udelar/jojajovai |
 | Axolotl (Nahuatl-Spanish) | X | a sub-source of the AmericasNLP data | https://huggingface.co/datasets/somosnlp-hackathon-2022/Axolotl-Spanish-Nahuatl |
-| Llamacha monolingual Quechua | X | below this sweep's per-region retrieval cutoff (the 8-14 strongest per region); not rejected | https://huggingface.co/datasets/Llamacha/monolingual-quechua-iic |
 | CMU Wilderness | X | scripts that re-align third-party recordings; distributes no data | https://github.com/festvox/datasets-CMU_Wilderness |
-| LatamGPT CHOCLO and Trueque | X | folded into the LatamGPT Corpus row | https://huggingface.co/datasets/latam-gpt/CHOCLO |
 | Global-MMLU | X | boundary: MMLU translated into 42 languages, defined by its task; belongs in benchmark_eval_data | https://huggingface.co/datasets/CohereLabs/Global-MMLU |
 | GlotCC | X | boundary: a Common Crawl corpus like MADLAD-400; belongs with it in training_synthetic_datasets | https://huggingface.co/datasets/cis-lmu/GlotCC-V1 |
-| Bloom speech and captioning | X | siblings of the Bloom Library row | https://huggingface.co/datasets/sil-ai/bloom-speech |
+| Bloom speech and captioning | X | new SKU of an existing product: configurations of the Bloom Library release | https://huggingface.co/datasets/sil-ai/bloom-speech |
 | Lanfrica | X | a catalog, a discovery source | https://lanfrica.com |
-| ELRA / ELDA catalog | X | a vendor catalog, a bundle rather than a product (ADR-005, surface not bundle) | https://catalog.elra.info |
-| Appen off-the-shelf datasets | X | a vendor catalog, a bundle rather than a product (ADR-005) | https://www.appen.com/ots-datasets |
-| Defined.ai marketplace | X | a vendor catalog, a bundle rather than a product (ADR-005) | https://defined.ai/datasets |
-| Karya | X | a data vendor, a bundle rather than a product (ADR-005) | https://www.karya.in |
-| MAP-CC | P | the alternative Chinese corpus; ChineseWebText 2.0 carries the more open license (MAP-CC is CC-BY-NC-ND-4.0) | https://huggingface.co/datasets/m-a-p/MAP-CC |
+| ELRA / ELDA catalog | X | closed long tail: a vendor catalog, a bundle rather than a product (ADR-005) | https://catalog.elra.info |
+| Appen off-the-shelf datasets | X | closed long tail: a vendor catalog, a bundle rather than a product (ADR-005) | https://www.appen.com/ots-datasets |
+| Defined.ai marketplace | X | closed long tail: a vendor catalog, a bundle rather than a product (ADR-005) | https://defined.ai/datasets |
+| Karya | X | closed long tail: a vendor catalog, a bundle rather than a product (ADR-005) | https://www.karya.in |
 | VoxPopuli | P | boundary: parliamentary speech in 16 mostly major European languages, a general multilingual corpus | https://huggingface.co/datasets/facebook/voxpopuli |
-| IrokoBench | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; LLM eval (AfriMMLU, AfriXNLI, AfriMGSM), 17 African languages, Apache-2.0 | https://huggingface.co/datasets/masakhane/afrimmlu |
-| AfriSenti | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; sentiment, 14 African languages, disputed: CC-BY-4.0 (repo) vs CC-BY-NC-SA-2.0 (card) | https://huggingface.co/datasets/masakhane/afrisenti |
-| MasakhaNER 2.0 | IAP | carried by the `afrobench` suite, which is the product under the bundle ruling; NER, 20 African languages, disputed: AFL-3.0 (card) vs CC-BY-NC (repo) | https://huggingface.co/datasets/masakhane/masakhaner2 |
-| MAFAND-MT | AP | carried by the `afrobench` suite, which is the product under the bundle ruling; MT (news), 21 African languages, CC-BY-NC-4.0 | https://huggingface.co/datasets/masakhane/mafand |
-| SALT | A | carried by the `afrobench` suite, which is the product under the bundle ruling; parallel text and speech, English plus 8 Ugandan languages, CC-BY-SA-4.0 | https://huggingface.co/datasets/Sunbird/salt |
-| NusaX | EP | carried by the `seacrowd` suite, which is the product under the bundle ruling; sentiment and MT, Indonesian, English and 10 local languages, CC-BY-SA-4.0 | https://huggingface.co/datasets/indonlp/NusaX-senti |
-| PhoMT | P | carried by the `seacrowd` suite, which is the product under the bundle ruling; parallel text, Vietnamese and English, none declared on the card | https://huggingface.co/datasets/vinai/PhoMT |
+| IrokoBench | AP | bundled: carried by `afrobench`, which is the product; LLM eval (AfriMMLU, AfriXNLI, AfriMGSM), 17 African languages, license Apache-2.0 | https://huggingface.co/datasets/masakhane/afrimmlu |
+| AfriSenti | AP | bundled: carried by `afrobench`, which is the product; sentiment, 14 African languages, license disputed: CC-BY-4.0 (repo) vs CC-BY-NC-SA-2.0 (card) | https://huggingface.co/datasets/masakhane/afrisenti |
+| MasakhaNER 2.0 | IAP | bundled: carried by `afrobench`, which is the product; NER, 20 African languages, license disputed: AFL-3.0 (card) vs CC-BY-NC (repo) | https://huggingface.co/datasets/masakhane/masakhaner2 |
+| MAFAND-MT | AP | bundled: carried by `afrobench`, which is the product; MT (news), 21 African languages, license CC-BY-NC-4.0 | https://huggingface.co/datasets/masakhane/mafand |
+| SALT | A | bundled: carried by `afrobench`, which is the product; parallel text and speech, English plus 8 Ugandan languages, license CC-BY-SA-4.0 | https://huggingface.co/datasets/Sunbird/salt |
+| NusaX | EP | bundled: carried by `seacrowd`, which is the product; sentiment and MT, Indonesian, English and 10 local languages, license CC-BY-SA-4.0 | https://huggingface.co/datasets/indonlp/NusaX-senti |
+| PhoMT | P | bundled: carried by `seacrowd`, which is the product; parallel text, Vietnamese and English, license none declared on the card | https://huggingface.co/datasets/vinai/PhoMT |
+| Mangosteen | E | held, org mapping ambiguous: built by VISTEC, the Hub copy sits in AI Singapore's namespace (`aisingapore/WangchanLION-Web`), and it is released as a joint WangchanLION product | https://huggingface.co/datasets/aisingapore/WangchanLION-Web |
+| AmericasNLI | PX | held, org mapping ambiguous: the dataset is under the NALA lab's Hub account and the repository under a personal account (`abteen/americasnli`) | https://huggingface.co/datasets/nala-cub/americas_nli |
+| IARPA Babel language packs | X | bundle: an LDC product line of separately licensed packs, one per language; one pack's page cannot stand for the line (ADR-005, surface not bundle), and single paid packs are the closed long tail | https://catalog.ldc.upenn.edu/ |
+| LORELEI language packs | X | bundle: an LDC product line of separately licensed packs, one per language; one pack's page cannot stand for the line (ADR-005, surface not bundle), and single paid packs are the closed long tail | https://catalog.ldc.upenn.edu/ |
+| Uhura | A | bundled: carried by `afrobench` | https://huggingface.co/datasets/masakhane/uhura-arc-easy |
+| InjongoIntent | A | bundled: carried by `afrobench` | https://huggingface.co/datasets/masakhane/InjongoIntent |
+| Svarah | S | boundary: Indian-accented English, defined by accent rather than language (the AfriSpeech-200 rule) | https://huggingface.co/datasets/ai4bharat/Svarah |
 
-## Decisions recorded before promotion
+## Decisions recorded on the draft
 
-Taken on review of the first draft of this seed, 2026-09-23:
-
-1. **No `languages` field for now.** It would make the per-language gap computable rather than
-   hand-assembled, and it is a schema change. Judged a nice-to-have; the category works without it.
-2. **Language-targeted evaluation sets stay in this category**, not `benchmark_eval_data`.
-3. **High-resource languages are out.** The six such rows were routed to their neighbors.
-4. **Bundles are the product.** AfroBench and SEACrowd stand for the datasets they carry.
-5. **Weights are `adopt: 0.3, cap: 0.7`.** Download counts for a low-resource corpus are small by
+1. Language-targeted evaluation sets stay in this category, not `benchmark_eval_data`.
+2. High-resource languages are out; their candidates were routed to the neighbors.
+3. Bundles are the product: AfroBench, IndicXTREME and SEACrowd stand for the datasets they carry.
+4. Weights are `adopt: 0.3, cap: 0.7`. Download counts for a low-resource corpus are small by
    construction, so adoption carries less of the overall score than in the neighboring categories.
+5. A structured `languages` field was deferred as a nice-to-have. Review on #688 disagrees; see below.
 
-## Still open for promotion
+## Open items for promotion
 
-- **Whether the dataset ladder needs a rung for a community-governed license** such as Te Hiku
-  Media's Kaitiakitanga License (see the category's `scoring_recipe.note`).
-- **The disputed licenses** on MasakhaNER 2.0, AfriSenti and CMMLU, and the undeclared ones on
-  Inkuba-Mono, PhoMT, UberText and VMLU, which promotion has to read at the source.
+- **A structured `languages` field.** Review on #688 asks for it as a promotion prerequisite: the
+  category's central question, coverage by language and modality, cannot be computed from the
+  registry schema, which has no field for it. The draft decision above deferred it. This needs a
+  maintainer's call before promotion starts. It is a schema change and belongs in its own PR.
+- **An operational line for "underrepresented".** The current line is an enumerated list (Chinese,
+  Japanese, Korean, Spanish and Portuguese out; the smaller European languages in). Review asks for
+  a rule that reproduces those calls rather than a list that states them.
+- **Completeness of multi-artifact products.** Several rows carry one representative artifact for a
+  product that spans many: Afrivoice, AfriVoices-KE, IrokoBench's members inside AfroBench,
+  IndicGenBench, IndicXTREME, SPRING-INX, SEA-HELM, SEACrowd and Bloom Library. Promotion must add
+  the rest to the head record; the representative artifact is not the product's whole identity.
+- **A ladder rung for a community-governed license** such as the Kaitiakitanga License.
+- **Licenses to read at the source:**
+  - **Disputed between the Hub card and the repository:** MasakhaNER 2.0 and AfriSenti (now inside
+    AfroBench), and CMMLU.
+  - **Undeclared:** Inkuba-Mono, Inkuba-Instruct, AfriDocMT, UberText, VMLU, HeDC4, Atlaset,
+    UrduSpeech, SPRING-INX, the Vietnamese Curated Dataset and ChrEn.
