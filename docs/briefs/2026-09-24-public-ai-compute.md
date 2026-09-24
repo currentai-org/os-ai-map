@@ -56,12 +56,17 @@ against a subsidized voucher as if they were two grades of one thing.
 
 ## Inventory
 
-**Provision** follows the Ada Lovelace Institute's typology:
+**Provision** extends the typology in the Ada Lovelace Institute's *Computing Commons* report.
+The first three values are Ada's:
 - `direct-generalist`: a public HPC machine that also takes AI work
 - `direct-ai`: a public machine built for AI
-- `federated`: one program over several machines or sites
-- `voucher`: public money spent on private capacity
-- `hybrid`: a private build with a public allocation attached
+- `market-based`: public money spent on commercial capacity, as vouchers or subsidies
+
+The last two are added here, because several programs fit none of Ada's values:
+- `federated`: one program allocating across several public machines or sites
+- `hybrid`: a private build with a public allocation or public co-funding attached
+
+Ada's fourth type, decentralised provision, has no qualifying row here.
 
 **Status** is one of:
 - `live`: you can apply now
@@ -75,17 +80,18 @@ publishes them. The notes after each table flag press-only figures.
 
 | Program | Jurisdiction | Provision | Status | Who can apply, on what terms | Capacity and usage (published) | Source |
 |---|---|---|---|---|---|---|
-| NAIRR Pilot, moving to the NAIRR Operations Center | US | federated | live | US academic, nonprofit, federal, state, local and tribal researchers and educators; startups only with a federal grant. Free and peer-reviewed. Results must be open and publishable. | 900 projects in all 50 states, DC and PR; 101 classroom awards. No capacity total. | [nairrpilot.org](https://nairrpilot.org/), [NSF release](https://www.nsf.gov/cise/updates/nsf-establishes-operations-center-national-artificial) |
+| NAIRR Pilot, moving to the NAIRR Operations Center | US | federated | live | US academic, nonprofit, federal, state, local and tribal researchers and educators; startups only with a federal grant. Free and peer-reviewed. Results must be open and publishable. | 900 projects in all 50 states, DC and PR; 101 classroom awards. NSF's two-year update gives about 6,000 students. No capacity total. | [nairrpilot.org](https://nairrpilot.org/), [NSF release](https://www.nsf.gov/cise/updates/nsf-establishes-operations-center-national-artificial), [two-year update](https://nsf-gov-resources.nsf.gov/files/NAIRR-2-Year-Progress-Update.pdf) |
 | NSF ACCESS | US | federated | live | US researchers and educators, grant or no grant. Free, in four tiers from an eligibility check (Explore) to panel review (Maximize). | More than 4,000 researchers a month; more than 2,000 projects. | [access-ci.org](https://access-ci.org/), [allocations](https://allocations.access-ci.org/) |
 | NSF LCCF Horizon (TACC) | US | direct-generalist | live, early operations | AI users apply through NAIRR's Deep Partnerships track, HPC users through LCCF. | 2,000 GB200 nodes (press). | [LCCF allocations](https://lccf.tacc.utexas.edu/allocations/) |
 | DOE INCITE and ALCC | US | federated | live | INCITE takes 60% of leadership-system time and is open to any researcher worldwide, industry included. ALCC takes about 20%. Free and competitive. | INCITE 2026: 75 projects, with requests over 141M node-hours. | [OLCF INCITE 2026](https://www.olcf.ornl.gov/2026/04/07/incite2026awards/), [ALCC call](https://science.osti.gov/ascr/Facilities/Accessing-ASCR-Facilities/ALCC/Call-for-Proposals) |
 | DOE Genesis Mission | US | hybrid | live | Grant program bundling lab compute with models and data. First round: 87 lab-led, 168 university-led, 19 company-led and 4 nonprofit-led projects. | 278 projects. Compute share not published. | [DOE release](https://www.energy.gov/articles/secretary-energy-chris-wright-announces-first-genesis-mission-projects-selected-accelerate) |
 | NSF State and Regional AI Infrastructure Hubs | US | federated | announced | Up to 10 hubs at $4M to $12M each. NSF pays for coordination; states, industry and philanthropy are expected to pay for the compute. Proposals due 2026-11-04. | None yet. | [NSF 26-513](https://www.nsf.gov/news/new-nsf-state-regional-ai-infrastructure-hubs-will-power-ai) |
-| Empire AI | New York | direct-ai | live | Researchers at the ten member institutions only, through each institution's internal call. | Beta is fully online, with 11x Alpha's training capacity. More than 130 projects ran on Alpha. | [Governor's release](https://www.governor.ny.gov/news/governor-hochul-announces-empire-ai-beta-fully-online-federal-government-takes-inspiration-new) |
+| Empire AI | New York | direct-ai | live | Researchers at the ten member institutions only, through each institution's internal call. | Beta: 288 Blackwell GPUs in DGX GB200 systems, fully online, with 11x Alpha's training capacity. More than 130 projects ran on Alpha. | [Empire AI](https://www.empireai.edu/2025/06/27/empire-ai-launches-beta-one-of-the-most-powerful-academic-ai-supercomputers-in-the-nation/), [Governor's release](https://www.governor.ny.gov/news/governor-hochul-announces-empire-ai-beta-fully-online-federal-government-takes-inspiration-new) |
 | Massachusetts AI Compute Resource | Massachusetts | direct-ai | building | Intended for startups, businesses, researchers and state agencies. Terms not published. | "Hundreds" of GPUs. | [MassTech](https://masstech.org/news/healey-driscoll-administration-celebrates-selection-cambridge-computer-build-landmark) |
-| Utah state AI supercomputer | Utah | direct-ai | building | Academics statewide first, then government, industry, startups and K-12. | Not published. | [University of Utah](https://attheu.utah.edu/research/state-backed-ai-supercomputer-set-to-expand-research-capacity-across-utah-this-summer/) |
+| Redtail (University of Utah CHPC) | Utah | direct-ai | live, early access | Selected early-access projects now. A quarterly open allocation is planned for Utah higher education, state bodies and commercial users. | 264 H200; No. 159 on the June 2026 TOP500. | [CHPC](https://www.chpc.utah.edu/resources/utah-ai-supercomputer.php), [Redtail](https://www.chpc.utah.edu/redtail/index.php), [funding](https://attheu.utah.edu/research/state-backed-ai-supercomputer-set-to-expand-research-capacity-across-utah-this-summer/) |
 | CalCompute | California | not yet decided | announced | SB 53 creates a consortium to deliver a framework for a public compute cluster by 2027-01-01. No machine and no appropriation found. | None. | [SB 53](https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260SB53) |
-| AI Compute Access Fund | Canada | voucher | live, intake closed | Canadian firms under 500 staff. Covers two-thirds of costs on Canadian clouds and half on foreign ones. Commercial by design, with no open-output rule. | 44 projects, C$66M. | [ISED](https://ised-isde.canada.ca/site/ised/en/canadian-sovereign-ai-compute-strategy/ai-compute-access-fund), [release](https://www.canada.ca/en/innovation-science-economic-development/news/2026/05/government-of-canada-supports-44-canadian-companies-using-ai-to-transform-industries-and-create-jobs.html) |
+| AI Compute Access Fund | Canada | market-based | live, intake closed | Canadian firms under 500 staff. Covers two-thirds of costs on Canadian clouds and half on foreign ones. Commercial by design, with no open-output rule. | 44 projects, C$66M. | [ISED](https://ised-isde.canada.ca/site/ised/en/canadian-sovereign-ai-compute-strategy/ai-compute-access-fund), [release](https://www.canada.ca/en/innovation-science-economic-development/news/2026/05/government-of-canada-supports-44-canadian-companies-using-ai-to-transform-industries-and-create-jobs.html) |
+| Resource Allocation Competition (Digital Research Alliance) | Canada | federated | live | Faculty at Canadian academic institutions apply as PIs; affiliated researchers get smaller Rapid Access allocations. Free. | Fir 640 H100, Nibi 288 H100, Trillium 252 H100, Rorqual 324 GPUs. RAC 2024 awarded 21% of the GPU-years requested. | [eligibility](https://alliancecan.ca/en/services/advanced-research-computing/account-management/user-roles-access-resources-and-services-federation), [systems](https://www.alliancecan.ca/en/services/compute), [RAC 2024](https://www.alliancecan.ca/en/2024-resource-allocations-competition-results) |
 | Pan-Canadian AI Compute Environment (PAICE) | Canada | federated | live | Free. Priority goes to CIFAR AI Chairs and faculty at Mila, Amii and Vector, with other Canadian AI researchers phased in. | Not published. | [Alliance](https://www.alliancecan.ca/en/our-services/advanced-research-computing/pan-canadian-ai-compute-environment-paice) |
 | AI Sovereign Compute Infrastructure Program | Canada | direct-ai | building | Applications were for building the machine. There is no user queue yet. | None yet. | [release](https://www.canada.ca/en/innovation-science-economic-development/news/2026/04/canada-launches-national-initiative-to-build-large-scale-ai-supercomputing-capacity.html) |
 | SDumont (LNCC) | Brazil | direct-generalist | live | People at Brazilian institutions, for teaching and research. Free, merit-reviewed, continuous intake. | 248 H100, 36 GH200 nodes, 18 MI300A nodes. | [machine](https://sdumont.lncc.br/machine.php?pg=machine), [call](https://sdumont.lncc.br/call.php?pg=call) |
@@ -118,9 +124,10 @@ Notes:
 | Program | Jurisdiction | Provision | Status | Who can apply, on what terms | Capacity and usage (published) | Source |
 |---|---|---|---|---|---|---|
 | ABCI 3.0 (AIST) | Japan | direct-ai | live | Industry and academia. Paid, at 220 yen a point in FY2026 and 16 points an hour per eight-GPU node, which is about 440 yen a GPU-hour. | 6,128 H200. | [tariffs](https://abci.ai/en/how_to_use/tariffs.html), [arXiv 2411.09134](https://arxiv.org/abs/2411.09134) |
-| GENIAC (METI, NEDO) | Japan | voucher | live | Subsidizes compute for foundation-model developers, mostly companies. | 16 projects in cycle 4. | [METI](https://www.meti.go.jp/english/press/2026/0604_001.html) |
-| IndiaAI Mission compute | India | voucher | live | DPIIT-registered startups, MSMEs, academia, students and government bodies. Subsidy up to 40%, about 65 to 92 rupees a GPU-hour. | More than 38,000 empanelled GPUs. 190 approved projects. | [PIB](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2177598) |
-| Korea national GPU provision (MSIT, NIPA) | South Korea | voucher | live | Free for universities and public institutes. Private users pay 5 to 10% of market price. | First batch of about 4,000 GPUs for 159 projects (press). | [Korea Herald](https://www.koreaherald.com/article/10678398) |
+| GENIAC (METI, NEDO) | Japan | market-based | live | Subsidizes compute for foundation-model developers, mostly companies. | 16 projects in cycle 4. | [METI](https://www.meti.go.jp/english/press/2026/0604_001.html) |
+| IndiaAI Mission compute | India | market-based | live | DPIIT-registered startups, MSMEs, academia, students and government bodies. Subsidy up to 40%, from 65 rupees a GPU-hour. | 38,231 GPUs onboarded, per a ministerial reply in the Lok Sabha. 190 approved projects. | [PIB](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2245069), [PIB projects](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2177598) |
+| AIRAWAT and PARAM Siddhi-AI (C-DAC) | India | direct-ai | live | Academia, R&D institutes and startups, under a charging policy; startups get a free starter allocation. Some AIRAWAT GPUs were also offered through the IndiaAI empanelment. | The NSM page gives 656 A100 for PARAM Siddhi-AI; other C-DAC pages give different counts. | [C-DAC](https://cdac.in/index.aspx?id=hpc_nsf_siddhi-AI), [NSM](https://nsmindia.in/infrastructure/nsm-systems/param-siddhi-ai/) |
+| Korea national GPU provision (MSIT, NIPA) | South Korea | market-based | live | Free for universities and public institutes. Private users pay 5 to 10% of market price. | First batch of about 4,000 GPUs for 159 projects (press). | [Korea Herald](https://www.koreaherald.com/article/10678398) |
 | Korea National AI Computing Center | South Korea | direct-ai | building | Terms not published. | 15,000 GPUs planned by 2028 (press). | [Kyunghyang](https://www.khan.co.kr/en/article/202608031407017/) |
 | NCHC (TWCC and the new system) | Taiwan | direct-ai | live | Time split among academia, government and industry. Startups get free GPU time through TAIWAN AI RAP. | Terms and usage unverified. | [NCHC](https://www.nchc.org.tw/Message/MessageView?id=3977&menutype=0&sitemenuid=8&mid=92) |
 | NSCC ASPIRE 2A+ and 2B | Singapore | direct-ai | live | Through a research office at A*STAR, NUS, NTU, SUTD or SIT. Paid: S$0.98 an H100 card-hour at the public-research rate, higher for industry. | ASPIRE 2B: more than 1,500 H200. | [allocation policy](https://www.nscc.sg/srapolicy/) |
@@ -128,7 +135,8 @@ Notes:
 | National AI supercomputer (Israel Innovation Authority) | Israel | hybrid | live | 70% to companies, 30% to academia. Discounted below market, with minimum requests of 16 GPUs for industry and 8 for academia. | The equivalent of 1,000 B200 over several years. | [IIA](https://innovationisrael.org.il/en/press_release/supercomputer-access-2026/) |
 
 Notes:
-- The Korea rows, and the IndiaAI project count, come from press or search snippets because the primary pages blocked fetching.
+- The Korea rows, the IndiaAI figures and AIRAWAT's startup allocation come from press or search snippets, because the primary pages blocked fetching.
+- Open Cloud Compute, the Indian network the Ada Lovelace report cites as decentralised provision, is left out. It is run by People+ai, part of the philanthropic EkStep Foundation, and no public funding or apply-here portal was found.
 - Saudi Arabia's Shaheen III is framed for KAUST faculty, with no documented outside path, so it is left out.
 
 ### Africa
@@ -152,21 +160,28 @@ Activity there is private data centers and draft national AI policies.
 - **Startup and SME access is narrower still.**
   - Programs that name startups or SMEs and are open to them now: the EuroHPC AI Factories, the
     UK AIRR, Jean Zay, ABCI, the IndiaAI Mission, Korea's GPU provision, Israel's supercomputer and
-    Canada's Access Fund (whose intake has closed).
+    Canada's Access Fund (whose intake has closed). Redtail plans commercial access.
   - NAIRR admits a startup only when it holds a federal grant.
-  - Empire AI, PAICE, SDumont and the Swiss AI Initiative are academic.
+  - Empire AI, PAICE, the Alliance competition, SDumont and the Swiss AI Initiative are academic.
 - **Much of the capacity is law or plans.**
   - CalCompute is a statute with no machine or appropriation.
   - The EU AI Gigafactories, Canada's SCIP, Brazil's PBIA machine, Mexico's Coatlicue, Korea's
-    national center, Massachusetts, Utah and the African Compute Initiative are all funded or
+    national center, Massachusetts and the African Compute Initiative are all funded or
     announced but not yet generally usable.
 - **Open-output rules are rare.** NAIRR requires open and publishable results, and the Swiss AI
   Initiative and Jean Zay's open-research track require open science. The UK AIRR, the EuroHPC
-  industry track and every voucher program publish no such rule, and Canada's fund is commercial
+  industry track and every market-based program publish no such rule, and Canada's fund is commercial
   by design.
-- **Demand outruns supply where it is measured.** Jean Zay is about 5x oversubscribed, NCMAS about
-  3x, and INCITE requests exceeded 141M node-hours. The issue's hypothesis that public capacity
-  sits unused has no published allocation data behind it in the programs surveyed.
+- **Demand outruns supply where it is measured.**
+  - Jean Zay is about 5x oversubscribed and NCMAS about 3x.
+  - The Alliance's 2024 competition awarded 21% of the GPU-years requested.
+  - INCITE requests exceeded 141M node-hours.
+  - EuroHPC closed Fast Lane access to MareNostrum 5's GPU partition because of demand ([notice](https://www.eurohpc-ju.europa.eu/fast-lane-access-ai-factories-temporarily-closed_en)).
+- **No program publishes evidence that its capacity sits unused.** That was the issue's
+  hypothesis. The nearest thing is NAIRR's policy of reclaiming allocations that go unused in time
+  ([policy](https://nairrpilot.org/allocation-management-policy)), which shows the program plans for
+  slack but doesn't measure any. A widely quoted figure of under 20% utilization describes India's
+  commercial GPU cloud market, not the IndiaAI program.
 
 ## What would make this a scored category
 
@@ -178,7 +193,7 @@ needs:
 - one adoption unit, such as projects served in the latest published year, with a dated abstention
   where a program publishes none
 - capacity counted as the accelerators or FLOPs allocated to outside users, not the machine's
-  total, with vouchers scored on the capacity they actually bought
+  total, with market-based programs scored on the capacity they actually bought
 
 Until then this inventory should be refreshed in a new dated brief rather than edited in place.
 
@@ -193,6 +208,7 @@ press note were read on the cited primary page. The gaps that remain:
 - NCHC's access terms
 - open-output rules for most programs
 
-Sources on the policy framing: Lawfare's "Building Public Compute for the Age of AI" and the Ada
-Lovelace Institute's work on public compute. Epoch AI's data on AI data centers and Cleanview's
+Sources on the policy framing:
+- Sarosh Nagar and David Eaves, ["Building Public Compute for the Age of AI"](https://www.lawfaremedia.org/article/building-public-compute-for-the-age-of-ai), Lawfare, 2025-08-07.
+- Matt Davies and Jai Vipra, [*Computing Commons: Designing public compute for people and society*](https://www.adalovelaceinstitute.org/report/computing-commons/), Ada Lovelace Institute, 2025-02-07. Epoch AI's data on AI data centers and Cleanview's
 tracker are siting sources, not program sources, so no row here comes from them.
