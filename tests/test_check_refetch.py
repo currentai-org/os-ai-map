@@ -218,6 +218,9 @@ def test_a_miss_is_a_suspected_copy_never_a_failure(monkeypatch):
     assert failures == [] and benign == []
     assert len(suspected) == 1 and "treeverse/lakeFS" in suspected[0]
     assert "Confirm by hand" in suspected[0] and "does not guarantee" in suspected[0]
+    assert "held around" not in suspected[0]
+    assert "checked 1 candidate commit(s)" in suspected[0]
+    assert "(0 recorded inside the window, 1 inferred" in suspected[0]
 
 
 def test_main_exits_zero_on_a_suspected_copy_and_raises_a_workflow_warning(monkeypatch, capsys):
@@ -255,6 +258,23 @@ def test_a_match_on_a_tip_recorded_inside_the_window_is_proven_drift(monkeypatch
     failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T1: BSL, T2: APACHE})
     assert failures == [] and suspected == []
     assert "Drift: master was at " + T2[:10] in benign[0]
+
+
+def test_proven_drift_names_only_the_access_date_whose_window_recorded_the_tip(monkeypatch):
+    """Two claimed accesses, 2026-07-01 and 2026-08-18. The matching tip T2 is recorded only in
+    the August window, so the message names 2026-08-18 and makes no claim about July."""
+    live = {LAKEFS_RAW: BSL}
+    fake = FakeGitHub(live, heads=["master"],
+                      activity=[("2026-06-01T00:00:00Z", T0, T1), ("2026-08-18T12:00:00Z", T1, T2),
+                                ("2026-09-22T00:00:00Z", T2, T3)],
+                      files={("treeverse/lakeFS", T1): BSL, ("treeverse/lakeFS", T2): APACHE,
+                             ("treeverse/lakeFS", T3): BSL})
+    mod = _install(monkeypatch, fake)
+    verdict, detail = mod.served_on_access_verdict(
+        LICENSE_URLS[2], APACHE_DIGEST, {date(2026, 7, 1), date(2026, 8, 18)}
+    )
+    assert verdict == "served"
+    assert "around the access on 2026-08-18," in detail and "2026-07-01" not in detail
 
 
 def test_a_late_merged_commit_is_judged_by_the_tip_not_its_date(monkeypatch):

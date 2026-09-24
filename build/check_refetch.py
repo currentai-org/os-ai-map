@@ -444,17 +444,18 @@ def _resolve_branch(owner: str, repo: str, rest: str, timeout: float) -> tuple[s
 
 
 def _window_tips(
-    owner: str, repo: str, branch: str, windows: list[tuple[datetime, datetime]], timeout: float
-) -> dict[str, bool] | str:
-    """{sha: recorded inside a window} for the branch around the accesses, or a reason.
+    owner: str, repo: str, branch: str, windows: list[tuple[date, datetime, datetime]],
+    timeout: float,
+) -> dict[str, set[date]] | str:
+    """{sha: access dates whose window recorded it} for the branch, or a reason.
 
-    Every update inside a window records its `after` directly (True). The tip entering a window
-    is INFERRED (False) from the `before` of the first update after its start, or the `after`
+    Every update inside a window records its `after` directly, under that window's access
+    date. The tip entering a window is INFERRED (an empty set unless another window records it) from the `before` of the first update after its start, or the `after`
     of the last update before it, and an inference across a log GitHub does not promise is
     complete is weaker evidence. The log is read only for tips to hash, never as proof that no
     other tip existed.
     """
-    since = windows[0][0]
+    since = windows[0][1]
     url: str | None = f"https://api.github.com/repos/{owner}/{repo}/activity"
     params: dict | None = {"ref": f"refs/heads/{branch}", "per_page": 100}
     entries: list[dict] = []
@@ -475,16 +476,16 @@ def _window_tips(
     else:
         return f"the activity log runs past {MAX_ACTIVITY_PAGES} pages before the access window"
     entries.sort()
-    tips: dict[str, bool] = {}
-    for start, end in windows:
+    tips: dict[str, set[date]] = {}
+    for accessed_on, start, end in windows:
         prior = [e for e in entries if e[0] < start]
         later = [e for e in entries if e[0] >= start]
         entering = later[0][1] if later else prior[-1][2] if prior else None
         if entering:
-            tips.setdefault(entering, False)
+            tips.setdefault(entering, set())
         for when, _, after in later:
             if when < end:
-                tips[after] = True
+                tips.setdefault(after, set()).add(accessed_on)
     tips.pop(ZERO_SHA, None)
     return tips or f"the activity log shows no tip for {branch} around the access"
 
@@ -527,7 +528,7 @@ def served_on_access_verdict(
         return "unresolved", resolved
     branch, path = resolved
     windows = [
-        (datetime.combine(d - ACCESS_WINDOW_BEFORE, datetime.min.time(), timezone.utc),
+        (d, datetime.combine(d - ACCESS_WINDOW_BEFORE, datetime.min.time(), timezone.utc),
          datetime.combine(d + ACCESS_WINDOW_AFTER, datetime.min.time(), timezone.utc))
         for d in sorted(accessed)
     ]
@@ -548,7 +549,8 @@ def served_on_access_verdict(
         elif hashlib.sha256(body.content).hexdigest() != digest:
             continue
         elif tips[sha]:
-            return "served", f"{branch} was at {sha[:10]} around the access on {dates}, and its {path} hashes to the recorded digest"
+            on = ", ".join(str(d) for d in sorted(tips[sha]))
+            return "served", f"{branch} was at {sha[:10]} around the access on {on}, and its {path} hashes to the recorded digest"
         else:
             compatible = (
                 f"{path} held the recorded digest at {sha[:10]}, the nearest recorded tip of "
@@ -558,10 +560,12 @@ def served_on_access_verdict(
         return "compatible", compatible
     if unchecked:
         return "unresolved", f"no checked tip matches, and {len(unchecked)} of {len(tips)} could not be fetched ({', '.join(unchecked)})"
+    recorded = sum(1 for on in tips.values() if on)
     return "unmatched", (
-        f"none of the {len(tips)} tip(s) {branch} held around the access on {dates} (per GitHub's "
-        f"activity log, whose completeness GitHub does not guarantee) serves a {path} hashing "
-        f"to it"
+        f"checked {len(tips)} candidate commit(s) of {branch} for the access on {dates} "
+        f"({recorded} recorded inside the window, {len(tips) - recorded} inferred from the nearest "
+        f"recorded updates, per GitHub's activity log, whose completeness GitHub does not "
+        f"guarantee), and none has a {path} hashing to it"
     )
 
 
