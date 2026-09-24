@@ -129,6 +129,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- `lakefs` openness moved from 5 (open source) to 2 (source available) after Treeverse relicensed
+  lakeFS from Apache-2.0 to the Business Source License 1.1 with v1.87.0 on 22 September 2026. Its
+  Additional Use Grant allows production use only of the unmodified release for internal purposes.
+  No storage stage move ([#692](https://github.com/currentai-org/os-ai-map/issues/692)).
 - `qdrant` and `milvus` adoption now comes from Docker Hub pulls of the server image, averaged over
   the image's lifetime as a floor, instead of downloads of their Python clients. Their pypi
   artifacts are declared `not_primary_channel`. qdrant moved from 5 to 3 and milvus from 4 to 3,
