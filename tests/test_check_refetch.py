@@ -1,14 +1,13 @@
 """Tests for the sampled re-fetch.
 
-The two that matter are `test_a_copied_digest_no_tip_served_is_fabrication` and
+The two that matter are `test_a_miss_is_a_suspected_copy_never_a_failure` and
 `test_rate_limit_is_not_reported_dead`.
 
-The first is the gate's whole reason to exist: the invariant and the digest requirement read
-what the writer wrote, so the only thing that catches an invented digest is noticing it could
-not have come from a body. A shared digest recorded against a URL whose branch tip, rebuilt
-from GitHub's activity log for the access date, serves something else is that. A shared
-digest alone is not, and neither is a member whose file changed after it was read
-(`test_a_relicensed_member_whose_tip_served_the_digest_is_drift`).
+The first pins what the gate does with a shared digest it cannot account for: it looks for a
+revision of the file that hashes to the recorded digest, clears the member as drift when it
+finds one (`test_a_relicensed_member_whose_tip_served_the_digest_is_drift`, the #692 lakeFS
+case), and otherwise raises a suspected copy for a human. It never fails on it, because every
+rule that did was wrong and a miss cannot be told apart from an incomplete history.
 
 The second pins a bug the first real run produced. The sampled re-fetch reported a live
 Mastra LICENSE as dead because GitHub answered 429, and a gate that reports rate limiting as
@@ -83,11 +82,11 @@ def _serve(monkeypatch, bodies: dict[str, bytes]):
 def test_identical_bodies_clear_the_group(monkeypatch):
     digest = hashlib.sha256(b"same").hexdigest()
     mod = _serve(monkeypatch, {"https://a.example/x": b"same", "https://b.example/y": b"same"})
-    failures, benign = mod.resolve_duplicates(
+    failures, benign, suspected = mod.resolve_duplicates(
         [(digest, ["https://a.example/x", "https://b.example/y"])], 5.0,
-        history=lambda url, digest: pytest.fail("a group that reproduces walks no history"),
+        history=lambda *a: pytest.fail("a group that reproduces looks up no history"),
     )
-    assert failures == [] and len(benign) == 1
+    assert failures == [] and suspected == [] and len(benign) == 1
     assert "really are identical" in benign[0]
 
 
@@ -101,11 +100,7 @@ LICENSE_URLS = [
 ]
 LAKEFS_RAW = "https://raw.githubusercontent.com/treeverse/lakeFS/master/LICENSE"
 ACCESSED = {date(2026, 8, 18)}
-T0, T1, T2, T3 = ("0" * 39 + "1"), "1" * 40, "2" * 40, "3" * 40
-
-
-def sha_of(n: int) -> str:
-    return f"{n:040x}"
+T0, T1, T2, T3 = "0" * 39 + "1", "1" * 40, "2" * 40, "3" * 40
 
 
 class _Api:
@@ -118,48 +113,42 @@ class _Api:
 
 
 class FakeGitHub:
-    """Just enough of GitHub for the resolver: refs, a branch activity log, files at SHAs.
+    """Just enough of GitHub: refs, one branch's activity log, files at SHAs.
 
-    `activity` entries are (timestamp, before, after, type), in any order; the fake serves them
-    newest first like the real API. `files` maps (repo, sha) to the LICENSE body at that commit;
-    a sha absent from `files` but listed in `commits` has no LICENSE, and one in neither is gone.
+    `activity` is (timestamp, before, after), served newest first in pages of `page_size`,
+    with a `next` link that carries the query string the way GitHub's does. `files` maps
+    (repo, sha) to the file body; any other SHA answers 404.
     """
 
-    def __init__(self, live, heads, tags=(), activity=(), files=None, commits=(),
-                 activity_status=200, page_size=100):
-        self.live, self.heads, self.tags = live, heads, tags
-        self.activity, self.files = activity, files or {}
-        self.commits = set(commits) | {sha for _repo, sha in self.files}
-        self.activity_status, self.page_size = activity_status, page_size
-        self.calls = []
+    def __init__(self, live, heads, tags=(), activity=(), files=None, activity_status=200,
+                 page_size=100):
+        self.live, self.heads, self.tags, self.activity = live, heads, tags, activity
+        self.files, self.activity_status, self.page_size = files or {}, activity_status, page_size
+        self.calls: list[tuple[str, dict | None]] = []
 
     def get(self, url, params=None, **kw):
-        self.calls.append(url)
+        self.calls.append((url, params))
         if url in self.live:
             return _Resp(self.live[url])
         if url.startswith("https://api.github.com/repos/"):
             parts = url.split("?")[0].split("/")
-            repo, rest = f"{parts[4]}/{parts[5]}", parts[6:]
+            rest = parts[6:]
             if rest[:2] == ["git", "matching-refs"]:
                 kind, prefix = rest[2], "/".join(rest[3:])
                 names = self.heads if kind == "heads" else self.tags
                 return _Api([{"ref": f"refs/{kind}/{n}"} for n in names if n.startswith(prefix)])
             if rest[0] == "activity":
                 if self.activity_status != 200:
-                    return _Api(None, self.activity_status)
-                page = int(url.split("page=")[1]) if "page=" in url else 0
+                    return _Api({"message": "rate limited"}, self.activity_status)
+                query = url.split("?")[1] if "?" in url else ""
+                page = int(query.split("page=")[1]) if "page=" in query else 0
                 rows = sorted(self.activity, reverse=True)
                 chunk = rows[page * self.page_size:(page + 1) * self.page_size]
-                more = len(rows) > (page + 1) * self.page_size
-                links = {"next": {"url": f"{url.split('?')[0]}?page={page + 1}"}} if more else {}
-                return _Api([
-                    {"timestamp": t, "before": b, "after": a, "activity_type": k}
-                    for t, b, a, k in chunk
-                ], links=links)
-            if rest[0] == "branches":
-                return _Api({"commit": {"sha": self.head}})
-            if rest[0] == "commits":
-                return _Api({}, 200 if rest[1] in self.commits else 404)
+                links = {}
+                if len(rows) > (page + 1) * self.page_size:
+                    links = {"next": {"url": f"{url.split('?')[0]}?ref=refs%2Fheads%2Fmaster&page={page + 1}"}}
+                return _Api([{"timestamp": t, "before": b, "after": a, "activity_type": "push"}
+                             for t, b, a in chunk], links=links)
         if url.startswith("https://raw.githubusercontent.com/"):
             parts = url.split("/")
             key = (f"{parts[3]}/{parts[4]}", parts[5])
@@ -183,174 +172,174 @@ def _lakefs(monkeypatch, activity, files, **kw):
     fake = FakeGitHub(live, heads=["master"], activity=activity,
                       files={("treeverse/lakeFS", k): v for k, v in files.items()}, **kw)
     mod = _install(monkeypatch, fake)
-    failures, benign = mod.resolve_duplicates(
+    result = mod.resolve_duplicates(
         [(APACHE_DIGEST, sorted(LICENSE_URLS))], 5.0,
         accessed={(APACHE_DIGEST, u): ACCESSED for u in LICENSE_URLS},
     )
-    return failures, benign, fake
+    return (*result, fake)
 
 
-RELICENSE = [
-    ("2026-08-16T07:46:56Z", T0, T1, "pr_merge"),
-    ("2026-09-22T15:16:16Z", T1, T2, "pr_merge"),
-]
+RELICENSE = [("2026-08-16T07:46:56Z", T0, T1), ("2026-09-22T15:16:16Z", T1, T2)]
 
 
 def test_a_relicensed_member_whose_tip_served_the_digest_is_drift(monkeypatch):
-    """#692: lakeFS relicensed to BSL-1.1 on 2026-09-22, after its 2026-08-18 read.
-
-    The activity log says master was at T1 on the access date, and T1's LICENSE is the
-    Apache-2.0 text, so the URL served the recorded digest. That is drift. The first resolver
-    called it "FABRICATION — no innocent reading" and failed the weekly run.
-    """
-    failures, benign, fake = _lakefs(monkeypatch, RELICENSE, {T1: APACHE, T2: BSL})
-    assert failures == []
-    assert len(benign) == 1
-    assert "treeverse/lakeFS" in benign[0] and "2 of 3 URLs" in benign[0]
-    assert "Drift, not fabrication" in benign[0] and f"master was at {T1[:10]}" in benign[0]
-    assert not any("peft" in c and "api.github.com" in c for c in fake.calls), (
+    """#692: lakeFS relicensed to BSL-1.1 on 2026-09-22, after its 2026-08-18 read. Master was
+    at T1 on the access date and T1's LICENSE is Apache-2.0, so the URL served the digest."""
+    failures, benign, suspected, fake = _lakefs(monkeypatch, RELICENSE, {T1: APACHE, T2: BSL})
+    assert failures == [] and suspected == []
+    assert len(benign) == 1 and "treeverse/lakeFS" in benign[0] and "2 of 3 URLs" in benign[0]
+    assert "Drift" in benign[0] and f"master was at {T1[:10]}" in benign[0]
+    assert not any("peft" in u and "api.github.com" in u for u, _ in fake.calls), (
         "only the changed member is looked up"
     )
 
 
-def test_a_copied_digest_no_tip_served_is_fabrication(monkeypatch):
-    """The case the class exists for. The log covers the access window, and the tip master held
-    then serves something else, so the digest was copied onto a URL that could not produce it."""
-    failures, benign, _fake = _lakefs(monkeypatch, RELICENSE, {T1: BSL, T2: BSL})
-    assert len(failures) == 1 and benign == []
-    assert "treeverse/lakeFS" in failures[0] and "FABRICATION" in failures[0]
+def test_a_miss_is_a_suspected_copy_never_a_failure(monkeypatch):
+    """No tip around the access serves the digest. That is what a copy looks like, and also
+    what an incomplete log looks like, so a human confirms it; the gate does not fail."""
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, RELICENSE, {T1: BSL, T2: BSL})
+    assert failures == [] and benign == []
+    assert len(suspected) == 1 and "treeverse/lakeFS" in suspected[0]
+    assert "Confirm by hand" in suspected[0] and "does not guarantee" in suspected[0]
 
 
-def test_a_digest_neither_member_reproduces_still_fails_when_the_log_proves_it(monkeypatch):
-    """Codex finding 1 on #699: a fabricated digest pasted onto two URLs, neither reproducing
-    it. Whether some member reproduces the digest is not the test; the rebuilt tip is."""
-    fake_digest = "f" * 64
-    urls = [
-        "https://raw.githubusercontent.com/o/one/main/LICENSE",
-        "https://raw.githubusercontent.com/o/two/main/LICENSE",
-    ]
-    fake = FakeGitHub(
-        {urls[0]: b"one", urls[1]: b"two"}, heads=["main"],
-        activity=[("2026-06-01T00:00:00Z", T0, T1, "push")],
-        files={("o/one", T1): b"one", ("o/two", T1): b"two"},
-    )
+def test_main_exits_zero_on_a_suspected_copy_and_raises_a_workflow_warning(monkeypatch, capsys):
+    import build.check_refetch as mod
+
+    monkeypatch.setattr(mod, "load_sources", lambda product=None: [src(LAKEFS_RAW, APACHE_DIGEST)])
+    monkeypatch.setattr(mod, "resolve_duplicates", lambda *a, **k: ([], [], ["suspected line"]))
+    monkeypatch.setattr(mod, "refetch", lambda source, timeout: ("drifted", "changed"))
+    monkeypatch.setattr("sys.argv", ["check_refetch"])
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    assert mod.main() == 0
+    out = capsys.readouterr().out
+    assert "SUSPECTED COPIES" in out
+    assert "::warning title=refetch: suspected copied digest::suspected line" in out
+
+
+def test_neither_member_reproducing_is_two_suspected_copies_not_failures(monkeypatch):
+    """Codex finding 1 on #699: a digest pasted onto two URLs, neither reproducing it."""
+    urls = ["https://raw.githubusercontent.com/o/one/main/LICENSE",
+            "https://raw.githubusercontent.com/o/two/main/LICENSE"]
+    fake = FakeGitHub({urls[0]: b"one", urls[1]: b"two"}, heads=["main"],
+                      activity=[("2026-06-01T00:00:00Z", T0, T1)],
+                      files={("o/one", T1): b"one", ("o/two", T1): b"two"})
     mod = _install(monkeypatch, fake)
-    failures, benign = mod.resolve_duplicates(
-        [(fake_digest, urls)], 5.0, accessed={(fake_digest, u): ACCESSED for u in urls}
+    failures, benign, suspected = mod.resolve_duplicates(
+        [("f" * 64, urls)], 5.0, accessed={("f" * 64, u): ACCESSED for u in urls}
     )
-    assert len(failures) == 2 and benign == []
-    assert all("0 of 2 URLs" in f and "FABRICATION" in f for f in failures)
+    assert failures == [] and benign == [] and len(suspected) == 2
 
 
 def test_a_late_merged_commit_is_judged_by_the_tip_not_its_date(monkeypatch):
-    """Codex finding 2 on #699: a true merge the day after the access brings in PR commits
-    dated two weeks earlier. Commit dates never enter it: the tip master held entering the
-    window still served Apache, so it is drift."""
-    activity = [("2026-08-01T00:00:00Z", T0, T1, "push"), ("2026-08-19T09:00:00Z", T1, T2, "pr_merge")]
-    failures, benign, _fake = _lakefs(monkeypatch, activity, {T1: APACHE, T2: BSL})
-    assert failures == []
-    assert "Drift, not fabrication" in benign[0]
+    """Codex finding 2 on #699: a merge the day after the access brings in PR commits dated
+    weeks earlier. The tip entering the window still served Apache, so it is drift."""
+    activity = [("2026-08-01T00:00:00Z", T0, T1), ("2026-08-19T09:00:00Z", T1, T2)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T1: APACHE, T2: BSL})
+    assert failures == [] and suspected == [] and "Drift" in benign[0]
 
 
 def test_a_force_push_does_not_hide_the_tip_that_was_served(monkeypatch):
-    """A force push after the access rewrites history, and a history walk would miss the old
-    revision. The activity log still records the tip the branch held, so it is still drift."""
-    activity = [("2026-08-01T00:00:00Z", T0, T1, "push"),
-                ("2026-09-01T00:00:00Z", T1, T3, "force_push")]
-    failures, benign, _fake = _lakefs(monkeypatch, activity, {T1: APACHE, T3: BSL})
-    assert failures == [] and "Drift, not fabrication" in benign[0]
+    activity = [("2026-08-01T00:00:00Z", T0, T1), ("2026-09-01T00:00:00Z", T1, T3)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T1: APACHE, T3: BSL})
+    assert failures == [] and suspected == [] and "Drift" in benign[0]
 
 
-def test_a_force_pushed_tip_that_is_gone_is_unresolved(monkeypatch):
-    """Codex blocking 1 on 76101aea: if the served tip was force-pushed away and collected, what
-    it served cannot be rebuilt. That is a hole in the evidence, never fabrication."""
-    activity = [("2026-08-01T00:00:00Z", T0, T1, "push"),
-                ("2026-09-01T00:00:00Z", T1, T3, "force_push")]
-    failures, benign, _fake = _lakefs(monkeypatch, activity, {T3: BSL})
-    assert failures == []
-    assert f"Unresolved: tip {T1[:10]} no longer exists on GitHub" in benign[0]
+def test_an_inaccessible_tip_does_not_stop_the_search(monkeypatch):
+    """The first tip (by sort order) is gone; a later tip in the window matches. Drift."""
+    activity = [("2026-08-01T00:00:00Z", T0, T1), ("2026-08-18T12:00:00Z", T1, T2)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T2: APACHE})
+    assert sorted([T1, T2])[0] == T1, "T1 is checked first and answers 404"
+    assert failures == [] and suspected == [] and "Drift" in benign[0]
 
 
-def test_a_tip_without_the_file_is_evidence_not_a_gap(monkeypatch):
-    """A 404 at a tip whose commit exists means the path was absent then. Not the digest."""
-    failures, _benign, _fake = _lakefs(monkeypatch, RELICENSE, {T2: BSL}, commits=[T1])
-    assert len(failures) == 1
+def test_an_inaccessible_tip_with_no_match_is_unresolved_not_suspected(monkeypatch):
+    activity = [("2026-08-01T00:00:00Z", T0, T1), ("2026-08-18T12:00:00Z", T1, T2)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, activity, {T2: BSL})
+    assert failures == [] and suspected == []
+    assert "Unresolved: no checked tip matches, and 1 of 2 could not be fetched" in benign[0]
+
+
+def test_an_empty_activity_log_is_unresolved(monkeypatch):
+    """No tip is known, and today's head is not substituted for the one at access time."""
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, [], {})
+    assert failures == [] and suspected == []
+    assert "Unresolved: the activity log shows no tip" in benign[0]
 
 
 @pytest.mark.parametrize("status", [403, 429, 500])
 def test_an_unavailable_activity_log_is_unresolved(monkeypatch, status):
-    """A rate limit says nothing about the file. It must not read as drift or fabrication."""
-    failures, benign, _fake = _lakefs(monkeypatch, RELICENSE, {T1: BSL}, activity_status=status)
-    assert failures == []
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, RELICENSE, {T1: BSL}, activity_status=status)
+    assert failures == [] and suspected == []
     assert f"Unresolved: the activity lookup failed (HTTP {status})" in benign[0]
+
+
+def test_pagination_follows_next_links_with_the_ref_filter_kept(monkeypatch):
+    """Three pages back to the window. The first call passes the ref as a param, and each
+    `next` link carries it in its own query string; losing it would read the whole repo."""
+    busy = [(f"2026-09-{d:02d}T00:00:00Z", f"{d:040x}", f"{d + 1:040x}") for d in range(1, 26)]
+    busy[0] = (busy[0][0], T1, busy[0][2])  # the first update after the access leaves T1
+    activity = [("2026-08-01T00:00:00Z", T0, T1)] + busy
+    failures, benign, suspected, fake = _lakefs(monkeypatch, activity, {T1: APACHE}, page_size=10)
+    assert failures == [] and suspected == [] and "Drift" in benign[0]
+    pages = [(u, p) for u, p in fake.calls if "/activity" in u]
+    assert len(pages) == 3
+    assert all((p or {}).get("ref") == "refs/heads/master" or "ref=refs%2Fheads%2Fmaster" in u
+               for u, p in pages)
 
 
 def test_an_activity_log_past_the_page_cap_is_unresolved(monkeypatch):
     import build.check_refetch as mod
 
     monkeypatch.setattr(mod, "MAX_ACTIVITY_PAGES", 2)
-    busy = [(f"2026-09-{d:02d}T{h:02d}:00:00Z", sha_of(d * 100 + h), sha_of(d * 100 + h + 1), "push")
-            for d in range(1, 21) for h in range(0, 24, 4)]
-    failures, benign, _fake = _lakefs(monkeypatch, busy, {}, page_size=10)
-    assert failures == []
-    assert "longer than 2 pages" in benign[0]
-
-
-def test_an_access_before_the_activity_log_is_unresolved(monkeypatch):
-    live = {LAKEFS_RAW: BSL}
-    mod = _install(monkeypatch, FakeGitHub(live, heads=["master"]))
-    verdict, detail = mod.served_on_access_verdict(LICENSE_URLS[2], APACHE_DIGEST, {date(2022, 5, 1)})
-    assert verdict == "unresolved" and "predates the activity log" in detail
+    busy = [(f"2026-09-{d:02d}T00:00:00Z", f"{d:040x}", f"{d + 1:040x}") for d in range(1, 26)]
+    failures, benign, suspected, _fake = _lakefs(monkeypatch, busy, {}, page_size=10)
+    assert failures == [] and suspected == [] and "runs past 2 pages" in benign[0]
 
 
 def test_an_ambiguous_slash_ref_is_unresolved(monkeypatch):
-    """Codex blocking 2 on 76101aea: `feature/x/LICENSE` names two different files when both
-    `feature` and `feature/x` exist, so no split is trusted."""
     url = "https://raw.githubusercontent.com/o/r/feature/x/LICENSE"
     mod = _install(monkeypatch, FakeGitHub({url: b"x"}, heads=["feature", "feature/x"]))
     verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "unresolved" and "ambiguous" in detail
+    assert verdict == "unresolved" and "exactly one current branch" in detail
 
 
-def test_an_unambiguous_slash_ref_resolves_to_the_right_file(monkeypatch):
-    """Only `feature/x` is a real branch (`featurex` matches the prefix and nothing else), so
-    the path is `LICENSE` at that branch's tip, which served the digest."""
+def test_a_deleted_branch_shape_never_yields_a_suspected_copy(monkeypatch):
+    """Codex finding 2 on a1d23aeb: `feature/x/LICENSE` was branch `feature/x` at access time,
+    since deleted, and branch `feature` exists now. The current-refs split lands on `feature`
+    and path `x/LICENSE`, which does not match. That miss must not be reported."""
+    url = "https://raw.githubusercontent.com/o/r/feature/x/LICENSE"
+    fake = FakeGitHub({url: b"x"}, heads=["feature"],
+                      activity=[("2026-08-01T00:00:00Z", T0, T1)], files={("o/r", T1): b"other"})
+    mod = _install(monkeypatch, fake)
+    verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
+    assert verdict == "unresolved" and "current refs" in detail
+
+
+def test_an_unambiguous_slash_ref_still_finds_positive_evidence(monkeypatch):
     url = "https://raw.githubusercontent.com/o/r/feature/x/LICENSE"
     fake = FakeGitHub({url: b"x"}, heads=["feature/x", "featurex"],
-                      activity=[("2026-08-01T00:00:00Z", T0, T1, "push")],
-                      files={("o/r", T1): APACHE})
+                      activity=[("2026-08-01T00:00:00Z", T0, T1)], files={("o/r", T1): APACHE})
     mod = _install(monkeypatch, fake)
     verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
     assert verdict == "served" and "feature/x was at" in detail
-    assert f"https://raw.githubusercontent.com/o/r/{T1}/LICENSE" in fake.calls
 
 
 def test_a_tag_ref_is_unresolved(monkeypatch):
     url = "https://raw.githubusercontent.com/o/r/v1.0/LICENSE"
     mod = _install(monkeypatch, FakeGitHub({url: b"x"}, heads=["main"], tags=["v1.0"]))
-    verdict, detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "unresolved" and "tag v1.0" in detail
-
-
-def test_a_branch_untouched_since_the_log_began_uses_its_head(monkeypatch):
-    """No activity at all since 2023-03-07 means the branch head then is the head now."""
-    url = "https://raw.githubusercontent.com/o/r/main/LICENSE"
-    fake = FakeGitHub({url: b"x"}, heads=["main"], files={("o/r", T1): APACHE})
-    fake.head = T1
-    mod = _install(monkeypatch, fake)
     verdict, _detail = mod.served_on_access_verdict(url, APACHE_DIGEST, ACCESSED)
-    assert verdict == "served"
+    assert verdict == "unresolved"
 
 
-def test_a_non_github_member_is_unresolved_not_drift(monkeypatch):
+def test_a_non_github_member_is_unresolved(monkeypatch):
     apache = b"Apache License 2.0 text"
     digest = hashlib.sha256(apache).hexdigest()
     mod = _serve(monkeypatch, {"https://a.example/x": apache, "https://b.example/y": b"different"})
-    failures, benign = mod.resolve_duplicates(
+    failures, benign, suspected = mod.resolve_duplicates(
         [(digest, ["https://a.example/x", "https://b.example/y"])], 5.0
     )
-    assert failures == []
-    assert len(benign) == 1
+    assert failures == [] and suspected == [] and len(benign) == 1
     assert "Unresolved: b.example has no ref history this check can read" in benign[0]
 
 
