@@ -74,26 +74,33 @@ openness:
     establishes:
     - core-gated
 adoption:
-  level: 5
-  reach: '>10M'
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
-  confidence: high
-  note: Qdrant is a server, so there is no direct package-download count for the database itself. Its official
-    Python client, qdrant-client, provides the closest measurable signal through its PyPI downloads, the
-    same way Milvus is measured through pymilvus.
-  last_verified: '2026-09-17'
-  derived_from:
-    observation_snapshot_id: 36a8263258443a39ad870309141f3eac30c15738d33ad4833dd46eefee175fb6
-    source_run_id: 980a87f1-3274-408e-928e-70eee35dd8a2
-    route_id: pypi.downloads_30d
-    measured_level: 5
-    measurement_as_of: '2026-09-17'
+  confidence: medium
+  note: Qdrant is a server, and it runs mostly as a self-hosted Docker container. Its Python client,
+    qdrant-client, is downloaded by every application that talks to a server, so it counts client installs
+    rather than deployments and is left out. The level rests on Docker Hub pulls of the server image
+    averaged over the image's lifetime, which understates a product still growing, so it is a floor
+    rather than a ceiling.
+  last_verified: '2026-09-24'
   sources:
-  - url: https://pypistats.org/api/packages/qdrant-client/recent
-    shows: last_month = 19,077,155 downloads for qdrant-client (last_week 4,271,948, last_day 681,811).
-    accessed: '2026-08-13'
+  - url: https://hub.docker.com/v2/repositories/qdrant/qdrant/
+    shows: '"pull_count": 47050807 cumulative pulls of qdrant/qdrant, "date_registered": "2022-02-03", about
+      845,000 a month over the image''s lifetime'
+    accessed: '2026-09-24'
     http_status: 200
-    content_sha256: 1a02e7e2d8e098c2eeace43ebe454d513986d5564f20dea113fb621ca0a4d08b
+    content_sha256: f52d98b55a861663ea56cbc09d44a6afc6824465dc124575a2fb812074901069
+  - url: https://pypistats.org/api/packages/qdrant-client/recent
+    shows: '"last_month":11277295 downloads of qdrant-client, the client package left out of the level'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 25155252dcabafd77946524b09ffef1626182881cd909ddb0370c7d0bc08af1c
+  - url: https://ungh.cc/repos/qdrant/qdrant
+    shows: '"stars":34774 for qdrant/qdrant. Corroboration only; a star count is not a use.'
+    accessed: '2026-09-24'
+    http_status: 200
+    content_sha256: 452d1df3c721f50ef3deb583a0255d224787f3e987366630544ed173429dbbcb
 capability:
   score: 4
   basis: benchmark
