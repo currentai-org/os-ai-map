@@ -36,12 +36,19 @@ stable URLs included.
 So the report separates *confirmed* from *drifted* and never fails on drift. What it does
 fail on is the small set of things that admit no innocent reading:
 
-- **A digest reused across two different URLs whose bodies genuinely differ.** The claim is
-  tested rather than assumed — see `resolve_duplicates`. The old rule failed on the mere
+- **A digest reused across URLs, where one of them provably never served it.** The claim is
+  tested rather than assumed — see `resolve_duplicates`. The first rule failed on the mere
   fact of a shared digest, reasoning that byte-identical bodies are "possible but rare", and
   that failed `main` on 2026-08-13 against five repos sharing one digest for their Apache-2.0
   LICENSE. A standard license IS the same bytes everywhere; that is what standard means.
-  Re-fetching the group settles it either way, and only a real difference is fabrication.
+  The second rule failed whenever the group's live bodies disagreed, and that failed the run
+  on 2026-09-24 when lakeFS relicensed to BSL-1.1 two days before: 51 repos still served the
+  Apache-2.0 text and one had changed its file. A body that differs today says nothing about
+  what the URL served on its `accessed` date. What does is the file's own change history, so
+  a member is fabrication only when the digest is proven real (another member still
+  reproduces it) AND that member's file has not changed since before its recorded access.
+- **A recorded digest that reproduces over a bot wall.** The recorded bytes are a challenge
+  page, so nothing behind any source carrying that digest was ever read.
 - **A malformed digest.** `validate.py` enforces the schema pattern, so this should be
   unreachable — it is here because a gate that trusts another gate is how both stop working.
 
@@ -75,13 +82,14 @@ import re
 import time
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, parse_date, parse_timestamp
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -381,16 +389,78 @@ def duplicate_digest_groups(sources: list[Source]) -> list[tuple[str, list[str]]
     return [(d, sorted(u)) for d, u in sorted(by_digest.items()) if len(u) > 1]
 
 
+# How far a commit's committer date may trail the moment it reached the branch. A commit made
+# locally and pushed days later carries the earlier date, so "unchanged since before the
+# access" is only claimed with this much room to spare. Merges through the GitHub UI stamp the
+# merge time and need none of it; the slack exists for the direct-push case, and it errs
+# toward calling a change drift, which is the side a fabrication claim has to err on.
+COMMIT_DATE_SLACK = timedelta(days=7)
+
+# raw.githubusercontent.com/{owner}/{repo}/{ref}/{path}, the form `canonical` produces. A ref
+# containing a slash parses wrong, the history lookup then finds no commits, and the member
+# is reported as drift. That is the safe direction.
+RAW = re.compile(r"^https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)$")
+
+
+def github_last_changed(url: str, timeout: float = 20.0) -> date | None:
+    """The committer date of the last commit touching this file on its ref, or None.
+
+    None means "no history available": not a GitHub file, a ref that does not parse, an API
+    error or a rate limit. Every one of those reads as drift downstream, never as evidence.
+    """
+    match = RAW.match(canonical(url))
+    if not match:
+        return None
+    owner, repo, ref, path = match.groups()
+    api = f"https://api.github.com/repos/{owner}/{repo}/commits"
+    try:
+        response = requests.get(
+            api,
+            params={"path": path, "sha": ref, "per_page": 1},
+            headers=_headers(api),
+            timeout=timeout,
+        )
+    except requests.RequestException:
+        return None
+    if response.status_code != 200:
+        return None
+    try:
+        stamp = parse_timestamp(response.json()[0]["commit"]["committer"]["date"])
+    except (ValueError, LookupError, TypeError):
+        return None
+    return stamp.date() if stamp else None
+
+
+def latest_access(sources: list[Source]) -> dict[tuple[str, str], date]:
+    """(digest, url) -> the latest date any record claims that URL served that digest.
+
+    The latest, because every record is its own claim: if the file was already in its
+    current form on the most recent claimed access, that claim is the impossible one.
+    """
+    out: dict[tuple[str, str], date] = {}
+    for source in sources:
+        when = parse_date(source.accessed)
+        if when is None:
+            continue
+        key = (source.digest, source.url)
+        if key not in out or when > out[key]:
+            out[key] = when
+    return out
+
+
 def resolve_duplicates(
-    groups: list[tuple[str, list[str]]], timeout: float
+    groups: list[tuple[str, list[str]]],
+    timeout: float,
+    accessed: dict[tuple[str, str], date] | None = None,
+    last_changed=github_last_changed,
 ) -> tuple[list[str], list[str]]:
-    """(failures, benign) — decided by fetching, not by guessing.
+    """(failures, benign) — decided by fetching and by change history, not by guessing.
 
-    THE HEURISTIC THIS REPLACES WAS WRONG, and it failed `main` on 2026-08-13.
+    TWO HEURISTICS HAVE BEEN WRONG HERE, and each failed a run.
 
-    The old rule read: a digest against two URLs is fabrication, because "two distinct pages
-    with byte-identical bodies is possible but rare." Both halves of that turned out false in
-    the corpus, in two different ways:
+    The first read: a digest against two URLs is fabrication, because "two distinct pages
+    with byte-identical bodies is possible but rare." It failed `main` on 2026-08-13, false
+    in two ways:
 
     - **Canonical texts.** Five repos — NeMo RL, peft, FastChat, ms-swift, vllm — recorded one
       digest for their LICENSE. Fetching all five live reproduced it exactly over an identical
@@ -401,20 +471,34 @@ def resolve_duplicates(
       `developer.apple.com/…/coreml.md`. Two URLs, one document. Nothing was pasted; the
       fetcher followed a redirect, which is what it is supposed to do.
 
-    A gate that fails on both of those is not detecting fabrication, it is detecting the
-    internet. And a gate whose failures are usually wrong stops being read, which costs more
-    than the check was ever worth.
+    The second read: fetch the group, and if the live bodies differ, "at least one digest
+    could not have come from its URL." It failed the weekly run on 2026-09-24. The Apache-2.0
+    digest `c71d239df917…` is recorded on 52 LICENSE URLs; 51 still reproduce it, and
+    treeverse/lakeFS returned a different body because lakeFS relicensed to BSL-1.1 on
+    2026-09-22, five weeks after its source was read on 2026-08-18. The inference compared
+    two bodies fetched TODAY and drew a conclusion about what one URL served back THEN. A
+    changed body is drift everywhere else in this module (`refetch` says so in as many
+    words), and sharing a digest with other files does not make it anything else.
 
-    So the claim is now TESTED rather than assumed. The old message asserted "it means at
-    least one was not fetched" — that is a falsifiable statement, so falsify it: fetch every
-    URL in the group and compare. If the bodies really are identical, the recorded digest is
-    exactly what an honest fetch produces and there is nothing to report. If they differ, at
-    least one digest could not have come from its URL, and that is fabrication with no
-    innocent reading left.
+    So what can actually show that a digest never came from its URL? Two facts together:
+
+    1. **The digest is real.** Some member still reproduces it through today's fetch path,
+       so it is the hash of a body that exists, not a fetch-mode artifact or random hex.
+    2. **This member could not have served it.** Its file has not changed since before its
+       recorded access (the last commit touching it, less `COMMIT_DATE_SLACK`), and it serves
+       a different body now. Then it served that different body on the access date too, and
+       the recorded digest was copied from elsewhere.
+
+    That pair is the only thing that fails here besides a bot wall. The history comes from
+    `last_changed`, which answers for GitHub-hosted files and returns None for everything
+    else. A member with no history, or one whose file changed after its access, is drift:
+    reported, queued for a re-check, never a failure. The lakeFS LICENSE is the second
+    case; the same group with a LICENSE last touched in 2020 would be a failure.
     """
+    accessed = accessed or {}
     failures, benign = [], []
     for digest, urls in groups:
-        seen: dict[str, list[str]] = defaultdict(list)
+        live_by_url: dict[str, str] = {}
         unreachable = []
         walled: list[tuple[str, str, str]] = []
         for url in urls:
@@ -437,16 +521,19 @@ def resolve_duplicates(
             live = hashlib.sha256(response.content).hexdigest()
             marker = bot_wall(response)
             if marker:
-                # The wall is the reason this group looked like fabrication. If its digest is
-                # the RECORDED one, that is positive evidence the original fetch was walled
-                # too: the recorded bytes are a challenge page, so nothing behind this source
-                # was ever read.
+                # If the wall's digest is the RECORDED one, that is positive evidence the
+                # original fetch was walled too: the recorded bytes are a challenge page, so
+                # nothing behind this source was ever read.
                 walled.append((url, live, marker))
                 continue
-            seen[live].append(url)
+            live_by_url[url] = live
 
         listed = ", ".join(urls)
         walls_matching = [w for w in walled if w[1] == digest]
+        reproducing = [u for u, live in live_by_url.items() if live == digest]
+        changed = [u for u, live in live_by_url.items() if live != digest]
+        distinct = set(live_by_url.values())
+
         if walls_matching:
             wall_urls = ", ".join(u for u, _, _ in walls_matching)
             failures.append(
@@ -456,22 +543,46 @@ def resolve_duplicates(
                 f"({listed}) were digested behind the wall and never read. Re-verify them "
                 f"against a source the host will serve."
             )
-        elif len(seen) > 1:
-            split = " | ".join(
-                f"{d[:12]}…: {', '.join(u)}" for d, u in sorted(seen.items())
-            )
-            failures.append(
-                f"digest {digest[:12]}… is recorded for {len(urls)} URLs ({listed}), and "
-                f"re-fetching them returns DIFFERENT bodies ({split}). At least one digest "
-                f"could not have come from the URL it is recorded against."
-            )
-        elif seen:
-            live = next(iter(seen))
+        elif len(distinct) == 1:
+            live = next(iter(distinct))
             note = "" if live == digest else f" (both now hash to {live[:12]}…, so the pair has drifted together)"
             benign.append(
                 f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
                 f"re-fetching confirms their bodies really are identical{note}."
             )
+        elif changed:
+            for url in changed:
+                live = live_by_url[url]
+                when = accessed.get((digest, url))
+                # Only asked when it could matter: without a reproducing member the digest is
+                # not proven real, and without an access date there is nothing to compare to.
+                since = last_changed(url) if reproducing and when else None
+                if since is not None and since + COMMIT_DATE_SLACK < when:
+                    failures.append(
+                        f"digest {digest[:12]}… is recorded for {url} as read on {when}, but "
+                        f"that file has not changed since {since} and serves a different body "
+                        f"({live[:12]}…). "
+                        f"The recorded digest is real ({len(reproducing)} other URL(s) in the "
+                        f"group still reproduce it, e.g. {reproducing[0]}), so it was copied "
+                        f"onto a URL that could not have produced it."
+                    )
+                    continue
+                if not reproducing:
+                    why = "no member reproduces the recorded digest, so every member has drifted"
+                elif since is not None and since >= when:
+                    why = f"the file changed on {since}, after the recorded access on {when}"
+                elif since is not None:
+                    why = (
+                        f"the file last changed on {since}, within {COMMIT_DATE_SLACK.days} "
+                        f"days of the recorded access on {when}, too close to rule out"
+                    )
+                else:
+                    why = "no change history is available for it"
+                benign.append(
+                    f"digest {digest[:12]}…: {url} now serves {live[:12]}… while "
+                    f"{len(reproducing)} of {len(urls)} URLs sharing the digest still "
+                    f"reproduce it. Drift, not fabrication: {why}. Re-check that source."
+                )
         if walled and not walls_matching:
             benign.append(
                 f"digest {digest[:12]}…: {', '.join(u for u, _, _ in walled)} answered with a "
@@ -553,11 +664,11 @@ def main() -> int:
 
     failures = offline_failures(sources)
 
-    # Duplicate digests are resolved by fetching rather than assumed to be fabrication. See
-    # resolve_duplicates: the old heuristic failed main on canonical LICENSE texts and on a
-    # host alias, neither of which is anybody pasting anything.
+    # Duplicate digests are resolved by fetching and by change history rather than assumed to
+    # be fabrication. See resolve_duplicates: earlier heuristics failed on canonical LICENSE
+    # texts, a host alias and a relicensed repo, none of which is anybody pasting anything.
     dup_failures, dup_benign = resolve_duplicates(
-        duplicate_digest_groups(sources), args.timeout
+        duplicate_digest_groups(sources), args.timeout, accessed=latest_access(sources)
     )
     failures.extend(dup_failures)
 

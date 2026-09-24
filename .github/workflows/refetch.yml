@@ -12,8 +12,11 @@ name: refetch
 # change: the first full run confirmed 4 of 24 digests and drifted on the other 20, because
 # every GitHub and Hugging Face API endpoint carries a star or download count in its body.
 # Failing on drift would fail 83% on day one, and a gate that fails on ordinary behavior gets
-# switched off — which is how gates die. What it DOES fail on is fabrication: a digest reused
-# across two URLs, or one that is not a SHA-256 at all. Those admit no innocent reading.
+# switched off — which is how gates die. What it DOES fail on is fabrication: a digest that is
+# not a SHA-256 at all, one that reproduces over a bot wall, or a digest shared across URLs
+# where one member's file has not changed since before its recorded access yet serves a
+# different body. A shared digest alone is not that (identical license texts share one), and
+# neither is a member whose file changed after it was read (lakeFS relicensing, #692).
 #
 # The count of confirmations is the signal, not the ratio. An agent that fetched nothing
 # would confirm zero, stable URLs included.
@@ -45,6 +48,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
       - name: Re-fetch a sample and compare digests
+        # The built-in token only raises GitHub's rate limit; it does not change the bytes a
+        # public repo serves. The shared-digest resolver asks the commits API when a LICENSE
+        # was last changed, and a rate-limited answer reads as "no history", which quietly
+        # downgrades a provable fabrication to drift.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ inputs.all }}" = "true" ]; then
             uv run python -m build.check_refetch --all
