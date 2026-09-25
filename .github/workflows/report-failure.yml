@@ -82,7 +82,7 @@ jobs:
           ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
         run: |
           TITLE="sentinel: $NAME failed"
-          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1) || EXISTING=""
           # One retry, first attempt only, waited on here. Runs started with GITHUB_TOKEN do not
           # reliably trigger workflow_run, so a retry left to report back that way could fail and
           # file nothing. Every gh call in this block is allowed to fail: an error here falls
@@ -145,6 +145,12 @@ jobs:
               exit 0
             fi
             gh issue comment "$EXISTING" -R "$GITHUB_REPOSITORY" --body "Failed again at $WHEN: $MARK"
+            # A green run's close can land between the lookup and this comment. A failure must not
+            # sit in a closed issue, so reopen it if that happened.
+            sleep 5
+            if [ "$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json state --jq .state || echo OPEN)" = CLOSED ]; then
+              gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY"
+            fi
           else
             BODY=$(cat <<EOF
           Unattended run of \`$NAME\` (\`$EVENT\`) failed at $WHEN.
