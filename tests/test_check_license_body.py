@@ -1,4 +1,4 @@
-"""The licence-body gate: a record that disputes GitHub's classifier must cite the file."""
+"""The license-body gate: a record that disputes GitHub's classifier must cite the file."""
 from pathlib import Path
 
 import pytest
@@ -50,7 +50,7 @@ def test_a_raw_body_satisfies_it(tmp_path):
     assert failures(tmp_path) == []
 
 
-def test_a_blob_view_of_a_licence_file_satisfies_it(tmp_path):
+def test_a_blob_view_of_a_license_file_satisfies_it(tmp_path):
     _write(tmp_path, "blob", "NOASSERTION, but the COPYING body is GPL.",
            ["https://github.com/o/r/blob/main/COPYING"])
     assert failures(tmp_path) == []
@@ -70,7 +70,7 @@ def test_a_blob_view_of_a_licence_file_satisfies_it(tmp_path):
         "https://example.com/legal/LICENSE?download=1",
     ],
 )
-def test_a_licence_file_is_a_body(url):
+def test_a_license_file_is_a_body(url):
     assert BODY(url)
 
 
@@ -80,7 +80,7 @@ def test_a_licence_file_is_a_body(url):
         ("https://github.com/o/r", "a repository page names no file"),
         ("https://api.github.com/repos/o/r/license", "the endpoint that returned NOASSERTION"),
         # The first draft accepted all three of these on a substring match.
-        ("https://raw.githubusercontent.com/o/r/main/README.md", "a raw URL is not automatically a licence"),
+        ("https://raw.githubusercontent.com/o/r/main/README.md", "a raw URL is not automatically a license"),
         ("https://github.com/o/r/blob/main/NOT_A_LICENSE.txt", "contains the word, is not the file"),
         ("https://github.com/o/LICENSE", "a repository that happens to be named LICENSE"),
     ],

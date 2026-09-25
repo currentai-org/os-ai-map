@@ -56,9 +56,9 @@ confirmation is evidence of the run that produced the rows.
 `observations.product_adoption_current` is bracketed between two control-plane reads of the
 model's newest materialization, and a read served by one materialization throughout is bound to
 that materialization's `run_id`. The attribution is at READ grain, not row grain — every row came
-from the run that materialized the table, which is not yet true of each observation individually
-(#355) — so this closes nothing in #355 and the reconciliation's `source_unavailable` status is
-unchanged by it. What it changes is that a date now names a run somebody can look up.
+from the run that materialized the table, which is not true of each observation individually.
+The warehouse will not gain a row-level binding (#355 closed as not planned), so the
+reconciliation's `source_unavailable` status is unchanged by this. What it changes is that a date now names a run somebody can look up.
 
 Read-grain binding leaves one thing open, and the date itself is what closes it: if a collector
 failed and the table is serving last week's figures, the run that materialized it is still

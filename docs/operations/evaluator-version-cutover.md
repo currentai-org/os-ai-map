@@ -74,6 +74,14 @@ Read live via `pyoso` on 2026-08-27:
 | `product_adoption_measurements`, `adoption_reconciliation` | `232015a76ecc…` | `f012d85` |
 | `axis_facts`, `axis_rule_matches`, `axis_results` | `eb828b57b14d…` | `980250b` |
 
+> **Moved on since this table was read (2026-09-25).** The trace tables no longer carry
+> `eb828b57b14d…`. `scoring-trace.yml` has republished them weekly since #665, and on 2026-09-25 they
+> held `d491326b846f…` (763 rows, cut at `d4df5763`). That workflow publishes without
+> `--deploy-artifact`, so each weekly generation leaves no Release and no durable occurrence record.
+> Re-read both live ids immediately before the cutover rather than trusting this table, and see #411
+> on whether the weekly publish should go through `--deploy-artifact` first. The evaluation
+> generation `232015a76ecc…` is still live.
+
 There are **two** live generations, because the eval tables and the trace tables were deployed from
 different commits. The rollback and transition map treat these as distinct old IDs (§7, §9).
 `registry.axis_assessments` has no live id (staged) and does not appear.

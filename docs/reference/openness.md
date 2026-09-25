@@ -533,7 +533,7 @@ because the source itself is published.
 
 ### Where openness and capability rest on different SKUs, say which and why
 
-`multi_sku_rule` resolves openness on the most restrictive licence among the SKUs whose weights
+`multi_sku_rule` resolves openness on the most restrictive license among the SKUs whose weights
 are actually distributed. Capability answers a different question — how good is the best thing
 this publisher ships — and where the strongest tier is API-only, the two axes end up measuring
 different artifacts of the same product. That is correct on both axes and invisible to a reader

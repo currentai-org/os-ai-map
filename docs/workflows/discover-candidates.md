@@ -156,9 +156,9 @@ A paper alone is weaker evidence of a *product* than a repo, a package, or a Hub
 inspect, so treat it as a lower-confidence emit and say so in the batch summary rather than
 promoting it with the same confidence as a repo-backed row.
 
-**When the category has no registry file yet, create it.** Only `compilers` and `storage` have
-registry files today, so a sweep over any other category is creating the file, not appending to
-one. The file is a mapping with a `category` key naming the category slug and a `products:`
+**When the category has no registry file yet, create it.** Most categories have one under
+`sources/registry/` already (20 of 25 on 2026-09-25), so check before creating: a sweep over a
+category without one is creating the file, not appending to it. The file is a mapping with a `category` key naming the category slug and a `products:`
 list of rows:
 
 ```yaml

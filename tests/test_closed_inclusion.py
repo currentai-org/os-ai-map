@@ -58,7 +58,7 @@ def test_the_population_is_the_openness_score_not_the_class_or_the_bucket():
     # `restricted` and `documented` land in the serializer's closed BUCKET but score above
     # the closed floor. ADR-005 governs the score, so they are outside the population.
     assert not is_closed({"openness": {"score": 2, "class": "restricted"}})
-    # No score at all is not a licence to assume one.
+    # No score at all is not a license to assume one.
     assert not is_closed({"openness": {"class": "closed"}})
 
 

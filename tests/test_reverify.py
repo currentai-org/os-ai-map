@@ -265,7 +265,7 @@ def test_a_contradicting_spdx_is_a_refutation_and_not_drift(tmp_path):
 
 
 def test_a_refutation_does_not_fall_through_to_the_shows_match(tmp_path):
-    """A `shows` string that still appears must not confirm a licence the same page refutes.
+    """A `shows` string that still appears must not confirm a license the same page refutes.
 
     This is the ordering the two-valued version could not express: it returned False for a
     refutation, and False fell straight into `_shows_confirms`, so a page carrying both a
@@ -288,7 +288,7 @@ def test_a_refutation_does_not_fall_through_to_the_shows_match(tmp_path):
 
 
 def test_an_unreadable_source_abstains_rather_than_refuting(tmp_path):
-    """ABSTAINS is not REFUTES. A body that is not JSON concludes nothing about the licence,
+    """ABSTAINS is not REFUTES. A body that is not JSON concludes nothing about the license,
     so it must still reach the shows-match rather than be reported as a disagreement."""
     body_path = _body(tmp_path, "license.html", "<html>Apache-2.0 here</html>")
     root = _score_with_license(tmp_path, "Apache-2.0", [
@@ -303,7 +303,7 @@ def test_an_unreadable_source_abstains_rather_than_refuting(tmp_path):
 
 
 def test_hub_cc_abstains_rather_than_refuting(tmp_path):
-    """Bare `cc` names a licence family with no version and no terms.
+    """Bare `cc` names a license family with no version and no terms.
 
     `sources/signal_routing.yaml` declares it an abstention for the Hub alongside `other`.
     A flat abstention set shared across sources missed it, and under three valued logic that
@@ -323,9 +323,9 @@ def test_hub_cc_abstains_rather_than_refuting(tmp_path):
 
 
 def test_a_case_only_difference_confirms_rather_than_refuting(tmp_path):
-    """The Hub returns licence ids in lower case as a matter of course, and the corpus records
+    """The Hub returns license ids in lower case as a matter of course, and the corpus records
     the SPDX spelling. `normalize_license` returns an id with no alias unchanged, so comparing
-    through it alone read `apache-2.0` against `Apache-2.0` as a different licence, and under
+    through it alone read `apache-2.0` against `Apache-2.0` as a different license, and under
     three-valued logic that is a refutation rather than drift (#655). Tier matching already
     folds case after normalizing, so the comparison here folds it the same way.
     """

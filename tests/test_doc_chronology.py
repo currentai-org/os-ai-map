@@ -206,9 +206,9 @@ CHRONOLOGY_BACKLOG: dict[str, dict[str, str]] = {
             "registry-only batch",
     },
     "docs/architecture/data-architecture.md": {
-        "#355":
-            "open work — the row-to-run binding the platform does not expose. Two fields are "
-            "constants until it lands, and the document says so wherever they appear",
+        "#410":
+            "open work — the repo-side Phase 4 gate, which the source-run and reconciliation "
+            "sections point to as the reader of per-dataset run evidence",
         "#384":
             "open work — the Phase-7 retirement the repo drives but does not own",
         "#412":
