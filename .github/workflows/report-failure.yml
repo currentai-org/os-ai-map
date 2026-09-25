@@ -55,11 +55,6 @@ jobs:
   report:
     # Long enough to wait out a retry of the slowest watched workflow (validate, ~20 minutes).
     timeout-minutes: 60
-    # One reporter per workflow at a time, so a retry's own completion (if GitHub delivers it)
-    # waits for the job that is watching that retry and then finds it already reported.
-    concurrency:
-      group: sentinel-report-${{ github.event.workflow_run.name }}
-      cancel-in-progress: false
     # Unattended failures only. `workflow_run` fires for EVERY run of a watched workflow,
     # including pull-request runs -- the default-branch rule governs where this listener lives,
     # not which runs reach it. Without the event/branch test below, watching `validate` would
@@ -114,6 +109,7 @@ jobs:
                   exit 0
                 fi
                 ATTEMPT=$NOW
+                WATCHED=1
                 echo "The retry failed too (attempt $ATTEMPT); filing."
               else
                 echo "The retry never started; filing the original failure."
@@ -123,9 +119,16 @@ jobs:
             fi
           fi
           # Each report names its run and attempt on one line, so a second delivery of the same
-          # failure (a retry's completion reaching this job after the watcher filed it) is
-          # recognized and skipped instead of commented twice.
+          # failure (a retry's completion reaching this job while the watcher files it) is
+          # recognized and skipped instead of reported twice. No concurrency group does this:
+          # GitHub keeps one pending job per group, so a queue there can silently drop a report.
+          # Instead a later attempt waits out the watcher's poll interval, then looks again, and
+          # files it itself if the mark is still missing (a watcher that died, or a manual re-run).
           MARK="$URL (attempt $ATTEMPT)"
+          if [ "$ATTEMPT" != 1 ] && [ -z "${WATCHED:-}" ]; then
+            sleep 150
+            EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
+          fi
           if [ -n "$EXISTING" ]; then
             SEEN=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json body,comments --jq '[.body, .comments[].body] | join("\n")') || SEEN=""
             if [[ "$SEEN" == *"$MARK"* ]]; then

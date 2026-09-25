@@ -252,13 +252,14 @@ def test_an_older_green_run_cannot_close_a_newer_failure():
 
 def test_a_second_delivery_of_one_failure_is_not_reported_twice():
     """The watcher files a failed retry itself; if GitHub also delivers the retry's completion,
-    the per-workflow concurrency group queues it behind the watcher and the run+attempt mark
-    makes it a no-op. Nothing is skipped by who triggered the run, which could drop a real one."""
+    that job waits, re-reads the issue and finds the run+attempt mark. No concurrency group:
+    GitHub keeps one pending job per group, so a third failure would cancel a queued second
+    one unreported. Nothing is skipped by who triggered the run either."""
     report = (yaml.safe_load(SENTINEL.read_text()) or {})["jobs"]["report"]
-    assert report["concurrency"]["cancel-in-progress"] is False
-    assert "workflow_run.name" in report["concurrency"]["group"]
+    assert "concurrency" not in report
     run = report["steps"][0]["run"]
     assert 'MARK="$URL (attempt $ATTEMPT)"' in run
+    assert run.index("sleep 150") < run.index('SEEN=')
     assert "triggering_actor" not in SENTINEL.read_text()
 
 
