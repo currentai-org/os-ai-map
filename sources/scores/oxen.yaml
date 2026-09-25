@@ -82,25 +82,26 @@ capability:
   confidence: medium
   note: 'Oxen is a versioned data layer for large files, not a distributed or cluster-capable system: content-addressed,
     git-like versioning (init, add, commit, branch, merge) over its own object store, with a self-hostable
-    server for remotes. It indexes the files it versions and can query tabular files such as CSV, Parquet
-    and JSONL, but offers no vector or full-text retrieval. That puts it on par with lakeFS, another versioning
-    store with the same shape.'
+    server for remotes. Oxen adds native indexing and queries over tabular files such as CSV, Parquet and
+    JSONL, while lakeFS provides versioning over external object stores without its own query layer. They
+    score the same because neither is a distributed or cluster-capable complete retrieval system.'
   comparison:
-    last_attested: '2026-09-02'
+    last_attested: '2026-09-25'
     sources:
     - url: https://github.com/treeverse/lakeFS/blob/master/README.md
-      shows: README still documents a Git-like repository over object storage, branches that give a copy of the full
-        production data without copying anything, and hooks that gate what reaches production, and no indexing or
-        retrieval of its own.
-      accessed: '2026-09-24'
+      shows: README still documents a Git-like repository over object storage, branches that give a copy of
+        the full production data without copying anything, and hooks that gate what reaches production. It
+        does not document an indexing or query layer of its own.
+      accessed: '2026-09-25'
       http_status: 200
       content_sha256: 9be184df7d48a99f7fadc15fd4abfa4aeaaa10e18882d34b952f56b1fa9e45b8
-  last_verified: '2026-09-02'
+  last_verified: '2026-09-25'
   sources:
   - url: https://github.com/Oxen-AI/Oxen/blob/main/README.md
     shows: README documents a git-like data version control system for large datasets, with its own object
       store and a self-hostable oxen-server, and lists indexing of the files it versions and native tabular
-      handling that can index and query csv, parquet and jsonl files, with no vector or full-text search.
+      handling that can index and query csv, parquet and jsonl files. It does not document vector or full-text
+      search.
     accessed: '2026-09-25'
     http_status: 200
     content_sha256: 2808d9f2c928b79e2b4117adb8f96079be4cc91998b0d4743322f14e61f7966f
