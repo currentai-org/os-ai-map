@@ -273,7 +273,14 @@ def test_local_scores_matches_check_rubrics_split():
     # Research, Esethu and the community-governed Kaitiakitanga License. The same change ruled four
     # clear-cut names onto the shared dataset tiers (cc-by-nc-4.0, cc-by-nc-sa-3.0, cc-by-2.5,
     # cc-by) with the owner's sign-off; each of the fourteen closes on a ruling, not on more work.
-    assert len(deferred) == 21
+    #
+    # 21 -> 6 on 2026-09-25, when those rulings came. Unstated but published data caps at 2 (an
+    # `unstated` rung), a suite takes its most restrictive member, no-derivatives data is 2, and
+    # Esethu's bounded commercial use is 3 (`use_bounded`); the Microsoft Research License joined
+    # `noncommercial`. That closed thirteen of the fourteen plus `livecodebench` and
+    # `openhermes-2-5`, which sat on the same `unstated` question. The Kaitiakitanga License stays
+    # deferred until its text is read.
+    assert len(deferred) == 6
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

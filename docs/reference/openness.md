@@ -129,14 +129,28 @@ on something nobody can run is still a 1.
 | **5** | OSI-approved, or open by the Open Definition for data | `osi`, `open_data` |
 | **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, or an acceptable-use policy on conduct | `permissive_non_osi` |
 | **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling | `use_bounded` |
-| **2** | commercial use prohibited or reserved to the vendor, though source or weights are published | `commercial_forbidden`, `competition_restricted`, `noncommercial` |
-| **1** | nothing published to license | `proprietary`, `unstated` |
+| **2** | commercial use prohibited or reserved to the vendor, though source or weights are published; or published with no license stated at all | `commercial_forbidden`, `competition_restricted`, `noncommercial`, `no_derivatives`, `unstated` |
+| **1** | closed or private: nothing published to license, or the license reserves it outright | `proprietary` |
 
 **The 3/2 boundary asks one question: does the license permit commercial use at all?** That is
 what separates Meta's 700M-MAU clause and AI21's $50M-revenue clause — which bind almost
 nobody — from CC-BY-NC and Mistral's Non-Production License, which bind everyone. It is also
 where MOF draws its own line: Class III, its entry point, requires components usable
 "including for commercial and educational purposes".
+
+**Published but unlicensed is a 2, not a 1.** There is no grant to rely on, so it is not open,
+but the files are out, and 1 is kept for what is genuinely closed or private. The dataset
+ladder's `unstated` rung applies it.
+
+**No-derivatives data is a 2, a deliberate exception to the scale's letter.** CC-BY-ND allows
+commercial use and caps nobody, which by the table above would make it a 4. For a corpus the
+derivative is usually the point: a model trained on the data is arguably a derivative, so
+no-derivatives blocks the main reason anyone wants it. The exception is the dataset ladder's
+`no_derivatives` tier; the model and software ladders do not make it.
+
+**Restricting by who the user is does not by itself forbid commerce.** A license that is free for
+some users and charges others (Esethu) permits commercial use, bounded, so it sits at 3 in
+`use_bounded`.
 
 The tier names still differ per ladder, because a corpus and a codebase carry different
 license families. The **caps** are what is universal.
@@ -811,12 +825,11 @@ collapse them back into a single rung without moving any score.
 
 ### When the local checker and the warehouse must agree on "no license"
 
-`sources/rubrics/dataset.yaml`'s `unstated` tier declares `none`, `closed` and `proprietary`
-explicitly rather than leaving them to `check_rubric`'s definitional fallback, which resolves any
-unmapped license value to a tier *named* `proprietary` whether or not the ladder declares one.
-The dataset ladder does declare `unstated`, and its definition already covers an unpublished eval
-suite that grants nothing — so leaving the three values implicit put the local checker and the
-warehouse in disagreement without either being wrong on its own terms. The local checker invented
+`sources/rubrics/dataset.yaml` declares `none` under its `unstated` tier and `closed` and
+`proprietary` under its `proprietary` tier, explicitly, rather than leaving them to
+`check_rubric`'s definitional fallback, which resolves any unmapped license value to a tier
+*named* `proprietary`. Leaving the values implicit put the local checker and the warehouse in
+disagreement without either being wrong on its own terms. The local checker invented
 the fallback tier and scored the affected internal-eval products on their `availability` rung
 instead; the warehouse joined a real lookup table, found no row for a tier that was never
 declared, and suppressed the score. Declaring the three values puts both computations on the same
