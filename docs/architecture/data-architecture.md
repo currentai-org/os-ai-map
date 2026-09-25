@@ -509,11 +509,13 @@ from timestamps. Two things stand in for them, and neither is row-level. `build/
 (#637) brackets a read with `latest_materialization` and binds it to the run of
 `product_adoption_current`'s own materialization, reporting `unstable` when a refresh lands
 mid-read. That is what dates adoption axes. It does not bind an observation to the fetcher run
-that measured it. For that, this table gives per-dataset evidence: whether each source dataset's
-latest scheduled run succeeded, and when. The Phase 4 gate (#410) combines the two, so its
-evidence is per dataset, not per row; a fetcher that half-succeeds inside a run that reports
-`SUCCESS` is invisible to it. Exposing the run id to model code (Kariba OSO-4705) would close that,
-and it wasn't requested because nothing yet needs evidence that fine.
+that measured it. For that, this table gives per-dataset evidence: each source dataset's runs,
+with trigger, status and timestamps, as of the capture. Neither piece establishes completeness. A
+successful run with unknown scope can still have skipped artifacts, and nothing the control plane
+offers says which artifacts a run was expected to cover. A run id written into rows, which was
+considered and not requested, would not say that either without an expected scope beside it. So the
+Phase 4 gate (#410) works on per-dataset evidence and names partial collection as its accepted
+blind spot, in the rules below.
 
 Rules:
 
@@ -521,16 +523,27 @@ Rules:
   run's steps executed without error, not that collection was complete. Reconciliation must
   therefore NOT read a `SUCCESS` carrying `scope_status = "unknown"` and no row-level binding as a
   fully valid current observation: an unbound success reconciles to `source_unavailable`, not to
-  agreement.
+  agreement. The one exception is the repo-side gate below, which accepts per-dataset evidence
+  under stated conditions and names what that evidence cannot see.
 - Reconciliation reports a missing or failed current run as its own condition, distinct from a
   product that has no applicable measurement. The first is an infrastructure failure; the
   second is a legitimate abstention. Collapsing them hides outages as data gaps.
 - In the warehouse, `source_runs` can report source/model execution state, but it cannot filter,
   validate, or attribute individual observations by run. An unbound `SUCCESS` therefore stays
-  `source_unavailable` in any reconciliation computed warehouse-side. A repo-side reconciliation
-  may treat an observation as current when the read is bound (#637) and its source dataset's
-  latest scheduled run in `source_runs` succeeded before that materialization. That is evidence
-  per dataset, never per row.
+  `source_unavailable` in any reconciliation computed warehouse-side.
+- A repo-side reconciliation (the Phase 4 gate, #410) may treat an observation as current only
+  when all of these hold, and reports `source_unavailable` otherwise:
+  - the read is bound (#637) to a materialization of `product_adoption_current` whose run was
+    `SCHEDULED` and succeeded, within `MAX_BINDING_AGE_DAYS` (the bound adoption dating uses);
+  - the observation's source dataset has a `SCHEDULED` run with `execution_status = "SUCCESS"`
+    that finished before that materialization's run started, so the model could have read it,
+    and that run is itself within the same age bound;
+  - `source_runs` was captured after that materialization, at gate time, so the run evidence is
+    not older than the read it vouches for.
+  This is evidence per dataset. It separates a failed or stale collector from a legitimate
+  absence, which is what `source_unavailable` exists for. It cannot see an artifact dropped by a
+  partial run that still reported `SUCCESS`, and that blind spot is accepted, not solved (#355
+  closed as not planned).
 - The observation identity is two things, not one. `observation_content_digest` is
   content-addressed over the normalized observation content alone; `observation_snapshot_id` is
   `SHA-256(domain + canonicalization_version + observation_content_digest)`, binding the

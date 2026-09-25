@@ -2,9 +2,10 @@
 
 ## What this is
 
-`observations.product_adoption_current` carries no row-level run lineage (#355): the fetcher
-tables expose no run id, so `source_run_id` is NULL and the reconciliation report classifies
-every measured row `source_unavailable`. That gap is the platform's to close. What CAN be
+`observations.product_adoption_current` carries no row-level run lineage: the fetcher tables
+expose no run id, so `source_run_id` is NULL and the warehouse reconciliation report classifies
+every measured row `source_unavailable`. #355 asked the platform to close that and closed as not
+planned. What CAN be
 established repo-side, without timestamp inference, is a narrower fact: **which materialization
 of the current table a given read was served from** — and through it, that materialization's
 `run_id`.

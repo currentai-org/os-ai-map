@@ -22,7 +22,8 @@ has a stable key.
 ## Statuses (report before block)
 
 "The initial implementation should report before it blocks" (§4.4). This assigns a `status` and an
-`explanation` and enforces nothing. Today, with row-to-run binding still missing (#355):
+`explanation` and enforces nothing. The warehouse carries no row-to-run binding, and won't (#355
+closed as not planned), so this warehouse-side report assigns:
 
   * recorded level null                       -> ``abstained`` (a deliberate abstention, not a gap)
   * measured (an observation on the route)    -> ``source_unavailable`` — the observation is not
@@ -32,8 +33,9 @@ has a stable key.
   * a route applies but was not observed      -> ``unmeasured``
 
 `measurement_freshness` is `unknown` for the same reason: freshness is a property of a bound run,
-and there is no binding yet. The fuller status set (`agree`, `expected_difference`,
-`route_mismatch`, the override statuses) becomes assignable once #355 binds observations to runs.
+and there is no binding here. The fuller status set (`agree`, `expected_difference`,
+`route_mismatch`, the override statuses) is assignable only in the repo-side gate (#410), which
+works on per-dataset run evidence; see `data-architecture.md` §4.3.
 
 ## Determinism
 
@@ -93,8 +95,8 @@ COLUMNS: tuple[str, ...] = (
 _NON_CONTENT = frozenset({"declaration_version_id", "evaluated_at"})
 
 _UNBOUND_EXPLANATION = (
-    "measurement derives from observations with no source_run_id (row-to-run binding is blocked "
-    "on #355), so it cannot be validated as a current bound observation; per §4.3 an unbound "
+    "measurement derives from observations with no source_run_id (the warehouse carries no "
+    "row-to-run binding), so it cannot be validated as a current bound observation; per §4.3 an unbound "
     "SUCCESS reconciles to source_unavailable, not agreement"
 )
 

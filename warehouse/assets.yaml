@@ -85,14 +85,14 @@ assets:
     evaluation.product_adoption_measurements below -- and turns an agreement into an
     adoption last_verified and a disagreement into the tier-change queue
     (.github/workflows/adoption-reconciliation.yml, Monday 05:00 UTC). A platform reader arrives
-    with the Phase-4 blocking gate, which is deliberately not enabled while every measured row is
-    source_unavailable (#355) -- the accepted interim state. Its authoritative row-to-run binding
-    is blocked follow-up (mechanism may come from OSO incremental / OSO-4705; #355 closes on its
-    own evidence), and the gate stays required by AD-5. This is
+    with the Phase-4 blocking gate only if that gate reads this table. As ruled on #410 (2026-09-25)
+    the gate runs repo-side on per-dataset run evidence, so whether it reads the deployed table at
+    all is open there. #355 (row-to-run binding) closed as not planned, and the gate stays required
+    by AD-5. This is
     a "nothing on the platform reads it yet" finding, not a
     "nobody wants it" one, and the derived predicate cannot tell those apart -- which is why the
     label is required here rather than the entry being exempt. NOT a deletion candidate.'
-  retirement_issue: '#355'
+  retirement_issue: '#410'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   status: active
   materialized: true
@@ -247,12 +247,12 @@ assets:
     docs/operations/deploy-evaluation.md.'
   retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
     its only consumer is the reconciliation builder, which reads the candidate rows in-repo rather
-    than the deployed table. A platform reader arrives with the Phase-4 gate, blocked follow-up until
-    authoritative row-to-run binding lands (#355) -- the accepted interim state, with the gate still
-    required by AD-5 (mechanism may come from OSO incremental / OSO-4705; #355 closes on its own
-    evidence). A "nothing uses it yet" finding, not a
+    than the deployed table. A platform reader would be the Phase-4 gate, which as ruled on #410
+    (2026-09-25) runs repo-side, so whether it reads the deployed table is open there. #355
+    (row-to-run binding) closed as not planned, and the gate stays required by AD-5. A "nothing uses
+    it yet" finding, not a
     "nobody wants it" one. NOT a deletion candidate.'
-  retirement_issue: '#355'
+  retirement_issue: '#410'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   status: active
   materialized: true
