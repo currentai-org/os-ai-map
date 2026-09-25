@@ -217,9 +217,10 @@ ledger_change AS (
 -- evidence that raised the item, so every decided equivalence came back every week (#653
 -- re-listed all four of #580's). Answered means:
 --   * a confirm (`existing_product` / `sku_of`) resolving to THIS product -- product_slug is the
---     ruling's resolves_to;
+--     ruling's resolves_to, and a confirm with no resolves_to answers nothing;
 --   * an exclusion (`excluded_boundary` / `excluded_maintenance`), which answers every
---     equivalence for the artifact -- product_slug NULL matches any product.
+--     equivalence for the artifact -- flagged explicitly by is_exclusion, never by a NULL slug,
+--     so a malformed confirm cannot turn into a wildcard.
 -- Deliberately NOT answered: `unresolved` (a human looked and could not decide), and a confirm
 -- resolving to a DIFFERENT product, which contradicts this edge and is worth a look.
 -- Same candidate_key fold as ledger_change above.
@@ -231,10 +232,14 @@ equivalence_ruled AS (
           THEN REGEXP_REPLACE(LOWER(artifact_id), '[-_.]+', '-')
         ELSE LOWER(artifact_id)
       END AS candidate_key,
-    CASE WHEN verdict IN ('existing_product', 'sku_of') THEN resolves_to END AS product_slug
+    CASE WHEN verdict IN ('existing_product', 'sku_of') THEN resolves_to END AS product_slug,
+    verdict IN ('excluded_boundary', 'excluded_maintenance') AS is_exclusion
   FROM currentai.registry.resolution_ledger
   WHERE (relation IS NULL OR relation = 'product_equivalence')
-    AND verdict IN ('existing_product', 'sku_of', 'excluded_boundary', 'excluded_maintenance')
+    AND (
+      verdict IN ('excluded_boundary', 'excluded_maintenance')
+      OR (verdict IN ('existing_product', 'sku_of') AND NULLIF(TRIM(resolves_to), '') IS NOT NULL)
+    )
 ),
 
 membership_items AS (
@@ -302,7 +307,7 @@ equivalence_items AS (
       SELECT 1
       FROM equivalence_ruled r
       WHERE r.candidate_key = e.candidate_key
-        AND (r.product_slug IS NULL OR r.product_slug = e.product_slug)
+        AND (r.is_exclusion OR r.product_slug = e.product_slug)
     )
 ),
 
