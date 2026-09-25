@@ -268,6 +268,7 @@ def test_the_retry_is_waited_on_not_left_to_workflow_run():
     reports back only through it could fail and file nothing."""
     run = (yaml.safe_load(SENTINEL.read_text()) or {})["jobs"]["report"]["steps"][0]["run"]
     assert "gh run rerun" in run and "gh run watch" in run
+    assert "timeout 40m gh run watch" in run, "an unbounded watch can outlive the job"
     assert run.index("gh run rerun") < run.index("gh run watch") < run.index("gh issue create")
 
 

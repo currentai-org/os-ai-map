@@ -98,7 +98,11 @@ jobs:
                 sleep 10
               done
               if [ "${NOW:-1}" -gt 1 ]; then
-                if gh run watch "$RUN_ID" -R "$GITHUB_REPOSITORY" --exit-status --interval 60 > /dev/null; then
+                # Bounded well inside the job's 60 minutes, so a queued or stuck retry still
+                # leaves time to file rather than having the job killed mid-wait.
+                RC=0
+                timeout 40m gh run watch "$RUN_ID" -R "$GITHUB_REPOSITORY" --exit-status --interval 60 > /dev/null || RC=$?
+                if [ "$RC" = 0 ]; then
                   echo "The retry passed; nothing to file."
                   if [ -n "$EXISTING" ]; then
                     UPDATED=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json updatedAt --jq .updatedAt || echo "")
@@ -110,7 +114,11 @@ jobs:
                 fi
                 ATTEMPT=$NOW
                 WATCHED=1
-                echo "The retry failed too (attempt $ATTEMPT); filing."
+                if [ "$RC" = 124 ]; then
+                  echo "The retry was still running after 40 minutes (attempt $ATTEMPT); filing."
+                else
+                  echo "The retry failed too (attempt $ATTEMPT); filing."
+                fi
               else
                 echo "The retry never started; filing the original failure."
               fi
@@ -127,8 +135,9 @@ jobs:
           MARK="$URL (attempt $ATTEMPT)"
           if [ "$ATTEMPT" != 1 ] && [ -z "${WATCHED:-}" ]; then
             sleep 150
-            EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
           fi
+          # Re-read: the lookup at the top is stale by the length of any retry.
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1) || true
           if [ -n "$EXISTING" ]; then
             SEEN=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json body,comments --jq '[.body, .comments[].body] | join("\n")') || SEEN=""
             if [[ "$SEEN" == *"$MARK"* ]]; then
