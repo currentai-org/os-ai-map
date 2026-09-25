@@ -419,7 +419,7 @@ Source-specific ingestion remains in datasets such as `signal_github`, `signal_h
 
 Use three distinct objects so current state is never mislabeled as history:
 
-- `observations.source_runs` — the run contract described below. Required from day one; a read-only control-plane snapshot (Option B, settled 2026-09-25 when #355 closed);
+- `observations.source_runs` — the run contract described below. Required from day one; a read-only control-plane snapshot (Option B);
 - `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run, since the warehouse carries no row-to-run binding, so it makes no completeness claim; see the source_runs rules below;
 - `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query. **Captured 2026-08-24T22:27:44Z** from the deployed `product_adoption_current` state, in Phase 2 and not deferred to Phase 2B: 654 rows over 392 products, file digest `84e0d574…a569`, content digest `3a942c39…9a9b`. §18 requires one preserved baseline snapshot for the whole temporary full-refresh period, and precisely because `product_adoption_current` is full-refresh (every run overwrites), those bytes would not have survived the next run had they not been frozen deliberately; waiting for 2B would have meant the first snapshot never existed. It anchors the future append-only history but did not wait for it. The capture records honestly that `source_run_id` is NULL for every one of the 654 rows and that no authoritative row-to-run binding exists in the warehouse; no run id is inferred from timestamps or from `source_runs`. It is immutable from here — later full-refresh executions must not overwrite or relabel it;
 - `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
@@ -464,10 +464,9 @@ does not silently reuse itself as current; it cannot be omitted.
 
 **Settled shape (Option B).** The platform exposes no row-level run id in the fetcher tables and
 no expected-scope field, so run completeness is not derivable from what the control plane offers.
-This was the interim shape while #355 waited for a live emitter, and it became the settled one on
-2026-09-25 when #355 closed as not planned. The one consumer that needed a warehouse-side
-binding, the Phase 4 gate, moved repo-side (#410, route 2), where it can combine the read-time
-binding from #637 with the fetcher run statuses this table already carries. So `source_runs` is a
+No live emitter is planned. The one consumer that would need a warehouse-side binding is the
+Phase 4 gate, and it runs repo-side (#410), where it combines the read-time binding in
+`build/read_binding.py` with the fetcher run statuses this table already carries. So `source_runs` is a
 READ-ONLY snapshot of platform-retained run history, produced by `build/snapshot_source_runs.py`
 against the control-plane `runs` API — **not** a SQL model that selects from upstream, and **not**
 a live current-run manifest. It fetches every run the API still retains for each adoption source
@@ -506,7 +505,7 @@ binding of an observation to the run that produced it. A warehouse-side row→ru
 the UDM runtime to write its run id into output rows, or a table version atomically bound to a
 materialization id. The control plane offers neither, and these fields must NOT be reconstructed
 from timestamps. Two things stand in for them, and neither is row-level. `build/read_binding.py`
-(#637) brackets a read with `latest_materialization` and binds it to the run of
+brackets a read with `latest_materialization` and binds it to the run of
 `product_adoption_current`'s own materialization, reporting `unstable` when a refresh lands
 mid-read. That is what dates adoption axes. It does not bind an observation to the fetcher run
 that measured it. For that, this table gives per-dataset evidence: each source dataset's runs,
@@ -533,7 +532,7 @@ Rules:
   `source_unavailable` in any reconciliation computed warehouse-side.
 - A repo-side reconciliation (the Phase 4 gate, #410) may treat an observation as current only
   when all of these hold, and reports `source_unavailable` otherwise:
-  - the read is bound (#637) to a materialization of `product_adoption_current` whose run was
+  - the read is bound by `build/read_binding.py` to a materialization of `product_adoption_current` whose run was
     `SCHEDULED` and succeeded, within `MAX_BINDING_AGE_DAYS` (the bound adoption dating uses);
   - the latest `SCHEDULED` run of the observation's source dataset that finished before that
     materialization's run started has `execution_status = "SUCCESS"`, and is within the same age
@@ -543,8 +542,7 @@ Rules:
     than the read it vouches for.
   This is evidence per dataset. It separates a failed or stale collector from a legitimate
   absence, which is what `source_unavailable` exists for. It cannot see an artifact dropped by a
-  partial run that still reported `SUCCESS`, and that blind spot is accepted, not solved (#355
-  closed as not planned).
+  partial run that still reported `SUCCESS`, and that blind spot is accepted, not solved.
 - The observation identity is two things, not one. `observation_content_digest` is
   content-addressed over the normalized observation content alone; `observation_snapshot_id` is
   `SHA-256(domain + canonicalization_version + observation_content_digest)`, binding the
@@ -662,7 +660,7 @@ observation identity:
 (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
 ```
 
-It holds the current source state and cannot filter or attribute observations by run: an unbound `SUCCESS` in `source_runs` stays `source_unavailable` for a warehouse-side reconciliation, not a validated current observation. It carries no row-to-run attribution. A repo-side reader combines the read-time binding (#637) with the per-dataset run status in `source_runs` when it needs to treat a value as current. It begins as a full-refresh model; after the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
+It holds the current source state and cannot filter or attribute observations by run: an unbound `SUCCESS` in `source_runs` stays `source_unavailable` for a warehouse-side reconciliation, not a validated current observation. It carries no row-to-run attribution. A repo-side reader combines the read-time binding in `build/read_binding.py` with the per-dataset run status in `source_runs` when it needs to treat a value as current. It begins as a full-refresh model; after the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
 
 The view must use explicit ordering and tie-breaking. It must not use an unordered `MAX()` reduction that can combine fields from different rows.
 
@@ -857,12 +855,12 @@ publish is a maintainer step (`docs/operations/deploy-evaluation.md`).
 `adoption_reconciliation` reports before it blocks (above) over EVERY recorded adoption assessment —
 measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today
 every measured row is `source_unavailable`: `product_adoption_current` carries no `source_run_id`,
-and the warehouse will not gain one (#355 closed 2026-09-25), so §4.3 forbids reading any current
+and the warehouse will not gain one, so §4.3 forbids reading any current
 measurement there as a validated agreement. That status is the source-run contract reaching the
 report, not a defect in it, and for the warehouse table it is the settled state. The fuller status
-set comes from a repo-side reconciliation that combines the read-time binding (#637) with the
-per-dataset fetcher run status in `source_runs`, and the blocking gate AD-5 requires reads that
-(#410, route 2), not this table. It activates when
+set comes from a repo-side reconciliation that combines the read-time binding in
+`build/read_binding.py` with the per-dataset fetcher run status in `source_runs`, and the blocking
+gate AD-5 requires reads that (#410), not this table. It activates when
 that gate is built.
 
 #### Repository-derived scoring trace
@@ -1400,7 +1398,7 @@ warehouse/
       daily.sql
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
-                                         (build/snapshot_source_runs.py); settled, #355 closed
+                                         (build/snapshot_source_runs.py); no live emitter is planned
       product_adoption.sql               incremental history — Phase 2B, blocked on OSO
       product_adoption_current.sql       full-refresh now, a view over history later
     evaluation/
