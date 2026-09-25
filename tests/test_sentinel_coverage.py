@@ -243,6 +243,25 @@ def test_a_green_unattended_run_closes_the_sentinel():
     assert "gh issue close" in close["steps"][0]["run"]
 
 
+def test_an_older_green_run_cannot_close_a_newer_failure():
+    """Overlapping runs finish out of order; closing on any green run would drop a live failure."""
+    run = (yaml.safe_load(SENTINEL.read_text()) or {})["jobs"]["close"]["steps"][0]["run"]
+    assert "updatedAt" in run and '"$WHEN" > "$UPDATED"' in run
+    assert run.index('"$WHEN" > "$UPDATED"') < run.index("gh issue close")
+
+
+def test_a_second_delivery_of_one_failure_is_not_reported_twice():
+    """The watcher files a failed retry itself; if GitHub also delivers the retry's completion,
+    the per-workflow concurrency group queues it behind the watcher and the run+attempt mark
+    makes it a no-op. Nothing is skipped by who triggered the run, which could drop a real one."""
+    report = (yaml.safe_load(SENTINEL.read_text()) or {})["jobs"]["report"]
+    assert report["concurrency"]["cancel-in-progress"] is False
+    assert "workflow_run.name" in report["concurrency"]["group"]
+    run = report["steps"][0]["run"]
+    assert 'MARK="$URL (attempt $ATTEMPT)"' in run
+    assert "triggering_actor" not in SENTINEL.read_text()
+
+
 def test_the_retry_is_waited_on_not_left_to_workflow_run():
     """Runs started with GITHUB_TOKEN do not reliably trigger workflow_run, so a retry that
     reports back only through it could fail and file nothing."""
