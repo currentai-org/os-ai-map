@@ -74,10 +74,11 @@ on:
       # The site tables in Neon are built from the payload, so a regeneration of it is a
       # change to what the serving layer holds.
       - "build/notebook_data.json"
-  # A dispatch always means "load Neon from this ref, leave OSO alone". No input decides it:
-  # the OSO static models are org-wide, and a flag defaulting to false meant that forgetting
-  # `-f neon_only=true` published a branch's declarations over them. The guard is the event
-  # and the ref, which nobody can forget. tests/test_registry_triggers.py pins it.
+  # A dispatch from main reloads Neon and leaves OSO alone; from any other ref it only
+  # serializes. No input decides it: a flag defaulting to false meant that forgetting
+  # `-f neon_only=true` published a branch's declarations over the org-wide static models.
+  # The guards are the event and the ref, which nobody can forget.
+  # tests/test_registry_triggers.py pins them.
   workflow_dispatch:
 
 jobs:
@@ -124,11 +125,13 @@ jobs:
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
   #
-  # A `workflow_dispatch` from main reruns both publishes. From any other ref it serializes and
-  # checks but publishes nothing: the OSO static models are org-wide, and the Neon schema is
-  # what aipotluck.org serves live (aipotluck.org#1350), so a branch load would reach visitors
-  # within a minute. To try a branch against Postgres, run `build.publish_neon --schema` into a
-  # schema of its own from a terminal.
+  # A `workflow_dispatch` from main reloads Neon; OSO still waits for a push. From any other
+  # ref it serializes but touches neither: the OSO static models are org-wide, and the Neon
+  # schema is what aipotluck.org serves live (aipotluck.org#1350), so a branch load would reach
+  # visitors within a minute. Both Neon steps are guarded, not just the publish, because the
+  # secret is the owner credential and a branch's code must never be handed it. To try a
+  # branch against Postgres, run `build.publish_neon --schema` into a schema of its own from a
+  # terminal.
   publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -180,6 +183,7 @@ jobs:
       # record you want when comparing two runs from a terminal. The report carries no part
       # of the DSN, by construction — see build/neon_status.py.
       - name: Report what Neon is serving
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would

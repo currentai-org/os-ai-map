@@ -276,7 +276,10 @@ the site never reads:
 uv run python -m build.publish_neon --schema os-ai-map-<branch>
 ```
 
-Drop that schema (and its `_staging` / `_previous` forms) when you are done.
+The name must be letters, digits, `_` and `-` only (no `/` or `.`, so sanitize the branch
+name), must not end in `_staging` or `_previous`, and should stay under 54 characters so its
+`_previous` form fits Postgres's 63-character identifier limit. Drop that schema and its
+`_staging` / `_previous` forms when you are done.
 
 **OSO publishing happens only on a push to `main`.** To republish the static models without a
 new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an empty
