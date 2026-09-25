@@ -535,11 +535,12 @@ Rules:
   when all of these hold, and reports `source_unavailable` otherwise:
   - the read is bound (#637) to a materialization of `product_adoption_current` whose run was
     `SCHEDULED` and succeeded, within `MAX_BINDING_AGE_DAYS` (the bound adoption dating uses);
-  - the observation's source dataset has a `SCHEDULED` run with `execution_status = "SUCCESS"`
-    that finished before that materialization's run started, so the model could have read it,
-    and that run is itself within the same age bound;
-  - `source_runs` was captured after that materialization, at gate time, so the run evidence is
-    not older than the read it vouches for.
+  - the latest `SCHEDULED` run of the observation's source dataset that finished before that
+    materialization's run started has `execution_status = "SUCCESS"`, and is within the same age
+    bound. That run is the authoritative one. An older success behind a newer failure does not
+    qualify, and a failed latest run reports the source as failed, not current;
+  - `source_runs` was captured after the bound read completed, so the run evidence is no older
+    than the read it vouches for.
   This is evidence per dataset. It separates a failed or stale collector from a legitimate
   absence, which is what `source_unavailable` exists for. It cannot see an artifact dropped by a
   partial run that still reported `SUCCESS`, and that blind spot is accepted, not solved (#355
