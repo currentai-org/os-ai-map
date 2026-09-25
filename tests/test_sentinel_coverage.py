@@ -200,6 +200,58 @@ def test_the_scheduled_gates_are_all_covered():
 
 
 # ---------------------------------------------------------------------------
+# the retry and the auto-close
+# ---------------------------------------------------------------------------
+
+#: What a workflow does that a blind re-run of a job failed after it could do twice.
+WRITES = ("git push", "gh pr create", "gh issue create", "gh issue comment", "create-pull-request")
+
+
+def retryable() -> list[str]:
+    doc = yaml.safe_load(SENTINEL.read_text()) or {}
+    return str((doc.get("env") or {}).get("RETRYABLE", "")).split()
+
+
+def _workflow_by_name(name: str) -> Path:
+    for path in _workflow_files():
+        if _name(path, yaml.safe_load(path.read_text()) or {}) == name:
+            return path
+    raise AssertionError(f"no workflow named {name!r}")
+
+
+def test_only_watched_workflows_are_retried():
+    extra = sorted(set(retryable()) - set(watched_workflows()))
+    assert retryable(), "RETRYABLE is empty, so the retry never fires"
+    assert not extra, f"RETRYABLE names workflows the sentinel does not watch: {extra}"
+
+
+def test_no_workflow_that_writes_is_retried():
+    """A re-run of a job that failed after opening a PR or pushing would do it twice."""
+    writers = {
+        name: [w for w in WRITES if w in _workflow_by_name(name).read_text()]
+        for name in retryable()
+    }
+    offenders = {name: found for name, found in writers.items() if found}
+    assert not offenders, f"RETRYABLE includes workflows that write: {offenders}"
+
+
+def test_a_green_unattended_run_closes_the_sentinel():
+    doc = yaml.safe_load(SENTINEL.read_text()) or {}
+    close = doc["jobs"]["close"]
+    assert "'success'" in close["if"]
+    assert "head_branch == 'main'" in close["if"], "a green PR run must not close a main failure"
+    assert "gh issue close" in close["steps"][0]["run"]
+
+
+def test_the_retry_is_waited_on_not_left_to_workflow_run():
+    """Runs started with GITHUB_TOKEN do not reliably trigger workflow_run, so a retry that
+    reports back only through it could fail and file nothing."""
+    run = (yaml.safe_load(SENTINEL.read_text()) or {})["jobs"]["report"]["steps"][0]["run"]
+    assert "gh run rerun" in run and "gh run watch" in run
+    assert run.index("gh run rerun") < run.index("gh run watch") < run.index("gh issue create")
+
+
+# ---------------------------------------------------------------------------
 # what counts as reaching main
 # ---------------------------------------------------------------------------
 
