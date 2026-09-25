@@ -45,7 +45,8 @@ says so and names no trigger, which is the same posture as an unstable bracket.
   * Not row-to-run binding for the observations themselves. The bound run is the run of
     `product_adoption_current`'s own materialization — the model evaluation that read the fetcher
     tables — not the fetcher runs that measured the artifacts. Reconciliation's
-    `source_unavailable` posture is unchanged by this module (#355 remains open).
+    `source_unavailable` posture is unchanged by this module. #355 closed as not planned, so
+    fetcher-run evidence stays per dataset (`observations.source_runs`), never per row.
   * Not inference. A bracket either proves the binding or reports that it could not; there is no
     "probably this run" outcome, and `createdAt` ordering is used only to pick the newest
     materialization within one control-plane response, never to correlate with row timestamps.
