@@ -7,7 +7,7 @@ under it argued CC-BY-NC-SA and the commercial-use test — an OPENNESS argument
 openness note, pasted into the capability block when the openness score moved to 2 on
 2026-08-01. The capability score followed it down. Nothing on that axis had been assessed.
 
-A licence says what you may do with a corpus. It says nothing about what training on it
+A license says what you may do with a corpus. It says nothing about what training on it
 produces. So the duplication is not a cosmetic problem: wherever it happened, one axis is
 carrying a judgment made about a different question, and its SCORE is the openness score
 wearing another name. `personahub` sat at 2 in a 38-product category where the next lowest was
@@ -178,7 +178,7 @@ def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
     a note about when something happened has to say when.
 
     `sources[].shows` is deliberately NOT covered. It quotes the source, and sources carry dates
-    honestly — a GitHub `pushed_at`, a copyright year inside licence text, "29 June 2007" inside
+    honestly — a GitHub `pushed_at`, a copyright year inside license text, "29 June 2007" inside
     the GPL, a model-snapshot identifier where the date IS the model's name.
     """
     offenders = [

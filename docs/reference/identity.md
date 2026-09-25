@@ -256,7 +256,7 @@ thousands of artifacts. Verifying that an association is a *measurement* identit
 scale, because it is a judgment about what a number means.
 
 So automation over this step should optimize for surfacing evidence and contradictions — a
-package whose backlink is missing, a licence that disagrees between two artifacts of one
+package whose backlink is missing, a license that disagrees between two artifacts of one
 product, a download count wildly out of step with a star count — and never for declaring the
 artifact. An identity edge stays provisional until a person has read it.
 

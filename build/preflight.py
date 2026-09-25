@@ -62,7 +62,7 @@ PLAN: dict[str, tuple[str, str]] = {
     "Rubric gate (recorded scores reproduce)": (RUN, ""),
     "Adoption gate (every band exists on its instrument's scale)": (RUN, ""),
     "Instrument gate (every signal_type claim has what it needs to be falsifiable)": (RUN, ""),
-    "Licence-body gate (a record disputing GitHub's classifier cites the file)": (RUN, ""),
+    "License-body gate (a record disputing GitHub's classifier cites the file)": (RUN, ""),
     "Routing table structure": (RUN, ""),
     "Citations gate (an arXiv /abs cited for a claim only the body carries)": (RUN, ""),
     "Freshness report (informational, does not gate)": (RUN, ""),

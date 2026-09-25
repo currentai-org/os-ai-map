@@ -1,6 +1,6 @@
-"""Fail when a record argues against GitHub's licence classifier without citing the body.
+"""Fail when a record argues against GitHub's license classifier without citing the body.
 
-GitHub's licence endpoint reports NOASSERTION whenever the LICENSE file is not a
+GitHub's license endpoint reports NOASSERTION whenever the LICENSE file is not a
 byte-recognizable copy of a template. Three things in this corpus trip it, all of them
 benign, and all of them found by reading the file:
 
@@ -10,10 +10,10 @@ benign, and all of them found by reading the file:
     executorch       the BSD-3-Clause header names eight copyright holders
     nemo-guardrails  an SPDX header sits above the Apache text
 
-So NOASSERTION is not a licence finding, it is a prompt to read the file - and the corpus
+So NOASSERTION is not a license finding, it is a prompt to read the file - and the corpus
 already does. 23 records say so in prose and 20 of them cite the body they read. This gate
 holds that line: if a record's prose disputes the classifier, the evidence for what the
-licence actually says has to be a licence FILE, not the API record that reported
+license actually says has to be a license FILE, not the API record that reported
 NOASSERTION in the first place.
 
 The failure it prevents is narrow and real. A curator who reads NOASSERTION, decides the
@@ -25,8 +25,8 @@ the next re-verification pass has nothing to re-read.
 Scope, and why it ratchets: the population is records whose own prose MENTIONS
 NOASSERTION - a deliberately broader test than "disputes it", because a record that
 explains why the classifier did or did not report NOASSERTION is making a claim about the
-licence body either way, and a claim about a body should cite one. A record that never
-mentions it is not covered: its licence claim rests on whatever the classifier said, and
+license body either way, and a claim about a body should cite one. A record that never
+mentions it is not covered: its license claim rests on whatever the classifier said, and
 agreeing with a classifier needs no second source.
 """
 import re
@@ -40,24 +40,24 @@ ROOT = Path(__file__).resolve().parents[1]
 SCORES = ROOT / "sources" / "scores"
 PRODUCTS = ROOT / "sources" / "products"
 
-# A licence BODY is decided on the URL's PATH, never on the whole string. The first draft
+# A license BODY is decided on the URL's PATH, never on the whole string. The first draft
 # matched the raw URL with `$`-anchored alternatives and got it wrong in both directions:
 # `/blob/main/LICENSE.md#L1` and `/legal/LICENSE?download=1` were rejected because a fragment
 # or a query follows the filename, while `raw.githubusercontent.com/o/r/main/README.md`,
 # `/blob/main/NOT_A_LICENSE.txt` and a repository literally named `github.com/o/LICENSE` were
-# accepted because the pattern matched a substring of something that is not a licence file.
+# accepted because the pattern matched a substring of something that is not a license file.
 #
 # `api.github.com/repos/<o>/<r>/license` is excluded by name: it is the endpoint that returned
 # NOASSERTION, so letting it answer the dispute is circular.
-LICENCE_FILE = re.compile(r"^(licen[cs]e|copying|notice)([.\-][A-Za-z0-9._\-]+)?$", re.IGNORECASE)
+LICENSE_FILE = re.compile(r"^(licen[cs]e|copying|notice)([.\-][A-Za-z0-9._\-]+)?$", re.IGNORECASE)
 
 
 def BODY(url: str) -> bool:  # noqa: N802 - reads as a matcher at the call sites
-    """True when `url` names a licence FILE rather than a page that merely mentions one.
+    """True when `url` names a license FILE rather than a page that merely mentions one.
 
     The test is the last path segment, so a fragment or a query cannot defeat it and a
     same-named repository cannot satisfy it: `github.com/o/LICENSE` has only two path
-    segments and a licence file always sits deeper than the repository it belongs to.
+    segments and a license file always sits deeper than the repository it belongs to.
     """
     parsed = urlparse(url)
     host = (parsed.hostname or "").lower()
@@ -68,10 +68,10 @@ def BODY(url: str) -> bool:  # noqa: N802 - reads as a matcher at the call sites
         return False
     # On GitHub the filename has to sit deeper than owner/repo, or a repository NAMED
     # `LICENSE` would satisfy the gate. Off GitHub there is no such shape to exclude, and a
-    # vendor licence page at `/legal/LICENSE` is a real body.
+    # vendor license page at `/legal/LICENSE` is a real body.
     if host in {"github.com", "raw.githubusercontent.com"} and len(segments) < 3:
         return False
-    return bool(LICENCE_FILE.match(segments[-1]))
+    return bool(LICENSE_FILE.match(segments[-1]))
 
 
 def _prose(slug: str, openness: dict) -> str:
@@ -104,11 +104,11 @@ def failures(scores_dir: Path = SCORES) -> list[str]:
 def main() -> int:
     population = disputed()
     bad = failures()
-    print(f"{len(population)} record(s) dispute GitHub's licence classifier in prose")
-    print(f"  {len(population) - len(bad)} cite a licence body; {len(bad)} do not")
+    print(f"{len(population)} record(s) dispute GitHub's license classifier in prose")
+    print(f"  {len(population) - len(bad)} cite a license body; {len(bad)} do not")
     for slug in bad:
         print(
-            f"  ! {slug}: openness prose says NOASSERTION but no source is a licence file. "
+            f"  ! {slug}: openness prose says NOASSERTION but no source is a license file. "
             "Cite the raw LICENSE/COPYING body that was read."
         )
     return 1 if bad else 0
