@@ -74,10 +74,11 @@ on:
       # The site tables in Neon are built from the payload, so a regeneration of it is a
       # change to what the serving layer holds.
       - "build/notebook_data.json"
-  # A dispatch always means "load Neon from this ref, leave OSO alone". No input decides it:
-  # the OSO static models are org-wide, and a flag defaulting to false meant that forgetting
-  # `-f neon_only=true` published a branch's declarations over them. The guard is the event
-  # and the ref, which nobody can forget. tests/test_registry_triggers.py pins it.
+  # A dispatch from main reloads Neon and leaves OSO alone; from any other ref it only
+  # serializes. No input decides it: a flag defaulting to false meant that forgetting
+  # `-f neon_only=true` published a branch's declarations over the org-wide static models.
+  # The guards are the event and the ref, which nobody can forget.
+  # tests/test_registry_triggers.py pins them.
   workflow_dispatch:
 
 jobs:
@@ -124,10 +125,13 @@ jobs:
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
   #
-  # A `workflow_dispatch` runs the same job on the dispatched ref with the OSO publish
-  # skipped. That is how the Postgres serving layer gets verified from a branch: the Neon
-  # schema is swapped atomically and re-loadable, so a branch run costs nothing beyond a
-  # reload, whereas the OSO static models are org-wide and a branch must not overwrite them.
+  # A `workflow_dispatch` from main reloads Neon; OSO still waits for a push. From any other
+  # ref it serializes but touches neither: the OSO static models are org-wide, and the Neon
+  # schema is what aipotluck.org serves live (aipotluck.org#1350), so a branch load would reach
+  # visitors within a minute. Both Neon steps are guarded, not just the publish, because the
+  # secret is the owner credential and a branch's code must never be handed it. To try a
+  # branch against Postgres, run `build.publish_neon --schema` into a schema of its own from a
+  # terminal.
   publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -162,13 +166,14 @@ jobs:
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
-      # The site's serving layer, after OSO rather than instead of it, and on every event that
-      # reaches this job. The load goes into
+      # The site's serving layer, after OSO rather than instead of it, from main only: the site
+      # reads this schema live, so whatever lands here is what visitors see. The load goes into
       # os-ai-map_staging and is swapped into os-ai-map in one transaction, so a reader mid-request
       # sees the old schema or the new one. No `if:` guard on the secret: an absent
       # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
       # leaves the site serving whatever the last successful run left behind.
       - name: Publish to Neon
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: uv run python -m build.publish_neon
@@ -178,6 +183,7 @@ jobs:
       # record you want when comparing two runs from a terminal. The report carries no part
       # of the DSN, by construction — see build/neon_status.py.
       - name: Report what Neon is serving
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         # pipefail explicitly: the runner's shell is `bash -e` without it, so `tee` would

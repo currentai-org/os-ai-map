@@ -95,6 +95,7 @@ def test_the_run_table_carries_the_publish_identity_and_the_two_payload_dates():
         "schema_version",
         "built_at",
         "released_at",
+        "version",
         "source_git_sha",
         "declaration_version_id",
         "table_count",

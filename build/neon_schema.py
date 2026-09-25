@@ -115,6 +115,7 @@ One mapping is lossy and worth knowing about. `capability.relation` in the paylo
 |---|---|---|
 | `publish_runs` | `built_at` | When was this data built? The payload's `generated`. |
 | `publish_runs` | `released_at` | When was the release cut? The payload's `released`, which `build/serialize.py::release_date` reads from `CHANGELOG.md`. |
+| `publish_runs` | `version` | Which release is this? The payload's `version`, from `pyproject.toml`. Not a date, but it names the release `released_at` dates. |
 | `products` | `freshness_date`, `freshness_basis` | When was this product's score last confirmed, and how? |
 | `openness` / `adoption` / `capability` | `last_verified` | Same question asked of one axis. |
 
@@ -183,7 +184,8 @@ PAYLOAD_PATH = ROOT / "build" / "notebook_data.json"
 #      column is `group_id` because GROUP is a reserved word in Postgres. `groups.layer`
 #      denormalizes what each category in the group already carries, and the loader refuses
 #      a group whose categories disagree rather than choosing one of them.
-SCHEMA_VERSION = 4
+#   5: `publish_runs.version`, the payload's semantic version, for the site's version badge.
+SCHEMA_VERSION = 5
 
 class UnmappedValue(ValueError):
     """A payload value with no place in the target enum. Fails the load, names the value."""

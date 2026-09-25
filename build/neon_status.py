@@ -61,7 +61,7 @@ ORDER BY 1
 """
 
 RUNS_SQL = """
-SELECT run_id, published_at, schema_version, built_at, released_at,
+SELECT run_id, published_at, schema_version, built_at, released_at, version,
        source_git_sha, declaration_version_id, table_count, row_counts
 FROM {schema}.{table}
 ORDER BY published_at DESC
@@ -130,10 +130,10 @@ def report(dsn: str, schema: str) -> str:
         runs = cursor.fetchall()
         lines.append(f"### `{schema}.{RUN_TABLE}` — {len(runs)} row(s), newest first\n")
         lines.append(
-            "| published_at | run_id | schema_version | built_at | released_at "
+            "| published_at | run_id | schema_version | built_at | released_at | version "
             "| source_git_sha | tables |"
         )
-        lines.append("|---|---|---:|---|---|---|---:|")
+        lines.append("|---|---|---:|---|---|---|---|---:|")
         for row in runs:
             (
                 run_id,
@@ -141,6 +141,7 @@ def report(dsn: str, schema: str) -> str:
                 schema_version,
                 built_at,
                 released_at,
+                version,
                 git_sha,
                 _version_id,
                 table_count,
@@ -148,7 +149,7 @@ def report(dsn: str, schema: str) -> str:
             ) = row
             lines.append(
                 f"| {published_at:%Y-%m-%d %H:%M:%SZ} | `{run_id[:12]}` | {schema_version} "
-                f"| {built_at or '-'} | {released_at or '-'} "
+                f"| {built_at or '-'} | {released_at or '-'} | {version or '-'} "
                 f"| `{(git_sha or '-')[:12]}` | {table_count} |"
             )
     return "\n".join(lines) + "\n"

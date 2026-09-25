@@ -91,11 +91,24 @@ def test_the_oso_publish_runs_only_on_a_push_to_main():
     assert "github.event_name" in guard and "github.ref" in guard
 
 
-def test_a_dispatch_reaches_the_neon_steps_on_any_ref():
-    """That is what the dispatch is for: the Neon schema is swapped atomically and
-    re-loadable, so a branch run costs nothing beyond a reload."""
+def test_the_neon_steps_run_only_from_main():
+    """aipotluck.org reads the Neon schema live (aipotluck.org#1350), so a load from a branch
+    dispatch would be served to visitors within a minute. The read-back is guarded too: its
+    secret is the same owner credential, and a branch's code must never be handed it. A push
+    and a dispatch from main both run them; nothing else does."""
     for name in ("Publish to Neon", "Report what Neon is serving"):
-        assert "if" not in step_named(name), f"{name} must not be guarded by event or ref"
+        guard = step_named(name)["if"]
+        assert "refs/heads/main" in guard and "github.ref" in guard, name
+        assert "event_name" not in guard, f"{name}: a dispatch from main must still run it"
+
+
+def test_no_other_step_is_handed_the_neon_secret():
+    """The guard means nothing if an unguarded step carries the credential."""
+    doc = yaml.safe_load(WORKFLOW.read_text())
+    for job in doc["jobs"].values():
+        for step in job.get("steps", []):
+            if "NEON_DATABASE_URL" in str(step.get("env", {})):
+                assert "refs/heads/main" in step.get("if", ""), step.get("name")
 
 
 def test_no_input_decides_whether_oso_is_published():
