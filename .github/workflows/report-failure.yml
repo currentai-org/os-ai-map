@@ -11,6 +11,12 @@
 #
 # Push-to-main workflows are watched as well as scheduled ones. A failure there has nobody
 # looking at a pull request either, which is the whole condition this job exists for.
+#
+# Two things keep it from being noise. A first failure of a workflow on RETRYABLE is re-run once
+# before anything is filed, because a third of the sentinels up to 2026-09-25 were one-off
+# platform flakes that the next run cleared (#569, #579, #702). And a green unattended run closes
+# that workflow's open sentinel, since "close this when the next run is green" was a rule a
+# person applied by hand every time.
 name: report-failure
 on:
   workflow_run:
@@ -34,8 +40,21 @@ on:
     types: [completed]
 permissions:
   issues: write
+  # `gh run rerun`, for the one retry.
+  actions: write
+env:
+  # Workflows safe to re-run blind: they read, or they publish idempotently (registry's static
+  # models and Neon swap are both re-loadable). Left off on purpose, because a re-run of a job
+  # that failed after its write could write twice: adoption-reconciliation, identity-digest,
+  # long-tail-sync and reverify open PRs or issues, and regenerate pushes (it has its own push
+  # retry). tests/test_sentinel_coverage.py fails if a workflow that writes is added here.
+  RETRYABLE: >-
+    artifacts channel-authority contradiction-sweep freshness identity-eval mirror-drift parity
+    refetch registry scoring-trace validate
 jobs:
   report:
+    # Long enough to wait out a retry of the slowest watched workflow (validate, ~20 minutes).
+    timeout-minutes: 60
     # Unattended failures only. `workflow_run` fires for EVERY run of a watched workflow,
     # including pull-request runs -- the default-branch rule governs where this listener lives,
     # not which runs reach it. Without the event/branch test below, watching `validate` would
@@ -59,19 +78,117 @@ jobs:
           URL: ${{ github.event.workflow_run.html_url }}
           WHEN: ${{ github.event.workflow_run.run_started_at }}
           EVENT: ${{ github.event.workflow_run.event }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+        run: |
+          TITLE="sentinel: $NAME failed"
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1) || EXISTING=""
+          # One retry, first attempt only, waited on here. Runs started with GITHUB_TOKEN do not
+          # reliably trigger workflow_run, so a retry left to report back that way could fail and
+          # file nothing. Every gh call in this block is allowed to fail: an error here falls
+          # through to filing the original failure, never out of the step.
+          if [ "$ATTEMPT" = 1 ] && [[ " $RETRYABLE " == *" $NAME "* ]]; then
+            echo "First failure of $NAME; re-running its failed jobs before filing."
+            if gh run rerun "$RUN_ID" -R "$GITHUB_REPOSITORY" --failed; then
+              # Wait for the new attempt to exist before watching, or watch returns at once on
+              # the completed first attempt.
+              for _ in $(seq 1 30); do
+                NOW=$(gh run view "$RUN_ID" -R "$GITHUB_REPOSITORY" --json attempt --jq .attempt || echo 1)
+                [ "$NOW" -gt 1 ] && break
+                sleep 10
+              done
+              if [ "${NOW:-1}" -gt 1 ]; then
+                # Bounded well inside the job's 60 minutes, so a queued or stuck retry still
+                # leaves time to file rather than having the job killed mid-wait.
+                RC=0
+                timeout 40m gh run watch "$RUN_ID" -R "$GITHUB_REPOSITORY" --exit-status --interval 60 > /dev/null || RC=$?
+                if [ "$RC" = 0 ]; then
+                  echo "The retry passed; nothing to file."
+                  if [ -n "$EXISTING" ]; then
+                    UPDATED=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json updatedAt --jq .updatedAt || echo "")
+                    if [ -n "$UPDATED" ] && [[ "$WHEN" > "$UPDATED" ]]; then
+                      gh issue close "$EXISTING" -R "$GITHUB_REPOSITORY" --comment "Green on retry: $URL" || true
+                    fi
+                  fi
+                  exit 0
+                fi
+                ATTEMPT=$NOW
+                WATCHED=1
+                if [ "$RC" = 124 ]; then
+                  echo "The retry was still running after 40 minutes (attempt $ATTEMPT); filing."
+                else
+                  echo "The retry failed too (attempt $ATTEMPT); filing."
+                fi
+              else
+                echo "The retry never started; filing the original failure."
+              fi
+            else
+              echo "Could not start a retry; filing the original failure."
+            fi
+          fi
+          # Each report names its run and attempt on one line, so a second delivery of the same
+          # failure (a retry's completion reaching this job while the watcher files it) is
+          # recognized and skipped instead of reported twice. No concurrency group does this:
+          # GitHub keeps one pending job per group, so a queue there can silently drop a report.
+          # Instead a later attempt waits out the watcher's poll interval, then looks again, and
+          # files it itself if the mark is still missing (a watcher that died, or a manual re-run).
+          MARK="$URL (attempt $ATTEMPT)"
+          if [ "$ATTEMPT" != 1 ] && [ -z "${WATCHED:-}" ]; then
+            sleep 150
+          fi
+          # Re-read: the lookup at the top is stale by the length of any retry.
+          EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1) || true
+          if [ -n "$EXISTING" ]; then
+            SEEN=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json body,comments --jq '[.body, .comments[].body] | join("\n")') || SEEN=""
+            if [[ "$SEEN" == *"$MARK"* ]]; then
+              echo "Already reported: $MARK"
+              exit 0
+            fi
+            gh issue comment "$EXISTING" -R "$GITHUB_REPOSITORY" --body "Failed again at $WHEN: $MARK"
+            # A green run's close can land between the lookup and this comment. A failure must not
+            # sit in a closed issue, so reopen it if that happened.
+            sleep 5
+            if [ "$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json state --jq .state || echo OPEN)" = CLOSED ]; then
+              gh issue reopen "$EXISTING" -R "$GITHUB_REPOSITORY"
+            fi
+          else
+            BODY=$(cat <<EOF
+          Unattended run of \`$NAME\` (\`$EVENT\`) failed at $WHEN.
+
+          Run: $MARK
+
+          Read the log, decide whether it is drift, staleness, or a broken upstream. The next green unattended run closes this on its own. If the gate is advisory and the finding is real, file the finding as its own issue and link it here.
+          EOF
+          )
+            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body "$BODY"
+          fi
+
+  close:
+    # The other half: a green unattended run closes the open sentinel for its workflow. Same
+    # event and branch test as `report`, so a green PR run never closes a failure on main.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'schedule' ||
+       (github.event.workflow_run.event == 'push' &&
+        github.event.workflow_run.head_branch == 'main'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close the sentinel issue if one is open
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ github.event.workflow_run.name }}
+          URL: ${{ github.event.workflow_run.html_url }}
+          WHEN: ${{ github.event.workflow_run.run_started_at }}
         run: |
           TITLE="sentinel: $NAME failed"
           EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
-          BODY=$(cat <<EOF
-          Unattended run of \`$NAME\` (\`$EVENT\`) failed at $WHEN.
-
-          Run: $URL
-
-          Read the log, decide whether it is drift, staleness, or a broken upstream, and close this when the next run is green. If the gate is advisory and the finding is real, file the finding as its own issue and link it here.
-          EOF
-          )
-          if [ -n "$EXISTING" ]; then
-            gh issue comment "$EXISTING" -R "$GITHUB_REPOSITORY" --body "Failed again at $WHEN: $URL"
+          [ -n "$EXISTING" ] || exit 0
+          # Only a run that started after the issue was last updated supersedes it. Overlapping
+          # runs can finish out of order, and an older green run must not close a newer failure.
+          # A person's comment also counts as an update, which errs toward leaving it open.
+          UPDATED=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json updatedAt --jq .updatedAt)
+          if [[ "$WHEN" > "$UPDATED" ]]; then
+            gh issue close "$EXISTING" -R "$GITHUB_REPOSITORY" --comment "Green at $WHEN: $URL"
           else
-            gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --label sentinel --assignee ccerv1 --body "$BODY"
+            echo "This run started ($WHEN) before the issue's last update ($UPDATED); leaving it open."
           fi
