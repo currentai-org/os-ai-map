@@ -19,7 +19,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Added
 
 - `publish_runs.version` in the Neon schema, the dataset's semantic version, so the site's version
-  badge reads it from the publish it serves (`SCHEMA_VERSION` 5).
+  badge reads it from the publish it serves (`SCHEMA_VERSION` 5)
+  ([#703](https://github.com/currentai-org/os-ai-map/pull/703)).
 - The Language-specific datasets category, published with 97 scored products: datasets built for
   underrepresented languages across speech, pretraining text, instruction data, parallel text and
   evaluation, three withheld corpora included
@@ -132,7 +133,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 ### Changed
 
 - The Neon publish runs only from `main`. A branch dispatch used to load Neon, which was safe while
-  nothing read it; aipotluck.org now serves that schema live.
+  nothing read it; aipotluck.org now serves that schema live
+  ([#703](https://github.com/currentai-org/os-ai-map/pull/703)).
 - `langtrace` adoption now comes from Docker Hub pulls of its server image, averaged over the
   image's lifetime as a floor, instead of downloads of its Python SDK, which is declared
   `not_primary_channel`. It moved from 2 to 1, with no telemetry_observability stage move.
