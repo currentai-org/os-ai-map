@@ -132,6 +132,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Published datasets that state no license now cap at 2, not 3: there is no grant to rely on, but
+  the files are out, and 1 is kept for what is closed or private. No-derivatives data scores 2 as a
+  written exception for data, and Esethu's bounded commercial use scores 3. Fourteen dataset records
+  move from 3/gated to 2/restricted and fifteen deferrals close. CC-BY-4.0 model weights join
+  `permissive_non_osi`, and FSL-1.1 joins `competition_restricted`.
 - The Neon publish runs only from `main`. A branch dispatch used to load Neon, which was safe while
   nothing read it; aipotluck.org now serves that schema live
   ([#703](https://github.com/currentai-org/os-ai-map/pull/703)).
