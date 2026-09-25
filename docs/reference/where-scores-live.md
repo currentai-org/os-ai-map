@@ -85,7 +85,7 @@ there; Neon answers what the site renders.
 Plus `publish_runs`: exactly one row, describing the load you are looking at — the swap
 replaces the table along with everything else, so it is a stamp on the current corpus and not
 an accumulating history. It carries `run_id`, `published_at`, `schema_version`,
-`built_at`, `released_at`, `source_git_sha`, `declaration_version_id`, `table_count` and a
+`built_at`, `released_at`, `version`, `source_git_sha`, `declaration_version_id`, `table_count` and a
 `row_counts` JSONB. That row is how you tell which commit and which shape the serving layer is
 showing.
 

@@ -124,10 +124,11 @@ jobs:
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
   #
-  # A `workflow_dispatch` runs the same job on the dispatched ref with the OSO publish
-  # skipped. That is how the Postgres serving layer gets verified from a branch: the Neon
-  # schema is swapped atomically and re-loadable, so a branch run costs nothing beyond a
-  # reload, whereas the OSO static models are org-wide and a branch must not overwrite them.
+  # A `workflow_dispatch` from main reruns both publishes. From any other ref it serializes and
+  # checks but publishes nothing: the OSO static models are org-wide, and the Neon schema is
+  # what aipotluck.org serves live (aipotluck.org#1350), so a branch load would reach visitors
+  # within a minute. To try a branch against Postgres, run `build.publish_neon --schema` into a
+  # schema of its own from a terminal.
   publish:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -162,13 +163,14 @@ jobs:
           # Org id is not sensitive, so it lives as a repo variable rather than a secret.
           OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
-      # The site's serving layer, after OSO rather than instead of it, and on every event that
-      # reaches this job. The load goes into
+      # The site's serving layer, after OSO rather than instead of it, from main only: the site
+      # reads this schema live, so whatever lands here is what visitors see. The load goes into
       # os-ai-map_staging and is swapped into os-ai-map in one transaction, so a reader mid-request
       # sees the old schema or the new one. No `if:` guard on the secret: an absent
       # NEON_DATABASE_URL must fail this step loudly, because a publish that quietly skips
       # leaves the site serving whatever the last successful run left behind.
       - name: Publish to Neon
+        if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: uv run python -m build.publish_neon

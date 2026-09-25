@@ -91,11 +91,18 @@ def test_the_oso_publish_runs_only_on_a_push_to_main():
     assert "github.event_name" in guard and "github.ref" in guard
 
 
-def test_a_dispatch_reaches_the_neon_steps_on_any_ref():
-    """That is what the dispatch is for: the Neon schema is swapped atomically and
-    re-loadable, so a branch run costs nothing beyond a reload."""
-    for name in ("Publish to Neon", "Report what Neon is serving"):
-        assert "if" not in step_named(name), f"{name} must not be guarded by event or ref"
+def test_the_neon_publish_runs_only_from_main():
+    """aipotluck.org reads the Neon schema live (aipotluck.org#1350), so a load from a branch
+    dispatch would be served to visitors within a minute. A push and a dispatch from main both
+    publish; nothing else does."""
+    guard = step_named("Publish to Neon")["if"]
+    assert "refs/heads/main" in guard and "github.ref" in guard
+    assert "event_name" not in guard, "a dispatch from main must still republish"
+
+
+def test_the_neon_read_back_runs_on_any_ref():
+    """It only reads, and on a branch dispatch it shows what the site is still serving."""
+    assert "if" not in step_named("Report what Neon is serving")
 
 
 def test_no_input_decides_whether_oso_is_published():

@@ -158,6 +158,9 @@ RUN_COLUMNS: tuple[tuple[str, str], ...] = (
     # date — when a product's score was last confirmed — is per product, on `products`.
     ("built_at", "DATE"),
     ("released_at", "DATE"),
+    # The dataset's semantic version, the payload's `version` (pyproject). The site's version
+    # badge reads it, so it names the release a visitor is looking at.
+    ("version", "TEXT"),
     ("source_git_sha", "TEXT"),
     ("declaration_version_id", "TEXT"),
     ("table_count", "INTEGER"),
@@ -608,6 +611,7 @@ def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None
         "schema_version": SCHEMA_VERSION,
         "built_at": payload.get("generated") or None,
         "released_at": payload.get("released") or None,
+        "version": payload.get("version") or None,
         "source_git_sha": git_sha,
         "declaration_version_id": version_id,
         "table_count": len(plans),
@@ -639,15 +643,16 @@ def publish(dsn: str, plans: list[TablePlan], schema: str, read_role: str | None
             cursor.execute(create_table_sql(staging, RUN_COLUMNS, RUN_TABLE))
             cursor.execute(
                 f"INSERT INTO {quote_schema(staging)}.{quote_ident(RUN_TABLE)} "
-                f"(run_id, published_at, schema_version, built_at, released_at, "
+                f"(run_id, published_at, schema_version, built_at, released_at, version, "
                 f"source_git_sha, declaration_version_id, table_count, row_counts) "
-                f"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                f"VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
                     record["run_id"],
                     record["published_at"],
                     record["schema_version"],
                     record["built_at"],
                     record["released_at"],
+                    record["version"],
                     record["source_git_sha"],
                     record["declaration_version_id"],
                     record["table_count"],

@@ -259,22 +259,28 @@ transaction, so it is safe to re-run and a reader never sees a half-loaded schem
 is shared with the rest of the site, and the publisher refuses to run against `drizzle`,
 `payload` or `public`.
 
-To verify a change to the load before it reaches `main`, dispatch the workflow on the branch.
-A dispatch always skips the OSO publish — the static models are org-wide and a branch must not
-overwrite them — and writes the resulting table counts, the constraint tally and the
-`publish_runs` row to the run summary:
+**Neon publishing happens only from `main`.** aipotluck.org reads the `os-ai-map` schema live
+(aipotluck.org#1350), so whatever lands there reaches visitors within a minute. A push to `main`
+publishes, and so does a `workflow_dispatch` from `main`, which is how to reload Neon without a
+new commit:
 
 ```bash
-gh workflow run registry.yml --ref <branch>
+gh workflow run registry.yml --ref main
 ```
 
-There is no flag to remember: the OSO step is guarded on `push` to `main`, so a dispatch never
-reaches it, on any ref.
+A dispatch from any other ref serializes and checks but publishes nothing, to OSO or to Neon. To
+try a change to the load from a branch, run it from a terminal into a schema of its own, which
+the site never reads:
 
-**OSO publishing now happens only on a push to `main`.** To republish the static models without
-a new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an
-empty commit — a `workflow_dispatch` will load Neon and leave OSO untouched however it is
-invoked.
+```bash
+uv run python -m build.publish_neon --schema os-ai-map-<branch>
+```
+
+Drop that schema (and its `_staging` / `_previous` forms) when you are done.
+
+**OSO publishing happens only on a push to `main`.** To republish the static models without a
+new commit, re-run the push run that last published them (`gh run rerun <id>`), or push an empty
+commit. A dispatch, even from `main`, leaves OSO untouched.
 
 See `docs/reference/where-scores-live.md` for what the schema holds, the three dates it
 carries, and what it deliberately does not have.
