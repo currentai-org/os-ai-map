@@ -195,3 +195,26 @@ Issues:
    - Cite fetches for the member-column package claims and the recall notes (flag 6.3), or cut
      them.
    - Use the first-upload date for statsmodels and mlpack releases.
+
+## Re-check (2026-09-26, after fixes)
+
+Only the flagged items were re-checked. There was one live re-fetch at about 20:25Z. The scratch
+directory has been deleted, so the entry below cites its URL.
+
+| item | verdict | finding |
+|---|---|---|
+| 1. depth-pro identity and activity | **PASS** | rows.yaml and the 6a copy now say `github: apple-aiml-research/ml-depth-pro`. A live fetch of https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/apple-aiml-research%2Fml-depth-pro returns `full_name` apple-aiml-research/ml-depth-pro, `archived` false, `fork` false, `pushed_at` 2026-09-11, and 5,728 stars. This matches the 6b cells, which now cite F0527 (HTTP 200, logged 20:23:57Z, raw body agrees). The org handle cell records the move from `apple/` (F0489). |
+| 2. Release dates | **PASS** | The statsmodels row gives 0.15.0 on 2026-08-27, citing F0022 (`latest_release_published_at` 2026-08-27T10:34:19), and notes the last file upload of 2026-08-30 (F0021). The mlpack row gives 4.8.0 on 2026-06-17, citing F0046 (2026-06-17T22:29:10), and notes the 2026-06-19 last upload (F0045). |
+| 3. Section 1 wording on timm | **PASS** | It now reads "59 software rows (timm among them, by ruling) and 22 model rows: vision backbones and perception model lines, plus the tabular foundation models". This is consistent with rows.yaml. |
+| 4. Org-count caveat | **PASS** | Section 2 now says there are 68 org slugs, and that google, google-research and google-cloud count as three, following the index's slugs. |
+| 5. Unnamed-candidate list | **PASS** | It lists 56 rows in four groups: search 14, HF lists 12, sweeper-added 27, closed 3. 14+12+27+3 = 56. A set comparison against rows.yaml minus the 25 brief leads finds nothing missing and nothing extra. |
+| 6. Recall-sounding notes | **PASS** (one note) | The hdbscan, rt-detr, h2o-3 and mlpack notes are removed or reworded. The h2o-3 note now cites the repo name (F0047). The sibling wheels cite F0529 (cuml-cu13), F0530 (u8darts), F0531 (opencv-contrib-python) and F0532 (opencv-python-headless). All four are HTTP 200 and each body names the package. The cotracker members cell is limited to CoTracker3 (F0413). "7 Commits" no longer appears in sweep.md. Remaining note: the torchvision note "Installed alongside torch; downloads partly reflect that pairing" is still present. It is an interpretive caveat, not a sourced figure, so it does not block. |
+| Section 2 active count | **PASS** | It reads **75 of 78**. The inactive rows listed are mmdetection, segformer and tpot, and the "could not be dated" sentence is gone. |
+| Schema | **PASS** | `jsonschema.validate(rows.yaml, registry.schema.json)` prints `ok`. The 6a copy is byte-identical to rows.yaml. Every F and W id cited anywhere in sweep.md exists in the logs. |
+
+Housekeeping: F0528 is a new malformed fetch (http `000000`, URL
+`https://raw.githubusercontent.com/cuml?`, label `x`). Nothing cites it. It is disclosed in the
+sweep's header and listed in 6c.
+
+**Final overall status: PASS.** All six checks now pass. The earlier check 1 and check 3
+failures (depth-pro) are resolved.
