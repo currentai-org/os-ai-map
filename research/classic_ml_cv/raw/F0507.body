@@ -1,0 +1,205 @@
+---
+license: apache-2.0
+library_name: synthefy-nori
+pipeline_tag: tabular-classification
+tags:
+  - tabular
+  - tabular-classification
+  - tabular-foundation-model
+  - in-context-learning
+  - synthetic-data
+  - pytorch
+---
+
+<p align="center">
+  <img src="synthefy_nori_banner.png" alt="Nori" width="100%">
+</p>
+
+# Nori
+
+**Nori** is a tabular foundation model for **regression** via in-context
+learning (ICL). Given a few labeled rows as context, it predicts on new query rows in a
+**single forward pass**, with no task-specific training or fine-tuning. The model is
+trained **entirely on synthetic data**.
+
+- **Documentation:** https://docs.synthefy.com/nori/
+- **Repository:** https://github.com/Synthefy/synthefy-nori
+- **Library:** `pip install synthefy-nori`
+- **Checkpoint:** `nori.pt` (this repo)
+- **Parameters:** ~5.9M
+- **License:** Apache-2.0
+
+## Results
+
+Mean and median R² of the base model across 96 regression tasks from three
+public benchmark suites (single H200, up to 50K context rows per dataset):
+
+| Suite | Datasets | Mean R² | Median R² |
+|-------|---------:|--------:|----------:|
+| TabArena | 13 | 0.8117 | 0.8757 |
+| TALENT | 72 | 0.7569 | 0.8802 |
+| OpenML | 11 | 0.6373 | 0.5856 |
+| **Overall** | **96** | **0.7506** | **0.8702** |
+
+Large-N / long-context tables (common in TabArena) are the current focus of the
+large-table training stages. These numbers are reproducible end-to-end with one
+command — see [Reproducing these numbers](https://github.com/Synthefy/synthefy-nori#reproducing-these-numbers).
+
+> **Thinking** is an inference-time reasoning extension that improves these
+> numbers further. Details are forthcoming.
+
+## Use it from your AI coding assistant
+
+Paste this into Claude Code, Cursor, or any AI coding assistant and it will wire
+Nori into your own project:
+
+````text
+Look at my code/task/report here and figure out where Nori would best fit — it's
+Synthefy's tabular foundation model, a drop-in scikit-learn estimator that predicts
+a continuous target by in-context learning: no training loop, no hyperparameters,
+and it uses the GPU automatically when one's available (CPU otherwise).
+
+1. Install it with this project's package manager
+   (e.g. `uv add synthefy-nori`, or `pip install -U synthefy-nori`).
+
+2. Use it wherever a tabular regression / prediction step fits:
+
+   ```python
+   from synthefy_nori import NoriRegressor
+
+   reg = NoriRegressor(model="nori-6m")   # downloads these weights from the Hub on first predict
+   reg.fit(X_train, y_train)              # stores your rows as context — no training happens
+   y_pred = reg.predict(X_test)           # point predictions (predictive-distribution mean)
+
+   # Prediction intervals come free — no conformal/quantile add-ons:
+   lo, mid, hi = reg.predict(X_test, output_type="quantiles", quantiles=[0.1, 0.5, 0.9])
+   ```
+
+X is a numeric feature matrix (encode categoricals as ordinals/one-hot, leave
+missing values as NaN, no scaling needed); y is a finite continuous target. If I
+already have a model, wire Nori up alongside it on the same train/test split and
+metric so I can compare them. If the best place to plug Nori in isn't obvious,
+show me where you'd put it and confirm with me before making changes.
+
+Going deeper: synthefy-nori ships a ready-made nori-regression skill for AI coding
+assistants with vetted recipes — calibrated prediction intervals, honest baseline
+comparison under fixed CV, SHAP/PDP interpretability, and leak-safe one-step
+time-series forecasting. Read and follow it if relevant:
+https://github.com/Synthefy/synthefy-nori/tree/main/.claude/skills/nori-regression
+````
+
+## Usage
+
+```bash
+pip install synthefy-nori
+```
+
+```python
+from sklearn.datasets import load_diabetes
+from sklearn.model_selection import train_test_split
+from synthefy_nori import NoriRegressor
+
+X, y = load_diabetes(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+model = NoriRegressor()    # downloads these weights from the Hub on first use
+model.fit(X_train, y_train)           # "fit" just stores the labeled rows as context
+pred = model.predict(X_test)          # predictions in a single forward pass, no training
+```
+
+It uses a GPU when one is available and falls back to CPU. A one-shot helper skips the
+object entirely:
+
+```python
+from synthefy_nori import predict
+pred = predict(X_train, y_train, X_test, task="regression")
+```
+
+`predict` follows the `TabPFNRegressor.predict` contract: pass `output_type="mean"`
+(default), `"median"`, or `"mode"` to choose the point estimate drawn from the model's
+predictive distribution.
+
+To run from a local checkpoint instead of the Hub default, pass a path:
+
+```python
+model = NoriRegressor(model_path="path/to/checkpoint.pt")
+```
+
+This checkpoint is **public**: the first inference call downloads and caches it
+automatically, with no token and no access request. A Hugging Face token (read scope)
+is only worth setting if you hit anonymous download rate limits — provide it via
+`export HF_TOKEN=hf_...`, `hf auth login`, or `NoriRegressor(token="hf_...")`.
+
+## How it works
+
+### Architecture
+
+A **FeaturesTransformer (~5.9M parameters)** that alternates two kinds of attention:
+
+- **Feature attention** learns relationships between columns.
+- **Sample attention** learns relationships between rows (context and query).
+- **In-context learning**: predictions condition on labeled context rows, with no
+  gradient updates at inference.
+
+Key config: 16 transformer layers, embed_dim 128, hidden 384, 2 heads, the **v2-lite**
+block (SwiGLU + RMSNorm + pre-norm), features grouped in pairs (`features_per_group=2`),
+with **column-specific y-aware** feature attention. Features are encoded with RBF
+embeddings; missing values are handled natively via learned mask embeddings. The
+regression head predicts a full distribution over 999 quantiles (pinball loss).
+
+### Synthetic data
+
+The model never sees real data during training. Its capability comes from a diverse
+synthetic data generator covering real-world tabular regimes:
+
+- **Structural Causal Models (SCM)**: hierarchical DAGs with 8 edge-function types
+  (MLP, decision tree, piecewise-linear, polynomial, periodic, RBF, log/exp, conv1d).
+- **Regression priors**: 9 target families (dense/sparse linear, GAM, interactions,
+  random MLP, random tree, radial/RBF, Fourier features, chained trigonometric).
+- **Realism augmentations**: discretized features, noise features, correlated blocks,
+  structural missingness, label noise.
+- **Learnability filter**: an ExtraTrees signal-quality filter rejects unlearnable
+  datasets so training compute is spent on learnable tasks.
+
+Training runs entirely on synthetic data and **trains to completion** — there is no
+real-data validation in the loop, so no benchmark data is needed to train and no eval
+signal influences checkpoint selection. See the
+[training guide](https://github.com/Synthefy/synthefy-nori/blob/main/docs/training.md)
+for the full curriculum recipe.
+
+## Intended use & limitations
+
+- **Intended for** small-to-medium tabular regression where in-context learning is
+  attractive (no per-task training).
+- **Limitations:** the current gap vs the best baselines is on **large-N / long-context**
+  TabArena datasets; dense O(N²) sample attention bounds practical context size. Very large
+  tables are the focus of the large-table training stages.
+
+## Citation
+
+```bibtex
+@software{synthefy_2026_20710462,
+  author       = {Synthefy and
+                  Li, Po-han and
+                  Narayanan, Aditya and
+                  Narasimhan, Sai Shankar and
+                  Mallampalli, Raghav and
+                  Agrawal, Aahan and
+                  Ajan, Bekzat and
+                  Shah, Raimi and
+                  Agarwal, Shubhankar},
+  title        = {Synthefy Nori: Tabular Foundation Model for Regression},
+  month        = jun,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {0.6.0},
+  doi          = {10.5281/zenodo.20710462},
+  url          = {https://doi.org/10.5281/zenodo.20710462},
+}
+```
+
+## License
+
+Apache-2.0. See
+[LICENSE](https://github.com/Synthefy/synthefy-nori/blob/main/LICENSE) and
+[NOTICE](https://github.com/Synthefy/synthefy-nori/blob/main/NOTICE).

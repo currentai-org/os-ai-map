@@ -1,0 +1,78 @@
+---
+base_model:
+- intfloat/e5-small-v2
+license: cc-by-4.0
+pipeline_tag: tabular-classification
+---
+
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/alanarazi7/TabSTAR/main/figures/tabstar_logo.png" alt="TabSTAR Logo" width="50%">
+</p>
+
+---
+
+## Install
+
+To fit a pretrained TabSTAR model to your own dataset, install the package:
+
+```bash
+pip install tabstar
+```
+
+---
+
+## Quickstart Example
+
+```python
+from importlib.resources import files
+import pandas as pd
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+
+from tabstar.tabstar_model import TabSTARClassifier
+
+csv_path = files("tabstar").joinpath("resources", "imdb.csv")
+x = pd.read_csv(csv_path)
+y = x.pop('Genre_is_Drama')
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+# For regression tasks, replace `TabSTARClassifier` with `TabSTARRegressor`.
+tabstar = TabSTARClassifier()
+tabstar.fit(x_train, y_train)
+y_pred = tabstar.predict(x_test)
+print(classification_report(y_test, y_pred))
+```
+
+---
+
+# 📚 TabSTAR: A Foundation Tabular Model With Semantically Target-Aware Representations
+
+**Repository:** [alanarazi7/TabSTAR](https://github.com/alanarazi7/TabSTAR)
+
+**Paper:** [TabSTAR: A Foundation Tabular Model With Semantically Target-Aware Representations](https://arxiv.org/abs/2505.18125)
+
+**License:** MIT © Alan Arazi et al.
+
+---
+
+## Abstract
+
+> While deep learning has achieved remarkable success across many domains, it
+> has historically underperformed on tabular learning tasks, which remain
+> dominated by gradient boosting decision trees (GBDTs). However, recent
+> advancements are paving the way for Tabular Foundation Models, which can
+> leverage real-world knowledge and generalize across diverse datasets,
+> particularly when the data contains free-text. Although incorporating language
+> model capabilities into tabular tasks has been explored, most existing methods
+> utilize static, target-agnostic textual representations, limiting their
+> effectiveness. We introduce TabSTAR: a Foundation Tabular Model with
+> Semantically Target-Aware Representations. TabSTAR is designed to enable
+> transfer learning on tabular data with textual features, with an architecture
+> free of dataset-specific parameters. It unfreezes a pretrained text encoder and
+> takes as input target tokens, which provide the model with the context needed
+> to learn task-specific embeddings. TabSTAR achieves state-of-the-art
+> performance for both medium- and large-sized datasets across known benchmarks
+> of classification tasks with text features, and its pretraining phase exhibits
+> scaling laws in the number of datasets, offering a pathway for further
+> performance improvements.
+
