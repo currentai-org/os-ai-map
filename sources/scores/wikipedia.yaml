@@ -1,0 +1,79 @@
+product: wikipedia
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-sa-3.0
+    - name: gfdl
+    gated:
+      value: 'false'
+    dataset_card:
+      value: present
+    context:
+      format:
+        value: parquet
+  confidence: high
+  note: Wikipedia text is dual-licensed under CC BY-SA 3.0 and the GFDL, both of which allow redistribution
+    and commercial reuse with attribution and share-alike. The download is ungated and the card documents
+    structure, languages and preprocessing.
+  raw: license:cc-by-sa-3.0+gfdl;gated:false;dataset_card:present;format:parquet
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/datasets/wikimedia/wikipedia
+    shows: Hub API metadata for the dataset, license cc-by-sa-3.0 and gfdl, gated false, published by the
+      wikimedia organization
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7cc603bc81010bf0e75c376d3297e1ebf56141226b983e3ae96e9dcbb6a09092
+    establishes:
+    - license
+    - gated
+  - url: https://huggingface.co/datasets/wikimedia/wikipedia/raw/main/README.md
+    shows: dataset card with summary, languages, structure, fields, splits and creation sections; license
+      front matter cc-by-sa-3.0 and gfdl
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a0f2055ac612f924721e9981fa2a49a18adec1c67cc8026f6c97d12f17211b21
+    establishes:
+    - dataset_card
+adoption:
+  level: 4
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is measured by Hugging Face downloads of wikimedia/wikipedia, the Foundation's own
+    distribution of the cleaned text, over the trailing month. Many pipelines read the raw dumps from
+    dumps.wikimedia.org instead, which publishes no download count, so this undercounts use.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/datasets/wikimedia/wikipedia
+    shows: 278,241 downloads over the trailing 30 days
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7cc603bc81010bf0e75c376d3297e1ebf56141226b983e3ae96e9dcbb6a09092
+capability:
+  score: 4
+  basis: training_value
+  basis_detail: downstream
+  value: null
+  confidence: high
+  note: Wikipedia is in the pretraining mix of most open model families, usually repeated more often than its
+    size alone would earn. LLaMA sampled it at 4.5 percent for about two and a half epochs and used it as the
+    quality reference for filtering web text, and OLMoE's mix carries it through Dolma. No ablation shows it
+    beating a current web corpus, so it sits with the documented, heavily reused components.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://arxiv.org/pdf/2302.13971
+    shows: LLaMA paper full text. Table 1 lists Wikipedia at a 4.5 percent sampling proportion over 2.45
+      epochs, and the CommonCrawl pipeline trains a classifier on pages used as references in Wikipedia
+      versus randomly sampled pages
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2e663675ae36ad12adb2f5a05281bac2747ecf8d23d92bedd9f937a89fee7136
+  - url: https://huggingface.co/datasets/allenai/OLMoE-mix-0924/raw/main/README.md
+    shows: OLMoE-mix-0924 card lists En Wikipedia + Wikibooks (Dolma) at 3.69B GPT-NeoX tokens among its
+      sources
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 12dae81339357859dfd1fa1bb88e4263fe1538d7c46971eebec51a317e9a6870
