@@ -690,6 +690,9 @@ Duplicate signals are names that turned out to be another listed name:
 9. **OpenFL end of life.** The README says it "will soon be archived" (F0110) but gives no date.
    Recommend keeping it as a tail row now, and adding `end_of_life` when a date is announced or the
    repo is archived.
+10. **Closed comparators (ADR-005).** Recommend **only Apheris Networks and Rhino FCP** as
+    best-in-class. Both are FL-first surfaces with the data kept in place (W0018, W0019). HPE
+    Swarm Learning stays parked as closed long-tail.
 11. **Keep `flsim-iqua` accepted?** It is 206 stars, last pushed 2022-04-09, with no releases and
     no package (F0247, F0261). Its own description reads as a framework ("A simulation framework
     for Federated Learning"), unlike the paper codebases parked in §7. Options: (a) keep it as a
@@ -697,6 +700,3 @@ Duplicate signals are names that turned out to be another listed name:
     under identity unclear, alongside RIS-FL and FedCLS.
 12. **FederatedScope's bundled notices.** Its LICENSE is Apache-2.0 followed by third-party
     notices, mostly MIT (F0266). A scorer should read past the first page.
-10. **Closed comparators (ADR-005).** Recommend **only Apheris Networks and Rhino FCP** as
-    best-in-class. Both are FL-first surfaces with the data kept in place (W0018, W0019). HPE
-    Swarm Learning stays parked as closed long-tail.
