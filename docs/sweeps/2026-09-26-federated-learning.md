@@ -112,9 +112,11 @@ the two closed rows. A handle that is a project account rather than the organiza
 Organization type is `unknown` wherever the sweep's evidence did not establish an affiliation.
 
 The slug choices follow the sweep's §9 Q7, which decisions.md left standing. `secretflow` is a new
-slug and not `ant-group`, because Ant Group ownership was not fetched. `fedlearner` goes to a new
-`bytedance`, not `bytedance-seed-volcano-engine`, because the repository sits under the `bytedance`
-GitHub account, not a Seed or Volcano Engine one. `fate` goes to `federatedai`, not
+slug and not `ant-group`, because Ant Group ownership was not fetched. `fedlearner` goes to
+`bytedance-seed-volcano-engine`. The sweep proposed a new `bytedance` slug, but the
+media_generation and multimodal_models seeds already attribute the `bytedance` GitHub account to
+that existing org (LatentSync, UI-TARS), and a handle can name only one organization, so the
+coordinator consolidated on the existing slug when the seeds were merged. `fate` goes to `federatedai`, not
 `lf-ai-and-data`, because its README says "hosted by Linux Foundation" without naming LF AI & Data.
 `openfl` and `substra` use `lf-ai-and-data`, following the `onnx` precedent for LF-hosted projects.
 `federatedscope` uses `alibaba-cloud`, the corpus's slug for `alibaba/` repositories.
@@ -144,7 +146,7 @@ record. The package is the declared `pypi` identifier, where one exists.
 | PFLlib | `pfllib` | `tsingz0` | open | Apache-2.0 | 2025-11-25 | – | https://github.com/TsingZ0/PFLlib | 2026-09-26 | F0021 F0135 F0250 |
 | FedLab | `fedlab` | `smilelab-fl` | open | Apache-2.0 | 2025-10-20 | `fedlab` | https://github.com/SMILELab-FL/FedLab | 2026-09-26 | F0022 F0065 F0270 |
 | PaddleFL | `paddlefl` | `paddlepaddle` | open | Apache-2.0 | 2023-07-26 | `paddle-fl` | https://github.com/PaddlePaddle/PaddleFL | 2026-09-26 | F0018 F0062 F0271 |
-| Fedlearner | `fedlearner` | `bytedance` | open | Apache-2.0 | 2026-07-06 | – | https://github.com/bytedance/fedlearner | 2026-09-26 | F0027 F0131 F0237 |
+| Fedlearner | `fedlearner` | `bytedance-seed-volcano-engine` | open | Apache-2.0 | 2026-07-06 | – | https://github.com/bytedance/fedlearner | 2026-09-26 | F0027 F0131 F0237 |
 | Plato | `plato-fl` | `tl-system` | open | Apache-2.0 | 2026-06-08 | `plato-learn` | https://github.com/TL-System/plato | 2026-09-26 | F0028 F0072 F0272 |
 | Flame | `flame-fl` | `cisco` | open | Apache-2.0 | 2025-11-06 | – | https://github.com/cisco-open/flame | 2026-09-26 | F0029 F0132 F0238 |
 | NEBULA | `nebula-dfl` | `cyberdatalab` | open | AGPL-3.0 | 2026-06-29 | – | https://github.com/CyberDataLab/nebula | 2026-09-26 | F0031 F0123 F0133 |

@@ -148,7 +148,7 @@ license texts, not a score.
 | torchvision | `torchvision` | software | `pytorch-foundation` | open | https://github.com/pytorch/vision | 2026-09-26 |
 | Ultralytics YOLO | `ultralytics` | software | `ultralytics` | open | https://github.com/ultralytics/ultralytics | 2026-09-26 |
 | Detectron2 | `detectron2` | software | `meta` | open | https://github.com/facebookresearch/detectron2 | 2026-09-26 |
-| MMDetection | `mmdetection` | software | `openmmlab` | open | https://github.com/open-mmlab/mmdetection | 2026-09-26 |
+| MMDetection | `mmdetection` | software | `open-mmlab` | open | https://github.com/open-mmlab/mmdetection | 2026-09-26 |
 | Kornia | `kornia` | software | `kornia` | open | https://github.com/kornia/kornia | 2026-09-26 |
 | Albumentations | `albumentations` | software | `albumentations-team` | open | https://github.com/albumentations-team/AlbumentationsX | 2026-09-26 |
 | supervision | `supervision` | software | `roboflow` | open | https://github.com/roboflow/supervision | 2026-09-26 |
