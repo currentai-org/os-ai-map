@@ -292,3 +292,16 @@ def test_the_comparison_is_the_same_whichever_source_feeds_it(monkeypatch, tmp_p
     assert [row["slug"] for row in legs["fires"]] == ["fires"]
     assert skipped_total(legs) == 0
     assert slept == [], "reading two queried tables needs no API pacing"
+
+
+def test_a_missing_column_that_is_not_a_requested_one_is_raised():
+    """A missing `package` is a broken query, not #708 or #709 still pending."""
+    def run_query(sql):
+        raise RuntimeError("USER_ERROR: COLUMN_NOT_FOUND - line 1:8: Column 'package' cannot be resolved")
+
+    try:
+        gate.warehouse_release_lookups(run_query)
+    except RuntimeError as error:
+        assert "'package'" in str(error)
+    else:
+        raise AssertionError("only the three requested columns may read as pending")

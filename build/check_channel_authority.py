@@ -296,7 +296,10 @@ _WAREHOUSE_PACKAGES_SQL = (
     "FROM currentai.signal_packages.downloads WHERE artifact_kind = 'pypi'"
 )
 _WAREHOUSE_TAGS_SQL = "SELECT repo, latest_release_tag FROM currentai.signal_github.artifact_state"
-_MISSING_COLUMN = re.compile(r"COLUMN_NOT_FOUND|cannot be resolved", re.IGNORECASE)
+# Only these three are expected to be missing. A missing `package`, `repo` or `artifact_kind`
+# is a broken query or a renamed table, and must not be reported as a pending request.
+_RELEASE_COLUMNS = frozenset({"latest_version", "latest_upload_at", "latest_release_tag"})
+_UNRESOLVED_COLUMN = re.compile(r"Column '([^']+)' cannot be resolved", re.IGNORECASE)
 
 
 def warehouse_release_lookups(run_query=None) -> tuple[dict, dict] | str:
@@ -313,7 +316,8 @@ def warehouse_release_lookups(run_query=None) -> tuple[dict, dict] | str:
         package_rows = run_query(_WAREHOUSE_PACKAGES_SQL)
         tag_rows = run_query(_WAREHOUSE_TAGS_SQL)
     except Exception as error:  # classified below, and re-raised unless expected
-        if _MISSING_COLUMN.search(str(error)):
+        missing = _UNRESOLVED_COLUMN.search(str(error))
+        if missing and missing.group(1).lower() in _RELEASE_COLUMNS:
             return ("the release columns are not on the warehouse tables yet (#708: "
                     "latest_release_tag on signal_github.artifact_state; #709: latest_version "
                     "and latest_upload_at on signal_packages.downloads)")
