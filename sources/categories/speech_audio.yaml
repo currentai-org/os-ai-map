@@ -1,0 +1,82 @@
+name: speech_audio
+display_name: Speech & audio
+description: Models and speech-first engines whose headline capability is speech itself - recognition
+  (ASR), synthesis (TTS), speech-to-speech conversation, and the diarization and voice-activity
+  components around them.
+weights:
+  adopt: 0.4
+  cap: 0.6
+scoring_recipe:
+  version: 1
+  extends:
+    model: model
+    software: software
+  derived_from:
+    method: per-type extends over the shared model and software ladders, not yet verified against
+      hand-authored scores (no head products at seed)
+    checker: build/check_rubric.py
+  note: >-
+    Per-type extends, as ruled on #602 on 2026-09-25: models (open weights and the closed API
+    comparators) climb the shared model ladder, and the speech-first engines and pipeline
+    components (faster-whisper, whisper.cpp, NeMo Speech, pyannote.audio, Silero VAD and the
+    rest) climb the shared software ladder. No pretrained, dataset or hardware ladder is needed.
+    License rulings the seed already relies on: CC-BY-4.0 reads permissive_non_osi and
+    CC-BY-NC-4.0 reads commercial_forbidden. The custom texts the sweep met (Coqui Public Model
+    License, Fish Audio Research License, the two Boson Higgs licenses, the Moonshine Community
+    License, the bilibili Model Use License, the BreezeBlue Research and Non-Commercial License)
+    are deferred to the single maintainer license-rulings issue, and a product carrying one is
+    deferred at promotion rather than scored by extending a shared tier here.
+
+    CAPABILITY IS NOT ONE QUANTITY ACROSS THE WHOLE ROSTER, and the promotion PR must settle it
+    per type rather than force one ordering. ASR has a public board ordered by average WER (the
+    Hugging Face Open ASR Leaderboard) and TTS has an Elo arena with an open-weights board
+    (Artificial Analysis Speech Arena); neither covers the other task or any engine. The sweep's
+    working proposal is frontier coverage of speech tasks, five rungs: (1) single-task,
+    narrow-language or legacy; (2) single-task, multilingual, no current leaderboard presence;
+    (3) single-task at mid-table on a current public board; (4) single-task at or near the top of
+    a public board, or ASR and TTS in one line; (5) real-time full-duplex speech-to-speech,
+    anchored by Moshi. For software the same ladder reads as which rungs of models the engine can
+    serve and whether it streams. This is a proposal for build-rubric at promotion, not a ruling.
+products: []
+comments: >-
+  Proposed and ruled in issue #602 (2026-09-25); seeded 2026-09-26 from the live sweep in
+  docs/sweeps/2026-09-26-speech-audio.md. Litmus: is the primary input or output a speech waveform,
+  and is speech the headline rather than one modality among several? Models and engines are
+  separate rows, and a speech-first engine lives here while a general runtime does not.
+
+  Exclusions, by neighbor. Chat-first audio LLMs and omni models (Voxtral Small 24B, Qwen2.5-Omni)
+  go to base_pretrained / finetuned_chat or multimodal_models: the voxtral row is the Mini and
+  Realtime ASR line and its TTS member, never the 24B chat model. Music and sound-effect
+  generation (Stable Audio, MusicGen, ACE-Step) goes to media_generation. Speech datasets (Common
+  Voice, IndicVoices, FLEURS, mms-lab-data) stay in language_specific_datasets or
+  training_synthetic_datasets; a model and its dataset share no artifact, so MMS and mms-lab-data
+  both stand. General inference runtimes that also serve audio (llama.cpp, ggml, ONNX Runtime,
+  Triton) stay in inference_code / ml_frameworks; whisper.cpp is here because it is speech-first.
+  Voice-agent orchestration frameworks go to orchestration_agents. Single-model API wrappers
+  (Kokoro-FastAPI) are not products of this category; multi-engine OpenAI-compatible speech
+  servers (Speaches) pass the litmus but are held until the inference_code boundary is revisited.
+
+  Contested rulings (decision record of 2026-09-26). NVIDIA NeMo moved here from the
+  finetuning_code registry: the repo is now NVIDIA-NeMo/Speech and speech-only, while LLM training
+  lives in nemo-rl and megatron-lm. Families fold into one row: Distil-Whisper into whisper, the
+  DSM Kyutai TTS into kyutai-stt, Canary-Qwen into canary, Voxtral TTS into voxtral, ZONOS2 into
+  zonos, Higgs Audio v3 STT into higgs-audio, Dia2 into dia. Kyutai Pocket TTS is its own row
+  (pocket-tts): separate repo, package and model. VibeVoice is one family row declared on the
+  VibeVoice-ASR checkpoint, because Microsoft removed the TTS code in 2025-09. Qwen slugs drop the
+  version token (qwen-asr, qwen-tts) so they survive the next generation. SeamlessM4T (speech
+  translation), pyannote.audio and Silero VAD are in. Step-Audio-EditX is parked (thin adoption,
+  no weights license on the card).
+
+  Openness is read from the current release. Higgs Audio's current TTS release (v3) is
+  non-commercial even though the declared artifact is the more-downloaded v2 checkpoint; Voxtral's
+  ASR line (Apache-2.0) governs over its CC-BY-NC TTS member; Fish-Speech's code as well as its
+  weights moved to the Fish Audio Research License; Piper's maintained engine is GPL-3.0 under the
+  Open Home Foundation; Orpheus's card says Apache-2.0 on a Llama 3.2 base, which the scorer must
+  read. Closed comparators (ADR-005) are surfaces, not vendors: ElevenLabs TTS, Deepgram Nova,
+  AssemblyAI Universal, OpenAI's speech API models and Cartesia Sonic. ElevenLabs Scribe, Deepgram
+  Flux and Microsoft MAI voice are the closed long tail and are not seeded.
+
+  Per-type capability: ASR models are read against WER on a public board, TTS models against an
+  arena Elo, speech-to-speech models by whether they hold a real-time full-duplex conversation,
+  and engines by which of those models they can serve and whether they stream. See the
+  scoring_recipe note.
