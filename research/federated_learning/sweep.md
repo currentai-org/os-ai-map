@@ -123,7 +123,7 @@ promotion, not a finding.
     federated-compute-platform, fedjax, federatedscope, fed-biomed (text Apache-2.0 while the repo
     label reads "other", F0099), secretflow, pfl-research, pfllib, fedlab, paddlefl, fedlearner,
     plato-fl, flame-fl, primihub, fedtree, featurecloud, fedscale, xfl, galaxy-federated-learning,
-    flgo, easyfl, flsim-iqua, and the moves pysyft and syfthub.
+    flgo, easyfl, flsim-iqua, and the moves pysyft (F0127) and syfthub (F0277, fetched by the auditor).
   - `MIT`: appfl (F0105).
   - **Conflict** for vantage6: the LICENSE file is Apache-2.0 (F0104), but PyPI and ecosyste.ms say
     MIT (F0088, F0067).
@@ -359,8 +359,10 @@ products:
 
 Stars, archive and push dates come from ecosyste.ms repository JSON. Monthly downloads come from
 ecosyste.ms `downloads` with `downloads_period: last-month`, cross-checked on pypistats where
-noted. A release date is the upload time of the current version in PyPI JSON when a package is
-declared, and the latest GitHub release otherwise.
+noted. A release date is the upload time of the current version in PyPI JSON where that was fetched,
+otherwise the ecosyste.ms package record's latest release, otherwise the latest GitHub release.
+Each cell cites its source. For plato-learn, ecosyste.ms's latest release is 1.4.3 (2025-10-25,
+F0072). The auditor also saw a 1.41 entry, which reads as a mis-numbered upload, so it wasn't used.
 
 | slug | open status | license(s) + source | archived/fork | last push | last release | adoption signal | member checkpoints/components | org handle | notes |
 |---|---|---|---|---|---|---|---|---|---|
@@ -688,6 +690,13 @@ Duplicate signals are names that turned out to be another listed name:
 9. **OpenFL end of life.** The README says it "will soon be archived" (F0110) but gives no date.
    Recommend keeping it as a tail row now, and adding `end_of_life` when a date is announced or the
    repo is archived.
+11. **Keep `flsim-iqua` accepted?** It is 206 stars, last pushed 2022-04-09, with no releases and
+    no package (F0247, F0261). Its own description reads as a framework ("A simulation framework
+    for Federated Learning"), unlike the paper codebases parked in §7. Options: (a) keep it as a
+    tail row flagged dormant *(recommended, since dormancy isn't a parking reason)*; (b) park it
+    under identity unclear, alongside RIS-FL and FedCLS.
+12. **FederatedScope's bundled notices.** Its LICENSE is Apache-2.0 followed by third-party
+    notices, mostly MIT (F0266). A scorer should read past the first page.
 10. **Closed comparators (ADR-005).** Recommend **only Apheris Networks and Rhino FCP** as
     best-in-class. Both are FL-first surfaces with the data kept in place (W0018, W0019). HPE
     Swarm Learning stays parked as closed long-tail.

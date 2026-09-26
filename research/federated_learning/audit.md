@@ -195,3 +195,90 @@ figure matched. The data is sound. The failures are one dead artifact (`pypi: fe
 metric miscount (30 organizations, not 31), and provenance gaps: ten license cells rest on a label,
 and claims in §1, §3, §4, §7 and §8 are not supported by their cited excerpts (issues 4–8, 10).
 Fix issues 1–11 and 14 before pushing. Issues 12, 13 and 15 are clarifications.
+
+## Re-check (2026-09-26, after the coordinator's fixes in commit c917396)
+
+This section re-checks only the items the coordinator fixed. The auditor compared the diff
+`e6b4992..c917396` on `sweep.md` and `rows.yaml` against the logs, and re-read the new fetch bodies
+F0249–F0272 and W0029–W0030. New live fetches by the auditor: F0273–F0277 (label `audit recheck:`).
+Nothing in `sweep.md` or `rows.yaml` was edited.
+
+### Per original issue
+
+| # | result | evidence |
+|---|---|---|
+| 1 | **PASS** | `pypi: federatedscope` is gone from rows.yaml and the §6a block. §6b line for federatedscope notes the 404 (F0205, F0216). Still 404 live (F0276). |
+| 2 | **PASS** | §1 and §2 now say 33 organizations. rows.yaml has 36 rows and 33 distinct orgs (google 3, lf-ai-and-data 2, 31 singletons). |
+| 3 | **PASS** | §8 now defines raw signals and says the brief's own out-of-scope examples (Prime Intellect, Gensyn, Bittensor, compute marketplaces) are not counted. FLaaS, FS-REAL and FLINT are now §7 rows 38–40, and all three appear in the W0015 excerpt. |
+| 4 | **PASS** | PyGrid and FlowerLLM are removed. The arithmetic checks out from the original counts: raw 78 − 2 duplicates + 4 net new unique names = 80. Unique 72 − 2 (Felicitas, FLaME) + 3 (FLaaS, FS-REAL, FLINT) + 3 (FLGo, EasyFL, iQua FLSim) = 76. 80 = 4 + 76 and 76 = 36 + 40. §7 has 40 rows and §6b has 36. |
+| 5 | **PASS** | Felicitas and FLaME are removed. WebFed no longer carries an arXiv id. The FLaaS arXiv id 2206.10963 is in the W0015 excerpt. |
+| 6 | **PASS** | The quote "can train model sizes up to 7B in a federated fashion" appears verbatim in F0264 (export.arxiv.org abstract 2411.02908, HTTP 200). |
+| 7 | **PASS** | The W0029 excerpt (WebFetch of the NVFlare 2.9.0 release page) contains both quoted phrases: "Slurm job launcher: a new HPC execution target alongside process, Docker, and Kubernetes" and "validated up to a 72-billion-parameter model". The unsupported "hardening ..." quote is gone. |
+| 8 | **PASS** | The pysyft quote now cites F0002, whose ecosyste.ms `description` is that exact string. |
+| 9 | **PASS** | fedtree has v1.0.5, 2023-01-26 (F0242) and xfl has v1.4.1, 2024-02-27 (F0243). featurecloud (F0257) and galaxy-federated-learning (F0258) have "no GitHub releases", and both bodies are `[]` with HTTP 200. |
+| 10 | **PASS** | #533 and #428 are gone. The §1 claim now cites W0030, a github-mcp read of the #574 comment, and the excerpt contains the quoted "no openness variation" line. §3 now quotes Brief 7's "Out:" sentence verbatim. |
+| 11 | **PASS** | Every open row's §6b license cell now cites a LICENSE-text fetch. The auditor spot-read each new body: F0249–F0256 and F0266–F0272 all begin with Apache License 2.0 text, and F0253 carries a "Copyright 2020 The GFL Authors" line above it. F0266 (FederatedScope, 33 KB) is Apache-2.0 followed by third-party notices, mostly MIT (pytorch_geometric, tf_gpu_manager, dlg) plus Apache-2.0 notices for code adapted from Ray. The project license is Apache-2.0, which is correct, but the scorer may want to know about the bundled MIT code. substra still cites the license text embedded in the PyPI metadata (F0052), which is a text read and acceptable. |
+| 12 | **PASS** | The TFF note now reads "Canonical repo from PyPI project_urls F0085; the old name tensorflow/federated does not resolve on ecosyste.ms (F0012, 404)". |
+| 13 | **PASS** | §9 Q7 now carries the fedlearner/`bytedance` vs `bytedance-seed-volcano-engine` question with a recommendation (F0027). |
+| 14 | **PASS** | FLGo, EasyFL and iQua FLSim are accepted, with ids for every cell. Live: `WwZzz/easyFL`, `EasyFL-AI/EasyFL` and `iQua/flsim` all resolve, and none is archived or a fork (F0244, F0245, F0247). PyPI `flgo` 0.4.4 was uploaded 2025-06-04, and its project_urls Bug Tracker points to WwZzz/easyFL (F0273). PyPI `easyfl` 0.1.2 was uploaded 2022-04-10, with home_page EasyFL-AI/EasyFL (F0274), 30/mo (F0275). The package trap is cleared for both. |
+| 15 | **PARTIAL** | fedscale's license cell is fixed (LICENSE text F0267), and so is the vantage6 wording ("PyPI license field 'MIT' F0088 (ecosyste.ms package record also MIT F0067)"). The third bullet is **not** addressed: the §6b header (lines 362–363) still says release dates come from PyPI JSON, but fedlab, paddlefl, plato-fl, p2pfl, fedscale and fedjax still cite packages.ecosyste.ms ids for the release. The plato-learn 1.41 vs 1.4.3 rule is still unstated. The values are correct, so this is a wording fix only. |
+
+### Schema, dedup and §2 metrics after the fixes
+
+- Schema: `jsonschema.validate(...)` prints `ok` on the 36-row rows.yaml.
+- Dedup: there are no slug, alias, GitHub or PyPI collisions with `research/corpus-index.tsv` (exact
+  match on all four keys) and no duplicate slugs within rows.yaml. The new slugs `flgo`, `easyfl`
+  and `flsim-iqua` have no fuzzy near-match in the index. The new orgs `wwzzz`, `easyfl-ai` and
+  `iqua` are not in the index, so they are new slugs, as expected.
+- §6b and rows.yaml list the same 36 slugs in the same order.
+- The §2 metrics recompute from §6b and rows.yaml:
+  - Status: 36 accepted (33 open / 0 open-weights / 1 source-available / 2 closed).
+  - Organizations: 33. Google holds 3/36 = 8.3%, and 3/38 = 7.9% with the moves.
+  - Activity: 22 of the 34 repositories were pushed on or after 2025-09-26. The 12 below the line
+    match the sweep's list.
+  - Usage instrument: 19 rows (19 declare a package).
+  - Downloads: the declared PyPI total is 111,577. Flower is 67.0%, and Flower plus NVIDIA FLARE is
+    88.9% (the §1 figure is also updated to 88.9%).
+  - Active and with a PyPI figure: 14 (the §1 "at least 14" still holds).
+- Ids: every id in the document exists in the logs. The only non-200 `F` ids are the three
+  intentional 404s (F0012, F0205, F0216). The §6b and §6c id sets match exactly.
+
+### New issues introduced by the fixes
+
+16. **sweep.md §5 lines 124–126:** "`Apache-2.0` (all read as LICENSE text, cited per row in §6b)"
+    lists the move `syfthub`. The sweep only has the ecosyste.ms label for syfthub (F0003), and the
+    move rows are not in §6b. The claim is true in substance, because the auditor fetched the
+    `OpenMined/syft-hub-sdk` LICENSE and it is Apache-2.0 text (F0277), but the sweep should cite
+    F0277 (and F0127 for pysyft) or drop "all" for the moves. Minor.
+17. **sweep.md §6b `flsim-iqua` row (and §2 line 101 "All three are triaged and accepted"):**
+    this is a judgment call, not an error. iQua FLSim has 206 stars, a last push on 2022-04-09, no
+    releases (F0261), no package, and describes itself as "a simulation framework". That profile is
+    close to rows the sweep parked as research code (RIS-FL, FedCLS, OpenFedLLM). Accepting it is
+    defensible, since it is a framework rather than a single paper's code, but the maintainer
+    should see the asymmetry. Suggest noting it in §9 or parking it for consistency. It does not
+    affect any gate.
+
+### Re-check verdict
+
+Issues 1–14 are fixed. Issue 15 is partially fixed (a wording-only remainder). There are two new
+minor items (16, 17). All six original checks now pass on the fixed items:
+
+| # | check | re-check result |
+|---|---|---|
+| 1 | Live re-fetch | PASS (unchanged; the new rows were also verified live) |
+| 2 | Unsourced facts | **PASS** (with issue 16's minor wording note) |
+| 3 | Artifacts resolve | **PASS** |
+| 4 | Schema and dedup | PASS |
+| 5 | Counts and §2 | **PASS** |
+| 6 | Recency and breadth | PASS |
+
+None of the remaining items (15c, 16, 17) blocks the push. They are wording or curator-judgment
+notes.
+
+## Author response to the re-check (items 15–17)
+
+- 15: the §6b header now states the source order for release dates (PyPI JSON, then the ecosyste.ms
+  package record, then the GitHub release), and it explains the plato-learn 1.4.3 choice.
+- 16: §5 now cites F0277 for syfthub and F0127 for pysyft.
+- 17: kept accepted, and added as §9 Q11 with park as the alternative. The FederatedScope notices
+  from F0266 are recorded as §9 Q12.
