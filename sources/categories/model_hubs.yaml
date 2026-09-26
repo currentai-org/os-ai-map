@@ -1,0 +1,76 @@
+name: model_hubs
+display_name: Model hubs & registries
+description: Platforms and self-hostable services whose product is hosting, indexing and distributing model
+  artifacts from many publishers, as a registry other tools pull from by name.
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, not yet verified against hand-authored scores
+    checker: build/check_rubric.py
+  note: >-
+    Every seed row is typed software, so the category inherits the shared software ladder
+    unchanged and no row needs the model, pretrained, dataset or hardware ladder. Half the seed
+    is a hosted service whose server source was not checked, and the ladder abstains on the
+    dimensions it cannot read for those rows. The open client a vendor publishes for its hub
+    (huggingface_hub, the modelscope library, kagglehub, ngcsdk, csghub-sdk) is a satellite
+    around a closed core and never lifts the platform's openness (identity.md, "An open
+    satellite around a closed core"). Capability is ONE quantity, registry scope: how much of
+    the publish, version, discover and pull cycle the surface provides, and for how many
+    artifact kinds. Scale is adoption, not capability, so the same quantity orders a hosted hub
+    and a self-hostable one. Proposed rungs, to be calibrated at promotion: 1 an index that
+    points at weights hosted elsewhere (pytorch-hub); 2 an operator-curated zoo that hosts
+    weights but only the operator publishes (nvidia-ngc-catalog, qualcomm-ai-hub-models, the
+    domain zoos); 3 a curated multi-provider catalog with deploy integration (the three
+    hyperscaler catalogs); 4 an open-upload, versioned registry for one artifact class with a
+    pull API (ollama-library, civitai, kaggle-models, kubeflow-hub, matrixhub, openml); 5 an
+    open-upload, git-versioned hub for models, datasets and apps with an API other tools treat
+    as an endpoint (csghub, modelscope), anchored on huggingface-hub-platform. Weighted 0.3
+    adoption to 0.7 capability because the category has no shared adoption instrument: one seed
+    row owns a download channel (PyPI qai-hub-models), and the client-library proxies differ by
+    about five orders of magnitude for reasons unrelated to registry use. Platform-native
+    counters (models hosted, pulls, per-model downloads) are recorded as evidence, not declared
+    as instruments. Two license questions go to the maintainer license-rulings issue rather
+    than this file: pytorch/hub and bioimage-io/bioimage.io publish code with no license file,
+    and OpenML's docs claim Apache for its code while the repo text is BSD-3-Clause.
+products: []
+comments: >-
+  Proposed in issue #601; seeded 2026-09-26 from the sweep in
+  docs/sweeps/2026-09-26-model_hubs.md. Membership test: can a client fetch a named, versioned
+  model artifact from it by API, git or registry protocol, where the thing being offered is the
+  registry itself rather than the runtime, UI or inference API in front of it? Runtimes that pull
+  from a registry go to deployment or inference_code: ollama (the runner) stays in deployment
+  while ollama-library (the ollama.com registry that `ollama push` writes to) is here, and the
+  LocalAI model gallery and Docker Model Runner stay with their runtimes. Chat and desktop apps
+  with a model browser stay in ui_api: the lm-studio catalog downloads from Hugging Face and gets
+  no row. Hosted inference APIs with a model gallery (Replicate) go to deployment, and Spaces
+  stays in deployment because it hosts apps, not model artifacts. Client libraries for a hub stay
+  in ml_frameworks: #601 ruled on 2026-09-24 that huggingface-hub is the client, and the platform
+  is the separate row huggingface-hub-platform (a rename of the published slug was declined, since
+  it would cost a redirect and this row costs nothing). kagglehub, the modelscope library, ngcsdk
+  and csghub-sdk follow the same rule. A registry tab inside an experiment tracker stays with its
+  product: MLflow Model Registry is part of mlflow. Kubeflow Hub is here, not in ml_orchestration,
+  because it is a model registry and catalog rather than a scheduler; it shares only an org with
+  the Kubeflow rows there. Versioned data layers and data catalogs (oxen, dvc, lakefs, DagsHub,
+  Unity Catalog) belong to storage. Agent skill and MCP registries belong to agent_protocols.
+  General research repositories such as Zenodo are out. Civitai, the hub, is here even though
+  media_generation parks LoRAs and checkpoints as a class; the qualcomm-ai-hub-models catalog is
+  here and its compile service is not, and Qualcomm's other rows elsewhere overlap by org only.
+  The domain zoos (MONAI, BioImage, Kipoi) are here rather than with the models they host, and
+  OpenML stays here while it is watched for a later move to benchmark_eval_data, since its
+  models ("flows") are secondary to its datasets and tasks. Rulings of 2026-09-26: OCI packaging
+  and generic registry tooling is out (KitOps, ModelPack, ORAS, Harbor, Docker Hub's ai/
+  namespace), with registry servers that display models first-class (Harbor 2.15) to be
+  revisited once ModelPack leaves CNCF Sandbox. No regional closed hub is admitted beside
+  ModelScope under ADR-005's best-in-class test (Modelers, WiseModel, OpenXLab stay parked). One
+  AWS surface, SageMaker JumpStart: Bedrock Marketplace deploys onto SageMaker endpoints and is
+  the same registry behind a second storefront. TensorFlow Hub is a retired alias of
+  kaggle-models, and the ONNX and OpenVINO model zoos are superseded. Civitai is scored as open
+  software on its published Apache-2.0 code, with a note that the live site was not verified to
+  run it. Vertex AI Model Garden keeps its slug; its display name follows the "Gemini Enterprise
+  Agent Platform" rebrand only after a primary-source fetch. pytorch-hub and bioimage-model-zoo
+  are read as source-available until upstream publishes a license. The first promotion tranche
+  comes in the last wave, per the 2026-09-26 decisions.
