@@ -1,0 +1,73 @@
+name: datacenter_accelerators
+display_name: Datacenter AI accelerators
+description: "Chips, cards and rack systems for training and serving AI models in the datacenter, sold or rented as silicon."
+weights:
+  adopt: 0.2
+  cap: 0.8
+scoring_recipe:
+  version: 1
+  note: >-
+    Inherits the shared hardware ladder unchanged. Every row is scored as `form_factor:
+    chipset`, because identity here is the silicon generation: the PCIe card, OAM module,
+    server and rack a vendor builds on one generation are that generation's SKUs rather than
+    separate artifacts, and none of them publishes a board design, so the board rungs would
+    only ever answer `schematics: none`. The chipset rung asks exactly the two questions this
+    set can answer - is there a public datasheet, and can an outside party obtain the part -
+    and that is where the category's openness story lives. No datacenter part in the seed
+    publishes design files, and every one of them is closed silicon, so the open stacks some
+    vendors ship (Tenstorrent's Apache-2.0 tt-metal, NVIDIA's MIT/GPL kernel modules, AMD's
+    ROCm) are recorded as `toolchain` and read by no rung, as they are for the edge chipsets.
+
+    Expect deferrals at promotion rather than forced scores. A cloud-only generation (AWS
+    Trainium and Inferentia, most of Google's TPU volume) can be rented but not bought, and
+    the ladder's `retail` vocabulary has no value for renting: it is neither `open_market`
+    nor `restricted`. Such a row falls off the chipset rung and is deferred until a shared
+    ruling says whether rentable-as-silicon counts as `buyable`; that ruling belongs in
+    sources/rubrics/hardware.yaml, never in this file. Several Chinese generations have no
+    vendor datasheet at all (their specs rest on press coverage), which answers `brief` or
+    abstains and defers the same way.
+
+    Weighted 0.2 adoption to 0.8 capability because adoption abstains for every row: there is
+    no download channel for silicon, the hardware ladder declares no numeric bands, and the
+    only citable proxies (cloud availability, MLPerf submission) cover under half the seed
+    and are not comparable. Capability is peak dense low-precision throughput per package
+    (FP8 where published, the precision recorded beside the number), memory as the
+    tiebreaker; expect abstentions where a vendor publishes no figure.
+  extends: hardware
+products: []
+comments: >-
+  Proposed in issue #599, seeded 2026-09-26 as a sibling of edge_hardware rather than a
+  rename of it: the two sets have different capability quantities (TOPS per watt and runnable
+  model size at the edge, per-package FP8 and memory here) and different openness stories
+  (edge boards can publish design files; no datacenter part does). Litmus: is it a chip,
+  board or system you rack or rent as silicon, distinct from the API that fronts it? Identity
+  is the generation (google-tpu-ironwood, aws-trainium3), seeded at the generation each
+  vendor line had generally available or shipping; next and prior generations are SKUs of
+  the line and wait to be swapped in or out by the same rule. A mid-cycle refresh sharing an
+  architecture collapses into one row: Blackwell and Blackwell Ultra, WSE-3 and WSE-3 Turbo,
+  ATOM and ATOM-Max. A system sold only as a system (Positron Atlas, whose Archer
+  accelerators are not sold alone) is pitched at the system.
+
+  Exclusions, by neighbor. Inference APIs that front this silicon stay in inference_code
+  (groq-inference, cerebras-inference, sambanova-cloud, google-cloud-tpu-inference), as do
+  vendor SDKs (aws-neuron); compilers stay in compilers (xla, composable-kernel) and triton in
+  ml_frameworks; anything served through a hosted endpoint rather than rented as an instance
+  of the silicon belongs to inference_code or deployment. Edge and embedded parts (M.2 and
+  mPCIe cards, SBCs, low-watt NPUs) stay in edge_hardware, and Axelera Europa, a 45 W PCIe
+  card sold "robot to rack", goes there with axelera-metis-aipu rather than here. Captive
+  silicon no outsider can rack or rent (Meta MTIA, Microsoft Maia 200, OpenAI's Broadcom
+  part) fails the litmus and is parked until one is rentable as an instance; IBM Spyre is
+  admitted because it can be bought, even though only inside an IBM system. HPC-first
+  silicon (NextSilicon Maverick-2), photonic interconnect (Lightmatter Passage) and open
+  accelerator RTL (NVDLA, Gemmini, Vortex) are out.
+
+  ADR-005: merchant parts with a public datasheet are likely to score 3/documented and sit
+  outside the closed-product population the principle governs; the cloud-only rows are the
+  likely closed ones, and of those Trainium3 and Ironwood are frontier comparators.
+  Inferentia2 is the trim candidate at promotion if the principle is applied strictly. All
+  22 GA generations are kept at seed. Adoption abstains category-wide; see the recipe note.
+
+  The finding worth keeping: the only genuinely open accelerator designs are RTL projects
+  (NVDLA, Gemmini, Vortex), and none of them reaches datacenter silicon. The closest thing to
+  an open datacenter accelerator today is Tenstorrent's open software stack on closed
+  silicon. Sweep record: docs/sweeps/2026-09-26-datacenter-accelerators.md.
