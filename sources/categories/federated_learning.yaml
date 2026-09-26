@@ -1,0 +1,84 @@
+name: federated_learning
+display_name: Federated learning
+description: >-
+  Software that trains, evaluates or queries a shared model across data holders who never pool
+  their raw data, moving model updates, aggregates or queries between silos instead of datasets.
+weights:
+  adopt: 0.5
+  cap: 0.5
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, not yet verified against hand-authored scores
+    checker: build/check_rubric.py
+  note: >-
+    Inherits the shared software ladder unchanged. Every seed row is typed software: the
+    category holds frameworks and platforms, not models or datasets, and no federated model
+    line surfaced in the sweep. Capability here is one quantity, federation reach: how far
+    outside a single machine a framework can actually run a federated job, and under what
+    trust assumptions. The sketch the sweep drew, to be banded against evidence at promotion
+    rather than taken as found: single-machine simulation only (FedJAX, pfl-research,
+    PFLlib); real multi-party runs across a few silos at research grade (Plato, P2PFL,
+    FedLab); production cross-silo with deployment tooling (Substra, vantage6, FATE);
+    cross-silo plus cross-device or HPC scale with large models (TensorFlow Federated, the
+    Federated Compute Platform); and the top rung, where NVIDIA FLARE documents HPC
+    launchers and federated LLM training at tens of billions of parameters, with Flower the
+    other likely occupant once its secure-aggregation and privacy features are read. Two
+    license strings the ladder does not tier yet - Clear BSD (MetisFL, which expressly grants
+    no patent rights) and the Vector Institute License (FL4Health, academic and partner use
+    only) - go to the shared license-rulings issue, and the
+    products carrying them are deferred at promotion rather than scored by a local rule.
+    Weighted evenly: declared installs concentrate in one or two frameworks (the dated
+    figures are in the sweep record), so leaning on adoption would mostly measure Flower, and
+    leaning on
+    capability would reward research-grade simulators that nobody deploys.
+products: []
+comments: >-
+  Proposed in issue #574; seeded preliminary 2026-09-26 (sweep record
+  docs/sweeps/2026-09-26-federated-learning.md). Membership test: does the raw data stay with
+  its owner for the whole run of training, evaluation or querying, with only model updates,
+  aggregates or queries leaving the silo? The test was widened from the brief's "training
+  data" so that federated evaluation, federated analytics and federated retrieval pass on
+  their stated function: syfthub (federated RAG) and the federated-statistics surfaces of
+  vantage6 and Rhino FCP fail a training-only test and pass this one.
+
+
+  CONTESTED RULINGS. Two head products move in at PROMOTION, not at the seed: pysyft from
+  ml_frameworks ("data science on data that remains in someone else's server"), rebanded here,
+  and syfthub from orchestration_agents, which is the move the widened litmus exists to admit.
+  Both stay in their current rosters until the promotion PR moves them, because a slug lives in
+  one tier and one category at a time. Flower is one product: flwr-datasets ships in the same
+  repository as a partitioning utility for Flower users and is not declared, since its
+  installs are Flower's own population counted twice. FedML and Substra are tail rows, not
+  first-tranche promotions: FedML's README now leads with TensorOpera's generative-AI cloud and
+  its last release is from early 2025, and Substra's core SDK has not moved since late 2024
+  while its FL library substrafl still does. OpenFL announces its own end of life and points
+  users to Flower; it stays a tail row until a date or an archive lands. Privacy-computing
+  platforms with an FL layer beside MPC (SecretFlow, PrimiHub) are in: they pass the litmus
+  and no other category owns them. FedTree (federated GBDT) stays here rather than in
+  classic_ml_cv, because federation is the product and the tree learner is the payload.
+  FeatureCloud's "app store" is a catalog of federated apps, not a model hub, so it stays here
+  rather than in model_hubs. FedScale and PFLlib call themselves platform plus benchmark; the
+  runtime is the product. Apheris Networks and Rhino FCP are the only closed rows (the ADR-005
+  best-in-class comparators); HPE Swarm Learning, which needs a license server and ships for
+  non-commercial use despite Apache-2.0 text in its repository, is closed long tail and parked.
+  Scaleout Edge (formerly FEDn) is parked: its open repository is now only the client SDK of a
+  gated platform, and declaring it would lift the platform's openness.
+
+
+  EXCLUSIONS, by neighbor. Differential-privacy, homomorphic-encryption and MPC primitive
+  libraries with no federation runtime have no category and are out. FL benchmarks and
+  leaderboards (FL-bench, blades, VFLAIR) belong to evaluation_code or benchmark_eval_data. FL
+  datasets (MedMNIST, and flwr-datasets if it is ever split out) belong to
+  dataset_processing_tools or the dataset categories. Cloud reference architectures
+  (GoogleCloudPlatform/federated-learning) belong to deployment or are not products. General
+  distributed-training frameworks with no data-locality guarantee stay in ml_frameworks or
+  ml_orchestration. A privacy-measurement or DP-accounting tool belongs to
+  assurance_evidence, not here.
+
+
+  OUT OF SCOPE entirely, because data locality is not what they are for: volunteer and
+  decentralized inference (Petals, exo), decentralized training networks (hivemind, Prime
+  Intellect, Gensyn), chain SDKs (Bittensor) and compute marketplaces. They pool compute, not
+  protect data; a volunteer-inference runtime that belongs anywhere belongs in inference_code.
