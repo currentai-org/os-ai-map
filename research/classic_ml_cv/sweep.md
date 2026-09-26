@@ -4,7 +4,7 @@ Brief 3, issue #600, proposed slug `classic_ml_cv`. Every fact below carries a f
 rows are in `fetch-log.tsv` (body under `raw/`), `Wnnnn` rows are WebSearch/WebFetch calls in
 `web-log.tsv`. All fetches were made on 2026-09-26 UTC. A few cited ids are deliberate non-200s
 (404 on a repo's old name, a 401 gate, a 403 from ungh); each is cited only to show that a lookup
-failed or a repo moved, never as the source of a value.
+failed or a repo moved, never as the source of a value. F0244 and F0528 are malformed fetches (a failed write and a mistyped URL) that nothing cites.
 
 ## 1. Verdict
 
@@ -18,8 +18,8 @@ None of the 81 collides with a slug or artifact in the index. Four changes are n
 building it:
 1. **Cut the drift.** Hyperparameter tuning (Optuna, Hyperopt) and explainability (SHAP, LIME,
    Captum, InterpretML) do not fit a model, so they are parked here with boundary targets.
-2. **Declare the category mixed-type.** 59 software rows and 22 model rows: timm and backbones
-   by ruling, plus the tabular foundation models. Use `extends: {model: pretrained, software: software}`.
+2. **Declare the category mixed-type.** 59 software rows (timm among them, by ruling) and 22 model rows: vision
+   backbones and perception model lines, plus the tabular foundation models. Use `extends: {model: pretrained, software: software}`.
 3. **Move the SAM line here** from `scientific_ai_models` as one product-line row.
 4. **Accept that the capability axis will be weak** (section 4).
 
@@ -32,11 +32,11 @@ vision has 33. Section 9, Q1, asks the maintainer to choose.
   - by type: software 59, model 22
   - by sub-area: classical ML estimators 18, CV libraries/toolkits 19, vision model lines 14,
     tabular foundation models 8, classical NLP 7, time series 7, tabular AutoML 5, closed 3
-- independent organizations: **68**; largest org share: **6.2% (meta, 5 rows:** detectron2, prophet,
+- independent organizations: **68** org slugs (google, google-research and google-cloud count as three, following the index's own slugs); largest org share: **6.2% (meta, 5 rows:** detectron2, prophet,
   dino, sapiens, cotracker). Next: nvidia 3 (cuml, radio, segformer).
-- candidates active in the last 12 months (push or release on or after 2025-09-26): **74 of 78**
+- candidates active in the last 12 months (push or release on or after 2025-09-26): **75 of 78**
   non-closed rows. Inactive: mmdetection (last push 2024-08-21, F0086) and segformer (2024-08-02,
-  F0167). tpot misses by 15 days (2025-09-11, F0211). depth-pro could not be dated (F0489, W0020).
+  F0167). tpot misses by 15 days (2025-09-11, F0211).
 - candidates with a usage instrument (PyPI monthly or HF 30-day downloads), not stars only:
   **73**. Stars or none: ml-net (NuGet lifetime total only, F0510), corenlp, detectron2,
   paddledetection, deim, and the 3 closed rows.
@@ -47,14 +47,16 @@ vision has 33. Section 9, Q1, asks the maintainer to choose.
   40 that were not researched individually are parked as "identity unclear (not researched this
   run)", not dropped. Library discovery ran on the brief's leads plus 20 WebSearch/WebFetch calls
   (W0001–W0020). There was no numeric cutoff on libraries.
-- **candidates the brief did not name, surfaced by search or HF lists:** ngboost, perpetual,
-  ml-net, dask-ml (W0008, W0014); rf-detr, d-fine (W0002); tabpfn, tabicl, limix (W0003); tabfm
-  (W0011, F0007); radio (W0012); depth-anything, depth-pro, birefnet, rmbg, segformer, sapiens,
-  eomt (F0003, F0005); sap-rpt-1, nori, tabstar, exaone-tabular (F0007); rt-detr (F0002);
-  lightly-train, deim, cotracker, cuml, river, skrub, h2o-3, mlpack, corenlp, textblob, dlib,
-  insightface, torchgeo, monai, lightly, mediapipe, paddledetection, pmdarima, gluonts,
-  neuralforecast, flaml, tpot, auto-sklearn, pycaret, autogluon (sweep additions checked against
-  ecosyste.ms/PyPI; see 6b).
+- **candidates the brief did not name (56 of 81 accepted).** Surfaced by search (14): ngboost,
+  perpetual, ml-net, dask-ml (W0008, W0014); rf-detr, d-fine (W0002); tabpfn, tabicl, limix (W0003);
+  tabfm (W0011); radio (W0012); statsforecast (W0006); autogluon, flaml (W0010). Surfaced from the
+  HF top-40 lists (12): depth-anything, depth-pro, birefnet, rmbg, segformer, sapiens, eomt (F0003,
+  F0005); rt-detr (F0002); sap-rpt-1, nori, tabstar, exaone-tabular (F0007). Added by the sweeper
+  as known neighbors of the leads and then verified by fetch, with no search surfacing them (27):
+  umap, hdbscan, cuml, river, skrub, mlpack, h2o-3, corenlp, textblob, flair, scikit-image,
+  mediapipe, paddledetection, monai, lightly, lightly-train, dlib, insightface, torchgeo, deim,
+  cotracker, neuralforecast, pmdarima, gluonts, tpot, auto-sklearn, pycaret. Closed comparators (3):
+  google-cloud-vision, amazon-rekognition, datarobot.
 
 ## 3. Boundary
 
@@ -561,7 +563,7 @@ products:
   display_name: Depth Pro
   type: model
   org: apple
-  github: apple/ml-depth-pro
+  github: apple-aiml-research/ml-depth-pro
   huggingface_model: apple/DepthPro-hf
 - slug: rt-detr
   display_name: RT-DETR
@@ -696,16 +698,16 @@ products:
 | xgboost | open | Apache-2.0 (F0254) | no / no F0011 | 2026-09-20 F0011 | 3.4.1, 2026-08-15 F0008 | PyPI 29,901,651 / last-month F0013 | - | github dmlc | project_urls -> dmlc/xgboost F0008 |
 | lightgbm | open | MIT (F0253; copyright Microsoft Corporation and the LightGBM developers) | no / no F0235 | 2026-09-24 F0235 | 4.7.0, 2026-07-18 F0015 | PyPI 18,191,249 / last-month F0016 | - | github lightgbm-org (was microsoft/LightGBM: ecosyste.ms 404 on old name F0014) | Repo moved from microsoft/ to lightgbm-org/; PyPI project_urls already point at lightgbm-org F0015. Org slug is a judgment call (Q5). |
 | catboost | open | Apache-2.0, copyright YANDEX LLC (F0255) | no / no F0017 | 2026-09-19 F0017 | 1.2.10, 2026-02-18 F0018 F0450 | PyPI 5,053,734 / last-month F0450 | - | github catboost | project_urls -> catboost/catboost F0018 |
-| statsmodels | open | BSD-3-Clause (F0265) | no / no F0020 | 2026-09-24 F0020 | 0.15.0, 2026-08-30 F0021 | PyPI 31,358,911 / last-month F0022 | - | github statsmodels | project_urls -> statsmodels/statsmodels F0021 |
+| statsmodels | open | BSD-3-Clause (F0265) | no / no F0020 | 2026-09-24 F0020 | 0.15.0, 2026-08-27 F0022 (latest file upload 2026-08-30 F0021) | PyPI 31,358,911 / last-month F0022 | - | github statsmodels | project_urls -> statsmodels/statsmodels F0021 |
 | imbalanced-learn | open | MIT (F0257) | no / no F0023 | 2026-06-29 F0023 | 0.14.2, 2026-06-07 F0024 | PyPI 6,711,265 / last-month F0025 | - | github scikit-learn-contrib |  |
 | pyod | open | BSD-2-Clause (F0259) | no / no F0026 | 2026-09-17 F0026 | 3.6.6, 2026-09-17 F0027 | PyPI 2,770,131 / last-month F0028 | - | github yzhao062 (personal account) | Outlier detection. |
 | umap | open | BSD-3-Clause (F0271) | no / no F0029 | 2026-09-24 F0029 | 0.5.12, 2026-04-08 F0030 | PyPI 5,340,690 / last-month F0031 | - | github lmcinnes (personal) | PyPI name umap-learn; project_urls -> lmcinnes/umap F0030. PyPI `umap` is a different project (not fetched; do not declare). |
-| hdbscan | open | BSD-3-Clause (F0262) | no / no F0032 | 2026-06-12 F0032 | 0.8.44, 2026-06-01 F0033 | PyPI 2,037,372 / last-month F0034 | - | github scikit-learn-contrib | scikit-learn also ships an HDBSCAN estimator; this is the standalone library. |
-| cuml | open | Apache-2.0 (F0263) | no / no F0249 | 2026-09-24 F0245 | 26.8.0, 2026-08-06 F0036 | PyPI cuml-cu12 418,656 / last-month F0037 | cuml-cu12, cuml-cu13 wheels (only cu12 measured) | github NVIDIA (was rapidsai/cuml: ecosyste.ms 404 F0035; ungh canonical NVIDIA/cuml F0245) | GPU scikit-learn-compatible estimators. Downloads split across CUDA-suffixed wheels; the figure undercounts. |
+| hdbscan | open | BSD-3-Clause (F0262) | no / no F0032 | 2026-06-12 F0032 | 0.8.44, 2026-06-01 F0033 | PyPI 2,037,372 / last-month F0034 | - | github scikit-learn-contrib | Standalone density-clustering library. |
+| cuml | open | Apache-2.0 (F0263) | no / no F0249 | 2026-09-24 F0245 | 26.8.0, 2026-08-06 F0036 | PyPI cuml-cu12 418,656 / last-month F0037 | cuml-cu12, cuml-cu13 wheels (cu13 exists F0529; only cu12 counted) | github NVIDIA (was rapidsai/cuml: ecosyste.ms 404 F0035; ungh canonical NVIDIA/cuml F0245) | GPU scikit-learn-compatible estimators. Downloads split across CUDA-suffixed wheels; the figure undercounts. |
 | river | open | BSD-3-Clause (F0264) | no / no F0038 | 2026-09-21 F0038 | 0.26.1, 2026-08-21 F0039 | PyPI 174,766 / last-month F0040 | - | github online-ml | Online/streaming ML. |
 | skrub | open | BSD-3-Clause (F0278) | no / no F0041 | 2026-09-18 F0041 | 0.10.1, 2026-09-01 F0042 | PyPI 142,039 / last-month F0043 | - | github skrub-data | Tabular preprocessing for scikit-learn pipelines (formerly dirty_cat per LICENSE F0278). Borderline: feature engineering, not an estimator library (Q3). |
-| mlpack | open | BSD-3-Clause (F0279; GitHub label 'other' F0044 - the text is plain BSD-3) | no / no F0044 | 2026-09-17 F0044 | 4.8.0, 2026-06-19 F0045 | PyPI 1,430 / last-month F0046 (C++ library; PyPI is a binding and undercounts) | - | github mlpack | Label lies: ecosyste.ms 'other', text is BSD-3. |
-| h2o-3 | open | Apache-2.0 (F0270) | no / no F0047 | 2026-09-25 F0047 | 3.46.0.12, 2026-08-12 F0048 | PyPI 156,866 / last-month F0049 | - | github h2oai | Distributed ML + AutoML. Slug carries the vendor's '-3' product name, not a version (H2O-3 is how H2O.ai names the open product). |
+| mlpack | open | BSD-3-Clause (F0279; GitHub label 'other' F0044 - the text is plain BSD-3) | no / no F0044 | 2026-09-17 F0044 | 4.8.0, 2026-06-17 F0046 (latest file upload 2026-06-19 F0045) | PyPI 1,430 / last-month F0046 (PyPI is one install channel; others not measured) | - | github mlpack | Label lies: ecosyste.ms 'other', text is BSD-3. |
+| h2o-3 | open | Apache-2.0 (F0270) | no / no F0047 | 2026-09-25 F0047 | 3.46.0.12, 2026-08-12 F0048 | PyPI 156,866 / last-month F0049 | - | github h2oai | Distributed ML + AutoML. The '-3' is part of the repo name h2oai/h2o-3 (F0047), not a version token. |
 | ngboost | open | Apache-2.0 (LICENSE text F0521; ecosyste.ms F0440) | no / no F0440 | 2026-09-02 F0440 | 2026-06-26 F0446 | PyPI 180,490 / last-month F0446 | - | github stanfordmlgroup | Surfaced by search W0014, not in the brief. |
 | perpetual | open | Apache-2.0 (LICENSE text F0522; ecosyste.ms F0439) | no / no F0439 | 2026-04-02 F0439 | 2026-03-06 F0445 | PyPI 6,093 / last-month F0445 | - | github perpetual-ml | Surfaced by search W0014. Rust core. |
 | ml-net | open | MIT, copyright .NET Foundation (F0497) | no / no F0490 | 2026-09-18 F0490 | NuGet Microsoft.ML 5.0.0 stable F0510 | NuGet Microsoft.ML 17,259,797 lifetime total F0510 (no monthly figure; NuGet has no registry field in the schema) | - | github dotnet | Surfaced by search W0008. Only .NET entry; its adoption channel (NuGet) is not a schema field, so the row carries github only. |
@@ -717,7 +719,7 @@ products:
 | corenlp | open | GPL-3.0 (F0295) | no / no F0068 | 2026-09-25 F0068 | v4.5.10, 2025-06-07 F0469 | stars only 10,121 F0068 (Java; Maven not fetched) | - | github stanfordnlp | Stars-only row. |
 | flair | open | MIT (F0283; GitHub label 'other' F0062) | no / no F0062 | 2025-10-27 F0062 | 0.15.1, 2025-02-05 F0063 | PyPI 51,250 / last-month F0064 | - | github flairNLP | Last release 19 months old. |
 | textblob | open | MIT (F0286) | no / no F0069 | 2026-09-22 F0069 | 0.20.1, 2026-07-18 F0070 | PyPI 3,735,355 / last-month F0071 | - | github sloria (personal) |  |
-| opencv | open | Apache-2.0 (F0290); opencv-python packaging repo MIT (F0303) | no / no F0072 | 2026-09-25 F0072 | 4.14.0 GitHub 2026-07-19 F0484; opencv-python 5.0.0.93 on PyPI F0073; OpenCV 5.0 announced 2026-06 W0016 | PyPI opencv-python 29,918,110 / last-month F0452 | opencv-python, opencv-contrib-python, opencv-python-headless wheels (only opencv-python measured) | github opencv | The PyPI wheel is built from opencv/opencv-python (OpenCV org) F0452; declared because it is the documented pip path of the same org. ecosyste.ms latest_release date for the package is stale (2023) F0452 - PyPI JSON shows 5.0.0.93 F0073. |
+| opencv | open | Apache-2.0 (F0290); opencv-python packaging repo MIT (F0303) | no / no F0072 | 2026-09-25 F0072 | 4.14.0 GitHub 2026-07-19 F0484; opencv-python 5.0.0.93 on PyPI F0073; OpenCV 5.0 announced 2026-06 W0016 | PyPI opencv-python 29,918,110 / last-month F0452 | opencv-python, opencv-contrib-python (F0531), opencv-python-headless (F0532) wheels; only opencv-python counted | github opencv | The PyPI wheel is built from opencv/opencv-python (OpenCV org) F0452; declared because it is the documented pip path of the same org. ecosyste.ms latest_release date for the package is stale (2023) F0452 - PyPI JSON shows 5.0.0.93 F0073. |
 | timm | open | Apache-2.0 (F0293); hosted weights licenses vary per checkpoint (e.g. apache-2.0 F0409) | no / no F0076 | 2026-09-18 F0076 | 1.0.30, 2026-09-22 F0077 | PyPI 10,328,111 / last-month F0078; HF author=timm top-1000 checkpoints 47,174,954 / 30d F0427 | timm/* HF checkpoints (1000+ F0427), incl. DINOv2/v3 and SigLIP mirrors | github huggingface; HF timm | Ruled into this category (issue #600 comment, 2026-09-25). HF 'timm' namespace mirrors other vendors' weights (DINO, SigLIP) - do not count those toward timm's own adoption without care (Q6). |
 | torchvision | open | BSD-3-Clause (F0294) | no / no F0079 | 2026-09-23 F0079 | 0.29.0, 2026-09-02 F0080 | PyPI 15,858,954 / last-month F0081 | - | github pytorch | Installed alongside torch; downloads partly reflect that pairing. |
 | ultralytics | open | AGPL-3.0 (F0296) with a paid Enterprise License W0018; HF YOLO26/YOLO11 weights agpl-3.0 F0407 F0408 | no / no F0082 | 2026-09-19 F0082 | v8.4.150 GitHub 2026-09-12 F0486; PyPI 8.4.163 F0083 | PyPI 5,557,129 / last-month F0447 | YOLOv8, YOLO11, YOLO26 checkpoints (F0407 F0408; W0002 says YOLO26 released Jan 2026) | github ultralytics; HF Ultralytics | Library and its YOLO checkpoints are one product (the vendor ships both through one package). Dual license: AGPL or commercial. |
@@ -737,7 +739,7 @@ products:
 | insightface | open | Code MIT per README (F0455; no LICENSE file at repo root, 6 names tried); models and training data non-commercial research only (F0455) | no / no F0138 | 2026-09-09 F0138 | 2.0, 2026-09-08 F0139 | PyPI 1,045,422 / last-month F0140 | buffalo_* model packs (not fetched) | github deepinsight | Code/weights license split: record both. |
 | torchgeo | open | MIT (F0323) | no / no F0236 | 2026-09-25 F0248 | 0.10.0, 2026-08-14 F0142 | PyPI 42,497 / last-month F0143 | - | github torchgeo (was microsoft/torchgeo: ecosyste.ms 404 F0141) | Geospatial imagery; contest with scientific_ai_models weak (library, not model). |
 | sktime | open | BSD-3-Clause (F0359) | no / no F0181 | 2026-09-20 F0181 | 1.2.0, 2026-09-22 F0182 | PyPI 1,126,565 / last-month F0183 | - | github sktime |  |
-| darts | open | Apache-2.0 (F0361) | no / no F0184 | 2026-09-18 F0184 | 0.47.0, 2026-09-04 F0185 | PyPI darts 183,156 / last-month F0186 | u8darts is a second PyPI name (not measured) | github unit8co | Undercounts: u8darts not summed. |
+| darts | open | Apache-2.0 (F0361) | no / no F0184 | 2026-09-18 F0184 | 0.47.0, 2026-09-04 F0185 | PyPI darts 183,156 / last-month F0186 | u8darts is a second PyPI name (exists F0530; not summed) | github unit8co | Undercounts: u8darts not summed. |
 | statsforecast | open | Apache-2.0 (F0362) | no / no F0187 | 2026-09-21 F0187 | 2.1.1, 2026-07-16 F0188 | PyPI 1,553,614 / last-month F0189 | - | github Nixtla |  |
 | neuralforecast | open | Apache-2.0 (F0364) | no / no F0190 | 2026-09-18 F0190 | 3.2.2, 2026-09-08 F0191 | PyPI 273,230 / last-month F0192 | - | github Nixtla | Separate package and repo from statsforecast. |
 | prophet | open | MIT (F0365) | no / no F0193 | 2026-08-27 F0193 | 1.4.0, 2026-08-15 F0194 | PyPI 4,058,052 / last-month F0195 | - | github facebook |  |
@@ -751,8 +753,8 @@ products:
 | dino | open-weights | DINOv3: custom 'DINOv3 License' (repo F0339; HF license other/dinov3-license, gated manual F0384). DINOv2: Apache-2.0 (repo F0330; HF F0385). Most restrictive across SKUs = DINOv3 License | dinov3 no / no F0151; dinov2 no / no F0150 | dinov3 2026-07-15 F0151; dinov2 2026-06-03 F0150 | no GitHub releases listed F0458 F0457; DINOv3 HF weights 2025-08-19 F0384 | HF facebook DINO checkpoints 9,914,994 / 30d F0422 (plus timm mirrors, e.g. timm/vit_small_patch14_dinov2 1,289,215 F0006) | DINO v1 (facebook/dino-vitb16), DINOv2 small/base/large/giant, DINOv3 ViT S/B/L/H+/7B and ConvNeXt F0006 F0422 | github facebookresearch; HF facebook | Product-line rule: one row for DINO; v2 and v3 are versions. embeddings_retrieval.yaml already excludes DINOv3 and points it at #9; the 2026-09-25 ruling moves it here. |
 | radio | open-weights | Code: NVIDIA Source Code License for RADIO, non-commercial (F0496). Weights: nvidia-open-model-license (HF cardData F0453; W0012) | no / no F0438 | 2026-05-29 F0438 | no GitHub releases listed F0471 | HF nvidia RADIO checkpoints 62,322 / 30d F0454 (C-RADIOv3-H alone 2,735 F0453) | C-RADIO, C-RADIOv2, v3 (B/L/H/g), v4 (H, SO400M) F0454 W0012 | github NVlabs; HF nvidia | Surfaced by search W0012, not in the brief. Agglomerative backbone distilled from CLIP, DINOv2, SAM (W0012). |
 | depth-anything | open-weights | Code Apache-2.0 (DA3 F0334; V2 F0335). Weights mixed: V2-Small apache-2.0 (F0390), V2-Large cc-by-nc-4.0 (F0391), DA3-LARGE cc-by-nc-4.0 (F0389). Most restrictive = CC-BY-NC-4.0 | DA3 no / no F0153; V2 no / no F0156 | DA3 2026-07-27 F0153; V2 2026-03-24 F0156 | depth-anything-3 0.1.1, 2026-03-04 F0154 | HF author=depth-anything 4,577,714 / 30d F0424; PyPI depth-anything-3 5,212 / last-month F0155 | Depth Anything V1 (LiheYoung/*), V2 S/B/L + metric, DA3 SMALL/LARGE/GIANT/METRIC/MONO/NESTED F0005 | github ByteDance-Seed, DepthAnything; HF depth-anything | Surfaced from HF depth-estimation top-40 F0005. Org slug reused from index. |
-| depth-pro | open-weights | Apple sample-code style license (repo LICENSE F0495; ecosyste.ms repo lookup 404 F0489); weights apple-amlr (F0418 F0505) | no archive banner seen W0020 (ecosyste.ms 404 F0489; ungh 403 F0524 F0526 - fetch did not complete) | fetch did not complete (7 commits total W0020) | none listed W0020 | HF apple/DepthPro-hf 26,401 / 30d F0418; apple/DepthPro 5,488 F0505 | - | github apple; HF apple | Surfaced from HF depth-estimation list F0005. 5.7k stars W0020. Activity date not measured. |
-| rt-detr | open | Apache-2.0 (code F0336; weights apache-2.0 F0392) | no / no F0157 | 2026-08-17 F0157 | no GitHub releases listed F0462 | HF author=PekingU 2,113,211 / 30d F0425 | RT-DETR r18/r50/r101 (+O365), RT-DETRv2 F0002 | github lyuwenyu (personal); HF PekingU | Also shipped inside transformers. Authoring institution not fetched; org slug is the repo owner handle (Q5). |
+| depth-pro | open-weights | Apple sample-code style license (repo LICENSE F0495; ecosyste.ms repo lookup 404 F0489); weights apple-amlr (F0418 F0505) | no / no F0527 (repo moved: apple/ml-depth-pro 404 on ecosyste.ms F0489) | 2026-09-11 F0527 | none listed W0020 | HF apple/DepthPro-hf 26,401 / 30d F0418; apple/DepthPro 5,488 F0505 | - | github apple-aiml-research (moved from apple/, F0527 F0489); HF apple | Surfaced from HF depth-estimation list F0005. 5,728 stars F0527. |
+| rt-detr | open | Apache-2.0 (code F0336; weights apache-2.0 F0392) | no / no F0157 | 2026-08-17 F0157 | no GitHub releases listed F0462 | HF author=PekingU 2,113,211 / 30d F0425 | RT-DETR r18/r50/r101 (+O365), RT-DETRv2 F0002 | github lyuwenyu (personal); HF PekingU | Authoring institution not fetched; org slug is the repo owner handle (Q5). |
 | rf-detr | open | Apache-2.0 (code F0338; HF weights apache-2.0 F0393) | no / no F0158 | 2026-09-18 F0158 | 1.10.1 GitHub 2026-09-07 F0485; PyPI 1.11.0, 2026-09-24 F0159 | PyPI rfdetr 416,071 / last-month F0160; HF author=Roboflow 90,156 / 30d F0426 | rf-detr base/nano/.../2XL, rf-detr-seg F0002 F0003; W0002 reports ICLR 2026 and 60.1 AP for 2XL | github roboflow; HF Roboflow | Surfaced by search W0002. |
 | d-fine | open | Apache-2.0 (code F0340; weights apache-2.0 F0394) | no / no F0161 | 2026-08-19 F0161 | no GitHub releases listed F0463 | HF author=ustc-community 94,094 / 30d F0430 | D-FINE nano/small/.../xlarge F0002 | github Peterande (personal); HF ustc-community | Surfaced by search W0002. |
 | deim | open | Apache-2.0 with copyright notice (F0341; GitHub label 'other' F0162) | no / no F0162 | 2026-03-24 F0162 | no GitHub releases listed F0473 | stars only 1,607 F0162 (HF not fetched) | - | github Intellindust-AI-Lab | DETR training recipe on D-FINE. Weak identity: could be a SKU of D-FINE lineage (kept separate: different org). |
@@ -761,7 +763,7 @@ products:
 | segformer | open-weights | NVIDIA Source Code License for SegFormer, non-commercial / research or evaluation only (F0347); HF card license 'other' F0397 F0520 | no / no F0167 | 2024-08-02 F0167 | no GitHub releases listed F0476 | HF nvidia/segformer-b0-finetuned-ade-512-512 368,469 / 30d F0397 (b1-b5 not summed F0003) | b0-b5, ADE/Cityscapes fine-tunes F0003 | github NVlabs; HF nvidia | Dormant since 2024-08. Surfaced from HF list F0003. |
 | sapiens | open-weights | Sapiens2 License (custom, F0494; HF other/sapiens2-license F0398); Sapiens v1 CC-BY-NC-4.0 (F0350) | sapiens2 no / no F0488; v1 no / no F0169 | sapiens2 2026-05-24 F0488; v1 2024-11-18 F0169 | no GitHub releases listed (v1) F0477 | HF facebook/sapiens2-seg-0.4b 35,476 / 30d F0398 | Sapiens v1, Sapiens2 (seg 0.4b, ...) F0003 | github facebookresearch; HF facebook | Human-centric vision models. Surfaced from HF list F0003. |
 | eomt | open | MIT (code F0352; weights mit F0411) | no / no F0170 | 2026-07-22 F0170 | no GitHub releases listed F0470 | HF author=tue-mps 132,121 / 30d F0434 | COCO/ADE/Cityscapes EoMT, eomt-dinov3 variants F0003 | github/HF tue-mps (TU/e Mobile Perception Systems Lab, F0352) | Surfaced from HF list F0003. |
-| cotracker | open-weights | CC-BY-NC-4.0 (repo F0360; HF F0413) | no / no F0172 | 2026-03-03 F0172 | no GitHub releases listed F0468 | HF facebook/cotracker3 17,576 / 30d F0413 | CoTracker, CoTracker3 | github facebookresearch; HF facebook | Point tracking in video. |
+| cotracker | open-weights | CC-BY-NC-4.0 (repo F0360; HF F0413) | no / no F0172 | 2026-03-03 F0172 | no GitHub releases listed F0468 | HF facebook/cotracker3 17,576 / 30d F0413 | CoTracker3 (F0413); earlier versions not fetched | github facebookresearch; HF facebook | Point tracking in video. |
 | tabpfn | open-weights | Code Apache-2.0 (LICENSE F0355, plain text; W0003 calls it 'modified Apache' - the current file is unmodified). Weights: TABPFN-3 License v1.0, non-commercial/non-production (F0419; HF other/tabpfn-3-license-v1.0 F0399); v2.5 tabpfn-2.5-license-v1.1 F0401; v2 priorlabs-1-1 F0400 | no / no F0173 | 2026-09-21 F0173 | v9.0.0, 2026-09-15 F0487 F0174 | PyPI tabpfn 207,148 / last-month F0175; HF author=Prior-Labs 139,781 / 30d F0428 | TabPFN v2 clf/reg, 2.5, 2.6, 3, 3.5 F0007 | github PriorLabs; HF Prior-Labs | TabPFN-3 released May 2026 W0003. |
 | tabicl | open | BSD-3-Clause, 'Soda team @ Inria' (F0356; GitHub label 'other' F0176); HF jingang/TabICL bsd-3-clause F0504 | no / no F0176 | 2026-06-05 F0176 | 2.2.0, 2026-09-02 F0177 | PyPI tabicl 133,045 / last-month F0178; HF jingang/TabICL reports 0 F0504 (HF id not declared) | TabICL, TabICLv2 (W0003) | github soda-inria; HF jingang | HF checkpoint jingang/TabICL (bsd-3-clause F0504) sits in a personal namespace with 0 reported downloads, so it is left off the row. Surfaced by search W0003. |
 | sap-rpt-1 | open | Apache-2.0 (code F0357; HF weights apache-2.0, gated auto F0403) | no / no F0179 | 2025-11-27 F0179 | v1.1.2, 2025-11-27 F0480 | HF SAP/sap-rpt-1-oss 94,516 / 30d F0403 | - | github SAP-samples; HF SAP | Surfaced from HF tabular list F0007. Open satellite of a closed SAP RPT-1 service? Not fetched - do not assume (Q8). |
@@ -986,6 +988,7 @@ from `web-log.tsv`.
 | F0235 | 200 | 2026-09-26T20:03:07Z | https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/lightgbm-org%2FLightGBM | ecosystems repo retry lightgbm-org%2FLightGBM |
 | F0236 | 200 | 2026-09-26T20:03:07Z | https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/torchgeo%2Ftorchgeo | ecosystems repo retry torchgeo%2Ftorchgeo |
 | F0237 | 200 | 2026-09-26T20:03:08Z | https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/meta-pytorch%2Fcaptum | ecosystems repo retry meta-pytorch%2Fcaptum |
+| F0244 | 000000 | 2026-09-26T20:03:13Z | https://ungh.cc/repos/microsoft/torchgeo | ungh repo microsoft/torchgeo |
 | F0245 | 200 | 2026-09-26T20:03:39Z | https://ungh.cc/repos/rapidsai/cuml | ungh repo retry rapidsai/cuml |
 | F0246 | 200 | 2026-09-26T20:03:44Z | https://ungh.cc/repos/THU-MIG/yolov10 | ungh repo retry THU-MIG/yolov10 |
 | F0247 | 200 | 2026-09-26T20:03:50Z | https://ungh.cc/repos/limix-ldm/LimiX | ungh repo retry limix-ldm/LimiX |
@@ -1183,13 +1186,19 @@ from `web-log.tsv`.
 | F0521 | 200 | 2026-09-26T20:12:46Z | https://raw.githubusercontent.com/stanfordmlgroup/ngboost/HEAD/LICENSE | license text stanfordmlgroup/ngboost (LICENSE) |
 | F0522 | 200 | 2026-09-26T20:12:46Z | https://raw.githubusercontent.com/perpetual-ml/perpetual/HEAD/LICENSE | license text perpetual-ml/perpetual (LICENSE) |
 | F0523 | 200 | 2026-09-26T20:12:46Z | https://raw.githubusercontent.com/google-research/tabfm/HEAD/LICENSE | license text google-research/tabfm (LICENSE) |
-| F0524 | 403 | 2026-09-26T20:12:47Z | https://ungh.cc/repos/apple/ml-depth-pro | ungh repo apple/ml-depth-pro |
-| F0526 | 403 | 2026-09-26T20:13:07Z | https://ungh.cc/repos/apple/ml-depth-pro | ungh repo retry apple/ml-depth-pro |
+| F0527 | 200 | 2026-09-26T20:23:57Z | https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/apple-aiml-research%2Fml-depth-pro | ecosystems repo apple-aiml-research/ml-depth-pro |
+| F0528 | 000000 | 2026-09-26T20:23:57Z | https://raw.githubusercontent.com/cuml?  | x |
+| F0529 | 200 | 2026-09-26T20:23:58Z | https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/cuml-cu13 | ecosystems pypi cuml-cu13 (sibling wheel) |
+| F0530 | 200 | 2026-09-26T20:23:58Z | https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/u8darts | ecosystems pypi u8darts (sibling wheel) |
+| F0531 | 200 | 2026-09-26T20:23:59Z | https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/opencv-contrib-python | ecosystems pypi opencv-contrib-python (sibling wheel) |
+| F0532 | 200 | 2026-09-26T20:23:59Z | https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/opencv-python-headless | ecosystems pypi opencv-python-headless (sibling wheel) |
 | W0001 | WebSearch | 2026-09-26T20:00:26Z | most downloaded Python machine learning libraries PyPI 2026 scikit-learn xgboost lightgbm | (excerpt in web-log.tsv) |
 | W0002 | WebSearch | 2026-09-26T20:00:26Z | new open source object detection model 2026 real-time DETR YOLO release Apache-2.0 | (excerpt in web-log.tsv) |
 | W0003 | WebSearch | 2026-09-26T20:00:26Z | tabular foundation model 2025 2026 TabPFN open source release | (excerpt in web-log.tsv) |
 | W0004 | WebSearch | 2026-09-26T20:00:26Z | DINOv3 SAM 3 release Meta vision backbone license 2025 | (excerpt in web-log.tsv) |
+| W0006 | WebSearch | 2026-09-26T20:00:46Z | time series forecasting library python 2026 sktime darts statsforecast nixtla comparison | (excerpt in web-log.tsv) |
 | W0008 | WebSearch | 2026-09-26T20:00:46Z | alternatives to scikit-learn 2026 new ML library skrub cuML river | (excerpt in web-log.tsv) |
+| W0010 | WebSearch | 2026-09-26T20:00:46Z | hyperparameter optimization AutoML library 2026 Optuna AutoGluon FLAML release | (excerpt in web-log.tsv) |
 | W0011 | WebSearch | 2026-09-26T20:05:47Z | Google TabFM tabular foundation model release 2026 | (excerpt in web-log.tsv) |
 | W0012 | WebSearch | 2026-09-26T20:05:47Z | NVIDIA C-RADIO v3 vision foundation backbone license huggingface | (excerpt in web-log.tsv) |
 | W0013 | WebSearch | 2026-09-26T20:05:47Z | Falcon Perception TII open vocabulary segmentation model 2026 | (excerpt in web-log.tsv) |
