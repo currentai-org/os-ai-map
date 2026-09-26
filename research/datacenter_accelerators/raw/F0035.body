@@ -1,0 +1,2685 @@
+<!doctype html><!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]--><!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en">        <![endif]--><!--[if IE 8]>    <html class="no-js lt-ie9" lang="en">               <![endif]--><!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]--><head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="author" content="Graphcore Ltd">
+	<meta name="description" content="Graphcore has built a new type of processor for machine intelligence to accelerate machine learning and AI applications for a world of intelligent machines">
+    <title>Graphcore: Accelerating machine learning in the cloud</title>
+    <link rel="shortcut icon" href="https://www.graphcore.ai/hubfs/assets/logo/Favicon_filled_dark_mode.svg">
+<!-- 	<meta name="viewport" content="width=device-width, user-scalable=no"> -->
+	<link rel="stylesheet" type="text/css" href="https://www.graphcore.ai/hubfs/hub_generated/template_assets/1/4960765543/1741263986703/template_GC_by_pentagram.min.css">
+	<meta name="facebook-domain-verification" content="je9oh0ogrwgoy1k0hpsygbuzez4wy3">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:description" content="Graphcore has built a new type of processor for machine intelligence to accelerate machine learning and AI applications for a world of intelligent machines">
+    <meta property="og:title" content="Graphcore: Accelerating machine learning in the cloud">
+    <meta name="twitter:description" content="Graphcore has built a new type of processor for machine intelligence to accelerate machine learning and AI applications for a world of intelligent machines">
+    <meta name="twitter:title" content="Graphcore: Accelerating machine learning in the cloud">
+
+    
+
+    
+
+    <style>
+a.cta_button{-moz-box-sizing:content-box !important;-webkit-box-sizing:content-box !important;box-sizing:content-box !important;vertical-align:middle}.hs-breadcrumb-menu{list-style-type:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px}.hs-breadcrumb-menu-item{float:left;padding:10px 0px 10px 10px}.hs-breadcrumb-menu-divider:before{content:'›';padding-left:10px}.hs-featured-image-link{border:0}.hs-featured-image{float:right;margin:0 0 20px 20px;max-width:50%}@media (max-width: 568px){.hs-featured-image{float:none;margin:0;width:100%;max-width:100%}}.hs-screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px}
+</style>
+
+
+<style>
+  #page {
+    padding-top: 55px;
+  }
+  @media only screen and (min-width: 1200px){
+    #page {
+      padding-top: 79px;
+    }
+  }
+  /*   SECTION SPACER */
+  #page section.spacer {
+    padding: 9em 0;
+    position: relative;
+    margin-bottom: 0;
+  }
+  #page section#firstblock {
+    padding-bottom: 2.5em;
+  }
+  #page section.spacer.blue::before {
+    content: url(https://www.graphcore.ai/hubfs/assets/images/blue%20spacer-right-01.svg);
+    display: block;
+    margin: auto;
+    width: 44%;
+    position: absolute;
+    top: -3%;
+    right: 0;
+  }
+  #page section.spacer.blue::after {
+    content: url(https://www.graphcore.ai/hubfs/assets/images/blue%20spacer-left.svg);
+    display: block;
+    margin: auto;
+    width: 34%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+    #page section.spacer.yellow::before {
+    content: url(https://www.graphcore.ai/hubfs/assets/images/icons/yellow-right.svg);
+    display: block;
+    margin: auto;
+    width: 44%;
+    position: absolute;
+    top: -3%;
+    right: 0;
+  }
+#page section.spacer.yellow::after {
+    content: url(https://www.graphcore.ai/hubfs/assets/images/icons/yellow-left.svg);
+    display: block;
+    margin: auto;
+    width: 34%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#page .container.benchmark-wrapper {
+    margin-top: 2em;
+}
+  #page .bg-grey {
+    background: #faf8f9;
+  }
+  #page section.cutout-sibling {
+    padding-bottom: calc(4em + 140px);
+    position: relative;
+    background: #fff;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 50% calc(100% - 35px), calc(50% - 35px) calc(100% - 35px), calc(50% - 35px) calc(100% - 70px), 20% calc(100% - 70px), 20% calc(100% - 140px), 0% calc(100% - 140px));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 50% calc(100% - 35px), calc(50% - 35px) calc(100% - 35px), calc(50% - 35px) calc(100% - 70px), 20% calc(100% - 70px), 20% calc(100% - 140px), 0% calc(100% - 140px));
+  }
+  #page section.cutout-sibling::after {
+    content: "";
+    position: absolute;
+    bottom: 70px;
+    left: 20%;
+    width: 70px;
+    height: 70px;
+    background-color: #faf8f9;
+    border-radius: 50%;
+  }
+  /*HERO TEXT BOX*/
+  .gc_hero_text {
+    padding: 25px;
+  }
+  .gc_hero_text h1.hero-heading {
+    font-size: 1.5em;
+    margin: 0;
+    width: 100%;
+    background: transparent;
+    max-width: none;
+  }
+  .gc_hero_text p {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    padding-bottom: .5em;
+  }
+  article.gc_hero_text .cta_container.primary-red > div a {
+    line-height: 50px;
+    text-align: left;
+  }
+  article.gc_hero_text .cta_container.primary-red > div a:hover {
+    background-color: transparent;
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  article.gc_hero_text .cta_container.primary-red > div a:hover:after {
+    color: #ffffff;
+  }
+  .gc-image-hero {
+    max-height: 932px;
+    margin-bottom: 100px;
+    background: #000;
+  }
+  .gc-image-hero > img {
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    animation: orbit 1500s linear infinite;
+    animation-delay: 100ms;
+    -webkit-transform-origin-z: 0;
+    padding: 1px;
+    background-color: #000;
+  }
+   #page.homepage_page .hero_img_mobile {
+    display:none;
+  }
+  #page .gc_hero_text a.primary-btn-white {
+    margin: 20px 0 0;
+    display: inline-block;
+    border: 1px solid #fff;
+    font-size: 1rem;
+    width: 49%;
+}
+   #page .gc_hero_text a.ghost-btn {
+    background-color: #0000;
+    border: solid #fff 1px;
+    color: #fff;
+}
+  /* CTA CSS */
+  #page a.primary-btn-white, #page a.primary-btn-red {
+    background-color: #FFFFFF;
+    display: block;
+    color: #292c31;
+    border: 2px solid transparent;
+    line-height: 50px;
+    padding: 0px 15px;
+    position: relative;
+    font-size: 1em;
+    text-align: left;
+		font-weight: normal;
+    font-family: 'Graphik-Medium',sans-serif;
+    max-width: 280px;
+  }
+  #page a.primary-btn-red {
+    background-color: #ff6f79;
+    color: #292c31;
+  }
+  #page a.primary-btn-red.blog-cta,  #page a.primary-btn-red.trial-cta {
+  margin:auto;
+  }
+  #page section.cloud-area a.primary-btn-red {
+    margin-top: 2em;
+}
+  #page a.primary-btn-white:after {
+    font-family: "GCSymbols-Regular";
+    content: '\E002';
+    position: absolute;
+    right: 1em;
+    top: 0;
+    font-size: 100%;
+    transition: transform ease-out .3s;
+    display: block;
+  }
+  #page a.secondary-cta {
+    color: #ff6f79;
+    font-family: "Graphik-Medium",sans-serif;
+    position: relative;
+  }
+  #page a.secondary-cta:after {
+    font-family: "GCSymbols-Regular";
+    content: '\E002';
+    transition: transform ease-out .3s;
+    display: inline-block;
+    margin-left: 1em;
+  }
+  #page a.primary-btn-red:after {
+    font-family: "GCSymbols-Regular";
+    content: '\E002';
+    position: absolute;
+    right: 1em;
+    top: 0;
+    font-size: 100%;
+    transition: transform ease-out .3s;
+    display: block;
+  }
+  #page a.primary-btn-red:hover:after, #page a.primary-btn-white:hover:after, #page a.secondary-cta:hover:after {
+    transform: translateX(8px);
+  }
+  #page .benchmark-wrapper a.primary-btn-white {
+    border: #ff6f79 solid 2px;
+    color: #ff6f79;
+    width: 232px;
+}
+  #page .feature-cta {
+    padding: 2em 1.5em;
+  }
+  #page .feature-cta a.primary-btn-red {
+    margin: auto;
+    min-width: 230px;
+  }
+  #page .gc-news a.primary-btn-red.blog-cta {
+    margin-top: 2em;
+}
+  #page div.cta-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  #page a.to-content {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    left: 50%;
+    bottom: -150px;
+    -ms-filter: drop-shadow(0px 2px 5px #000);
+    filter: drop-shadow(0px 2px 5px #000);
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+  #page a.to-content::before {
+    content: "";
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    position: relative;
+    display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: rotate(0deg) translateZ(0);
+    -webkit-clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
+    transition: -webkit-transform .7s cubic-bezier(0,.12,.25,.99), -ms-transform .7s cubic-bezier(0,.12,.25,.99), transform .7s cubic-bezier(0,.12,.25,.99), background-color .3s;
+  }
+  #page a.to-content:hover::before {
+    background-color: #FAF8F9;
+    transform: rotate(180deg) translateZ(0);
+  }
+  #page a.to-content::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+    content: "\E004";
+    font-family: "GCSymbols-Regular";
+    color: #ff6f79;
+  }
+  #page a.to-content:hover::after{
+    animation: bobbing .7s cubic-bezier(0,.12,.25,.99);
+  }
+  #page.homepage_page .gc-image-hero:before {
+    display: none;
+  }
+  /* BENCHMARK HEADER */
+  #page .benchmark-header {
+    text-align: center;
+    margin-bottom: 2em;
+  }
+  #page .benchmark-header h2 {
+    font-size: 2em;
+    line-height: 1.4;
+    -webkit-font-feature-settings: "calt" 0, "liga";
+    font-feature-settings: "calt" 0, "liga";
+    font-family: "Caslons Egyptian Pentagram Reg", sans-serif;
+  }
+  #page .benchmark-header p {
+    font-family: "Graphik-Regular", sans-serif;
+    font-size: 1em;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 2em;
+  }
+  /* TWO + THREE PANEL CSS */
+  #page .two-panel, #page .three-panel {
+   display: block;
+ }
+ #page .two-panel div.copy-block h2 {
+  font-size: 1.6em;
+  line-height: 1.4;
+  margin-bottom: 1em;
+}
+#page.two-panel div.copy-block p {
+  font-size: 1em;
+  line-height: 1.4;
+  margin-bottom: 1em;
+  color: #646464;
+}
+  #page .two-panel div.copy-block p {
+    margin-bottom: 1em;
+}
+  #page .two-panel {
+    margin-bottom: 2em;
+    margin-top: 1em;
+}
+#page .three-panel div.grid-item h3 {
+  font-size: 1.2em;
+  font-family: "Graphik-Medium", sans-serif;
+  line-height: 1.3;
+  color: #292c31;
+  margin: 0.5rem 0;
+}
+#page .three-panel div.grid-item p, #page .announcement-panel p.summary {
+  font-size: 0.8em;
+  line-height: 1.4;
+  color: #646464;
+}
+#page .three-panel div.grid-item a.secondary-cta {
+    margin-top: auto;
+}
+  #page .three-panel div.grid-item a {
+  padding: 1em;
+  height: 100%;
+}
+  #page .three-panel div.grid-item {
+  padding: 0;
+}
+/* CUSTOMER CAROUSEL CSS */
+#page.homepage_page section.homepage-carousel.careers_page-v2 .gr-testimonials-cards {
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+  #page div.performance {
+    text-align: center;
+    background: #fff;
+}
+#page #hs_cos_wrapper_module_16348284168217 > div.chart-container.single-chart {
+    max-width: 1200px;
+  }
+#page .featured > h2 {
+ margin-bottom: 20px;
+font-size: 1.6em;
+    font-family: 'Caslons Egyptian Pentagram Reg', sans-serif;
+}
+#page div.performance h2.featured.benchmark_title {
+ font-size: 1.2em;
+ line-height: 1.4;
+ -webkit-font-feature-settings: "calt" 0, "liga";
+ font-feature-settings: "calt" 0, "liga";
+ font-family: "Caslons Egyptian Pentagram Reg", sans-serif;
+}
+#page div.performance p {
+ color: #333;
+ margin: 0 auto 30px;
+}
+#page div.performance div.benchmarks-container {
+ display: flex;
+ justify-content: space-between;
+ align-items: stretch;
+ margin-top:3em;
+}
+#page summary {
+    display: list-item;
+}
+ 	/*HIDE CAROUSEL WHEN LOADING*/
+.slide { display: none; }
+.slide.slick-initialized { display: block; }
+.loader-square-container {
+    width: 160px;
+    height: 160px;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: scale(.7);
+    background: #fff;
+    z-index: 500;
+}
+.loader-square-container:before {
+    content: '';
+    background: #ff6f79;
+    width: 40px;
+    height: 40px;
+    left: -40px;
+    top: 0;
+    position: absolute;
+    animation: 4s infinite alternate slideShrink;
+    }
+.loader-square:nth-child(1), .loader-square-container:before, .loader-.circle {
+    animation-delay: -0.75s;
+}
+.loader-square {
+    background: #ff6f79;
+    width: 80px;
+    height: 80px;
+    left: 0;
+    bottom: 80px;
+    position: absolute;
+    transform: translate3d(0,0,0);
+    animation: 4s infinite alternate loadingAnimation;
+}
+.loader-circle {
+    background: #fbe8aa;
+    width: 70px;
+    height: 70px;
+    right: 0;
+    bottom: -5px;
+    position: absolute;
+    border-radius: 50%;
+    animation: 4s infinite alternate shrink;
+}
+.loader-poly {
+    height: 115px;
+    width: 115px;
+    position: absolute;
+    bottom: -58px;
+    left: -50px;
+    animation: 6s infinite linear roundAround;
+}
+.loader-poly > path {
+    fill: #d9d9d9;
+}
+  .slick-initialized div.loader-square-container {
+    display: none;
+}
+@keyframes loadingAnimation {
+  0% {
+    left: 0;
+    bottom: 80px;
+  }
+  20% {
+    left: 0;
+    bottom: 80px;
+  }
+  40% {
+    left: 80px;
+    bottom: 80px;
+  }
+  60% {
+    left: 80px;
+    bottom: 80px;
+  }
+  80% {
+    left: 80px;
+    bottom: 0px;
+  }
+  100% {
+    left: 80px;
+    bottom: 0px;
+  }
+}
+@keyframes roundAround {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+@keyframes slideShrink {
+  0% { width: 40px; }
+  20% { width: 40px; }
+  40% { width: 0px; }
+  100% { width: 0px; }
+}
+@keyframes shrink {
+  0% { transform: scale(1); }
+  20% { transform: scale(1); }
+  40% { transform: scale(0); }
+  100% { transform: scale(0); }
+}
+/*END CAROUSEL*/
+/* ANNOUNCEMENT GRID */
+#page .announcement-grid {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+#page article.announcement-panel {
+  width: 40%;
+  margin: 10px;
+  background: #faf8f9;
+  padding: 20px 25px 20px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  transition: transform .3s, background .3s;
+}
+#page article.announcement-panel small.date {
+  font-family: "Graphik-Medium",sans-serif;
+  color: rgba(16, 30, 36, 0.4);
+  width:100%;
+}
+  #page article.announcement-panel:hover a.secondary-cta:after {
+    transform: translateX(8px);
+}
+  #page article.announcement-panel a.secondary-cta {
+    width:100%;
+  }
+#page .announcement-panel figure.fadein {
+  margin: 20px auto;
+}
+#page .announcement-panel img {
+  height: 240px;
+  width: 100%;
+  object-fit: cover;
+}
+#page article.announcement-panel .caption {
+  height: auto;
+  background: none;
+  margin-bottom: 40px;
+}
+#page article.announcement-panel .caption h2 {
+  font-size: 1.6rem;
+  -webkit-font-feature-settings: "calt" 0, "liga";
+  font-feature-settings: "calt" 0, "liga";
+}
+#page .announcement-panel p.summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+#page .announcement-panel .secondary-cta {
+  margin-top: auto;
+}
+/*GC IN THE NEWS */
+#page .gc-news {
+  background-color: #FAF8F9;
+  padding: 4em 0 6em;
+}
+#page .gc-news .news-list-home article {
+  margin-left: 15px;
+  margin-right: 15px;
+  min-height: 265px;
+  height: 265px;
+  background-color: #fff;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transform: translate3d(0px, 0px, 0px);
+  transition: transform .3s, background .3s;
+}
+ #page .gc-news .news-list-home article a {
+  padding: 35px;
+  height: 100%;
+}
+ #page .gc-news.news-content article figure {
+    margin-bottom: 28px;
+}
+ #page .gc-news.news-content article figure img {
+background-color: transparent;
+    filter: grayscale(1);
+  }
+#page .news-list-home {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+#page .news-list-home p.news-descrip {
+  color: #646464;
+  text-align: left;
+  line-height: 1.6;
+}
+#page .news-content article a.secondary-cta {
+  margin-top: auto;
+}
+  #page .two-panel img {
+    background-color:transparent;
+    flex-grow: 1;
+  }
+#page .three-panel .grid-item:last-child {
+    justify-content: flex-start;
+}
+  #page .gc-news .news-list-home article:hover {
+    transform: scale(.975) translate3d(0px, 0px, 0px);
+    background: #ffffff;
+  }
+  /*More Posts Grid*/
+div#page .articles {
+ margin-bottom: 1em;
+}
+div#page section.more_stories.posts {
+/*     margin-bottom: 2em; */
+}
+div#page section.more_stories .neg-marg.grid {
+ display: flex;
+ align-items: stretch;
+  justify-content: center;
+ flex-wrap: wrap;
+}
+div#page section.more_stories .neg-marg.grid>article.grid-item.dark.all_posts:hover {
+    transform: scale(.975) translate3d(0px, 0px, 0px);
+    background: #f7f3f5;
+}
+div#page section.more_stories .neg-marg.grid>article.grid-item.dark.all_posts {
+ background-color: #faf8f9;
+ padding: 0.5em 0 1em 0;
+ position: unset !important;
+ display: flex;
+ flex-direction: column;
+ margin: 15px;
+ justify-content: flex-start;
+ transform: translate3d(0px, 0px, 0px);
+ transition: transform .3s, background .3s;
+}
+div#page article.grid-item {
+ margin-bottom: 1.2em;
+}
+div#page article.plain.blogfeed_hero {
+    margin-bottom: 0;
+}
+div#page .articles .neg-marg.grid {
+ max-height: 100%;
+ height: auto !important;
+}
+div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts .caption {
+ height: auto;
+ background: none;
+ margin: 0 1em;
+ padding-right: 0px;
+ min-height: unset;
+}
+div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts .caption div.featured h2 {
+ color: #292c31;
+ font-size: 1.3rem;
+ font-family: "Caslons Egyptian Pentagram Reg", sans-serif;
+ -webkit-font-feature-settings: "calt" 0, "liga";
+ font-feature-settings: "calt" 0, "liga";
+ white-space: nowrap;
+ text-overflow: ellipsis;
+ overflow: hidden;
+}
+div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts p.readnext_meta {
+ color: #b5b5b5;
+ margin: 0 1.2em;
+ font-size: 0.9rem;
+ line-height: 1.5;
+ min-height: 42px;
+ white-space: nowrap;
+ text-overflow: ellipsis;
+ overflow: hidden;
+}
+@supports (-webkit-line-clamp: 3) {
+ div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts .caption div.featured h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+ }
+}
+@supports (-webkit-line-clamp: 2) {
+ div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts p.readnext_meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: initial;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+ }
+}
+div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts p.readnext_meta span.pink_separator {
+ color: #ff6f79;
+ margin: 0 0.5em;
+}
+div#page section.more_stories .neg-marg.grid article figure.fadein {
+ margin: 0 0 1em 0;
+ height: auto;
+}
+div#page section.more_stories .neg-marg.grid article figure.fadein img {
+ width: 100%;
+ object-fit: cover;
+ max-height: 56.25%;
+ object-position: center;
+ position: unset !important;
+}
+div#page section.more_stories .neg-marg.grid article a.secondary-cta {
+ color: #ff6f79;
+ font-family: "Graphik-Medium", sans-serif;
+ position: relative;
+ margin-top: auto;
+ margin-left: 1em;
+}
+div#page section.more_stories .neg-marg.grid article a.secondary-cta:after {
+ font-family: "GCSymbols-Regular";
+ content: "\E002";
+ transition: transform ease-out 0.3s;
+ display: inline-block;
+ margin-left: 1em;
+}
+div#page .more_stories .articles article {
+ float: none;
+}
+  #page #firstblock .three-panel {
+    padding-top:0;
+  }
+  #page .three-panel .grid-item {
+    background-color: #faf8f9;
+    padding: 1em;
+  }
+  #page .three-panel div.grid-item p {
+    margin-bottom: 0;
+}
+  #page .container.trial-wrapper {
+    text-align: center;
+    max-width: 800px;
+}
+  #page .container.trial-wrapper > div {
+    margin-bottom: 1em;
+}
+div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts {
+  width: calc(100% / 3 - 30px);
+}
+/* SMALLER SCREENS */
+@media (min-width:768px) {
+  #page .two-panel, #page .four-panel, #page .three-panel, #page .tech-panel {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 2em 0;
+  }
+  #page .two-panel.reverse {
+    flex-direction: row-reverse;
+  }
+  #page .benchmark-wrapper .two-panel, #page .container.trial-wrapper .two-panel {
+    align-items: center;
+  }
+  #page .two-panel img {
+    max-width: 40%;
+  }
+  #page .two-panel div.copy-block {
+    max-width: 50%;
+  }
+  #page .three-panel, #page .tech-panel {
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+	#page .three-panel {
+		flex-wrap: wrap;
+	}
+  #page .three-panel .grid-item {
+    width: calc(100%/4 - 12px);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    transform: translate3d(0px, 0px, 0px);
+    transition: transform .3s, background .3s;
+  }
+   #page article.announcement-panel:hover, #page .three-panel .grid-item:hover {
+    transform: scale(.975) translate3d(0px, 0px, 0px);
+    background: #f7f3f5;
+}
+}
+@media (max-width:1199px) {
+    #page.homepage_page .gc-image-hero {
+    margin-bottom: 30px;
+    background: transparent;
+  }
+  #page.homepage_page .hero_img_mobile {
+    display:block;
+  }
+  #page.homepage_page .gc-image-hero img.hs-image-widget {
+    display:none;
+  }
+  #page a.to-content {
+    display:none;
+  }
+  #page .two-panel div.copy-block h2, #page .four-panel div.feature-block h2, #page .tech-panel h2 {
+    margin-bottom: .75em;
+  }
+   #page .gr-l, #page .gr5 {
+    display:none;
+}
+  #page .gc-image-hero > img {
+    animation: none!important;
+  }
+  #page article.announcement-panel {
+    width: 100%;
+  }
+  #page .news-list-home {
+    display: block;
+  }
+    #page .gc-news .news-list-home article {
+    width: 100%;
+    min-height: 190px;
+    height: auto;
+  }
+  #page figure .customer-container {
+    padding: 20px 25px;
+    width: 200px;
+}
+  #page a.to-content {
+    bottom: -70px;
+  }
+  #page article.announcement-panel .caption h2 {
+    font-size: 1.4rem;
+      margin-bottom: 0;
+  }
+  #page .benchmark-header {
+    margin-bottom: 1em;
+  }
+	#page .three-panel .grid-item {
+    width: calc(100%/3 - 12px);
+		margin-bottom: 20px;
+	}
+     #page div.three-panel .grid-item img {
+    height: 190px;
+    width: 100%;
+    object-fit: cover;
+    object-position:top;
+}
+ #page section.spacer.yellow::before {
+    top: -2%;
+   width:50%;
+  }
+  #page section.spacer.yellow::after {
+   width: 40%;
+  }
+  }
+    @media (max-width: 1024px) {
+  #page .two-panel.benchmarks {
+    display: block;
+}
+   #page .two-panel div.copy-block {
+    max-width: 100%;
+}
+      #page .three-panel .grid-item {
+    width: calc(100%/2 - 12px);
+      }
+  div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts {
+  width: 100%;
+}
+  }
+@media (max-width:767px) {
+  #page a.secondary-cta {
+    font-size: 1.2em;
+    margin: 20px 0 30px;
+  }
+  #page .benchmark-header {
+    text-align: left;
+  }
+	#page .three-panel {
+		flex-wrap: nowrap;
+	}
+  #page .benchmark-header p, #page .cloud-area .copy-block p {
+    font-size: 1.05em;
+    line-height: 1.33333;
+  }
+	#page .three-panel .grid-item {
+    width: 100%;
+	}
+  #page .three-panel div.grid-item h3 {
+    margin: .75em 0;
+  }
+  #page .three-panel div.grid-item p, #page .four-panel div.feature-block p {
+   font-size: 1.05em;
+  }
+  #page .two-panel img {
+    margin: 20px auto 5px;
+  }
+  #page article.gc_hero_text {
+    position: relative;
+    transform: translateY(-5%);
+  }
+  #page .gc_hero_text h1.hero-heading {
+    font-size: 1.3em;
+    text-align: left;
+    padding: 0;
+  }
+  #page .gc_hero_text p {
+    text-align: left;
+    font-size: 0.9em;
+  }
+  #page .feature-cta {
+    padding: 0;
+    margin-top: 40px;
+  }
+ #page .feature-cta a.primary-btn-red, #page .feature-cta a.primary-btn-white {
+    margin: 10px 0;
+    font-size: 1.1em;
+  }
+ #page a.to-content, #page a.to-content::before, #page .slick-arrow.slick-prev:after, #page .slick-arrow.slick-next:after, #page .slick-arrow.slick-prev i, #page .slick-arrow.slick-next i {
+    display:none;
+  }
+   #page .two-panel div.copy-block h2 {
+   margin: 1.5em 0 1em;
+  }
+  #page article.announcement-panel {
+    width: 100%;
+    display: block;
+    margin: 10px 0;
+    background: #faf8f9;
+    padding: 10px 20px 20px;
+}
+  #page .announcement-panel img {
+    height: auto;
+    width: 100%;
+}
+  #page .news-list-home {
+    display: block;
+  }
+  #page .benchmark-header h2 {
+    font-size: 1.6em;
+    line-height: 1.2;
+    width: 100%;
+  }
+  #page .gc-news .news-list-home article {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    justify-content: space-between;
+  }
+   #page .news-content article figure img {
+    max-width: 70%;
+  }
+  #page .gc-news .news-list-home article a.secondary-cta {
+    margin: 20px 0 0;
+  }
+  #page.homepage_page section h2.featured.benchmark_title {
+    text-align: left;
+    margin-top: 2em;
+    margin-bottom: 0;
+}
+    #page .gc_hero_text .hero_bg {
+    display: flex;
+}
+  #page .gc_hero_text a.primary-btn-white:nth-of-type(1) {
+    margin-left: 0;
+}
+    #page .gc_hero_text a.primary-btn-white {
+    display: block;
+    margin: 1em 0;
+  }
+  #page .gc_hero_text .hero_bg {
+    display: block;
+}
+  #page div.cta-wrapper {
+    justify-content: space-evenly;
+  }
+  #page .three-panel {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+}
+  #page .three-panel .grid-item {
+    width: calc(100%/2 - 12px);
+}
+  div#page section.more_stories .neg-marg.grid>article.grid-item.dark.all_posts {
+    margin: 15px 0;
+    width: 100%;
+  }
+  #page a.primary-btn-white, #page a.primary-btn-red {
+    line-height: 46px;
+  }
+  #page .more_stories a.primary-btn-red,  #page .gc-news a.primary-btn-red {
+    max-width: 200px;
+    font-size: 1.1em;
+  }
+  #page section.spacer.blue::before, #page section.spacer.blue::after, #page section.spacer.yellow::before, #page section.spacer.yellow::after  {
+  display:none;
+}
+  #page section.spacer {
+    padding: 3em 0;
+  }
+   #page section.cloud-area a.primary-btn-red {
+     max-width: 230px;
+     font-size: 1.1em;
+  }
+  section.homepage-carousel.careers_page-v2 .gr-testimonials-cards .gr-testimonials-quote::before {
+    display:none;
+  }
+  #page section.homepage-carousel.careers_page-v2 ul.slick-slider figure {
+    align-items: flex-start;
+  }
+  #page section.homepage-carousel.careers_page-v2 .gr-testimonials-cards .gr-testimonials-quote {
+    padding: 0;
+    min-height: 120px;
+}
+  #page section.homepage-carousel.careers_page-v2 .gr-testimonials-cards .gr-testimonials-quote p {
+  font-style: italic;
+  margin-left: 0;
+ }
+  #page.homepage_page section.homepage-carousel.careers_page-v2 .gr-testimonials-cards {
+    padding-top: 1em;
+  }
+  #page .gc-news h2, #page .more_stories .benchmark-header h2,   #firstblock h2 {
+    text-align: center;
+    margin: auto;
+}
+  #page .featured > h2 {
+    margin-bottom: 1em;
+  }
+  }
+  @media (max-width: 600px) {
+  #page .three-panel .grid-item {
+    width: 100%;
+}
+  }
+   @media (max-width: 540px){
+ #page .chart-block {
+  margin-left: -32px;
+}
+     #page div.cta-wrapper {
+    flex-direction: column;
+        align-items: flex-start;
+  }
+     #page .feature-cta {
+    margin-top: 0;
+  }
+     div#page section.more_stories .neg-marg.grid article.grid-item.dark.all_posts .caption div.featured h2 {
+    font-size: 1.1em;
+     }
+  }
+   
+/*   HERO IMAGE ANIMATION  */
+@keyframes orbit {
+  0% {
+    -webkit-transform: translateZ(0) rotate(0deg);
+    -ms-transform: translateZ(0) rotate(0deg);
+    transform: translateZ(0) rotate(0deg);
+  }
+  100% {
+    -webkit-transform: translateZ(0) rotate(359.99deg);
+    -ms-transform: translateZ(0) rotate(359.99deg);
+    transform: translateZ(0) rotate(359.99deg);
+  }
+}
+/* ARROW DOWN ANIMATION */
+@keyframes bobbing {
+  0% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+  50% {
+    -webkit-transform: translate3d(-50%,-38%, 0);
+    -ms-transform: translate3d(-50%,-38%, 0);
+    transform: translate3d(-50%,-38%, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+}
+@keyframes bobbingRight {
+  0% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+  50% {
+    -webkit-transform: translate3d(-38%, -50%, 0);
+    -ms-transform: translate3d(-38%, -50%, 0);
+    transform: translate3d(-38%, -50%, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+}
+@keyframes bobbingLeft {
+  0% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+  50% {
+    -webkit-transform: translate3d(-62%, -50%, 0);
+    -ms-transform: translate3d(-62%, -50%, 0);
+    transform: translate3d(-62%, -50%, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(-50%,-50%, 0);
+    -ms-transform: translate3d(-50%,-50%, 0);
+    transform: translate3d(-50%,-50%, 0);
+  }
+}
+</style>
+
+
+<style>
+  header.main {
+    background: #FAF8F9 !important;
+  }
+  header.main > .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header.main div.gc-nav-logo {
+    width: auto;
+    margin-left: 0;
+  }
+  header.main div.gc-nav-logo strong {
+    background-image: url(https://www.graphcore.ai/hubfs/assets/logo/GC_no_padding.svg);
+    background-size: 100% auto;
+    background-position: left center;
+    background-repeat: no-repeat;
+  }
+  header.main nav.header ul {
+    display: block;
+  }
+  header.main nav.header li a {
+    position: relative;
+    font-family: 'Graphik-Medium', sans-serif;
+  }
+  header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper {
+    max-height: 0;
+    opacity: 0;
+    background: #FAF8F9;
+  }
+  header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper {
+    max-height: 0;
+    opacity: 0;
+    background: #FAF8F9;
+    transform: scale3d(1,0,1);
+    transform-origin: top center;
+    will-change: transform;
+    transition: transform .3s;
+  }
+  header.main nav.header li.hs-item-has-children.open ul.hs-menu-children-wrapper {
+    opacity: 1;
+    max-height: 999px;
+    height: auto;
+    transform: scale3d(1,1,1);
+  }
+  header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li {
+    opacity: 0;
+    transform: translateX(150px);
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper {
+    flex-direction: column;
+    position: relative;
+  }
+  header.main nav.header li.hs-menu-depth-1.hs-item-has-children.active-branch.active > ul.hs-menu-children-wrapper, header.main nav.header li.hs-menu-depth-1.hs-item-has-children > ul.hs-menu-children-wrapper {
+    border-top: solid #F2F0F0 3px;
+    justify-content: center;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children {
+    margin: auto 0;
+    text-align: left;
+  }
+header.main nav.header li.hs-menu-item.hs-menu-depth-1.open li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a, header.main nav.header li.hs-menu-item.hs-menu-depth-1.open li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after  {
+    color: #999;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a[href*="https://www.graphcore.ai/resources"], header.main nav.header li.hs-menu-item.hs-menu-depth-1.open li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a[href*="https://www.graphcore.ai/resources"]::after {
+    color: #292c31;
+}
+  header.main nav.header li.hs-item-has-children.open ul.hs-menu-children-wrapper li {
+    transform-origin: top center;
+    animation: rotateX .2s ease-out forwards running;
+    -webkit-animation: rotateX .2s ease-out forwards running;
+  }
+  header.main.headroom.headroom--not-bottom.headroom--not-top.headroom--unpinned li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.active-branch.active > ul.hs-menu-children-wrapper.active-branch, header.main.headroom.headroom--not-bottom.headroom--not-top.headroom--unpinned li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.active-branch.active > ul.hs-menu-children-wrapper.active-branch > li {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0);
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-3:first-child {
+    margin-top: .4em;
+  }
+  header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li.hs-menu-item.hs-menu-depth-3 {
+    padding: .5em 0;
+    margin-left: 0;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after {
+    transition: transform .2s;
+    content: "▾";
+    display: inline-block;
+    text-decoration: none;
+    margin-left: .5px!important;
+    transform: scale(1.1) rotate(-90deg) translateX(-1px);
+  }
+ header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a::after,  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.active.open > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children.active > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children.open > a::after {
+    transform: scale(1.1) rotate(0) translateX(2px);
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-3.active > a:before {
+    margin-left: 0;
+  }
+  header.main nav.header li.hs-menu-depth-1.active:not(.nav-cta) > a:before {
+content: "";
+    opacity: 1;
+    background-color: #FF6F79;
+    position: absolute;
+    bottom: 1em;
+    text-align: center;
+    width: 60%;
+    height: 3px;
+    margin: auto;
+    left: 0;
+    right: 10px;
+    transition: all 150ms ease-in-out;
+  }
+ header.main nav.header li.hs-menu-depth-2.active > a:before, header.main nav.header li.hs-menu-depth-3.active > a:before {
+   content: "";
+    opacity: 1;
+    background-color: #FF6F79;
+    position: absolute;
+    bottom: -8px;
+    text-align: center;
+    width: 60%;
+    height: 3px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    transition: all 150ms ease-in-out;
+  }
+  header.main nav.header li:not(.nav-cta) a:hover {
+    color: #FF6F79;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open a::after,  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:hover a::after {
+    color: #FF6F79;
+  }
+  header.main nav.header ul.active-branch > li.hs-menu-item.hs-menu-depth-2.hs-item-has-children::before {
+    transform: rotate(0deg);
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:hover > a, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a {
+    color: #FF6F79;
+  }
+  nav.footer li.hs-menu-item.hs-menu-depth-2 > a {
+    will-change: color;
+    transition: color 200ms;
+  }
+  nav.footer li.hs-menu-item.hs-menu-depth-2 > a:hover {
+    color: #ff6f79;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper {
+    max-width: 186px;
+  }
+  header.main nav.header .mobile-menu-toggle, header.main .tablet_CTA {
+    display:none;
+  }
+  header.main nav.header li.hs-item-has-children.open ul.hs-menu-children-wrapper li.hs-menu-item.hs-menu-depth-3 {
+    animation: rotateX .1s ease-out forwards running;
+    -webkit-animation: rotateX .1s ease-out forwards running;
+  }
+  header.main nav.header {
+    -webkit-tap-highlight-color: transparent;
+  }
+  header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children > ul > li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a {
+    pointer-events: none;
+}
+    header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:nth-of-type(3) > ul > li.hs-menu-item.hs-menu-depth-2.hs-item-has-children:first-child > a, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:nth-of-type(3) > ul > li.hs-menu-item.hs-menu-depth-2.hs-item-has-children:first-child > a:after {
+    color: #292C31;
+    pointer-events:all;
+}
+    @media (min-width:1199px){
+  header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children {
+  margin: 0 13px auto 13px;
+  }
+  }
+  @media (min-width:768px){
+    header.main > .container {
+      justify-content: flex-end;
+    }
+    header.main div.gc-nav-logo strong {
+      width: 220px;
+      height: 79px;
+    }
+    header.main nav.header {
+      display: block;
+    }
+    header.main nav.header ul {
+      display: flex;
+      cursor: pointer;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: 0 calc(50% - 560px) 0 calc(50% - 365px);
+      display:flex!important;
+    }
+    header.main li.nav-cta a {
+      border: 2px solid #FF6F79;
+      background: #FF6F79;
+      color: #292c31;
+      display: flex;
+      flex-direction: row-reverse;
+      padding: .75em;
+      font-size: 0.9em;
+      line-height: .8;
+      font-family: 'Graphik-Medium', sans-serif;
+    }
+    header.main li.nav-cta a:before {
+      color: #292c31;
+      font-size: 100%;
+      position: relative;
+      display: inline-block;
+      margin-left: 0.4em;
+      font-family: "GCSymbols-Regular";
+      content: '\E002';
+      transition: transform .3s ease-out;
+    }
+    header.main li.nav-cta:hover a:before {
+      transform: translateX(.3em);
+    }
+    header.main nav.header li:not(.nav-cta) {
+      margin-right: 13px;
+      margin-left: 13px;
+    }
+    header.main nav.header li.nav-cta {
+      margin-left: 13px;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li.hs-menu-item.hs-menu-depth-2:first-child {
+      margin-left: 0;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li {
+      padding: .75em 0;
+    }
+    header.main > .container, header.main nav.header,   header.main nav.header .nav_wrap,  header.main nav.header .nav_ul_wrap, header.main span#hs_cos_wrapper_new_nav, header.main div#hs_menu_wrapper_new_nav, header.main nav.header ul, header.main nav.header li:not(.hs-menu-depth-2) {
+      display:flex;
+      align-items:stretch;
+    }
+    header.main nav.header li a, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children::before {
+      margin:auto;
+    }
+    header.main nav.header li a {
+      margin-left: 0;
+      text-align: left;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children::before {
+      transform: rotate(-0deg);
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children {
+      margin: 0 0 auto 13px;
+    }
+    header.main nav.header #hs_menu_wrapper_new_nav > ul > li:not(.nav-cta) > a {
+      margin: 0;
+      align-items: center;
+      display: flex;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after {
+    transform: scale(1.1) rotate(0) translateX(2px);
+  }
+    header.main nav.header li.hs-menu-depth-1.active:first-child > a:before {
+    right: 0;
+}
+  }
+  @media only screen and (max-width: 1199px) and (min-width: 768px) {
+    header.main > .container {
+      background-color: #faf8f9;
+    }
+    #page header.main {
+      height:auto;
+    }
+    header.main nav.header {
+      width:100%;
+      height:55px;
+    }
+    header.main nav.header .nav_ul_wrap > span > div > ul {
+      position: unset;
+      background-color: #FAF8F9;
+      left: 0;
+      padding:0;
+      width: 100%;
+      max-width: 1328px;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li.hs-menu-depth-3 {
+      width: 100%;
+      margin-right: 14px;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children ul.hs-menu-children-wrapper {
+      padding: 0 1.5em 0 0;
+    }
+    header.main .tablet_CTA {
+      display:flex;
+    }
+    header.main nav.header li.nav-cta {
+      display: none;
+    }
+    header.main > .container {
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header.main div.gc-nav-logo {
+      width: auto;
+      margin-left: 0;
+    }
+    header.main ul.tablet_CTA {
+      margin-left: auto;
+      list-style: none;
+    }
+    header.main div.gc-nav-logo, header.main nav.header li:first-child,  header.main nav.header ul li.hs-menu-depth-3 {
+      margin-left: 0;
+    }
+    header.main ul.tablet_CTA li a {
+      font-family: 'Graphik-Medium', sans-serif;
+    }
+    header.main nav.header .mobile-menu-toggle {
+      display:none;
+    }
+    header.main nav.header li:not(.nav-cta) {
+      font-size: 16px;
+    }
+    #page header.main nav.header ul > li.hs-menu-depth-1 > ul.hs-menu-children-wrapper {
+      padding: 0px calc(50% - 260px) 0 calc(50% - 600px);
+      justify-content: center;
+    }
+    header.main nav.header li.hs-menu-depth-1.active:not(.nav-cta) > a:before {
+    bottom: .5em;
+    }
+    header.main nav.header ul.hs-menu-children-wrapper li {
+    font-size: 14px;
+}
+  }
+  @media (max-width:1060px){
+    #page header.main nav.header ul > li.hs-menu-depth-1 > ul.hs-menu-children-wrapper {
+      padding: 0px calc(50% - 335px) 0 calc(50% - 505px);
+      justify-content: center;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper {
+      max-width: 130px;
+    }
+  }
+  @media (max-width:940px){
+    #page header.main nav.header ul > li.hs-menu-depth-1 > ul.hs-menu-children-wrapper {
+      padding: 0px calc(50% - 355px) 0 calc(50% - 400px);
+      justify-content: center;
+    }
+  }
+  @media (max-width: 814px) {
+    #page header.main nav.header ul > li.hs-menu-depth-1 > ul.hs-menu-children-wrapper {
+      padding: 0px calc(50% - 385px) 0 calc(50% - 386px);
+      justify-content: center;
+    }
+  }
+  @media (max-width:767px) {
+    header.main nav.header {
+      display: block;
+      background: #FAF8F9;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+    }
+    header.main nav.header > div {
+      max-height: 0;
+      transform: scaleY(0);
+      transform-origin: top center;
+      transition: all .3s;
+    }
+    header.main .open nav.header > div {
+      max-height: 999px;
+      height: auto;
+      transform: scaleY(1);
+    }
+    header.main nav.header li {
+      margin: 0;
+    }
+    header.main nav.header > div > ul > li {
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    header.main .open nav.header > div > ul > li {
+      opacity: 1;
+    }
+    header.main nav.header li a {
+      font-size: 1.1em;
+      line-height: 1.7;
+      padding: 0.6em 0.9em;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
+    header.main .mobile-menu-toggle {
+      cursor: pointer;
+      width: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header.main .mobile-menu-toggle div, header.main .mobile-menu-toggle div::before, header.main .mobile-menu-toggle div::after {
+      display: block;
+      width: 28px;
+      height: 3px;
+      border-radius: 2px;
+      background-color: #292c31;
+      outline: 1px solid transparent;
+      transition-property: background-color, -webkit-transform;
+      transition-property: background-color, transform;
+      transition-property: background-color, transform, -webkit-transform;
+      transition-duration: 0.3s;
+    }
+    header.main .mobile-menu-toggle div::before, header.main .mobile-menu-toggle div::after {
+      position: absolute;
+      content: "";
+    }
+    header.main .mobile-menu-toggle div::before {
+      top: -8px;
+      transform-origin: top left;
+    }
+    header.main .mobile-menu-toggle div::after {
+      top: 8px;
+      transform-origin: bottom left;
+    }
+    header.main .open .mobile-menu-toggle div::before {
+      transform: rotate(45deg) translateY(-2px);
+    }
+    header.main .open .mobile-menu-toggle div::after {
+      transform: rotate(-45deg) translateY(2px);
+    }
+    header.main .mobile-menu-toggle span {
+      font-size: 1.1em;
+      font-family: "Graphik-Medium", sans-serif;
+      padding-right: .75em;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    header.main .mobile-menu-toggle > span::before {
+      content: "Menu";
+    }
+    header.main .open .mobile-menu-toggle > span::before {
+      content: "Close"
+    }
+    header.main .mobile-menu-toggle div {
+      position: relative;
+      margin-top: 6px;
+      margin-bottom: 6px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    header.main .open .mobile-menu-toggle div {
+      background: transparent;
+    }
+    header.main nav.header li.hs-menu-depth-1.hs-item-has-children > ul.hs-menu-children-wrapper, header.main nav.header li.hs-menu-depth-1.hs-item-has-children.active-branch > ul.hs-menu-children-wrapper {
+      background-color: #f4f2f2;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper {
+      background-color: #efecec;
+    }
+    header.main nav.header ul {
+      text-align: left;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children > ul.hs-menu-children-wrapper li a {
+      margin-left: 2em;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper li {
+      margin-left: 2em;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper > li.hs-menu-item.hs-menu-depth-3 {
+      padding: 0.15em 0;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after{
+      position: relative;
+      margin-left: auto!important;
+      display: inline-block;
+      transition: all .2s;
+      margin-right: calc(100% - 110px);
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after {
+      margin-right: calc(100% - 135px);
+    }
+    header.main nav.header li.nav-cta:last-child a {
+      background-color: #ff6f79;
+      color: #fff;
+      padding-bottom: 10px;
+    }
+    header.main nav.header ul.active-branch > li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children.open > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.active > a::after   {
+      transform: scale(1.1) rotate(0) translateX(2px);
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children {
+      margin-right: 0!important;
+    }
+    header.main nav.header li.hs-menu-depth-1.hs-item-has-children.active-branch.active > ul.hs-menu-children-wrapper,  header.main nav.header li.hs-menu-depth-1.hs-item-has-children.open > ul.hs-menu-children-wrapper {
+      border-top:none;
+    }
+    header.main nav.header li.hs-menu-depth-1.hs-item-has-children.active-branch.active > ul.hs-menu-children-wrapper {
+      border-top: solid #F2F0F0 3px;
+    }
+    header.main nav.header li.hs-menu-depth-1 > a:before, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children > ul::before {
+      display:none;
+    }    
+    header.main nav.header ul.active-branch {
+      top: 0;
+      padding:0;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a {
+      margin-left: 0;
+    }
+    header.main nav.header li:not(.nav-cta) a:hover, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:hover > a, header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children.open > a, header.main nav.header li.hs-menu-item.hs-menu-depth-3.hs-item-has-children.open > a, header.main nav.header ul.active-branch > li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a {
+      color:#292C31;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-3:first-child {
+      margin-top: 0;
+    }
+    header.main nav.header li.active > a:before {
+      opacity: 0;
+    }    
+    header.main nav.header li.hs-item-has-children.open ul.hs-menu-children-wrapper > li {
+      animation: rotateX .1s ease-out forwards running;
+      -webkit-animation: rotateX .1s ease-out forwards running;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > ul.hs-menu-children-wrapper {
+      max-width: 100%;
+    }
+    header.main nav.header .nav_ul_wrap > span > div > ul {
+      top: 0;
+      padding: 0;
+    }
+    header.main nav.header li.hs-item-has-children ul.hs-menu-children-wrapper {
+      padding:0;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-3 a {
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: baseline;
+    }
+    header.main nav.header li:not(.nav-cta) > a:before {
+      display:none;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:hover a::after, header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.open > a::after {
+      color: #292C31;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-1.hs-item-has-children.active > a::after {
+    transform: scale(1.1) rotate(-90deg) translateX(-1px);
+}
+    header.main nav.header li.hs-item-has-children.hs-menu-depth-2 ul.hs-menu-children-wrapper {
+    max-height: 0;
+   transform: scale3d(1,0,1);
+    opacity: 0;
+    }
+    header.main nav.header li.hs-item-has-children.hs-menu-depth-2.open ul.hs-menu-children-wrapper {
+       max-height: 999px;
+   transform: scale3d(1,1,1);
+    opacity: 1;
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children > a::after {
+      transform: scale(1.1) rotate(-90deg) translateX(-1px);
+    }
+    header.main nav.header li.hs-menu-item.hs-menu-depth-2.hs-item-has-children.open > a::after {
+    transform: scale(1.1) rotate(0) translateX(2px);
+    }
+  }
+  @keyframes slidein {
+    0% {
+      opacity: 0;
+      transform: translateX(150px);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+  }
+  @keyframes slideinleft {
+    0% {
+      opacity: 0;
+      transform: translateX(-150px);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+  }
+  @keyframes rotateX {
+    0% {
+      opacity: 0;
+      transform: rotateX(-90deg);
+    }
+    50% {
+      transform: rotateX(-20deg);
+    }
+    100% {
+      opacity: 1;
+      transform: rotateX(0deg);
+    }
+  }
+</style>
+
+<link rel="stylesheet" href="https://www.graphcore.ai/hubfs/hub_generated/module_assets/1/171582905727/1788872757064/module_Hero_homepage_June_24.min.css">
+<link rel="stylesheet" href="https://www.graphcore.ai/hubfs/hub_generated/module_assets/1/34350663750/1741271165940/module_Single_testimonial_2020.min.css">
+<link rel="stylesheet" href="https://www.graphcore.ai/hubfs/hub_generated/module_assets/1/34346100474/1741271163786/module_Testimonial_logos_2020.min.css">
+
+<style>
+footer.main {
+ background-color: #faf8f9;
+}
+footer.main p.footer-heading {
+ margin-bottom: 15px;
+ font-family: 'Graphik-Medium', sans-serif;
+ font-weight: normal;
+ color: #292C31;
+}
+footer.main ul {
+ list-style: none;
+}
+footer.main nav.footer {
+ padding: 2.5em 0 3em;
+}
+footer.main nav.footer>ul {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ flex-wrap: nowrap;
+}
+footer.main .social-footer {
+ position: relative;
+}
+footer.main .logo {
+ order: -1;
+}
+footer.main .logo strong {
+ display: block;
+ position: relative;
+ text-indent: -999em;
+ width: 220px;
+ height: 79px;
+ background-image: url(https://www.graphcore.ai/hubfs/assets/logo/GC_no_padding.svg);
+ background-size: 100% auto;
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+footer.main .bottom-footer {
+ background: #ffffff;
+ padding: 15px 0;
+}
+footer.main .bottom-footer>.container,
+footer.main .bottom-footer .legal-footer ul {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+}
+footer.main .bottom-footer .legal-footer ul>li {
+ margin: 0 15px;
+}
+footer.main .copyright {
+ background: #292c31;
+ color: #fff;
+ text-align: center;
+}
+nav.footer li.hs-menu-item.hs-menu-depth-2 {
+ line-height: 1.3;
+ margin-bottom: 7px;
+}
+footer.main .bottom-footer .legal-footer ul>li {
+ padding: 5px;
+ font-size: 0.9em;
+}
+nav.footer li.hs-menu-item.hs-menu-depth-2 > a {
+ color: #646464;
+}
+footer.main .sub_footer div.container {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+}
+footer.main .social-footer ul li.medium {
+ background: url(https://www.graphcore.ai/hubfs/assets/images/social/medium_icon_social.svg) no-repeat;
+ background-size: 24px 24px;
+}
+footer.main .social-footer ul li.slack {
+ background: url(https://www.graphcore.ai/hubfs/assets/images/icons/slack-black-icon.svg) no-repeat;
+ background-size: 24px 24px;
+}
+footer.main div.social-footer ul {
+ width: 100%;
+ height: unset;
+ flex-wrap: wrap;
+ justify-content: center;
+ margin-top: 0px;
+}
+footer.main div.social-footer ul li {
+ background-color: #faf8f9!important;
+ width: 48px;
+ height: 48px;
+ margin: 4px;
+ background-position: center!important;
+}
+footer.main .social-footer a {
+ width: 48px;
+ height: 48px;
+}
+footer.main .social-footer ul li.youtube {
+ width:48px;  
+}
+/* Region notice */
+label#region-notice-lang {
+ font-size: .95em;
+ vertical-align: middle;
+}
+div.region_wrapper {
+ padding: 1em;
+ text-align: center;
+ background: #faf8f9;
+ z-index: 400;
+ bottom: 0;
+ border-top: solid 1px #eaeaea;
+ display: none;
+}
+div.region_wrapper.sticky {
+ position: sticky;
+ display: block;
+}
+div.region_wrapper.fixed {
+ position: relative;
+ display: block;
+}
+div.region_wrapper div#region_selector_form span:after {
+ content: "▾";
+ color: #292c31;
+ font-size: 1em;
+ right: 18%;
+ position: relative;
+ pointer-events: none;
+}
+div.region_wrapper div#region_selector_form select#region_select {
+ font-family: "Graphik-Medium", sans-serif;
+ box-sizing: content-box;
+ cursor: pointer;
+ outline: none;
+ font-size: .9em;
+ padding-right: 16px;
+}
+div.region_wrapper .selector-wrapper {
+ display: inline-block;
+ background-color: #f2f0f0;
+ padding: 4px 0 4px 10px;
+ margin-left: 8px;
+ vertical-align: middle;
+}
+div.region_wrapper .region-notice-close {
+ color: #FF6F79;
+ font-size: 36px;
+ font-weight: bold;
+ transition: 0.3s;
+ transform: translate(-50%, -50%);
+ position: absolute;
+ top: 50%;
+ right: 3%;
+}
+div.region_wrapper.fixed span.region-notice-close {
+ display: none!important;
+}
+div.region_wrapper .region-notice-close:hover,
+div.region_wrapper .region-notice-close:focus {
+ color: #FF6F79;
+ text-decoration: none;
+ cursor: pointer;
+}
+div.region_wrapper span.region_globe_icon {
+ content: '';
+ background-image: url(https://www.graphcore.ai/hubfs/assets/images/icons/iconmonstr-globe-5.svg);
+ background-repeat: no-repeat;
+ background-size: cover;
+ position: relative;
+ display: inline-block;
+ width: 25px;
+ height: 25px;
+ left: -12px;
+ vertical-align: middle;
+}
+div.region_wrapper span.region_globe_icon:after {
+ display: none;
+}
+footer.main .social-footer ul li.github {
+ margin-left: 4px;
+}
+@media (min-width:768px) {
+ nav.footer li.hs-menu-item.hs-menu-depth-1.hs-item-has-children {
+  max-width: 20%;
+  flex-grow: 1;
+  flex-basis: 0;
+  padding-right: 15px;
+ }
+ nav.footer li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:last-child {
+  padding-right: 0;
+ }
+}
+@media only screen and (min-width: 767px) {
+ footer.main div.social-footer {
+  position: relative;
+  bottom: 0;
+  right: 0;
+ }
+}
+@media (max-width: 1200px) and (min-width: 767px) {
+ footer.main nav.footer>ul {
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+ }
+ nav.footer li.hs-menu-item.hs-menu-depth-1.hs-item-has-children:nth-child(-n+3) {
+  margin-bottom: 2.5em;
+ }
+ nav.footer li.hs-menu-item.hs-menu-depth-1.hs-item-has-children {
+  max-width: 100%;
+  flex-grow: 0;
+  flex-basis: calc(100% / 3);
+  padding-right: 0;
+ }
+ footer.main .bottom-footer>.container {
+  display: flex;
+  justify-content: stretch;
+  align-items: flex-start;
+  flex-direction: column-reverse;
+ }
+ footer.main div.social-footer {
+  align-self: flex-end;
+  position: absolute;
+  bottom: unset;
+  top: unset;
+  left: unset;
+  right: unset;
+ }
+ footer.main .bottom-footer .legal-footer ul>li:first-child {
+  padding-left: 0;
+  margin-left: 0;
+ }
+ footer.main div.legal-footer {
+  margin-bottom: 1.5em;
+ }
+ footer.main div.social-footer,
+ footer.main .logo.small {
+  margin-bottom: 10px;
+ }
+ footer.main .logo strong {
+  height: 100%;
+  background-position: center;
+  padding: 2px 0;
+ }
+}
+@media (max-width: 1199px) {
+ footer.main div.social-footer {
+  margin-bottom: 5px;
+ }
+ footer.main div.social-footer ul li {
+  margin-bottom: 0;
+ }
+}
+@media (max-width: 1024px) {
+ footer.main nav.footer>ul>li.hs-menu-item.hs-menu-depth-1.hs-item-has-children {
+  font-size: .9rem;
+ }
+ div.region_wrapper span.region_globe_icon {
+  width: 21px;
+  height: 21px;
+  left: -10px;
+ }
+ div.region_wrapper .region-notice-close {
+  font-size: 30px;
+ }
+}
+@media (max-width: 767px) {
+ footer.main div.social-footer>ul {
+  margin-top: 20px;
+ }
+ footer.main div.social-footer ul li {
+  margin-bottom: 4px;
+ }
+ footer.main nav.footer>ul,
+ footer.main .bottom-footer>.container,
+ footer.main .bottom-footer .legal-footer ul {
+  display: block;
+ }
+ footer.main nav.footer .hs-item-has-children>ul>li {
+  max-height: 0;
+  height: 0;
+  opacity: 0;
+  transform: scale3d(1, 0, 1);
+  transform-origin: top center;
+  will-change: transform;
+  transition: transform .3s;
+ }
+ footer.main nav.footer>ul>li.hs-menu-item.hs-menu-depth-1.hs-item-has-children {
+  font-size: unset;
+ }
+ nav.footer li.hs-menu-item.hs-menu-depth-2 {
+  margin-bottom: 0;
+  line-height: 1.8;
+ }
+ footer.main nav.footer .hs-item-has-children.open ul>li {
+  height: auto;
+  opacity: 1;
+  max-height: 999px;
+  transform: scale3d(1, 1, 1);
+ }
+ footer.main ul {
+  padding-bottom: 15px;
+ }
+ footer.main nav.footer>ul {
+  padding-bottom: 0;
+ }
+ footer.main nav.footer {
+  padding: 2em 0;
+ }
+ footer.main .logo strong {
+  background-position: center;
+  margin: auto;
+ }
+ footer.main nav.footer li.hs-menu-item {
+  text-align: left;
+ }
+ footer.main nav.footer p.footer-heading::after {
+  content: "▾";
+  display: inline-block;
+  text-decoration: none;
+  margin-left: 0.65em;
+  transform: scale(1.1) rotate(-90deg) translate(-10%, -2px);
+  transition: transform .2s;
+ }
+ footer.main nav.footer .open p.footer-heading::after {
+  transform: scale(1.1) rotate(0deg) translateX(1px);
+ }
+ footer.main li:last-child>ul,
+ footer.main .bottom-footer>.container,
+ footer.main .bottom-footer .legal-footer ul {
+  padding-bottom: 0;
+ }
+ footer.main li>p.footer-heading {
+  margin-bottom: 5px;
+ }
+ footer.main li:last-child:not(.open)>p.footer-heading {
+  margin-bottom: 0;
+ }
+ footer.main div.social-footer {
+  margin-bottom: 0;
+ }
+}
+@media (max-width: 670px) {
+ div.region_wrapper span.region_globe_icon {
+  display: none;
+ }
+ div.region_wrapper .region-notice-close {
+  font-size: 30px;
+  right: 2%;
+ }
+ div.region_wrapper label#region-notice-lang {
+  font-size: .9em;
+ }
+ div.region_wrapper .selector-wrapper {
+  padding: 4px 0 4px 8px;
+  margin-left: 4px;
+ }
+}
+@media (max-width: 578px) {
+ div.region_wrapper .selector-wrapper {
+  margin-top: 2px;
+  padding: 6px;
+  padding-right: 0;
+ }
+}
+@media (max-width: 540px) {
+ footer.main .sub_footer div.container {
+  flex-direction: column-reverse;
+ }
+ div#region_selector_form {
+  max-width: 80%;
+  margin: auto;
+ }
+}
+@media (max-width: 400px) {
+ div#region_selector_form {
+  max-width: 100%;
+ }
+}
+@media (max-width: 320px) {
+ div.region_wrapper .container {
+  padding: 0 25px;
+ }
+}
+</style>
+
+    
+
+
+    
+<!--  Added by GoogleAnalytics integration -->
+<script data-cookieconsent="ignore">
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) { if (consent.allowed || (consent.categories && consent.categories.analytics)) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-82396948-1','auto');
+  ga('send','pageview');
+}}]);
+</script>
+
+<!-- /Added by GoogleAnalytics integration -->
+
+    <link rel="canonical" href="https://www.graphcore.ai">
+
+
+<meta property="og:image" content="https://www.graphcore.ai/hubfs/resnet34inf_b%26w_inv.png">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="2048">
+
+<meta name="twitter:image" content="https://www.graphcore.ai/hubfs/resnet34inf_b%26w_inv.png">
+
+
+<meta property="og:url" content="https://www.graphcore.ai">
+<meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="content-language" content="en">
+
+
+
+
+
+
+    <!--<link href="//cloud.typenetwork.com/projects/1203/fontface.css/" rel="stylesheet" type="text/css">-->
+  <!-- Hotjar Tracking Code for https://www.graphcore.ai -->
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:1074732,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+	<!-- Facebook Pixel Code -->
+	
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '145304570664993');
+fbq('track', 'PageView');
+</script>
+<noscript>&lt;img  height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=145304570664993&amp;amp;ev=PageView&amp;amp;noscript=1"&gt;</noscript>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-58VGWTB');</script>
+<!-- End Google Tag Manager -->
+<!-- Google GA4 tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9FGGQC4BG9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9FGGQC4BG9');
+</script>
+<!-- End Facebook Pixel Code -->
+	<!--[if lt IE 9]>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/selectivizr/1.0.2/selectivizr-min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	
+<!-- GA Outbound links -->
+<script>
+     var captureOutboundLink = function(url) {
+        ga('send', 'event', 'outbound', 'click', url, {
+          'transport': 'beacon',
+          'hitCallback': function(){document.location = url;}
+        });
+     }
+</script>
+<meta name="generator" content="HubSpot"></head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-58VGWTB" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+    <div id="page" class="homepage_page">
+
+        
+<header class="main headroom--top">
+  <div class="container">
+    <a href="#content" class="screen-reader-text">Skip to content</a>
+    <div class="logo small red gc-nav-logo">
+      <a href="/"><strong>Graphcore</strong></a>
+    </div>
+    <div class="mobile-menu-toggle">
+      <span></span>
+      <div></div>
+    </div>
+    <nav class="header">
+      <div class="nav_wrap">
+        <ul class="nav_ul_wrap"> 
+          <span id="hs_cos_wrapper_new_nav" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_new_nav" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="graphcore_2020" data-menu-id="31220516457" aria-label="Navigation Menu">
+ <ul role="menu" class="active-branch">
+  <li class="hs-menu-item hs-menu-depth-1 active active-branch" role="none"><a href="https://www.graphcore.ai" role="menuitem">Home</a></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="none"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">About</a>
+   <ul role="menu" class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/about" role="menuitem">About Us</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/our-team" role="menuitem">Our Team</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/contact" role="menuitem">Contact Us</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1" role="none"><a href="https://www.graphcore.ai/blog" role="menuitem">Blog</a></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="none"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Careers</a>
+   <ul role="menu" class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/careers" role="menuitem">Life at Graphcore</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/diversity-equity-inclusion" role="menuitem">Diversity + Inclusion</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/early-careers" role="menuitem">Early Careers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/jobs" role="menuitem">Job Vacancies</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/bengaluru" role="menuitem">India</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="none"><a href="https://www.graphcore.ai/gdansk-office" role="menuitem">Poland</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+        
+<div id="content">
+<div id="hs_cos_wrapper_module_17195890699908" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><div class="hero-shapes">
+                <div class="gr-l">
+    				<div class="gr-contact">
+						<div>
+							<span class="shp elt1 square white"></span>
+							<span class="shp elt3 square white"></span>
+							<span class="shp elt4 square white"></span>
+						</div>
+					</div>
+				</div>
+
+				<div class="gr-r">
+					<div class="gr1">
+						<div>
+							<span class="shp elt0 octo white"></span>
+						</div>
+					</div>
+					<div class="gr5 gr">
+						<div>
+							<span id="elt5" class="shp elt5 square white"></span>
+							<span id="elt6" class="shp elt6 square white"></span>
+						</div>
+					</div>
+				</div>
+		</div>
+<section id="heroHome">
+  <div class="img-container no-pointer">
+    	<img class="cover-img" style="width: 100%; margin: auto; display: block;position: absolute;top: 0;" src="https://www.graphcore.ai/hubfs/assets/images/content/video-placeholder-bowlaunch-3.jpg" alt="" loading="lazy">
+    
+  </div>
+<article class="gc_hero_text boxed lrg">
+  <div class="clip-wrapper">
+  <h1 style="color:#fff;" class="hero-heading">GRAPHCORE OPENS NEW TAIPEI OFFICE</h1>
+
+  <section class="hero_container">
+    <div class="hero_bg">
+      <div id="hs_cos_wrapper_module_17195890699908_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_inline_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="inline_rich_text" data-hs-cos-field="hero_copy"><p>Graphcore's strong global growth continues as part of the SoftBank Group.</p></div>
+      <div class="button-wrapper">
+      <a class="primary-btn-white ghost" href="https://www.graphcore.ai/posts/welcome-to-graphcore-taipei">Read the Blog</a>  
+     </div>
+    </div>
+  </section>  
+  </div>
+</article>
+</section></div>
+  
+
+
+
+
+<!-- <section class="spacer blue homepage-carousel careers_page-v2 gr-testimonials-cards-container">
+    <div id="hs_cos_wrapper_module_15994932982136" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module" ><section class="homepage-carousel careers_page-v2 gr-testimonials-cards-container our_customers">
+			<div class="container">
+        <div class="benchmark-header resources-header featured">
+          <h2>Our Customers</h2>
+        </div>
+				<div class="gr-testimonials-cards">
+					<ul class="gr-testimonials-slider">
+            <div class="loader-square-container">
+<div class="loader-square">&nbsp;</div>
+<div class="loader-square">&nbsp;</div>
+<div class="loader-circle">&nbsp;</div>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 276 276" class="loader-poly">
+	<path d="M138,10l90.51,37.49L266,138l-37.49,90.51L138,266,47.49,228.51,10,138,47.49,47.49ZM92.75,92.75,74,138l18.75,45.25L138,202l45.25-18.75L202,138,183.25,92.75,138,74Z"></path>
+</svg>
+</div>
+
+						
+								<li class="slide">
+									<div>
+										<figure>
+											<div class="customer-container">
+                        <img src="https://www.graphcore.ai/hubfs/assets/images/content/customer_testimonial_logos/JP%20Morgan%20logo_2.png" alt="JP Morgan logo" width="150px" height="auto" loading="lazy">
+<div class="gr-testimonials-cite">
+                          <p class="name">
+                            
+                          </p>
+                          <p class="job-title">
+                            
+                          </p>
+                        </div>
+                      </div>
+											<figcaption>
+												<div>
+													<div class="gr-testimonials-quote">
+														<p>“Graphcore’s technology is being evaluated by J.P. Morgan to see if its solutions can accelerate the bank’s advances in AI, specifically in Natural Language Processing and speech recognition.”</p>
+													</div>
+												</div>
+											</figcaption>
+										</figure>
+									</div>
+								</li>
+						
+					</ul>
+				</div>
+			</div>
+		</section></div>
+    <div id="hs_cos_wrapper_module_15994932696053" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module" ><section class="customer-logo-wrapper">
+            <div class="container customer-logo-container">
+                          
+                                   <div>
+                                      <img src="https://www.graphcore.ai/hubfs/assets/images/content/customer_testimonial_logos/microsoft-logo.png" alt="microsoft-logo" class="customer-logo-img" loading="lazy">
+                                </div>
+                          
+            </div>
+        </section></div>
+		</section> -->
+<div class="bg-grey">
+   <section class="cutout-sibling more_stories posts">
+            <div class="container">
+    <div class="benchmark-header featured">
+      <h2>ANNOUNCEMENTS</h2>
+      
+    </div>
+                <div class="articles">
+                    <div id="grid_div" class="neg-marg grid">
+                        <!--Posts-->
+
+      
+      
+                      <article class="grid-item dark all_posts">
+                        <a href="https://www.graphcore.ai/posts/from-research-to-reality-fitting-an-11b-vlm-on-a-phone">
+                          
+                            <p class="readnext_meta" title="AI, Research">Aug 26, 2026</p>
+                             
+                            
+                        <figure class="fadein">
+                                <img loading="lazy" src="https://www.graphcore.ai/hubfs/llama-vlm-blog-featured.jpg" alt="From Research to Reality: Fitting an 11B VLM on a Phone" title="From Research to Reality: Fitting an 11B VLM on a Phone">
+                            </figure>
+                             
+                          
+                            <div class="caption">
+                                <div class="featured">
+                                    <h2 alt="From Research to Reality: Fitting an 11B VLM on a Phone" title="From Research to Reality: Fitting an 11B VLM on a Phone">From Research to Reality: Fitting an 11B VLM on a Phone</h2>
+                                </div>
+                                
+                            </div>
+                            </a><a href="https://www.graphcore.ai/posts/from-research-to-reality-fitting-an-11b-vlm-on-a-phone" class="secondary-cta">Read post</a>
+                         
+                          
+                        </article>
+                         
+                        <!--End Posts-->
+                        
+                      <article class="grid-item dark all_posts">
+                        <a href="https://www.graphcore.ai/posts/welcome-to-graphcore-taipei">
+                          
+                            <p class="readnext_meta" title="Announcements, People, Taiwan, Taipei">Aug 03, 2026</p>
+                             
+                            
+                        <figure class="fadein">
+                                <img loading="lazy" src="https://www.graphcore.ai/hubfs/Taiwan_social_preview.png" alt="Welcome to Graphcore Taipei" title="Welcome to Graphcore Taipei">
+                            </figure>
+                             
+                          
+                            <div class="caption">
+                                <div class="featured">
+                                    <h2 alt="Welcome to Graphcore Taipei" title="Welcome to Graphcore Taipei">Welcome to Graphcore Taipei</h2>
+                                </div>
+                                
+                            </div>
+                            </a><a href="https://www.graphcore.ai/posts/welcome-to-graphcore-taipei" class="secondary-cta">Read post</a>
+                         
+                          
+                        </article>
+                         
+                        <!--End Posts-->
+                        
+                      <article class="grid-item dark all_posts">
+                        <a href="https://www.graphcore.ai/posts/graphcore-co-founder-and-executive-chair-nigel-toon-steps-down">
+                          
+                            <p class="readnext_meta" title="Announcements">Jul 31, 2026</p>
+                             
+                            
+                        <figure class="fadein">
+                                <img loading="lazy" src="https://www.graphcore.ai/hubfs/nigel-toon-steps-down.jpeg" alt="Graphcore Co-Founder and Executive Chair, Nigel Toon, steps down" title="Graphcore Co-Founder and Executive Chair, Nigel Toon, steps down">
+                            </figure>
+                             
+                          
+                            <div class="caption">
+                                <div class="featured">
+                                    <h2 alt="Graphcore Co-Founder and Executive Chair, Nigel Toon, steps down" title="Graphcore Co-Founder and Executive Chair, Nigel Toon, steps down">Graphcore Co-Founder and Executive Chair, Nigel Toon, steps down</h2>
+                                </div>
+                                
+                            </div>
+                            </a><a href="https://www.graphcore.ai/posts/graphcore-co-founder-and-executive-chair-nigel-toon-steps-down" class="secondary-cta">Read post</a>
+                         
+                          
+                        </article>
+                         
+                        <!--End Posts-->
+                        
+                    </div>
+                    
+                </div>
+                   <a href="https://www.graphcore.ai/blog" class="primary-btn-red blog-cta">View Blog</a>
+            </div>
+        </section>
+       
+          </div>
+	
+<footer class="main grey">
+    <div class="container">
+        <nav class="footer">
+            <ul>
+                 
+                <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children " role="menu">
+                  <p class="footer-heading"><strong>Why Graphcore</strong></p>
+                    <ul class="hs-menu-children-wrapper">
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/about" role="menuitem">About</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/careers" role="menuitem">Careers</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/blog" role="menuitem">Blog</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/contact" role="menuitem">Contact Us</a></li>
+                        
+                    </ul>
+                </li>
+                
+                <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children " role="menu">
+                  <p class="footer-heading"><strong>Legal</strong></p>
+                    <ul class="hs-menu-children-wrapper">
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/termsofuse" role="menuitem">Terms of Use</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/hubfs/assets/pdf/GC_Terms_and_Conditions_for_Sale_Jan2021.pdf" role="menuitem">Terms of Sale</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://docs.graphcore.ai/projects/eula/en/latest/" role="menuitem">End User Licence Agreement</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/modern-slavery" role="menuitem">Modern Slavery Act</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/group-tax-strategy" role="menuitem">Group Tax Strategy</a></li>
+                        
+                        <li class="hs-menu-item hs-menu-depth-2 "><a href="https://www.graphcore.ai/s172-statement" role="menuitem">S172(1) Statement</a></li>
+                        
+                    </ul>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</footer>
+<footer class="main white">
+    <div class="bottom-footer" id="white-footer">
+        <div class="container">
+            <div class="legal-footer">
+                <ul>
+                    <li><a href="https://www.graphcore.ai/contact">Contact</a></li>
+                    <li><a href="https://www.graphcore.ai/privacy">Candidate Privacy Notice</a></li>
+                    <li><a href="https://www.graphcore.ai/cookies">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="social-footer">
+                <ul>
+                    <li class="twitter"><a href="https://twitter.com/graphcoreai" target="_blank" title="X">X</a></li>
+                    <li class="facebook"><a href="http://www.facebook.com/pages/Graphcore/890447934394683" target="_blank" title="Facebook">Facebook</a></li>
+                    <li class="linkedin"><a href="https://www.linkedin.com/company/graphcore" target="_blank" title="Linkedin">LinkedIn</a></li>
+                    <li class="youtube"><a href="https://www.youtube.com/channel/UCBX_e0R_EPhAlDNJTMi4Svw" target="_blank" title="YouTube">YouTube</a></li>
+                    <li class="medium"><a href="https://medium.com/graphcore" target="_blank" title="Medium">Medium</a></li>
+                    <li class="github"><a href="https://github.com/graphcore" target="_blank" title="GitHub">GitHub</a></li>
+                </ul>
+            </div>
+            <div class="logo small">
+                <a href="//www.graphcore.ai">
+                    <strong>Graphcore</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="sub_footer copyright" style="background: #292c31">
+        <div class="container">
+            <div class="gc-copyright-footer">
+                <small style="color: #fff;">© Copyright 2026 Graphcore</small>
+            </div>
+        </div>
+    </div>
+</footer>
+<aside class="popup" id="products">
+    <div class="innerpopup">
+        <div class="shapes">
+            <section class="container">
+                <div class="close close-btn"><span class="screen-reader-text">Close this page</span></div>
+                <div class="form_content_container">
+                    <div class="form_content">
+                        <div class="top-part">
+                            <div>
+                                <div class="form_container">
+                                    <!--[if lte IE 8]>
+    									<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2-legacy.js"></script>
+    									<![endif]-->
+                                    <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2.js"></script>
+                                    <script>
+                                        hbspt.forms.create({
+                                            css: '',
+                                            portalId: '729091',
+                                            formId: '9e173af8-d1a9-4d5c-bced-3527abf4735c'
+                                        });
+                                    </script>
+                                    <div class="close-bis"><span class="close-btn">Close</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</aside>
+<div class="overlay"></div>
+<!-- end page div -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.3.2.min.js"></script>
+<script src="https://www.graphcore.ai/hubfs/hub_generated/template_assets/1/4963864694/1789059800444/template_GC_pentagram.min.js"></script>
+<!--<script>hsjQuery = window['jQuery']</script>-->
+	
+<!-- HubSpot performance collection script -->
+<script defer src="/hs/hsstatic/content-cwv-embed/static-1.1293/embed.js"></script>
+<script src="/hs/hsstatic/keyboard-accessible-menu-flyouts/static-1.17/bundles/project.js"></script>
+
+<script>
+  (function() {
+    var activeLi = document.querySelector("li.hs-menu-item.hs-menu-depth-1.active-branch");
+    var activeLiChild = document.querySelector("li.hs-menu-item.hs-menu-depth-2.active-branch");
+    if (activeLi) activeLi.classList.add("active");
+    if (activeLiChild) activeLiChild.classList.add("active");
+    function userDrop(e,elem) {
+      e.stopPropagation();
+      elem.parentElement.querySelectorAll( "nav .open" ).forEach( e => e !== elem && e.classList.remove("open"));
+      elem.classList.toggle("open");
+      if(elem.classList.contains('open')){
+       var screenWidth = window.matchMedia("(min-width: 767px)");
+        if (screenWidth.matches) window.addEventListener("scroll", function(){ elem.classList.remove("open")});
+        if (!screenWidth.matches) document.querySelectorAll("li.hs-menu-item.hs-menu-depth-2.hs-item-has-children").forEach( el => el.classList.add("open"));
+        document.addEventListener('click', function(event) {
+          if (!elem.contains(event.target)) {
+            elem.classList.remove('open')}});
+      }
+
+    }
+    var dropdownbtns = document.querySelectorAll(".hs-item-has-children > a, .hs-item-has-children > h5, .hs-item-has-children > p.footer-heading"),
+   
+    mobbtn = document.querySelector(".mobile-menu-toggle");
+    mobbtn.addEventListener("click", function(e){userDrop(e,this.parentNode)});
+    for (var dropdownbtn of dropdownbtns){
+      dropdownbtn.addEventListener("click", function(e){userDrop(e,this.parentNode)});
+    }
+  })();
+</script>
+
+<script>
+var hsVars = hsVars || {}; hsVars['language'] = 'en';
+</script>
+
+<script src="/hs/hsstatic/cos-i18n/static-1.53/bundles/project.js"></script>
+
+
+<!-- Start of HubSpot Analytics Code -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "standard-page"]);
+_hsq.push(["setCanonicalUrl", "https:\/\/www.graphcore.ai"]);
+_hsq.push(["setPageId", "32290131556"]);
+_hsq.push(["setContentMetadata", {
+    "contentPageId": 38508150093,
+    "legacyPageId": "32290131556",
+    "contentFolderId": null,
+    "contentGroupId": null,
+    "abTestId": null,
+    "languageVariantId": 38508150093,
+    "languageCode": "en",
+    
+    
+}]);
+</script>
+
+<script type="text/javascript">
+var hbspt = hbspt || {};
+(hbspt.targetedContentMetadata = hbspt.targetedContentMetadata || []).push(...[]);
+
+var _hsq = _hsq || [];
+_hsq.push(["setTargetedContentMetadata", hbspt.targetedContentMetadata]);
+</script>
+<script type="text/javascript" id="hs-script-loader" async defer src="/hs/scriptloader/729091.js"></script>
+<!-- End of HubSpot Analytics Code -->
+
+
+<script type="text/javascript">
+var hsVars = {
+    render_id: "6dbcffd5-f99c-4b90-b4ba-67a421193f27",
+    ticks: 1790397518353,
+    page_id: 38508150093,
+    
+    content_group_id: 0,
+    portal_id: 729091,
+    app_hs_base_url: "https://app.hubspot.com",
+    cp_hs_base_url: "https://cp.hubspot.com",
+    language: "en",
+    analytics_page_type: "standard-page",
+    scp_content_type: "",
+    
+    analytics_page_id: "32290131556",
+    category_id: 1,
+    folder_id: 0,
+    is_hubspot_user: false
+}
+</script>
+
+
+<script defer src="/hs/hsstatic/HubspotToolsMenu/static-1.640/js/index.js"></script>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-58VGWTB" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenLite.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TimelineLite.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/easing/EasePack.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/plugins/CSSPlugin.min.js"></script>
+
+</div>
+
+
+</div></body></html>
