@@ -4,9 +4,11 @@ openness:
   class: open
   components:
     license:
+    - name: CC-BY-SA-4.0
+      detail: the grant dumps.wikimedia.org/legal.html now states for text
     - name: cc-by-sa-3.0
-      detail: the grant that covers every article; most text is also under the GFDL, but some is available
-        only under Creative Commons, so the CC grant is the one that reaches the whole release
+      detail: the grant the card and Hub metadata still state, covering older text; most text is also under
+        the GFDL, but some is available only under Creative Commons
     gated:
       value: 'false'
     dataset_card:
@@ -15,12 +17,14 @@ openness:
       format:
         value: parquet
   confidence: high
-  note: Wikipedia text is under CC BY-SA 3.0, which allows redistribution and commercial reuse with attribution
-    and share-alike. Most of it is also under the GFDL, but some is available only under Creative Commons, so
-    the CC grant is the one that covers the whole release. The download is ungated and the card documents
-    structure, languages and preprocessing.
-  raw: license:cc-by-sa-3.0(the grant that covers every article; most text is also under the GFDL, but some
-    is available only under Creative Commons, so the CC grant is the one that reaches the whole release);gated:false;dataset_card:present;format:parquet
+  note: Wikipedia text is under Creative Commons Attribution-ShareAlike. The Foundation's legal page for the
+    dumps now states 4.0, while the card and Hub metadata still name 3.0; both allow redistribution and
+    commercial reuse with attribution and share-alike. Most text is also under the GFDL, but some is available only under
+    Creative Commons, so the CC grants are what cover the release. The download is ungated, and the card
+    documents structure and fields, though its curation, bias and limitations sections are empty.
+  raw: license:CC-BY-SA-4.0(the grant dumps.wikimedia.org/legal.html now states for text)+cc-by-sa-3.0(the grant the card
+    and Hub metadata still state, covering older text; most text is also under the GFDL, but some is available
+    only under Creative Commons);gated:false;dataset_card:present;format:parquet
   last_verified: '2026-09-26'
   sources:
   - url: https://huggingface.co/api/datasets/wikimedia/wikipedia
@@ -43,13 +47,22 @@ openness:
     establishes:
     - dataset_card
     - license
+  - url: https://dumps.wikimedia.org/legal.html
+    shows: '"all original textual content is licensed under the GNU Free Documentation License (GFDL) and the
+      Creative Commons Attribution-Share-Alike 4.0 License. Some text may be available only under the
+      Creative Commons license"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 104242365285791c1d60d61b2ec8eac34e5c4b6a74ae5fdca9996a52f9cd3714
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is measured by Hugging Face downloads of wikimedia/wikipedia, the Foundation's own
-    distribution of the cleaned text, over the trailing month. It excludes the other ways people obtain
+  note: Adoption is measured by Hugging Face downloads of wikimedia/wikipedia, the cleaned text published in
+    the wikimedia namespace on the Hub, over the trailing month. It excludes the other ways people obtain
     Wikipedia, such as the raw dumps on dumps.wikimedia.org.
   last_verified: '2026-09-26'
   sources:
@@ -64,17 +77,15 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Wikipedia text is a documented part of major open pretraining mixes. LLaMA sampled it at 4.5 percent,
-    about 2.45 epochs over its 1.4-trillion-token run, and trained a classifier on pages that Wikipedia cites
-    to select web text; OLMoE's mix carries it through Dolma. That evidence is about Wikipedia text, not this
-    particular Hugging Face distribution of it. No ablation shows it beating a current web corpus, so it sits
-    with the documented, reused components, as pes2o does.
+  note: Wikipedia text is a documented part of major pretraining mixes. LLaMA sampled it at 4.5 percent,
+    about 2.45 epochs over its 1.4-trillion-token run, and OLMoE's mix carries it through Dolma. That evidence
+    is about Wikipedia text, not this particular Hugging Face distribution of it. No ablation shows it
+    beating a current web corpus, so it rests on documented reuse rather than a measured gain.
   last_verified: '2026-09-26'
   sources:
   - url: https://arxiv.org/pdf/2302.13971
-    shows: LLaMA paper full text. Table 1 lists Wikipedia at a 4.5 percent sampling proportion over 2.45
-      epochs, and the CommonCrawl pipeline trains a classifier on pages used as references in Wikipedia
-      versus randomly sampled pages
+    shows: LLaMA paper full text. Table 1 lists Wikipedia at a 4.5 percent sampling proportion and 2.45
+      epochs when training on 1.4T tokens
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 2e663675ae36ad12adb2f5a05281bac2747ecf8d23d92bedd9f937a89fee7136
