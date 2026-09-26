@@ -1,0 +1,59 @@
+name: world_models
+display_name: World models
+description: Models that learn a predictive model of an environment and can be rolled forward
+  under an agent's actions, from latent planners to interactive video and 3D world simulators.
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  extends: model
+  note: >-
+    Inherits the shared model ladder unchanged. Cosmos and V-JEPA are both trained from raw
+    video and could argue for `pretrained`; they are flagged for the promotion PR rather than
+    split onto a second ladder now, because every other row fine-tunes or conditions a video
+    or latent backbone it did not train from scratch. Weighted 0.3 adoption to 0.7 capability
+    because adoption is thin by construction at this stage: most lines are single research
+    drops with small Hub download counts, so adoption measures how new the field is before it
+    measures the product. License strings the shared tier does not yet name (OpenMDW-1.1, the
+    NVIDIA Open Model License, the Tencent HY-World and Hunyuan community licenses with their
+    EU, UK and South Korea exclusions, the inherited LTX-Video license) go to the maintainer's
+    license-rulings issue, and the products carrying them are deferred at promotion.
+products: []
+comments: >-
+  Proposed in issue #99 and seeded on 2026-09-26 as a preliminary category next to
+  robotics_embodied, in the new Embodied & world models group. The July count that parked it
+  (about four lines from two vendors) no longer holds, but adoption is still thin, so
+  promotion waits for the late-October revisit #99 already planned rather than going out with
+  the other new categories (research/decisions.md). Membership test: given a state and an
+  action, does it predict the next state, as pixels, latents or 3D? An action is the agent's
+  control input: robot actions, keyboard and mouse input, and camera pose all count, and game
+  worlds count as environments. Web and text environments do not (WebWorld is out). The seed
+  holds four populations that the capability quantity, controllable rollout (how much of a
+  world you can drive, and for how long), orders only loosely: latent world models for
+  model-based RL (Dreamer, TD-MPC, V-JEPA 2-AC), robot world models used as data engines and
+  policy evaluators (Genie Envisioner, UnifoLM-WMA, GigaWorld, Ctrl-World, Boundless World
+  Model, RynnWorld, Aether), interactive game and scene world models (Matrix-Game,
+  LingBot-World, Yume, Hunyuan-GameCraft, HY-World, DreamX-World, Oasis, DIAMOND), and the
+  closed frontier (Genie 3, Runway GWM-1). Cosmos 3 is the top open anchor. The promotion PR
+  decides whether the interactive-generation rung needs splitting between games and robots.
+  Neighbors. Text-to-video or text-to-3D with no action input belongs to media_generation,
+  which is where World Labs Marble (static editable 3D worlds) and Skywork's Matrix-3D go, in a
+  follow-up rather than this seed. A policy that outputs actions belongs to robotics_embodied
+  even when a world model sits inside it (VLA-JEPA, RynnVLA-002 and the former WorldVLA,
+  GigaBrain), and GR00T, GR00T Dreams included, is ruled there. A code or language model
+  trained on world-model data (CWM) belongs to base_pretrained.
+  Contested rows ruled here on 2026-09-26 (a proposal for maintainer review). Cosmos is one
+  row across Predict, Transfer, Reason and Cosmos 3, and its Reason vision-language SKU is not
+  split out to multimodal_models, since Cosmos 3 unifies reasoning, generation and action
+  prediction. V-JEPA is here on the strength of the action-conditioned V-JEPA 2-AC, though its
+  encoder checkpoints are what gets downloaded and read like a classic_ml_cv vision backbone;
+  the promotion PR should say which artifact carries the adoption. HY-World is one row across
+  HunyuanWorld 1.0, Voyager, WorldPlay and HY-World 2.0, pitched at the brand Tencent ships,
+  with the litmus applied to the interactive members; 1.0 and 2.0 alone would fail it. The
+  action-conditioned game world models (Hunyuan-GameCraft, Matrix-Game, Yume, DreamX-World,
+  Oasis) are here rather than in media_generation. The oasis row is Etched's open 500M
+  release; Decart's hosted Oasis 3 is not merged into it, because no fetched source ties the
+  two lines, and it is added as a closed comparator only if a primary source does. The
+  rynnworld row pairs the RynnWorld-4D repository with the RynnWorld-Teleop weights, and the
+  action-conditioning evidence is for Teleop; the promotion PR may narrow it to Teleop.
