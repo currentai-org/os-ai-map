@@ -1,0 +1,556 @@
+---
+license: other
+license_name: nvidia-open-model-license
+license_link: >-
+  https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/
+pipeline_tag: image-text-to-text
+library_name: transformers
+tags:
+  - nvidia
+  - VLM
+---
+
+# Model Overview
+
+
+### Description:
+NVIDIA Nemotron Nano v2 12B VL model enables multi-image reasoning and video understanding, along with strong document intelligence, visual Q&A and summarization capabilities.
+<br>
+
+This model is ready for commercial use. <br>
+
+### License/Terms of Use
+
+Governing Terms: Use of this model is governed by the [ NVIDIA Open Model License Agreement](https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/)
+
+### Deployment Geography:
+Global <br>
+
+### Use Case: <br>
+Nemotron Nano 12B V2 VL is a model for multi-modal document intelligence. It would be used by individuals or businesses that need to process documents such as invoices, receipts, and manuals. The model is capable of handling multiple images of documents, up to four images at a resolution of 1k x 2k each, along with a long text prompt. The expected use is for tasks like summarization and Visual Question Answering (VQA). The model is also expected to have a significant advantage in throughput. <br>
+
+### Release Date:  <br>
+- Build.Nvidia.com [October 28th, 2025] via [nvidia/NVIDIA-Nemotron-Nano-VL-12B-V2](https://build.nvidia.com/nvidia/nvidia-nemotron-nano-vl-12b-v2)
+- Hugging Face [October 28th, 2025] via [nvidia/NVIDIA-Nemotron-Nano-VL-12B-V2-BF16](https://huggingface.co/nvidia/Nemotron-Nano-12B-v2-VL-BF16)
+- Hugging Face [October 28th, 2025] via [nvidia/NVIDIA-Nemotron-Nano-VL-12B-V2-FP8](https://huggingface.co/nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-FP8)
+- Hugging Face [October 28th, 2025] via [nvidia/NVIDIA-Nemotron-Nano-VL-12B-V2-NVFP4](https://huggingface.co/nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-NVFP4-QAD)
+
+
+
+# Model Architecture:
+**Architecture Type:**
+Transformer  <br>
+**Network Architecture:** 
+Vision Encoder: CRadioV2-H
+Language Encoder: NVIDIA-Nemotron-Nano-12B-v2
+ <br>
+
+** Number of model parameters: 12.6B<br>
+
+
+## Computational Load (For NVIDIA Models Only)
+**Cumulative Compute:**  2.2e+22 <br>
+**Estimated Energy and Emissions for Model Training:**
+Energy Consumption: 7,827.46 kWh <br>
+Carbon Emissions: 3.21 tCO2e <br>
+
+
+## Input: <br>
+**Input Type(s):**  Image, Video, Text
+**Input Format:** Image (png,jpg), Video (MP4, MKV, FLV, 3GP), Text (String) <br>
+**Input Parameters:** Image (2D),Video(3D), Text (1D)  <br>
+**Other Properties Related to Input:**
+- Input Images Supported: 4
+- Language Supported: English only <br>
+- Input + Output Token: 128K
+- Minimum Resolution: 32 × 32 pixels
+- Maximum Resolution: Determined by a 12-tile layout constraint, with each tile being 512 × 512 pixels. This supports aspect ratios such as:
+  - 4 × 3 layout: up to 2048 × 1536 pixels
+  - 3 × 4 layout: up to 1536 × 2048 pixels
+  - 2 × 6 layout: up to 1024 × 3072 pixels
+  - 6 × 2 layout: up to 3072 × 1024 pixels
+  - Other configurations allowed, provided total tiles ≤ 12
+- Channel Count: 3 channels (RGB)
+- Alpha Channel: Not supported (no transparency) <br>
+- Frames: 2 FPS with min of 8 frame and max of 128 frames
+
+
+
+## Output: <br>
+**Output Type(s):**  Text <br>
+**Output Format:**  String <br>
+Output Parameters: 1D <br>
+**Other Properties Related to Output:**  Input + Output Token: 128K <br>
+
+Our AI models are designed and/or optimized to run on NVIDIA GPU-accelerated systems. By leveraging NVIDIA’s hardware (e.g. GPU cores) and software frameworks (e.g., CUDA libraries), the model achieves faster training and inference times compared to CPU-only solutions. <br>
+
+
+## Software Integration:
+**Runtime Engine(s):**
+* [vLLM] <br>
+* [TRT-LLM] <br>
+* [SGLang] <br>
+
+**Supported Hardware Microarchitecture Compatibility:** <br>
+* NVIDIA L40S <br>*
+* NVIDIA A100 <br>
+* NVIDIA B200 <br>
+* NVIDIA H100/H200 <br>
+* NVIDIA RTX PRO 6000 Server Edition<br>
+* NVIDIA GB200 <br>
+
+**Preferred/Supported Operating System(s):**
+* [Linux] <br>
+
+The integration of foundation and fine-tuned models into AI systems requires additional testing using use-case-specific data to ensure safe and effective deployment. Following the V-model methodology, iterative testing and validation at both unit and system levels are essential to mitigate risks, meet technical and functional requirements, and ensure compliance with safety and ethical standards before deployment. <br>
+
+
+## Model Version(s):
+v1.0
+
+## Quick Start
+
+### Install Dependencies
+```
+pip install causal_conv1d "transformers>4.53,<4.54" torch timm "mamba-ssm==2.2.5" accelerate open_clip_torch numpy pillow
+```
+
+### Usage
+
+#### Single Image Inference
+```python
+import torch
+from PIL import Image
+from transformers import AutoModelForCausalLM, AutoProcessor, AutoTokenizer
+
+# Load model and processor
+model_path = "nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16"  # Or use a local path
+device = "cuda:0"
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    trust_remote_code=True,
+    device_map=device,
+    torch_dtype=torch.bfloat16
+).eval()
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
+
+# Load image
+image = Image.open("path/to/your/image.jpg")
+
+# Prepare messages
+messages = [
+    {"role": "system", "content": "/no_think"},
+    {
+        "role": "user",
+        "content": [
+            {"type": "image", "image": ""},
+            {"type": "text", "text": "Describe the image."},
+        ],
+    }
+]
+
+# Generate prompt and process inputs
+prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+inputs = processor(text=[prompt], images=[image], return_tensors="pt").to(device)
+
+# Generate output
+generated_ids = model.generate(
+    pixel_values=inputs.pixel_values,
+    input_ids=inputs.input_ids,
+    attention_mask=inputs.attention_mask,
+    max_new_tokens=1024,
+    do_sample=False,
+    eos_token_id=tokenizer.eos_token_id,
+)
+
+# Decode output
+output_text = processor.batch_decode(
+    generated_ids, skip_special_tokens=False, clean_up_tokenization_spaces=False
+)[0]
+print(output_text)
+```
+
+#### Multi-Image Inference
+```python
+import torch
+from PIL import Image
+from transformers import AutoModelForCausalLM, AutoProcessor, AutoTokenizer
+
+# Load model and processor
+model_path = "nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16"  # Or use a local path
+device = "cuda:0"
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    trust_remote_code=True,
+    device_map=device,
+    torch_dtype=torch.bfloat16
+).eval()
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
+
+# Load multiple images
+images = [
+    Image.open("path/to/image1.jpg"),
+    Image.open("path/to/image2.jpg"),
+]
+
+# Prepare messages with multiple images
+messages = [
+    {"role": "system", "content": "/no_think"},
+    {
+        "role": "user",
+        "content": [
+            {"type": "image", "image": "/path/to/image1"},
+            {"type": "image", "image": "/path/to/image2"},
+            {"type": "text", "text": "\nDescribe the two images in detail."},
+        ],
+    }
+]
+
+# Generate prompt and process inputs
+prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+inputs = processor(text=[prompt], images=images, return_tensors="pt").to(device)
+
+# Generate output
+generated_ids = model.generate(
+    pixel_values=inputs.pixel_values,
+    input_ids=inputs.input_ids,
+    attention_mask=inputs.attention_mask,
+    max_new_tokens=1024,
+    do_sample=False,
+    eos_token_id=tokenizer.eos_token_id,
+)
+
+# Decode output
+output_text = processor.batch_decode(
+    generated_ids, skip_special_tokens=False, clean_up_tokenization_spaces=False
+)[0]
+print(output_text)
+```
+
+#### Video Inference (from Pre-extracted Frames)
+
+**Note:** Video decoding is not included. You must first extract frames from your video using ffmpeg or similar tools.
+
+**Step 1: Extract frames from video**
+```bash
+# Extract 1 frame per second
+ffmpeg -i video.mp4 -vf fps=1 frames/frame_%04d.jpg
+
+# Or extract a specific number of frames uniformly
+ffmpeg -i video.mp4 -vf "select=not(mod(n\,30))" -vsync vfr frames/frame_%04d.jpg
+```
+
+**Step 2: Run inference on frames**
+```python
+import torch
+from transformers import AutoModelForCausalLM, AutoProcessor, AutoTokenizer
+
+import video_io  # Helper module for loading frames
+
+# Load model and processor
+model_path = "nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16"  # Or use a local path
+device = "cuda:0"
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    trust_remote_code=True,
+    device_map=device,
+    torch_dtype=torch.bfloat16
+).eval()
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
+
+# Load frames from directory
+frames_dir = "path/to/frames_directory"
+video_fps = 1  # FPS used when extracting frames (for temporal understanding)
+
+frames = video_io.load_frames_from_directory(frames_dir)
+image_urls, metadata = video_io.frames_to_data_urls_with_metadata(frames, video_fps)
+
+print(f"Loaded {len(frames)} frames, metadata: {metadata}")
+
+# Prepare messages
+messages = [
+    {"role": "system", "content": "/no_think"},
+    {
+        "role": "user",
+        "content": [
+            {"type": "video", "video": ""},
+            {"type": "text", "text": "\nDescribe what you see."},
+        ],
+    }
+]
+
+# Generate prompt and process inputs
+prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+
+# Process with FPS metadata for better temporal understanding
+if metadata:
+    inputs = processor(
+        text=[prompt],
+        videos=frames,
+        videos_kwargs={'video_metadata': metadata},
+        return_tensors="pt",
+    )
+else:
+    inputs = processor(
+        text=[prompt],
+        videos=frames,
+        return_tensors="pt",
+    )
+inputs = inputs.to(device)
+
+# Set video pruning rate for efficient inference
+model.video_pruning_rate = 0.75
+
+# Generate output
+generated_ids = model.generate(
+    pixel_values_videos=inputs.pixel_values_videos,
+    input_ids=inputs.input_ids,
+    attention_mask=inputs.attention_mask,
+    max_new_tokens=128,
+)
+
+# Decode output
+output_text = processor.batch_decode(
+    generated_ids, skip_special_tokens=False, clean_up_tokenization_spaces=False
+)[0]
+print(output_text)
+```
+
+#### Inference with vLLM
+
+Make sure to use the main branch of vLLM. Run the following install command:
+
+```bash
+!VLLM_USE_PRECOMPILED=1 pip install git+https://github.com/vllm-project/vllm.git@main
+```
+
+Commands to serve the model:
+
+**BF16**
+```bash
+vllm serve nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16 --trust-remote-code --dtype bfloat16 --video-pruning-rate 0
+```
+
+**FP8**
+```bash
+vllm serve nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-FP8 --trust-remote-code --quantization modelopt --video-pruning-rate 0
+```
+
+**FP4**
+```bash
+vllm serve nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-NVFP4-QAD --trust-remote-code --quantization modelopt_fp4 --video-pruning-rate 0
+```
+
+#### Inference with SGLang
+Support is verified in **main**:
+
+```bash
+pip install "git+https://github.com/sgl-project/sglang.git@main#subdirectory=python"
+```
+
+**BF16**
+```bash
+sglang serve --trust-remote-code --model-path nvidia/Nemotron-Nano-12B-v2-VL-BF16 --max-mamba-cache-size 256 # Adjust '--max-mamba-cache-size' as needed, to fit in memory
+```
+
+**FP8**
+```bash
+sglang serve --trust-remote-code --model-path nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-FP8
+```
+
+**FP4**
+```bash
+sglang serve --trust-remote-code --model-path nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-NVFP4-QAD --quantization modelopt_fp4
+```
+
+
+## Training, Testing, and Evaluation Datasets:
+
+### Training Datasets: 
+
+**Data Modalities** <br>
+** Total Size: 39'486'703 samples <br>
+** Total Number of Datasets: 270 <br>   
+** Text-only datasets: 33 <br>
+** Text-and-image datasets: 176 <br>
+** Video-and-text datasets: 61 <br>
+** Total size: 27.7 TB <br>
+
+** Data modalities: Text, Image, Video <br>
+** Data Collection Method by dataset: Hybrid: Automated, Human, Synthetic <br>
+** Labeling Method by dataset: Hybrid: Automated, Human, Synthetic <br>
+
+** Dataset partition: Training [100%], Testing [0%], Validation [0%] <br> 
+** Time period for training data collection: 2023-2025 <br> 
+** Time period for testing data collection: N/A <br> 
+** Time period for validation data collection: N/A <br>
+
+The post-training datasets consist of a mix of internal and public datasets designed for training vision language models across various tasks. It includes: 
+
+* Public datasets sourced from publicly available images and annotations, supporting tasks like classification, captioning, visual question answering, conversation modeling, document analysis and text/image reasoning.
+* Internal text and image datasets built with public commercial images and internal labels, adapted for the same tasks as listed above.
+* Synthetic image datasets generated programmatically for specific tasks like tabular data understanding and optical character recognition (OCR), for English, Chinese as well as other languages.
+* Video datasets supporting video question answering and reasoning tasks from publicly available video sources, with either publicly available or internally generated annotations.
+* Specialized datasets for safety alignment, function calling, and domain-specific tasks (e.g., science diagrams, financial question answering).
+* NVIDIA-Sourced Synthetic Datasets for text reasoning.
+* Private datasets for safety alignment or VQA on invoices.
+* Crawled or scraped captioning, VQA, and video datasets.
+* Some datasets were improved with Qwen2.5-72B-Instruct annotations
+
+For around ~30% of our total training corpus and several of the domains listed above, we used commercially permissive models to perform:
+* Language translation
+* Re-labeling of annotations for text, image and video datasets
+* Synthetic data generation
+* Generating chain-of-thought (CoT) traces
+
+Additional processing for several datasets included rule-based QA generation (e.g., with templates), expanding short answers into longer responses, as well as proper reformatting. More details can be found [here](https://arxiv.org/abs/2501.14818). 
+
+
+** Image based datasets were all scanned against known CSAM to make sure no such content was included in training.<br>
+
+# Public Datasets <br> 
+| Type | Data Type | Total Samples | Total Size (GB) |
+|------|-----------|---------------|------------------|
+| Function call | text | 8,000 | 0.02 |
+| Image Captioning | image, text | 1,422,102 | 1,051.04 |
+| Image Reasoning | image, text | 1,888,217 | 286.95 |
+| OCR | image, text | 9,830,570 | 5,317.60 |
+| Referring Expression Grounding | image, text | 14,694 | 2.39 |
+| Safety | image, text | 34,187 | 9.21 |
+| Safety | text | 57,223 | 0.52 |
+| Safety | video, text | 12,988 | 11.78 |
+| Text Instruction Tuning | text | 245,056 | 1.13 |
+| Text Reasoning | text | 225,408 | 4.55 |
+| VQA | image, text | 8,174,136 | 2,207.52 |
+| VQA | video, text | 40,000 | 46.05 |
+| Video Captioning | video, text | 3,289 | 6.31 |
+| Video Reasoning | video, text | 42,620 | 49.10 |
+| VideoQA | video, text | 1,371,923 | 17,641.79 |
+| Visual Instruction Tuning | image, text | 1,173,877 | 167.79 |
+| **TOTAL** | | **24,544,290** | **26,803.75** |
+
+
+# Private Datasets <br> 
+| Type | Modalities | Total Samples | Total Size (GB) |
+|------|------------|---------------|------------------|
+| Image Reasoning | image, text | 17,729 | 15.41 |
+| Text Reasoning | text | 445,958 | 9.01 |
+| **TOTAL** | | **463,687** | **24.42** |
+
+
+# Data Crawling and Scraping <br> 
+| Type | Modalities | Total Samples | Total Size (GB) |
+|------|------------|---------------|------------------|
+| Image Captioning | image, text | 39,870 | 10.24 |
+| VQA | image, text | 40,348 | 3.94 |
+| VideoQA | video, text | 288,728 | 393.30 |
+| **TOTAL** | | **368,946** | **407.48** |
+
+
+# User-Sourced Data (Collected by Provider including Prompts) <br> 
+<br>
+
+# Self-Sourced Synthetic Data <br> 
+| Type | Data Type | Total Samples | Total Size (GB) |
+|------|-----------|---------------|------------------|
+| Code | text | 1,165,591 | 54.15 |
+| OCR | image, text | 216,332 | 83.53 |
+| Text Reasoning | text | 12,727,857 | 295.80 |
+| **TOTAL** | | **14,109,780** | **433.48** |
+
+
+
+
+**Properties**<br>
+* Additionally, the dataset collection (for training and evaluation) consists of a mix of internal and public datasets designed for training and evaluation across various tasks. It includes: 
+  * Internal datasets built with public commercial images and internal labels, supporting tasks like conversation modeling and document analysis.
+  * Public datasets sourced from publicly available images and annotations, adapted for tasks such as image captioning and visual question answering.
+  * Synthetic datasets generated programmatically for specific tasks like tabular data understanding.
+  * Specialized datasets for safety alignment, function calling, and domain-specific tasks (e.g., science diagrams, financial question answering).
+
+For more information about the datasets used to train this model, please see the [Public Summary of Training Content](https://developer.download.nvidia.com/assets/nemo/docs/public-summary-of-training-content-for-nvidia-nemotron.pdf)
+
+### Evaluation Datasets:
+The following external benchmarks are used for evaluating the model: <br>
+
+| Dataset |
+|---------|
+| [RDTableBench](https://github.com/Filimoa/rd-tablebench?tab=readme-ov-file ) |
+| NVIDIA internal test set for OCR |
+| [MMMU Val with ChatGPT as judge](https://mmmu-benchmark.github.io/)  |
+| [AI2D Test](https://prior.allenai.org/projects/diagram-understanding )  |
+| [ChartQA Test](https://github.com/vis-nlp/ChartQA) |
+| [InfoVQA Val](https://www.docvqa.org/datasets/infographicvqa) |
+| [OCRBench](https://github.com/Yuliang-Liu/MultimodalOCR) |
+| [OCRBenchV2](https://github.com/Yuliang-Liu/MultimodalOCR) English |
+| [DocVQA Val](https://www.docvqa.org/datasets) |
+| [SlideQA Val](https://github.com/nttmdlab-nlp/SlideVQA) |
+| [Video MME](https://github.com/MME-Benchmarks/Video-MME)  |
+
+
+
+Data Collection Method by dataset:  <br>
+* Hybrid: Human, Automated <br>
+
+Labeling Method by dataset:  <br>
+* Hybrid: Human, Automated  <br>
+
+**Properties (Quantity, Dataset Descriptions, Sensor(s)):** N/A <br>
+
+**Dataset License(s):** N/A <br>
+
+Evaluation benchmarks scores: <br>
+
+| Benchmarks         | Score |
+|--------------------|-------|
+| MMMU*              | 68    |
+| MathVista*         | 76.9  |
+| AI2D               | 87.11 |
+| OCRBenchv2         | 62.0  |
+| OCRBench           | 85.6  |
+| OCR-Reasoning      | 36.4  |
+| ChartQA            | 89.72 |
+| DocVQA             | 94.39 |
+| Video-MME w/o sub  | 65.9  |
+| Vision Average     | 74.0  |
+
+
+# Inference: <br>
+**Acceleration Engine:** vLLM <br>
+**Acceleration Engine:** TRT-LLM <br>
+**Acceleration Engine:** SGLang <br>
+
+**Test Hardware:** <br>  
+* NVIDIA L40S <br>
+* NVIDIA A100 <br>
+* NVIDIA B200 <br>
+* NVIDIA H100/H200 <br>
+* NVIDIA RTX PRO 6000 Server Edition<br>
+* NVIDIA GB200 <br>
+
+## Ethical Considerations:
+NVIDIA believes Trustworthy AI is a shared responsibility and we have established policies and practices to enable development for a wide array of AI applications.  When downloaded or used in accordance with our terms of service, developers should work with their internal model team to ensure this model meets requirements for the relevant industry and use case and addresses unforeseen product misuse. <br> 
+
+For more detailed information on ethical considerations for this model, please see the Model Card++ [Bias](bias.md), [Explainability](explainability.md), [Safety & Security](safety.md), and [Privacy](privacy.md) Subcards.
+
+Please report security vulnerabilities or NVIDIA AI Concerns [here](https://www.nvidia.com/en-us/support/submit-security-vulnerability/).
+
+
+# Citation:
+```
+@misc{nvidia2025nvidianemotronnanov2,
+      title={NVIDIA Nemotron Nano V2 VL},
+      author={NVIDIA},
+      year={2025},
+      eprint={2511.03929},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2511.03929},
+}
+```
