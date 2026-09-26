@@ -827,8 +827,8 @@ collapse them back into a single rung without moving any score.
 
 `sources/rubrics/dataset.yaml` declares `none` under its `unstated` tier and `closed` and
 `proprietary` under its `proprietary` tier, explicitly, rather than leaving them to
-`check_rubric`'s definitional fallback, which resolves any unmapped license value to a tier
-*named* `proprietary`. Leaving the values implicit put the local checker and the warehouse in
+`check_rubric`'s definitional fallback, which resolves those three values, and only those, to a
+tier *named* `proprietary`; any other unmapped name abstains. Leaving the values implicit put the local checker and the warehouse in
 disagreement without either being wrong on its own terms. The local checker invented
 the fallback tier and scored the affected internal-eval products on their `availability` rung
 instead; the warehouse joined a real lookup table, found no row for a tier that was never
