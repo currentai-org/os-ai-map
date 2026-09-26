@@ -10,7 +10,7 @@ def c(**k): A.append(k)
 c(slug='flux', name='FLUX', type='model', org='black-forest-labs', gh='black-forest-labs/flux2', hf='black-forest-labs/FLUX.1-dev',
   status='open-weights', modality='image', bucket='model',
   lic='weights: FLUX.1 [dev]/FLUX.2 [dev] "FLUX Non-Commercial License" (F0367, F0147, W0021); FLUX.1 [schnell] and FLUX.2 [klein] 4B Apache-2.0 (F0077, F0169); FLUX.2 [klein] 9B non-commercial (F0077); code Apache-2.0 (F0001, F0002)',
-  arch='no/no (F0002)', push='2026-03-12 flux2 (F0002); FLUX.1 repo black-forest-labs/flux 2025-07-31 (F0001)', rel='no GitHub release returned by ecosyste.ms (F0346)',
+  arch='no/no (F0002)', push='2026-03-12 flux2 (F0002); FLUX.1 repo black-forest-labs/flux 2025-07-31 (F0001)', rel='no GitHub release returned by ecosyste.ms for flux2 (F0411) or flux (F0346)',
   adopt='HF 30d downloads FLUX.1-dev 692,264 (F0367); FLUX.2-dev 406,993 (F0147); FLUX.2-klein-4B 404,007 (F0077)',
   members='FLUX.1 [dev]/[schnell]/Kontext/Krea/Fill/Redux; FLUX.2 [dev]/[klein] 4B/9B; API-only FLUX.2 pro/flex (W0021, W0011)',
   handle='GH black-forest-labs; HF black-forest-labs', notes='AA open-weights T2I Elo FLUX.2 [dev] 1000 (W0009). Row declares the current FLUX.2 repo and the most-downloaded checkpoint (FLUX.1-dev).',

@@ -139,3 +139,62 @@ xdit, lightx2v, fastvideo and diffsynth-studio. The sweep discloses this split i
    adding a one-line note in 6b so the scorer can decide whether to band adoption on it.
 10. **Housekeeping.** `rfetch.sh` leaves a `.lock` file in `research/media_generation/`. The auditor
     removed it, along with the `gen/out_*` scratch files. Make sure neither is committed.
+
+## Re-check of fixed items (second auditor)
+
+Second, independent pass on 2026-09-26, limited to the 10 issues above and to the consistency checks
+the fixes could break. Newly cited raw bodies read: F0399, F0401–F0407. This auditor's live fetches
+are F0408–F0411 in `fetch-log.tsv`. No edits were made to `sweep.md`, `rows.yaml` or `gen/*`.
+
+### Per-issue verdicts
+
+| # | issue | verdict | reason |
+|---|---|---|---|
+| 1 | ideogram archived/fork citation | **FIXED** | The cell now reads "no/no (F0399)". F0399 has archived=false, fork=false, pushed 2026-06-04. The last-push cell gives both dates, "2026-06-04 per ecosyste.ms (F0399); ungh pushedAt 2026-06-30 (F0230)", so the disagreement is disclosed. |
+| 2 | "no GitHub release" inferred from 404 / empty list | **FIXED** | The five ungh cells now read "no release returned (ungh 404, F03xx)" (trellis F0332, stable-audio-tools F0327, heartmula F0331, wan2gp F0326, audiocraft F0328). The flux, wan, ltx, sdnext and liveportrait cells read "no GitHub release returned by ecosyste.ms (F0346/F0345/F0344/F0341/F0349)". Each cited body is `[]`. |
+| 3 | package trap on `stable-audio` | **FIXED** | The `stable-audio` model row now declares only `huggingface_model: stabilityai/stable-audio-3-medium`, with no github or pypi. A separate software row `stable-audio-tools` declares `Stability-AI/stable-audio-tools` and `pypi: stable-audio-tools`. Its 6b notes cite F0405, whose README line 37 reads `pip install "stable-audio-tools[train]"`. |
+| 4 | install-doc citation for declared packages | **FIXED** | The five declared pypi fields each have an install-doc id in 6b. invokeai: F0407 (manual install page, "install the invokeai package", `uv pip install <PACKAGE_SPECIFIER>`; F0406 is the redirect stub to it). audiocraft: F0401 (`pip install -U audiocraft`). xfuser: F0402 (`pip install xfuser`). fastvideo: F0403 (`uv pip install fastvideo`). stable-audio-tools: F0405. `diffsynth` is no longer declared. F0404 shows only `pip install -e .`, although the README carries a PyPI badge, so "documents only a source install" is accurate. |
+| 5 | ByteDance org-slug reuse | **ACCEPTED-AS-DISCLOSED** | seedream and seedance use `bytedance-seed-volcano-engine` in both `rows.yaml` and the 6b handle column. infinity-image and latentsync keep a new `bytedance` slug, which is not in the index. Both 6b cells and section 9 Q14 disclose this and ask the maintainer to rule. |
+| 6 | flux declares the dormant repo | **FIXED** | `rows.yaml` now declares `black-forest-labs/flux2`. The push cell leads with "2026-03-12 flux2 (F0002)", and F0002 is flux2 (pushed 2026-03-12, not archived, not a fork). Re-fetched live as F0410, which matches. One loose end: the last-release cell still cites F0346, which is the old `black-forest-labs/flux` release list. The flux2 release list is also `[]` (F0411), so the value holds but the id points at the other repo. |
+| 7 | midjourney "default June 2026" | **FIXED** | The members cell now reads "V8.1 alpha released 2026-04-14 (W0052); V8.0 alpha 2026-03-17 and V8.2 alpha per a search summary (W0024, not vendor-confirmed)". It no longer claims a default. |
+| 8 | minor cells with no id | **FIXED** (8c accepted as before) | (a) musicgen now reads "MusicGen small/medium/large (F0104)", and F0104 lists exactly those three. (b) All 12 closed licence cells cite a homepage fetch (F0374–F0385) plus a W id. tripo cites W0063 and discloses the homepage 403 (F0376). (d) Section 4 now calls ComfyUI "named first among the four most-used UIs and the backend SwarmUI runs on (W0007)". The W0007 excerpt supports both parts, and the video-pipeline claim is gone. |
+| 9 | minimax-hailuo plausibility | **FIXED** | 6b notes now carry a scorer note on the 3,657,004 figure. Its "created 2026-07-28" matches F0136 `createdAt`. |
+| 10 | housekeeping (.lock, gen/out_*) | **NOT FIXED at hand-off; resolved by this auditor** | A zero-byte `research/media_generation/.lock` (mtime 20:27, left by the author's F0401–F0407 fetches) was present at the start of this pass. It has been removed, along with the `.lock` and `gen/out_*` files from this pass. Note that `gen/out__dups.md`, `gen/out__evidence.md`, `gen/out__parked.md` and `gen/out_rows.yaml` are tracked in HEAD and show as deleted in the working tree. The deletion must be committed, or they stay in the repo. |
+
+### Consistency checks
+
+- **Schema:** `jsonschema.validate(rows.yaml, registry.schema.json)` prints `ok`.
+- **Dedup against `research/corpus-index.tsv`:** no slug, retired-alias, github, HF or PyPI collision across all 92 rows. That includes the new `stable-audio-tools` row and `black-forest-labs/flux2`.
+- **Section 6a is identical to `rows.yaml`:** true (byte-identical).
+- **`gen.py` reproduces the files:** `python3 research/media_generation/gen/gen.py` writes an `out_rows.yaml` that is byte-identical to `rows.yaml`. Its 6b table matches the sweep's line for line (94 lines), and the section 7a (52 lines) and 7b (15 lines) tables also match. The scratch files were deleted afterwards.
+- **Section 2 and section 8, recounted from `rows.yaml` and 6b:**
+  - 92 accepted: open 52, open-weights 26, source-available 2, closed 12.
+  - 71 model rows and 21 software rows. The software rows split open 19 and source-available 2.
+  - Modalities: image 20, video 16, 3D 11, audio 12. Closed rows: image 4, video 4, audio 2, 3D 2.
+  - 62 org slugs. The largest is `stability-ai` at 6/92 = 6.5%.
+  - 59 parent companies, with Stability AI and Tencent tied at 6.
+  - 66 of 80 non-closed rows active, and the 14 dormant rows match the list in the sweep.
+  - 53 rows with a usage instrument (92 − 39).
+  - 248 = 106 + 142, where 248 is 235 candidate-source pairs plus 13 index matches.
+  - 142 = 92 + 50.
+  - Every figure matches the author's reported totals.
+  - Minor: `stable-audio-tools` carries `src=['brief']`, since it was split from the brief's "Stable Audio Open" lead. It is therefore rightly absent from section 8's two "not in the brief" lists. `gen.py`'s diagnostic list uses a hard-coded brief-name set and does print it, but no count depends on that list.
+- **Cited ids:** all 308 F/W ids cited in 6b exist in `fetch-log.tsv` or `web-log.tsv`. Every cited F id has a raw body except F0310. That fetch has HTTP 000 and 0 bytes, and its cell says "ungh fetch did not complete".
+- **stable-audio-tools resolves live:**
+  - F0408 (repos.ecosyste.ms) returns 200: `Stability-AI/stable-audio-tools`, licence mit, not archived, not a fork, pushed 2026-09-18, which matches the 6b cell.
+  - F0409 (packages.ecosyste.ms) returns 200: `stable-audio-tools`, licence mit, latest 0.0.20 (2026-05-20), 102,734 downloads last month, which matches F0277.
+
+### Overall status
+
+**PASS.** Eight issues are fixed and issue 5 is accepted as disclosed. Issue 10 was not clean at
+hand-off: the leftover `.lock` has been removed, and the tracked `gen/out_*` deletions must be
+included in the commit. All consistency checks pass. One non-blocking citation nit remains: the flux
+last-release cell cites F0346, which is the old repo. F0411 is the flux2 equivalent and gives the
+same `[]`.
+
+## Author follow-up to the re-check
+
+- Issue 6 leftover: the flux last-release cell now cites the flux2 release list (F0411, `[]`) as well as the old flux repo (F0346). 6b was regenerated from `gen/data.py`, and `rows.yaml` is unchanged.
+- Issue 10: `gen/out_*` was already removed from the tree in commit ff1e2ec. `git ls-files research/media_generation/gen` lists only data.py, gen.py and parked.py, and no `.lock` file remains.
+
+Final status: PASS (second auditor), with the one leftover closed.
