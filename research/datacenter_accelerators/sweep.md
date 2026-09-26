@@ -23,7 +23,7 @@ one.
 
 **GO-WITH-CHANGES.** Supply is not the problem: 22 generally-available generations from 21
 independent organizations survive the litmus, the largest vendor holds 9% of the seed, and
-another 44 surveyed candidates are parked with reasons (mostly next/prior generations and
+another 45 surveyed candidates are parked with reasons (mostly next/prior generations and
 pre-product startups). The changes are four. (1) Make it a **sibling category** in the
 existing Infrastructure → Hardware group next to `edge_hardware`, not a rename. The shared
 `hardware` ladder already has the `form_factor: chipset` rung and the datasheet/availability
@@ -115,7 +115,7 @@ with. The sketch:
 publish no figure at all (Cambricon's site lists no MLU590, F0098), and sparsity or
 "AI compute" marketing definitions differ. A rack-level alternative (the scale-up domain:
 NVL72, Trn3 UltraServer's 144 chips (F0010), the 9,216-chip Ironwood pod (F0002), Helios'
-72 GPUs) orders the frontier better but is unpublished for most of the long tail. The
+72 MI455X GPUs (F0003)) orders the frontier better but is unpublished for most of the long tail. The
 recommendation is per-package peak FP8 with a recorded precision, and a curator should
 expect abstentions.
 
@@ -179,7 +179,7 @@ products:
   - {slug: aws-trainium3, display_name: AWS Trainium3, type: hardware, org: amazon-web-services, homepage: "https://aws.amazon.com/ai/machine-learning/trainium/"}
   - {slug: aws-inferentia2, display_name: AWS Inferentia2, type: hardware, org: amazon-web-services, homepage: "https://aws.amazon.com/ai/machine-learning/inferentia/"}
   - {slug: intel-gaudi-3, display_name: Intel Gaudi 3, type: hardware, org: intel, homepage: "https://www.intel.com/content/www/us/en/products/details/processors/ai-accelerators/gaudi.html"}
-  - {slug: cerebras-wse-3, display_name: "Cerebras WSE-3 (CS-3, CS-4)", type: hardware, org: cerebras-systems, homepage: "https://www.cerebras.ai/chip"}
+  - {slug: cerebras-wse-3, display_name: Cerebras WSE-3, type: hardware, org: cerebras-systems, homepage: "https://www.cerebras.ai/chip"}
   - {slug: sambanova-sn40l, display_name: SambaNova SN40L RDU, type: hardware, org: sambanova-systems, homepage: "https://sambanova.ai/products/sn40l-rdu-ai-chip"}
   - {slug: tenstorrent-blackhole, display_name: Tenstorrent Blackhole, type: hardware, org: tenstorrent, github: tenstorrent/tt-metal, homepage: "https://tenstorrent.com/en/hardware/blackhole"}
   - {slug: qualcomm-cloud-ai-100, display_name: Qualcomm Cloud AI 100 (incl. Ultra), type: hardware, org: qualcomm, github: quic/cloud-ai-sdk, homepage: "https://www.qualcomm.com/artificial-intelligence/data-center/cloud-ai-100-ultra"}
@@ -213,21 +213,21 @@ generation's GA/shipping date. Adoption cells record what is citable. Most will 
 | slug | open status | license(s) + URL | archived/fork | last push | last release (GA/shipping) | adoption signal + value + URL | member checkpoints/SKUs | org GitHub/HF handle | notes |
 |---|---|---|---|---|---|---|---|---|---|
 | nvidia-blackwell | closed | silicon: none. Open kernel modules MIT/GPL-2.0 dual, github.com/NVIDIA/open-gpu-kernel-modules (F0067). CUDA license not fetched | n/a (no repo attached) | kernel modules 2026-09-09 (F0052) | AWS P6-B300 GA Nov 2025 (F0094). GB300 NVL72 on vendor page (F0009) | GB300 rentable from 7 cloud providers (F0095); NVIDIA an MLPerf Inference v6.1 submitter (F0090) | B200, B300 (Blackwell Ultra), GB200 NVL72, GB300 NVL72 "72 NVIDIA Blackwell Ultra GPUs, 36 NVIDIA Grace CPUs" (F0009), HGX (F0011) | NVIDIA | Blackwell + Blackwell Ultra collapsed as one architecture generation. §9 Q1 |
-| amd-instinct-mi350 | closed | ROCm meta-repo MIT (F0074); repo renamed legacy-rocm-build (F0096) | n/a | ROCm 2026-09-22 (F0096) | MI350P "available" in MLPerf v6.1 (F0090) | MI350P new in MLPerf Inference v6.1 (F0090) | MI350X, MI355X, MI350P PCIe; 288 GB HBM3E, 8 TB/s (F0001) | ROCm | "open, ROCm software-based foundation" (F0005) |
-| google-tpu-ironwood | closed | none (libtpu license not fetched) | n/a | n/a | GA at Cloud Next, 2026-04-22 (W0002) | Rented via GKE/Compute Engine (F0002); sold to "a select group of customers in their own data centers", first revenue Q2 2026 (W0041); Google an MLPerf v6.1 submitter (F0090) | TPU7x; 4,614 FP8 TFLOPs, 192 GiB HBM per chip; 9,216-chip pod (F0002) | google | Prior gens v6e/v5p/v5e parked (F0006). Next gen TPU 8t/8i parked (W0002) |
+| amd-instinct-mi350 | closed | ROCm meta-repo MIT (F0074); repo renamed legacy-rocm-build (F0096) | n/a | ROCm 2026-09-22 (F0096) | MI350P "available" in MLPerf v6.1 (F0090) | MI350P new in MLPerf Inference v6.1 (F0090) | MI350X, MI355X, MI350P PCIe; 288 GB HBM3E, 8 TB/s (F0001) | ROCm | vendor cites "an open low and no-cost software ecosystem" (F0001) |
+| google-tpu-ironwood | closed | none (libtpu license not fetched) | n/a | n/a | available via GKE/Compute Engine (F0002); GA at Cloud Next 2026-04-22 per search excerpt only (W0002). The auditor found an earlier (Nov 2025) GA report, not fetched here, so treat the date as unverified | Rented via GKE/Compute Engine (F0002); sold to "a select group of customers in their own data centers", first revenue Q2 2026 (W0041); Google an MLPerf v6.1 submitter (F0090) | TPU7x; 4,614 FP8 TFLOPs, 192 GiB HBM per chip; 9,216-chip pod (F0002) | google | Prior gens v6e/v5p/v5e parked (F0006). Next gen TPU 8t/8i parked (W0002) |
 | aws-trainium3 | closed | Neuron SDK docs CC-BY-SA-4.0 (F0073); NKI samples MIT-0 (F0050) | n/a | aws-neuron-sdk 2026-09-16 (F0064) | Trn3 UltraServers GA Dec 2025 (F0010) | EC2 Trn3 UltraServers in EC2 UltraClusters 3.0 (F0010) | Trainium3 2.52 PFLOPs FP8, 144 GB HBM3e; Trn3 UltraServer 144 chips (F0010) | aws-neuron | Cloud-only (F0008). Trainium2 prior (F0010), Trainium4 future (W0025) |
 | aws-inferentia2 | closed | as Trainium (same Neuron stack) | n/a | n/a | Inf2 instances current on vendor page (F0007) | EC2 Inf2 instances, "up to 12 Inferentia2 chips" per instance (F0007) | Inferentia2, 2 NeuronCores per chip (F0007) | aws-neuron | No Inferentia3 announced per search excerpt (W0025). §9 Q4 (long tail?) |
 | intel-gaudi-3 | closed | stack repos: HabanaAI/Model-References archived (F0071), HabanaAI/Gaudi-tutorials archived (F0066) | n/a | Model-References 2026-01-08 (F0071) | shipping via OEMs Dell/HPE/Supermicro and IBM Cloud (W0026) | cloud: IBM Cloud, Denvr Dataworks (W0026) | HL-338 PCIe, HL-325L mezzanine, HLB-325 UBB (W0026) | HabanaAI | Archived reference repos are a churn signal. Gaudi 2 prior, Crescent Island / Jaguar Shores future (W0013) |
-| cerebras-wse-3 | closed | Cerebras/modelzoo apache-2.0 label (F0056) | n/a | modelzoo 2026-09-01 (F0056) | CS-4 (WSE-3 Turbo) unveiled Aug 2026 (W0011); WSE-3T on vendor page (F0024) | on-prem: "Bring the fastest AI to your data center" (F0081); API `cerebras-inference` already mapped | WSE-3, WSE-3 Turbo (4T transistors, 900,000 cores, 250 PF); systems CS-3, CS-4 = 3× WSE-3T (F0024) | Cerebras | Public "CS-3 and WSE-3 Datasheet" (F0024). No WSE-4 (W0011) |
+| cerebras-wse-3 | closed | Cerebras/modelzoo apache-2.0 label (F0056) | n/a | modelzoo 2026-09-01 (F0056) | CS-4 (WSE-3 Turbo) unveiled Aug 2026 (W0011); WSE-3T on vendor page (F0024) | on-prem: "Bring the fastest AI to your data center" (F0081); API `cerebras-inference` already mapped | WSE-3, WSE-3 Turbo (4T transistors, 900,000 cores, 250 PF); systems CS-3, CS-4 = 3× WSE-3T (F0024) | Cerebras | Public "CS-3 and WSE-3 Datasheet" (F0024). No WSE-4 (W0011). CS-4 first shipments "begin this quarter" (F0081), so the GA system today is CS-3 |
 | sambanova-sn40l | closed | sambanova/ai-starter-kit "other" (F0061) | n/a | 2026-09-21 (F0061) | on current product page's "SN50 and SN40 RDU Specifications" (F0020, W0040) | API `sambanova-cloud` already mapped. SambaRack sold (F0020) | SN40(L); SambaRack; three-tier SRAM/HBM/DDR memory (F0020) | sambanova | SN50 (5th gen) ships H2 2026 (F0028), parked as next gen. Swap in SN50 once shipping is confirmed |
-| tenstorrent-blackhole | closed silicon, **open stack** | tt-metal Apache-2.0 (text, F0069); tt-kmd GPL-2.0 label (F0051) | tt-metal not archived, not fork (F0065) | tt-metal 2026-09-26 (F0065) | cards on sale, "Buy Now" (F0018) | tt-metal 1,687 stars (F0065). Prices: p100a $999, p150a/b $1,399 (F0018), Galaxy Blackhole from $160,000 (F0022) | p100a, p150a, p150b (120 Tensix cores, 28/32 GB GDDR6, "16 big RISC-V cores"), Galaxy Blackhole (F0018, F0022) | tenstorrent | The one open-stack datacenter part. Wormhole prior gen still sold, parked (F0022) |
+| tenstorrent-blackhole | closed silicon, **open stack** | tt-metal Apache-2.0 (text, F0069); tt-kmd GPL-2.0 label (F0051) | tt-metal not archived, not fork (F0065) | tt-metal 2026-09-26 (F0065) | cards on sale, "Buy Now" (F0018) | tt-metal 1,687 stars (F0065). Prices: p100a $999, p150a/b $1,399 (F0018), Galaxy Blackhole from $160,000 on the vendor page (F0022; search excerpt W0007 says $110,000, and the vendor page wins) | p100a, p150a, p150b (120 Tensix cores, 28/32 GB GDDR6, "16 big RISC-V cores"), Galaxy Blackhole (F0018, F0022) | tenstorrent | The one open-stack datacenter part. Wormhole prior gen still sold, parked (F0022) |
 | qualcomm-cloud-ai-100 | closed | quic/cloud-ai-sdk BSD-3-Clause-Clear-style text (F0070) | not archived (F0054) | 2026-09-23 (F0054) | product page current (F0092) | none citable | Cloud AI 100 Ultra: 870 TOPS INT8, 128 GB LPDDR4x, 576 MB SRAM, 150 W, PCIe Gen4 x16 (F0078) | quic | AI200 (2026) / AI250 (2027) parked as next gen (W0010) |
-| ibm-spyre | closed | none fetched | n/a | n/a | GA 2025-10-28 on z17/LinuxONE 5, early Dec 2025 on Power11 (F0111) | sold inside IBM systems (F0111) | 32-core SoC, 25.6B transistors, 5 nm (F0111); PCIe card (W0050) | IBM | Not in the brief: found via awesome-list (W0045). System-bundled only. §9 Q3 |
+| ibm-spyre | closed | none fetched | n/a | n/a | GA 2025-10-28 on z17/LinuxONE 5, early Dec 2025 on Power11 (F0111) | sold inside IBM systems (F0111) | 32-core SoC, 25.6B transistors, 5 nm (F0111); PCIe card (W0050) | none found | Not in the brief: found via awesome-list (W0045). System-bundled only. §9 Q3 |
 | furiosa-rngd | closed | furiosa-sdk apache-2.0 label (F0063); LICENSE file 404 at HEAD (F0072) | not archived (F0063) | 2026-03-27 (F0063) | shipping as a standalone PCIe card or turnkey server (W0017) | none citable | RNGD PCIe; NXT RNGD Server; 512 TFLOPS FP8, 48 GB HBM3, 180 W (F0023) | furiosa-ai | SDK repo quiet since March. The current SDK may live elsewhere (not fetched) |
-| rebellions-atom | closed | SDK docs at docs.rbln.ai (W0028); license not fetched | n/a | n/a | ATOM-Max servers in commercial use at SK Telecom (W0030) | SK Telecom: ~14M AI requests/day on ATOM-Max servers (W0030) | ATOM, ATOM-Max: 128 TFLOPS FP16, 64 GB GDDR6, PCIe Gen5 x16 (F0077) | rebellions | Rebel100 (HBM3E 144 GB, F0088) ships H2 2026, parked |
-| d-matrix-corsair | closed | Aviator software (F0103); license not fetched | n/a | n/a | "Enters Full Production", 2026-06-09 (F0015) | shipping in volume to hyperscalers/neoclouds (F0015) | Corsair PCIe card; rack scale (F0103) | d-Matrix | Raptor next gen parked (W0015) |
-| positron-atlas | closed | none | n/a | n/a | "Shipping Today" (F0016) | none citable | Atlas server = 8× Positron Archer Transformer Accelerators (F0016) | Positron | Row pitched at the system because Archer is only sold inside Atlas (F0016). Asimov/Titan parked (W0022). Whether Archer is custom ASIC or FPGA-based was not fetched |
-| huawei-ascend-950 | closed | CANN repos on AtomGit (F0100); open-sourcing reported (W0008); license not fetched | n/a | n/a | 950PR mass production from April 2026 (W0031); 950PR/950DT and Atlas 350 card named on vendor site (W0044) | none citable beyond mass-production start (W0031, search excerpt) | Ascend 950PR, 950DT; Atlas 350 card; Atlas 950 SuperPoD (F0031, W0044) | Ascend (AtomGit) | Atlas 950 SuperPoD (950DT) Q4 2026 (W0031). 910C prior gen parked |
+| rebellions-atom | closed | SDK docs at docs.rbln.ai (W0028); license not fetched | n/a | n/a | ATOM-Max servers in commercial use at SK Telecom (W0030) | SK Telecom: ~14M AI requests/day on ATOM-Max servers (W0030) | ATOM, ATOM-Max: 128 TFLOPS FP16, 64 GB GDDR6, PCIe Gen5 x16 (F0077) | none found | Rebel100 (HBM3E 144 GB, F0088) ships H2 2026, parked |
+| d-matrix-corsair | closed | Aviator software (F0103); license not fetched | n/a | n/a | "Enters Full Production", 2026-06-09 (F0015) | "products to begin shipping in volume to priority hyperscalers, neoclouds, and frontier labs" (F0015) | Corsair PCIe card; rack scale (F0103) | none found | Raptor next gen parked (W0015) |
+| positron-atlas | closed | none | n/a | n/a | "Shipping Today" (F0016) | none citable | Atlas server = 8× Positron Archer Transformer Accelerators (F0016) | none found | Row pitched at the system because Archer is only sold inside Atlas (F0016). Asimov/Titan parked (W0022). Whether Archer is custom ASIC or FPGA-based was not fetched |
+| huawei-ascend-950 | closed | CANN repos on AtomGit (F0100); open-sourcing reported (W0008); license not fetched | n/a | n/a | 950PR mass production from April 2026 (W0031); 950PR/950DT and Atlas 350 card named on vendor site (W0044) | none citable beyond mass-production start (W0031, search excerpt) | Ascend 950PR, 950DT, Atlas 350 card (W0044); Atlas 950 SuperPoD (F0031) | Ascend (AtomGit) | Atlas 950 SuperPoD (950DT) Q4 2026 (W0031). 910C prior gen parked |
 | cambricon-mlu590 | closed | Cambricon/torch_mlu "other" (F0058) | not archived (F0058) | torch_mlu 2025-03-15 (F0058) | mass shipment early 2025 (W0032, search excerpt) | ByteDance largest customer (W0032, search excerpt) | MLU590, 80 GB HBM (W0032) | Cambricon | Vendor site lists only MLU370/270/220 (F0098). Weakest identity evidence in the seed. MLU690 parked |
 | kunlunxin-p800 | closed | none fetched | n/a | n/a | 30,000-chip P800 cluster running (W0035, search excerpt) | ~40% of orders from outside customers (W0035) | P800 (3rd gen) (W0035) | none found | Vendor product list shows RG800/R200/R480-X8 (F0033), P800 naming not on the fetched page. §9 Q7 |
 | t-head-zhenwu-m890 | closed | none | n/a | n/a | M890 supernodes "entered large-scale commercial deployment" (F0037) | capabilities offered through Alibaba Cloud (F0037) | Zhenwu M890; also 810E (F0104) | none | V900 unveiled 2026-09-22, parked (F0037). Cloud-first |
@@ -296,7 +296,7 @@ All fetch dates 2026-09-26.
 | Enflame (L600 etc.) | identity unclear: vendor site 403 (W0037). Fourth-gen L600 known only from a search excerpt (W0023) | W0023, W0037 | ✓ |
 | Hygon DCU (BW1000) | identity unclear: vendor page empty (W0038), search excerpt only (W0023) | W0023, W0038 | ✓ |
 | MatX One | not yet generally available: no ship date on vendor page (F0034) | F0034 | ✓ |
-| Fractile | not yet generally available: funding news, no product (F0042) | F0042 | ✓ |
+| Fractile | not yet generally available: $220M Series B reported (W0001), vendor site shows hiring and news but no product (F0042) | F0042, W0001 | ✓ |
 | Taalas HC1 | identity unclear: model-hardwired chip (Llama 3.1 8B), AMD acquisition announced 2026-08-06 (W0022) | W0022 | ✓ |
 | Untether AI speedAI240 | unmaintained: team acquired by AMD, product support ended (W0042) | W0042 | ✓ |
 | Lightmatter Passage | boundary: photonic interconnect, not an accelerator (F0039) | F0039 | ✓ |
@@ -314,16 +314,17 @@ logs for the timestamp.)
 
 ## 8. Reconciled counts
 
-- raw_signals = **72**: the 66 unique candidates below, plus 6 signals that matched the index:
-  `groq-inference` (from the GroqCloud/Groq search, W0006), `cerebras-inference` (W0011),
-  `sambanova-cloud` (W0012), `google-cloud-tpu-inference` (W0002), `aws-neuron` (F0008), and
-  `axelera-metis-aipu` (F0109).
+- raw_signals = **73**: the 67 unique candidates below, plus 6 signals that matched the index:
+  the four inference APIs the brief's scope line names as already in the index (`groq-inference`,
+  `cerebras-inference`, `sambanova-cloud`, `google-cloud-tpu-inference`; confirmed in
+  corpus-index.tsv), `aws-neuron` (Neuron SDK, surfaced by F0008, in the index), and
+  `axelera-metis-aipu` (Metis surfaced by F0109, in the index).
 - duplicate_signals = **6**
-- unique_candidates = **66**
+- unique_candidates = **67**
 - accepted = **22**
-- parked = **44**
+- parked = **45**
 
-72 = 6 + 66 ✓ · 66 = 22 + 44 ✓
+73 = 6 + 67 ✓ · 67 = 22 + 45 ✓
 
 ## 9. Open questions for the maintainer
 
@@ -338,7 +339,7 @@ logs for the timestamp.)
    `datacenter_accelerators`** in the existing Infrastructure → Hardware group. The two
    sets have different capability quantities (edge: TOPS/W and runnable model size;
    datacenter: per-package FP8 and memory) and different openness stories (edge boards
-   publish design files, and no datacenter part does). A merged category would put a
+   publish design files, per `sources/categories/edge_hardware.yaml`, and no datacenter part in §6b does). A merged category would put a
    Raspberry Pi and a GB300 on one axis.
 3. **Admit captive or system-bundled silicon?** Maia 200 and MTIA can't be racked or rented.
    IBM Spyre can be bought only inside an IBM system. **Recommend: admit ibm-spyre (buyable
@@ -366,6 +367,6 @@ logs for the timestamp.)
 8. **Adoption instrument:** accept that adoption abstains category-wide (weights like
    `adopt: 0.2, cap: 0.8`), or build a citable proxy (count of public clouds renting the
    generation, MLPerf submission presence)? **Recommend abstain now.** MLPerf v6.1's submitters
-   include AMD, Google, Intel and NVIDIA among these vendors, and the new accelerators it lists are
-   AMD and NVIDIA parts only (F0090), and cloud counts exist for about
-   5 of 22.
+   include AMD, Google, Intel and NVIDIA among these vendors, and the new processors it lists are
+   AMD, Intel (Arc Pro B70) and NVIDIA parts, none of them the other 18 rows' silicon (F0090), and a cloud-availability fact exists for only 5 of 22 (nvidia-blackwell F0095,
+   google-tpu-ironwood F0002, aws-trainium3 F0010, aws-inferentia2 F0007, intel-gaudi-3 W0026).
