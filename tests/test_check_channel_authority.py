@@ -238,3 +238,70 @@ def test_the_prose_leg_holds_at_its_known_count():
         "mistral-large", "mistral-rs", "n8n",
         "mcp-registry", "ollama", "perplexica", "promptfoo", "searxng", "tesseract", "uzu",
     }
+
+
+# --- the warehouse form of the release-line leg ------------------------------------------
+
+
+def test_the_warehouse_leg_is_skipped_while_the_columns_are_absent():
+    """Until #708 and #709 land, a missing column is the expected state: a reason, not a crash."""
+    def run_query(sql):
+        raise RuntimeError("USER_ERROR: COLUMN_NOT_FOUND - line 1:8: Column 'latest_version' cannot be resolved")
+
+    reason = gate.warehouse_release_lookups(run_query)
+    assert isinstance(reason, str)
+    assert "#708" in reason and "#709" in reason
+
+
+def test_a_broken_warehouse_run_is_raised_not_read_as_pending():
+    """No key or a network error is a broken run. Reporting it as "not yet" would hide it."""
+    def run_query(sql):
+        raise RuntimeError("OSO_API_KEY must be set to read the warehouse")
+
+    try:
+        gate.warehouse_release_lookups(run_query)
+    except RuntimeError as error:
+        assert "OSO_API_KEY" in str(error)
+    else:
+        raise AssertionError("a non-column failure must propagate")
+
+
+def test_the_warehouse_lookups_key_by_lowercased_package_and_repo():
+    def run_query(sql):
+        if "signal_packages" in sql:
+            return [{"package": "Areal", "latest_version": "0.3.0", "latest_upload_at": "2025-01-01"},
+                    {"package": "empty", "latest_version": None, "latest_upload_at": None}]
+        return [{"repo": "inclusionAI/AReaL", "latest_release_tag": "v1.0.0"},
+                {"repo": "o/untagged", "latest_release_tag": None}]
+
+    packages, tags = gate.warehouse_release_lookups(run_query)
+    assert packages == {"areal": ("0.3.0", "2025-01-01")}
+    assert tags == {"inclusionai/areal": "v1.0.0"}
+
+
+def test_the_comparison_is_the_same_whichever_source_feeds_it(monkeypatch, tmp_path):
+    """The warehouse leg swaps where the two strings come from, never how they are compared."""
+    monkeypatch.setattr(gate, "pypi_routed", lambda root=None: {"fires": "f", "clear": "c"})
+    monkeypatch.setattr(gate, "declared_repo_id", lambda slug, root=None: f"o/{slug}")
+    monkeypatch.setattr(gate, "_load", lambda path: {})
+    slept = []
+    monkeypatch.setattr(gate.time, "sleep", lambda seconds: slept.append(seconds))
+    packages = {"f": ("1.0.0", "2025-01-01T00:00:00Z"), "c": ("2.0.0", "2025-01-01T00:00:00Z")}
+    tags = {"o/fires": "v2.0.0", "o/clear": "v2.1.0"}
+    legs = release_lines(tmp_path, release_of=packages.get, tag_of=tags.get)
+    assert [row["slug"] for row in legs["fires"]] == ["fires"]
+    assert skipped_total(legs) == 0
+    assert slept == [], "reading two queried tables needs no API pacing"
+
+
+def test_a_missing_column_that_is_not_a_requested_one_is_raised():
+    """A missing `package` is a broken query, not #708 or #709 still pending."""
+    def run_query(sql):
+        raise RuntimeError("USER_ERROR: COLUMN_NOT_FOUND - line 1:8: Column 'package' cannot be resolved")
+
+    try:
+        gate.warehouse_release_lookups(run_query)
+    except RuntimeError as error:
+        assert "'package'" in str(error)
+    else:
+        raise AssertionError("only the three requested columns may read as pending")

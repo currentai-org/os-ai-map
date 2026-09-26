@@ -79,9 +79,19 @@ gate that punishes candor gets its notes rewritten rather than its bands fixed.
 Ships non-strict, per this repo's convention (`check_adoption`, `check_instrument`,
 `check_artifacts`). `--strict` is what CI passes once the backlog is clear.
 
+## Leg 1 from the warehouse, once the columns exist
+
+The live leg makes a few hundred PyPI and GitHub calls a week. `--warehouse` runs the same
+comparison on columns the collectors would carry instead: `latest_version` and
+`latest_upload_at` on `currentai.signal_packages.downloads` (#709), and `latest_release_tag`
+on `currentai.signal_github.artifact_state` (#708). Until those land the leg reports itself
+skipped and names the missing column, which is the honest state: no platform change is needed
+to write it, only to run it. When both are live, the weekly workflow can switch flags.
+
 Usage:
     uv run python -m build.check_channel_authority           # the prose leg, no network
     uv run python -m build.check_channel_authority --live    # add the release-line leg
+    uv run python -m build.check_channel_authority --warehouse  # the same leg, from the warehouse
     uv run python -m build.check_channel_authority --strict  # exit 1 on any finding
 """
 
@@ -279,6 +289,50 @@ def newest_repo_tag(repo: str, token: str | None = None) -> str | None:
     return None
 
 
+# The warehouse form of leg 1. Column names are the ones #708 and #709 request; if the platform
+# lands them under other names, these two queries are the only place to change.
+_WAREHOUSE_PACKAGES_SQL = (
+    "SELECT package, latest_version, latest_upload_at "
+    "FROM currentai.signal_packages.downloads WHERE artifact_kind = 'pypi'"
+)
+_WAREHOUSE_TAGS_SQL = "SELECT repo, latest_release_tag FROM currentai.signal_github.artifact_state"
+# Only these three are expected to be missing. A missing `package`, `repo` or `artifact_kind`
+# is a broken query or a renamed table, and must not be reported as a pending request.
+_RELEASE_COLUMNS = frozenset({"latest_version", "latest_upload_at", "latest_release_tag"})
+_UNRESOLVED_COLUMN = re.compile(r"Column '([^']+)' cannot be resolved", re.IGNORECASE)
+
+
+def warehouse_release_lookups(run_query=None) -> tuple[dict, dict] | str:
+    """`(package -> (version, uploaded), repo -> tag)` from the warehouse, or why it cannot run.
+
+    A missing column is the expected state until #708 and #709 land, so it comes back as a
+    reason string rather than an exception, and the caller reports the leg as skipped. Any
+    other failure (no key, a network error, a renamed table) is raised: that is a broken run,
+    not a pending request, and reading it as "not yet" would hide it.
+    """
+    if run_query is None:
+        from build.warehouse import query as run_query
+    try:
+        package_rows = run_query(_WAREHOUSE_PACKAGES_SQL)
+        tag_rows = run_query(_WAREHOUSE_TAGS_SQL)
+    except Exception as error:  # classified below, and re-raised unless expected
+        missing = _UNRESOLVED_COLUMN.search(str(error))
+        if missing and missing.group(1).lower() in _RELEASE_COLUMNS:
+            return ("the release columns are not on the warehouse tables yet (#708: "
+                    "latest_release_tag on signal_github.artifact_state; #709: latest_version "
+                    "and latest_upload_at on signal_packages.downloads)")
+        raise
+    packages = {
+        str(row["package"]).lower(): (str(row["latest_version"]), str(row.get("latest_upload_at") or ""))
+        for row in package_rows if row.get("package") and row.get("latest_version")
+    }
+    tags = {
+        str(row["repo"]).lower(): str(row["latest_release_tag"])
+        for row in tag_rows if row.get("repo") and row.get("latest_release_tag")
+    }
+    return packages, tags
+
+
 def _age_days(uploaded: str, today: date | None = None) -> int | None:
     if not uploaded:
         return None
@@ -290,7 +344,8 @@ def _age_days(uploaded: str, today: date | None = None) -> int | None:
     return (reference - when.astimezone(timezone.utc).date()).days
 
 
-def release_lines(root: Path | None = None, token: str | None = None) -> dict:
+def release_lines(root: Path | None = None, token: str | None = None, *,
+                  release_of=None, tag_of=None) -> dict:
     """Leg 1, live. `{fires, prerelease, undecidable, considered, skipped}`.
 
     The three lists hold per-product rows. `considered` is the population — every pypi-routed
@@ -304,6 +359,12 @@ def release_lines(root: Path | None = None, token: str | None = None) -> dict:
     findings and looks *healthier* than a clean one, which is the worst failure mode a report
     can have. So the skips are counted and printed against the denominator.
     """
+    # Live by default. `release_of`/`tag_of` swap the source (the warehouse leg passes lookups
+    # over two queried tables) without touching the comparison, which is the part that can be
+    # wrong. Resolved at call time so a test that replaces the live fetchers still reaches them.
+    live = release_of is None and tag_of is None
+    release_of = release_of or newest_pypi_release
+    tag_of = tag_of or (lambda repo: newest_repo_tag(repo, token))
     base = root or ROOT
     scores = base / "sources" / "scores"
     routed = pypi_routed(base)
@@ -317,17 +378,19 @@ def release_lines(root: Path | None = None, token: str | None = None) -> dict:
         if not repo:
             out["skipped"]["declare no repository"] += 1
             continue
-        release = newest_pypi_release(package)
+        release = release_of(package)
         if not release:
             out["skipped"]["package unreadable"] += 1
             continue
         version, uploaded = release
-        time.sleep(_PACE_SECONDS)
-        tag = newest_repo_tag(repo, token)
+        if live:
+            time.sleep(_PACE_SECONDS)
+        tag = tag_of(repo)
         if not tag:
             out["skipped"]["repository unreadable"] += 1
             continue
-        time.sleep(_PACE_SECONDS)
+        if live:
+            time.sleep(_PACE_SECONDS)
         verdict, behind = lag_verdict(version, tag)
         if verdict == "clear":
             continue
@@ -390,13 +453,26 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--live", action="store_true",
                         help="add the release-line leg, which reads PyPI and the GitHub API")
+    parser.add_argument("--warehouse", action="store_true",
+                        help="run the release-line leg on warehouse columns instead of the APIs")
     parser.add_argument("--strict", action="store_true", help="exit 1 on any finding")
     args = parser.parse_args()
+    if args.live and args.warehouse:
+        parser.error("--live and --warehouse are two sources for the same leg; pass one")
 
     findings = 0
     fires: list[dict] = []
+    legs = None
 
-    if args.live:
+    if args.warehouse:
+        lookups = warehouse_release_lookups()
+        if isinstance(lookups, str):
+            print(f"release-line leg (warehouse) skipped: {lookups}.\n")
+        else:
+            packages, tags = lookups
+            legs = release_lines(ROOT, release_of=lambda pkg: packages.get(str(pkg).lower()),
+                                 tag_of=lambda repo: tags.get(str(repo).lower()))
+    elif args.live:
         # The rate limit is the difference between a short report and a wrong one. Leg 1 makes
         # up to three calls per product; unauthenticated GitHub allows 60 an hour, and an
         # exhausted limit returns an error body that reads here as "no repository tag" — a
@@ -408,6 +484,7 @@ def main() -> int:
             print("unreadable and be counted as skipped rather than checked. Read the skipped")
             print("line below before trusting the findings.\n")
         legs = release_lines(ROOT, token)
+    if legs is not None:
         fires, flagged = legs["fires"], unremedied(legs["fires"])
         marked = {row["slug"] for row in flagged}
         findings += len(flagged)
@@ -437,7 +514,7 @@ def main() -> int:
             for row in sorted(legs["undecidable"], key=lambda r: r["slug"]):
                 print(f"    {row['slug']:<22} {row['package']}=={row['version']} vs {row['tag']!r}")
         print()
-    else:
+    elif not args.warehouse:
         print("release-line leg skipped; pass --live to read PyPI and the GitHub API.\n")
 
     prose = under_coverage()
@@ -449,7 +526,7 @@ def main() -> int:
 
     print(f"\n{REMEDY}")
     print("\nReport-only unless --strict. Nothing here re-bands a product.")
-    if args.live and fires:
+    if legs is not None and fires:
         # No count and no classification here on purpose. An earlier draft narrated "five of
         # the seven read as trailing channels and two look like a monorepo", which is a copy of
         # a count that drifts on the next release AND a judgment this module cannot make. The
