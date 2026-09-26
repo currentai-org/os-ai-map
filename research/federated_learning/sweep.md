@@ -6,17 +6,17 @@ run on 2026-09-26. `Fnnnn` ids point to `fetch-log.tsv` and `raw/`; `Wnnnn` ids 
 
 ## 1. Verdict
 
-**GO-WITH-CHANGES.** Supply is deep. This run found 33 new candidates from 31 organizations, plus
+**GO-WITH-CHANGES.** Supply is deep. This run found 36 new candidates from 33 organizations, plus
 `pysyft` and `syfthub` moving in, and at least 14 of them are active and carry a PyPI download
-instrument. So the set clears 10 without padding. The largest organization, Google, holds 3 of 33
-rows (9.1%). The changes are to the 2026-09-14 framing, not to the category itself.
+instrument. So the set clears 10 without padding. The largest organization, Google, holds 3 of 36
+rows (8.3%). The changes are to the 2026-09-14 framing, not to the category itself.
 (1) **Openness is no longer uniform.** The set now spans Apache-2.0, MIT, GPL-3.0, AGPL-3.0,
-Clear BSD, a custom academic-only license (FL4Health) and two closed platforms, so #533's "uniformly
-open" objection is weaker than the issue said.
+Clear BSD, a custom academic-only license (FL4Health) and two closed platforms, so the issue's own
+"this row will show no openness variation" expectation (W0030) no longer holds.
 (2) **Flower's lead is narrower than the issue recorded.** Flower reads 74,715
-installs a month today on both ecosyste.ms and pypistats (F0046, F0108), not the 120,618 read on 2026-09-14 (W0028). It is
-about 3.1x NVIDIA FLARE (24,429, F0050), down from the issue's 4.5x (W0028), and the two together are 89% of the declared PyPI downloads
-in the set.
+installs a month today on both ecosyste.ms and pypistats (F0046, F0108), not the 120,618 read on
+2026-09-14 (W0028). It is about 3.1x NVIDIA FLARE (24,429, F0050), down from the issue's 4.5x
+(W0028), and the two together are 88.9% of the declared PyPI downloads in the set.
 (3) **Two of the six "known" products are winding down.** OpenFL's README says the project "is no
 longer under active development and will soon be archived" and points users to Flower (F0110).
 FedML's README now leads with TensorOpera's generative-AI cloud, and its last PyPI release was
@@ -27,29 +27,30 @@ function (see §3).
 
 ## 2. Fit metrics (computed from section 6, not estimated)
 
-- accepted candidates: **33** (open: 30, open-weights: 0, source-available: 1, closed: 2). With
+- accepted candidates: **36** (open: 33, open-weights: 0, source-available: 1, closed: 2). With
   the two contested moves (`pysyft`, `syfthub`, both Apache-2.0: F0002, F0003, F0127), the category
-  would hold 35.
-- independent organizations: **31**. Largest org's share: **9.1% (google: tensorflow-federated,
-  federated-compute-platform, fedjax)**. `lf-ai-and-data` holds 2 (openfl, substra). With the
-  moves, google holds 3/35 (8.6%) and openmined 2/35.
-- candidates active in the last 12 months (last push on or after 2025-09-26): **22** of the 31 with
-  a repository. The 9 below the line are substra, fate, federatedscope, paddlefl, primihub,
-  fedtree, metisfl, fedscale and galaxy-federated-learning. The 2 closed rows have no push date.
+  would hold 38.
+- independent organizations: **33**. Largest org's share: **8.3% (google, 3/36:
+  tensorflow-federated, federated-compute-platform, fedjax)**. `lf-ai-and-data` holds 2 (openfl,
+  substra). With the moves, google holds 3/38 (7.9%) and openmined 2/38.
+- candidates active in the last 12 months (last push on or after 2025-09-26): **22** of the 34 with
+  a repository. The 12 below the line are substra, fate, federatedscope, paddlefl, primihub,
+  fedtree, metisfl, fedscale, galaxy-federated-learning, flgo, easyfl and flsim-iqua. The 2 closed rows have no push date.
 - candidates with a usage instrument (a declared PyPI package with a fetched monthly figure):
-  **17**. federatedscope declares a package, but ecosyste.ms reports 0 with a null period (F0058),
-  so it isn't counted.
-- adoption concentration (derived from §6b): declared PyPI total 111,216 a month. Flower is 67.2%,
-  and Flower plus NVIDIA FLARE is 89.1%.
+  **19**. federatedscope's package is no longer on pypi.org (F0205, F0216), so it isn't declared.
+- adoption concentration (derived from §6b): declared PyPI total 111,577 a month. Flower is 67.0%,
+  and Flower plus NVIDIA FLARE is 88.9%.
 - retrieval cutoff: GitHub topic pages `federated-learning` (sorted by stars) and
   `federated-learning-framework`, first page of 20 each (W0005, W0006), plus 17 WebSearch queries.
   Topic-page results past the first 20 were not read. That is a coverage limit, not a rejection.
   Hugging Face was not swept: the category holds software only, and no FL model line surfaced in
-  search.
+  search. The independent auditor's breadth probe found three FL platforms past the cutoff: FLGo
+  (F0245, F0248), EasyFL (F0244) and iQua FLSim (F0247). All three are triaged and accepted below,
+  which shows the cutoff misses real candidates.
 - brief leads **not** named but surfaced by search: secretflow, pfl-research, pfllib, vantage6,
   federated-compute-platform, fedjax, fedlab, fedlearner, plato-fl, flame-fl, nebula-dfl, p2pfl,
-  primihub, fedtree, featurecloud, metisfl, xfl, galaxy-federated-learning, fl4health, Scaleout
-  Edge (parked), HPE Swarm Learning (parked), Photon (parked).
+  primihub, fedtree, featurecloud, metisfl, xfl, galaxy-federated-learning, fl4health, flgo,
+  easyfl, flsim-iqua, Scaleout Edge (parked), HPE Swarm Learning (parked), Photon (parked).
 
 ## 3. Boundary
 
@@ -63,7 +64,8 @@ evaluation, analytics and RAG. Q5 asks whether to keep that.)
 **Explicit exclusions:**
 - Volunteer and decentralized inference (Petals, exo) belongs to `inference_code` or is out of
   scope. Decentralized training networks (hivemind, Prime Intellect, Gensyn) and chain SDKs are out
-  of scope under #428's general-infrastructure exclusion, per the brief.
+  of scope, per the brief ("Out: volunteer inference (exo, Petals), decentralized training networks
+  (Prime Intellect, Gensyn), chain SDKs (Bittensor), compute marketplaces").
 - Differential-privacy, homomorphic-encryption and MPC primitive libraries with no federation
   runtime: no category, and out. Searches for secure-aggregation or federated-analytics *libraries*
   returned only papers (W0009).
@@ -78,7 +80,7 @@ evaluation, analytics and RAG. Q5 asks whether to keep that.)
 
 | product | where it is now | recommendation | reason |
 |---|---|---|---|
-| pysyft | `ml_frameworks` (index) | move here | "Perform data science on data that remains in someone else's server" (W0005). Passes the litmus. PyPI syft 4,941/mo (F0048). |
+| pysyft | `ml_frameworks` (index) | move here | "Perform data science on data that remains in someone else's server" (F0002). Passes the litmus. PyPI syft 4,941/mo (F0048). |
 | syfthub | `orchestration_agents` (index) | move here, **if** the litmus covers querying (Q5) | Federated RAG, not training (sources/products/syfthub.yaml). Under the brief's training-only litmus it fails. |
 | flwr-datasets | absent | fold into `flower` (Q2) | Same repo (F0080, F0115). It is a partitioning utility for Flower users, and declaring it would double-count one population. |
 | secretflow, primihub | absent | here, flagged (Q4) | Privacy-computing platforms with an FL layer beside MPC (F0117, F0118). No other category owns PET platforms. |
@@ -101,10 +103,11 @@ job, and under what trust assumptions.
    biotech companies" (MELLODDY, F0111). vantage6 PET platform "without sharing the data" (W0020).
    FATE "industrial grade", with HE/MPC protocols (F0116).
 4. **Cross-silo plus cross-device or HPC scale, large models.** TensorFlow Federated and the
-   Federated Compute Platform for on-device FL (F0120, F0119). Flower-based Photon pre-trains up to
-   7B federated (W0010).
-5. **Top rung, anchored by NVIDIA FLARE.** 2.9.0 ships Docker, Kubernetes and Slurm launchers and
-   "hardening large-model training ... for production deployments" (W0026). Flower is the other
+   Federated Compute Platform for on-device FL (F0120, F0119). Flower-based Photon "can train model
+   sizes up to 7B in a federated fashion" (F0264, W0010).
+5. **Top rung, anchored by NVIDIA FLARE.** 2.9.0 adds a "Slurm job launcher: a new HPC execution
+   target alongside process, Docker, and Kubernetes", and FedAvg LLM training "validated up to a
+   72-billion-parameter model" (W0029, W0026). Flower is the other
    likely top-rung product, but its secure-aggregation and DP features were not fetched in this
    run.
 
@@ -113,14 +116,14 @@ promotion, not a finding.
 
 ## 5. Scoring ladder inputs
 
-- Ladder: **software** for every row (all 33 are `type: software`). No model, dataset or hardware
+- Ladder: **software** for every row (all 36 are `type: software`). No model, dataset or hardware
   rows.
 - License strings met:
-  - `Apache-2.0`: flower, nvidia-flare, fedml, openfl, substra, fate, tensorflow-federated,
+  - `Apache-2.0` (all read as LICENSE text, cited per row in §6b): flower, nvidia-flare, fedml, openfl, substra, fate, tensorflow-federated,
     federated-compute-platform, fedjax, federatedscope, fed-biomed (text Apache-2.0 while the repo
     label reads "other", F0099), secretflow, pfl-research, pfllib, fedlab, paddlefl, fedlearner,
     plato-fl, flame-fl, primihub, fedtree, featurecloud, fedscale, xfl, galaxy-federated-learning,
-    and the moves pysyft and syfthub.
+    flgo, easyfl, flsim-iqua, and the moves pysyft and syfthub.
   - `MIT`: appfl (F0105).
   - **Conflict** for vantage6: the LICENSE file is Apache-2.0 (F0104), but PyPI and ecosyste.ms say
     MIT (F0088, F0067).
@@ -139,12 +142,14 @@ promotion, not a finding.
 
 ### 6a. Registry rows
 
-See `rows.yaml` (33 rows, validated against `docs/schemas/registry.schema.json`, no slug or
+See `rows.yaml` (36 rows, validated against `docs/schemas/registry.schema.json`, no slug or
 artifact collision with `research/corpus-index.tsv`). Slug notes: `plato-fl`, `flame-fl` and
 `nebula-dfl` carry a suffix because the bare names are generic words. Org notes: `substra` and
 `openfl` use `lf-ai-and-data`, following the `onnx` precedent for LF-hosted projects (F0111,
 W0016). `federatedscope` uses `alibaba-cloud`, the index's slug for `alibaba/` repos.
-`secretflow` uses a new org slug (see Q7).
+`secretflow` and `fedlearner` (`bytedance`) use new org slugs (see Q7).
+`federatedscope` declares no PyPI package, because `federatedscope` returns 404 on pypi.org (F0205,
+F0216).
 
 ```yaml
 category: federated_learning
@@ -206,7 +211,6 @@ products:
     type: software
     org: alibaba-cloud
     github: alibaba/FederatedScope
-    pypi: federatedscope
   - slug: fed-biomed
     display_name: Fed-BioMed
     type: software
@@ -317,6 +321,23 @@ products:
     type: software
     org: galaxylearning
     github: GalaxyLearning/GFL
+  - slug: flgo
+    display_name: FLGo
+    type: software
+    org: wwzzz
+    github: WwZzz/easyFL
+    pypi: flgo
+  - slug: easyfl
+    display_name: EasyFL
+    type: software
+    org: easyfl-ai
+    github: EasyFL-AI/EasyFL
+    pypi: easyfl
+  - slug: flsim-iqua
+    display_name: FLSim (iQua)
+    type: software
+    org: iqua
+    github: iQua/flsim
   - slug: fl4health
     display_name: FL4Health
     type: software
@@ -345,34 +366,37 @@ declared, and the latest GitHub release otherwise.
 |---|---|---|---|---|---|---|---|---|---|
 | flower | open | Apache-2.0: LICENSE text F0102; PyPI license_expression Apache-2.0 F0079 | no/no F0001 | 2026-09-21 F0001 | flwr 1.38.0, 2026-09-22 F0079 | PyPI flwr 74,715/mo (ecosyste.ms F0046; pypistats F0108); 7,140 stars F0001 | framework `flwr`; companion `flwr-datasets` 0.6.1 (24,394/mo F0047, same repo F0080/F0115) held as a component, not declared | gh flwrlabs | Install path `pip install flwr` W0021. The 2026-09-14 sweep read 120,618/mo; both sources read 74,715 today (-38%). |
 | nvidia-flare | open | Apache-2.0: LICENSE text F0103; PyPI Apache-2.0 F0082 | no/no F0005 | 2026-09-19 F0005 | nvflare 2.9.0, 2026-09-04 F0082; release 2.9.0 W0026 | PyPI nvflare 24,429/mo (F0050; pypistats 23,969 F0096); 974 stars F0005 | 2.x line | gh NVIDIA | Install path `pip install nvflare` W0022. Corporate (NVIDIA). |
-| fedml | open | Apache 2.0 (PyPI F0094; repo apache-2.0 F0004) | no/no F0004 | 2025-10-28 F0004 | fedml 0.9.6, 2025-02-24 F0094 | PyPI fedml 2,132/mo F0049; 4,065 stars F0004 | FedGraphNN (dormant sub-project, F0156) | gh FedML-AI | README now leads with TensorOpera generative-AI cloud F0112, W0011. Corporate. No release in 19 months. |
+| fedml | open | Apache-2.0: LICENSE text F0268; PyPI Apache 2.0 F0094 | no/no F0004 | 2025-10-28 F0004 | fedml 0.9.6, 2025-02-24 F0094 | PyPI fedml 2,132/mo F0049; 4,065 stars F0004 | FedGraphNN (dormant sub-project, F0156) | gh FedML-AI | README now leads with TensorOpera generative-AI cloud F0112, W0011. Corporate. No release in 19 months. |
 | openfl | open | Apache-2.0: LICENSE text F0107 | no/no F0006 | 2026-08-25 F0006 | openfl 1.9, 2025-06-10 F0083; GH v1.9 2025-06-23 F0140 | PyPI openfl 467/mo F0051; 843 stars F0006 | none | gh securefederatedai | README: 'no longer under active development and will soon be archived ... recommend the community transitions to Flower' F0110, W0016. PyPI URL securefederatedai/openfl resolves to openfederatedlearning W0027. LF AI & Data project W0016. |
 | substra | open | Apache-2.0 (license text embedded in PyPI metadata F0052; repo apache-2.0 F0007) | no/no F0007 | 2024-10-14 F0007 | substra 1.0.0, 2024-10-14 F0084 | PyPI substra 750/mo F0052; 278 stars F0007 | `substrafl` FL library (245/mo F0053; repo pushed 2026-07-17 F0008) | gh Substra | Hosted by LF AI & Data, Owkin main contributor F0111. Core SDK dormant 23 months; substrafl repo still pushed. |
 | fate | open | Apache-2.0: LICENSE text F0128 | no/no F0009 | 2024-11-19 F0009 | GH v2.2.0, 2024-07-31 F0137; fate-client 2.2.0 2024-08-06 F0092 | 6,098 stars F0009 (fate-client 609/mo F0055 is a client, not declared) | FATE-LLM (250 stars, pushed 2026-02-21 F0010; fate-llm 135/mo F0078) | gh FederatedAI | 'hosted by Linux Foundation' F0116. Core repo dormant 22 months; FATE-LLM still pushed. |
-| tensorflow-federated | open | Apache-2.0: LICENSE text F0106 | no/no F0011 | 2026-09-19 F0011 | tensorflow-federated 0.87.0, 2024-09-17 F0085; GH v0.88.0 2024-09-26 F0139 | PyPI tensorflow-federated 2,230/mo F0057; 2,452 stars F0011 | none | gh google-parfait | ecosyste.ms has no tensorflow/federated (F0012); PyPI points to google-parfait F0085. Repo active, no release in 2 years. |
-| federated-compute-platform | open | apache-2.0 (ecosyste.ms F0036; LICENSE not read) | no/no F0036 | 2026-09-17 F0036 | no GitHub releases F0134 | 111 stars F0036 | none | gh google-parfait | Google's server/client platform for federated programs F0119. |
-| fedjax | open | Apache 2.0 (PyPI F0076; repo apache-2.0 F0035) | no/no F0035 | 2026-08-06 F0035 | fedjax 0.0.17, 2023-07-12 F0076 | PyPI fedjax 69/mo F0076; 272 stars F0035 | none | gh google | Simulation library; 'not an officially supported Google product' F0113. |
-| federatedscope | open | Apache License 2.0 (PyPI F0058; repo apache-2.0 F0013) | no/no F0013 | 2024-08-10 F0013 | federatedscope 0.1.9, 2022-06-27 F0058 | 1,541 stars F0013; PyPI reports 0 with null period F0058 (no usable figure) | FederatedScope-LLM (branch, W0003) | gh alibaba | Dormant 25 months. |
+| tensorflow-federated | open | Apache-2.0: LICENSE text F0106 | no/no F0011 | 2026-09-19 F0011 | tensorflow-federated 0.87.0, 2024-09-17 F0085; GH v0.88.0 2024-09-26 F0139 | PyPI tensorflow-federated 2,230/mo F0057; 2,452 stars F0011 | none | gh google-parfait | Canonical repo from PyPI project_urls F0085; the old name tensorflow/federated does not resolve on ecosyste.ms (F0012, 404). Repo active, no release in 2 years. |
+| federated-compute-platform | open | Apache-2.0: LICENSE text F0249 | no/no F0036 | 2026-09-17 F0036 | no GitHub releases F0134 | 111 stars F0036 | none | gh google-parfait | Google's server/client platform for federated programs F0119. |
+| fedjax | open | Apache-2.0: LICENSE text F0269; PyPI Apache 2.0 F0076 | no/no F0035 | 2026-08-06 F0035 | fedjax 0.0.17, 2023-07-12 F0076 | PyPI fedjax 69/mo F0076; 272 stars F0035 | none | gh google | Simulation library; 'not an officially supported Google product' F0113. |
+| federatedscope | open | Apache-2.0: LICENSE text F0266 | no/no F0013 | 2024-08-10 F0013 | ecosyste.ms records 0.1.9, 2022-06-27 (F0058), but the package is no longer on pypi.org (404, F0205, F0216) and is not declared | 1,541 stars F0013 | FederatedScope-LLM (branch, W0003) | gh alibaba | Dormant 25 months. |
 | fed-biomed | open | Apache-2.0: LICENSE text (Inria/UCA) F0099; repo field 'other' F0014 | no/no F0014 | 2026-09-22 F0014 | fedbiomed 6.4.1, 2026-08-06 F0086 | PyPI fedbiomed 375/mo F0059; 93 stars F0014 | none | gh fedbiomed | Label says 'other'; text is Apache-2.0 behind an Inria/UCA notice F0099. |
 | appfl | open | MIT: LICENSE text (Argonne) F0105 | no/no F0015 | 2026-09-21 F0015 | appfl 1.11.0, 2026-08-25 F0087 | PyPI appfl 526/mo F0060; 184 stars F0015 | none | gh APPFL | Argonne National Laboratory copyright F0105. |
 | secretflow | open | Apache-2.0: LICENSE text F0129 | no/no F0020 | 2026-04-24 F0020 | secretflow 1.14.0b0, 2025-09-26 F0091 | PyPI secretflow 435/mo F0064; 2,712 stars F0020 | none | gh secretflow | Privacy-computing framework with horizontal/vertical FL layer plus MPC devices F0117 (boundary question Q4). |
-| vantage6 | open | CONFLICT: LICENSE file Apache-2.0 F0104 vs PyPI license 'MIT' F0088 / ecosyste.ms MIT F0067 | no/no F0024 | 2026-09-19 F0024 | vantage6 5.0.3, 2026-09-21 F0088 | PyPI vantage6 4,113/mo F0067 (vantage6-client 6,722/mo F0068, pypistats 3,365 F0098, not declared); 50 stars F0024 | vantage6 CLI, server, node, client | gh vantage6 | Install path `pip install vantage6` W0023. PET platform for FL and MPC W0020, W0007. |
-| pfl-research | open | apache-2.0 (ecosyste.ms F0023; LICENSE not read) | no/no F0023 | 2026-09-16 F0023 | pfl 0.5.2, 2026-09-16 F0093 | PyPI pfl 64/mo F0066; 358 stars F0023 | none | gh apple | Simulation framework for private FL F0093. |
-| pfllib | open | apache-2.0 (ecosyste.ms F0021; LICENSE not read) | no/no F0021 | 2025-11-25 F0021 | GH v0.1.12, 2025-03-26 F0135 | 2,006 stars F0021 | none | gh TsingZ0 | 'PFLlib: Personalized Federated Learning Library and Benchmark' F0166; JMLR paper; individual owner handle. |
-| fedlab | open | Apache-2.0 License (PyPI F0065; repo apache-2.0 F0022) | no/no F0022 | 2025-10-20 F0022 | fedlab 1.3.0, 2022-10-26 F0065 | PyPI fedlab 497/mo F0065; 828 stars F0022 | none | gh SMILELab-FL |  |
-| paddlefl | open | Apache 2.0 (PyPI F0062; repo apache-2.0 F0018) | no/no F0018 | 2023-07-26 F0018 | paddle-fl 1.2.0, 2021-12-06 F0062 | PyPI paddle-fl 192/mo F0062; 512 stars F0018 | none | gh PaddlePaddle | Dormant 38 months. |
-| fedlearner | open | apache-2.0 (ecosyste.ms F0027; LICENSE not read) | no/no F0027 | 2026-07-06 F0027 | GH v1.5, 2021-03-22 F0131 | 900 stars F0027 | none | gh bytedance | 'A multi-party collaborative machine learning framework' F0027. |
-| plato-fl | open | Apache-2.0 (PyPI F0072; repo apache-2.0 F0028) | no/no F0028 | 2026-06-08 F0028 | plato-learn 1.4.3, 2025-10-25 F0072 | PyPI plato-learn 54/mo F0072; 399 stars F0028 | none | gh TL-System | Slug suffixed: bare `plato` is generic. |
-| flame-fl | open | apache-2.0 (ecosyste.ms F0029; LICENSE not read) | no/no F0029 | 2025-11-06 F0029 | GH v0.4.0, 2023-12-15 F0132 | 59 stars F0029 | none | gh cisco-open | 'federated learning system for edge' F0029; cisco-open org. |
+| vantage6 | open | CONFLICT: LICENSE file Apache-2.0 F0104 vs PyPI license field 'MIT' F0088 (ecosyste.ms package record also MIT F0067) | no/no F0024 | 2026-09-19 F0024 | vantage6 5.0.3, 2026-09-21 F0088 | PyPI vantage6 4,113/mo F0067 (vantage6-client 6,722/mo F0068, pypistats 3,365 F0098, not declared); 50 stars F0024 | vantage6 CLI, server, node, client | gh vantage6 | Install path `pip install vantage6` W0023. PET platform for FL and MPC W0020, W0007. |
+| pfl-research | open | Apache-2.0: LICENSE text F0239 | no/no F0023 | 2026-09-16 F0023 | pfl 0.5.2, 2026-09-16 F0093 | PyPI pfl 64/mo F0066; 358 stars F0023 | none | gh apple | Simulation framework for private FL F0093. |
+| pfllib | open | Apache-2.0: LICENSE text F0250 | no/no F0021 | 2025-11-25 F0021 | GH v0.1.12, 2025-03-26 F0135 | 2,006 stars F0021 | none | gh TsingZ0 | 'PFLlib: Personalized Federated Learning Library and Benchmark' F0166; JMLR paper; individual owner handle. |
+| fedlab | open | Apache-2.0: LICENSE text F0270 | no/no F0022 | 2025-10-20 F0022 | fedlab 1.3.0, 2022-10-26 F0065 | PyPI fedlab 497/mo F0065; 828 stars F0022 | none | gh SMILELab-FL |  |
+| paddlefl | open | Apache-2.0: LICENSE text F0271 | no/no F0018 | 2023-07-26 F0018 | paddle-fl 1.2.0, 2021-12-06 F0062 | PyPI paddle-fl 192/mo F0062; 512 stars F0018 | none | gh PaddlePaddle | Dormant 38 months. |
+| fedlearner | open | Apache-2.0: LICENSE text F0237 | no/no F0027 | 2026-07-06 F0027 | GH v1.5, 2021-03-22 F0131 | 900 stars F0027 | none | gh bytedance | 'A multi-party collaborative machine learning framework' F0027. |
+| plato-fl | open | Apache-2.0: LICENSE text F0272 | no/no F0028 | 2026-06-08 F0028 | plato-learn 1.4.3, 2025-10-25 F0072 | PyPI plato-learn 54/mo F0072; 399 stars F0028 | none | gh TL-System | Slug suffixed: bare `plato` is generic. |
+| flame-fl | open | Apache-2.0: LICENSE text F0238 | no/no F0029 | 2025-11-06 F0029 | GH v0.4.0, 2023-12-15 F0132 | 59 stars F0029 | none | gh cisco-open | 'federated learning system for edge' F0029; cisco-open org. |
 | nebula-dfl | open | AGPL-3.0: LICENSE text F0123 | no/no F0031 | 2026-06-29 F0031 | GH 1.0.0, 2025-07-02 F0133 | 82 stars F0031 | none | gh CyberDataLab | Decentralized (serverless) FL platform W0006; only copyleft-network license in set. |
 | p2pfl | open | GPL-3.0: LICENSE text F0124; PyPI GPL-3.0-only F0074 | no/no F0032 | 2026-05-09 F0032 | p2pfl 0.4.4, 2025-09-30 F0074 | PyPI p2pfl 66/mo F0074; 155 stars F0032 | none | gh p2pfl | Gossip-based decentralized FL W0008. |
-| primihub | open | apache-2.0 (ecosyste.ms F0026; LICENSE not read) | no/no F0026 | 2024-12-02 F0026 | GH 1.7.1.pre, 2024-06-04 F0136 | 1,324 stars F0026 | none | gh primihub | Privacy-computing platform (MPC + FL) F0118; boundary question Q4. Dormant 21 months. |
-| fedtree | open | apache-2.0 (ecosyste.ms F0145; LICENSE not read) | no/no F0145 | 2025-01-20 F0145 | not fetched | 153 stars F0145 | none | gh Xtra-Computing | Tree-based (GBDT) horizontal/vertical FL W0025. |
-| featurecloud | open | apache-2.0 (ecosyste.ms F0144; LICENSE not read) | no/no F0144 | 2026-02-04 F0144 | not fetched | 11 stars F0144 (PyPI `featurecloud` points to FeatureCloud/app-template F0147; not declared) | none | gh FeatureCloud | Biomedical FL platform with app store W0024; hosted service at featurecloud.ai (not fetched). |
+| primihub | open | Apache-2.0: LICENSE text F0251 | no/no F0026 | 2024-12-02 F0026 | GH 1.7.1.pre, 2024-06-04 F0136 | 1,324 stars F0026 | none | gh primihub | Privacy-computing platform (MPC + FL) F0118; boundary question Q4. Dormant 21 months. |
+| fedtree | open | Apache-2.0: LICENSE text F0235 | no/no F0145 | 2025-01-20 F0145 | GH v1.0.5, 2023-01-26 F0242 | 153 stars F0145 | none | gh Xtra-Computing | Tree-based (GBDT) horizontal/vertical FL W0025. |
+| featurecloud | open | Apache-2.0: LICENSE text F0252 | no/no F0144 | 2026-02-04 F0144 | no GitHub releases F0257 | 11 stars F0144 (PyPI `featurecloud` points to FeatureCloud/app-template F0147; not declared) | none | gh FeatureCloud | Biomedical FL platform with app store W0024; hosted service at featurecloud.ai (not fetched). |
 | metisfl | open | Clear BSD (USC): LICENSE text F0122; repo field 'other' F0033 | no/no F0033 | 2024-06-27 F0033 | no GitHub tags F0033; PyPI metisfl 1.0.0 2023-09-22 points to nevronai/metisfl F0075 (not declared) | 523 stars F0033 | none | gh bioint | Clear BSD: 'NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED' F0122; flag for tiering. |
-| fedscale | open | apache-2.0 (PyPI F0063; repo F0019) | no/no F0019 | 2023-12-18 F0019 | fedscale 1.0, 2024-04-06 F0063 | PyPI fedscale 102/mo F0063; 421 stars F0019 | none | gh SymbioticLab | 'scalable and extensible open-source federated learning (FL) platform' F0019. Dormant 33 months. |
-| xfl | open | apache-2.0 (ecosyste.ms F0154; LICENSE not read) | no/no F0154 | 2026-03-17 F0154 | not fetched | 43 stars F0154 | none | gh paritybit-ai |  |
-| galaxy-federated-learning | open | apache-2.0 (ecosyste.ms F0148; LICENSE not read) | no/no F0148 | 2023-01-14 F0148 | not fetched | 253 stars F0148 | none | gh GalaxyLearning | Dormant 44 months. |
+| fedscale | open | Apache-2.0: LICENSE text F0267 | no/no F0019 | 2023-12-18 F0019 | fedscale 1.0, 2024-04-06 F0063 | PyPI fedscale 102/mo F0063; 421 stars F0019 | none | gh SymbioticLab | 'scalable and extensible open-source federated learning (FL) platform' F0019. Dormant 33 months. |
+| xfl | open | Apache-2.0: LICENSE text F0236 | no/no F0154 | 2026-03-17 F0154 | GH v1.4.1, 2024-02-27 F0243 | 43 stars F0154 | none | gh paritybit-ai |  |
+| galaxy-federated-learning | open | Apache-2.0: LICENSE text behind a GFL Authors notice F0253 | no/no F0148 | 2023-01-14 F0148 | no GitHub releases F0258 | 253 stars F0148 | none | gh GalaxyLearning | Dormant 44 months. |
+| flgo | open | Apache-2.0: LICENSE text F0254 | no/no F0245 | 2025-06-04 F0245 | flgo 0.4.4, 2025-06-04 F0262 | PyPI flgo 331/mo F0248; 634 stars F0245 | none | gh WwZzz | 'An experimental platform for federated learning.' F0245; PyPI project_urls point to WwZzz/easyFL F0262. Surfaced by the auditor's breadth probe. |
+| easyfl | open | Apache-2.0: LICENSE text F0255 | no/no F0244 | 2023-08-23 F0244 | easyfl 0.1.2, 2022-04-10 F0265 | PyPI easyfl 30/mo F0263; 26 stars F0244 | none | gh EasyFL-AI | 'An easy-to-use federated learning platform' F0244; PyPI home_page EasyFL-AI/EasyFL F0265. Surfaced by the auditor's breadth probe. |
+| flsim-iqua | open | Apache-2.0: LICENSE text F0256 | no/no F0247 | 2022-04-09 F0247 | no GitHub releases F0261 | 206 stars F0247 | none | gh iQua | 'A simulation framework for Federated Learning written in PyTorch' F0247. Distinct from facebookresearch/FLSim (parked). Surfaced by the auditor's breadth probe. |
 | fl4health | source-available | Vector Institute License (academic/sponsor/partner only, no right to Sell) LICENSE.md F0109; repo field 'other' F0030; PyPI fl4health 0.4.2 says Apache-2.0 F0073 | no/no F0030 | 2026-09-21 F0030 | fl4health 0.4.2, 2026-01-21 F0073 (PyPI has no repo URL; not declared) | 56 stars F0030 | none | gh VectorInstitute | Custom license, last updated 12-08-2025 F0109; the PyPI Apache label predates or contradicts it. Flag. |
 | apheris-networks | closed | proprietary (no open-source statement W0018) | n/a | n/a | n/a | none | Apheris also sells Foundry, ApherisFold (out of scope) W0018 | homepage apheris.com | Surface = 'Networks - Federated AI training' W0018, W0004. |
 | rhino-fcp | closed | proprietary (no open-source mention W0019) | n/a | n/a | n/a | none | federated statistics, learning, inference W0019 | homepage rhinofcp.com | W0004, W0019. |
@@ -380,7 +404,7 @@ declared, and the latest GitHub release otherwise.
 ### 6c. Source list
 
 Every id cited in §6b, with fetch date. The full trail, including ids cited only in §1–§5 and
-§7–§9, is in `fetch-log.tsv` (166 fetches) and `web-log.tsv` (28 entries).
+§7–§9, is in `fetch-log.tsv` (272 fetches, including the auditor's F0167–F0248) and `web-log.tsv` (30 entries).
 
 - F0001 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/flwrlabs%2Fflower
 - F0004 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FedML-AI%2FFedML
@@ -491,6 +515,40 @@ Every id cited in §6b, with fetch date. The full trail, including ids cited onl
 - F0154 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/paritybit-ai%2FXFL
 - F0156 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FedML-AI%2FFedGraphNN
 - F0166 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/TsingZ0/PFLlib/HEAD/README.md
+- F0205 (2026-09-26, HTTP 404): https://pypi.org/pypi/federatedscope/json
+- F0216 (2026-09-26, HTTP 404): https://pypi.org/pypi/FederatedScope/json
+- F0235 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/Xtra-Computing/FedTree/HEAD/LICENSE
+- F0236 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/paritybit-ai/XFL/HEAD/LICENSE
+- F0237 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/bytedance/fedlearner/HEAD/LICENSE
+- F0238 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/cisco-open/flame/HEAD/LICENSE
+- F0239 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/apple/pfl-research/HEAD/LICENSE
+- F0242 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/Xtra-Computing%2FFedTree/releases?per_page=1
+- F0243 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/paritybit-ai%2FXFL/releases?per_page=1
+- F0244 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/EasyFL-AI%2FEasyFL
+- F0245 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/WwZzz%2FeasyFL
+- F0247 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/iQua%2Fflsim
+- F0248 (2026-09-26, HTTP 200): https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/flgo
+- F0249 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/google-parfait/federated-compute/HEAD/LICENSE
+- F0250 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/TsingZ0/PFLlib/HEAD/LICENSE
+- F0251 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/primihub/primihub/HEAD/LICENSE
+- F0252 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/FeatureCloud/FeatureCloud/HEAD/LICENSE
+- F0253 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/GalaxyLearning/GFL/HEAD/LICENSE
+- F0254 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/WwZzz/easyFL/HEAD/LICENSE
+- F0255 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/EasyFL-AI/EasyFL/HEAD/LICENSE
+- F0256 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/iQua/flsim/HEAD/LICENSE
+- F0257 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FeatureCloud%2FFeatureCloud/releases?per_page=1
+- F0258 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/GalaxyLearning%2FGFL/releases?per_page=1
+- F0261 (2026-09-26, HTTP 200): https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/iQua%2Fflsim/releases?per_page=1
+- F0262 (2026-09-26, HTTP 200): https://pypi.org/pypi/flgo/json
+- F0263 (2026-09-26, HTTP 200): https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/easyfl
+- F0265 (2026-09-26, HTTP 200): https://pypi.org/pypi/easyfl/json
+- F0266 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/alibaba/FederatedScope/HEAD/LICENSE
+- F0267 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/SymbioticLab/FedScale/HEAD/LICENSE
+- F0268 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/FedML-AI/FedML/HEAD/LICENSE
+- F0269 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/google/fedjax/HEAD/LICENSE
+- F0270 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/SMILELab-FL/FedLab/HEAD/LICENSE
+- F0271 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/PaddlePaddle/PaddleFL/HEAD/LICENSE
+- F0272 (2026-09-26, HTTP 200): https://raw.githubusercontent.com/TL-System/plato/HEAD/LICENSE
 - W0003 (2026-09-26, WebSearch): new federated learning framework release 2025 open source LLM fine-tuning
 - W0004 (2026-09-26, WebSearch): Apheris Rhino Federated Computing Platform Owkin federated learning platform 2026
 - W0006 (2026-09-26, WebFetch): https://github.com/topics/federated-learning-framework
@@ -549,28 +607,34 @@ Every id cited in §6b, with fetch date. The full trail, including ids cited onl
 | 34 | FedLess | no addressable artifact: named in a search snippet, not fetched | W0014 | 2026-09-26 |
 | 35 | OpenFed | no addressable artifact: named in a search snippet, not fetched | W0014 | 2026-09-26 |
 | 36 | FedCampus | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
-| 37 | Felicitas | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
-| 38 | FLaME | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
-| 39 | WebFed | no addressable artifact: paper (arXiv 2110.11646) only | W0015 | 2026-09-26 |
+| 37 | WebFed | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
+| 38 | FLaaS | no addressable artifact: paper only (arXiv 2206.10963) | W0015 | 2026-09-26 |
+| 39 | FS-REAL | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
+| 40 | FLINT | no addressable artifact: paper mention only | W0015 | 2026-09-26 |
 
 ## 8. Reconciled counts
 
-Raw signals are the distinct names surfaced across the brief and every discovery source before
-dedup. Duplicate signals are names that turned out to be another listed name:
+Raw signals are the distinct candidate names surfaced across the brief's lead lists and every
+discovery source before dedup, including the three names the independent auditor's probe added
+(FLGo, EasyFL, iQua FLSim). Two groups are **not counted**:
+- The brief's own out-of-scope examples (Prime Intellect, Gensyn, Bittensor, compute
+  marketplaces). They were excluded by the brief and not re-swept, and exo and Petals, which the
+  brief also names, are counted because they were re-fetched (§7).
+- The awesome-lists and survey papers, which are sources, not candidates.
+
+Duplicate signals are names that turned out to be another listed name:
 1. FEDn = Scaleout Edge (W0007, W0012)
 2. TensorOpera = FedML (W0011, F0112)
 3. Rhino Health = Rhino FCP (W0004)
 4. IBMFL = IBM Federated Learning (W0008)
-5. PyGrid = part of PySyft (W0014)
-6. FlowerLLM = Photon, the same Flower Labs federated pre-training effort (W0010)
 
-- raw_signals = **78**
-- duplicate_signals = **6**
-- unique_candidates = **72**
-- accepted = **33**
-- parked = **39**
+- raw_signals = **80**
+- duplicate_signals = **4**
+- unique_candidates = **76**
+- accepted = **36**
+- parked = **40**
 
-78 = 6 + 72 ✓. 72 = 33 + 39 ✓.
+80 = 4 + 76 ✓. 76 = 36 + 40 ✓.
 
 ## 9. Open questions for the maintainer
 
@@ -610,6 +674,9 @@ dedup. Duplicate signals are names that turned out to be another listed name:
 7. **Org slugs.**
    - `secretflow`: new slug, or reuse `ant-group` (already in `sources/organizations/`)? Ant Group
      ownership was **not fetched** in this run. Recommend the new slug until a fetch confirms it.
+   - `fedlearner`: new `bytedance`, or the index's `bytedance-seed-volcano-engine`? The repo sits
+     under the `bytedance` GitHub org (F0027), not a Seed or Volcano Engine handle. Recommend the new
+     slug.
    - `fate`: `federatedai`, or `lf-ai-and-data`? Its README says "hosted by Linux Foundation"
      (F0116) without naming LF AI & Data. Recommend `federatedai` until the umbrella is confirmed.
 8. **License conflicts to settle before scoring.**
