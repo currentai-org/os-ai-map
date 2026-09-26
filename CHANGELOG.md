@@ -16,6 +16,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-26
+
 ### Added
 
 - Two products: `agent-qa` in orchestration_agents, source available under FSL-1.1 (openness 2),
@@ -604,7 +606,8 @@ Initial release: the first full snapshot of the AI Stack Map corpus, at the star
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
 adoption, and capability. Tagged at commit `2e9d6eb`.
 
-[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/currentai-org/os-ai-map/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/currentai-org/os-ai-map/releases/tag/v0.1.0
