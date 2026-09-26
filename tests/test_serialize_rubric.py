@@ -767,7 +767,9 @@ def test_real_sources_serialize_without_errors(real_rubric):
 
     SOFTWARE = sorted(SOFTWARE_CATEGORIES)
     # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
-    # same 24 rules. Was 22 until compound licenses resolved on all their parts, which put
+    # same 28 rules. 24 -> 28 when the license rulings of 2026-09-25 added four single-condition
+    # license rungs: `no_derivatives` and `unstated` at 2, `proprietary` at 1 and
+    # `use_bounded` at 3. Was 22 until compound licenses resolved on all their parts, which put
     # `flan-collection` on a deferred-license tier it had never reached while the resolver
     # truncated at the first parenthesis, and needed a rung for a deferred license paired
     # with a partial card. Two rows because a two-condition rung serializes as two.
@@ -823,7 +825,7 @@ def test_real_sources_serialize_without_errors(real_rubric):
             ("base_pretrained", "finetuned_chat", "safeguards", "benchmark_eval_data",
              "training_synthetic_datasets", "edge_hardware")} == {
         "base_pretrained": 14, "finetuned_chat": 10, "safeguards": 23,
-        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 17,
+        "benchmark_eval_data": 28, "training_synthetic_datasets": 28, "edge_hardware": 17,
     }
     # Software categories inherit ONE ladder, so they must all serialize the same rule
     # count. Identical counts are the point: a category showing a different number means

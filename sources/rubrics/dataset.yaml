@@ -81,6 +81,24 @@ openness:
         examples: [ODC-BY, odc-by, ODC-BY-1.0, CC-BY-4.0, CC-BY-SA-4.0, cc0-1.0, Apache-2.0,
           apache-2.0, MIT, mit, Apache-2.0/MIT, Etalab-2.0, permissive, open,
           NVIDIA-Open-Data, CommonCrawl-ToU, cc-by-2.5, cc-by]
+      use_bounded:
+        definition: >-
+          Commercial use is permitted, but bounded: some users are free and others must pay or
+          ask first. Capped at 3 by the universal license scale, whose 3/2 line asks only whether
+          commercial use is available at all. It is here, so this sits above the tiers that
+          forbid it.
+        # Esethu: research and commercial use by African entities are free, other commercial
+        # users pay a fee. Restricting by who the user is does not by itself forbid commerce.
+        examples: [Esethu-License]
+      no_derivatives:
+        definition: >-
+          Redistribution and commercial use are allowed, but derivative works are not. By the
+          letter of the universal scale that is a 4, since it caps nobody. For a corpus the
+          derivative is usually the point: a model trained on the data is arguably a derivative,
+          so no-derivatives blocks the main reason anyone wants it. Scored at 2 beside
+          noncommercial, a deliberate exception for data that the model and software ladders do
+          not make.
+        examples: [cc-by-nd-4.0, CC-BY-ND-4.0]
       noncommercial:
         definition: >-
           Permits redistribution but forbids commercial use. Capped at 2 by the universal
@@ -94,7 +112,8 @@ openness:
           both be right. The scale picks the commercial-use test, so a non-commercial corpus
           now scores where a non-commercial model already did. The Open Definition agrees:
           data is not open unless it may be reused commercially.
-        examples: [cc-by-nc-sa-4.0, cc-by-nc-4.0, cc-by-nc-sa-3.0]
+        # Microsoft-Research-License: non-commercial research use only, no redistribution.
+        examples: [cc-by-nc-sa-4.0, cc-by-nc-4.0, cc-by-nc-sa-3.0, Microsoft-Research-License]
       deferred_to_components:
         definition: >-
           The card grants no license of its own and defers to the terms of whatever the
@@ -111,16 +130,21 @@ openness:
           per-task, per-component]
       unstated:
         definition: >-
-          No license recorded on the card at all. The most restrictive tier, because absent
-          a grant there is no permission to rely on, however freely the files download.
+          No license stated anywhere the publisher could state one, while the files are
+          published. Absent a grant there is no permission to rely on, however freely the files
+          download, so this is not open. It is not closed either: the data is out, and a 1 is
+          kept for what is genuinely closed or private. Capped at 2.
         # `cc` names the family without the variant (CC-BY and CC-BY-NC both write it);
         # `undeclared on HF dataset card` is `swe-bench-verified` saying so outright.
         # `none`/`closed`/`proprietary` are declared here rather than left to check_rubric's
         # definitional fallback.
         # Ruling: docs/reference/openness.md, "When the local checker and the warehouse must
         # agree on 'no license'".
-        examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc, none,
-          closed, proprietary]
+        examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc, none]
+      proprietary:
+        definition: >-
+          The publisher reserves the data outright. Capped at 1, the scale's closed end.
+        examples: [closed, proprietary]
 
   # Ordered, first match wins. There is deliberately NO `otherwise`. Most of the
   # availability vocabulary and the whole `unstated` tier are cases where the ladder either
@@ -135,6 +159,13 @@ openness:
       Redistributable, and not usable commercially. Scored where a non-commercial MODEL is
       scored, which is the point of a universal scale: `command-r` and `personahub` carry the
       same licence family and used to sit three levels apart.
+  - when: {license_tier: no_derivatives}
+    then: {score: 2, class: restricted}
+    because: >-
+      Commercial use is allowed but derivatives are not, and for training data the derivative
+      is the use. Tested before availability for the same reason as noncommercial: the license
+      caps the corpus wherever it sits. See the tier's definition for why this departs from
+      the scale's letter.
   # Not published at all, next. Nothing below can lift a corpus you cannot obtain.
   - when: {availability: internal-only}
     then: {score: 0, class: closed}
@@ -150,6 +181,9 @@ openness:
   - when: {availability: closed}
     then: {score: 1, class: closed}
     because: The data is not distributed, however it came to be that way.
+  - when: {license_tier: proprietary}
+    then: {score: 1, class: closed}
+    because: The license reserves the data, so nothing about access can lift it.
   # Published, but the answers are not. Ahead of the gate rungs because a benchmark you
   # cannot score yourself is a bigger limitation than a login wall.
   - when: {answers: held-out}
@@ -160,6 +194,14 @@ openness:
   - when: {answers: private}
     then: {score: 2, class: gated}
     because: The same shape, recorded under `holdout` rather than `answers`.
+  - when: {license_tier: unstated}
+    then: {score: 2, class: restricted}
+    because: >-
+      Published, with no license stated anywhere the publisher could state one. There is no
+      grant to rely on, so it is not open, and the files are out, so it is not closed. It sits
+      after the held-out-answers rungs, which already score 2, and before the gate rungs,
+      because the license caps the corpus: an unlicensed gated corpus is no more usable than an
+      unlicensed open one.
   # A gate outranks everything below it. A permissively licensed corpus you cannot download
   # without a maintainer's approval is not more open than one you can, whatever the license
   # says, so no license tier can lift a gated product past 3.
@@ -186,6 +228,11 @@ openness:
       Gated without the mechanism being recorded. Scored with the other gates rather than
       abstained on, because every recorded mechanism lands on 3 anyway.
   # Ungated from here down, so the license is what decides.
+  - when: {license_tier: use_bounded}
+    then: {score: 3, class: restricted}
+    because: >-
+      Commercial use is available but bounded, the scale's 3. An ungated download does not
+      lift it, since the bound is in the license, not the gate.
   - when: {license_tier: deferred_to_components, documentation: legacy-repo-only}
     then: {score: 3, class: open}
     because: >-
