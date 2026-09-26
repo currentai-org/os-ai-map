@@ -1,0 +1,299 @@
+cargo-features = ["profile-rustflags"]
+
+[package]
+name = "ezkl"
+version = "0.0.0"
+edition = "2021"
+default-run = "ezkl"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# Name to be imported within python
+# Example: import ezkl
+name = "ezkl"
+crate-type = ["cdylib", "rlib", "staticlib"]
+
+
+[dependencies]
+halo2_gadgets = { git = "https://github.com/zkonduit/halo2", branch= "ac/conditional-compilation-icicle2" }
+halo2curves = { git = "https://github.com/privacy-scaling-explorations/halo2curves", rev = "b753a832e92d5c86c5c997327a9cf9de86a18851", features = [
+    "derive_serde",
+] }
+halo2_proofs = { git = "https://github.com/zkonduit/halo2", package = "halo2_proofs", branch= "ac/conditional-compilation-icicle2", features = [
+    "circuit-params", "mv-lookup"
+] }
+rand = { version = "0.8", default-features = false }
+itertools = { version = "0.10.3", default-features = false }
+clap = { version = "4.5.3", features = ["derive"], optional = true }
+serde = { version = "1.0.126", features = ["derive"] }
+clap_complete = { version = "4.5.2", optional = true }
+log = { version = "0.4.17", default-features = false }
+thiserror = { version = "1.0.38", default-features = false }
+hex = { version = "0.4.3", default-features = false }
+halo2_wrong_ecc = { git = "https://github.com/zkonduit/halo2wrong", branch = "ac/chunked-mv-lookup", package = "ecc" }
+snark-verifier = { git = "https://github.com/zkonduit/snark-verifier", branch = "ac/chunked-mv-lookup", features = [
+    "derive_serde", "mv-lookup"
+] }
+halo2_solidity_verifier = { git = "https://github.com/zkonduit/ezkl-verifier", branch = "main", optional = true, features = [
+    "evm", "mv-lookup",
+] }
+maybe-rayon = { version = "0.1.1", default-features = false }
+bincode = { version = "1.3.3", default-features = false }
+unzip-n = "0.1.2"
+num = "0.4.1"
+tosubcommand = { git = "https://github.com/zkonduit/enum_to_subcommand", package = "tosubcommand", optional = true }
+semver = { version = "1.0.22", optional = true }
+
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+
+# evm related deps
+serde_json = { version = "1.0.97", features = ["float_roundtrip", "raw_value"] }
+
+alloy = { version = "1.0", features = [
+    "provider-http",
+    "signers",
+    "contract",
+    "rpc-types-eth",
+    "signer-local",
+    "node-bindings",
+], optional = true }
+
+foundry-compilers = { version = "0.19.1", features = [
+    "svm-solc",
+], optional = true }
+ethabi = { version = "18", optional = true }
+indicatif = { version = "0.17.5", features = ["rayon"], optional = true }
+gag = { version = "1.0.0", default-features = false, optional = true }
+instant = { version = "0.1" }
+reqwest = { version = "0.12.4", default-features = false, features = [
+    "default-tls",
+    "multipart",
+    "stream",
+], optional = true }
+openssl = { version = "0.10.55", features = ["vendored"], optional = true }
+lazy_static = { version = "1.4.0", optional = true }
+colored_json = { version = "3.0.1", default-features = false, optional = true }
+tokio = { version = "1.35.0", default-features = false, features = [
+    "macros",
+    "rt-multi-thread",
+], optional = true }
+pyo3 = { version = "0.27.2", features = [
+    "extension-module",
+    "abi3-py37",
+    "macros",
+], default-features = false, optional = true }
+pyo3-async-runtimes = { git = "https://github.com/PyO3/pyo3-async-runtimes", version = "0.27.0", features = [
+    "attributes",
+    "tokio-runtime",
+], default-features = false, optional = true }
+pyo3-log = { version = "0.13.2", default-features = false, optional = true }
+tract-onnx = { git = "https://github.com/sonos/tract/", rev = "37132e0397d0a73e5bd3a8615d932dabe44f6736", default-features = false, optional = true }
+tabled = { version = "0.12.0", optional = true }
+objc = { version = "0.2.4", optional = true }
+pyo3-stub-gen = { version = "0.6.0", optional = true }
+jemallocator = { version = "0.5", optional = true }
+mimalloc = { version = "0.1", optional = true }
+# GPU / device related things (optional - only enabled with gpu-accelerated feature)
+icicle-runtime = { git = "https://github.com/ingonyama-zk/icicle", branch="emir/gate_eval_2", package="icicle-runtime", optional = true }
+
+
+[target.'cfg(not(all(target_arch = "wasm32", target_os = "unknown")))'.dependencies]
+colored = { version = "2.0.0", default-features = false, optional = true }
+env_logger = { version = "0.10.0", default-features = false, optional = true }
+chrono = { version = "0.4.31", optional = true }
+sha256 = { version = "1.4.0", optional = true }
+
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+serde_json = { version = "1.0.97", default-features = false, features = [
+    "float_roundtrip",
+    "raw_value",
+] }
+getrandom = { version = "0.2.8", features = ["js"] }
+instant = { version = "0.1", features = ["wasm-bindgen", "inaccurate"] }
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+wasm-bindgen-rayon = { version = "1.2.1", optional = true }
+wasm-bindgen-test = "0.3.42"
+serde-wasm-bindgen = "0.6.5"
+wasm-bindgen = { version = "0.2.92", features = ["serde-serialize"] }
+console_error_panic_hook = "0.1.7"
+wasm-bindgen-console-logger = "0.1.1"
+
+
+[target.'cfg(not(all(target_arch = "wasm32", target_os = "unknown")))'.dev-dependencies]
+criterion = { version = "0.5.1", features = ["html_reports"] }
+
+
+[build-dependencies]
+uniffi = { version = "0.28", features = ["build"], optional = true }
+
+[dev-dependencies]
+tempfile = "3.3.0"
+lazy_static = "1.4.0"
+mnist = "0.5"
+seq-macro = "0.3.1"
+test-case = "2.2.2"
+tempdir = "0.3.7"
+shellexpand = "3.1.0"
+
+[target.wasm32-unknown-unknown]
+runner = 'wasm-bindgen-test-runner'
+
+
+[[bench]]
+name = "zero_finder"
+harness = false
+
+[[bench]]
+name = "accum_dot"
+harness = false
+
+
+[[bench]]
+name = "accum_sum"
+harness = false
+
+[[bench]]
+name = "pairwise_add"
+harness = false
+
+
+[[bench]]
+name = "pairwise_pow"
+harness = false
+
+[[bench]]
+name = "poseidon"
+harness = false
+
+[[bench]]
+name = "accum_einsum_matmul"
+harness = false
+
+
+[[bench]]
+name = "accum_conv"
+harness = false
+
+
+[[bench]]
+name = "accum_sumpool"
+harness = false
+
+
+[[bench]]
+name = "sigmoid"
+harness = false
+
+[[bench]]
+name = "relu_lookupless"
+harness = false
+
+[[bench]]
+name = "accum_matmul_sigmoid"
+harness = false
+
+
+[[bench]]
+name = "accum_matmul_sigmoid_overflow"
+harness = false
+
+[[bin]]
+name = "ezkl"
+test = false
+bench = false
+required-features = ["ezkl"]
+
+
+
+[[bin]]
+name = "py_stub_gen"
+required-features = ["python-bindings"]
+
+[features]
+web = ["wasm-bindgen-rayon"]
+default = [
+    "eth",
+    "dep:halo2_solidity_verifier",
+    "ezkl",
+    "precompute-coset",
+    "no-banner",
+    "parallel-poly-read",
+    "reusable-verifier",
+]
+onnx = ["dep:tract-onnx"]
+python-bindings = ["pyo3", "pyo3-log", "pyo3-async-runtimes", "pyo3-stub-gen"]
+logging = ["dep:colored", "dep:env_logger", "dep:chrono"]
+ezkl = [
+    "onnx",
+    "tabled/color",
+    "serde_json/std",
+    "colored_json",
+    "dep:ethabi",
+    "dep:indicatif",
+    "dep:gag",
+    "dep:reqwest",
+    "dep:lazy_static",
+    "dep:tokio",
+    "dep:openssl",
+    "dep:chrono",
+    "dep:sha256",
+    "dep:clap_complete",
+    "dep:semver",
+    "dep:clap",
+    "dep:tosubcommand",
+    "logging",
+]
+eth = ["dep:alloy", "dep:foundry-compilers", "dep:ethabi"]
+parallel-poly-read = [
+    "halo2_proofs/circuit-params",
+    "halo2_proofs/parallel-poly-read",
+]
+mv-lookup = ["halo2_proofs/mv-lookup", "snark-verifier/mv-lookup"]
+asm = ["halo2curves/asm", "halo2_proofs/asm"]
+precompute-coset = ["halo2_proofs/precompute-coset"]
+det-prove = []
+gpu-accelerated = ["halo2_proofs/gpu-accelerated", "dep:icicle-runtime"]
+empty-cmd = []
+no-banner = []
+no-update = []
+macos-metal = ["halo2_proofs/macos"]
+ios-metal = ["halo2_proofs/ios"]
+jemalloc = ["dep:jemallocator"]
+mimalloc = ["dep:mimalloc"]
+reusable-verifier = []
+
+
+[patch.'https://github.com/zkonduit/halo2']
+halo2_proofs = { git = "https://github.com/zkonduit/halo2#1dd2090741f006fd031a07da7f3c9dfce5e0015e", package = "halo2_proofs", branch= "ac/conditional-compilation-icicle2", features = [
+    "circuit-params", "mv-lookup"
+] }
+
+[patch.'https://github.com/zkonduit/halo2#f441c920be45f8f05d2c06a173d82e8885a5ed4d']
+halo2_proofs = { git = "https://github.com/zkonduit/halo2#1dd2090741f006fd031a07da7f3c9dfce5e0015e", package = "halo2_proofs", branch= "ac/conditional-compilation-icicle2", features = [
+    "circuit-params", "mv-lookup"
+] }
+
+
+[patch.crates-io]
+uniffi_testing = { git = "https://github.com/ElusAegis/uniffi-rs", branch = "feat/testing-feature-build-fix" }
+
+[profile.release]
+# debug = true
+rustflags = ["-C", "relocation-model=pic"]
+lto = "fat"
+codegen-units = 1
+# panic = "abort"
+
+
+[profile.test-runs]
+inherits = "dev"
+opt-level = 3
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ["-O4", "--flexible-inline-max-function-size", "4294967295"]
+
+
