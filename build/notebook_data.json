@@ -18769,6 +18769,112 @@
               "Hermes-4-Llama-3.1-405B"
             ]
           }
+        },
+        {
+          "slug": "wikipedia",
+          "product": "Wikipedia",
+          "org_slug": "wikimedia-foundation",
+          "org": "Wikimedia Foundation",
+          "type": "dataset",
+          "description": "Cleaned article text from the Wikipedia dumps in more than 300 languages, one subset per language, published as Parquet in the wikimedia namespace on Hugging Face. The current release is a single dump from November 2023. Wikipedia text is a small but widely reused component of pretraining mixtures.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:CC-BY-SA-4.0(the grant dumps.wikimedia.org/legal.html now states for text)+cc-by-sa-3.0(the grant the card and Hub metadata still state, covering older text; most text is also under the GFDL, but some is available only under Creative Commons);gated:false;dataset_card:present;format:parquet",
+            "confidence": "high",
+            "note": "Wikipedia text is under Creative Commons Attribution-ShareAlike. The Foundation's legal page for the dumps now states 4.0, while the card and Hub metadata still name 3.0; both allow redistribution and commercial reuse with attribution and share-alike. Most text is also under the GFDL, but some is available only under Creative Commons, so the CC grants are what cover the release. The download is ungated, and the card documents structure and fields, though its curation, bias and limitations sections are empty.",
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/wikimedia/wikipedia",
+                "shows": "Hub API metadata for the dataset, license tags cc-by-sa-3.0 and gfdl, gated false, published by the wikimedia organization",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "7cc603bc81010bf0e75c376d3297e1ebf56141226b983e3ae96e9dcbb6a09092",
+                "establishes": [
+                  "license",
+                  "gated"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datasets/wikimedia/wikipedia/raw/main/README.md",
+                "shows": "dataset card with summary, languages, structure, fields, splits and creation sections; \"All original textual content is licensed under the GNU Free Documentation License (GFDL) and the Creative Commons Attribution-Share-Alike 3.0 License. Some text may be available only under the Creative Commons license\"",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "a0f2055ac612f924721e9981fa2a49a18adec1c67cc8026f6c97d12f17211b21",
+                "establishes": [
+                  "dataset_card",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://dumps.wikimedia.org/legal.html",
+                "shows": "\"all original textual content is licensed under the GNU Free Documentation License (GFDL) and the Creative Commons Attribution-Share-Alike 4.0 License. Some text may be available only under the Creative Commons license\"",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "104242365285791c1d60d61b2ec8eac34e5c4b6a74ae5fdca9996a52f9cd3714",
+                "establishes": [
+                  "license"
+                ]
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is measured by Hugging Face downloads of wikimedia/wikipedia, the cleaned text published in the wikimedia namespace on the Hub, over the trailing month. It excludes the other ways people obtain Wikipedia, such as the raw dumps on dumps.wikimedia.org.",
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/wikimedia/wikipedia",
+                "shows": "278,241 downloads over the trailing 30 days",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "7cc603bc81010bf0e75c376d3297e1ebf56141226b983e3ae96e9dcbb6a09092"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "training_value",
+            "basis_detail": "downstream",
+            "value": null,
+            "confidence": "high",
+            "note": "Wikipedia text is a documented part of major pretraining mixes. LLaMA sampled it at 4.5 percent, about 2.45 epochs over its 1.4-trillion-token run, and OLMoE's mix carries it through Dolma. That evidence is about Wikipedia text, not this particular Hugging Face distribution of it. No ablation shows it beating a current web corpus, so the score comes from documented reuse rather than a measured gain.",
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://arxiv.org/pdf/2302.13971",
+                "shows": "LLaMA paper full text. Table 1 lists Wikipedia at a 4.5 percent sampling proportion and 2.45 epochs when training on 1.4T tokens",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "2e663675ae36ad12adb2f5a05281bac2747ecf8d23d92bedd9f937a89fee7136"
+              },
+              {
+                "url": "https://huggingface.co/datasets/allenai/OLMoE-mix-0924/raw/main/README.md",
+                "shows": "OLMoE-mix-0924 card lists En Wikipedia + Wikibooks (Dolma) at 3.69B GPT-NeoX tokens among its sources",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "12dae81339357859dfd1fa1bb88e4263fe1538d7c46971eebec51a317e9a6870"
+              }
+            ]
+          },
+          "overall_score": 4.0,
+          "tier": "strong",
+          "maturity": 4.0,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-26",
+            "basis": "verified"
+          },
+          "lineage": {
+            "derived_from": [
+              "Wikipedia dumps"
+            ]
+          }
         }
       ]
     },
@@ -56109,6 +56215,121 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-09-19"
           }
+        },
+        {
+          "slug": "agent-qa",
+          "product": "Agent QA",
+          "org_slug": "vostride",
+          "org": "Vostride",
+          "type": "software",
+          "description": "Agent that tests web and mobile apps from tests written in natural language. It plans and carries out each action, re-observes the interface and tries another path when a step fails, and keeps memory from earlier runs to reuse proven actions. It ships a CLI, a dashboard, MCP and agent skills, and runs on the model the user brings.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "confidence": "high",
+            "components": "license:FSL-1.1-ALv2(Functional Source License, not OSI; converts to Apache-2.0 two years after each release, and restricts competing use until then);source:public(full TypeScript monorepo, CLI, dashboard and packages);no managed tier; model-agnostic;core-gated:ungated",
+            "note": "Agent QA is under the Functional Source License, which converts to Apache-2.0 two years after each release and forbids competing use until then, so today's code is source-available rather than open source. The whole harness, CLI and dashboard are published in one repository, and the vendor states that no feature is held back behind a paid tier.",
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://github.com/vostride/agent-qa/blob/main/LICENSE.md",
+                "shows": "Functional Source License, Version 1.1, ALv2 Future License (FSL-1.1-ALv2), Copyright 2026 Pranshu Chittora",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "b6e614bd593801682ecd5083d048364e1beabd79954afb87bc6728e12571b1ef",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://github.com/vostride/agent-qa",
+                "shows": "full source public, including packages, docker and a demo project; 888 stars, 18 forks",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "0c1e500f4704c0da0afbeade33357e7b42518e4f20e08031f4596dfe65f8a150",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/vostride/agent-qa/git/trees/main?recursive=1",
+                "shows": "full recursive tree of main, 1,058 paths, not truncated; no ee/, enterprise/, commercial/ or proprietary/ directory",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "113de41fa99334227d87a8051d0d92285bcddb57a5abf24eabc347bc60950281",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://vostride.com/",
+                "shows": "FAQ, \"Is agent-qa free?\": \"It is free to install and free to run, the source is public, and no feature is held back behind a paid tier.\"",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "407c30e1972afb28638d768d55e50e12fbedfeec72653ab8ba8f9487eed0dadd",
+                "establishes": [
+                  "core-gated"
+                ]
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Adoption is measured by npm downloads of agent-qa, the product's declared distribution channel, over the trailing month. Raw download volume includes CI and mirror traffic, so this measures install volume rather than a count of teams.",
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/agent-qa",
+                "shows": "npm registry download API returns 3,557 downloads for agent-qa over the trailing month, 2026-08-26 to 2026-09-24",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "b5477faa4d6d3a51a633b00253a2dffae2eb3100def5a4ff58de533d917834fc"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "value": "Natural-language tests for web and mobile; self-healing execution that re-observes the UI and retries a failed step another way; execution memory reused across runs; CLI, dashboard, MCP and agent skills; bring-your-own model. No standardized benchmark result.",
+            "confidence": "medium",
+            "note": "Agent QA runs one agent loop for one task, testing applications, with memory carried between runs. GPT Researcher, the closest single-task agent on the map, adds a multi-agent assistant and a recursive deep-research workflow that produces cited reports, so Agent QA scores a step below it. Neither has third-party benchmark coverage.",
+            "relative_to": "gpt-researcher",
+            "relation": "one_below",
+            "comparison": {
+              "last_attested": "2026-09-26",
+              "sources": [
+                {
+                  "url": "https://raw.githubusercontent.com/assafelovic/gpt-researcher/main/README.md",
+                  "shows": "README describes a multi-agent assistant built with LangGraph and a Deep Research recursive workflow producing detailed research reports with citations, the scope Agent QA's single QA loop does not have",
+                  "accessed": "2026-09-26",
+                  "http_status": 200,
+                  "content_sha256": "afdec2787e3b4478d7a1fed962cc5e3111e26868f08fcbee94a018e47d871048"
+                }
+              ]
+            },
+            "last_verified": "2026-09-26",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/vostride/agent-qa/main/README.md",
+                "shows": "self-healing test execution, execution memory across runs, dashboard and CLI plus MCP and skills, bring your own LLM; no benchmark figure",
+                "accessed": "2026-09-26",
+                "http_status": 200,
+                "content_sha256": "624d990f374e3473f36bebc3d7a62288d867e3c35238d5426999476871278174"
+              }
+            ]
+          },
+          "overall_score": 1.7,
+          "tier": null,
+          "maturity": 1.7,
+          "mature": false,
+          "freshness": {
+            "date": "2026-09-26",
+            "basis": "verified"
+          }
         }
       ]
     },
@@ -92451,6 +92672,19 @@
         "volcano"
       ]
     },
+    "vostride": {
+      "slug": "vostride",
+      "display_name": "Vostride",
+      "type": "company",
+      "homepage": "https://vostride.com",
+      "github": [
+        "https://github.com/vostride"
+      ],
+      "country": "",
+      "products": [
+        "agent-qa"
+      ]
+    },
     "voyage-ai": {
       "slug": "voyage-ai",
       "display_name": "Voyage AI",
@@ -92535,6 +92769,19 @@
       "country": "",
       "products": [
         "whylabs"
+      ]
+    },
+    "wikimedia-foundation": {
+      "slug": "wikimedia-foundation",
+      "display_name": "Wikimedia Foundation",
+      "type": "foundation",
+      "homepage": "https://wikimediafoundation.org",
+      "github": [
+        "https://github.com/wikimedia"
+      ],
+      "country": "",
+      "products": [
+        "wikipedia"
       ]
     },
     "wonderwhy-er": {
@@ -92837,7 +93084,7 @@
       "google-deepmind": "google"
     }
   },
-  "n_total": 860,
+  "n_total": 862,
   "generated": "2026-09-26",
   "version": "0.3.0",
   "released": "2026-09-05",
@@ -92850,8 +93097,8 @@
       "total": 61461,
       "matched": 737,
       "overlap": 459,
-      "scored": 860,
-      "scored_outside": 401,
+      "scored": 862,
+      "scored_outside": 403,
       "uncategorized": 60724
     },
     "top": [
