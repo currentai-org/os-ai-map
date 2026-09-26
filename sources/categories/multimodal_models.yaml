@@ -1,0 +1,73 @@
+name: multimodal_models
+display_name: Multimodal models
+description: Vision-language and omni models whose headline capability is understanding images, documents, screens, video or audio and answering in text, speech or actions, released as a model line separate from the vendor's general LLM.
+weights:
+  adopt: 0.3
+  cap: 0.7
+scoring_recipe:
+  version: 1
+  note: >-
+    Inherits the shared fine-tuned model ladder unchanged. Most of the seed roster is a vision
+    stack trained onto someone else's language model - Holo on Qwen, MiniCPM-o on SigLIP,
+    Whisper, CosyVoice and Qwen3, InternVL3-78B carrying the Qwen license - so the data question
+    that fits is the one this ladder asks: what the publisher released for the stage it trained,
+    not the base model's pretraining corpus. A row whose vendor trained the whole stack from
+    scratch may want the pretrained ladder instead; that is a per-type or per-product call for
+    the promotion PR, made with evidence, and not one to guess at seed. Weighted 0.3 adoption to
+    0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads here are
+    dominated by one family (Qwen-VL) and by small models pulled into pipelines, so adoption
+    ranks distribution before it ranks the model. The capability quantity the sweep proposes is
+    breadth of grounded understanding, not MMMU, and is set out in `comments`. Several rows carry
+    a custom weights license the shared tiers do not name (the sweep record lists them); those
+    go to the maintainer's license-rulings issue and the products are deferred at promotion. No
+    edit to sources/rubrics/ is made or implied here.
+  extends: model
+products: []
+comments: >-
+  Proposed in issue #9; seeded from the 2026-09-26 sweep (docs/sweeps/2026-09-26-multimodal_models.md).
+  Membership test: is this a separately named vision or omni model line whose reason for fame is
+  visual or audio-visual understanding, so that listing it as a text LLM would mischaracterize it?
+  A natively multimodal general model answers no and stays in its family row in base_pretrained
+  or finetuned_chat: Qwen3.5 and later, Gemma 3 and 4, Llama 3.2 Vision and Llama 4, Kimi K2.5 and
+  K3, GLM-5.x, DeepSeek-V4, MiniMax-M3, Inkling, Phi-4-multimodal, ERNIE-4.5-VL and Muse Glimmer.
+  A vendor sub-line with its own name and repo that answers a different question from the family
+  gets its own row here, following the nemotron-embed and embeddinggemma precedent: qwen-vl,
+  glm-v, kimi-vl, paligemma, minicpm-v and minicpm-o, nemotron-vl and nemotron-omni. qwen-vl keeps
+  its row although the line has shipped no chat checkpoint since 2025-10-31; its successor is the
+  mapped qwen family, which the product record says in prose at promotion. Scope is understanding
+  VLMs (image, document, multi-image, video, and GUI or computer-use models, which are weights you
+  download), omni models (audio and video in, text or speech out), and the four unified
+  understanding-and-generation models janus, bagel, emu and sensenova-u, which this category owns
+  by the 2026-09-26 ruling that media_generation agreed to. Exclusions, by neighbor.
+  base_pretrained and finetuned_chat keep the general LLM families above. document_conversion
+  keeps OCR-first and document-parsing VLMs (dots.ocr, DeepSeek-OCR, olmOCR, PaddleOCR-VL,
+  MinerU2.5, chandra, HunyuanOCR, GOT-OCR2 and the rest), because its question is how much of a
+  document survives, which a general VLM ladder does not measure. embeddings_retrieval keeps
+  contrastive and embedding vision-language models (CLIP, OpenCLIP, SigLIP, ColPali, ModernVBERT,
+  the Nemotron embed-VL and rerank-VL models, Perception Encoder): the test is whether the output
+  is a vector or a relevance score rather than text. classic_ml_cv keeps vision backbones, video
+  encoders and detection or segmentation models; Florence-2 and InternVideo sit here on their chat
+  and prompt-driven checkpoints, and the InternVideo encoders belong there. media_generation keeps
+  models whose headline output is a synthesized image, video or 3D asset (BLIP3o, diffusiongemma).
+  speech_audio keeps speech-first ASR, TTS and speech-to-speech models, and ruled chat-first audio
+  LLMs and omni models out, so omni lives here. robotics_embodied and world_models keep
+  vision-language-action and embodied-reasoning models (MolmoAct, Cosmos-Reason, Isaac,
+  HY-Embodied) and the world models (Cosmos, V-JEPA 2); embodied-reasoning VLMs with no action head
+  (RynnBrain, Hy-Embodied VLM, UnifoLM-ER) are held for a follow-up sweep and not seeded here.
+  inference_code and evaluation_code keep the runtimes and harnesses (vLLM-Omni, MLX-VLM,
+  lmms-eval, VLMEvalKit). orchestration_agents keeps agent apps built on a GUI model
+  (UI-TARS-desktop, OmniParser); the model stays here. scientific_ai_models takes domain models
+  such as MedGemma. No closed row is seeded: the strongest closed VLMs are the general frontier
+  models finetuned_chat already carries (gpt-5, gemini-pro, claude-sonnet), and a vendor's closed
+  API tier (Qwen-VL-Max, GLM-4v-Plus, Qwen3.5-Omni, Holo3-122B) is a SKU of its open row. Three
+  rows need a governing-release call at promotion because one line spans two licenses or an open
+  and a closed tier: qwen-omni (Qwen3.5-Omni is proprietary), moondream (Moondream 2 is Apache-2.0,
+  3.x carries a custom license) and pixtral (12B Apache-2.0, Large under the Mistral Research
+  License). Capability, for the promotion PR: no
+  single leaderboard orders the set. OpenCompass's Open VLM Leaderboard stops at 2025-09-17 and
+  has nothing for the GUI or omni rows, and MMMU's test answers have been public since 2026-02-12.
+  The proposed quantity is breadth of grounded understanding, each rung nesting the one below:
+  single-image perception; documents and multi-image; video and long context; acting on what it
+  sees (grounded actions or native tool calls from visual input); omni in (audio and video
+  understood natively, text out); omni in with streaming speech out. A benchmark average breaks
+  ties within a rung where one exists.
