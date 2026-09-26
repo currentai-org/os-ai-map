@@ -5,7 +5,8 @@ openness:
   components:
     license:
     - name: cc-by-sa-3.0
-    - name: gfdl
+      detail: the grant that covers every article; most text is also under the GFDL, but some is available
+        only under Creative Commons, so the CC grant is the one that reaches the whole release
     gated:
       value: 'false'
     dataset_card:
@@ -14,15 +15,17 @@ openness:
       format:
         value: parquet
   confidence: high
-  note: Wikipedia text is dual-licensed under CC BY-SA 3.0 and the GFDL, both of which allow redistribution
-    and commercial reuse with attribution and share-alike. The download is ungated and the card documents
+  note: Wikipedia text is under CC BY-SA 3.0, which allows redistribution and commercial reuse with attribution
+    and share-alike. Most of it is also under the GFDL, but some is available only under Creative Commons, so
+    the CC grant is the one that covers the whole release. The download is ungated and the card documents
     structure, languages and preprocessing.
-  raw: license:cc-by-sa-3.0+gfdl;gated:false;dataset_card:present;format:parquet
+  raw: license:cc-by-sa-3.0(the grant that covers every article; most text is also under the GFDL, but some
+    is available only under Creative Commons, so the CC grant is the one that reaches the whole release);gated:false;dataset_card:present;format:parquet
   last_verified: '2026-09-26'
   sources:
   - url: https://huggingface.co/api/datasets/wikimedia/wikipedia
-    shows: Hub API metadata for the dataset, license cc-by-sa-3.0 and gfdl, gated false, published by the
-      wikimedia organization
+    shows: Hub API metadata for the dataset, license tags cc-by-sa-3.0 and gfdl, gated false, published by
+      the wikimedia organization
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 7cc603bc81010bf0e75c376d3297e1ebf56141226b983e3ae96e9dcbb6a09092
@@ -30,21 +33,24 @@ openness:
     - license
     - gated
   - url: https://huggingface.co/datasets/wikimedia/wikipedia/raw/main/README.md
-    shows: dataset card with summary, languages, structure, fields, splits and creation sections; license
-      front matter cc-by-sa-3.0 and gfdl
+    shows: 'dataset card with summary, languages, structure, fields, splits and creation sections; "All
+      original textual content is licensed under the GNU Free Documentation License (GFDL) and the Creative
+      Commons Attribution-Share-Alike 3.0 License. Some text may be available only under the Creative
+      Commons license"'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: a0f2055ac612f924721e9981fa2a49a18adec1c67cc8026f6c97d12f17211b21
     establishes:
     - dataset_card
+    - license
 adoption:
   level: 4
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
   note: Adoption is measured by Hugging Face downloads of wikimedia/wikipedia, the Foundation's own
-    distribution of the cleaned text, over the trailing month. Many pipelines read the raw dumps from
-    dumps.wikimedia.org instead, which publishes no download count, so this undercounts use.
+    distribution of the cleaned text, over the trailing month. It excludes the other ways people obtain
+    Wikipedia, such as the raw dumps on dumps.wikimedia.org.
   last_verified: '2026-09-26'
   sources:
   - url: https://huggingface.co/api/datasets/wikimedia/wikipedia
@@ -58,10 +64,11 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Wikipedia is in the pretraining mix of most open model families, usually repeated more often than its
-    size alone would earn. LLaMA sampled it at 4.5 percent for about two and a half epochs and used it as the
-    quality reference for filtering web text, and OLMoE's mix carries it through Dolma. No ablation shows it
-    beating a current web corpus, so it sits with the documented, heavily reused components.
+  note: Wikipedia text is a documented part of major open pretraining mixes. LLaMA sampled it at 4.5 percent,
+    about 2.45 epochs over its 1.4-trillion-token run, and trained a classifier on pages that Wikipedia cites
+    to select web text; OLMoE's mix carries it through Dolma. That evidence is about Wikipedia text, not this
+    particular Hugging Face distribution of it. No ablation shows it beating a current web corpus, so it sits
+    with the documented, reused components, as pes2o does.
   last_verified: '2026-09-26'
   sources:
   - url: https://arxiv.org/pdf/2302.13971
