@@ -15,15 +15,18 @@ openness:
       detail: training code and configs for v1, v2 and v4
     license:
     - name: Apache-2.0
-      detail: code and weights, every version
+      detail: repository LICENSE for v1, v2 and v4; the v4 README states no separate weights license
   confidence: medium
   note: Every version is Apache-2.0, code and weights, with the full training code and configs published
     and the checkpoints trained on public COCO data. RT-DETRv4 uses a DINOv3 model as a teacher during
     training, which a user must obtain separately under Meta's DINOv3 License; the detectors it produces
-    are released under Apache-2.0.
+    are released under Apache-2.0. Because v4's features are distilled from that teacher, trained on Meta's
+    unreleased LVD-1689M images, the open-data reading rests on COCO being the only training set the detector
+    itself sees.
   raw: weights:open(RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the
     Hub, ungated);data:open(COCO 2017, a public dataset; Objects365 pretraining for some v1 and v2 checkpoints);code:open(training
-    code and configs for v1, v2 and v4);license:Apache-2.0(code and weights, every version)
+    code and configs for v1, v2 and v4);license:Apache-2.0(repository LICENSE for v1, v2 and v4; the v4
+    README states no separate weights license)
   last_verified: '2026-09-27'
   sources:
   - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/LICENSE
@@ -82,8 +85,8 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: Hugging Face downloads over the trailing 30 days for the two most-used checkpoints, which are
-    the ones declared; all eleven PekingU checkpoints reach about 2.07 million. RT-DETRv4 checkpoints
-    are downloaded from a file-sharing link that publishes no counts.
+    the ones declared; the other PekingU checkpoints add comparatively little. RT-DETRv4 checkpoints are
+    downloaded from a file-sharing link that publishes no counts.
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models?author=PekingU&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
@@ -102,7 +105,7 @@ capability:
   confidence: high
   note: RT-DETR and RF-DETR are the same kind of product, real-time transformer detectors pretrained on
     COCO's 80 classes, so detecting anything else still takes a training run on the user's own labels.
-    RT-DETR's newest version trails RF-DETR's largest sizes on COCO accuracy.
+    RT-DETRv4 reaches 57.0 COCO AP at its largest size.
   comparison:
     last_attested: '2026-09-27'
     sources:

@@ -62,36 +62,43 @@ adoption:
     http_status: 200
     content_sha256: 59634217894558af270fb010a4c1c9eebd3564cbc6b86209a62870ee346e4f8a
 capability:
-  score: 1
+  score: 4
   basis: feature_matrix
   value: 1,200+ differentiable operators for geometry, feature matching, filtering, color, enhancement,
-    augmentation and losses, plus builders that load ported pretrained models (LoFTR, LightGlue, DISK,
-    DeDoDe, SAM, YuNet, RT-DETR) whose zoo is frozen for expansion
-  relative_to: opencv
+    augmentation and losses, plus builders for 14 families of pretrained models (YuNet faces, RT-DETR
+    objects, SAM masks, DexiNed edges, LoFTR, LightGlue, DISK, DeDoDe) that download their weights on
+    first use; the zoo is frozen for expansion
+  relative_to: ultralytics
   relation: at
   confidence: medium
-  note: Kornia supplies the operations vision models are built and trained from, differentiably so they
-    can sit inside a network, and fits no predictor of its own. Its pretrained models are ports of other
-    projects' networks, loaded much as OpenCV's dnn module runs models trained elsewhere, and the project
-    has stopped adding them.
+  note: Kornia is mainly the operations vision models are built and trained from, written to sit inside
+    a network, but it also ships ready pretrained models, including SAM, which segments whatever the user
+    points at in any image with no training. Bundling that kind of model is what places Ultralytics here
+    too. Kornia's models are ports of other projects' networks, and the project has stopped adding them.
   comparison:
     last_attested: '2026-09-27'
     sources:
-    - url: https://ungh.cc/repos/opencv/opencv/files/HEAD
-      shows: OpenCV tree at HEAD still carries modules/dnn, which runs networks trained elsewhere, and
-        no ml module - the primitives scope this product is compared at.
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/
+        and the sam modules with sam3 builders - the bundled no-training models Kornia is compared at.
       accessed: '2026-09-27'
       http_status: 200
-      content_sha256: 1cd92b787079057d87e3c47cfa1e4b4e40b0952f8086836c6fae7118c61a41b6
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
   last_verified: '2026-09-27'
   sources:
   - url: https://kornia.readthedocs.io/en/latest/
-    shows: 'Docs landing: "1,200+ differentiable operators - functions and nn.Module layers, batched and
-      device-agnostic - across geometry, feature matching, filtering, color, augmentation, losses and
-      pretrained models"; "14 model families".'
+    shows: 'Docs landing: "1,200+ differentiable operators"; "Detect and segment with pretrained models
+      YuNet faces, RT-DETR objects, SAM masks, DexiNed edges - one line to build, weights on first use.
+      14 model families".'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 91ab4c2e4d91ce3f7bd1d4b740b3da744d83d0dae3c08c389557823938c67227
+  - url: https://kornia.readthedocs.io/en/latest/models.html
+    shows: 'Models page: "Each builder returns a configured model with pretrained weights." and "Pretrained
+      weights are downloaded on first use".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 47dd059ee083ea3d9278f9c39d336457b0d6e0ddbc0890a60e8f5bd8bacefc62
   - url: https://raw.githubusercontent.com/kornia/kornia/main/README.md
     shows: 'README: "The model zoo is currently frozen for expansion while maintainer bandwidth concentrates
       on the core. Shipped models (LoFTR, LightGlue, DISK, DeDoDe, SAM, and friends) stay available and

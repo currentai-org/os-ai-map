@@ -42,26 +42,27 @@ scoring_recipe:
     it documents.
       1  PRIMITIVES. Supplies the operations a model is built from or run on, and fits no
          predictor of its own (opencv: its classical learners moved to opencv_contrib at HEAD, and
-         its dnn module runs networks trained elsewhere; scikit-image; kornia, whose frozen model
-         zoo loads other projects' networks the way opencv's dnn does; supervision, which works on
+         its dnn module runs networks trained elsewhere; scikit-image; supervision, which works on
          other libraries' detections).
       2  ONE LEARNER FAMILY, well engineered (xgboost, lightgbm, catboost, prophet, pmdarima,
          umap, hdbscan, the imbalance-aware ensembles of imbalanced-learn), or a thin convenience
          layer over part of a toolkit (textblob over nltk).
       3  A TOOLKIT of many learners or a model zoo, with the pipelines, evaluation or training
          recipes to compare and fit them; choosing among them is left to the user (scikit-learn,
-         statsmodels, sktime, spacy, nltk, timm, rf-detr, and in this tranche cuml, river, dlib,
-         gensim, stanza, darts, gluonts, statsforecast, torchvision, detectron2, fastai, rt-detr).
-         Wrapping pretrained foundation forecasters, as sktime and darts do, does not lift a
-         toolkit off this rung while choosing and fitting the rest stays with the user.
+         statsmodels, sktime, spacy, nltk, timm, rf-detr, and in this tranche cuml, river, gensim,
+         stanza, gluonts, statsforecast, torchvision, detectron2, fastai, rt-detr).
       4  PRETRAINED, AND DOES THE USER'S OWN TASK WITH NO TRAINING STEP: a new table, or any
          image, gets a prediction from the shipped model directly (tabpfn, tabicl,
          google-cloud-vision, ultralytics, whose package runs the open-vocabulary YOLO-World and
          YOLOE detectors and SAM 3 on labels the user names). The prediction qualifies when the
          user chooses the target at inference - a text phrase, a point, an enrolled identity, a
-         new table's label column (segment-anything, dino through dino.txt, insightface, mediapipe's
-         interactive segmenter) - or when the task has no label set to change, as with depth and
-         class-agnostic foreground extraction (depth-anything, birefnet, rmbg). A checkpoint that
+         new table or series (segment-anything, dino through dino.txt, insightface, dlib's face
+         recognizer, mediapipe's interactive segmenter, kornia's bundled SAM, darts' foundation
+         forecasters) - or when the product exists to deliver a class-agnostic depth map or
+         foreground mask (depth-anything, birefnet, rmbg). A shipped model counts whether the
+         vendor trained it or bundles another project's, as ultralytics' SAM 3 already did. A
+         model zoo whose only such model is incidental to a label-bound catalog, such as
+         torchvision's RAFT optical flow, is not placed here on that model. A checkpoint that
          handles only its training label space - COCO's 80 classes for rf-detr and rt-detr - does
          not qualify: a new label set means a training run, which is rung 3. An earlier draft of
          the first tranche put ultralytics at 3 on its fixed-class YOLO models; the independent
@@ -77,31 +78,34 @@ scoring_recipe:
     and rt-detr are model rows at rung 3, on the definition above.
 
     Every non-root band records `relative_to`/`relation` against a same-category peer:
-    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk, timm, cuml, river and dlib
-    at scikit-learn; ultralytics at google-cloud-vision; rf-detr one_below ultralytics; xgboost one_below scikit-learn; prophet one_below
+    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk, timm, cuml and river at
+    scikit-learn; ultralytics at google-cloud-vision; rf-detr one_below ultralytics; xgboost one_below scikit-learn; prophet one_below
     sktime; opencv one_below xgboost; tabpfn one_below autogluon; tabicl at tabpfn;
     amazon-rekognition at autogluon; google-cloud-vision one_below amazon-rekognition; lightgbm,
     catboost, imbalanced-learn, umap and hdbscan at xgboost; pmdarima at prophet; textblob
-    one_below nltk; gensim at nltk; stanza at spacy; darts, gluonts and statsforecast at sktime;
-    torchvision, detectron2 and fastai at timm; rt-detr at rf-detr; kornia, supervision and
-    scikit-image at opencv; dino, segment-anything, depth-anything, birefnet, insightface and
-    mediapipe at ultralytics; rmbg at birefnet; h2o-3, flaml, pycaret, monai and pyod at
+    one_below nltk; gensim at nltk; stanza at spacy; gluonts and statsforecast at sktime; darts
+    at tabpfn; torchvision, detectron2 and fastai at timm; rt-detr at rf-detr; supervision and
+    scikit-image at opencv; dino, segment-anything, depth-anything, birefnet, insightface,
+    mediapipe and kornia at ultralytics; dlib at insightface; rmbg at birefnet; h2o-3, flaml, pycaret, monai and pyod at
     autogluon.
 
     DISTRIBUTION REVIEW (capability.md, "Writing the rungs"), counted 2026-09-27 over the 50
-    banded products after the second tranche: rung 1 = 4, rung 2 = 9, rung 3 = 19, rung 4 = 11,
-    rung 5 = 7. Rung 3 holds 19/50 = 38%, above the one-third trigger (it was 7/16 = 44% after
+    banded products after the second tranche: rung 1 = 3, rung 2 = 9, rung 3 = 17, rung 4 = 14,
+    rung 5 = 7. Rung 3 holds 17/50 = 34%, just above the one-third trigger (it was 7/16 = 44% after
     the first tranche). Wording as it stands: "a toolkit of many learners or a model zoo, with the
     pipelines, evaluation or training recipes to compare and fit them; choosing among them is left
     to the user". Reading: the products genuinely CLUSTER rather than the wording generalizing.
-    Evidence: each of the nineteen documents a catalog of learners or checkpoints (cuML's 50+
-    GPU algorithms, River's online-learning modules, dlib's SVM, kernel and clustering trainers,
-    Gensim's topic and embedding models, Stanza's 80-language pipelines, Darts', GluonTS' and
-    StatsForecast's model tables, torchvision's and Detectron2's model zoos, fastai's learners,
-    RT-DETR's COCO checkpoints) and none documents predicting on a user-chosen target untrained
-    or searching models automatically, which is what separates 4 and 5. The first tranche's
+    Evidence: each of the seventeen documents a catalog of learners or checkpoints (cuML's 50+
+    GPU algorithms, River's online-learning modules, Gensim's topic and embedding models,
+    Stanza's 80-language pipelines, GluonTS' and StatsForecast's model tables, torchvision's and
+    Detectron2's model zoos, fastai's learners, RT-DETR's COCO checkpoints) and none documents
+    predicting on a user-chosen target untrained or searching models automatically, which is
+    what separates 4 and 5. The independent verifier of this tranche moved dlib and kornia up
+    to 4 on their bundled face-recognition and SAM models, and darts followed on its foundation
+    forecasters; sktime, placed at 3 in the first tranche, documents running foundation models
+    too, and is left for re-review rather than moved inside a promotion. The first tranche's
     expectation that promoting single-learner and primitive libraries would widen rungs 1 and 2
-    held: they went from 1 and 2 products to 4 and 9. The tabular/vision split stays open: the
+    held for rung 2, which went from 2 products to 9; rung 1 went from 1 to 3. The tabular/vision split stays open: the
     ladder discriminated both halves in both tranches, so nothing here requires it yet.
 
     Weighted 0.6 adoption to 0.4 capability, as ml_frameworks and document_conversion are,
@@ -243,7 +247,7 @@ products:
 - amazon-rekognition
 - google-cloud-vision
 strapline: >-
-  Outside the LLM stack, the libraries are open almost all the way down: nearly every classical-ML, forecasting, NLP and vision library here publishes its whole source under an OSI license, and only Ultralytics and H2O-3 keep models or features back for paying customers. The restrictions sit on pretrained weights instead - non-commercial checkpoints from TabPFN, Depth Anything, BRIA and InsightFace, RF-DETR's platform-only large models, and Meta's own DINOv3 and SAM licenses - and on the hosted vision APIs from Google and AWS.
+  Outside the LLM stack, the libraries are open almost all the way down: nearly every classical-ML, forecasting, NLP and vision library here publishes its whole source under an OSI license, and only Ultralytics, H2O-3 and InsightFace keep models or features back for paying customers. The restrictions sit on pretrained weights instead - non-commercial checkpoints from TabPFN, Depth Anything, BRIA and InsightFace, RF-DETR's platform-only large models, and Meta's own DINOv3 and SAM licenses - and on the hosted vision APIs from Google and AWS.
 comments: >-
   Proposed in issue #600; created as one category (not split) on the 2026-09-26 new-category
   decisions. Litmus: does the product fit, run or ship a prediction model - or the vision

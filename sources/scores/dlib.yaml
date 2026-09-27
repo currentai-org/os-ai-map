@@ -79,28 +79,29 @@ adoption:
     http_status: 200
     content_sha256: 791206552e54ef9ff8f2bf6b7bfd54ed0b0f571966c76cd6c9af0ce1e06171f6
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   value: binary and multiclass SVMs, relevance vector machines, kernel ridge and recursive least squares,
-    random-forest regression, structural SVMs, clustering (k-means, spectral, Chinese whispers), automatic
-    model selection helpers, a deep-learning API, and trained face detection, landmark and recognition
-    models
-  relative_to: scikit-learn
+    random-forest regression, structural SVMs, clustering (k-means, spectral, Chinese whispers) and a
+    deep-learning API, plus trained face detection, 68-point landmark and face-recognition models, the
+    last mapping any face to an embedding so enrolled people are recognized with no training
+  relative_to: insightface
   relation: at
   confidence: medium
-  note: dlib is a general machine-learning toolkit in the same sense as scikit-learn, with many learners
-    to choose among, and its pretrained face models cover one object class. Choosing and training a model
+  note: dlib is first a general machine-learning toolkit with many learners to choose among, but it also
+    ships a trained face-recognition network that compares faces the user enrolls without any training
+    run, the same capability that places InsightFace here. Outside faces, choosing and training a model
     for a new task is left to the user.
   comparison:
     last_attested: '2026-09-27'
     sources:
-    - url: https://scikit-learn.org/stable/user_guide.html
-      shows: scikit-learn's user guide still lists supervised learners (linear models, SVMs, nearest neighbors,
-        Gaussian processes, naive Bayes, trees, ensembles, neural networks), unsupervised learning and
-        model selection - the toolkit scope dlib is compared at.
+    - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/python-package/README.md
+      shows: 'InsightFace Python package README: "InsightFace provides face detection, recognition, alignment,
+        and attributes through Python and ONNX Runtime." - the ready face-recognition capability dlib
+        is compared at.'
       accessed: '2026-09-27'
       http_status: 200
-      content_sha256: 6c6c264ef869e05cbd5a682bdcdbdfa7302478eb897be90112fa3d2655766875
+      content_sha256: 16dd8e38ad332bb600ce82328513f0acd46191bf2a1932e294b91fba62993539
   last_verified: '2026-09-27'
   sources:
   - url: http://dlib.net/ml.html
@@ -111,3 +112,10 @@ capability:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 375111b24981c8c1bbeac51487dd3f019f849ba2cef319d3874b59cda0cafc22
+  - url: https://raw.githubusercontent.com/davisking/dlib-models/HEAD/README.md
+    shows: 'dlib-models README: "dlib_face_recognition_resnet_model_v1.dat.bz2", a network "trained from
+      scratch on a dataset of about 3 million faces", released with the other models "into the public
+      domain".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9c6d18a2a83ceebc136997941ec913ccc0548889e24440381bd06d7453b05e3c

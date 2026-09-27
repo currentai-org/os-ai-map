@@ -19,7 +19,10 @@ openness:
   confidence: high
   note: The RMBG-2.0 weights can be downloaded after a click-through, but only for non-commercial use
     under CC BY-NC 4.0; businesses need a commercial agreement with BRIA or its paid API. BRIA describes
-    the licensed training images without releasing them, and publishes inference code only.
+    the licensed training images without releasing them, and publishes inference code only. BRIA's newer
+    Fibo-Edit-RMBG, a background-removal fine-tune of its Fibo-Edit image editor, and the video model
+    VRMBG-3.0 are separate models; BRIA's own VRMBG-3.0 card points still-image users to RMBG-2.0, and
+    Fibo-Edit-RMBG is non-commercial too.
   raw: weights:open(on the Hub behind an automatic click-through gate);data:documented-not-released(over
     15,000 licensed images, described by category; not released);code:partial(inference code only);license:CC-BY-NC-4.0(RMBG-2.0
     weights; commercial use by separate agreement with BRIA)
@@ -60,6 +63,14 @@ openness:
     content_sha256: fbc21ad241fcf843fc5fe6bf08cac9b62f0bff6793c74af4b778309dd17d589f
     establishes:
     - code
+  - url: https://huggingface.co/api/models/briaai/Fibo-Edit-RMBG
+    shows: 'Hub record for briaai/Fibo-Edit-RMBG: base_model briaai/Fibo-Edit, library diffusers, license_link
+      to CC BY-NC 4.0, gated "auto".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 33fbb577c8eb921be28db739bd1f88c69ebf8234af71dbbe053c4b1e1200a8ce
+    establishes:
+    - license
   - url: https://huggingface.co/briaai/VRMBG-3.0
     shows: 'The newer VRMBG-3.0 is a video model: "BRIA Video Background Removal v3.0" and "For still-image
       background removal, see RMBG-2.0."'
@@ -73,8 +84,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: Hugging Face downloads over the trailing 30 days of RMBG-2.0; the older RMBG-1.4 adds another
-    317,948, and the two together stay in the same band. BRIA's API usage is not counted.
+  note: Hugging Face downloads over the trailing 30 days of RMBG-2.0; the older RMBG-1.4 has a smaller
+    count and is not declared. BRIA's API usage is not counted.
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models?author=briaai&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
@@ -91,6 +102,16 @@ capability:
   relative_to: birefnet
   relation: at
   confidence: medium
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/main/README.md
+      shows: BiRefNet README describes "Bilateral Reference for High-Resolution Dichotomous Image Segmentation"
+        and its general-use foreground-extraction checkpoints - the architecture RMBG-2.0 is built on
+        and is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 7a4c7661d0861bd99845e78e7980c5440a9c2095eff9b7d6fdbccdcc45c8fec7
   note: RMBG-2.0 does the same job as BiRefNet, cutting the subject out of any image with no training,
     and uses its architecture; BRIA's contribution is the licensed training data. It offers no variants
     beyond that one task.

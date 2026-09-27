@@ -65,7 +65,7 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: Measured on monthly PyPI downloads of the darts package. Unit8 also publishes the same library
-    as u8darts, with another 56,994 downloads, which does not change the band.
+    as u8darts, with a smaller count that is not added here.
   last_verified: '2026-09-27'
   sources:
   - url: https://pypistats.org/api/packages/darts/recent
@@ -79,28 +79,29 @@ adoption:
     http_status: 200
     content_sha256: d76d7b71cdd607389c39c7bfe1b24745e6c84d3bb3524e6e6b9023ec158cac21
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   value: forecasting and anomaly detection over baselines, statistical models (ARIMA, ETS, Theta, TBATS,
     Prophet and statsforecast's Auto models), regression models (scikit-learn, LightGBM, XGBoost, CatBoost),
     deep models (RNN, N-BEATS, N-HiTS, TCN, Transformer, TFT, TiDE, TSMixer) and pretrained foundation
-    models (Chronos-2, TimesFM, TiRex), with backtesting, ensembling and conformal prediction
-  relative_to: sktime
+    models (Chronos-2, TimesFM, TiRex) that forecast a new series with no training, with backtesting,
+    ensembling and conformal prediction
+  relative_to: tabpfn
   relation: at
-  confidence: high
-  note: Darts puts dozens of forecasting models behind one interface and makes them easy to compare, as
-    sktime does, and both run pretrained foundation models that forecast a new series with no training.
-    Choosing among the models is still the user's work.
+  confidence: medium
+  note: Darts puts dozens of forecasting models behind one interface, and its foundation models forecast
+    a series the user brings with no training run, as TabPFN predicts on a new table. Choosing among its
+    other models, and tuning them, is still the user's work; it does not search for a model automatically.
   comparison:
     last_attested: '2026-09-27'
     sources:
-    - url: https://www.sktime.net/en/stable/
-      shows: 'sktime site: "500+ models, one API Classical statistics, machine learning, deep learning,
-        and modern AI, all behind the same interface." and "Run AI foundation models next to proven classics"
-        - the toolkit scope Darts is compared at.'
+    - url: https://arxiv.org/abs/2605.13986
+      shows: 'TabPFN-3 abstract: "a forward pass of TabPFN-3 outperforms all other models, including tuned
+        and ensembled baselines" - prediction on a new table with no training, the capability Darts is
+        compared at.'
       accessed: '2026-09-27'
       http_status: 200
-      content_sha256: c95eb8729e194b5736d3b3ed721a6fa554c6a9ed377cc290cfbfe3605fc854da
+      content_sha256: 9c51e19e7c596807779393daa4f6c0cd60d54870a42a8eeeedee48b27dcc71e4
   last_verified: '2026-09-27'
   sources:
   - url: https://raw.githubusercontent.com/unit8co/darts/HEAD/README.md
