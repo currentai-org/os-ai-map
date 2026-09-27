@@ -1,7 +1,7 @@
 product: latentsync
 openness:
-  score: 3
-  class: open_weights
+  score: 2
+  class: restricted
   components:
     weights:
       value: open
@@ -22,9 +22,10 @@ openness:
         and data processing
   governing_release: LatentSync 1.6
   confidence: medium
-  note: LatentSync's code, training scripts included, is Apache 2.0, and its own weights carry an OpenRAIL++ license
-    that restricts some uses but not commercial use. Its face detector relies on InsightFace models licensed for non-commercial
-    research only, and the training videos are not released.
+  note: LatentSync's code, training scripts included, is Apache 2.0, and its own weights carry an OpenRAIL++
+    license that restricts some uses but not commercial use. Lip-syncing a video runs every frame through
+    a face detector built on InsightFace models licensed for non-commercial research only, and the training
+    videos are not released.
   raw: weights:open(LatentSync 1.6 and 1.5 download from Hugging Face without a gate);data:described(the training videos
     are described (512x512 in 1.6; 1.5 added Chinese videos to the training) and not released; the data processing pipeline
     that prepares them is published);code:open(U-Net and SyncNet training scripts and the data processing pipeline are
@@ -109,6 +110,14 @@ openness:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: acbae04911ae95cf975dbcd3ae667ea3ca04ed422c52892d14ec3656e0a8b248
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/bytedance/LatentSync/main/latentsync/utils/image_processor.py
+    shows: ImageProcessor imports FaceDetector from .face_detector and builds self.face_detector = FaceDetector(device=device);
+      the lip-sync pipeline's affine_transform_video calls image_processor.affine_transform on every frame.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 003cc7370e2b9724e23b3d498b4c2dd9c11f1c4c31ec3c4e23b9c662d89a17aa
     establishes:
     - license
 adoption:
