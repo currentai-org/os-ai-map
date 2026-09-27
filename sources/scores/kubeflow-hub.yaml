@@ -1,0 +1,92 @@
+product: kubeflow-hub
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/kubeflow/hub
+    core-gated:
+      value: ungated
+      detail: a component of Kubeflow, a CNCF graduated project
+  confidence: high
+  note: The registry and catalog are Apache-2.0 and install standalone or with Kubeflow. It is a component
+    of Kubeflow, a CNCF graduated project, and its repository carries no enterprise code or license check.
+  raw: license:Apache-2.0(OSI);source:public(github.com/kubeflow/hub);core-gated:ungated(a component of Kubeflow,
+    a CNCF graduated project)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/kubeflow/hub/HEAD/LICENSE
+    shows: Apache License Version 2.0, January 2004, full text.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/kubeflow/hub/HEAD/README.md
+    shows: '"Kubeflow Hub is an umbrella project including the Model Registry ... and the Catalog"; standalone
+      installation is documented.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 529ceb289af934be5982e3eeaa178c4b0a8eb70ea8de8d37d9822a031702f1b4
+    establishes:
+    - source
+  - url: https://www.kubeflow.org/docs/components/model-registry/overview/
+    shows: '"Kubeflow is now a CNCF graduated project"; "© 2026 The Kubeflow Authors."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4831a767986e6b7e4ad17d4ee7f7123ab505ecd5713837b7906d4bb5b4e3661d
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Kubeflow Hub runs inside each organization's own cluster, and no install or user count is published.
+    Downloads of its Python client would measure a client rather than the registry, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/kubeflow/hub/HEAD/README.md
+    shows: '"This Kubeflow component has alpha status with limited support." No usage or install figure in
+      the README.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 529ceb289af934be5982e3eeaa178c4b0a8eb70ea8de8d37d9822a031702f1b4
+capability:
+  score: 4
+  basis: feature_matrix
+  value: register and version models (RegisteredModel, ModelVersion, ModelArtifact) through a REST API with
+    an OpenAPI contract and a Python client; upload_artifact_and_register_model writes to S3 or an OCI registry
+    and records the URI; read-only catalog federating external sources; models only
+  confidence: medium
+  relative_to: huggingface-hub-platform
+  relation: one_below
+  note: Team members register models, versions and artifacts through a documented API, and the client uploads
+    the files to the deployment's own object store or OCI registry as it registers them. It tracks models only,
+    keeps weights in storage it points to rather than serving them itself, and is still alpha, which keeps
+    it a step below Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/kubeflow/hub/HEAD/docs/logical_model.md
+    shows: RegisteredModel "Represent logically a given ML model", ModelVersion "a specific version", ModelArtifact
+      "the ML model artifact"; "`uri` can be used as a general mechanism to locate the model artifact/file
+      on storage."
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aeb797b944621461401593d8e5b2bf785f1730bf6c547b5c7e22b3ec9febe19b
+  - url: https://model-registry.readthedocs.io/en/latest/
+    shows: '"To both upload and register a model, use the convenience method upload_artifact_and_register_model.
+      This method supports both s3-based storage (via boto3) as well as OCI-based image registries"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 66598e7d0ad089014cad20777f9f3014b818f4a65ef54e7de2d52e82b9a19d79
+  - url: https://www.kubeflow.org/docs/components/model-registry/overview/
+    shows: '"a metadata store where teams register, version, and track their own models"; the catalog "does
+      not store model weights or artifacts".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4831a767986e6b7e4ad17d4ee7f7123ab505ecd5713837b7906d4bb5b4e3661d
