@@ -116,7 +116,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # on both sides and diffed: 378 rows before and after, those two are the only rows that differ, and
 # on each the only field that differs is category_slug. The new products add no row, because the
 # baseline observation snapshot predates them.
-MEASUREMENTS_DIGEST = "6d7bd331ec4b38ae9ef1cfae5a6982340e377689247d8ddd99e3044dca27f5ac"
+# Moved by #726: mimo-pro declares its two MiMo-V2.6 Pro checkpoints beside MiMo-V2.5-Pro. The
+# baseline snapshot observed only V2.5-Pro, so the Hugging Face sum is short and the row abstains
+# (#585) instead of banding. Measured rather than asserted - the row sets were dumped on both sides
+# and diffed: 378 rows before and after, and mimo-pro's is the only row that differs, with
+# measured_level, measured_reach and raw_value now null.
+MEASUREMENTS_DIGEST = "20ee0717459fc862b03906c8ae9a7367e733f0af2b079a67271568978dd509fa"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.
@@ -648,7 +653,7 @@ def test_the_baseline_abstains_only_on_partial_coverage(measurement_rows):
     that kind -- the short sums that used to band. Named rather than counted: an abstention
     appearing for any other reason is a finding, not a tolerance."""
     abstained = {r["product_slug"] for r in measurement_rows if r["measured_level"] is None}
-    assert abstained == {"composable-kernel", "glm", "olmo-instruct"}
+    assert abstained == {"composable-kernel", "glm", "mimo-pro", "olmo-instruct"}
     for row in measurement_rows:
         if row["measured_level"] is None:
             # the short aggregate goes with the band, and the audit trail stays
