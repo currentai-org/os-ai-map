@@ -15,34 +15,40 @@ scoring_recipe:
     corpus. Weighted 0.3 adoption to 0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads
     here are dominated by one family (Qwen-VL) and by small models pulled into pipelines (Florence-2-base, BLIP
     captioning, SmolVLM2-500M), so adoption ranks distribution before it ranks the model. OPENNESS READING RULES,
-    applied at the first promotion (2026-09-27). The governing release is the newest one with downloadable weights;
-    API-only tiers are excluded (Qwen3.5-Omni, Holo3-122B, the full UI-TARS-1.5, UI-TARS-2), and older generations
-    with a different license are named in the product''s comments rather than scored. `data: open` only where the
-    publisher releases the post-training mixture itself or scripts that fetch all of it (Molmo2 Data with scripts/download_datasets.py;
-    LLaVA-OneVision-2-Data with the carried-forward 1.5 sets); a mixture assembled from named third-party sets plus
-    some of the publisher''s own is `partial` (SmolVLM2, VideoLLaMA3, InternVL3.5, Nemotron); a mixture described
-    without a release is `described`. `code: open` means the publisher''s own training scripts and configs for the
-    scored release (Molmo2, LLaVA-OneVision-2, InternVL3.5 CascadeRL, VideoLLaMA3, BAGEL, BLIP-2 in LAVIS, PaliGemma''s
-    big_vision transfers); a fine-tuning toolkit for users without the publisher''s own recipe is `partial` (qwen-vl-finetune,
-    MiniCPM-V finetune/), as is inference and serving code alone; no code at all is `closed`. CAPABILITY is breadth
-    of grounded understanding, read as the highest rung the product''s own card, repository or paper documents.
-    The rungs are ordered but not strictly cumulative: a computer-use model need not read video. 5 OMNI IN: audio
-    and video understood natively together with images and text; top anchor qwen-omni, which also answers in streaming
-    speech. 4 ACTS ON WHAT IT SEES: completes tasks in a live GUI or computer environment, reported on an online
-    agent benchmark (OSWorld, AndroidWorld, WindowsAgentArena, WebVoyager, Online-Mind2Web), however low the score;
-    grounding-only results such as ScreenSpot or OSWorld-G do not qualify on their own; root ui-tars, one_below
-    qwen-omni. 3 VIDEO AND MULTI-IMAGE: native video understanding alongside multi-image and document input; root
-    minicpm-v, two_below qwen-omni. 2 DOCUMENTS ON ONE IMAGE: OCR-grade reading of whole documents, charts and tables
-    with question answering over them, one image at a time; boxes, points and region OCR alone stay at 1; root moondream,
-    one_below minicpm-v. 1 SINGLE-IMAGE PERCEPTION: captioning, question answering and prompted detection, boxes
-    and region OCR on one image; root florence-2, two_below minicpm-v. Capability is the maximum across a product''s
-    releases (docs/reference/identity.md), which is why videollama is at 5 on VideoLLaMA2.1-AV''s audio-visual input.
-    Image generation by the unified models (janus, bagel) is recorded in `value` and does not raise the band, because
-    it is a second quantity. A benchmark average breaks ties only within a rung: OpenCompass stops at 2025-09-17
-    and has nothing for the GUI or omni rows, and MMMU''s test answers have been public since 2026-02-12. Distribution
-    at promotion, 22 banded: 5 -> 4, 4 -> 7, 3 -> 5, 2 -> 2, 1 -> 4; the widest rung is 7 of 22 (32%), just under
-    the one-third review trigger. Custom weights licenses the shared tiers do not name are deferred below and listed
-    for the maintainer''s license-rulings issue. No edit to sources/rubrics/ is made or implied here.'
+    applied at the first promotion (2026-09-27) and corrected to the #720 ruling. The current release governs openness.
+    The API-only exclusion works across the SKUs of one release and never across releases. So the full UI-TARS-1.5,
+    a tier of the release ui-tars is scored on, is left out, and Holo3-122B, a hosted size of the earlier Holo3
+    release, does not bear on holo, whose current release Holo3.1 ships every size as downloadable weights. qwen-omni
+    is deferred below because its current release, Qwen3.5-Omni, is API-only while Qwen3-Omni stays downloadable.
+    UI-TARS-2 is newer than UI-TARS-1.5 but has only a technical report, with no weights and no named API model
+    found, so ui-tars stays on UI-TARS-1.5, since identity.md excludes unshipped releases.
+    Older generations with a different license are named in the product''s comments rather than scored. `data: open`
+    only where the publisher releases the post-training mixture itself or scripts that fetch all of it (Molmo2 Data
+    with scripts/download_datasets.py; LLaVA-OneVision-2-Data with the carried-forward 1.5 sets); a mixture assembled
+    from named third-party sets plus some of the publisher''s own is `partial` (SmolVLM2, VideoLLaMA3, InternVL3.5,
+    Nemotron); a mixture described without a release is `described`. `code: open` means the publisher''s own training
+    scripts and configs for the scored release (Molmo2, LLaVA-OneVision-2, InternVL3.5 CascadeRL, VideoLLaMA3, BAGEL,
+    BLIP-2 in LAVIS, PaliGemma''s big_vision transfers); a fine-tuning toolkit for users without the publisher''s
+    own recipe is `partial` (qwen-vl-finetune, MiniCPM-V finetune/), as is inference and serving code alone; no
+    code at all is `closed`. CAPABILITY is breadth of grounded understanding, read as the highest rung the product''s
+    own card, repository or paper documents. The rungs are ordered but not strictly cumulative: a computer-use model
+    need not read video. 5 OMNI IN: audio and video understood natively together with images and text; top anchor
+    qwen-omni, which also answers in streaming speech. 4 ACTS ON WHAT IT SEES: completes tasks in a live GUI or
+    computer environment, reported on an online agent benchmark (OSWorld, AndroidWorld, WindowsAgentArena, WebVoyager,
+    Online-Mind2Web), however low the score; grounding-only results such as ScreenSpot or OSWorld-G do not qualify
+    on their own; root ui-tars, one_below qwen-omni. 3 VIDEO AND MULTI-IMAGE: native video understanding alongside
+    multi-image and document input; root minicpm-v, two_below qwen-omni. 2 DOCUMENTS ON ONE IMAGE: OCR-grade reading
+    of whole documents, charts and tables with question answering over them, one image at a time; boxes, points
+    and region OCR alone stay at 1; root moondream, one_below minicpm-v. 1 SINGLE-IMAGE PERCEPTION: captioning,
+    question answering and prompted detection, boxes and region OCR on one image; root florence-2, two_below minicpm-v.
+    Capability is the maximum across a product''s releases (docs/reference/identity.md), which is why videollama
+    is at 5 on VideoLLaMA2.1-AV''s audio-visual input. Image generation by the unified models (janus, bagel) is
+    recorded in `value` and does not raise the band, because it is a second quantity. A benchmark average breaks
+    ties only within a rung: OpenCompass stops at 2025-09-17 and has nothing for the GUI or omni rows, and MMMU''s
+    test answers have been public since 2026-02-12. Distribution at promotion, 22 banded: 5 -> 4, 4 -> 7, 3 -> 5,
+    2 -> 2, 1 -> 4; the widest rung is 7 of 22 (32%), just under the one-third review trigger. Custom weights licenses
+    the shared tiers do not name are deferred below and listed for the maintainer''s license-rulings issue. No edit
+    to sources/rubrics/ is made or implied here.'
   extends: model
   deferred:
     moondream:
@@ -60,6 +66,13 @@ scoring_recipe:
         and that derivatives may be distributed. Naming it in a tier is a shared-rubric ruling; if it joins the
         Open Model License in permissive_non_osi the ladder gives 3/open_weights, because only part of the training
         data is released and no training code is, so that is the hand score.'
+    qwen-omni:
+      because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Qwen3.5-Omni,
+        is API-only and the ladder computes 1/closed from it; the prior release, Qwen3-Omni, remains distributed
+        under Apache-2.0, and both are recorded (the prior one under components.context and in the sources). Alibaba''s
+        Model Studio also serves Qwen3.8-Omni-Flash, again hosted only. openness.score is left null rather than
+        hand-set because how the map models availability separately from openness, with the open line one generation
+        behind the vendor''s closed frontier, awaits a maintainer ruling from the #720 review.'
 products:
 - minicpm-o
 - nemotron-omni

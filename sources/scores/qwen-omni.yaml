@@ -1,30 +1,39 @@
 product: qwen-omni
 openness:
-  score: 3
-  class: open_weights
-  governing_release: qwen3-omni
+  score: null
+  class: closed
+  governing_release: qwen3.5-omni
   components:
     weights:
-      value: open
-      detail: safetensors on the Hub, ungated
+      value: closed
+      detail: Qwen3.5-Omni is served only through Alibaba Cloud Model Studio; no Qwen3.5-Omni weights are
+        published on the Hub or in the QwenLM GitHub organization
     data:
       value: closed
-      detail: no post-training data named or linked in the card or repository
+      detail: nothing is published for Qwen3.5-Omni
     code:
-      value: partial
-      detail: inference cookbooks and serving instructions only
+      value: closed
+      detail: no code is published for Qwen3.5-Omni
     license:
-    - name: Apache-2.0
-      detail: OSI; the Hub card reads other with license name apache-2.0, and the repository LICENSE is the Apache
-        2.0 text
+    - name: Proprietary
+      detail: Qwen3.5-Omni is available only under Model Studio API terms
+    context:
+      prior-release:
+        value: distributed
+        detail: 'Qwen3-Omni (and Qwen2.5-Omni): safetensors on the Hub, ungated, under Apache-2.0, with
+          inference cookbooks and serving code only and no post-training data'
   confidence: high
-  note: Qwen3-Omni's weights are published under Apache 2.0, the newest release with downloadable weights. Alibaba
-    publishes neither the post-training data nor a training pipeline, so the model can be run and fine-tuned but
-    not rebuilt. Qwen3.5-Omni, the later tier, is sold only as a hosted API and is left out of this reading.
-  raw: weights:open(safetensors on the Hub, ungated);data:closed(no post-training data named or linked in the card
-    or repository);code:partial(inference cookbooks and serving instructions only);license:Apache-2.0(OSI; the Hub
-    card reads other with license name apache-2.0, and the repository LICENSE is the Apache 2.0 text)
-  last_verified: '2026-09-26'
+  note: Qwen3.5-Omni, the current release, can only be used through Alibaba Cloud's API, and no weights
+    have been published for it. The same Model Studio documentation serves Qwen3.8-Omni-Flash, a text-output
+    omni model, also hosted only. The previous generation, Qwen3-Omni, remains downloadable under Apache
+    2.0, so the open line now trails Alibaba's own closed omni models.
+  raw: 'weights:closed(Qwen3.5-Omni is served only through Alibaba Cloud Model Studio; no Qwen3.5-Omni weights
+    are published on the Hub or in the QwenLM GitHub organization);data:closed(nothing is published for
+    Qwen3.5-Omni);code:closed(no code is published for Qwen3.5-Omni);license:Proprietary(Qwen3.5-Omni is
+    available only under Model Studio API terms);prior-release:distributed(Qwen3-Omni (and Qwen2.5-Omni):
+    safetensors on the Hub, ungated, under Apache-2.0, with inference cookbooks and serving code only and
+    no post-training data)'
+  last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen3-Omni-30B-A3B-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
     shows: 'Hub metadata for Qwen3-Omni-30B-A3B-Instruct: gated false, safetensors weight shards, card license other
@@ -53,15 +62,30 @@ openness:
     - code
   - url: https://huggingface.co/api/models?author=Qwen&search=Qwen3.5-Omni&limit=100
     shows: 'An empty list: no Qwen3.5-Omni weights are published under the Qwen organization on the Hub'
-    accessed: '2026-09-26'
+    accessed: '2026-09-27'
     http_status: 200
     content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+    establishes:
+    - weights
   - url: https://www.alibabacloud.com/help/en/model-studio/qwen-omni
-    shows: Alibaba Cloud Model Studio documentation serves qwen3.8-omni-flash and Qwen3.5-Omni through the hosted
-      API
-    accessed: '2026-09-26'
+    shows: 'Model Studio Qwen-Omni documentation (last updated Sep 18, 2026): "Choose Qwen3.8-Omni-Flash
+      for text analysis and Qwen3.5-Omni for speech output", called through the DashScope API as qwen3.5-omni-plus
+      and qwen3.8-omni-flash with an API key; no download.'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: e79f28c67437e80f29c9085754225601da162507ae5927f868fa20dd5494781a
+    content_sha256: dc1fd339c4b3cc5320b209c75a2dcf62df13a519efca637f38d9c8a6aa127345
+    establishes:
+    - weights
+    - license
+  - url: https://api.github.com/search/repositories?q=org:QwenLM+omni
+    shows: 'GitHub search of the QwenLM organization for omni: four repositories, Qwen3-Omni, Qwen2.5-Omni,
+      Qwen-Live-Harness and Omnilingua-Bench; no Qwen3.5-Omni code or data repository.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 782148f9b029ea4d16fb71cf59399982526c2a1601e9651046e3b107c38cd842
+    establishes:
+    - data
+    - code
 adoption:
   level: 4
   reach: 1M-10M
