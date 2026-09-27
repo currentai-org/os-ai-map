@@ -12,7 +12,7 @@ openness:
     code:
       value: partial
       detail: Stability-AI/generative-models publishes SVD inference configs and sampling scripts under MIT; its example
-        training configs cover SDXL and toy sets, not SVD
+        training configs cover ImageNet, CIFAR-10, MNIST and a CLIP-conditioned text-to-image model, not SVD
     license:
     - name: Stability-AI-Community-License
       detail: 'the LICENSE.md in every SVD repository: free below USD 1M annual revenue, after which an enterprise license
@@ -24,10 +24,10 @@ openness:
     publishes inference code only, and the training videos are described but not released.
   raw: 'weights:open(SVD and SVD-XT download without a gate; SVD-XT 1.1 behind an automatically granted click-through);data:described(the
     SVD paper and cards describe the curated training video set and its filtering; no dataset is released);code:partial(Stability-AI/generative-models
-    publishes SVD inference configs and sampling scripts under MIT; its example training configs cover SDXL and toy sets,
-    not SVD);license:Stability-AI-Community-License(the LICENSE.md in every SVD repository: free below USD 1M annual
-    revenue, after which an enterprise license is required; the SVD-XT 1.1 click-through still asks for non-commercial
-    or research use only)'
+    publishes SVD inference configs and sampling scripts under MIT; its example training configs cover ImageNet, CIFAR-10,
+    MNIST and a CLIP-conditioned text-to-image model, not SVD);license:Stability-AI-Community-License(the LICENSE.md
+    in every SVD repository: free below USD 1M annual revenue, after which an enterprise license is required; the SVD-XT
+    1.1 click-through still asks for non-commercial or research use only)'
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt/raw/main/LICENSE.md
@@ -55,6 +55,20 @@ openness:
     establishes:
     - weights
     - license
+  - url: https://huggingface.co/api/models/stabilityai/stable-video-diffusion-img2vid-xt?expand[]=gated&expand[]=cardData
+    shows: 'Hugging Face API record for SVD-XT: gated false.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71e2f07eeb263b7e9a6f8334eabb970d3855f8dbd5ea162ca0cfdfcd5a933fa
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/stabilityai/stable-video-diffusion-img2vid?expand[]=gated
+    shows: 'Hugging Face API record for SVD: gated false.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b4f7d524789949c821b1d45e8e91bd35869f53df1220267259a161265265b4c3
+    establishes:
+    - weights
   - url: https://huggingface.co/api/models?author=stabilityai&search=stable-video&sort=downloads&direction=-1&limit=100
     shows: 'Listing of the stable-video repositories: img2vid-xt, img2vid and img2vid-xt-1-1 are public.'
     accessed: '2026-09-27'
@@ -72,8 +86,8 @@ openness:
     - data
     - license
   - url: https://ungh.cc/repos/Stability-AI/generative-models/files/main
-    shows: 'generative-models file list: inference configs for svd and sv3d; the example training configs are SDXL, MNIST
-      and ImageNet only.'
+    shows: 'generative-models file list: inference configs for svd and sv3d; configs/example_training holds ImageNet,
+      CIFAR-10, MNIST and txt2img-clipl configs, none for SVD.'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 51ba3bf0dcc11ea533ccddd74760a7e97fa3cb629a9a7f2232b7f8a5ae707a81

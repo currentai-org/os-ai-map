@@ -131,12 +131,14 @@ scoring_recipe:
         own MIT weights; a ruling that the bundle governs would make it 2/restricted.'
     open-sora:
       because: The weights license is a compound the tier cannot resolve, the liveportrait case. Open-Sora 2.0's
-        own weights and training code are Apache-2.0, but its checkpoint repository redistributes FLUX.1 [dev] under
-        the FLUX.1 [dev] Non-Commercial License, which the text-to-video pipeline uses for its first frame, and
-        a HunyuanVideo VAE under the Tencent Hunyuan Community License, which excludes the EU, UK and South Korea.
-        Whether a bundled third-party component governs a model's tier is a shared-rubric question. Hand-scored
+        own weights and training code are Apache-2.0, but every text-to-video and image-to-video config loads a
+        HunyuanVideo VAE, redistributed in the checkpoint repository under the Tencent Hunyuan Community License,
+        which excludes the EU, UK and South Korea; the same repository carries FLUX.1 [dev] under its non-commercial
+        license for an optional text-to-image-to-video pipeline. Whether a required third-party component governs
+        a model's tier, and whether a territorial exclusion lowers it, are shared-rubric questions. Hand-scored
         3/open_weights on the product's own Apache-2.0 weights, the rung the ladder gives open weights with a described
-        but unreleased corpus; a ruling that the bundle governs would make it 2/restricted.
+        but unreleased corpus; the territorial ruling for hunyuan-video decides this one too, and only counting
+        the optional FLUX stage would make it 2/restricted on the non-commercial test.
     stable-video-diffusion:
       because: 'The weights license abstains: every SVD checkpoint''s LICENSE.md is now the Stability AI Community
         License (free below USD 1M annual revenue, an enterprise license above), the string stable-diffusion and
@@ -146,11 +148,13 @@ scoring_recipe:
         the same reading as stable-audio; the older SVD non-commercial license in Stability-AI/generative-models
         no longer ships with any checkpoint.'
     latentsync:
-      because: 'The weights license abstains: the LatentSync checkpoints declare openrail++ (CreativeML OpenRAIL++-M)
-        in their card metadata and ship no license file. OpenRAIL++-M reads as permissive_non_osi under #117 (use-based
-        restrictions only), the reading already recorded for SDXL under stable-diffusion, but the tier names BigCode-OpenRAIL-M
-        and not this string. Hand-scored 3/open_weights, the rung the ladder would give that tier with a described
-        but unreleased corpus.'
+      because: 'Two gaps, either enough to abstain. The checkpoints declare openrail++ (CreativeML OpenRAIL++-M)
+        in their card metadata and ship no license file; OpenRAIL++-M reads as permissive_non_osi under #117, the
+        reading already recorded for SDXL under stable-diffusion, but the tier names BigCode-OpenRAIL-M and not
+        this string. And the face detector loads InsightFace models that the insightface library downloads at run
+        time under terms for non-commercial research only, the liveportrait compound with the component fetched
+        rather than bundled. Hand-scored 3/open_weights, the rung the ladder would give the OpenRAIL tier with a
+        described but unreleased corpus; a ruling that the InsightFace dependency governs would make it 2/restricted.'
 products:
 - gpt-image
 - nano-banana

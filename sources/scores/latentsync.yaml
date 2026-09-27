@@ -8,23 +8,30 @@ openness:
       detail: LatentSync 1.6 and 1.5 download from Hugging Face without a gate
     data:
       value: described
-      detail: the training videos are described (512x512 in 1.6, Chinese data added in 1.5) and not released; the data
-        processing pipeline that prepares them is published
+      detail: the training videos are described (512x512 in 1.6; 1.5 added Chinese videos to the training) and not released;
+        the data processing pipeline that prepares them is published
     code:
       value: open
       detail: U-Net and SyncNet training scripts and the data processing pipeline are published under Apache-2.0
     license:
     - name: CreativeML-OpenRAIL++-M
       detail: the checkpoints, declared as openrail++ in the Hub card metadata; no license file in the weight repositories
+    - name: InsightFace-Non-Commercial-Research
+      detail: the face-detection models the insightface library downloads at run time for face_detector.py, "for non-commercial
+        research purposes only"; the weight repositories also carry third-party auxiliary checkpoints used for evaluation
+        and data processing
   governing_release: LatentSync 1.6
   confidence: medium
-  note: LatentSync's code, training scripts included, is Apache 2.0, and its weights carry an OpenRAIL++ license that
-    restricts some uses but not commercial use. The training videos are not released.
+  note: LatentSync's code, training scripts included, is Apache 2.0, and its own weights carry an OpenRAIL++ license
+    that restricts some uses but not commercial use. Its face detector relies on InsightFace models licensed for non-commercial
+    research only, and the training videos are not released.
   raw: weights:open(LatentSync 1.6 and 1.5 download from Hugging Face without a gate);data:described(the training videos
-    are described (512x512 in 1.6, Chinese data added in 1.5) and not released; the data processing pipeline that prepares
-    them is published);code:open(U-Net and SyncNet training scripts and the data processing pipeline are published under
-    Apache-2.0);license:CreativeML-OpenRAIL++-M(the checkpoints, declared as openrail++ in the Hub card metadata; no
-    license file in the weight repositories)
+    are described (512x512 in 1.6; 1.5 added Chinese videos to the training) and not released; the data processing pipeline
+    that prepares them is published);code:open(U-Net and SyncNet training scripts and the data processing pipeline are
+    published under Apache-2.0);license:CreativeML-OpenRAIL++-M(the checkpoints, declared as openrail++ in the Hub card
+    metadata; no license file in the weight repositories)+InsightFace-Non-Commercial-Research(the face-detection models
+    the insightface library downloads at run time for face_detector.py, "for non-commercial research purposes only";
+    the weight repositories also carry third-party auxiliary checkpoints used for evaluation and data processing)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/ByteDance/LatentSync-1.6?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
@@ -36,7 +43,8 @@ openness:
     - license
     - weights
   - url: https://huggingface.co/api/models/ByteDance/LatentSync-1.6/tree/main
-    shows: 'File tree: latentsync_unet.pt and stable_syncnet.pt; no license file.'
+    shows: 'File tree: latentsync_unet.pt and stable_syncnet.pt at the root, with auxiliary/ and whisper/ folders; no
+      license file.'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: f0928ef2af2da19275fcf8b25f73122a2bbef89f258c41c518702755a2b6edd9
@@ -73,6 +81,36 @@ openness:
     content_sha256: 932f492a9caaa334d5e200c66e7324430d6857ddbc4c1ae12ec285b052914110
     establishes:
     - data
+  - url: https://ungh.cc/repos/bytedance/LatentSync/files/main/latentsync/utils/face_detector.py
+    shows: 'face_detector.py: "from insightface.app import FaceAnalysis".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 37cfc600f8f0e409c21f8abf001ce813d08475ccaa26afde32794493d19c23e2
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/bytedance/LatentSync/files/main/requirements.txt
+    shows: 'requirements.txt: "insightface==0.7.3".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 087132f23b8faf8d60fbd3b43d40599b4e52c9a10b949aacd3675f04f5c72348
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/deepinsight/insightface/files/master/README.md
+    shows: 'InsightFace README: auto-downloading models with the python library follow "the above license policy(which
+      is for non-commercial research purposes only)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 28d2d95fb23e557ab3ee808d7a8e18f070475843e70391c73c746457afa87e36
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/ByteDance/LatentSync-1.6/tree/main/auxiliary
+    shows: 'auxiliary/ tree: i3d_torchscript.pt, koniq_pretrained.pkl, sfd_face.pth, syncnet_v2.model, vgg16-397923af.pth,
+      vit_g_hybrid_pt_1200e_ssv2_ft.pth.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: acbae04911ae95cf975dbcd3ae667ea3ca04ed422c52892d14ec3656e0a8b248
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 100K-1M
