@@ -16,8 +16,13 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-26
+
 ### Added
 
+- Two products: `agent-qa` in orchestration_agents, source available under FSL-1.1 (openness 2),
+  and `wikipedia` in training_synthetic_datasets, open data under CC BY-SA (openness 5)
+  ([#716](https://github.com/currentai-org/os-ai-map/pull/716), [#717](https://github.com/currentai-org/os-ai-map/pull/717)).
 - `publish_runs.version` in the Neon schema, the dataset's semantic version, so the site's version
   badge reads it from the publish it serves (`SCHEMA_VERSION` 5)
   ([#703](https://github.com/currentai-org/os-ai-map/pull/703)).
@@ -136,7 +141,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   the files are out, and 1 is kept for what is closed or private. No-derivatives data scores 2 as a
   written exception for data, and Esethu's bounded commercial use scores 3. Fourteen dataset records
   move from 3/gated to 2/restricted and fifteen deferrals close. CC-BY-4.0 model weights join
-  `permissive_non_osi`, and FSL-1.1 joins `competition_restricted`.
+  `permissive_non_osi`, and FSL-1.1 joins `competition_restricted`. On the dataset ladder, the
+  rungs for data that is not published now outrank the license caps, so a withheld corpus stays at
+  its lower rung whatever its license says ([#710](https://github.com/currentai-org/os-ai-map/pull/710), [#713](https://github.com/currentai-org/os-ai-map/pull/713)).
+- The Kaitiakitanga License sits in the noncommercial tier: commercial use needs an explicit grant
+  and access needs permission. `te-hiku-media-reo-maori-corpus`, the last deferred dataset row,
+  scores 2 ([#715](https://github.com/currentai-org/os-ai-map/pull/715)).
+- `mattersim` adoption is routed to its PyPI package, which ships the scored checkpoints. `scgpt`
+  stays on its stars fallback, because its package installs the code while its checkpoints are
+  downloaded from Google Drive ([#711](https://github.com/currentai-org/os-ai-map/pull/711), [#714](https://github.com/currentai-org/os-ai-map/pull/714)).
 - The Neon publish runs only from `main`. A branch dispatch used to load Neon, which was safe while
   nothing read it; aipotluck.org now serves that schema live
   ([#703](https://github.com/currentai-org/os-ai-map/pull/703)).
@@ -593,7 +606,8 @@ Initial release: the first full snapshot of the AI Stack Map corpus, at the star
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
 adoption, and capability. Tagged at commit `2e9d6eb`.
 
-[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/currentai-org/os-ai-map/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/currentai-org/os-ai-map/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/currentai-org/os-ai-map/releases/tag/v0.1.0
