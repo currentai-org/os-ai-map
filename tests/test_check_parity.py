@@ -382,7 +382,22 @@ def test_local_scores_matches_check_rubrics_split():
     # licenses are all named (Apache-2.0 on the ASR line, CC-BY-NC-4.0 on the Voxtral TTS member), so
     # this is not a tier gap: it is hand-placed at 2/restricted and closes on the maintainer's ruling
     # on whether a TTS member belongs to the governing release, not on more work.
-    assert len(deferred) == 47
+    #
+    # 47 -> 19 on 2026-09-27, when the #739 license rulings landed and 28 deferrals closed. The
+    # software ladder gained `noncommercial` and `unstated` tiers (content-seal, maniskill,
+    # insightface; ezkl, pytorch-hub, txt360-pipeline) and named zlib, LGPL-2.1, BSL-1.0 and an
+    # unversioned CC-BY (pybullet, gensim, dlib, carla). The model and pretrained ladders gained
+    # `unstated` (nanonets-ocr), placed the revenue-bound and territorial community licenses in
+    # `use_bounded` (stable-diffusion, stable-audio, stable-video-diffusion, ltx, hunyuan-video,
+    # minimax-hailuo, lfm-vl, moondream), the vendor non-commercial licenses in
+    # `commercial_forbidden` (tabpfn, rf-detr, flux), and OpenRAIL++-M and the NVIDIA Open Model
+    # Agreement in `permissive_non_osi` (nemotron-omni). deepprove closed on the ruling that its
+    # package metadata governs. The bundled-part rule closed liveportrait, latentsync and open-sora,
+    # whose non-commercial parts are required or downloaded by default, and habitat, whose NC task
+    # data is optional. What stays: wan, qwen-image, hunyuan-3d and qwen-omni (availability versus
+    # openness), voxtral and higgs-audio (the TTS-member question), xtts, chandra, surya, dino,
+    # segment-anything and multipl-e (licenses no ruling has placed), and the seven hardware rows.
+    assert len(deferred) == 19
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

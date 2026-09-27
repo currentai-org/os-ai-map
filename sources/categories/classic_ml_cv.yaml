@@ -15,10 +15,11 @@ scoring_recipe:
   derived_from:
     method: >-
       Shared ladders inherited per product type. Promotion of the first tranche (2026-09-26/27)
-      reproduced 14 of 16 hand-authored openness scores; the two that do not reproduce are the
-      deferrals below, both on license strings the shared tiers do not name. The second tranche
-      (2026-09-27, 34 products) reproduces except for five further deferrals, again all on license
-      strings the shared tiers do not name.
+      reproduced 14 of 16 hand-authored openness scores; the other two were deferred on license
+      strings the shared tiers did not name. The second tranche (2026-09-27, 34 products)
+      reproduced except for five further deferrals, again all on license strings. The #739 rulings
+      placed five of those seven strings, and those products now compute; dino and
+      segment-anything stay deferred.
     checker: build/check_rubric.py
   note: >-
     TWO LADDERS for openness. Libraries, toolkits and hosted APIs are typed `software` and climb
@@ -125,15 +126,12 @@ scoring_recipe:
     because the adoption instrument is unusually strong here (monthly PyPI and Hugging Face
     downloads on nearly every row) and the capability axis is weak.
 
-    LICENSE STRINGS NEEDING A RULING before a product carrying one can reproduce, sent to the
-    single maintainer license-rulings issue rather than decided here. Met in the first tranche
-    and deferred below: the Prior Labs TabPFN weights licenses (TABPFN-3 License v1.0, TABPFN-3.5
-    License v1.0, TABPFN-2.6 License v1.0, TABPFN-2.5 License v1.1, and the Prior Labs License 1.1
-    on TabPFN-2) and Roboflow's Platform Model License 1.0 (PML-1.0) on the RF-DETR XL and 2XL
-    detection weights. Met in the second tranche and deferred below: LGPL-2.1 (gensim; the osi
-    examples name LGPL-3.0 only), BSL-1.0 Boost (dlib; OSI-approved and must not be matched to
-    BSL-1.1 Business Source), InsightFace's non-commercial model license on the model packs its
-    library downloads, the DINOv3 License and the SAM License (SAM 3 and 3.1). FSL-1.1-MIT, which
+    LICENSE STRINGS NEEDING A RULING before a product carrying one can reproduce go to a single
+    maintainer license-rulings issue rather than being decided here. #739 placed the Prior Labs
+    TabPFN weights licenses and Roboflow's PML-1.0 in `commercial_forbidden`, LGPL-2.1 and BSL-1.0
+    (Boost, kept distinct from BSL-1.1) in `osi`, and InsightFace's model license in the software
+    ladder's `noncommercial` tier. Still deferred below: the DINOv3 License and the SAM License
+    (SAM 3 and 3.1). FSL-1.1-MIT, which
     the seed note expected pycaret to need, governs only PyCaret 4.0's pre-releases; the current
     stable release, 3.3.2, is MIT, so pycaret computes, and FSL-1.1-MIT will need a ruling when 4.0
     ships as a stable release. Still in the registry and expected to defer when promoted: the
@@ -141,52 +139,6 @@ scoring_recipe:
     licenses, the EXAONE AI Model License NC, Apple's apple-amlr sample-code license, and the
     NVIDIA Source Code License.
   deferred:
-    tabpfn:
-      because: >-
-        Every currently distributed TabPFN checkpoint (2.5, 2.6, 3, and the default 3.5) is under
-        its own Prior Labs license granting use "solely for your Non-Commercial Purposes", and
-        TabPFN-2 is under the Prior Labs License 1.1 (Apache-2.0 plus an attribution and
-        model-naming clause). None of those strings is named in the pretrained ladder's tiers, so
-        the tier lookup abstains. The recorded 2/restricted is the commercial_forbidden reading of
-        the non-commercial grant, hand-assigned pending the maintainer's ruling; the grant text
-        was read on each checkpoint's LICENSE on 2026-09-26.
-    rf-detr:
-      because: >-
-        The code and the Nano to Large detection and all segmentation weights are Apache-2.0, but
-        the XL and 2XL detection weights ship in the rfdetr_plus package under Roboflow's
-        Platform Model License 1.0, which allows use only while the user holds a Roboflow platform
-        plan or other agreement and is in good standing. The multi-SKU rule makes the most
-        restrictive distributed license govern, and PML-1.0 maps to no tier, so the lookup
-        abstains. The recorded 2/restricted is a hand reading (weights published, use reserved to
-        the vendor's platform customers) pending the maintainer's ruling; whether PML-1.0 is
-        commercial_forbidden, use_bounded or proprietary is that ruling.
-    gensim:
-      because: >-
-        Gensim's COPYING is the GNU Lesser General Public License, Version 2.1, and PyPI records
-        LGPL-2.1-only. LGPL-2.1 is OSI-approved, but the software ladder's `osi` tier lists its
-        names literally and names LGPL-3.0 only, so the tier lookup abstains. The recorded
-        5/open_source is the `osi` reading (public source, nothing gated), hand-assigned pending
-        the maintainer's ruling that adds the name to the tier; the license text was read on
-        2026-09-27.
-    dlib:
-      because: >-
-        dlib's LICENSE.txt is the Boost Software License 1.0 (BSL-1.0), which is OSI-approved and
-        unrelated to the Business Source License 1.1 that the software ladder places in
-        `competition_restricted` as BSL-1.1. BSL-1.0 is named in no tier, so the lookup abstains,
-        and it must not be resolved by prefix to BSL-1.1. The recorded 5/open_source is the `osi`
-        reading, hand-assigned pending the maintainer's ruling; the license text was read on
-        2026-09-27.
-    insightface:
-      because: >-
-        The library and training code are MIT, stated in the README (the repository has no root
-        LICENSE file), but the model packs the library downloads by default, buffalo_l included,
-        are licensed for non-commercial research only through InsightFace's own signed model
-        licenses, and commercial model licenses are sold on request. The software ladder names no
-        tier for a non-commercial model license, so the lookup abstains. The recorded
-        2/source_available is the `competition_restricted` reading (the shipped product may not
-        be used commercially without a paid license), hand-assigned pending the maintainer's
-        ruling; the `osi`-with-gated-core reading would give 4/open_core, and choosing between
-        them is that ruling.
     dino:
       because: >-
         DINOv3, the current release, is under Meta's DINOv3 License (last updated 2025-08-19),

@@ -73,23 +73,6 @@ scoring_recipe:
         null rather than hand-set because how the map models availability separately from openness - the open line
         one generation behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This
         is a gap signal, not bookkeeping.'
-    flux:
-      because: 'The weights license abstains: the most restrictive distributed FLUX checkpoints carry Black Forest
-        Labs'' own FLUX Non-Commercial License (v2.1, beside v2.0 and the FLUX.1 [dev] v1.1.1), which prohibits
-        revenue-generating use and is sold separately for commercial use. That is the commercial_forbidden tier''s
-        definition, but the tier names licenses literally and does not list these. Hand-scored 2/restricted, the
-        rung the tier would produce. The license strings go to the maintainer license-rulings issue.'
-    stable-diffusion:
-      because: 'The weights license abstains: SD3, SD3.5 and SDXL-Turbo carry the Stability AI Community License
-        (free, commercial use included, below USD 1M annual revenue; the license terminates above it), and SDXL
-        carries CreativeML Open RAIL++-M. The first reads as the use_bounded tier and the second as permissive_non_osi
-        under #117, but neither string is named. Hand-scored 3/open_weights on the more restrictive half. One SD3
-        Medium repository''s metadata still says a non-commercial research license, which the ruling should settle.'
-    stable-audio:
-      because: 'The weights license abstains: every distributed Stable Audio checkpoint carries the Stability AI
-        Community License (free below USD 1M annual revenue, enterprise license above), which reads as use_bounded
-        but is not named in the tier. Hand-scored 3/open_weights, the same reading as stable-diffusion; one ruling
-        on the string settles both.'
     qwen-image:
       because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Qwen-Image 3.0,
         is API-only and the ladder computes 1/closed from it; the prior release, Qwen-Image-2.1, remains distributed
@@ -98,17 +81,6 @@ scoring_recipe:
         than hand-set because how the map models availability separately from openness - the open line one generation
         behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This is a gap signal,
         not bookkeeping.'
-    ltx:
-      because: 'The weights license abstains: LTX-2.5 carries the LTX-2.x Community License and LTX-2 and 2.3 the
-        LTX-2 Community License, both free for commercial use below USD 10M annual revenue with a paid license above
-        it, and LTX-Video 0.9.6+ the LTXV Open Weights License 0.X with the same threshold. That is the use_bounded
-        tier''s definition, but none of the three strings is named. Hand-scored 3/open_weights.'
-    hunyuan-video:
-      because: 'The weights license abstains: the Tencent Hunyuan Community License permits commercial use with
-        a 100M-MAU bound, which alone would read as use_bounded, but it also excludes the European Union, the United
-        Kingdom and South Korea from the grant entirely. No tier addresses a territorial exclusion, and whether
-        it lowers the tier is a shared-rubric ruling. Hand-scored 3/open_weights on the commercial test; the territorial
-        question could move it to 2.'
     hunyuan-3d:
       because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Hunyuan3D 3.0,
         is API-only and the ladder computes 1/closed from it; the prior release, Hunyuan3D 2.1, remains distributed
@@ -117,44 +89,6 @@ scoring_recipe:
         than hand-set because how the map models availability separately from openness - the open line one generation
         behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This is a gap signal,
         not bookkeeping.'
-    minimax-hailuo:
-      because: 'The weights license abstains: the MiniMax H3 Community License excludes the European Union, the
-        United Kingdom, the Republic of Korea and the United States, and requires written authorization above USD
-        20M yearly revenue. It is a different string from the `minimax-community` license the permissive_non_osi
-        tier already names, and the US exclusion makes it materially narrower. Hand-scored 3/open_weights on the
-        commercial test; the territorial ruling for hunyuan-video decides this one more sharply.'
-    liveportrait:
-      because: 'The license is a compound the tier cannot resolve: the LivePortrait code and weights are MIT, but
-        the weight tree bundles InsightFace face-detection models licensed ''for non-commercial research purposes
-        only'', and the LICENSE says commercial users must replace them. Whether a bundled, replaceable third-party
-        component governs a model''s tier is a shared-rubric question. Hand-scored 3/open_weights on the product''s
-        own MIT weights; a ruling that the bundle governs would make it 2/restricted.'
-    open-sora:
-      because: The weights license is a compound the tier cannot resolve, the liveportrait case. Open-Sora 2.0's
-        own weights and training code are Apache-2.0, but every text-to-video and image-to-video config loads a
-        HunyuanVideo VAE, redistributed in the checkpoint repository under the Tencent Hunyuan Community License,
-        which excludes the EU, UK and South Korea; the same repository carries FLUX.1 [dev] under its non-commercial
-        license for an optional text-to-image-to-video pipeline. Whether a required third-party component governs
-        a model's tier, and whether a territorial exclusion lowers it, are shared-rubric questions. Hand-scored
-        3/open_weights on the product's own Apache-2.0 weights, the rung the ladder gives open weights with a described
-        but unreleased corpus; the territorial ruling for hunyuan-video decides this one too, and only counting
-        the optional FLUX stage would make it 2/restricted on the non-commercial test.
-    stable-video-diffusion:
-      because: 'The weights license abstains: every SVD checkpoint''s LICENSE.md is now the Stability AI Community
-        License (free below USD 1M annual revenue, an enterprise license above), the string stable-diffusion and
-        stable-audio are deferred on, while the card metadata still names it stable-video-diffusion-community and
-        stable-video-diffusion-1-1-community. The governing release, SVD-XT 1.1, also keeps a click-through that
-        asks for non-commercial or research use only, a stale form the ruling should settle. Hand-scored 3/open_weights,
-        the same reading as stable-audio; the older SVD non-commercial license in Stability-AI/generative-models
-        no longer ships with any checkpoint.'
-    latentsync:
-      because: 'Two gaps, either enough to abstain. The checkpoints declare openrail++ (CreativeML OpenRAIL++-M)
-        in their card metadata and ship no license file; OpenRAIL++-M reads as permissive_non_osi under #117, the
-        reading already recorded for SDXL under stable-diffusion, but the tier names BigCode-OpenRAIL-M and not
-        this string. And the face detector loads InsightFace models that the insightface library downloads at run
-        time under terms for non-commercial research only, the liveportrait compound with the component fetched
-        rather than bundled. Hand-scored 3/open_weights, the rung the ladder would give the OpenRAIL tier with a
-        described but unreleased corpus; a ruling that the InsightFace dependency governs would make it 2/restricted.'
 products:
 - gpt-image
 - nano-banana

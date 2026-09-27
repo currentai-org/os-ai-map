@@ -25,7 +25,7 @@ scoring_recipe:
     \ API token). matrixhub, kubeflow-hub and monai-model-zoo read ungated on path absence paired with a governance\
     \ statement: MatrixHub's GOVERNANCE.md puts commercial packaging outside the core repository, Kubeflow\
     \ is a CNCF graduated project, and Project MONAI is a multi-institution project with public governance\
-    \ and nothing sold. pytorch-hub is deferred (below).\n\nCAPABILITY is one quantity, registry scope: how\
+    \ and nothing sold. pytorch-hub publishes no license grant and scores 2 on the `unstated` tier.\n\nCAPABILITY is one quantity, registry scope: how\
     \ much of the publish, version, discover and pull cycle the surface itself provides, who may publish into\
     \ it, and for how many artifact kinds. Scale is adoption, not capability, so the same quantity orders\
     \ a public hub and a self-hosted one. Rungs, each stated as something the product either does or does\
@@ -65,19 +65,11 @@ scoring_recipe:
     \ hyperscaler and vendor catalogs publish catalog sizes only and abstain; self-hosted software abstains\
     \ rather than borrowing stars or client-library downloads; qualcomm-ai-hub-models is the one row with\
     \ a download channel of its own (PyPI qai-hub-models). Weights stay 0.3 adoption to 0.7 capability for\
-    \ that reason.\n\nLICENSE QUESTIONS for the maintainer license-rulings issue (#739): pytorch/hub (promoted\
-    \ and deferred), bioimage-io/bioimage.io and bioimage-io/collection (still a registry row) publish no\
-    \ license file. OpenML's own terms, about page, README and LICENSE all state BSD-3-Clause for code and\
+    \ that reason.\n\nNO LICENSE FILE: pytorch/hub (promoted), bioimage-io/bioimage.io and\
+    \ bioimage-io/collection (still registry rows) publish none. #739 ruled that published source with no\
+    \ grant caps at 2 on the software ladder's `unstated` tier. OpenML's own terms, about page, README and LICENSE all state BSD-3-Clause for code and\
     \ CC-BY for data; the Apache claim the seed recorded came from a search summary and is withdrawn. The\
     \ openml row moved to the benchmark_eval_data registry on 2026-09-27."
-  deferred:
-    pytorch-hub:
-      because: 'The repository grants no license at all: no LICENSE, COPYING or LICENSES/ path in the 146-path
-        tree, no license field in package.json, and a CONTRIBUTING.md that licenses contributions under a
-        root LICENSE file that does not exist. The software tier has no entry for `none-declared`, so the
-        walk blocks on the first rung that reads a tier; the recorded 2/source_available is the hand reading
-        (public source, no grant to reuse it), the same one ezkl carries in assurance_evidence. Whether `none-declared`
-        joins `proprietary` or needs its own tier is the shared-rubric ruling asked on #739.'
 products:
 - huggingface-hub-platform
 - modelscope
