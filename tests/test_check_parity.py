@@ -331,7 +331,12 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 33 with the robotics_embodied second tranche, five products in. `habitat` ships MIT
+    # code, but Habitat-Lab distributes its Matterport3D- and Gibson-based task datasets and trained
+    # models under CC BY-NC-SA 3.0 US, a name the software tiers do not carry: the maniskill
+    # question, recorded rather than hand-closed, and closing on the same ruling.
+    assert len(deferred) == 33
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

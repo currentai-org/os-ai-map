@@ -6,18 +6,22 @@ openness:
   components:
     license:
     - name: MIT
-      detail: Habitat-Sim and Habitat-Lab LICENSE bodies
+      detail: Habitat-Sim and Habitat-Lab code
+    - name: CC-BY-NC-SA-3.0-US
+      detail: the Matterport3D- and Gibson-based task datasets and trained models Meta distributes
     source:
       value: public
     core-gated:
       value: ungated
-      detail: no paid edition; scene datasets are separate downloads under their own terms
+      detail: no paid edition; ReplicaCAD scenes are CC BY 4.0, and HM3D, Matterport3D and Gibson scenes are third-party downloads
+        under their owners' terms
   confidence: medium
-  note: 'The simulator and the task library are both MIT, with no paid edition. The scanned scenes most benchmarks use are
-    not part of it: HM3D is free only for academic, non-commercial research and the Matterport3D and Gibson task data carry
-    CC BY-NC-SA terms, so commercial work has to bring its own scenes.'
-  raw: license:MIT(Habitat-Sim and Habitat-Lab LICENSE bodies);source:public;core-gated:ungated(no paid edition; scene datasets
-    are separate downloads under their own terms)
+  note: The simulator and the task library are both MIT, with no paid edition. The navigation task datasets and trained models
+    Meta publishes for the Matterport3D and Gibson scenes are CC BY-NC-SA, and the scanned HM3D scenes are for non-commercial
+    research only, so commercial work uses Habitat's CC BY 4.0 ReplicaCAD scenes or brings its own.
+  raw: license:MIT(Habitat-Sim and Habitat-Lab code)+CC-BY-NC-SA-3.0-US(the Matterport3D- and Gibson-based task datasets and
+    trained models Meta distributes);source:public;core-gated:ungated(no paid edition; ReplicaCAD scenes are CC BY 4.0, and
+    HM3D, Matterport3D and Gibson scenes are third-party downloads under their owners' terms)
   last_verified: '2026-09-27'
   sources:
   - url: https://ungh.cc/repos/facebookresearch/habitat-sim/files/main/LICENSE
@@ -39,11 +43,23 @@ openness:
     - source
     - core-gated
   - url: https://ungh.cc/repos/facebookresearch/habitat-lab/files/main/README.md
-    shows: 'Habitat-Lab README: "Habitat-Lab is MIT licensed"; "Matterport3D based task datasets and trained models are distributed
-      with Matterport3D Terms of Use and under CC BY-NC-SA 3.0 US license"; the same for Gibson-based task datasets.'
+    shows: 'Habitat-Lab README: "Habitat-Lab is MIT licensed"; "The trained models and the task datasets are considered data
+      derived from the correspondent scene datasets"; "Matterport3D based task datasets and trained models are distributed
+      with Matterport3D Terms of Use and under CC BY-NC-SA 3.0 US license"; "Gibson based task datasets, the code for generating
+      such datasets, and trained models are distributed with Gibson Terms of Use and under CC BY-NC-SA 3.0 US license".'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 49ffbba6a3e459e382aebcc1724a9682ebb3c4eec85df7f6e2aa92ee0eefa8a7
+    establishes:
+    - license
+    - core-gated
+  - url: https://aihabitat.org/datasets/replica_cad/
+    shows: 'ReplicaCAD page: "intended for use in the Habitat simulator for embodied in-home interaction tasks such as object
+      re-arrangement. All materials are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) Public
+      License."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 94181828cdf1224ff1802bc861613c41efe128b49a30a909efa21eead550e82d
     establishes:
     - license
     - core-gated
