@@ -1,0 +1,121 @@
+product: omnivoice
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: 0.8B safetensors checkpoint with its audio tokenizer on the Hub, ungated
+    data:
+      value: partial
+      detail: 581K hours curated from public datasets the paper names; no composition file, and the recipe script reproduces
+        only the Emilia variant
+    code:
+      value: open
+      detail: 'full pipeline in examples/: data preparation, training from scratch, fine-tuning and evaluation'
+    license:
+    - name: CC-BY-NC
+      detail: the pre-trained model, per the card body (the Hub license field is empty); the bundled Higgs Audio 2 tokenizer
+        carries Boson's community license and the code is Apache-2.0
+  governing_release: OmniVoice (2026-03)
+  confidence: medium
+  note: The code and the full training pipeline are open, but the card licenses the model itself under CC-BY-NC because
+    of the terms of its training data, so it may not be used commercially. The training set is built from public datasets
+    the paper names rather than published as one.
+  raw: 'weights:open(0.8B safetensors checkpoint with its audio tokenizer on the Hub, ungated);data:partial(581K hours
+    curated from public datasets the paper names; no composition file, and the recipe script reproduces only the Emilia
+    variant);code:open(full pipeline in examples/: data preparation, training from scratch, fine-tuning and evaluation);license:CC-BY-NC(the
+    pre-trained model, per the card body (the Hub license field is empty); the bundled Higgs Audio 2 tokenizer carries
+    Boson''s community license and the code is Apache-2.0)'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/k2-fsa/OmniVoice/raw/main/README.md
+    shows: 'Card: "Our code is released under the Apache 2.0 License. The pre-trained model is licensed under the CC-BY-NC
+      due to constraints from its training data (e.g., Emilia)."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b5d645a1874baa96a460a0e3a7d5a262811d682d04ce235878a16d5fed287fd3
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/k2-fsa/OmniVoice
+    shows: 'Hub record: "gated":false, model.safetensors and audio_tokenizer/model.safetensors in the file list, and
+      no license tag.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 73e9592f5960fb3e93a27602654c8dcaa7269fa7cb4e27a3ae2689fc2a9c4b2b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/k2-fsa/OmniVoice/raw/main/audio_tokenizer/LICENSE
+    shows: 'Bundled tokenizer license: "BOSON HIGGS AUDIO 2 COMMUNITY LICENSE AGREEMENT".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ac933dc084d119bd20401956b90d11ae87c248b2da62622cd580d82cdf2fa049
+    establishes:
+    - license
+  - url: https://arxiv.org/abs/2604.00688
+    shows: 'Abstract: "By leveraging a 581k-hour multilingual dataset curated entirely from open-source data".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 83b08c5d0401f8cdf4cec4ab266f924e8a774957d6647cd1483ca207e8f7a2af
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/k2-fsa/OmniVoice/HEAD/examples/README.md
+    shows: 'Examples README: "| Training from scratch | [run_emilia.sh](run_emilia.sh) | Full pipeline on the Emilia
+      dataset (data check, tokenization, training) |".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f9dea4db15bb685191d21e4cd149bafea63a8e94050ab4ca8b585f3beaddf0d0
+    establishes:
+    - code
+    - data
+  - url: https://raw.githubusercontent.com/k2-fsa/OmniVoice/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c843a20ede4d1e7595c2736b88fc62cb7483a8c082eb7092a3772248849c59e2
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the model repository. The omnivoice package is marked as not a separate channel because
+    it loads these weights from the Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=k2-fsa&search=OmniVoice&limit=100
+    shows: 'Trailing-30-day downloads: k2-fsa/OmniVoice 1,378,254.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 175b6aa61a6197cd9ec59587c7dbcc435ddbf377eca3d82583c47d4392dc8b64
+  - url: https://raw.githubusercontent.com/k2-fsa/OmniVoice/HEAD/README.md
+    shows: 'README usage: "from_pretrained("k2-fsa/OmniVoice"".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 13bf6dbac41b732873de6f8aad68b0ffbc8836773d86f9aec0e31977992af4c6
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: self-reported Seed-TTS-eval zero-shot WER/CER and speaker similarity
+  value: The paper reports zero-shot results on Seed-TTS test-en and test-zh, LibriSpeech-PC, MiniMax-Multilingual-24
+    and FLEURS-Multilingual-102; OmniVoice is not on the Artificial Analysis TTS leaderboard.
+  confidence: low
+  note: The broadest language coverage of any open voice-cloning model. It has no arena rating, so it is placed on its
+    own results on the shared Seed-TTS test sets, level with Kokoro.
+  relative_to: kokoro
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://arxiv.org/html/2604.00688
+    shows: 'Paper: "We evaluate OmniVoice on four benchmarks"; "A bilingual (Chinese/English) zero-shot benchmark." for
+      Seed-TTS'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e12f086164ef9a758835bead664ae7238df4835106a05f9806da63dc39033e7
+  - url: https://huggingface.co/k2-fsa/OmniVoice/raw/main/README.md
+    shows: 'Card: "OmniVoice is a massively multilingual zero-shot text-to-speech (TTS) model supporting over 600 languages."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b5d645a1874baa96a460a0e3a7d5a262811d682d04ce235878a16d5fed287fd3

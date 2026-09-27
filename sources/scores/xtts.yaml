@@ -1,0 +1,97 @@
+product: xtts
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: XTTS-v2 .pth checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no training-data statement on either card
+    code:
+      value: partial
+      detail: inference plus a GPT-encoder fine-tuning recipe in the maintained Idiap fork; no full training pipeline
+    license:
+    - name: Coqui-Public-Model-License-1.0.0
+      detail: XTTS-v2 and XTTS-v1 weights; non-commercial use only. The code is MPL-2.0
+  governing_release: XTTS-v2 (2023-10)
+  confidence: high
+  note: XTTS-v2 downloads freely, but the Coqui Public Model License allows only non-commercial use of the model and
+    its outputs. Nothing is published about the training data, and only a fine-tuning recipe for one component is available.
+  raw: weights:open(XTTS-v2 .pth checkpoints on the Hub, ungated);data:closed(no training-data statement on either card);code:partial(inference
+    plus a GPT-encoder fine-tuning recipe in the maintained Idiap fork; no full training pipeline);license:Coqui-Public-Model-License-1.0.0(XTTS-v2
+    and XTTS-v1 weights; non-commercial use only. The code is MPL-2.0)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/coqui/XTTS-v2/raw/main/LICENSE.txt
+    shows: 'License file titled "# Coqui Public Model License 1.0.0": "This license allows only non-commercial use of
+      a machine learning model and its outputs."; "Use of the model to train other models for commercial use is not a
+      non-commercial purpose."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 190f6d7c19b8984f91b97712b94ce92d2b2e640fc677dacab966e955ece9d043
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/coqui/XTTS-v2
+    shows: 'Hub record: "gated":false, tag "license:other", and model.pth in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 71479ec786946dd08698aacdf67a34c798a71ca135ccf144fb519f06cb498437
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/coqui/XTTS-v2/raw/main/README.md
+    shows: 'Card: "This model is licensed under [Coqui Public Model License](https://coqui.ai/cpml)."; "The [code-base](https://github.com/coqui-ai/TTS)
+      supports inference and [fine-tuning]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1cfa85b3293f685b3a6537f8da3d94820fd111270e553589073885dea3facfb7
+    establishes:
+    - license
+    - data
+  - url: https://raw.githubusercontent.com/idiap/coqui-ai-TTS/HEAD/docs/source/models/xtts.md
+    shows: 'Idiap fork docs: "Current implementation only supports inference and GPT encoder training."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1943ff63d61f5d0acf68b4fb4b1cb9ebb1534acbb33e5c85b672db4a92bfc6cf
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/idiap/coqui-ai-TTS/HEAD/README.md
+    shows: 'Idiap fork README: "Fork of the [original, unmaintained repository](https://github.com/coqui-ai/TTS)."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 678ca2542738a1c6388f95607206afd09698e43f5384ada69a17b2064f1a20f2
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the XTTS checkpoints; installs through the Coqui TTS packages fetch the same files.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=coqui&limit=100
+    shows: 'Hub listing of the coqui organization: XTTS-v2 with "downloads":6781520 and XTTS-v1 with "downloads":1568.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e718c7a6e7e5ca30f8c6dddea4d52a67883a92476326dd75e66dd678f6bc5200
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: XTTS v2 ranks 82nd of 91 on the Artificial Analysis TTS leaderboard at an Elo of about 916.
+  confidence: medium
+  note: Still the most downloaded open voice-cloning model, but listeners in blind tests rank it near the bottom of the
+    board, a step below Kokoro.
+  relative_to: kokoro
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"XTTS v2" (creator Coqui) with "elo":916.4 and "openWeights":true; 91 models are
+      ranked.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205

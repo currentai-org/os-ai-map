@@ -498,6 +498,8 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     speech_packages = {
         "kokoro": "kokoro", "chatterbox": "chatterbox-tts", "qwen-asr": "qwen-asr",
         "qwen-tts": "qwen-tts", "f5-tts": "f5-tts", "voxcpm": "voxcpm", "moshi": "moshi",
+        # The second speech_audio tranche adds omnivoice on the same decision.
+        "omnivoice": "omnivoice",
     }
     for slug, package in speech_packages.items():
         assert inputs.non_primary_artifacts[slug] == {("pypi", package)}

@@ -1,0 +1,99 @@
+product: personaplex
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 7B safetensors checkpoint on the Hub behind an automatically approved license click-through
+    data:
+      value: closed
+      detail: Fisher English (an LDC corpus) plus synthetic conversations generated with open LLMs and TTS; the synthetic
+        set is not released
+    code:
+      value: partial
+      detail: inference and server code only
+    license:
+    - name: NVIDIA-Open-Model-License
+      detail: the weights; the code is MIT and the Moshi base is CC-BY-4.0
+  governing_release: personaplex-7b-v1 (2026-01)
+  confidence: high
+  note: The weights are published under the NVIDIA Open Model License, which permits commercial use and derivatives,
+    and the code is MIT. NVIDIA trained it on the licensed Fisher corpus plus synthetic conversations it has not released,
+    and publishes inference code only.
+  raw: weights:open(7B safetensors checkpoint on the Hub behind an automatically approved license click-through);data:closed(Fisher
+    English (an LDC corpus) plus synthetic conversations generated with open LLMs and TTS; the synthetic set is not released);code:partial(inference
+    and server code only);license:NVIDIA-Open-Model-License(the weights; the code is MIT and the Moshi base is CC-BY-4.0)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/personaplex-7b-v1
+    shows: 'Hub record: license_name "nvidia-open-model-license", "gated":"auto", and model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b2355d3bf62e213491c486e8c8c22396cec7d478feb06b3158eb276824514583
+    establishes:
+    - weights
+    - license
+  - url: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/
+    shows: 'NVIDIA Open Model License Agreement: "Models are commercially usable. You are free to create and distribute
+      Derivative Models."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 22b8bb0c3d7a65da5cfeb580c8fb836ddb07643b05120ddff82f777e48faea95
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NVIDIA/personaplex/main/README.md
+    shows: 'README: "The present code is provided under the MIT license. The weights for the models are released under
+      the NVIDIA Open Model license."; sections "Launch Server" and "Offline Evaluation".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e8d2598c511473ddfe325409cca15bf8adddc3844e60a52b2607bbaddf7b3a2
+    establishes:
+    - license
+    - code
+  - url: https://research.nvidia.com/labs/adlr/personaplex/
+    shows: 'Project page: "PersonaPlex trains on 7,303 real conversations (1217 hours) from the Fisher English corpus";
+      "The conversation speech was generated using Chatterbox TTS".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 99e6da36b42ef3bc83be3829b3d28fa938397e4786beceac33fa7be1c07f203c
+    establishes:
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single released checkpoint.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/personaplex-7b-v1
+    shows: '"downloads":194423 for nvidia/personaplex-7b-v1.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b2355d3bf62e213491c486e8c8c22396cec7d478feb06b3158eb276824514583
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: real-time full-duplex speech-to-speech
+  value: Listens and speaks concurrently in a dual-stream design, with persona control from a text role prompt and a
+    voice sample; the card reports FullDuplexBench results such as a 0.950 takeover rate on user interruptions.
+  confidence: medium
+  note: Holds a live two-way spoken conversation like Moshi, on which it is built, and adds control over who the assistant
+    is and how it sounds.
+  relative_to: moshi
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/nvidia/personaplex-7b-v1
+    shows: 'Card: "Personaplex runs in a dual-stream configuration in which listening and speaking occur concurrently.";
+      "Testing/Evaluation Dataset: Link: FullDuplexBench".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 10ed36b0d7581d32b3011d3c8a56695cac5a28e13d26ec79945939edebd8a29e
+  - url: https://raw.githubusercontent.com/NVIDIA/personaplex/main/README.md
+    shows: 'README: "PersonaPlex is a real-time, full-duplex speech-to-speech conversational model that enables persona
+      control through text-based role prompts and audio-based voice conditioning."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e8d2598c511473ddfe325409cca15bf8adddc3844e60a52b2607bbaddf7b3a2

@@ -1,0 +1,141 @@
+product: wav2vec
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: PyTorch, TensorFlow and safetensors checkpoints on the Hub, ungated, plus fairseq .pt files
+    data:
+      value: open
+      detail: LibriSpeech (CC BY 4.0) and Libri-Light, both public; the declared checkpoints train on nothing else
+    code:
+      value: open
+      detail: fairseq pretraining and CTC fine-tuning recipes for wav2vec 2.0 and HuBERT
+    license:
+    - name: Apache-2.0
+      detail: the wav2vec 2.0 and HuBERT checkpoints on the Hub; fairseq itself is MIT
+    context:
+      research-release:
+        value: voxpopuli
+        detail: 2021 VoxPopuli checkpoints under CC-BY-NC-4.0, published with a separate dataset paper; outside the wav2vec
+          2.0 and HuBERT releases and not scored
+  governing_release: wav2vec 2.0 and HuBERT (fairseq releases)
+  confidence: high
+  note: The wav2vec 2.0 and HuBERT checkpoints are Apache-2.0, they were trained on public LibriSpeech and Libri-Light
+    audio, and fairseq publishes the pretraining and fine-tuning recipes, so the models can be rebuilt from what is released.
+    Meta's later VoxPopuli checkpoints carry a non-commercial license but belong to a separate research release.
+  raw: weights:open(PyTorch, TensorFlow and safetensors checkpoints on the Hub, ungated, plus fairseq .pt files);data:open(LibriSpeech
+    (CC BY 4.0) and Libri-Light, both public; the declared checkpoints train on nothing else);code:open(fairseq pretraining
+    and CTC fine-tuning recipes for wav2vec 2.0 and HuBERT);license:Apache-2.0(the wav2vec 2.0 and HuBERT checkpoints
+    on the Hub; fairseq itself is MIT);research-release:voxpopuli(2021 VoxPopuli checkpoints under CC-BY-NC-4.0, published
+    with a separate dataset paper; outside the wav2vec 2.0 and HuBERT releases and not scored)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/facebook/wav2vec2-base-960h?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=tags&expand[]=siblings
+    shows: 'Hub record for wav2vec2-base-960h: "gated":false, tag "license:apache-2.0", and model.safetensors in the
+      file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2e933fcf1f4fef94124caf30b3b1548cae312cbd987300e5da01b1ac14ace2e2
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=facebook&search=wav2vec2&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Family listing: the wav2vec2 base, large and XLS-R checkpoints tagged "license:apache-2.0"; the *-voxpopuli*
+      checkpoints tagged "license:cc-by-nc-4.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1cbf173dd27cd64a11a50cf3afeb01271dccf83eaa8b7281c03f8207a020e06f
+    establishes:
+    - license
+  - url: https://huggingface.co/facebook/wav2vec2-base-960h/raw/main/README.md
+    shows: 'Card: "The base model pretrained and fine-tuned on 960 hours of Librispeech on 16kHz sampled speech audio."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fc52a0adfa64e446800f9944c6cf9b90da3127aba548860ea5714516ec8c18c7
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/hubert/README.md
+    shows: 'HuBERT README: "HuBERT Large (~316M params) | [Libri-Light](https://github.com/facebookresearch/libri-light)
+      60k hr"; "## Train a new model".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 18ba01438a631d993b9ae992be35d854f8f12337fe9e5044f8292e36e2b2661e
+    establishes:
+    - data
+    - code
+  - url: https://www.openslr.org/12/
+    shows: 'OpenSLR LibriSpeech page: "<b>License:</b> CC BY 4.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9b012c60f8fe6a5435f96cf034c042ffe4222e7936c88cb835671413e74a5301
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/wav2vec/README.md
+    shows: 'wav2vec README: "### Train a wav2vec 2.0 base model"; "### Fine-tune a pre-trained model with CTC".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 57e5a889b72a5f036379a3b7b6f645324b03a0cd5e9a5462c0756023b124809f
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/README.md
+    shows: 'fairseq README: "fairseq(-py) is MIT-licensed." and "The license applies to the pre-trained models as well."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 198e3311a3a538cac678243de53b379a8bf160800d1ab8e7cdaefb971d83bc9e
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the five declared wav2vec 2.0 and HuBERT checkpoints; the base encoder is pulled mostly
+    as a starting point for fine-tuning.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=wav2vec2&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: wav2vec2-base 2,161,483, wav2vec2-base-960h 1,421,400, wav2vec2-large-960h-lv60-self
+      152,118.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1cbf173dd27cd64a11a50cf3afeb01271dccf83eaa8b7281c03f8207a020e06f
+  - url: https://huggingface.co/api/models?author=facebook&search=hubert&limit=100&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: hubert-large-ls960-ft 313,174, hubert-base-ls960 243,099.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa70db3473606a916c7708307e7417b68fc02b899ad4508bda87aab55ac0abf0
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: card-reported LibriSpeech WER; absent from both ASR boards
+  value: wav2vec2-large-960h-lv60-self reports 1.9/3.9% WER on LibriSpeech test clean/other and wav2vec2-base-960h 3.4/8.6%;
+    no checkpoint appears on the Open ASR Leaderboard or the Artificial Analysis speech-to-text table.
+  confidence: low
+  note: An English recognizer from 2020 whose strength today is as a pretrained encoder to fine-tune. Its reported results
+    cover LibriSpeech only, and it has no place on the public boards that rank Whisper, so it sits a step below Whisper.
+  relative_to: whisper
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/facebook/wav2vec2-large-960h-lv60-self/raw/main/README.md
+    shows: 'Card results table under "clean" and "other": "| 1.9 | 3.9 |".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c84b90c84e32773d67536fdd93ad4e0fd27a662e024c698bc62a66f0bae3c342
+  - url: https://huggingface.co/facebook/wav2vec2-base-960h/raw/main/README.md
+    shows: 'Card results table: "| 3.4 | 8.6 |".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fc52a0adfa64e446800f9944c6cf9b90da3127aba548860ea5714516ec8c18c7
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: The results CSV lists no facebook/wav2vec2 or facebook/hubert row among its 71 models.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://artificialanalysis.ai/speech-to-text
+    shows: The speech-to-text table lists no row for this model.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3db6b9578d6c98f73d2b3f651118cfe1b13ddce0be9fb635bc164c7707f68db0

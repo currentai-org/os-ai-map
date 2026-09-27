@@ -1,0 +1,69 @@
+product: whisperx
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-2-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: an individual researcher's project from Oxford's Visual Geometry Group, with no paid tier; the README's
+        Recall.ai block is a third-party sponsorship
+  confidence: medium
+  note: WhisperX is BSD-2-Clause and the published repository is the whole pipeline. It is maintained by its author out
+    of academic research, and nothing is sold alongside it.
+  raw: license:BSD-2-Clause(OSI);source:public;core-gated:ungated(an individual researcher's project from Oxford's Visual
+    Geometry Group, with no paid tier; the README's Recall.ai block is a third-party sponsorship)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/m-bain/whisperX/main/LICENSE
+    shows: 'LICENSE body: "BSD 2-Clause License" / "Copyright (c) 2024, Max Bain".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cddc25bce26226b4a04ed12839d9006b7a4403da9020ef6428ef7282a6567441
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/m-bain/whisperX/main/README.md
+    shows: 'README: "This work, and my PhD, is supported by the [VGG (Visual Geometry Group)](https://www.robots.ox.ac.uk/~vgg/)
+      and the University of Oxford."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 38a681ac8cc79589e11f227f9d053f6f66054cab4ae0069804ca6b52306e3aa8
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the whisperx package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/whisperx/recent
+    shows: '"last_month":328332 for whisperx.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 147c9f3c319d3b966359ffb189d9b4fa385edcd9deb3794e9a4869de2a88541a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: Batched Whisper transcription at up to 70 times real time with word-level timestamps and speaker labels; inference
+    only, no streaming, no training.
+  confidence: medium
+  note: The usual way to get speaker-labeled, word-timed Whisper transcripts, but it runs one task by composing other
+    engines and trains nothing, two steps below NeMo.
+  relative_to: nemo
+  relation: two_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/m-bain/whisperX/main/README.md
+    shows: 'README: "This repository provides fast automatic speech recognition (70x realtime with large-v2) with word-level
+      timestamps and speaker diarization."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 38a681ac8cc79589e11f227f9d053f6f66054cab4ae0069804ca6b52306e3aa8

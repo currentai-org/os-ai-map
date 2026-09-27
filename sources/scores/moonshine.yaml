@@ -1,0 +1,128 @@
+product: moonshine
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors checkpoints on the Hub and .ort files for the library, ungated
+    data:
+      value: described
+      detail: 'about 300K hours: public web audio, open datasets named in the paper, and 100K hours prepared internally;
+        not released'
+    code:
+      value: partial
+      detail: inference library and LoRA fine-tuning; no training pipeline
+    license:
+    - name: MIT
+      detail: every Moonshine Streaming model and the English Tiny and Base models, and the code
+    context:
+      superseded-release:
+        value: legacy non-English non-streaming models
+        detail: 2025 Arabic, Japanese, Korean, Mandarin, Spanish, Ukrainian and Vietnamese Tiny/Base models under the
+          Moonshine AI Community License (free below USD 1M annual revenue), deprecated where a streaming replacement
+          exists; Korean and Ukrainian have none yet. Not scored; the revenue-capped license would give the same score
+  governing_release: Moonshine Streaming (2026)
+  confidence: medium
+  note: The current Moonshine Streaming models, like the English Tiny and Base models before them, are MIT-licensed and
+    download freely. The training audio is described but not released, and only LoRA fine-tuning is published. Older
+    non-English models remain under a community license that caps free use at USD 1M in annual revenue; they are being
+    replaced by the streaming line, and even read as current they would not change the score.
+  raw: 'weights:open(safetensors checkpoints on the Hub and .ort files for the library, ungated);data:described(about
+    300K hours: public web audio, open datasets named in the paper, and 100K hours prepared internally; not released);code:partial(inference
+    library and LoRA fine-tuning; no training pipeline);license:MIT(every Moonshine Streaming model and the English Tiny
+    and Base models, and the code);superseded-release:legacy non-English non-streaming models(2025 Arabic, Japanese,
+    Korean, Mandarin, Spanish, Ukrainian and Vietnamese Tiny/Base models under the Moonshine AI Community License (free
+    below USD 1M annual revenue), deprecated where a streaming replacement exists; Korean and Ukrainian have none yet.
+    Not scored; the revenue-capped license would give the same score)'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/moonshine-ai/moonshine/main/LICENSE
+    shows: 'LICENSE header: "Moonshine models are released under the MIT License by default, in every language and at
+      every size. This includes all streaming speech-to-text models and all English-language models."; "The only speech-to-text
+      models that are NOT MIT are the legacy non-streaming models for languages other than English".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa7d1174dd8af6a7cd280be20b80d10095ed4c19b5b20b61a7715c3ad790dc5f
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=moonshine-ai&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Hub listing: moonshine-streaming-tiny, -small and -medium created 2026-01-06 and the non-English streaming
+      models 2026-08-24, tagged "license:mit" and ungated; the legacy non-English models, created 2025, tagged "license:other".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 470ae59ff2d6d201d9e7af0762f1cd1c706cc1ee0d285a15e6aafe348c53326e
+    establishes:
+    - weights
+    - license
+  - url: https://moonshine-voice.readthedocs.io/en/latest/license/
+    shows: 'License page: "Where a streaming replacement exists, they are deprecated".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b73ecd7c40ff4c5fec659633546bd7f3d8d853228ba94d4540cefec51fdc428c
+    establishes:
+    - license
+  - url: https://huggingface.co/moonshine-ai/moonshine-streaming-medium/raw/main/README.md
+    shows: 'Card: "This includes the original Moonshine training sources (about 200K hours of public web data and open
+      datasets) plus an additional 100K hours of internally prepared speech data."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0ccde77bb216368f388be4d78bda1a0eac6af4963c6f93a8e2c42b3cda9d924b
+    establishes:
+    - data
+  - url: https://moonshine-voice.readthedocs.io/en/latest/models/domain-customization/
+    shows: 'Docs: "The trainer is an opt-in extra."; "moonshine-voice finetune is an alias of python -m moonshine_voice.lora".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1583045d19ab929409ef06e52d0b805f1022dce571bcb9537fc9108607b6f7ee
+    establishes:
+    - code
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of the two Moonshine packages, the current moonshine-voice library and the older ONNX package.
+    The Hub checkpoints are downloaded more, but the package is the documented way to run the models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/moonshine-voice/recent
+    shows: '"last_month":38846 for moonshine-voice.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0acea2386f9df56de2d08fdcd55ab554154b90ebb0c7ada2aad60f4395300d7a
+  - url: https://pypistats.org/api/packages/useful-moonshine-onnx/recent
+    shows: '"last_month":36873 for useful-moonshine-onnx.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 53b58e550025e8043f3a586c68608d8e3473aa37631cf0720a4beaed4e928521
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: card-reported average WER on the Open ASR Leaderboard test sets; absent from both ASR boards
+  value: Moonshine Streaming Medium (245M) reports 6.65% average WER on the Open ASR sets, Small 7.84% and Tiny 12.01%;
+    none is listed on the Open ASR Leaderboard, where 6.65% would fall just below the 61st of 71 rows.
+  confidence: low
+  note: Built for live transcription on small devices rather than for the top of the accuracy tables; its own figures
+    on the leaderboard's test sets place it below Whisper's large models, a step below Whisper.
+  relative_to: whisper
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/moonshine-ai/moonshine-streaming-medium/raw/main/README.md
+    shows: Card table "### Open ASR benchmark results (WER %)" with the row "| **Average**           | **12.01** | **7.84**     |
+      **6.65**      |".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0ccde77bb216368f388be4d78bda1a0eac6af4963c6f93a8e2c42b3cda9d924b
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "mistralai/Voxtral-Mini-4B-Realtime-2602,6.4625" (61st) and "AutoArk-AI/Audio8-ASR-0.1B,6.9525"
+      (62nd); no moonshine row.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://artificialanalysis.ai/speech-to-text
+    shows: The speech-to-text table lists no Moonshine row.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3db6b9578d6c98f73d2b3f651118cfe1b13ddce0be9fb635bc164c7707f68db0
