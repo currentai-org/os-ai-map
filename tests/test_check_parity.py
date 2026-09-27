@@ -284,7 +284,13 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 5 on 2026-09-26, when it was read: access is by permission and commercial use needs
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
-    assert len(deferred) == 5
+    #
+    # 5 -> 11 with the datacenter_accelerators first tranche (still preliminary). Six of its
+    # twelve products cannot reach the hardware ladder's chipset rung: Ironwood and Trainium3 are
+    # rent-only, Corsair goes only to select customers, and SambaNova, Qualcomm and IBM publish
+    # briefs rather than datasheets. Each closes on a shared hardware.yaml ruling (is rentable or
+    # approved-buyer silicon `buyable`?) or on a datasheet being published, not on more work here.
+    assert len(deferred) == 11
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
