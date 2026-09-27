@@ -331,7 +331,15 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 34 with the speech_audio second tranche, seventeen products in. Both additions are
+    # license-tier gaps on the model ladder, recorded rather than hand-closed per promote-category
+    # step 7: `xtts` (the Coqui Public Model License 1.0.0, non-commercial) and `higgs-audio` (the
+    # Boson Higgs TTS 3 Research and Non-Commercial License on its current TTS model, beside
+    # Apache-2.0 speech-to-text checkpoints, which also waits on the same TTS-versus-ASR-member
+    # ruling as voxtral). Each is hand-placed at 2/restricted and closes on a maintainer's ruling,
+    # not on more work.
+    assert len(deferred) == 34
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

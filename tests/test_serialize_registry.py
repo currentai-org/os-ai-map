@@ -322,6 +322,8 @@ SPEECH_MODEL_PACKAGES = {
     "f5-tts": "f5-tts",
     "voxcpm": "voxcpm",
     "moshi": "moshi",
+    # The second speech_audio tranche: the same decision, one more model.
+    "omnivoice": "omnivoice",
 }
 
 
@@ -346,7 +348,8 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     The speech_audio promotion adds seven, all one decision: an open speech model's inference
     package (kokoro, chatterbox-tts, qwen-asr, qwen-tts, f5-tts, voxcpm, moshi) loads its weights
     from the Hub repositories the product declares, so its installs are already inside those
-    repositories' downloads and the model bands on the Hub, the unit its ladder declares."""
+    repositories' downloads and the model bands on the Hub, the unit its ladder declares. The
+    second speech_audio tranche adds omnivoice on the same decision."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
