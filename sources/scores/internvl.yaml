@@ -1,0 +1,111 @@
+product: internvl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: internvl3.5
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: the MMPR-v1.2 and MMPR-Tiny preference and RL sets are released under MIT; the InternVL3.5 SFT mixture
+        is not
+    code:
+      value: open
+      detail: training code and CascadeRL offline and online RL scripts (internvl_chat_gpt_oss)
+    license:
+    - name: Apache-2.0
+      detail: OSI; every InternVL3.5 checkpoint
+  confidence: high
+  note: Every InternVL3.5 checkpoint is Apache 2.0, and OpenGVLab publishes its training code and reinforcement-learning
+    pipeline with the preference data that stage used. The supervised fine-tuning mixture for InternVL3.5 is not
+    released, so the full model cannot be rebuilt.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(the MMPR-v1.2 and MMPR-Tiny preference and RL
+    sets are released under MIT; the InternVL3.5 SFT mixture is not);code:open(training code and CascadeRL offline
+    and online RL scripts (internvl_chat_gpt_oss));license:Apache-2.0(OSI; every InternVL3.5 checkpoint)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/OpenGVLab/InternVL3_5-8B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for InternVL3_5-8B: gated false, safetensors, card license apache-2.0, datasets OpenGVLab/MMPR-v1.2
+      and MMPR-Tiny'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bacdf6906edf20b8b08667b78845fd6e6059cfb7698cf6c20f8f0d3f4da1470f
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=OpenGVLab&search=InternVL3_5&limit=100
+    shows: 50 InternVL3.5 checkpoints from 1B to 241B-A28B, every one tagged license:apache-2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 28ff0ddb8f292765867d89b10d1a3e6c6e793087b4e6395b89477bc935361e4b
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/OpenGVLab/MMPR-v1.2
+    shows: 'MMPR-v1.2: public, ungated, MIT, preference data that "greatly improves the overall performance of InternVL3.5"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6e034d15bafec6d4d0266e767984b94f667ef12e78a1caa5bc893f2aea4d7b4e
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/OpenGVLab/InternVL@main/README.md
+    shows: '"We open-source the training code of InternVL3_5-GPT-OSS-20B-A4B and CascadeRL ... The training data
+      for these two stages (MMPR-v1.2 and MMPR-Tiny) are also open-sourced."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0d5338fba1508bf7ffc9ccb2479c852e20b195394376b3c648750706b1465e10
+    establishes:
+    - code
+    - data
+  - url: https://cdn.jsdelivr.net/gh/OpenGVLab/InternVL@main/internvl_chat_gpt_oss/shell/internvl3_5_gpt_oss/internvl3_5_gpt_oss_20b_stage3_mpo.sh
+    shows: The stage-3 MPO training launch script for InternVL3.5-GPT-OSS-20B-A4B
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 41fe22055b3311b6a2f8369617921ea1c1e89ef6dcbcf1b0a12d42affa1d38b5
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across OpenGVLab's InternVL checkpoints from InternVL
+    1.x to 3.5, including the transformers-format copies. Most of it is the small InternVL2 and InternVL3 models
+    rather than the current generation.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=OpenGVLab&search=InternVL&limit=1000
+    shows: 155 OpenGVLab InternVL checkpoints with 2,923,773 downloads in the trailing 30 days; InternVL2-1B 709,860
+      and InternVL2-2B 704,959
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f6a7205b8405345c552aef0a42b7548b18ebfaf96ca8ef9c9d9aaba58ecaf1b5
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: GUI grounding and online agent results (OSWorld-G, WindowsAgentArena, WebArena-Lite-v2) in the InternVL3.5
+    report
+  value: 'InternVL3.5: single and multi-image, documents, video, GUI interaction and embodied tasks. Report Table
+    10, InternVL3.5-241B-A28B: ScreenSpot-v2 92.9, OSWorld-G 53.2, WindowsAgentArena 18.0, WebArena-Lite-v2 11.7,
+    against UI-TARS-72B at 17.9 and 10.3.'
+  confidence: high
+  relative_to: ui-tars
+  relation: at
+  note: InternVL3.5 completes tasks in Windows and web environments as well as understanding documents, multi-image
+    input and video. Its online agent scores sit beside UI-TARS-72B in its own report, which places it level with
+    UI-TARS.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://arxiv.org/pdf/2508.18265
+    shows: 'Table 10, GUI grounding and online agentic evaluation: InternVL3.5-241B-A28B ScreenSpot 89.8, ScreenSpot-v2
+      92.9, OSWorld-G 53.2, WindowsAgentArena 18.0, WebArena-Lite-v2 11.7; UI-TARS-72B 57.1, 17.9, 10.3'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7cec38fe73c626625a00c9c7ab1d17b24f2740c6a8d7a46ed66fc32c6f8b31ee
+  - url: https://huggingface.co/OpenGVLab/InternVL3_5-8B/raw/main/README.md
+    shows: '"InternVL3.5 supports novel capabilities such as GUI interaction and embodied agency"; multi-image and
+      video inference examples'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 47383e9746907dbfabfcad9c786aab81e43586b5e4b0bb07ad893d8b58f3b1e9

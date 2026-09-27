@@ -1,0 +1,108 @@
+product: holo
+openness:
+  score: 3
+  class: open_weights
+  governing_release: holo-3.1
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the Holo3 card names a mix of open datasets, synthetic trajectories and human-annotated samples; only
+        evaluation and narrow grounding sets are published
+    code:
+      value: closed
+      detail: no code repository; quickstart guides cover integration and inference only
+    license:
+    - name: Apache-2.0
+      detail: OSI; every Holo3.1 checkpoint
+  confidence: high
+  note: Every Holo3.1 checkpoint is released under Apache 2.0. H Company describes its training mix of synthetic
+    navigation data and reinforcement learning but publishes neither the data nor any training code.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the Holo3 card names a mix of open datasets,
+    synthetic trajectories and human-annotated samples; only evaluation and narrow grounding sets are published);code:closed(no
+    code repository; quickstart guides cover integration and inference only);license:Apache-2.0(OSI; every Holo3.1
+    checkpoint)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/Hcompany/Holo-3.1-35B-A3B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Holo-3.1-35B-A3B: gated false, 26 safetensors shards, card license apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b08c69ff1b35fd2b5ea55c2811de1903242c56d17a2c21e72c75d2042b44bd68
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=Hcompany&limit=100
+    shows: 'Hcompany listing: all seven Holo-3.1 repositories tagged license:apache-2.0; Holo1.5-72B, Holo2-30B-A3B
+      and Holo2-235B-A22B tagged cc-by-nc-4.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fbb3a1e2046468319cf3e34a90410cff885ddfb3b1f273bc150c4e3f231b697e
+    establishes:
+    - license
+  - url: https://huggingface.co/Hcompany/Holo3-35B-A3B/raw/main/README.md
+    shows: '"The training pipeline utilizes a carefully curated mix of open-source datasets, large-scale synthetic
+      trajectories, and high-quality human-annotated samples"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0681f87b059110a4e5dff8955e9feca6c5ea118b326f729f9c0ed0fe49e42d03
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets?author=Hcompany&limit=100
+    shows: 'Three Hcompany datasets: WebClick and DragOn (grounding benchmarks) and h_cua_perf (serving traces)'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f65eec76feb1c25aed659c198c49e2bcae28db1389f7bb0eb7518b17caa507fa
+    establishes:
+    - data
+  - url: https://huggingface.co/Hcompany/Holo-3.1-35B-A3B/raw/main/README.md
+    shows: '"License: Apache 2.0 License"; Get Started links a quickstart for integration and local inference; no
+      training code'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d99bf15b6e5cb377b1b7a75f3cd8e2b0e07d4aa3323576c0e1477afe90712d1a
+    establishes:
+    - code
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days, summed across H Company's Holo1 to Holo3.1 checkpoints,
+    including its own quantized builds. Most of it is the GGUF build of the 35B model, and use of the hosted API
+    is not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=Hcompany&limit=100
+    shows: 17 Holo-line repositories with 268,799 downloads in the trailing 30 days, 217,699 of them Holo-3.1-35B-A3B-GGUF
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fbb3a1e2046468319cf3e34a90410cff885ddfb3b1f273bc150c4e3f231b697e
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: computer-use actions on web, desktop and mobile with AndroidWorld and OSWorld results from H Company
+  value: Screens in; GUI actions and native function calls out on web, desktop and mobile. Holo3.1-35B-A3B reaches
+    79.3% on AndroidWorld; Holo3-35B-A3B scores 77.8% on OSWorld-Verified.
+  confidence: medium
+  relative_to: ui-tars
+  relation: at
+  note: 'Holo is built to operate computers: it reads screenshots and returns actions or function calls on web,
+    desktop and mobile, with strong vendor-reported AndroidWorld and OSWorld-Verified scores. It is level with UI-TARS,
+    and like it takes no audio input.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.hcompany.ai/holo3.1
+    shows: '"On AndroidWorld, our 35B-A3B model improves from 67% to 79.3%"; "native support for function-calling
+      protocols"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fdfaabd6c5234ca92e59ac41393a47a0c3537241ded43275c36ccf46d2bc6e8e
+  - url: https://huggingface.co/Hcompany/Holo3-35B-A3B/raw/main/README.md
+    shows: '"Holo3-35B-A3B achieves a 77.8% score on OSWorld-Verified"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0681f87b059110a4e5dff8955e9feca6c5ea118b326f729f9c0ed0fe49e42d03

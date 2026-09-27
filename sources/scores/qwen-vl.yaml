@@ -1,0 +1,116 @@
+product: qwen-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: qwen3-vl
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the technical report says the SFT set was curated from open-source datasets and web resources and
+        the RL set of about 30K queries from open-source and proprietary sources; neither is released
+    code:
+      value: partial
+      detail: a supervised fine-tuning framework for users (qwen-vl-finetune); the RL stage and Alibaba's own training
+        configs are not released
+    license:
+    - name: Apache-2.0
+      detail: OSI; every Qwen3-VL checkpoint on the Hub
+  confidence: high
+  note: Every Qwen3-VL checkpoint is released under Apache 2.0, and the repository includes a fine-tuning framework.
+    The training data is described in the technical report but not published, and Alibaba's own training recipe
+    is not released, so the model cannot be rebuilt from what ships.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the technical report says the SFT set was curated
+    from open-source datasets and web resources and the RL set of about 30K queries from open-source and proprietary
+    sources; neither is released);code:partial(a supervised fine-tuning framework for users (qwen-vl-finetune);
+    the RL stage and Alibaba's own training configs are not released);license:Apache-2.0(OSI; every Qwen3-VL checkpoint
+    on the Hub)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-VL-8B-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Qwen3-VL-8B-Instruct: gated false, four safetensors shards, card license apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 436e613a5fc09e86e49c18ab84c6179352deeefb86684817c5934a65fccde34b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=Qwen&search=VL&limit=100
+    shows: 'Qwen-owned VL listing: every Qwen3-VL checkpoint is tagged license:apache-2.0; some Qwen2-VL and Qwen2.5-VL
+      72B checkpoints are tagged license:other'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e754bacbf8e6f6cd2cb408de9f3da084db158e1f624cc35263fc8c4a5f7522e2
+    establishes:
+    - license
+  - url: https://arxiv.org/html/2511.21631
+    shows: 'Qwen3-VL technical report: SFT data curated "from open-source datasets and web resources"; RL data "from
+      both open-source and proprietary sources", about 30K queries; no release link'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a22c5f2d9070182dd6758369f423feb6953dbe1855baf391ae88ff3a909cff48
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/QwenLM/Qwen3-VL@main/qwen-vl-finetune/README.md
+    shows: '"This repository provides a training framework for Qwen VL models": a supervised fine-tuning trainer,
+      argument and data-packing tools'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cba2c1d8286c348f1d63511d7b82fbecff5ec41c1a6093f7d9398d7cf15e9c41
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/QwenLM/Qwen3-VL@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Alibaba's own Qwen-VL, Qwen2-VL, Qwen2.5-VL,
+    Qwen3-VL and QVQ checkpoints, including its own quantized builds. The Qwen3-VL embedding and reranker models
+    are a separate line and are excluded.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=Qwen&search=VL&limit=100
+    shows: 62 Qwen-owned vision-language chat checkpoints (the four Qwen3-VL-Embedding and Reranker repositories
+      excluded); trailing-30-day downloads sum to 46,805,754, Qwen3-VL-8B-Instruct alone 18,555,061
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e754bacbf8e6f6cd2cb408de9f3da084db158e1f624cc35263fc8c4a5f7522e2
+  - url: https://huggingface.co/api/models?author=Qwen&search=QVQ&limit=100
+    shows: QVQ-72B-Preview, 603 downloads in the trailing 30 days
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fe10b81dcfc54a33f212ed33586fdf048958f9881e20c0f3811b9599751619fe
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: documented GUI operation with GUI-agent benchmark results in the Qwen3-VL technical report
+  value: 'Qwen3-VL: single and multi-image, documents (OCR in 32 languages), video in a 256K context expandable
+    to 1M, 2D and 3D grounding, and a visual agent that operates PC and mobile GUIs; Qwen3-VL-32B scores 41 on OSWorld
+    and 63.7 on AndroidWorld. No audio input.'
+  confidence: high
+  relative_to: ui-tars
+  relation: at
+  note: Qwen3-VL operates desktop and phone interfaces from screenshots and reports OSWorld and AndroidWorld results,
+    on top of long-video and document understanding. It is level with UI-TARS and short of Qwen-Omni because it
+    takes no audio input.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/raw/main/README.md
+    shows: '"Visual Agent: Operates PC/mobile GUIs"; "Native 256K context, expandable to 1M; handles books and hours-long
+      video"; OCR in 32 languages; 2D and 3D grounding'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6d5d06e0c3f069097002445d30dce9ee107db3afaf15563f09e6df49b8dcb4d7
+  - url: https://arxiv.org/html/2511.21631
+    shows: '"Qwen3-VL 32B scores 41 on OSWorld and 63.7 on AndroidWorld"; ScreenSpot, ScreenSpot Pro and OSWorldG
+      among the evaluated GUI benchmarks'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a22c5f2d9070182dd6758369f423feb6953dbe1855baf391ae88ff3a909cff48

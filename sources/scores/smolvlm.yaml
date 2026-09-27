@@ -1,0 +1,109 @@
+product: smolvlm
+openness:
+  score: 3
+  class: open_weights
+  governing_release: smolvlm2
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: SmolVLM trained on The Cauldron and Docmatix, which Hugging Face publishes; SmolVLM2's 3.3M-sample
+        mixture is named with per-dataset shares from ten public third-party datasets but not published as one release
+    code:
+      value: open
+      detail: pretraining and fine-tuning code in huggingface/smollm (vision/m4)
+    license:
+    - name: Apache-2.0
+      detail: OSI; "We release the SmolVLM2 checkpoints under the Apache 2.0 license"
+  confidence: high
+  note: SmolVLM2 is Apache 2.0 and Hugging Face publishes its training code. The first SmolVLM trained on datasets
+    Hugging Face itself releases, but SmolVLM2's video mixture is assembled from ten third-party sets and is listed
+    rather than published.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(SmolVLM trained on The Cauldron and Docmatix,
+    which Hugging Face publishes; SmolVLM2's 3.3M-sample mixture is named with per-dataset shares from ten public
+    third-party datasets but not published as one release);code:open(pretraining and fine-tuning code in huggingface/smollm
+    (vision/m4));license:Apache-2.0(OSI; "We release the SmolVLM2 checkpoints under the Apache 2.0 license")
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/HuggingFaceTB/SmolVLM2-2.2B-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for SmolVLM2-2.2B-Instruct: gated false, two safetensors shards, card license apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9f76f74a1389e271fb32f643e543a3d7b7903d26cfacba89682efdca10cdb4dc
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/HuggingFaceTB/SmolVLM2-2.2B-Instruct/raw/main/README.md
+    shows: '"SmolVLM2 used 3.3M samples for training originally from ten different datasets" with per-modality shares;
+      "We release the SmolVLM2 checkpoints under the Apache 2.0 license"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8e46e92a3a40643b85a6df905b1a2014bcb7a01daaf6566588c89a95c5c6e700
+    establishes:
+    - data
+    - license
+  - url: https://huggingface.co/blog/smolvlm
+    shows: '"we used the datasets previously used for Idefics3: the Cauldron and Docmatix, which are also fully
+      open-source"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 64c91112c36c8bd03bdd5ab25c248401cccff6075a2d13cb4f02b1055442fd0b
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/huggingface/smollm/HEAD/vision/README.md
+    shows: '"everything related to the training of our Vision Language Models series: SmolVLM. This includes pretraining
+      and finetuning code"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8c090d18d337537df5211fdb00d999a915abef7361086d25b46f255344926da2
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/huggingface/smollm/HEAD/vision/m4/training/main.py
+    shows: The m4 training entry point
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 55518d818e02f3338422b39f78e485632f07eca11486776e86bb1ddfd7559ae3
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Hugging Face's SmolVLM and SmolVLM2 checkpoints.
+    More than half of it is the 500M video model, which suits small on-device pipelines.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=HuggingFaceTB&search=SmolVLM&limit=100
+    shows: Twelve SmolVLM checkpoints (the app-config repository excluded) with 2,037,669 downloads in the trailing
+      30 days; SmolVLM2-500M-Video-Instruct 1,195,310
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b9fc736b9f63f0db0fa2ba67ed1612c78e5378771a182ac2bfedc603a3ccfbbc
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, multi-image and video understanding from the SmolVLM2 card
+  value: 'Images, multi-image and video in, text out; interleaved inputs, text transcription. SmolVLM2-2.2B: Video-MME
+    52.1, MMMU 42, OCRBench 72.9, DocVQA 79.98.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: at
+  note: SmolVLM2 watches video as well as reading images and documents, at sizes small enough for phones and laptops.
+    Its scores are well below larger models, but it covers the same kinds of input as MiniCPM-V, so it sits level
+    with it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/HuggingFaceTB/SmolVLM2-2.2B-Instruct/raw/main/README.md
+    shows: '"Multi-modal model (image/multi-image/video/text)"; "does not support image or video generation"; Video-MME
+      52.1, MMMU 42, OCRBench 72.9'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8e46e92a3a40643b85a6df905b1a2014bcb7a01daaf6566588c89a95c5c6e700
+  - url: https://huggingface.co/blog/smolvlm2
+    shows: '"SmolVLM can now watch"; 256M, 500M and 2.2B models, "the smallest video language models ever released"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 001bed5b5267fed2fe64a2fdfdb5b15991b3ef0ee392d4441fc55325452e95c3

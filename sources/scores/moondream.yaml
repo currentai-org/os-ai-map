@@ -1,0 +1,111 @@
+product: moondream
+openness:
+  score: 3
+  class: open_weights
+  governing_release: moondream-3.1
+  components:
+    weights:
+      value: open
+      detail: model.safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the changelog names RL fine-tuning across 55 vision-language tasks; no training data is published
+    code:
+      value: partial
+      detail: inference code only; fine-tuning is offered through the hosted Lens product
+    license:
+    - name: Moondream-Model-License-1.0
+      detail: commercial use, modification and redistribution allowed; offering general-purpose Moondream as a hosted
+        inference or fine-tuning service needs a separate license
+  confidence: high
+  note: Moondream 3.1's weights may be used commercially, fine-tuned and redistributed, but its license forbids
+    offering Moondream itself as a general-purpose hosted service. M87 Labs publishes neither the training data
+    nor the training code.
+  raw: weights:open(model.safetensors on the Hub, ungated);data:described(the changelog names RL fine-tuning across
+    55 vision-language tasks; no training data is published);code:partial(inference code only; fine-tuning is offered
+    through the hosted Lens product);license:Moondream-Model-License-1.0(commercial use, modification and redistribution
+    allowed; offering general-purpose Moondream as a hosted inference or fine-tuning service needs a separate license)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/moondream/moondream3.1-9B-A2B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for moondream3.1-9B-A2B: gated false, model.safetensors, license other, license_name moondream-model-license-1.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e08b89a70f381eeb9ac5734f6cd2ad31b9d1bf02aa9eb5a2a14801562a0c07d1
+    establishes:
+    - weights
+    - license
+  - url: https://moondream.ai/licenses/model/1.0
+    shows: '"You may not provide Moondream to third parties as a hosted or managed service where that service gives
+      users access to general-purpose Moondream inference or fine-tuning"; commercial use granted'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eeb38f006a2b4f55438aed972b79f388b7cf388212ba08b5149e68c40b3a57bf
+    establishes:
+    - license
+  - url: https://huggingface.co/vikhyatk/moondream2/raw/main/README.md
+    shows: 'Changelog: "RL fine-tuning applied across 55 vision-language tasks"; no dataset linked'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 24cb16e1accd51e91302836bf87388740f0c78d1a29fc2895b68b4b2ed452bbc
+    establishes:
+    - data
+  - url: https://moondream.ai/blog/moondream-3-1-beyond-benchmarks
+    shows: '"We used Lens, our fine-tuning product: the same hosted API customers use to tune Moondream with SFT
+      and RL"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: af08371e30943c0771e49d44ba5002fa346267b7ed87a6699a1a8fed8bd18cba
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/m87-labs/moondream/HEAD/README.md
+    shows: The repository documents local and cloud inference; no training section
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0928f2bcfc2c22754a9f78c6feaf92e10e1d2f21f3ff772f4a4a5973447d7643
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across the Moondream 2 and Moondream 3 checkpoints
+    under the vikhyatk and moondream accounts. Nearly all of it is Moondream 2, and the hosted Moondream Cloud is
+    not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=vikhyatk&search=moondream&sort=downloads&direction=-1&limit=100
+    shows: vikhyatk/moondream2 with 1,970,584 downloads in the trailing 30 days
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e4c253c0ce183d0ac5fade247867c2fb07f0cb6c544a61135a566fe4a77531b2
+  - url: https://huggingface.co/api/models?author=moondream&search=moondream&sort=downloads&direction=-1&limit=100
+    shows: moondream3-preview 115,536, moondream3.1-9B-A2B 14,668 and three Moondream 2 builds totalling 13,358
+      downloads in the trailing 30 days; the Parakeet speech models are excluded
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3607a745ded406e1fc17af3150119851648bac501c80a16d99782b16c5bfde84
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: document, chart and detection skills from the Moondream 3.1 card and launch post
+  value: 'Single image in; query, caption, point and detect skills with structured output. Moondream 3.1 launch
+    post: ChartQA 86.01, DocVQA 88.6, COCO detection F1@0.5 81.46, against Qwen3.5 9B at 70.72, 92.94 and 75.58.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: one_below
+  note: Moondream reads documents and charts and returns object points and boxes quickly on modest hardware. It
+    works on one image at a time with no video input, which puts it a step below MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/moondream/moondream3.1-9B-A2B/raw/main/README.md
+    shows: '"Skills include query, detect, point, and caption, all native and all returning structured output"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e66c19526f47469eac169561fb1fce1ad8894d86ea087b8ceb40bb3b4be7a67b
+  - url: https://moondream.ai/blog/moondream-3-1-beyond-benchmarks
+    shows: ChartQA 86.01, DocVQA 88.6 and COCO detect 81.46 for Moondream 3.1; Qwen3.5 9B 70.72, 92.94 and 75.58
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: af08371e30943c0771e49d44ba5002fa346267b7ed87a6699a1a8fed8bd18cba
