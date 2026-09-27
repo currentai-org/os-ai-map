@@ -1,0 +1,88 @@
+product: minimax-hailuo
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: MiniMax-H3 downloads from Hugging Face without a gate; the Hailuo 02 and 2.3 models are not distributed
+    data:
+      value: closed
+      detail: the README names no training data
+    code:
+      value: partial
+      detail: inference code only, with full attention; no training code
+    license:
+    - name: MiniMax-H3-Community-License
+      detail: licensed for a territory excluding the European Union, the United Kingdom, the Republic of Korea and
+        the United States; products above USD 20M yearly revenue need written authorization; outputs may not be
+        used to improve other models
+  governing_release: MiniMax H3
+  confidence: high
+  note: MiniMax's community license permits commercial use but excludes the European Union, the United Kingdom,
+    South Korea and the United States entirely, and requires written permission above USD 20M in yearly revenue.
+    Only inference code is published and the training data is not described.
+  raw: weights:open(MiniMax-H3 downloads from Hugging Face without a gate; the Hailuo 02 and 2.3 models are not
+    distributed);data:closed(the README names no training data);code:partial(inference code only, with full attention;
+    no training code);license:MiniMax-H3-Community-License(licensed for a territory excluding the European Union,
+    the United Kingdom, the Republic of Korea and the United States; products above USD 20M yearly revenue need
+    written authorization; outputs may not be used to improve other models)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-H3/raw/main/LICENSE
+    shows: 'License body: "MiniMax H3 COMMUNITY LICENSE AGREEMENT"; "Excluded Territories" means the European Union,
+      the United Kingdom, the Republic of Korea and the United States of America; a separate authorization is needed
+      above "20 million US dollars" in yearly revenue.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 59b99642b95ea21630e311198ddbfffbfe05aadba0c2f5d884cbdf4efcc90f44
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-H3?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: gated false, license minimax-h3-community-license-agreement.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 66a7b9a084d7ca69942f481ec5d71778c1f2256be07ce5dc3eac3279e13abac4
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/MiniMax-AI/MiniMax-H3/main/README.md
+    shows: 'README: "The initial open-source release provides inference with full attention only"; H3-Context-IR
+      "is not included in this open-source release"; no training data is named.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7964f3044d3c7efaa054bb823644ad98cf9ea43389f994c51e08977822f16bac
+    establishes:
+    - code
+    - data
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the single MiniMax H3 repository, which holds both of
+    its checkpoints.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-H3?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for MiniMaxAI/MiniMax-H3: downloads 3657004, createdAt 2026-07-28.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 66a7b9a084d7ca69942f481ec5d71778c1f2256be07ce5dc3eac3279e13abac4
+capability:
+  score: 5
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: MiniMax H3 3rd of 86 at
+    an Elo of 1302, behind the closed Wan 3.0 and Gemini Omni Flash and first among open-weights entries; on the
+    with-audio board it is 4th and again first among open weights.'
+  confidence: medium
+  note: MiniMax H3 is among the three strongest video models on the arena, closed models included, and the strongest
+    with downloadable weights. Only two hosted models place above it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: 'Arena FAQ: "The top Text to Video models without audio by Elo rating are: 1. Wan 3.0 (Elo 1335), 2.
+      Gemini Omni Flash (Elo 1332), 3. MiniMax H3 (Elo 1302)".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9

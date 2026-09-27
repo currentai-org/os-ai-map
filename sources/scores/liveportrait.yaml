@@ -1,0 +1,100 @@
+product: liveportrait
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: KlingTeam/LivePortrait downloads from Hugging Face without a gate, Humans and Animals models together
+    data:
+      value: described
+      detail: the paper describes about 69 million training frames; no dataset is released
+    code:
+      value: partial
+      detail: inference code only; no training script
+    license:
+    - name: MIT
+      detail: the LivePortrait code and weights
+    - name: InsightFace-Non-Commercial-Research
+      detail: the InsightFace face-detection models bundled in the weight tree are "for non-commercial research
+        purposes only"; the LICENSE says commercial users must replace them
+  confidence: high
+  note: LivePortrait's own code and weights are MIT, but the download bundles InsightFace face-detection models
+    that are licensed for non-commercial research only, and the LICENSE says commercial users must swap them out.
+    Only inference code is published and the training data is not released.
+  raw: weights:open(KlingTeam/LivePortrait downloads from Hugging Face without a gate, Humans and Animals models
+    together);data:described(the paper describes about 69 million training frames; no dataset is released);code:partial(inference
+    code only; no training script);license:MIT(the LivePortrait code and weights)+InsightFace-Non-Commercial-Research(the
+    InsightFace face-detection models bundled in the weight tree are "for non-commercial research purposes only";
+    the LICENSE says commercial users must replace them)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/KlingAIResearch/LivePortrait/files/main/LICENSE
+    shows: 'LICENSE: "MIT License / Copyright (c) 2024 Kuaishou Visual Generation and Interaction Center", followed
+      by "The models of InsightFace are for non-commercial research purposes only."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 75fcad03ad21369e9eeb369b97b73fc0bba7f7f3243d0a661f968bd1478207bb
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/KlingTeam/LivePortrait?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: cardData license mit, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 03882b2bdc8d7bf9ecdc4cbe5aafa67c14db08871bbccf0e881e7c95c86c5e46
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/KlingAIResearch/LivePortrait/files/main
+    shows: 'Repository file list: app.py, inference.py and the model sources; InsightFace and X-Pose vendored as
+      dependencies; no training script.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ff4ad4852a525ad56ec5cbb04b9af881c0925dddb6d075381cef3893d7e0b61b
+    establishes:
+    - code
+  - url: https://arxiv.org/abs/2407.03168
+    shows: 'Paper abstract: "we scale up the training data to about 69 million high-quality frames, adopt a mixed
+      image-video training strategy"; no dataset release.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ac65af68d9b0e560dbe79f530a6cf83463d5e4d8795a2c2315bc06377003d6cd
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the LivePortrait checkpoint repository. The weights are
+    also mirrored on Google Drive and Baidu, which this figure does not count.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/KlingTeam/LivePortrait?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for KlingTeam/LivePortrait: downloads 10340.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 03882b2bdc8d7bf9ecdc4cbe5aafa67c14db08871bbccf0e881e7c95c86c5e46
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released weights for portrait animation (image plus driving video to video, humans and animals, real-time
+    on one GPU); portrait animation has no entry on the Artificial Analysis Text to Video Arena, which ranks text-to-video
+    generation
+  confidence: medium
+  relative_to: mochi
+  relation: one_below
+  note: LivePortrait animates a still portrait from a driving video rather than generating video from a prompt,
+    and no public arena ranks that task. It sits below Mochi, which at least places on the text-to-video arena.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/KlingAIResearch/LivePortrait/files/main/readme.md
+    shows: 'README: "the official PyTorch implementation of our paper LivePortrait: Efficient Portrait Animation
+      with Stitching and Retargeting Control", with image-driven and video-to-video modes.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ba9144f3a57c4acdeae3e51cdaf379b41c32ffe27ec7ff4b279265995ad01878
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: The text-to-video leaderboard lists no LivePortrait entry.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9

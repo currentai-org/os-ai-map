@@ -1,0 +1,101 @@
+product: hunyuan-3d
+openness:
+  score: null
+  class: closed
+  components:
+    weights:
+      value: closed
+      detail: Hunyuan3D 3.0 is offered only through the Tencent Cloud Hunyuan 3D API and the Hunyuan3D site; no
+        2.5 or 3.x repository exists on Hugging Face
+    data:
+      value: closed
+      detail: nothing is published for Hunyuan3D 3.0
+    code:
+      value: closed
+      detail: no code is published for Hunyuan3D 3.0
+    license:
+    - name: Proprietary
+      detail: Hunyuan3D 3.0 is available only under Tencent Cloud service terms
+    context:
+      prior-release:
+        value: distributed
+        detail: 'Hunyuan3D 2.1 (and 2.0): downloadable under the Tencent Hunyuan 3D Community License, which excludes
+          the European Union, the United Kingdom and South Korea, with training code published for 2.1'
+  governing_release: Hunyuan3D 3.0
+  confidence: medium
+  note: Hunyuan3D 3.0, the current release, can only be used through Tencent Cloud, with no weights published. The
+    previous downloadable release, Hunyuan3D 2.1, carries a regional community license that excludes the European
+    Union, the United Kingdom and South Korea.
+  raw: 'weights:closed(Hunyuan3D 3.0 is offered only through the Tencent Cloud Hunyuan 3D API and the Hunyuan3D
+    site; no 2.5 or 3.x repository exists on Hugging Face);data:closed(nothing is published for Hunyuan3D 3.0);code:closed(no
+    code is published for Hunyuan3D 3.0);license:Proprietary(Hunyuan3D 3.0 is available only under Tencent Cloud
+    service terms);prior-release:distributed(Hunyuan3D 2.1 (and 2.0): downloadable under the Tencent Hunyuan 3D
+    Community License, which excludes the European Union, the United Kingdom and South Korea, with training code
+    published for 2.1)'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.tencent.com/en-us/articles/2202235.html
+    shows: 'Tencent release: "models such as Hunyuan 3D 3.0" offered to "enterprise users plugged into the Hunyuan
+      3D Model API via Tencent Cloud".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: db431c0bd8bf5e533e08c6bf3d23582ad36b8dd474fb9379bd4988c41c308f0a
+    establishes:
+    - weights
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models?search=Hunyuan3D&author=tencent&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of tencent Hunyuan3D repositories: 2, 2.1, 2mini, 2mv, Omni, Part and 1; no 2.5
+      or 3.x repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 964b0acfc90c58f55635b7da3a77d64afe3383da63f8d230839febd79cb9c574
+    establishes:
+    - weights
+  - url: https://huggingface.co/tencent/Hunyuan3D-2.1/raw/main/LICENSE
+    shows: 'Hunyuan3D 2.1 license body: "TENCENT HUNYUAN 3D 2.1 COMMUNITY LICENSE AGREEMENT"; "THIS LICENSE AGREEMENT
+      DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5bd08f93b2d280bb26ff3eed5d3996fe47a9698b5f7785163928668d7fd578c6
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the six Hunyuan3D checkpoints, led by Hunyuan3D 2.0.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?search=Hunyuan3D&author=tencent&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: Hunyuan3D-2 108234, Hunyuan3D-2.1 54794, Hunyuan3D-2mini 33588, Hunyuan3D-2mv
+      10644 in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 964b0acfc90c58f55635b7da3a77d64afe3383da63f8d230839febd79cb9c574
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena image-to-3D render board, read 2026-09-26: Hunyuan3D-2 8th of 24 (score 1284) and Hunyuan3D-2.1
+    11th (1273); on the topology board Hunyuan3D-2 is 1st of 21.'
+  confidence: medium
+  relative_to: trellis
+  relation: two_below
+  note: Hunyuan3D places in the upper half of the image-to-3D arena for rendered quality and leads its separate
+    board for mesh topology. TRELLIS and Meshy rate higher on rendered quality, the arena's main board.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: Render-board entries "Hunyuan3D-2" (score 1284) and "Hunyuan3D-2.1" (1273), below "TRELLIS-3DGS" (1399)
+      and "Meshy-6" (1359).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 851c701579171a41e52e65f1ac76d3920a9de594250befcbad250b0e2151465c
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: Topology-board entry "Hunyuan3D-2" first, score 1363.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 740825f79e09b85c6805bb32f884aac9bd9cdc49dce994530c55abb8d3762ba5

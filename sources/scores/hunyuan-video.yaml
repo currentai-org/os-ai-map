@@ -1,0 +1,91 @@
+product: hunyuan-video
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: HunyuanVideo, HunyuanVideo-1.5 and HunyuanVideo-I2V download from Hugging Face
+    data:
+      value: described
+      detail: the READMEs describe data curation; no dataset is released
+    code:
+      value: open
+      detail: HunyuanVideo-1.5 publishes train.py, a full distributed training pipeline
+    license:
+    - name: Tencent-Hunyuan-Community-License
+      detail: 'every checkpoint: licensed for a territory that excludes the European Union, the United Kingdom and
+        South Korea; licensees above 100 million monthly active users must ask Tencent; outputs may not be used
+        to improve other models'
+  governing_release: HunyuanVideo 1.5
+  confidence: high
+  note: Tencent's community license allows commercial use but does not apply at all in the European Union, the United
+    Kingdom or South Korea, and requires a separate license for the very largest services. HunyuanVideo 1.5 publishes
+    its full training pipeline, while the training data is described but not released.
+  raw: 'weights:open(HunyuanVideo, HunyuanVideo-1.5 and HunyuanVideo-I2V download from Hugging Face);data:described(the
+    READMEs describe data curation; no dataset is released);code:open(HunyuanVideo-1.5 publishes train.py, a full
+    distributed training pipeline);license:Tencent-Hunyuan-Community-License(every checkpoint: licensed for a territory
+    that excludes the European Union, the United Kingdom and South Korea; licensees above 100 million monthly active
+    users must ask Tencent; outputs may not be used to improve other models)'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo-1.5/main/LICENSE
+    shows: 'License body: "TENCENT HUNYUAN COMMUNITY LICENSE AGREEMENT"; "THIS LICENSE AGREEMENT DOES NOT APPLY
+      IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA"; licensees "greater than 100 million monthly active
+      users ... must request a license from Tencent".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c38236952096107a4adbc164f44cd1768745b0a20090ea858e0954c96a6b8391
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=tencent&sort=downloads&direction=-1&limit=100&search=HunyuanVideo
+    shows: 'Hugging Face listing of HunyuanVideo repositories: HunyuanVideo, HunyuanVideo-1.5 and HunyuanVideo-I2V
+      public, license tencent-hunyuan-community.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a836c184d928960e15f2de7e22eb8b6974c512f13bdcb284c66ae6295202135f
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/Tencent-Hunyuan/HunyuanVideo-1.5/main/README.md
+    shows: 'README: "We now open-source the training code for HunyuanVideo-1.5! The training script (train.py) provides
+      a full training pipeline"; the model is credited to "meticulous data curation", with no dataset released.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 57eed52d56216c2e0b60f0e926267a0708fc18de2109e5a60a01d8ccac6e49dc
+    establishes:
+    - code
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the three HunyuanVideo checkpoints. Converted copies
+    on other accounts are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=tencent&sort=downloads&direction=-1&limit=100&search=HunyuanVideo
+    shows: 'Listing sorted by downloads: HunyuanVideo 1269, HunyuanVideo-1.5 1193, HunyuanVideo-I2V 179 in the trailing
+      30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a836c184d928960e15f2de7e22eb8b6974c512f13bdcb284c66ae6295202135f
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: HunyuanVideo-1.5 (served
+    by Fal) 67th of 86 at an Elo of 1020; the original HunyuanVideo 74th.'
+  confidence: medium
+  relative_to: ltx
+  relation: one_below
+  note: HunyuanVideo 1.5 places in the lower half of the video arena, a step below LTX-2.5 and below the downloadable
+    Wan 2.2. MiniMax H3 leads the downloadable video models.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: Leaderboard entries "HunyuanVideo-1.5 (Fal)" (rank 67, Elo 1020.0, open weights at huggingface.co/tencent/HunyuanVideo-1.5)
+      and "Hunyuan Video (Fal)" (rank 74).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9

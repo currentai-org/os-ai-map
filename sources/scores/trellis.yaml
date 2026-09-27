@@ -1,0 +1,112 @@
+product: trellis
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+      detail: the TRELLIS image and text models and TRELLIS.2-4B download from Hugging Face without a gate
+    data:
+      value: open
+      detail: TRELLIS-500K is published as metadata over its public source collections with the toolkits to rebuild
+        it, and the TRELLIS.2 card states that the dataset is publicly released
+    code:
+      value: open
+      detail: both repositories publish full training code (train.py and the trainers)
+    license:
+    - name: MIT
+      detail: OSI; the models and the majority of the code; a few rendering submodules carry their own licenses
+  confidence: high
+  note: 'TRELLIS publishes everything needed to reproduce it: MIT-licensed weights, the full training code, and
+    the TRELLIS-500K training set with the tools to rebuild it from its public sources. Only a few third-party rendering
+    submodules sit under other licenses.'
+  raw: weights:open(the TRELLIS image and text models and TRELLIS.2-4B download from Hugging Face without a gate);data:open(TRELLIS-500K
+    is published as metadata over its public source collections with the toolkits to rebuild it, and the TRELLIS.2
+    card states that the dataset is publicly released);code:open(both repositories publish full training code (train.py
+    and the trainers));license:MIT(OSI; the models and the majority of the code; a few rendering submodules carry
+    their own licenses)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/microsoft/TRELLIS/files/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) Microsoft Corporation."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/microsoft/TRELLIS.2/files/main/LICENSE
+    shows: 'TRELLIS.2 LICENSE body: "MIT License / Copyright (c) Microsoft Corporation."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d9a1b1e30d633d5732ea18e3cba9538d293ebc53e1a9e4e96ab739e0c5c4f1cb
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?search=TRELLIS&author=microsoft&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing: the five TRELLIS and TRELLIS.2 checkpoints, license mit, public.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ad91779cf489b46757f7bed5631015e566d7b25d09ac5394143efafbbcc4fa9d
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/microsoft/TRELLIS/files/main/README.md
+    shows: 'README: "We provide TRELLIS-500K, a large-scale dataset containing 500K 3D assets curated from Objaverse(XL),
+      ABO, 3D-FUTURE, HSSD, and Toys4k"; "Release training code"; "The training code is centered around train.py".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 675a1bab7837d22972a776dec8e2a2eb01f9211bd40b4c57112a8335ccb9ec3e
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/microsoft/TRELLIS.2-4B/raw/main/README.md
+    shows: 'TRELLIS.2 card: "This model is released under the MIT License. The code and dataset are publicly released
+      to facilitate reproduction and further research."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ab08bd7f555372317d166220dbd2c17c73b5a238d45da018ef301c1e32aec8a8
+    establishes:
+    - data
+    - license
+  - url: https://ungh.cc/repos/microsoft/TRELLIS.2/files/main/README.md
+    shows: 'TRELLIS.2 README: "We provide the full training codebase, enabling users to train TRELLIS.2 from scratch
+      or fine-tune it on custom datasets."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: adc985d5a71fda0a5cb7287f58b6baa7de8db1568c4483ac210f3447b786552b
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the five TRELLIS checkpoints, almost all of them for
+    TRELLIS-image-large and TRELLIS.2-4B.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?search=TRELLIS&author=microsoft&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: TRELLIS-image-large 2118600, TRELLIS.2-4B 1724957 in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ad91779cf489b46757f7bed5631015e566d7b25d09ac5394143efafbbcc4fa9d
+capability:
+  score: 5
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena image-to-3D render board, read 2026-09-26: TRELLIS-3DGS 2nd of 24 with a score of 1399 and TRELLIS
+    5th; TRELLIS.2-4B 18th on few votes. TRELLIS is 2nd of 21 on the topology board.'
+  confidence: medium
+  note: TRELLIS is among the three highest-rated models on the public image-to-3D arena, closed services included,
+    and the highest-rated with open weights. It places level with Meshy's hosted models there.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: Render-board entries "TRELLIS-3DGS" (score 1399, open_source true), "Meshy-6" (1359) and "TRELLIS" (1304).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 851c701579171a41e52e65f1ac76d3920a9de594250befcbad250b0e2151465c
+  - url: https://huggingface.co/spaces/3d-arena/3d-arena/raw/main/src/routes/About.svelte
+    shows: '3D Arena About page: "The 3D Arena leaderboard evaluates leading generative 3D models"; models take
+      image inputs and produce mesh or splat outputs.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 82311358e6ae29b160df2b7a8cfdfe58562640dce3280d815884187a9ea9dd3c

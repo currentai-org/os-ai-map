@@ -1,0 +1,95 @@
+product: audiocraft
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; covers the library code. The weights carry CC-BY-NC-4.0 in a separate LICENSE_weights file and
+        are scored on musicgen
+    source:
+      value: public
+      detail: facebookresearch/audiocraft
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary path; a Meta research release with no paid or hosted
+        edition named
+  confidence: high
+  note: The AudioCraft code is MIT-licensed and fully public, training code included, and Meta offers no paid edition
+    of it. The model weights the library loads are licensed separately for non-commercial use only, which is recorded
+    on MusicGen rather than here.
+  raw: license:MIT(OSI; covers the library code. The weights carry CC-BY-NC-4.0 in a separate LICENSE_weights file
+    and are scored on musicgen);source:public(facebookresearch/audiocraft);core-gated:ungated(no ee, enterprise,
+    commercial or proprietary path; a Meta research release with no paid or hosted edition named)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/audiocraft/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) Meta Platforms, Inc. and affiliates."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/audiocraft/main/LICENSE_weights
+    shows: 'LICENSE_weights body: "Attribution-NonCommercial 4.0 International", covering the model weights rather
+      than the code.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 336255dc30193e8e15d689d9481bb05673d89055718f3a96923a7ffb99adbbaf
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/facebookresearch/audiocraft/files/main
+    shows: 'Full file list: no ee/, enterprise/, commercial/ or proprietary/ path; LICENSE and LICENSE_weights are
+      the license files.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f10853520335b535561f445547f7d7eafc278d2aa84ed12155add765daa1b814
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/facebookresearch/audiocraft/main/README.md
+    shows: 'README: "The code in this repository is released under the MIT license" and "The models weights in this
+      repository are released under the CC-BY-NC 4.0 license"; no paid or hosted edition is named.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0240bd901c60c42508680e6beb580574836fd44b8476e721f811831fd2780638
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of the audiocraft package, which is the library itself. Installs
+    made directly from the repository are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/audiocraft/recent
+    shows: 'pypistats for audiocraft: last_month 9599.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2cab554b0a20fc329bfb4aa78f9fc765330f633cae59ae3be12673f09d19bd94
+  - url: https://pypi.org/pypi/audiocraft/json
+    shows: 'PyPI audiocraft: project_urls Homepage = https://github.com/facebookresearch/audiocraft; last release
+      1.3.0, uploaded 2024-06-03.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2934c580deebc18ab435ebce1cc5b02598177aed7a76bd853b76e5f67472c0e7
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'audio only, across several model families: MusicGen, MusicGen Style, MAGNeT and JASCO for music, AudioGen
+    for sound effects, EnCodec and Multi Band Diffusion for decoding; training code for each'
+  confidence: high
+  relative_to: stable-diffusion-cpp
+  relation: one_below
+  note: AudioCraft runs and trains several of Meta's music and sound-effect model families. It is a step below stable-diffusion.cpp
+    because it covers a single modality, audio.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/audiocraft/main/README.md
+    shows: 'README Models: MusicGen ("text-to-music"), AudioGen ("text-to-sound"), EnCodec, Multi Band Diffusion,
+      MAGNeT, AudioSeal, MusicGen Style and JASCO; "AudioCraft contains inference and training code".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0240bd901c60c42508680e6beb580574836fd44b8476e721f811831fd2780638

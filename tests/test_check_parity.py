@@ -314,7 +314,17 @@ def test_local_scores_matches_check_rubrics_split():
     # class: `moondream` (Moondream Model License 1.0, a hosted-service limitation) and
     # `nemotron-omni` (the NVIDIA Open Model Agreement, a document separate from the Open Model
     # License the tier names). Each closes on a shared-tier ruling, not on more work.
-    assert len(deferred) == 22
+    #
+    # 22 -> 32 with the media_generation promotion, 30 products in. Seven additions are
+    # license-tier gaps recorded rather than hand-closed, each with the reading that would apply:
+    # FLUX's non-commercial terms, revenue-bounded community licenses (Stability AI Community on
+    # stable-diffusion and stable-audio, LTX-2 Community), two territorial exclusions no tier
+    # addresses (Tencent Hunyuan on hunyuan-video, MiniMax H3), and liveportrait's MIT weights
+    # bundling a non-commercial third-party detector. The other three - wan, qwen-image and
+    # hunyuan-3d - are the closed frontier on an open line held by the #720 ruling: the current
+    # release is API-only, openness.score is left null, and they close on the maintainer's ruling
+    # on availability versus openness. None of the ten closes on more work.
+    assert len(deferred) == 32
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
