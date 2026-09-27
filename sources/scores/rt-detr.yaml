@@ -1,15 +1,16 @@
 product: rt-detr
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_weights
   governing_release: RT-DETRv4
   components:
     weights:
       value: open
       detail: RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the Hub, ungated
     data:
-      value: open
-      detail: COCO 2017, a public dataset; Objects365 pretraining for some v1 and v2 checkpoints
+      value: documented-not-released
+      detail: COCO 2017 is public, but v4 distills from a DINOv3 ViT-B/16 teacher trained on the unreleased
+        LVD-1689M corpus
     code:
       value: open
       detail: training code and configs for v1, v2 and v4
@@ -17,15 +18,15 @@ openness:
     - name: Apache-2.0
       detail: repository LICENSE for v1, v2 and v4; the v4 README states no separate weights license
   confidence: medium
-  note: Every version is Apache-2.0, code and weights, with the full training code and configs published
-    and the checkpoints trained on public COCO data. RT-DETRv4 uses a DINOv3 model as a teacher during
-    training, which a user must obtain separately under Meta's DINOv3 License; the detectors it produces
-    are released under Apache-2.0. The detector itself trains only on COCO, but its features are distilled
-    from that teacher, which Meta trained on images it has not released.
-  raw: weights:open(RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the
-    Hub, ungated);data:open(COCO 2017, a public dataset; Objects365 pretraining for some v1 and v2 checkpoints);code:open(training
-    code and configs for v1, v2 and v4);license:Apache-2.0(repository LICENSE for v1, v2 and v4; the v4
-    README states no separate weights license)
+  note: 'Every version is Apache-2.0, code and weights, with the full training code and configs published.
+    The training data cannot be fully reproduced, though: RT-DETRv4''s recipe distills features from a DINOv3
+    ViT-B/16 teacher, and Meta has not released that teacher''s LVD-1689M training images, so COCO being
+    public does not make the detector''s full training data available. The teacher itself must be obtained
+    separately under Meta''s DINOv3 License.'
+  raw: weights:open(RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the Hub,
+    ungated);data:documented-not-released(COCO 2017 is public, but v4 distills from a DINOv3 ViT-B/16 teacher
+    trained on the unreleased LVD-1689M corpus);code:open(training code and configs for v1, v2 and v4);license:Apache-2.0(repository
+    LICENSE for v1, v2 and v4; the v4 README states no separate weights license)
   last_verified: '2026-09-27'
   sources:
   - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/LICENSE
@@ -78,6 +79,15 @@ openness:
     content_sha256: c6bccab3c7d1dca169792e06d3ac329ff0dba4b1e0597b2748b97e982a37f344
     establishes:
     - code
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/MODEL_CARD.md
+    shows: 'DINOv3 model card: "Web dataset (LVD-1689M): a curated dataset of 1,689 millions of images extracted
+      from a large data pool of 17 billions web images collected from public posts on Instagram"; no release
+      of the dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5df24b62906d899688882146c5ff4ca066391205c5350a9b85dbcb485b2d07c8
+    establishes:
+    - data
 adoption:
   level: 4
   reach: 1M-10M
