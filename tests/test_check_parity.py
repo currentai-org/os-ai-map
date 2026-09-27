@@ -343,7 +343,12 @@ def test_local_scores_matches_check_rubrics_split():
     # OpenRAIL++-M, which the permissive tier does not name) and `open-sora` (Apache-2.0 weights
     # whose checkpoint repository bundles FLUX.1 [dev] and a Tencent Hunyuan VAE, the liveportrait
     # compound). triposr, mmaudio and diffsynth-studio compute. None of the three closes on more work.
-    assert len(deferred) == 36
+    #
+    # 36 -> 37 with the multimodal_models second tranche. `lfm-vl` ships every LFM2.5-VL size under
+    # the LFM Open License v1.0, an Apache-based license with a USD 10M annual-revenue threshold that
+    # no shared tier names. It is hand-placed at the use_bounded reading, 3/open_weights, and closes
+    # on a shared-tier ruling, not on more work.
+    assert len(deferred) == 37
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

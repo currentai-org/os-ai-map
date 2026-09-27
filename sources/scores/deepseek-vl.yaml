@@ -1,0 +1,106 @@
+product: deepseek-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: deepseek-vl2
+  components:
+    weights:
+      value: open
+      detail: safetensors for all three DeepSeek-VL2 sizes on the Hub, ungated
+    data:
+      value: described
+      detail: the paper names open sources such as WIT, WikiHow and OBELICS alongside in-house knowledge, OCR and recaptioned
+        data; nothing is published
+    code:
+      value: partial
+      detail: inference and demo code under MIT; training ran on DeepSeek's internal HAI-LLM platform
+    license:
+    - name: DeepSeek-Model-License
+      detail: the DeepSeek License Agreement 1.0; "DeepSeek-VL2 series supports commercial use", with Attachment A use restrictions
+        passed on to derivatives
+  confidence: high
+  note: DeepSeek-VL2 may be used commercially under DeepSeek's model license, which forbids a list of harmful uses and requires
+    passing those limits on. DeepSeek publishes inference code only, and much of the training data was built in house and
+    not released.
+  raw: weights:open(safetensors for all three DeepSeek-VL2 sizes on the Hub, ungated);data:described(the paper names open
+    sources such as WIT, WikiHow and OBELICS alongside in-house knowledge, OCR and recaptioned data; nothing is published);code:partial(inference
+    and demo code under MIT; training ran on DeepSeek's internal HAI-LLM platform);license:DeepSeek-Model-License(the DeepSeek
+    License Agreement 1.0; "DeepSeek-VL2 series supports commercial use", with Attachment A use restrictions passed on to
+    derivatives)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/deepseek-ai/deepseek-vl2?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for deepseek-vl2: gated false, safetensors shards, license other, license_name deepseek'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8175a2faec546bd9ac34c658c2df68cf775124725a0c25ec279429f301251e01
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/deepseek-ai/DeepSeek-VL2@main/README.md
+    shows: '"The use of DeepSeek-VL2 models is subject to DeepSeek Model License. DeepSeek-VL2 series supports commercial
+      use."; install, inference.py and web demo only, no training section'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4a3745aca21fb0b4ac6494dfb4954678c752e16045ce1689d189637aa806fe31
+    establishes:
+    - license
+    - code
+  - url: https://cdn.jsdelivr.net/gh/deepseek-ai/DeepSeek-VL2@main/LICENSE-MODEL
+    shows: 'DEEPSEEK LICENSE AGREEMENT Version 1.0; Attachment A: "You agree not to use the Model or Derivatives of the Model:
+      ... For military use in any way"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ccfee4895df06bcab524151c278e8dde88bbe76165a24ecbcbcf9fafd71fd2b3
+    establishes:
+    - license
+  - url: https://arxiv.org/html/2412.10302v1
+    shows: '"we developed an in-house collection to expand coverage of general real-world knowledge"; "We combined these datasets
+      with an extensive in-house OCR dataset"; training on "HAI-LLM", an internal platform'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f239e01c959ffeefa7c5437277da819edd1cbe64c6f8dc72917d5b0c21cbeb
+    establishes:
+    - data
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across DeepSeek's DeepSeek-VL and DeepSeek-VL2 checkpoints.
+    Most of it is the smallest DeepSeek-VL2 model.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=deepseek-ai&search=vl&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: Seven DeepSeek-VL and DeepSeek-VL2 checkpoints with 119,734 downloads in the trailing 30 days; deepseek-vl2-tiny
+      90,047
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 385fc758b9ee92171ac598edf7b84c6ba8649faeb9edcaaa81e11e0725b640fb
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: document, table, chart and grounding understanding over a few images, from the DeepSeek-VL2 repository and
+    paper
+  value: 'Images in, including a few per conversation; OCR, document, table and chart question answering, visual grounding.
+    DeepSeek-VL2: DocVQA 93.3, ChartQA 86.0, InfoVQA 78.1, TextVQA 84.2, OCRBench 811.'
+  confidence: high
+  relative_to: moondream
+  relation: at
+  note: DeepSeek-VL2 reads documents, tables and charts with strong scores for its size and can point to objects in an image.
+    Its paper says it handles only a few images per conversation and it has no video input, so it sits level with Moondream.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/deepseek-ai/DeepSeek-VL2@main/README.md
+    shows: '"visual question answering, optical character recognition, document/table/chart understanding, and visual grounding";
+      a "multiple images/interleaved image-text" example'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4a3745aca21fb0b4ac6494dfb4954678c752e16045ce1689d189637aa806fe31
+  - url: https://arxiv.org/html/2412.10302v1
+    shows: 'Table 3, DeepSeek-VL2: DocVQA 93.3, ChartQA 86.0, InfoVQA 78.1, TextVQA 84.2, OCRBench 811; "DeepSeek-VL2''s context
+      window only allows for a few images per chat session"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f239e01c959ffeefa7c5437277da819edd1cbe64c6f8dc72917d5b0c21cbeb
