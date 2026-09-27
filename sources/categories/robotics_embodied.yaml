@@ -30,16 +30,18 @@ scoring_recipe:
     Each type has its own top and every comparison stays inside the type.
 
     Models, embodiment generality: 1 a single-task or single-robot policy; 2 a multi-task policy on one embodiment
-    family; 3 pretraining on pooled data from several robots, single-arm control (openvla, octo, smolvla);
-    4 cross-embodiment pretraining AND released bimanual or humanoid control (gr00t, pi0, rdt); 5 all of that
-    plus a separate embodied-reasoning model and whole-body humanoid control (gemini-robotics, the top, with
-    gr00t the top open model one below it).
+    family (smolvla, pretrained on community datasets filtered by embodiment type and evaluated on SO-100/SO-101);
+    3 pretraining on pooled data from several robots, single-arm control (openvla, octo); 4 cross-embodiment
+    pretraining AND released bimanual or humanoid control (gr00t, pi0, rdt); 5 all of that plus a separate
+    embodied-reasoning model and whole-body humanoid control (gemini-robotics, the top, with gr00t the top
+    open model one below it).
 
     Software, simulation throughput and fidelity: 1 CPU rigid-body simulation with basic rendering (pybullet);
-    2 CPU contact physics with a robot-learning surface of tasks, controllers and teleoperation (robosuite);
-    3 one of GPU-batched parallel simulation or rendered multi-sensor simulation (mujoco via MJX and Warp;
-    carla on Unreal Engine); 4 both, GPU-parallel simulation with rendered camera sensors (genesis, maniskill);
-    5 that plus a second physics backend and a library of ready-to-train tasks for common robots (isaac-lab,
+    2 CPU contact physics with a robot-learning surface of tasks, controllers and teleoperation (none promoted);
+    3 one of GPU-batched parallel simulation or rendered camera and sensor simulation (carla on Unreal Engine;
+    robosuite, whose MuJoCo tasks carry photorealistic rendering); 4 both, GPU-parallel simulation with rendered
+    camera sensors (genesis, maniskill, and mujoco, whose MuJoCo Warp build ray-traces cameras across parallel
+    worlds); 5 that plus a second physics backend and a library of ready-to-train tasks for common robots (isaac-lab,
     the top). lerobot abstains: it simulates nothing, it is the real-robot collect-train-deploy loop, and placing
     it on a simulator''s quantity would be a comparison nobody can check.
 
@@ -53,22 +55,34 @@ scoring_recipe:
     humanoid (berkeley-humanoid-lite, the top).
 
 
-    DISTRIBUTION, counted 2026-09-27 over the 21 banded products (lerobot abstains): 5 has 4, 4 has 7, 3 has
-    7, 2 has 2, 1 has 1. The widest rungs hold 7 of 21, exactly a third, so the category-wide trigger does
-    not fire. Within the models the review does fire: 3 of 7 at 4 and 3 of 7 at 3. This is the clustering case,
-    not a loose definition. The 3/4 split is a have-or-have-not test on the release (is there a released bimanual
-    or humanoid policy?), and it divides the models the way their own cards do: OpenVLA''s card rules out unseen
-    embodiments and ships single-arm control, Octo and SmolVLA ship single-arm policies, while GR00T, pi0 and
-    RDT each ship bimanual or humanoid checkpoints. Inside each rung the differences are scale and data mix,
-    which vendor cards do not order.'
+    DISTRIBUTION, counted 2026-09-27 over the 21 banded products (lerobot abstains): 5 has 4, 4 has 8, 3 has
+    6, 2 has 2, 1 has 1. The widest rung, 4, holds 8 of 21 (38%), above a third, so it was reviewed. It is
+    the clustering case, not a loose definition, and the count mostly adds four unrelated per-type rungs together:
+    within types 4 holds 3 of 7 software, 3 of 7 models and 2 of 4 datasets. Each per-type 4 is a have-or-have-not
+    test on the release. For software it is GPU-parallel simulation AND rendered cameras, which genesis, maniskill
+    and mujoco (through MuJoCo Warp''s batch ray tracer) each document and carla and robosuite, one environment
+    per process, do not. For models it is a released bimanual or humanoid policy: gr00t, pi0 and rdt ship one,
+    while OpenVLA''s card rules out unseen embodiments and ships single-arm control and Octo ships single-arm
+    policies. Inside each rung the differences are scale and data mix, which vendor cards do not order. The
+    independent verification pass moved mujoco 3 to 4, robosuite 2 to 3 and smolvla 3 to 2 on evidence the
+    first draft had missed, and the distribution above is after those moves.
+
+
+    ASSET AND RUNTIME LICENSES are read the same way across the software. A license on content the product
+    ships is one of its license parts (ManiSkill''s CC BY-NC assets, CARLA''s CC-BY assets), and both are deferred
+    on those strings. A proprietary component the product depends on but does not ship is not (Isaac Lab''s
+    BSD code runs on Isaac Sim, whose Omniverse Kit runtime and 3D assets are NVIDIA''s; Isaac Sim is a separate
+    registry row), and it is recorded on the source detail and the note, as the sweep ruled for Isaac Sim itself.
+    Whether that dependency should cap Isaac Lab is part of the same maintainer ruling.'
   deferred:
     gr00t:
-      because: The N1.x base checkpoints are under the NVIDIA Open Model License, which the model tier names,
-        but GR00T-H and NVIDIA's own task fine-tune GR00T-N1.5-3B_Assemble_Trocar are
-        under the NVIDIA OneWay Noncommercial License, whose text limits use to 'research or evaluation purposes
-        only'. No tier names that string, the family's most restrictive distributed SKU governs, so the lookup
-        abstains. Recorded 2/restricted on the tier the license text describes (commercial_forbidden); the
-        ruling, or a decision to split GR00T-H into its own row, is the maintainer's.
+      because: The N1.x base checkpoints and GR00T-H-N1.7 are under the NVIDIA Open Model License, which the
+        model tier names, but the declared GR00T-H, the N1.6 humanoid release its own card calls 'non-commercially
+        usable', and NVIDIA's Assemble_Trocar task fine-tune are under the NVIDIA OneWay Noncommercial License,
+        whose section 3.3 limits use to non-commercial research or evaluation. No tier names that string and
+        the family's most restrictive distributed SKU governs, so the lookup abstains. Recorded 2/restricted
+        on the tier the text describes (commercial_forbidden). The ruling on the string is the maintainer's;
+        so is whether superseded GR00T-H should leave the family, which would make the line 3/open_weights.
     maniskill:
       because: The code and environments are Apache-2.0, but the README puts the bundled assets under CC BY-NC
         4.0, and the software tiers name no non-commercial license. A software product whose shipped tasks

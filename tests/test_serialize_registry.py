@@ -327,7 +327,10 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     counts client installs rather than deployments of the server.
 
     langtrace (#695) is the sixth: its Python SDK counts instrumented applications rather than
-    deployments of the platform."""
+    deployments of the platform.
+
+    carla (the robotics_embodied promotion) is the seventh: the `carla` package is the Python
+    client for a separately run CARLA server, so its installs count scripts, not simulators."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -343,6 +346,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("qdrant", "pypi", "qdrant-client"),
         ("milvus", "pypi", "pymilvus"),
         ("langtrace", "pypi", "langtrace-python-sdk"),
+        ("carla", "pypi", "carla"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS}
 
 

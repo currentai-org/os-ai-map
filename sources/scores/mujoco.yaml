@@ -82,24 +82,23 @@ adoption:
     http_status: 200
     content_sha256: 9d4c048cd8a6cb0c8e6791619cd28ee1757deab05c51cd1774ff8245d530bf03
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   basis_detail: simulation throughput and fidelity
   value: Contact-rich articulated-body physics on the CPU with an OpenGL viewer; GPU-batched simulation through
-    MJX (JAX) and MuJoCo Warp (NVIDIA GPUs, rigid bodies with contact, soft bodies, cloth, signed distance fields).
-    No photorealistic or ray-traced rendering.
+    MJX (JAX) and MuJoCo Warp (NVIDIA GPUs, rigid bodies with contact, soft bodies, cloth, signed distance fields),
+    and in MuJoCo Warp a ray-traced GPU batch renderer for cameras across many parallel worlds.
   confidence: medium
-  note: 'MuJoCo is the reference contact physics engine, and with MJX and MuJoCo Warp it runs large batches of environments
-    in parallel on a GPU. It stops at physics: rendering is a plain OpenGL viewer, and there are no ready-made training
-    tasks or camera sensors that look like the real world.'
+  note: MuJoCo is the reference contact physics engine, and its GPU build runs many worlds in parallel and renders
+    their cameras in the same batch by ray tracing. What it does not carry is a second physics engine or a library
+    of ready-to-train tasks for common robots; those come from projects built on it.
   relative_to: isaac-lab
-  relation: two_below
+  relation: one_below
   last_verified: '2026-09-26'
   sources:
   - url: https://raw.githubusercontent.com/google-deepmind/mujoco/main/README.md
     shows: 'README: "a general purpose physics engine ... fast and accurate simulation of articulated structures
-      interacting with their environment"; "interactive visualization with a native GUI, rendered in OpenGL"; no
-      ray-tracing claim.'
+      interacting with their environment"; the core''s own viewer is "rendered in OpenGL".'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: f50477192f4d3fbe21b436c83f78b0895c57e94f19ff5685e0742a259f5a8d88
@@ -111,8 +110,9 @@ capability:
     content_sha256: c8f280404e36d048b5a3924d4f301f2dd14aea9fac9718a4659f37030d949129
   - url: https://raw.githubusercontent.com/google-deepmind/mujoco_warp/main/README.md
     shows: 'mujoco_warp README: "a GPU-accelerated version of the MuJoCo physics simulator, designed for NVIDIA
-      hardware"; simulates "rigid bodies with contacts to soft bodies, cloth, signed distance fields"; maintained
-      "by Google DeepMind and NVIDIA as part of the Newton project".'
+      hardware"; "MJWarp includes a high-throughput GPU batch renderer designed for simultaneous rendering of cameras
+      across many parallel simulation worlds. The renderer uses ray-tracing"; maintained "by Google DeepMind and
+      NVIDIA as part of the Newton project".'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 37a3c8ae658e9a488f6e30dcba3ef5fc3209931dadc3140fbdd5855729e9c06c
