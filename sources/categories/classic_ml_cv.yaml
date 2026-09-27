@@ -1,0 +1,111 @@
+name: classic_ml_cv
+display_name: Classic ML & computer vision
+description: >-
+  Libraries and pretrained model lines for machine learning outside the LLM stack: classical and
+  gradient-boosted estimators, classical NLP pipelines, time-series forecasters, tabular AutoML and
+  tabular foundation models, and computer-vision libraries, backbones and perception models.
+weights:
+  adopt: 0.6
+  cap: 0.4
+scoring_recipe:
+  version: 1
+  extends:
+    model: pretrained
+    software: software
+  derived_from:
+    method: >-
+      Shared ladders inherited per product type, not yet verified against scored products; the
+      category is preliminary and has none.
+    checker: build/check_rubric.py
+  note: >-
+    TWO LADDERS for openness. Libraries, toolkits and hosted APIs are typed `software` and climb
+    the shared software ladder. Vision backbones, perception model lines and tabular foundation
+    models are typed `model` and climb `pretrained`, not the fine-tune `model` ladder: each is
+    pretrained from scratch, so the questions about releasing the pretraining data and the
+    training pipeline apply to it unchanged. A row is typed by what the vendor ships as the
+    product - a pip-installable library that bundles checkpoints (Ultralytics, timm, AutoGluon)
+    is software; a checkpoint line whose code exists to run the weights (DINO, Depth Anything,
+    TabPFN) is a model.
+
+    CAPABILITY IS NOT ONE CLEAN QUANTITY here, and that is recorded rather than engineered away.
+    The best candidate is how much of the prediction task the product does for you, which
+    roughly nests: 1 primitives a model is built from, with no learner (OpenCV, scikit-image,
+    Kornia, Albumentations, supervision); 2 one learner family, well engineered (XGBoost,
+    LightGBM, CatBoost, Prophet, UMAP); 3 a toolkit of many learners with pipelines, evaluation
+    and a model zoo (scikit-learn, statsmodels, sktime, spaCy, Ultralytics, timm), containing 2;
+    4 pretrained and usable on a new task without training (TabPFN, SAM, Depth Anything, DINO
+    features); 5 automated end to end, searching, fitting and ensembling, and now embedding
+    rung-4 models (anchor AutoGluon). The weak joins are between 3 and 5 across sub-areas: a CV
+    toolkit and a tabular AutoML system are not more or less of the same thing, and no vision
+    AutoML product surfaced to anchor rung 5 for vision. Per type: software rows read the
+    ladder above directly; model rows sit at rung 4 by construction, so within the model rows
+    the discriminating reading is per task (classify, detect, segment, track or estimate depth)
+    against that task's own benchmark, never one benchmark across the set. If promotion shows
+    the ladder cannot discriminate, the split into a tabular half and a vision half (each with a
+    cleaner quantity: the rung ladder for tabular, task coverage for vision) is the repair,
+    which is why the category was created whole but with that split left open.
+
+    Weighted 0.6 adoption to 0.4 capability, as ml_frameworks and document_conversion are,
+    because the adoption instrument is unusually strong here (monthly PyPI and Hugging Face
+    downloads on nearly every row) and the capability axis is weak.
+
+    LICENSE STRINGS NEEDING A RULING before any product carrying one is promoted, sent to the
+    single maintainer license-rulings issue rather than decided here: FSL-1.1-MIT (pycaret; the
+    software ladder names only the ALv2 variant), BSL-1.0 Boost (dlib; OSI-approved and must
+    not be matched to BSL-1.1 Business Source), the DINOv3 License, the SAM License (SAM 3), the
+    Sapiens2 License, the Prior Labs TabPFN weights licenses, the TabFM Non-Commercial License,
+    the Stable AI LimiX code and weights licenses, the EXAONE AI Model License NC, Apple's
+    apple-amlr sample-code license, and the NVIDIA Source Code License. Products carrying one
+    are deferred at promotion.
+products: []
+comments: >-
+  Proposed in issue #600; created as one category (not split) on the 2026-09-26 new-category
+  decisions. Litmus: does the product fit, run or ship a prediction model - or the vision
+  primitives one is built from - that a data scientist would use before any LLM is involved? It
+  passes only if its reason for fame predates the LLM stack or runs orthogonal to it. The scope
+  test inside that is "does it fit or run a model": tabular AutoML (AutoGluon, FLAML, H2O-3,
+  PyCaret, TPOT, auto-sklearn) and time-series estimator libraries are in because they fit
+  models, and CV primitives (OpenCV, scikit-image, Kornia, Albumentations, supervision) are in
+  because a vision model cannot be built without them and nothing else on the map owns them.
+  Exclusions, by neighbor. ml_frameworks keeps the deep-learning frameworks every layer imports
+  (PyTorch, TensorFlow, JAX, Keras, PyTorch Lightning, Paddle) and Feluda for now; timm,
+  torchvision and fastai sit here because they are vision-first libraries, not frameworks the
+  stack imports. embeddings_retrieval keeps contrastive image-text encoders (CLIP, OpenCLIP,
+  SigLIP, and Perception Encoder when it is seeded) because their reason for fame is retrieval;
+  general vision backbones (DINO, timm) are owned here, ruled on issue #600 on 2026-09-25, and
+  timm's hosted SigLIP and CLIP checkpoints are mirrors that count for neither. multimodal_models
+  takes text-prompted and open-vocabulary vision (Grounding DINO, Falcon Perception, CLIPSeg,
+  LocateAnything). document_conversion takes OCR and layout or table detection (Table
+  Transformer, PP-DocLayout, PaddleX's document pipelines). scientific_ai_models takes
+  domain-trained backbones (pathology UNI, CONCH and Virchow, geospatial Prithvi, MedSAM);
+  MONAI and TorchGeo are here because they are general toolkits for a domain rather than models
+  trained on its instruments. media_generation takes image and video generation. robotics_embodied
+  takes robot perception stacks and world_models takes action-conditioned video models; depth,
+  tracking and segmentation models with no action or world state stay here. ml_orchestration
+  takes hyperparameter search (Optuna, Hyperopt), on the Katib precedent: tuning fits no model.
+  evaluation_code takes explainability (SHAP, LIME, Captum, InterpretML), which explains a model
+  and fits none; the responsible_ai_measurement proposal (#30) that might have taken them was
+  parked. dataset_processing_tools takes data curation (FiftyOne, beside label-studio and
+  cleanlab). inference_code and deployment take serving (Roboflow Inference). edge_hardware
+  holds boards, not libraries, so MediaPipe is here.
+  Contested rulings. The Segment Anything line moved here from the scientific_ai_models tail on
+  the 2026-09-26 decisions, since SAM is a general image-segmentation model rather than one
+  trained on instrument data; sam2 and SAM 3 fold into the one `segment-anything` row, whose
+  most restrictive license is SAM 3's custom SAM License. DataRobot is held out as a closed
+  comparator until its surface is pinned (its platform page now leads with agentic products);
+  Google Cloud Vision and Amazon Rekognition are the closed comparators seeded. OpenMMLab is
+  represented by MMDetection alone while the toolboxes are dormant; MMCV, MMSegmentation,
+  MMPretrain and MMPose are parked. The academic YOLO releases (v9, v10, v12) are parked as
+  single release-named papers from different labs; Ultralytics is the product line.
+  Albumentations points at AlbumentationsX, the live AGPL successor, and the archived MIT
+  package's downloads are a note, not adoption. timm's adoption is PyPI only, because the HF
+  `timm/` namespace mirrors other vendors' weights. SAP RPT-1 OSS is held as-is and checked at
+  promotion for being an open satellite of a closed SAP service. Pretrained time-series
+  forecasters (Chronos and its kind) are the forecasting analogue of the tabular foundation
+  models and are in scope in principle, but wait for a follow-up sweep; skrub stays as feature
+  engineering for scikit-learn. Checkpoints of a line fold into the line (Mitra and TabPFN-mix
+  into AutoGluon, Depth Anything V1-V3 into one row), and community fine-tunes, ONNX
+  conversions and legacy architecture checkpoints (ResNet, ViT, ConvNeXt, DeiT) are not
+  products. Org slugs for rows published from a personal account (lyuwenyu, Peterande, yzhao062,
+  lmcinnes) or a moved org (lightgbm-org) keep the account slug until promotion writes the org
+  files.

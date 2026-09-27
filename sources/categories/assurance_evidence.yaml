@@ -1,0 +1,94 @@
+name: assurance_evidence
+display_name: Assurance & compliance evidence
+description: 'Tools whose main output is machine-readable evidence about an AI system, model, dataset or
+  generated content, produced for a party outside the operating team: an auditor, a regulator, an acquirer
+  or a downstream deployer.'
+weights:
+  adopt: 0.4
+  cap: 0.6
+products: []
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, not yet verified against hand-authored scores
+    checker: build/check_rubric.py
+  note: "Capability here is ONE quantity: how independently checkable the evidence is. Proposed by the\n\
+    2026-09-26 sweep and not yet calibrated against scored products; the promotion PR bands it.\n\n\
+    \  1  TEMPLATE. A checklist or document template a person fills in.\n\
+    \  2  GENERATED DOCUMENTATION, self-attested. The tool writes structured documentation from\n\
+    \     the system itself (verifyml, validmind-library, mlte, ai-verify).\n\
+    \  3  STANDARD-SCHEMA EVIDENCE, machine-validated and mapped to a control framework or a\n\
+    \     published format (compliance-trestle OSCAL, croissant, owasp-aibom-generator CycloneDX,\n\
+    \     venturalitica).\n\
+    \  4  SIGNED OR TAMPER-EVIDENT evidence a third party checks offline (model-signing, c2pa-sdk,\n\
+    \     halo-record).\n\
+    \  5  HARDWARE- OR PROOF-BACKED verification of the execution itself: GPU attestation (nvtrust)\n\
+    \     and zero-knowledge proofs of inference (ezkl, deepprove, zkml).\n\n\
+    Rungs 1-3 are the self-attested (SA) rows and rungs 4-5 the independently verifiable (IV) ones,\n\
+    so the per-row tag in the category comments is this ladder read coarsely. Watermarking rows do\n\
+    not climb it cleanly: a watermark is a statistical signal a detector reports with an error\n\
+    rate, not a signed claim. They sit with the SA rows until the promotion PR decides whether\n\
+    watermark robustness is a second quantity that needs its own reading.\n\n\
+    ONE LADDER for openness: every row is typed `software`, including Content Seal, which ships\n\
+    model weights inside one suite. If a watermark model is ever split into its own `model` row,\n\
+    `extends` becomes the per-type map `{model: model, software: software}`."
+comments: |
+  Proposed in issue #93; seeded 2026-09-26 from the sweep in
+  docs/sweeps/2026-09-26-assurance-evidence.md, under the rulings in that session's decision
+  record. Preliminary: registry rows only, no head products, no strapline.
+
+  LITMUS. Is the product's main artifact evidence that a third party consumes? Yes means here.
+  TIE-BREAKER (from #93). When one artifact is both a control and its evidence, classify by what
+  reaches the outside party. A tool that enforces a policy and also logs that it did so belongs to
+  whichever neighbor owns the enforcement, unless the log is the thing it is built to hand over.
+
+  EXCLUSIONS, one per neighbor:
+  - safeguards: runtime policy enforcement, guardrails, content filters and red-teaming.
+    agent-governance-toolkit stays there: it enforces agent policy first, and its compliance
+    mappings are secondary. AI Verify's LLM red-team sibling, Moonshot, would go there too.
+  - evaluation_code (and benchmark_eval_data): capability or quality benchmarking for builders.
+    compl-ai and ai-verify are here, not there, under the tie-breaker: what reaches the outside
+    party is a conformity report mapped to regulation, not a benchmark score. Reverse this only if
+    the map decides to keep every benchmark runner together.
+  - telemetry_observability: operator-facing traces and metrics. halo-record is here because its
+    hash-chained records are built for the customer to verify, not for the operator to read.
+  - deployment: confidential-compute runtimes whose main product is a deployment surface. dstack
+    goes there (a follow-up, not seeded here); attestation verifiers such as nvtrust stay here.
+    The ruling is about the artifact, not the stack.
+  - model_hubs, and huggingface-hub in ml_frameworks: hosting models, datasets and model cards.
+    Hubs serve Croissant; the croissant row is the format and its library. The Hub client's
+    ModelCard API is one module of huggingface-hub, not a product.
+  - speech_audio and media_generation: generating media. Watermarking generated media is here.
+  - Out of scope entirely: general, non-AI software supply chain (in-toto, cdxgen, SPDX tooling)
+    and document templates with no tool behind them (the ISO 42001 toolkits).
+
+  CONTESTED RULINGS:
+  - C2PA and watermarking are here. #30 (responsible_ai_measurement) was parked, and its
+    watermarking rows came here with C2PA: both answer "where did this content come from" for an
+    outside party. synthid-text moved in from the safeguards tail: a watermark embedder and
+    detector filters no unsafe input or output.
+  - Content Seal is one row, because Meta markets one suite. The row declares no package:
+    AudioSeal's downloads belong to one member, and declaring it would assert the suite's numbers.
+    Stable Signature, one member, is CC-BY-NC-4.0 inside an MIT suite.
+  - ezkl (no license grant; CLA only) and deepprove (proprietary evaluation-only license, which
+    the GitHub label misreports as Apache-2.0) are listed as source-available rows, not held. How
+    thin the independently verifiable leg is is itself the #93 finding.
+  - validmind-library is here: it automates model documentation for model-risk validators, and is
+    the open library of a closed platform.
+  - The closed comparators are the GRC suites, ibm-watsonx-governance and credo-ai. Other closed
+    governance platforms are parked as the long tail.
+  - Regula is parked until its PyPI name ships a distribution; read its LicenseRef-DRL-1.1
+    component then.
+
+  TRUST TAG. Every row is self-attested (SA: an auditor reads it and takes it on trust) or
+  independently verifiable (IV: a signature, attestation or proof a third party checks without
+  trusting the operator). The registry has no field for it, so it is recorded here, per row:
+  - IV: model-signing, nvtrust, c2pa-sdk, halo-record, ezkl, deepprove, aicert, zkml.
+  - SA: compliance-trestle, ai-verify, mlte, croissant, owasp-aibom-generator, compl-ai,
+    validmind-library, verifywise, venturalitica, air-blackbox, opencomplai,
+    data-provenance-collection, verifyml, ibm-watsonx-governance, credo-ai.
+  - SA (watermarking): content-seal, invisible-watermark, trustmark, markllm, synthid-text. A
+    detector reports a statistical signal, and SynthID-Text's detector also needs the embedder's
+    watermarking keys, so the check trusts the operator. Revisit at promotion.
+  A promoted product repeats its tag in its own comments.

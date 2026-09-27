@@ -1,0 +1,105 @@
+name: media_generation
+display_name: Image, video, 3D & music generation
+description: Models that synthesize images, video, 3D assets, or music and sound effects from a prompt
+  or condition, and the apps, engines and libraries built specifically to run, compose or serve them.
+weights:
+  adopt: 0.4
+  cap: 0.6
+scoring_recipe:
+  version: 1
+  extends:
+    model: model
+    software: software
+  note: >-
+    Two ladders for openness, per product type, following document_conversion and safeguards:
+    generation models climb the shared model ladder and the apps, UIs, engines and libraries
+    that run them climb the shared software ladder. The closed comparators are typed `model`
+    and abstain wherever the model ladder asks for something a hosted service does not publish.
+    Many weights here ship under custom community licences (FLUX Non-Commercial, Stability AI
+    Community, Tencent Hunyuan Community with its territorial carve-out, MiniMax H3, LTX-2,
+    CogVideoX, Qwen Research, and others the sweep record lists). None is added to a shared
+    tier from this category: each goes to the one maintainer licence-rulings issue, and a
+    product carrying one is deferred at promotion until that ruling lands.
+
+
+    CAPABILITY IS PER TYPE, AND FOR MODELS IT IS READ WITHIN A MODALITY. No single quantity
+    orders image, video, 3D and audio together: the public arenas are separate per modality,
+    and an Elo in one is not commensurable with an Elo in another. Within a modality the arena
+    orders the models well. The proposed model reading, low to high, is a within-modality arena
+    standing: (1) released weights with no public arena presence; (2) on its modality's arena,
+    below the open-weights median; (3) top ten open-weights on that board; (4) first among
+    open-weights on that board; (5) inside the overall top three of its modality, closed models
+    included. 3D has only thin third-party arenas that disagree with each other, so a 3D model
+    may abstain above rung 1 until one settles. Software is a different quantity, the breadth
+    of what it can drive: (1) one model family; (2) one modality with several families; (3)
+    image and video; (4) image, video and audio or 3D, with graph composition. These are a
+    sketch from the seed sweep, not a derived ladder; the promotion PR derives the rungs from
+    the researched records and may revise them.
+products: []
+comments: >-
+  Created preliminary 2026-09-26 under #603. Seed roster in sources/registry/media_generation.yaml;
+  the candidate sweep, parked list and open questions are in docs/sweeps/2026-09-26-media_generation.md.
+  The rulings below are proposals from the 2026-09-26 decision record, for the maintainer to confirm
+  at review.
+
+
+  LITMUS. Is the product's primary output a synthesized image, video, 3D asset or non-speech audio
+  asset, or is the product purpose-built to produce one? The test is the product's own job, not
+  what it can be used for.
+
+
+  ONE CATEGORY, MODALITY RECORDED PER PRODUCT. Image, video, 3D and music each have supply enough
+  for a category of their own, and the split was declined because it would scatter the shared
+  tooling (ComfyUI runs all four). Models and the software that runs them are separate products
+  here, on separate ladders.
+
+
+  EXCLUSIONS, BY NEIGHBOR. Speech synthesis, recognition and voice conversion go to speech_audio;
+  music and sound effects stay here, and ElevenLabs' music surface is parked as closed long tail
+  because its speech product is speech_audio's comparator. Understanding VLMs, and unified
+  understanding-and-generation models (Janus, BAGEL, Emu, SenseNova-U), go to multimodal_models;
+  a generation- or editing-first model (OmniGen, Ming-Image) stays here. Action-conditioned
+  environment models (Cosmos, HunyuanWorld / HY-World, action-conditioned game world models) go to
+  world_models even where their SKUs rank on the image and video arenas. General LLM runtimes stay
+  in inference_code: vllm-omni is an artifact of `vllm` and SGLang's diffusion path sits under
+  `sglang`. The core library `diffusers` stays in ml_frameworks. LoRA and checkpoint trainers go to
+  finetuning_code: OneTrainer and ai-toolkit are there already, and kohya sd-scripts, musubi-tuner,
+  SimpleTuner and diffusion-pipe are proposed there as a follow-up, not seeded here. Chat UIs and
+  API gateways stay in ui_api, which holds no media app. Agentic video-production pipelines built
+  over third-party models (OpenMontage, Pixelle-Video, ViMax) go to orchestration_agents. The
+  Stable Diffusion safety checker stays in safeguards. SAM 3D Objects is here as image-to-3D
+  generation; the Segment Anything segmentation family is classic_ml_cv's.
+
+
+  CONTESTED RULINGS. (1) Media apps and UIs (ComfyUI, AUTOMATIC1111, Forge, InvokeAI, Fooocus,
+  SD.Next, SwarmUI) live here, not in ui_api. (2) Engines purpose-built for diffusion or video
+  generation (stable-diffusion.cpp, xDiT, LightX2V, FastVideo, DiffSynth-Studio, Nunchaku) live
+  here, not in inference_code or compilers; `nunchaku` moved in from the compilers registry at seed.
+  (3) Adapters and derivative checkpoints are not products: Civitai LoRAs and merges, ControlNet
+  and its kin, ComfyUI custom-node packs, and Chroma, the hardest case, a FLUX.1-schnell
+  derivative retrained at a new size. (4) Portrait animation and lip-sync (LivePortrait,
+  LatentSync) are in, because the output is synthesized video; restoration and upscaling
+  (SeedVR2) are out. (5) Vendor modality lines get their own products beside the vendor's LLM
+  (qwen-image, glm-image, ernie-image, the hunyuan-* media lines, minimax-hailuo, minimax-music),
+  as qwen3-embedding sits beside qwen. LongCat is two products, image and video, split by modality
+  as Hunyuan is. Stability AI is five: stable-diffusion, stable-video-diffusion, stable-audio,
+  stable-fast-3d and spar3d, since SF3D and SPAR3D are different models rather than sizes;
+  stable-audio-tools is the engine and a sixth, software product. (6) TripoSR is attributed to
+  VAST (vast-ai), whose research group wrote it, although its weights sit on Stability AI's Hub
+  account. (7) ByteDance's non-Seed research teams (FoundationVision's Infinity, LatentSync) use
+  the parent-company slug bytedance-seed-volcano-engine rather than a second ByteDance slug.
+  (8) Closed comparators under ADR-005: Midjourney stays as the best-known closed image service
+  though it sat outside the fetched arena top 25; Runway gets a second look before promotion.
+  Sora is not seeded: OpenAI shut its API on 2026-09-24.
+
+
+  THE CLOSED FLAGSHIP ON AN OPEN LINE - RULED IN THE #720 REVIEW (2026-09-27). Three vendors that
+  anchored open generation now ship their newest release closed while older generations stay
+  downloadable: Wan 2.5 to 3.0 are API-only, Hunyuan3D 2.5 to 3.1 are API-only, and Qwen-Image 3.0
+  is closed while Qwen-Image-2.1 moved to a non-commercial research licence. The proposal that the
+  newest DISTRIBUTED release should govern openness was rejected. The current release governs, as
+  identity.md says. The API-only exclusion works across SKUs within a release, never across
+  releases. Scoring the older release would present the line as an open alternative and hide the
+  gap this category exists to show, that the open line is a generation behind its vendor's closed
+  frontier. These products keep evidence for both releases and sit in scoring_recipe.deferred
+  until a maintainer rules on how availability is modelled separately from openness.

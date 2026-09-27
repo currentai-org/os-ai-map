@@ -16,6 +16,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- Ten preliminary categories seeded from live, audited sweeps with 459 registry rows: speech_audio,
+  media_generation, multimodal_models, robotics_embodied, world_models (in a new Embodied & world
+  models group), federated_learning, assurance_evidence, classic_ml_cv, model_hubs and
+  datacenter_accelerators; responsible_ai_measurement was parked
+  ([#720](https://github.com/currentai-org/os-ai-map/pull/720)).
+
 ## [0.4.0] - 2026-09-26
 
 ### Added
