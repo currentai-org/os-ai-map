@@ -1,0 +1,109 @@
+product: videollama
+openness:
+  score: 3
+  class: open_weights
+  governing_release: videollama3
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: the VL3-Syn7M re-captioned image set is released; the other training sets are third-party public datasets
+        named in the card
+    code:
+      value: open
+      detail: training scripts for every stage (scripts/train) and an evaluation harness
+    license:
+    - name: Apache-2.0
+      detail: OSI; the repository LICENSE and every VideoLLaMA2, 2.1 and 3 checkpoint
+  confidence: high
+  note: VideoLLaMA3's weights and code are Apache 2.0, and the repository includes training scripts for every stage.
+    DAMO releases its re-captioned image set, but the full training mixture is assembled from third-party datasets
+    rather than published as one release.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(the VL3-Syn7M re-captioned image set is released;
+    the other training sets are third-party public datasets named in the card);code:open(training scripts for every
+    stage (scripts/train) and an evaluation harness);license:Apache-2.0(OSI; the repository LICENSE and every VideoLLaMA2,
+    2.1 and 3 checkpoint)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/DAMO-NLP-SG/VideoLLaMA3-7B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for VideoLLaMA3-7B: gated false, four safetensors shards, license apache-2.0, trained on
+      LLaVA-OneVision-Data, pixmo-docs, Docmatix, LLaVA-Video-178K and ShareGPT4Video'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e991c3c6731f4f4f9ec4487a7c1fea3bca57def51ef4e689f0194571dbba753
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://cdn.jsdelivr.net/gh/DAMO-NLP-SG/VideoLLaMA3@main/README.md
+    shows: '"We provide some templates in scripts/train for all stages"; License section: Apache 2.0, and "The service
+      is a research preview intended for non-commercial use ONLY"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aa2b1857d70fec0d7c5526c442219cee9beb04a75c90b0e003ae36cb6b87a962
+    establishes:
+    - code
+    - license
+  - url: https://cdn.jsdelivr.net/gh/DAMO-NLP-SG/VideoLLaMA3@main/scripts/train/stage1_2b.sh
+    shows: The stage-1 training launch script for the 2B model
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1691f185cd6e70b95793ac8b27d3e6c425ab129a115318534bd3b0138b7306e7
+    establishes:
+    - code
+  - url: https://huggingface.co/api/datasets/DAMO-NLP-SG/VL3-Syn7M
+    shows: 'VL3-Syn7M: public, ungated, apache-2.0, "the re-captioned data we used during the training of VideoLLaMA3"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 967ae25637e3043cb4adf1584f5bfc423ae86d635c08d72e045dfc0d7fe00340
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/DAMO-NLP-SG/VideoLLaMA3@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across DAMO's VideoLLaMA2, 2.1 and 3 checkpoints.
+    The older Video-LLaMA repositories record no downloads.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=DAMO-NLP-SG&search=VideoLLaMA&limit=100
+    shows: 17 VideoLLaMA2, 2.1 and 3 checkpoints with 11,148 downloads in the trailing 30 days; VideoLLaMA3-7B 3,912
+      and VideoLLaMA3-2B 3,799
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 713ec283e314c6749bfe989bbd5576a7d9e90ff2a313ae5a1abe4caa2a75c10f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: video and image understanding from the model card and repository
+  value: Video, images and text in, text out; the documented example samples video at 1 FPS up to 180 frames. The
+    repository reports VideoLLaMA3-7B as the best 7B model on the Video-MME leaderboard as of 2025-01-24.
+  confidence: medium
+  relative_to: minicpm-v
+  relation: at
+  note: VideoLLaMA3 is built for video, reading long frame sequences as well as still images, and was the strongest
+    7B model on Video-MME when it was released. It documents no GUI operation, so it sits level with MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/DAMO-NLP-SG/VideoLLaMA3@main/README.md
+    shows: '"VideoLLaMA 3 is a series of multimodal foundation models with frontier image and video understanding
+      capacity"; example video input with fps 1 and max_frames 180; "VideoLLaMA3-7B is the best 7B-sized model on
+      VideoMME leaderboard" as of Jan 24'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aa2b1857d70fec0d7c5526c442219cee9beb04a75c90b0e003ae36cb6b87a962
+  - url: https://arxiv.org/abs/2501.13106
+    shows: 'Abstract: four training stages, from vision encoder adaptation to video-centric fine-tuning'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c3c8bf9a3860b2d6bfe50646273abc4058847544cd27fc8bead1d0b032323ca

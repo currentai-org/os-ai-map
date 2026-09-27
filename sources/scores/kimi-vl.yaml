@@ -1,0 +1,98 @@
+product: kimi-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: kimi-vl-a3b-thinking-2506
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the long chain-of-thought SFT and RL stages are described; no training dataset is published
+    code:
+      value: closed
+      detail: inference and vLLM deployment only; fine-tuning support comes from the third-party LLaMA-Factory
+    license:
+    - name: MIT
+      detail: OSI; all three Kimi-VL checkpoints and the repository
+  confidence: high
+  note: Kimi-VL's weights are MIT, so the model can be used and modified freely. Moonshot publishes no training
+    data and no training code; fine-tuning is supported through a third-party framework.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the long chain-of-thought SFT and RL stages
+    are described; no training dataset is published);code:closed(inference and vLLM deployment only; fine-tuning
+    support comes from the third-party LLaMA-Factory);license:MIT(OSI; all three Kimi-VL checkpoints and the repository)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/moonshotai/Kimi-VL-A3B-Thinking-2506?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Kimi-VL-A3B-Thinking-2506: gated false, seven safetensors shards, card license mit'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8726019d39f338c4b7228aa28cd6e40c7165d96b95d0a618045357fb90e37037
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/MoonshotAI/Kimi-VL/HEAD/LICENSE
+    shows: The repository LICENSE is the MIT License, Copyright 2025 Moonshot AI
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f0c89806155f93f4ea5cb9e81ef70aad1a7729240132df9706db9584024547db
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/MoonshotAI/Kimi-VL/HEAD/README.md
+    shows: Thinking variant "Developed through long chain-of-thought (CoT) supervised fine-tuning (SFT) and reinforcement
+      learning (RL)"; "Kimi-VL now offers seamless support for efficient fine-tuning through the latest version
+      of LLaMA-Factory"
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6efabbe27d40d6180d1ab11eee51a8709b5400343cead682786e1aaee89926f4
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets?author=moonshotai&limit=100
+    shows: Three moonshotai datasets, PerceptionBench, Kimi-Audio-GenTest and WorldVQA, all evaluation sets
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6a8a47902beb88d5e9347aa71b342e9e73ca896a4ca1c7eaf066365ec18ecefd
+    establishes:
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Moonshot's three Kimi-VL checkpoints. Most
+    of it is the non-thinking Instruct model.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=moonshotai&search=Kimi-VL&sort=downloads&direction=-1&limit=100
+    shows: Three Kimi-VL checkpoints with 221,687 downloads in the trailing 30 days; Kimi-VL-A3B-Instruct 197,676
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8c02deeda4fcf45b53d3403f604c9ab9fdf1d7df577151c3757f21fc61d6b16f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, multi-image, document, video and screen-grounding results from the model card
+  value: 'Thinking-2506: MMMU val 64.0, MathVista mini 80.1, VideoMMMU 65.2, Video-MME (w/ sub) 71.9, MMLongBench-Doc
+    42.1, ScreenSpot-Pro 52.8, OSWorld-G 52.5; 128K context, 3.2 million pixels per image.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: at
+  note: Kimi-VL understands long video, long documents and several images at once, and it locates interface elements
+    on screen accurately. It reports grounding rather than completed tasks in a live computer environment, so it
+    sits level with MiniCPM-V rather than with the computer-use models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/moonshotai/Kimi-VL-A3B-Thinking-2506/raw/main/README.md
+    shows: 'Performance table: MMMU 64.0, MathVista_MINI 80.1, VideoMMMU 65.2, ScreenSpot-Pro 52.8, OSWorld-G 52.5,
+      MMLongBench-DOC 42.1; "It Extends to Video Scenarios"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 840d2b966176f9e1742bd3143dcf8cde33e444734f799e1502cba9d0c85643bf
+  - url: https://raw.githubusercontent.com/MoonshotAI/Kimi-VL/HEAD/README.md
+    shows: '"college-level image and video comprehension, optical character recognition (OCR), mathematical reasoning,
+      multi-image understanding"; "Equipped with a 128K extended context window"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6efabbe27d40d6180d1ab11eee51a8709b5400343cead682786e1aaee89926f4

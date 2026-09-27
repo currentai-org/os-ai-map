@@ -1,0 +1,96 @@
+product: nemotron-omni
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: Nemotron-Image-Training-v3 is released under CC-BY-4.0; the card's full corpus of 1,395 datasets also
+        draws on licensed third-party and NVIDIA-internal data
+    code:
+      value: closed
+      detail: serving and deployment instructions only
+    license:
+    - name: NVIDIA-Open-Model-Agreement
+      detail: '"Works are commercially usable"; a separate document from the NVIDIA Open Model License, dated April
+        2, 2026'
+  confidence: high
+  note: The weights are published under NVIDIA's Open Model Agreement, which permits commercial use and derivatives.
+    NVIDIA releases one of its image training sets, but the full training corpus includes licensed and internal
+    data and no training code is published.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(Nemotron-Image-Training-v3 is released under CC-BY-4.0;
+    the card's full corpus of 1,395 datasets also draws on licensed third-party and NVIDIA-internal data);code:closed(serving
+    and deployment instructions only);license:NVIDIA-Open-Model-Agreement("Works are commercially usable"; a separate
+    document from the NVIDIA Open Model License, dated April 2, 2026)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata: gated false, safetensors shards, license_name nvidia-open-model-agreement, datasets nvidia/Nemotron-Image-Training-v3'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4a986f7a35edd53834b13631e42037af0e51b0c2cf8357ff9fcc3d4315ffb4c5
+    establishes:
+    - weights
+    - license
+  - url: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-agreement/
+    shows: '"NVIDIA Open Model Agreement", release date April 2, 2026: "Works are commercially usable. You are free
+      to create and distribute Derivative Works."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 17eaf1d33b00c939ea29f12e94bbf8db785ea107eca309774e12c13de325e171
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Image-Training-v3
+    shows: 'Nemotron-Image-Training-v3: public, ungated, cc-by-4.0, image-centric multimodal training data'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f428b55357cc2fbb1fa00feb5159a1a3b6a1cc39681d3987e75a5746bcce9ff0
+    establishes:
+    - data
+  - url: https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16/raw/main/README.md
+    shows: 'Training data: 354,587,705 items across 1,395 datasets including "licensed third-party data, NVIDIA-internal
+      collections"; the card gives vLLM, TensorRT-LLM and SGLang serving steps and no training scripts'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3081b24932a80ff4ade38bad73d0b3cb1c161867dad7559bdfa42345879f1348
+    establishes:
+    - data
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across NVIDIA's BF16, FP8 and NVFP4 builds of the
+    model. Most of it is the quantized builds rather than the BF16 original.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=Omni&limit=100
+    shows: 'The three Nemotron-3-Nano-Omni-30B-A3B-Reasoning builds: BF16 351,706, NVFP4 647,309 and FP8 1,073,945
+      downloads in the trailing 30 days, 2,072,960 in all'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f47feb2fc9846e4d4f1e30f43250bd3fd27146d6d8329000ac393e0632e1b78d
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: modalities understood and produced, from the model card; OSWorld and Video-MME as tie-breaks
+  value: 'Video (up to 2 minutes), audio (up to 1 hour), image and text in; text out with tool calling and word-level
+    transcription timestamps; 256K context. Card table: OSWorld 47.4, Video-MME 72.2, OCRBenchV2 (EN) 67.04.'
+  confidence: high
+  relative_to: qwen-omni
+  relation: at
+  note: 'Nemotron Nano Omni understands audio and video natively together with images and text, and also operates
+    computer interfaces, scoring 47.4 on OSWorld. It sits level with Qwen-Omni, with one difference: it answers
+    in text only, where Qwen-Omni also speaks.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-BF16/raw/main/README.md
+    shows: '"Modalities (in): Video, Audio, Image, Text" / "Modality (out): Text"; "Supports tool calling"; OSWorld
+      47.4, Video MME 72.2, OCRBenchV2 (EN) 67.04'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3081b24932a80ff4ade38bad73d0b3cb1c161867dad7559bdfa42345879f1348

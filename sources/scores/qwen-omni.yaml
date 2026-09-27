@@ -1,0 +1,104 @@
+product: qwen-omni
+openness:
+  score: 3
+  class: open_weights
+  governing_release: qwen3-omni
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: closed
+      detail: no post-training data named or linked in the card or repository
+    code:
+      value: partial
+      detail: inference cookbooks and serving instructions only
+    license:
+    - name: Apache-2.0
+      detail: OSI; the Hub card reads other with license name apache-2.0, and the repository LICENSE is the Apache
+        2.0 text
+  confidence: high
+  note: Qwen3-Omni's weights are published under Apache 2.0, the newest release with downloadable weights. Alibaba
+    publishes neither the post-training data nor a training pipeline, so the model can be run and fine-tuned but
+    not rebuilt. Qwen3.5-Omni, the later tier, is sold only as a hosted API and is left out of this reading.
+  raw: weights:open(safetensors on the Hub, ungated);data:closed(no post-training data named or linked in the card
+    or repository);code:partial(inference cookbooks and serving instructions only);license:Apache-2.0(OSI; the Hub
+    card reads other with license name apache-2.0, and the repository LICENSE is the Apache 2.0 text)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-Omni-30B-A3B-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Qwen3-Omni-30B-A3B-Instruct: gated false, safetensors weight shards, card license other
+      with license_name apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 742a9ba85f3ae470a337e98141bfa9291ce3b04e1c65a8d1048bf8497c9ea3d9
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/QwenLM/Qwen3-Omni@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0, with no added field-of-use or revenue clause
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8d5eb5f806d01e8f5ea2c5a52f7d68ebc54b196b1cfbe1cd5dfa4b94e482a9c6
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/QwenLM/Qwen3-Omni@main/README.md
+    shows: 'Repository README: model downloads, inference and vLLM serving instructions and cookbooks; no training
+      scripts and no post-training dataset links'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 013dbbd14768e7767a05d6a5da8dffecd0b8f36938eedaa6a5000c26484f4603
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen3.5-Omni&limit=100
+    shows: 'An empty list: no Qwen3.5-Omni weights are published under the Qwen organization on the Hub'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+  - url: https://www.alibabacloud.com/help/en/model-studio/qwen-omni
+    shows: Alibaba Cloud Model Studio documentation serves qwen3.8-omni-flash and Qwen3.5-Omni through the hosted
+      API
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e79f28c67437e80f29c9085754225601da162507ae5927f868fa20dd5494781a
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Alibaba's own Qwen3-Omni and Qwen2.5-Omni
+    checkpoints. Use of the hosted Qwen3.5-Omni API is not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=Qwen&search=Omni&limit=100
+    shows: Seven Qwen-owned Omni checkpoints; their trailing-30-day downloads sum to 1,548,543, led by Qwen3-Omni-30B-A3B-Instruct
+      at 612,375
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e5c1c8c6b21eaa072bacb05a60ed71d2e74c98801255fc0c0a497512f40d799b
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: modalities understood and produced, from the model card; MMMU, MathVista and Video-MME as tie-breaks
+  value: 'Text, image, audio and video in; text and real-time streaming speech out (119 text, 19 speech-input and
+    10 speech-output languages); audio function calling. Card vision table: MMMU_val 69.1, MathVista_mini 75.9,
+    Video-MME 70.5 for Qwen3-Omni-30B-A3B-Instruct.'
+  confidence: high
+  note: Qwen3-Omni understands audio and video natively alongside images and text and answers in streaming speech
+    as well as text, the widest range of inputs and outputs in this category. Its vision scores sit close to Qwen2.5-VL-72B
+    on the card's own comparison, so the breadth does not come at a large cost in image understanding.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Omni-30B-A3B-Instruct/raw/main/README.md
+    shows: '"It processes text, images, audio, and video, and delivers real-time streaming responses in both text
+      and natural speech." Vision table: MMMU_val 69.1, MathVista_mini 75.9, Video-MME 70.5'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0e44065c4c4a27071f7239afd5b5a33af5bc2e437dd7ea9950e51aafabfde3df
+  - url: https://arxiv.org/abs/2509.17765
+    shows: 'Abstract: across 36 audio and audio-visual benchmarks Qwen3-Omni reaches open-source state of the art
+      on 32, with a theoretical first-packet latency of 234 ms'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 367e8b919955698da58d7f042ba15db8375560a1e9b35a9c51265f902c3d3696

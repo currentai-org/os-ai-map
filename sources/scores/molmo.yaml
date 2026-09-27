@@ -1,0 +1,121 @@
+product: molmo
+openness:
+  score: 5
+  class: open_source
+  governing_release: molmo2
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: open
+      detail: the Molmo2 Data collection and PixMo sets are published ungated, mostly ODC-BY; a download script
+        fetches the full mixture
+    code:
+      value: open
+      detail: pre-training, SFT and long-context SFT launch scripts in allenai/molmo2
+    license:
+    - name: Apache-2.0
+      detail: OSI; every Molmo and Molmo2 checkpoint
+  confidence: high
+  note: Ai2 publishes Molmo2's weights under Apache 2.0 together with the datasets it was trained on and the full
+    training code, so the model can be rebuilt from what ships. The datasets were built without distilling from
+    closed models.
+  raw: weights:open(safetensors on the Hub, ungated);data:open(the Molmo2 Data collection and PixMo sets are published
+    ungated, mostly ODC-BY; a download script fetches the full mixture);code:open(pre-training, SFT and long-context
+    SFT launch scripts in allenai/molmo2);license:Apache-2.0(OSI; every Molmo and Molmo2 checkpoint)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/allenai/Molmo2-8B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Molmo2-8B: gated false, eight safetensors shards, card license apache-2.0, nine Molmo2
+      training datasets listed'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9def0de2b5d4a410f3dce7553aad357985cb69c6e1937d721b0c91f2d2403eeb
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/collections/allenai/molmo2-data
+    shows: 'The "Molmo2 Data" collection: Molmo2-Cap, VideoCapQA, VideoSubtitleQA, AskModelAnything, VideoPoint,
+      VideoTrack, MultiImageQA, SynMultiImageQA and MultiImagePoint'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 089c2e06b42989b582998dc86e08a1218a3880e8460917dba2d13cdb84d0e483
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/allenai/Molmo2-Cap
+    shows: 'Molmo2-Cap: public, ungated, odc-by'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d4da2e830d53d6813762cc9886acb741e6846c2b1c9991659b31dcb44deca249
+    establishes:
+    - data
+  - url: https://arxiv.org/pdf/2601.10611
+    shows: '"we release our training data, model weights, and training code ... all our data is constructed without
+      distilling from proprietary models"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cd91ee503386ca16469381f560c229246fd6762bd992b4bc687601d6a25fe8fe
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/allenai/molmo2/HEAD/launch_scripts/sft.py
+    shows: The multitask SFT launch script in allenai/molmo2
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3763402edfb97ed0ff26909cbaa97c9545bf850d8575076e104a5a928b227915
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/allenai/molmo2/HEAD/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Ai2's Molmo and Molmo2 checkpoints. MolmoAct,
+    MolmoPoint, MolmoWeb and the other Molmo-named lines are separate and excluded.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=allenai&search=Molmo&limit=100
+    shows: Nine Molmo and Molmo2 checkpoints with 252,694 downloads in the trailing 30 days; Molmo2-4B 102,438 and
+      Molmo2-8B 71,158
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6136911c940b20fd0796ec8c3d57d5f55c8d75244a0cc7b48466a2a5dc35edaa
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, multi-image and video understanding with pointing and tracking, from the Molmo2 card and
+    paper
+  value: 'Molmo2: single image, multi-image and video (up to 128 frames, 384 in long-context training) with point
+    and track outputs. Paper: Video-MME 69.9 and MMMU 53.0 for Molmo2-8B, against 71.4 and 69.6 for Qwen3-VL-8B;
+    video pointing F1 38.4 against 20.0 for Gemini 3 Pro.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: at
+  note: Molmo2 understands images, image sets and video and can point at or track what it describes, where it beats
+    much larger models. It reports no GUI operation or audio input, so it sits level with MiniCPM-V.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/allenai/Molmo2-8B/raw/main/README.md
+    shows: '"support image, video and multi-image understanding and grounding"; Pointing, Tracking and Multi-Image
+      Point QA examples'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 87490109abd281cf2bc3e0a6498a931e18286b8b441dcf82c1a960c15ca05c2a
+  - url: https://arxiv.org/pdf/2601.10611
+    shows: Video-MME 69.9 and MMMU val 53.0 for Molmo2-8B against 71.4 and 69.6 for Qwen3-VL-8B; maximum 128 frames,
+      384 for long-context training
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cd91ee503386ca16469381f560c229246fd6762bd992b4bc687601d6a25fe8fe
+  - url: https://arxiv.org/abs/2601.10611
+    shows: 'Abstract: "38.4 vs 20.0 F1 on video pointing and 56.2 vs 41.1 J&F on video tracking" against Gemini
+      3 Pro'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d6203e8eca1e0827944bb8f1405397309575a41d0b9a8475dd643884f63ea20e

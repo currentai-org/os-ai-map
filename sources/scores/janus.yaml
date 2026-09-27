@@ -1,0 +1,110 @@
+product: janus
+openness:
+  score: 3
+  class: open_weights
+  governing_release: janus-pro
+  components:
+    weights:
+      value: open
+      detail: PyTorch .bin weights on the Hub, ungated
+    data:
+      value: described
+      detail: the Janus-Pro paper names the SFT additions and about 72 million synthetic aesthetic samples; no dataset
+        is published
+    code:
+      value: partial
+      detail: inference, generation and demo code; no training scripts
+    license:
+    - name: DeepSeek-Model-License
+      detail: the DeepSeek License Agreement 1.0, word for word the DeepSeek-LLM LICENSE-MODEL; commercial use allowed
+        with Attachment A use restrictions passed on to derivatives
+  confidence: high
+  note: Janus-Pro is released under DeepSeek's model license, which allows commercial use but forbids a list of
+    harmful uses and requires passing those limits on. Only inference code is published, and the training data is
+    described but not released.
+  raw: weights:open(PyTorch .bin weights on the Hub, ungated);data:described(the Janus-Pro paper names the SFT additions
+    and about 72 million synthetic aesthetic samples; no dataset is published);code:partial(inference, generation
+    and demo code; no training scripts);license:DeepSeek-Model-License(the DeepSeek License Agreement 1.0, word
+    for word the DeepSeek-LLM LICENSE-MODEL; commercial use allowed with Attachment A use restrictions passed on
+    to derivatives)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/deepseek-ai/Janus-Pro-7B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Janus-Pro-7B: gated false, PyTorch .bin shards, license mit with license_name deepseek'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0d09af50939ed18db5146669de2a0aa85dca665a15a937dab98cb2e19cd090a8
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/deepseek-ai/Janus@main/LICENSE-MODEL
+    shows: '"DEEPSEEK LICENSE AGREEMENT Version 1.0, 23 October 2023", byte-identical to the DeepSeek-LLM LICENSE-MODEL;
+      Attachment A lists use restrictions'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 09b2b4b4614509ff8baccd3c220e9d9b99e55152925b501f0d5f8b5e36eea982
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/deepseek-ai/Janus@main/README.md
+    shows: '"Commercial usage is permitted under these terms"; quick start covers inference, text-to-image generation
+      and Gradio and FastAPI demos'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d8588ba1c70ae39ff514a29c2f9a08a053b54e1a4d59d776c1422858fbd8597d
+    establishes:
+    - license
+    - code
+  - url: https://data.jsdelivr.com/v1/packages/gh/deepseek-ai/Janus@main?structure=flat
+    shows: 'Repository file list: inference.py, generation_inference.py, demo apps and model code; no trainer or
+      training config'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e1aaf94f6d47c882b11fde8bda43dc372ed4638e2e94eb33c049e9639c421e30
+    establishes:
+    - code
+  - url: https://arxiv.org/pdf/2501.17811
+    shows: Stage III SFT adds datasets from DeepSeek-VL2 and about 72 million synthetic aesthetic samples; no release
+      link
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2f5b4b26341f7be4a5c2851718f84af9c41b3084093ad71254e54ad68272a793
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across DeepSeek's four Janus checkpoints.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=deepseek-ai&search=Janus&limit=100
+    shows: Four Janus checkpoints with 21,018 downloads in the trailing 30 days; Janus-Pro-7B 10,483
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1fd28d6551af90dd09402f13c7a40bbb38eca7b7a95a3a676877394c113a291f
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: single-image understanding plus text-to-image generation, from the Janus-Pro card and paper
+  value: 'Single 384x384 image and text in; text or a generated image out. Janus-Pro-7B: MMBench 79.2, MMMU 41.0,
+    MM-Vet 50.0; GenEval 80% overall.'
+  confidence: high
+  relative_to: florence-2
+  relation: at
+  note: Janus-Pro answers questions about a single low-resolution image and also generates images from text. Its
+    understanding side takes one image with no document or video focus, so it sits level with Florence-2; the image
+    generation is recorded but does not raise it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/deepseek-ai/Janus-Pro-7B/raw/main/README.md
+    shows: '"unifies multimodal understanding and generation"; "uses the SigLIP-L as the vision encoder, which supports
+      384 x 384 image input"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1230925dfbcf1681345543270ca3ea1d37aebdde72a0356e9c0771e98565e18e
+  - url: https://arxiv.org/pdf/2501.17811
+    shows: 'Table 3: Janus-Pro-7B MMB 79.2, MMMU 41.0, MM-Vet 50.0; "80% overall accuracy on GenEval"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2f5b4b26341f7be4a5c2851718f84af9c41b3084093ad71254e54ad68272a793

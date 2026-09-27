@@ -1,0 +1,107 @@
+product: paligemma
+openness:
+  score: 3
+  class: open_weights
+  governing_release: paligemma-2
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub behind a click-through license acknowledgement
+    data:
+      value: described
+      detail: WebLI, CC3M-35L, OpenImages and WIT are named for pretraining; the mix and transfer data are not published
+    code:
+      value: open
+      detail: the PaliGemma fine-tuning trainer and transfer configs in google-research/big_vision
+    license:
+    - name: Gemma-License
+      detail: the Gemma Terms of Use, which list PaliGemma and PaliGemma 2 and incorporate the Prohibited Use Policy
+  confidence: high
+  note: PaliGemma is released under the Gemma Terms of Use, which carry Google's prohibited-use policy and require
+    passing its restrictions on to anyone downstream. Google publishes the fine-tuning code but not the pretraining
+    data.
+  raw: weights:open(safetensors on the Hub behind a click-through license acknowledgement);data:described(WebLI,
+    CC3M-35L, OpenImages and WIT are named for pretraining; the mix and transfer data are not published);code:open(the
+    PaliGemma fine-tuning trainer and transfer configs in google-research/big_vision);license:Gemma-License(the
+    Gemma Terms of Use, which list PaliGemma and PaliGemma 2 and incorporate the Prohibited Use Policy)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/google/paligemma2-3b-mix-224?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for paligemma2-3b-mix-224: gated manual (license acknowledgement), two safetensors shards,
+      card license gemma'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9784dba5d4948997efb9b418e49a60630da1ba58ae574ca722b8b0575d2e8857
+    establishes:
+    - weights
+    - license
+  - url: https://ai.google.dev/gemma/terms
+    shows: '"Gemma Terms of Use"; the Appendix lists PaliGemma and PaliGemma 2; section 3.2 incorporates the Gemma
+      Prohibited Use Policy'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8b05fd244f89fdce4babb1de5fce09e07a949a4ee5b9ad956b0858d02c3f36cc
+    establishes:
+    - license
+  - url: https://huggingface.co/google/paligemma2-3b-mix-224
+    shows: The card names WebLI, CC3M-35L, VQ2A-CC3M-35L, OpenImages and WIT as pretraining data; "fine-tuned on
+      a mixture of academic tasks"; no dataset link
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 249814e36d49e1903881424d1dbb2eab8081f24c0578d5ae161a802421042404
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/google-research/big_vision/main/big_vision/configs/proj/paligemma/README.md
+    shows: '"How to run PaliGemma fine-tuning" with big_vision.trainers.proj.paligemma.train and transfer configs'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c9b435f758ab3a134ee59a0f28160f3d7401f0a9fc49e96e39f221b80407f48e
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/google-research/big_vision/main/big_vision/trainers/proj/paligemma/train.py
+    shows: The PaliGemma trainer in big_vision
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6b28b5454ccfc9dfe544fe3069dcb84757aae3b92333f5a4a33b8756346347fb
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Google's PaliGemma and PaliGemma 2 checkpoints.
+    Most of it is the first PaliGemma, and downloads from Kaggle and Vertex AI are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=google&search=paligemma&limit=1000
+    shows: 166 Google PaliGemma checkpoints with 651,853 downloads in the trailing 30 days; PaliGemma 2's 43 checkpoints
+      account for 61,830
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 334c535fb2dc9ac0b1016fa6072b5b61fa3242729f03907e0bc8e354f562f2ac
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: task outputs from the PaliGemma 2 card; its transfer results as tie-break
+  value: 'Image and text in; captions, answers, OCR text, bounding boxes and segmentation codes out. PaliGemma 2
+    transfers at 448px, 10B: DocVQA 76.6, ChartQA 66.4, AI2D 84.4; table structure recognition on FinTabNet.'
+  confidence: high
+  relative_to: moondream
+  relation: at
+  note: PaliGemma reads text, charts and tables and returns boxes and segmentation masks, but it is built to be
+    fine-tuned for one task at a time and takes a single image. That breadth sits level with Moondream.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/google/paligemma2-3b-mix-224
+    shows: '"a caption of the image, an answer to a question, a list of object bounding box coordinates, or segmentation
+      codewords"; transfer table DocVQA 76.6, ChartQA 66.4, AI2D 84.4 at 448px 10B'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 249814e36d49e1903881424d1dbb2eab8081f24c0578d5ae161a802421042404
+  - url: https://arxiv.org/abs/2412.03555
+    shows: 'Abstract: table structure recognition, molecular structure recognition, music score recognition, long
+      fine-grained captioning and radiography reports'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 476d45bbd8edb3a7be13eb9c294d18d364d38ccff5fa36e553d792959de3c7f3

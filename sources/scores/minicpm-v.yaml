@@ -1,0 +1,108 @@
+product: minicpm-v
+openness:
+  score: 3
+  class: open_weights
+  governing_release: minicpm-v-4.6
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: the RLAIF-V preference set is released under CC-BY-NC-4.0; the SFT data for 4.6 is not named
+    code:
+      value: partial
+      detail: official fine-tuning scripts for users (finetune/); OpenBMB's own training recipe is not released
+    license:
+    - name: Apache-2.0
+      detail: OSI; "The MiniCPM-o/V model weights and code are open-sourced under the Apache-2.0 license"
+  confidence: high
+  note: MiniCPM-V 4.6 and its code are Apache 2.0, and OpenBMB ships fine-tuning scripts. It releases its RLAIF-V
+    preference data, under a non-commercial license, but not the rest of the training mixture or its own training
+    recipe.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(the RLAIF-V preference set is released under CC-BY-NC-4.0;
+    the SFT data for 4.6 is not named);code:partial(official fine-tuning scripts for users (finetune/); OpenBMB's
+    own training recipe is not released);license:Apache-2.0(OSI; "The MiniCPM-o/V model weights and code are open-sourced
+    under the Apache-2.0 license")
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/openbmb/MiniCPM-V-4_6?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for MiniCPM-V-4.6: gated false, model.safetensors, card license apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1e1973964857f12a57abbab444c52c0a0fc20aa519ba951e0898c15e9b1833cb
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+    shows: '"The MiniCPM-o/V model weights and code are open-sourced under the Apache-2.0 license."; no datasets
+      field in the card'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d08f69f90aa371f85fccb9369eb43d9261bed706a9b48e73f0a4553f6a954e50
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/datasets/openbmb/RLAIF-V-Dataset
+    shows: 'RLAIF-V-Dataset: public, ungated, cc-by-nc-4.0; "also used in MiniCPM-V 4.5"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 71bc04e59eae9baf51d331b724ae8d2fac89a27616b01673ae36caae887a9f4d
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/OpenBMB/MiniCPM-V@main/finetune/readme.md
+    shows: '"We offer the official scripts for easy finetuning of the pretrained MiniCPM-V 4.0, MiniCPM-o 2.6, MiniCPM-V
+      2.6 ... on downstream tasks"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 701a5655804778687a3096dc87c9cb7a97cd02f63689347b7bf764430d513e42
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/OpenBMB/MiniCPM-V@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 186c8635e1f88660ec113f4935867a612e35b3124aca5c712d97e2e33d7eb677
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across OpenBMB's MiniCPM-V checkpoints from 2.0
+    to 4.6, including its own quantized builds. Three speculative-decoding helper repositories the search also returns
+    are counted too, and are negligible.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=openbmb&search=MiniCPM-V&limit=100
+    shows: 34 openbmb repositories matching MiniCPM-V with 1,238,521 downloads in the trailing 30 days; MiniCPM-V-4.6
+      alone 388,634
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a540d066adcaa731d0accf97331e1ef25aedf40bfa3fa0aad04bacb756637f4c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: single-image, multi-image and video understanding from the model card
+  value: 'MiniCPM-V 4.6: single-image, multi-image and video understanding (up to 128 frames, sampled at 1 FPS for
+    short videos), tool calling; 13 on the Artificial Analysis Intelligence Index against 10 for Qwen3.5-0.8B. MiniCPM-V
+    4.5 reports state of the art under 30B on Video-MME.'
+  confidence: high
+  relative_to: qwen-omni
+  relation: two_below
+  note: MiniCPM-V understands single images, several images together and video, and its tool calling lets it hand
+    work to other software. It documents no GUI operation and no audio input, which puts it two steps below Qwen-Omni.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/openbmb/MiniCPM-V-4_6/raw/main/README.md
+    shows: '"It inherits the strong single-image, multi-image, and video understanding capabilities of MiniCPM-V
+      family"; max_num_frames default 128; tool calling example; Artificial Analysis Intelligence Index 13 against
+      10 for Qwen3.5-0.8B'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d08f69f90aa371f85fccb9369eb43d9261bed706a9b48e73f0a4553f6a954e50
+  - url: https://arxiv.org/abs/2509.18154
+    shows: 'MiniCPM-V 4.5 abstract: surpasses GPT-4o-latest on OpenCompass and "achieves state-of-the-art performance
+      among models under 30B size" on VideoMME'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2acb79d5da24d8797902c913e7e8188630995289ee934e93caa79aba04ea700c

@@ -1,73 +1,125 @@
 name: multimodal_models
 display_name: Multimodal models
 description: Vision-language and omni models whose headline capability is understanding images, documents, screens, video or audio and answering in text, speech or actions, released as a model line separate from the vendor's general LLM.
+strapline: Open weights are the rule and the recipe is the exception. Every model here downloads, most under Apache
+  2.0 or MIT, but only Molmo and LLaVA publish the data and code to rebuild theirs.
 weights:
   adopt: 0.3
   cap: 0.7
 scoring_recipe:
   version: 1
-  note: >-
-    Inherits the shared fine-tuned model ladder unchanged. Most of the seed roster is a vision
-    stack trained onto someone else's language model - Holo on Qwen, MiniCPM-o on SigLIP,
-    Whisper, CosyVoice and Qwen3, InternVL3-78B carrying the Qwen license - so the data question
-    that fits is the one this ladder asks: what the publisher released for the stage it trained,
-    not the base model's pretraining corpus. A row whose vendor trained the whole stack from
-    scratch may want the pretrained ladder instead; that is a per-type or per-product call for
-    the promotion PR, made with evidence, and not one to guess at seed. Weighted 0.3 adoption to
-    0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads here are
-    dominated by one family (Qwen-VL) and by small models pulled into pipelines, so adoption
-    ranks distribution before it ranks the model. The capability quantity the sweep proposes is
-    breadth of grounded understanding, not MMMU, and is set out in `comments`. Several rows carry
-    a custom weights license the shared tiers do not name (the sweep record lists them); those
-    go to the maintainer's license-rulings issue and the products are deferred at promotion. No
-    edit to sources/rubrics/ is made or implied here.
+  note: 'Inherits the shared fine-tuned model ladder unchanged. Most of the roster is a vision stack trained onto
+    someone else''s language model - Holo and Fara on Qwen3.5, MiniCPM-V on Qwen3.5-0.8B, Molmo2 on Qwen3 or OLMo,
+    LLaVA-OneVision-1.5 on Qwen3, BAGEL and VideoLLaMA3 on Qwen2.5 - so the data question that fits is the one this
+    ladder asks: what the publisher released for the stage it trained, not the base model''s pretraining corpus.
+    Weighted 0.3 adoption to 0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads here
+    are dominated by one family (Qwen-VL) and by small models pulled into pipelines (Florence-2-base, BLIP captioning,
+    SmolVLM2-500M), so adoption ranks distribution before it ranks the model. OPENNESS READING RULES, applied at
+    the first promotion (2026-09-27). The governing release is the newest one with downloadable weights; API-only
+    tiers are excluded (Qwen3.5-Omni, Holo3-122B, the full UI-TARS-1.5, UI-TARS-2), and older generations with a
+    different license are named in the product''s comments rather than scored. `data: open` only where the publisher
+    releases the post-training mixture itself or scripts that fetch all of it (Molmo2 Data with scripts/download_datasets.py;
+    LLaVA-OneVision-1.5''s mid-training and instruct sets); a mixture assembled from named third-party sets plus
+    some of the publisher''s own is `partial` (SmolVLM2, VideoLLaMA3, InternVL3.5, Nemotron); a mixture described
+    without a release is `described`. `code: open` means the publisher''s own training scripts and configs for the
+    scored release (Molmo2, LLaVA-OneVision-1.5, InternVL3.5 CascadeRL, VideoLLaMA3, BAGEL, BLIP-2 in LAVIS, PaliGemma''s
+    big_vision transfers); a fine-tuning toolkit for users without the publisher''s own recipe is `partial` (qwen-vl-finetune,
+    MiniCPM-V finetune/), as is inference and serving code alone; no code at all is `closed`. CAPABILITY is breadth
+    of grounded understanding, read as the highest rung the product''s own card, repository or paper documents.
+    The rungs are ordered but not strictly cumulative: a computer-use model need not read video. 5 OMNI IN: audio
+    and video understood natively together with images and text; top anchor qwen-omni, which also answers in streaming
+    speech. 4 ACTS ON WHAT IT SEES: completes tasks in a live GUI or computer environment, reported on an online
+    agent benchmark (OSWorld, AndroidWorld, WindowsAgentArena, WebVoyager, Online-Mind2Web); grounding-only results
+    such as ScreenSpot or OSWorld-G do not qualify, which is why kimi-vl is at 3; root ui-tars, one_below qwen-omni.
+    3 VIDEO AND MULTI-IMAGE: native video understanding alongside multi-image and document input; root minicpm-v,
+    two_below qwen-omni. 2 DOCUMENTS ON ONE IMAGE: OCR-grade reading of documents, charts and tables, or structured
+    point and box output, one image at a time; root moondream, one_below minicpm-v. 1 SINGLE-IMAGE PERCEPTION: captioning,
+    question answering and prompted detection on one image; root florence-2, two_below minicpm-v. Image generation
+    by the unified models (janus, bagel) is recorded in `value` and does not raise the band, because it is a second
+    quantity. A benchmark average breaks ties only within a rung: OpenCompass stops at 2025-09-17 and has nothing
+    for the GUI or omni rows, and MMMU''s test answers have been public since 2026-02-12. Distribution at promotion,
+    22 banded: 5 -> 3, 4 -> 6, 3 -> 6, 2 -> 3, 1 -> 4; the widest rung is 6 of 22, under the one-third review trigger.
+    Custom weights licenses the shared tiers do not name are deferred below and listed for the maintainer''s license-rulings
+    issue. No edit to sources/rubrics/ is made or implied here.'
   extends: model
-products: []
-comments: >-
-  Proposed in issue #9; seeded from the 2026-09-26 sweep (docs/sweeps/2026-09-26-multimodal_models.md).
-  Membership test: is this a separately named vision or omni model line whose reason for fame is
-  visual or audio-visual understanding, so that listing it as a text LLM would mischaracterize it?
-  A natively multimodal general model answers no and stays in its family row in base_pretrained
-  or finetuned_chat: Qwen3.5 and later, Gemma 3 and 4, Llama 3.2 Vision and Llama 4, Kimi K2.5 and
-  K3, GLM-5.x, DeepSeek-V4, MiniMax-M3, Inkling, Phi-4-multimodal, ERNIE-4.5-VL and Muse Glimmer.
-  A vendor sub-line with its own name and repo that answers a different question from the family
-  gets its own row here, following the nemotron-embed and embeddinggemma precedent: qwen-vl,
-  glm-v, kimi-vl, paligemma, minicpm-v and minicpm-o, nemotron-vl and nemotron-omni. qwen-vl keeps
-  its row although the line has shipped no chat checkpoint since 2025-10-31; its successor is the
-  mapped qwen family, which the product record says in prose at promotion. Scope is understanding
-  VLMs (image, document, multi-image, video, and GUI or computer-use models, which are weights you
-  download), omni models (audio and video in, text or speech out), and the four unified
-  understanding-and-generation models janus, bagel, emu and sensenova-u, which this category owns
-  by the 2026-09-26 ruling that media_generation agreed to. Exclusions, by neighbor.
-  base_pretrained and finetuned_chat keep the general LLM families above. document_conversion
-  keeps OCR-first and document-parsing VLMs (dots.ocr, DeepSeek-OCR, olmOCR, PaddleOCR-VL,
-  MinerU2.5, chandra, HunyuanOCR, GOT-OCR2 and the rest), because its question is how much of a
-  document survives, which a general VLM ladder does not measure. embeddings_retrieval keeps
-  contrastive and embedding vision-language models (CLIP, OpenCLIP, SigLIP, ColPali, ModernVBERT,
-  the Nemotron embed-VL and rerank-VL models, Perception Encoder): the test is whether the output
-  is a vector or a relevance score rather than text. classic_ml_cv keeps vision backbones, video
-  encoders and detection or segmentation models; Florence-2 and InternVideo sit here on their chat
-  and prompt-driven checkpoints, and the InternVideo encoders belong there. media_generation keeps
-  models whose headline output is a synthesized image, video or 3D asset (BLIP3o, diffusiongemma).
-  speech_audio keeps speech-first ASR, TTS and speech-to-speech models, and ruled chat-first audio
-  LLMs and omni models out, so omni lives here. robotics_embodied and world_models keep
-  vision-language-action and embodied-reasoning models (MolmoAct, Cosmos-Reason, Isaac,
-  HY-Embodied) and the world models (Cosmos, V-JEPA 2); embodied-reasoning VLMs with no action head
-  (RynnBrain, Hy-Embodied VLM, UnifoLM-ER) are held for a follow-up sweep and not seeded here.
-  inference_code and evaluation_code keep the runtimes and harnesses (vLLM-Omni, MLX-VLM,
-  lmms-eval, VLMEvalKit). orchestration_agents keeps agent apps built on a GUI model
-  (UI-TARS-desktop, OmniParser); the model stays here. scientific_ai_models takes domain models
-  such as MedGemma. No closed row is seeded: the strongest closed VLMs are the general frontier
-  models finetuned_chat already carries (gpt-5, gemini-pro, claude-sonnet), and a vendor's closed
-  API tier (Qwen-VL-Max, GLM-4v-Plus, Qwen3.5-Omni, Holo3-122B) is a SKU of its open row. Three
-  rows need a governing-release call at promotion because one line spans two licenses or an open
-  and a closed tier: qwen-omni (Qwen3.5-Omni is proprietary), moondream (Moondream 2 is Apache-2.0,
-  3.x carries a custom license) and pixtral (12B Apache-2.0, Large under the Mistral Research
-  License). Capability, for the promotion PR: no
-  single leaderboard orders the set. OpenCompass's Open VLM Leaderboard stops at 2025-09-17 and
-  has nothing for the GUI or omni rows, and MMMU's test answers have been public since 2026-02-12.
-  The proposed quantity is breadth of grounded understanding, each rung nesting the one below:
-  single-image perception; documents and multi-image; video and long context; acting on what it
-  sees (grounded actions or native tool calls from visual input); omni in (audio and video
-  understood natively, text out); omni in with streaming speech out. A benchmark average breaks
-  ties within a rung where one exists.
+  deferred:
+    moondream:
+      because: Moondream 3.1, the governing release, ships under the Moondream Model License 1.0, which no shared
+        tier names. It grants commercial use, modification and redistribution and forbids only offering general-purpose
+        Moondream as a hosted inference or fine-tuning service, a managed-service limitation it says is adapted
+        from the Elastic License 2.0. Whether that is a conduct-style limit (permissive_non_osi) or a bound on commerce
+        (use_bounded) is a shared-tier ruling for the maintainer. Either tier gives 3/open_weights here because
+        the data is described and the code is inference-only, so 3/open_weights is recorded by hand and check_recipe
+        will report the deferral stale once the ruling lands.
+    nemotron-omni:
+      because: 'The weights ship under the NVIDIA Open Model Agreement (release date April 2, 2026), a separate
+        document from the NVIDIA Open Model License that permissive_non_osi names: different title, different defined
+        terms (Works rather than Models) and a different date. Both state that the works are commercially usable
+        and that derivatives may be distributed. Naming it in a tier is a shared-rubric ruling; if it joins the
+        Open Model License in permissive_non_osi the ladder gives 3/open_weights, because only part of the training
+        data is released and no training code is, so that is the hand score.'
+products:
+- minicpm-o
+- nemotron-omni
+- qwen-omni
+- qwen-vl
+- internvl
+- glm-v
+- holo
+- ui-tars
+- fara
+- minicpm-v
+- smolvlm
+- kimi-vl
+- molmo
+- nemotron-vl
+- videollama
+- llava
+- moondream
+- paligemma
+- blip
+- florence-2
+- janus
+- bagel
+comments: 'Proposed in issue #9; seeded from the 2026-09-26 sweep (docs/sweeps/2026-09-26-multimodal_models.md).
+  Membership test: is this a separately named vision or omni model line whose reason for fame is visual or audio-visual
+  understanding, so that listing it as a text LLM would mischaracterize it? A natively multimodal general model
+  answers no and stays in its family row in base_pretrained or finetuned_chat: Qwen3.5 and later, Gemma 3 and 4,
+  Llama 3.2 Vision and Llama 4, Kimi K2.5 and K3, GLM-5.x, DeepSeek-V4, MiniMax-M3, Inkling, Phi-4-multimodal, ERNIE-4.5-VL
+  and Muse Glimmer. A vendor sub-line with its own name and repo that answers a different question from the family
+  gets its own row here, following the nemotron-embed and embeddinggemma precedent: qwen-vl, glm-v, kimi-vl, paligemma,
+  minicpm-v and minicpm-o, nemotron-vl and nemotron-omni. qwen-vl keeps its row although the line has shipped no
+  chat checkpoint since 2025-10-31; its successor is the mapped qwen family, which the product record says in prose
+  at promotion. Scope is understanding VLMs (image, document, multi-image, video, and GUI or computer-use models,
+  which are weights you download), omni models (audio and video in, text or speech out), and the four unified understanding-and-generation
+  models janus, bagel, emu and sensenova-u, which this category owns by the 2026-09-26 ruling that media_generation
+  agreed to. Exclusions, by neighbor. base_pretrained and finetuned_chat keep the general LLM families above. document_conversion
+  keeps OCR-first and document-parsing VLMs (dots.ocr, DeepSeek-OCR, olmOCR, PaddleOCR-VL, MinerU2.5, chandra, HunyuanOCR,
+  GOT-OCR2 and the rest), because its question is how much of a document survives, which a general VLM ladder does
+  not measure. embeddings_retrieval keeps contrastive and embedding vision-language models (CLIP, OpenCLIP, SigLIP,
+  ColPali, ModernVBERT, the Nemotron embed-VL and rerank-VL models, Perception Encoder): the test is whether the
+  output is a vector or a relevance score rather than text. classic_ml_cv keeps vision backbones, video encoders
+  and detection or segmentation models; Florence-2 and InternVideo sit here on their chat and prompt-driven checkpoints,
+  and the InternVideo encoders belong there. media_generation keeps models whose headline output is a synthesized
+  image, video or 3D asset (BLIP3o, diffusiongemma). speech_audio keeps speech-first ASR, TTS and speech-to-speech
+  models, and ruled chat-first audio LLMs and omni models out, so omni lives here. robotics_embodied and world_models
+  keep vision-language-action and embodied-reasoning models (MolmoAct, Cosmos-Reason, Isaac, HY-Embodied) and the
+  world models (Cosmos, V-JEPA 2); embodied-reasoning VLMs with no action head (RynnBrain, Hy-Embodied VLM, UnifoLM-ER)
+  are held for a follow-up sweep and not seeded here. inference_code and evaluation_code keep the runtimes and harnesses
+  (vLLM-Omni, MLX-VLM, lmms-eval, VLMEvalKit). orchestration_agents keeps agent apps built on a GUI model (UI-TARS-desktop,
+  OmniParser); the model stays here. scientific_ai_models takes domain models such as MedGemma. No closed row is
+  seeded: the strongest closed VLMs are the general frontier models finetuned_chat already carries (gpt-5, gemini-pro,
+  claude-sonnet), and a vendor''s closed API tier (Qwen-VL-Max, GLM-4v-Plus, Qwen3.5-Omni, Holo3-122B) is a SKU
+  of its open row. Three rows need a governing-release call at promotion because one line spans two licenses or
+  an open and a closed tier: qwen-omni (Qwen3.5-Omni is proprietary), moondream (Moondream 2 is Apache-2.0, 3.x
+  carries a custom license) and pixtral (12B Apache-2.0, Large under the Mistral Research License). Capability,
+  for the promotion PR: no single leaderboard orders the set. OpenCompass''s Open VLM Leaderboard stops at 2025-09-17
+  and has nothing for the GUI or omni rows, and MMMU''s test answers have been public since 2026-02-12. The proposed
+  quantity is breadth of grounded understanding, each rung nesting the one below: single-image perception; documents
+  and multi-image; video and long context; acting on what it sees (grounded actions or native tool calls from visual
+  input); omni in (audio and video understood natively, text out); omni in with streaming speech out. A benchmark
+  average breaks ties within a rung where one exists. First promotion, 2026-09-27: 22 of the 47 seeded rows were
+  promoted, chosen for adoption and to cover every sub-type (image and document, video, GUI and computer use, omni,
+  unified). The other 25 stay registry rows for add-product. emu was held back although it is in scope: Emu3.5 leads
+  with world modeling and generation, and neither its card nor its repository gives an understanding benchmark to
+  place it with. No closed row was added, per the seed ruling.'

@@ -1,0 +1,106 @@
+product: ui-tars
+openness:
+  score: 3
+  class: open_weights
+  governing_release: ui-tars-1.5
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the paper and README describe large-scale GUI screenshots and action traces; the repository ships
+        one format example
+    code:
+      value: partial
+      detail: action parser, prompt templates and inference tests; no training scripts or configs
+    license:
+    - name: Apache-2.0
+      detail: OSI; all six ByteDance-Seed UI-TARS checkpoints
+  confidence: high
+  note: The released checkpoints are Apache 2.0 and the repository carries the prompt templates and action parser
+    needed to run them. The GUI trajectory data and the training pipeline are not published.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the paper and README describe large-scale GUI
+    screenshots and action traces; the repository ships one format example);code:partial(action parser, prompt templates
+    and inference tests; no training scripts or configs);license:Apache-2.0(OSI; all six ByteDance-Seed UI-TARS
+    checkpoints)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/ByteDance-Seed/UI-TARS-1.5-7B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for UI-TARS-1.5-7B: gated false, seven safetensors shards, card license apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d8533d0a5ef60a615a4ffc1b5f5894d8cc05c04622a8d321f66efdd02fc46943
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=ByteDance-Seed&search=UI-TARS&limit=100
+    shows: All six ByteDance-Seed UI-TARS checkpoints are tagged license:apache-2.0
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ccf382d2c0df630e0e0553783695c2dcb8bd55b09fc9064e38ab00e5df200853
+    establishes:
+    - license
+  - url: https://data.jsdelivr.com/v1/packages/gh/bytedance/UI-TARS@main?structure=flat
+    shows: 'Repository file list: codes/ui_tars action_parser.py and prompt.py, inference tests, one data/training_example.json;
+      no trainer or training config'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ff91153126c26dc9c17bade2e37cb09f22494a2e39377ce33a305275b2392a92
+    establishes:
+    - code
+    - data
+  - url: https://cdn.jsdelivr.net/gh/bytedance/UI-TARS@main/README_v1.md
+    shows: '"Combines large-scale annotated and synthetic datasets"; no dataset linked'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 02546a4a6c82f33043a3ae9b971c06192da69611d5402f3c03449a44dc8c3592
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/bytedance/UI-TARS@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across ByteDance Seed's six UI-TARS checkpoints;
+    nearly all of it is UI-TARS-1.5-7B. Use through the UI-TARS-desktop application is counted only where it downloads
+    these weights.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=ByteDance-Seed&search=UI-TARS&limit=100
+    shows: Six UI-TARS checkpoints with 605,451 downloads in the trailing 30 days, 598,585 of them UI-TARS-1.5-7B
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ccf382d2c0df630e0e0553783695c2dcb8bd55b09fc9064e38ab00e5df200853
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: GUI actions from screenshots, with OSWorld, AndroidWorld and ScreenSpot-Pro results on the model
+    card
+  value: 'Screenshots in; mouse, keyboard, drag, scroll and phone actions out (COMPUTER_USE, MOBILE_USE and GROUNDING
+    prompt templates). Released UI-TARS-1.5-7B: OSWorld 27.5, ScreenSpotPro 49.6; the unreleased UI-TARS-1.5 scores
+    42.5 and 61.6.'
+  confidence: high
+  relative_to: qwen-omni
+  relation: one_below
+  note: UI-TARS acts on what it sees, turning screenshots into clicks, keystrokes and phone gestures across desktop,
+    web and Android. It sits a step below Qwen-Omni because it understands only images, with no audio or video input.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/ByteDance-Seed/UI-TARS-1.5-7B/raw/main/README.md
+    shows: 'Model Scale Comparison: UI-TARS-1.5-7B OSWorld 27.5, ScreenSpotPro 49.6; UI-TARS-1.5 42.5 and 61.6;
+      "The released UI-TARS-1.5-7B focuses primarily on enhancing general computer use capabilities"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd6ebdc23c119b356e12876c964597d2920e3a2878424a6b5a5b8706e6bc23c4
+  - url: https://arxiv.org/abs/2501.12326
+    shows: '"a native GUI agent model that solely perceives the screenshots as input and performs human-like interactions
+      (e.g., keyboard and mouse operations)"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0f19ac87068c5055dc055ef73dd6a105b1f1dc93d4cc167653516a21abf55458

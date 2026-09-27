@@ -1,0 +1,120 @@
+product: llava
+openness:
+  score: 5
+  class: open_source
+  governing_release: llava-onevision-1.5
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: open
+      detail: the 85M-sample mid-training set and the instruction set are published ungated under Apache 2.0, with
+        FineVision from Hugging Face
+    code:
+      value: open
+      detail: alignment, mid-training and instruction-training scripts with configs (EvolvingLMMs-Lab/LLaVA-OneVision-1.5,
+        branch 1.5)
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LLaVA-OneVision-1.5 checkpoints and both repositories
+  confidence: high
+  note: LLaVA-OneVision-1.5 is released under Apache 2.0 with its pretraining and instruction data, the training
+    framework and configs, and the training logs, so the model can be reproduced from what ships.
+  raw: weights:open(safetensors on the Hub, ungated);data:open(the 85M-sample mid-training set and the instruction
+    set are published ungated under Apache 2.0, with FineVision from Hugging Face);code:open(alignment, mid-training
+    and instruction-training scripts with configs (EvolvingLMMs-Lab/LLaVA-OneVision-1.5, branch 1.5));license:Apache-2.0(OSI;
+    the LLaVA-OneVision-1.5 checkpoints and both repositories)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/lmms-lab/LLaVA-OneVision-1.5-8B-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata: gated false, four safetensors shards, card license apache-2.0, datasets LLaVA-One-Vision-1.5-Mid-Training-85M,
+      LLaVA-OneVision-1.5-Insturct-Data and FineVision'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8d41967c4d2878facac499af6a1a6c4a7609cf357d7472be5d911b9b7f1bfdc7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/lmms-lab/LLaVA-OneVision-1.5-8B-Instruct/raw/main/README.md
+    shows: '"The project also releases high-quality pretraining and SFT data, a complete and efficient training
+      framework with recipes and configs, and comprehensive logs"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fb81124976fb621585132bc54e67029172bbee9f8843879c0d4624677e8a2e92
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets/lmms-lab/LLaVA-One-Vision-1.5-Mid-Training-85M
+    shows: 'Resolves to mvp-lab/LLaVA-OneVision-1.5-Mid-Training-85M: public, ungated, apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ac1a6d9f3abd20e9b6b73fc0033e3e80c4b038b426bb46e1232f35c5066cb57d
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets/lmms-lab/LLaVA-OneVision-1.5-Insturct-Data
+    shows: 'Resolves to mvp-lab/LLaVA-OneVision-1.5-Instruct-Data: public, ungated, apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8c530e4a50b5c2a5f3773f1bc7703b00172b3eedeea1b53fe559371d0e6e81a5
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/EvolvingLMMs-Lab/LLaVA-OneVision-1.5/1.5/examples/llava_ov_1_5/quick_start/stage_2_instruct_llava_ov_4b.sh
+    shows: The stage-2 instruction-training script for the 4B model
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 84804c415d11f0a37275330e37fbaded764314eddd5af625306d311a72b7f6cc
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/EvolvingLMMs-Lab/LLaVA-OneVision-1.5/HEAD/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d8621ec2eee5b9ca3c65f8492505f3590de8574fac0fdf5132a77232dba47abc
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads over the trailing 30 days, summed across the lmms-lab checkpoints and Hugging Face's
+    llava-hf conversions. Nearly all of it is the older LLaVA-1.5 and 1.6 conversions rather than the current OneVision-1.5
+    release.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=llava-hf&search=llava&sort=downloads&direction=-1&limit=100
+    shows: 29 llava-hf conversions with 3,261,856 downloads in the trailing 30 days; llava-1.5-7b-hf 1,646,114
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 90b7a9ada88811cc70623ee65bdeb42e852798816000159f219c823ef336c25d
+  - url: https://huggingface.co/api/models?author=lmms-lab&search=llava&sort=downloads&direction=-1&limit=100
+    shows: 47 lmms-lab LLaVA checkpoints with 77,776 downloads in the trailing 30 days; LLaVA-OneVision-1.5-8B-Instruct
+      15,955
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 21e297c38853439f9191a8a35e65d4f325817abe06a2536696d8206155ddfa69
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: native-resolution image, document and chart understanding from the OneVision-1.5 card; lmms-eval
+    scores as tie-break
+  value: 'LLaVA-OneVision-1.5-8B: native-resolution images, documents and charts; lmms-eval results MMMU val 55.44,
+    MathVista mini 69.57, ChartQA 86.48, DocVQA test 95.00, against Qwen2.5-VL-7B at 51.33, 68.60, 84.08 and 94.93.'
+  confidence: medium
+  relative_to: moondream
+  relation: at
+  note: LLaVA-OneVision-1.5 reads documents and charts at native resolution and edges past Qwen2.5-VL-7B on its
+    own benchmark table. Its card and repository document no video or multi-image evaluation for this release, so
+    it sits with Moondream rather than with the video models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/lmms-lab/LLaVA-OneVision-1.5-8B-Instruct/raw/main/README.md
+    shows: 'Evaluation Results: MMMU val 55.44, MathVista mini 69.57, ChartQA 86.48, DocVQA test 95.00, OCRBench
+      82.90; Qwen2.5-VL-7B 51.33, 68.60, 84.08, 94.93, 84.20'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fb81124976fb621585132bc54e67029172bbee9f8843879c0d4624677e8a2e92
+  - url: https://raw.githubusercontent.com/EvolvingLMMs-Lab/LLaVA-OneVision-1.5/1.5/README.md
+    shows: '"operate on native-resolution images"; the evaluation task list covers image, chart and document benchmarks'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 450f6937788b5a8061664a2d3f9c9206d3ad4b23b2b77820ac107ab165885aea
