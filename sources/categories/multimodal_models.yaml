@@ -9,38 +9,40 @@ weights:
 scoring_recipe:
   version: 1
   note: 'Inherits the shared fine-tuned model ladder unchanged. Most of the roster is a vision stack trained onto
-    someone else''s language model - Holo and Fara on Qwen3.5, MiniCPM-V on Qwen3.5-0.8B, Molmo2 on Qwen3 or OLMo,
-    LLaVA-OneVision-1.5 on Qwen3, BAGEL and VideoLLaMA3 on Qwen2.5 - so the data question that fits is the one this
-    ladder asks: what the publisher released for the stage it trained, not the base model''s pretraining corpus.
-    Weighted 0.3 adoption to 0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads here
-    are dominated by one family (Qwen-VL) and by small models pulled into pipelines (Florence-2-base, BLIP captioning,
-    SmolVLM2-500M), so adoption ranks distribution before it ranks the model. OPENNESS READING RULES, applied at
-    the first promotion (2026-09-27). The governing release is the newest one with downloadable weights; API-only
-    tiers are excluded (Qwen3.5-Omni, Holo3-122B, the full UI-TARS-1.5, UI-TARS-2), and older generations with a
-    different license are named in the product''s comments rather than scored. `data: open` only where the publisher
-    releases the post-training mixture itself or scripts that fetch all of it (Molmo2 Data with scripts/download_datasets.py;
-    LLaVA-OneVision-1.5''s mid-training and instruct sets); a mixture assembled from named third-party sets plus
+    someone else''s language model - Holo on Qwen3.5 and Qwen3.6, Fara on Qwen3.5, MiniCPM-V on Qwen3.5-0.8B, Molmo2
+    on Qwen3 or OLMo, LLaVA-OneVision-2 on Qwen3, BAGEL and VideoLLaMA3 on Qwen2.5 - so the data question that fits
+    is the one this ladder asks: what the publisher released for the stage it trained, not the base model''s pretraining
+    corpus. Weighted 0.3 adoption to 0.7 capability, as base_pretrained and finetuned_chat are, because Hub downloads
+    here are dominated by one family (Qwen-VL) and by small models pulled into pipelines (Florence-2-base, BLIP
+    captioning, SmolVLM2-500M), so adoption ranks distribution before it ranks the model. OPENNESS READING RULES,
+    applied at the first promotion (2026-09-27). The governing release is the newest one with downloadable weights;
+    API-only tiers are excluded (Qwen3.5-Omni, Holo3-122B, the full UI-TARS-1.5, UI-TARS-2), and older generations
+    with a different license are named in the product''s comments rather than scored. `data: open` only where the
+    publisher releases the post-training mixture itself or scripts that fetch all of it (Molmo2 Data with scripts/download_datasets.py;
+    LLaVA-OneVision-2-Data with the carried-forward 1.5 sets); a mixture assembled from named third-party sets plus
     some of the publisher''s own is `partial` (SmolVLM2, VideoLLaMA3, InternVL3.5, Nemotron); a mixture described
     without a release is `described`. `code: open` means the publisher''s own training scripts and configs for the
-    scored release (Molmo2, LLaVA-OneVision-1.5, InternVL3.5 CascadeRL, VideoLLaMA3, BAGEL, BLIP-2 in LAVIS, PaliGemma''s
+    scored release (Molmo2, LLaVA-OneVision-2, InternVL3.5 CascadeRL, VideoLLaMA3, BAGEL, BLIP-2 in LAVIS, PaliGemma''s
     big_vision transfers); a fine-tuning toolkit for users without the publisher''s own recipe is `partial` (qwen-vl-finetune,
     MiniCPM-V finetune/), as is inference and serving code alone; no code at all is `closed`. CAPABILITY is breadth
     of grounded understanding, read as the highest rung the product''s own card, repository or paper documents.
     The rungs are ordered but not strictly cumulative: a computer-use model need not read video. 5 OMNI IN: audio
     and video understood natively together with images and text; top anchor qwen-omni, which also answers in streaming
     speech. 4 ACTS ON WHAT IT SEES: completes tasks in a live GUI or computer environment, reported on an online
-    agent benchmark (OSWorld, AndroidWorld, WindowsAgentArena, WebVoyager, Online-Mind2Web); grounding-only results
-    such as ScreenSpot or OSWorld-G do not qualify, which is why kimi-vl is at 3; root ui-tars, one_below qwen-omni.
-    3 VIDEO AND MULTI-IMAGE: native video understanding alongside multi-image and document input; root minicpm-v,
-    two_below qwen-omni. 2 DOCUMENTS ON ONE IMAGE: OCR-grade reading of documents, charts and tables, or structured
-    point and box output, one image at a time; root moondream, one_below minicpm-v. 1 SINGLE-IMAGE PERCEPTION: captioning,
-    question answering and prompted detection on one image; root florence-2, two_below minicpm-v. Image generation
-    by the unified models (janus, bagel) is recorded in `value` and does not raise the band, because it is a second
-    quantity. A benchmark average breaks ties only within a rung: OpenCompass stops at 2025-09-17 and has nothing
-    for the GUI or omni rows, and MMMU''s test answers have been public since 2026-02-12. Distribution at promotion,
-    22 banded: 5 -> 3, 4 -> 6, 3 -> 6, 2 -> 3, 1 -> 4; the widest rung is 6 of 22, under the one-third review trigger.
-    Custom weights licenses the shared tiers do not name are deferred below and listed for the maintainer''s license-rulings
-    issue. No edit to sources/rubrics/ is made or implied here.'
+    agent benchmark (OSWorld, AndroidWorld, WindowsAgentArena, WebVoyager, Online-Mind2Web), however low the score;
+    grounding-only results such as ScreenSpot or OSWorld-G do not qualify on their own; root ui-tars, one_below
+    qwen-omni. 3 VIDEO AND MULTI-IMAGE: native video understanding alongside multi-image and document input; root
+    minicpm-v, two_below qwen-omni. 2 DOCUMENTS ON ONE IMAGE: OCR-grade reading of whole documents, charts and tables
+    with question answering over them, one image at a time; boxes, points and region OCR alone stay at 1; root moondream,
+    one_below minicpm-v. 1 SINGLE-IMAGE PERCEPTION: captioning, question answering and prompted detection, boxes
+    and region OCR on one image; root florence-2, two_below minicpm-v. Capability is the maximum across a product''s
+    releases (docs/reference/identity.md), which is why videollama is at 5 on VideoLLaMA2.1-AV''s audio-visual input.
+    Image generation by the unified models (janus, bagel) is recorded in `value` and does not raise the band, because
+    it is a second quantity. A benchmark average breaks ties only within a rung: OpenCompass stops at 2025-09-17
+    and has nothing for the GUI or omni rows, and MMMU''s test answers have been public since 2026-02-12. Distribution
+    at promotion, 22 banded: 5 -> 4, 4 -> 7, 3 -> 6, 2 -> 2, 1 -> 3; the widest rung is 7 of 22 (32%), just under
+    the one-third review trigger. Custom weights licenses the shared tiers do not name are deferred below and listed
+    for the maintainer''s license-rulings issue. No edit to sources/rubrics/ is made or implied here.'
   extends: model
   deferred:
     moondream:
@@ -62,19 +64,19 @@ products:
 - minicpm-o
 - nemotron-omni
 - qwen-omni
+- videollama
 - qwen-vl
 - internvl
 - glm-v
 - holo
+- kimi-vl
 - ui-tars
 - fara
+- llava
 - minicpm-v
 - smolvlm
-- kimi-vl
 - molmo
 - nemotron-vl
-- videollama
-- llava
 - moondream
 - paligemma
 - blip

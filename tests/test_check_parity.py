@@ -284,7 +284,12 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 5 on 2026-09-26, when it was read: access is by permission and commercial use needs
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
-    assert len(deferred) == 5
+    #
+    # 5 -> 7 with the multimodal_models promotion. Both additions are license-tier gaps of the same
+    # class: `moondream` (Moondream Model License 1.0, a hosted-service limitation) and
+    # `nemotron-omni` (the NVIDIA Open Model Agreement, a document separate from the Open Model
+    # License the tier names). Each closes on a shared-tier ruling, not on more work.
+    assert len(deferred) == 7
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
