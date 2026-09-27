@@ -289,7 +289,13 @@ def test_local_scores_matches_check_rubrics_split():
     # class: `moondream` (Moondream Model License 1.0, a hosted-service limitation) and
     # `nemotron-omni` (the NVIDIA Open Model Agreement, a document separate from the Open Model
     # License the tier names). Each closes on a shared-tier ruling, not on more work.
-    assert len(deferred) == 7
+    #
+    # 7 -> 8 the same day, when multimodal_models was corrected to the #720 ruling. `qwen-omni`
+    # had been scored on Qwen3-Omni as the newest release with downloadable weights; the current
+    # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
+    # releases recorded, openness.score left null, closing on the maintainer's ruling on
+    # availability versus openness rather than on more work.
+    assert len(deferred) == 8
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
