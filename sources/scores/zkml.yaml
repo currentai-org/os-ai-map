@@ -2,7 +2,7 @@ product: zkml
 openness:
   score: 5
   class: open_source
-  governing_release: repository head (main at 4378958, 2024-05-17); no tagged release, crate 0.0.1
+  governing_release: repository head, main at 4378958; no tagged release, and the 0.0.1 crate is a placeholder
   components:
     license:
     - name: Apache-2.0
@@ -12,8 +12,9 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: The prover and its converters are published under Apache-2.0 by an academic group, with no paid edition
-    or withheld component, so anyone may run, modify and redistribute it.
+  note: Daniel Kang publishes the prover and its converters under Apache-2.0, with no paid edition or withheld component,
+    so anyone may run, modify and redistribute it. The placeholder crate on crates.io declares AGPL-3.0-or-later
+    instead; it carries none of the prover, so the repository's license governs.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-27'
   sources:
@@ -26,7 +27,8 @@ openness:
     - license
   - url: https://raw.githubusercontent.com/ddkang/zkml/main/Cargo.toml
     shows: Package zkml 0.0.1, "Zero-knowledge machine learning", license = "LICENSE" (the file name put in the
-      SPDX field), homepage github.com/ddkang/zkml
+      SPDX field), homepage github.com/ddkang/zkml, repository github.com/ddkang/zkml-public.git; depends on the
+      PSE halo2, halo2_gadgets and halo2_proofs crates
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 37bc67e3dcbf54d5218a3d02a6fb95d7221d2aeacc27d3597e02046dd2f40f4e
@@ -48,26 +50,34 @@ openness:
     content_sha256: 0f09d0c1e01a0b6067adae1517f588321edc3fb3949b6538fcb4fa26dc7d7d55
     establishes:
     - source
-adoption:
-  level: 1
-  reach: <10K
-  signal_type: usage_volume
-  confidence: low
-  note: 'Downloads of the zkml crate, the project''s own package, measure its use, and they are close to none: the
-    README installs from a source checkout, so the crate undercounts whoever builds it that way.'
-  last_verified: '2026-09-27'
-  sources:
-  - url: https://crates.io/api/v1/crates/zkml
-    shows: 'crate zkml: recent_downloads (90 days) = 6, all-time 1,496; max_version 0.0.1; repository github.com/ddkang/zkml-public,
-      homepage github.com/ddkang/zkml'
+  - url: https://crates.io/api/v1/crates/zkml/0.0.1
+    shows: 'zkml 0.0.1, created 2023-02-27: license AGPL-3.0-or-later, has_lib false, bin_names [main], one Rust
+      file, crate_size 15,542 bytes'
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: bdf70dc14fa68ff0143c904997628bf5af896553d587c69ae9278ee0a314ae7f
+    content_sha256: 804acf874416c8042d31dfb36b141d94288cdc0095d6f16f854a96ea707c7192
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 'GitHub stars are the only signal: the prover is installed by building the repository, and the zkml crate
+    is a placeholder that does not contain it. A star is not a use.'
+  last_verified: '2026-09-27'
+  sources:
   - url: https://ungh.cc/repos/ddkang/zkml
     shows: 'ddkang/zkml: 379 stars, 42 forks, default branch main, pushed 2024-05-17'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: e9b0edf1acb9b5e8cf7604fa959eedb176bfe05a148cf590af4b0bc278337db7
+  - url: https://crates.io/api/v1/crates/zkml/0.0.1
+    shows: 'zkml 0.0.1, created 2023-02-27: license AGPL-3.0-or-later, has_lib false, bin_names [main], one Rust
+      file, crate_size 15,542 bytes'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 804acf874416c8042d31dfb36b141d94288cdc0095d6f16f854a96ea707c7192
 capability:
   score: 5
   basis: feature_matrix
@@ -87,6 +97,13 @@ capability:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: cab831a374651c792b70cd8fbdd8fe3cd9e01189d453818e671c0484ce8ea62d
+  - url: https://raw.githubusercontent.com/ddkang/zkml/main/Cargo.toml
+    shows: Package zkml 0.0.1, "Zero-knowledge machine learning", license = "LICENSE" (the file name put in the
+      SPDX field), homepage github.com/ddkang/zkml, repository github.com/ddkang/zkml-public.git; depends on the
+      PSE halo2, halo2_gadgets and halo2_proofs crates
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 37bc67e3dcbf54d5218a3d02a6fb95d7221d2aeacc27d3597e02046dd2f40f4e
   - url: https://arxiv.org/abs/2210.08674
     shows: '"Scaling up Trustless DNN Inference with Zero-Knowledge Proofs", the paper the README cites for implementation
       details'
