@@ -302,7 +302,14 @@ def test_local_scores_matches_check_rubrics_split():
     # `gr00t` (NVIDIA OneWay Noncommercial on one declared SKU), `maniskill` (CC-BY-NC-4.0 assets
     # beside Apache-2.0 code), `carla` (an unversioned CC-BY on its assets) and `pybullet` (zlib,
     # OSI-approved but not listed in the osi tier).
-    assert len(deferred) == 18
+    #
+    # 18 -> 20 with the classic_ml_cv first-tranche promotion, sixteen products in. Both additions
+    # are license-tier gaps on the pretrained ladder, recorded rather than hand-closed per
+    # promote-category step 7: `tabpfn`, whose distributed checkpoints carry Prior Labs'
+    # non-commercial TABPFN-2.5/2.6/3/3.5 licenses, and `rf-detr`, whose XL and 2XL detection
+    # weights carry Roboflow's Platform Model License 1.0. Each closes on a maintainer's tier
+    # ruling, not on more work.
+    assert len(deferred) == 20
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
