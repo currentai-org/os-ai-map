@@ -1,0 +1,408 @@
+# Promotion PRs #729–#737: review
+
+Sources: `gh pr view` bodies, `sources/categories/<cat>.yaml` on each `origin/claude/promote-<cat>` branch, score and product files on each branch, three-dot diffs against `origin/main` (473ba19f), `sources/rubrics/*.yaml` and `docs/sweeps/2026-09-26-*.md` on `origin/main`, and `gh pr checks`. Read 2026-09-27.
+
+## Cross-cutting
+
+- **CI `validate` shows red on #730–#735.** All six fail at the same step: `check_corpus_diff` printed "stage moved without the stage-move label". Every one of those PRs now carries `stage-move`, so the label was probably added after the run. The job needs a re-run. #736 and #737 were still pending, and #729 (no stage move) is green.
+- **The multi-SKU rule is applied three different ways.**
+  - #733 lets superseded or gated research checkpoints govern: canary and moshi drop to 2/restricted.
+  - #731 does the same for gr00t, where the superseded GR00T-H N1.6 is NC.
+  - #734 and #737 read openness on the governing or current release instead. #734 internvl declares `OpenGVLab/InternVL3-78B` (Qwen license, per its own product comment) but is scored on InternVL3.5 Apache-2.0. The score is 3 either way.
+  - #733 raises this as a shared-rule question, but the other PRs don't reference it.
+- **Verifier counts predate later fixes.** Cited-source counts now run higher than the verifier numbers in the bodies. Unique URLs in the score files vs body: 729 51 vs 46; 730 129 vs 139 "sources"; 731 122 vs 118; 734 153 vs 148; 735 109 vs 106; 736 87 vs 83; 737 191 citations vs 186. This is expected given the "sources added" fixes, but no body says the verifier numbers are pre-fix.
+- **Checked and clean:**
+  - No Linear ids (`OSO-`/`CUR-`) and no "Kariba" in any diff or body.
+  - Added-product counts match the bodies for all nine PRs.
+  - Registry row counts left on each branch match the bodies.
+  - Every deferred slug is on its category roster.
+  - Every license string that no tier names is either deferred or explained (see licenses.md).
+
+---
+
+## #729 datacenter_accelerators
+
+- **Products added:** 12 (diff) / 12 (body). **Taxonomy flip:** no, stays `preliminary` (taxonomy.yaml untouched). The body says why: 6 of 12 fully scored, below the 10 needed, and no strapline yet.
+- **Products:**
+  - nvidia-blackwell: adoption leader, frontier merchant GPU
+  - amd-instinct-mi350: second merchant GPU line, open ROCm
+  - google-tpu-ironwood: closed frontier comparator (ADR-005), cloud TPU
+  - cerebras-wse-3: wafer-scale sub-type
+  - aws-trainium3: closed frontier comparator, rent-only
+  - intel-gaudi-3: third merchant line, Ethernet scale-out
+  - d-matrix-corsair: in-memory-compute inference sub-type
+  - tenstorrent-blackhole: most open stack (Apache-2.0 down to firmware)
+  - furiosa-rngd: low-power inference card
+  - sambanova-sn40l: dataflow sub-type
+  - qualcomm-cloud-ai-100: inference card from a mobile-silicon vendor
+  - ibm-spyre: system-bundled sub-type
+- **Capability:** per unit sold, dense throughput at 8-bit or lower.
+  - 5: at least 4 PFLOPS. Top reference nvidia-blackwell; mi350, ironwood and wse-3 sit at it.
+  - 4: 1.5–4 PFLOPS. trainium3 and gaudi-3 one below Blackwell; corsair at gaudi-3.
+  - 3: 0.4–1.5 PFLOPS. blackhole, rngd, sn40l and cloud-ai-100 one below gaudi-3.
+  - 2: empty. 1: unused. spyre abstains.
+  - The files match (4/3/4, 1 null).
+- **Verifier:**
+  - Re-derived every score. All 46 shas matched, and every capability number, rung and `shows` quote held.
+  - Fixes applied: Spyre memory now cited; Ironwood `retail` unrecorded; thin retail evidence narrowed (Cerebras, Furiosa, Intel); four unsupported clauses removed; NVIDIA COPYING and TT-Forge LICENSE citations added.
+- **Deferrals (6, all recorded 3/documented):**
+  - google-tpu-ironwood: rent-only, and renting has no value in the `retail` vocabulary.
+  - aws-trainium3: rent-only, same reason.
+  - d-matrix-corsair: `retail: restricted` (select, qualified customers).
+  - sambanova-sn40l: `datasheets: brief`, no retail listing.
+  - qualcomm-cloud-ai-100: `datasheets: brief`, and the HPE store returned 403 on six attempts.
+  - ibm-spyre: `datasheets: brief` (no throughput figure).
+- **Flags:**
+  - Main is not an ancestor. The branch is one bot commit (473ba19f, notebook regen) behind `origin/main`, while the body says main is merged in. Trivial, and GitHub shows CLEAN.
+  - Every product's adoption is null. The body never mentions adoption.
+  - Test logic changed: `tests/test_goldens.py` now subtracts preliminary head products from a structural invariant. Needs a reviewer's eye, since it's the first PR to put head products in a preliminary category.
+  - Deferred products carry a score (3/documented) that the body itself asks about (Q2: does this overstate openness for rent-only or approved-buyer parts?).
+  - Recipe note uses spaced-hyphen splices ("per unit sold - one package ... - read on dense throughput").
+  - No British spellings or license strings.
+
+## #730 assurance_evidence
+
+- **Products added:** 21 / 21. **Taxonomy flip:** yes, to `published`.
+- **Products:**
+  - nvtrust: GPU/NVSwitch attestation; spans nvtrust and attestation-sdk
+  - ezkl: ZK prover, adoption leader of the provers
+  - deepprove: full-LLM ZK proofs
+  - c2pa-sdk: signing/provenance, category adoption leader
+  - model-signing: OpenSSF OMS reference implementation
+  - halo-record: tamper-evident audit trail
+  - compliance-trestle: OSCAL compliance-as-code
+  - croissant: dataset documentation format
+  - trustmark: C2PA-listed watermark with an open decoder
+  - invisible-watermark: most-downloaded watermark library
+  - owasp-aibom-generator: CycloneDX AI-BOM
+  - venturalitica: OSCAL mapped to EU AI Act articles
+  - content-seal: Meta watermark suite
+  - ibm-watsonx-governance: closed comparator
+  - credo-ai: closed comparator
+  - ai-verify: government-backed governance testing
+  - compl-ai: EU AI Act benchmark
+  - validmind-library: open client of a closed platform
+  - verifywise: BSL-1.1 GRC platform
+  - mlte: test-and-evaluation reports
+  - synthid-text: keyed text watermark
+- **Capability:**
+  - 5 "verifies the execution": nvtrust (top anchor), ezkl, deepprove.
+  - 4 "signed or tamper-evident": model-signing, c2pa-sdk, halo-record.
+  - 3 "standard format": 7 products.
+  - 2 "self-attested": 8 products.
+  - 1: empty.
+  - Distribution 3/3/7/8/0 matches the files. Rung 2 at 38% was reviewed.
+- **Verifier:** no score changes. Openness 18/18, adoption and capability all held, 139 sources matched. 16 prose and evidence findings were applied in a second commit.
+- **Deferrals (3, hand 2/source_available):**
+  - ezkl: no license grant (`none-declared`).
+  - deepprove: `Lagrange-License`, evaluation-only; Cargo.toml and the GitHub label contradict the LICENSE.
+  - content-seal: compound with CC-BY-NC-4.0 members; the software ladder has no NC tier.
+- **Flags:**
+  - validmind-library was not deferred, though the sweep record's "License notes for promotion" says it should be (custom `AGPL-3.0 OR ValidMind-Commercial-License`). The PR argues `source: partial` settles the score first, and raises it as Q4.
+  - Body says "All 139 sources match", but the files hold 148 citations, 129 unique URLs. The count is probably from before the fixes.
+  - Four `ungated` readings rest on thin evidence (invisible-watermark, mlte, compl-ai, nvtrust), at medium confidence. They're below the 2026-09-16 acceptance standard, per the body's own Q2.
+  - The publish flip depends on Q1 (nvtrust identity). The body says to revert the line if Q1 blocks.
+  - British spellings "recognised/standardised" appear only inside a quoted `shows` string (AI Verify's own text), so they're fine.
+  - Em-dashes appear only in quoted source text.
+  - CI red (stage-move label; see cross-cutting).
+
+## #731 robotics_embodied
+
+- **Products added:** 22 / 22. **Taxonomy flip:** yes.
+- **Products:**
+  - isaac-lab: GPU robot-learning framework, top of software scale
+  - genesis: multi-physics plus photoreal rendering
+  - maniskill: GPU sim with NC assets
+  - mujoco: reference contact engine, adoption leader
+  - carla: driving simulator
+  - robosuite: manipulation benchmark
+  - pybullet: CPU physics baseline
+  - lerobot: real-robot learning stack
+  - gemini-robotics: closed frontier comparator
+  - gr00t: top open model
+  - pi0: Physical Intelligence VLA
+  - rdt: bimanual cross-embodiment
+  - openvla: most-downloaded open VLA
+  - octo: fully reproducible policy
+  - smolvla: compact community-data VLA
+  - open-x-embodiment: pooled dataset
+  - agibot-world: largest single-fleet collection
+  - nvidia-physical-ai-dataset: most-downloaded robotics dataset
+  - droid: in-the-wild single platform
+  - berkeley-humanoid-lite: open humanoid
+  - openarm: open bimanual arm
+  - so-101: low-cost arm
+- **Capability, per type:**
+  - Models: tops out at gemini-robotics (5); gr00t is the top open model.
+  - Software: isaac-lab tops the scale (5); lerobot abstains.
+  - Datasets: open-x-embodiment (5).
+  - Hardware: berkeley-humanoid-lite (5).
+  - Distribution 4/8/6/2/1 over 21 matches the files. Rung 4 at 38% was reviewed.
+- **Verifier:**
+  - Re-fetched 118 URLs.
+  - Moves: mujoco 3→4, smolvla 3→2, robosuite 2→3.
+  - gr00t deferral text corrected, and the asset-license rule written into the note.
+  - so-101, nvidia and berkeley fixes plus 10–15 prose fixes applied.
+- **Deferrals (4):**
+  - gr00t, recorded 2/restricted: `NVIDIA-OneWay-Noncommercial` on GR00T-H N1.6 and the Trocar fine-tune.
+  - maniskill, recorded 2/source_available: CC-BY-NC-4.0 bundled assets on the software ladder.
+  - carla, recorded 3/source_available: unversioned "CC-BY" assets, plus Unreal Engine terms.
+  - pybullet, recorded 5/open_source: zlib isn't listed in the software `osi` examples.
+- **Flags:**
+  - British spellings in the PR's own prose:
+    - `sources/scores/pybullet.yaml`: "contact modelling"
+    - `sources/scores/openarm.yaml`: "a strongly reciprocal CERN open-hardware licence", a paraphrase in the note rather than a quote
+  - "LICENCE" (the file name of the Berkeley assets repo) and "licenced" (inside an NVIDIA quote in isaac-lab) are external text, so they're fine.
+  - Test logic changed: `tests/test_serialize_rubric.py` now excludes tier-free types (robot bodies) from the license-row check. The change is deliberate, but it loosens that check.
+  - Isaac Lab scored 5 despite its required proprietary Isaac Sim runtime. The robotics sweep listed "the Isaac Sim additional software and materials license" among strings to defer, but the PR scores the BSD-3 artifact and raises it as Q2.
+  - pi0 records Apache-2.0 only. The sweep listed the Gemma terms on LeRobot's pi0 ports for a ruling; the PR notes it as Q5 (no score effect).
+  - CI red (stage-move).
+
+## #732 classic_ml_cv
+
+- **Products added:** 16 / 16. **Taxonomy flip:** yes.
+- **Products:**
+  - autogluon: AutoML, top anchor
+  - scikit-learn: adoption leader
+  - xgboost: GBDT leader
+  - statsmodels: statistics and time series
+  - sktime: time-series toolkit
+  - prophet: forecaster
+  - spacy: production NLP
+  - nltk: classical NLP
+  - tabpfn: tabular foundation model leader
+  - tabicl: fully open tabular foundation model
+  - opencv: vision primitives
+  - timm: backbone zoo
+  - ultralytics: vision adoption leader
+  - rf-detr: real-time detector
+  - amazon-rekognition: closed comparator
+  - google-cloud-vision: closed comparator
+- **Capability:** how much of the prediction task the product does for you.
+  - 1: opencv.
+  - 2: xgboost, prophet.
+  - 3: seven products.
+  - 4: tabpfn, tabicl, google-cloud-vision, ultralytics.
+  - 5: autogluon and amazon-rekognition.
+  - 1/2/7/4/2 matches the files.
+- **Verifier:**
+  - 48 cells: 40 agreed, 6 needed source or note fixes, 2 disagreed.
+  - Ultralytics adoption 3→4 and capability →4, both fixed.
+  - `ungated` confidence lowered to low for statsmodels, prophet and timm.
+  - AutoGluon NOTICE now cited; TabICL and TabPFN wording fixed.
+- **Deferrals (2, hand 2/restricted):**
+  - tabpfn: Prior Labs non-commercial weights licenses (TABPFN-2.5/2.6/3/3.5), plus Prior Labs License 1.1 on TabPFN-2.
+  - rf-detr: `PML-1.0` (Roboflow Platform Model License) on the XL/2XL weights.
+- **Flags:**
+  - The tabpfn record lists only `TABPFN-3-License-v1.0` and cites LICENSE bodies only for 3 and 3.5. The deferral says "the grant text was read on each checkpoint's LICENSE", but the 2.5 and 2.6 license bodies and the Prior Labs License 1.1 (TabPFN-2) have no cited source.
+  - The body says pytest was not rerun after the final fixture commit.
+  - Heavy spaced-hyphen dash splices in added prose: 18 lines, including the strapline ("on pretrained weights instead - TabPFN's ... - and on"), product descriptions and score notes.
+  - Q6 flags gensim's LGPL-2.1 (not in the osi examples) ahead of any future promotion.
+  - CI red (stage-move).
+
+## #733 speech_audio
+
+- **Products added:** 22 / 22. **Taxonomy flip:** yes.
+- **Products:**
+  - whisper: adoption leader, legacy reference
+  - qwen-asr: best open row on the Open ASR board
+  - parakeet: NVIDIA ASR line
+  - canary: NVIDIA ASR line
+  - cohere-transcribe: 2026 entrant; replaced granite-speech
+  - kokoro: highest adoption
+  - chatterbox: open TTS leader by downloads
+  - qwen-tts: open TTS leader by downloads
+  - cosyvoice: open TTS leader by downloads
+  - voxcpm: widest language coverage
+  - f5-tts: flow-matching, NC weights
+  - moshi: full-duplex anchor
+  - nemo: engine
+  - faster-whisper: engine
+  - whisper-cpp: engine
+  - sherpa-onnx: engine
+  - pyannote-audio: engine
+  - silero-vad: engine
+  - piper: engine
+  - elevenlabs-tts: closed comparator
+  - deepgram-nova: closed comparator
+  - openai-speech: closed comparator
+- **Capability:**
+  - Models are placed by board position: 5 is top ten or full-duplex, 4 is ranks 11–30, 3 is 31–60, 2 is 61 or lower.
+  - Engines have their own rung text.
+  - Top anchor moshi. Roots: qwen-asr, elevenlabs-tts, nemo.
+  - 3/6/10/3 matches the files.
+- **Verifier:**
+  - Agreed on 22/22 openness walks.
+  - Canary and moshi dropped to 2/restricted (multi-SKU), and canary adoption 3→2.
+  - qwen-tts, f5-tts and voxcpm capability re-sourced.
+  - deepgram and openai adoption now abstain; whisper-cpp gating statement added.
+- **Deferrals:** none. `scoring_recipe.deferred` is absent, which is consistent.
+- **Flags:**
+  - canary and moshi are 2/restricted only because of a superseded or gated research checkpoint (the multi-SKU scope question, Q1). This conflicts with how #734 and #737 read the governing release.
+  - faster-whisper and sherpa-onnx are 5/open_source on `ungated` without a maintainer statement, below the post-2026-09-16 standard (Q2).
+  - elevenlabs-tts adoption 4 rests on a cumulative "1M+ users" figure (Q5).
+  - No British spellings. CI red (stage-move).
+
+## #734 multimodal_models
+
+- **Products added:** 22 / 22. **Taxonomy flip:** yes.
+- **Products:**
+  - qwen-omni: omni leader
+  - minicpm-o: full-duplex omni
+  - nemotron-omni: omni plus computer use
+  - videollama: audio and video line
+  - qwen-vl: category adoption leader
+  - internvl: major family
+  - glm-v: GUI benchmarks
+  - kimi-vl: MoE, GUI
+  - ui-tars: GUI adoption leader
+  - holo: computer use
+  - fara: computer use
+  - minicpm-v: edge VLM
+  - smolvlm: small, training code
+  - molmo: fully open
+  - llava: fully open OV-2
+  - nemotron-vl: document and video VLM
+  - moondream: small-model leader
+  - paligemma: transfer VLM
+  - florence-2: captioning and detection
+  - blip: captioning staple
+  - janus: unified
+  - bagel: unified
+  - No closed row, per decision record Q7.
+- **Capability:**
+  - 5: omni in (qwen-omni).
+  - 4: acts in a live GUI (ui-tars root).
+  - 3: video and multi-image (minicpm-v root).
+  - 2: documents on one image (moondream root).
+  - 1: single-image perception (florence-2 root).
+- **Verifier:**
+  - Re-fetched 148 URLs; 7 disagreements, all fixed.
+  - Capability moves: kimi-vl 3→4, llava 2→3, videollama 3→5.
+  - llava re-cited on OV-2; code values set to partial for kimi-vl and nemotron-vl; paligemma prose fixed.
+- **Deferrals (2, hand 3/open_weights):**
+  - moondream: `Moondream-Model-License-1.0`.
+  - nemotron-omni: `NVIDIA-Open-Model-Agreement`, a separate document from the Open Model License.
+- **Flags:**
+  - **The distribution is stale in both the body and the category note.** Both say "5→4, 4→7, 3→6, 2→2, 1→3", but the score files give 4/7/**5**/2/**4**:
+    - rung 3: minicpm-v, smolvlm, molmo, llava, nemotron-vl
+    - rung 1: florence-2, blip, janus, bagel
+    - The widest rung is still 7 of 22 (32%), so the review-trigger conclusion holds, but the `scoring_recipe.note` text is wrong.
+  - internvl declares `OpenGVLab/InternVL3-78B`, whose license is Qwen-derived by the product's own comment. The record scores on InternVL3.5 Apache-2.0 only. The multimodal sweep listed "the Qwen license on InternVL3-78B" for a ruling. Qwen-License-Agreement is already `use_bounded` (cap 3), so the score doesn't move, but the multi-SKU treatment differs from #733.
+  - Q8 notes a fetched LLaVA-OneVision-2 README with an embedded block addressed to AI agents. It was treated as data.
+  - No British spellings. CI red (stage-move).
+
+## #735 federated_learning
+
+- **Products added:** 15 new, plus 2 moved in (pysyft product and score modified; syfthub score modified; roster moves out of ml_frameworks and orchestration_agents). The body's "17 head products" is consistent with that. **Taxonomy flip:** yes.
+- **Products:**
+  - nvidia-flare: production/HPC leader, top anchor
+  - flower: adoption leader, open core
+  - fate: cross-silo, HE/MPC
+  - vantage6: health analytics network
+  - fed-biomed: biomedical, secure aggregation
+  - appfl: HPC, national lab
+  - pysyft (moved): remote computation
+  - apheris-networks: closed comparator
+  - rhino-fcp: closed comparator
+  - plato-fl: research runtime
+  - fedtree: federated GBDT
+  - federated-compute-platform: cross-device, source partial
+  - fedjax: simulation
+  - tensorflow-federated: simulation
+  - pfl-research: private-FL simulation
+  - pfllib: personalized FL
+  - syfthub (moved): federated RAG
+- **Capability:** federation reach.
+  - 5: nvidia-flare.
+  - 4: cross-silo runtime; eight products, recorded against flower.
+  - 3: plato-fl, fedtree, federated-compute-platform.
+  - 2: fedjax, tff, pfl-research, pfllib, syfthub.
+  - 1/8/3/5/0 matches the files.
+- **Verifier:**
+  - Openness 15/16 (federatedscope pulled back), adoption 15/16 (fate re-instrumented to pyfate), capability 18/18.
+  - FLARE citation re-pointed, unsupported phrases removed, strapline simulator count fixed.
+- **Deferrals:** none. `deferred` is absent, which is consistent.
+- **Flags:**
+  - British spellings in the PR's own prose:
+    - `sources/categories/federated_learning.yaml`: "data-centre silo" (also in the body)
+    - `sources/scores/apheris-networks.yaml`: "data centre"
+  - The body says every value "cites a source re-fetched live on 2026-09-27". pysyft and syfthub keep openness and adoption sources dated 2026-06-22 and 2026-08-12/13, which the body elsewhere calls "unchanged". A mild overclaim.
+  - vantage6's LICENSE is Apache-2.0 while PyPI says MIT. It's recorded in comments, and both are OSI.
+  - syfthub's membership depends on the decision record's litmus widening (Q1).
+  - `MEASUREMENTS_DIGEST` in `tests/test_adoption_evaluation.py` re-pinned. The body documents the before/after diff.
+  - CI red (stage-move).
+
+## #736 model_hubs
+
+- **Products added:** 14 / 14. **Taxonomy flip:** yes.
+- **Products:**
+  - huggingface-hub-platform: top anchor, closed server
+  - modelscope: leading non-HF open-upload hub
+  - ollama-library: `ollama push` registry
+  - civitai: image hub, open core
+  - kaggle-models: absorbed TF Hub
+  - vertex-ai-model-garden: closed curated catalog
+  - azure-ai-foundry-models: closed curated catalog
+  - sagemaker-jumpstart: closed curated catalog
+  - nvidia-ngc-catalog: vendor catalog
+  - qualcomm-ai-hub-models: vendor catalog, open core
+  - csghub: self-hosted HF counterpart, open core
+  - matrixhub: private HF replacement
+  - kubeflow-hub: model registry
+  - monai-model-zoo: medical domain zoo
+- **Capability:** registry scope.
+  - 5: HF (top anchor), modelscope, csghub.
+  - 4: ollama, civitai, kaggle, matrixhub, kubeflow.
+  - 3: the three hyperscaler catalogs.
+  - 2: ngc, qualcomm, monai.
+  - 1: none.
+  - 0/3/3/5/3 matches the files.
+- **Verifier:**
+  - No blocking issues, 10 minor ones, all fixed.
+  - Confirmed the CSGHub EE gate, the Civitai private services, and MatrixHub/Kubeflow/MONAI as ungated.
+  - Confirmed NGC and MONAI at 2 and Kaggle at 4.
+- **Deferrals:** none (all promoted licenses are Apache/MIT/BSD-3).
+- **Flags:**
+  - The body says a CHANGELOG entry ("model_hubs published with 14 products") is still owed under Unreleased.
+  - 7 of 14 products have no adoption (null); all 7 abstain.
+  - Qualcomm is read as open core although the Workbench is free (Q1). The `core_gated` question asks about a *paid* tier.
+  - The branch was merged with `-X ours origin/main`. The body reports the diff contains only this PR's files.
+  - CI pending at read time.
+  - No British spellings.
+
+## #737 media_generation
+
+- **Products added:** 30 / 30. **Taxonomy flip:** yes. runway-gen was removed from the registry under ADR-005, not promoted.
+- **Products:**
+  - Image: gpt-image (closed frontier), nano-banana (closed), qwen-image (top open line behind a hosted 3.0), flux (open adoption leader), z-image (Apache), stable-diffusion (install base), midjourney (best-known closed).
+  - Video: minimax-hailuo (open in the top three), seedance and veo (closed), ltx (video with audio), wan (Apache line, hosted 3.0 leads), hunyuan-video (territorial case), mochi (Apache), liveportrait (portrait animation).
+  - 3D: trellis (fully open), meshy (closed frontier), hunyuan-3d (behind a hosted 3.0), triposg (MIT).
+  - Music: suno (frontier), lyria (middle peer), stable-audio, musicgen (NC), ace-step (vocals).
+  - Software: comfyui, stable-diffusion-cpp, invokeai, nunchaku, audiocraft, stable-diffusion-webui.
+- **Capability:**
+  - Models are placed by board position within a modality: 5 is top three, 4 is the best open entry or a closed entry above all open ones, 3 is upper half, 2 is lower half, 1 is absent from the board.
+  - Model roots: gpt-image, minimax-hailuo, suno, trellis. Software is scored by breadth, root comfyui.
+  - Models 6/3/7/5/3 and software 1/0/1/3/1 match the files.
+- **Verifier:**
+  - No scoring errors across 186 citations, with prose and citation fixes applied.
+  - The body says the #720-ruling changes to wan, qwen-image, hunyuan-3d and stable-audio came after the verifier and had no independent re-read.
+- **Deferrals (10):**
+  - License-tier gaps (7):
+    - flux, hand 2: FLUX Non-Commercial v2.1/v2.0/v1.1.1.
+    - stable-diffusion, hand 3: Stability Community License plus CreativeML OpenRAIL++-M.
+    - stable-audio, hand 3: Stability Community License.
+    - ltx, hand 3: LTX-2.x and LTX-2 Community Licenses, LTXV Open Weights 0.X, Open-RAIL-M.
+    - hunyuan-video, hand 3: Tencent Hunyuan Community License (territorial exclusions).
+    - minimax-hailuo, hand 3: MiniMax H3 Community License (territorial, including the USA).
+    - liveportrait, hand 3: MIT, bundling InsightFace NC models.
+  - Closed frontier on an open line, openness null (3): wan, qwen-image, hunyuan-3d.
+- **Flags:**
+  - **Stale body.** Q2 says "Branch not merged with main ... the two-step merge still needs to be run". The branch now contains both merges (`4b8a2290` merging origin/pr720, `9cd4f556` merging origin/main), and `origin/main` is an ancestor. Q2 should be struck.
+  - The verifier says "All nine hand scores". There are 7 license-gap hand scores plus 3 null-score deferrals. The count doesn't reconcile with the current file, probably because it predates the #720 changes.
+  - Three products carry null openness in a published category (Q1).
+  - British spelling in the PR's own prose: `sources/categories/media_generation.yaml`, "how availability is modelled". "LICENCE.txt" in nunchaku is a real file name, so it's fine.
+  - AI-tell prose. "This is a gap signal, not bookkeeping." / "That gap is the finding, not bookkeeping." repeats in three deferred reasons, the recipe note and the PR body. There are also 14 spaced-hyphen dash-splice lines (strapline "three open lines - Wan, Qwen-Image and Hunyuan3D - now keep ...", the deferred reasons, and the note).
+  - Territorial exclusion is a new shared-rubric question the PR raises, and it decides 3 products.
+  - The MiniMax H3 download figure (3.66M in 30 days for a repo created 2026-07-28) is flagged by the PR itself.
+  - CI pending at read time.

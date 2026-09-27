@@ -3,7 +3,7 @@ Blocks are copied verbatim (so notes and quoting survive), deduped on (org, plat
 and sorted by org, platform, handle. Usage: rebuild_org_handles.py REF [REF ...]"""
 import re, subprocess, sys
 from pathlib import Path
-R = Path("/home/user/os-ai-map")
+R = Path(".")
 def blocks_of(text):
     head, _, body = text.partition("handles:\n")
     out = []
