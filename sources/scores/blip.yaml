@@ -117,17 +117,17 @@ adoption:
     http_status: 200
     content_sha256: e628ecaecef994662e2f98e62b7ced42f2ea6fc1e139fd2854fb5998d1af5db4
 capability:
-  score: 3
+  score: 2
   basis: feature_matrix
-  basis_detail: interleaved multi-image input from the xGen-MM v1.5 card and video input from xGen-MM-Vid
-  value: 'Interleaved images and text in, text out; xGen-MM-Vid takes 8-frame video. xGen-MM v1.5 interleave:
-    MMMU 41.1, TextVQA 71.0, BLINK 49.7, Mantis-eval 56.7; BLIP-2 zero-shot VQAv2 65.0.'
+  basis_detail: interleaved multi-image input and text reading from the xGen-MM v1.5 card and paper
+  value: 'Interleaved images and text in, text out. xGen-MM v1.5 interleave: MMMU 41.1, TextVQA 71.0, BLINK
+    49.7, Mantis-eval 56.7; BLIP-2 zero-shot VQAv2 65.0.'
   confidence: medium
-  relative_to: minicpm-v
+  relative_to: moondream
   relation: at
-  note: The BLIP line now reads interleaved sequences of several images, and its BLIP-3-Video model answers
-    questions about short video clips. It is not benchmarked on document or chart reading, and it has no
-    audio or computer-use models, so it sits level with MiniCPM-V.
+  note: xGen-MM, the current BLIP model, reads interleaved sequences of several images and the text in them,
+    beyond BLIP-2's single image. It reports no document or chart benchmark and takes no video, so it sits
+    level with Moondream; Salesforce's separate BLIP-3-Video model is not counted here.
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5/raw/main/README.md
@@ -141,12 +141,6 @@ capability:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: b83144d00414d364c949f264f77025987cf3544548da4105a5aaa02fd5382c79
-  - url: https://huggingface.co/Salesforce/xgen-mm-vid-phi3-mini-r-v1.5-128tokens-8frames/raw/main/README.md
-    shows: '"Here, we are sharing the 128 token version trained to take 8-frame video inputs"; accuracy
-      on MSVD-QA'
-    accessed: '2026-09-27'
-    http_status: 200
-    content_sha256: 568029b9934edb4c2bccb9a548537c56611139653e352d545fbfc5ae56c932a1
   - url: https://arxiv.org/abs/2301.12597
     shows: BLIP-2 "outperforms Flamingo80B by 8.7% on zero-shot VQAv2"
     accessed: '2026-09-27'
