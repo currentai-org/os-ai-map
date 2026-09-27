@@ -12,7 +12,7 @@ Sources: `gh pr view` bodies, `sources/categories/<cat>.yaml` on each `origin/cl
   - #733 raises this as a shared-rule question, but the other PRs don't reference it.
 - **Verifier counts predate later fixes.** Cited-source counts now run higher than the verifier numbers in the bodies. Unique URLs in the score files vs body: 729 51 vs 46; 730 129 vs 139 "sources"; 731 122 vs 118; 734 153 vs 148; 735 109 vs 106; 736 87 vs 83; 737 191 citations vs 186. This is expected given the "sources added" fixes, but no body says the verifier numbers are pre-fix.
 - **Checked and clean:**
-  - No Linear ids (`OSO-`/`CUR-`) and no "Kariba" in any diff or body.
+  - No tracker ids or internal names in any diff or body.
   - Added-product counts match the bodies for all nine PRs.
   - Registry row counts left on each branch match the bodies.
   - Every deferred slug is on its category roster.
