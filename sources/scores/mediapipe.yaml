@@ -1,0 +1,114 @@
+product: mediapipe
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/google-ai-edge/mediapipe
+    core-gated:
+      value: ungated
+      detail: no paid edition; Google publishes the framework and the solution models openly
+  confidence: medium
+  note: Apache-2.0 and built from the public repository, which moved from the google account to google-ai-edge.
+    Google sells no edition of it, and the model cards for its solution models carry Apache-2.0 as well.
+  raw: license:Apache-2.0(OSI);source:public(github.com/google-ai-edge/mediapipe);core-gated:ungated(no
+    paid edition; Google publishes the framework and the solution models openly)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, with an appended notice for bundled Lucent Technologies
+      utf code.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/google-ai-edge/mediapipe
+    shows: Repository record for google-ai-edge/mediapipe, not archived and not a fork, license apache-2.0,
+      last pushed 2026-09-25.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 698a2be9a401f1d13e53b0d70e9f208ec269ac03c70b014f36b6be14e5d9f025
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/README.md
+    shows: 'README: "MediaPipe Solutions provides a suite of libraries and tools for you to quickly apply
+      artificial intelligence (AI) and machine learning (ML) techniques in your applications"; "MediaPipe
+      models: Pre-trained, ready-to-run models for use with each solution"; no paid tier mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 451a5c70b2ec2fee1f0aa34612cd7da7754863e5d7d11e4f1b9c2cf051adb5a3
+    establishes:
+    - source
+    - core-gated
+  - url: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20(Lite_Full)%20with%20Fairness%20Oct%202021.pdf
+    shows: 'Hand Tracking model card: "LICENSED UNDER Apache License, Version 2.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 43127ff8a92e22717f0d8c30dab3efef4641a29cbf50b15ae3de001be94ab76b
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/google-ai-edge/mediapipe/files/master
+    shows: Repository tree of 4,866 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa9dfa92aef1e345c97ef47eb68611c07a816485dc01330a05cfc97535126f2f
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the mediapipe package. Android, iOS and web installs, which
+    are most of MediaPipe's deployments, are not counted, so this is a floor.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/mediapipe/recent
+    shows: last_month 1,838,759 downloads of mediapipe
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 431cf2195b166a3b2e5278918cd0fa4475a3870cadac5e2833da36ea01c8e5d8
+capability:
+  score: 4
+  basis: feature_matrix
+  value: ready-to-run on-device pretrained models for face detection and landmarks, hand and pose landmarks,
+    gesture recognition, holistic tracking, interactive segmentation, image classification, embedding
+    and segmentation, object detection, audio and text classification and language detection, plus on-device
+    LLM inference, with Model Maker retraining for a few tasks
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: MediaPipe is built to be dropped into an app and used as is. Its landmark trackers and its interactive
+    segmenter, which cuts out whatever object the user taps, work on any image with no training, which
+    is what places it beside Ultralytics. Its object detector and classifier predict fixed benchmark classes,
+    and retraining them relies on Model Maker, which Google no longer actively maintains.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/,
+        yolo/pose/ and the sam modules - the models it runs on the user's own images without training.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ai.google.dev/edge/mediapipe/solutions/guide
+    shows: 'Solutions guide: vision tasks face detection, face landmark detection, gesture recognition,
+      hand landmark detection, holistic landmark detection, image classification, image embedding, image
+      segmentation, interactive segmentation, object detection and pose landmark detection; text and audio
+      tasks; generative AI tasks including LLM Inference.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 20b8b26e5e68858f9826384bb3573c221d7e66f3e07a462b7dd2e413de4a427d
+  - url: https://ai.google.dev/edge/mediapipe/solutions/model_maker
+    shows: 'Model Maker page: "Deprecated: MediaPipe Model Maker is still available, but is no longer
+      actively maintained."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d181d1dab17698a42410ca5d82afd54f2550ad98ca1b669ec7fe01fce57885a2
