@@ -368,10 +368,11 @@ the shared tiers before promotion.
 ## Open questions left for the maintainer
 
 1. **The closed flagship on an open line.** Wan 2.5 to 3.0 and Hunyuan3D 2.5 to 3.1 are API-only,
-   Qwen-Image 3.0 is closed and Qwen-Image-2.1 is non-commercial. The proposal, recorded in the
-   category `comments`: the newest distributed release governs openness, and the closed flagship is
-   written into the product's comments. It decides whether `wan` scores open, and identity.md
-   currently says the current release governs, so it needs an explicit ruling.
+   Qwen-Image 3.0 is closed and Qwen-Image-2.1 is non-commercial. *Ruled in the #720 review
+   (2026-09-27):* the proposal that the newest distributed release governs openness was rejected.
+   The current release governs, as identity.md says. The affected products keep evidence for both
+   releases and are deferred at promotion. How availability is modelled separately from openness
+   stays open for the maintainer.
 2. **Runway** was outside the fetched arena top 25 (W0012). Keep it as a closed comparator, or drop
    it at promotion under ADR-005? Midjourney is kept regardless.
 3. **Capability ladder.** The within-modality arena reading in `scoring_recipe.note` is a sketch. 3D
