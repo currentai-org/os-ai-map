@@ -18,8 +18,8 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
-- Second promotion tranche for eight of the new categories, 71 head products: classic_ml_cv 34,
-  speech_audio 17, media_generation 6, robotics_embodied 5, multimodal_models 5,
+- Second promotion tranche for eight of the new categories, 72 head products: classic_ml_cv 34,
+  speech_audio 18, media_generation 6, robotics_embodied 5, multimodal_models 5,
   datacenter_accelerators 2, assurance_evidence 1 and model_hubs 1; openml moves to the
   benchmark_eval_data registry ([#749](https://github.com/currentai-org/os-ai-map/pull/749)).
 - First promotion tranche for nine new categories, 174 head products: assurance_evidence,
