@@ -485,9 +485,17 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # langtrace (#695) declares its Python SDK: applications install it to send traces, so it
     # counts instrumented applications, not deployments of the platform.
     assert inputs.non_primary_artifacts["langtrace"] == {("pypi", "langtrace-python-sdk")}
+    # The speech_audio promotion: seven open speech models declare the inference package that
+    # loads their Hub weights, so the package's installs are already inside the Hub downloads.
+    speech_packages = {
+        "kokoro": "kokoro", "chatterbox": "chatterbox-tts", "qwen-asr": "qwen-asr",
+        "qwen-tts": "qwen-tts", "f5-tts": "f5-tts", "voxcpm": "voxcpm", "moshi": "moshi",
+    }
+    for slug, package in speech_packages.items():
+        assert inputs.non_primary_artifacts[slug] == {("pypi", package)}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
-        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace",
+        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", *speech_packages,
     }
 
 

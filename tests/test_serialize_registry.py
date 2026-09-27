@@ -314,6 +314,17 @@ AFROBENCH_MEMBERS = (
 )
 
 
+SPEECH_MODEL_PACKAGES = {
+    "kokoro": "kokoro",
+    "chatterbox": "chatterbox-tts",
+    "qwen-asr": "qwen-asr",
+    "qwen-tts": "qwen-tts",
+    "f5-tts": "f5-tts",
+    "voxcpm": "voxcpm",
+    "moshi": "moshi",
+}
+
+
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     """`hexabot`'s npm widget, `yomo`'s crate, and AfroBench's member datasets, and nothing else.
     A further one would be a curation decision, not a serializer change, and this is where it
@@ -327,7 +338,12 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     counts client installs rather than deployments of the server.
 
     langtrace (#695) is the sixth: its Python SDK counts instrumented applications rather than
-    deployments of the platform."""
+    deployments of the platform.
+
+    The speech_audio promotion adds seven, all one decision: an open speech model's inference
+    package (kokoro, chatterbox-tts, qwen-asr, qwen-tts, f5-tts, voxcpm, moshi) loads its weights
+    from the Hub repositories the product declares, so its installs are already inside those
+    repositories' downloads and the model bands on the Hub, the unit its ladder declares."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -343,7 +359,9 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("qdrant", "pypi", "qdrant-client"),
         ("milvus", "pypi", "pymilvus"),
         ("langtrace", "pypi", "langtrace-python-sdk"),
-    } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS}
+    } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS} | {
+        (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
+    }
 
 
 def test_real_sources_serialize_without_structural_errors():
