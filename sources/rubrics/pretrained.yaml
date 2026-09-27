@@ -76,7 +76,8 @@ openness:
         # per-license reasoning: docs/reference/openness.md, "Creative Commons, vendor terms
         # and other tier extensions".
         examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License, CDLA-Permissive-2.0,
-          CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1, OpenMDW-1.1]
+          CC-BY-4.0, CC-BY-SA-4.0, FAIR-Chemistry-License-v1, OpenMDW-1.1,
+          CreativeML-OpenRAIL++-M, Open-RAIL-M, NVIDIA-Open-Model-Agreement]
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
@@ -84,7 +85,9 @@ openness:
           commercially. Almost every user is inside the bound and may use the model
           commercially without asking. Was `use_restricted` and capped at 2 before the
           universal license scale; see sources/rubrics/model.yaml for why the cap moved and
-          why the tier was renamed alongside it.
+          why the tier was renamed alongside it. A revenue- or usage-bound community license
+          sits here whatever the threshold, and a territorial exclusion caps a license here:
+          it still permits commercial use inside the territories it grants.
         # An acceptable-use policy alone belongs in `permissive_non_osi`, not here — the #117
         # ruling in docs/reference/openness.md, "Two places the map deliberately departs from
         # MOF".
@@ -93,8 +96,12 @@ openness:
         # Llama-3.2-Community-License is spelled in full because sources/signal_routing.yaml's
         # alias resolves the short form to this name, and a tier example is matched after
         # normalization.
+        # The #739 names match sources/rubrics/model.yaml, where each is explained.
         examples: [Llama-3.1-Community-License, Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement,
-          InternLM-Free-Commercial-License]
+          InternLM-Free-Commercial-License, Stability-AI-Community-License, LTX-2.x-Community-License,
+          LTX-2-Community-License, LTXV-Open-Weights-License-0.X, MiniMax-H3-Community-License,
+          LFM-Open-License-1.0, Tencent-Hunyuan-Community-License,
+          Tencent-Hunyuan-3D-Community-License, Moondream-Model-License-1.0]
       commercial_forbidden:
         definition: >
           Weights are published and commercial use is prohibited, or reserved to the vendor.
@@ -103,7 +110,17 @@ openness:
         # license resolves on all of its parts").
         # CC-BY-NC-4.0 is the versioned spelling of CC-BY-NC already listed here; same test.
         examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC, CC-BY-NC-SA-4.0, AlphaGenome-Model-Terms,
-          ASL, AlphaFold-3-Model-Parameters-Terms-of-Use, CC-BY-NC-4.0]
+          ASL, AlphaFold-3-Model-Parameters-Terms-of-Use, CC-BY-NC-4.0, NVIDIA-OneWay-Noncommercial,
+          TABPFN-3-License-v1.0, TABPFN-3.5-License-v1.0, TABPFN-2.6-License-v1.0,
+          TABPFN-2.5-License-v1.1, Prior-Labs-License-1.1, FLUX-Non-Commercial-License-2.1,
+          FLUX-dev-Non-Commercial-License-2.0, FLUX.1-dev-Non-Commercial-License,
+          Qwen-Research-License, PML-1.0, InsightFace-Non-Commercial-Research]
+      unstated:
+        definition: >
+          Weights are published with no license declared anywhere the publisher could declare
+          one. Not open, since there is no grant to rely on, and not closed, since the weights
+          are out. Capped at 2; see sources/rubrics/model.yaml.
+        examples: [none-declared]
       proprietary:
         definition: No public license; weights not distributed.
     multi_sku_rule: >
@@ -149,6 +166,11 @@ openness:
       Open weights you may not use commercially. Downloadable is not the same as usable, and
       this rung sits ahead of the data and code rungs deliberately: publishing the
       pretraining corpus does not buy back the right to use the model.
+  - when: {license_tier: unstated}
+    then: {score: 2, class: restricted}
+    because: >-
+      Weights published with no license declared. Nothing permits using them, so they score
+      with the weights you may not use commercially, above the 1 that closed weights get.
   - when: {license_tier: use_bounded}
     then: {score: 3, class: open_weights}
     because: >-

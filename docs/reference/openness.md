@@ -128,7 +128,7 @@ on something nobody can run is still a 1.
 |---|---|---|
 | **5** | OSI-approved, or open by the Open Definition for data | `osi`, `open_data` |
 | **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, or an acceptable-use policy on conduct | `permissive_non_osi` |
-| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling | `use_bounded` |
+| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling, a territorial exclusion | `use_bounded` |
 | **2** | commercial use prohibited or reserved to the vendor, though source or weights are published; or published with no license stated at all | `commercial_forbidden`, `competition_restricted`, `noncommercial`, `no_derivatives`, `unstated` |
 | **1** | closed or private: nothing published to license, or the license reserves it outright | `proprietary` |
 
@@ -140,7 +140,30 @@ where MOF draws its own line: Class III, its entry point, requires components us
 
 **Published but unlicensed is a 2, not a 1.** There is no grant to rely on, so it is not open,
 but the files are out, and 1 is kept for what is genuinely closed or private. The dataset
-ladder's `unstated` rung applies it.
+ladder's `unstated` rung applies it, and since #739 the software, model and pretrained ladders
+each have an `unstated` tier too. The corpus records the case as `none-declared`: a repository
+with no LICENSE file and no manifest license field (ezkl, pytorch-hub), or a model card with no
+license in its metadata (nanonets-ocr).
+
+**A revenue- or usage-bound community license is a 3, whatever the threshold.** The Stability AI
+Community License binds above USD 1M in annual revenue, LFM Open above USD 10M, Meta's Llama
+licenses above 700M monthly users. The threshold changes how many users meet the bound, and it
+does not change the answer to the 3/2 question, which is whether commercial use is available at
+all.
+
+**A territorial exclusion caps a license at 3.** The Tencent Hunyuan Community License leaves
+out the EU, the UK and South Korea, and the MiniMax H3 Community License leaves out those and
+the USA as well. Inside the territories they grant, commercial use is permitted, so neither
+reaches 2. Excluding whole territories is a bound on who may use the artifact, though, so
+neither can sit higher than `use_bounded`, however permissive the rest of the license is.
+
+**Software gets a `noncommercial` tier.** Published source under a license that forbids
+commercial use, or limits use to evaluation or research, caps at 2 on the software ladder, as it
+already did on the model and dataset ladders. It sits below `competition_restricted`, which
+forbids one class of use, because it forbids all of them. In practice a product lands here
+through a bundled part (content-seal's CC-BY-NC watermarking members, maniskill's CC-BY-NC
+assets, insightface's model packs), under the rule in "A bundled part governs only when the
+product needs it".
 
 **No-derivatives data is a 2, a deliberate exception to the scale's letter.** CC-BY-ND allows
 commercial use and caps nobody, which by the table above would make it a 4. For a corpus the
@@ -221,6 +244,21 @@ cap who may use the artifact, or at what scale — not on the license family's r
 - **CC-BY-NC-4.0 and CC-BY-NC-SA-4.0** land in `commercial_forbidden`, alongside the unversioned
   `CC-BY-NC`: the NC clause answers this tier's one question — does the license permit
   commercial use at all — with no.
+- **CreativeML-OpenRAIL++-M and Open-RAIL-M** (#739) land in `permissive_non_osi` with the rest
+  of the OpenRAIL family under #117: use-based restrictions only, no cap on commerce or scale.
+  **OpenMDW-1.1** joins the model ladder's list, matching the pretrained ladder.
+- **NVIDIA-Open-Model-Agreement** (#739) lands in `permissive_non_osi` beside the NVIDIA Open
+  Model License. Its text, dated April 2, 2026, was read against the License: it states that
+  works are commercially usable and derivatives may be distributed, and it restricts neither who
+  may use the works nor at what scale. It is, if anything, looser, since it carries no guardrail
+  termination clause.
+- **Vendor non-commercial model licenses** (#739) land in `commercial_forbidden`: NVIDIA OneWay
+  Noncommercial, the Prior Labs TabPFN licenses (Prior Labs License 1.1 included, by the ruling),
+  the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0 and InsightFace's
+  research-only model license.
+- **Bounded community licenses** (#739) land in `use_bounded`: the Stability AI Community
+  License, the LTX-2 and LTXV licenses, LFM Open, the Moondream Model License 1.0, and the
+  territorially bounded Tencent Hunyuan, Tencent Hunyuan 3D and MiniMax H3 community licenses.
 
 ### A compound license resolves on all of its parts
 
@@ -269,7 +307,11 @@ not because the compound-resolution rule above picked the less restrictive one.
 
 Because the list is shared across every software category, adding a name for one product
 tiers every other product that happens to record it, so each addition is checked against the
-corpus before it lands. Two names on the list carry a ruling worth reading:
+corpus before it lands. `zlib` (pybullet), `LGPL-2.1` (gensim) and `BSL-1.0` (dlib) were added
+on #739. BSL-1.0 is the Boost Software License, OSI-approved, and has nothing to do with the
+Business Source License 1.1 that `competition_restricted` lists as `BSL-1.1`; examples match
+whole names, and a test pins that neither resolves to the other. Two older names on the list
+carry a ruling worth reading:
 
 - **`GPL-2.0`**, for `slurm`. Slurm's `COPYING` body puts all Slurm code and documentation
   under the GNU General Public License. GPL-2.0 is OSI-approved and copyleft, which the
@@ -468,6 +510,34 @@ The rule does have an edge, and it is worth stating so nobody stretches it. It a
 bundled artifact is *substitutable* — you can point LlamaFirewall at a different model and it
 still works. Where the published thing genuinely cannot run without the restricted component, the
 component is not a bundle but a dependency, and `core_gated` is the dimension that asks about it.
+
+### A bundled part governs only when the product needs it
+
+The section above scores a harness on the harness. This rule, ruled on #739 and written into
+the software and model ladders as `bundled_part_rule`, says when a separately distributed part
+does count. **A part governs a product's tier only if it is required for the product's ordinary
+advertised capability, or the software downloads it automatically or by default.** Then it is
+recorded under `license` beside the product's own license, and the most restrictive part wins.
+An optional part is still recorded, under `context`, and does not govern.
+
+The cases it has settled:
+
+- **insightface** is governed by its non-commercial model packs, because the default
+  `FaceAnalysis()` flow downloads `buffalo_l`. It scores 2 on the software ladder's
+  `noncommercial` tier.
+- **liveportrait** is governed by the InsightFace detection models in its weight tree. The
+  pipeline builds its face cropper, which loads them, on every run, and the README's one download
+  command fetches them with the weights. It scores 2/restricted, down from a hand score of 3.
+- **latentsync** is governed the same way: lip-syncing a video runs every frame through a face
+  detector built on InsightFace models. 2/restricted, down from 3.
+- **open-sora** is governed by FLUX.1 [dev]'s non-commercial license. The README's only
+  download command fetches the whole checkpoint repository, `flux1-dev.safetensors` included,
+  and its text-to-video instructions lead with the pipeline that runs through FLUX. 2/restricted,
+  down from 3.
+- **detectron2** stays governed by its Apache-2.0 framework, because its CC-BY-SA-3.0 model zoo
+  is optional output of training. **dlib** stays on BSL-1.0, because the non-commercial 68-point
+  landmark model is a manual, optional download. **habitat** stays on MIT, because its CC
+  BY-NC-SA task datasets are optional downloads with a CC BY 4.0 substitute in ReplicaCAD.
 
 ### `permissive_non_osi`: attribution-only licenses, and the artifact they have to attach to
 
