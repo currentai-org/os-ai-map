@@ -290,7 +290,13 @@ def test_local_scores_matches_check_rubrics_split():
     # rent-only, Corsair goes only to select customers, and SambaNova, Qualcomm and IBM publish
     # briefs rather than datasheets. Each closes on a shared hardware.yaml ruling (is rentable or
     # approved-buyer silicon `buyable`?) or on a datasheet being published, not on more work here.
-    assert len(deferred) == 11
+    #
+    # 11 -> 14 with the assurance_evidence first tranche (2026-09-26), deliberately, under
+    # promote-category step 7: ezkl (`none-declared`, no license grant), deepprove
+    # (`Lagrange-License`, evaluation-only) and content-seal (a `CC-BY-NC-4.0` member, which the
+    # software ladder does not name) wait on the maintainer's license rulings. Each is hand-placed
+    # at 2/source_available, and each closes when its name reaches a software tier.
+    assert len(deferred) == 14
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

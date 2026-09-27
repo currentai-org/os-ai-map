@@ -1,0 +1,121 @@
+product: c2pa-sdk
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0/MIT
+      detail: dual-licensed at the recipient's choice, in both repositories
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The Rust library and the Python bindings are each dual-licensed under MIT or Apache-2.0 at the user's
+    choice, and the published code is the whole SDK. Content Credentials are an open standard, and nothing
+    in the repositories is held back for a paid edition.
+  raw: license:Apache-2.0/MIT(dual-licensed at the recipient's choice, in both repositories);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-rs/main/LICENSE-APACHE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 86bdd5dafab77451044b6fd6d2efab23e3410ce658eb097f04c04f4f54aed62f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-rs/main/LICENSE-MIT
+    shows: '"MIT License © Copyright 2020 Adobe. All rights reserved. Permission is hereby granted, free of
+      charge..."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 89375a50de90d2dcaa04406086da832ad452ebcaf6ab402ef3d51b8401a67c71
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-python/main/LICENSE-APACHE
+    shows: 'c2pa-python: Apache License, Version 2.0, full text'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 86bdd5dafab77451044b6fd6d2efab23e3410ce658eb097f04c04f4f54aed62f
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-python/main/LICENSE-MIT
+    shows: 'c2pa-python: "MIT License © Copyright 2020 Adobe"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 89375a50de90d2dcaa04406086da832ad452ebcaf6ab402ef3d51b8401a67c71
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-rs/main/sdk/Cargo.toml
+    shows: 'crate c2pa manifest: license = "MIT OR Apache-2.0"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 696acb13b6923918e412e8788386dc596f3cedc0602b947bd097761f9329c2df
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/contentauth/c2pa-rs/files/main
+    shows: Full file listing of contentauth/c2pa-rs main, 650 paths; no ee/, enterprise/, commercial/ or proprietary/
+      directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 67204bf802de9057dcf19ce6ec7dc2f46e6fbd1222f284a0c7028eac641743d3
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-rs/main/README.md
+    shows: '"The CAI Rust library is part of the Content Authenticity Initiative open-source SDK"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4e0ad6f5fa2ef357650e917d59f5f647441290e1170dc26f13729c6a4ed09d73
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Downloads of the two packages the SDK ships through, the c2pa-python bindings on PyPI and the c2pa
+    crate on crates.io, measure its use.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/c2pa-python/recent
+    shows: last_month downloads = 406,979 for c2pa-python
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 30d9093ebdbbb91d617f49eec11fd770c9fa365d6fc2352b4fb07339249b6912
+  - url: https://crates.io/api/v1/crates/c2pa
+    shows: 'crate c2pa: recent_downloads (90 days) = 1,150,875; repository github.com/contentauth/c2pa-rs;
+      version 0.91.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e731238139c9777555ff8f6640efb655262a69c6eab369eb1f81f2f16fab5aba
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Creates and validates signed C2PA manifests (Content Credentials) bound to media files; validation
+    checks the signing certificate against the C2PA trust list.
+  relative_to: nvtrust
+  relation: one_below
+  confidence: high
+  note: A manifest is signed, so anyone holding the file can check that it was not altered and which certificate
+    signed it, offline and without the publisher's help. What it cannot show is that the signer's claims about
+    the content are true, which is the gap between this and NVIDIA's hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/contentauth/c2pa-rs/main/docs/usage.md
+    shows: Usage guide for reading, validating and signing C2PA manifests with the Rust library
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6b6ec91837d69bae7174eeeb6ddd490e53cc6f8c01da1b3203e61e42a0a4333d
+  - url: https://opensource.contentauthenticity.org/docs/conformance/trust-lists/
+    shows: CAI documentation on the C2PA trust list used to validate manifest signing certificates
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 65aec02401e866a3b3844368efc181191b6c36befcbc1b1f09acc03f9fa77343
+  - url: https://opensource.contentauthenticity.org/docs/signing/get-cert/
+    shows: CAI documentation on obtaining a signing certificate for Content Credentials
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9a564e33d37e152733404df58b952810badd88451142cf0a48e045b8e4319f8d

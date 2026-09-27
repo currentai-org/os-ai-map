@@ -1,0 +1,107 @@
+product: ezkl
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: none-declared
+      detail: no LICENSE file, no license field in Cargo.toml or pyproject.toml; contributions are taken under
+        a CLA
+    source:
+      value: public
+      detail: Rust library and Python bindings
+  confidence: high
+  note: 'The full source is public, but the repository grants no license: there is no LICENSE file and neither
+    package manifest names one, so by default all rights stay with the authors. That makes EZKL readable rather
+    than open source, whatever its contributor agreement says about incoming code.'
+  raw: license:none-declared(no LICENSE file, no license field in Cargo.toml or pyproject.toml; contributions
+    are taken under a CLA);source:public(Rust library and Python bindings)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/zkonduit/ezkl/files/main
+    shows: Full file listing of zkonduit/ezkl main, 545 paths; no LICENSE, COPYING or LICENSES/ path
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 960e2a5ee5434abdacab761a06d22528eb3ee127d810758b7f40040ba5ce6301
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/Cargo.toml
+    shows: Package manifest for ezkl with no license or license-file field
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bd6f4cccfe9024209b1cf15fd93b72f72904a1fe3ae59c197709510c89724562
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/pyproject.toml
+    shows: Python build manifest with no license field
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cd25b4f43be4468bc2bd2a9be253e59466b27b6f8db901fd0ba2f8f3ea48e20b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/cla.md
+    shows: Contributor License Agreement covering what contributors grant for their contributions; it licenses
+      no rights in Zkonduit's own code
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 36dc57f6c51cfeafdb4e8c5b5d045621c001411765049f5012f3d1290dabfc38
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/zkonduit%2Fezkl
+    shows: 'zkonduit/ezkl: license null, archived false, fork false, pushed 2026-02-20'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cf762f23f29b5c1a09e0bb5cfb23cf9348ece255b7956d620b28c9ee0ecacaa0
+    establishes:
+    - license
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: 'Downloads of the product''s own packages measure its use: the Python package, its GPU build and the
+    JavaScript engine on npm.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/ezkl/recent
+    shows: last_month downloads = 1,824 for ezkl
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b29eb2baee89dc910073f403ef53de5cd7ff5caa643ec661884306c22053d69c
+  - url: https://pypistats.org/api/packages/ezkl-gpu/recent
+    shows: last_month downloads = 13 for ezkl-gpu
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3d7fb3c25d124ed1248b179e8d7a7ae8f0fa8c808f703ed6af80792f118cd5b8
+  - url: https://api.npmjs.org/downloads/point/last-month/@ezkljs/engine
+    shows: 979 downloads for @ezkljs/engine, 2026-08-27 to 2026-09-25
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ddfc638653f79a25948d50638de1dec35329adac6421c54cb2cbebe86d04ee9a
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Zero-knowledge proofs of neural-network inference from ONNX models with Halo2; proofs verify on-chain
+    in the EVM, in a browser, or on a device.
+  relative_to: nvtrust
+  relation: at
+  confidence: medium
+  note: A proof lets anyone confirm that a specific model produced a specific output without trusting the party
+    that ran it, which puts EZKL beside NVIDIA's hardware attestation at the top of the category.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/README.md
+    shows: '"we use the collaboratively-developed Halo2 as a proof system. The generated proofs can then be
+      verified with much less computational resources, including on-chain (with the Ethereum Virtual Machine),
+      in a browser, or on a device"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 43d715593009916471189b734138b35be6ee8589befc69865c0cdec975b61fe6
+  - url: https://docs.ezkl.xyz/
+    shows: EZKL documentation site for the library and its bindings
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 51fa5aecea1ddec6a0fc1dd0bca0c5bd82d7c967b66a85a826f02ce8fb5aab75
