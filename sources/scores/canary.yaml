@@ -1,7 +1,7 @@
 product: canary
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components:
     weights:
       value: open
@@ -14,30 +14,36 @@ openness:
       detail: NeMo speech_to_text_aed.py training script named in the card
     license:
     - name: CC-BY-4.0
-      detail: current checkpoints
-    - name: CC-BY-NC-4.0
-      detail: canary-1b (2024), still published
-  confidence: medium
-  note: Canary's current checkpoints download freely under CC-BY-4.0, an attribution-only license, and the card
-    names the NeMo training script. The first Canary model, canary-1b, is still published under a non-commercial
-    license, and the family is scored on its most restrictive published checkpoint, so it sits at restricted even
-    though every current model is commercially usable.
-  raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary is released; NeMo ASR Set 3.0
-    is in-house);code:open(NeMo speech_to_text_aed.py training script named in the card);license:CC-BY-4.0(current
-    checkpoints)+CC-BY-NC-4.0(canary-1b (2024), still published)
+      detail: canary-1b-v2, the current release; the Flash and Canary-Qwen checkpoints carry it too
+    context:
+      superseded-release:
+        value: canary-1b
+        detail: 2024, still published under CC-BY-NC-4.0; superseded by the 2025 checkpoints and not scored
+  governing_release: canary-1b-v2
+  confidence: high
+  note: Canary's current release, Canary 1B v2 (August 2025), downloads freely under CC-BY-4.0, an attribution-only
+    license, and its card names the NeMo training script. Its Granary training data is public but NeMo ASR
+    Set 3.0 is in-house, so the model cannot be rebuilt from what is released. The Flash and Canary-Qwen
+    checkpoints carry the same license. The 2024 canary-1b is still published under a non-commercial license,
+    but it is a superseded release and does not set the score.
+  raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary is released; NeMo ASR
+    Set 3.0 is in-house);code:open(NeMo speech_to_text_aed.py training script named in the card);license:CC-BY-4.0(canary-1b-v2,
+    the current release; the Flash and Canary-Qwen checkpoints carry it too);superseded-release:canary-1b(2024,
+    still published under CC-BY-NC-4.0; superseded by the 2025 checkpoints and not scored)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/nvidia/canary-1b-v2
-    shows: '"license:cc-by-4.0" tag, "gated":false, and canary-1b-v2.nemo in the file list.'
+    shows: '"license:cc-by-4.0" tag, "gated":false, "createdAt":"2025-08-04T13:34:41.000Z", and canary-1b-v2.nemo and model.safetensors in the file list.'
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: c3bcdf309a9e4c829a0573a9401f4bb2e2bbce008072fde21c31c9cfdc440011
+    content_sha256: 9609150ae27960c42c192a9d668f3cd62b8247c30a52e01f191705481320a10b
     establishes:
     - weights
     - license
   - url: https://huggingface.co/nvidia/canary-1b-v2/raw/main/README.md
     shows: 'Card: "combining Nvidia''s newly published [Granary](https://huggingface.co/datasets/nvidia/Granary)
-      and in-house dataset NeMo ASR Set 3.0"; "Training script: [speech\_to\_text\_aed.py]".'
+      and in-house dataset NeMo ASR Set 3.0"; "Training script: [speech\_to\_text\_aed.py]"; Release Date
+      "Huggingface [08/14/2025]"; "GOVERNING TERMS: Use of this model is governed by the [CC-BY-4.0]".'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 9a89d0bc0be172d66099b3a9ff3ecfdae72b5eeec3d048efde681c582ccaa047
@@ -45,18 +51,19 @@ openness:
     - data
     - code
   - url: https://huggingface.co/api/models?author=nvidia&search=canary
-    shows: 'Family listing: canary-1b-v2, canary-1b-flash, canary-180m-flash and canary-qwen-2.5b tagged "license:cc-by-4.0";
-      the older canary-1b tagged "license:cc-by-nc-4.0".'
+    shows: 'Family listing with createdAt: canary-1b-v2 2025-08-04, canary-qwen-2.5b 2025-06-26, canary-180m-flash
+      2025-03-11 and canary-1b-flash 2025-03-07, all tagged "license:cc-by-4.0"; canary-1b 2024-02-07, tagged
+      "license:cc-by-nc-4.0".'
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 040fea5ff440941a99ef32f0c380145a201d4497bfd57700986e41eaebd06973
+    content_sha256: c076240d065e152f45e54d25789059a92656ad36df1f4b3c05a8ee3eb383ca86
     establishes:
     - license
   - url: https://huggingface.co/api/models/nvidia/canary-1b
-    shows: nvidia/canary-1b is public and tagged "license:cc-by-nc-4.0".
+    shows: nvidia/canary-1b is public, "createdAt":"2024-02-07T17:20:55.000Z", and tagged "license:cc-by-nc-4.0".
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: fe8287586d2513a5cdb844a92f6cb191975dfda6b037e4849f41283ce7bf8c54
+    content_sha256: a7e79c3a28d0cce02405cae21785df5b2f42ca7f0aaaf789957a090d9515a4a2
     establishes:
     - license
 adoption:

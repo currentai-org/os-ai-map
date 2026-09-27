@@ -1,7 +1,7 @@
 product: moshi
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components:
     weights:
       value: open
@@ -14,15 +14,24 @@ openness:
       detail: inference, server and a separate fine-tuning repository
     license:
     - name: CC-BY-4.0
-      detail: released weights
-    - name: CC-BY-NC-4.0
-      detail: moshika-rl-seamless, gated research checkpoint
-  confidence: medium
-  note: The Moshi release is CC-BY-4.0, with code under MIT and Apache-2.0, but one gated research checkpoint, moshika-rl-seamless,
-    is non-commercial, and the most restrictive published checkpoint sets the score.
-  raw: weights:open(PyTorch, MLX and Candle checkpoints, ungated);data:described(7M hours of audio, Fisher and a
-    Kyutai-collected set; not released);code:partial(inference, server and a separate fine-tuning repository);license:CC-BY-4.0(released
-    weights)+CC-BY-NC-4.0(moshika-rl-seamless, gated research checkpoint)
+      detail: Moshi v0.1 release weights
+    context:
+      research-checkpoint:
+        value: moshika-rl-seamless
+        detail: 2026, gated CC-BY-NC-4.0 fine-tune published with the Interactivity Alignment paper; outside
+          the v0.1 release and not scored
+  governing_release: moshi-v0.1 (Moshiko and Moshika)
+  confidence: high
+  note: Moshi's current release, the v0.1 Moshiko and Moshika checkpoints for PyTorch, MLX and Candle, is
+    CC-BY-4.0, an attribution-only license, with code under MIT and Apache-2.0. Kyutai describes its 7 million
+    hours of training audio without releasing them and publishes inference code and a separate fine-tuning
+    repository rather than the training pipeline. The gated, non-commercial moshika-rl-seamless checkpoint
+    belongs to Kyutai's separate Interactivity Alignment research release and does not set the score.
+  raw: weights:open(PyTorch, MLX and Candle checkpoints, ungated);data:described(7M hours of audio, Fisher
+    and a Kyutai-collected set; not released);code:partial(inference, server and a separate fine-tuning
+    repository);license:CC-BY-4.0(Moshi v0.1 release weights);research-checkpoint:moshika-rl-seamless(2026,
+    gated CC-BY-NC-4.0 fine-tune published with the Interactivity Alignment paper; outside the v0.1 release
+    and not scored)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/kyutai/moshiko-pytorch-bf16
@@ -52,10 +61,28 @@ openness:
     - code
     - license
   - url: https://huggingface.co/api/models/kyutai/moshika-rl-seamless
-    shows: kyutai/moshika-rl-seamless is tagged "license:cc-by-nc-4.0" and gated.
+    shows: 'kyutai/moshika-rl-seamless: "license:cc-by-nc-4.0", "gated":"auto", "base_model:finetune:kyutai/moshika-pytorch-bf16", "arxiv:2606.11167", "createdAt":"2026-06-02T08:37:38.000Z".'
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: c9c27f11cd058e1a0926b827f29c7bdbe6c981324938acd70b2f493d8b012325
+    content_sha256: 7b4a47b81b81dc145ad681eff9a4b212a1dc70696aaa7df9ee1686c2dac7c449
+    establishes:
+    - license
+  - url: https://huggingface.co/api/collections/kyutai/moshi-v01-release-66eaeaf3302bef6bd9ad7acd
+    shows: 'Collection "Moshi v0.1 Release", "MLX, Candle & PyTorch model checkpoints released as part of
+      the Moshi release from Kyutai": paper 2410.00037, kyutai/mimi and the moshiko and moshika pytorch,
+      mlx and candle checkpoints; moshika-rl-seamless is not among them.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: be9dfc6b882998fd541191a64b6a91cec6f5aa2052d12c1ee381bed393773df3
+    establishes:
+    - license
+  - url: https://huggingface.co/api/collections/kyutai/interactivity-alignment-6a1fe5f14879ce66956362e2
+    shows: 'Collection "Interactivity Alignment", "Full-duplex speech models post-trained with reinforcement
+      learning for improved conversational interactivity.": paper 2606.11167, kyutai/moshika-rl-seamless,
+      kyutai/personaplex-rl-seamless and a samples dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 652c084207153deb85f89f7a31036a679faf1f490104c18001e922337b1dfd57
     establishes:
     - license
 adoption:
