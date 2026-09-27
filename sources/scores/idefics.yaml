@@ -1,0 +1,113 @@
+product: idefics
+openness:
+  score: 3
+  class: open_weights
+  governing_release: idefics3
+  components:
+    weights:
+      value: open
+      detail: four safetensors shards on the Hub, ungated
+    data:
+      value: partial
+      detail: fine-tuned on The Cauldron and Docmatix, which Hugging Face publishes; the card says the extended Cauldron with
+        the added Idefics3 sets is still to be pushed
+    code:
+      value: partial
+      detail: a fine-tuning tutorial notebook only; no Idefics3 training code is published
+    license:
+    - name: Apache-2.0
+      detail: OSI; "We release the Idefics3 checkpoints under the Apache 2.0 license"
+  confidence: high
+  note: Idefics3's weights are Apache 2.0, and Hugging Face publishes the main datasets it was fine-tuned on. The additional
+    sets it added for Idefics3 are not yet released, and neither is the training code, so the model cannot be rebuilt from
+    what is public.
+  raw: weights:open(four safetensors shards on the Hub, ungated);data:partial(fine-tuned on The Cauldron and Docmatix, which
+    Hugging Face publishes; the card says the extended Cauldron with the added Idefics3 sets is still to be pushed);code:partial(a
+    fine-tuning tutorial notebook only; no Idefics3 training code is published);license:Apache-2.0(OSI; "We release the Idefics3
+    checkpoints under the Apache 2.0 license")
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/HuggingFaceM4/Idefics3-8B-Llama3?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Idefics3-8B-Llama3: gated false, four safetensors shards, card license apache-2.0, datasets OBELICS,
+      the_cauldron, Docmatix and WebSight'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aae2fb3ce817bb9d70d03ac9d88aefada1022f5cb4c28cc200e9b8a6b597c3d7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/HuggingFaceM4/Idefics3-8B-Llama3/raw/main/README.md
+    shows: '"We release the Idefics3 checkpoints under the Apache 2.0 license"; "we have extended The Cauldron and added several
+      datasets, including Docmatix. We will push soon these datasets to the same repo of The Cauldron (TODO)"; a fine-tuning
+      tutorial is the only code linked'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 41e3438ac36ccbaf1babf20e14b565303e3dd51a2c1116e716b03241a09d616f
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://arxiv.org/abs/2408.12637
+    shows: '"trained efficiently, exclusively on open datasets"; "We release the model along with the datasets created for
+      its training"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ad746630595fd077636323d77384a7f90892c43773c12e603036973f954d1f23
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceM4/Docmatix/raw/main/README.md
+    shows: 'Docmatix, MIT: "used for the fine-tuning of the vision-language model Idefics3"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 39c1a5f25dee9e26d1596624227b37e3ada582ff7386a3b6446d1a744cadd307
+    establishes:
+    - data
+  - url: https://huggingface.co/datasets/HuggingFaceM4/the_cauldron/raw/main/README.md
+    shows: 'The Cauldron: "a massive collection of 50 vision-language datasets (training sets only)", each governed by its
+      own license'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c12cf33570dd437c381c34d3434e88eabe1d1cc90310b83c4afbea67aa1a95fb
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/merveenoyan/smol-vision/files/main
+    shows: The smol-vision tree the card links holds Idefics_FT.ipynb, a fine-tuning notebook
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c48c8ffabbd0f6155002c10f082d8cf4d9b1a5bf8bbb8cf2d32fb763fb9abac
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Hugging Face's Idefics, Idefics2 and Idefics3 checkpoints.
+    Almost all of it is Idefics3 and Idefics2 8B.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=HuggingFaceM4&search=idefics&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=lastModified&expand[]=cardData&expand[]=gated
+    shows: Fourteen Idefics checkpoints with 259,183 downloads in the trailing 30 days; Idefics3-8B-Llama3 127,897 and idefics2-8b
+      98,214
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 481e32579155c44a2a17057eaa885f6fc15e6ba26974b6a4078421583a7ddc17
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: interleaved multi-image, OCR and document understanding from the Idefics3 card; no video
+  value: 'Arbitrary interleaved images and text in, text out; OCR and document question answering. Idefics3-8B: DocVQA 87.7,
+    MMMU 46.6, MathVista 58.4, MMStar 55.9, TextVQA 74.9.'
+  confidence: high
+  relative_to: moondream
+  relation: at
+  note: Idefics3 reads whole documents and answers questions over several images at once, with a DocVQA score well above Idefics2's.
+    Nothing on its card covers video, so it sits level with Moondream rather than with MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/HuggingFaceM4/Idefics3-8B-Llama3/raw/main/README.md
+    shows: '"accepts arbitrary sequences of image and text inputs and produces text outputs"; "significantly enhancing capabilities
+      around OCR, document understanding and visual reasoning"; Idefics3-8B row 46.6 / 58.4 / 55.9 / 87.7 / 74.9'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 41e3438ac36ccbaf1babf20e14b565303e3dd51a2c1116e716b03241a09d616f
