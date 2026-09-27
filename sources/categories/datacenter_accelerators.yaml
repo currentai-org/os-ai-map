@@ -33,8 +33,93 @@ scoring_recipe:
     and are not comparable. Capability is peak dense low-precision throughput per package
     (FP8 where published, the precision recorded beside the number), memory as the
     tiebreaker; expect abstentions where a vendor publishes no figure.
+
+    How `datasheets` is read here (first tranche, 2026-09-27). `public` means the vendor
+    publishes, without registration, a technical document for the part beyond its marketing
+    pages: a datasheet with a specification table, an architecture white paper, an ISA or
+    hardware reference, or developer documentation of the hardware. `brief` means product
+    pages, brochures, a product brief or announcements only. The test is what the documents
+    contain, not what they are titled: SambaNova's brochure gives no chip power or interfaces,
+    IBM publishes no throughput or memory figure for Spyre, and Qualcomm's only fetchable
+    document is a two-page product brief. `restricted` is recorded where the vendor itself says
+    the part goes only to a select group of customers (d-Matrix Corsair; Ironwood outside Google
+    Cloud); a rent-only part records no `retail` at all, because renting has no value in the
+    vocabulary.
+
+    Capability, per unit sold - one package, or one card where the card is the smallest thing
+    sold (d-Matrix Corsair and Qualcomm Cloud AI 100 Ultra) - read on dense throughput at 8-bit
+    or lower precision, or half a vendor's sparse figure, or the lowest precision the vendor
+    publishes when it names no 8-bit figure:
+    5 = at least 4 PFLOPS, the frontier (anchor `nvidia-blackwell`: 5 PFLOPS dense FP8 and 279 GB
+    HBM3E per Blackwell Ultra GPU; `amd-instinct-mi350`, `google-tpu-ironwood` and
+    `cerebras-wse-3` at it). 4 = 1.5 to 4 PFLOPS (`aws-trainium3`, `intel-gaudi-3` one below the
+    anchor; `d-matrix-corsair` at `intel-gaudi-3`). 3 = 0.4 to 1.5 PFLOPS (`tenstorrent-blackhole`,
+    `furiosa-rngd`, `sambanova-sn40l`, `qualcomm-cloud-ai-100`, each one below `intel-gaudi-3`, the
+    nearer evidenced peer). 2 = below 0.4 PFLOPS; empty in this tranche (Inferentia2's 190 TFLOPS
+    cFP8 would land here). 1 is unused. `ibm-spyre` abstains: IBM publishes no throughput or
+    memory figure. Memory decides nothing on its own; notes name it where it cuts against the
+    throughput, as for Cerebras' 44 GB of on-wafer SRAM and Corsair's 2 GB of performance memory.
+
+    Distribution review (docs/reference/capability.md, "Writing the rungs"): of 11 banded
+    products, 5 holds 4 (36%) and 3 holds 4 (36%), both above a third. The wording is a number,
+    not an outcome, so it cannot be satisfied incidentally; this is the clustering case. The four
+    5s are the three frontier GPU/TPU generations and a wafer, all at or above 4.6 PFLOPS; the
+    four 3s are inference cards between 0.5 and 0.9 P(FL)OPS whose vendors publish no higher
+    figure. The 4 rung between them, which Trainium3, Gaudi 3 and Corsair sit on, keeps the two
+    clusters apart by a factor of about two in throughput on each side.
   extends: hardware
-products: []
+  deferred:
+    google-tpu-ironwood:
+      because: 'Google rents Ironwood as Cloud TPU capacity and says only that it "will begin to
+        deliver TPUs to a select group of customers in their own data centers", so `retail` reads
+        `restricted`, `availability` reads `gated`, and the chipset rung does not match. The
+        recorded 3/documented is the lowest pair this ladder can emit; whether rentable silicon
+        counts as `buyable` is a shared-rubric ruling for sources/rubrics/hardware.yaml.
+        `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
+        them, so answering them would not change the outcome.'
+    aws-trainium3:
+      because: 'Trainium3 can only be rented as EC2 Trn3 capacity and is never sold, and renting
+        has no value in the `retail` vocabulary, so no `retail` is recorded and the chipset rung
+        cannot match. The recorded 3/documented is the lowest pair this ladder can emit; whether
+        rentable silicon counts as `buyable` is a shared-rubric ruling for
+        sources/rubrics/hardware.yaml.'
+    d-matrix-corsair:
+      because: 'd-Matrix says Corsair "is being made available to select, qualified customers",
+        which is `retail: restricted` and so `availability: gated`, and the chipset rung does not
+        match. Its documentation is public. The recorded 3/documented is the lowest pair this
+        ladder can emit; the ladder has deliberately no `restricted` rung (issue #133).
+        `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
+        them, so answering them would not change the outcome.'
+    sambanova-sn40l:
+      because: 'SambaNova publishes a brochure and a product-page table but no datasheet giving
+        the chip power or interfaces, so `datasheets` reads `brief`, and no retail listing was
+        found, so `retail` is unrecorded. The chipset rung needs both `public` and `buyable`. The
+        recorded 3/documented is the lowest pair this ladder can emit.'
+    qualcomm-cloud-ai-100:
+      because: 'The only Qualcomm document that could be fetched is a two-page product brief
+        (`datasheets: brief`), and the HPE store listing for the card returned HTTP 403 on every
+        attempt, so `retail` is unrecorded rather than guessed. The chipset rung needs both. The
+        recorded 3/documented is the lowest pair this ladder can emit.'
+    ibm-spyre:
+      because: 'IBM publishes announcements and a research blog but no throughput or memory
+        specification for Spyre, so `datasheets` reads `brief` even though the card is orderable
+        as an option for IBM z17, LinuxONE 5 and Power11 systems. The chipset rung needs
+        `public`. The recorded 3/documented is the lowest pair this ladder can emit.
+        `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
+        them, so answering them would not change the outcome.'
+products:
+- nvidia-blackwell
+- amd-instinct-mi350
+- google-tpu-ironwood
+- cerebras-wse-3
+- aws-trainium3
+- intel-gaudi-3
+- d-matrix-corsair
+- tenstorrent-blackhole
+- furiosa-rngd
+- sambanova-sn40l
+- qualcomm-cloud-ai-100
+- ibm-spyre
 comments: >-
   Proposed in issue #599, seeded 2026-09-26 as a sibling of edge_hardware rather than a
   rename of it: the two sets have different capability quantities (TOPS per watt and runnable
@@ -71,3 +156,16 @@ comments: >-
   (NVDLA, Gemmini, Vortex), and none of them reaches datacenter silicon. The closest thing to
   an open datacenter accelerator today is Tenstorrent's open software stack on closed
   silicon. Sweep record: docs/sweeps/2026-09-26-datacenter-accelerators.md.
+
+  First tranche promoted 2026-09-27: twelve rows, chosen to cover merchant GPUs (NVIDIA, AMD,
+  Intel), the wafer (Cerebras), the open-stack card (Tenstorrent), the inference cards
+  (FuriosaAI, SambaNova, Qualcomm, d-Matrix), the rent-only frontier comparators ADR-005 needs
+  (Ironwood, Trainium3) and the system-bundled part (IBM Spyre). Six score on the chipset rung
+  and six are deferred; see scoring_recipe.deferred. Ten rows stay in the registry.
+  `aws-inferentia2` is the ADR-005 trim: a prior-generation closed inference part beside
+  Trainium3, left as a signal-only row rather than promoted. `rebellions-atom` waits because
+  Rebellions now ships RebelRack on its next generation, Rebel100, so the row is due a swap
+  rather than a promotion. `positron-atlas`, `huawei-ascend-950`, `moore-threads-mtt-s5000` and
+  the five rows resting on search excerpts or name-only vendor pages (`cambricon-mlu590`, `kunlunxin-p800`,
+  `t-head-zhenwu-m890`, `metax-c500`, `biren-br100`) wait for a vendor specification that could
+  be fetched. No row was rejected at promotion.

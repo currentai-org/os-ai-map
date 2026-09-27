@@ -1,0 +1,93 @@
+product: aws-trainium3
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: AWS chip offered as EC2 Trn3 instances and UltraServers; scored as the silicon
+    datasheets:
+      value: public
+      detail: Neuron documentation architecture pages with per-device compute, memory and interconnect
+    toolchain:
+      value: partial
+      detail: the neuronx-cc compiler is proprietary; torch-neuronx, the NKI library and vLLM integration are open
+        repositories
+  confidence: medium
+  note: AWS documents Trainium3's compute, memory and interconnect in its public Neuron documentation, and parts
+    of the Neuron stack are open source, though the compiler is not. The chip can only be rented as EC2 capacity,
+    never bought, and this score is provisional until the map rules on rented silicon.
+  raw: form_factor:chipset(AWS chip offered as EC2 Trn3 instances and UltraServers; scored as the silicon);datasheets:public(Neuron
+    documentation architecture pages with per-device compute, memory and interconnect);toolchain:partial(the neuronx-cc
+    compiler is proprietary; torch-neuronx, the NKI library and vLLM integration are open repositories)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium3.html
+    shows: 'Neuron documentation, Trainium3: "2,517 MXFP8/MXFP4 TFLOPS", "144 GiB of device memory, with 4.9 TB/sec
+      of bandwidth", NeuronLink-v4 at 2.56 TB/sec per device'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: 347085a8a077cb7295e6c06683f8d866ab4919bfea590ac3f5c9878bc5f0d55b
+  - url: https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-ec2-trn3-ultraservers/
+    shows: '"AWS announces the general availability of Amazon Elastic Compute Cloud (Amazon EC2) Trn3 UltraServers
+      powered by our fourth-generation AI chip Trainium3"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ead9803d9ac475b0d86d6983002a6f20972aef9bb2c8687a5aff5300ddc09946
+  - url: https://pypi.org/pypi/neuronx-cc/json
+    shows: 'PyPI metadata for neuronx-cc, the Neuron compiler: "license": "Proprietary"'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 497dc5dcf1862b7f6f37d28b59d6b7919065823440b2a0b41f2bbd00b997771d
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/oss/index.html
+    shows: Neuron open-source repositories page listing aws-neuron/torch-neuronx, aws-neuron/nki-library and vllm-project/vllm-neuron
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 2665575807c9796d2b0148d1a110affc7564661f909e62f44ab5ff8fa70d80fa
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and AWS publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use,
+    so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://aws.amazon.com/ai/machine-learning/trainium/
+    shows: The Trainium product page, read for a usage disclosure; it states none for Trainium3.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3deac880607331957c92585032f3a1d053d805f46adaf3349766f1dbce4e03c7
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 2,517 TFLOPS dense MXFP8/MXFP4, 671 TFLOPS BF16, 144 GiB HBM at 4.9 TB/s per device
+  confidence: high
+  relative_to: nvidia-blackwell
+  relation: one_below
+  note: Each Trainium3 device delivers about 2.5 PFLOPS of dense MXFP8 with 144 GiB of HBM, half of Blackwell Ultra's
+    dense FP8 throughput with about half its memory. AWS compensates at the system level, joining up to 144 devices
+    in one UltraServer.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium3.html
+    shows: 'Trainium3 device: "2,517 MXFP8/MXFP4 TFLOPS", "671 BF16/FP16/TF32 TFLOPS", "144 GiB of device memory,
+      with 4.9 TB/sec of bandwidth"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 347085a8a077cb7295e6c06683f8d866ab4919bfea590ac3f5c9878bc5f0d55b
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trn3-arch.html
+    shows: '"The EC2 Trn3 Gen2 UltraServers deliver 362 PetaFLOPS of dense MXFP8 compute ... 36 servers with 4 Trainium3
+      devices per server"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c1042fe2ed0698e01970a0de22bf89b4e0be8c81c6aa9a03e3c8e05440338d43

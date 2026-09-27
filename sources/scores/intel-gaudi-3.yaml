@@ -1,0 +1,72 @@
+product: intel-gaudi-3
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: accelerator sold as OAM modules and a PCIe card; scored as the silicon
+    datasheets:
+      value: public
+      detail: Gaudi 3 white paper with the full specification table, and a cluster reference-design paper
+    retail:
+      value: distributor
+      detail: through OEM servers, Dell PowerEdge XE9680 and Supermicro X14
+  confidence: high
+  note: Intel publishes a detailed white paper and specification table for Gaudi 3 with no registration, and the
+    part ships in Dell and Supermicro servers. Intel publishes no design files for the accelerator itself.
+  raw: form_factor:chipset(accelerator sold as OAM modules and a PCIe card; scored as the silicon);datasheets:public(Gaudi
+    3 white paper with the full specification table, and a cluster reference-design paper);retail:distributor(through
+    OEM servers, Dell PowerEdge XE9680 and Supermicro X14)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf
+    shows: 'Intel Gaudi 3 AI accelerator white paper: specification table against Gaudi 2, OAM and HL-338 PCIe card
+      interfaces, "up to 900W Total Device Power"'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: cecab8cf5e553e81a11c06256e949570625ef3b1a5f440765ee8b3a847d5816e
+  - url: https://cdrdv2-public.intel.com/845118/gaudi-3-ai-accelerator-30-3-30.pdf
+    shows: 'Intel Gaudi 3 overview, availability: "Supermicro X14 ... Dell PowerEdge XE9680 ... Shipping Q225 Shipping
+      Q125"'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: ed24c85ab9399cf952578d06e0821ac287f80bf998b2d58c8db55d7b426035cd
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Intel publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use,
+    so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdrdv2-public.intel.com/845118/gaudi-3-ai-accelerator-30-3-30.pdf
+    shows: Intel's Gaudi 3 overview, read for a usage disclosure; it names customers but no installed base.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ed24c85ab9399cf952578d06e0821ac287f80bf998b2d58c8db55d7b426035cd
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 1,678 TFLOPS FP8 and BF16 matrix, 128 GB HBM2e at 3.7 TB/s, up to 900 W (OAM)
+  confidence: high
+  relative_to: nvidia-blackwell
+  relation: one_below
+  note: Gaudi 3 delivers about 1.7 PFLOPS of FP8 or BF16 matrix compute with 128 GB of HBM2e. That is roughly a
+    third of Blackwell Ultra's dense FP8 throughput with under half its memory.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf
+    shows: 'Gaudi 3 white paper: "1.8 PFlops of FP8 and BF16 compute, 128 GB of HBM2e memory capacity, and 3.7 TB/s";
+      table "FP8 MME TFLOPS 865 1678"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cecab8cf5e553e81a11c06256e949570625ef3b1a5f440765ee8b3a847d5816e

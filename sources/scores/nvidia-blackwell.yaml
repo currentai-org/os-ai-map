@@ -1,0 +1,117 @@
+product: nvidia-blackwell
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: GPU generation sold as SXM modules on HGX boards and in NVL72 racks; scored as the silicon
+    datasheets:
+      value: public
+      detail: Blackwell and Blackwell Ultra datasheets plus the architecture technical brief, no registration
+    retail:
+      value: distributor
+      detail: through OEM servers such as the Dell PowerEdge XE9785 and NVIDIA partners
+    toolchain:
+      value: closed
+      detail: CUDA toolkit and user-mode driver under the NVIDIA EULA; only the kernel modules are open under MIT/GPL-2.0
+    blobs:
+      value: required
+      detail: GSP firmware and user-space driver components
+  confidence: high
+  note: NVIDIA publishes datasheets and a full architecture brief for Blackwell with no registration, and the GPUs
+    reach buyers through OEM servers from Dell and other partners. Nothing of the design is published, and the CUDA
+    stack that programs the part ships under NVIDIA's own license even though the Linux kernel modules are open.
+  raw: form_factor:chipset(GPU generation sold as SXM modules on HGX boards and in NVL72 racks; scored as the silicon);datasheets:public(Blackwell
+    and Blackwell Ultra datasheets plus the architecture technical brief, no registration);retail:distributor(through
+    OEM servers such as the Dell PowerEdge XE9785 and NVIDIA partners);toolchain:closed(CUDA toolkit and user-mode
+    driver under the NVIDIA EULA; only the kernel modules are open under MIT/GPL-2.0);blobs:required(GSP firmware
+    and user-space driver components)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf
+    shows: 'NVIDIA Blackwell Datasheet: HGX B200 and GB200 NVL72 specification tables, per-GPU FP8 and FP4 Tensor
+      Core throughput, HBM3E capacity and TDP'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: ad8ed65e64974278670d8e6904c0e3020391027925e339bf28e75fdfe2d307d7
+  - url: https://dam-cdn.nvd.orangelogic.com/AssetLink/gl2l4l4812s5fw0p614s6i8bv6mi3vx5.pdf
+    shows: NVIDIA Blackwell Architecture Technical Brief V2.1, updated to include Blackwell Ultra GB300 and HGX
+      B300
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: df58a797c6bc4236b1877b634fe31ff8da4c82fff289605adfb5aaca424aec69
+  - url: https://www.nvidia.com/en-us/data-center/hgx/
+    shows: '"HGX B300 and HGX B200 shipping now"'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: 3920775b7b6ebded8f71037791f158293367ddf86b6b613f3a073a24e165c74a
+  - url: https://www.dell.com/en-us/shop/ipovw/poweredge-xe9785
+    shows: Dell PowerEdge XE9785 configured with "8 NVIDIA HGX B300 NVL8 270 GB 1100W SXM6 GPUs"
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: bbdc252502c9d83c0ec010f2b05207b60278fed88348c15d5b4cf323590ad3fd
+  - url: https://docs.nvidia.com/cuda/eula/index.html
+    shows: The CUDA Toolkit End User License Agreement, NVIDIA's proprietary license for the CUDA toolkit
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: dae4884999a096f1e61e976336344e95a3705eca1a87caf519c3f70b6d859a06
+  - url: https://raw.githubusercontent.com/NVIDIA/open-gpu-kernel-modules/HEAD/README.md
+    shows: 'open-gpu-kernel-modules README: the kernel modules "must be used with GSP firmware and user-space NVIDIA
+      GPU driver components"'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    - blobs
+    http_status: 200
+    content_sha256: c2ce63aedef8c6779e59fdc46596eaa4c4b97767dce888d85d99ce2790bfbb77
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and NVIDIA publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use,
+    so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/
+    shows: The Blackwell architecture page, read for a usage disclosure; it states none for the generation.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b748ca2ca58ba9b85d489747c28c0012ac96fb4ae450313c43b403ef2385a9ae
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 'Blackwell Ultra (GB300): 15 PFLOPS dense FP4 and 5 PFLOPS dense FP8 per GPU, 279 GB HBM3E at 8 TB/s, up
+    to 1,400 W. B200 (HGX): 4.5 PFLOPS dense FP8, 180 GB HBM3E'
+  confidence: high
+  note: Each Blackwell Ultra GPU delivers about 5 PFLOPS of dense FP8 and 15 of dense FP4, with 279 GB of HBM3E,
+    and 72 of them share one NVLink domain in a GB300 rack. That per-package compute and memory is the frontier
+    the rest of this category is measured against.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://dam-cdn.nvd.orangelogic.com/AssetLink/1k0p832eq8r5ca0u5383ie5o4tp3bst1.pdf
+    shows: 'Blackwell Ultra datasheet, GB300 per GPU: "FP4 Tensor Core 20 PFLOPS | 15 PFLOPS", "FP8/FP6 Tensor Core
+      10 PFLOPS" (sparse; "Dense is ½ sparse spec shown"), "279 GB HBM3E | 8 TB/s", TDP up to 1,400 W'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ccdffc064731cc160016f4c7a77ecfa37983038bcaf60e39190ba4175b39c7c8
+  - url: https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf
+    shows: 'Blackwell datasheet, HGX B200 per GPU: FP8/FP6 9 PFLOPS sparse, "180 GB HBM3E | 7.7 TB/s", TDP up to
+      1,000 W'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ad8ed65e64974278670d8e6904c0e3020391027925e339bf28e75fdfe2d307d7

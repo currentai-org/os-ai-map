@@ -1,0 +1,68 @@
+product: sambanova-sn40l
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: dataflow processor sold inside SambaRack systems; scored as the silicon
+    datasheets:
+      value: brief
+      detail: a product brochure and a specification table on the product page; no datasheet with power or interfaces
+  confidence: medium
+  note: SambaNova publishes a brochure and a short specification table for the SN40L, but no datasheet giving the
+    chip's power or interfaces, and its system sales are arranged directly rather than listed. This score is provisional
+    until the map settles how thin vendor documentation is read.
+  raw: form_factor:chipset(dataflow processor sold inside SambaRack systems; scored as the silicon);datasheets:brief(a
+    product brochure and a specification table on the product page; no datasheet with power or interfaces)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://sambanova.ai/hubfs/SambaNova%20SN40%20RDU.pdf
+    shows: 'SambaNova SN40 RDU brochure: three-tier memory hierarchy and "10KW Average power per SambaRack"'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: 95d536d64da181e2d4951a9179e3c57bf11591b4915c64f9fc192f1fdde78a3f
+  - url: https://sambanova.ai/products/sn40l-rdu-ai-chip
+    shows: 'SN40L product page table comparing SN50 and SN40: compute, on-chip SRAM, HBM2E, DDR5 and scale-up'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 802ad23619a2cc4d98bc006456a6dd6ac8525ae6b35d02b82e4df057bc7eca86
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and SambaNova publishes no unit shipments or installed base for
+    this generation. Cloud listings and benchmark submissions cover only part of this category and do not measure
+    use, so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://sambanova.ai/products/sn40l-rdu-ai-chip
+    shows: The SN40L product page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 802ad23619a2cc4d98bc006456a6dd6ac8525ae6b35d02b82e4df057bc7eca86
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 640 TFLOPS per chip (precision not stated), 520 MB on-chip SRAM, 64 GB HBM2E, up to 512 GB DDR5; up to
+    16 RDUs per system
+  confidence: medium
+  relative_to: intel-gaudi-3
+  relation: one_below
+  note: SambaNova rates the SN40L at 640 TFLOPS without naming the precision, and its three memory tiers let a 16-chip
+    system keep many models resident. That is well under half of Gaudi 3's matrix throughput, with half its HBM.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://sambanova.ai/products/sn40l-rdu-ai-chip
+    shows: 'Product page table, SN50 | SN40: "Compute 1600 TFLOPS at BF16 3200 TFLOPS at FP8 | 640 TFLOPS"; SRAM
+      432 MB | 520 MB; HBM2E 64 GB | 64 GB; DDR5 up to 512 GB; scale-up up to 256 | up to 16 RDUs'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 802ad23619a2cc4d98bc006456a6dd6ac8525ae6b35d02b82e4df057bc7eca86

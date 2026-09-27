@@ -1,0 +1,91 @@
+product: tenstorrent-blackhole
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: processor sold as p100a/p150 PCIe cards and in Galaxy servers; scored as the silicon
+    datasheets:
+      value: public
+      detail: card specifications and the Tenstorrent ISA documentation for Blackhole
+    retail:
+      value: open_market
+      detail: cards listed on tenstorrent.com with prices and an add-to-cart path
+    toolchain:
+      value: open
+      detail: TT-Metalium, the TT-MLIR compiler and TT-Forge under Apache-2.0
+  confidence: high
+  note: Tenstorrent publishes card specifications and low-level ISA documentation, and sells the cards from its
+    own online store. Its whole software stack, compiler included, is open source; what keeps it from scoring higher
+    is that the silicon design is not published.
+  raw: form_factor:chipset(processor sold as p100a/p150 PCIe cards and in Galaxy servers; scored as the silicon);datasheets:public(card
+    specifications and the Tenstorrent ISA documentation for Blackhole);retail:open_market(cards listed on tenstorrent.com
+    with prices and an add-to-cart path);toolchain:open(TT-Metalium, the TT-MLIR compiler and TT-Forge under Apache-2.0)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/tenstorrent/tt-isa-documentation/HEAD/BlackholeA0/README.md
+    shows: 'tt-isa-documentation, Blackhole: "Each Blackhole ASIC contains: 140x Tensix tile ... 24x DRAM tile,
+      collectively exposing 32 GiB of GDDR6"'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: f7750b350ef427978fc9990dbb82a98382b3cfa71390e2eabd49db304fba494a
+  - url: https://tenstorrent.com/en/hardware/cards
+    shows: 'Cards page: "Blackhole® p100a $999 ... Add to Cart ... In stock: Ships in 2 weeks"; "p150a $1,399 Active
+      cooling p150b $1,399 Passive cooling"'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    - datasheets
+    http_status: 200
+    content_sha256: 350d27acfbb4da7247f7b557148d4c9048496d8954e6a1df3029dcdf754b39b8
+  - url: https://raw.githubusercontent.com/tenstorrent/tt-metal/HEAD/LICENSE
+    shows: 'tt-metal LICENSE: Apache License, Version 2.0'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9
+  - url: https://raw.githubusercontent.com/tenstorrent/tt-mlir/HEAD/LICENSE
+    shows: 'tt-mlir LICENSE: Apache License, Version 2.0'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: c8e9ed99510a43c6cb05b6651472cc09875d29009728b97ff706072a4ac8692b
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Tenstorrent publishes no unit shipments or installed base
+    for this generation. Cloud listings and benchmark submissions cover only part of this category and do not measure
+    use, so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://tenstorrent.com/en/hardware/blackhole
+    shows: The Blackhole hardware page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 350d27acfbb4da7247f7b557148d4c9048496d8954e6a1df3029dcdf754b39b8
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 'p150: 664 TFLOPS BLOCKFP8, 32 GB GDDR6 at 512 GB/s, 300 W; 120 or 140 Tensix cores'
+  confidence: high
+  relative_to: intel-gaudi-3
+  relation: one_below
+  note: Each Blackhole card delivers about 660 TFLOPS in Tenstorrent's block FP8 format with 32 GB of GDDR6 on a
+    300 W card. That is under half of Gaudi 3's FP8 throughput and a quarter of its memory, with no HBM.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://tenstorrent.com/en/hardware/cards
+    shows: 'Card specification table: "Memory 28 GB GDDR6 32 GB GDDR6 32 GB GDDR6 ... 448 GB/sec 512 GB/sec 512
+      GB/sec TeraFLOPS (BLOCKFP8) 664 664 664 TBP (Total Board Power) 300W"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 350d27acfbb4da7247f7b557148d4c9048496d8954e6a1df3029dcdf754b39b8

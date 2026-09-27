@@ -1,0 +1,86 @@
+product: cerebras-wse-3
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: wafer-scale processor sold inside CS-3 and CS-4 systems; scored as the silicon
+    datasheets:
+      value: public
+      detail: CS-4 datasheet with per-wafer specifications, and the wafer-scale architecture white paper
+    retail:
+      value: open_market
+      detail: CS-3 and CS-4 systems sold by Cerebras for customers' own datacenters
+  confidence: high
+  note: Cerebras publishes a datasheet with per-wafer specifications and a white paper on the architecture, and
+    sells its systems for installation in customers' own datacenters. The wafer is only sold inside a Cerebras system,
+    and none of its design is published.
+  raw: form_factor:chipset(wafer-scale processor sold inside CS-3 and CS-4 systems; scored as the silicon);datasheets:public(CS-4
+    datasheet with per-wafer specifications, and the wafer-scale architecture white paper);retail:open_market(CS-3
+    and CS-4 systems sold by Cerebras for customers' own datacenters)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.sanity.io/files/e4qjo92p/production/bb028ae2422089dfbcc9fd2455c021f3625c7a75.pdf
+    shows: 'CS-4 datasheet: "CS-4 Specifications" table and "WSE-3 Turbo (PER WAFER)" table'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: de68d10a77a40ead10e2dc689556f2424e5227be128f75864f1fb9e61910ec8d
+  - url: https://cdn.sanity.io/files/e4qjo92p/production/2d7fa58e3b820715664bcf42097e86c05070c161.pdf
+    shows: White paper "The Cerebras Wafer-Scale Architecture for Deep Learning" by Sean Lie
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 57d9b501c0fd70f33bac14f8f4d3cccc02a0edd57c91f1a5c4fc82854d090c0b
+  - url: https://www.cerebras.ai/cs4
+    shows: 'CS-4 page: "First CS-4 shipments begin this quarter." and "Bring the fastest AI to your data center."'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: dbe4b528cecffe617c889badb3ae194bcd2048cbe8548a2131f8f8e980ff3e78
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Cerebras publishes no unit shipments or installed base for
+    this generation. Cloud listings and benchmark submissions cover only part of this category and do not measure
+    use, so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.cerebras.ai/chip
+    shows: The WSE-3 Turbo chip page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d8b328419c51c00654ca33b63715aad1b1bc95f534fce0b01f99e858d2ab8a61
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 'WSE-3 Turbo: 250 PFLOPS sparse FP16 per wafer, 900,000 cores, 44 GB on-wafer SRAM at 43.2 PB/s; three
+    wafers per CS-4'
+  confidence: medium
+  relative_to: nvidia-blackwell
+  relation: at
+  note: A single WSE-3 Turbo wafer is quoted at 250 PFLOPS of sparse FP16 with memory bandwidth in petabytes per
+    second, far beyond any other package here. Its 44 GB of on-wafer memory is less than a Blackwell GPU carries,
+    so large models are streamed from external memory or spread across several systems.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.sanity.io/files/e4qjo92p/production/bb028ae2422089dfbcc9fd2455c021f3625c7a75.pdf
+    shows: 'CS-4 datasheet, per wafer: "900,000 cores; 44 GB SRAM", "AI Compute 250 PFLOPS*", "Memory Bandwidth
+      43.2 PB/s", "*AI compute shown as sparse FP16"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: de68d10a77a40ead10e2dc689556f2424e5227be128f75864f1fb9e61910ec8d
+  - url: https://www.cerebras.ai/press-release/cerebras-announces-third-generation-wafer-scale-engine
+    shows: 'WSE-3 announcement: "125 petaflops of peak AI performance through 900,000 AI optimized compute cores
+      ... 44GB on-chip SRAM"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 404ba7a9e909b56b6ba2f1d335c7e47469bf50fddebd3bbd5d938f6d4c3dc5d6
