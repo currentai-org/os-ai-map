@@ -1,0 +1,97 @@
+product: flaml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/microsoft/FLAML
+    core-gated:
+      value: ungated
+      detail: Microsoft Fabric's AutoML runs it as a separate product
+  confidence: high
+  note: MIT-licensed and built from the public repository. Microsoft uses it inside the AutoML feature
+    of its Fabric data platform, which is a separate paid product; nothing is held back from the library.
+  raw: license:MIT(OSI);source:public(github.com/microsoft/FLAML);core-gated:ungated(Microsoft Fabric's
+    AutoML runs it as a separate product)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/FLAML/main/LICENSE
+    shows: LICENSE is the "MIT License", "Copyright (c) Microsoft Corporation."
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/flaml/json
+    shows: PyPI record for flaml 2.7.0, uploaded 2026-09-18, license MIT, Homepage github.com/microsoft/FLAML.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1908c5b7ca3ad9e91992a589a0f3b2eb72b31d0374f4cef0b39bb56edc7f493a
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/microsoft/FLAML/main/README.md
+    shows: 'README: "FLAML supports AutoML and Hyperparameter Tuning in Microsoft Fabric Data Science.";
+      no paid edition of the library mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 18b2fb8172062611ae05e2e605b1fb75310e6b33e3f3cc90090e2845910cb9c9
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/microsoft/FLAML/files/main
+    shows: Repository tree of 463 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a757767e70e7b3b220281b04d9df5358648d36010e4d7ac254f288d3dc6dcaea
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the flaml package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/flaml/recent
+    shows: last_month 324,343 downloads of flaml
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 00ae63b8d41e88294bc7f19832ad9550ec5754a614df35a828d6cdce6b1ee8c9
+capability:
+  score: 5
+  basis: feature_matrix
+  value: task-oriented AutoML over classification, regression, ranking, time-series forecasting and NLP
+    tasks, searching learners (LightGBM, XGBoost, CatBoost, random forest, extra trees, linear models,
+    k-NN, Prophet, ARIMA, SARIMAX, TFT and others) and hyperparameters within a time budget, with optional
+    stacked ensembles
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: Given only the training data and the task, FLAML chooses the learner and its settings itself,
+    which is the automation AutoGluon provides. Unlike AutoGluon it bundles no pretrained tabular model,
+    and its search is tuned for low compute cost.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple
+        models and ensembles them together to obtain superior predictive performance." - the automated
+        search and fit FLAML is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/microsoft/FLAML/main/website/docs/Use-Cases/Task-Oriented-AutoML.md
+    shows: 'Task-Oriented AutoML: "flaml.AutoML is a class for task-oriented AutoML ... The minimal inputs
+      from users are the training data and the task type."; "Two optional inputs are time_budget and max_iter
+      for searching models and hyperparameters."; built-in estimators lgbm, xgboost, xgb_limitdepth, rf,
+      extra_tree, histgb, lrl1, lrl2, catboost, kneighbor, prophet, arima, sarimax, holt-winters, transformer,
+      tft, tcn.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d9f7fbdf536592b1bfab7b3618e0690406ebbbca2322aa1f8c4d96ced4ff15fd

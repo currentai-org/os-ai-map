@@ -1,0 +1,130 @@
+product: segment-anything
+openness:
+  score: 3
+  class: open_weights
+  governing_release: SAM 3.1
+  components:
+    weights:
+      value: open
+      detail: SAM 3 and SAM 3.1 checkpoints on the Hub behind a manual access request
+    data:
+      value: documented-not-released
+      detail: the SA-Co training data from Meta's data engine is described; only its evaluation benchmarks
+        are released
+    code:
+      value: partial
+      detail: inference and fine-tuning code; no pretraining pipeline
+    license:
+    - name: SAM-License
+      detail: code and weights; commercial use allowed, with trade-control and military-use exclusions
+  confidence: medium
+  note: SAM 3 and SAM 3.1 come under Meta's SAM License, which permits commercial use but bars military,
+    weapons and trade-controlled uses and lets Meta change the terms, and the checkpoints need an approved
+    access request. Meta publishes fine-tuning code and evaluation benchmarks but not the training data
+    or pretraining code. SAM and SAM 2 were Apache-2.0, but the current release governs.
+  raw: weights:open(SAM 3 and SAM 3.1 checkpoints on the Hub behind a manual access request);data:documented-not-released(the
+    SA-Co training data from Meta's data engine is described; only its evaluation benchmarks are released);code:partial(inference
+    and fine-tuning code; no pretraining pipeline);license:SAM-License(code and weights; commercial use
+    allowed, with trade-control and military-use exclusions)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/sam3/main/LICENSE
+    shows: 'LICENSE is the "SAM License", "Last Updated: November 19, 2025"; 1.a grants "a non-exclusive,
+      worldwide, non-transferable and royalty-free limited license ... to use, reproduce, distribute,
+      copy, create derivative works of, and make modifications to the SAM Materials"; 1.b bars trade-controlled,
+      military, nuclear, espionage and weapons uses. No non-commercial clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4dea99bfaa016e21bc860d73f344236bd1e5c4977d1a9a8fd32f822b500ae1be
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/sam3/main/README.md
+    shows: 'README: "This project is licensed under the SAM License"; "please request access to the checkpoints
+      on the SAM 3 Hugging Face repo"; "03/27/2026 -- SAM 3.1 Object Multiplex is released"; "We release
+      2 image benchmarks, SA-Co/Gold and SA-Co/Silver, and a video benchmark SA-Co/VEval"; the data engine
+      "automatically annotated over 4 million unique concepts".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: da3dd047d18ef9a4b33557bf6f8187cf166218dc8aef40f2e18a67cc5249a502
+    establishes:
+    - license
+    - weights
+    - data
+  - url: https://huggingface.co/api/models/facebook/sam3
+    shows: Hub record for facebook/sam3, gated "manual", license other.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1feeaf6d66206307056863a4834e0c1f55b02d470b96314a6c27e1ab4e9e27d9
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/facebook/sam3.1
+    shows: Hub record for facebook/sam3.1, gated "manual", license other.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8e4340fcd1f43894ef60de04550a626fa49b22f519ae5d41bc06231ea74a1ab6
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/facebookresearch/sam3/main/README_TRAIN.md
+    shows: 'README_TRAIN: "This repository supports finetuning SAM3 models on custom datasets in multi-node
+      setup or local execution."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4c0c9f2f9e79d1cfc31464ffccdf611dedcbcb5845aff3a6b032f1cc57b1b378
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/sam2/main/README.md
+    shows: 'SAM 2 README: "The SAM 2 model checkpoints, SAM 2 demo code ... and SAM 2 training code are
+      licensed under Apache 2.0" - the superseded release.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eea69ee1042fb30933c5ca5019fbf0f6f9366cec5e792109281b5023a4f1589c
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the two SAM 3 releases, which are the ones
+    declared. The superseded SAM 2 and original SAM checkpoints add roughly another 1.2 million.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=sam&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: facebook/sam3 2,105,970 and facebook/sam3.1 49,010 downloads in the trailing 30 days (2,154,980
+      together); sam-vit-huge 328,473, sam-vit-base 240,441 and the sam2 and sam2.1 checkpoints listed
+      alongside under apache-2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f28ce6af4ec3ae36ca42a053dd06727772d3a0c7a11c52e7e3974a3f3193d5dd
+capability:
+  score: 4
+  basis: feature_matrix
+  value: promptable segmentation and tracking in images and video from text phrases, image exemplars,
+    points, boxes and masks, segmenting every instance of an open-vocabulary concept with no training,
+    plus fine-tuning code
+  relative_to: ultralytics
+  relation: at
+  confidence: high
+  note: SAM 3 segments whatever the user names or points at in their own images and video with no training,
+    the capability that sets the top-but-one rung. Ultralytics sits here partly because it bundles SAM
+    3; the model line itself does one family of tasks, segmentation and tracking, where Ultralytics spans
+    many.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/
+        and the sam modules with sam3 builders - the models it runs on user-named labels without training.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/sam3/main/README.md
+    shows: 'README: "SAM 3 is a unified foundation model for promptable segmentation in images and videos.
+      It can detect, segment, and track objects using text or visual prompts such as points, boxes, and
+      masks." and "SAM 3 introduces the ability to exhaustively segment all instances of an open-vocabulary
+      concept specified by a short text phrase or exemplars".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: da3dd047d18ef9a4b33557bf6f8187cf166218dc8aef40f2e18a67cc5249a502

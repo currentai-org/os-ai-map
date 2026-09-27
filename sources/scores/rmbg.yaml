@@ -1,0 +1,105 @@
+product: rmbg
+openness:
+  score: 2
+  class: restricted
+  governing_release: RMBG-2.0
+  components:
+    weights:
+      value: open
+      detail: on the Hub behind an automatic click-through gate
+    data:
+      value: documented-not-released
+      detail: over 15,000 licensed images, described by category; not released
+    code:
+      value: partial
+      detail: inference code only
+    license:
+    - name: CC-BY-NC-4.0
+      detail: RMBG-2.0 weights; commercial use by separate agreement with BRIA
+  confidence: high
+  note: The RMBG-2.0 weights can be downloaded after a click-through, but only for non-commercial use
+    under CC BY-NC 4.0; businesses need a commercial agreement with BRIA or its paid API. BRIA describes
+    the licensed training images without releasing them, and publishes inference code only.
+  raw: weights:open(on the Hub behind an automatic click-through gate);data:documented-not-released(over
+    15,000 licensed images, described by category; not released);code:partial(inference code only);license:CC-BY-NC-4.0(RMBG-2.0
+    weights; commercial use by separate agreement with BRIA)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Bria-AI/RMBG-2.0/dev/LICENSE
+    shows: LICENSE is the Creative Commons "Attribution-NonCommercial 4.0 International" text.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3711f963c05d0be80d53e5923308a6dee31b203da23435c9cfb7c7b6e4dd5e19
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Bria-AI/RMBG-2.0/dev/README.md
+    shows: 'README: "The model is released under a CC BY-NC 4.0 license for non-commercial use." and "Commercial
+      use is subject to a commercial agreement with BRIA."; training on "over 15,000 high-quality, high-resolution,
+      manually labeled (pixel-wise accuracy), fully licensed images", with category distribution tables
+      and no dataset release.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7a8ae0f03eb20b09a2f958f0f37754f9d624c72bdbaa3203d1c16ff9a82bae27
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models/briaai/RMBG-2.0
+    shows: 'Hub record for briaai/RMBG-2.0: gated "auto", license_link to CC BY-NC 4.0, gate text "Bria
+      AI Model weights are open source for non commercial use only".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 83d62585a454ec0400cd78f5a2ec0cbf537b71241c65cba4a6801c36958d2838
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/Bria-AI/RMBG-2.0/files/dev
+    shows: 'Repository tree of 11 files: birefnet.py, BiRefNet_config.py, config.json, preprocessor_config.json,
+      README, LICENSE and images; no training code.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fbc21ad241fcf843fc5fe6bf08cac9b62f0bff6793c74af4b778309dd17d589f
+    establishes:
+    - code
+  - url: https://huggingface.co/briaai/VRMBG-3.0
+    shows: 'The newer VRMBG-3.0 is a video model: "BRIA Video Background Removal v3.0" and "For still-image
+      background removal, see RMBG-2.0."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fcb211d1a1a925e1e393b96ee7d4fe90e93095113945fd68c0ea45bbd05d1b31
+    establishes:
+    - weights
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days of RMBG-2.0; the older RMBG-1.4 adds another
+    317,948, and the two together stay in the same band. BRIA's API usage is not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=briaai&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: briaai listing with RMBG-2.0 at 528,171 and RMBG-1.4 at 317,948 downloads in the trailing 30
+      days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: afd48b4d4b9d2390edd84758d9822d19ddb1236d672a9629ddc9b5277e64145a
+capability:
+  score: 4
+  basis: feature_matrix
+  value: class-agnostic foreground segmentation on any image with no training, on the BiRefNet architecture
+    retrained on BRIA's licensed dataset
+  relative_to: birefnet
+  relation: at
+  confidence: medium
+  note: RMBG-2.0 does the same job as BiRefNet, cutting the subject out of any image with no training,
+    and uses its architecture; BRIA's contribution is the licensed training data. It offers no variants
+    beyond that one task.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Bria-AI/RMBG-2.0/dev/README.md
+    shows: 'README: RMBG v2.0 is "designed to effectively separate foreground from background in a range
+      of categories and image types" and "is developed on the BiRefNet architecture enhanced with our
+      proprietary dataset and training scheme".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7a8ae0f03eb20b09a2f958f0f37754f9d624c72bdbaa3203d1c16ff9a82bae27

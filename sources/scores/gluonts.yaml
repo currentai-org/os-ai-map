@@ -1,0 +1,109 @@
+product: gluonts
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/awslabs/gluonts
+    core-gated:
+      value: ungated
+      detail: no paid tier or commercial edition found
+  confidence: high
+  note: Apache-2.0 and built from the public repository under the awslabs account. AWS sells no edition
+    of it; its pretrained Chronos models are a separate open project.
+  raw: license:Apache-2.0(OSI);source:public(github.com/awslabs/gluonts);core-gated:ungated(no paid tier
+    or commercial edition found)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/awslabs/gluonts/dev/LICENSE
+    shows: LICENSE is the "Apache License, Version 2.0, January 2004".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/awslabs/gluonts/dev/NOTICE
+    shows: 'NOTICE: "Gluon Time Series / Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights
+      Reserved."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a63acdabd22cbe02e0a03495b7c5e7a373bebad96c5bf776b126e67d3a97f6ae
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/gluonts/json
+    shows: PyPI record for gluonts 0.17.0, uploaded 2026-07-31, license Apache-2.0, Repository URL github.com/awslabs/gluonts.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bf07871435ce7e6e83a9bee16f706aea67f9a825beeceab7553da7b680249165
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/awslabs/gluonts/dev/README.md
+    shows: 'README: "GluonTS is a Python package for probabilistic time series modeling, focusing on deep
+      learning based models, based on PyTorch."; points to Chronos in its own repository; no paid tier
+      mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aefd777d754fbf3b4d32ee4f3a7ef9844bf29166e2afcbc40390cfc79e644b87
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/awslabs/gluonts/files/dev
+    shows: Repository tree of 1,016 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c08ffd00bea108323f2a30e02754abe7200e924667a38ce844da8ae66bc75ca6
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the gluonts package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/gluonts/recent
+    shows: last_month 279,795 downloads of gluonts
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2bd4a1401524d2530d79a8c79b7d00ebbf87004f7d1a700275cfdfc4a9ab99df
+capability:
+  score: 3
+  basis: feature_matrix
+  value: about 25 probabilistic forecasting models (DeepAR, DeepState, DeepFactor, N-BEATS, TFT, WaveNet,
+    MQ-CNN, DeepVAR, GPVAR, LSTNet, Rotbaum, PatchTST, TiDE, DLinear and more) with dataset loaders, backtesting
+    and evaluation
+  relative_to: sktime
+  relation: at
+  confidence: high
+  note: GluonTS is a catalog of forecasting models with the tooling to train and compare them, which is
+    what sktime offers too, though GluonTS concentrates on deep probabilistic models. Choosing among them
+    and tuning them is the user's job, and its pretrained zero-shot models ship separately as Chronos.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://www.sktime.net/en/stable/
+      shows: 'sktime site: "500+ models, one API Classical statistics, machine learning, deep learning,
+        and modern AI, all behind the same interface." and "Swap algorithms to find what works best" -
+        the toolkit scope GluonTS is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: c95eb8729e194b5736d3b3ed721a6fa554c6a9ed377cc290cfbfe3605fc854da
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ts.gluon.ai/stable/getting_started/models.html
+    shows: '"Available models" table of 25 rows including DeepAR, DeepState, DeepFactor, Deep Renewal
+      Processes, GPForecaster, MQ-CNN, MQ-RNN, N-BEATS, Rotbaum, Temporal Fusion Transformer, Transformer,
+      WaveNet, DeepVAR, GPVAR, LSTNet and wrappers for R forecast and Prophet.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c6bb4cf00d0e67098fba0970529fcb3f3b721834197248effb0f8ff15add2377
+  - url: https://ungh.cc/repos/awslabs/gluonts/files/dev
+    shows: Tree under src/gluonts/torch/model/ includes d_linear, deepar, i_transformer, lag_tst, mqf2,
+      patch_tst, tft, tide and wavenet.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c08ffd00bea108323f2a30e02754abe7200e924667a38ce844da8ae66bc75ca6

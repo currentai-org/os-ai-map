@@ -1,0 +1,127 @@
+product: depth-anything
+openness:
+  score: 2
+  class: restricted
+  governing_release: Depth Anything 3
+  components:
+    weights:
+      value: open
+      detail: every DA3 checkpoint on the Hub, ungated
+    data:
+      value: documented-not-released
+      detail: stated to be public academic datasets only; the mixture is not published
+    code:
+      value: partial
+      detail: inference, CLI and benchmark code; no training code
+    license:
+    - name: Apache-2.0
+      detail: code, and the Small, Base, Metric and Mono checkpoints
+    - name: CC-BY-NC-4.0
+      detail: the Large, Giant and Nested any-view checkpoints
+  confidence: high
+  note: The code and the small, base, metric and monocular models are Apache-2.0, but the large, giant
+    and nested any-view models, the line's flagships, are CC BY-NC 4.0 and may not be used commercially.
+    The map treats the most restrictive license among a release's distributed checkpoints as the release's.
+    One Hub card, DA3-LARGE-1.1, is tagged Apache-2.0 while the repository's license table lists it as
+    CC BY-NC; the giant models settle the reading either way.
+  raw: weights:open(every DA3 checkpoint on the Hub, ungated);data:documented-not-released(stated to be
+    public academic datasets only; the mixture is not published);code:partial(inference, CLI and benchmark
+    code; no training code);license:Apache-2.0(code, and the Small, Base, Metric and Mono checkpoints)+CC-BY-NC-4.0(the
+    Large, Giant and Nested any-view checkpoints)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ByteDance-Seed/Depth-Anything-3/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright 2025 The Depth Anything 3 Team".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 78446e29c48900cda82620a8df183cca61f0a595e05a49d0401a5fd604dd1870
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ByteDance-Seed/Depth-Anything-3/main/README.md
+    shows: 'README model table: DA3NESTED-GIANT-LARGE(-1.1), DA3-GIANT(-1.1) and DA3-LARGE(-1.1) "CC BY-NC
+      4.0"; DA3METRIC-LARGE "Apache 2.0"; "All models are trained exclusively on public academic datasets."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 91679cf6df290b6af439c85f29a2440ce10353a1063ae4f599e9c734ec3096a8
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/depth-anything/DA3-GIANT-1.1/raw/main/README.md
+    shows: 'DA3-GIANT-1.1 card: license cc-by-nc-4.0 and "Non-commercial use only".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b939f8754d5147d42e926f20073ed59912f751eeb7c727cd4697b0f771c1c487
+    establishes:
+    - license
+  - url: https://huggingface.co/depth-anything/DA3-LARGE-1.1/raw/main/README.md
+    shows: 'DA3-LARGE-1.1 card: "license: apache-2.0", contradicting the repository table''s CC BY-NC
+      4.0 for that checkpoint.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2d323de54b5e27e73762486d1b6e509ab8ac32b6fcd6fbf87c17661671a6a1f0
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=depth-anything&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: All depth-anything DA3 checkpoints are gated false; DA3-GIANT, DA3-LARGE and DA3NESTED-GIANT-LARGE-1.1
+      tagged cc-by-nc-4.0, DA3METRIC-LARGE, DA3MONO-LARGE, DA3-BASE and DA3-SMALL apache-2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0645e1c0ae1d6f1fde39271d7a6d1a0e67a4ecfec3abf74099e298633e26fce4
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/ByteDance-Seed/Depth-Anything-3/files/main
+    shows: Repository tree of 133 paths holding inference, CLI, benchmark, app and streaming code; no
+      training script.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dad610cf06466c913a33047e569069723534b3a9aaf7eca3d258a99ff77e39d8
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the six declared Depth Anything 3 checkpoints.
+    The older V2 and V1 checkpoints add about 3.7 million more, most of it Depth-Anything-V2-Small, which
+    keeps the family in the same band.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=depth-anything&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: DA3METRIC-LARGE 259,633, DA3-LARGE-1.1 258,562, DA3MONO-LARGE 207,983, DA3NESTED-GIANT-LARGE-1.1
+      129,398, DA3-LARGE 103,007 and DA3-GIANT 100,195 downloads in the trailing 30 days (1,058,778 together);
+      Depth-Anything-V2-Small-hf 2,711,667.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0645e1c0ae1d6f1fde39271d7a6d1a0e67a4ecfec3abf74099e298633e26fce4
+capability:
+  score: 4
+  basis: feature_matrix
+  value: relative and metric depth, camera pose estimation, pose-conditioned depth and 3D Gaussian rendering
+    from one or many images of any scene with no training, across Small to Giant checkpoints
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: Depth Anything gives a depth map, and with several views a camera pose, for any image the user
+    supplies without training, and depth has no label set that a new task would require retraining for.
+    It covers the geometry tasks only, where Ultralytics spans detection, segmentation and depth together.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main includes ultralytics/models/yolo/depth/ beside yolo/world/, yolo/yoloe/
+        and the sam modules - the no-training models Depth Anything is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ByteDance-Seed/Depth-Anything-3/main/README.md
+    shows: 'README: DA3 "predicts spatially consistent geometry from arbitrary visual inputs, with or
+      without known camera poses"; capabilities "Monocular Depth Estimation", "Pose-Conditioned Depth
+      Estimation", "Camera Pose Estimation"; "DA3 Metric Series ... fine-tuned for metric depth estimation
+      in monocular settings".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 91679cf6df290b6af439c85f29a2440ce10353a1063ae4f599e9c734ec3096a8

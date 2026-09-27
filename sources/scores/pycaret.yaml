@@ -1,0 +1,131 @@
+product: pycaret
+openness:
+  score: 5
+  class: open_source
+  governing_release: pycaret-3.3.2
+  components:
+    license:
+    - name: MIT
+      detail: OSI; PyCaret 3.3.2, the current stable release
+    source:
+      value: public
+      detail: github.com/pycaret/pycaret (tag 3.3.2)
+    core-gated:
+      value: ungated
+      detail: no paid tier in the 3.x library
+    context:
+      upcoming-terms:
+        value: FSL-1.1-MIT
+        detail: main branch and the 4.0 alpha pre-releases; not yet a stable release
+  confidence: medium
+  note: The release people install today, PyCaret 3.3.2, is MIT-licensed and builds from the public repository.
+    The maintainers have since relicensed the engine on the main branch to the Functional Source License
+    (FSL-1.1-MIT), which forbids competing commercial use for two years after each release, starting with
+    PyCaret 4.0. Only alpha builds of 4.0 have shipped, so the MIT release governs until 4.0 is released.
+  raw: license:MIT(OSI; PyCaret 3.3.2, the current stable release);source:public(github.com/pycaret/pycaret
+    (tag 3.3.2));core-gated:ungated(no paid tier in the 3.x library);upcoming-terms:FSL-1.1-MIT(main branch
+    and the 4.0 alpha pre-releases; not yet a stable release)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/pycaret/pycaret/3.3.2/LICENSE
+    shows: LICENSE at tag 3.3.2 is the "MIT License", "Copyright (c) 2024 PyCaret".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 60fb2fb7e88728bf075dd8fcc4b8333c30b4552428a7d37dde2baaf27c34b688
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/pycaret/json
+    shows: 'PyPI: latest stable version 3.3.2, uploaded 2024-04-28, license MIT, classifier "License ::
+      OSI Approved :: MIT License"; release list continues only with pre-releases 4.0.0a3 to 4.0.0a8.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ed110070aaf6b6e5ffe0c08787af6ffb86b76c70e1f6fd711c47eaeebebea137
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/pycaret/4.0.0a8/json
+    shows: 'PyPI pre-release 4.0.0a8, uploaded 2026-05-08: license_expression "LicenseRef-FSL-1.1-MIT".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c451d9e7955105ddb0c6c31dde4dae549df2c195c8aa4dea5c788fc75b654058
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pycaret/pycaret/main/LICENSE
+    shows: 'LICENSE on main: "Functional Source License, Version 1.1, MIT Future License", abbreviation
+      "FSL-1.1-MIT", "Copyright 2026 Moez Ali and PyCaret contributors"; a Permitted Purpose is "any purpose
+      other than a Competing Use".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 669b77cd6f9cc5237108c093b0da5269ce1ef8678eab56b4ad89abda13f011de
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pycaret/pycaret/main/docs/revamp/DECISIONS.md
+    shows: 'DECISIONS.md, 2026-04-27: "Engine moves from MIT to FSL-1.1-MIT ... starting with PyCaret
+      4.0. The 3.x line on PyPI (pycaret <= 3.4.0) stays MIT - the relicense applies prospectively to
+      4.0+ only."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a1c4d8ac7d6a5002562c7f72b5507befb7b1e0012c0aa284ad9d1ec5d06a666c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pycaret/pycaret/3.3.2/README.md
+    shows: 'README at 3.3.2: "PyCaret is an open-source, low-code machine learning library in Python that
+      automates machine learning workflows."; no paid tier or commercial edition mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e3775bef8cbddeea706c84ca87ba7eaa13fedb29ac9145d550247de8a1618c5d
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/pycaret/pycaret/files/main
+    shows: Repository tree of 631 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 52e0669368a7d64b37a4098c0b28dd3b1fefb9504f954b16cbf94433f883c529
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the pycaret package, almost all of them the 3.x line.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/pycaret/recent
+    shows: last_month 225,282 downloads of pycaret
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5c8d0adaf5853f48bf8c6313b1593fafcefae6e730a003f9823bbae2b914816e
+capability:
+  score: 5
+  basis: feature_matrix
+  value: low-code AutoML for classification, regression, clustering, anomaly detection and time-series
+    forecasting - one setup call, then compare_models trains and ranks every applicable model, with tuning,
+    blending, stacking, evaluation and deployment of the chosen pipeline
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: PyCaret's compare_models call trains and ranks every applicable model on the user's data and returns
+    the best, so choosing among learners is done for the user. It sits with AutoGluon on that automation,
+    though the user still drives each step with a function call.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple
+        models and ensembles them together to obtain superior predictive performance." - the automated
+        search and fit PyCaret is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/pycaret/pycaret/3.3.2/README.md
+    shows: 'README at 3.3.2 quickstart: "s = setup(data, target = ''Purchase'', session_id = 123)", "#
+      model training and selection", "best = compare_models()", then evaluate_model, predict_model and
+      save_model; "PyCaret is essentially a Python wrapper around several machine learning libraries and
+      frameworks such as scikit-learn, XGBoost, LightGBM, CatBoost, Optuna, Hyperopt, Ray".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e3775bef8cbddeea706c84ca87ba7eaa13fedb29ac9145d550247de8a1618c5d
