@@ -284,7 +284,15 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 5 on 2026-09-26, when it was read: access is by permission and commercial use needs
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
-    assert len(deferred) == 5
+    #
+    # 5 -> 14 with the media_generation promotion, 30 products in. All nine additions are
+    # license-tier gaps recorded rather than hand-closed, each with the reading that would apply:
+    # vendor non-commercial terms (FLUX, the Qwen Research License), revenue-bounded community
+    # licenses (Stability AI Community on stable-diffusion and stable-audio, LTX-2 Community),
+    # three territorial exclusions no tier addresses (both Tencent Hunyuan licenses, MiniMax H3),
+    # and liveportrait's MIT weights bundling a non-commercial third-party detector. Each closes on
+    # a ruling in the maintainer license-rulings issue, not on more work.
+    assert len(deferred) == 14
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
