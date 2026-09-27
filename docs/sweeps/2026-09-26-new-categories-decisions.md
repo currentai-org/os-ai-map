@@ -6,7 +6,32 @@ everything"). Every decision below is a proposal for the maintainer to review in
 merges without a person. Where a sweep's recommendation isn't overridden here, **it stands as
 written in that sweep's §9**.
 
-## Fit test (adopted before reading the counts)
+## Review outcome (2026-09-27)
+
+A maintainer review of #720 settled the calls below. Everything not listed stands as written.
+
+- **Confirmed:**
+  - `world_models` is created now, but stays preliminary. The planned late-October revisit becomes
+    its promotion gate rather than its creation date. The change from about 4 product lines from
+    2 vendors to 21 from 20 is a change in the market, and the boundary (state + action →
+    predicted next state) is crisp.
+  - Parking `responsible_ai_measurement` (#30), with watermarking moving to `assurance_evidence`.
+  - The Embodied & world models group.
+  - `classic_ml_cv` stays under Infrastructure. Whether CV and classic ML split later is a separate
+    question.
+  - The 0.2 / 0.8 weights for `datacenter_accelerators`.
+  - The `fedlearner` and `mmdetection` org consolidations.
+- **Amended:** the fit test is a provisional screening heuristic, not taxonomy policy (see below).
+- **Reversed:** media Q10 (see the media_generation entry below).
+
+## Fit test: a screening heuristic for this sweep
+
+For this sweep, 15 accepted candidates, 6 independent organizations and at most 30% concentration
+were used as presumptive evidence that a category has enough independent supply to seed. These are
+screening thresholds, not permanent taxonomy policy, and a maintainer may override them with an
+explicit rationale. They exist to stop arbitrary category proliferation, not to let three integers
+define the ontology. An important emerging category with 12 products from 8 independent teams can
+deserve a row more than a legacy one with 20 marginal projects.
 
 1. At least 15 accepted candidates with a live artifact.
 2. At least 6 independent organizations, and no single org above 30%.
@@ -70,9 +95,16 @@ written in that sweep's §9**.
   `research/external_tts/`), VoxCPM and Maya1, plus Cartesia Sonic as a closed comparator (its
   homepage was fetched there). Keep Voxtral TTS inside `voxtral` and Step-Audio-EditX parked (the
   sweep's reasons hold). Slugs are `qwen-asr`/`qwen-tts` (Q2). `pocket-tts` gets its own row (Q4).
-- **media_generation:** every §9 recommendation stands. On Q10 (the closed flagship on an open line),
-  the newest *distributed* release governs openness. This is a proposal: record it in the category
-  `comments` and flag it in the PR for the maintainer, because it decides whether `wan` scores open.
+- **media_generation:** every §9 recommendation stands except Q10. **The Q10 proposal is reversed.**
+  It said the newest *distributed* release governs openness. The rule stays the one identity.md
+  states: the current release governs a product's openness. The voyage-embeddings disclosure
+  pattern in openness.md applies across SKUs within one release, not across releases. Where a
+  product's current flagship is API-only or closed while an earlier release is still distributed
+  (`wan`, `hunyuan3d`, `qwen-image`), scoring the old release would present the line as an open
+  alternative and hide the gap the map exists to show: the open line is one generation behind the
+  vendor's closed frontier. At promotion these products keep evidence for both releases and are
+  listed in `scoring_recipe.deferred`. How the map models availability separately from openness is
+  a maintainer ruling still to come.
 - **multimodal_models:** scope (b) plus the four unified models. The membership test is "separately
   marketed as a vision/omni model" (Q2). No closed rows (Q7).
 - **classic_ml_cv:** one category (Q1a). DataRobot is held (Q9).
