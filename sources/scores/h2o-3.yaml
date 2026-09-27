@@ -1,0 +1,123 @@
+product: h2o-3
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/h2oai/h2o-3
+    core-gated:
+      value: gated
+      detail: H2O-3 Secure, under a commercial license, adds early-access algorithms, enterprise Hadoop
+        and Kubernetes packages and production MOJO scoring
+  confidence: medium
+  note: The open H2O-3 is Apache-2.0 and includes every algorithm and AutoML, but H2O.ai sells H2O-3 Secure
+    under a commercial license that adds early access to new algorithms, Hadoop and Kubernetes enterprise
+    packages, production scoring for Hadoop, Spark, Teradata and Oracle, and security and compliance features.
+    Part of what H2O-3 users run in production is therefore held back from the open release.
+  raw: license:Apache-2.0(OSI);source:public(github.com/h2oai/h2o-3);core-gated:gated(H2O-3 Secure, under
+    a commercial license, adds early-access algorithms, enterprise Hadoop and Kubernetes packages and
+    production MOJO scoring)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/h2oai/h2o-3/master/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright 2014-2021 H2O.ai, Inc.".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 648ae6159fa8c8ff8044cdf0ae36b56f3b0ee87ba0a4f81935883fb895d08019
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/h2o/json
+    shows: PyPI record for h2o 3.46.0.12, uploaded 2026-08-12, license "Apache v2", Homepage github.com/h2oai/h2o-3.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bdecc01f1856b847d4b2738694a18dc8b4b9017a617de8a67a2f55e6554839ed
+    establishes:
+    - source
+  - url: https://h2o.ai/products/h2o/
+    shows: 'H2O product page: "H2O-3 OSS is free and Apache-licensed, designed for self-managed and experimental
+      workflows. Running H2O-3 in production environments? Upgrade to H2O-3 Secure: same code, APIs and
+      pipelines."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9c7223a5a1b6d87ec89cf6d1a02d285342ccd914d95e5f77e7db1342bd51767c
+    establishes:
+    - core-gated
+  - url: https://h2o.ai/h2o-3/oss-vs-secure/
+    shows: 'Comparison table "H2O-3 OSS Apache 2.0 | H2O-3 Secure Commercial License": both have all algorithms,
+      H2O AutoML, distributed training and scoring; Secure only has "Early access to latest algorithms
+      and improvements", "Hadoop and Kubernetes enterprise packages", "Production MOJO model scoring for
+      Hadoop, Spark, Teradata, Oracle", "Managed distributed XGBoost service", "Automated model documentation
+      (H2O Auto Doc)" and enterprise SSO.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d069f89d01b02068d197dbaf06fa9c4b322af01acc00f613347315ca381fdf4c
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/h2oai/h2o-3/files/master
+    shows: Repository tree of about 8,500 paths with no ee, enterprise, commercial or pro directory; the
+      Secure additions are not in it.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 47289117ed1c2f86f0bf686cd140ac9a59054cfd7440cfbfab6ec8fcfbc1eaaa
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of the h2o Python client, which is how most users install and
+    drive H2O-3. The R package on CRAN and direct JVM use are not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/h2o/recent
+    shows: last_month 156,866 downloads of h2o
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51d17c4432d0acb0144d591f9e81c141f9f951d5bdca7a20865a328b77f68834
+capability:
+  score: 5
+  basis: feature_matrix
+  value: distributed supervised and unsupervised learners (GLM, GAM, GBM, XGBoost, DRF, deep learning,
+    SVM, RuleFit, CoxPH, stacked ensembles, isolation forest, k-means, PCA, GLRM) plus H2O AutoML, which
+    trains and cross-validates a set of GBM, XGBoost, GLM, random-forest and deep-learning models and
+    random grids, then stacks them into ensembles
+  relative_to: autogluon
+  relation: at
+  confidence: high
+  note: H2O AutoML takes the user's table and a time or model budget and returns a leaderboard topped
+    by stacked ensembles, with no model choice on the user's side, which is the automation AutoGluon offers.
+    Unlike AutoGluon it bundles no pretrained tabular models.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple
+        models and ensembles them together to obtain superior predictive performance." - the automated
+        search and fit H2O-3 is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.h2o.ai/h2o/latest-stable/h2o-docs/automl.html
+    shows: 'AutoML FAQ: "The current version of AutoML trains and cross-validates the following algorithms:
+      three pre-specified XGBoost GBM (Gradient Boosting Machine) models, a fixed grid of GLMs, a default
+      Random Forest (DRF), five pre-specified H2O GBMs, a near-default Deep Neural Net, an Extremely Randomized
+      Forest (XRT), a random grid of XGBoost GBMs, a random grid of H2O GBMs, and a random grid of Deep
+      Neural Nets", with Stacked Ensemble models built on them.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 73178de3e8c6f5d32b59bdfa48e9ec18e6f8ae4c69b24b00cc6ffbf1533d749b
+  - url: https://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science.html
+    shows: 'Algorithms page: Supervised - H2O AutoML, CoxPH, Deep Learning, DRF, GLM, Isotonic Regression,
+      GAM, HGLM, GBM, Naive Bayes, RuleFit, Decision Tree, AdaBoost, Stacked Ensembles, SVM, Uplift DRF,
+      XGBoost; Unsupervised - Aggregator, GLRM, Isolation Forest, Extended Isolation Forest, K-Means,
+      PCA.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a8e041f650cda57308f5ee60fd8ade4446baee29abc2888074792033e8f04151

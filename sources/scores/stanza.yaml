@@ -1,0 +1,102 @@
+product: stanza
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/stanfordnlp/stanza
+    core-gated:
+      value: ungated
+      detail: published by Stanford University's NLP group; nothing sold
+  confidence: high
+  note: Apache-2.0, built from the public repository and published by Stanford University's NLP group,
+    with its pretrained models also Apache-2.0 on the Hub. Nothing is sold.
+  raw: license:Apache-2.0(OSI);source:public(github.com/stanfordnlp/stanza);core-gated:ungated(published
+    by Stanford University's NLP group; nothing sold)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/stanfordnlp/stanza/main/LICENSE
+    shows: LICENSE opens "Copyright 2019 The Board of Trustees of The Leland Stanford Junior University"
+      and "Licensed under the Apache License, Version 2.0".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9e65adb49698e6f81223d81bae0ee00ac4ddf3cb8d429b85ef85e38b95ea8a50
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/stanfordnlp/stanza/main/README.md
+    shows: 'README: "The Stanford NLP Group''s official Python NLP library."; "Stanza is released under
+      the Apache License, Version 2.0."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b4f5360262f710da999086d585e29fa060e0db2e52387ae7d59c5b7dc7d84eca
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://huggingface.co/api/models?author=stanfordnlp&sort=downloads&limit=1000&expand[]=downloads&expand[]=cardData&expand[]=gated&search=stanza
+    shows: 108 stanfordnlp/stanza-* model repositories, none gated, 107 tagged apache-2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cfd36fae7c3145cd282141220c23cde29969f0e4ce60450e4e4f74f5410f5c27
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/stanfordnlp/stanza/files/main
+    shows: Repository tree of 659 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5c39ce6f256cad51824ba22a2785540ff43bd2fa55d0d086756b7af181acddfc
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the stanza package. The package fetches its language models
+    from the Hub, where they are counted separately and far lower.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/stanza/recent
+    shows: last_month 723,139 downloads of stanza
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 62ea3b03f5e790782c58aaed723349b3b6a5e21cced74e2a518cc38682a436a3
+capability:
+  score: 3
+  basis: feature_matrix
+  value: tokenization, multi-word tokens, lemmatization, POS and morphological tagging, dependency and
+    constituency parsing, NER, sentiment, language identification and coreference, with pretrained pipelines
+    for about 80 languages and training code for every module
+  relative_to: spacy
+  relation: at
+  confidence: high
+  note: Stanza ships trained pipelines that analyze text in many languages straight away, as spaCy does,
+    and like spaCy it needs a training run to recognize entity types or labels beyond the ones its models
+    were trained on. Its breadth of languages is the main difference.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://cdn.jsdelivr.net/gh/explosion/spaCy@master/README.md
+      shows: spaCy README still reads "spaCy comes with pretrained pipelines and currently supports tokenization
+        and training for 70+ languages" and describes its "production-ready training system" - the scope
+        Stanza is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f7a66a3473456b6d28520c9aa8baafa57ac4404994808118f1a6ae8e9440c9ce
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://stanfordnlp.github.io/stanza/available_models.html
+    shows: '"Stanza provides pretrained NLP models for a total of 80 human languages"; models divided
+      into Universal Dependencies models and NER models by training dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 52b35129e59efcf35b224525ab7576e89ea7988decc2758a5591f5ba17100455
+  - url: https://raw.githubusercontent.com/stanfordnlp/stanza/main/README.md
+    shows: 'README: "All neural modules in this library can be trained with your own data."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b4f5360262f710da999086d585e29fa060e0db2e52387ae7d59c5b7dc7d84eca
