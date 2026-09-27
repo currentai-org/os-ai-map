@@ -31,14 +31,15 @@ scoring_recipe:
     \ orders a public hub and a self-hosted one. Rungs, each stated as something the product either does\
     \ or does not do:\n  1  An index that points at weights hosted by each publisher and has no storage\
     \ of its own. Unused in this tranche; pytorch-hub, still a registry row, is the shape.\n  2  An operator-curated\
-    \ collection: it hosts versioned artifacts under the operator's own accounts and serves them by name\
-    \ through a CLI or API, but only the operator or partners it admits publish, and it does not deploy\
-    \ what it lists. nvidia-ngc-catalog, qualcomm-ai-hub-models, monai-model-zoo.\n  3  A curated multi-provider\
-    \ catalog with deploy integration: the operator lists many third-party providers' models, versions them\
-    \ and deploys any of them onto its own managed serving, while a customer's own models stay in that customer's\
-    \ project or private hub. vertex-ai-model-garden, azure-ai-foundry-models, sagemaker-jumpstart.\n  4\
-    \  An open registry for one artifact class: any account (or, for self-hosted software, any user of the\
-    \ deployment) publishes, each version is addressable, and clients pull by name through an API. ollama-library,\
+    \ collection: it hosts versioned artifacts on storage the operator runs or controls (NGC's catalog,\
+    \ or accounts the operator holds on another host, as MONAI does on NGC and Hugging Face) and serves\
+    \ them by name through a CLI or API, but only the operator or partners it admits publish, and it does\
+    \ not deploy what it lists. nvidia-ngc-catalog, qualcomm-ai-hub-models, monai-model-zoo.\n  3  A curated\
+    \ multi-provider catalog with deploy integration: the operator lists many third-party providers' models,\
+    \ versions them and deploys any of them onto its own managed serving, while a customer's own models\
+    \ stay in that customer's project or private hub. vertex-ai-model-garden, azure-ai-foundry-models, sagemaker-jumpstart.\n\
+    \  4  An open registry for one artifact class: any account (or, for self-hosted software, any user of\
+    \ the deployment) publishes, each version is addressable, and clients pull by name through an API. ollama-library,\
     \ civitai, kaggle-models, matrixhub, kubeflow-hub.\n  5  An open, git-versioned hub for several artifact\
     \ kinds, at least models, datasets and apps, with an API other tools treat as an endpoint. huggingface-hub-platform\
     \ (top anchor), modelscope, csghub.\nThe step from 2 to 3 is deployment from the catalog plus many providers;\

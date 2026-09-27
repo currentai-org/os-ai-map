@@ -37,10 +37,12 @@ adoption:
   reach: broad
   signal_type: reported_traction
   confidence: low
-  banded_quantity: models, datasets and Studio apps listed by the hub's public OpenAPI, not a usage count
-  note: The hub's public listing API reports how many models, datasets and apps it hosts, and shows per-repository
-    download counters, but ModelScope publishes no platform-wide usage figure. Hosted repositories measure
-    supply, so this reading is a judgment of the platform's standing rather than a count of use.
+  banded_quantity: hosted repository totals and cumulative per-model download counters from the public OpenAPI,
+    not a monthly or user count
+  note: The hub's public API reports how many models, datasets and apps it hosts and a cumulative download
+    counter per repository, and its most-downloaded models, speech models from Alibaba's own lab, are in the
+    hundreds of millions. ModelScope publishes no platform-wide or monthly figure, so the reading is a judgment
+    from those counters rather than a count of users.
   last_verified: '2026-09-27'
   sources:
   - url: https://www.modelscope.cn/openapi/v1/models?page_size=1
@@ -58,6 +60,12 @@ adoption:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: d2ed106119ab411f6356665e72b44487325c8a39069cc9882137fe4f84f8fc65
+  - url: https://www.modelscope.cn/openapi/v1/models?page_size=3&sort=downloads
+    shows: 'Sorted by downloads: iic/speech_fsmn_vad_zh-cn-16k-common-pytorch "downloads":283264119, then 171184552
+      and 117069748 for the next two, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a78202f2e1882b589e180bb1691c4ebbad8680a77df3ccba08b2cf1647ef467e
 capability:
   score: 5
   basis: feature_matrix
