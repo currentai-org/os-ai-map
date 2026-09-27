@@ -2,9 +2,9 @@ name: model_hubs
 display_name: Model hubs & registries
 description: Platforms and self-hostable services whose product is hosting, indexing and distributing model
   artifacts from many publishers, as a registry other tools pull from by name.
-strapline: The hubs the ecosystem pulls from are closed services. Open registry code runs private copies of
-  Hugging Face Hub rather than a public hub, and the one public hub with published code keeps its paid services
-  private.
+strapline: The hubs the ecosystem pulls from are closed services. Open registry code runs private copies
+  of Hugging Face Hub rather than a public hub, and the one public hub with open-source code keeps its paid
+  services private.
 weights:
   adopt: 0.3
   cap: 0.7
@@ -19,24 +19,23 @@ scoring_recipe:
     \ the modelscope library and modelscope-hub, kagglehub, the Kaggle CLI, the Ollama runner) is a satellite\
     \ around a closed core and never lifts the platform (identity.md, \"An open satellite around a closed\
     \ core\"). Three open products read gated on direct evidence of the mechanism: civitai (Buzz, signals\
-    \ and orchestration are private ghcr.io images), csghub (csghub-server builds Community, Enterprise\
-    \ and SaaS editions behind ee/saas build tags and a license check; Starship is EE-only) and qualcomm-ai-hub-models\
-    \ (compilation, on-device profiling and cloud-device inference need the closed AI Hub Workbench and\
-    \ an API token). matrixhub, kubeflow-hub and monai-model-zoo read ungated on path absence paired with\
-    \ a governance statement: MatrixHub's GOVERNANCE.md puts commercial packaging outside the core repository,\
-    \ Kubeflow is a CNCF graduated project, and Project MONAI is a multi-institution project with public\
-    \ governance and nothing sold. No product is deferred.\n\nCAPABILITY is one quantity, registry scope:\
-    \ how much of the publish, version, discover and pull cycle the surface itself provides, who may publish\
-    \ into it, and for how many artifact kinds. Scale is adoption, not capability, so the same quantity\
-    \ orders a public hub and a self-hosted one. Rungs, each stated as something the product either does\
-    \ or does not do:\n  1  An index that points at weights hosted by each publisher and has no storage\
-    \ of its own. Unused in this tranche; pytorch-hub, still a registry row, is the shape.\n  2  An operator-curated\
-    \ collection: it hosts versioned artifacts on storage the operator runs or controls (NGC's catalog,\
-    \ or accounts the operator holds on another host, as MONAI does on NGC and Hugging Face) and serves\
-    \ them by name through a CLI or API, but only the operator or partners it admits publish, and it does\
-    \ not deploy what it lists. nvidia-ngc-catalog, qualcomm-ai-hub-models, monai-model-zoo.\n  3  A curated\
-    \ multi-provider catalog with deploy integration: the operator lists many third-party providers' models,\
-    \ versions them and deploys any of them onto its own managed serving, while a customer's own models\
+    \ and orchestration are private ghcr.io images), csghub (csghub-server builds Community, Enterprise and\
+    \ SaaS editions behind ee/saas build tags and a license check; Starship is EE-only) and qualcomm-ai-hub-models\
+    \ (compilation, on-device profiling and cloud-device inference need the closed AI Hub Workbench and an\
+    \ API token). matrixhub, kubeflow-hub and monai-model-zoo read ungated on path absence paired with a governance\
+    \ statement: MatrixHub's GOVERNANCE.md puts commercial packaging outside the core repository, Kubeflow\
+    \ is a CNCF graduated project, and Project MONAI is a multi-institution project with public governance\
+    \ and nothing sold. pytorch-hub is deferred (below).\n\nCAPABILITY is one quantity, registry scope: how\
+    \ much of the publish, version, discover and pull cycle the surface itself provides, who may publish into\
+    \ it, and for how many artifact kinds. Scale is adoption, not capability, so the same quantity orders\
+    \ a public hub and a self-hosted one. Rungs, each stated as something the product either does or does\
+    \ not do:\n  1  An index that points at weights hosted by each publisher and has no storage of its own.\
+    \ pytorch-hub.\n  2  An operator-curated collection: it hosts versioned artifacts on storage the operator\
+    \ runs or controls (NGC's catalog, or accounts the operator holds on another host, as MONAI does on NGC\
+    \ and Hugging Face) and serves them by name through a CLI or API, but only the operator or partners it\
+    \ admits publish, and it does not deploy what it lists. nvidia-ngc-catalog, qualcomm-ai-hub-models, monai-model-zoo.\n\
+    \  3  A curated multi-provider catalog with deploy integration: the operator lists many third-party providers'\
+    \ models, versions them and deploys any of them onto its own managed serving, while a customer's own models\
     \ stay in that customer's project or private hub. vertex-ai-model-garden, azure-ai-foundry-models, sagemaker-jumpstart.\n\
     \  4  An open registry for one artifact class: any account (or, for self-hosted software, any user of\
     \ the deployment) publishes, each version is addressable, and clients pull by name through an API. ollama-library,\
@@ -47,28 +46,38 @@ scoring_recipe:
     \ The order rests on one stated judgment: letting anyone publish is more registry than deploying what\
     \ the operator chose. For self-hosted software the deployment's own object store counts as the registry's\
     \ storage, which is why kubeflow-hub, whose client uploads to S3 or OCI as it registers, reaches 4 while\
-    \ holding only metadata; its alpha status is recorded in its note and confidence, not in the band.\n\
-    \nANCHORS. huggingface-hub-platform is the top anchor and records no relative_to. modelscope and csghub\
+    \ holding only metadata; its alpha status is recorded in its note and confidence, not in the band.\n\n\
+    ANCHORS. huggingface-hub-platform is the top anchor and records no relative_to. modelscope and csghub\
     \ are at it; the five 4s are one_below it; the three hyperscaler catalogs are two_below it. The 2s are\
-    \ placed against a nearer peer rather than stretched to the anchor: nvidia-ngc-catalog is one_below\
-    \ sagemaker-jumpstart (hosts and serves, no deploy, admitted publishers only), and qualcomm-ai-hub-models\
-    \ and monai-model-zoo are at nvidia-ngc-catalog.\n\nDISTRIBUTION, counted 2026-09-27 over 14 banded\
-    \ products: 0 at 1, 3 at 2, 3 at 3, 5 at 4, 3 at 5. The widest rung is 4 at 5 of 14 (36%), above the\
-    \ third that triggers a review. Its wording is the rung-4 line above. This is the clustering case, not\
-    \ a loose definition: the five genuinely share open publishing, per-version addressing and a pull API\
-    \ over a single artifact class (packaged models, image-generation weights, framework variations, Hugging\
-    \ Face-compatible model repos, registered model versions), and each misses rung 5 on a checkable absence\
-    \ (no datasets or apps, or no Git history). The definition does not admit the curated catalogs or zoos,\
-    \ which fail on who may publish.\n\nADOPTION has no shared instrument. Public hubs record platform-native\
-    \ counters as reported_traction with a banded_quantity (Hugging Face 30-day downloads, ModelScope listing\
-    \ totals, Ollama and Civitai cumulative per-model counts); hyperscaler and vendor catalogs publish catalog\
-    \ sizes only and abstain; self-hosted software abstains rather than borrowing stars or client-library\
-    \ downloads; qualcomm-ai-hub-models is the one row with a download channel of its own (PyPI qai-hub-models).\
-    \ Weights stay 0.3 adoption to 0.7 capability for that reason.\n\nLICENSE QUESTIONS for the maintainer\
-    \ license-rulings issue: pytorch/hub, bioimage-io/bioimage.io and bioimage-io/collection publish no\
-    \ license file (both rows remain in the registry). OpenML's own terms, about page, README and LICENSE\
-    \ all state BSD-3-Clause for code and CC-BY for data; the Apache claim the seed recorded came from a\
-    \ search summary and is withdrawn."
+    \ placed against a nearer peer rather than stretched to the anchor: nvidia-ngc-catalog is one_below sagemaker-jumpstart\
+    \ (hosts and serves, no deploy, admitted publishers only), and qualcomm-ai-hub-models and monai-model-zoo\
+    \ are at nvidia-ngc-catalog. pytorch-hub is one_below monai-model-zoo: both take entries by reviewed pull\
+    \ request, and only the zoo stores and serves what it lists.\n\nDISTRIBUTION, counted 2026-09-27 over\
+    \ 15 banded products: 1 at 1, 3 at 2, 3 at 3, 5 at 4, 3 at 5. The widest rung is 4 at 5 of 15 (33%), at\
+    \ the third that triggers a review, down from 5 of 14 before pytorch-hub filled the bottom rung. Its wording\
+    \ is the rung-4 line above. This is the clustering case, not a loose definition: the five genuinely share\
+    \ open publishing, per-version addressing and a pull API over a single artifact class (packaged models,\
+    \ image-generation weights, framework variations, Hugging Face-compatible model repos, registered model\
+    \ versions), and each misses rung 5 on a checkable absence (no datasets or apps, or no Git history). The\
+    \ definition does not admit the curated catalogs or zoos, which fail on who may publish.\n\nADOPTION has\
+    \ no shared instrument. Public hubs record platform-native counters as reported_traction with a banded_quantity\
+    \ (Hugging Face 30-day downloads, ModelScope listing totals, Ollama and Civitai cumulative per-model counts);\
+    \ hyperscaler and vendor catalogs publish catalog sizes only and abstain; self-hosted software abstains\
+    \ rather than borrowing stars or client-library downloads; qualcomm-ai-hub-models is the one row with\
+    \ a download channel of its own (PyPI qai-hub-models). Weights stay 0.3 adoption to 0.7 capability for\
+    \ that reason.\n\nLICENSE QUESTIONS for the maintainer license-rulings issue (#739): pytorch/hub (promoted\
+    \ and deferred), bioimage-io/bioimage.io and bioimage-io/collection (still a registry row) publish no\
+    \ license file. OpenML's own terms, about page, README and LICENSE all state BSD-3-Clause for code and\
+    \ CC-BY for data; the Apache claim the seed recorded came from a search summary and is withdrawn. The\
+    \ openml row moved to the benchmark_eval_data registry on 2026-09-27."
+  deferred:
+    pytorch-hub:
+      because: 'The repository grants no license at all: no LICENSE, COPYING or LICENSES/ path in the 146-path
+        tree, no license field in package.json, and a CONTRIBUTING.md that licenses contributions under a
+        root LICENSE file that does not exist. The software tier has no entry for `none-declared`, so the
+        walk blocks on the first rung that reads a tier; the recorded 2/source_available is the hand reading
+        (public source, no grant to reuse it), the same one ezkl carries in assurance_evidence. Whether `none-declared`
+        joins `proprietary` or needs its own tier is the shared-rubric ruling asked on #739.'
 products:
 - huggingface-hub-platform
 - modelscope
@@ -84,6 +93,7 @@ products:
 - nvidia-ngc-catalog
 - qualcomm-ai-hub-models
 - monai-model-zoo
+- pytorch-hub
 comments: 'Proposed in issue #601; seeded 2026-09-26 from the sweep in docs/sweeps/2026-09-26-model_hubs.md.
   Membership test: can a client fetch a named, versioned model artifact from it by API, git or registry protocol,
   where the thing being offered is the registry itself rather than the runtime, UI or inference API in front
@@ -102,23 +112,26 @@ comments: 'Proposed in issue #601; seeded 2026-09-26 from the sweep in docs/swee
   and MCP registries belong to agent_protocols. General research repositories such as Zenodo are out. Civitai,
   the hub, is here even though media_generation parks LoRAs and checkpoints as a class; the qualcomm-ai-hub-models
   catalog is here and its compile service is not, and Qualcomm''s other rows elsewhere overlap by org only.
-  The domain zoos (MONAI, BioImage, Kipoi) are here rather than with the models they host, and OpenML stays
-  here while it is watched for a later move to benchmark_eval_data, since its models ("flows") are secondary
-  to its datasets and tasks. Rulings of 2026-09-26: OCI packaging and generic registry tooling is out (KitOps,
-  ModelPack, ORAS, Harbor, Docker Hub''s ai/ namespace), with registry servers that display models first-class
-  (Harbor 2.15) to be revisited once ModelPack leaves CNCF Sandbox. No regional closed hub is admitted beside
-  ModelScope under ADR-005''s best-in-class test (Modelers, WiseModel, OpenXLab stay parked). One AWS surface,
-  SageMaker JumpStart: Bedrock Marketplace deploys onto SageMaker endpoints and is the same registry behind
-  a second storefront. TensorFlow Hub is a retired alias of kaggle-models, and the ONNX and OpenVINO model
-  zoos are superseded. Civitai is scored as open software on its published Apache-2.0 code, with a note that
-  the live site was not verified to run it. Vertex AI Model Garden keeps its slug; its display name follows
-  the "Gemini Enterprise Agent Platform" rebrand only after a primary-source fetch. pytorch-hub and bioimage-model-zoo
-  are read as source-available until upstream publishes a license. First tranche promoted 2026-09-27: fourteen
-  products covering every sub-type (five public hubs, five cloud and vendor catalogs, three self-hostable registries,
-  one domain zoo). Four rows stay in the registry, none rejected: pytorch-hub (no push since 2024-04 and no
-  license file), bioimage-model-zoo (no license file, awaiting the license ruling), kipoi (its READMEs and
-  kipoi.org announce the project''s sunset, archiving the repositories and ending maintenance; remove the row
-  when the archive lands) and openml (its model objects, flows, are pipeline descriptions that reconstruct
-  an untrained model rather than hosted weights, and the row is already watched for benchmark_eval_data). Vertex
-  AI Model Garden''s display name now follows Google''s own pages, which call the platform Gemini Enterprise
-  Agent Platform and the catalog Model Garden.'
+  The domain zoos (MONAI, BioImage, Kipoi) are here rather than with the models they host, and OpenML moved
+  to benchmark_eval_data on 2026-09-27, since its models ("flows") are secondary to its datasets and tasks.
+  Rulings of 2026-09-26: OCI packaging and generic registry tooling is out (KitOps, ModelPack, ORAS, Harbor,
+  Docker Hub''s ai/ namespace), with registry servers that display models first-class (Harbor 2.15) to be revisited
+  once ModelPack leaves CNCF Sandbox. No regional closed hub is admitted beside ModelScope under ADR-005''s
+  best-in-class test (Modelers, WiseModel, OpenXLab stay parked). One AWS surface, SageMaker JumpStart: Bedrock
+  Marketplace deploys onto SageMaker endpoints and is the same registry behind a second storefront. TensorFlow
+  Hub is a retired alias of kaggle-models, and the ONNX and OpenVINO model zoos are superseded. Civitai is
+  scored as open software on its published Apache-2.0 code, with a note that the live site was not verified
+  to run it. Vertex AI Model Garden keeps its slug; its display name follows the "Gemini Enterprise Agent Platform"
+  rebrand only after a primary-source fetch. pytorch-hub and bioimage-model-zoo are read as source-available
+  until upstream publishes a license. First tranche promoted 2026-09-27: fourteen products covering every sub-type
+  (five public hubs, five cloud and vendor catalogs, three self-hostable registries, one domain zoo). Four
+  rows stayed in the registry, none rejected: pytorch-hub (no push since 2024-04 and no license file), bioimage-model-zoo
+  (no license file, awaiting the license ruling), kipoi (its READMEs and kipoi.org announce the project''s
+  sunset, archiving the repositories and ending maintenance; remove the row when the archive lands) and openml
+  (its model objects, flows, are pipeline descriptions that reconstruct an untrained model rather than hosted
+  weights, and the row is already watched for benchmark_eval_data). Vertex AI Model Garden''s display name
+  now follows Google''s own pages, which call the platform Gemini Enterprise Agent Platform and the catalog
+  Model Garden. Second tranche, 2026-09-27: pytorch-hub promoted onto the empty bottom rung and deferred on
+  its missing license grant; the openml row moved to the benchmark_eval_data registry, because its flows are
+  pipeline descriptions that reconstruct an untrained model rather than hosted weights, and its datasets, tasks
+  and runs are the product. bioimage-model-zoo and kipoi stay in the registry for the reasons above.'
