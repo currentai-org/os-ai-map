@@ -331,7 +331,14 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 35 with the media_generation second tranche, six products in. Three are license-tier
+    # gaps recorded rather than hand-closed: `stable-video-diffusion` (the Stability AI Community
+    # License that stable-diffusion and stable-audio already wait on), `latentsync` (CreativeML
+    # OpenRAIL++-M, which the permissive tier does not name) and `open-sora` (Apache-2.0 weights
+    # whose checkpoint repository bundles FLUX.1 [dev] and a Tencent Hunyuan VAE, the liveportrait
+    # compound). triposr, mmaudio and diffsynth-studio compute. None of the three closes on more work.
+    assert len(deferred) == 35
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
