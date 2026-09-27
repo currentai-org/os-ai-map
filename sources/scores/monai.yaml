@@ -1,0 +1,105 @@
+product: monai
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/Project-MONAI/MONAI
+    core-gated:
+      value: ungated
+      detail: community project steered by an advisory board; nothing sold
+  confidence: high
+  note: Apache-2.0 and built from the public repository. MONAI is run in the open by a community of more
+    than thirty institutions under an advisory board, and no edition of it is sold.
+  raw: license:Apache-2.0(OSI);source:public(github.com/Project-MONAI/MONAI);core-gated:ungated(community
+    project steered by an advisory board; nothing sold)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Project-MONAI/MONAI/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Project-MONAI/MONAI/HEAD/README.md
+    shows: 'README: "MONAI is a PyTorch-based, open-source framework for deep learning in healthcare imaging,
+      part of the PyTorch Ecosystem."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 97556de84bb73a380b4400021064baa952c8d9e1df8291b1d98809a4a334b195
+    establishes:
+    - source
+  - url: https://project-monai.github.io/about.html
+    shows: 'About page: "Started by NVIDIA and King''s College London, it has grown into a community of
+      30+ institutions"; "The Advisory Board sets MONAI''s strategic direction"; "MONAI is built in the
+      open: code, governance, and roadmap."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d4b47ef7506f5862e6f41389c2981323c78f6fc835664eb153e82d38fae87f02
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/Project-MONAI/MONAI/files/dev
+    shows: Repository tree of 1,585 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 24684b64918fe729468aac2c0b754d0d0585ffa66a0ba69eb9c2cabe7f379cc8
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the monai package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/monai/recent
+    shows: last_month 824,386 downloads of monai
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d135eac89167a186c446d98a7f9cf29a281d24bccbcbb1fb31fb07c6e2eed1b1
+capability:
+  score: 5
+  basis: feature_matrix
+  value: medical-imaging transforms, losses, metrics and about 150 network building blocks and architectures,
+    training workflows and model-zoo bundles, plus Auto3DSeg, which analyzes a dataset, generates, trains
+    and tunes several segmentation algorithms and ensembles them from one call
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: Most of MONAI is a toolkit for building medical-imaging models by hand, but its Auto3DSeg runs
+    the whole job for 3D segmentation - data analysis, algorithm choice, training, tuning and ensembling
+    - from a single line of code, the automation AutoGluon provides for tables. That automation covers
+    segmentation only.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple
+        models and ensembles them together to obtain superior predictive performance." - the automated
+        search and fit MONAI is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://monai.readthedocs.io/en/latest/apps.html
+    shows: 'Auto3DSeg AutoRunner: "An interface for handling Auto3Dseg with minimal inputs ... The users
+      can run the Auto3Dseg with default settings in one line of code."; output includes "data statistics
+      analysis report", "algorithm definition files", "training results (checkpoints, accuracies)" and
+      "the predictions on the testing datasets from the final algorithm ensemble"; "automatic hyperparameter
+      optimization".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d960647850c8b7a076f36791a2a1877b8c1c12ff60f8230c81ea15725b0c38a1
+  - url: https://monai.readthedocs.io/en/latest/networks.html
+    shows: Network reference lists blocks, layers and nets including UNet, UNETR, SwinUNETR, SegResNet,
+      DynUNet, VISTA3D, MedNeXt and ViT.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d02318ad345216e867fcff8301b4038d362509f3efd06bbab90178dc3d11e0ea

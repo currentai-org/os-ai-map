@@ -1,0 +1,113 @@
+product: dlib
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSL-1.0
+      detail: Boost Software License 1.0, OSI-approved; not the Business Source License
+    source:
+      value: public
+      detail: github.com/davisking/dlib
+    core-gated:
+      value: ungated
+      detail: maintained by its author; nothing sold
+  confidence: high
+  note: dlib is under the Boost Software License 1.0, a short permissive license the OSI approves, and
+    builds from the public repository its author maintains; nothing is sold. Its trained models are published
+    separately and mostly placed in the public domain, though the 68-point landmark model inherits a no-commercial-use
+    condition from its training data.
+  raw: license:BSL-1.0(Boost Software License 1.0, OSI-approved; not the Business Source License);source:public(github.com/davisking/dlib);core-gated:ungated(maintained
+    by its author; nothing sold)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/davisking/dlib/HEAD/LICENSE.txt
+    shows: LICENSE.txt is the "Boost Software License - Version 1.0 - August 17th, 2003", "Permission
+      is hereby granted, free of charge, to any person or organization".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/dlib/json
+    shows: PyPI record for dlib 20.0.1, uploaded 2026-03-29, license "Boost Software License", Homepage
+      github.com/davisking/dlib.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9e57c8107448a4804dd46f4290221b8da53773066d76ecd15e405c60fc5810e0
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/davisking/dlib/HEAD/README.md
+    shows: 'README: "Dlib is a modern C++ toolkit containing machine learning algorithms and tools for
+      creating complex software in C++ to solve real world problems."; no paid tier or commercial edition
+      mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: edbf6b484f06454ac5f2ce139174e4ae6abc65ba433bee77152bb50c875a2c86
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/davisking/dlib/files/master
+    shows: Repository tree of 2,304 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f7bea595c38bfe8cbd4fbf3ecb0e1f474bb3136fc36692a925d9d87bafec1407
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/davisking/dlib-models/HEAD/README.md
+    shows: 'dlib-models README: "anyone can do whatever they want with these model files as I''ve released
+      them into the public domain"; for the 68-point landmark model, "The license for this dataset excludes
+      commercial use".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9c6d18a2a83ceebc136997941ec913ccc0548889e24440381bd06d7453b05e3c
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of the dlib package, which ships only as source and compiles
+    on install. The C++ library used directly is not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/dlib/recent
+    shows: last_month 174,853 downloads of dlib
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 791206552e54ef9ff8f2bf6b7bfd54ed0b0f571966c76cd6c9af0ce1e06171f6
+capability:
+  score: 3
+  basis: feature_matrix
+  value: binary and multiclass SVMs, relevance vector machines, kernel ridge and recursive least squares,
+    random-forest regression, structural SVMs, clustering (k-means, spectral, Chinese whispers), automatic
+    model selection helpers, a deep-learning API, and trained face detection, landmark and recognition
+    models
+  relative_to: scikit-learn
+  relation: at
+  confidence: medium
+  note: dlib is a general machine-learning toolkit in the same sense as scikit-learn, with many learners
+    to choose among, and its pretrained face models cover one object class. Choosing and training a model
+    for a new task is left to the user.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://scikit-learn.org/stable/user_guide.html
+      shows: scikit-learn's user guide still lists supervised learners (linear models, SVMs, nearest neighbors,
+        Gaussian processes, naive Bayes, trees, ensembles, neural networks), unsupervised learning and
+        model selection - the toolkit scope dlib is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 6c6c264ef869e05cbd5a682bdcdbdfa7302478eb897be90112fa3d2655766875
+  last_verified: '2026-09-27'
+  sources:
+  - url: http://dlib.net/ml.html
+    shows: 'Machine Learning page "Primary Algorithms": Binary Classification (svm_c_trainer, rvm_trainer,
+      svm_pegasos, auto_train_rbf_classifier ...), Multiclass Classification, Regression (krr_trainer,
+      rvm_regression_trainer, random_forest_regression_trainer, svr_trainer ...), Structured Prediction,
+      Clustering (kkmeans, spectral_cluster, chinese_whispers ...), and Deep Learning layers.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 375111b24981c8c1bbeac51487dd3f019f849ba2cef319d3874b59cda0cafc22
