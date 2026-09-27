@@ -5,7 +5,7 @@ openness:
   components:
     weights:
       value: open
-      detail: eight checkpoints on the Hub, ungated; the Large and 7B TTS repositories were withdrawn
+      detail: ASR and TTS checkpoints on the Hub as safetensors, ungated
     data:
       value: described
       detail: the cards give languages and properties of the training audio only
@@ -20,21 +20,28 @@ openness:
   note: Every VibeVoice checkpoint, including the current streaming ASR models, is MIT-licensed and downloads freely.
     Microsoft describes the training audio without releasing it, and publishes ASR fine-tuning code but not the training
     pipeline.
-  raw: weights:open(eight checkpoints on the Hub, ungated; the Large and 7B TTS repositories were withdrawn);data:described(the
-    cards give languages and properties of the training audio only);code:partial(ASR inference and LoRA fine-tuning;
-    the TTS code was removed in 2025-09);license:MIT(every checkpoint and the code; the TTS cards add that the models
-    are intended for research use)
+  raw: weights:open(ASR and TTS checkpoints on the Hub as safetensors, ungated);data:described(the cards give languages
+    and properties of the training audio only);code:partial(ASR inference and LoRA fine-tuning; the TTS code was removed
+    in 2025-09);license:MIT(every checkpoint and the code; the TTS cards add that the models are intended for research
+    use)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models?author=microsoft&search=VibeVoice&limit=100
-    shows: 'Family listing: eight microsoft/VibeVoice* repositories, all tagged "license:mit" and ungated, the newest
-      VibeVoice-ASR-Streaming-7B and -1.5B created 2026-09-02.'
+    shows: 'Family listing: eight microsoft/VibeVoice* repositories, all tagged "license:mit", the newest VibeVoice-ASR-Streaming-7B
+      and -1.5B created 2026-09-02.'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: d0d77e849430770d8eaceeb473192f5d2c961247e5a2b10322daa93970e55d9d
     establishes:
     - weights
     - license
+  - url: https://huggingface.co/api/models/microsoft/VibeVoice-ASR
+    shows: 'Hub record for VibeVoice-ASR: "gated":false and sharded safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f5363f6b8c4ed334c0c382d3e28cfd2f782c8e4128de572e5716509b38ecfca6
+    establishes:
+    - weights
   - url: https://raw.githubusercontent.com/microsoft/VibeVoice/HEAD/LICENSE
     shows: 'LICENSE body: "MIT License" / "Copyright (c) 2025 Microsoft".'
     accessed: '2026-09-27'
