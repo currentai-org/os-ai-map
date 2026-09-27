@@ -2,68 +2,102 @@ product: blip
 openness:
   score: 3
   class: open_weights
-  governing_release: blip-2
+  governing_release: xgen-mm-v1.5
   components:
     weights:
       value: open
-      detail: safetensors and PyTorch weights on the Hub, ungated
+      detail: safetensors for the xGen-MM v1.5 base and instruct checkpoints on the Hub, ungated
     data:
-      value: described
-      detail: BLIP-2 is trained on public image-text sets such as LAION, and LAVIS ships loaders for them; the exact
-        mixture is not published
+      value: partial
+      detail: Salesforce publishes BLIP3-KALE, BLIP3-OCR-200M and BLIP3-GROUNDING-50M, three of the datasets
+        it built for training; the instruction-tuning mixture is not published as a release
     code:
       value: open
-      detail: LAVIS train.py with the BLIP-2 pretraining configs
+      detail: the xgen-mm branch of LAVIS, "the fine-tuning code that's used for producing our instruct
+        models"
     license:
-    - name: MIT
-      detail: OSI; every BLIP-2 checkpoint on the Hub
+    - name: Apache-2.0
+      detail: OSI; "Our code and weights are released under the Apache 2.0 license", with a card statement
+        that the release is for research purposes
+    context:
+      video-model:
+        value: restricted
+        detail: xGen-MM-Vid (BLIP-3-Video), a separate video model built on the v1.5 architecture, ships
+          under CC-BY-NC-4.0
   confidence: high
-  note: BLIP-2's checkpoints are MIT and Salesforce published the training code and configs in LAVIS. The training
-    data is described by source rather than released as a mixture, so the model cannot be rebuilt exactly.
-  raw: weights:open(safetensors and PyTorch weights on the Hub, ungated);data:described(BLIP-2 is trained on public
-    image-text sets such as LAION, and LAVIS ships loaders for them; the exact mixture is not published);code:open(LAVIS
-    train.py with the BLIP-2 pretraining configs);license:MIT(OSI; every BLIP-2 checkpoint on the Hub)
-  last_verified: '2026-09-26'
+  note: xGen-MM v1.5, the BLIP-3 release, is Apache 2.0, and Salesforce publishes the code that fine-tuned
+    its instruct models along with three of the large datasets it built for training. The instruction-tuning
+    mixture itself is not released, so the model cannot be rebuilt exactly.
+  raw: weights:open(safetensors for the xGen-MM v1.5 base and instruct checkpoints on the Hub, ungated);data:partial(Salesforce
+    publishes BLIP3-KALE, BLIP3-OCR-200M and BLIP3-GROUNDING-50M, three of the datasets it built for training;
+    the instruction-tuning mixture is not published as a release);code:open(the xgen-mm branch of LAVIS,
+    "the fine-tuning code that's used for producing our instruct models");license:Apache-2.0(OSI; "Our code
+    and weights are released under the Apache 2.0 license", with a card statement that the release is for
+    research purposes);video-model:restricted(xGen-MM-Vid (BLIP-3-Video), a separate video model built on
+    the v1.5 architecture, ships under CC-BY-NC-4.0)
+  last_verified: '2026-09-27'
   sources:
-  - url: https://huggingface.co/api/models/Salesforce/blip2-opt-2.7b?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
-    shows: 'Hub metadata for blip2-opt-2.7b: gated false, safetensors and PyTorch shards, card license mit'
-    accessed: '2026-09-26'
+  - url: https://huggingface.co/api/models/Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for xgen-mm-phi3-mini-instruct-interleave-r-v1.5: gated false, safetensors shards,
+      card license apache-2.0'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 1fd8668be3d5531f74706f310a94e4e6b4048405fccfbcb3028979d9cafdb449
+    content_sha256: b83701dbc26c19a40575322998a0f2bed7ebceb8ff48df21d5412a8dcce896fe
     establishes:
     - weights
     - license
-  - url: https://huggingface.co/api/models?author=Salesforce&search=blip&limit=1000
-    shows: All nine BLIP-2 checkpoints tagged license:mit; the BLIP checkpoints bsd-3-clause
-    accessed: '2026-09-26'
+  - url: https://huggingface.co/Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5/raw/main/README.md
+    shows: '"In the v1.5 (08/2024) release"; interleave is "our main instruct model"; "This series advances
+      upon the successful designs of the BLIP series"; "Our code and weights are released under the Apache
+      2.0 license"; "This release is for research purposes only"'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 062e659b78099578c28954cd70f89ee23f8b6fd3c30f0cf1ee08968ed8b6bb58
+    content_sha256: 84b95ec1bccde45a810340a4326ac05003b979ba0b689789334b3ada969e38c6
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=Salesforce&search=xgen-mm&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: 'Eight xGen-MM checkpoints: the v1.5 base and instruct models tagged apache-2.0, the v1 instruct
+      model and the two xgen-mm-vid models cc-by-nc-4.0; the newest is xgen-mm-vid, 2025-01-15'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fde432745af70158393cbc0f47a9d005c0cfcc82875de2c029c0d4fec21cdbb6
     establishes:
     - license
-  - url: https://huggingface.co/Salesforce/blip2-opt-2.7b/raw/main/README.md
-    shows: '"BLIP2 is fine-tuned on image-text datasets (e.g. LAION) collected from the internet"'
-    accessed: '2026-09-26'
+  - url: https://huggingface.co/Salesforce/xgen-mm-vid-phi3-mini-r-v1.5-128tokens-8frames/raw/main/README.md
+    shows: xGen-MM-Vid (BLIP-3-Video) "specifically designed to understand videos"; "Our code and weights
+      are released under the CC by-NC 4.0 license"
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 441eced273ee86fe9ebb2eaaf269d3b2b665afecd180db6912977f3e32007dff
+    content_sha256: 568029b9934edb4c2bccb9a548537c56611139653e352d545fbfc5ae56c932a1
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets?author=Salesforce&search=blip3&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: blip3-kale, blip3-ocr-200m and blip3-grounding-50m published by Salesforce, each tagged apache-2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 30b87ee3fa3d8adecb7508c1b2998c3072b8a9d734b481df8138ee43e2298bf9
     establishes:
     - data
-  - url: https://raw.githubusercontent.com/salesforce/LAVIS/main/lavis/projects/blip2/train/pretrain_stage1.yaml
-    shows: The BLIP-2 stage-1 pretraining config in LAVIS
-    accessed: '2026-09-26'
+  - url: https://arxiv.org/abs/2408.08872
+    shows: '"Our training code, models, and all datasets used in this work, including the three largescale
+      datasets we create and the preprocessed ones, will be open-sourced"'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 9cd525dabc0026e85cafebde8cf30be2ad1547897641003d350d8ddf314ca794
+    content_sha256: b83144d00414d364c949f264f77025987cf3544548da4105a5aaa02fd5382c79
     establishes:
-    - code
-  - url: https://raw.githubusercontent.com/salesforce/LAVIS/main/train.py
-    shows: The LAVIS training entry point, BSD-3-Clause
-    accessed: '2026-09-26'
+    - data
+  - url: https://cdn.jsdelivr.net/gh/salesforce/LAVIS@xgen-mm/README.md
+    shows: '"This codebase provides the fine-tuning code that''s used for producing our instrcut models";
+      "We implement xGen-MM in the OpenFlamingo codebase"'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 8d5098dd4bed5904b228ef010a65589538ac6ffaf690be7673b4f742b5435048
+    content_sha256: e3cf3eec2f77891542dbaed7310fc1881ba1c19f7b8698efedd2905a758032c0
     establishes:
     - code
   - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/salesforce%2FLAVIS
     shows: 'salesforce/LAVIS: archived true, fork false, license bsd-3-clause'
-    accessed: '2026-09-26'
+    accessed: '2026-09-27'
     http_status: 200
     content_sha256: 78880a0d007f5e865c17a75d9e62c35cb9f75971173db99e0f003c847aff28cb
 adoption:
@@ -71,44 +105,50 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Hugging Face downloads over the trailing 30 days, summed across Salesforce's BLIP, BLIP-2 and InstructBLIP
-    checkpoints. Most of it is the original BLIP captioning and question-answering models, which remain common pipeline
-    components.
-  last_verified: '2026-09-26'
+  note: Hugging Face downloads over the trailing 30 days, summed across Salesforce's BLIP, BLIP-2, InstructBLIP
+    and xGen-MM checkpoints. Most of it is the original BLIP captioning and question-answering models, which
+    remain common pipeline components.
+  last_verified: '2026-09-27'
   sources:
-  - url: https://huggingface.co/api/models?author=Salesforce&search=blip&limit=1000
-    shows: BLIP checkpoints 2,853,499 and BLIP-2 checkpoints 815,615 downloads in the trailing 30 days; blip-image-captioning-base
-      1,636,362
-    accessed: '2026-09-26'
+  - url: https://huggingface.co/api/models?author=Salesforce&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: BLIP checkpoints 2,846,161, BLIP-2 813,835, InstructBLIP 65,012 and xGen-MM 1,800 downloads in
+      the trailing 30 days, 3,726,808 in all; blip-image-captioning-base 1,625,727
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 062e659b78099578c28954cd70f89ee23f8b6fd3c30f0cf1ee08968ed8b6bb58
-  - url: https://huggingface.co/api/models?author=Salesforce&search=instructblip&limit=100
-    shows: Four InstructBLIP checkpoints with 65,305 downloads in the trailing 30 days
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: a4286fab09360bd1b4061c79b7ca83737cde643d527bbd8d3e138551e6913761
+    content_sha256: e628ecaecef994662e2f98e62b7ced42f2ea6fc1e139fd2854fb5998d1af5db4
 capability:
-  score: 1
+  score: 3
   basis: feature_matrix
-  basis_detail: single-image captioning and question answering from the BLIP-2 card and paper
-  value: 'Single image in; captions, answers and image-conditioned chat out. BLIP-2: zero-shot VQAv2 65.0 against
-    56.3 for Flamingo, NoCaps CIDEr 121.6.'
-  confidence: high
-  relative_to: florence-2
+  basis_detail: interleaved multi-image input from the xGen-MM v1.5 card and video input from xGen-MM-Vid
+  value: 'Interleaved images and text in, text out; xGen-MM-Vid takes 8-frame video. xGen-MM v1.5 interleave:
+    MMMU 41.1, TextVQA 71.0, BLINK 49.7, Mantis-eval 56.7; BLIP-2 zero-shot VQAv2 65.0.'
+  confidence: medium
+  relative_to: minicpm-v
   relation: at
-  note: BLIP-2 captions images and answers questions about them, and was ahead of Flamingo on zero-shot question
-    answering when it was released. It handles a single image with no document, multi-image or video understanding,
-    level with Florence-2.
-  last_verified: '2026-09-26'
+  note: The BLIP line now reads interleaved sequences of several images, and its BLIP-3-Video model answers
+    questions about short video clips. It is not benchmarked on document or chart reading, and it has no
+    audio or computer-use models, so it sits level with MiniCPM-V.
+  last_verified: '2026-09-27'
   sources:
-  - url: https://huggingface.co/Salesforce/blip2-opt-2.7b/raw/main/README.md
-    shows: '"image captioning - visual question answering (VQA) - chat-like conversations by feeding the image and
-      the previous conversation as prompt"'
-    accessed: '2026-09-26'
+  - url: https://huggingface.co/Salesforce/xgen-mm-phi3-mini-instruct-interleave-r-v1.5/raw/main/README.md
+    shows: 'Multi-image benchmarks for xGen-MM-inst.-interleave (4B): BLINK 49.7, QBench-2 75.1, Mantis-eval
+      56.7; single-image MMMU (val) 41.1, TextVQA 71.0'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 441eced273ee86fe9ebb2eaaf269d3b2b665afecd180db6912977f3e32007dff
-  - url: https://raw.githubusercontent.com/salesforce/LAVIS/main/projects/blip2/README.md
-    shows: '"BLIP-2 beats Flamingo on zero-shot VQAv2 (65.0 vs 56.3)"; NoCaps CIDEr 121.6'
-    accessed: '2026-09-26'
+    content_sha256: 84b95ec1bccde45a810340a4326ac05003b979ba0b689789334b3ada969e38c6
+  - url: https://arxiv.org/abs/2408.08872
+    shows: '"with the ability to comprehend interleaved image-text inputs"'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: d96faf17d11ea7a3cb84089a885342f178b5ee7af10e2e7ed93a2688b2f0ec77
+    content_sha256: b83144d00414d364c949f264f77025987cf3544548da4105a5aaa02fd5382c79
+  - url: https://huggingface.co/Salesforce/xgen-mm-vid-phi3-mini-r-v1.5-128tokens-8frames/raw/main/README.md
+    shows: '"Here, we are sharing the 128 token version trained to take 8-frame video inputs"; accuracy
+      on MSVD-QA'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 568029b9934edb4c2bccb9a548537c56611139653e352d545fbfc5ae56c932a1
+  - url: https://arxiv.org/abs/2301.12597
+    shows: BLIP-2 "outperforms Flamingo80B by 8.7% on zero-shot VQAv2"
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 88e06b761f46c14c9c12fcbbb9688e948360edacf91112eb1b99bbd837c7afe5
