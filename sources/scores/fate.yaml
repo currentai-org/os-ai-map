@@ -52,19 +52,26 @@ openness:
     establishes:
     - core-gated
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 'No package measures FATE: `fate-client` is a client library, and sites deploy FATE from installers or container
-    images. Stars are the fallback, and they cap the reading because a star is not a deployment.'
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `pyfate`, the package FATE's standalone deployment guide recommends. Cluster deployments
+    run from installers or container images instead, which this figure does not count, and the last `pyfate` release
+    is from 2024-08-06.
   last_verified: '2026-09-27'
   sources:
-  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FederatedAI%2FFATE
-    shows: stargazers_count = 6,098 for FederatedAI/FATE.
+  - url: https://pypistats.org/api/packages/pyfate/recent
+    shows: last_month = 74 downloads for the package `pyfate`.
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: b843f0de799fe0fc1db6fe10ac3beeab30a4419ec7b696b58f4cb495f24709b4
+    content_sha256: ecfda46827da399ae999f00efe5735bff7876b2aaea6deaa44e8d81a450598b3
+  - url: https://raw.githubusercontent.com/FederatedAI/FATE/HEAD/deploy/standalone-deploy/README.md
+    shows: 'Standalone deployment guide: "Install FATE from PyPI (Recommended)", one of three single-node methods
+      beside Docker images and host installation.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cb83c73d8eeb087348d16639da8e0403a485be4ea03a3385d86cb6eeec627f57
 capability:
   score: 4
   basis: feature_matrix
