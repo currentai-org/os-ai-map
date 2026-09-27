@@ -284,7 +284,13 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 5 on 2026-09-26, when it was read: access is by permission and commercial use needs
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
-    assert len(deferred) == 5
+    #
+    # 5 -> 8 with the assurance_evidence first tranche (2026-09-26), deliberately, under
+    # promote-category step 7: ezkl (`none-declared`, no license grant), deepprove
+    # (`Lagrange-License`, evaluation-only) and content-seal (a `CC-BY-NC-4.0` member, which the
+    # software ladder does not name) wait on the maintainer's license rulings. Each is hand-placed
+    # at 2/source_available, and each closes when its name reaches a software tier.
+    assert len(deferred) == 8
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
