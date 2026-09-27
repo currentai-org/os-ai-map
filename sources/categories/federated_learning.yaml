@@ -3,6 +3,12 @@ display_name: Federated learning
 description: >-
   Software that trains, evaluates or queries a shared model across data holders who never pool
   their raw data, moving model updates, aggregates or queries between silos instead of datasets.
+strapline: Openness is high, and the one open-core record is the adoption leader. Thirteen of seventeen products
+  publish a complete OSI-licensed system, but Flower, which draws about two thirds of the category's monthly
+  PyPI installs, reserves OIDC login, audit logging and its Helm charts for Flower Enterprise, and Google publishes
+  only the device half of its production cross-device platform. Capability splits on reach. Only NVIDIA FLARE
+  documents HPC and mobile paths together with federated training measured up to 72 billion parameters, while
+  four of the seventeen simulate federations they do not deploy.
 weights:
   adopt: 0.5
   cap: 0.5
@@ -12,28 +18,63 @@ scoring_recipe:
   derived_from:
     method: shared software ladder, not yet verified against hand-authored scores
     checker: build/check_rubric.py
-  note: >-
-    Inherits the shared software ladder unchanged. Every seed row is typed software: the
-    category holds frameworks and platforms, not models or datasets, and no federated model
-    line surfaced in the sweep. Capability here is one quantity, federation reach: how far
-    outside a single machine a framework can actually run a federated job, and under what
-    trust assumptions. The sketch the sweep drew, to be banded against evidence at promotion
-    rather than taken as found: single-machine simulation only (FedJAX, pfl-research,
-    PFLlib); real multi-party runs across a few silos at research grade (Plato, P2PFL,
-    FedLab); production cross-silo with deployment tooling (Substra, vantage6, FATE);
-    cross-silo plus cross-device or HPC scale with large models (TensorFlow Federated, the
-    Federated Compute Platform); and the top rung, where NVIDIA FLARE documents HPC
-    launchers and federated LLM training at tens of billions of parameters, with Flower the
-    other likely occupant once its secure-aggregation and privacy features are read. Two
-    license strings the ladder does not tier yet - Clear BSD (MetisFL, which expressly grants
-    no patent rights) and the Vector Institute License (FL4Health, academic and partner use
-    only) - go to the shared license-rulings issue, and the
-    products carrying them are deferred at promotion rather than scored by a local rule.
-    Weighted evenly: declared installs concentrate in one or two frameworks (the dated
-    figures are in the sweep record), so leaning on adoption would mostly measure Flower, and
-    leaning on
-    capability would reward research-grade simulators that nobody deploys.
-products: []
+  note: 'Inherits the shared software ladder unchanged. Every product is typed software. Two license records
+    needed the body rather than the label: Fed-BioMed''s GitHub label reads "other" over a short notice
+    granting Apache-2.0 by SPDX identifier, and vantage6''s PyPI record says MIT against an Apache-2.0 LICENSE,
+    so the score follows the LICENSE. Flower is the one open-core record, because its own documentation
+    marks OIDC login, audit logging and the Helm charts as Flower Enterprise features, so it records core-gated:
+    gated and lands on 4. The Federated Compute Platform records source: partial, because Google has not
+    published the production server and has removed the reference one, and it lands on 2. No promoted product
+    is deferred.
+
+
+    Capability is one quantity, federation reach: how far outside a single machine a product runs a federated
+    job, and under what trust. 5 is everything in 4 plus reach past the data-center silo in the open product
+    (a current mobile or edge SDK, or an HPC scheduler launcher), plus federated training validated at multi-billion
+    parameters. 4 is a cross-silo deployment runtime: a coordinator and per-party services that each organization
+    starts in its own environment, admitting only identified parties (node keys, certificates, an authentication
+    service, a party whitelist, or the owner''s approval of each collaborator), with deployment tooling
+    for those services and at least one privacy mechanism beyond plain aggregation (secure aggregation,
+    homomorphic encryption, MPC, differential privacy or a TEE). 3 is a real federation across machines
+    over a network that lacks rung 4''s party-identity layer, or covers only one side of the federation
+    or a single model family. 2 is simulation first, where federations are emulated on a machine or cluster
+    the researcher controls and the product itself calls real deployment out of scope or unfinished, or
+    a client for one federated workload that leaves the federation runtime to another product. No product
+    in the first tranche sits at 1. nvidia-flare is the top anchor: a Slurm launcher, an Android and iOS
+    SDK, and FedAvg measured up to 72B parameters. flower sits one below it, because its Android SDK is
+    marked incompatible with current releases and its Slurm guide runs through the hosted SuperGrid. Every
+    other band is recorded against flower, plato-fl (3), fedjax (2), or, for syfthub, pysyft.
+
+
+    Distribution, counted 2026-09-27 over 17 banded products: one at 5, eight at 4, three at 3, five at
+    2 and none at 1. Rung 4 holds 8 of 17 (47%), above the one-third review trigger, with the wording given
+    above. This is the clustering case, not a loose definition. Each of the eight was checked against all
+    three parts of rung 4 (party identity, deployment tooling and a privacy mechanism), and the wording
+    demonstrably excludes working networked frameworks: plato-fl and fedtree each run real federations and
+    each lacks the identity layer, so they sit at 3. Inside rung 4, the difference is breadth of privacy
+    stack against breadth of operations: Rhino''s governance and customer-managed keys, FATE''s MPC, Fed-BioMed''s
+    homomorphic secure aggregation, Flower''s SecAgg+. The vendors'' own feature lists cannot order those.
+    The weights are even because declared installs concentrate in Flower, about two thirds of the category''s
+    monthly PyPI installs: leaning on adoption would mostly measure Flower, and leaning on capability would
+    reward platforms that few people deploy.'
+products:
+- nvidia-flare
+- flower
+- fate
+- vantage6
+- fed-biomed
+- appfl
+- pysyft
+- apheris-networks
+- rhino-fcp
+- plato-fl
+- fedtree
+- federated-compute-platform
+- tensorflow-federated
+- fedjax
+- pfl-research
+- pfllib
+- syfthub
 comments: >-
   Proposed in issue #574; seeded preliminary 2026-09-26 (sweep record
   docs/sweeps/2026-09-26-federated-learning.md). Membership test: does the raw data stay with
@@ -82,3 +123,27 @@ comments: >-
   decentralized inference (Petals, exo), decentralized training networks (hivemind, Prime
   Intellect, Gensyn), chain SDKs (Bittensor) and compute marketplaces. They pool compute, not
   protect data; a volunteer-inference runtime that belongs anywhere belongs in inference_code.
+
+
+  FIRST TRANCHE, promoted 2026-09-27: 17 head products, each re-verified live that day. Fifteen
+  came from the registry. pysyft (from ml_frameworks) and syfthub (from orchestration_agents)
+  moved in and were rebanded against this category's matrix: pysyft stays at 4, now recorded at
+  flower, and syfthub stays at 2, now two below pysyft instead of one below openrag. The tranche
+  covers production cross-silo (nvidia-flare, flower, fate, vantage6, fed-biomed, appfl), research
+  runtimes (plato-fl, fedtree), cross-device (federated-compute-platform), simulation
+  (tensorflow-federated, fedjax, pfl-research, pfllib), remote computation and federated query
+  (pysyft, syfthub), and the two closed comparators (apheris-networks, rhino-fcp). Twenty-one rows
+  stay in the registry. FedML and Substra are held out of the first tranche by decision, and
+  OpenFL by its announced end of life. SecretFlow waits on two things: a fetch confirming its Ant
+  Group affiliation, and a gating statement, because its tree shows no enterprise path but no
+  party says nothing is withheld. NEBULA's README names a proprietary Enterprise Edition beside
+  its AGPL Community Edition. P2PFL's pricing page withholds "Advanced features" from the free
+  tier for an Enterprise plan still marked as launching soon. Both need a gating reading before
+  they can be scored, so the decentralized sub-type is not in this tranche. FeatureCloud's open
+  repository is the CLI and controller for the featurecloud.ai service, which leaves its source
+  value unsettled. FederatedScope was drafted and pulled back: its core-gated value rested on a
+  tree with no enterprise path, which the acceptance standard does not accept alone, and no
+  statement from Alibaba was reachable, because federatedscope.io's certificate does not match its
+  host. MetisFL (Clear BSD) and FL4Health (Vector Institute License) wait on the license-rulings
+  issue. Flame, FedLab, PaddleFL, Fedlearner, PrimiHub, FedScale, XFL, GFL, FLGo, EasyFL and FLSim
+  (iQua) remain candidates for later add-product promotions.

@@ -1,0 +1,80 @@
+product: federated-compute-platform
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: partial
+      detail: client libraries and proto definitions only; the production server is not published and the reference
+        server was removed
+  confidence: high
+  note: What Google publishes is the device side of its cross-device platform under Apache-2.0. The production server
+    is not open source, and the reference server that used to be in the repository has been removed, so nobody can
+    run the platform end to end from this code.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:partial(client
+    libraries and proto definitions only; the production server is not published and the reference server was removed)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/google-parfait/federated-compute/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/google-parfait%2Ffederated-compute
+    shows: 'Repository record for google-parfait/federated-compute: license apache-2.0, not archived, not a fork,
+      pushed 2026-09-17, 111 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a26e7dcc35fecfba6bf3f7ddf7e30c5c4c32afd4937aadbee7af33a19d30c38c
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/google-parfait/federated-compute/HEAD/README.md
+    shows: 'README: "parts of the repository - in particular, code in the client/ directory, and the service & data
+      format definitions in proto/ - are used in production in Google''s federated learning infrastructure. Other
+      parts - notably, production server side infrastructure - have not yet been open sourced"; the reference server
+      "was removed to reduce maintenance costs".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c78f6ff293fd7356142b2d185353ae956de7f140bd5db94bd6b5c22546e3bb81
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: The platform publishes no package; its client ships inside Google's apps rather than to developers. Stars
+    are the fallback and read attention only.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/google-parfait%2Ffederated-compute
+    shows: stargazers_count = 111 for google-parfait/federated-compute.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a26e7dcc35fecfba6bf3f7ddf7e30c5c4c32afd4937aadbee7af33a19d30c38c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Production cross-device client libraries and service definitions, and a client for the ConfidentialAggregations
+    protocol that verifies remotely attested TEE-hosted server applications; no server in the repository.
+  confidence: medium
+  relative_to: plato-fl
+  relation: at
+  note: The published code is the phone side of a production cross-device platform, including attestation
+    of the servers that aggregate. Without the server half it is level with Plato.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/google-parfait/federated-compute/HEAD/README.md
+    shows: 'README: "This repository hosts infrastructure for running federated computations in the cross-device
+      setting"; a client-side implementation of the ConfidentialAggregations protocol "which uses remotely attested
+      server-side applications that run in a Trusted Execution Environment (TEE)"; the production server is not
+      open sourced.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c78f6ff293fd7356142b2d185353ae956de7f140bd5db94bd6b5c22546e3bb81

@@ -54,18 +54,28 @@ adoption:
 capability:
   score: 2
   basis: feature_matrix
-  value: null
-  confidence: low
-  note: Implements a full federated RAG pipeline — distributed private indexing, federated query broadcast,
-    local top-k retrieval, global aggregation/ranking, and LLM synthesis. A distinctive privacy-preserving
-    approach (nothing else on the map does federated RAG), but early-stage and narrow.
-  relative_to: openrag
-  relation: one_below
-  last_verified: '2026-08-13'
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: An SDK that loads data-source services from a network, queries each on its owner's infrastructure,
+    returns only relevant snippets and has an LLM synthesize them; the federation itself runs on the separate
+    SyftBox runtime.
+  confidence: medium
+  note: 'SyftHub federates retrieval: each source is queried where it lives and only snippets leave it,
+    which nothing else on the map does. The SDK leaves the federation itself to SyftBox, which users install
+    separately, so it sits two steps below PySyft, the OpenMined runtime it builds on.'
+  relative_to: pysyft
+  relation: two_below
+  last_verified: '2026-09-27'
   sources:
-  - url: https://openmined.org/syfthub/
-    shows: federated RAG architecture - distributed indexing, federated query broadcast, aggregation and
-      ranking, LLM synthesis; no benchmark figure
-    accessed: '2026-08-13'
+  - url: https://cdn.jsdelivr.net/gh/OpenMined/syft-hub-sdk/README.md
+    shows: 'README: "Build Federated RAG and tap into distributed data sources without centralizing knowledge";
+      "Each data source was queried on its own infrastructure"; "Only relevant snippets were retrieved and
+      shared"; outside Jupyter, "Download and run distributed protocol, SyftBox".'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 6030a489c45f61ea9d67c875e6aa02118a140df9a3eb7c630aa399f102705ebc
+    content_sha256: d10033fe70e23796084e5e657f4a3677ce137b55ccb4b32887d15dad13e84d0c
+  - url: https://openmined.org/syfthub/
+    shows: 'SyftHub: "The Directory for Collective Intelligence", a registry of who has knowledge and how
+      to reach it; Syft Spaces publish queryable RAG endpoints with access policies and pricing.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cff57a24d4da5f80d438fc72a1804e10d7fc59079eac4386c627440ad5d31eb7

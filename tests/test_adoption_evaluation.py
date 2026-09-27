@@ -111,7 +111,12 @@ BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c
 # pypi.downloads_30d to github.stargazers_count. Measured rather than asserted - the row sets were
 # dumped on both sides and diffed: 378 rows before and after, and langtrace's is the only row
 # that differs. browserbase declares no artifact and has no row.
-MEASUREMENTS_DIGEST = "bdf5f654369cd33125f869d199199d93c0e47e5cc760c98b1a707f30b4a20cd5"
+# Moved by the federated_learning promotion: pysyft (from ml_frameworks) and syfthub (from
+# orchestration_agents) changed category. Measured rather than asserted - the row sets were dumped
+# on both sides and diffed: 378 rows before and after, those two are the only rows that differ, and
+# on each the only field that differs is category_slug. The new products add no row, because the
+# baseline observation snapshot predates them.
+MEASUREMENTS_DIGEST = "6d7bd331ec4b38ae9ef1cfae5a6982340e377689247d8ddd99e3044dca27f5ac"
 # Moved 2026-09-01 by the areal and xtuner relabels (#435): a recorded instrument change
 # is a declaration change, which is one of the four things this digest tracks. Both
 # levels stay where they were.

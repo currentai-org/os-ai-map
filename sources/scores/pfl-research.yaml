@@ -1,0 +1,90 @@
+product: pfl-research
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: the whole framework
+    core-gated:
+      value: ungated
+      detail: a research framework with no paid edition
+  confidence: high
+  note: pfl-research is Apache-2.0 and exists for research simulations, so there is no paid tier or commercial deployment
+    product to hold anything back for.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(the whole
+    framework);core-gated:ungated(a research framework with no paid edition)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/apple/pfl-research/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/apple%2Fpfl-research
+    shows: 'Repository record for apple/pfl-research: license apache-2.0, not archived, not a fork, pushed 2026-09-16,
+      358 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 68a402be8fbe6ed2b6615b5912925f5def95d80cf877bda39593da46becfa11b
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/apple/pfl-research/files/develop
+    shows: 'The 439-file tree of apple/pfl-research at `develop`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 73a26182b8bc31ac2dcf25764d019ff3e7c064ab579b934447cbe4ab66cb03e3
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/apple/pfl-research/HEAD/README.md
+    shows: 'README: "The framework is `not` intended to be used for third-party FL deployments". No paid tier is
+      named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c09dd9075a762d4960d3091beacddd0ece17a7a88f4f6be876e3944482ee5fec
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `pfl`, the framework's package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/pfl/recent
+    shows: last_month = 217 downloads for the package `pfl`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d4af342e6e9253a3b3725a063746520a361fe2f4f3e7af3f24cd3c98c9609306
+  - url: https://pypi.org/pypi/pfl/json
+    shows: PyPI `pfl` 0.5.2, uploaded 2026-09-16; homepage and repository https://github.com/apple/pfl-research.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ff4261eb893ec7e87f1aa4ed6561df1bc8226e936d2b187c9e46590134439306
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Distributed simulation across processes, GPUs and machines, with local and central differential privacy
+    and benchmark suites.
+  confidence: high
+  relative_to: fedjax
+  relation: at
+  note: pfl-research simulates private federated learning at scale and says outright that it is not for
+    real deployments, level with FedJAX.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/apple/pfl-research/HEAD/README.md
+    shows: 'README: "a Python framework ... to run efficient simulations with privacy-preserving federated learning";
+      "multiple levels of distributed training (multiple processes, GPUs and machines)"; "local and central differential
+      privacy"; "not intended to be used for third-party FL deployments".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c09dd9075a762d4960d3091beacddd0ece17a7a88f4f6be876e3944482ee5fec

@@ -1,0 +1,128 @@
+product: nvidia-flare
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: the whole runtime, simulator, provisioning, dashboard and mobile SDK
+    core-gated:
+      value: ungated
+      detail: no enterprise tree; NVIDIA positions FLARE as the SDK other vendors build commercial offerings on
+  confidence: high
+  note: NVIDIA publishes the whole of FLARE under Apache-2.0, and nothing in the repository is held back for a paid
+    tier. Its own README presents it as the open SDK platform builders use to create their own offerings, and Apheris,
+    one of the closed platforms in this category, runs on it.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(the whole
+    runtime, simulator, provisioning, dashboard and mobile SDK);core-gated:ungated(no enterprise tree; NVIDIA positions
+    FLARE as the SDK other vendors build commercial offerings on)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA/NVFlare/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/NVIDIA%2FNVFlare
+    shows: 'Repository record for NVIDIA/NVFlare: license apache-2.0, not archived, not a fork, pushed 2026-09-19,
+      974 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9460139c32b5325c0316b677727cb5b76e52ddacec2ee05d06d9d443f107f5b0
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/NVIDIA/NVFlare/files/main
+    shows: 'The 5,455-file tree of NVIDIA/NVFlare at `main`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6e00d83f9e394171538024d0f376b606ace9b6808b67f69859a9683ae3676ea8
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/NVIDIA/NVFlare/HEAD/README.md
+    shows: 'README: FLARE "is a domain-agnostic, open-source, extensible Python SDK" that "enables platform developers
+      to build a secure, privacy-preserving offering for a distributed multi-party collaboration". No paid edition,
+      license key or enterprise tier is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cfdaca956b5af81b8770e2ac1104b1d2a27611932a2f174390a207249ead30c6
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `nvflare`, the package the project documents for installing both the simulator and the
+    site runtimes. Sites run the same package, so downloads measure the product rather than a client for it.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/nvflare/recent
+    shows: last_month = 23,969 downloads for the package `nvflare`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2842fe4c8fddee7e74dc14ca670e88ed8ef4b8098b1403ce6fd34b66c4a85894
+  - url: https://pypi.org/pypi/nvflare/json
+    shows: PyPI `nvflare` 2.9.0, uploaded 2026-09-04, license Apache-2.0, homepage https://github.com/NVIDIA/NVFlare.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8b55ead482096132e06e2c6a22b743c11d62b2bf0dd8c0bbe146363c418b13be
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Provisioned server and client sites, with a dashboard; Kubernetes and Slurm job launchers; an Android and
+    iOS edge SDK; homomorphic encryption, differential privacy and confidential computing on AMD SEV-SNP with NVIDIA
+    GPUs (Intel TDX announced for a future release); and federated LLM fine-tuning validated from 1.7B to 72B parameters.
+  confidence: high
+  note: 'FLARE is the one product here that reaches all three settings at once: production sites with provisioned
+    identities, HPC clusters through a Slurm launcher, and phones through a mobile SDK. It also publishes
+    timing and memory figures for federated LLM training up to 72 billion parameters, which no other product
+    in the category does.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://nvflare.readthedocs.io/en/main/whats_new.html
+    shows: 'What''s new: "Training time and server memory across model sizes (1.7B-72B)", with "Elapsed time, 1.7B-72B
+      (measured, 1 FL round)" and "FedAvg server peak memory, 1.7B-72B (measured, 1 FL round)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 13daba305abe1fcdd7b2e6c276e8450f67fd4f1b3d428df0c3ed794ab1695a8f
+  - url: https://nvflare.readthedocs.io/en/main/programming_guide/llm_fine_tuning.html
+    shows: 'The LLM fine-tuning guide: supervised fine-tuning and PEFT (LoRA) recipes that train only adapter parameters.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 54a806bee96dc8780513f3f14f8974fcc6cdf01ba49dbbe874913e3f78b9fc11
+  - url: https://nvflare.readthedocs.io/en/main/user_guide/admin_guide/deployment/slurm_job_launcher.html
+    shows: 'The Slurm job launcher: FL jobs dispatched through sbatch, with squeue for live state, from a site startup
+      kit.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a38207e1e955136f4f1d73417d170535858c38bef51d5a57bbe1fec5a5713b77
+  - url: https://nvflare.readthedocs.io/en/main/user_guide/edge_development/flare_mobile.html
+    shows: 'FLARE Mobile: an Android example app, AndroidFlareRunner and an Android DataSource interface for running
+      federated jobs on devices.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a223f0550169c2d5db6b934eee68bafbc0c5498c59f8461a95d6f80627a4a747
+  - url: https://nvflare.readthedocs.io/en/main/user_guide/confidential_computing/index.html
+    shows: 'Confidential computing: confidential VMs on AMD SEV-SNP CPUs paired with NVIDIA H100 or Blackwell GPUs,
+      and an Azure confidential computing deployment.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a52799e38826a948ffce06ca9b2e8bba5ec8dfca64af503753b6d4124c5cfbc1
+  - url: https://nvflare.readthedocs.io/en/main/flare_overview.html
+    shows: 'Overview: "Built-in differential privacy and homomorphic encryption" and a production path from simulation
+      to deployment.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8d6cdf82106dc02504f8364a168a6fb9f660756683c44558114dfcb124434d3a
+  - url: https://nvflare.readthedocs.io/en/main/programming_guide/provisioning_system.html
+    shows: Provisioning establishes "the identities of the server, clients" and generates each site's startup kit.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2e780230f9e4fc05d41ddb7bc4816f50c4d0bc01340fadc10606189aad6744b9

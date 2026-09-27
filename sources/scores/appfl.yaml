@@ -1,0 +1,91 @@
+product: appfl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the LICENSE body is the unmodified MIT text, Copyright (c) 2023 Argonne National Laboratory
+    source:
+      value: public
+      detail: the whole framework
+    core-gated:
+      value: ungated
+      detail: a DOE-funded national-laboratory project with no paid edition
+  confidence: high
+  note: APPFL is MIT-licensed and developed at Argonne with Department of Energy funding. There is no commercial
+    party positioned to hold features back, and no paid edition is named.
+  raw: license:MIT(OSI; the LICENSE body is the unmodified MIT text, Copyright (c) 2023 Argonne National Laboratory);source:public(the
+    whole framework);core-gated:ungated(a DOE-funded national-laboratory project with no paid edition)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/APPFL/APPFL/HEAD/LICENSE
+    shows: 'The LICENSE body: verbatim MIT text, "Copyright (c) 2023 Argonne National Laboratory".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1b7c2d0132b494929189026434b635365c9f7dcf289ce3cb65f536e54632a984
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/APPFL%2FAPPFL
+    shows: 'Repository record for APPFL/APPFL: license mit, not archived, not a fork, pushed 2026-09-21, 184 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d6e29cacfca5b82da30dec08334725b3a5d5f6ab1f1fbaeb08d0bda8920f0974
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/APPFL/APPFL/files/main
+    shows: 'The 900-file tree of APPFL/APPFL at `main`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c2080cf7d29b7c5803faf2d84c61c38f6f627d7102c3699a2a77e8f60a4de7ce
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/APPFL/APPFL/HEAD/README.md
+    shows: 'README: "This material is based upon work supported by the U.S. Department of Energy, Office of Science,
+      under contract number DE-AC02-06CH11357." No paid tier is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 897902e133de6c3ee376732c89f7c8dccd15f1969fbd30bad5e6aab30e5a011e
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `appfl`, which carries both the server and the client.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/appfl/recent
+    shows: last_month = 438 downloads for the package `appfl`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0892ede52e6ff2b6b418ec3e17040d20eb0bc996763c3b5eaf664628514e91f9
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: MPI simulation on HPC systems; real distributed runs over gRPC or Globus Compute with client authentication
+    and SSL; global and local differential privacy.
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: Clients authenticate over gRPC or through Globus, and training can apply differential privacy, so
+    APPFL runs real cross-institution federations as Flower does. Its HPC support is MPI simulation rather
+    than a launcher for production sites, which keeps it below NVIDIA FLARE.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/APPFL/APPFL/HEAD/README.md
+    shows: 'README: "APPFL supports MPI for single-machine/cluster simulation, and gRPC and Globus Compute with
+      authenticator for secure distributed training"; "APPFL supports several global/local differential privacy
+      schemes".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 897902e133de6c3ee376732c89f7c8dccd15f1969fbd30bad5e6aab30e5a011e
+  - url: https://ungh.cc/repos/APPFL/APPFL/files/main
+    shows: The tree ships launch_server_auth and launch_client_auth notebooks, a gRPC authentication guide and an
+      SSL example.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c2080cf7d29b7c5803faf2d84c61c38f6f627d7102c3699a2a77e8f60a4de7ce
