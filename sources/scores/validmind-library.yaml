@@ -1,0 +1,79 @@
+product: validmind-library
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: AGPL-3.0 OR ValidMind-Commercial-License
+      detail: dual license at the user's choice
+    source:
+      value: partial
+      detail: the test library is public; the documentation platform it logs to is a closed hosted service
+  confidence: high
+  note: 'The library is dual-licensed under AGPL-3.0 or ValidMind''s commercial license, but it is the client
+    half of the product: the documentation it produces is assembled on the ValidMind Platform, a hosted service
+    whose source is not published.'
+  raw: license:AGPL-3.0 OR ValidMind-Commercial-License(dual license at the user's choice);source:partial(the
+    test library is public; the documentation platform it logs to is a closed hosted service)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/validmind/validmind-library/main/LICENSE
+    shows: '"DUAL LICENSE NOTICE This software is dual-licensed under the GNU Affero General Public License
+      version 3 (AGPL-3.0) and the ValidMind Commercial License. Users may choose to use the software under
+      either"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5e89cf51fc23beb0b93a66e5df2fa4a345ae6dbd71746ffb9f3bc86e4651287c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/validmind/validmind-library/main/README.pypi.md
+    shows: '"you use the ValidMind Library to run tests and log documentation to the ValidMind Platform"; "The
+      ValidMind Platform — A cloud-hosted user in..."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: abb7b959bbc9bf79fa5f4f3f7d0d7e86c01d70a28b058f2157e0ce05e1f6b3e9
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/validmind/validmind-library/files/main
+    shows: 'Full file listing of validmind/validmind-library main, 820 paths: the Python library, tests and
+      notebooks'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4107a1c7db26768571a789d10a13797dcb431c74faa95ffcf857a677f8852936
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of validmind, the library's package, measure use of the open client. Use of the hosted
+    platform is not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/validmind/recent
+    shows: last_month downloads = 1,037 for validmind
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d2150922c91e60a4c3389f4f112af5c5098d5bd39abf90e1929985f61388428
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Model-agnostic validation test suites and automated model documentation, logged to the ValidMind Platform
+    for review.
+  relative_to: compliance-trestle
+  relation: one_below
+  confidence: medium
+  note: ValidMind generates model documentation and test evidence for validators, but in its own format and
+    on its own platform, so a reviewer takes it on the developer's word. Compliance Trestle writes to a published
+    standard that outside tools can validate.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/validmind/validmind-library/main/README.md
+    shows: '"a suite of developer tools and methods designed to run validation tests and automate the documentation
+      of your models"; it "helps you automate model documentation by feeding the ValidMind Platform with documentation
+      artifacts and test results"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c8c5b51b67d0f01dba977b1e75e03646daa7cf63f6dd84e21d0b52131435b519

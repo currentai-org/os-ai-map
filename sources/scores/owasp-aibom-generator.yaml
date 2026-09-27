@@ -1,0 +1,84 @@
+product: owasp-aibom-generator
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the Apache text with an OWASP Foundation copyright line
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The generator is Apache-2.0, as its LICENSE text shows despite the repository's unclassified label,
+    and it is an OWASP Foundation project with nothing sold beside it.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the Apache text with an OWASP Foundation copyright line);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/GenAI-Security-Project/aibom-generator@main/LICENSE
+    shows: '"Apache License Version 2.0"; "Copyright 2026 OWASP Foundation - AI SBOM Generator and contributors
+      Licensed under the Apache License, Version 2.0"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1b80e48550e922093b401e2b1deb68f5751aadad1bd7b79938c1ed158e9783af
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/GenAI-Security-Project%2Faibom-generator
+    shows: 'GenAI-Security-Project/aibom-generator: GitHub license label other, archived false, pushed 2026-09-02'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 079841fdfcc77fb325ffe991a83ef20a84cc224e59e06e554dcd598b6db06ec7
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/GenAI-Security-Project/aibom-generator/files/main
+    shows: Full file listing, 70 paths; no ee/, enterprise/, commercial/ or proprietary/ directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1109ca68e0a3caaa171aba71c6312a198abdf99fd1d9e80566e97aa584fd4224
+    establishes:
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/GenAI-Security-Project/aibom-generator@main/README.md
+    shows: '"the official GitHub repository for the OWASP AIBOM Generator — an open-source tool"; runs "under
+      the OWASP GenAI Security Project"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bc9e824a09f81116d6305862d242b35c08e9223cf4d8b934a0ebc27e89f7e39f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only signal. The tool publishes no package, and its hosted instance reports no
+    usage. A star is not a use.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/GenAI-Security-Project%2Faibom-generator
+    shows: 'GenAI-Security-Project/aibom-generator: 100 stargazers'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 079841fdfcc77fb325ffe991a83ef20a84cc224e59e06e554dcd598b6db06ec7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: CycloneDX 1.6 AIBOMs for Hugging Face models, built on the CycloneDX Python library with schema validation,
+    plus a completeness score.
+  relative_to: nvtrust
+  relation: two_below
+  confidence: medium
+  note: Its output is a CycloneDX document that any consumer can validate with standard tools, without relying
+    on the generator. The contents repeat what the model publisher declared, so it sits two steps below NVIDIA's
+    hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/GenAI-Security-Project/aibom-generator@main/README.md
+    shows: '"Generates an AIBOM (AI Bill of Materials) in CycloneDX 1.6 JSON format"; "Calculates AIBOM completeness
+      scoring"; "Built on CycloneDX Python Library — BOM generation, schema validation"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bc9e824a09f81116d6305862d242b35c08e9223cf4d8b934a0ebc27e89f7e39f

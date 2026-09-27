@@ -1,0 +1,87 @@
+product: halo-record
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Recorder, verifier, witness client and report server are all in the Apache-2.0 repository, and the
+    project states that the record format is open and free to implement. No hosted edition or paid tier sits
+    beside it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/bkuan001/halo-record/main/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 764be65873212601b2d560e29156ed756985c17cf13e463b6f9f483e77c5ae24
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/bkuan001/halo-record/main/NOTICE
+    shows: '"halo-record Copyright 2026 Halo Record, Inc. and contributors Licensed under the Apache License,
+      Version 2.0"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 99adb765142b7540d3b482d2fd5ad5cc0870d899575799c275fdea8245dec9fb
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/bkuan001/halo-record/files/main
+    shows: Full file listing of bkuan001/halo-record main, 90 paths; no ee/, enterprise/, commercial/ or proprietary/
+      directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e16da68e8c9ca34b3ff1047891c554562746de4cf0190fe69567e617dae1206c
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/bkuan001/halo-record/main/README.md
+    shows: '"The record format is open and free to implement. This package is the reference implementation:
+      recorder, verifier, witness client, and report server."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f03e5aba6c41c2e7a0f2a96bd9411af47e663a748ff77467ccab5be7ef2ca950
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of halo-record, the project's only package, measure its use. The project is young, first
+    published in 2026.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/halo-record/recent
+    shows: last_month downloads = 1,024 for halo-record
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8ff02fdda9c4a05a4d30c0fda4ea49f3511c1ebd6d9f25202d49b3cc427c1d5e
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Hash-chained Runtime Records of agent actions, a self-verifying HTML Runtime Report, witness anchoring
+    and RFC 3161 timestamps; verification needs no hosted infrastructure.
+  relative_to: nvtrust
+  relation: one_below
+  confidence: medium
+  note: Anyone holding a checkpoint can confirm the records behind it were never altered, without trusting
+    whoever produced them. The records still describe what the operator's recorder saw, so they fall a step
+    short of NVIDIA's hardware attestation of the execution itself.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/bkuan001/halo-record/main/README.md
+    shows: '"Any party holding a checkpoint of the chain can verify the records behind it were never altered,
+      without trusting whoever produced them"; the chain alone "is tamper-evident against everyone except the
+      party operating the recorder"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f03e5aba6c41c2e7a0f2a96bd9411af47e663a748ff77467ccab5be7ef2ca950

@@ -1,0 +1,75 @@
+product: invisible-watermark
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The whole library is MIT-licensed in a small public repository, and its maintainer sells nothing beside
+    it.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/ShieldMnt/invisible-watermark/main/LICENSE
+    shows: '"MIT License Copyright (c) 2021 ShieldMnt"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fb12dda69d231690bd725fea224fd6016d4492465a9e8dcafadec162b2243474
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/ShieldMnt/invisible-watermark/files/main
+    shows: 'Full file listing, 16 paths: the library, tests and README; no ee/, enterprise/, commercial/ or
+      proprietary/ directory'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ac31e487ef285f8c48c3704f84524e44d5493adc2eb061781d12d23cd01fcce
+    establishes:
+    - source
+    - core-gated
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/ShieldMnt%2Finvisible-watermark
+    shows: 'ShieldMnt/invisible-watermark: license mit, archived false, fork false, pushed 2023-09-23'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ce61569834ec46a45940da71bb3e6adc4a84b58bd52cb20420a21794b07a3922
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of invisible-watermark measure the package, and most of them are pulled in as a dependency
+    of image-generation pipelines rather than installed to check provenance.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/invisible-watermark/recent
+    shows: last_month downloads = 120,631 for invisible-watermark
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1098d460ade183d7b019b1aa1b8f40b16386cacfa3567cbfaeee3dc413e2202c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: DWT-DCT, DWT-DCT-SVD and RivaGAN image watermarks, embedded and decoded by the same open library;
+    the README warns decoding is not guaranteed even without attack.
+  relative_to: nvtrust
+  relation: two_below
+  confidence: low
+  note: Anyone can decode the mark with the same open library, without a key, so the check does not depend
+    on the embedder. The maintainers say decoding can fail even on untouched images, and the mark proves nothing
+    about who placed it, two steps below NVIDIA's hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/ShieldMnt/invisible-watermark/main/README.md
+    shows: default dwtDct "is fast and suitable for on-the-fly embedding"; "The algorithm cannot guarantee
+      to decode the original watermarks 100% accurately even though we don't apply any attack"
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ad852e7d8eaa72d7f4cefa73a917cce9bc90f929ef1be2eed1aed73ed10d8527

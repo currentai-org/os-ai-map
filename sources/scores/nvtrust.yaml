@@ -1,0 +1,112 @@
+product: nvtrust
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the NVAT successor repository is also Apache-2.0
+    source:
+      value: public
+      detail: C++ SDK, CLI, Rust bindings and the legacy Python guest tools
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Both repositories are published under Apache-2.0 and hold the whole toolset, and NVIDIA sells no edition
+    of the SDK that withholds a feature. The remote attestation service is an NVIDIA-run verifier offered beside
+    the SDK, which also verifies locally.
+  raw: license:Apache-2.0(OSI; the NVAT successor repository is also Apache-2.0);source:public(C++ SDK, CLI,
+    Rust bindings and the legacy Python guest tools);core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA/nvtrust/main/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 756005f963846334943e8bfc08ef98cd254257d8467ac7a7ffd42a1be262f442
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NVIDIA/attestation-sdk/main/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 82d36972a71088e8d4a4793313e64e18340c60de08e3175a58360a277c962a33
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/NVIDIA/nvtrust/files/main
+    shows: Full file listing of NVIDIA/nvtrust main, 265 paths; no ee/, enterprise/, commercial/ or proprietary/
+      directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: eaab5230fe883278c403fda29ca9e6cef0bf8898c926890ad4cda7e3fb5b7d4f
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/NVIDIA/attestation-sdk/files/main
+    shows: Full file listing of NVIDIA/attestation-sdk main, 240 paths; no ee/, enterprise/, commercial/ or
+      proprietary/ directory
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 333161704a873fd37297a57030030fae04844d1384b57ecf8e67a7c9509f075e
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NVIDIA/attestation-sdk/main/README.md
+    shows: '"NVAT (NVIDIA Attestation SDK) is an open-source C++ SDK"; usable "via a C API, a CLI (nvattest),
+      or Rust bindings"; "the successor of the Python-based guest tools in nvTrust"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d40ec4ee2ce8b46749b4b4e4244c3caaff8709bcdca751215a8e6c0340b6face
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars across the two repositories are the only signal. The SDK ships as native packages from
+    NVIDIA's download page, which publishes no count, and the retired Python package no longer measures current
+    use. A star is not a use.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/NVIDIA/nvtrust
+    shows: 'NVIDIA/nvtrust: 323 stars, pushed 2026-09-01'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f599e376f54abeca5d0c51ee62fe62495fd70aac0304edd8469e55855fa45580
+  - url: https://ungh.cc/repos/NVIDIA/attestation-sdk
+    shows: 'NVIDIA/attestation-sdk: 45 stars, pushed 2026-08-16'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5f494b678fd868bfef6f9b8d126ffa6090d60d7b01d4b675f7de551f3b667198
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: 'GPU and NVSwitch attestation: hardware-signed evidence of the device, firmware and confidential-computing
+    mode, verified locally or by NVIDIA''s remote attestation service, with Rego policies over the resulting
+    claims.'
+  confidence: high
+  note: A relying party checks evidence the GPU itself signs, against NVIDIA's certificate chain, so the claim
+    about what ran does not depend on trusting the operator. That is the strongest check in this category,
+    shared only with the zero-knowledge provers, and the trust it asks for moves to the hardware vendor.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA/nvtrust/main/guest_tools/attestation_sdk/README.md
+    shows: The SDK supports "Local and Remote GPU Attestation" and "Local and Remote NVSwitch Attestation";
+      requires an H100 or later GPU that supports Confidential Computing
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8e45a04196e254b1e51503b38d7d3b40a59ffea56fcb031d687d00e1811975da
+  - url: https://docs.nvidia.com/attestation/attestation-client-tools-sdk/latest/migration_guide.html
+    shows: 'Python SDK to C++ SDK (NVAT) migration: deprecation March 15, 2026, end of support September 15,
+      2026; the C++ SDK evaluates Rego (Open Policy Agent) policies during attestation'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2a263f58be341f3ad4d7d82bc8225f17208d183dcab7282544259a6803c3bb18
+  - url: https://raw.githubusercontent.com/NVIDIA/attestation-sdk/main/README.md
+    shows: '"nvattest attest --device gpu --verifier local" attests the GPUs attached to a confidential VM'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d40ec4ee2ce8b46749b4b4e4244c3caaff8709bcdca751215a8e6c0340b6face

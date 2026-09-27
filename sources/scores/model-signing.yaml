@@ -1,0 +1,89 @@
+product: model-signing
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The library and CLI are published under Apache-2.0 within the Sigstore project, an open-source effort
+    of the OpenSSF, so no vendor stands behind it with a paid edition.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/sigstore/model-transparency/main/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/sigstore/model-transparency/files/main
+    shows: Full file listing of sigstore/model-transparency main, 198 paths; no ee/, enterprise/, commercial/
+      or proprietary/ directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a79ea8972e90530e14e89cca930fc11e2519da5b4425966a0b1df048f51abdac
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/sigstore/model-transparency/main/README.md
+    shows: '"Building on the work with Open Source Security Foundation, we are creating this collection of
+      projects to strengthen the ML supply chain"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9737b029c2a87aebfb039d2d68c070e4ed63ec7aecd9777fcc248f2557276842
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of model-signing, the project's own package, measure its use. Signing done inside registries
+    such as NVIDIA's NGC does not show up in them.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/model-signing/recent
+    shows: last_month downloads = 20,049 for model-signing
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: abca8a3a05a6f9583be83e2d6a744faef27a4f99a6a16729d3b785e2d846d343
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Signs a model directory as a Sigstore bundle holding a DSSE envelope over per-file digests; verification
+    with Sigstore identities, public keys or certificates. NVIDIA signs NGC models with it.
+  relative_to: nvtrust
+  relation: one_below
+  confidence: high
+  note: The signature lets anyone confirm a model is the one its publisher signed, without asking the publisher,
+    and NVIDIA uses it to sign the models in its NGC catalog. It attests who published the weights, not how
+    they were produced, which keeps it a step below NVIDIA's hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/sigstore/model-transparency/main/README.md
+    shows: Aims at "verifiable claims about the integrity and provenance of the resulting models, meaning users
+      can check for themselves"; signing creates a Sigstore bundle with a DSSE envelope
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9737b029c2a87aebfb039d2d68c070e4ed63ec7aecd9777fcc248f2557276842
+  - url: https://developer.nvidia.com/blog/bringing-verifiable-trust-to-ai-models-model-signing-in-ngc
+    shows: '"NVIDIA has been signing all NVIDIA-published models in the NGC Catalog with the OpenSSF Model
+      Signing (OMS) specification since March 2025"; consumers verify with the OpenSSF Model Signing tooling
+      and NVIDIA''s public certificate'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a1f6d8850ee49d14797dd80e07c83ee5e90c7e8ff30f6264031d20f08fc1a18d
+  - url: https://raw.githubusercontent.com/ossf/model-signing-spec/main/README.md
+    shows: OpenSSF Model Signing (OMS) specification repository
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5c07b31580f427852e0a7f549b4960d640418ff7fd6361e89fa3439998d88848

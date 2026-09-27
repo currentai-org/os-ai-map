@@ -1,0 +1,78 @@
+product: deepprove
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Lagrange-License
+      detail: proprietary; a revocable license to use internally for testing and evaluation, or unmodified
+        with Lagrange's platform
+    source:
+      value: public
+      detail: 'Rust workspace: the zkml proving crate, client stack, storage and tooling'
+  confidence: high
+  note: The source is published, but Lagrange's license permits only internal testing and evaluation, or unmodified
+    use with its own platform, and can be revoked. The code can be audited and not freely run, which makes
+    DeepProve source-available.
+  raw: 'license:Lagrange-License(proprietary; a revocable license to use internally for testing and evaluation,
+    or unmodified with Lagrange''s platform);source:public(Rust workspace: the zkml proving crate, client stack,
+    storage and tooling)'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/Lagrange-Labs/deep-prove/master/LICENSE
+    shows: Lagrange grants "a personal, non-exclusive, non-sublicenseable, non-transferable, revocable, limited
+      license" to "internally use the Software solely for the purpose of testing and evaluating it"
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a987edea4642b280ae02ca3db6c67ada8425556017fe5225041f38b007e8e9fd
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/Lagrange-Labs/deep-prove/files/master
+    shows: Full file listing of Lagrange-Labs/deep-prove master, 346 paths, including zkml/, the client and
+      storage crates
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 461ff9a83de535ce3a59ed2dd7ed95c87a5777266bd186cdbeb73a4a4737dc2e
+    establishes:
+    - source
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/Lagrange-Labs%2Fdeep-prove
+    shows: 'Lagrange-Labs/deep-prove: GitHub license label apache-2.0, archived false, pushed 2025-10-01'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 329ab31bf22611f65f9fb416bbff9c2c4f11ae683e499efbf33ad6746f9e1610
+    establishes:
+    - source
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 'GitHub stars are the only signal: DeepProve publishes no package, and the zkml crate of that name
+    on crates.io belongs to another project. A star is not a use.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/Lagrange-Labs%2Fdeep-prove
+    shows: 'Lagrange-Labs/deep-prove: 3,359 stargazers'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 329ab31bf22611f65f9fb416bbff9c2c4f11ae683e499efbf33ad6746f9e1610
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: End-to-end zero-knowledge proofs of LLM inference (GPT-2, Gemma 3, Llama 2) plus MLP and CNN models,
+    using sumchecks and logup GKR.
+  relative_to: nvtrust
+  relation: at
+  confidence: medium
+  note: DeepProve produces a proof that a given model computed a given output, checkable without trusting whoever
+    ran it, and it reaches full LLM forward passes. That matches NVIDIA's hardware attestation as the strongest
+    check the category offers.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/Lagrange-Labs/deep-prove/master/README.md
+    shows: '"DeepProve is the first end-to-end zero-knowledge proof system for full LLM inference"; "Confirmed
+      working models: GPT-2, Gemma 3, Llama 2 — all transformer layers proven end-to-end"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4c9bdfbfa2dffbacf3514ca9e00180d93d0c1bb16ad964ca088ac977ccdfa0d5

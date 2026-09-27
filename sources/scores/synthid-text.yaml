@@ -1,0 +1,78 @@
+product: synthid-text
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The reference implementation is Apache-2.0 and complete for research use. Google runs SynthID in its
+    own products, but that is a separate deployment, not a paid edition of this code.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/google-deepmind/synthid-text/files/main
+    shows: 'Full file listing, 18 paths: the library, detectors and notebooks; no ee/, enterprise/, commercial/
+      or proprietary/ directory'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b19550288a5e875ac2cf69e780a96814eb6501ddb854388346339cee07c179b8
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/README.md
+    shows: '"a reference implementation of the SynthID Text watermarking and detection capabilities for the
+      research paper published in Nature. It is not intended for production use."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5fd70fde4e99dcf0923f090955d8899a8820a35966b0d7647cc5b62ad3b04406
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of synthid-text, the reference implementation's package, measure its use. SynthID running
+    inside Google's own services is not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/synthid-text/recent
+    shows: last_month downloads = 348 for synthid-text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4955240cd964f59e68e3ac2bf5008dee233bf77b96bb023d894f746581c512bd
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Generation-time text watermarking by tournament sampling, with a weighted-mean detector or a trained
+    Bayesian detector; detection uses the generator's watermarking keys.
+  relative_to: compliance-trestle
+  relation: one_below
+  confidence: medium
+  note: Only the holder of the watermarking keys can run the detector, so an outside party has to take the
+    operator's word for a result. Compliance Trestle writes to a published standard that anyone can validate
+    without the operator.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/README.md
+    shows: Detects the watermark "either with the simple Weighted Mean detector which requires no training,
+      or with the more powerful Bayesian detector that requires training"; reference implementation "not intended
+      for production use"
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5fd70fde4e99dcf0923f090955d8899a8820a35966b0d7647cc5b62ad3b04406

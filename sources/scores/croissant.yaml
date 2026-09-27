@@ -1,0 +1,94 @@
+product: croissant
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the croissant-rdf subdirectory is MIT
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The specification and library are published under Apache-2.0 by MLCommons, an industry consortium,
+    and developed in the open by its working group. One contributed subdirectory is MIT, which changes nothing.
+  raw: license:Apache-2.0(OSI; the croissant-rdf subdirectory is MIT);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/LICENSE.md
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/croissant-rdf/LICENSE
+    shows: '"MIT License Copyright (c) 2024 David Steinberg" for the croissant-rdf subdirectory'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 18f3e8d562ecd4a8fadccabf2895fe7eee2a5af43282fdc8038994c7cd234a5b
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/mlcommons/croissant/files/main
+    shows: Full file listing of mlcommons/croissant main, 782 paths; no ee/, enterprise/, commercial/ or proprietary/
+      directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f1b9e7de3481f6866fa4f1fdccfe2f03d3c7038543b24cd91a9507ebdde88b9b
+    establishes:
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/README.md
+    shows: '"Croissant is currently under development by the community. You can try the Croissant implementation,
+      mlcroissant"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b15422f2d7b284d7f599df43119a278114322fb0073c5bdec0bce416686ee03c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of mlcroissant, the reference library, measure use of the format's tooling. Hubs that
+    emit Croissant files without the library are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/mlcroissant/recent
+    shows: last_month downloads = 28,529 for mlcroissant
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4d70f9d30d0ccce4f4e366199c98f95fc7a50403b8e810eecc758b47c9cf853d
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: JSON-LD dataset descriptions on schema.org with a Responsible AI extension; mlcroissant validates
+    and loads them; a NeurIPS validator checks submitted datasets.
+  relative_to: nvtrust
+  relation: two_below
+  confidence: high
+  note: A Croissant file follows a public schema that anyone can validate with open tooling, so a reader can
+    check its structure without the publisher. Its provenance and responsible-AI fields are still the publisher's
+    own account, two steps below NVIDIA's hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/README.md
+    shows: '"Croissant is a high-level format for machine learning datasets that combines metadata, resource
+      file descriptions, data structure, and default ML semantics into a single file"; builds on schema.org'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b15422f2d7b284d7f599df43119a278114322fb0073c5bdec0bce416686ee03c
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/docs/croissant-rai-spec.md
+    shows: Croissant Responsible AI (RAI) vocabulary specification
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ceb1201f0d28fa62d65da5c6b08cbab2a934b119b1cb7006288513ced7be709
+  - url: https://cdn.jsdelivr.net/gh/mlcommons/croissant@main/health/croissant-validator-neurips/README.md
+    shows: Croissant validator for NeurIPS dataset submissions
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ecff436334a78065032c7865015196281d567b20635d1cde95af817df6777af
