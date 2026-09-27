@@ -16,7 +16,9 @@ scoring_recipe:
     method: >-
       Shared ladders inherited per product type. Promotion of the first tranche (2026-09-26/27)
       reproduced 14 of 16 hand-authored openness scores; the two that do not reproduce are the
-      deferrals below, both on license strings the shared tiers do not name.
+      deferrals below, both on license strings the shared tiers do not name. The second tranche
+      (2026-09-27, 34 products) reproduces except for five further deferrals, again all on license
+      strings the shared tiers do not name.
     checker: build/check_rubric.py
   note: >-
     TWO LADDERS for openness. Libraries, toolkits and hosted APIs are typed `software` and climb
@@ -24,73 +26,103 @@ scoring_recipe:
     models are typed `model` and climb `pretrained`, not the fine-tune `model` ladder: each is
     pretrained from scratch, so the questions about releasing the pretraining data and the
     training pipeline apply to it unchanged. A row is typed by what the vendor ships as the
-    product - a pip-installable library that bundles checkpoints (Ultralytics, timm, AutoGluon)
-    is software; a checkpoint line whose code exists to run the weights (DINO, Depth Anything,
-    TabPFN) is a model.
+    product - a pip-installable library that bundles checkpoints (Ultralytics, timm, AutoGluon,
+    MediaPipe, InsightFace) is software; a checkpoint line whose code exists to run the weights
+    (DINO, Segment Anything, Depth Anything, RT-DETR, BiRefNet, BRIA RMBG, TabPFN) is a model.
+    Model lines are scored on their current release, recorded as `governing_release`.
 
     CAPABILITY is read as one quantity: how much of the prediction task the product does for
     you. Each rung is a capability the product either has or lacks, checkable against its docs
-    and repository tree, and each contains the one below.
+    and repository tree. The rungs are ordered, not nested: rungs 1 to 3 build on one another
+    (operations, then one learner family, then many learners), but rung 4 is reached by a
+    pretrained model that predicts on the user's own input without training, which need not be
+    a toolkit of learners at all (tabpfn, google-cloud-vision and birefnet are not), and rung 5 by
+    automating model search and fitting for the user, which need not bundle a pretrained model
+    (h2o-3, flaml and pycaret do not). A product is placed on the highest rung whose capability
+    it documents.
       1  PRIMITIVES. Supplies the operations a model is built from or run on, and fits no
          predictor of its own (opencv: its classical learners moved to opencv_contrib at HEAD, and
-         its dnn module runs networks trained elsewhere).
-      2  ONE LEARNER FAMILY, well engineered (xgboost, prophet).
+         its dnn module runs networks trained elsewhere; scikit-image; kornia, whose frozen model
+         zoo loads other projects' networks the way opencv's dnn does; supervision, which works on
+         other libraries' detections).
+      2  ONE LEARNER FAMILY, well engineered (xgboost, lightgbm, catboost, prophet, pmdarima,
+         umap, hdbscan, the imbalance-aware ensembles of imbalanced-learn), or a thin convenience
+         layer over part of a toolkit (textblob over nltk).
       3  A TOOLKIT of many learners or a model zoo, with the pipelines, evaluation or training
          recipes to compare and fit them; choosing among them is left to the user (scikit-learn,
-         statsmodels, sktime, spacy, nltk, timm, rf-detr).
+         statsmodels, sktime, spacy, nltk, timm, rf-detr, and in this tranche cuml, river, dlib,
+         gensim, stanza, darts, gluonts, statsforecast, torchvision, detectron2, fastai, rt-detr).
+         Wrapping pretrained foundation forecasters, as sktime and darts do, does not lift a
+         toolkit off this rung while choosing and fitting the rest stays with the user.
       4  PRETRAINED, AND DOES THE USER'S OWN TASK WITH NO TRAINING STEP: a new table, or any
          image, gets a prediction from the shipped model directly (tabpfn, tabicl,
          google-cloud-vision, ultralytics, whose package runs the open-vocabulary YOLO-World and
-         YOLOE detectors and SAM 3 on labels the user names). A checkpoint that handles only its
-         training label space - COCO's 80 classes for rf-detr - does not qualify: a new label set
-         means a training run, which is rung 3. An earlier draft of this tranche put ultralytics
-         at 3 on its fixed-class YOLO models; the independent verifier found the open-vocabulary
-         models in its tree and docs, and it moved to 4.
+         YOLOE detectors and SAM 3 on labels the user names). The prediction qualifies when the
+         user chooses the target at inference - a text phrase, a point, an enrolled identity, a
+         new table's label column (segment-anything, dino through dino.txt, insightface, mediapipe's
+         interactive segmenter) - or when the task has no label set to change, as with depth and
+         class-agnostic foreground extraction (depth-anything, birefnet, rmbg). A checkpoint that
+         handles only its training label space - COCO's 80 classes for rf-detr and rt-detr - does
+         not qualify: a new label set means a training run, which is rung 3. An earlier draft of
+         the first tranche put ultralytics at 3 on its fixed-class YOLO models; the independent
+         verifier found the open-vocabulary models in its tree and docs, and it moved to 4.
       5  AUTOMATED END TO END: searches, fits and ensembles or trains models for the user's own
-         task without machine-learning work on their side, and embeds rung-4 models (autogluon,
-         the TOP ANCHOR; amazon-rekognition, whose Custom Labels trains detectors by AutoML inside
-         the same service). This replaces the seed note's claim that no vision product anchors
-         rung 5.
+         task without machine-learning work on their side (autogluon, the TOP ANCHOR, which also
+         embeds rung-4 tabular models; amazon-rekognition, whose Custom Labels trains detectors by
+         AutoML inside the same service; h2o-3's AutoML; flaml; pycaret's compare_models; monai's
+         Auto3DSeg for 3D segmentation; pyod's ADEngine for outlier detection). The first-tranche
+         wording also required a rung-5 product to embed rung-4 models; that clause described the
+         two products then on the rung rather than the capability, and it is dropped here.
     The seed note's statement that model rows sit at rung 4 by construction is withdrawn: rf-detr
-    is a model row at rung 3, on the definition above.
+    and rt-detr are model rows at rung 3, on the definition above.
 
     Every non-root band records `relative_to`/`relation` against a same-category peer:
-    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk and timm at
-    scikit-learn; ultralytics at google-cloud-vision; rf-detr one_below ultralytics; xgboost one_below scikit-learn; prophet one_below
+    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk, timm, cuml, river and dlib
+    at scikit-learn; ultralytics at google-cloud-vision; rf-detr one_below ultralytics; xgboost one_below scikit-learn; prophet one_below
     sktime; opencv one_below xgboost; tabpfn one_below autogluon; tabicl at tabpfn;
-    amazon-rekognition at autogluon; google-cloud-vision one_below amazon-rekognition.
+    amazon-rekognition at autogluon; google-cloud-vision one_below amazon-rekognition; lightgbm,
+    catboost, imbalanced-learn, umap and hdbscan at xgboost; pmdarima at prophet; textblob
+    one_below nltk; gensim at nltk; stanza at spacy; darts, gluonts and statsforecast at sktime;
+    torchvision, detectron2 and fastai at timm; rt-detr at rf-detr; kornia, supervision and
+    scikit-image at opencv; dino, segment-anything, depth-anything, birefnet, insightface and
+    mediapipe at ultralytics; rmbg at birefnet; h2o-3, flaml, pycaret, monai and pyod at
+    autogluon.
 
-    DISTRIBUTION REVIEW (capability.md, "Writing the rungs"), counted 2026-09-27 over the 16
-    banded products: rung 1 = 1, rung 2 = 2, rung 3 = 7, rung 4 = 4, rung 5 = 2. Rung 3 holds
-    7/16 = 44%, above the one-third trigger. Wording as it stands: "a toolkit of many learners or
-    a model zoo, with the pipelines, evaluation or training recipes to compare and fit them;
-    choosing among them is left to the user". Reading: the products genuinely CLUSTER rather than
-    the wording generalizing. Evidence: each of the seven documents a catalog of learners or
-    checkpoints (scikit-learn's user guide, statsmodels' model list, sktime's 500+ models, spaCy's
-    trained components, NLTK's module index, timm's >700 weights, RF-DETR's size and head
-    tables) and none documents predicting on a new task untrained or automated
-    model search, which is what separates 4 and 5. The tranche is also skewed toward adoption
-    leaders, which are mostly toolkits; single-learner and primitive libraries (LightGBM,
-    CatBoost, UMAP, scikit-image, Kornia, supervision) remain in the registry, and promoting them
-    should widen rungs 1 and 2. The tabular/vision split stays open: the ladder above
-    discriminated both halves in this tranche, so nothing here requires it yet.
+    DISTRIBUTION REVIEW (capability.md, "Writing the rungs"), counted 2026-09-27 over the 50
+    banded products after the second tranche: rung 1 = 4, rung 2 = 9, rung 3 = 19, rung 4 = 11,
+    rung 5 = 7. Rung 3 holds 19/50 = 38%, above the one-third trigger (it was 7/16 = 44% after
+    the first tranche). Wording as it stands: "a toolkit of many learners or a model zoo, with the
+    pipelines, evaluation or training recipes to compare and fit them; choosing among them is left
+    to the user". Reading: the products genuinely CLUSTER rather than the wording generalizing.
+    Evidence: each of the nineteen documents a catalog of learners or checkpoints (cuML's 50+
+    GPU algorithms, River's online-learning modules, dlib's SVM, kernel and clustering trainers,
+    Gensim's topic and embedding models, Stanza's 80-language pipelines, Darts', GluonTS' and
+    StatsForecast's model tables, torchvision's and Detectron2's model zoos, fastai's learners,
+    RT-DETR's COCO checkpoints) and none documents predicting on a user-chosen target untrained
+    or searching models automatically, which is what separates 4 and 5. The first tranche's
+    expectation that promoting single-learner and primitive libraries would widen rungs 1 and 2
+    held: they went from 1 and 2 products to 4 and 9. The tabular/vision split stays open: the
+    ladder discriminated both halves in both tranches, so nothing here requires it yet.
 
     Weighted 0.6 adoption to 0.4 capability, as ml_frameworks and document_conversion are,
     because the adoption instrument is unusually strong here (monthly PyPI and Hugging Face
     downloads on nearly every row) and the capability axis is weak.
 
     LICENSE STRINGS NEEDING A RULING before a product carrying one can reproduce, sent to the
-    single maintainer license-rulings issue rather than decided here. Met in this tranche and
-    deferred below: the Prior Labs TabPFN weights licenses (TABPFN-3 License v1.0, TABPFN-3.5
+    single maintainer license-rulings issue rather than decided here. Met in the first tranche
+    and deferred below: the Prior Labs TabPFN weights licenses (TABPFN-3 License v1.0, TABPFN-3.5
     License v1.0, TABPFN-2.6 License v1.0, TABPFN-2.5 License v1.1, and the Prior Labs License 1.1
     on TabPFN-2) and Roboflow's Platform Model License 1.0 (PML-1.0) on the RF-DETR XL and 2XL
-    detection weights. Still in the registry and expected to defer when promoted: FSL-1.1-MIT
-    (pycaret; the software ladder names only the ALv2 variant), BSL-1.0 Boost (dlib;
-    OSI-approved and must not be matched to BSL-1.1 Business Source), LGPL-2.1 (gensim; the osi
-    examples name LGPL-3.0 only), the DINOv3 License, the SAM License (SAM 3), the Sapiens2
-    License, the TabFM Non-Commercial License, the Stable AI LimiX code and weights licenses, the
-    EXAONE AI Model License NC, Apple's apple-amlr sample-code license, and the NVIDIA Source Code
-    License.
+    detection weights. Met in the second tranche and deferred below: LGPL-2.1 (gensim; the osi
+    examples name LGPL-3.0 only), BSL-1.0 Boost (dlib; OSI-approved and must not be matched to
+    BSL-1.1 Business Source), InsightFace's non-commercial model license on the model packs its
+    library downloads, the DINOv3 License and the SAM License (SAM 3 and 3.1). FSL-1.1-MIT, which
+    the seed note expected pycaret to need, governs only PyCaret 4.0's pre-releases; the current
+    stable release, 3.3.2, is MIT, so pycaret computes, and FSL-1.1-MIT will need a ruling when 4.0
+    ships as a stable release. Still in the registry and expected to defer when promoted: the
+    Sapiens2 License, the TabFM Non-Commercial License, the Stable AI LimiX code and weights
+    licenses, the EXAONE AI Model License NC, Apple's apple-amlr sample-code license, and the
+    NVIDIA Source Code License.
   deferred:
     tabpfn:
       because: >-
@@ -111,6 +143,54 @@ scoring_recipe:
         abstains. The recorded 2/restricted is a hand reading (weights published, use reserved to
         the vendor's platform customers) pending the maintainer's ruling; whether PML-1.0 is
         commercial_forbidden, use_bounded or proprietary is that ruling.
+    gensim:
+      because: >-
+        Gensim's COPYING is the GNU Lesser General Public License, Version 2.1, and PyPI records
+        LGPL-2.1-only. LGPL-2.1 is OSI-approved, but the software ladder's `osi` tier lists its
+        names literally and names LGPL-3.0 only, so the tier lookup abstains. The recorded
+        5/open_source is the `osi` reading (public source, nothing gated), hand-assigned pending
+        the maintainer's ruling that adds the name to the tier; the license text was read on
+        2026-09-27.
+    dlib:
+      because: >-
+        dlib's LICENSE.txt is the Boost Software License 1.0 (BSL-1.0), which is OSI-approved and
+        unrelated to the Business Source License 1.1 that the software ladder places in
+        `competition_restricted` as BSL-1.1. BSL-1.0 is named in no tier, so the lookup abstains,
+        and it must not be resolved by prefix to BSL-1.1. The recorded 5/open_source is the `osi`
+        reading, hand-assigned pending the maintainer's ruling; the license text was read on
+        2026-09-27.
+    insightface:
+      because: >-
+        The library and training code are MIT, stated in the README (the repository has no root
+        LICENSE file), but the model packs the library downloads by default, buffalo_l included,
+        are licensed for non-commercial research only through InsightFace's own signed model
+        licenses, and commercial model licenses are sold on request. The software ladder names no
+        tier for a non-commercial model license, so the lookup abstains. The recorded
+        2/source_available is the `competition_restricted` reading (the shipped product may not
+        be used commercially without a paid license), hand-assigned pending the maintainer's
+        ruling; the `osi`-with-gated-core reading would give 4/open_core, and choosing between
+        them is that ruling.
+    dino:
+      because: >-
+        DINOv3, the current release, is under Meta's DINOv3 License (last updated 2025-08-19),
+        which grants use, redistribution and modification with no commercial restriction but bars
+        trade-controlled, military, nuclear, espionage and weapons uses and lets Meta change the
+        terms; every DINOv3 checkpoint on the Hub carries it behind a manual access gate. The name
+        is in no pretrained tier, so the lookup abstains. The recorded 4/open_weights is the
+        `permissive_non_osi` reading (a conduct restriction that caps neither commerce nor scale),
+        which with the documented-not-released corpus and the open pretraining code reaches 4,
+        hand-assigned pending the maintainer's ruling. DINOv2 is Apache-2.0 but superseded, and
+        the current release governs.
+    segment-anything:
+      because: >-
+        SAM 3 and SAM 3.1, the current releases, are under Meta's SAM License (last updated
+        2025-11-19), the same agreement as the DINOv3 License with SAM Materials in place of DINO
+        Materials: commercial use allowed, trade-controlled, military, nuclear, espionage and
+        weapons uses barred, terms changeable by Meta. The name is in no pretrained tier, so the
+        lookup abstains. The recorded 3/open_weights is the `permissive_non_osi` reading, which
+        with fine-tuning-only code falls through to the open-weights rung, hand-assigned pending
+        the maintainer's ruling. SAM and SAM 2 are Apache-2.0 but superseded, and the current
+        release governs.
 products:
 - autogluon
 - h2o-3
@@ -163,7 +243,7 @@ products:
 - amazon-rekognition
 - google-cloud-vision
 strapline: >-
-  Outside the LLM stack, the libraries are open all the way down: every classical-ML, forecasting, NLP and vision library promoted here publishes its whole source under an OSI license, and only Ultralytics keeps models back for paying customers. The restrictions sit on pretrained weights instead - TabPFN's non-commercial checkpoints and RF-DETR's platform-only large models - and on the hosted vision APIs from Google and AWS.
+  Outside the LLM stack, the libraries are open almost all the way down: nearly every classical-ML, forecasting, NLP and vision library here publishes its whole source under an OSI license, and only Ultralytics and H2O-3 keep models or features back for paying customers. The restrictions sit on pretrained weights instead - non-commercial checkpoints from TabPFN, Depth Anything, BRIA and InsightFace, RF-DETR's platform-only large models, and Meta's own DINOv3 and SAM licenses - and on the hosted vision APIs from Google and AWS.
 comments: >-
   Proposed in issue #600; created as one category (not split) on the 2026-09-26 new-category
   decisions. Litmus: does the product fit, run or ship a prediction model - or the vision
@@ -227,3 +307,21 @@ comments: >-
   declares the tabicl package though its PyPI record carries no project URL back to the repository
   (the authors named on it are the repository's authors); lightgbm stays under the lightgbm-org
   account slug until it is promoted. No row was rejected at promotion.
+  PROMOTION, second tranche (2026-09-27): thirty-four more rows, chosen by the round-2 triage for
+  adoption and to fill the sub-areas the first tranche left thin - gradient boosting (lightgbm,
+  catboost), imbalanced, outlier, embedding and clustering methods (imbalanced-learn, pyod, umap,
+  hdbscan), GPU and online learning (cuml, river), AutoML (h2o-3, flaml, pycaret), NLP (gensim,
+  stanza, textblob), forecasting (darts, statsforecast, pmdarima, gluonts), vision libraries
+  (torchvision, detectron2, kornia, supervision, scikit-image, mediapipe, fastai, dlib,
+  insightface, monai) and model lines (dino, segment-anything, depth-anything, rt-detr, birefnet,
+  rmbg). Identity calls made at this promotion: model lines declare the checkpoints whose
+  downloads make up their band, and depth-anything's depth-anything-3 PyPI package is declared
+  not_primary_channel because the checkpoints come from the Hub; cuml declares both CUDA wheels
+  (cuml-cu12, cuml-cu13) and not the placeholder `cuml` package; detectron2 declares no package,
+  since the PyPI name is registered with no files, and bands on stars; rt-detr is scored on
+  RT-DETRv4, which its repository names the newest member of the family although it is published
+  from a separate RT-DETRs account; rmbg is scored on RMBG-2.0, which BRIA's own video model card
+  names its still-image model; pycaret is scored on 3.3.2, the current stable release, while the
+  FSL-1.1-MIT relicense applies to 4.0 pre-releases only. Account slugs (lightgbm-org, lyuwenyu,
+  yzhao062, lmcinnes, zhengpeng7, sloria, davisking) were kept as they are, since no fetched page
+  attributes those projects to an institution. No row was rejected at this promotion.
