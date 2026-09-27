@@ -18,6 +18,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Added
 
+- First promotion tranche for nine new categories, 174 head products: assurance_evidence,
+  robotics_embodied, classic_ml_cv, speech_audio, multimodal_models, federated_learning,
+  model_hubs and media_generation are published; datacenter_accelerators stays preliminary
+  ([#738](https://github.com/currentai-org/os-ai-map/pull/738)).
 - Ten preliminary categories seeded from live, audited sweeps with 459 registry rows: speech_audio,
   media_generation, multimodal_models, robotics_embodied, world_models (in a new Embodied & world
   models group), federated_learning, assurance_evidence, classic_ml_cv, model_hubs and
