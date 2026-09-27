@@ -71,28 +71,6 @@ scoring_recipe:
     for the maintainer''s license-rulings issue. No edit to sources/rubrics/ is made or implied here.'
   extends: model
   deferred:
-    lfm-vl:
-      because: LFM2.5-VL, the governing release, ships every size under the LFM Open License v1.0, which no shared
-        tier names. It is Apache-2.0-based and licenses commercial use only to entities below USD 10 million annual
-        revenue; above the threshold a commercial license must be bought from Liquid AI. That reads as the use_bounded
-        tier (an annual revenue ceiling), as the Stability AI Community License does on stable-diffusion, but whether
-        a threshold this low still binds almost nobody is a shared-tier ruling for the maintainer. use_bounded gives
-        3/open_weights, so that is the hand score; commercial_forbidden would give 2/restricted.
-    moondream:
-      because: Moondream 3.1, the governing release, ships under the Moondream Model License 1.0, which no shared
-        tier names. It grants commercial use, modification and redistribution and forbids only offering general-purpose
-        Moondream as a hosted inference or fine-tuning service, a managed-service limitation it says is adapted
-        from the Elastic License 2.0. Whether that is a conduct-style limit (permissive_non_osi) or a bound on commerce
-        (use_bounded) is a shared-tier ruling for the maintainer. Either tier gives 3/open_weights here because
-        the data is described and the code is inference-only, so 3/open_weights is recorded by hand and check_recipe
-        will report the deferral stale once the ruling lands.
-    nemotron-omni:
-      because: 'The weights ship under the NVIDIA Open Model Agreement (release date April 2, 2026), a separate
-        document from the NVIDIA Open Model License that permissive_non_osi names: different title, different defined
-        terms (Works rather than Models) and a different date. Both state that the works are commercially usable
-        and that derivatives may be distributed. Naming it in a tier is a shared-rubric ruling; if it joins the
-        Open Model License in permissive_non_osi the ladder gives 3/open_weights, because only part of the training
-        data is released and no training code is, so that is the hand score.'
     qwen-omni:
       because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Qwen3.5-Omni,
         is API-only and the ladder computes 1/closed from it; the prior release, Qwen3-Omni, remains distributed

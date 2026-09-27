@@ -79,27 +79,6 @@ scoring_recipe:
     \nONE LADDER for openness: every row is typed `software` and inherits the shared software ladder.\nContent\
     \ Seal ships model weights inside one suite; if a watermark model is ever split into its\nown `model` row,\
     \ `extends` becomes the per-type map `{model: model, software: software}`."
-  deferred:
-    ezkl:
-      because: 'The repository grants no license at all: no LICENSE or COPYING file in the full tree, no license
-        field in Cargo.toml or pyproject.toml, and only a contributor CLA covering incoming code. The software
-        tier has no entry for `none-declared`, so the walk blocks on the first rung that reads a tier; the
-        recorded 2/source_available is the hand reading (public source, no grant to run or reuse it). Whether
-        `none-declared` joins `proprietary` or needs its own tier is a shared-rubric ruling for the license-rulings
-        issue.'
-    deepprove:
-      because: Lagrange's own license grants a revocable right to use the software internally for testing and
-        evaluation, or unmodified with Lagrange's platform. That is a use-bounded proprietary grant over published
-        source, which reads as competition_restricted in spirit, but the tier names licenses literally and
-        `Lagrange-License` is not among them, so the walk blocks. The recorded 2/source_available is the hand
-        reading. The GitHub label (apache-2.0) and the workspace Cargo.toml (`MIT OR Apache-2.0`) both contradict
-        the LICENSE body, which is taken as governing; the maintainer should confirm that reading.
-    content-seal:
-      because: The suite is MIT and Apache-2.0 except two members, Stable Signature and radioactive-watermark,
-        which are CC-BY-NC-4.0. A compound license resolves on its most restrictive part, and the software
-        ladder has no tier for a non-commercial license (`CC-BY-NC-4.0` is named only on the model and dataset
-        ladders), so the walk blocks. The recorded 2/source_available is the hand reading. Adding a non-commercial
-        tier to the software ladder, or splitting the NC members out of the suite, is the fix.
 comments: |
   Proposed in issue #93; seeded 2026-09-26 from the sweep in
   docs/sweeps/2026-09-26-assurance-evidence.md, under the rulings in that session's decision

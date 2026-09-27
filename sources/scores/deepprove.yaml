@@ -1,25 +1,31 @@
 product: deepprove
 openness:
-  score: 2
-  class: source_available
+  score: 5
+  class: open_source
   components:
     license:
-    - name: Lagrange-License
-      detail: proprietary; a revocable license to use internally for testing and evaluation, or unmodified
-        with Lagrange's platform. The workspace Cargo.toml declares MIT OR Apache-2.0, which the LICENSE body
-        contradicts
+    - name: Apache-2.0/MIT
+      detail: 'OSI; the workspace Cargo.toml declares MIT OR Apache-2.0, which governs over the evaluation-only
+        grant in the LICENSE file, as ruled on #739'
     source:
       value: public
       detail: 'Rust workspace: the zkml proving crate plus the deep-prove, utils, tenstore, tenvis and telemetry
         crates'
-  confidence: high
-  note: The source is published, but Lagrange's LICENSE permits only internal testing and evaluation, or unmodified
-    use with its own platform, and can be revoked. The workspace manifest's MIT-or-Apache declaration conflicts
-    with it, and the LICENSE file is taken as governing, so DeepProve reads as source-available.
-  raw: 'license:Lagrange-License(proprietary; a revocable license to use internally for testing and evaluation,
-    or unmodified with Lagrange''s platform. The workspace Cargo.toml declares MIT OR Apache-2.0, which the
-    LICENSE body contradicts);source:public(Rust workspace: the zkml proving crate plus the deep-prove, utils,
-    tenstore, tenvis and telemetry crates)'
+    core-gated:
+      value: ungated
+      detail: the proving library and the worker and CLI that run it locally are all in the published workspace;
+        the remote proving network the CLI can also submit to is a separate service
+  confidence: medium
+  note: 'The workspace manifest declares MIT OR Apache-2.0, and as ruled that package metadata governs.
+    The LICENSE file and the README contradict it: the LICENSE is a revocable Lagrange grant for internal
+    testing and evaluation, or unmodified use with Lagrange''s platform, and the README says the code is
+    licensed under the Lagrange License. Two of three first-party documents disagree with the reading, hence
+    medium confidence. The whole prover, worker and CLI are in the published workspace.'
+  raw: 'license:Apache-2.0/MIT(OSI; the workspace Cargo.toml declares MIT OR Apache-2.0, which governs over
+    the evaluation-only grant in the LICENSE file, as ruled on #739);source:public(Rust workspace: the zkml
+    proving crate plus the deep-prove, utils, tenstore, tenvis and telemetry crates);core-gated:ungated(the
+    proving library and the worker and CLI that run it locally are all in the published workspace; the remote
+    proving network the CLI can also submit to is a separate service)'
   last_verified: '2026-09-26'
   sources:
   - url: https://raw.githubusercontent.com/Lagrange-Labs/deep-prove/master/LICENSE
@@ -53,6 +59,16 @@ openness:
     content_sha256: 329ab31bf22611f65f9fb416bbff9c2c4f11ae683e499efbf33ad6746f9e1610
     establishes:
     - source
+  - url: https://raw.githubusercontent.com/Lagrange-Labs/deep-prove/master/README.md
+    shows: 'Repository Structure table: zkml is the "Core proving library", and deep-prove''s "deep-prove-cli
+      submits proving jobs locally or to a remote proving network"; the Licensing section reads "Licensed
+      under the Lagrange License."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4c9bdfbfa2dffbacf3514ca9e00180d93d0c1bb16ad964ca088ac977ccdfa0d5
+    establishes:
+    - core-gated
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars

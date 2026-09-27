@@ -76,10 +76,12 @@ scoring_recipe:
 
 
     ASSET AND RUNTIME LICENSES are read the same way across the software. A license on content the product
-    ships is one of its license parts (ManiSkill''s CC BY-NC assets, CARLA''s CC-BY assets), and both are deferred
-    on those strings. Habitat is deferred on the same question: its task datasets and trained models for the
-    Matterport3D and Gibson scenes are CC BY-NC-SA, with Habitat''s CC BY 4.0 ReplicaCAD scenes as the commercial
-    substitute. A proprietary component the product depends on but does not ship is not (Isaac Lab''s
+    ships is one of its license parts when it is required for the advertised capability or downloaded by
+    default, the bundled-part rule ruled on #739: ManiSkill''s CC BY-NC assets (the `noncommercial` tier, 2)
+    and CARLA''s CC-BY assets (`permissive_non_osi`, 3). Habitat''s task datasets and trained models for the
+    Matterport3D and Gibson scenes are CC BY-NC-SA, but they are optional downloads with Habitat''s CC BY 4.0
+    ReplicaCAD scenes as the commercial substitute, so they are recorded under `context` and the MIT code
+    governs. A proprietary component the product depends on but does not ship is not (Isaac Lab''s
     BSD code runs on Isaac Sim, whose Omniverse Kit runtime and 3D assets are NVIDIA''s; Isaac Sim is a separate
     registry row), and it is recorded on the source detail and the note, as the sweep ruled for Isaac Sim itself.
     Whether that dependency should cap Isaac Lab is part of the same maintainer ruling.
@@ -90,32 +92,6 @@ scoring_recipe:
     so the ladder computes 3/open_weights. The N1.6 GR00T-H and an N1.5 surgical fine-tune are still on the
     Hub under NVIDIA''s OneWay Noncommercial License. They belong to earlier releases, so the score records
     them as history and they do not lower it.'
-  deferred:
-    maniskill:
-      because: The code and environments are Apache-2.0, but the README puts the bundled assets under CC BY-NC
-        4.0, and the software tiers name no non-commercial license. A software product whose shipped tasks
-        cannot be used commercially is closest to competition_restricted by that tier's own definition (a license
-        that forbids a class of use), so it is recorded 2/source_available; the ruling on NC-licensed assets
-        inside an OSI-licensed simulator is the maintainer's.
-    carla:
-      because: CARLA's code is MIT and its README puts the assets under 'the CC-BY License' with no version.
-        The software tiers name CC-BY-4.0 but not an unversioned CC-BY, so the lookup abstains rather than
-        guess a version. Recorded 3/source_available, where CC-BY-4.0 would land (permissive_non_osi); the
-        Unreal Engine dependency under Epic's own terms is recorded on the source detail and is a second question
-        for the same ruling.
-    pybullet:
-      because: 'Bullet is under the zlib license (PyPI classifier ''License :: OSI Approved :: zlib/libpng
-        License''), which is OSI-approved, but the software osi tier lists names literally and has never been
-        asked to name zlib. Recorded 5/open_source, where an osi license with public, ungated source lands;
-        adding Zlib to the osi examples is a shared-rubric change and the maintainer''s.'
-    habitat:
-      because: 'Habitat-Sim and Habitat-Lab are MIT, but Habitat-Lab''s README distributes the Matterport3D- and Gibson-based
-        task datasets and trained models, and for Gibson the code that generates them, under CC BY-NC-SA 3.0 US, and the
-        software tiers name no non-commercial license. This is the ManiSkill question with one difference: ManiSkill''s
-        own tasks load NC assets, while Habitat''s NC data is derived from third-party scenes and has a commercial substitute
-        in Habitat''s own CC BY 4.0 ReplicaCAD scenes. Recorded 5/open_source, where the MIT code lands, on the reading
-        that a substitutable data download does not cap the software; whether it should cap it, as ManiSkill''s assets do,
-        is part of the same maintainer ruling.'
 products:
 - isaac-lab
 - genesis

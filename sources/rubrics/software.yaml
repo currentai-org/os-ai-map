@@ -88,9 +88,13 @@ openness:
         # Ruling: docs/reference/openness.md, "The `osi` tier's `examples`: literal spellings,
         # and what's been added to it" (why dual licenses and the added GPL-2.0 /
         # Apache-2.0-WITH-LLVM-exception names land here).
+        # zlib (pybullet), LGPL-2.1 (gensim) and BSL-1.0 (dlib) were ruled on #739. BSL-1.0 is
+        # the Boost Software License, OSI-approved and unrelated to the Business Source License
+        # 1.1 in `competition_restricted`. Examples match whole names, never prefixes, so the
+        # two cannot resolve to each other; tests/test_check_rubric.py pins both.
         examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-2.0, GPL-3.0, AGPL-3.0,
           LGPL-3.0, MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT,
-          PostgreSQL, Apache-2.0-WITH-LLVM-exception]
+          PostgreSQL, Apache-2.0-WITH-LLVM-exception, zlib, LGPL-2.1, BSL-1.0]
       permissive_non_osi:
         definition: >-
           Not OSI-approved, but imposes no restriction on WHO may use the software or AT
@@ -99,7 +103,9 @@ openness:
         # licenses, and the artifact they have to attach to" (CC-BY-4.0 on
         # model-context-protocol, the docs-license-vs-product-license rule, and
         # Crawl4AI-Attribution-License).
-        examples: [CC-BY-4.0, Crawl4AI-Attribution-License]
+        # CC-BY with no version (carla's assets) was ruled here on #739: every version of the
+        # attribution-only license passes this tier's test.
+        examples: [CC-BY-4.0, CC-BY, Crawl4AI-Attribution-License]
       competition_restricted:
         definition: >-
           Source is published and readable, but the license forbids or charges for a class
@@ -115,10 +121,40 @@ openness:
           Sustainable-Use-License, n8n-Enterprise-License, Modular-Community-License, Dify-Open-Source-License,
           Open-WebUI-License, LobeHub-Community-License, PolyForm-Shield, MinerU-Open-Source-License,
           AI-Pubs-Open-RAIL-M-Modified, NXAI-Community-License]
+      noncommercial:
+        definition: >-
+          Source is published, but the license forbids commercial use outright or limits use to
+          evaluation or research. Capped at 2 by the universal license scale, whose 3/2 line asks
+          whether commercial use is available at all. Below competition_restricted, which forbids
+          one class of use, because this forbids every commercial one. Most products land here
+          through a part rather than their own code: a non-commercial model pack or asset set
+          that governs under the bundled-part rule below.
+        # Ruled on #739. CC-BY-NC-4.0: content-seal's Stable Signature and radioactive-watermark
+        # members, and maniskill's bundled assets. InsightFace-Model-License: the model packs the
+        # insightface library downloads by default.
+        examples: [CC-BY-NC-4.0, InsightFace-Model-License]
+      unstated:
+        definition: >-
+          Source is published with no license grant anywhere the publisher could state one: no
+          LICENSE file, no manifest license field. Absent a grant there is no permission to rely
+          on, so this is not open. It is not closed either, since the source is out, and 1 is kept
+          for what is genuinely closed. Capped at 2, matching the dataset ladder's `unstated`.
+        # Ruled on #739. `none-declared` is how the corpus records it (ezkl, pytorch-hub,
+        # txt360-pipeline, confer).
+        examples: [none-declared]
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.
         examples: [Proprietary, commercial, proprietary]
+    bundled_part_rule: >-
+      A separately distributed part governs a product's tier only if it is required for the
+      product's ordinary advertised capability, or the software downloads it automatically or by
+      default. That holds for bundled assets and for model weights shipped beside software.
+      Optional model-zoo artifacts and substitutable data downloads do not govern; their
+      restrictions are still recorded, under `context` rather than `license`. insightface is
+      governed by its non-commercial model packs, because the default FaceAnalysis() flow
+      downloads buffalo_l; detectron2 stays governed by its Apache-2.0 framework, because its
+      model zoo is optional. Ruled on #739, first applied in classic_ml_cv.
 
   # Ordered, first match wins. There is deliberately NO `otherwise`: a product whose
   # recorded evidence does not reach a rule is abstained on by check_rubric and reported,
@@ -137,6 +173,17 @@ openness:
     because: >-
       Full source, but a license that forbids a class of use. Scored beside partial
       source because the practical outcome matches: you can read it and not run it freely.
+  - when: {license_tier: noncommercial, source: public}
+    then: {score: 2, class: source_available}
+    because: >-
+      Full source, but no commercial use of the product as it ships. Scored beside
+      competition_restricted: you can read it, and you cannot run it freely.
+  - when: {license_tier: unstated, source: public}
+    then: {score: 2, class: source_available}
+    because: >-
+      Published source with no license grant. Readable, and nothing permits running,
+      changing or redistributing it, so it scores with the other readable-not-runnable
+      shapes. Above the 1 that closed source gets, because the source is out.
   - when: {license_tier: osi, source: public, core_gated: gated}
     then: {score: 4, class: open_core}
     because: >-

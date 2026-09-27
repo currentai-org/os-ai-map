@@ -686,3 +686,67 @@ class TestResolveLicenseParts:
         from build.check_rubric import license_entry, resolve_license_parts
 
         assert resolve_license_parts(license_entry("MIT"), {"openness": {}}) == []
+
+
+def _shared_ladder(name: str) -> dict:
+    return yaml.safe_load((ROOT / "sources" / "rubrics" / f"{name}.yaml").read_text())
+
+
+class TestLicenseRulings739:
+    """The license rulings of #739, read against the real shared ladders."""
+
+    @pytest.mark.parametrize(
+        ("recorded", "tier"),
+        [
+            # BSL-1.0 is the Boost Software License (dlib); BSL-1.1 is the Business Source
+            # License. Tier examples match whole names, so neither can resolve to the other.
+            ("BSL-1.0", "osi"),
+            ("BSL-1.1", "competition_restricted"),
+            ("bsl-1.0", "osi"),
+            ("zlib", "osi"),
+            ("LGPL-2.1", "osi"),
+            ("CC-BY", "permissive_non_osi"),
+            ("CC-BY-NC-4.0", "noncommercial"),
+            ("none-declared", "unstated"),
+        ],
+    )
+    def test_software_names_land_on_their_ruled_tiers(self, recorded, tier):
+        assert license_tier(license_entry(recorded), _shared_ladder("software")) == tier
+
+    def test_bsl_prefixes_do_not_resolve(self):
+        """A prefix of either BSL name is not a license the ladder knows."""
+        assert license_tier(license_entry("BSL"), _shared_ladder("software")) is None
+        assert license_tier(license_entry("BSL-1"), _shared_ladder("software")) is None
+
+    def test_a_noncommercial_part_governs_an_osi_product(self):
+        """The bundled-part rule records a governing NC part under `license`, and the most
+        restrictive part wins."""
+        entry = license_entry("Apache-2.0 + CC-BY-NC-4.0")
+        assert license_tier(entry, _shared_ladder("software")) == "noncommercial"
+
+    @pytest.mark.parametrize("ladder", ["software", "model", "pretrained"])
+    def test_unstated_sits_just_above_proprietary(self, ladder):
+        """`unstated` caps at 2 while `proprietary` stays the scale's closed end, so it is
+        declared immediately before `proprietary` in restrictiveness order."""
+        tiers = list(_shared_ladder(ladder)["openness"]["license_tier"]["values"])
+        assert tiers.index("unstated") == tiers.index("proprietary") - 1
+
+    @pytest.mark.parametrize(
+        ("recorded", "tier"),
+        [
+            ("Stability-AI-Community-License", "use_bounded"),
+            ("Tencent-Hunyuan-Community-License", "use_bounded"),
+            ("MiniMax-H3-Community-License", "use_bounded"),
+            ("Moondream-Model-License-1.0", "use_bounded"),
+            ("CreativeML-OpenRAIL++-M", "permissive_non_osi"),
+            ("NVIDIA-Open-Model-Agreement", "permissive_non_osi"),
+            ("PML-1.0", "commercial_forbidden"),
+            ("TABPFN-3-License-v1.0", "commercial_forbidden"),
+            ("none-declared", "unstated"),
+        ],
+    )
+    def test_model_and_pretrained_ladders_agree_on_the_ruled_names(self, recorded, tier):
+        # A structured part, as the score files record it: `license_entry` parses the flat
+        # string form, where the `+` in OpenRAIL++-M would read as a compound.
+        for ladder in ("model", "pretrained"):
+            assert license_tier([{"name": recorded}], _shared_ladder(ladder)) == tier, ladder

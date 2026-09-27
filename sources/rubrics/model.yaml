@@ -79,9 +79,15 @@ openness:
         # CC-BY-NC) resolves at all; the more restrictive half decides the score either way.
         # CC-BY-4.0 on weights (Canary, Parakeet, Kyutai, Moshi): attribution only, caps no
         # use. Not OSI-approved, so not `osi`; ruled into this tier rather than a new one.
+        # Ruled on #739: OpenMDW-1.1 (already placed on the pretrained ladder), and the two
+        # OpenRAIL variants CreativeML-OpenRAIL++-M (SDXL) and Open-RAIL-M (LTX-Video 0.9.1 and
+        # 0.9.5), which carry use-based restrictions only. NVIDIA-Open-Model-Agreement
+        # (nemotron-omni) was read against the Open Model License and restricts neither who may
+        # use the works nor at what scale.
         examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
           zentropi-openrail-m, DeepSeek-Model-License, TII-Falcon-License-2.0,
-          Cohere-Acceptable-Use-Policy, CC-BY-4.0, cc-by-4.0]
+          Cohere-Acceptable-Use-Policy, CC-BY-4.0, cc-by-4.0, OpenMDW-1.1, CreativeML-OpenRAIL++-M,
+          Open-RAIL-M, NVIDIA-Open-Model-Agreement, Prior-Labs-License-1.1]
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded - a monthly-active-user ceiling, an annual
@@ -96,14 +102,29 @@ openness:
           the distinction the map exists to draw. Renamed with the cap change so that a stale
           reference to `use_restricted` fails loudly rather than resolving to a tier whose
           meaning moved underneath it.
+
+          A revenue- or usage-bound community license sits here whatever the threshold. A
+          territorial exclusion also caps a license here: a grant that leaves out whole
+          territories still permits commercial use inside them, so it is bounded commercial use,
+          and it never rises above this tier however permissive the rest of the license is.
         # An acceptable-use policy alone belongs in `permissive_non_osi`, not here — the #117
         # ruling in docs/reference/openness.md, "Two places the map deliberately departs from
         # MOF". (Issue #538 tracked this ladder and pretrained.yaml disagreeing; both now match.)
         # InternLM-Free-Commercial-License: the bound written as a process (free, granted on
         # application) rather than a number, and still inside this tier's test.
+        # Ruled on #739. Revenue-bound: the Stability AI Community License (USD 1M), the LTX-2
+        # and LTXV licenses (USD 10M), LFM Open (USD 10M). Territorial: the Tencent Hunyuan
+        # Community License and its 3D sibling (EU, UK and South Korea excluded) and the MiniMax
+        # H3 Community License (EU, UK, Republic of Korea and USA excluded, and USD 20M). The
+        # Moondream Model License bars only offering Moondream as a general-purpose hosted
+        # service.
         examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
           Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
-          Qwen-License-Agreement, Jamba-Open-Model-License, InternLM-Free-Commercial-License]
+          Qwen-License-Agreement, Jamba-Open-Model-License, InternLM-Free-Commercial-License,
+          Stability-AI-Community-License, LTX-2.x-Community-License, LTX-2-Community-License,
+          LTXV-Open-Weights-License-0.X, MiniMax-H3-Community-License, LFM-Open-License-1.0,
+          Tencent-Hunyuan-Community-License, Tencent-Hunyuan-3D-Community-License,
+          Moondream-Model-License-1.0]
       commercial_forbidden:
         definition: >
           Weights are published and commercial use is prohibited, or reserved to the vendor.
@@ -115,14 +136,34 @@ openness:
           it. It is also the same line the Model Openness Framework draws at the bottom of
           its qualifying range - MOF Class III requires components usable "including for
           commercial and educational purposes".
+        # Ruled on #739, vendor non-commercial model licenses: NVIDIA OneWay Noncommercial, the
+        # Prior Labs TabPFN 2.5 to 3.5 licenses, the FLUX
+        # non-commercial licenses, the Qwen Research License (a different document from
+        # Qwen-License-Agreement), Roboflow's PML-1.0, and InsightFace's research-only models.
         examples: [CC-BY-NC, CC-BY-NC-4.0, CC-BY-NC-SA-4.0, cc-by-nc-4.0, cc-by-nc-sa-4.0,
-          Mistral-AI-Non-Production-License, Mistral-Research-License]
+          Mistral-AI-Non-Production-License, Mistral-Research-License, NVIDIA-OneWay-Noncommercial,
+          TABPFN-3-License-v1.0, TABPFN-3.5-License-v1.0, TABPFN-2.6-License-v1.0,
+          TABPFN-2.5-License-v1.1, FLUX-Non-Commercial-License-2.1,
+          FLUX-dev-Non-Commercial-License-2.0, FLUX.1-dev-Non-Commercial-License,
+          Qwen-Research-License, PML-1.0, InsightFace-Non-Commercial-Research]
+      unstated:
+        definition: >
+          Weights are published with no license declared anywhere the publisher could declare
+          one. Absent a grant there is no permission to rely on, so this is not open, and the
+          weights are out, so it is not closed. Capped at 2, matching the dataset ladder's
+          `unstated`; 1 stays reserved for what is genuinely closed. Ruled on #739.
+        examples: [none-declared]
       proprietary:
         definition: No public license; weights not distributed.
     multi_sku_rule: >
       As base_pretrained: within the governing release, where a family ships SKUs
       under different licenses, the most restrictive license among the SKUs WHOSE
       WEIGHTS ARE ACTUALLY DISTRIBUTED governs, and API-only tiers are excluded.
+    bundled_part_rule: >
+      As the software ladder: a separately distributed part, such as a face detector or a VAE
+      from another project, governs the tier only if it is required for the model's advertised
+      capability or downloaded by default. Then it is recorded under `license` and the most
+      restrictive part wins. An optional part is recorded under `context` and does not govern.
     inherits_from_base: >
       A tune of a restrictively licensed base carries that restriction, because
       the license travels with the weights. hermes-4-llama-3-1-405b is
@@ -166,6 +207,11 @@ openness:
       Open weights you may not use commercially. Downloadable is not the same as usable, and
       this rung sits ahead of the data and code rungs on purpose: a full open recipe does not
       buy back the right to use the result.
+  - when: {license_tier: unstated}
+    then: {score: 2, class: restricted}
+    because: >-
+      Weights published with no license declared. Nothing permits using them, so they score
+      with the weights you may not use commercially, above the 1 that closed weights get.
   - when: {license_tier: use_bounded}
     then: {score: 3, class: open_weights}
     because: >-

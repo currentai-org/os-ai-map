@@ -1,7 +1,7 @@
 product: liveportrait
 openness:
-  score: 3
-  class: open_weights
+  score: 2
+  class: restricted
   components:
     weights:
       value: open
@@ -19,9 +19,10 @@ openness:
       detail: the InsightFace face-detection models bundled in the weight tree are "for non-commercial research
         purposes only"; the LICENSE says commercial users must replace them
   confidence: high
-  note: LivePortrait's own code and weights are MIT, but the download bundles InsightFace face-detection models
-    that are licensed for non-commercial research only, and the LICENSE says commercial users must swap them out.
-    Only inference code is published and the training data is not released.
+  note: LivePortrait's own code and weights are MIT, but every run crops the face with InsightFace detection
+    models licensed for non-commercial research only, and the one download command fetches them with the
+    weights. The LICENSE says commercial users must swap them out. Only inference code is published and
+    the training data is not released.
   raw: weights:open(KlingTeam/LivePortrait downloads from Hugging Face without a gate, Humans and Animals models
     together);data:described(the paper describes about 69 million training frames; no dataset is released);code:partial(inference
     code only; no training script);license:MIT(the LivePortrait code and weights)+InsightFace-Non-Commercial-Research(the
@@ -60,6 +61,23 @@ openness:
     content_sha256: ac65af68d9b0e560dbe79f530a6cf83463d5e4d8795a2c2315bc06377003d6cd
     establishes:
     - data
+  - url: https://raw.githubusercontent.com/KlingAIResearch/LivePortrait/main/src/utils/cropper.py
+    shows: The Cropper's constructor loads FaceAnalysisDIY(name="buffalo_l", root=self.crop_cfg.insightface_root),
+      prepares it and warms it up; the face crop runs on these InsightFace models.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fdcad351e002cc0383d1a9972e2edfcc6a9edc5498f07a6c7dbac016f81ca1e4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/KlingAIResearch/LivePortrait/main/readme.md
+    shows: The download step is "huggingface-cli download KlingTeam/LivePortrait --local-dir pretrained_weights
+      --exclude "*.git*" "README.md" "docs"", which fetches the whole weight tree, insightface/models/buffalo_l
+      included.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ba9144f3a57c4acdeae3e51cdaf379b41c32ffe27ec7ff4b279265995ad01878
+    establishes:
+    - license
 adoption:
   level: 2
   reach: 10K-100K

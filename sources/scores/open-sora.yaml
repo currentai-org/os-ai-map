@@ -5,39 +5,46 @@ openness:
   components:
     weights:
       value: open
-      detail: Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the same repository also
-        carries flux1-dev.safetensors and hunyuan_vae.safetensors
+      detail: Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the same repository
+        also carries flux1-dev.safetensors and hunyuan_vae.safetensors
     data:
       value: described
-      detail: the training data is described in the technical report; the only published set is a 45K-clip Pexels sample
-        for trying the training scripts, and its Hub page is disabled
+      detail: the training data is described in the technical report; the only published set is a 45K-clip
+        Pexels sample for trying the training scripts, and its Hub page is disabled
     code:
       value: open
-      detail: the pretraining scripts (scripts/diffusion/train.py) and docs/train.md are published; the repository is
-        Apache-2.0, with bundled third-party terms over code derived from other projects
+      detail: the pretraining scripts (scripts/diffusion/train.py) and docs/train.md are published; the
+        repository is Apache-2.0, with bundled third-party terms over code derived from other projects
     license:
     - name: Apache-2.0
       detail: the Open-Sora 2.0 weights and the repository
     - name: Tencent-Hunyuan-Community-License
-      detail: the HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed in the Open-Sora-v2
-        repository, and code the LICENSE bundles; excludes the EU, UK and South Korea
-    - name: FLUX.1-dev-Non-Commercial-License
-      detail: the FLUX.1 [dev] weights redistributed in the same repository, used only by the optional text-to-image-to-video
-        pipeline
+      detail: the HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed
+        in the Open-Sora-v2 repository, and code the LICENSE bundles; excludes the EU, UK and South Korea
+    context:
+      optional-pipeline:
+        value: FLUX.1-dev-Non-Commercial-License
+        detail: FLUX.1 [dev] weights sit in the same Hugging Face repository and the README's download command
+          fetches them, but only the optional text-to-image-to-video pipeline uses them; the direct text-to-video
+          configs load no FLUX weights, so under the bundled-part rule they do not govern
   governing_release: Open-Sora 2.0
   confidence: medium
-  note: Open-Sora 2.0's own weights and training code are Apache 2.0, but every generation loads a HunyuanVideo VAE whose
-    license excludes the EU, UK and South Korea, and an optional pipeline adds FLUX.1 [dev] under a non-commercial license.
-    The training data is described, not released.
-  raw: weights:open(Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the same repository
-    also carries flux1-dev.safetensors and hunyuan_vae.safetensors);data:described(the training data is described in
-    the technical report; the only published set is a 45K-clip Pexels sample for trying the training scripts, and its
-    Hub page is disabled);code:open(the pretraining scripts (scripts/diffusion/train.py) and docs/train.md are published;
-    the repository is Apache-2.0, with bundled third-party terms over code derived from other projects);license:Apache-2.0(the
-    Open-Sora 2.0 weights and the repository)+Tencent-Hunyuan-Community-License(the HunyuanVideo VAE that every text-to-video
-    and image-to-video config loads, redistributed in the Open-Sora-v2 repository, and code the LICENSE bundles; excludes
-    the EU, UK and South Korea)+FLUX.1-dev-Non-Commercial-License(the FLUX.1 [dev] weights redistributed in the same
-    repository, used only by the optional text-to-image-to-video pipeline)
+  note: Open-Sora 2.0's own weights and training code are Apache 2.0, but every text-to-video and image-to-video
+    run loads a HunyuanVideo VAE whose license excludes the EU, UK and South Korea, which caps it at use_bounded.
+    FLUX.1 [dev] weights under a non-commercial license sit in the same repository for an optional text-to-image-to-video
+    pipeline; the direct text-to-video path does not load them, so they do not govern. The training data
+    is described, not released.
+  raw: weights:open(Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the
+    same repository also carries flux1-dev.safetensors and hunyuan_vae.safetensors);data:described(the training
+    data is described in the technical report; the only published set is a 45K-clip Pexels sample for trying
+    the training scripts, and its Hub page is disabled);code:open(the pretraining scripts (scripts/diffusion/train.py)
+    and docs/train.md are published; the repository is Apache-2.0, with bundled third-party terms over code
+    derived from other projects);license:Apache-2.0(the Open-Sora 2.0 weights and the repository)+Tencent-Hunyuan-Community-License(the
+    HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed in the Open-Sora-v2
+    repository, and code the LICENSE bundles; excludes the EU, UK and South Korea);optional-pipeline:FLUX.1-dev-Non-Commercial-License(FLUX.1
+    [dev] weights sit in the same Hugging Face repository and the README's download command fetches them,
+    but only the optional text-to-image-to-video pipeline uses them; the direct text-to-video configs load
+    no FLUX weights, so under the bundled-part rule they do not govern)
   last_verified: '2026-09-27'
   sources:
   - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/LICENSE
@@ -104,6 +111,16 @@ openness:
     content_sha256: 05b6e946536d01c56d80bd2ef4de4314426d270df722e0af06f096ccf49096dd
     establishes:
     - data
+  - url: https://raw.githubusercontent.com/hpcaitech/Open-Sora/main/README.md
+    shows: Model Download gives one command, "huggingface-cli download hpcai-tech/Open-Sora-v2 --local-dir
+      ./ckpts", which fetches the whole repository, flux1-dev.safetensors included; Text-to-Video Generation
+      says "To generate high quality videos, with the help of flux text-to-image model, we build a text-to-image-to-video
+      pipeline" and lists direct text-to-video after it.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0fcb328e414279344c13ccf65fdf297c054a152b8a39c0be485cb9146bd5cd26
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <10K
