@@ -1,0 +1,111 @@
+product: latentsync
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: LatentSync 1.6 and 1.5 download from Hugging Face without a gate
+    data:
+      value: described
+      detail: the training videos are described (512x512 in 1.6, Chinese data added in 1.5) and not released; the data
+        processing pipeline that prepares them is published
+    code:
+      value: open
+      detail: U-Net and SyncNet training scripts and the data processing pipeline are published under Apache-2.0
+    license:
+    - name: CreativeML-OpenRAIL++-M
+      detail: the checkpoints, declared as openrail++ in the Hub card metadata; no license file in the weight repositories
+  governing_release: LatentSync 1.6
+  confidence: medium
+  note: LatentSync's code, training scripts included, is Apache 2.0, and its weights carry an OpenRAIL++ license that
+    restricts some uses but not commercial use. The training videos are not released.
+  raw: weights:open(LatentSync 1.6 and 1.5 download from Hugging Face without a gate);data:described(the training videos
+    are described (512x512 in 1.6, Chinese data added in 1.5) and not released; the data processing pipeline that prepares
+    them is published);code:open(U-Net and SyncNet training scripts and the data processing pipeline are published under
+    Apache-2.0);license:CreativeML-OpenRAIL++-M(the checkpoints, declared as openrail++ in the Hub card metadata; no
+    license file in the weight repositories)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/ByteDance/LatentSync-1.6?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for ByteDance/LatentSync-1.6: cardData license openrail++, gated false, created 2025-06-11.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c8adef4703073f6b0f0fff7f2713a77a8e9b3ef92b30540b2a62650b9e368027
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/api/models/ByteDance/LatentSync-1.6/tree/main
+    shows: 'File tree: latentsync_unet.pt and stable_syncnet.pt; no license file.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f0928ef2af2da19275fcf8b25f73122a2bbef89f258c41c518702755a2b6edd9
+    establishes:
+    - license
+    - weights
+  - url: https://ungh.cc/repos/bytedance/LatentSync/files/main/LICENSE
+    shows: 'Code LICENSE body: "Apache License / Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - code
+  - url: https://ungh.cc/repos/bytedance/LatentSync/files/main/README.md
+    shows: 'README: "2025/06/11: We released LatentSync 1.6", and an open-source plan that checks off inference code,
+      checkpoints, "Data processing pipeline" and training code.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f4efe6ac062511b5de6ff65db110aa3d755fef662277c3bb4dd16dbfa02362b1
+    establishes:
+    - code
+    - data
+  - url: https://ungh.cc/repos/bytedance/LatentSync/files/main
+    shows: 'Repository file list: scripts/train_unet.py, scripts/train_syncnet.py and preprocess/data_processing_pipeline.py.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3c68d475db2291dfae73d97f716ed2d06ccd99b511025c5a65a6f0441b979c83
+    establishes:
+    - code
+  - url: https://huggingface.co/ByteDance/LatentSync-1.6/raw/main/README.md
+    shows: 'Card: "the only modification was upgrading the training dataset to 512 x 512 videos"; no dataset is released.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 932f492a9caaa334d5e200c66e7324430d6857ddbc4c1ae12ec285b052914110
+    establishes:
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the LatentSync checkpoints, 275,311 in the trailing 30 days,
+    led by version 1.6.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=ByteDance&search=LatentSync&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: LatentSync-1.6 199929, LatentSync-1.5 75382, LatentSync 0.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e1b51c2fe5670b5bcdde3f5216b48653cd5c37605f564a353dfb0a9851a272f3
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released lip-sync weights (video plus audio to lip-synced video, 512x512); no lip-sync entry on the Artificial
+    Analysis Text to Video Arena, read 2026-09-27, which ranks text-to-video generation
+  confidence: medium
+  relative_to: liveportrait
+  relation: at
+  note: LatentSync re-renders a speaker's mouth to match new audio rather than generating video from a prompt, and no
+    public arena ranks lip-sync. It sits level with LivePortrait, the other face-animation model here.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: The text-to-video leaderboard lists no LatentSync entry.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ecc78a74fae549c9280921dd649d3e57a26b799673ef84c10e677d24d6b8408f
+  - url: https://arxiv.org/abs/2412.09262
+    shows: 'Paper title: "LatentSync: Taming Audio-Conditioned Latent Diffusion Models for Lip Sync with SyncNet Supervision".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c713ca18d73daeb66a4c1f4db431fead6d6db64f778f4f5d089b058c1260c13f

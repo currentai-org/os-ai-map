@@ -1,0 +1,119 @@
+product: mmaudio
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: the small, medium and large checkpoints download from hkchengrex/MMAudio on Hugging Face without a gate
+    data:
+      value: described
+      detail: trained on public sets named in the README and TRAINING.md (AudioSet, Freesound, VGGSound, AudioCaps, WavCaps,
+        Clotho), which the authors say they cannot redistribute
+    code:
+      value: open
+      detail: train.py, the training configs and latent-extraction scripts are published under MIT
+    license:
+    - name: CC-BY-NC-4.0
+      detail: the checkpoints, "for non-commercial purposes only"; the code is MIT
+  governing_release: MMAudio (large_44k_v2 checkpoint, the recommended release)
+  confidence: high
+  note: MMAudio's weights may be used for non-commercial purposes only. The training code is published under MIT, and
+    the public datasets it was trained on are named, though not redistributed.
+  raw: weights:open(the small, medium and large checkpoints download from hkchengrex/MMAudio on Hugging Face without
+    a gate);data:described(trained on public sets named in the README and TRAINING.md (AudioSet, Freesound, VGGSound,
+    AudioCaps, WavCaps, Clotho), which the authors say they cannot redistribute);code:open(train.py, the training configs
+    and latent-extraction scripts are published under MIT);license:CC-BY-NC-4.0(the checkpoints, "for non-commercial
+    purposes only"; the code is MIT)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/hkchengrex/MMAudio/raw/main/README.md
+    shows: 'Card: "Please note that the checkpoints are licensed under CC BY-NC 4.0 and can be used for non-commercial
+      purposes only."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d788ad7a8c6067e7e710a2a0539bba7c6047259daf217a0b639ca317fcad7596
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/hkchengrex/MMAudio/files/main/README.md
+    shows: 'README: "The checkpoints are released on Hugging Face under the CC-BY-NC 4.0 license"; "MMAudio was trained
+      on several datasets, including AudioSet, Freesound, VGGSound, AudioCaps, and WavCaps".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c1ecec52892b7db7761e587a00ee5a9b4cb140158b6de4ae8823d420c6e6f297
+    establishes:
+    - license
+    - data
+  - url: https://ungh.cc/repos/hkchengrex/MMAudio/files/main/LICENSE
+    shows: 'Code LICENSE body: "MIT License / Copyright (c) 2024 Sony Research Inc."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 157b6af8c1bc4eac646abdf17473934a85e8815ade3a346cd83a58a171586a73
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/hkchengrex/MMAudio?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record: cardData license cc-by-nc-4.0, gated false; files weights/mmaudio_large_44k_v2.pth
+      and the other checkpoints.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e525af56695e81b24647cf6413f9a4fb9e2c37641be41878275252b7ab4daa85
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/hkchengrex/MMAudio/files/main/docs/TRAINING.md
+    shows: 'TRAINING.md: "We used VGGSound, AudioCaps, WavCaps, and Clotho" and "We cannot redistribute the datasets
+      for copyright reasons".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d6a9fdab16aeedbd9b5a4d07558157af717b1982289991d5059a3e36eda47d45
+    establishes:
+    - data
+    - code
+  - url: https://ungh.cc/repos/hkchengrex/MMAudio/files/main
+    shows: 'Repository file list: train.py, config/train_config.yaml and training/ scripts.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3b3ce0f07bb405a120e1d7496ef90fd1122d46986f724cab5229a1ec600f7a86
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: The Hub reports zero downloads for the checkpoint repository, which holds only .pth files and no config.json,
+    so the counter likely misses real use. The band is the measured floor, not a claim that nobody uses it; 2,267 GitHub
+    stars suggest modest use.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/hkchengrex/MMAudio?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for hkchengrex/MMAudio: downloads 0, likes 131; siblings list no config.json.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e525af56695e81b24647cf6413f9a4fb9e2c37641be41878275252b7ab4daa85
+  - url: https://ungh.cc/repos/hkchengrex/MMAudio
+    shows: 'Repository record: stars 2267, pushedAt 2026-02-23.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6473946014f28ae9b1e70e5ee73fc0b89d0ff67f8748fa9f46d80d82b85f1466
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released video-to-audio and text-to-audio weights (sound effects synchronized to video); no entry on AA-Music-Instrumental
+    v1.1, read 2026-09-27, which ranks music generation, and no public arena ranks video-to-audio
+  confidence: medium
+  relative_to: musicgen
+  relation: one_below
+  note: MMAudio generates sound effects to match a video rather than music, and no public arena ranks that task. It sits
+    below MusicGen, which at least places on the music arena.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: The 19-entry instrumental board lists no MMAudio entry; "MusicGen" is on it.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 951bfb88a04d8cbc316ec8417aa21072b0941100522b6803cfaeb218ae1bc462
+  - url: https://arxiv.org/abs/2412.15322
+    shows: 'Abstract: "MMAudio achieves new video-to-audio state-of-the-art among public models ... and just 157M parameters."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c6a7c99d376c08356075027fe938941a4807996c2855b5064248f120cbca9c3f
