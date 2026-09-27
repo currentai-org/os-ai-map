@@ -145,8 +145,19 @@ Collapsing releases into a tier means one score describes several things. The co
 
 | axis | rule |
 |---|---|
-| adoption, capability | **max** across the tier's releases |
+| adoption | **sum** across every declared artifact, every release included, then band |
+| capability | **max** across the tier's releases |
 | openness | **the current release governs** |
+
+Adoption sums because it measures how much the family is used now, and a trailing 30-day window
+already makes it a measure of now: someone still downloading last year's release this month is a
+current user of the product. Taking the max instead would drop those users, and it would lower a
+family's band whenever a new release split its downloads, though no one had stopped using it. The
+sum is taken on raw counts before banding, never across per-release bands, and within the winning
+route only; `docs/reference/adoption.md` ("Sum across the family, not per artifact") has the
+mechanics and `sources/signal_routing.yaml` declares it as `sum_across_artifacts: true`.
+
+Capability takes the max because what a family can do is set by its best release.
 
 Openness differs because it is a claim about what you can obtain, and what you can obtain is what
 ships now. A family whose previous release was Apache-2.0 and whose current one is not is not an
