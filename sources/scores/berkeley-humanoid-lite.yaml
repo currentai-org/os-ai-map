@@ -1,0 +1,94 @@
+product: berkeley-humanoid-lite
+openness:
+  score: 5
+  class: open_hardware
+  components:
+    form_factor:
+      value: board
+      detail: a complete robot built from the published design
+    schematics:
+      value: open
+      detail: CAD and robot descriptions under CC BY-SA 4.0
+    toolchain:
+      value: open
+      detail: MIT controller and training code
+  confidence: medium
+  note: The mechanical design, the embedded controller and the training code are all published, the design under
+    CC BY-SA 4.0 and the code under MIT, so the robot can be built and programmed from what is released.
+  raw: form_factor:board(a complete robot built from the published design);schematics:open(CAD and robot descriptions
+    under CC BY-SA 4.0);toolchain:open(MIT controller and training code)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/HybridRobotics/berkeley-humanoid-lite/main/README.md
+    shows: 'README: code "licensed under MIT License"; "Other assets are under Creative Commons Attribution-ShareAlike
+      4.0 International"; robot descriptions (URDF, MJCF, USD) and Onshape export in the assets submodule; Isaac
+      Lab environments in source/berkeley_humanoid_lite.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 33d70c69bbb9ccbdaa70d027b868031d4a260cb0a92d40e625f08de80bbf4f74
+    establishes:
+    - schematics
+    - toolchain
+    - form_factor
+  - url: https://raw.githubusercontent.com/HybridRobotics/berkeley-humanoid-lite/main/.gitmodules
+    shows: '.gitmodules: Berkeley-Humanoid-Lite-Assets and Berkeley-Humanoid-Lite-Lowlevel submodules.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 887fcb377b8c88be38c8b0646af242c4def2e367052a679180e2037bf8d0ddd3
+    establishes:
+    - schematics
+    - toolchain
+  - url: https://raw.githubusercontent.com/HybridRobotics/berkeley-humanoid-lite-lowlevel/main/README.md
+    shows: 'Low-level README: "the low-level control code for the Berkeley Humanoid Lite robot"; "The main controller
+      is implemented in C".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 15fbf4e4ca0ddb9b46cc6b6fc13c9703360443c8fe3ccd2cac2318ba291c8594
+    establishes:
+    - toolchain
+  - url: https://arxiv.org/abs/2504.17249
+    shows: 'arXiv 2504.17249 abstract: total hardware cost under $5,000; "fully open-sourcing the hardware design,
+      embedded code, and training and deployment frameworks".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 964f2be963eb0ce092414764808b4baee73bdfef9901504aff19e09e4fb06714
+    establishes:
+    - schematics
+    - toolchain
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the main repository. A robot that builders print and assemble themselves leaves no sales
+    or download count.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/HybridRobotics%2FBerkeley-Humanoid-Lite
+    shows: 'Repository record for HybridRobotics/berkeley-humanoid-lite: 1,878 stargazers.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: eb7bee598549d0708a64ce2d0ae0c8127004fdcd977463019d0900bec4d1720c
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: morphology
+  value: Full bipedal humanoid with 3D-printed cycloidal actuators, RL locomotion with zero-shot sim-to-real transfer;
+    under $5,000 in parts.
+  confidence: medium
+  note: A walking humanoid is the most general body among the open robots here, and this one comes with a locomotion
+    controller trained in simulation that transfers straight to the hardware.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://arxiv.org/abs/2504.17249
+    shows: 'Abstract: "Demonstrating Berkeley Humanoid Lite: An Open-source, Accessible, and Customizable 3D-printed
+      Humanoid Robot"; locomotion controller trained with reinforcement learning and zero-shot policy transfer from
+      simulation to hardware.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 964f2be963eb0ce092414764808b4baee73bdfef9901504aff19e09e4fb06714
+  - url: https://lite.berkeley-humanoid.org/
+    shows: 'Project page: cycloidal gear design; total hardware cost under $5,000.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9b97089d3b29302a4dbcdca66bea52138460ecc0fc00d94bfa62dbe51cab712e

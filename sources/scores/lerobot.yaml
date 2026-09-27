@@ -1,0 +1,93 @@
+product: lerobot
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: LICENSE body
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: no enterprise path in the tree and no paid tier in the README
+  confidence: high
+  note: The whole library is Apache-2.0, and nothing in the repository is set aside for a paid edition. The policies
+    it ships are the library's own code; pretrained weights it can load, such as the pi0 ports, carry their own
+    licenses and are separate entries.
+  raw: license:Apache-2.0(LICENSE body);source:public;core-gated:ungated(no enterprise path in the tree and no paid
+    tier in the README)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/huggingface/lerobot/main/LICENSE
+    shows: 'LICENSE: "Copyright 2024 The Hugging Face team. All rights reserved." followed by the Apache License,
+      Version 2.0 text, with no per-directory exception.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9e108af26a7ae92a6d2cb0273856a4a0a84da8819c2cffee8b2657cc4f905718
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/huggingface%2Flerobot
+    shows: 'Repository record for huggingface/lerobot: license apache-2.0, archived false, fork false, pushed 2026-09-22.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d4ae0ead4c44cef885d64fbdb73cd8148fe83fc7b1a7398d0ba75b3de98a28e7
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/huggingface/lerobot/files/main
+    shows: Full file listing of the main branch, 1,150 paths; none sits under an enterprise, ee or commercial directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cc2b02ddb6fe48d0078df86addd36dde500d109d4914379a807ad245880d0a70
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/huggingface/lerobot/main/README.md
+    shows: 'README: policies, dataset tooling and hardware support are all in the repository; no hosted service,
+      paid plan or withheld feature is mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1f73722970eeaec89782b3e2213ddd3afdae6af9210be07c97ac013fd23b522a
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the lerobot package, which the project's own metadata links to this repository. Installs
+    from a source checkout, the route most hardware builders follow, are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/lerobot/recent
+    shows: 'pypistats: last_month 230,678 downloads for lerobot.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 28b808de3bf1d15bb88ab8e437287bde46156e40314d1809b58cd64b557de1da
+  - url: https://pypi.org/pypi/lerobot/json
+    shows: 'PyPI metadata: project_urls source https://github.com/huggingface/lerobot; license Apache-2.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4cb229c348285b76cb689cc0b8b9f6808a045e4ddfcfce3235be078ba5b7f50c
+capability:
+  score: null
+  basis: n/a
+  basis_detail: not a simulator
+  value: 'Real-robot learning framework: teleoperated data collection, a Hub dataset format, training for ACT, Diffusion,
+    VQ-BeT, HIL-SERL, TDMPC and VLAs including pi0, SmolVLA and GR00T N1.7, and deployment on arms and humanoids.
+    It runs no physics simulation of its own.'
+  confidence: medium
+  note: 'The software in this category is compared on how fast and how faithfully it simulates robots. LeRobot does
+    not simulate at all: it collects data on real hardware, trains policies and runs them back on the robot, so
+    it has no place on that comparison and none is claimed.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/huggingface/lerobot/main/README.md
+    shows: 'README policy table: imitation learning (ACT, Diffusion, VQ-BeT, Multitask DiT), reinforcement learning
+      (HIL-SERL, TDMPC), VLAs (Pi0, Pi0Fast, Pi0.5, GR00T N1.7, SmolVLA, XVLA, EO-1, MolmoAct2, WALL-OSS, EVO1);
+      "a hardware-agnostic, Python-native interface ... from low-cost arms (SO-100) to humanoids"; no physics-engine
+      or simulator claim.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1f73722970eeaec89782b3e2213ddd3afdae6af9210be07c97ac013fd23b522a

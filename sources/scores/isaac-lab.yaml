@@ -1,0 +1,111 @@
+product: isaac-lab
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: framework; isaaclab_mimic is Apache-2.0
+    source:
+      value: public
+      detail: the framework builds from the repo; it runs on Isaac Sim, whose runtime is proprietary
+    core-gated:
+      value: ungated
+      detail: no feature of the framework is withheld
+  confidence: medium
+  note: 'The framework itself is BSD-3-Clause, with nothing set aside for a paid tier. It cannot run on its own,
+    though: it sits on Isaac Sim, whose Omniverse Kit runtime and 3D assets are proprietary NVIDIA software, and
+    the optional mimic extension needs the proprietary cuRobo.'
+  raw: license:BSD-3-Clause(framework; isaaclab_mimic is Apache-2.0);source:public(the framework builds from the
+    repo; it runs on Isaac Sim, whose runtime is proprietary);core-gated:ungated(no feature of the framework is
+    withheld)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/LICENSE
+    shows: 'LICENSE: "Copyright (c) 2022-2025, The Isaac Lab Project Developers ... SPDX-License-Identifier: BSD-3-Clause"
+      followed by the BSD 3-Clause text.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: df351ebfa8af317bf5a9ad83df63a8b68e4f5c04b71f30767cdb27aa434eac62
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/README.md
+    shows: 'README License section: the framework is BSD-3, the isaaclab_mimic extension Apache 2.0; "Isaac Lab
+      requires Isaac Sim, which includes components under proprietary licensing terms", and isaaclab_mimic requires
+      cuRobo, "which has proprietary licensing terms".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa7bc112d6d65a4e156f444281e0b18579575ddddb8aa9c9e11d89b194ed45c5
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/docs/licenses/dependencies/isaacsim-license.txt
+    shows: 'Vendored Isaac Sim license: Isaac Sim''s code is Apache 2.0, but "building or using the software requires
+      additional components licenced under other terms ... the Omniverse Kit SDK, as well as 3D models and textures".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c43354cdc674d47195b77a88b08af27ecf9ca356e754f5040f281e46a9831d89
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/isaac-sim/IsaacLab/files/main
+    shows: Full listing of the main branch, 1,993 paths; no enterprise, ee or commercial path.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 735290cad740928b5d034d7ec4758240bf06a45da913e9f59e3ec6f6e3f4ef82
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: PyPI installs of the isaaclab package. The README installs Isaac Lab from a source checkout rather than
+    from PyPI, so most users never touch the package and the figure undercounts use.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/isaaclab/recent
+    shows: 'pypistats: last_month 1,726 downloads for isaaclab.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9f7d6800a97fc8650e348c28a0b779cd1da9295cb063ab5bb2b69c126be4d1f3
+  - url: https://pypi.org/pypi/isaaclab/json
+    shows: 'PyPI metadata for isaaclab: Documentation https://isaac-sim.github.io/IsaacLab/, Home page https://developer.nvidia.com/isaac/lab;
+      no repository URL.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 96bbca031e5b2a5121c4ca72455849b65cd1528b228bfa7629455c652cc52691
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: GPU-parallel robot learning on Isaac Sim PhysX with RTX-rendered cameras, LIDAR and contact sensors; 30+
+    ready-to-train environments for RSL RL, SKRL, RL Games and Stable Baselines, multi-agent RL; an experimental
+    Newton (MuJoCo Warp) physics backend with sim-to-sim transfer configs for ANYmal-D, G1, Go2 and H1.
+  confidence: medium
+  note: 'Isaac Lab combines everything the other simulators here offer in part: parallel environments on the GPU,
+    rendered cameras, LIDAR and contact sensors, a large set of ready-to-train tasks for common robots, and a second
+    physics engine for checking a policy before it goes to hardware.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/README.md
+    shows: 'README: "a GPU-accelerated, open-source framework designed to unify and simplify robotics research workflows,
+      such as reinforcement learning, imitation learning, and motion planning"; "more than 30 environments, which
+      can be trained with popular reinforcement learning frameworks such as RSL RL, SKRL, RL Games, or Stable Baselines";
+      sensors "cameras, LIDAR, or contact sensors".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa7bc112d6d65a4e156f444281e0b18579575ddddb8aa9c9e11d89b194ed45c5
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacSim/main/README.md
+    shows: 'Isaac Sim README: "high-fidelity, GPU-accelerated physics engines to simulate accurate dynamics and
+      support multi-sensor RTX rendering at scale".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 13b6ce1cc0b151ea4d2b4d670a4455e00e23dbadbad7ef801852f0f568c879e4
+  - url: https://raw.githubusercontent.com/isaac-sim/IsaacLab/main/docs/source/experimental-features/newton-physics-integration/index.rst
+    shows: 'Newton integration docs: available on the develop branch as part of Isaac Lab 3.0 Beta, focused on the
+      MuJoCo-Warp solver, with a limited set of locomotion examples.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8abe809489407c75f3eb187e444fd87d4fbf345a89a98289981966d55ce527b7

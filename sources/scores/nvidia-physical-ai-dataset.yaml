@@ -1,0 +1,71 @@
+product: nvidia-physical-ai-dataset
+openness:
+  score: 5
+  class: open
+  components:
+    license:
+    - name: cc-by-4.0
+      detail: card metadata
+    access:
+      value: public
+      detail: ungated on the Hub
+    dataset_card:
+      value: present
+  confidence: high
+  note: Downloadable from the Hub without a sign-up, under CC BY 4.0, with a card listing each subset. Other datasets
+    in NVIDIA's Physical AI collection carry different terms.
+  raw: license:cc-by-4.0(card metadata);access:public(ungated on the Hub);dataset_card:present
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+    shows: 'Card front matter: license: cc-by-4.0; card lists every subset with its trajectory count and download
+      commands.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim?expand[]=downloads&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub API: gated false, license cc-by-4.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1591012c38cef1d12c3710395b7a35705ed434a0d0399d1ca1071c5f02ee4088
+    establishes:
+    - license
+    - availability
+adoption:
+  level: 5
+  reach: '>1M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of the GR00T X-Embodiment Sim repository. Loaders fetch its many subsets file by
+    file, so one training run can count many times.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim?expand[]=downloads&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub API: 1,267,768 downloads in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1591012c38cef1d12c3710395b7a35705ed434a0d0399d1ca1071c5f02ee4088
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: episodes and embodiments
+  value: 'About 345k simulated trajectories: 9k cross-embodied bimanual, 240k GR1 humanoid tabletop (plus a 24k
+    downsampled set), 72k single-arm Panda kitchen and 102 Unitree G1 loco-manipulation, across about five embodiments.'
+  confidence: low
+  note: The collection spans humanoids, two-armed and single-arm robots, which few datasets here do, and at hundreds
+    of thousands of trajectories it is large. It is simulated rather than recorded on real robots, and covers a
+    handful of robot bodies against Open X-Embodiment's twenty-two.
+  relative_to: agibot-world
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+    shows: 'Card: "Cross-embodied bimanual manipulation: 9k trajectories"; "Humanoid robot tabletop manipulation:
+      240k trajectories"; "Robot Arm Kitchen Manipulation: 72K trajectories"; "Unitree G1 Loco-Manipulation: 102
+      trajectories"; "used for post-training of GR00T N1".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862

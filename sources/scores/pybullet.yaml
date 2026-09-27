@@ -1,0 +1,89 @@
+product: pybullet
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: zlib
+      detail: LICENSE.txt; third-party code under Extras keeps its own terms
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: The SDK is under the zlib license, which is OSI-approved and asks only that altered versions be marked as
+    such. Bundled third-party code keeps its own terms, and no part of the product is held back.
+  raw: license:zlib(LICENSE.txt; third-party code under Extras keeps its own terms);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/bulletphysics/bullet3/HEAD/LICENSE.txt
+    shows: 'LICENSE.txt: the zlib license, applying to all files "except for the files under ''Extras'' and examples/ThirdPartyLibs",
+      which carry their own licenses.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 885cd516a8420acb7c3e0b1a7119913b686495001ae564e3229740460e8cff59
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/pybullet/json
+    shows: 'PyPI metadata for pybullet: license zlib; classifier "License :: OSI Approved :: zlib/libpng License";
+      Homepage https://github.com/bulletphysics/bullet3.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8a1f606b4c2cf434b8ebd76fb2c5857feed7e13ba185471eb43eff41818d9d2c
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/bulletphysics/bullet3/files/master
+    shows: Full listing of the master branch; third-party LICENSE files sit only under Extras/ and examples/ThirdPartyLibs/;
+      no enterprise, ee or commercial path.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 68bc0a45d44a26c02732db7ab918e96ee117756005f695ddfaab133f13765bd1
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/bulletphysics/bullet3/HEAD/README.md
+    shows: 'README: no hosted or paid edition is mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 45cc7a3aea87bfabc5d5a285266332d8d843e60f5d47669ae6849c26baf1a989
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the pybullet package, whose metadata links to the bullet3 repository.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/pybullet/recent
+    shows: 'pypistats: last_month 508,213 downloads for pybullet.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6e331f724df1ef0cbd8b98525d65e92346537bab04de086fa23064e93c14897d
+  - url: https://pypi.org/pypi/pybullet/json
+    shows: 'PyPI metadata for pybullet 3.2.7: Homepage https://github.com/bulletphysics/bullet3.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8a1f606b4c2cf434b8ebd76fb2c5857feed7e13ba185471eb43eff41818d9d2c
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: CPU rigid-body dynamics and collision with URDF loading and example RL environments; GPU support only as
+    experimental OpenCL for collision and rigid bodies; OpenGL demo rendering.
+  confidence: medium
+  note: PyBullet simulates rigid robots on the CPU and is easy to script, which made it a common first simulator
+    for reinforcement learning. Its contact modelling is simpler than MuJoCo's, GPU support never left the experimental
+    stage, and it renders only a basic viewer.
+  relative_to: robosuite
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/bulletphysics/bullet3/HEAD/README.md
+    shows: 'README: "real-time collision detection and multi-physics simulation for VR, games, visual effects, robotics,
+      machine learning"; "Requirements for experimental OpenCL GPGPU support"; examples pybullet_envs.examples.enjoy_TF_AntBulletEnv_v0
+      and deep_mimic; no ray-tracing or throughput claim.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 45cc7a3aea87bfabc5d5a285266332d8d843e60f5d47669ae6849c26baf1a989

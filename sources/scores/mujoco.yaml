@@ -1,0 +1,118 @@
+product: mujoco
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: core, MJX and MuJoCo Warp
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: no paid edition; MJX and Warp are in the open repos
+  confidence: high
+  note: The engine and both accelerator backends are Apache-2.0 in their own repositories, and nothing is held back
+    for a paid edition.
+  raw: license:Apache-2.0(core, MJX and MuJoCo Warp);source:public;core-gated:ungated(no paid edition; MJX and Warp
+    are in the open repos)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco/main/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text, with no exception clause.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/google-deepmind%2Fmujoco
+    shows: 'Repository record for google-deepmind/mujoco: license apache-2.0, archived false, fork false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8a68a4cb4cda7f27b0c568af267e1bb773bae2c6abe8c1f0179c7fb322db9d87
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/google-deepmind/mujoco/files/main
+    shows: Full listing of the main branch, 2,206 paths including the mjx/ directory; no enterprise, ee or commercial
+      path.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 68702d799bf1b7d6a1edfdca5856a3b27c2c73a10547e55888056db0583ce0ac
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco_warp/main/LICENSE
+    shows: 'mujoco_warp LICENSE: the same Apache License, Version 2.0 text.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco/main/README.md
+    shows: 'README: an engine, a GUI viewer, Python bindings and a Unity plug-in; no hosted or paid edition mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f50477192f4d3fbe21b436c83f78b0895c57e94f19ff5685e0742a259f5a8d88
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the mujoco package plus the separately published MuJoCo Warp package. A share of the core
+    figure is pulled in as a dependency by other simulators and reinforcement-learning libraries rather than chosen
+    directly.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/mujoco/recent
+    shows: 'pypistats: last_month 3,877,990 downloads for mujoco.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 68dbc63304083257c096bf592b026fdf7af8c742528f31c177204a2e2d3b78a8
+  - url: https://pypistats.org/api/packages/mujoco-warp/recent
+    shows: 'pypistats: last_month 363,577 downloads for mujoco-warp.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e77cc1899b9f084cd92ccf4d8f7411e32733effea2c44783e0a1938dd44dca72
+  - url: https://pypi.org/pypi/mujoco/json
+    shows: 'PyPI metadata for mujoco: Homepage and Repository both https://github.com/google-deepmind/mujoco.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d4c048cd8a6cb0c8e6791619cd28ee1757deab05c51cd1774ff8245d530bf03
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: Contact-rich articulated-body physics on the CPU with an OpenGL viewer; GPU-batched simulation through
+    MJX (JAX) and MuJoCo Warp (NVIDIA GPUs, rigid bodies with contact, soft bodies, cloth, signed distance fields).
+    No photorealistic or ray-traced rendering.
+  confidence: medium
+  note: 'MuJoCo is the reference contact physics engine, and with MJX and MuJoCo Warp it runs large batches of environments
+    in parallel on a GPU. It stops at physics: rendering is a plain OpenGL viewer, and there are no ready-made training
+    tasks or camera sensors that look like the real world.'
+  relative_to: isaac-lab
+  relation: two_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco/main/README.md
+    shows: 'README: "a general purpose physics engine ... fast and accurate simulation of articulated structures
+      interacting with their environment"; "interactive visualization with a native GUI, rendered in OpenGL"; no
+      ray-tracing claim.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f50477192f4d3fbe21b436c83f78b0895c57e94f19ff5685e0742a259f5a8d88
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco/main/mjx/README.md
+    shows: 'mjx/README.md: "a re-implementation of the MuJoCo physics engine in JAX" that is "API-compatible with
+      MuJoCo, but is missing some features".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c8f280404e36d048b5a3924d4f301f2dd14aea9fac9718a4659f37030d949129
+  - url: https://raw.githubusercontent.com/google-deepmind/mujoco_warp/main/README.md
+    shows: 'mujoco_warp README: "a GPU-accelerated version of the MuJoCo physics simulator, designed for NVIDIA
+      hardware"; simulates "rigid bodies with contacts to soft bodies, cloth, signed distance fields"; maintained
+      "by Google DeepMind and NVIDIA as part of the Newton project".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 37a3c8ae658e9a488f6e30dcba3ef5fc3209931dadc3140fbdd5855729e9c06c

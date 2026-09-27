@@ -1,0 +1,93 @@
+product: genesis
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: LICENSE body
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 throughout, with the renderer and compiler it builds on published in their own open repositories
+    and no paid edition.
+  raw: license:Apache-2.0(LICENSE body);source:public;core-gated:ungated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/main/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text, with no exception clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/Genesis-Embodied-AI%2Fgenesis-world
+    shows: 'Repository record for Genesis-Embodied-AI/genesis-world: license apache-2.0, archived false, fork false;
+      previous name genesis-embodied-ai/genesis.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4fd33bf3cfdba2ac77aa5ab2627c65cba846c5d8e34682fba9d358655329d884
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/Genesis-Embodied-AI/genesis-world/files/main
+    shows: Full listing of the main branch, 1,058 paths; no enterprise, ee or commercial path.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2f41053f737efd7b0fe12b0167cd7c430294f707354819d302a539f35fd975cf
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/main/README.md
+    shows: 'README: no pricing, subscription or hosted-service language; the renderer and compiler are separate
+      open repositories it links to.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d0d2206b9bbb9cf615798342f491f3405cf5576b9ab645b1bab0dc4bf21b9b01
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of genesis-world. PyPI carries no repository link for the package, but its description links
+    issues and images to this repository, so the package is the product.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/genesis-world/recent
+    shows: 'pypistats: last_month 99,572 downloads for genesis-world.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f6635595cefe83b71f5a2d9b4124a0978d9bd6b3132db6650d851e68b0573c14
+  - url: https://pypi.org/pypi/genesis-world/json
+    shows: 'PyPI metadata for genesis-world: project_urls empty; the long description links https://github.com/Genesis-Embodied-AI/genesis-world/issues.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8a9934d386909daad5d7dc4b7f30b3aa57e06f8c45d6c287f7383b58ebfd9622
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: Multi-physics (rigid, PBD cloth, smoke, IPC coupling), parallel and heterogeneous environments, Nyx photorealistic
+    renderer plus Luisa ray tracing and Pyrender, sensors from depth camera and lidar to tactile and contact force,
+    cross-vendor GPU backends. No ready-to-train task suite or sim-to-real pipeline named in the README.
+  confidence: medium
+  note: Genesis matches Isaac Lab on parallel simulation, physics breadth and rendered sensors, and goes further
+    on hardware, running on AMD, Apple and Vulkan GPUs as well as NVIDIA. Its README offers demos rather than a
+    library of ready-to-train tasks for common robots, and names no route for checking a trained policy before it
+    goes to hardware.
+  relative_to: isaac-lab
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/main/README.md
+    shows: 'README: "combines a unified multi-physics engine, a photo-realistic renderer (Nyx), and a cross-platform
+      compiler (Quadrants)"; "parallel and heterogeneous environments"; "Quadrants lowers Python kernel code to
+      CUDA, AMD ROCm, Apple Metal, Vulkan, x86, and ARM64"; sensor demos for depth camera, IMU, lidar, tactile and
+      contact force.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d0d2206b9bbb9cf615798342f491f3405cf5576b9ab645b1bab0dc4bf21b9b01

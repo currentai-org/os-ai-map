@@ -1,0 +1,94 @@
+product: octo
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+    data:
+      value: open
+      detail: the named Open X-Embodiment mixture
+    code:
+      value: open
+      detail: pretraining and fine-tuning
+    license:
+    - name: MIT
+      detail: code and checkpoints
+  confidence: high
+  note: 'Everything needed to rebuild Octo is public: MIT weights and code, the pretraining and fine-tuning scripts,
+    and a card that lists each Open X-Embodiment dataset in the training mix with its share.'
+  raw: weights:open;data:open(the named Open X-Embodiment mixture);code:open(pretraining and fine-tuning);license:MIT(code
+    and checkpoints)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/octo-models/octo/LICENSE
+    shows: 'LICENSE: MIT License, "Copyright (c) 2023 Robotic AI & Learning Lab Berkeley".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8c891a7dd06fdaa873aa011ff0b2773a3ccfe6d123f6b9a9fc589db718aec1d1
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/rail-berkeley/octo-base-1.5
+    shows: 'Hub API for rail-berkeley/octo-base-1.5: license:mit, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8e63698170009e6271f644b3a745a57b55501a1f749d4b37c031b862bbfd70e5
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/rail-berkeley/octo-base-1.5/raw/main/README.md
+    shows: 'octo-base-1.5 card: "trained on a mix of datasets from the Open X-Embodiment dataset" with the mixture
+      listed by weight (Fractal, Kuka, Bridge 17% each, BC-Z 9.1%, and more).'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0a0491b6bb70312e6b52d5131e88b9e4eb70d4e32e54053545ab9e2639a340e6
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/octo-models/octo/files/main
+    shows: 'Repository tree: scripts/train.py, scripts/finetune.py, scripts/configs/octo_pretrain_config.py.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: dc4aed0062c9c83601124b113c0ac5f11d914939d59c5ebf652a8a6b8b690bbe
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the four Octo checkpoints.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=rail-berkeley&sort=downloads&limit=50&expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub listing for rail-berkeley: octo-small-1.5 346, octo-small 153, octo-base-1.5 128, octo-base 116
+      downloads in 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6fe57c701ba2cf30ab85a34bb931f35daa2266132715e4aa8d37d91501e516b4
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Cross-embodiment diffusion policy (93M parameters for Base) trained on 800k Open X-Embodiment trajectories;
+    multiple RGB cameras, language or goal-image conditioning; fine-tunable to new observations, action spaces and
+    morphologies with small target datasets.
+  confidence: medium
+  note: Octo, like OpenVLA, learned from pooled data across many single-arm robots, and it was built to be fine-tuned
+    onto new bodies and sensors. At under a hundred million parameters it has no language-model backbone, and it
+    ships no bimanual or humanoid policy.
+  relative_to: openvla
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/octo-models/octo/README.md
+    shows: 'README: "transformer-based diffusion policies, trained on a diverse mix of 800k robot trajectories";
+      "can control various robot arms"; "effectively finetuned to robot setups with new sensory inputs, action spaces,
+      and morphologies".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 837093ee2d6ef831f3950cb36deb78dae172999a5c5be1f36530980b86c62faf
+  - url: https://huggingface.co/rail-berkeley/octo-base-1.5/raw/main/README.md
+    shows: 'Card: "The model is a Transformer with 93M parameters (equivalent to a ViT-B)".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0a0491b6bb70312e6b52d5131e88b9e4eb70d4e32e54053545ab9e2639a340e6

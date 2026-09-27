@@ -1,0 +1,86 @@
+product: maniskill
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: Apache-2.0
+      detail: code and environments
+    - name: CC-BY-NC-4.0
+      detail: the bundled assets
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: medium
+  note: The simulator and its environments are Apache-2.0, but the assets they load are CC BY-NC 4.0, so a company
+    cannot use the tasks as shipped in a commercial product without replacing the assets.
+  raw: license:Apache-2.0(code and environments)+CC-BY-NC-4.0(the bundled assets);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/mani-skill/ManiSkill/main/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/mani-skill/ManiSkill/main/README.md
+    shows: 'README license section: "All rigid body environments in ManiSkill are licensed under fully permissive
+      licenses (e.g., Apache-2.0). The assets are licensed under CC BY-NC 4.0."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 304da9c2fdf69bf8944e1293a5c1bf146c434b2e6acd7604a46b3cfbfdfac10f
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/mani-skill/ManiSkill/files/main
+    shows: Full listing of the main branch, 1,490 paths, including per-robot asset LICENSE files and LICENSE-3RD-PARTY;
+      no enterprise, ee or commercial path.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 09e9960e7af21a6605bc45dad2437266120a046e45b34d4cde76b6022af33d29
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the mani-skill package, whose metadata links to this repository under its former address.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/mani-skill/recent
+    shows: 'pypistats: last_month 24,378 downloads for mani-skill.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d17817c932d3b6e8122849f853b53b111ad30a96bbea65152721f4b0746ee183
+  - url: https://pypi.org/pypi/mani-skill/json
+    shows: 'PyPI metadata for mani-skill 3.0.1: Homepage https://github.com/haosulab/ManiSkill.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e82d29ae9169d5496fbebbd57ae7c666ada0f35eb05f2626a6155cefa851302f
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: GPU-parallel simulation and GPU-parallel rendered RGB-D and segmentation (30,000+ FPS on a 4090), heterogeneous
+    scenes per parallel environment, tasks across humanoids, mobile manipulators and single arms, real2sim evaluation
+    environments. GPU simulation on Linux with NVIDIA only.
+  confidence: medium
+  note: ManiSkill pairs GPU-parallel physics with rendered camera observations at very high frame rates, the same
+    combination Genesis offers, and adds real-to-sim environments for evaluating policies trained on real robots.
+    It has one physics engine and runs its GPU path only on NVIDIA hardware under Linux.
+  relative_to: genesis
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/mani-skill/ManiSkill/main/README.md
+    shows: 'README: "GPU parallelized visual data collection system. On the high end you can collect RGBD + Segmentation
+      data at 30,000+ FPS on a 4090 GPU"; "GPU parallelized heterogeneous simulation"; tasks cover "humanoids, mobile
+      manipulators, single-arm robots"; "Real2sim environments"; powered by SAPIEN.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 304da9c2fdf69bf8944e1293a5c1bf146c434b2e6acd7604a46b3cfbfdfac10f

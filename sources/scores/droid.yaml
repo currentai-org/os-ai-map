@@ -1,0 +1,83 @@
+product: droid
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: none
+      detail: no license in the repository or on the project page
+    access:
+      value: public
+    dataset_card:
+      value: present
+      detail: project page and paper
+  confidence: medium
+  note: The data downloads freely, but the team behind it has published no license, so there is no written permission
+    to reuse it. LeRobot's copy on the Hub carries Apache-2.0, a label the converter chose rather than one the DROID
+    authors granted.
+  raw: license:none(no license in the repository or on the project page);access:public;dataset_card:present(project
+    page and paper)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/droid-dataset/droid/files/main
+    shows: 'Repository tree, 238 files: no LICENSE, COPYING or license file of any name.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 616dc24163d16fcc89e703b7c1fc349134f90a80e4d2483b9c1740f2ce51240e
+    establishes:
+    - license
+  - url: https://droid-dataset.github.io/
+    shows: 'Project page: dataset scale, download instructions via TFDS and GCS; the word license does not appear.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 48e7283e8fa77441818ac74f833e7b2529b78ba750cd3808750fc63a45e84b20
+    establishes:
+    - license
+    - availability
+    - documentation
+  - url: https://huggingface.co/datasets/lerobot/droid_1.0.1/raw/main/README.md
+    shows: 'LeRobot''s Hub copy lerobot/droid_1.0.1: card metadata license apache-2.0, set by the converter; ungated.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3d276a23ec940ed927a580e4bc2af527f3f7bcb64b64a6261abf6746810e4f2c
+    establishes:
+    - license
+    - availability
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: Hugging Face downloads of LeRobot's conversion. Most use of DROID goes through TensorFlow Datasets and Cloud
+    Storage, which publish no counts.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/datasets/lerobot/droid_1.0.1?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub API for lerobot/droid_1.0.1: 16,522 downloads in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 927a6bb2e6e4b77ff8f31c5f435ad74ec01b41c2010abb706a7f03602b18d56f
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: episodes and embodiments
+  value: About 76k trajectories, 350 hours, 564 scenes and 86 tasks from 50 collectors, all on one Franka-based
+    platform.
+  confidence: medium
+  note: 'DROID''s strength is variety of place: 564 real scenes recorded by collectors on three continents. Every
+    trajectory comes from the same robot, though, and the collection is a tenth the size of AgiBot World''s.'
+  relative_to: agibot-world
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://droid-dataset.github.io/
+    shows: 'Project page: "76k demonstration trajectories or 350h of interaction data, collected across 564 scenes
+      and 86 tasks by 50 data collectors in North America, Asia, and Europe".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 48e7283e8fa77441818ac74f833e7b2529b78ba750cd3808750fc63a45e84b20
+  - url: https://huggingface.co/datasets/lerobot/droid_1.0.1/raw/main/README.md
+    shows: 'LeRobot''s conversion card, info.json: robot_type Franka, 95,658 episodes.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3d276a23ec940ed927a580e4bc2af527f3f7bcb64b64a6261abf6746810e4f2c

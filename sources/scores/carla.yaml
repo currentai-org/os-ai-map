@@ -1,0 +1,85 @@
+product: carla
+openness:
+  score: 3
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: CARLA code
+    - name: CC-BY
+      detail: CARLA assets, version not stated
+    source:
+      value: public
+      detail: builds against Epic's Unreal Engine, under Epic's own terms
+    core-gated:
+      value: ungated
+  confidence: medium
+  note: CARLA's own code is MIT and its maps, buildings and vehicles are under a Creative Commons attribution license.
+    The engine underneath is Epic's Unreal Engine, which has its own terms and is reached through an Epic Games
+    account.
+  raw: license:MIT(CARLA code)+CC-BY(CARLA assets, version not stated);source:public(builds against Epic's Unreal
+    Engine, under Epic's own terms);core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/carla-simulator/carla/HEAD/LICENSE
+    shows: 'LICENSE: MIT License, "Copyright (c) 2024 Computer Vision Center (CVC) at the Universitat Autonoma de
+      Barcelona (UAB)".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 41dfdc66f64b59ffb73f66ec6986ee554b97a84c3a701c20df7d5b0e6115ac68
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/carla-simulator/carla/HEAD/README.md
+    shows: 'README licenses: "CARLA specific code is distributed under the MIT License. CARLA specific assets are
+      distributed under the CC-BY License."; "Unreal Engine 5 follows its own license terms", and building needs
+      the CARLA fork of Unreal Engine reached through a linked Epic Games account.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5ef2343f8c83a4089be60064a2a5abb2e8b292f9852dd66b6971a2b9dd1212c7
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/carla-simulator/carla/files/ue5-dev
+    shows: Full listing of the ue5-dev branch, 2,219 paths; no enterprise, ee or commercial path.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4357f5ea71efe1e479431db42595612a115485810eab4ea67b869f2a75d1ae25
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the simulator's repository. The only package channel is the Python client, whose installs
+    count scripts talking to a server rather than simulators running.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/carla-simulator%2Fcarla
+    shows: 'Repository record for carla-simulator/carla: 14,434 stargazers.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9a864d6a530e1475b60ba57095bf990aff0f358f5dacbe95d37a9233b80bec50
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: Unreal Engine 5 driving simulation with configurable sensor suites and environmental conditions, open urban
+    maps and vehicles, Python API over every actor; one simulated world per server, no GPU-batched parallel environments.
+  confidence: low
+  note: CARLA renders a full city on a game engine, with camera and other sensors under changing weather and light,
+    which is what testing a driving stack needs. Each server runs a single world, so it trades the parallel throughput
+    of MuJoCo's GPU builds for visual fidelity.
+  relative_to: mujoco
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/carla-simulator/carla/HEAD/README.md
+    shows: 'README: "developed from the ground up to support development, training, and validation of autonomous
+      driving systems ... open digital assets (urban layouts, buildings, vehicles) ... supports flexible specification
+      of sensor suites and environmental conditions"; Unreal Engine 5.5 branch; recommended NVIDIA RTX 3070 or better.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5ef2343f8c83a4089be60064a2a5abb2e8b292f9852dd66b6971a2b9dd1212c7
