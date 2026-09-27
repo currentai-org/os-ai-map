@@ -54,19 +54,30 @@ scoring_recipe:
     HBM3E per Blackwell Ultra GPU; `amd-instinct-mi350`, `google-tpu-ironwood` and
     `cerebras-wse-3` at it). 4 = 1.5 to 4 PFLOPS (`aws-trainium3`, `intel-gaudi-3` one below the
     anchor; `d-matrix-corsair` at `intel-gaudi-3`). 3 = 0.4 to 1.5 PFLOPS (`tenstorrent-blackhole`,
-    `furiosa-rngd`, `sambanova-sn40l`, `qualcomm-cloud-ai-100`, each one below `intel-gaudi-3`, the
-    nearer evidenced peer). 2 = below 0.4 PFLOPS; empty in this tranche (Inferentia2's 190 TFLOPS
+    `furiosa-rngd`, `sambanova-sn40l`, `qualcomm-cloud-ai-100`, `huawei-ascend-950` and
+    `moore-threads-mtt-s5000`, each one below `intel-gaudi-3`, the nearer evidenced peer). The two
+    second-tranche rows sit near the top of the rung: the Ascend 950 at 804 TFLOPS FP8 in the
+    Atlas 350 card as sold, and 1,034 TFLOPS for the 950DT's top version in Huawei's white paper,
+    which Huawei announced for the fourth quarter of 2026 and which would not change the band; the
+    S5000 at up to 1,000 TFLOPS dense, a figure Moore Threads' annual report gives without a
+    precision, read as its 8-bit figure because FP8 is the lowest precision the report names, press
+    coverage of the same disclosure says FP8, and the product page puts the card at about
+    three-quarters of a 989 TFLOPS FP16 baseline; a 16-bit reading would imply about 2 PFLOPS at 8
+    bits, above Gaudi 3's FP8. The 989 TFLOPS on the S5000 product page is a footnoted comparator
+    baseline, dense FP16 at 3.35 TB/s, and not the S5000's own figure. 2 = below 0.4 PFLOPS; empty in this tranche (Inferentia2's 190 TFLOPS
     cFP8 would land here). 1 is unused. `ibm-spyre` abstains: IBM publishes its
     128 GB of LPDDR5 but no throughput figure. Memory decides nothing on its own; notes name it where it cuts against the
     throughput, as for Cerebras' 44 GB of on-wafer SRAM and Corsair's 2 GB of performance memory.
 
-    Distribution review (docs/reference/capability.md, "Writing the rungs"): of 11 banded
-    products, 5 holds 4 (36%) and 3 holds 4 (36%), both above a third. The wording is a number,
-    not an outcome, so it cannot be satisfied incidentally; this is the clustering case. The four
-    5s are the three frontier GPU/TPU generations and a wafer, all at or above 4.6 PFLOPS; the
-    four 3s are inference cards between 0.5 and 0.9 P(FL)OPS whose vendors publish no higher
-    figure. The 4 rung between them, which Trainium3, Gaudi 3 and Corsair sit on, keeps the two
-    clusters apart by a factor of about two in throughput on each side.
+    Distribution review (docs/reference/capability.md, "Writing the rungs"): of 13 banded
+    products (second tranche, 2026-09-27), 5 holds 4 (31%), 4 holds 3 (23%) and 3 holds 6 (46%),
+    so only 3 is above a third. The wording is a number, not an outcome, so it cannot be satisfied
+    incidentally; this is the clustering case. The four 5s are the three frontier GPU/TPU
+    generations and a wafer, all at or above 4.6 PFLOPS; the six 3s run from 0.5 to 1 P(FL)OPS
+    and are the four inference cards whose vendors publish no higher figure plus the two Chinese
+    training-and-inference parts, which reach about 1 PFLOPS at 8 bits, well short of Gaudi 3's
+    1.7. The 4 rung between them, which Trainium3, Gaudi 3 and Corsair sit on, keeps the two
+    clusters apart by a factor of about 1.6 to 1.8 in throughput on each side.
   extends: hardware
   deferred:
     google-tpu-ironwood:
@@ -109,6 +120,16 @@ scoring_recipe:
         `public`. The recorded 3/documented is the lowest pair this ladder can emit.
         `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
         them, so answering them would not change the outcome.'
+    moore-threads-mtt-s5000:
+      because: 'Moore Threads describes the S5000 on a product page and an architecture page, and
+        gives the card''s own throughput, memory and interconnect only in its 2025 annual report,
+        with no precision named; no document gives the card''s power or interfaces, the product
+        page''s only TFLOPS figures are comparator baselines, and its documentation center covers
+        the S4000 but not the S5000. So `datasheets` reads `brief`, and the chipset rung needs
+        `public`. The card is sold as modules, servers and clusters (`retail: open_market`). The
+        recorded 3/documented is the lowest pair this ladder can emit. `schematics`, `toolchain`
+        and `blobs` are unrecorded too, but no chipset rung reads them, so answering them would
+        not change the outcome.'
 products:
 - nvidia-blackwell
 - amd-instinct-mi350
@@ -121,6 +142,8 @@ products:
 - furiosa-rngd
 - sambanova-sn40l
 - qualcomm-cloud-ai-100
+- huawei-ascend-950
+- moore-threads-mtt-s5000
 - ibm-spyre
 comments: >-
   Proposed in issue #599, seeded 2026-09-26 as a sibling of edge_hardware rather than a
@@ -171,3 +194,12 @@ comments: >-
   the five rows resting on search excerpts or name-only vendor pages (`cambricon-mlu590`, `kunlunxin-p800`,
   `t-head-zhenwu-m890`, `metax-c500`, `biren-br100`) wait for a vendor specification that could
   be fetched. No row was rejected at promotion.
+
+  Second tranche promoted 2026-09-27: `huawei-ascend-950` and `moore-threads-mtt-s5000`, the
+  Chinese domestic sub-segment the head lacked. The Ascend 950's blocker cleared because Huawei
+  now publishes an Ascend 950 NPU architecture white paper with a per-version specification table
+  and an Atlas 350 specification page, and sells the card; it scores on the chipset rung. The
+  S5000's own figures are in Moore Threads' annual report rather than any datasheet, so it is
+  deferred on `datasheets: brief` like SambaNova. Moore Threads' product menu and annual report
+  still name the S5000 its flagship datacenter card; a successor swaps in when it ships. Eight
+  rows stay in the registry.

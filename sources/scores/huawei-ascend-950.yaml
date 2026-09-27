@@ -1,0 +1,111 @@
+product: huawei-ascend-950
+openness:
+  class: documented
+  score: 3
+  governing_release: Ascend 950 (the 950PR, shipping in the Atlas 350 card; the 950DT, sharing its design, announced for the
+    fourth quarter of 2026)
+  components:
+    form_factor:
+      value: chipset
+      detail: one chip design sold as the 950PR in the Atlas 350 PCIe card, with the 950DT announced for Atlas 950 SuperPoD
+        systems; scored as the silicon
+    datasheets:
+      value: public
+      detail: the Ascend 950 NPU architecture white paper with a per-SKU specification table, and the Atlas 350 technical
+        specifications page
+    retail:
+      value: open_market
+      detail: Atlas 350 card on general sale; its product page links Huawei's how-to-buy price inquiry
+  confidence: high
+  note: Huawei publishes an architecture white paper for the Ascend 950 with a full specification table for each version,
+    and sells the Atlas 350 card that carries it. The chip's design files are not published.
+  raw: form_factor:chipset(one chip design sold as the 950PR in the Atlas 350 PCIe card, with the 950DT announced for Atlas
+    950 SuperPoD systems; scored as the silicon);datasheets:public(the Ascend 950 NPU architecture white paper with a per-SKU
+    specification table, and the Atlas 350 technical specifications page);retail:open_market(Atlas 350 card on general sale;
+    its product page links Huawei's how-to-buy price inquiry)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://public-download.obs.cn-east-2.myhuaweicloud.com/ascend/%E6%98%87%E8%85%BE950%20NPU%E6%9E%B6%E6%9E%84%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf
+    shows: 'Ascend 950 NPU architecture white paper, table 3-1: "HiF8/MXFP8/FP8 (TFLOPS) 919/804 | 1034/919/804", "Memory
+      容量（GB） 128/112 | 144/96", "Memory 带宽（TB/s） 1.6/1.4 | 4"'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: ece3405e6a17fabdd462338fb94266558649a6407a2f28008403211387b3a927
+  - url: https://www.hiascend.com/hardware/accelerator-card
+    shows: 'Atlas 350 technical specifications: "扩高*全长*双宽（OH FL DW） PCIe标卡形态", "804 TFLOPS mxFP8/HiF8/mxFP6/INT8", "112 GB
+      HBM，带宽1.4TB/s", "PCIe 5.0 x16", "最大功耗 ≤600W"; a "项目咨询" link to e.huawei.com/cn/how-to-buy/get-price-info'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    - form_factor
+    - retail
+    http_status: 200
+    content_sha256: efd80e1a2390e755a13e60cdc119d66a141dd342713691dfcde0ded48b34f897
+  - url: https://www.huawei.com/en/news/2025/9/hc-xu-keynote-speech
+    shows: 'Huawei Connect keynote: "The Ascend 950PR and Ascend 950DT chips will use the same Ascend 950 Die"; the 950PR
+      "will support two product form factors at first: computing cards and SuperPoD servers"; "The Ascend 950DT chip will
+      be available in the fourth quarter of 2026"'
+    accessed: '2026-09-27'
+    establishes:
+    - form_factor
+    http_status: 200
+    content_sha256: a57b4650934cc2d2a65746fce02adca32078cade4bcb49e6f558d143e0525d63
+  - url: https://www.ithome.com/0/931/355.htm
+    shows: 'IT之家: Huawei vice president Ma Haixu "宣布搭载全新昇腾 950PR（Ascend 950PR）处理器的 Atlas 350 加速卡正式上市"; "作为昇腾 950 代际首款上市的硬件产品"'
+    accessed: '2026-09-27'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: dfb8b1ff75fb8b12397db57c5050e6e2002ac3e3d450c6692326bc5f8847fe13
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Huawei publishes no unit shipments or installed base for this generation.
+    Cloud listings and benchmark submissions cover only part of this category and do not measure use, so the map leaves adoption
+    unscored.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.hiascend.com/hardware/accelerator-card
+    shows: The Atlas 350 product page, read for a usage disclosure; it states none.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: efd80e1a2390e755a13e60cdc119d66a141dd342713691dfcde0ded48b34f897
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 804 TFLOPS FP8/MXFP8/HiF8 and 804 TOPS INT8, 425 TFLOPS BF16, 112 GB HBM at 1.4 TB/s, up to 600 W (Atlas 350, 950PR);
+    up to 1,034 TFLOPS FP8 with 144 GB at 4 TB/s for the 950DT
+  confidence: medium
+  relative_to: intel-gaudi-3
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf
+      shows: 'Gaudi 3 white paper: "1.8 PFlops of FP8 and BF16 compute, 128 GB of HBM2e memory capacity, and 3.7 TB/s"; table
+        "FP8 MME TFLOPS 865 1678"'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: cecab8cf5e553e81a11c06256e949570625ef3b1a5f440765ee8b3a847d5816e
+  note: The Atlas 350 card delivers about 0.8 PFLOPS of 8-bit compute with 112 GB of HBM, under half of Gaudi 3's FP8 throughput
+    with less memory. The 950DT's top version, about 1 PFLOPS with 144 GB, still stays near three-fifths of Gaudi 3.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.hiascend.com/hardware/accelerator-card
+    shows: 'Atlas 350 specifications: "1561 TFLOPS mxFP4", "804 TFLOPS mxFP8/HiF8/mxFP6/INT8", "425 TFLOPS FP16/BF16", "112
+      GB HBM，带宽1.4TB/s", "最大功耗 ≤600W"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: efd80e1a2390e755a13e60cdc119d66a141dd342713691dfcde0ded48b34f897
+  - url: https://public-download.obs.cn-east-2.myhuaweicloud.com/ascend/%E6%98%87%E8%85%BE950%20NPU%E6%9E%B6%E6%9E%84%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf
+    shows: 'White paper table 3-1, 昇腾 950PR | 昇腾 950DT: "HiF8/MXFP8/FP8 (TFLOPS) 919/804 | 1034/919/804", "BF16/FP16 (TFLOPS)
+      486/425 | 547/486/425", "Memory 容量（GB） 128/112 | 144/96"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ece3405e6a17fabdd462338fb94266558649a6407a2f28008403211387b3a927

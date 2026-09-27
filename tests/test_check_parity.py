@@ -353,7 +353,13 @@ def test_local_scores_matches_check_rubrics_split():
     # code, but Habitat-Lab distributes its Matterport3D- and Gibson-based task datasets and trained
     # models under CC BY-NC-SA 3.0 US, a name the software tiers do not carry: the maniskill
     # question, recorded rather than hand-closed, and closing on the same ruling.
-    assert len(deferred) == 38
+    #
+    # 38 -> 39 with the datacenter_accelerators second tranche. `moore-threads-mtt-s5000` is not a
+    # license gap: the hardware chipset rung needs `datasheets: public`, and Moore Threads gives
+    # the card's own figures only in its annual report, so it reads `brief`, as SambaNova's SN40L
+    # does. It closes on a published datasheet or on a ruling on how thin vendor documentation is
+    # read, not on a tier. `huawei-ascend-950`, promoted beside it, computes on that rung.
+    assert len(deferred) == 39
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
