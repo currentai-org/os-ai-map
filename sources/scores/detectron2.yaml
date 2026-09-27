@@ -1,0 +1,123 @@
+product: detectron2
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; code
+    source:
+      value: public
+      detail: github.com/facebookresearch/detectron2
+    core-gated:
+      value: ungated
+      detail: Meta research library; nothing sold
+    context:
+      model-zoo-terms:
+        value: CC-BY-SA-3.0
+        detail: optional model-zoo weights; they do not govern the Apache-2.0 framework
+  confidence: high
+  note: The code is Apache-2.0 and builds from the public repository; Meta sells nothing around it. The
+    model-zoo weights are licensed separately under Creative Commons Attribution-ShareAlike 3.0. The last
+    tagged release was v0.6 in November 2021, though the repository is still updated.
+  raw: license:Apache-2.0(OSI; code);source:public(github.com/facebookresearch/detectron2);core-gated:ungated(Meta
+    research library; nothing sold);model-zoo-terms:CC-BY-SA-3.0(optional model-zoo weights; they do not
+    govern the Apache-2.0 framework)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/detectron2/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ceb78ee847e76f67a6a521a5732dc3373aed07eee003d738a572dc96705f08ff
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/detectron2/main/README.md
+    shows: 'README: "Detectron2 is Facebook AI Research''s next generation library that provides state-of-the-art
+      detection and segmentation algorithms."; no paid tier mentioned.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 54df9b531f3507801a27973f8f2f904375716036d9869424ccacd033e8889cc3
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/facebookresearch/detectron2/main/MODEL_ZOO.md
+    shows: 'MODEL_ZOO: "All models available for download through this document are licensed under the
+      Creative Commons Attribution-ShareAlike 3.0 license."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: be14e51d7309c862c0a66fd73be8de1121050009aba8d4ed08886c981491d1f1
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/facebookresearch/detectron2/releases
+    shows: Latest release v0.6, published 2021-11-15.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 11f349f32ce4e7e1339bf79518e416394c651b8e2709e60f98dfc907d67c6573
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/facebookresearch/detectron2/files/main
+    shows: Repository tree with no ee, enterprise, commercial or pro directory; training scripts tools/train_net.py,
+      plain_train_net.py and lazyconfig_train_net.py.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1af64aa03a273799de372f6d2ad3c0d8e6ac43b6d71f1bfa01cb1cdbe7ced6f4
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars are the only usable signal, because Detectron2 is not published on PyPI - the name
+    is registered with no files - and installs from source or from Meta's own wheel host, which publishes
+    no counts. A star is not a use, and the stars scale stops at 3.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/facebookresearch/detectron2
+    shows: 'Repository record for facebookresearch/detectron2: 34,734 stars, last pushed 2026-08-19.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b48934d56b4da66c0cdbadb3b0f5368a2d5ff783ce1412d908e2796eb3a8508f
+  - url: https://pypi.org/simple/detectron2/
+    shows: The PyPI simple index for detectron2 lists no distribution files.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fdb6b2030df2126c283775b845ba2729fd8981efc5e302f152932e73e871aea2
+  - url: https://detectron2.readthedocs.io/en/latest/tutorials/install.html
+    shows: 'Install guide: build from source with "python -m pip install ''git+https://github.com/facebookresearch/detectron2.git''",
+      or "Install Pre-Built Detectron2 (Linux only)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4736b8db35552521b1ec2b3b333c4a85693d47400bfe02ed64eec0a458a6dc95
+capability:
+  score: 3
+  basis: feature_matrix
+  value: detection, instance, panoptic and keypoint segmentation and DensePose models (Faster R-CNN, Mask
+    R-CNN, RetinaNet, Cascade R-CNN, Panoptic FPN and others) with a model zoo of COCO, LVIS, Cityscapes
+    and VOC baselines and a training framework for custom datasets
+  relative_to: timm
+  relation: at
+  confidence: high
+  note: Detectron2 is a model zoo with the training framework around it, for detection and segmentation
+    where timm covers image backbones. Its baselines predict the benchmark classes they were trained on,
+    so a new label set needs a training run.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://huggingface.co/docs/timm/index
+      shows: 'timm docs: "timm is a library containing SOTA computer vision models ... and training/evaluation
+        scripts. It comes packaged with >700 pretrained models" - the model-zoo scope Detectron2 is compared
+        at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 94d76d71fe5e214675613e63fe038ca615a4482b2f4bc8269da6f6413a10845b
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/detectron2/main/MODEL_ZOO.md
+    shows: 'MODEL_ZOO: "a large collection of baselines trained with detectron2 in Sep-Oct, 2019"; sections
+      for COCO object detection, instance segmentation, person keypoint detection, panoptic segmentation,
+      LVIS, Cityscapes and Pascal VOC baselines.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: be14e51d7309c862c0a66fd73be8de1121050009aba8d4ed08886c981491d1f1

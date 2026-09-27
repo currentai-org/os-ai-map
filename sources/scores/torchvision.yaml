@@ -1,0 +1,101 @@
+product: torchvision
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI; code
+    source:
+      value: public
+      detail: github.com/pytorch/vision
+    core-gated:
+      value: ungated
+      detail: PyTorch Foundation project; technical and business governance kept separate
+  confidence: high
+  note: The library is BSD-3-Clause, builds from the public repository and is governed as part of PyTorch
+    under the PyTorch Foundation. Its pretrained weights can carry their own terms from the data they
+    were trained on, and the SWAG weights are non-commercial; they are optional downloads, not the library.
+  raw: license:BSD-3-Clause(OSI; code);source:public(github.com/pytorch/vision);core-gated:ungated(PyTorch
+    Foundation project; technical and business governance kept separate)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/pytorch/vision/main/LICENSE
+    shows: LICENSE is the "BSD 3-Clause License", "Copyright (c) Soumith Chintala 2016".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6502f676851cfe25f8af75531dfb32375b7325b73c37e7b43741fa422893e71d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pytorch/vision/main/README.md
+    shows: 'README: "The torchvision package consists of popular datasets, model architectures, and common
+      image transformations for computer vision."; "The pre-trained models provided in this library may
+      have their own licenses or terms and conditions derived from the dataset used for training"; "SWAG
+      models are released under the CC-BY-NC 4.0 license."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8b5e67f5426f2f28e3f15f546d8624f367f7998a0994fc1b274029257fa2649d
+    establishes:
+    - license
+    - source
+  - url: https://docs.pytorch.org/docs/2.14/community/governance.html
+    shows: 'PyTorch governance: the project "clearly separates technical governance from business governance";
+      "Technical governance is strictly separated from business governance."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5bbe9797d47457cd4eb46957fec0dbdc6b6dd51fa006606afaaaaedc37463aeb
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/pytorch/vision/files/main
+    shows: Repository tree of 707 paths with no ee, enterprise, commercial or pro directory; training
+      scripts under references/.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 259927ddef3d21f199ca0c917d5352f4eaeacdbf6b4d5c4351fafa285b04d18f
+    establishes:
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of torchvision. Many of them come from installing it alongside
+    PyTorch rather than from choosing it, so the figure overstates deliberate use.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/torchvision/recent
+    shows: last_month 15,814,091 downloads of torchvision
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a8413287eb77620131c78fd11896eefc3c7c0a5e3ec9552b6fdd75d9257d47ae
+capability:
+  score: 3
+  basis: feature_matrix
+  value: model architectures with pretrained weights for classification, quantized classification, semantic
+    segmentation, detection, instance segmentation, keypoint detection, video classification and optical
+    flow, plus datasets, transforms, vision operators and reference training scripts
+  relative_to: timm
+  relation: at
+  confidence: high
+  note: torchvision is a model zoo with the datasets, transforms and training recipes to fine-tune it,
+    like timm, whose catalog of image backbones is larger. Its pretrained models predict the classes of
+    the benchmarks they were trained on, so a new task still means a training run.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://huggingface.co/docs/timm/index
+      shows: 'timm docs: "timm is a library containing SOTA computer vision models, layers, utilities,
+        optimizers, schedulers, data-loaders, augmentations, and training/evaluation scripts. It comes
+        packaged with >700 pretrained models" - the model-zoo scope torchvision is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 94d76d71fe5e214675613e63fe038ca615a4482b2f4bc8269da6f6413a10845b
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.pytorch.org/vision/stable/models.html
+    shows: 'Models page: "TorchVision offers pre-trained weights for every provided architecture"; sections
+      for classification, quantized models, semantic segmentation, object detection, instance segmentation,
+      keypoint detection, video classification and optical flow.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6b18dadd8346ca8cfa577f3907f0176eca20aeb2b81e4a6a41ce1c7c64117eb1

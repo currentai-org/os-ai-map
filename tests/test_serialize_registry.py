@@ -322,6 +322,13 @@ SPEECH_MODEL_PACKAGES = {
     "f5-tts": "f5-tts",
     "voxcpm": "voxcpm",
     "moshi": "moshi",
+    # The second speech_audio tranche: the same decision, one more model.
+    "omnivoice": "omnivoice",
+}
+
+VISION_MODEL_PACKAGES = {
+    "depth-anything": "depth-anything-3",
+    "segment-anything": "sam3",
 }
 
 
@@ -346,7 +353,16 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     The speech_audio promotion adds seven, all one decision: an open speech model's inference
     package (kokoro, chatterbox-tts, qwen-asr, qwen-tts, f5-tts, voxcpm, moshi) loads its weights
     from the Hub repositories the product declares, so its installs are already inside those
-    repositories' downloads and the model bands on the Hub, the unit its ladder declares."""
+    repositories' downloads and the model bands on the Hub, the unit its ladder declares. The
+    second speech_audio tranche adds omnivoice on the same decision.
+
+    zkml (the assurance_evidence second tranche) is the next: its only crates.io release is a
+    one-file binary placeholder that does not contain the prover, which is installed by building
+    the repository, so crate downloads count nobody who runs it and it bands on stars.
+
+    The classic_ml_cv second tranche adds two more of the speech models' decision: `depth-anything-3`
+    and `sam3` install the inference code for Depth Anything 3 and SAM 3, which fetch the checkpoints
+    the products declare on the Hub, so both model lines band on the Hub."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -363,9 +379,10 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("milvus", "pypi", "pymilvus"),
         ("langtrace", "pypi", "langtrace-python-sdk"),
         ("carla", "pypi", "carla"),
+        ("zkml", "crates", "zkml"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS} | {
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
-    }
+    } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()}
 
 
 def test_real_sources_serialize_without_structural_errors():

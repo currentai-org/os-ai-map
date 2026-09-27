@@ -1,0 +1,114 @@
+product: granite-speech
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors and GGUF checkpoints on the Hub, ungated
+    data:
+      value: partial
+      detail: third-party public corpora named in each card, plus synthetic sets that are not released
+    code:
+      value: partial
+      detail: fine-tuning notebooks and inference; no training pipeline
+    license:
+    - name: Apache-2.0
+      detail: granite-speech-5.0-470m-turboctc and every 3.x and 4.x checkpoint
+    context:
+      substitutable-variant:
+        value: granite-speech-5.0-470m-turboctc-nc
+        detail: the same 470M architecture trained with GigaSpeech and SPGISpeech added, under CC-BY-NC-SA-4.0; its card
+          points commercial users to the Apache-2.0 model, which fully substitutes for it, so it does not set the score
+  governing_release: granite-speech-5.0 (470m-turboctc)
+  confidence: medium
+  note: IBM's current Granite Speech 5.0 model and every earlier checkpoint are Apache-2.0 and download freely. The training
+    data are public corpora plus synthetic sets IBM has not released, and only fine-tuning notebooks are published. A
+    non-commercial 5.0 variant exists, but it is the same model trained on more data and IBM points commercial users
+    to the Apache-2.0 one.
+  raw: weights:open(safetensors and GGUF checkpoints on the Hub, ungated);data:partial(third-party public corpora named
+    in each card, plus synthetic sets that are not released);code:partial(fine-tuning notebooks and inference; no training
+    pipeline);license:Apache-2.0(granite-speech-5.0-470m-turboctc and every 3.x and 4.x checkpoint);substitutable-variant:granite-speech-5.0-470m-turboctc-nc(the
+    same 470M architecture trained with GigaSpeech and SPGISpeech added, under CC-BY-NC-SA-4.0; its card points commercial
+    users to the Apache-2.0 model, which fully substitutes for it, so it does not set the score)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=ibm-granite&search=speech&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Family listing: eleven ibm-granite speech repositories tagged "license:apache-2.0" and granite-speech-5.0-470m-turboctc-nc
+      tagged "license:cc-by-nc-sa-4.0", all ungated.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 277e3f77871b7114cbff58bfa74cedd6ecc82143eed3568c7dfe1174e0afc93e
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc/raw/main/README.md
+    shows: 'Card: "Granite Speech 5.0 TurboCTC is a compact 470 million parameter English ASR model"; "It was trained
+      on approximately 60,000 hours of English audio from public corpora"; "Our training data is entirely comprised of
+      publicly available datasets or of synthetic data generated from public corpora".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc346dd8fed3b66303a112957bb35e0186913bf7f431af26058390dd69a93195
+    establishes:
+    - data
+    - license
+  - url: https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc-nc/raw/main/README.md
+    shows: 'Card: "This model is intended for research and non-commercial use-only. See [Granite Speech 5.0 Turbo CTC](https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc)
+      if interested in commercial use."; "It was trained on approximately 75,000 hours of English audio from public corpora".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a942cf3f7b64d0abca8088d1dfbf6f2858b956463727dd02fab1391674ac262e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ibm-granite/granite-speech-models/main/notebooks/finetune_granite_speech_5_turboctc.ipynb
+    shows: Fine-tuning notebook for Granite Speech 5.0 TurboCTC in the code repository.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 398b3057b7c04532802fe55ea945a757e03b9d3e6c6ca21ecce966ccc82eafbf
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/ibm-granite/granite-speech-models/main/README.md
+    shows: 'README: "**License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 782c8594307ac8f8b1d299749b71f391aa7bc815778c6ba10604ba1deb9f5b50
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the five declared checkpoints, led by the multilingual 4.1 models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=ibm-granite&search=speech&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: granite-speech-4.1-2b 154,165, 4.1-2b-plus 112,757, 4.1-2b-nar 82,910, 3.3-2b
+      71,840, 5.0-470m-turboctc 52,451.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 277e3f77871b7114cbff58bfa74cedd6ecc82143eed3568c7dfe1174e0afc93e
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: ibm-granite/granite-speech-4.1-2b ranks 20th of 71 at 4.62% average WER; granite-speech-5.0-470m-turboctc ranks
+    36th at 5.04%.
+  confidence: medium
+  note: Among the most accurate open recognizers on the English board, a step below Qwen3-ASR, and the 4.1 models add
+    speech translation across six languages.
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "ibm-granite/granite-speech-4.1-2b,4.615" and "ibm-granite/granite-speech-5.0-470m-turboctc,5.04375".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://huggingface.co/ibm-granite/granite-speech-4.1-2b/raw/main/README.md
+    shows: 'Card: "specifically designed for multilingual automatic speech recognition (ASR) and bidirectional automatic
+      speech translation (AST)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b19000f47a92d898443500096858d1f0dbf1faa00ddcb642be98e5eac83179e9

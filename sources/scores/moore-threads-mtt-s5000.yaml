@@ -1,0 +1,116 @@
+product: moore-threads-mtt-s5000
+openness:
+  class: documented
+  score: 3
+  governing_release: MTT S5000 (PingHu architecture, PH100 chip)
+  components:
+    form_factor:
+      value: chipset
+      detail: PH100 GPU sold as OAM modules, in eight-GPU SGX5000 servers and in KUAE clusters; scored as the silicon
+    datasheets:
+      value: brief
+      detail: product and architecture pages and the annual report; no datasheet giving the card's power, interfaces or the
+        precision of its throughput figure
+    retail:
+      value: open_market
+      detail: sold as modules, servers and clusters through direct sales and distributors, per the annual report
+  confidence: medium
+  note: Moore Threads describes the S5000 on product and architecture pages and gives its throughput and memory in its annual
+    report, but publishes no datasheet with the card's power or interfaces. It sells the card in modules, servers and clusters.
+    This score is provisional until the map settles how thin vendor documentation is read.
+  raw: form_factor:chipset(PH100 GPU sold as OAM modules, in eight-GPU SGX5000 servers and in KUAE clusters; scored as the
+    silicon);datasheets:brief(product and architecture pages and the annual report; no datasheet giving the card's power,
+    interfaces or the precision of its throughput figure);retail:open_market(sold as modules, servers and clusters through
+    direct sales and distributors, per the annual report)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://en.mthreads.com/product/S5000
+    shows: 'MTT S5000 product page: OAM compute modules in liquid- and air-cooled versions, the "MTT MGX 8-GPU" platform and
+      the "MTT SGX5000 Server"; the only TFLOPS figures are footnoted baselines, "① Baseline 1: Dense FP16 compute 989 TFLOPs,
+      memory bandwidth 3.35 TB/s"'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    - form_factor
+    - retail
+    http_status: 200
+    content_sha256: d7675ba434c3fc2b36dcc7fe4100b58f3b542b07ff9ceb87cb3945e2af4f7b41
+  - url: https://docs.mthreads.com/
+    shows: 'Moore Threads documentation center: product documentation listed for the MTT S3000 and MTT S4000 under 智算中心计算卡产品;
+      the S5000 appears only in software tutorials'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 8e062af16fca0573c93dec4763f3253e0cae1a2031d2396dfa419abdebb4c999
+  - url: https://www.mthreads.com/architecture/pinghu
+    shows: '"平湖"架构 page: tensor, memory and communication engines (TCE, TME, ACE), "60MB 高容量的 Last Level Cache（LLC）" and MTLink
+      "7 倍带宽提升", with no throughput, memory capacity, power or interface figure for the card'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: b30ba240d9b47bd4a600c60774331e0b8b3f4153e350cf718061a1e285ca8862
+  - url: https://pdf.dfcfw.com/pdf/H2_AN202604261821587780_1.pdf
+    shows: '2025 annual report: "采用公司全新一代“平湖”芯片架构的MTTS5000 及相关产品实现大规模商业化落地"; "公司采用直销与经销并存的销售模式…直销收入的占比为72.86%，经销收入的占比为27.14%"'
+    accessed: '2026-09-27'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: 0471768febdf06421315284e1fc03b8d9a8da9c7f03be38ac7ab4d6a2a525586
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Moore Threads publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use, so the map
+    leaves adoption unscored.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pdf.dfcfw.com/pdf/H2_AN202604261821587780_1.pdf
+    shows: 'The 2025 annual report, read for a usage disclosure: it reports a ten-thousand-GPU KUAE cluster in service, but
+      no unit shipments.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0471768febdf06421315284e1fc03b8d9a8da9c7f03be38ac7ab4d6a2a525586
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own filing
+  value: up to 1,000 TFLOPS dense AI compute per card (precision not named by the vendor; press reports it as FP8), 80 GB
+    at 1.6 TB/s, about 800 GB/s card-to-card
+  confidence: medium
+  relative_to: intel-gaudi-3
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://cdrdv2-public.intel.com/817486/gaudi-3-ai-accelerator-white-paper.pdf
+      shows: 'Gaudi 3 white paper: "1.8 PFlops of FP8 and BF16 compute, 128 GB of HBM2e memory capacity, and 3.7 TB/s"; table
+        "FP8 MME TFLOPS 865 1678"'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: cecab8cf5e553e81a11c06256e949570625ef3b1a5f440765ee8b3a847d5816e
+  note: Moore Threads rates the S5000 at up to 1 PFLOPS of dense AI compute, without naming the precision, with 80 GB of memory,
+    and puts it at about three-quarters of a 989 TFLOPS FP16 baseline. Read as its 8-bit figure, that is about three-fifths
+    of Gaudi 3's FP8 throughput with under two-thirds of its memory.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pdf.dfcfw.com/pdf/H2_AN202604261821587780_1.pdf
+    shows: '2025 annual report: "MTTS5000 不仅提供从FP8 到FP64 的全精度算力支持，其单卡AI（稠密）算力高达1,000TFLOPS，并配备80GB 超大显存、1.6TB/s 显存带宽及约800GB/s
+      的高速卡间互联带宽"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0471768febdf06421315284e1fc03b8d9a8da9c7f03be38ac7ab4d6a2a525586
+  - url: https://finance.sina.com.cn/tech/roll/2026-02-12/doc-inhmpkar4117688.shtml
+    shows: '新浪科技: "MTT S5000的单卡FP8 AI算力最高可达1000 TFLOPS"; "单卡配备多达80GB显存，显存带宽高达1.6TB/s"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: da657a9d440b67b491fa60573925345a3e0772c6b3f344df78c7d75b56b24842
+  - url: https://en.mthreads.com/product/S5000
+    shows: 'Product page: "MTT S5000 achieves over 74% of the performance of leading international flagship products ①"; footnote
+      "① Baseline 1: Dense FP16 compute 989 TFLOPs, memory bandwidth 3.35 TB/s", the comparator rather than the S5000'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d7675ba434c3fc2b36dcc7fe4100b58f3b542b07ff9ceb87cb3945e2af4f7b41

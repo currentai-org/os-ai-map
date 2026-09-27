@@ -1,0 +1,131 @@
+product: lfm-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: lfm2.5-vl
+  components:
+    weights:
+      value: open
+      detail: model.safetensors on the Hub for every LFM2.5-VL size, ungated
+    data:
+      value: described
+      detail: the release post describes a mixture of curated and synthetic caption, OCR, grounding and instruction data;
+        nothing is published
+    code:
+      value: partial
+      detail: LoRA fine-tuning notebooks in the Liquid4All cookbook; no training code
+    license:
+    - name: LFM-Open-License-1.0
+      detail: Apache-2.0-based; commercial use is licensed only to entities below USD 10 million annual revenue, above which
+        a commercial license must be bought
+  confidence: high
+  note: LFM2.5-VL's weights can be used commercially by companies with under 10 million dollars in annual revenue; larger
+    companies need a paid license from Liquid AI. Liquid publishes fine-tuning notebooks but neither its training data nor
+    its training code.
+  raw: weights:open(model.safetensors on the Hub for every LFM2.5-VL size, ungated);data:described(the release post describes
+    a mixture of curated and synthetic caption, OCR, grounding and instruction data; nothing is published);code:partial(LoRA
+    fine-tuning notebooks in the Liquid4All cookbook; no training code);license:LFM-Open-License-1.0(Apache-2.0-based; commercial
+    use is licensed only to entities below USD 10 million annual revenue, above which a commercial license must be bought)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/LiquidAI/LFM2.5-VL-3B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for LFM2.5-VL-3B: gated false, model.safetensors and LICENSE, license other, license_name lfm1.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ae95efe21acd0a7ae2e3ee3e94680108caa45a20a645ad1226bcb5d1925e90bd
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/LiquidAI/LFM2.5-VL-1.6B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for LFM2.5-VL-1.6B: gated false, model.safetensors and LICENSE, license_name lfm1.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4d556df59b7f1e6696c40b60e77e1fed6d961f3a14f8065d1e9d7dd4e286c793
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=LiquidAI&search=VL&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=lastModified&expand[]=cardData&expand[]=gated
+    shows: All 31 LiquidAI VL checkpoints carry license other with license_name lfm1.0, none gated
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cb801d6d82a4c7ea88f396d373f1e4855ac0ca07e01f066f3ad49a0f468fde27
+    establishes:
+    - license
+  - url: https://huggingface.co/LiquidAI/LFM2.5-VL-3B/raw/main/LICENSE
+    shows: 'LFM Open License v1.0: "\"Threshold\" shall mean annual revenue of 10 million United States dollars ($10,000,000)
+      or more"; "Any Commercial Use of the Work or a Derivative Work by a Legal Entity that exceeds the Threshold is not licensed
+      under this Agreement"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 30adf9d6478191fb87f2424f63ba0728598335aaf99cd2848ef17e8e545fe94b
+    establishes:
+    - license
+  - url: https://www.liquid.ai/lfm-license
+    shows: '"Once you cross the revenue threshold, you must contact Liquid AI, Inc. to purchase a commercial license to continue
+      using the model"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d44239fa98c14b4cbdf79bc0e8b94bc03294603400ddec1860b463bf2793fbfd
+    establishes:
+    - license
+  - url: https://www.liquid.ai/blog/lfm2-5-vl-3b
+    shows: '"Today, we release LFM2.5-VL-3B, our most capable vision-language model"; "a large mixture of curated and synthetic
+      image-caption, OCR, grounding, and instruction following data"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 86bf7f6db6aecef09e79627741ddacec38af8eb449ab9fc48b76d7f76836243d
+    establishes:
+    - data
+  - url: https://huggingface.co/LiquidAI/LFM2.5-VL-3B/raw/main/README.md
+    shows: 'Fine-tuning table: "SFT (Unsloth)" and "SFT (TRL)", LoRA notebooks; no training code linked'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7453c0e9cde760baccb06ef2fb4ac15d63c61ad4cfff6831d337d4a530a250ad
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Liquid AI's LFM2-VL and LFM2.5-VL checkpoints, including
+    its own GGUF, ONNX and MLX builds. More than a third of it is those quantized builds, which suit local apps.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=LiquidAI&search=VL&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=lastModified&expand[]=cardData&expand[]=gated
+    shows: Thirty-one LiquidAI VL checkpoints with 308,517 downloads in the trailing 30 days, 116,217 of them GGUF, ONNX and
+      MLX builds; LFM2-VL-1.6B 83,372
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cb801d6d82a4c7ea88f396d373f1e4855ac0ca07e01f066f3ad49a0f468fde27
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: multi-image, OCR, documents, grounding and screen understanding from the LFM2.5-VL cards; no video benchmark
+  value: 'Text and images in, including multi-image; full-page OCR with layout, grounding, tool use. LFM2.5-VL-3B: MMStar
+    63.3, ChartQA 81.3, OCRBench 84.2, MuirBench 58.3, ScreenSpot-v2 80.7.'
+  confidence: medium
+  relative_to: moondream
+  relation: at
+  note: LFM2.5-VL reads full pages, charts and screens and answers over several images, and the 3B model reports strong chart
+    and OCR results for its size. Liquid demonstrates video captioning but reports no video benchmark, so it sits level with
+    Moondream rather than with MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/LiquidAI/LFM2.5-VL-3B/raw/main/README.md
+    shows: '"LFM2.5-VL-3B significantly improves over LFM2-VL-3B in screen understanding, grounding, multi-image input, and
+      tool use"; "Full page OCR with layout annotation"; MMStar 63.3, ChartQA 81.3, MuirBench 58.3, ScreenSpot-v2 80.7'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7453c0e9cde760baccb06ef2fb4ac15d63c61ad4cfff6831d337d4a530a250ad
+  - url: https://huggingface.co/LiquidAI/LFM2.5-VL-1.6B/raw/main/README.md
+    shows: '"improved results on multi-image inputs, high-resolution images, and OCR"; a real-time video stream captioning
+      WebGPU demo; no video benchmark'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 689fa5c3561dcb0b0683fa2d61c0e29dc0d5952a8f374402a2c1a1c15a206dac
+  - url: https://www.liquid.ai/blog/lfm2-5-vl-3b
+    shows: OCRBench v1 84.2; latency quoted "on a 5-frame video clip"; no video benchmark reported
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 86bf7f6db6aecef09e79627741ddacec38af8eb449ab9fc48b76d7f76836243d

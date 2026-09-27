@@ -3,12 +3,12 @@ display_name: Assurance & compliance evidence
 description: 'Tools whose main output is machine-readable evidence about an AI system, model, dataset or
   generated content, produced for a party outside the operating team: an auditor, a regulator, an acquirer
   or a downstream deployer.'
-strapline: 'The tools that produce evidence about AI systems are mostly open source, but most of the evidence
-  they produce is self-attested. Documentation generators, compliance-as-code tools, watermark detectors and
-  the closed governance suites from IBM and Credo AI hand a reader records to take on trust or to validate
-  only for form. Signing, tamper-evident logs, GPU attestation and zero-knowledge proofs let a third party
-  check without the operator, and the two provers, EZKL and DeepProve, are the least open products here: one
-  grants no license, the other permits evaluation only.'
+strapline: The tools that produce evidence about AI systems are mostly open source, but most of the evidence
+  they produce is self-attested. Documentation generators, compliance-as-code tools and watermark detectors
+  hand a reader records to take on trust or to validate only for form, and so do the closed governance suites
+  from IBM and Credo AI, the least open products here. Signing, tamper-evident logs, GPU attestation and zero-knowledge
+  proofs let a third party check without the operator. Two of the three provers, EZKL and DeepProve, publish
+  their source without an open license; the open one, ZKML, was last pushed in May 2024.
 weights:
   adopt: 0.4
   cap: 0.6
@@ -16,6 +16,7 @@ products:
 - nvtrust
 - ezkl
 - deepprove
+- zkml
 - c2pa-sdk
 - model-signing
 - halo-record
@@ -41,42 +42,43 @@ scoring_recipe:
     method: shared software ladder, checked against the hand-recorded scores of the first tranche
     checker: build/check_rubric.py
   note: "Capability here is ONE quantity: how independently a third party can check the evidence a\ntool produces,\
-    \ without trusting the operator who produced it. Banded 2026-09-26 against the\nfirst 21 promoted products.\
-    \ nvtrust is the top anchor; every other band records relative_to\nnvtrust, or compliance-trestle for the\
-    \ bottom rung, so check_capability holds the arithmetic.\n\n  5  VERIFIES THE EXECUTION. Hardware attestation\
-    \ or a cryptographic proof binds the evidence\n     to the computation that ran: GPU attestation signed\
-    \ by the device (nvtrust) and\n     zero-knowledge proofs of inference (ezkl, deepprove). Trust moves to\
-    \ the hardware vendor\n     or the proof system, never the operator.\n  4  SIGNED OR TAMPER-EVIDENT. A\
-    \ signature, or a hash chain anchored to a witness or timestamp\n     authority the operator does not control,\
-    \ lets a third party confirm offline that the\n     evidence is unaltered and who issued or checkpointed\
-    \ it, but not that what it asserts is\n     true (model-signing, c2pa-sdk, halo-record). halo-record reaches\
-    \ this rung through its\n     witness and RFC 3161 anchoring; its bare chain alone would not.\n  3  STANDARD\
-    \ FORMAT, CHECKABLE WITHOUT THE OPERATOR. The evidence follows a published schema\n     or an open decoding\
-    \ method, so anyone can validate or read it with independent tooling;\n     its content is still the operator's\
-    \ claim and signing is not the product's normal output\n     (compliance-trestle's detached DSSE signing\
-    \ is a beta command) (compliance-trestle OSCAL,\n     croissant, owasp-aibom-generator CycloneDX, venturalitica\
-    \ OSCAL, and the open-detector\n     watermarks trustmark, invisible-watermark, content-seal).\n  2  GENERATED,\
-    \ SELF-ATTESTED. The tool generates reports, documentation or test results in its\n     own format, or\
-    \ a detector only the key holder can run, and the reader takes it on trust\n     (mlte, ai-verify, compl-ai,\
-    \ validmind-library, verifywise, synthid-text, and the closed\n     suites ibm-watsonx-governance and credo-ai).\n\
-    \  1  TEMPLATE. A checklist or document a person fills in. Empty in this tranche: the ISO 42001\n     template\
-    \ repositories are parked in the sweep record as not being tools.\n\nTRUST TAG. Rungs 1-3 are the self-attested\
-    \ (SA) rows and 4-5 the independently verifiable (IV)\nones; each product repeats its tag in its own comments.\n\
-    \nWATERMARKING is read on this same quantity, not as a second one (sweep open item 1). The\nquestion the\
-    \ category asks of a watermark is who can check it: an open decoder anyone can run\nputs a mark on rung\
-    \ 3 beside the schema tools, and a detector that needs the embedder's keys\n(synthid-text) puts it on rung\
-    \ 2. Robustness is a property of whether the mark survives, which\nis recorded in value and note but does\
-    \ not move the band. No watermark reaches rung 4: a mark\ncarries an identifier or a statistical signal,\
-    \ not a signature. TrustMark's link to a signed\nC2PA manifest is the manifest's evidence, and c2pa-sdk\
-    \ carries it.\n\nDISTRIBUTION (21 banded): 5 -> 3, 4 -> 3, 3 -> 7, 2 -> 8, 1 -> 0. Rung 2 is the widest\
-    \ at 8\nof 21 (38%), above the one-third review trigger. Reviewed 2026-09-26: the definition turns on\n\
-    whether a third party needs the operator's cooperation or trust, which is not satisfiable\nincidentally\
-    \ - each of the eight emits evidence in its own format or behind its own key, and\nnone validates against\
-    \ a published schema. The width is a fact about the field (the #93\nfinding that the independently verifiable\
-    \ leg is thin), not loose wording, so it stays.\n\nONE LADDER for openness: every row is typed `software`\
-    \ and inherits the shared software ladder.\nContent Seal ships model weights inside one suite; if a watermark\
-    \ model is ever split into its\nown `model` row, `extends` becomes the per-type map `{model: model, software:\
-    \ software}`."
+    \ without trusting the operator who produced it. Banded 2026-09-26 against the\nfirst 21 promoted products;\
+    \ zkml, the second tranche, was placed on 2026-09-27. nvtrust is the top anchor; every other band records\
+    \ relative_to\nnvtrust, or compliance-trestle for the bottom rung, so check_capability holds the arithmetic.\n\
+    \n  5  VERIFIES THE EXECUTION. Hardware attestation or a cryptographic proof binds the evidence\n     to\
+    \ the computation that ran: GPU attestation signed by the device (nvtrust) and\n     zero-knowledge proofs\
+    \ of inference (ezkl, deepprove, zkml). Trust moves to the hardware vendor\n     or the proof system, never\
+    \ the operator.\n  4  SIGNED OR TAMPER-EVIDENT. A signature, or a hash chain anchored to a witness or timestamp\n\
+    \     authority the operator does not control, lets a third party confirm offline that the\n     evidence\
+    \ is unaltered and who issued or checkpointed it, but not that what it asserts is\n     true (model-signing,\
+    \ c2pa-sdk, halo-record). halo-record reaches this rung through its\n     witness and RFC 3161 anchoring;\
+    \ its bare chain alone would not.\n  3  STANDARD FORMAT, CHECKABLE WITHOUT THE OPERATOR. The evidence follows\
+    \ a published schema\n     or an open decoding method, so anyone can validate or read it with independent\
+    \ tooling;\n     its content is still the operator's claim and signing is not the product's normal output\n\
+    \     (compliance-trestle's detached DSSE signing is a beta command) (compliance-trestle OSCAL,\n     croissant,\
+    \ owasp-aibom-generator CycloneDX, venturalitica OSCAL, and the open-detector\n     watermarks trustmark,\
+    \ invisible-watermark, content-seal).\n  2  GENERATED, SELF-ATTESTED. The tool generates reports, documentation\
+    \ or test results in its\n     own format, or a detector only the key holder can run, and the reader takes\
+    \ it on trust\n     (mlte, ai-verify, compl-ai, validmind-library, verifywise, synthid-text, and the closed\n\
+    \     suites ibm-watsonx-governance and credo-ai).\n  1  TEMPLATE. A checklist or document a person fills\
+    \ in. Empty in this tranche: the ISO 42001\n     template repositories are parked in the sweep record as\
+    \ not being tools.\n\nTRUST TAG. Rungs 1-3 are the self-attested (SA) rows and 4-5 the independently verifiable\
+    \ (IV)\nones; each product repeats its tag in its own comments.\n\nWATERMARKING is read on this same quantity,\
+    \ not as a second one (sweep open item 1). The\nquestion the category asks of a watermark is who can check\
+    \ it: an open decoder anyone can run\nputs a mark on rung 3 beside the schema tools, and a detector that\
+    \ needs the embedder's keys\n(synthid-text) puts it on rung 2. Robustness is a property of whether the\
+    \ mark survives, which\nis recorded in value and note but does not move the band. No watermark reaches\
+    \ rung 4: a mark\ncarries an identifier or a statistical signal, not a signature. TrustMark's link to a\
+    \ signed\nC2PA manifest is the manifest's evidence, and c2pa-sdk carries it.\n\nDISTRIBUTION (22 banded):\
+    \ 5 -> 4, 4 -> 3, 3 -> 7, 2 -> 8, 1 -> 0. Rung 2 is the widest at 8\nof 22 (36%), above the one-third review\
+    \ trigger. Reviewed 2026-09-26, and unchanged by zkml,\nwhich joins rung 5 (relative_to nvtrust, at) and\
+    \ leaves rung 2 as it was: the definition turns on\nwhether a third party needs the operator's cooperation\
+    \ or trust, which is not satisfiable\nincidentally - each of the eight emits evidence in its own format\
+    \ or behind its own key, and\nnone validates against a published schema. The width is a fact about the\
+    \ field (the #93\nfinding that the independently verifiable leg is thin), not loose wording, so it stays.\n\
+    \nONE LADDER for openness: every row is typed `software` and inherits the shared software ladder.\nContent\
+    \ Seal ships model weights inside one suite; if a watermark model is ever split into its\nown `model` row,\
+    \ `extends` becomes the per-type map `{model: model, software: software}`."
   deferred:
     ezkl:
       because: 'The repository grants no license at all: no LICENSE or COPYING file in the full tree, no license
@@ -105,6 +107,12 @@ comments: |
   sub-type (compliance-as-code, documentation, signing, provenance, watermarking, attestation,
   proofs) and the two closed comparators. The other seven stay registry rows for add-product:
   air-blackbox, opencomplai, data-provenance-collection, aicert, zkml, verifyml, markllm.
+  Second tranche 2026-09-27: zkml, as a thin gap fill. It is the only zero-knowledge inference
+  prover here under an OSI license (ezkl grants no license, deepprove permits evaluation only),
+  and it was taken despite no push since 2024-05: the gap it fills is an open prover at
+  rung 5, not an active one. The other six stay in the registry: markllm overlaps synthid-text's
+  open text watermarking, data-provenance-collection overlaps croissant and is idle, aicert and
+  verifyml are abandoned, and air-blackbox and opencomplai are small and new.
 
   LITMUS. Is the product's main artifact evidence that a third party consumes? Yes means here.
   TIE-BREAKER (from #93). When one artifact is both a control and its evidence, classify by what

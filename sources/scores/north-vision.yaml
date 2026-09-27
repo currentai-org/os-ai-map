@@ -1,0 +1,94 @@
+product: north-vision
+openness:
+  score: 3
+  class: open_weights
+  governing_release: north-micro-vision
+  components:
+    weights:
+      value: open
+      detail: model.safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: publicly available datasets and an in-house multilingual document corpus, named in the release post; nothing
+        is published
+    code:
+      value: partial
+      detail: Transformers inference, a NeMo AutoModel fine-tuning recipe made with NVIDIA and community Axolotl support;
+        no training code
+    license:
+    - name: Apache-2.0
+      detail: OSI; "Apache 2.0-licensed model weights"
+  confidence: high
+  note: North Micro Vision's weights are released under the Apache 2.0 license and are not gated. Cohere trained it partly
+    on its own document corpus and publishes neither that data nor its training code.
+  raw: weights:open(model.safetensors on the Hub, ungated);data:described(publicly available datasets and an in-house multilingual
+    document corpus, named in the release post; nothing is published);code:partial(Transformers inference, a NeMo AutoModel
+    fine-tuning recipe made with NVIDIA and community Axolotl support; no training code);license:Apache-2.0(OSI; "Apache 2.0-licensed
+    model weights")
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/CohereLabs/North-Micro-Vision-Instruct?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for North-Micro-Vision-Instruct: gated false, model.safetensors, card license apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 224a5731905d5f44b6dabf0996f62eafd2e6240018a32d7d3eccbf3c8e294af5
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/CohereLabs/North-Micro-Vision-Instruct/raw/main/README.md
+    shows: '"released under the Apache 2.0 license"; "Apache 2.0-licensed model weights"; fine-tuning via an "NVIDIA AutoModel
+      recipe" and "Community-supported fine-tuning using the Axolotl framework"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b7837743ea686f54cdc7377ba7bcf05b523649db6a0ef116d3a4ba1bf8059f12
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/blog/CohereLabs/meet-north-micro-vision-instruct
+    shows: '"The curriculum drew on publicly available datasets and an in-house, large-scale multilingual document corpus"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e77d0576f55e98cf583a13a00c268de47820cf9baf438a3160d89b9a277c217f
+    establishes:
+    - data
+  - url: https://docs.cohere.com/docs/models
+    shows: Cohere's API lists north-small-translate-1-0 and north-mini-code-1-0 as the North models it serves; North Micro
+      Vision is not an API tier
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 78d2d30a075152b2591e4e3e5abfa8b804cf07f4f832c5c94d86ef25bec85d3a
+    establishes:
+    - weights
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days of North Micro Vision Instruct, the only North vision checkpoint.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=CohereLabs&search=North&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=lastModified&expand[]=cardData&expand[]=gated
+    shows: North-Micro-Vision-Instruct 168,910 downloads in the trailing 30 days; no other North vision checkpoint
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aa3aec0e8662d6c3eef7f9cac0a34aa9c6b17da795a5699e77f61688f0990bc9
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: multi-image, OCR, chart and document understanding from the card; no video claim
+  value: Interleaved text and images in, text out; grounding, OCR, charts and documents, multilingual. DocVQA 92.1, ChartQA
+    80.8, InfoVQA 65.2, OCRBench 79.2, MMMU 32.9.
+  confidence: high
+  relative_to: moondream
+  relation: at
+  note: North Micro Vision reads documents and charts well for its size and takes several images at once. Its card claims
+    no video understanding and rules out tool use, so it sits level with Moondream.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/CohereLabs/North-Micro-Vision-Instruct/raw/main/README.md
+    shows: '"Inputs | Interleaved text and images"; "Broad image-understanding capabilities across VQA, captioning, grounding,
+      OCR, charts, and documents"; "Tool calling and agentic workflows are not supported"; DocVQA_VAL 0.921, ChartQA_Test
+      0.808, OCRBench 0.792'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b7837743ea686f54cdc7377ba7bcf05b523649db6a0ef116d3a4ba1bf8059f12

@@ -1,0 +1,152 @@
+product: open-sora
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the same repository also
+        carries flux1-dev.safetensors and hunyuan_vae.safetensors
+    data:
+      value: described
+      detail: the training data is described in the technical report; the only published set is a 45K-clip Pexels sample
+        for trying the training scripts, and its Hub page is disabled
+    code:
+      value: open
+      detail: the pretraining scripts (scripts/diffusion/train.py) and docs/train.md are published; the repository is
+        Apache-2.0, with bundled third-party terms over code derived from other projects
+    license:
+    - name: Apache-2.0
+      detail: the Open-Sora 2.0 weights and the repository
+    - name: Tencent-Hunyuan-Community-License
+      detail: the HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed in the Open-Sora-v2
+        repository, and code the LICENSE bundles; excludes the EU, UK and South Korea
+    - name: FLUX.1-dev-Non-Commercial-License
+      detail: the FLUX.1 [dev] weights redistributed in the same repository, used only by the optional text-to-image-to-video
+        pipeline
+  governing_release: Open-Sora 2.0
+  confidence: medium
+  note: Open-Sora 2.0's own weights and training code are Apache 2.0, but every generation loads a HunyuanVideo VAE whose
+    license excludes the EU, UK and South Korea, and an optional pipeline adds FLUX.1 [dev] under a non-commercial license.
+    The training data is described, not released.
+  raw: weights:open(Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the same repository
+    also carries flux1-dev.safetensors and hunyuan_vae.safetensors);data:described(the training data is described in
+    the technical report; the only published set is a 45K-clip Pexels sample for trying the training scripts, and its
+    Hub page is disabled);code:open(the pretraining scripts (scripts/diffusion/train.py) and docs/train.md are published;
+    the repository is Apache-2.0, with bundled third-party terms over code derived from other projects);license:Apache-2.0(the
+    Open-Sora 2.0 weights and the repository)+Tencent-Hunyuan-Community-License(the HunyuanVideo VAE that every text-to-video
+    and image-to-video config loads, redistributed in the Open-Sora-v2 repository, and code the LICENSE bundles; excludes
+    the EU, UK and South Korea)+FLUX.1-dev-Non-Commercial-License(the FLUX.1 [dev] weights redistributed in the same
+    repository, used only by the optional text-to-image-to-video pipeline)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/LICENSE
+    shows: 'LICENSE body: "Apache License" ... "Copyright 2024 HPC-AI Technology Inc.", followed by bundled third-party
+      terms including "THIS LICENSE AGREEMENT DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6d9037ce1eadfa116e7daaf98bf95e2b176c993e1f5936e69170773c6011d68d
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/hpcai-tech/Open-Sora-v2?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for hpcai-tech/Open-Sora-v2: cardData license apache-2.0, gated false, created 2025-03-04.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d2e33c76f6f428299cd9249f1c0af7e9120a52e4bf85ed4dc09af58056022c6e
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/hpcai-tech/Open-Sora-v2/tree/main
+    shows: 'File tree: Open_Sora_v2.safetensors, flux1-dev.safetensors, flux1-dev-ae.safetensors and hunyuan_vae.safetensors.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 63c9a607639dbca1ec655d999b8399617b1c5069fa86e4124fbc349f8b18d490
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/configs/diffusion/inference/256px.py
+    shows: 'Inference config: type="hunyuan_vae", from_pretrained="./ckpts/hunyuan_vae.safetensors", with T5 and CLIP
+      text encoders; no FLUX weights are loaded.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 25ecc1e3b341610aa09012e64ad056793a39efb73487b0adf66ecc3bfb350258
+    establishes:
+    - license
+  - url: https://huggingface.co/hpcai-tech/Open-Sora-v2/raw/main/README.md
+    shows: 'Card: "You can also run direct text-to-video by:" the 256px and 768px configs, and separately "with the help
+      of flux text-to-image model, we build a text-to-image-to-video pipeline".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e89bbbcca4230e35fde9489425bb79ef1f6aa8babd8a729a48ad8d6f849d5b60
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/README.md
+    shows: 'README: "[2025.03.12] We released Open-Sora 2.0 (11B)" and "Fully open-source: checkpoints and training codes
+      for training with only $200K."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0fcb328e414279344c13ccf65fdf297c054a152b8a39c0be485cb9146bd5cd26
+    establishes:
+    - code
+    - weights
+  - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/docs/train.md
+    shows: 'docs/train.md: "we will use a 45k pexels dataset as an example."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 665398313bbf6b0e83c11c2e5e9538ee7649721ab6f43bb35ec65ca02b2d143f
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/datasets/hpcai-tech/open-sora-pexels-45k
+    shows: 'Dataset record for the Pexels sample: "disabled":true.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 05b6e946536d01c56d80bd2ef4de4314426d270df722e0af06f096ccf49096dd
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the Open-Sora checkpoints, led by the 1.2 VAE and the 2.0
+    model. The project's GitHub following is far larger than its measured use.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=hpcai-tech&search=Open-Sora&sort=downloads&direction=-1&limit=100
+    shows: 'Listing of hpcai-tech Open-Sora repositories sorted by downloads: OpenSora-VAE-v1.2 1321, Open-Sora-v2 1194,
+      OpenSora-STDiT-v3 438, the rest under 320 each; 3816 in all.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8224db7981e4550ac8c87cbd0663281ef33f98db48c931fcca09267653fd8413
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released text-to-video and image-to-video weights (Open-Sora 2.0, 11B, up to 768px); no Open-Sora entry on the
+    Artificial Analysis Text to Video or Image to Video arenas, read 2026-09-27
+  confidence: medium
+  relative_to: mochi
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+      shows: 'Re-read of the peer: "Mochi 1" still on the without-audio text-to-video board (rank 73 of 86, Elo 1000),
+        in its lower half; Open-Sora has no entry, so it sits one level below.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: ecc78a74fae549c9280921dd649d3e57a26b799673ef84c10e677d24d6b8408f
+  note: Open-Sora does not appear on the public video arena, where Mochi 1 places in the lower half. Its own report compares
+    it with HunyuanVideo, but the map reads one public board per modality.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: The text-to-video leaderboard lists no Open-Sora entry; "Mochi 1" (rank 73, Elo 1000) is on it.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ecc78a74fae549c9280921dd649d3e57a26b799673ef84c10e677d24d6b8408f
+  - url: https://artificialanalysis.ai/video/leaderboard/image-to-video
+    shows: The image-to-video leaderboard lists no Open-Sora entry.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 796a94a6f5baae531f35af327e5dd966c7ed34456f556e68482e7623023512ff

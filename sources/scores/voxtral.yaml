@@ -1,0 +1,133 @@
+product: voxtral
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: Voxtral Mini 4B Realtime, Voxtral Mini 3B and Voxtral 4B TTS as safetensors on the Hub, ungated
+    data:
+      value: closed
+      detail: the cards describe no training data
+    code:
+      value: partial
+      detail: inference through vLLM, Transformers and mistral-common; no training code
+    license:
+    - name: Apache-2.0
+      detail: the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507
+    context:
+      unresolved-member:
+        value: Voxtral 4B TTS 2603, CC-BY-NC-4.0
+        detail: the current text-to-speech model, licensed CC-BY-NC-4.0 because it inherits the license of its bundled
+          reference voices; whether it belongs to the governing release is the open ruling, and the hand score takes
+          it as governing
+      api-only-tier:
+        value: Voxtral Mini Transcribe 2.0
+        detail: the offline transcription model the Realtime card compares against; no Hub checkpoint, so excluded
+  governing_release: Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line; whether Voxtral 4B TTS 2603
+    belongs to the release is pending)
+  confidence: medium
+  note: Mistral's current speech-recognition models are Apache-2.0, but its current text-to-speech model is licensed
+    CC-BY-NC-4.0 because of the reference voices it ships with, and may not be used commercially. The more restrictive
+    terms are taken to govern the family for now. The cards describe no training data and only inference code is published.
+  raw: weights:open(Voxtral Mini 4B Realtime, Voxtral Mini 3B and Voxtral 4B TTS as safetensors on the Hub, ungated);data:closed(the
+    cards describe no training data);code:partial(inference through vLLM, Transformers and mistral-common; no training
+    code);license:Apache-2.0(the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507);unresolved-member:Voxtral
+    4B TTS 2603, CC-BY-NC-4.0(the current text-to-speech model, licensed CC-BY-NC-4.0 because it inherits the license
+    of its bundled reference voices; whether it belongs to the governing release is the open ruling, and the hand score
+    takes it as governing);api-only-tier:Voxtral Mini Transcribe 2.0(the offline transcription model the Realtime card
+    compares against; no Hub checkpoint, so excluded)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=mistralai&search=Voxtral&limit=100&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Family listing: Voxtral-Mini-4B-Realtime-2602, Voxtral-Mini-3B-2507 and Voxtral-Small-24B-2507 tagged "license:apache-2.0";
+      Voxtral-4B-TTS-2603 tagged "license:cc-by-nc-4.0"; all ungated.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f840e2dd359773c801b2531e8f19452f3483fdc7fc4fc57565ba1493d843ebb1
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/mistralai/Voxtral-4B-TTS-2603/raw/main/README.md
+    shows: 'Card: "These voices are licensed under CC BY-NC 4, which is the license that the model inherits."; "Thus,
+      this model inherits the same license."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 33b56cf6987186fe7ccc5057027af5132186974d9e726d1fd8c926795674da00
+    establishes:
+    - license
+  - url: https://huggingface.co/mistralai/Voxtral-Mini-4B-Realtime-2602/raw/main/README.md
+    shows: 'Card: "This model is released in **BF16** under the **Apache-2 license**, ensuring flexibility for both research
+      and commercial use."; the comparison table lists "Voxtral Mini Transcribe 2.0" as an offline model.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a5f8e9f596b6d933f8ad0ef4f9654b43b1f61a22bf9a40b63571804e869b2bc5
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models/mistralai/Voxtral-4B-TTS-2603
+    shows: 'Hub record: "gated":false, with consolidated.safetensors and voice_embedding files in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 01f93790697356b78744c6f8a9c7c4ef90c70a614630590d366e5410783eccef
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/mistralai/Voxtral-Mini-4B-Realtime-2602
+    shows: 'Hub record: "gated":false, with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 215dad5bf7dd7be606ac81fa5a8b35a57c3022dcb44288bf1881f66e1b792182
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/mistralai/Voxtral-Mini-3B-2507
+    shows: 'Hub record: "gated":false, with consolidated.safetensors and sharded safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d95ca92d7e89fcf0969a04c763f067f44ea6ed4236fe02c97ae961491bd9574e
+    establishes:
+    - weights
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the three declared checkpoints, almost all of them the streaming recognizer.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=mistralai&search=Voxtral&limit=100&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: Voxtral-Mini-4B-Realtime-2602 1,765,082, Voxtral-Mini-3B-2507 247,167, Voxtral-4B-TTS-2603
+      1,583.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f840e2dd359773c801b2531e8f19452f3483fdc7fc4fc57565ba1493d843ebb1
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: mistralai/Voxtral-Mini-3B-2507 ranks 46th of 71 at 5.54% average WER and Voxtral-Mini-4B-Realtime-2602 61st
+    at 6.46%; Voxtral TTS ranks 42nd of 91 on the Artificial Analysis TTS leaderboard.
+  confidence: medium
+  note: Mid-table on both boards, level with Whisper for recognition and close to Kokoro for synthesis; the realtime
+    model trades some accuracy for streaming with a sub-second delay.
+  relative_to: whisper
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "mistralai/Voxtral-Mini-3B-2507,5.53875" and "mistralai/Voxtral-Mini-4B-Realtime-2602,6.4625".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"Voxtral TTS" (creator Mistral) with "openWeights":true, ranked 42nd of the 91 models
+      on the board.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205
+  - url: https://huggingface.co/mistralai/Voxtral-Mini-4B-Realtime-2602/raw/main/README.md
+    shows: 'Card: "Built with a **natively streaming architecture** and a custom causal audio encoder - it allows configurable
+      transcription delays (240ms to 2.4s)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a5f8e9f596b6d933f8ad0ef4f9654b43b1f61a22bf9a40b63571804e869b2bc5

@@ -331,7 +331,58 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 33 with the model_hubs second tranche. `pytorch-hub` is ezkl's case again: the
+    # pytorch/hub repository carries no LICENSE file at all (`none-declared`), so it is hand-placed
+    # at 2/source_available and closes on the #739 ruling on whether a public repository with no
+    # grant maps to `proprietary`, not on more work.
+    #
+    # 33 -> 36 with the media_generation second tranche, six products in. Three are license-tier
+    # gaps recorded rather than hand-closed: `stable-video-diffusion` (the Stability AI Community
+    # License that stable-diffusion and stable-audio already wait on), `latentsync` (CreativeML
+    # OpenRAIL++-M, which the permissive tier does not name) and `open-sora` (Apache-2.0 weights
+    # whose checkpoint repository bundles FLUX.1 [dev] and a Tencent Hunyuan VAE, the liveportrait
+    # compound). triposr, mmaudio and diffsynth-studio compute. None of the three closes on more work.
+    #
+    # 36 -> 37 with the multimodal_models second tranche. `lfm-vl` ships every LFM2.5-VL size under
+    # the LFM Open License v1.0, an Apache-based license with a USD 10M annual-revenue threshold that
+    # no shared tier names. It is hand-placed at the use_bounded reading, 3/open_weights, and closes
+    # on a shared-tier ruling, not on more work.
+    #
+    # 37 -> 38 with the robotics_embodied second tranche, five products in. `habitat` ships MIT
+    # code, but Habitat-Lab distributes its Matterport3D- and Gibson-based task datasets and trained
+    # models under CC BY-NC-SA 3.0 US, a name the software tiers do not carry: the maniskill
+    # question, recorded rather than hand-closed, and closing on the same ruling.
+    #
+    # 38 -> 39 with the datacenter_accelerators second tranche. `moore-threads-mtt-s5000` is not a
+    # license gap: the hardware chipset rung needs `datasheets: public`, and Moore Threads gives
+    # the card's own figures only in its annual report, so it reads `brief`, as SambaNova's SN40L
+    # does. It closes on a published datasheet or on a ruling on how thin vendor documentation is
+    # read, not on a tier. `huawei-ascend-950`, promoted beside it, computes on that rung.
+    #
+    # 39 -> 44 with the classic_ml_cv second tranche, thirty-four products in. All five additions
+    # are license names the shared tiers do not carry, recorded rather than hand-closed per
+    # promote-category step 7, each closing on a maintainer's tier ruling: `gensim` (LGPL-2.1,
+    # OSI-approved, not listed in the software osi tier), `dlib` (BSL-1.0 Boost, OSI-approved and
+    # distinct from the BSL-1.1 the tier names), `insightface` (MIT code, non-commercial model
+    # packs), `dino` (the DINOv3 License) and `segment-anything` (the SAM License on SAM 3 and 3.1).
+    # `pycaret` was expected to be a sixth on FSL-1.1-MIT, but that license covers only its 4.0
+    # pre-releases; read on the current stable release, MIT 3.3.2, it computes and is not counted.
+    #
+    # 44 -> 46 with the speech_audio second tranche, seventeen products in. Both additions are
+    # license-tier gaps on the model ladder, recorded rather than hand-closed per promote-category
+    # step 7: `xtts` (the Coqui Public Model License 1.0.0, non-commercial) and `higgs-audio` (the
+    # Boson Higgs TTS 3 Research and Non-Commercial License on its current TTS model, beside
+    # Apache-2.0 speech-to-text checkpoints, which also waits on the same TTS-versus-ASR-member
+    # ruling as voxtral). Each is hand-placed at 2/restricted and closes on a maintainer's ruling,
+    # not on more work.
+    #
+    # 46 -> 47 the same day, when review of the round-2 integration (#749) asked for `voxtral` to be
+    # promoted as a deferred head product like higgs-audio rather than held in the registry. Its
+    # licenses are all named (Apache-2.0 on the ASR line, CC-BY-NC-4.0 on the Voxtral TTS member), so
+    # this is not a tier gap: it is hand-placed at 2/restricted and closes on the maintainer's ruling
+    # on whether a TTS member belongs to the governing release, not on more work.
+    assert len(deferred) == 47
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

@@ -1,0 +1,96 @@
+product: diffsynth-studio
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; standard text in the root LICENSE
+    source:
+      value: public
+      detail: modelscope/DiffSynth-Studio
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise or proprietary path; the README links ModelScope's hosted AIGC service built on the engine
+        but names no paid edition of the engine
+  confidence: high
+  note: DiffSynth-Studio is released under Apache 2.0 with its full source public. ModelScope runs a hosted service on
+    it but sells no separate edition of the engine.
+  raw: license:Apache-2.0(OSI; standard text in the root LICENSE);source:public(modelscope/DiffSynth-Studio);core-gated:ungated(no
+    ee, enterprise or proprietary path; the README links ModelScope's hosted AIGC service built on the engine but names
+    no paid edition of the engine)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/modelscope/DiffSynth-Studio/files/main/LICENSE
+    shows: 'LICENSE body: "Apache License / Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d43b96112d60d83595395649e61c6bc215f568052a979320489556c6c1262eb1
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/modelscope/DiffSynth-Studio/files/main
+    shows: 'Full file list of 1568 files: no ee/, enterprise/ or proprietary/ path.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 25ee6f63e4dd3fae3b5b2fa07bdaa4dd5b915fbc2abee5ee78dc46f741664cf3
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/modelscope/DiffSynth-Studio/files/main/README.md
+    shows: 'README: "ModelScope AIGC Zone (for Chinese users): Productized features powered by DiffSynth-Studio as the
+      core inference and training engine"; no paid edition of the engine is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc3e322dbdedac05568f0367fe4d3a7a2d9e16793030fe41ba0cb9d54902a8c8
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Adoption is measured as PyPI downloads of the diffsynth package. The README recommends installing from source,
+    which this figure does not count, and the monthly figure sits just over the edge of its range, so the next read may
+    place it a level lower.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/diffsynth/recent
+    shows: 'pypistats for diffsynth: last_month 10736, last_week 1562.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f132dbdc23504f405c86433a8ba123eb08ec65b0b4473c154b4ec30a2aa5966f
+  - url: https://pypi.org/pypi/diffsynth/json
+    shows: 'PyPI diffsynth 2.1.8: author "ModelScope Team", summary "Enjoy the magic of Diffusion models!", the repository
+      description, license_expression Apache-2.0.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9a2f739d956b31a4afb60f4c55342860d19ecd25f83f2d1168cb4a582673f96f
+capability:
+  score: 4
+  basis: feature_matrix
+  value: runs and trains image (FLUX.1, FLUX.2, Qwen-Image, Z-Image, Stable Diffusion, SDXL and others), video (Wan,
+    LTX-2, LTX-2.5, MiniMax H3) and audio (ACE-Step, YuE2, MiniMax-Music3) generation models; no 3D model in its supported-model
+    table
+  confidence: high
+  relative_to: comfyui
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/Comfy-Org/ComfyUI/files/master/README.md
+      shows: 'Re-read of the peer: ComfyUI README still reads "A visual node graph for building and reusing image, video,
+        audio, 3D, and text workflows without code", the 3D modality DiffSynth-Studio lacks.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 9e3730235b5e88ca5db52c62c0116235bd8064c4b2dffb81e410eebb64d0c555
+  note: DiffSynth-Studio runs image, video and music models, and can train almost every model it runs. It sits a step
+    below ComfyUI because it runs no 3D generation model.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/modelscope/DiffSynth-Studio/files/main/README.md
+    shows: 'README: "covering image generation, video generation, audio generation, and image quality metrics models"
+      and "Almost every model that supports inference also supports training"; the supported-model table lists Wan, LTX-2,
+      Qwen-Image, MiniMax-H3, FLUX.1, FLUX.2, ACE-Step, Z-Image, YuE2 and MiniMax-Music3, and no 3D model.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc3e322dbdedac05568f0367fe4d3a7a2d9e16793030fe41ba0cb9d54902a8c8

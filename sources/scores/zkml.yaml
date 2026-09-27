@@ -1,0 +1,112 @@
+product: zkml
+openness:
+  score: 5
+  class: open_source
+  governing_release: repository head, main at 4378958; no tagged release, and the 0.0.1 crate is a placeholder
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Daniel Kang publishes the prover and its converters under Apache-2.0, with no paid edition or withheld component,
+    so anyone may run, modify and redistribute it. The placeholder crate on crates.io declares AGPL-3.0-or-later
+    instead; it carries none of the prover, so the repository's license governs.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ddkang/zkml/main/LICENSE
+    shows: Apache License, Version 2.0, full text; the appendix copyright line is left as the unfilled template
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/ddkang/zkml/main/Cargo.toml
+    shows: Package zkml 0.0.1, "Zero-knowledge machine learning", license = "LICENSE" (the file name put in the
+      SPDX field), homepage github.com/ddkang/zkml, repository github.com/ddkang/zkml-public.git; depends on the
+      PSE halo2, halo2_gadgets and halo2_proofs crates
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 37bc67e3dcbf54d5218a3d02a6fb95d7221d2aeacc27d3597e02046dd2f40f4e
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/ddkang/zkml/files/main
+    shows: 'Full file listing of ddkang/zkml main at 4378958, 125 paths: src/, python/ converters, examples/, testing/;
+      no ee/, enterprise/, commercial/ or proprietary/ directory'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9647312ccb86e1f4fe1685f5584fd3281b291f110a31724e9ce508ebabccf914
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/ddkang/zkml/releases
+    shows: No releases published for ddkang/zkml
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0f09d0c1e01a0b6067adae1517f588321edc3fb3949b6538fcb4fa26dc7d7d55
+    establishes:
+    - source
+  - url: https://crates.io/api/v1/crates/zkml/0.0.1
+    shows: 'zkml 0.0.1, created 2023-02-27: license AGPL-3.0-or-later, has_lib false, bin_names [main], one Rust
+      file, crate_size 15,542 bytes'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 804acf874416c8042d31dfb36b141d94288cdc0095d6f16f854a96ea707c7192
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 'GitHub stars are the only signal: the prover is installed by building the repository, and the zkml crate
+    is a placeholder that does not contain it. A star is not a use.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/ddkang/zkml
+    shows: 'ddkang/zkml: 379 stars, 42 forks, default branch main, pushed 2024-05-17'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e9b0edf1acb9b5e8cf7604fa959eedb176bfe05a148cf590af4b0bc278337db7
+  - url: https://crates.io/api/v1/crates/zkml/0.0.1
+    shows: 'zkml 0.0.1, created 2023-02-27: license AGPL-3.0-or-later, has_lib false, bin_names [main], one Rust
+      file, crate_size 15,542 bytes'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 804acf874416c8042d31dfb36b141d94288cdc0095d6f16f854a96ea707c7192
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Zero-knowledge proofs (Halo2, KZG or IPA commitments) that a TensorFlow Lite model produced a given output.
+  relative_to: nvtrust
+  relation: at
+  confidence: medium
+  note: A proof lets anyone confirm that a specific model computed a specific output without trusting the party
+    that ran it, which puts ZKML beside NVIDIA's hardware attestation at the top of the category. It accepts only
+    TensorFlow Lite models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ddkang/zkml/main/README.md
+    shows: '"zkml is a framework for constructing proofs of ML model execution in ZK-SNARKs"; "Currently, we accept
+      TFLite models"; the quickstart creates params_kzg and params_ipa and proves an MNIST circuit with kzg'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cab831a374651c792b70cd8fbdd8fe3cd9e01189d453818e671c0484ce8ea62d
+  - url: https://raw.githubusercontent.com/ddkang/zkml/main/Cargo.toml
+    shows: Package zkml 0.0.1, "Zero-knowledge machine learning", license = "LICENSE" (the file name put in the
+      SPDX field), homepage github.com/ddkang/zkml, repository github.com/ddkang/zkml-public.git; depends on the
+      PSE halo2, halo2_gadgets and halo2_proofs crates
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 37bc67e3dcbf54d5218a3d02a6fb95d7221d2aeacc27d3597e02046dd2f40f4e
+  - url: https://arxiv.org/abs/2210.08674
+    shows: '"Scaling up Trustless DNN Inference with Zero-Knowledge Proofs", the paper the README cites for implementation
+      details'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2edad4624f4b696703a917a8caadeb449d55bc28252be0c90e8a4ef8ff3dac2c

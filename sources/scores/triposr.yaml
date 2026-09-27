@@ -1,0 +1,113 @@
+product: triposr
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: model.ckpt downloads from stabilityai/TripoSR on Hugging Face without a gate
+    data:
+      value: described
+      detail: a curated subset of Objaverse, which is itself public under CC-BY, is described; the subset is not released
+    code:
+      value: partial
+      detail: inference script and a local Gradio app only; no training code
+    license:
+    - name: MIT
+      detail: the code, the weights and the demo, per the README and the model card
+  governing_release: TripoSR (March 2024)
+  confidence: high
+  note: TripoSR's code and weights are MIT-licensed and download freely. Only inference code is published, and the training
+    set is described as a curated Objaverse subset without the subset itself being released.
+  raw: weights:open(model.ckpt downloads from stabilityai/TripoSR on Hugging Face without a gate);data:described(a curated
+    subset of Objaverse, which is itself public under CC-BY, is described; the subset is not released);code:partial(inference
+    script and a local Gradio app only; no training code);license:MIT(the code, the weights and the demo, per the README
+    and the model card)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSR/files/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) 2024 Tripo AI & Stability AI".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ade0a66629bdd7e01e46b3296b3851cff0fd27989bca53da470ad6e96ed620fb
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSR/files/main/README.md
+    shows: 'README: "The model is released under the MIT license, which includes the source code, pretrained models,
+      and an interactive online demo."; only inference and a Gradio app are documented.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ed40f078c5e451c58eae716187e0128f0ce8575e467aab2440b4ed9c75e490b9
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/api/models/stabilityai/TripoSR?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for stabilityai/TripoSR: cardData license mit, gated false, files config.yaml and
+      model.ckpt.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5eff74951fe4954d5decae7f007d60fa384aeaf46741c7269933a61ebe744201
+    establishes:
+    - weights
+  - url: https://huggingface.co/stabilityai/TripoSR/raw/main/README.md
+    shows: 'Card: "We selected a carefully curated subset of the Objaverse dataset for the training data, which is available
+      under the CC-BY license."; the subset is not published.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5c12ef5b850c6ee2aa7454b1a264f6f8dfa95164384dbb1ab374acd917aa558b
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSR/files/main
+    shows: 'Repository file list: run.py, gradio_app.py and the tsr/ package; no training script or training config.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a8416580f2d45eb761e797eb5dadc64508eae3565d5955b6da952eaff3e80716
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the stabilityai/TripoSR checkpoint, the only first-party copy;
+    third-party conversions are left out.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/stabilityai/TripoSR?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt&expand[]=siblings
+    shows: 'Hugging Face API record for stabilityai/TripoSR: downloads 201059.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5eff74951fe4954d5decae7f007d60fa384aeaf46741c7269933a61ebe744201
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena render board, read 2026-09-27: TripoSR 20th of 24 (score 1081); 20th of 21 on the topology board (score
+    981)'
+  confidence: medium
+  relative_to: hunyuan-3d
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+      shows: 'Re-read of the peer: "Hunyuan3D-2" rank 9 and "Hunyuan3D-2.1" rank 10 of 24 on the render board, still
+        in its upper half; TripoSR is 20th, in the lower half.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 3791f781e96b4b1962c123ebd03555801d28c83528686949612dfb06222334b8
+  note: TripoSR places in the lower half of the image-to-3D arena, below Hunyuan3D-2 and 2.1 in its upper half and well
+    below TRELLIS near the top. It trades quality for speed, reconstructing a mesh in under a second.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: 'Render board of 24 entries: "TripoSR" rank 20, score 1081, 11388 votes; "Hunyuan3D-2" rank 9, "Hunyuan3D-2.1"
+      rank 10.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3791f781e96b4b1962c123ebd03555801d28c83528686949612dfb06222334b8
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: 'Topology board of 21 entries: "TripoSR" rank 20, score 981.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d3dceaac17f16c5b4ac2811d9bda228c1040f7407353a908b04c3fa0f3ad9296

@@ -1,0 +1,113 @@
+product: pytorch-hub
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: none-declared
+      detail: no LICENSE file in the 146-path tree and no license field in package.json;
+        CONTRIBUTING.md points at a root LICENSE that does not exist
+    source:
+      value: public
+      detail: github.com/pytorch/hub, model pages and CI scripts
+  governing_release: pytorch/hub master at c7895df (last push 2024-04-15); the repository
+    cuts no releases
+  confidence: high
+  note: The model pages, tag list and test scripts are all public, but the repository
+    grants no license, and its contributing guide points at a LICENSE file that does
+    not exist. All rights stay with the authors, so the hub can be read but not freely
+    reused.
+  raw: license:none-declared(no LICENSE file in the 146-path tree and no license field
+    in package.json; CONTRIBUTING.md points at a root LICENSE that does not exist);source:public(github.com/pytorch/hub,
+    model pages and CI scripts)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/pytorch/hub/files/master
+    shows: Full file listing of pytorch/hub master (sha c7895df), 146 paths; no LICENSE,
+      COPYING or LICENSES/ path
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 621faf201994486958373f90e5edc262da0425b58cbeb51a414003e3742b7438
+    establishes:
+    - license
+    - source
+  - url: https://ungh.cc/repos/pytorch/hub/files/master/CONTRIBUTING.md
+    shows: '"By contributing to hub, you agree that your contributions will be licensed
+      under the LICENSE file in the root directory of this source tree." No such file
+      exists in the listing.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 506c14ac8766098f36ed491883ff59f4ef143129be7cffe307f0ebc3833104f8
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/pytorch/hub/files/master/package.json
+    shows: package.json lists four front-end dependencies and no license field
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 38c43f28302c7c0d3e9e21982a46ee3027b2eaf56a34f9dfe951e82d05aa93df
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/pytorch/hub
+    shows: 'pytorch/hub: "Submission to https://pytorch.org/hub/", default branch
+      master, pushedAt 2024-04-15, 1,435 stars, 247 forks'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd99768569cbdd0917a7c832ea89f0d1ae1caae41b657fa219ffeda2810cd558
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: The index publishes no load or download counts, and torch.hub ships inside
+    every PyTorch install, so PyTorch's own downloads measure the framework rather
+    than the hub. No reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pytorch.org/hub/
+    shows: Model index grouped by type (Audio 8, Generative 2, Nlp 3, Scriptable 21,
+      Vision 41) with no download, pull or usage counters on the page
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6b89527bd68e2ee40b3e575e2b9886209abd6ee42d1771b66ec34e6f58602097
+capability:
+  score: 1
+  basis: feature_matrix
+  value: index of model pages submitted by pull request; each page points torch.hub.load
+    at an entrypoint in the publisher's own GitHub repository; weights hosted by each
+    publisher; no storage, versioning or upload of its own
+  confidence: high
+  relative_to: monai-model-zoo
+  relation: one_below
+  note: 'Like the MONAI zoo, entries arrive by a reviewed pull request, but the hub
+    keeps only a page per model: the code stays in the publisher''s repository and
+    the README says the hub does not host pretrained weights. That makes it an index
+    over other people''s hosting rather than a collection it stores and serves, which
+    is the least any hub in this category does.'
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/Project-MONAI/model-zoo/files/dev/README.md
+      shows: MONAI zoo README still says each bundle version "will be archived as
+        a .zip file ... and stored in Releases" and is fetched with "python -m monai.bundle
+        download"; same content hash as the copy its capability axis cites
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 21d14ec7c5e9e57b69b97cf66fd2c6e7edf3b5eb1ca85f54544b5ee30666ab69
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/pytorch/hub/files/master/README.md
+    shows: '"We accept submission to PyTorch hub through PR in `hub` repo." "Add a
+      `hubconf.py` in your repo". "Currently we don''t support hosting pretrained
+      weights, users with pretrained weights need to host them properly themselves."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ae7bd7ee0ab39cb094ee1d0e5cd60f5d198e847bfd927140e074ea8cf19bfd51
+  - url: https://pytorch.org/hub/
+    shows: '"Discover and publish models to a pre-trained model repository designed
+      for research exploration." "This is a beta release"; 75 type tags across the
+      listed models'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6b89527bd68e2ee40b3e575e2b9886209abd6ee42d1771b66ec34e6f58602097

@@ -1,0 +1,127 @@
+product: birefnet
+openness:
+  score: 5
+  class: open_source
+  governing_release: BiRefNet
+  components:
+    weights:
+      value: open
+      detail: 16 checkpoints on the Hub, none gated
+    data:
+      value: open
+      detail: public segmentation benchmarks (DIS5K for the main model; DUTS, P3M-10k and others for the
+        variants)
+    code:
+      value: open
+      detail: training, loss and dataset code in the repository
+    license:
+    - name: MIT
+      detail: code and weights
+  confidence: medium
+  note: Code and weights are MIT-licensed, the training scripts are in the repository, and the main model
+    was trained on DIS5K, a public dataset, with the variants adding other public matting and saliency
+    sets. A few of those sets were not checked individually, which is why confidence is medium.
+  raw: weights:open(16 checkpoints on the Hub, none gated);data:open(public segmentation benchmarks (DIS5K
+    for the main model; DUTS, P3M-10k and others for the variants));code:open(training, loss and dataset
+    code in the repository);license:MIT(code and weights)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/main/LICENSE
+    shows: LICENSE is the "MIT License", "Copyright (c) 2024 ZhengPeng".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 92a7089e0915fc32bc40067560b398f1e6a7a5958abd7d04eda393629a5acefb
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=ZhengPeng7&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: Sixteen ZhengPeng7 checkpoints, all gated false and tagged mit except BiRefNet-DIS5K-TR_TEs,
+      which carries no license tag.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 62b78a52253158bc63d1eb34cbe14c1b7680ac0ba6559f58b2580ea48cfb46d1
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ZhengPeng7/BiRefNet/raw/main/README.md
+    shows: 'Model card: "license: mit"; "This BiRefNet for standard dichotomous image segmentation (DIS)
+      is trained on **DIS-TR** and validated on **DIS-TEs and DIS-VD**."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ceac4a1bb69b807eac5510bff80ff5599f606ef7458bee3b54b68d866e868532
+    establishes:
+    - data
+    - license
+  - url: https://xuebinqin.github.io/dis/index.html
+    shows: 'DIS project page: "Download (Newly Released Jul. 16, 2022) DIS5K Dataset (5,470)", split into
+      DIS-TR (3,000), DIS-VD (470) and DIS-TE (2,000).'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fde2df9743ffde68d7290d1ddd010c0a087723d4b09b3e31aef1b457e38d87f4
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/main/README.md
+    shows: README model zoo lists each checkpoint's training sets (DIS5K-TR; COD10K-TR and CAMO-TR; DUTS-TR,
+      HRSOD-TR, UHRSD-TR; the general-use mix adds P3M-10k, AM-2k, HIM2K, Distinctions-646 and others),
+      with the datasets "suggested to be downloaded from official pages".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7a4c7661d0861bd99845e78e7980c5440a9c2095eff9b7d6fdbccdcc45c8fec7
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/ZhengPeng7/BiRefNet/files/main
+    shows: Repository tree includes train.py, train.sh, dataset.py, loss.py, config.py and models/birefnet.py.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 76180b44ca5c8220a740fd51414ab95d0b817ea13504dcfaae3f958da7bcf7e1
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the two declared checkpoints, the general
+    model and the lite model; the other ZhengPeng7 checkpoints add comparatively little.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=ZhengPeng7&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: BiRefNet 798,071 and BiRefNet_lite 308,663 downloads in the trailing 30 days (1,106,734 together);
+      all sixteen checkpoints sum to 1,273,908.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 62b78a52253158bc63d1eb34cbe14c1b7680ac0ba6559f58b2580ea48cfb46d1
+capability:
+  score: 4
+  basis: feature_matrix
+  value: class-agnostic foreground segmentation and matting on any image at up to 2K resolution with no
+    training, with checkpoints for general use, lite, high-resolution, matting, portrait, camouflaged
+    and salient objects, plus training code for new data
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: BiRefNet cuts the main subject out of any photo straight away, with no label set to retrain for,
+    so a user's own images get a result from the shipped model directly. It does one task, foreground
+    extraction, where Ultralytics spans many.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/
+        and the sam modules with sam3 builders - the models it runs on the user's own images without training.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/main/README.md
+    shows: README describes "Bilateral Reference for High-Resolution Dichotomous Image Segmentation" and
+      a model zoo of general-use, lite, 2K high-resolution, matting, portrait, COD and HRSOD checkpoints.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7a4c7661d0861bd99845e78e7980c5440a9c2095eff9b7d6fdbccdcc45c8fec7
+  - url: https://huggingface.co/ZhengPeng7/BiRefNet/raw/main/README.md
+    shows: Model card gives an inference example that loads the checkpoint and predicts a foreground mask
+      for an input image.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ceac4a1bb69b807eac5510bff80ff5599f606ef7458bee3b54b68d866e868532
