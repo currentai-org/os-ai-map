@@ -1,7 +1,7 @@
 product: canary
 openness:
-  score: 3
-  class: open_weights
+  score: 2
+  class: restricted
   components:
     weights:
       value: open
@@ -15,13 +15,16 @@ openness:
     license:
     - name: CC-BY-4.0
       detail: current checkpoints
+    - name: CC-BY-NC-4.0
+      detail: canary-1b (2024), still published
   confidence: medium
   note: Canary's current checkpoints download freely under CC-BY-4.0, an attribution-only license, and the card
-    names the NeMo training script. As with Parakeet, the public Granary corpus is only part of the training mixture;
-    the rest is NVIDIA's in-house set.
+    names the NeMo training script. The first Canary model, canary-1b, is still published under a non-commercial
+    license, and the family is scored on its most restrictive published checkpoint, so it sits at restricted even
+    though every current model is commercially usable.
   raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary is released; NeMo ASR Set 3.0
     is in-house);code:open(NeMo speech_to_text_aed.py training script named in the card);license:CC-BY-4.0(current
-    checkpoints)
+    checkpoints)+CC-BY-NC-4.0(canary-1b (2024), still published)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/nvidia/canary-1b-v2
@@ -49,9 +52,16 @@ openness:
     content_sha256: 040fea5ff440941a99ef32f0c380145a201d4497bfd57700986e41eaebd06973
     establishes:
     - license
+  - url: https://huggingface.co/api/models/nvidia/canary-1b
+    shows: nvidia/canary-1b is public and tagged "license:cc-by-nc-4.0".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fe8287586d2513a5cdb844a92f6cb191975dfda6b037e4849f41283ce7bf8c54
+    establishes:
+    - license
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 2
+  reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
   note: Hugging Face downloads summed over the four current checkpoints, with Canary 1B v2 and Canary-Qwen-2.5B

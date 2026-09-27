@@ -33,13 +33,14 @@ scoring_recipe:
     Model Use License, the BreezeBlue Research and Non-Commercial License) belong to products still in
     the registry; each is deferred at its own promotion rather than scored by extending a shared tier here.
 
-    The multi-SKU rule is read over the release a product's own README or card lists, and over the
-    current line. Two readings rest on that and are flagged for a maintainer: canary is scored on its
-    CC-BY-4.0 checkpoints (1B v2, the Flash models, Canary-Qwen), while the superseded canary-1b of 2024
-    is CC-BY-NC-4.0; moshi is scored on the README's release ("All models are released under the CC-BY
-    4.0 license"), leaving out kyutai/moshika-rl-seamless, a gated CC-BY-NC-4.0 research checkpoint the
-    README does not list. granite-speech stays a registry row because its current 5.0 line ships a
-    CC-BY-NC-SA-4.0 sibling beside the Apache-2.0 one, which the rule as written would let govern.
+    The multi-SKU rule is applied as the shared ladder writes it: the most restrictive checkpoint whose
+    weights are published governs, gated or superseded ones included. It puts two products at 2 whose
+    current release is attribution-only: canary, because the 2024 canary-1b is still published under
+    CC-BY-NC-4.0 beside the CC-BY-4.0 1B v2, Flash and Canary-Qwen models, and moshi, because the gated
+    research checkpoint kyutai/moshika-rl-seamless is CC-BY-NC-4.0 while the README's release is CC-BY-4.0.
+    Whether a superseded or unlisted research checkpoint should count is a question for the shared
+    rule, not this category, and is raised for a maintainer. granite-speech stays a registry row for the
+    same reason: its current 5.0 line ships a CC-BY-NC-SA-4.0 sibling beside the Apache-2.0 one.
 
     CAPABILITY. No single quantity orders recognition, synthesis, conversation and engines, so the
     rungs are read per type against one five-step scale, and every band except the anchor names a
@@ -67,16 +68,17 @@ scoring_recipe:
     qwen-asr (5, the best open-weights row on the Open ASR Leaderboard) for recognition,
     elevenlabs-tts (4) for synthesis, nemo (5) for engines.
 
-    Distribution at promotion (22 banded): 3 at 5, 6 at 4, 11 at 3, 2 at 2, none at 1. The widest rung,
-    3, holds 11 of 22, over the one-third review trigger. Its wording as it stands is the rank band
+    Distribution at promotion (22 banded): 3 at 5, 6 at 4, 10 at 3, 3 at 2, none at 1. The widest rung,
+    3, holds 10 of 22, over the one-third review trigger. Its wording as it stands is the rank band
     31-60 for models, one-task engines for software, and the unrated-synthesizer clause. Read against
     the products, this is clustering rather than loose wording: the rung holds two recognizers placed
-    mid-table on their boards (whisper 53rd, deepgram-nova 49th of 58), Kokoro at 48th in the arena, the
-    four synthesizers the arena does not rate (cosyvoice, qwen-tts, f5-tts, voxcpm), and four one-task
+    mid-table on their boards (whisper 53rd of 71, deepgram-nova tied 48th of 58), Kokoro at 48th in the
+    arena, the three synthesizers the arena does not rate (cosyvoice, f5-tts, voxcpm), and four one-task
     engines (faster-whisper, whisper-cpp, pyannote-audio, piper). The unrated clause is the part a
-    reviewer should watch: it puts four synthesizers level with Kokoro on their own reported results,
-    while chatterbox, which the arena does rate, sits a rung lower at 71st. The asymmetry is recorded
-    rather than hidden, and a board placement for any of the four replaces the clause for that product.
+    reviewer should watch: it puts three synthesizers level with Kokoro on their own reported results,
+    while chatterbox (71st) and qwen-tts (the arena's "Qwen3 TTS" row, 81st) sit a rung lower on
+    listening tests. The asymmetry is recorded rather than hidden, and a board placement for any of the
+    three replaces the clause for that product.
 products:
 - whisper
 - qwen-asr
@@ -148,6 +150,6 @@ comments: >-
   full-duplex conversation (moshi), engines and components (nemo, faster-whisper, whisper-cpp,
   sherpa-onnx, pyannote-audio, silero-vad, piper) and three closed comparators (elevenlabs-tts,
   deepgram-nova, openai-speech). No row was rejected on the boundary. The other 30 rows stay in the
-  registry for add-product; granite-speech among them for the license reading in the scoring note, and
+  registry for add-product; granite-speech among them for the multi-SKU reading in the scoring note, and
   voxtral because its CC-BY-NC TTS member would govern the family under the multi-SKU rule, which
   the seed's reading ("the ASR line governs") contradicts.

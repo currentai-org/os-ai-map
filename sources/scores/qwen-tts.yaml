@@ -61,22 +61,26 @@ adoption:
     http_status: 200
     content_sha256: 3b6a4897c4d95ae5cababb2f1f9ec92de42aafecf731c76293e391983c9b8d83
 capability:
-  score: 3
+  score: 2
   basis: benchmark
-  basis_detail: self-reported Seed-TTS-eval zero-shot WER and multilingual test set
-  value: The card reports zero-shot results on the Seed-TTS test set, a multilingual test set, cross-lingual generation
-    and long-form speech; the models cover 10 languages with 3-second cloning and voice design.
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: The Artificial Analysis TTS leaderboard ranks an Alibaba "Qwen3 TTS" entry 81st of 91 at an Elo of about
+    930, released 2026-01-22, the date the open Qwen3-TTS series was published; the leaderboard marks that entry
+    as not open-weights, so whether it is these checkpoints or a hosted variant is not certain.
   confidence: low
-  note: Among the broadest open TTS feature sets, voice design included. It is not on the Artificial Analysis TTS
-    leaderboard, so it is placed on its own reported results on a shared public test set, level with Kokoro, rather
-    than on a blind listening test.
-  relative_to: kokoro
+  note: Broad features, voice design and 3-second cloning in 10 languages among them, but the arena entry that most
+    likely corresponds to it sits near the bottom of blind listening tests.
+  relative_to: chatterbox
   relation: at
   last_verified: '2026-09-27'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/raw/main/README.md
-    shows: '"Zero-shot speech generation on the Seed-TTS test set. Performance is measured by Word Error Rate (WER,
-      ↓), where lower is better."; "Base model capable of 3-second rapid voice clone from user audio input".'
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Entry "name":"Qwen3 TTS" (creator Alibaba) with "elo":929.65, "releaseDate":"2026-01-22" and "openWeights":false.
     accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 621b7e88f1867bc03d817176fc1f7f55f4b5a70654b2a07fdcda1e169efb024b
+    content_sha256: 524dd3f2d13e2629cf820715a3c37c79af623b2af67cfa437cf7e7da38c61cb1
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/README.md
+    shows: 'The README''s news list dates the open release: "2026.1.22".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f4497e70e9ae024b10ee4bbcb470366f10592edeab56c58d2194ba2dadb745

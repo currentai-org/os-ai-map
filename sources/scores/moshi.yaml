@@ -1,7 +1,7 @@
 product: moshi
 openness:
-  score: 3
-  class: open_weights
+  score: 2
+  class: restricted
   components:
     weights:
       value: open
@@ -14,13 +14,15 @@ openness:
       detail: inference, server and a separate fine-tuning repository
     license:
     - name: CC-BY-4.0
-      detail: weights
+      detail: released weights
+    - name: CC-BY-NC-4.0
+      detail: moshika-rl-seamless, gated research checkpoint
   confidence: medium
-  note: Moshi's weights are released under CC-BY-4.0, which asks only for attribution, and its code under MIT and
-    Apache-2.0. Kyutai describes the audio it trained on, including a conversation set it collected itself, but
-    does not release it, so the model is open weights rather than reproducible.
+  note: The Moshi release is CC-BY-4.0, with code under MIT and Apache-2.0, but one gated research checkpoint, moshika-rl-seamless,
+    is non-commercial, and the most restrictive published checkpoint sets the score.
   raw: weights:open(PyTorch, MLX and Candle checkpoints, ungated);data:described(7M hours of audio, Fisher and a
-    Kyutai-collected set; not released);code:partial(inference, server and a separate fine-tuning repository);license:CC-BY-4.0(weights)
+    Kyutai-collected set; not released);code:partial(inference, server and a separate fine-tuning repository);license:CC-BY-4.0(released
+    weights)+CC-BY-NC-4.0(moshika-rl-seamless, gated research checkpoint)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models/kyutai/moshiko-pytorch-bf16
@@ -48,6 +50,13 @@ openness:
     content_sha256: e429032aab30c9db9fd0c59426727df5e0bd1be2e5bc8c93e6911e30a06415f9
     establishes:
     - code
+    - license
+  - url: https://huggingface.co/api/models/kyutai/moshika-rl-seamless
+    shows: kyutai/moshika-rl-seamless is tagged "license:cc-by-nc-4.0" and gated.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c9c27f11cd058e1a0926b827f29c7bdbe6c981324938acd70b2f493d8b012325
+    establishes:
     - license
 adoption:
   level: 3
