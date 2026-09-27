@@ -33,3 +33,8 @@ hand-placed score, as in round 1 (#739 collects the strings).
   re-read it under the current-release rule and record the governing release.
 - federated_learning (no promotions): pysyft and syfthub openness and adoption cite June and
   August fetches; re-fetch and re-cite them. Branch `claude/promote2-federated_learning`.
+
+## Launch (2026-09-27 14:56 UTC)
+Eight writer sessions started from main (a4ace94c), one per branch; see sessions.tsv.
+The federated_learning evidence-refresh session was NOT started (the session launch was refused
+by a permission check); that fix waits for the user.
