@@ -11,8 +11,8 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: The reference implementation is Apache-2.0 and complete for research use. Google runs SynthID in its
-    own products, but that is a separate deployment, not a paid edition of this code.
+  note: The reference implementation is Apache-2.0 and complete for research use. Its README says it is not
+    an official Google product and not meant for production, and nothing is sold beside it.
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
   last_verified: '2026-09-26'
   sources:
@@ -34,7 +34,8 @@ openness:
     - core-gated
   - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/README.md
     shows: '"a reference implementation of the SynthID Text watermarking and detection capabilities for the
-      research paper published in Nature. It is not intended for production use."'
+      research paper published in Nature. It is not intended for production use."; "This is not an official
+      Google product."'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 5fd70fde4e99dcf0923f090955d8899a8820a35966b0d7647cc5b62ad3b04406
@@ -59,14 +60,14 @@ capability:
   score: 2
   basis: feature_matrix
   basis_detail: 'category matrix: how independently a third party can check the evidence'
-  value: Generation-time text watermarking by tournament sampling, with a weighted-mean detector or a trained
-    Bayesian detector; detection uses the generator's watermarking keys.
+  value: Generation-time text watermarking with a weighted-mean detector or a trained Bayesian detector; detection
+    uses the watermarking keys set at generation.
   relative_to: compliance-trestle
   relation: one_below
   confidence: medium
-  note: Only the holder of the watermarking keys can run the detector, so an outside party has to take the
-    operator's word for a result. Compliance Trestle writes to a published standard that anyone can validate
-    without the operator.
+  note: Detection needs the watermarking keys the generator used. The reference library ships a fixed configuration,
+    but a deployer who keeps its keys private is the only party able to check, so an outsider takes its word.
+    Compliance Trestle writes to a published standard anyone can validate.
   last_verified: '2026-09-26'
   sources:
   - url: https://raw.githubusercontent.com/google-deepmind/synthid-text/main/README.md

@@ -9,13 +9,13 @@ openness:
         a CLA
     source:
       value: public
-      detail: Rust library, Python and JavaScript bindings, EVM verifier
+      detail: Rust library and Python bindings
   confidence: high
   note: 'The full source is public, but the repository grants no license: there is no LICENSE file and neither
     package manifest names one, so by default all rights stay with the authors. That makes EZKL readable rather
     than open source, whatever its contributor agreement says about incoming code.'
   raw: license:none-declared(no LICENSE file, no license field in Cargo.toml or pyproject.toml; contributions
-    are taken under a CLA);source:public(Rust library, Python and JavaScript bindings, EVM verifier)
+    are taken under a CLA);source:public(Rust library and Python bindings)
   last_verified: '2026-09-26'
   sources:
   - url: https://ungh.cc/repos/zkonduit/ezkl/files/main
@@ -41,7 +41,8 @@ openness:
     establishes:
     - license
   - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/cla.md
-    shows: Contributor License Agreement setting the terms for contributions; grants no license to users
+    shows: Contributor License Agreement covering what contributors grant for their contributions; it licenses
+      no rights in Zkonduit's own code
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 36dc57f6c51cfeafdb4e8c5b5d045621c001411765049f5012f3d1290dabfc38
@@ -60,8 +61,8 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: medium
-  note: PyPI downloads of ezkl, the product's own Python package, measure its use. The separate GPU build adds
-    almost nothing, and the Rust crate is not published to crates.io.
+  note: 'Downloads of the product''s own packages measure its use: the Python package, its GPU build and the
+    JavaScript engine on npm.'
   last_verified: '2026-09-26'
   sources:
   - url: https://pypistats.org/api/packages/ezkl/recent
@@ -74,27 +75,31 @@ adoption:
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 3d7fb3c25d124ed1248b179e8d7a7ae8f0fa8c808f703ed6af80792f118cd5b8
+  - url: https://api.npmjs.org/downloads/point/last-month/@ezkljs/engine
+    shows: 979 downloads for @ezkljs/engine, 2026-08-27 to 2026-09-25
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ddfc638653f79a25948d50638de1dec35329adac6421c54cb2cbebe86d04ee9a
 capability:
   score: 5
   basis: feature_matrix
   basis_detail: 'category matrix: how independently a third party can check the evidence'
-  value: Zero-knowledge proofs of neural-network inference from ONNX models with Halo2; verifiers run natively,
-    as WASM in a browser, or as an EVM smart contract.
+  value: Zero-knowledge proofs of neural-network inference from ONNX models with Halo2; proofs verify on-chain
+    in the EVM, in a browser, or on a device.
   relative_to: nvtrust
   relation: at
   confidence: medium
   note: A proof lets anyone confirm that a specific model produced a specific output without trusting the party
-    that ran it, which puts EZKL beside NVIDIA's hardware attestation at the top of the category. Proving cost
-    limits it to comparatively small models.
+    that ran it, which puts EZKL beside NVIDIA's hardware attestation at the top of the category.
   last_verified: '2026-09-26'
   sources:
-  - url: https://raw.githubusercontent.com/zkonduit/ezkl/v21.0.0/README.md
+  - url: https://raw.githubusercontent.com/zkonduit/ezkl/main/README.md
     shows: '"we use the collaboratively-developed Halo2 as a proof system. The generated proofs can then be
       verified with much less computational resources, including on-chain (with the Ethereum Virtual Machine),
       in a browser, or on a device"'
     accessed: '2026-09-26'
     http_status: 200
-    content_sha256: e0793b4c6ef5af913af9370eec9b7a52913e907ab688b43f8ba0e289c3d536de
+    content_sha256: 43d715593009916471189b734138b35be6ee8589befc69865c0cdec975b61fe6
   - url: https://docs.ezkl.xyz/
     shows: EZKL documentation site for the library and its bindings
     accessed: '2026-09-26'
