@@ -5,46 +5,107 @@ openness:
   components:
     weights:
       value: open
-      detail: MIT per HF card
+      detail: MiMo-V2.6-Pro-RL and MiMo-V2.6-Pro-MOPD on Hugging Face, ungated safetensors
     data:
       value: closed
+      detail: no pretraining corpus released or named
     code:
-      value: open
+      value: partial
+      detail: inference support and RL post-training code (a verl fork with five environment recipes); no
+        pretraining pipeline
     license:
     - name: MIT
-      detail: HF card; older GitHub repo shows Apache-2.0
-  confidence: medium
-  note: Open weights under a permissive license - MIT on the Hugging Face card, though the older GitHub
-    repository shows Apache-2.0 - with no open training data, so open weights rather than open source.
-  last_verified: '2026-08-13'
-  raw: weights:open(MIT per HF card);data:closed;code:open;license:MIT(HF card; older GitHub repo shows
-    Apache-2.0)
+      detail: HF card on both V2.6 Pro checkpoints
+    context:
+      rl-environments:
+        value: released
+        detail: 'MiMo-V2.6-RL-oss on Hugging Face under Apache-2.0: code, cybersecurity, knowledge-work,
+          web-development and music environments, graded by tests, rule checks, rubrics and visual grading'
+      agent-harness:
+        value: released
+        detail: mimoagent (MIT, a fork of mini-swe-agent) supplies the harnesses, tools and graders, and
+          uni-agent (Apache-2.0, a fork of verl-project/uni-agent) the model gateway and trajectory capture,
+          both as submodules of the verl fork
+  governing_release: mimo-v2-6-pro
+  confidence: high
+  note: Xiaomi publishes the MiMo-V2.6-Pro weights under MIT, along with reinforcement-learning code and
+    environments that reproduce its training recipe on a distilled 9B model. The pretraining corpus is not
+    released and no pretraining code ships, so the model is open weights rather than fully open.
+  last_verified: '2026-09-27'
+  raw: 'weights:open(MiMo-V2.6-Pro-RL and MiMo-V2.6-Pro-MOPD on Hugging Face, ungated safetensors);data:closed(no
+    pretraining corpus released or named);code:partial(inference support and RL post-training code (a verl
+    fork with five environment recipes); no pretraining pipeline);license:MIT(HF card on both V2.6 Pro checkpoints);rl-environments:released(MiMo-V2.6-RL-oss
+    on Hugging Face under Apache-2.0: code, cybersecurity, knowledge-work, web-development and music environments,
+    graded by tests, rule checks, rubrics and visual grading);agent-harness:released(mimoagent (MIT, a fork
+    of mini-swe-agent) supplies the harnesses, tools and graders, and uni-agent (Apache-2.0, a fork of verl-project/uni-agent)
+    the model gateway and trajectory capture, both as submodules of the verl fork)'
   sources:
-  - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro
-    shows: MIT, 1.02T/42B MoE, 1M context, benchmark tables; no training corpus named on the card
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.6-Pro-RL
+    shows: 'card license `mit`, `gated: false`, `private: false`, created 2026-09-21; safetensors weight
+      shards and MiMo_V2_6_technical_report.pdf in the file list'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 49f797c15d88a6c2e9c5057cf7c118303d07aaec08fa8a7af0669539c4e71324
-    establishes: [weights, data, license]
-  - url: https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.5-Pro
-    shows: 'card license `mit`, `gated: false`, `private: false`, 61,546 downloads and 736 likes.'
-    accessed: '2026-08-13'
+    content_sha256: 581af9ff5b15a004b2e5c55fc0543f0913f3c160caf82b6506689b8a4be9eebb
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL
+    shows: card licensed MIT, '1.02T total / 42B activated parameters', a Downloads table listing the Pro
+      and Flash checkpoints; no training corpus named
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 420cc501c5a9bb1ccfe85ccb147167b160fe6ce497ebf209b33cf342c611b252
-    establishes: [weights, license]
-  - url: https://api.github.com/repos/XiaomiMiMo/MiMo
-    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 2,294 stars, description
-      "MiMo: Unlocking the Reasoning Potential of Language Model - From Pretraining to Posttraining".
-      This is the older repo whose Apache-2.0 the license note contrasts with the card MIT.'
-    accessed: '2026-08-13'
+    content_sha256: 58ce3f9607a6e54fb8f0da1870f8e29a9fefbe9a44862727037baa1c9d4b5b4c
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.6-Pro-MOPD
+    shows: 'card license `mit`, `gated: false`, `private: false`, created 2026-09-27, with the same weight-shard
+      layout as Pro-RL'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 1c115a9259f3b47509f3923137efc00b06578c41bf3d2eebec59c5ce35d3559d
-    establishes: [code]
+    content_sha256: c9a683f1e22c497aef18f438315be400ab25c6e9b3cad81620d2fee37d7af300
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/XiaomiMiMo/verl/mimo-oss/README.md
+    shows: '''Agentic RL training code for MiMo'' and ''This fork adds reproduction code for five RL environments'';
+      its submodules are mimoagent (''agent harnesses, tools, execution environments and graders'') and
+      uni-agent (''model gateway and TransferQueue trajectory capture''), and the training model is MiMo-V2.6-Distill-Qwen-9B'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 459c77419a1ed72756f64307d64aa8b0ba864f428ee497cf0ca905aa2db20edd
+    establishes:
+    - code
+  - url: https://api.github.com/repos/XiaomiMiMo/verl
+    shows: '`fork: true` with parent `verl-project/verl`, license `Apache-2.0`, created 2026-09-21'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 459a55d3fe97a148cccb6d6280727ec28910c8ee24b9ae2db2ba14250c31f330
+    establishes:
+    - code
+  - url: https://huggingface.co/datasets/XiaomiMiMo/MiMo-V2.6-RL-oss/raw/main/README.md
+    shows: '''license: apache-2.0'', ''RL training environments for LLM agents'' across Code, Cyber, General,
+      Visual and Music, with executable tests, rule checks, rubric-based judging and visual grading'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a7a6216652a80d91a9dbbc558a406bb3344abdc462e850707477c8a7fb8b3ba9
+  - url: https://api.github.com/repos/XiaomiMiMo/mimoagent
+    shows: '`fork: true` with parent `SWE-agent/mini-swe-agent`, license `MIT`'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 63859e9d8e74367ea14340ba3d786b3046b93c209711742d221e07454c962a29
+  - url: https://api.github.com/repos/XiaomiMiMo/uni-agent
+    shows: '`fork: true` with parent `verl-project/uni-agent`, license `Apache-2.0`'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 26b088af9671bdd420fb4341a7d15698113ac8f3cada216efa52df6884929a45
 adoption:
   level: 2
   signal_type: usage_volume
   confidence: medium
-  note: Adoption is read from Hugging Face downloads for the single declared checkpoint, MiMo-V2.5-Pro.
+  note: Adoption is read from Hugging Face downloads of MiMo-V2.5-Pro, the only checkpoint declared when
+    it was measured; the V2.6 checkpoints are newer than that reading.
   reach: 10K-100K
   last_verified: '2026-09-20'
   derived_from:
@@ -60,27 +121,35 @@ adoption:
     http_status: 200
     content_sha256: a2aaae84dbf0cee839884669a0b3da7dfbd40d6d2969342831c10c7f9c44594d
 capability:
-  score: 4
+  score: 5
   basis: benchmark
-  basis_detail: LMArena/MMLU-Pro
-  value: MMLU 89.4, MMLU-Pro 68.5, GSM8K 99.6, HumanEval+ 75.6; efficiency-focused; lower end of the LMArena frontier
-    band (~#29 per mirrors)
-  confidence: medium
-  note: 'MiMo-V2.5-Pro is a frontier open-weights model built for efficiency, scoring 89.4 on MMLU, 68.5
-    on MMLU-Pro, 99.6 on GSM8K and 75.6 on HumanEval+ on Xiaomi''s own model card, which its product page
-    now defers to. An LMArena rank near #29 circulates on mirrors with no citable primary source, so it
-    is not used as evidence here.'
-  last_verified: '2026-08-13'
+  basis_detail: Artificial Analysis Intelligence Index
+  value: 'Artificial Analysis Intelligence Index v4.3.2: 46, ranked #1 of 115 on the model page (Kimi K3
+    (max): 44, #3 of 115). Xiaomi-reported DeepSWE v1.1 71.9, Terminal Bench 2.1 89.9, OSWorld-Verified
+    82.0'
+  confidence: high
+  note: Artificial Analysis ranks MiMo-V2.6-Pro first of 115 models on its Intelligence Index, two places
+    above Kimi K3, and calls it among the leading open-weights models of its size in intelligence. Xiaomi's
+    own agentic benchmarks put it close to Claude Opus 5 on software-engineering and computer-use tasks,
+    though Xiaomi ran those itself.
+  last_verified: '2026-09-27'
   sources:
-  - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro
-    shows: MMLU 89.4, MMLU-Pro 68.5, GSM8K 99.6 and HumanEval+ 75.6 on the official model card
-    accessed: '2026-08-13'
+  - url: https://artificialanalysis.ai/models/mimo-v2-6-pro
+    shows: '''MiMo-V2.6-Pro scores 46 on the Artificial Analysis Intelligence Index'' (v4.3.2), ranked #1
+      of 115 in the model summary, and ''amongst the leading models in intelligence'' against ''other open
+      weight models of similar size''; released September 21, 2026'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 49f797c15d88a6c2e9c5057cf7c118303d07aaec08fa8a7af0669539c4e71324
-  - url: https://mimo.xiaomi.com/mimo-v2-5-pro
-    shows: official architecture and Apr 27 2026 release announcement. The benchmark figures are no
-      longer readable on this page - it now points to the Hugging Face model card for the evaluation
-      tables.
-    accessed: '2026-08-13'
+    content_sha256: 3a02b8e7d03a58327457be78867c45dce9a52cc802073251329e079ade9c9c67
+  - url: https://artificialanalysis.ai/models/kimi-k3
+    shows: '''Kimi K3 (max) scores 44 on the Artificial Analysis Intelligence Index'', ranked #3 of 115
+      in the model summary'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 169c17e63ed923dde2ec4bcf53abeaef2de46d38412488aeea8f9c697fdff03f
+    content_sha256: 3d921cbbde876dd76de61bf79631a354613524df39a8041680e3915a73108753
+  - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL
+    shows: 'Xiaomi''s evaluation table: DeepSWE v1.1 71.9, Terminal Bench 2.1 89.9 and OSWorld-Verified
+      82.0 for MiMo-V2.6 Pro, against 74.0, 89.1 and 83.4 for Claude Opus 5'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 58ce3f9607a6e54fb8f0da1870f8e29a9fefbe9a44862727037baa1c9d4b5b4c
