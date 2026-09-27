@@ -1,0 +1,83 @@
+product: vosk
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the vosk-api COPYING file
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: Alpha Cephei sells Vosk Enterprise and Vosk Mobile tiers with more languages, premium-accuracy models and
+        iOS and Unity support that the open-source edition does not carry
+  confidence: medium
+  note: The Vosk engine is Apache-2.0 and builds from the published repository. Alpha Cephei also sells Enterprise and
+    Mobile editions that add languages, higher-accuracy models and platforms the open-source release lacks, so the open
+    code is not the whole product.
+  raw: license:Apache-2.0(OSI; the vosk-api COPYING file);source:public;core-gated:gated(Alpha Cephei sells Vosk Enterprise
+    and Vosk Mobile tiers with more languages, premium-accuracy models and iOS and Unity support that the open-source
+    edition does not carry)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/alphacep/vosk-api/master/COPYING
+    shows: 'COPYING body: "Apache License" / "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bb618af833c817ab01c1564bd3ec75ba4b4f9cf30910a4a2168e30a674ee8cc6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/alphacep/vosk-api/master/README.md
+    shows: 'README: "Vosk scales from small devices like Raspberry Pi or Android smartphone to big clusters."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5f56ab2addced6c3655d22dbeeaf05dd5fc75ab9aa8e5e6a9f18b622fe68e5bb
+    establishes:
+    - source
+  - url: https://alphacephei.com/en/
+    shows: 'Alpha Cephei products: "Vosk Enterprise more languages premium accuracy ongoing support technology training";
+      "Vosk Mobile more languages efficiency for the edge iOS and Unity".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 00b02e8c1abd346c68543b2826efce7cf93bd54b851fc70770fdafe412dc8a58
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of the vosk package; the Android, Java and Node bindings install through other registries not
+    counted here.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/vosk/recent
+    shows: '"last_month":572791 for vosk.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d819254886d5eca14c4683806a64270cdf99f5c81dd32b8666872b2ee15d8b6a
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: Streaming offline recognition in 20+ languages on Android, iOS, Raspberry Pi and servers, with speaker identification
+    and Kaldi training recipes for its own models.
+  confidence: medium
+  note: A dependable offline recognizer that runs almost anywhere, but it serves one task on Kaldi-era models, two steps
+    below NeMo.
+  relative_to: nemo
+  relation: two_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/alphacep/vosk-api/master/README.md
+    shows: 'README: "It enables speech recognition for 20+ languages and dialects"; "zero-latency response with streaming
+      API, reconfigurable vocabulary and speaker identification."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5f56ab2addced6c3655d22dbeeaf05dd5fc75ab9aa8e5e6a9f18b622fe68e5bb
+  - url: https://alphacephei.com/vosk/models
+    shows: 'Models page: "You can check Vosk recipe for details: https://github.com/alphacep/vosk-api/tree/master/training".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 54ea4c1e367e18a67e8f4fce6232de62e5a467f8ec094266be7650efa1d7e77a

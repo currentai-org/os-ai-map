@@ -1,0 +1,112 @@
+product: zonos
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: ZONOS2 (model.pth) and GGUF conversions on the Hub, ungated
+    data:
+      value: described
+      detail: more than six million hours of web-scale multilingual speech; not named or released
+    code:
+      value: partial
+      detail: inference server and offline API; no training code
+    license:
+    - name: Apache-2.0
+      detail: ZONOS2 weights per the Hub card and Zyphra's announcement; the ZONOS2 code repository is MIT
+    context:
+      superseded-release:
+        value: Zonos-v0.1
+        detail: 2025 transformer and hybrid models, Apache-2.0, still published
+  governing_release: ZONOS2 (2026-06)
+  confidence: medium
+  note: ZONOS2, the current release, downloads freely under Apache-2.0, as did Zonos v0.1 before it. Zyphra describes
+    its six million hours of training audio without naming or releasing them and publishes only inference code.
+  raw: weights:open(ZONOS2 (model.pth) and GGUF conversions on the Hub, ungated);data:described(more than six million
+    hours of web-scale multilingual speech; not named or released);code:partial(inference server and offline API; no
+    training code);license:Apache-2.0(ZONOS2 weights per the Hub card and Zyphra's announcement; the ZONOS2 code repository
+    is MIT);superseded-release:Zonos-v0.1(2025 transformer and hybrid models, Apache-2.0, still published)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.zyphra.com/our-work/zonos2
+    shows: 'Announcement dated "Jun 12, 2026": "Zyphra has released ZONOS2, an Apache 2.0-licensed real-time text-to-speech
+      model"; "The ZONOS2 model weights are available on Hugging Face"; "we increased our training set from roughly 200,000
+      hours to over six million hours".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8e08da3e7c10447b78154cd5dde944bb8f452243fbb6ba8fdd290e2c8e510ec6
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://huggingface.co/api/models/Zyphra/ZONOS2
+    shows: 'Hub record: tag "license:apache-2.0", "gated":false, and model.pth in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 81661d68c7fc663f46b69afadcb4284254de84d9308b4f34d33cbb7c66e2833f
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/Zyphra/ZONOS2/HEAD/LICENSE
+    shows: 'Code LICENSE: "MIT License" / "Copyright (c) 2026 Zyphra, Inc."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 98216c34413fa17aeaaba8aeec41d157609b6b8f6c07cf6250239128cf616bb5
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Zyphra/ZONOS2/HEAD/README.md
+    shows: 'README: "ZONOS2 is our latest text-to-speech model trained on more than 6 million hours of varied multilingual
+      speech"; the repository documents a server and offline inference only.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2a0d3c9316a2cc8c04220a1f9381ba71ebd7dadcd506d8d8570de1e8099c1c07
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=Zyphra&limit=100
+    shows: 'Hub listing: ZONOS2 created 2026-06-11 and Zonos-v0.1-transformer and -hybrid created 2025-02-06, all tagged
+      "license:apache-2.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 32ecfed076898e4b5b24ddabff987ca2ac4d73335bf28838d279813dbe3080b0
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the declared checkpoints, still mostly the 2025 v0.1 transformer model.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=Zyphra&limit=100
+    shows: 'Trailing-30-day downloads: Zonos-v0.1-transformer 107,508, ZONOS2-GGUF 10,615, Zonos-v0.1-hybrid 1,196, ZONOS2
+      692.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 32ecfed076898e4b5b24ddabff987ca2ac4d73335bf28838d279813dbe3080b0
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: Zonos-v0.1 ranks 74th of 91 on the Artificial Analysis TTS leaderboard at an Elo of 1000. ZONOS2 is not yet
+    on the board, and Zyphra's announcement gives its seed-tts eval results in charts without figures.
+  confidence: low
+  note: Listeners place the first Zonos model in the lower part of the arena, a step below Kokoro. The newer ZONOS2 has
+    no rating or published figures yet, so a board placement would replace this reading.
+  relative_to: kokoro
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"Zonos-v0.1" (creator Zyphra) with "openWeights":true.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205
+  - url: https://www.zyphra.com/our-work/zonos2
+    shows: 'Announcement: "competitive with leading open-source TTS models on widely used open benchmarks such as seed-tts
+      eval".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8e08da3e7c10447b78154cd5dde944bb8f452243fbb6ba8fdd290e2c8e510ec6

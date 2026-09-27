@@ -1,0 +1,104 @@
+product: melotts
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: eight per-language .pth checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no statement of what the released checkpoints were trained on
+    code:
+      value: open
+      detail: training scripts in the repository (train.sh, preprocess_text.py)
+    license:
+    - name: MIT
+      detail: code and every checkpoint
+  governing_release: MeloTTS (2024, English v3 the newest checkpoint)
+  confidence: high
+  note: MeloTTS is MIT-licensed, code and checkpoints alike, and the repository includes the scripts to train a voice
+    on your own data. What the released voices were trained on is not stated, so they cannot be rebuilt.
+  raw: weights:open(eight per-language .pth checkpoints on the Hub, ungated);data:closed(no statement of what the released
+    checkpoints were trained on);code:open(training scripts in the repository (train.sh, preprocess_text.py));license:MIT(code
+    and every checkpoint)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/README.md
+    shows: 'README: "This library is under MIT License, which means it is free for both commercial and non-commercial
+      use."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ee0722f303183c227dc2008069d2fe6cd2c72867d4062c61598a5435b1b55205
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/LICENSE
+    shows: 'LICENSE body: "Copyright (c) 2024 MyShell.ai" followed by the MIT permission text.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 88a50e5a02bbc2a5c2f084dc19da751aa97b1690f5fda76cd8005c8634d1ca70
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=myshell-ai&search=MeloTTS&limit=100
+    shows: 'Family listing: eight myshell-ai/MeloTTS-* checkpoints tagged "license:mit", the newest MeloTTS-English-v3
+      created 2024-04-17.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a15d21614baf2fa5db9e2d1a82c75c8708876db815aa04915ccca583c18c5a8e
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/docs/training.md
+    shows: 'Training doc: "To train a TTS model, we need to prepare the audio files and a metadata file."; "bash train.sh
+      <path/to/config.json> <num_of_gpus>".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5c2c288e724205ad3b5234e4603505d55e49f925dd3929deffb9529a5b6f3b31
+    establishes:
+    - code
+    - data
+  - url: https://huggingface.co/api/models/myshell-ai/MeloTTS-English
+    shows: 'Hub record: "gated":false and checkpoint.pth in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e14c1a9d730d54c684789a4d3d6dfe1d6652013d90a5f57843b0861b2bbfff77
+    establishes:
+    - weights
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the per-language checkpoints, about half of them the English voice.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=myshell-ai&search=MeloTTS&limit=100
+    shows: 'Trailing-30-day downloads: MeloTTS-English 263,685, English-v3 62,843, Korean 62,528, Japanese 54,079, Chinese
+      37,345, Spanish 14,047, French 8,055.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a15d21614baf2fa5db9e2d1a82c75c8708876db815aa04915ccca583c18c5a8e
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: no board presence; card and README report no evaluation
+  value: Multi-speaker synthesis in six languages with several English accents and CPU real-time inference; no voice
+    cloning, no streaming, no reported evaluation, and no entry on the Artificial Analysis TTS leaderboard.
+  confidence: low
+  note: A light, practical synthesizer for fixed voices. It clones no voices and publishes no quality results, and listeners
+    have not rated it on the public arena, so it sits well below Kokoro.
+  relative_to: kokoro
+  relation: two_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/myshell-ai/MeloTTS/HEAD/README.md
+    shows: 'README: "MeloTTS is a **high-quality multi-lingual** text-to-speech library"; "Fast enough for `CPU real-time
+      inference`."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ee0722f303183c227dc2008069d2fe6cd2c72867d4062c61598a5435b1b55205
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: The 91-row leaderboard has no MeloTTS entry.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205

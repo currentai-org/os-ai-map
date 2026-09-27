@@ -1,0 +1,114 @@
+product: seamless-m4t
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: SeamlessM4T v2 Large as fairseq2 and Transformers checkpoints, ungated
+    data:
+      value: partial
+      detail: SeamlessAlign metadata is published and rebuildable; the full training mixture is not
+    code:
+      value: partial
+      detail: inference, evaluation and a demonstration fine-tuning script
+    license:
+    - name: CC-BY-NC-4.0
+      detail: SeamlessM4T v1 and v2 and SeamlessStreaming weights; the code is MIT
+    context:
+      sibling-model:
+        value: seamless-expressive
+        detail: SeamlessExpressive, released with v2 under the Seamless Licensing Agreement (noncommercial research only)
+          behind a request form; a separate model, not a size of SeamlessM4T
+  governing_release: SeamlessM4T v2 (2023-11)
+  confidence: high
+  note: SeamlessM4T v2 downloads freely, but its weights are CC-BY-NC-4.0 and may not be used commercially; only the
+    code and the speech encoder are MIT. Meta publishes the metadata to rebuild its aligned training corpus, not the
+    full training mixture.
+  raw: weights:open(SeamlessM4T v2 Large as fairseq2 and Transformers checkpoints, ungated);data:partial(SeamlessAlign
+    metadata is published and rebuildable; the full training mixture is not);code:partial(inference, evaluation and a
+    demonstration fine-tuning script);license:CC-BY-NC-4.0(SeamlessM4T v1 and v2 and SeamlessStreaming weights; the code
+    is MIT);sibling-model:seamless-expressive(SeamlessExpressive, released with v2 under the Seamless Licensing Agreement
+    (noncommercial research only) behind a request form; a separate model, not a size of SeamlessM4T)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/seamless_communication/main/README.md
+    shows: 'README: "We have three license categories."; "The following models are CC-BY-NC 4.0 licensed as found in
+      the [LICENSE](LICENSE):" covering "SeamlessM4T models (v1 and v2)."; "We open-source the metadata to SeamlessAlign".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bf90146e41cb2bcc7cb64bc1209b9b2b3b6aec59fd48cbfff396ca46cb15ba15
+    establishes:
+    - license
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/seamless_communication/main/LICENSE
+    shows: 'LICENSE body: "Attribution-NonCommercial 4.0 International".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a7950c0fed88e9a177617e3836e9dc0ae4f4a96e59b15c3706de38ace171aca4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/facebook/seamless-m4t-v2-large?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=tags&expand[]=siblings
+    shows: 'Hub record for seamless-m4t-v2-large: "gated":false, tag "license:cc-by-nc-4.0", and seamlessM4T_v2_large.pt
+      with safetensors shards.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1fba3a3f8a5056fd1a4d8b3c4556346912a771195b29932265ea2ff6b9bf416b
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/seamless_communication/main/src/seamless_communication/cli/m4t/finetune/README.md
+    shows: 'Fine-tuning README: "The trainer and dataloader were designed mainly for demonstration purposes."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c0e9c23a6e1abcaef971d7dad09f21fada4bc8256cf0d698592bf4b50dec33f0
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/seamless_communication/main/SEAMLESS_LICENSE
+    shows: SEAMLESS_LICENSE, titled "Seamless Licensing Agreement", grants use "solely for Noncommercial Research Uses".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0a8e7e2656ad1fd13243a496be6aed6ba3e9e91bf7a597d538c4d3f30baefc82
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of the Transformers-format checkpoints; the fairseq2 repositories report none because
+    the Hub does not count their files.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=seamless&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: seamless-m4t-v2-large 299,813, hf-seamless-m4t-medium 114,820, hf-seamless-m4t-large
+      718, seamless-streaming 0.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4b707bc72d6b6cdd7e4adac77d8055859c2a647824688a9b0c91aec05a4501c3
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'task coverage: speech-to-speech, speech-to-text and text-to-speech translation plus ASR; absent from
+    both ASR boards'
+  value: Speech-to-speech, speech-to-text, text-to-speech and text-to-text translation and ASR in one model, 101 speech
+    input languages and 35 speech output languages; the card links FLEURS, CoVoST2 and CVSS-C metrics files but gives
+    no figures, and no Seamless checkpoint is on the Open ASR Leaderboard.
+  confidence: low
+  note: The only open model on the map that translates speech directly into speech in dozens of languages. Its results
+    sit in downloadable metrics files rather than on a public board, so it sits a step below Whisper.
+  relative_to: whisper
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/facebook/seamless-m4t-v2-large/raw/main/README.md
+    shows: 'Card: "Speech-to-speech translation (S2ST)"; "101 languages for speech input."; "35 languages for speech
+      output."; "The evaluation data ids for FLEURS, CoVoST2 and CVSS-C can be found".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b67e1da78fa5f52f4b5d8194b59d1ac829d7ee0dd3984153b3ad2022da6d7441
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: The results CSV lists no facebook/seamless row among its 71 models.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1

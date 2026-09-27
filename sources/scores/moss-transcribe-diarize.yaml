@@ -1,0 +1,106 @@
+product: moss-transcribe-diarize
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: 0.9B safetensors checkpoint on the Hub, ungated
+    data:
+      value: closed
+      detail: trained on in-the-wild recordings that are not listed or released
+    code:
+      value: partial
+      detail: inference, serving and a minimal fine-tuning script
+    license:
+    - name: Apache-2.0
+      detail: code and the 0.9B weights
+    context:
+      api-only-tier:
+        value: MOSS-Transcribe-Diarize Pro
+        detail: a stronger model offered only through MOSI's online playground; not distributed, so excluded
+  governing_release: MOSS-Transcribe-Diarize 0.9B (2026-07)
+  confidence: medium
+  note: The 0.9B model and its code are Apache-2.0 and download freely, but the training recordings are neither listed
+    nor released and only a minimal fine-tuning script is published. A stronger Pro model is offered only in MOSI's hosted
+    playground.
+  raw: weights:open(0.9B safetensors checkpoint on the Hub, ungated);data:closed(trained on in-the-wild recordings that
+    are not listed or released);code:partial(inference, serving and a minimal fine-tuning script);license:Apache-2.0(code
+    and the 0.9B weights);api-only-tier:MOSS-Transcribe-Diarize Pro(a stronger model offered only through MOSI's online
+    playground; not distributed, so excluded)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize/raw/main/README.md
+    shows: 'Card: "MOSS-Transcribe-Diarize 0.9B is licensed under the Apache License 2.0."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0d87aefa6a5cbe31b4d93ebe7942fe2480722923675623e4504ce4148f695bfb
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/OpenMOSS-Team/MOSS-Transcribe-Diarize?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=tags&expand[]=siblings
+    shows: 'Hub record: "gated":false and model-00000-of-00001.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f74efa597e4ec6b6111a8404541d54414fd045456a8eeb6644cf725224222615
+    establishes:
+    - weights
+  - url: https://arxiv.org/abs/2601.01554
+    shows: 'Abstract: "Trained on extensive real wild data and equipped with a 128k context window for up to 90-minute
+      inputs".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2074d23ebcd7e3c360c334e2e609107cb3ec833460f53ea4b9f7c59e2a42a074
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/OpenMOSS/MOSS-Transcribe-Diarize/main/FINETUNING.md
+    shows: 'FINETUNING.md: "`finetune.py` provides a minimal fine-tuning workflow built on the Hugging Face Transformers
+      `Trainer`."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 81faaf68246334143ede4d5c22337c7ddc754f85e74f2f08f61dc5620a8f599a
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/OpenMOSS/MOSS-Transcribe-Diarize/main/README.md
+    shows: 'README: "* 2026-07-09: Open-sourced MOSS-Transcribe-Diarize 0.9B."; "[MOSS-Transcribe-Diarize Pro](https://platform.mosi.cn/app/playground)
+      is a stronger model with higher overall performance and is available through the online playground."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5ed43e1cd2c764d8fe8302dc3d539b239d4ba5d1bfc38b8522596232e5b8566f
+    establishes:
+    - weights
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of the 0.9B checkpoint within about three months of its open release.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=OpenMOSS-Team&search=MOSS-Transcribe&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Trailing-30-day downloads: OpenMOSS-Team/MOSS-Transcribe-Diarize 165,491.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 275269c53a787f861333e215ed46aea395e2aecca015c927fb243b64e5ef8f72
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: OpenMOSS-Team/MOSS-Transcribe-Diarize ranks 21st of 71 at 4.64% average WER, and also produces speaker labels
+    and timestamps in the same pass.
+  confidence: medium
+  note: Close to the best open recognizers on English accuracy while also diarizing long recordings, a step below Qwen3-ASR.
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV row "OpenMOSS-Team/MOSS-Transcribe-Diarize,4.63625".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://raw.githubusercontent.com/OpenMOSS/MOSS-Transcribe-Diarize/main/README.md
+    shows: 'README: "an open-source SOTA end-to-end audio understanding model for long-form multi-speaker transcription,
+      diarization, timestamps, and acoustic event awareness".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5ed43e1cd2c764d8fe8302dc3d539b239d4ba5d1bfc38b8522596232e5b8566f

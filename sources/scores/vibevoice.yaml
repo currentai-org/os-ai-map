@@ -1,0 +1,112 @@
+product: vibevoice
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: eight checkpoints on the Hub, ungated; the Large and 7B TTS repositories were withdrawn
+    data:
+      value: described
+      detail: the cards give languages and properties of the training audio only
+    code:
+      value: partial
+      detail: ASR inference and LoRA fine-tuning; the TTS code was removed in 2025-09
+    license:
+    - name: MIT
+      detail: every checkpoint and the code; the TTS cards add that the models are intended for research use
+  governing_release: VibeVoice-ASR-Streaming (2026-09)
+  confidence: medium
+  note: Every VibeVoice checkpoint, including the current streaming ASR models, is MIT-licensed and downloads freely.
+    Microsoft describes the training audio without releasing it, and publishes ASR fine-tuning code but not the training
+    pipeline.
+  raw: weights:open(eight checkpoints on the Hub, ungated; the Large and 7B TTS repositories were withdrawn);data:described(the
+    cards give languages and properties of the training audio only);code:partial(ASR inference and LoRA fine-tuning;
+    the TTS code was removed in 2025-09);license:MIT(every checkpoint and the code; the TTS cards add that the models
+    are intended for research use)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=microsoft&search=VibeVoice&limit=100
+    shows: 'Family listing: eight microsoft/VibeVoice* repositories, all tagged "license:mit" and ungated, the newest
+      VibeVoice-ASR-Streaming-7B and -1.5B created 2026-09-02.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d0d77e849430770d8eaceeb473192f5d2c961247e5a2b10322daa93970e55d9d
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/VibeVoice/HEAD/LICENSE
+    shows: 'LICENSE body: "MIT License" / "Copyright (c) 2025 Microsoft".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 98a96c38494df4963951e32b81ec4effebe4c8a812ab8d9e7d185d59e86fe2fc
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/VibeVoice/HEAD/README.md
+    shows: 'README: "we have removed the VibeVoice-TTS code from this repository."; "The VibeVoice-ASR [finetuning code](finetuning-asr/README.md)
+      is now available!"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b1fe27ee5b77e30b4a82b76e0f279157ffddc43f782b094ffe07f90383e62537
+    establishes:
+    - code
+  - url: https://huggingface.co/microsoft/VibeVoice-1.5B/raw/main/README.md
+    shows: 'Card: "the model is trained only on English and Chinese data"; "The VibeVoice model is limited to research
+      purpose use exploring highly realistic audio dialogue generation".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9a881db6567b6091dae09a56fc31edc6647ba04f74c575fa99c838b72c68879d
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/microsoft/VibeVoice/HEAD/finetuning-asr/README.md
+    shows: Fine-tuning README with a "## Training" section using LoRA ("pip install peft").
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0dde0faf3f195f31f8b4807cf76d8356a1b9a3d2e12fc2e69e8e173901a34b5d
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads summed over the ASR and TTS checkpoints, split roughly evenly between VibeVoice-ASR and
+    the 1.5B TTS model.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=microsoft&search=VibeVoice&limit=100
+    shows: 'Trailing-30-day downloads: VibeVoice-ASR 739,222, VibeVoice-1.5B 714,527, VibeVoice-Realtime-0.5B 199,522,
+      VibeVoice-ASR-HF 57,059, VibeVoice-ASR-BitNet 52,719, VibeVoice-ASR-Streaming-1.5B 11,760, VibeVoice-ASR-Streaming-7B
+      6,732.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d0d77e849430770d8eaceeb473192f5d2c961247e5a2b10322daa93970e55d9d
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: microsoft/VibeVoice-ASR-HF ranks 49th of 71 at 5.58% average WER; the VibeVoice 1.5B TTS model ranks 76th of
+    91 on the Artificial Analysis TTS leaderboard.
+  confidence: medium
+  note: Mid-table on short English clips, level with Whisper, though its draw is hour-long transcription with speaker
+    labels in a single pass, which that board does not test.
+  relative_to: whisper
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV row "microsoft/VibeVoice-ASR-HF,5.575".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"VibeVoice 1.5B" (creator Microsoft) with "elo":953.25.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205
+  - url: https://raw.githubusercontent.com/microsoft/VibeVoice/HEAD/README.md
+    shows: 'README: "a unified streaming ASR model"; "60-minute long-form audio in a single pass".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b1fe27ee5b77e30b4a82b76e0f279157ffddc43f782b094ffe07f90383e62537

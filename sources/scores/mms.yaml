@@ -1,0 +1,105 @@
+product: mms
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: ASR, language-ID and per-language VITS TTS checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: the MMS-lab and unlabeled corpora are not released
+    code:
+      value: partial
+      detail: inference and adapter fine-tuning; pretraining points to the wav2vec recipes
+    license:
+    - name: CC-BY-NC-4.0
+      detail: every MMS checkpoint, code and weights alike
+  governing_release: MMS (2023)
+  confidence: high
+  note: Every MMS checkpoint downloads freely but is licensed CC-BY-NC-4.0, which rules out commercial use. The labeled
+    and unlabeled corpora it was trained on are not released.
+  raw: weights:open(ASR, language-ID and per-language VITS TTS checkpoints on the Hub, ungated);data:closed(the MMS-lab
+    and unlabeled corpora are not released);code:partial(inference and adapter fine-tuning; pretraining points to the
+    wav2vec recipes);license:CC-BY-NC-4.0(every MMS checkpoint, code and weights alike)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/mms/README.md
+    shows: 'MMS README: "The MMS code and model weights are released under the CC-BY-NC 4.0 license."; the language-coverage
+      table names "MMS-lab"; fine-tuning goes through "the official 🤗 Transformers examples".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 05c630cdfeb42412c68591f5182b4d79de6cdd1178b5f287f0a94b3406e0cd18
+    establishes:
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models/facebook/mms-1b-all?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=tags&expand[]=siblings
+    shows: 'Hub record for mms-1b-all: "gated":false, tag "license:cc-by-nc-4.0", with per-language adapter safetensors
+      files.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2e7972c40d61c369d6e289f1fa3517b0cb7cc184a252e5986d5af8fa0359b8a1
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=facebook&search=mms&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: 'Family listing: every facebook/mms-* ASR, LID and TTS checkpoint tagged "license:cc-by-nc-4.0", created between
+      May and September 2023.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b159f64a9228194472f18b28067b7f2dd0e47500feffa936b1552dad32411b3b
+    establishes:
+    - license
+  - url: https://huggingface.co/facebook/mms-1b-all/raw/main/README.md
+    shows: 'Card: "has been fine-tuned from [facebook/mms-1b](https://huggingface.co/facebook/mms-1b) on 1162 languages."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3c0f40d0b0087814e046376117fda9b1b10cc6fc395301a96218a6f954dde359
+    establishes:
+    - data
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: 'Hugging Face downloads summed across the family: the recognizer and language-ID checkpoints plus the per-language
+    TTS voices, which together clear a million a month though no single checkpoint does.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=mms&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: The 13 non-TTS facebook/mms-* repositories sum to 629,777 trailing-30-day downloads, led by mms-1b-all at
+      266,668 and mms-lid-1024 at 180,708.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b159f64a9228194472f18b28067b7f2dd0e47500feffa936b1552dad32411b3b
+  - url: https://huggingface.co/api/models?author=facebook&search=mms-tts&sort=downloads&direction=-1&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
+    shows: The top 1,000 facebook/mms-tts-* repositories by downloads sum to 599,826, led by mms-tts-bam and mms-tts-eng.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bf0c2ccad019e87d5c6ddc6df7240f656896b3c6b6ac3a522ecad8bae2a16ba2
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'coverage: recognition in 1,100+ languages, identification in about 4,000, TTS per language; absent from
+    both ASR boards'
+  value: One recognizer covering 1,162 languages through adapters, language identification models up to 4,017 languages,
+    and a VITS voice per language; the cards publish no accuracy figures and no MMS checkpoint is on the Open ASR Leaderboard.
+  confidence: low
+  note: Unmatched breadth for low-resource languages, with recognition, identification and synthesis in one family. Its
+    accuracy is not compared on any public board, so it sits a step below Whisper, which is.
+  relative_to: whisper
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/fairseq/main/examples/mms/README.md
+    shows: 'README: "building a single multilingual speech recognition model supporting over 1,100 languages (more than
+      10 times as many as before), language identification models able to identify over [4,000 languages]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 05c630cdfeb42412c68591f5182b4d79de6cdd1178b5f287f0a94b3406e0cd18
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: The results CSV lists no facebook/mms row among its 71 models.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
