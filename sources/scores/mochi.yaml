@@ -1,0 +1,79 @@
+product: mochi
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: mochi-1-preview downloads from Hugging Face without a gate
+    data:
+      value: closed
+      detail: the README says only that the model was trained from scratch; no data is described or released
+    code:
+      value: partial
+      detail: inference harness and a LoRA fine-tuning trainer; no pretraining code
+    license:
+    - name: Apache-2.0
+      detail: OSI; weights and code
+  confidence: high
+  note: Mochi 1 is released under Apache 2.0 and downloads without a gate. Genmo publishes inference and LoRA fine-tuning
+    code but not the pretraining pipeline or data.
+  raw: weights:open(mochi-1-preview downloads from Hugging Face without a gate);data:closed(the README says only
+    that the model was trained from scratch; no data is described or released);code:partial(inference harness and
+    a LoRA fine-tuning trainer; no pretraining code);license:Apache-2.0(OSI; weights and code)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/genmoai/mochi/main/LICENSE
+    shows: 'LICENSE body: "Apache License Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5c62a354b2cbebb832cafcfb29677e98d62ea875da19d82ebc700246ffe7e5cf
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/genmo/mochi-1-preview?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: cardData license apache-2.0, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5c247b3cfc6b04322b292f3879cd3e78f0836ab9987e738b22c082cd0c720c48
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/genmoai/mochi/main/README.md
+    shows: 'README: "Trained entirely from scratch"; "We provide an easy-to-use trainer that allows you to build
+      LoRA fine-tunes of Mochi on your own videos"; no dataset is described.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d9d7fa08cd191e96940f77ae5d7d84636259e44017271fd63bc3a1a1359081e0
+    establishes:
+    - code
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the mochi-1-preview checkpoint.
+  sources:
+  - url: https://huggingface.co/api/models/genmo/mochi-1-preview?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for genmo/mochi-1-preview: downloads 7819.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5c247b3cfc6b04322b292f3879cd3e78f0836ab9987e738b22c082cd0c720c48
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: Mochi 1 73rd of 86 at an
+    Elo of 1000.'
+  confidence: medium
+  relative_to: wan
+  relation: at
+  note: Mochi 1 places in the lower half of the video arena, near Wan 2.2 and HunyuanVideo. Newer open models such
+    as LTX-2.5 place well above it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: Leaderboard entry "Mochi 1" (rank 73, Elo 1000.0, open weights at huggingface.co/genmo/mochi-1-preview).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9

@@ -1,0 +1,106 @@
+product: ltx
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: the LTX-2, 2.3 and 2.5 checkpoints and the LTX-Video line download from Hugging Face; LTX-2.5 sits
+        behind an automatically granted click-through
+    data:
+      value: closed
+      detail: the cards say only that the models were trained on a large video dataset; nothing is released
+    code:
+      value: open
+      detail: the ltx-trainer package publishes LoRA, IC-LoRA and full fine-tuning; pretraining code is not released
+    license:
+    - name: LTX-2.x-Community-License
+      detail: 'LTX-2.5: commercial use free for entities under USD 10M annual revenue, a paid license above it,
+        with use-based restrictions; LTX-2 and 2.3 carry the LTX-2 Community License on the same terms'
+    - name: LTXV-Open-Weights-License-0.X
+      detail: LTX-Video 0.9.6 to 0.9.8, with the same USD 10M threshold
+  governing_release: LTX-2.5
+  confidence: high
+  note: LTX is free for commercial use by organizations under USD 10M in annual revenue, with a paid license above
+    that. Lightricks publishes a fine-tuning trainer but not the pretraining code or data.
+  raw: 'weights:open(the LTX-2, 2.3 and 2.5 checkpoints and the LTX-Video line download from Hugging Face; LTX-2.5
+    sits behind an automatically granted click-through);data:closed(the cards say only that the models were trained
+    on a large video dataset; nothing is released);code:open(the ltx-trainer package publishes LoRA, IC-LoRA and
+    full fine-tuning; pretraining code is not released);license:LTX-2.x-Community-License(LTX-2.5: commercial use
+    free for entities under USD 10M annual revenue, a paid license above it, with use-based restrictions; LTX-2
+    and 2.3 carry the LTX-2 Community License on the same terms)+LTXV-Open-Weights-License-0.X(LTX-Video 0.9.6 to
+    0.9.8, with the same USD 10M threshold)'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/Lightricks/LTX-2/main/LICENSE-2_x
+    shows: 'License body "LTX-2.x Community License Agreement / License date: August 11, 2026": "Entities with annual
+      revenues of at least $10,000,000 (the "Commercial Entities") are required to obtain a paid license".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: be75acae5c99b0fb16ed6cfbf8f731e5121a729bef112d20337699407e796451
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Lightricks/LTX-2/main/LICENSE-2
+    shows: '"LTX-2 Community License Agreement / License date: January 5, 2026", with the same USD 10,000,000 revenue
+      clause.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c325da090976a313b214bf0d6a1738003b96505c01c46043e80edc200a72c147
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=Lightricks&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of the Lightricks organization: the LTX-2, 2.3, 2.5 and LTX-Video checkpoints are
+      public.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1600cbcec1012a6c941659879207f9d84fa9c56c3536f5a50a19a732ca1f0b06
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/Lightricks/LTX-2/main/README.md
+    shows: 'README: "ltx-trainer - Training and fine-tuning tools for LoRA, full fine-tuning, and IC-LoRA".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9c58c07e95872d9b810da302518e72795c3aec8d26256b7241438a204504f821
+    establishes:
+    - code
+  - url: https://huggingface.co/Lightricks/LTX-Video/raw/main/README.md
+    shows: 'LTX-Video card: "Trained on a large-scale dataset of diverse videos"; no dataset is released.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d847f02c010f00a3164ff92b0f94b6a5b63e1c790ec7387f3200307e04fb2e1
+    establishes:
+    - data
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the main LTX-2 and LTX-Video checkpoints, led by LTX-2.5
+    and LTX-2.3. The LoRA and upscaler repositories are left out.
+  sources:
+  - url: https://huggingface.co/api/models?author=Lightricks&sort=downloads&direction=-1&limit=100
+    shows: 'Organization listing sorted by downloads: LTX-2.5 1604804, LTX-2.3 1098602, LTX-Video 773634, LTX-2.3-fp8
+      548583 in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1600cbcec1012a6c941659879207f9d84fa9c56c3536f5a50a19a732ca1f0b06
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: LTX-2.5 Fast 16th of 86
+    at an Elo of 1218, second among open-weights entries behind MiniMax H3; on the with-audio board LTX-2.5 Fast
+    is also the second open-weights entry.'
+  confidence: medium
+  relative_to: minimax-hailuo
+  relation: two_below
+  note: LTX-2.5 places in the upper half of the video arena, ahead of Veo 3.1 on the silent board and second only
+    to MiniMax H3 among downloadable models. MiniMax H3 sits among the three leaders overall, well above it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: 'Arena FAQ: "MiniMax H3 currently leads among open weights Text to Video models with audio ... followed
+      by LTX-2.5 Fast (Elo 1055)"; without-audio leaderboard entry "LTX-2.5 Fast" (rank 16, Elo 1217.6).'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9

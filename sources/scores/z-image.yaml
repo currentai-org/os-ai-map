@@ -1,0 +1,102 @@
+product: z-image
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: Z-Image-Turbo and Z-Image download from Hugging Face without a gate
+    data:
+      value: closed
+      detail: the cards and README neither release nor describe the training data
+    code:
+      value: partial
+      detail: the repository holds inference code only; training is supported by the third-party DiffSynth-Studio
+    license:
+    - name: Apache-2.0
+      detail: OSI; both checkpoints and the code
+  confidence: high
+  note: Both Z-Image checkpoints are released under Apache 2.0 and download without a gate. The first-party repository
+    holds inference code only, and the training data is not published.
+  raw: weights:open(Z-Image-Turbo and Z-Image download from Hugging Face without a gate);data:closed(the cards and
+    README neither release nor describe the training data);code:partial(the repository holds inference code only;
+    training is supported by the third-party DiffSynth-Studio);license:Apache-2.0(OSI; both checkpoints and the
+    code)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/Tongyi-MAI/Z-Image-Turbo?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: cardData license apache-2.0, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7949a0473befe998e68059db5277a202e100e704a1bd714a502f7a11e344b512
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models/Tongyi-MAI/Z-Image?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: cardData license apache-2.0, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b637278a2318a8d8283f6ac6bf4819c90a45ab0b416b189096f212ad24e0cef8
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/Tongyi-MAI/Z-Image@main/LICENSE
+    shows: 'Repository LICENSE body: "Apache License Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/Tongyi-MAI/Z-Image/files/main
+    shows: 'Repository file list: inference.py, batch_inference.py and the model sources under src/zimage; no training
+      scripts.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d7634d8bbd3d3b83578fd900c9c8bb05448341d6f27dca59dc838dfb71a60917
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/Tongyi-MAI/Z-Image@main/README.md
+    shows: 'README: "DiffSynth-Studio has provided more support for Z-Image, including LoRA training, full training,
+      distillation training, and low-VRAM inference"; no training dataset is named or released.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 974f81967af2ade1a392b1849b3a630eb82fd9a52c322d9b3aa8d2a5a1e07544
+    establishes:
+    - code
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the two checkpoints, nearly all of them for Z-Image-Turbo.
+  sources:
+  - url: https://huggingface.co/api/models/Tongyi-MAI/Z-Image-Turbo?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for Tongyi-MAI/Z-Image-Turbo: downloads 609489.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7949a0473befe998e68059db5277a202e100e704a1bd714a502f7a11e344b512
+  - url: https://huggingface.co/api/models/Tongyi-MAI/Z-Image?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for Tongyi-MAI/Z-Image: downloads 59864.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b637278a2318a8d8283f6ac6bf4819c90a45ab0b416b189096f212ad24e0cef8
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board
+  value: 'Artificial Analysis Text to Image Arena, overall board read 2026-09-26: Z-Image Turbo 76th of 163 at an
+    Elo of 940; the base Z-Image 111th.'
+  confidence: medium
+  relative_to: flux
+  relation: at
+  note: Z-Image Turbo places in the upper half of the text-to-image arena, a strong result for a model small enough
+    for a consumer GPU. It trails FLUX.2 [dev] there and sits in the same group of open models.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: Arena leaderboard entries "Z-Image Turbo" (rank 76, Elo 940.4, open weights at huggingface.co/Tongyi-MAI/Z-Image-Turbo)
+      and "Z-Image Base" (rank 111).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d21dc3f75a506b5cbf4ccae601dcc91335e7d3c9eaaf9fc1b823c578152d53c4

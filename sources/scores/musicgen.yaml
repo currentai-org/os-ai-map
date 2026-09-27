@@ -1,0 +1,84 @@
+product: musicgen
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: every MusicGen checkpoint downloads from Hugging Face without a gate
+    data:
+      value: described
+      detail: trained on 20K hours of licensed music from Meta, Shutterstock and Pond5; the datasets are not provided
+    code:
+      value: open
+      detail: the MusicGen training pipeline is published in AudioCraft
+    license:
+    - name: CC-BY-NC-4.0
+      detail: the weights; the AudioCraft code is MIT
+  confidence: high
+  note: The MusicGen weights are licensed for non-commercial use only, even though the code that trains and runs
+    them is MIT. Meta publishes the training pipeline, and the licensed training music is described but not provided.
+  raw: weights:open(every MusicGen checkpoint downloads from Hugging Face without a gate);data:described(trained
+    on 20K hours of licensed music from Meta, Shutterstock and Pond5; the datasets are not provided);code:open(the
+    MusicGen training pipeline is published in AudioCraft);license:CC-BY-NC-4.0(the weights; the AudioCraft code
+    is MIT)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/facebookresearch/audiocraft/files/main/LICENSE_weights
+    shows: 'LICENSE_weights body: "Attribution-NonCommercial 4.0 International".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 336255dc30193e8e15d689d9481bb05673d89055718f3a96923a7ffb99adbbaf
+    establishes:
+    - license
+  - url: https://huggingface.co/facebook/musicgen-medium/raw/main/README.md
+    shows: 'Card: "Code is released under MIT, model weights are released under CC-BY-NC 4.0"; "The model was trained
+      on licensed data using the following sources: the Meta Music Initiative Sound Collection, Shutterstock music
+      collection and the Pond5 music collection."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ab437e2412c0405c964bbb5d3ce18bfb3e8f35a30282561fa64f7a383a65d6f2
+    establishes:
+    - license
+    - weights
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/audiocraft/files/main/docs/MUSICGEN.md
+    shows: '"we do NOT provide any of the datasets used for training MusicGen"; "The MusicGenSolver implements MusicGen''s
+      training pipeline."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e4bbf6a8544a30e9e3cac1ee5bb538e26641cf71098ec57f352c0516d4c70ae5
+    establishes:
+    - data
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the MusicGen checkpoints, nearly all of them for musicgen-medium.
+  sources:
+  - url: https://huggingface.co/api/models?search=musicgen&author=facebook&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: musicgen-medium 1947422, musicgen-small 142904, musicgen-large 89340 in
+      the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4df6a15e40e3d1f98d5965ac91ed88ec7bf364e95a2abb581fdbd5b402947e3a
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Music Arena, instrumental board
+  value: 'Artificial Analysis Music Arena, AA-Music-Instrumental v1.1, read 2026-09-26: MusicGen 19th of 19 at an
+    Elo of 882.'
+  confidence: medium
+  relative_to: stable-audio
+  relation: at
+  note: MusicGen places last on the instrumental music arena, below Stable Audio 3 Medium and far below the closed
+    services. It is still one of only two downloadable model families ranked there.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: Leaderboard entry "MusicGen" (rank 19 of 19, Elo 882.3) on "AA-Music-Instrumental v1.1".
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bf0b4602c881de5a29bdff7d49a1ba6a0ac879ecf6e5c6b6b1cc235164110688

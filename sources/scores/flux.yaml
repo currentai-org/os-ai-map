@@ -1,0 +1,128 @@
+product: flux
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: fourteen downloadable image checkpoints across FLUX.1 and FLUX.2; the [dev]-licensed ones sit behind
+        an automatically granted click-through on Hugging Face
+    data:
+      value: closed
+      detail: the model cards describe filtering of the pre-training data and release none of it
+    code:
+      value: partial
+      detail: the flux and flux2 repositories carry minimal inference code; no training pipeline
+    license:
+    - name: FLUX-Non-Commercial-License-2.1
+      detail: 'the most restrictive license among the distributed checkpoints: FLUX.2 [dev] and the [klein] 9B models,
+        alongside FLUX [dev] Non-Commercial License v2.0 and the FLUX.1 [dev] Non-Commercial License v1.1.1; revenue-generating
+        use is excluded and a commercial license is sold separately'
+    - name: Apache-2.0
+      detail: FLUX.1 [schnell] and the FLUX.2 [klein] 4B models
+  confidence: high
+  note: The most widely downloaded FLUX checkpoints, FLUX.1 [dev], FLUX.2 [dev] and the larger [klein] models, may
+    not be used commercially without a paid license from Black Forest Labs; only [schnell] and the small [klein]
+    4B models are Apache 2.0. Only inference code is published and the training data is not released.
+  raw: 'weights:open(fourteen downloadable image checkpoints across FLUX.1 and FLUX.2; the [dev]-licensed ones sit
+    behind an automatically granted click-through on Hugging Face);data:closed(the model cards describe filtering
+    of the pre-training data and release none of it);code:partial(the flux and flux2 repositories carry minimal
+    inference code; no training pipeline);license:FLUX-Non-Commercial-License-2.1(the most restrictive license among
+    the distributed checkpoints: FLUX.2 [dev] and the [klein] 9B models, alongside FLUX [dev] Non-Commercial License
+    v2.0 and the FLUX.1 [dev] Non-Commercial License v1.1.1; revenue-generating use is excluded and a commercial
+    license is sold separately)+Apache-2.0(FLUX.1 [schnell] and the FLUX.2 [klein] 4B models)'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux2@main/model_licenses/LICENSE-FLUX-NON-COMMERICAL
+    shows: License body titled "FLUX Non-Commercial License v2.1"; "Please see https://bfl.ai/licensing if you would
+      like a commercial license."
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e98f298dae1bcc91aeb13e30948d8600418d8a161840e34078bbaf2b18abcecc
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux2@main/model_licenses/LICENSE-FLUX-DEV
+    shows: '"FLUX [dev] Non-Commercial License v2.0": "use (a) for revenue-generating activity, (b) in direct interactions
+      with or that has impact on end users, or (c) to train, fine tune, or distill other models for commercial use,
+      in each case, is not a Non-Commercial Purpose."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 49d6e28784b26ba85d2849a68c2d1144600f0bf52136878cd152f604c65580a8
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux@main/model_licenses/LICENSE-FLUX1-dev
+    shows: License body titled "FLUX.1 [dev] Non-Commercial License v1.1.1", covering FLUX.1 [dev], Fill, Depth,
+      Canny, Redux and Kontext [dev].
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6f7b3d94ddd94380a4dc2d1211ed57883d320dea96f4393b34d4a454041029e1
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux@main/model_licenses/LICENSE-FLUX1-schnell
+    shows: 'FLUX.1 [schnell] license body: "Apache License Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 15ec800f93139ec3f09a72d6afafca51496ad40cb3adf5112fd80c28e69d5140
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=black-forest-labs&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of the black-forest-labs organization: the FLUX.1 and FLUX.2 checkpoints are public
+      repositories, the [dev]-licensed ones with gated "auto".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c863e519c6e02bfbfc662044281594cbedefb9dc47a5880ee6599c8aa9e41569
+    establishes:
+    - weights
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux2@main/README.md
+    shows: 'README: "This repo contains minimal inference code to run image generation & editing with our FLUX.2
+      open-weight models."; its table links the [klein] 4B models to Apache 2.0 and the 9B models to the FLUX Non-Commercial
+      License.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 435753749320bbb395c15983e63e3dc73936c03f0f1870c628e7bf922c55eef7
+    establishes:
+    - code
+    - license
+  - url: https://cdn.jsdelivr.net/gh/black-forest-labs/flux2@main/model_cards/FLUX.2-dev.md
+    shows: 'FLUX.2 [dev] card: "We filtered pre-training data for multiple categories of “not safe for work” (NSFW)
+      and known child sexual abuse material (CSAM)"; no dataset is released.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a9816150ada00e765433c55628f8ef8a3338b32e97689441728b5b4d7a9405ae
+    establishes:
+    - data
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads summed across the fourteen FLUX.1 and FLUX.2 base checkpoints,
+    led by FLUX.1 [dev]. Quantized and LoRA repositories are left out.
+  sources:
+  - url: https://huggingface.co/api/models?author=black-forest-labs&sort=downloads&direction=-1&limit=100
+    shows: 'Organization listing sorted by downloads: FLUX.1-dev 692264, FLUX.1-schnell 524812, FLUX.2-dev 406993,
+      FLUX.2-klein-4B 404007 and ten more checkpoints in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c863e519c6e02bfbfc662044281594cbedefb9dc47a5880ee6599c8aa9e41569
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Image Arena, overall board
+  value: 'Artificial Analysis Text to Image Arena, overall board read 2026-09-26: FLUX.2 [dev], the best-placed
+    downloadable FLUX model, 41st of 163 at an Elo of 1000; fourth among open-weights entries behind Qwen-Image-2.1
+    and two Ideogram 4.0 entries. The API-only FLUX.2 [flex] places 23rd.'
+  confidence: medium
+  relative_to: qwen-image
+  relation: one_below
+  note: FLUX.2 [dev] places in the upper half of the text-to-image arena and among the strongest open-weight image
+    models, a step below Qwen-Image-2.1, which leads the open models there. The vendor's better-placed FLUX.2 tiers
+    are API-only and are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
+    shows: Arena leaderboard entries "FLUX.2 [dev]" (rank 41, Elo 1000.0, open weights at huggingface.co/black-forest-labs/FLUX.2-dev)
+      and "FLUX.2 [flex]" (rank 23, no open weights).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d21dc3f75a506b5cbf4ccae601dcc91335e7d3c9eaaf9fc1b823c578152d53c4

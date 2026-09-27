@@ -1,0 +1,102 @@
+product: wan
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: all Wan 2.1 and 2.2 checkpoints, including Wan-Animate-2 and Wan-Dancer, download from Hugging Face
+        without a gate
+    data:
+      value: described
+      detail: the READMEs describe the curation and growth of the training data; none of it is released
+    code:
+      value: partial
+      detail: the official repositories carry inference code only; training is pointed to DiffSynth-Studio
+    license:
+    - name: Apache-2.0
+      detail: OSI; every distributed checkpoint and the code
+  governing_release: Wan 2.2
+  confidence: high
+  note: Every downloadable Wan release is Apache 2.0 and downloads without a gate. The official repositories ship
+    inference code only and the training data is described but not released; Wan 2.5 and later are not downloadable
+    at all and are left out of this reading.
+  raw: weights:open(all Wan 2.1 and 2.2 checkpoints, including Wan-Animate-2 and Wan-Dancer, download from Hugging
+    Face without a gate);data:described(the READMEs describe the curation and growth of the training data; none
+    of it is released);code:partial(the official repositories carry inference code only; training is pointed to
+    DiffSynth-Studio);license:Apache-2.0(OSI; every distributed checkpoint and the code)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/Wan-Video/Wan2.2/main/LICENSE.txt
+    shows: 'LICENSE.txt body: "Apache License / Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=Wan-AI&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of the Wan-AI organization: the Wan 2.1 and 2.2 checkpoints, all public; no Wan
+      2.5, 2.6, 2.7 or 3.0 repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 203ac94ecc3432957dea1e31962431de7f4df2cd58b41631f6ac48639ed480d4
+    establishes:
+    - weights
+    - license
+  - url: https://help.aliyun.com/en/model-studio/wan3-video-generation-api-reference
+    shows: 'Model Studio API reference: "wan3.0-video-prime" and "wan3.0-video" as API model names, "Currently in
+      preview".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cf6111402dfe11c3b5a9a33f0c7678e3c869de88c2ee29530866b95862cb8361
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/Wan-Video/Wan2.2/main/README.md
+    shows: 'README: "Wan2.2 is trained on a significantly larger data, with +65.6% more images and +83.2% more videos";
+      training is pointed to DiffSynth-Studio, "including ... LoRA training, full training".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 40222cb3a66cc89aa1cd84589d1fa696806c93c09cf1c4383b3994139202dfa1
+    establishes:
+    - data
+    - code
+  - url: https://ungh.cc/repos/Wan-Video/Wan2.2/files/main
+    shows: 'Wan2.2 file list: generate.py and the wan inference modules; no training script.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 70d6673129497f1054a0054e8d2b53447ed6b649d494d10e02aa1c957ae37869
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the Wan 2.1 and 2.2 checkpoints, most of them for
+    the Diffusers-format builds.
+  sources:
+  - url: https://huggingface.co/api/models?author=Wan-AI&sort=downloads&direction=-1&limit=100
+    shows: 'Organization listing sorted by downloads: Wan2.1-T2V-1.3B-Diffusers 264951, Wan2.2-TI2V-5B-Diffusers
+      159486, Wan2.2-I2V-A14B-Diffusers 143218 in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 203ac94ecc3432957dea1e31962431de7f4df2cd58b41631f6ac48639ed480d4
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: Wan 2.2 A14B, the best-placed
+    downloadable Wan model, 53rd of 86 at an Elo of 1116; the API-only Wan 3.0 leads the board and is not counted.'
+  confidence: medium
+  relative_to: ltx
+  relation: one_below
+  note: Wan 2.2 A14B places in the lower half of the video arena, behind the LTX-2.5 models among open weights.
+    Alibaba's own hosted Wan 3.0 tops the same board, but it cannot be downloaded.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
+    shows: 'Arena FAQ: "Wan 3.0 currently leads the Artificial Analysis Text to Video Arena (without audio) with
+      an Elo score of 1335"; leaderboard entry "Wan 2.2 A14B" (rank 53, Elo 1116.1, open weights at huggingface.co/Wan-AI/Wan2.2-T2V-A14B).'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9
