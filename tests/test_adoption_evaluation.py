@@ -488,9 +488,17 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # carla (robotics_embodied) declares its Python client: it talks to a separately run CARLA
     # server, so its installs count scripts rather than running simulators.
     assert inputs.non_primary_artifacts["carla"] == {("pypi", "carla")}
+    # The speech_audio promotion: seven open speech models declare the inference package that
+    # loads their Hub weights, so the package's installs are already inside the Hub downloads.
+    speech_packages = {
+        "kokoro": "kokoro", "chatterbox": "chatterbox-tts", "qwen-asr": "qwen-asr",
+        "qwen-tts": "qwen-tts", "f5-tts": "f5-tts", "voxcpm": "voxcpm", "moshi": "moshi",
+    }
+    for slug, package in speech_packages.items():
+        assert inputs.non_primary_artifacts[slug] == {("pypi", package)}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
-        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla",
+        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
     }
 
 

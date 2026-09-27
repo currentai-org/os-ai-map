@@ -1,0 +1,64 @@
+product: piper
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Piper is GPL-3.0, an OSI-approved copyleft license, and is maintained by a nonprofit foundation with no
+    commercial edition; the published repository is the whole engine.
+  raw: license:GPL-3.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/OHF-Voice/piper1-gpl/HEAD/COPYING
+    shows: 'COPYING body: "GNU GENERAL PUBLIC LICENSE" "Version 3, 29 June 2007".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0ae0485a5bd37a63e63603596417e4eb0e653334fa6c7f932ca3a0e85d4af227
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OHF-Voice/piper1-gpl/HEAD/README.md
+    shows: README carries "A library from the Open Home Foundation" badge; the foundation maintains it ("The Open
+      Home Foundation is looking for maintainers for Piper!") and it builds and trains from the repository.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a73f576020071a1d58701a40026a451385ef4dad4c9ba0a2499544d988d06e84
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of piper-tts, the package the README installs. Downloads count installs, not voices synthesized.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/piper-tts/recent
+    shows: '"last_month":893727 for piper-tts.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6d05f4322bd18274bd9af29cb9a97499220f839209ced58e4f548cbfddd3cfab
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: Local text-to-speech with its own voice models and a documented training path for new voices; one task.
+  confidence: medium
+  note: A complete local synthesizer with training support, but for one task and its own voice family.
+  relative_to: faster-whisper
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/OHF-Voice/piper1-gpl/HEAD/README.md
+    shows: '"A fast and local neural text-to-speech engine that embeds [espeak-ng][] for phonemization."; links
+      "[Training new voices][training]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a73f576020071a1d58701a40026a451385ef4dad4c9ba0a2499544d988d06e84

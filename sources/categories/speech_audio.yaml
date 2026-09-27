@@ -3,6 +3,12 @@ display_name: Speech & audio
 description: Models and speech-first engines whose headline capability is speech itself - recognition
   (ASR), synthesis (TTS), speech-to-speech conversation, and the diarization and voice-activity
   components around them.
+strapline: >-
+  The most accurate English speech recognizers are all proprietary: the nine services at the top of
+  the Open ASR Leaderboard, with the best open model, Qwen3-ASR, tenth. In synthesis the only
+  open-weights voice in the Artificial Analysis arena's top ten forbids commercial use, and the most
+  downloaded open voice, Kokoro, ranks 48th of 91. The engines that run speech on your own hardware,
+  from whisper.cpp to sherpa-onnx and Piper, are open source.
 weights:
   adopt: 0.4
   cap: 0.6
@@ -12,32 +18,90 @@ scoring_recipe:
     model: model
     software: software
   derived_from:
-    method: per-type extends over the shared model and software ladders, not yet verified against
-      hand-authored scores (no head products at seed)
+    method: per-type extends over the shared model and software ladders; evidence recorded under the
+      keys each ladder reads at promotion, and every recorded score reproduces
     checker: build/check_rubric.py
-  note: >-
+  note: |-
     Per-type extends, as ruled on #602 on 2026-09-25: models (open weights and the closed API
     comparators) climb the shared model ladder, and the speech-first engines and pipeline
-    components (faster-whisper, whisper.cpp, NeMo Speech, pyannote.audio, Silero VAD and the
-    rest) climb the shared software ladder. No pretrained, dataset or hardware ladder is needed.
-    License rulings the seed already relies on: CC-BY-4.0 reads permissive_non_osi and
-    CC-BY-NC-4.0 reads commercial_forbidden. The custom texts the sweep met (Coqui Public Model
-    License, Fish Audio Research License, the two Boson Higgs licenses, the Moonshine Community
-    License, the bilibili Model Use License, the BreezeBlue Research and Non-Commercial License)
-    are deferred to the single maintainer license-rulings issue, and a product carrying one is
-    deferred at promotion rather than scored by extending a shared tier here.
+    components climb the shared software ladder. No pretrained, dataset or hardware ladder is needed.
+    The first tranche (22 products, promoted 2026-09-27) needed no deferral: every license it carries
+    is already named by a shared tier, CC-BY-4.0 and the NVIDIA Open Model License as
+    permissive_non_osi and CC-BY-NC-4.0 as commercial_forbidden on the model ladder, GPL-3.0 as osi on
+    the software ladder. The custom texts the sweep met (Coqui Public Model License, Fish Audio
+    Research License, the two Boson Higgs licenses, the Moonshine Community License, the bilibili
+    Model Use License, the BreezeBlue Research and Non-Commercial License) belong to products still in
+    the registry; each is deferred at its own promotion rather than scored by extending a shared tier here.
 
-    CAPABILITY IS NOT ONE QUANTITY ACROSS THE WHOLE ROSTER, and the promotion PR must settle it
-    per type rather than force one ordering. ASR has a public board ordered by average WER (the
-    Hugging Face Open ASR Leaderboard) and TTS has an Elo arena with an open-weights board
-    (Artificial Analysis Speech Arena); neither covers the other task or any engine. The sweep's
-    working proposal is frontier coverage of speech tasks, five rungs: (1) single-task,
-    narrow-language or legacy; (2) single-task, multilingual, no current leaderboard presence;
-    (3) single-task at mid-table on a current public board; (4) single-task at or near the top of
-    a public board, or ASR and TTS in one line; (5) real-time full-duplex speech-to-speech,
-    anchored by Moshi. For software the same ladder reads as which rungs of models the engine can
-    serve and whether it streams. This is a proposal for build-rubric at promotion, not a ruling.
-products: []
+    The multi-SKU rule is applied as the shared ladder writes it: the most restrictive checkpoint whose
+    weights are published governs, gated or superseded ones included. It puts two products at 2 whose
+    current release is attribution-only: canary, because the 2024 canary-1b is still published under
+    CC-BY-NC-4.0 beside the CC-BY-4.0 1B v2, Flash and Canary-Qwen models, and moshi, because the gated
+    research checkpoint kyutai/moshika-rl-seamless is CC-BY-NC-4.0 while the README's release is CC-BY-4.0.
+    Whether a superseded or unlisted research checkpoint should count is a question for the shared
+    rule, not this category, and is raised for a maintainer. granite-speech stays a registry row for the
+    same reason: its current 5.0 line ships a CC-BY-NC-SA-4.0 sibling beside the Apache-2.0 one.
+
+    CAPABILITY. No single quantity orders recognition, synthesis, conversation and engines, so the
+    rungs are read per type against one five-step scale, and every band except the anchor names a
+    same-category peer with relative_to/relation.
+
+    Models are read on the current public board for their task, by position: the Hugging Face Open
+    ASR Leaderboard (English short-form, average WER, the 25-09-2026 version of 71 rows) for
+    recognizers; the Artificial Analysis speech-to-text table (WER, 58 rows) for a recognizer absent
+    from that board; the Artificial Analysis TTS leaderboard (Elo, 91 rows) for synthesizers. A family
+    is read by its best-placed declared checkpoint. 5: in the top ten of its board, or holds a real-time
+    full-duplex spoken conversation. 4: ranks 11-30. 3: ranks 31-60; or a synthesizer absent from the
+    arena whose card reports zero-shot cloning results on a shared public test set (Seed-TTS-eval), since
+    absence from a board is not evidence about quality. 2: ranks 61 or lower. 1: no board presence and a
+    single narrow task. Positions on boards of different lengths are not the same fraction, which is why
+    the band edges are ranks rather than percentiles and why each product's basis_detail names its board.
+
+    Engines are read on what they run and train. 5: trains as well as serves speech models across
+    recognition and synthesis, including checkpoints at rung 4 or above. 4: serves more than one speech
+    task (among ASR, TTS, diarization, VAD) with streaming, on servers, phones, embedded boards and the
+    web. 3: runs one speech task end to end (a recognizer, a synthesizer or diarization). 2: a single
+    pipeline component that produces no transcript or speech of its own (voice activity detection).
+    1: unused.
+
+    Top anchor: moshi (5), the only model here that listens and speaks at once. Board roots under it:
+    qwen-asr (5, the best open-weights row on the Open ASR Leaderboard) for recognition,
+    elevenlabs-tts (4) for synthesis, nemo (5) for engines.
+
+    Distribution at promotion (22 banded): 3 at 5, 6 at 4, 10 at 3, 3 at 2, none at 1. The widest rung,
+    3, holds 10 of 22, over the one-third review trigger. Its wording as it stands is the rank band
+    31-60 for models, one-task engines for software, and the unrated-synthesizer clause. Read against
+    the products, this is clustering rather than loose wording: the rung holds two recognizers placed
+    mid-table on their boards (whisper 53rd of 71, deepgram-nova tied 48th of 58), Kokoro at 48th in the
+    arena, the three synthesizers the arena does not rate (cosyvoice, f5-tts, voxcpm), and four one-task
+    engines (faster-whisper, whisper-cpp, pyannote-audio, piper). The unrated clause is the part a
+    reviewer should watch: it puts three synthesizers level with Kokoro on their own reported results,
+    while chatterbox (71st) and qwen-tts (the arena's "Qwen3 TTS" row, 81st) sit a rung lower on
+    listening tests. The asymmetry is recorded rather than hidden, and a board placement for any of the
+    three replaces the clause for that product.
+products:
+- whisper
+- qwen-asr
+- parakeet
+- canary
+- cohere-transcribe
+- kokoro
+- chatterbox
+- cosyvoice
+- qwen-tts
+- f5-tts
+- voxcpm
+- moshi
+- nemo
+- faster-whisper
+- whisper-cpp
+- sherpa-onnx
+- pyannote-audio
+- silero-vad
+- piper
+- elevenlabs-tts
+- deepgram-nova
+- openai-speech
 comments: >-
   Proposed and ruled in issue #602 (2026-09-25); seeded 2026-09-26 from the live sweep in
   docs/sweeps/2026-09-26-speech-audio.md. Litmus: is the primary input or output a speech waveform,
@@ -80,3 +144,12 @@ comments: >-
   arena Elo, speech-to-speech models by whether they hold a real-time full-duplex conversation,
   and engines by which of those models they can serve and whether they stream. See the
   scoring_recipe note.
+
+  First tranche promoted 2026-09-27: 22 products covering recognition (whisper, qwen-asr, parakeet,
+  canary, cohere-transcribe), synthesis (kokoro, chatterbox, cosyvoice, qwen-tts, f5-tts, voxcpm),
+  full-duplex conversation (moshi), engines and components (nemo, faster-whisper, whisper-cpp,
+  sherpa-onnx, pyannote-audio, silero-vad, piper) and three closed comparators (elevenlabs-tts,
+  deepgram-nova, openai-speech). No row was rejected on the boundary. The other 30 rows stay in the
+  registry for add-product; granite-speech among them for the multi-SKU reading in the scoring note, and
+  voxtral because its CC-BY-NC TTS member would govern the family under the multi-SKU rule, which
+  the seed's reading ("the ASR line governs") contradicts.

@@ -1,0 +1,99 @@
+product: canary
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: .nemo and safetensors checkpoints, ungated
+    data:
+      value: partial
+      detail: Granary is released; NeMo ASR Set 3.0 is in-house
+    code:
+      value: open
+      detail: NeMo speech_to_text_aed.py training script named in the card
+    license:
+    - name: CC-BY-4.0
+      detail: current checkpoints
+    - name: CC-BY-NC-4.0
+      detail: canary-1b (2024), still published
+  confidence: medium
+  note: Canary's current checkpoints download freely under CC-BY-4.0, an attribution-only license, and the card
+    names the NeMo training script. The first Canary model, canary-1b, is still published under a non-commercial
+    license, and the family is scored on its most restrictive published checkpoint, so it sits at restricted even
+    though every current model is commercially usable.
+  raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary is released; NeMo ASR Set 3.0
+    is in-house);code:open(NeMo speech_to_text_aed.py training script named in the card);license:CC-BY-4.0(current
+    checkpoints)+CC-BY-NC-4.0(canary-1b (2024), still published)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/canary-1b-v2
+    shows: '"license:cc-by-4.0" tag, "gated":false, and canary-1b-v2.nemo in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c3bcdf309a9e4c829a0573a9401f4bb2e2bbce008072fde21c31c9cfdc440011
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/nvidia/canary-1b-v2/raw/main/README.md
+    shows: 'Card: "combining Nvidia''s newly published [Granary](https://huggingface.co/datasets/nvidia/Granary)
+      and in-house dataset NeMo ASR Set 3.0"; "Training script: [speech\_to\_text\_aed.py]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9a89d0bc0be172d66099b3a9ff3ecfdae72b5eeec3d048efde681c582ccaa047
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=nvidia&search=canary
+    shows: 'Family listing: canary-1b-v2, canary-1b-flash, canary-180m-flash and canary-qwen-2.5b tagged "license:cc-by-4.0";
+      the older canary-1b tagged "license:cc-by-nc-4.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 040fea5ff440941a99ef32f0c380145a201d4497bfd57700986e41eaebd06973
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/nvidia/canary-1b
+    shows: nvidia/canary-1b is public and tagged "license:cc-by-nc-4.0".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fe8287586d2513a5cdb844a92f6cb191975dfda6b037e4849f41283ce7bf8c54
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the four current checkpoints, with Canary 1B v2 and Canary-Qwen-2.5B
+    carrying most of them.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=canary
+    shows: 'Trailing-30-day downloads: canary-1b-v2 56,469, canary-qwen-2.5b 35,182, canary-1b-flash 3,937, canary-180m-flash
+      2,955.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 040fea5ff440941a99ef32f0c380145a201d4497bfd57700986e41eaebd06973
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: nvidia/canary-qwen-2.5b ranks 16th of 71 at 4.43% average WER; canary-1b-v2 ranks 50th at 5.71% and adds
+    speech translation between English and 24 European languages.
+  confidence: medium
+  note: 'The Canary line is split between accuracy and breadth: Canary-Qwen sits near the top of the English board,
+    while Canary 1B v2 trades some English accuracy for 25-language transcription and translation.'
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "nvidia/canary-qwen-2.5b,4.4275" and "nvidia/canary-1b-v2,5.70625".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://huggingface.co/nvidia/canary-1b-v2/raw/main/README.md
+    shows: '"Speech Transcription (ASR) for 25 languages"; "Speech Translation (AST) from English → 24 languages".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9a89d0bc0be172d66099b3a9ff3ecfdae72b5eeec3d048efde681c582ccaa047

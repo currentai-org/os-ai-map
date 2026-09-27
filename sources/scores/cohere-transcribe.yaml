@@ -1,0 +1,73 @@
+product: cohere-transcribe
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors behind a click-through contact-sharing gate
+    data:
+      value: closed
+      detail: the card names no training corpus
+    code:
+      value: partial
+      detail: transformers inference code only
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: medium
+  note: Cohere Transcribe's weights are Apache-2.0, an OSI-approved license, behind a gate that asks only for contact
+    details. Cohere does not say what the model was trained on and publishes inference code alone.
+  raw: weights:open(safetensors behind a click-through contact-sharing gate);data:closed(the card names no training
+    corpus);code:partial(transformers inference code only);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/CohereLabs/cohere-transcribe-03-2026
+    shows: '"license:apache-2.0" tag, "gated":"auto", with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 40c400c8c3406378ae7ac396807015c9d596bf260735afdfb236eca7d821f307
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/CohereLabs/cohere-transcribe-03-2026
+    shows: 'Model page: "You need to agree to share your contact information to access this model"; the card describes
+      the architecture ("trained from scratch") and inference with transformers, and names no training dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b1c06450926565d62bb8dc44b018dfa1a7e743f187d7c96a5d569f7ebc4e5232
+    establishes:
+    - weights
+    - data
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the two released checkpoints, which sit behind a click-through gate.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=CohereLabs&search=transcribe
+    shows: cohere-transcribe-03-2026 213,697 and cohere-transcribe-arabic-07-2026 48,692 downloads in the trailing
+      30 days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3dfda8c447ebad9eed651d02d6e2c94330e6854a5a6635b9288032832a2229c0
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: CohereLabs/cohere-transcribe-03-2026 ranks 22nd of 71 at 4.67% average WER with an RTFx of about 907; it
+    transcribes 14 languages.
+  confidence: medium
+  note: A strong English recognizer a third of a point behind Qwen3-ASR, with narrower language coverage.
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV row "CohereLabs/cohere-transcribe-03-2026,4.67,906.56,apache-2.0" (14 languages).
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
