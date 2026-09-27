@@ -1,0 +1,71 @@
+product: google-tpu-ironwood
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: TPU chip offered as Cloud TPU slices; scored as the silicon
+    datasheets:
+      value: public
+      detail: Cloud TPU documentation for TPU7x with per-chip compute, memory and interconnect
+  confidence: medium
+  note: Google documents Ironwood's per-chip compute, memory and interconnect in its public Cloud TPU documentation.
+    The chip is rented as cloud capacity rather than sold, and this score is provisional until the map rules on
+    rented silicon.
+  raw: form_factor:chipset(TPU chip offered as Cloud TPU slices; scored as the silicon);datasheets:public(Cloud
+    TPU documentation for TPU7x with per-chip compute, memory and interconnect)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/tpu/docs/tpu7x
+    shows: 'TPU7x documentation: per-chip table "Peak compute per chip (FP8) (TFLOPs)", "HBM capacity per chip (GiB)",
+      "HBM bandwidth per chip (GBps)"; "Each TPU7x chip contains two TensorCores and four SparseCores"'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: 31ff7a7d70fd8a5ed8bc99fbf58848718fd43defed8259d400fc74dfd423a6cc
+  - url: https://docs.cloud.google.com/tpu/docs/release-notes
+    shows: 'Cloud TPU release notes: "Generally available : TPU7x is generally available (GA)."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6760c35ea42557bcaf6ed7defbc2b55ee541333f647f087fdaec94ee8702220e
+  - url: https://cloud.google.com/tpu/pricing
+    shows: 'Cloud TPU pricing page: TPU capacity priced by region, with a custom-quote path'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 565f69e8ec9e75b4a50ad77a0eab6d1f84d018732435ebd73cf09176bcc5ea6e
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and Google publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use,
+    so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/tpu/docs/tpu7x
+    shows: The TPU7x documentation page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 31ff7a7d70fd8a5ed8bc99fbf58848718fd43defed8259d400fc74dfd423a6cc
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 4,614 TFLOPS FP8 and 2,307 TFLOPS BF16 peak per chip, 192 GiB HBM at 7.4 TB/s
+  confidence: high
+  relative_to: nvidia-blackwell
+  relation: at
+  note: Each Ironwood chip is rated at about 4.6 PFLOPS of FP8 with 192 GiB of HBM, close to Blackwell Ultra's dense
+    FP8 throughput and memory. Google states no sparsity for the figure.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/tpu/docs/tpu7x
+    shows: 'TPU7x per-chip table: "Peak compute per chip (FP8) (TFLOPs)" 4614, "Peak compute per chip (BF16)" 2307,
+      "HBM capacity per chip (GiB)" 192, "HBM bandwidth per chip (GBps)" 7380'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 31ff7a7d70fd8a5ed8bc99fbf58848718fd43defed8259d400fc74dfd423a6cc

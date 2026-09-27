@@ -1,0 +1,99 @@
+product: amd-instinct-mi350
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: GPU generation sold as OAM modules on eight-GPU platforms; scored as the silicon
+    datasheets:
+      value: public
+      detail: MI355X and MI350X datasheets, the CDNA 4 architecture white paper and the CDNA4 ISA reference guide
+    retail:
+      value: distributor
+      detail: through OEM servers such as the Dell PowerEdge XE9785
+    toolchain:
+      value: open
+      detail: ROCm under MIT, its compiler under Apache-2.0 with LLVM exceptions
+  confidence: high
+  note: AMD publishes datasheets, an architecture white paper and the full CDNA 4 instruction-set reference, and
+    the GPUs reach buyers through OEM servers such as Dell's. The ROCm stack that compiles for the part is open
+    source, but the silicon's design is not published.
+  raw: form_factor:chipset(GPU generation sold as OAM modules on eight-GPU platforms; scored as the silicon);datasheets:public(MI355X
+    and MI350X datasheets, the CDNA 4 architecture white paper and the CDNA4 ISA reference guide);retail:distributor(through
+    OEM servers such as the Dell PowerEdge XE9785);toolchain:open(ROCm under MIT, its compiler under Apache-2.0
+    with LLVM exceptions)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/product-briefs/amd-instinct-mi355x-gpu-brochure.pdf
+    shows: '"DATASHEET: AMD INSTINCT MI355X GPU" with peak throughput by data type, 288 GB HBM3E and maximum board
+      power'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: e1a411c53e034f3ea528a75383774a175f52ccd1a58f630d7717d1dca6a2f7c2
+  - url: https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/instruction-set-architectures/amd-instinct-cdna4-instruction-set-architecture.pdf
+    shows: '"CDNA4 Instruction Set Architecture Reference Guide", 5 August 2025'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: c459fb8db759006da52df57b5d7b913686ed7a68b52dc76e3f557f553a5d667f
+  - url: https://www.dell.com/en-us/shop/ipovw/poweredge-xe9785
+    shows: Dell PowerEdge XE9785 configured with "8 AMD Instinct MI355X 288GB 1400W OAM"
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: bbdc252502c9d83c0ec010f2b05207b60278fed88348c15d5b4cf323590ad3fd
+  - url: https://raw.githubusercontent.com/ROCm/ROCm/HEAD/LICENSE
+    shows: 'ROCm repository LICENSE: MIT License, Copyright 2023-2026 Advanced Micro Devices'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: a1f3488f19e24558526aaa54c30b32975d26167e5455a711a9f59959cda943c4
+  - url: https://raw.githubusercontent.com/ROCm/llvm-project/HEAD/LICENSE.TXT
+    shows: 'ROCm llvm-project LICENSE: "Apache License v2.0 with LLVM Exceptions"'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and AMD publishes no unit shipments or installed base for this
+    generation. Cloud listings and benchmark submissions cover only part of this category and do not measure use,
+    so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.amd.com/en/products/accelerators/instinct/mi350.html
+    shows: The MI350 Series product page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2834362554c822169ec05dbe84daea1c9cd30c0d7b2dab6e74b474d32a1be8e0
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 'MI355X: 5 PFLOPS dense OCP-FP8 (10.1 with sparsity), 10.1 PFLOPS MXFP4, 288 GB HBM3E at 8 TB/s, 1,400
+    W'
+  confidence: high
+  relative_to: nvidia-blackwell
+  relation: at
+  note: The MI355X matches Blackwell Ultra's dense FP8 throughput at about 5 PFLOPS and carries slightly more memory,
+    288 GB of HBM3E at 8 TB/s. Its FP4 figure is lower than NVIDIA's, which is the one place the two generations
+    differ materially.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.amd.com/en/products/accelerators/instinct/mi350/mi355x.html
+    shows: 'MI355X page: OCP-FP8 "5 PFLOPs", with structured sparsity "10.1 PFLOPs"; MXFP4 "10.1 PFLOPs"; 288 GB
+      HBM3E, "8 TB/s"; "1400W (TBP)"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c292b5dc312aeb707c30b3422544a16bd245937ac81749e4c5076d7cff62ff64

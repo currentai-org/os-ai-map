@@ -48,10 +48,23 @@ def test_equality_when_tree_matches_golden(computed):
         assert computed[key] == data[key], key
 
 
+def _preliminary_head_products() -> int:
+    # Head products on the roster of a preliminary category: scored, so adoption_reconciliation
+    # counts them, but absent from the payload axis_assessments reads its population from.
+    from build.validate import load_sources, published_products
+
+    data = load_sources(ROOT)
+    rostered = {slug for cat in data["categories"].values() for slug in (cat.get("products") or [])}
+    return len(rostered - published_products(data.get("taxonomy") or {}, data["categories"]))
+
+
 def test_structural_invariants_hold_regardless_of_tree(computed):
-    # Three axis rows per recorded assessment: the pins were largely redundant with this.
-    assert computed["axis_assessments"]["rows"] == computed["adoption_reconciliation"]["rows"] * 3
-    assert computed["axis_scoring_trace"]["axis_results"][0] == computed["adoption_reconciliation"]["rows"]
+    # Three axis rows per recorded assessment: the pins were largely redundant with this. The
+    # assessment count includes head products of preliminary categories, which the published
+    # payload (axis_assessments' population) deliberately omits, so they are taken out first.
+    published = computed["adoption_reconciliation"]["rows"] - _preliminary_head_products()
+    assert computed["axis_assessments"]["rows"] == published * 3
+    assert computed["axis_scoring_trace"]["axis_results"][0] == published
     # Full reproduction: every computed product reproduces, none abstains.
     assert computed["parity"]["computed"] + computed["parity"]["deferred"] == computed["adoption_reconciliation"]["rows"]
     for slug, report in computed["check_rubric"].items():
