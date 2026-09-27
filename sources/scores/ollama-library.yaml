@@ -1,0 +1,92 @@
+product: ollama-library
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: the ollama.com registry service; not in the runner repository
+  confidence: high
+  note: The registry at ollama.com is a service Ollama Inc. runs, and its server code is not in the MIT runner
+    repository, which only implements the client side of push and pull.
+  raw: license:proprietary(hosted service; server source not published);source:closed(the ollama.com registry
+    service; not in the runner repository)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ollama.com/terms
+    shows: The terms govern "the services provided by Ollama Inc." including "our website, software, APIs,
+      and related services".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ad8bb52d7d1bc413ecb8856ab6f9e256e2f9887166260a2cce56b49bde9018cc
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/ollama/ollama/HEAD/docs/api.md
+    shows: 'The runner''s push endpoint: "Upload a model to a model library. Requires registering for ollama.ai
+      and adding a public key first." The runner is the client of the registry.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3be0d384b9236c3f1d5be35e988221e7810546772a85d74854a288b4aa82ff23
+    establishes:
+    - source
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  confidence: low
+  banded_quantity: cumulative pulls shown per model on ollama.com/library, not a monthly or user count
+  note: Ollama shows a running pull count on every library model, and the most-pulled models are in the tens
+    of millions. Those counters are cumulative and cover only the official library page, so they show the registry
+    is heavily used without giving a monthly figure.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ollama.com/library
+    shows: 'Library listing: "llama3.1 ... 119.9M Pulls 93 Tags", "nomic-embed-text ... 87.2M Pulls", fetched
+      2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ef3e21360c267b6576f6050992c3af10a410b906c2cfbb8b12bfc61859ea4fd7
+  - url: https://ollama.com/library/llama3.1
+    shows: '"llama3.1 119.9M Downloads" on the model page, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b28cc54b6fc676a575f71e4fe7a834b2ec193d029518396b9bfab127ba84683f
+capability:
+  score: 4
+  basis: feature_matrix
+  value: open push by any registered account to its own namespace (ollama push myuser/mymodel); model:tag versioning;
+    pull and push over the runner's API; search and per-model tag lists on ollama.com; models only
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: one_below
+  note: Anyone who registers a key can push a model to their own namespace, each tag pins a version, and the
+    runner pulls by name from the registry's API. It hosts one kind of artifact, packaged models, with no datasets
+    or apps and no Git history behind a tag, which keeps it a step below Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/ollama/ollama/HEAD/docs/import.mdx
+    shows: '"You can share any model you have created by pushing it to ollama.com so that other users can try
+      it out." "ollama push myuser/mymodel"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 04803f9359d7dba109972a9d524f3e0f2bb09662bfc7b258646a64a1a01272b2
+  - url: https://raw.githubusercontent.com/ollama/ollama/HEAD/docs/api.md
+    shows: '"Model names follow a model:tag format, where model can have an optional namespace" and "The tag
+      is used to identify a specific version."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3be0d384b9236c3f1d5be35e988221e7810546772a85d74854a288b4aa82ff23
+  - url: https://ollama.com/huihui_ai
+    shows: A third-party namespace on ollama.com listing its own models, e.g. "gemma-4-abliterated".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0fb5cb00c2905ac34f9ccf29b18134fd679377b511d4a37527c0d1ce427e93f8
+  - url: https://ollama.com/library/llama3.1/tags
+    shows: '"Name 93 models" on the tags page, each tag such as "llama3.1:405b" a separate version.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2c1c13702d2a8cecf5cd2a820a73d07dcf306a85da71e3195d3956384361767b
