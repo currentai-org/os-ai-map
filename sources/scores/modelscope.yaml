@@ -1,0 +1,105 @@
+product: modelscope
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: hosted service; the published repositories are client libraries
+  confidence: high
+  note: ModelScope's hub runs as an Alibaba service, and what Alibaba publishes under Apache-2.0 is the library
+    and client that call it. Those clients are separate from the platform and do not make it self-hostable.
+  raw: license:proprietary(hosted service; server source not published);source:closed(hosted service; the published
+    repositories are client libraries)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/modelscope/modelscope/HEAD/README.md
+    shows: The library "enables the necessary interactions with ModelScope backend services, particularly with
+      the Model-Hub and Dataset-Hub." The repository is the client and model library, not the hub.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b25eed73ab6136ceeb5749d8e891d682045511c9bce1fb1271aa9fdcc11ea4a8
+    establishes:
+    - license
+    - source
+  - url: https://pypi.org/pypi/modelscope-hub/json
+    shows: 'summary: "The official Python client to connect with ModelScope Hub."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 32c76f1edb8557e0796adedf0fd1050dac52402629129203904540a0277ebe1e
+    establishes:
+    - source
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  confidence: low
+  banded_quantity: hosted repository totals and cumulative per-model download counters from the public OpenAPI,
+    not a monthly or user count
+  note: The hub's public API reports how many models, datasets and apps it hosts and a cumulative download
+    counter per repository, and its most-downloaded models, speech models from Alibaba's own lab, are in the
+    hundreds of millions. ModelScope publishes no platform-wide or monthly figure, so the reading is a judgment
+    from those counters rather than a count of users.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.modelscope.cn/openapi/v1/models?page_size=1
+    shows: '"total_count":259537 in the public models listing, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c10f9a439b302e9bc82f828df16625b66f73bf74c84c15f77b6b33a607122074
+  - url: https://www.modelscope.cn/openapi/v1/datasets?page_size=1
+    shows: '"total_count":43062 in the public datasets listing, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 400c80b4dbf497830c0ec6326079bdda8d1ac651a4219790473aa0052dd6d321
+  - url: https://www.modelscope.cn/openapi/v1/studios?page_size=1
+    shows: '"total_count":16347 in the public studios listing, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d2ed106119ab411f6356665e72b44487325c8a39069cc9882137fe4f84f8fc65
+  - url: https://www.modelscope.cn/openapi/v1/models?page_size=3&sort=downloads
+    shows: 'Sorted by downloads: iic/speech_fsmn_vad_zh-cn-16k-common-pytorch "downloads":283264119, then 171184552
+      and 117069748 for the next two, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a78202f2e1882b589e180bb1691c4ebbad8680a77df3ccba08b2cf1647ef467e
+capability:
+  score: 5
+  basis: feature_matrix
+  value: create and upload model, dataset and studio repositories from the CLI or SDK, with public, internal
+    or private visibility; revisions by branch, tag or commit; download by git or the hub OpenAPI
+  confidence: medium
+  relative_to: huggingface-hub-platform
+  relation: at
+  note: 'ModelScope covers the same cycle as Hugging Face Hub: account holders create repositories for models,
+    datasets and apps, version them by branch, tag and commit, and pull them over git or an API other tools
+    call. Its documentation pages render only in a browser, so the reading comes from the official client''s
+    reference and the hub''s own API.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypi.org/pypi/modelscope-hub/json
+    shows: Connects "models, datasets, Studio spaces, skills, and MCP servers"; "ms-hub create my-org/my-model
+      --repo-type model --visibility private"; "--revision REV ... Branch, tag, or commit hash".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 32c76f1edb8557e0796adedf0fd1050dac52402629129203904540a0277ebe1e
+  - url: https://raw.githubusercontent.com/modelscope/modelscope/HEAD/modelscope/hub/constants.py
+    shows: '"REPO_TYPE_DATASET, REPO_TYPE_MODEL, REPO_TYPE_STUDIO" and public, internal and private visibility
+      constants.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aa256c7512c1faa478f29795f491a26f7119e936651874ae8cc6d672fc3051bf
+  - url: https://raw.githubusercontent.com/modelscope/modelscope/HEAD/README.md
+    shows: '"Most models on ModelScope are public and can be downloaded directly from the website" "with api
+      provided by modelscope library or git."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b25eed73ab6136ceeb5749d8e891d682045511c9bce1fb1271aa9fdcc11ea4a8
+  - url: https://www.modelscope.cn/openapi/v1/studios?page_size=1
+    shows: The public studios endpoint returns app entries such as "sdk_type":"gradio".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d2ed106119ab411f6356665e72b44487325c8a39069cc9882137fe4f84f8fc65

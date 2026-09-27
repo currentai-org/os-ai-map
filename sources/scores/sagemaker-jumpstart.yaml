@@ -1,0 +1,80 @@
+product: sagemaker-jumpstart
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: managed AWS service
+  confidence: high
+  note: JumpStart is part of AWS's managed SageMaker service and has no self-hostable form. The models it lists
+    carry their own licenses, but the catalog and endpoints are Amazon's.
+  raw: license:proprietary(hosted service; server source not published);source:closed(managed AWS service)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models.html
+    shows: '"Amazon SageMaker JumpStart onboards and maintains publicly available foundation models for you
+      to access, customize, and integrate into your machine learning lifecycles."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b4fb1652d451a7dea710b1aa11ef0a8d18eac435b33ffa910778bbac39000be3
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: AWS describes the catalog as hundreds of models and publishes no count of customers or deployments.
+    Neither figure would measure use, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html
+    shows: '"Amazon SageMaker JumpStart provides access to hundreds of publicly available and proprietary foundation
+      models from third-party sources and partners." No usage figure on the page.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 14669e8fe31f2ba58a9bbfac3cc0d8104f72db65fc83833eca8f46f19c06c4b4
+capability:
+  score: 3
+  basis: feature_matrix
+  value: public hub (SageMakerPublicHub) of open and proprietary foundation models that AWS onboards; search
+    and filter by provider; fine-tune, evaluate and deploy from Studio or the SDK; versioned hub content (ListHubContentVersions);
+    private hubs where admins add custom models, notebooks and datasets for their organization
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: two_below
+  note: JumpStart lists open and proprietary models from dozens of providers, versions them, and deploys them
+    to SageMaker endpoints from the catalog. AWS decides what enters the public hub, and custom models live
+    only in an organization's private hub, so it is a curated catalog rather than an open registry like Hugging
+    Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/studio-jumpstart.html
+    shows: '"explore models in the SageMakerPublicHub, models in Private Hubs or Curated Hubs, and customized
+      models"; "choose Fine-tune, Customize, Deploy, or Evaluate".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 69cfe9a0cbbb0cd7f22a737b9bc85e41e8ae1a71b0f386b0513b5d7eefa371c7
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs-update.html
+    shows: '"The resources that you can update include model references to Amazon SageMaker JumpStart models,
+      custom models, notebooks, datasets, and JsonDoc." "use the ListHubContentVersions API."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3540ba0bb0e816bf41ccec9d35194d77b5afa3eeaaff3c47e5807d711faf7f44
+  - url: https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-curated-hubs.html
+    shows: '"Administrators can create private hubs that include subsets of models tailored to different teams,
+      use cases, or security requirements."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 337770de9e026225451963b3c225622eba2be0df7fce04e91e7e7ae9f05effe2
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/amazon-bedrock-marketplace.html
+    shows: 'Bedrock Marketplace: "you can subscribe to it and deploy it to an endpoint managed by SageMaker
+      AI."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: afff146e4bdc9c79ca73f0ff0c2afc5a3a6d42902b411649cfee91d99e0d4e09

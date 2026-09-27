@@ -1,0 +1,93 @@
+product: matrixhub
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/matrixhub-ai/matrixhub
+    core-gated:
+      value: ungated
+      detail: governance puts commercial support and enterprise packaging outside the core repository
+  confidence: high
+  note: The whole registry is Apache-2.0 and deploys with Docker Compose or Helm. The project's governance
+    document states that any commercial support, hosted service or enterprise packaging sits outside the core
+    repository, and the repository has no enterprise code.
+  raw: license:Apache-2.0(OSI);source:public(github.com/matrixhub-ai/matrixhub);core-gated:ungated(governance
+    puts commercial support and enterprise packaging outside the core repository)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/matrixhub-ai/matrixhub/HEAD/LICENSE
+    shows: Apache License Version 2.0, January 2004, full text.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://matrixhub.ai/docs/overview/
+    shows: '"Deploy with Docker Compose or Kubernetes Helm charts." "The entire infrastructure is open source
+      and free for the community."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e9b1751875d0e7b3095a55c4a46ab800a7f2da814f1804ceeb6bcf29521be86
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/matrixhub-ai/matrixhub/HEAD/GOVERNANCE.md
+    shows: '"MatrixHub is a community-led open source project." "Commercial support, hosted services, or enterprise
+      packaging built around MatrixHub are separate from the core repository."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4840136658c58440cd55ac3b1c1e118f44a55fd6297871b56d68c12addaf62b6
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: MatrixHub runs only as private installations and publishes no install or user count; its adopters page
+    names one organization. GitHub stars would count interest rather than use, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://matrixhub.ai/docs/adoption/
+    shows: The adopters list, "organizations that have agreed to be named publicly", with DaoCloud's Token
+      Factory as its entry.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7f94145f15acb54c0c2f70e880a780d6a407345842e6886457e4feec83ee356c
+capability:
+  score: 4
+  basis: feature_matrix
+  value: create and manage model repositories; hf download and hf upload through HF_ENDPOINT; Git, Git LFS
+    and HTTP access; model version and release management; web UI for browsing; proxy cache of public Hugging
+    Face models; datasets planned, not shipped
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: one_below
+  note: Users create model repositories, version and release them, and push or pull them with the same clients
+    they would use against Hugging Face Hub, over Git or HTTP. It holds models only, with dataset support still
+    on the roadmap and no app hosting, so it sits a step below Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://matrixhub.ai/docs/overview/
+    shows: '"Create and manage model repositories." "Point HF_ENDPOINT to MatrixHub to use hf download and
+      hf upload" "Access repositories through Git, Git LFS, and HTTP."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4e9b1751875d0e7b3095a55c4a46ab800a7f2da814f1804ceeb6bcf29521be86
+  - url: https://raw.githubusercontent.com/matrixhub-ai/matrixhub/HEAD/ROADMAP.md
+    shows: '"Dataset support" is listed under Phase 3, and "A public community model-sharing platform" under
+      Non-Goals.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7ae1b2340f2782cc249ddefebd9718bbee6b0421284c67119299d59beb7b85dd
+  - url: https://raw.githubusercontent.com/matrixhub-ai/matrixhub/HEAD/README.md
+    shows: '"It serves as a drop-in private replacement for Hugging Face, purpose-built to accelerate vLLM
+      and SGLang workloads."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6994900ba21414eb7dc53405fbbb49e68660dd44767197e6fb6dd3bcb77e7602

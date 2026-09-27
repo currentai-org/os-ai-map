@@ -1,0 +1,92 @@
+product: monai-model-zoo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/Project-MONAI/model-zoo
+    core-gated:
+      value: ungated
+      detail: multi-institution project with public governance; nothing sold
+  confidence: high
+  note: The zoo's repository is Apache-2.0 and holds every bundle's code and configuration, with each bundle
+    also carrying its own license for its weights. Project MONAI is maintained by a group of hospitals, universities
+    and NVIDIA with public governance, and neither its site nor its repository offers a paid edition.
+  raw: license:Apache-2.0(OSI);source:public(github.com/Project-MONAI/model-zoo);core-gated:ungated(multi-institution
+    project with public governance; nothing sold)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/LICENSE
+    shows: Apache License Version 2.0, January 2004, full text.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/README.md
+    shows: '"The MONAI Model Zoo repository itself follows Apache License"; bundles "require a license for
+      the software itself comprising the configuration files and model weights".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 21d14ec7c5e9e57b69b97cf66fd2c6e7edf3b5eb1ca85f54544b5ee30666ab69
+    establishes:
+    - source
+  - url: https://project-monai.github.io/
+    shows: '"Maintained by NVIDIA, NIH, King''s College London, Mayo Clinic, MSKCC, Stanford, DKFZ, and 30+
+      other institutions. Governance, working groups, and roadmap decisions are public."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fa1ce9246b15e0d18e9fcebdd1c5542e64e07cf882cdd6101ba304eac0aceee0
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Most bundle versions are hosted on NVIDIA's NGC, which publishes no download counts, and the remainder
+    on Project MONAI's Hugging Face organization, whose counters would cover only part of the zoo. No reading
+    was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/models/model_info.json
+    shows: 'Index of released bundle versions and their download sources, e.g. "source": "https://api.ngc.nvidia.com/v2/models/nvidia/monaihosting/spleen_ct_segmentation/versions/0.1.0/files/...".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b1f8b15ef896e121bd89a730722c8b4b80e1caf2932d4c54813a19e16283b9a9
+capability:
+  score: 2
+  basis: feature_matrix
+  value: bundles contributed by reviewed pull request; each version archived as a zip and indexed in model_info.json;
+    download by name through monai.bundle.download from Project MONAI's NGC and Hugging Face hosting; browsable
+    model page; MONAI Bundle format only
+  confidence: medium
+  relative_to: nvidia-ngc-catalog
+  relation: at
+  note: Like the NGC catalog, the zoo hosts versioned packages under its operator's own accounts and serves
+    them by name through a download API. Contributors cannot publish directly; each bundle arrives by a pull
+    request the maintainers review, so it is a curated collection rather than an open registry.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/CONTRIBUTING.md
+    shows: '"All code changes to the dev branch must be done via pull requests." "Wait for reviews; if there
+      are reviews, make point-to-point responses".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: afb6678093fc4e1dce9e2852af135fa83d45b7e8d97defb17aff1a42a9f7e8a4
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/README.md
+    shows: '"for each distinct version of a bundle, it will be archived as a .zip file ... and stored in Releases."
+      "python -m monai.bundle download "spleen_ct_segmentation" --bundle_dir "bundles/""'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 21d14ec7c5e9e57b69b97cf66fd2c6e7edf3b5eb1ca85f54544b5ee30666ab69
+  - url: https://raw.githubusercontent.com/Project-MONAI/model-zoo/HEAD/models/model_info.json
+    shows: Per-version sources on NGC ("api.ngc.nvidia.com/v2/models/nvidia/monaihosting/...") and Hugging
+      Face ("https://huggingface.co/MONAI/vista3d/tree/0.5.11").
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b1f8b15ef896e121bd89a730722c8b4b80e1caf2932d4c54813a19e16283b9a9

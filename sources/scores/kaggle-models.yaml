@@ -1,0 +1,88 @@
+product: kaggle-models
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: hosted service; the published repositories are the CLI and kagglehub client
+  confidence: high
+  note: Kaggle Models is part of Kaggle's hosted platform, and what Kaggle publishes openly are two clients
+    for it, a Python library and a CLI. Neither contains the service, so nothing about the platform can be
+    run elsewhere.
+  raw: license:proprietary(hosted service; server source not published);source:closed(hosted service; the published
+    repositories are the CLI and kagglehub client)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md
+    shows: '"The kagglehub library provides a simple way to interact with Kaggle resources such as datasets,
+      models, notebook outputs in Python." A client of the hosted service.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/README.md
+    shows: '"The official CLI to interact with Kaggle." Another client; neither repository contains the platform.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5edaa4aded86315be3095dd9675a2ed6fe99d0f68a1fb55c4b3564c45e780107
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Kaggle's model listing API and pages served a browser challenge on every attempt, and the CLI documentation
+    describes paged results with no total. No usage figure could be read, and the download counts of the kagglehub
+    client would measure a client rather than the hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/models.md
+    shows: The models list command pages with "--page-token" and sorts by "downloadCount" among others; no
+      total count is documented.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a5aa6248b4a98630a65076dafb6b3d9a63a3a7cdef4b42ab7bf0b6da5d921b29
+capability:
+  score: 4
+  basis: feature_matrix
+  value: users or organizations publish models (ownerSlug); variations per framework (TensorFlow, PyTorch,
+    JAX, TFLite and others) each with versioned snapshots; search and sort by downloads, votes or recency;
+    download and upload by handle through kagglehub and the CLI
+  confidence: medium
+  relative_to: huggingface-hub-platform
+  relation: one_below
+  note: Any user or organization can publish a model, split it into variations by framework, and add versioned
+    snapshots that kagglehub downloads by handle. The hub holds models only, with datasets and notebooks living
+    elsewhere on Kaggle and no Git history, so it sits a step below Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/models_metadata.md
+    shows: '"1. The model 2. The variations 3. The variation versions"; "ownerSlug: the slug of the user or
+      organization"; frameworks "tensorFlow1, tensorFlow2, tfLite, tfJs, pyTorch, jax, coral, ...".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7e1c77cbf6596d62d5e26feaf6e8d546555f65791be2f110d6f2379666056539
+  - url: https://raw.githubusercontent.com/Kaggle/kagglehub/HEAD/README.md
+    shows: '"kagglehub.model_download(''google/bert/tensorFlow2/answer-equivalence-bem/1'')" and "kagglehub.model_upload(handle,
+      local_model_dir, version_notes=''improved accuracy'')".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd82f2c5522be2502e7b251e59f7918cc1633dfff0276f3a1effb11cb22b1a3b
+  - url: https://raw.githubusercontent.com/Kaggle/kaggle-api/HEAD/docs/model_variations_versions.md
+    shows: '"Each version represents a snapshot of the model variation files at a point in time."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d0f040edca38081245f6c1aa868ec417ce6639cc5242e38ac0ea041e66d7927b
+  - url: https://raw.githubusercontent.com/tensorflow/hub/HEAD/README.md
+    shows: '"TensorFlow Hub has moved to Kaggle Models" and "Starting November 15th 2023, links to tfhub.dev
+      redirect to their counterparts on Kaggle Models."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 295f31d8d73c76f40192c204dce65b5ba2f9f59170cb55563b2eef534f102902

@@ -1,0 +1,109 @@
+product: qualcomm-ai-hub-models
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/qualcomm/ai-hub-models
+    core-gated:
+      value: gated
+      detail: compilation, on-device profiling and cloud-device inference need the closed AI Hub Workbench
+        and an API token
+  confidence: medium
+  note: The catalog code is BSD-3-Clause and its demos run locally, but compilation, on-device profiling and
+    cloud-device inference go through Qualcomm's closed AI Hub Workbench with an API token. Workbench is free
+    today, yet those features cannot be built from the published source.
+  raw: license:BSD-3-Clause(OSI);source:public(github.com/qualcomm/ai-hub-models);core-gated:gated(compilation,
+    on-device profiling and cloud-device inference need the closed AI Hub Workbench and an API token)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/qualcomm/ai-hub-models/HEAD/LICENSE
+    shows: BSD 3-Clause text, "Copyright 2025 Qualcomm Technologies, Inc. and/or its subsidiaries."
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1935f1927570e99e49d0f2f48b3d1e918c1a78d65d4d6f00e89c7c0bf9d4ddaf
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/qualcomm/ai-hub-models/HEAD/README.md
+    shows: '"Many features of AI Hub Models (such as model compilation, on-device profiling, etc.) require
+      access to Qualcomm® AI Hub Workbench"; "All end-to-end demos can also run locally via PyTorch".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 710fe73872ce983566a5c75e9af616958cb3292dc958c7157e288e7f0cb9c9eb
+    establishes:
+    - source
+    - core-gated
+  - url: https://workbench.aihub.qualcomm.com/docs/hub/faq.html
+    shows: '"Qualcomm® AI Hub Workbench, our platform, is currently completely free to use."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 00e35d24674fc37add46f9fcb070784da614e608980e14d7926ab7730fc72e14
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Installs of the qai-hub-models package from PyPI are the catalog's own download channel, and the last
+    month is well below the spring, when monthly installs ran several times higher. The figure understates
+    use of the catalog, since the web page and Qualcomm's Hugging Face organization serve assets that never
+    pass through the package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/qai-hub-models/recent
+    shows: '"last_month":5231, "last_week":1300 for qai-hub-models, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f38fb65e3c574952998989cae0029f4dd752f4ab7241cb9d9b6cbeed11418649
+  - url: https://packages.ecosyste.ms/api/v1/registries/pypi.org/packages/qai-hub-models
+    shows: '"downloads":31663 over "last-month", from a record last refreshed 2026-07-15 that still lists release
+      0.57.3.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a138e90d716122c4f75793dcaafdeea8c03fb4a222bee0ebfdb6e571be24955b
+  - url: https://pypistats.org/api/packages/qai-hub-models/overall?mirrors=false
+    shows: Daily downloads without mirrors; summed by month they run about 34,000 to 36,000 in April to June
+      2026, 24,900 in July and 16,952 in August.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2aecc1ef110ae54709088aa01f6eb39cfcb2c65ea94a13924ebdaa6e3889b048
+  - url: https://huggingface.co/api/organizations/qualcomm/overview
+    shows: '"fullname":"Qualcomm", "isVerified":true, "numModels":257 on the Hugging Face organization.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9e17f1e7becc289c31e99e26ab784112f0fb8d0050dd85ffbc445568d1c54daf
+capability:
+  score: 2
+  basis: feature_matrix
+  value: Qualcomm-only publishing (internal legal approval); CLI and Python API to browse the catalog and fetch
+    deployable assets by model, runtime and precision; versions through package releases; per-model pages with
+    licenses; no third-party upload and no deployment service in this entry
+  confidence: high
+  relative_to: nvidia-ngc-catalog
+  relation: at
+  note: Like the NGC catalog, it hosts ready-to-run assets and serves them by name, with a CLI and API to browse
+    and fetch them. Only Qualcomm publishes, and new models need internal legal approval, so it is an operator's
+    own collection rather than an open registry.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/qualcomm/ai-hub-models/HEAD/README.md
+    shows: '"qai-hub-models models # browse the catalog" and "qai-hub-models fetch mobilenet_v2 --runtime tflite
+      --precision float # download a deployable asset"; "The CLI also offers a Python API."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 710fe73872ce983566a5c75e9af616958cb3292dc958c7157e288e7f0cb9c9eb
+  - url: https://raw.githubusercontent.com/qualcomm/ai-hub-models/HEAD/CONTRIBUTING.md
+    shows: '"Legal approval is required before publishing new models. Submit a request at go/genairequest."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 45d3dc978213390ba4710161842cdb163fd2eeb3273e4c42526fbf9d989cfc6a
+  - url: https://aihub.qualcomm.com/models
+    shows: '"All Models Optimized and Validated by Qualcomm"; "541 model variants (235 models)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f02a64504890679e22602a30e7b92161e02cd78785a2b0f0e300c185a6d58f79

@@ -1,0 +1,112 @@
+product: csghub
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/OpenCSGs/csghub and csghub-server
+    core-gated:
+      value: gated
+      detail: Enterprise and SaaS editions built with ee/saas tags behind a license check; Starship and llmlog
+        are EE-only
+  confidence: high
+  note: Both the frontend and the server are Apache-2.0, but the server compiles into Community, Enterprise
+    and SaaS editions, and the community build stubs out license checking. OpenCSG's own install guide lists
+    components available only in the Enterprise edition, so part of the product is withheld from the community
+    code.
+  raw: license:Apache-2.0(OSI);source:public(github.com/OpenCSGs/csghub and csghub-server);core-gated:gated(Enterprise
+    and SaaS editions built with ee/saas tags behind a license check; Starship and llmlog are EE-only)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenCSGs/csghub-server/HEAD/LICENSE
+    shows: '"Copyright 2023- The OpenCSG team. All rights reserved." followed by the Apache License Version
+      2.0 text.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 39ab1fcafae061c9ac824b521518578990674eeb7f2771278d6e997585bb6403
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OpenCSGs/csghub/HEAD/README.md
+    shows: '"Essentially, CSGHub serves as a private, on-premise version of Huggingface", installable with
+      Docker Compose or a Helm chart.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2827680da64baaf60aaf42f0f9af1fcc0a02e1136b5c893017a369039807beae
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/OpenCSGs/csghub-server/HEAD/component/license_ce.go
+    shows: '"//go:build !saas && !ee" with ImportLicense and VerifyLicense returning nothing in the community
+      build.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3c2df29eaa4677c8d5442df27c6e0e70a5637c8313aeda01073a516ccdc65d7d
+    establishes:
+    - core-gated
+  - url: https://opencsg.com/docs/en/releasenote/kubernetes/v1.11.0
+    shows: '"install Starship, only EE version is available (EE version is installed by default)." "install
+      the ee version of the csghub helm chart (without ee license, the same functions as ce)."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f092de522d63d76d65271471852f6d2627699a605320fbbe7fdae4871de93140
+    establishes:
+    - core-gated
+  - url: https://opencsg.com/docs/en/csghub/101/install/kubernetes/configuration
+    shows: '"This specifies the deployment version: Community (ce), Enterprise (ee), or SaaS edition. Different
+      versions affect the image tag, enabled features, and dependencies." Section "8.1 llmlog (EE/SaaS only)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 01d215e2a8a1b77a6e971b7ad0a22337949212877c63048151351f829d9f2567
+    establishes:
+    - core-gated
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: CSGHub is installed privately and reports no install or user count. The model total on OpenCSG's hosted
+    instance counts one deployment's contents, and GitHub stars would count interest rather than use, so no
+    reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://hub.opencsg.com/api/v1/models?page=1&per=1
+    shows: '"total":207286 models on the OpenCSG-hosted instance, a count for that one deployment.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5f54c257aaff9e9e4bb26adb6beb782e2ebf33232e778905751a7c7476494f77
+capability:
+  score: 5
+  basis: feature_matrix
+  value: upload and download by web UI, git, CLI and SDK; models, datasets, code, prompt and MCP repositories
+    and application Spaces; Git with LFS for versioning and history; REST API compatible with Hugging Face
+    clients; search; sync from remote hubs
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: at
+  note: 'CSGHub reproduces the Hugging Face Hub model inside a private deployment: users publish models, datasets
+    and app Spaces as Git repositories with LFS, keep their history, and pull them with Hugging Face''s own
+    libraries. It adds prompt, code and MCP repositories, so its registry covers at least as many kinds of
+    artifact as Hugging Face Hub.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://opencsg.com/docs/en/csghub/101/introduction
+    shows: '"Centrally manage model files, datasets, code repositories, and application Spaces." "Compatible
+      with Hugging Face SDK." "Supports Git, Web UI, CLI, and Python SDK workflows."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 53f35716289138e678c37d24896fd7df3aece44a0c47379f24b1389d7784ddb9
+  - url: https://raw.githubusercontent.com/OpenCSGs/csghub/HEAD/docs/detailed_intro_en.md
+    shows: '"CSGHub integrates Git server with Git LFS protocol and Object Storage Service to create a reliable
+      storage system." "Keep track of all model versions automatically"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1632b7c5b3fc7e4a43f74910af82a8f2a58a5adbe745bffb12695888af33868a
+  - url: https://raw.githubusercontent.com/OpenCSGs/csghub-server/HEAD/README.md
+    shows: '"It focuses on management of models、datasets and other LLM assets through REST API"; "Search for
+      users, organizations, models, and data".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 21fa68b2c5bfb8752c3544d5833909ff105a13c84e8254a7cdab3ad5a0658c77
