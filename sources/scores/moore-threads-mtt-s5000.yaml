@@ -13,21 +13,21 @@ openness:
         precision of its throughput figure
     retail:
       value: open_market
-      detail: sold as modules, servers and clusters; the product page carries a purchase inquiry
+      detail: sold as modules, servers and clusters through direct sales and distributors, per the annual report
   confidence: medium
   note: Moore Threads describes the S5000 on product and architecture pages and gives its throughput and memory in its annual
     report, but publishes no datasheet with the card's power or interfaces. It sells the card in modules, servers and clusters.
     This score is provisional until the map settles how thin vendor documentation is read.
   raw: form_factor:chipset(PH100 GPU sold as OAM modules, in eight-GPU SGX5000 servers and in KUAE clusters; scored as the
     silicon);datasheets:brief(product and architecture pages and the annual report; no datasheet giving the card's power,
-    interfaces or the precision of its throughput figure);retail:open_market(sold as modules, servers and clusters; the product
-    page carries a purchase inquiry)
+    interfaces or the precision of its throughput figure);retail:open_market(sold as modules, servers and clusters through
+    direct sales and distributors, per the annual report)
   last_verified: '2026-09-27'
   sources:
   - url: https://en.mthreads.com/product/S5000
     shows: 'MTT S5000 product page: OAM compute modules in liquid- and air-cooled versions, the "MTT MGX 8-GPU" platform and
       the "MTT SGX5000 Server"; the only TFLOPS figures are footnoted baselines, "① Baseline 1: Dense FP16 compute 989 TFLOPs,
-      memory bandwidth 3.35 TB/s"; a "Purchase" section'
+      memory bandwidth 3.35 TB/s"'
     accessed: '2026-09-27'
     establishes:
     - datasheets
@@ -35,16 +35,24 @@ openness:
     - retail
     http_status: 200
     content_sha256: d7675ba434c3fc2b36dcc7fe4100b58f3b542b07ff9ceb87cb3945e2af4f7b41
+  - url: https://docs.mthreads.com/
+    shows: 'Moore Threads documentation center: product documentation listed for the MTT S3000 and MTT S4000 under 智算中心计算卡产品;
+      the S5000 appears only in software tutorials'
+    accessed: '2026-09-27'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 8e062af16fca0573c93dec4763f3253e0cae1a2031d2396dfa419abdebb4c999
   - url: https://www.mthreads.com/architecture/pinghu
-    shows: '"平湖"架构 page: tensor, memory and communication engines (TCE, TME, ACE) described without any specification figure
-      for the chip'
+    shows: '"平湖"架构 page: tensor, memory and communication engines (TCE, TME, ACE), "60MB 高容量的 Last Level Cache（LLC）" and MTLink
+      "7 倍带宽提升", with no throughput, memory capacity, power or interface figure for the card'
     accessed: '2026-09-27'
     establishes:
     - datasheets
     http_status: 200
     content_sha256: b30ba240d9b47bd4a600c60774331e0b8b3f4153e350cf718061a1e285ca8862
   - url: https://pdf.dfcfw.com/pdf/H2_AN202604261821587780_1.pdf
-    shows: '2025 annual report: "采用公司全新一代“平湖”芯片架构的MTTS5000 及相关产品实现大规模商业化落地"'
+    shows: '2025 annual report: "采用公司全新一代“平湖”芯片架构的MTTS5000 及相关产品实现大规模商业化落地"; "公司采用直销与经销并存的销售模式…直销收入的占比为72.86%，经销收入的占比为27.14%"'
     accessed: '2026-09-27'
     establishes:
     - retail
@@ -84,8 +92,9 @@ capability:
       accessed: '2026-09-27'
       http_status: 200
       content_sha256: cecab8cf5e553e81a11c06256e949570625ef3b1a5f440765ee8b3a847d5816e
-  note: Moore Threads rates the S5000 at up to 1 PFLOPS of dense AI compute, without naming the precision, with 80 GB of memory.
-    Read as its 8-bit figure, that is about three-fifths of Gaudi 3's FP8 throughput with under two-thirds of its memory.
+  note: Moore Threads rates the S5000 at up to 1 PFLOPS of dense AI compute, without naming the precision, with 80 GB of memory,
+    and puts it at about three-quarters of a 989 TFLOPS FP16 baseline. Read as its 8-bit figure, that is about three-fifths
+    of Gaudi 3's FP8 throughput with under two-thirds of its memory.
   last_verified: '2026-09-27'
   sources:
   - url: https://pdf.dfcfw.com/pdf/H2_AN202604261821587780_1.pdf
@@ -100,8 +109,8 @@ capability:
     http_status: 200
     content_sha256: da657a9d440b67b491fa60573925345a3e0772c6b3f344df78c7d75b56b24842
   - url: https://en.mthreads.com/product/S5000
-    shows: 'Product page footnote: "① Baseline 1: Dense FP16 compute 989 TFLOPs, memory bandwidth 3.35 TB/s", the comparator
-      the page benchmarks against rather than the S5000'
+    shows: 'Product page: "MTT S5000 achieves over 74% of the performance of leading international flagship products ①"; footnote
+      "① Baseline 1: Dense FP16 compute 989 TFLOPs, memory bandwidth 3.35 TB/s", the comparator rather than the S5000'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: d7675ba434c3fc2b36dcc7fe4100b58f3b542b07ff9ceb87cb3945e2af4f7b41
