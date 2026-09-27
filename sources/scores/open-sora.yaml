@@ -1,7 +1,7 @@
 product: open-sora
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components:
     weights:
       value: open
@@ -21,15 +21,19 @@ openness:
     - name: Tencent-Hunyuan-Community-License
       detail: the HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed
         in the Open-Sora-v2 repository, and code the LICENSE bundles; excludes the EU, UK and South Korea
-    - name: FLUX.1-dev-Non-Commercial-License
-      detail: the FLUX.1 [dev] weights redistributed in the same repository, which the README's only download
-        command fetches with the Open-Sora weights; the README's text-to-video path runs through them
+    context:
+      optional-pipeline:
+        value: FLUX.1-dev-Non-Commercial-License
+        detail: FLUX.1 [dev] weights sit in the same Hugging Face repository and the README's download command
+          fetches them, but only the optional text-to-image-to-video pipeline uses them; the direct text-to-video
+          configs load no FLUX weights, so under the bundled-part rule they do not govern
   governing_release: Open-Sora 2.0
   confidence: medium
-  note: Open-Sora 2.0's own weights and training code are Apache 2.0, but every generation loads a HunyuanVideo
-    VAE whose license excludes the EU, UK and South Korea, and the one documented download also fetches
-    FLUX.1 [dev] under a non-commercial license, which the README's text-to-video path runs through. The
-    training data is described, not released.
+  note: Open-Sora 2.0's own weights and training code are Apache 2.0, but every text-to-video and image-to-video
+    run loads a HunyuanVideo VAE whose license excludes the EU, UK and South Korea, which caps it at use_bounded.
+    FLUX.1 [dev] weights under a non-commercial license sit in the same repository for an optional text-to-image-to-video
+    pipeline; the direct text-to-video path does not load them, so they do not govern. The training data
+    is described, not released.
   raw: weights:open(Open_Sora_v2.safetensors downloads from hpcai-tech/Open-Sora-v2 without a gate; the
     same repository also carries flux1-dev.safetensors and hunyuan_vae.safetensors);data:described(the training
     data is described in the technical report; the only published set is a 45K-clip Pexels sample for trying
@@ -37,9 +41,10 @@ openness:
     and docs/train.md are published; the repository is Apache-2.0, with bundled third-party terms over code
     derived from other projects);license:Apache-2.0(the Open-Sora 2.0 weights and the repository)+Tencent-Hunyuan-Community-License(the
     HunyuanVideo VAE that every text-to-video and image-to-video config loads, redistributed in the Open-Sora-v2
-    repository, and code the LICENSE bundles; excludes the EU, UK and South Korea)+FLUX.1-dev-Non-Commercial-License(the
-    FLUX.1 [dev] weights redistributed in the same repository, which the README's only download command
-    fetches with the Open-Sora weights; the README's text-to-video path runs through them)
+    repository, and code the LICENSE bundles; excludes the EU, UK and South Korea);optional-pipeline:FLUX.1-dev-Non-Commercial-License(FLUX.1
+    [dev] weights sit in the same Hugging Face repository and the README's download command fetches them,
+    but only the optional text-to-image-to-video pipeline uses them; the direct text-to-video configs load
+    no FLUX weights, so under the bundled-part rule they do not govern)
   last_verified: '2026-09-27'
   sources:
   - url: https://ungh.cc/repos/hpcaitech/Open-Sora/files/main/LICENSE
