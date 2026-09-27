@@ -1,0 +1,102 @@
+product: vantage6
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; LICENSE body is Apache License 2.0 (Copyright 2022 IKNL); PyPI reports MIT
+    source:
+      value: public
+      detail: HQ, node, authentication service, algorithm store and UI
+    core-gated:
+      value: ungated
+      detail: no paid edition; the README licenses the whole project under Apache 2.0
+  confidence: medium
+  note: Every vantage6 component is published under the Apache License 2.0, and the project names no paid edition.
+    PyPI labels the package MIT, which disagrees with the LICENSE file but leaves it OSI either way.
+  raw: license:Apache-2.0(OSI; LICENSE body is Apache License 2.0 (Copyright 2022 IKNL); PyPI reports MIT);source:public(HQ,
+    node, authentication service, algorithm store and UI);core-gated:ungated(no paid edition; the README licenses
+    the whole project under Apache 2.0)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/vantage6/vantage6/HEAD/LICENSE
+    shows: 'The LICENSE body: the Apache License, Version 2.0 text with the appendix filled in as "Copyright 2022
+      IKNL".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 64f513f80a474c27b21f87dee40548fe1234588e7e36157de6847cdefe810977
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/vantage6%2Fvantage6
+    shows: 'Repository record for vantage6/vantage6: license apache-2.0, not archived, not a fork, pushed 2026-09-19,
+      50 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4ae1dbf143fde64fb20b794043868d78644bbe3b973413d6cfb25d8ee65261df
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/vantage6/vantage6/files/main
+    shows: 'The 1,175-file tree of vantage6/vantage6 at `main`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6b4b5f4cc5acf5b945c3687a03696df03ced7a59741d47fe2c2cbf2e01bf7306
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/vantage6/vantage6/HEAD/README.md
+    shows: 'README: "This project is licensed under the Apache License 2.0"; the infrastructure ships as Docker
+      images for HQ, node, algorithm store and UI. No paid tier or enterprise edition is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c841a3461a30bb6580301e97f971b76ee2d5ad38179d7c9b716ec2cb288a746e
+    establishes:
+    - core-gated
+  - url: https://pypi.org/pypi/vantage6/json
+    shows: PyPI `vantage6` 5.0.3, uploaded 2026-09-21, license field MIT, which disagrees with the repository LICENSE.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dfeaf030b9864a893da2207bece74bc9bd456a54d70fe53cfc1f83100d5d5736
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `vantage6`, the command-line package operators use to set up and run HQ and node instances.
+    The server and node themselves run from Docker images, so this reads the operators rather than every running
+    node.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/vantage6/recent
+    shows: last_month = 4,105 downloads for the package `vantage6`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 741897bbf363c70687633535368ec057db4f92cf9c63290c10cd7b6e734458dd
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: An HQ server, authentication service, algorithm store and web UI; nodes delivered as Docker images that
+    data holders run beside their data; containerised algorithms for federated learning, federated statistics and
+    MPC.
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: 'vantage6 is a production cross-silo network: each data holder runs an authenticated node, the central services
+    come as containers, and the network can run MPC algorithms as well as federated ones. That is Flower''s rung.
+    It documents no device or HPC reach.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/vantage6/vantage6/HEAD/README.md
+    shows: 'README: Docker images for HQ, node, algorithm store and UI; the infrastructure includes an "authentication
+      service, algorithm store, and user interface"; nodes connect to HQ.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c841a3461a30bb6580301e97f971b76ee2d5ad38179d7c9b716ec2cb288a746e
+  - url: https://docs.vantage6.ai/en/main/introduction/introduction.html
+    shows: 'Introduction: an orchestration tool for privacy-preserving analyses that deploys a network of nodes;
+      an authentication service; it is "possible to run federated algorithms, but also MPC algorithms or other protocols";
+      nodes "securely communicate with HQ".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8a1d16ac68368239dbd435b897a1edbdabe7dc4aa1bf97f71a932c4d01ef168a

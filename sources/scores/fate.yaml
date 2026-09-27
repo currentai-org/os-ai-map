@@ -1,0 +1,102 @@
+product: fate
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: the framework and its deployment tooling
+    core-gated:
+      value: ungated
+      detail: foundation-hosted under a technical charter; no paid edition
+  confidence: high
+  note: FATE is Apache-2.0 throughout and is governed as a Linux Foundation-hosted project under a technical charter,
+    so no company is in a position to hold part of it back for a paid tier.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(the framework
+    and its deployment tooling);core-gated:ungated(foundation-hosted under a technical charter; no paid edition)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/FederatedAI/FATE/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FederatedAI%2FFATE
+    shows: 'Repository record for FederatedAI/FATE: license apache-2.0, not archived, not a fork, pushed 2024-11-19,
+      6,098 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b843f0de799fe0fc1db6fe10ac3beeab30a4419ec7b696b58f4cb495f24709b4
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/FederatedAI/FATE/files/master
+    shows: 'The 1,419-file tree of FederatedAI/FATE at `master`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 70db6581b8d65dedc15a3f95a2f4672965b66c24563c8117b4aacadcd9b9dccd
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/FederatedAI/FATE/HEAD/README.md
+    shows: 'README: "FATE is an open source project hosted by Linux Foundation. The Technical Charter sets forth
+      the responsibilities and procedures"; FATE "implements secure computation protocols based on homomorphic encryption
+      and multi-party computation (MPC)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 94cdcd813936cd961d0688daf14fddf63d043326e64f21bbfdca493edc36496b
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 'No package measures FATE: `fate-client` is a client library, and sites deploy FATE from installers or container
+    images. Stars are the fallback, and they cap the reading because a star is not a deployment.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/FederatedAI%2FFATE
+    shows: stargazers_count = 6,098 for FederatedAI/FATE.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b843f0de799fe0fc1db6fe10ac3beeab30a4419ec7b696b58f4cb495f24709b4
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Standalone and cluster deployment, docker-compose and KubeFATE on Kubernetes, FATE-Flow multi-party task
+    scheduling, party routing with a whitelist through the eggroll proxy, homomorphic encryption and MPC, and FATE-LLM
+    for federated large language models.
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: 'FATE is built for real cross-organization deployment: each party runs its own cluster, traffic between
+    parties goes through a routing layer with an explicit whitelist of permitted parties, and its protocols encrypt
+    the values exchanged. That puts it level with Flower. It documents no mobile or HPC path, so it stays below
+    NVIDIA FLARE.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/FederatedAI/FATE/HEAD/README.md
+    shows: 'README: cluster deployment by CLI, docker-compose deployment, FATE-Flow ("A multi-party secure task
+      scheduling platform"), FATE-LLM, and "secure computation protocols based on homomorphic encryption and multi-party
+      computation (MPC)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 94cdcd813936cd961d0688daf14fddf63d043326e64f21bbfdca493edc36496b
+  - url: https://raw.githubusercontent.com/FederatedAI/KubeFATE/HEAD/README.md
+    shows: KubeFATE deploys FATE with Docker Compose or Kubernetes, and manages the full life cycle of multiple
+      FATE clusters; Kubernetes is the recommended production mode.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0ccae298e9d6bcbbecb5c7b0c8f3063ed366a266b32ec7e3e2a1be524f6f0454
+  - url: https://ungh.cc/repos/FederatedAI/FATE/files/master
+    shows: The tree ships deploy/docker-compose/docker-deploy with parties.conf, and an eggroll proxy configuration
+      carrying route_table.json and whitelist.json.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 70db6581b8d65dedc15a3f95a2f4672965b66c24563c8117b4aacadcd9b9dccd

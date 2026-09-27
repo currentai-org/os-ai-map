@@ -1,0 +1,134 @@
+product: flower
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: the framework, simulation engine and deployment runtime
+    core-gated:
+      value: gated
+      detail: OIDC account authentication, audit logging and the Helm charts are documented as Flower Enterprise
+        features, and the SuperLink reports license-missing and license-invalid errors
+  confidence: high
+  note: 'Flower''s framework and deployment runtime are Apache-2.0, but Flower Labs reserves part of the production
+    operating layer for a paid tier: its own documentation marks OIDC login, audit logging and the Helm charts as
+    Flower Enterprise features. That is open core, not a separate product sold beside a complete one.'
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(the framework,
+    simulation engine and deployment runtime);core-gated:gated(OIDC account authentication, audit logging and the
+    Helm charts are documented as Flower Enterprise features, and the SuperLink reports license-missing and license-invalid
+    errors)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/flwrlabs/flower/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/flwrlabs%2Fflower
+    shows: 'Repository record for flwrlabs/flower: license apache-2.0, not archived, not a fork, pushed 2026-09-21,
+      7,140 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3083e659b4d6150ed4dd5466c886921de73e9dec149e071ba00bba965627704b
+    establishes:
+    - source
+  - url: https://flower.ai/docs/framework/how-to-authenticate-accounts.html
+    shows: '"OpenID Connect Authentication is a Flower Enterprise feature. See Flower Enterprise for details." The
+      same page lists SUPERLINK_LICENSE_INVALID, SUPERLINK_LICENSE_MISSING and SUPERLINK_LICENSE_URL_INVALID exit
+      codes.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 00df68b464cd49deba8fd170e6ccb1a0c2ad8e09e4622ceebc3088a02b2fb85a
+    establishes:
+    - core-gated
+  - url: https://flower.ai/docs/framework/how-to-configure-audit-logging.html
+    shows: '"Audit logging is a Flower Enterprise feature. See Flower Enterprise for details."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: de6cca3eae34c0cc39ef4632d92ceb693378dde2439c69a606f50083c83d9fdd
+    establishes:
+    - core-gated
+  - url: https://flower.ai/docs/framework/helm/index.html
+    shows: '"Flower Helm charts are a Flower Enterprise feature. See Flower Enterprise for details."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7dad39048d84094249482be1aa401add1056808ec89778472dfcfab3374c3a5c
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `flwr`, which carries the simulation engine, the SuperLink and the SuperNode alike, so
+    they count the product rather than a client for it. Flower draws about two thirds of the monthly PyPI installs
+    declared across this category, and still sits in the 10K-100K band.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/flwr/recent
+    shows: last_month = 74,715 downloads for the package `flwr`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eb06d65fc39dbab99829269a113ad6f398ea14046ec3faed6d9a17259242178a
+  - url: https://pypi.org/pypi/flwr/json
+    shows: PyPI `flwr` 1.38.0, uploaded 2026-09-22, license Apache-2.0, repository https://github.com/flwrlabs/flower.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4567a24bb962e5eb91cebff9307623a9607263ce0733f2d2794933cf98a1ee15
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: A deployment runtime of SuperLink and per-organization SuperNodes over TLS with SuperNode authentication,
+    Docker images, SecAgg and SecAgg+ secure aggregation, and central and local differential privacy (in preview).
+    Its Android SDK is marked incompatible with current releases, and its Slurm guide connects SuperNodes to the
+    hosted SuperGrid.
+  confidence: high
+  relative_to: nvidia-flare
+  relation: one_below
+  note: 'Flower runs real cross-silo federations: each organization starts its own authenticated SuperNode, connections
+    are encrypted, and secure aggregation ships in the framework. It sits one rung below NVIDIA FLARE. Its own quickstart
+    says the Android SDK does not work with current Flower, its Slurm path runs through the hosted SuperGrid rather
+    than the open runtime, and it publishes no multi-billion-parameter training measurement.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://flower.ai/docs/framework/explanation-ref-secure-aggregation-protocols.html
+    shows: '"Flower now provides the SecAgg and SecAgg+ protocols" to aggregate model updates without the server
+      inspecting individual ones.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1f52a7d1bc4af7944efb1bd10ace921871f56312ac815298f916b23797497daf
+  - url: https://flower.ai/docs/framework/how-to-authenticate-supernodes.html
+    shows: 'Two mechanisms to authenticate SuperNodes connecting to a SuperLink: automatic timestamp-signature checks,
+      and CLI-managed authentication behind --enable-supernode-auth.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 26d49632114839ffdb0fdaaa933a7b630ac76b8113b2eb5c16d826fc79a79ece
+  - url: https://flower.ai/docs/framework/how-to-enable-tls-connections.html
+    shows: TLS for SuperLink to SuperNode and user to SuperLink connections, replacing --insecure.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 65081f05ed1f71d86622fd0e5097672e012226f5eabbfe52a762adf9dbf0e407
+  - url: https://flower.ai/docs/framework/how-to-use-differential-privacy.html
+    shows: Central and local differential privacy; "Differential Privacy in Flower is in a preview phase."
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd79243211526491a999d977aac8c79b459b2d4925a9d931238f7678b3124231
+  - url: https://flower.ai/docs/framework/tutorial-quickstart-android.html
+    shows: '"The experimental Flower Android SDK is not compatible with the latest version of Flower. Android support
+      is currently being reworked"; the quickstart is "kept for historical purposes".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e8c0a4e6a94b3fc84624b0e015a68109e15b1e3c08bce6a7d103760230f56179
+  - url: https://flower.ai/docs/framework/how-to-deploy-supernode-using-slurm.html
+    shows: 'Deploying a SuperNode as a Slurm job: "Each example connects a SuperNode to SuperGrid", after registering
+      its key pair in SuperGrid.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f233a1a0cf1039c3e472c528223ad902b04a5346a5791a55ac6531bd975bd0f2

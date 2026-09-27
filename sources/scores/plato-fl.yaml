@@ -1,0 +1,79 @@
+product: plato-fl
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the LICENSE body is the unmodified Apache License 2.0 text
+    source:
+      value: public
+      detail: the whole framework
+    core-gated:
+      value: ungated
+      detail: a university research framework with no paid edition
+  confidence: high
+  note: Plato is an Apache-2.0 research framework with no paid tier or held-back component.
+  raw: license:Apache-2.0(OSI; the LICENSE body is the unmodified Apache License 2.0 text);source:public(the whole
+    framework);core-gated:ungated(a university research framework with no paid edition)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/TL-System/plato/HEAD/LICENSE
+    shows: 'The LICENSE body: the verbatim Apache License, Version 2.0 text with no added clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/TL-System%2Fplato
+    shows: 'Repository record for TL-System/plato: license apache-2.0, description "Plato: A Research Framework
+      for Federated Learning", not archived, not a fork, pushed 2026-06-08, 399 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8e7a67652463ffbd6523dd576f6fd9a612230849cbadad93986f2213d237276b
+    establishes:
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/TL-System/plato/files/main
+    shows: 'The 883-file tree of TL-System/plato at `main`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. Path absence only, paired with the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5470f49c945e2ccf49da8d9f8a09a8d666e84f0c4e8dfadc728053356cbd6c5d
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `plato-learn`, the framework's package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/plato-learn/recent
+    shows: last_month = 84 downloads for the package `plato-learn`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2d997044eb1a7db33916ff4eb35112dc21471a07b7d564277415c6d52f5797c3
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Configuration-driven simulation locally, in Docker or on Slurm; a server deployable on a public cloud over
+    HTTPS with remote clients; LoRA fine-tuning of Hugging Face causal language models; a homomorphic-encryption
+    secure-aggregation example.
+  confidence: medium
+  relative_to: flower
+  relation: one_below
+  note: 'Plato can run a real federation, with a server behind HTTPS that clients reach over the network. But its
+    deployment guide secures only the server''s certificate: there is no way for the coordinator to identify or
+    admit the parties themselves, which is the layer that separates Flower''s rung. It sits one rung below Flower.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://platodocs.netlify.app/deployment/
+    shows: 'Deployment: "The Plato federated learning server is designed to use Socket.IO over HTTP and HTTPS, and
+      can be easily deployed in a production server environment in the public cloud"; the guide configures the server''s
+      certificate behind nginx and Cloudflare, with no client identity step.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e8c2cb4ab64f1cffac1e5ee02ac3753b1ed3f6ceaa6f16de3c476560b63fd105

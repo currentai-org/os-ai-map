@@ -1,0 +1,84 @@
+product: apheris-networks
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+      detail: closed platform; the Gateway ships from Apheris's credentialed registry
+    source:
+      value: closed
+      detail: no published implementation; the Helm chart and images need Apheris-issued registry credentials
+  confidence: high
+  note: 'Apheris publishes no implementation: data custodians install the Compute Gateway from a private registry
+    using credentials Apheris issues, and the orchestrator it connects to is Apheris''s own service.'
+  raw: license:Proprietary(closed platform; the Gateway ships from Apheris's credentialed registry);source:closed(no
+    published implementation; the Helm chart and images need Apheris-issued registry credentials)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.apheris.com/docs/gateway/3.11/gateway/deploy-on-kubernetes-with-helm.html
+    shows: 'Deploying the Gateway with Helm: "Your Apheris representative provides you with the following: login
+      credentials for the Apheris OCI registry, the values.yaml file ... a concrete chart version".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8e5db69df7865375cd1b3a25785743f7e424a0c57b492c409de977543a15da27
+    establishes:
+    - license
+    - source
+  - url: https://www.apheris.com/docs/gateway/3.11/general/architecture.html
+    shows: 'Architecture: the Compute Gateway "regularly polls the Gateway API on the Orchestrator (egress only,
+      no ingress)"; the Orchestrator routes Compute Specs.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5631eb549ecee890dcde52ecc00ce600d39310e0dc13bda1f2b636e5da2d747c
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Apheris publishes network and dataset counts, such as nine pharmaceutical companies in one network, but
+    no count of deployments or users, and it has no public distribution channel that could be counted. The adoption
+    axis abstains.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.apheris.com/networks/aisb
+    shows: 'The AI Structural Biology network: "An industry-led collaboration of nine leading pharmaceutical companies".
+      A membership figure for one network, not a usage count for the platform.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0eec9a3700bf8da43ce38d978a872404dac6c524dc8f8da307329c346f2daab4
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: A Compute Gateway each data custodian deploys on Kubernetes, egress-only polling of the orchestrator, asset-policy
+    validation and model-specific privacy controls on every computation, and federated training through NVIDIA FLARE.
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: 'Apheris runs production cross-silo federations: every custodian operates its own gateway, and every computation
+    is checked against that custodian''s own policy before it runs. That is Flower''s rung. Its training runs on
+    NVIDIA FLARE, and it documents no reach beyond the data centre.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://www.apheris.com/docs/gateway/3.11/general/architecture.html
+    shows: The Compute Gateway is "a software component that a Data Custodian deploys into their environment" and
+      "can then execute computations on the data while enforcing access controls and PrivSec controls based on Asset
+      Policies"; "Each Compute Gateway is managed and controlled by exactly one organization".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5631eb549ecee890dcde52ecc00ce600d39310e0dc13bda1f2b636e5da2d747c
+  - url: https://www.apheris.com/docs/gateway/3.11/data-custodian/privacy-controls.html
+    shows: 'Privacy controls: the Gateway validates that "the submitter is allowed to run computations on the data;
+      the computation is permitted on the data; the computation parameters are within the allowed bounds"; privacy
+      controls are model specific.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e4109db08baa95492ef7d7744a64e15c2c9c7b5172a153842d95227f67b0c5e0
+  - url: https://www.apheris.com/docs/gateway/3.11/general/custom-models.html
+    shows: 'Custom models: "Currently the main federation framework we support is NVFlare."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 22cff47855e7f360f848eba4e8bc7f047e0b05cd1b5f3bfd45db81c0810d861a
