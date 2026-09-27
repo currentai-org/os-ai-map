@@ -1,38 +1,59 @@
 product: qwen-image
 openness:
-  score: 2
-  class: restricted
+  score: null
+  class: closed
   components:
     weights:
-      value: open
-      detail: the Qwen-Image, Edit, Layered, 2512 and 2.1 checkpoints download from Hugging Face without a gate
+      value: closed
+      detail: Qwen-Image 3.0 and 3.0-Pro are listed only as Model Studio API models; no Hugging Face repository
+        exists for them
     data:
       value: closed
-      detail: the technical report and cards do not release the training data
+      detail: nothing is published for Qwen-Image 3.0
     code:
-      value: partial
-      detail: inference demos and prompt-rewriting code only; training is left to third-party frameworks
+      value: closed
+      detail: no code is published for Qwen-Image 3.0
     license:
-    - name: Qwen-Research-License
-      detail: 'Qwen-Image-2.1 and its prompt-rewriting models: "FOR NON-COMMERCIAL PURPOSES ONLY", with commercial
-        use by separate license'
-    - name: Apache-2.0
-      detail: Qwen-Image, Qwen-Image-Edit, -Edit-2509, -Edit-2511, -Layered and -2512
-  governing_release: Qwen-Image-2.1
-  confidence: high
-  note: Qwen-Image-2.1, the newest downloadable release, is licensed for non-commercial use only, although every
-    earlier Qwen-Image release is Apache 2.0. The newer 2.0 and 3.0 models are not downloadable at all, and the
-    training data and training code are not published.
-  raw: 'weights:open(the Qwen-Image, Edit, Layered, 2512 and 2.1 checkpoints download from Hugging Face without
-    a gate);data:closed(the technical report and cards do not release the training data);code:partial(inference
-    demos and prompt-rewriting code only; training is left to third-party frameworks);license:Qwen-Research-License(Qwen-Image-2.1
-    and its prompt-rewriting models: "FOR NON-COMMERCIAL PURPOSES ONLY", with commercial use by separate license)+Apache-2.0(Qwen-Image,
-    Qwen-Image-Edit, -Edit-2509, -Edit-2511, -Layered and -2512)'
+    - name: Proprietary
+      detail: Qwen-Image 3.0 is available only under Model Studio API terms
+    context:
+      prior-release:
+        value: distributed
+        detail: 'Qwen-Image-2.1 (and earlier): downloadable; 2.1 under the Qwen Research License Agreement, non-commercial
+          only, and Qwen-Image to Qwen-Image-2512 under Apache-2.0'
+  governing_release: Qwen-Image 3.0
+  confidence: medium
+  note: Qwen-Image 3.0, the current release, can only be used through Alibaba Cloud's API, with no weights published.
+    The newest downloadable release, Qwen-Image-2.1, is licensed for non-commercial use only, and the older Apache
+    2.0 releases trail the hosted flagship by two generations.
+  raw: 'weights:closed(Qwen-Image 3.0 and 3.0-Pro are listed only as Model Studio API models; no Hugging Face repository
+    exists for them);data:closed(nothing is published for Qwen-Image 3.0);code:closed(no code is published for Qwen-Image
+    3.0);license:Proprietary(Qwen-Image 3.0 is available only under Model Studio API terms);prior-release:distributed(Qwen-Image-2.1
+    (and earlier): downloadable; 2.1 under the Qwen Research License Agreement, non-commercial only, and Qwen-Image
+    to Qwen-Image-2512 under Apache-2.0)'
   last_verified: '2026-09-26'
   sources:
+  - url: https://www.alibabacloud.com/help/en/model-studio/qwen-image-api
+    shows: Model Studio lists "qwen-image-3.0-pro", "qwen-image-3.0" and "qwen-image-2.0-pro" as API models.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4c1593df678ad8185bc41192bbaeff8dd2d05a96d015aeee762e1644645858fe
+    establishes:
+    - weights
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen-Image&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of Qwen-Image repositories: Qwen-Image, -Edit, -Edit-2509, -Edit-2511, -Layered,
+      -2512 and -2.1; no Qwen-Image-2.0 or 3.0 repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 182de359ef8e562675089654b074572e57bd4e0af2352998bb02800240c0e79e
+    establishes:
+    - weights
   - url: https://huggingface.co/Qwen/Qwen-Image-2.1/raw/main/LICENSE
-    shows: 'License body: "Qwen RESEARCH LICENSE AGREEMENT Release Date: September 20, 2026"; the grant is "FOR
-      NON-COMMERCIAL PURPOSES ONLY".'
+    shows: 'Qwen-Image-2.1 license body: "Qwen RESEARCH LICENSE AGREEMENT"; the grant is "FOR NON-COMMERCIAL PURPOSES
+      ONLY".'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 8dc973f024ff95966bea25866efa443fd16776dcb1001e681e3d467ea572b28d
@@ -45,51 +66,6 @@ openness:
     content_sha256: b907c8234b565e5ecefff8232dbb6f1d603fbf9a47a3176db734dcae27175d08
     establishes:
     - license
-  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen-Image&sort=downloads&direction=-1&limit=100
-    shows: 'Hugging Face listing of Qwen-Image repositories: Qwen-Image, -Edit, -Edit-2509, -Edit-2511, -Layered,
-      -2512 and -2.1 public and ungated; no Qwen-Image-2.0 or 3.0 repository.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 182de359ef8e562675089654b074572e57bd4e0af2352998bb02800240c0e79e
-    establishes:
-    - weights
-  - url: https://huggingface.co/api/models/Qwen/Qwen-Image-2.1?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
-    shows: 'Hugging Face API record for Qwen-Image-2.1: gated false, license other (qwen-research).'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 4abe7422ca43da9d433ad42f701902362e84f24ee0486fce487ea6e0274beeeb
-    establishes:
-    - weights
-  - url: https://huggingface.co/api/models/Qwen/Qwen-Image?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
-    shows: 'Hugging Face API record for Qwen-Image: gated false, license apache-2.0.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 0e2d91e381c0a664f874dd9efdc8ce92a18ca916b9ccc245eda3689d6fbfe5fb
-    establishes:
-    - weights
-  - url: https://www.alibabacloud.com/help/en/model-studio/qwen-image-api
-    shows: Model Studio lists "qwen-image-3.0-pro", "qwen-image-3.0" and "qwen-image-2.0-pro" as API models.
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 4c1593df678ad8185bc41192bbaeff8dd2d05a96d015aeee762e1644645858fe
-    establishes:
-    - weights
-  - url: https://ungh.cc/repos/QwenLM/Qwen-Image/files/main
-    shows: 'Qwen-Image repository file list: demo and prompt-utility scripts only, no training code.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 304dd873adabb0c7615453a20fdeb479de73623a109c6e9426aa8daa1ae6747f
-    establishes:
-    - code
-  - url: https://cdn.jsdelivr.net/gh/QwenLM/Qwen-Image@main/README.md
-    shows: README points LoRA and full training to DiffSynth-Studio and the technical report on arXiv; no training
-      dataset is released.
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 12878946f055f1e1bd5f58e90891b845ad178171a71154dbb6a841dcb1fed5c6
-    establishes:
-    - code
-    - data
 adoption:
   level: 4
   reach: 1M-10M
@@ -108,19 +84,20 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: Artificial Analysis Text to Image Arena, overall board
-  value: 'Artificial Analysis Text to Image Arena, overall board read 2026-09-26: Qwen-Image-2.1 18th of 163 at
-    an Elo of 1035, first among open-weights entries; the closed Qwen-Image-3.0-Pro places 14th and is not counted.'
+  basis_detail: Artificial Analysis Text to Image Arena, overall board; best-placed release, the API-only Qwen-Image-3.0-Pro
+  value: 'Artificial Analysis Text to Image Arena, overall board read 2026-09-26: Qwen-Image-3.0-Pro (the current,
+    API-only release) 14th of 163 at an Elo of 1088; the downloadable Qwen-Image-2.1 18th at 1035, first among open-weights
+    entries.'
   confidence: medium
   relative_to: nano-banana
   relation: at
-  note: Qwen-Image-2.1 is the highest-placed open-weight model on the text-to-image arena. It trails the closed
-    frontier led by GPT Image, and Nano Banana places well above it on the same board.
+  note: Qwen-Image 3.0 places above every open-weight image model on the arena, and its downloadable predecessor
+    Qwen-Image-2.1 leads the open models. GPT Image and Nano Banana both place above the hosted flagship.
   last_verified: '2026-09-26'
   sources:
   - url: https://artificialanalysis.ai/image/leaderboard/text-to-image
-    shows: Arena leaderboard entry "Qwen-Image-2.1" (rank 18, Elo 1035.4, open weights at huggingface.co/Qwen/Qwen-Image-2.1),
-      the first entry on the board with an open-weights link.
+    shows: Leaderboard entries "Qwen-Image-3.0-Pro" (rank 14, Elo 1088.4, no open weights) and "Qwen-Image-2.1"
+      (rank 18, Elo 1035.4, open weights at huggingface.co/Qwen/Qwen-Image-2.1).
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: d21dc3f75a506b5cbf4ccae601dcc91335e7d3c9eaaf9fc1b823c578152d53c4

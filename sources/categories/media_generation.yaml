@@ -21,41 +21,53 @@ scoring_recipe:
     \ ladder. The closed comparators are typed `model` and settle at 1/closed on `weights: closed`. Many weights\
     \ here ship under custom community licenses. None is added to a shared tier from this category: each goes to\
     \ the one maintainer license-rulings issue, and the product carrying it is in `deferred:` below with a hand-assigned\
-    \ score until that ruling lands.\n\nGOVERNING RELEASE (PROPOSAL, 2026-09-26 decision record, flagged for the\
-    \ maintainer): on a line whose newest release is closed, the newest DISTRIBUTED release governs openness and\
-    \ capability, and the closed flagship is named in the product's comments rather than scored. It is applied,\
-    \ and recorded in `openness.governing_release`, on wan (Wan 2.2; Wan 2.5-3.0 are API-only), qwen-image (Qwen-Image-2.1;\
-    \ 2.0 and 3.0 are API-only) and hunyuan-3d (Hunyuan3D 2.1; 2.5 and 3.x are API-only), and in the same form on\
-    \ flux, stable-diffusion and stable-audio, whose strongest tiers are API-only. Under identity.md's current-release\
-    \ reading, wan, qwen-image and hunyuan-3d would each score 1/closed on openness and their capability would read\
-    \ the closed flagship.\n\nCAPABILITY, MODELS: ONE READING, WITHIN A MODALITY. No single quantity orders image,\
-    \ video, 3D and audio together: the public arenas are separate per modality and an Elo in one is not commensurable\
-    \ with an Elo in another. Each model is read on its modality's board, by its best-placed SKU whose weights are\
-    \ distributed (for a closed product, its best-placed SKU): image on the Artificial Analysis Text to Image Arena\
-    \ overall board (163 entries); video on the Artificial Analysis Text to Video Arena without-audio board (86\
-    \ entries, the wider of its two boards); music on AA-Music-Instrumental v1.1 (19 entries); 3D on the 3D Arena\
-    \ image-to-3D render board (24 entries), the only live 3D arena, vote-driven and undated, which the seed feared\
-    \ would be too thin and which instead lists every 3D product promoted here but one. All read 2026-09-26.\n \
-    \ 5  inside the overall top three of its modality's board, closed models included.\n  4  not top three, but\
-    \ the highest-placed open-weights entry on the board, or a closed entry placed above every open-weights entry.\n\
-    \  3  in the upper half of the board overall.\n  2  on the board, in its lower half.\n  1  released, with no\
-    \ entry on its modality's board (portrait animation, song generation with vocals, and a 3D model ranked only\
-    \ on the topology board).\nAnchors: gpt-image (image), minimax-hailuo (video), suno (music) and trellis (3D)\
-    \ are the roots at 5; every other model records `relative_to` a peer in its own modality. Distribution over\
-    \ 24 models: 5 at 5, 3 at 4, 6 at 3, 7 at 2, 3 at 1; the widest rung is 7 of 24 (29%), under the one-third review\
-    \ trigger. Two readings to know: Midjourney's current V8 models had no arena entry, so it is read on V7; and\
-    \ a board position is a snapshot of a vote-driven ranking, which the next refresh re-reads rather than trusts.\n\
-    \nCAPABILITY, SOFTWARE: the breadth of what it can drive, as capabilities it has or has not.\n  5  runs image,\
-    \ video, audio and 3D generation models and composes them in one workflow graph.\n  4  runs three of those modalities.\n\
-    \  3  runs two modalities (in practice image and video).\n  2  runs several model families within one modality.\n\
-    \  1  runs one model family.\nRoot comfyui (5). Distribution over 6: 1 at 5, 1 at 3, 3 at 2, 1 at 1; nothing\
-    \ at 4. The widest rung is 3 of 6 (50%), above the review trigger. Wording as stated above; the reading is that\
-    \ the products genuinely share the capability rather than that the rung is loose: invokeai, nunchaku and audiocraft\
-    \ each run several families of exactly one modality locally, and the capability that separates them from stable-diffusion-cpp\
-    \ - running a second modality - is checkable against their own supported-model lists (invokeai lists Wan only\
-    \ as a hosted API call, recorded as not running it). Splitting the rung by family count would record a distinction\
-    \ the evidence does not order."
+    \ score until that ruling lands.\n\nCLOSED FRONTIER ON AN OPEN LINE (the #720 ruling, 2026-09-27). The current\
+    \ release governs openness, as identity.md says; the API-only exclusion works across SKUs within a release,\
+    \ never across releases. wan (Wan 3.0 current and API-only; Wan 2.2 distributed, Apache-2.0), qwen-image (Qwen-Image\
+    \ 3.0 current and API-only; Qwen-Image-2.1 distributed, Qwen Research License) and hunyuan-3d (Hunyuan3D 3.0\
+    \ current and API-only; Hunyuan3D 2.1 distributed, Tencent Hunyuan 3D Community License) record the current\
+    \ release in `components` and `governing_release`, the prior distributed release under `components.context`\
+    \ and in their sources, and leave `openness.score` null: the ladder computes 1/closed from the current release,\
+    \ and how the map shows availability separately from openness - the open line one generation behind its vendor's\
+    \ closed frontier - awaits a maintainer ruling. That gap is the finding, not bookkeeping. Tiers inside one release\
+    \ are unaffected: FLUX.2 [pro]/[flex]/[max] and Stable Audio 3 Large are API-only SKUs of a release whose other\
+    \ SKUs are distributed, so the most restrictive DISTRIBUTED SKU still governs flux and stable-audio.\n\nCAPABILITY,\
+    \ MODELS: ONE READING, WITHIN A MODALITY. No single quantity orders image, video, 3D and audio together: the\
+    \ public arenas are separate per modality and an Elo in one is not commensurable with an Elo in another. Each\
+    \ model is read on its modality's board by its best-placed SKU across all of its releases, closed ones included,\
+    \ because capability combines as the max across a tier's releases (score.schema.json, `governing_release`) while\
+    \ openness follows the current release: image on the Artificial Analysis Text to Image Arena overall board (163\
+    \ entries); video on the Artificial Analysis Text to Video Arena without-audio board (86 entries, the wider\
+    \ of its two boards); music on AA-Music-Instrumental v1.1 (19 entries); 3D on the 3D Arena image-to-3D render\
+    \ board (24 entries), the only live 3D arena, vote-driven and undated, which the seed feared would be too thin\
+    \ and which instead lists every 3D product promoted here but one. All read 2026-09-26.\n  5  inside the overall\
+    \ top three of its modality's board, closed models included.\n  4  not top three, but the highest-placed open-weights\
+    \ entry on the board, or a closed entry placed above every open-weights entry.\n  3  in the upper half of the\
+    \ board overall.\n  2  on the board, in its lower half.\n  1  released, with no entry on its modality's board\
+    \ (portrait animation, song generation with vocals, and a 3D model ranked only on the topology board).\nAnchors:\
+    \ gpt-image (image), minimax-hailuo (video), suno (music) and trellis (3D) are the roots at 5; every other model\
+    \ records `relative_to` a peer in its own modality. Distribution over 24 models: 6 at 5, 3 at 4, 7 at 3, 5 at\
+    \ 2, 3 at 1; the widest rung is 7 of 24 (29%), under the one-third review trigger. Two readings to know: Midjourney's\
+    \ current V8 models had no arena entry, so it is read on V7; and a board position is a snapshot of a vote-driven\
+    \ ranking, which the next refresh re-reads rather than trusts.\n\nCAPABILITY, SOFTWARE: the breadth of what\
+    \ it can drive, as capabilities it has or has not.\n  5  runs image, video, audio and 3D generation models and\
+    \ composes them in one workflow graph.\n  4  runs three of those modalities.\n  3  runs two modalities (in practice\
+    \ image and video).\n  2  runs several model families within one modality.\n  1  runs one model family.\nRoot\
+    \ comfyui (5). Distribution over 6: 1 at 5, 1 at 3, 3 at 2, 1 at 1; nothing at 4. The widest rung is 3 of 6\
+    \ (50%), above the review trigger. Wording as stated above; the reading is that the products genuinely share\
+    \ the capability rather than that the rung is loose: invokeai, nunchaku and audiocraft each run several families\
+    \ of exactly one modality locally, and the capability that separates them from stable-diffusion-cpp - running\
+    \ a second modality - is checkable against their own supported-model lists (invokeai lists Wan only as a hosted\
+    \ API call, recorded as not running it). Splitting the rung by family count would record a distinction the evidence\
+    \ does not order."
   deferred:
+    wan:
+      because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Wan 3.0, is API-only
+        and the ladder computes 1/closed from it; the prior release, Wan 2.2, remains distributed under Apache-2.0,
+        and both are recorded (the prior one under components.context and in the sources). openness.score is left
+        null rather than hand-set because how the map models availability separately from openness - the open line
+        one generation behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This
+        is a gap signal, not bookkeeping.'
     flux:
       because: 'The weights license abstains: the most restrictive distributed FLUX checkpoints carry Black Forest
         Labs'' own FLUX Non-Commercial License (v2.1, beside v2.0 and the FLUX.1 [dev] v1.1.1), which prohibits
@@ -74,11 +86,13 @@ scoring_recipe:
         but is not named in the tier. Hand-scored 3/open_weights, the same reading as stable-diffusion; one ruling
         on the string settles both.'
     qwen-image:
-      because: 'The weights license abstains: Qwen-Image-2.1, the newest distributed release, carries the Qwen Research
-        License Agreement (''FOR NON-COMMERCIAL PURPOSES ONLY''), while every earlier Qwen-Image release is Apache-2.0.
-        The research license is commercial_forbidden by definition but not named in the tier. Hand-scored 2/restricted.
-        It also rests on the governing-release proposal in the note: under a current-release reading the product
-        would be 1/closed on Qwen-Image 3.0.'
+      because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Qwen-Image 3.0,
+        is API-only and the ladder computes 1/closed from it; the prior release, Qwen-Image-2.1, remains distributed
+        under the Qwen Research License Agreement (non-commercial; the earlier releases are Apache-2.0), and both
+        are recorded (the prior one under components.context and in the sources). openness.score is left null rather
+        than hand-set because how the map models availability separately from openness - the open line one generation
+        behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This is a gap signal,
+        not bookkeeping.'
     ltx:
       because: 'The weights license abstains: LTX-2.5 carries the LTX-2.x Community License and LTX-2 and 2.3 the
         LTX-2 Community License, both free for commercial use below USD 10M annual revenue with a paid license above
@@ -91,10 +105,13 @@ scoring_recipe:
         it lowers the tier is a shared-rubric ruling. Hand-scored 3/open_weights on the commercial test; the territorial
         question could move it to 2.'
     hunyuan-3d:
-      because: 'The weights license abstains for the same reason as hunyuan-video: the Tencent Hunyuan 3D 2.0/2.1
-        Community License has a 1M-MAU bound and excludes the European Union, the United Kingdom and South Korea.
-        Hand-scored 3/open_weights pending the territorial ruling. It also rests on the governing-release proposal:
-        under a current-release reading it would be 1/closed on the API-only Hunyuan3D 3.x.'
+      because: 'Closed frontier on an open line, held under the #720 ruling. The current release, Hunyuan3D 3.0,
+        is API-only and the ladder computes 1/closed from it; the prior release, Hunyuan3D 2.1, remains distributed
+        under the Tencent Hunyuan 3D Community License, which also excludes the EU, UK and South Korea, and both
+        are recorded (the prior one under components.context and in the sources). openness.score is left null rather
+        than hand-set because how the map models availability separately from openness - the open line one generation
+        behind the vendor''s closed frontier - awaits a maintainer ruling from the #720 review. This is a gap signal,
+        not bookkeeping.'
     minimax-hailuo:
       because: 'The weights license abstains: the MiniMax H3 Community License excludes the European Union, the
         United Kingdom, the Republic of Korea and the United States, and requires written authorization above USD
@@ -185,14 +202,15 @@ comments: 'Created preliminary 2026-09-26 under #603. Seed roster in sources/reg
   top 25; Runway gets a second look before promotion. Sora is not seeded: OpenAI shut its API on 2026-09-24.
 
 
-  THE CLOSED FLAGSHIP ON AN OPEN LINE - A PROPOSAL, FLAGGED FOR THE MAINTAINER. Three vendors that anchored open
+  THE CLOSED FLAGSHIP ON AN OPEN LINE - RULED IN THE #720 REVIEW (2026-09-27). Three vendors that anchored open
   generation now ship their newest release closed while older generations stay downloadable: Wan 2.5 to 3.0 are
-  API-only, Hunyuan3D 2.5 to 3.1 are API-only, and Qwen-Image 3.0 is closed while Qwen-Image-2.1 moved to a non-commercial
-  research licence. Proposed rule: the newest DISTRIBUTED release governs a product''s openness, and the closed
-  flagship is written into that product''s comments rather than scored. identity.md says the current release governs
-  openness and excludes API-only tiers only within a release''s SKUs; this carries that exclusion up to the choice
-  of governing release. It decides whether `wan` scores open, so it wants an explicit ruling before promotion rather
-  than a quiet default.
+  API-only, Hunyuan3D 2.5 to 3.x are API-only, and Qwen-Image 3.0 is closed while Qwen-Image-2.1 moved to a non-commercial
+  research license. The proposal that the newest DISTRIBUTED release should govern openness was rejected. The current
+  release governs, as identity.md says. The API-only exclusion works across SKUs within a release, never across
+  releases. Scoring the older release would present the line as an open alternative and hide the gap this category
+  exists to show, that the open line is a generation behind its vendor''s closed frontier. These products keep evidence
+  for both releases and sit in scoring_recipe.deferred until a maintainer rules on how availability is modelled
+  separately from openness.
 
 
   PROMOTED 2026-09-27 (first tranche of 30, from live fetches on 2026-09-26/27; research trail on the branch claude/research-media_generation
@@ -219,5 +237,7 @@ comments: 'Created preliminary 2026-09-26 under #603. Seed roster in sources/reg
   and its default for video, not part of Veo) and Magenta RealTime (Google''s open Lyria-family model, a separate
   open-weight release) are not folded into `veo` and `lyria`; both are follow-up candidates. Hosted flagships on
   open lines (Wan 2.5-3.0, Qwen-Image 2.0/3.0, Hunyuan3D 2.5/3.x, FLUX.2 [pro]/[flex]/[max], Stable Audio 3 Large,
-  Hailuo 02/2.3) are named in their product''s comments and not scored, under the governing-release proposal in
-  the recipe note.'
+  which is API and enterprise self-hosting only, Hailuo 02/2.3; FLUX 3 Video is hosted and FLUX 3 Action is a world-action
+  model outside this category) are named in their product''s comments. Within a release they are simply API-only
+  SKUs; across releases (Wan, Qwen-Image, Hunyuan3D) they are the current release, and those three products are
+  held in `deferred` under the #720 ruling.'

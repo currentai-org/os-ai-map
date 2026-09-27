@@ -1,78 +1,39 @@
 product: hunyuan-3d
 openness:
-  score: 3
-  class: open_weights
+  score: null
+  class: closed
   components:
     weights:
-      value: open
-      detail: the Hunyuan3D 1, 2, 2mini, 2mv, 2.1 and Omni checkpoints download from Hugging Face; the cards flag
-        EU download as disallowed
+      value: closed
+      detail: Hunyuan3D 3.0 is offered only through the Tencent Cloud Hunyuan 3D API and the Hunyuan3D site; no
+        2.5 or 3.x repository exists on Hugging Face
     data:
       value: closed
-      detail: the READMEs and cards neither release nor describe the training data
+      detail: nothing is published for Hunyuan3D 3.0
     code:
-      value: open
-      detail: Hunyuan3D 2.1 publishes its shape and paint training code
+      value: closed
+      detail: no code is published for Hunyuan3D 3.0
     license:
-    - name: Tencent-Hunyuan-3D-Community-License
-      detail: 'versions 2.0 and 2.1: licensed for a territory that excludes the European Union, the United Kingdom
-        and South Korea; licensees above 1 million monthly active users must ask Tencent; both versions bar using
-        outputs to improve other models'
-  governing_release: Hunyuan3D 2.1
-  confidence: high
-  note: Tencent's license allows commercial use but does not apply in the European Union, the United Kingdom or
-    South Korea, and requires a separate license once a licensee's products pass a monthly-user ceiling. Hunyuan3D
-    2.1 publishes its training code, while the training data is not described; the newer 2.5 and 3.x models are
-    not downloadable.
-  raw: 'weights:open(the Hunyuan3D 1, 2, 2mini, 2mv, 2.1 and Omni checkpoints download from Hugging Face; the cards
-    flag EU download as disallowed);data:closed(the READMEs and cards neither release nor describe the training
-    data);code:open(Hunyuan3D 2.1 publishes its shape and paint training code);license:Tencent-Hunyuan-3D-Community-License(versions
-    2.0 and 2.1: licensed for a territory that excludes the European Union, the United Kingdom and South Korea;
-    licensees above 1 million monthly active users must ask Tencent; both versions bar using outputs to improve
-    other models)'
+    - name: Proprietary
+      detail: Hunyuan3D 3.0 is available only under Tencent Cloud service terms
+    context:
+      prior-release:
+        value: distributed
+        detail: 'Hunyuan3D 2.1 (and 2.0): downloadable under the Tencent Hunyuan 3D Community License, which excludes
+          the European Union, the United Kingdom and South Korea, with training code published for 2.1'
+  governing_release: Hunyuan3D 3.0
+  confidence: medium
+  note: Hunyuan3D 3.0, the current release, can only be used through Tencent Cloud, with no weights published. The
+    previous downloadable release, Hunyuan3D 2.1, carries a regional community license that excludes the European
+    Union, the United Kingdom and South Korea.
+  raw: 'weights:closed(Hunyuan3D 3.0 is offered only through the Tencent Cloud Hunyuan 3D API and the Hunyuan3D
+    site; no 2.5 or 3.x repository exists on Hugging Face);data:closed(nothing is published for Hunyuan3D 3.0);code:closed(no
+    code is published for Hunyuan3D 3.0);license:Proprietary(Hunyuan3D 3.0 is available only under Tencent Cloud
+    service terms);prior-release:distributed(Hunyuan3D 2.1 (and 2.0): downloadable under the Tencent Hunyuan 3D
+    Community License, which excludes the European Union, the United Kingdom and South Korea, with training code
+    published for 2.1)'
   last_verified: '2026-09-26'
   sources:
-  - url: https://huggingface.co/tencent/Hunyuan3D-2.1/raw/main/LICENSE
-    shows: 'License body: "TENCENT HUNYUAN 3D 2.1 COMMUNITY LICENSE AGREEMENT"; "THIS LICENSE AGREEMENT DOES NOT
-      APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA"; above "1 million monthly active users ... You
-      must request a license from Tencent".'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 5bd08f93b2d280bb26ff3eed5d3996fe47a9698b5f7785163928668d7fd578c6
-    establishes:
-    - license
-  - url: https://huggingface.co/tencent/Hunyuan3D-2/raw/main/LICENSE
-    shows: 'Hunyuan3D 2.0 license body: "TENCENT HUNYUAN 3D 2.0 COMMUNITY LICENSE AGREEMENT", with the same territory
-      and a bar on using outputs to improve other models.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: eca02cc10abaf520d85c3c523aef0b88f36b935b85635f1e34370688e93da3dd
-    establishes:
-    - license
-  - url: https://huggingface.co/api/models/tencent/Hunyuan3D-2.1?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
-    shows: 'Hugging Face API record for Hunyuan3D-2.1: gated false, "extra_gated_eu_disallowed":true, license tencent-hunyuan-community.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: dcaa258edd235dbd2b52e47a8af934d7067981f18ea289f8433e491901366f7e
-    establishes:
-    - weights
-  - url: https://huggingface.co/api/models?search=Hunyuan3D&author=tencent&sort=downloads&direction=-1&limit=100
-    shows: 'Hugging Face listing of tencent Hunyuan3D repositories: 2, 2.1, 2mini, 2mv, Omni, Part and 1, all public;
-      no 2.5 or 3.x repository.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 964b0acfc90c58f55635b7da3a77d64afe3383da63f8d230839febd79cb9c574
-    establishes:
-    - weights
-  - url: https://ungh.cc/repos/Tencent-Hunyuan/Hunyuan3D-2.1/files/main/README.md
-    shows: 'README: "For the first time, the system releases full model weights and training code"; no training
-      dataset is described.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 35479a9741c38cf6ebc7693bb0c58a6fa447659b3b9f1d60ba01e21098d0af20
-    establishes:
-    - code
-    - data
   - url: https://www.tencent.com/en-us/articles/2202235.html
     shows: 'Tencent release: "models such as Hunyuan 3D 3.0" offered to "enterprise users plugged into the Hunyuan
       3D Model API via Tencent Cloud".'
@@ -81,6 +42,25 @@ openness:
     content_sha256: db431c0bd8bf5e533e08c6bf3d23582ad36b8dd474fb9379bd4988c41c308f0a
     establishes:
     - weights
+    - license
+    - data
+    - code
+  - url: https://huggingface.co/api/models?search=Hunyuan3D&author=tencent&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of tencent Hunyuan3D repositories: 2, 2.1, 2mini, 2mv, Omni, Part and 1; no 2.5
+      or 3.x repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 964b0acfc90c58f55635b7da3a77d64afe3383da63f8d230839febd79cb9c574
+    establishes:
+    - weights
+  - url: https://huggingface.co/tencent/Hunyuan3D-2.1/raw/main/LICENSE
+    shows: 'Hunyuan3D 2.1 license body: "TENCENT HUNYUAN 3D 2.1 COMMUNITY LICENSE AGREEMENT"; "THIS LICENSE AGREEMENT
+      DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5bd08f93b2d280bb26ff3eed5d3996fe47a9698b5f7785163928668d7fd578c6
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 100K-1M

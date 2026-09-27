@@ -1,48 +1,38 @@
 product: wan
 openness:
-  score: 3
-  class: open_weights
+  score: null
+  class: closed
   components:
     weights:
-      value: open
-      detail: all Wan 2.1 and 2.2 checkpoints, including Wan-Animate-2 and Wan-Dancer, download from Hugging Face
-        without a gate
+      value: closed
+      detail: Wan 3.0 is served only through Alibaba Cloud Model Studio; the AlibabaCloud-Official/Wan3.0 repository
+        calls it open-source but holds only a LICENSE and a README, with no weights
     data:
-      value: described
-      detail: the READMEs describe the curation and growth of the training data; none of it is released
+      value: closed
+      detail: nothing is published for Wan 3.0
     code:
-      value: partial
-      detail: the official repositories carry inference code only; training is pointed to DiffSynth-Studio
+      value: closed
+      detail: no code is published for Wan 3.0
     license:
-    - name: Apache-2.0
-      detail: OSI; every distributed checkpoint and the code
-  governing_release: Wan 2.2
-  confidence: high
-  note: Every downloadable Wan release is Apache 2.0, with no gate on any checkpoint. The official repositories
-    ship inference code only and the training data is described but not released; Wan 2.5 and later are not downloadable
-    at all and are left out of this reading.
-  raw: weights:open(all Wan 2.1 and 2.2 checkpoints, including Wan-Animate-2 and Wan-Dancer, download from Hugging
-    Face without a gate);data:described(the READMEs describe the curation and growth of the training data; none
-    of it is released);code:partial(the official repositories carry inference code only; training is pointed to
-    DiffSynth-Studio);license:Apache-2.0(OSI; every distributed checkpoint and the code)
+    - name: Proprietary
+      detail: Wan 3.0 is available only under Model Studio API terms
+    context:
+      prior-release:
+        value: distributed
+        detail: 'Wan 2.2 (and 2.1): all checkpoints downloadable under Apache-2.0, with inference code only and
+          training data described but not released'
+  governing_release: Wan 3.0
+  confidence: medium
+  note: Wan 3.0, the current release, can only be used through Alibaba Cloud's API, and no weights have been published
+    for it. The previous generation, Wan 2.2, remains downloadable under Apache 2.0, so the open line now trails
+    Alibaba's own closed flagship by one generation.
+  raw: 'weights:closed(Wan 3.0 is served only through Alibaba Cloud Model Studio; the AlibabaCloud-Official/Wan3.0
+    repository calls it open-source but holds only a LICENSE and a README, with no weights);data:closed(nothing
+    is published for Wan 3.0);code:closed(no code is published for Wan 3.0);license:Proprietary(Wan 3.0 is available
+    only under Model Studio API terms);prior-release:distributed(Wan 2.2 (and 2.1): all checkpoints downloadable
+    under Apache-2.0, with inference code only and training data described but not released)'
   last_verified: '2026-09-26'
   sources:
-  - url: https://raw.githubusercontent.com/Wan-Video/Wan2.2/main/LICENSE.txt
-    shows: 'LICENSE.txt body: "Apache License / Version 2.0, January 2004".'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
-    establishes:
-    - license
-  - url: https://huggingface.co/api/models?author=Wan-AI&sort=downloads&direction=-1&limit=100
-    shows: 'Hugging Face listing of the Wan-AI organization: the Wan 2.1 and 2.2 checkpoints, all public; no Wan
-      2.5, 2.6, 2.7 or 3.0 repository.'
-    accessed: '2026-09-26'
-    http_status: 200
-    content_sha256: 203ac94ecc3432957dea1e31962431de7f4df2cd58b41631f6ac48639ed480d4
-    establishes:
-    - weights
-    - license
   - url: https://help.aliyun.com/en/model-studio/wan3-video-generation-api-reference
     shows: 'Model Studio API reference: "wan3.0-video-prime" and "wan3.0-video" as API model names, "Currently in
       preview".'
@@ -51,22 +41,49 @@ openness:
     content_sha256: cf6111402dfe11c3b5a9a33f0c7678e3c869de88c2ee29530866b95862cb8361
     establishes:
     - weights
-  - url: https://raw.githubusercontent.com/Wan-Video/Wan2.2/main/README.md
-    shows: 'README: "Wan2.2 is trained on a significantly larger data, with +65.6% more images and +83.2% more videos";
-      training is pointed to DiffSynth-Studio, "including ... LoRA training, full training".'
+    - license
+  - url: https://www.alibabacloud.com/blog/wan3-0-30-second-ai-video-generation-from-any-input_603452
+    shows: '"Wan3.0 is the new generation of Alibaba''s Wan video generation model family, now available on Alibaba
+      Cloud Model Studio", with per-second API pricing.'
     accessed: '2026-09-26'
     http_status: 200
-    content_sha256: 40222cb3a66cc89aa1cd84589d1fa696806c93c09cf1c4383b3994139202dfa1
+    content_sha256: cc24a42d0fb3390233fc15008ae7a8b951c9102577d79431a48030d11f7e07eb
     establishes:
+    - weights
     - data
     - code
-  - url: https://ungh.cc/repos/Wan-Video/Wan2.2/files/main
-    shows: 'Wan2.2 file list: generate.py and the wan inference modules; no training script.'
+  - url: https://ungh.cc/repos/AlibabaCloud-Official/Wan3.0/files/main
+    shows: 'File list of AlibabaCloud-Official/Wan3.0: LICENSE and README.md only; no weights or code.'
     accessed: '2026-09-26'
     http_status: 200
-    content_sha256: 70d6673129497f1054a0054e8d2b53447ed6b649d494d10e02aa1c957ae37869
+    content_sha256: e6cb44a0350856802be63b889625d6127a7a9e56d6ef9704c08de13f2cde4ac8
     establishes:
+    - weights
     - code
+  - url: https://raw.githubusercontent.com/AlibabaCloud-Official/Wan3.0/main/README.md
+    shows: 'README: "Wan 3.0 is a state-of-the-art AI video generation model powered by Alibaba Cloud", linking
+      the hosted wan.video site and Model Studio; no download.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9b97703d31d99ebd885b0ad7b44ec3c784404aca48250860410c4107ab94e1fc
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=Wan-AI&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of the Wan-AI organization: the Wan 2.1 and 2.2 checkpoints, all public and apache-2.0;
+      no Wan 2.5, 2.6, 2.7 or 3.0 repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 203ac94ecc3432957dea1e31962431de7f4df2cd58b41631f6ac48639ed480d4
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/Wan-Video/Wan2.2/main/LICENSE.txt
+    shows: 'Wan 2.2 LICENSE.txt body: "Apache License / Version 2.0, January 2004", covering the prior, still-distributed
+      release.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M
@@ -83,21 +100,22 @@ adoption:
     http_status: 200
     content_sha256: 203ac94ecc3432957dea1e31962431de7f4df2cd58b41631f6ac48639ed480d4
 capability:
-  score: 2
+  score: 5
   basis: benchmark
-  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio
-  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: Wan 2.2 A14B, the best-placed
-    downloadable Wan model, 53rd of 86 at an Elo of 1116; the API-only Wan 3.0 leads the board and is not counted.'
+  basis_detail: Artificial Analysis Text to Video Arena, overall board without audio; best-placed release, the API-only
+    Wan 3.0
+  value: 'Artificial Analysis Text to Video Arena, without-audio board read 2026-09-26: Wan 3.0 (the current, API-only
+    release) 1st of 86 at an Elo of 1335; the downloadable Wan 2.2 A14B 53rd at 1116.'
   confidence: medium
-  relative_to: ltx
-  relation: one_below
-  note: Wan 2.2 A14B places in the lower half of the video arena, behind the LTX-2.5 models among open weights.
-    Alibaba's own hosted Wan 3.0 tops the same board, but it cannot be downloaded.
+  relative_to: minimax-hailuo
+  relation: at
+  note: Wan 3.0 leads the video arena outright, ahead of Gemini Omni Flash and MiniMax H3, but it is a hosted model.
+    The downloadable Wan 2.2 places in the lower half of the same board.
   last_verified: '2026-09-26'
   sources:
   - url: https://artificialanalysis.ai/video/leaderboard/text-to-video
     shows: 'Arena FAQ: "Wan 3.0 currently leads the Artificial Analysis Text to Video Arena (without audio) with
-      an Elo score of 1335"; leaderboard entry "Wan 2.2 A14B" (rank 53, Elo 1116.1, open weights at huggingface.co/Wan-AI/Wan2.2-T2V-A14B).'
+      an Elo score of 1335"; leaderboard entry "Wan 2.2 A14B" (rank 53, Elo 1116.1).'
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 0e027bf87769ed949482bac6260ded38ccd69ea81e4e397f8669b9f877f899a9
