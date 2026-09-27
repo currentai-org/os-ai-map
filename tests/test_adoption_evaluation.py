@@ -501,9 +501,13 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     }
     for slug, package in speech_packages.items():
         assert inputs.non_primary_artifacts[slug] == {("pypi", package)}
+    # zkml (assurance_evidence second tranche) declares its crate: a one-file placeholder that does
+    # not contain the prover, which is installed by building the repository.
+    assert inputs.non_primary_artifacts["zkml"] == {("crates", "zkml")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
+        "zkml",
     }
 
 
