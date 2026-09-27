@@ -62,12 +62,13 @@ openness:
     establishes:
     - source
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: Measured on monthly PyPI downloads of the ultralytics package, which is how the library and its checkpoints
     are installed.
+  last_verified: '2026-09-26'
   sources:
   - url: https://pypistats.org/api/packages/ultralytics/recent
     shows: last_month 4,028,814 downloads of ultralytics
@@ -75,16 +76,18 @@ adoption:
     http_status: 200
     content_sha256: ff78bc4ddfc7108506acc89c7d2b84106a89236bffdcc6e2e1695a9999e5850b
 capability:
-  score: 3
+  score: 4
   basis: feature_matrix
   value: one package training and running detection, instance and semantic segmentation, depth estimation, classification,
-    pose, oriented boxes and tracking over a zoo of YOLOv8, YOLO11 and YOLO26 checkpoints
-  relative_to: scikit-learn
+    pose, oriented boxes and tracking over a zoo of YOLOv8, YOLO11 and YOLO26 checkpoints, plus the open-vocabulary
+    YOLO-World and YOLOE detectors and SAM 3 segmentation
+  relative_to: google-cloud-vision
   relation: at
   confidence: medium
   note: Ultralytics covers most image-perception tasks from one training and inference interface, with pretrained
-    checkpoints for each. New object classes still need a training run on labeled data, so it is a toolkit for building
-    detectors rather than a model that handles a new task out of the box.
+    checkpoints for each. Its fixed-class YOLO models need a training run for new object classes, but the same package
+    runs the open-vocabulary YOLO-World and YOLOE detectors and SAM 3, which detect or segment what the user names
+    in their own images with no training. It does not search for or train a model automatically.
   last_verified: '2026-09-26'
   sources:
   - url: https://docs.ultralytics.com/
@@ -100,3 +103,9 @@ capability:
     accessed: '2026-09-26'
     http_status: 200
     content_sha256: 4e1ac9b9949ae967fc1a62cdac92df1e5eff050b5fcb09d49b399ee2e550381b
+  - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+    shows: Repository tree at main includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/ (with
+      predict.py) and ultralytics/models/sam/, and the docs pages models/yolo-world.md, models/yoloe.md and models/sam-3.md.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 03f753f1782326d44ee45bba07d25b432eee59b3828ffed504022165e3c7f937

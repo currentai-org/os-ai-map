@@ -284,7 +284,14 @@ def test_local_scores_matches_check_rubrics_split():
     # 6 -> 5 on 2026-09-26, when it was read: access is by permission and commercial use needs
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
-    assert len(deferred) == 5
+    #
+    # 5 -> 7 with the classic_ml_cv first-tranche promotion, sixteen products in. Both additions
+    # are license-tier gaps on the pretrained ladder, recorded rather than hand-closed per
+    # promote-category step 7: `tabpfn`, whose distributed checkpoints carry Prior Labs'
+    # non-commercial TABPFN-2.5/2.6/3/3.5 licenses, and `rf-detr`, whose XL and 2XL detection
+    # weights carry Roboflow's Platform Model License 1.0. Each closes on a maintainer's tier
+    # ruling, not on more work.
+    assert len(deferred) == 7
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

@@ -37,12 +37,15 @@ scoring_recipe:
       2  ONE LEARNER FAMILY, well engineered (xgboost, prophet).
       3  A TOOLKIT of many learners or a model zoo, with the pipelines, evaluation or training
          recipes to compare and fit them; choosing among them is left to the user (scikit-learn,
-         statsmodels, sktime, spacy, nltk, timm, ultralytics, rf-detr).
+         statsmodels, sktime, spacy, nltk, timm, rf-detr).
       4  PRETRAINED, AND DOES THE USER'S OWN TASK WITH NO TRAINING STEP: a new table, or any
          image, gets a prediction from the shipped model directly (tabpfn, tabicl,
-         google-cloud-vision). A checkpoint that handles only its training label space - COCO's
-         80 classes for rf-detr and the Ultralytics zoo - does not qualify: a new label set means
-         a training run, which is rung 3.
+         google-cloud-vision, ultralytics, whose package runs the open-vocabulary YOLO-World and
+         YOLOE detectors and SAM 3 on labels the user names). A checkpoint that handles only its
+         training label space - COCO's 80 classes for rf-detr - does not qualify: a new label set
+         means a training run, which is rung 3. An earlier draft of this tranche put ultralytics
+         at 3 on its fixed-class YOLO models; the independent verifier found the open-vocabulary
+         models in its tree and docs, and it moved to 4.
       5  AUTOMATED END TO END: searches, fits and ensembles or trains models for the user's own
          task without machine-learning work on their side, and embeds rung-4 models (autogluon,
          the TOP ANCHOR; amazon-rekognition, whose Custom Labels trains detectors by AutoML inside
@@ -52,20 +55,20 @@ scoring_recipe:
     is a model row at rung 3, on the definition above.
 
     Every non-root band records `relative_to`/`relation` against a same-category peer:
-    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk, timm and ultralytics at
-    scikit-learn; rf-detr at ultralytics; xgboost one_below scikit-learn; prophet one_below
+    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk and timm at
+    scikit-learn; ultralytics at google-cloud-vision; rf-detr one_below ultralytics; xgboost one_below scikit-learn; prophet one_below
     sktime; opencv one_below xgboost; tabpfn one_below autogluon; tabicl at tabpfn;
     amazon-rekognition at autogluon; google-cloud-vision one_below amazon-rekognition.
 
     DISTRIBUTION REVIEW (capability.md, "Writing the rungs"), counted 2026-09-27 over the 16
-    banded products: rung 1 = 1, rung 2 = 2, rung 3 = 8, rung 4 = 3, rung 5 = 2. Rung 3 holds
-    8/16 = 50%, above the one-third trigger. Wording as it stands: "a toolkit of many learners or
+    banded products: rung 1 = 1, rung 2 = 2, rung 3 = 7, rung 4 = 4, rung 5 = 2. Rung 3 holds
+    7/16 = 44%, above the one-third trigger. Wording as it stands: "a toolkit of many learners or
     a model zoo, with the pipelines, evaluation or training recipes to compare and fit them;
     choosing among them is left to the user". Reading: the products genuinely CLUSTER rather than
-    the wording generalizing. Evidence: each of the eight documents a catalog of learners or
+    the wording generalizing. Evidence: each of the seven documents a catalog of learners or
     checkpoints (scikit-learn's user guide, statsmodels' model list, sktime's 500+ models, spaCy's
-    trained components, NLTK's module index, timm's >700 weights, Ultralytics' task list, RF-DETR's
-    size and head tables) and none documents predicting on a new task untrained or automated
+    trained components, NLTK's module index, timm's >700 weights, RF-DETR's size and head
+    tables) and none documents predicting on a new task untrained or automated
     model search, which is what separates 4 and 5. The tranche is also skewed toward adoption
     leaders, which are mostly toolkits; single-learner and primitive libraries (LightGBM,
     CatBoost, UMAP, scikit-image, Kornia, supervision) remain in the registry, and promoting them
