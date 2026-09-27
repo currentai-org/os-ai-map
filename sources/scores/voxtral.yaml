@@ -24,7 +24,8 @@ openness:
       api-only-tier:
         value: Voxtral Mini Transcribe 2.0
         detail: the offline transcription model the Realtime card compares against; no Hub checkpoint, so excluded
-  governing_release: Voxtral Mini 4B Realtime 2602 and Voxtral 4B TTS 2603 (2026)
+  governing_release: Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line; whether Voxtral 4B TTS 2603
+    belongs to the release is pending)
   confidence: medium
   note: Mistral's current speech-recognition models are Apache-2.0, but its current text-to-speech model is licensed
     CC-BY-NC-4.0 because of the reference voices it ships with, and may not be used commercially. The more restrictive
@@ -79,6 +80,13 @@ openness:
     content_sha256: 215dad5bf7dd7be606ac81fa5a8b35a57c3022dcb44288bf1881f66e1b792182
     establishes:
     - weights
+  - url: https://huggingface.co/api/models/mistralai/Voxtral-Mini-3B-2507
+    shows: 'Hub record: "gated":false, with consolidated.safetensors and sharded safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d95ca92d7e89fcf0969a04c763f067f44ea6ed4236fe02c97ae961491bd9574e
+    establishes:
+    - weights
 adoption:
   level: 4
   reach: 1M-10M
@@ -101,7 +109,7 @@ capability:
     at 6.46%; Voxtral TTS ranks 42nd of 91 on the Artificial Analysis TTS leaderboard.
   confidence: medium
   note: Mid-table on both boards, level with Whisper for recognition and close to Kokoro for synthesis; the realtime
-    model trades some accuracy for streaming with a delay as short as 240 ms.
+    model trades some accuracy for streaming with a sub-second delay.
   relative_to: whisper
   relation: at
   last_verified: '2026-09-27'
@@ -112,7 +120,8 @@ capability:
     http_status: 200
     content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
   - url: https://artificialanalysis.ai/text-to-speech/leaderboard
-    shows: Leaderboard entry "name":"Voxtral TTS" (creator Mistral) with "openWeights":true.
+    shows: Leaderboard entry "name":"Voxtral TTS" (creator Mistral) with "openWeights":true, ranked 42nd of the 91 models
+      on the board.
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205
