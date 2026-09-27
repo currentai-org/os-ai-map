@@ -1,0 +1,145 @@
+product: cambrian
+openness:
+  score: 5
+  class: open_source
+  governing_release: cambrian-p
+  components:
+    weights:
+      value: open
+      detail: safetensors for five Cambrian-P-7B variants on the Hub, ungated
+    data:
+      value: open
+      detail: VSI-590K, Cambrian-S-3M and Cambrian-P-Data are published under Apache 2.0, and the Cambrian-S-3M card gives
+        the download steps for the two public video sets it adds
+    code:
+      value: open
+      detail: the Cambrian-P and Cambrian-S training scripts, with per-stage configs, in their repositories
+    license:
+    - name: Apache-2.0
+      detail: OSI; the cambrian-p repository LICENSE, which its README points to for the release; Cambrian-S-7B is tagged
+        apache-2.0
+  confidence: medium
+  note: Cambrian-P is Apache 2.0 and New York University publishes its training data, its fine-tuning data and the scripts
+    that trained it, so the model can be rebuilt from public parts. Its checkpoints have no model card, so the license comes
+    from the repository that releases them.
+  raw: weights:open(safetensors for five Cambrian-P-7B variants on the Hub, ungated);data:open(VSI-590K, Cambrian-S-3M and
+    Cambrian-P-Data are published under Apache 2.0, and the Cambrian-S-3M card gives the download steps for the two public
+    video sets it adds);code:open(the Cambrian-P and Cambrian-S training scripts, with per-stage configs, in their repositories);license:Apache-2.0(OSI;
+    the cambrian-p repository LICENSE, which its README points to for the release; Cambrian-S-7B is tagged apache-2.0)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nyu-visionx/Cambrian-P-7B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Cambrian-P-7B: gated false, safetensors shards, no card and no license tag'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc92dd56d7ac048c0d88f877b015cee36b31c6723d59d9155fdd7f83e5e07d1f
+    establishes:
+    - weights
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-p@main/README.md
+    shows: '"model checkpoints, the annotated pose Cambrian-P-Data, and full training/eval code are all released"; five Cambrian-P-7B
+      variants that "finetune from Cambrian-S-7B stage 3"; "## License See LICENSE."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6784b3121c38f1ff57ded6317af52215a33f90cf1c3b0b653d261c4f18375332
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-p@main/LICENSE
+    shows: Apache License, Version 2.0, "Copyright 2026 Cambrian-P Authors"
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d2fd1c7ff5367737ab8f4f56e4dea71fe8d80e7e9ef5b45ee6235affba1201ac
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/nyu-visionx/Cambrian-S-7B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Cambrian-S-7B: gated false, safetensors shards, card license apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9c8faca025c4e9ef1b8f85c1b7ce45f4835197648011cf1d08d5fbe93fe2b970
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-s@main/README.md
+    shows: Cambrian-S models are trained on Cambrian-Alignment, Cambrian-7M, Cambrian-S-3M and VSI-590K, each linked on the
+      Hub; four per-stage training scripts
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 21416ff8e8bf52f2aa75eb00ba5f423646a9190586614ec6e56594d46084aadc
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/datasets/nyu-visionx/Cambrian-S-3M/raw/main/README.md
+    shows: Cambrian-S-3M "combines three video instruction datasets" with step-by-step hf download commands for LLaVA-Video-178K
+      and LLaVA-Hound; "This dataset is released under the Apache 2.0 license"
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d5d3e6e968c059685685c088a6e04f1df0dda36d9a94a01e6658928502b8a564
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets?author=nyu-visionx&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: VSI-590K, Cambrian-S-3M, Cambrian-10M, Cambrian-Alignment and Cambrian-P-Data published by nyu-visionx, each tagged
+      apache-2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4272a6e1c723ef3928506d0bef0e22aaf715a908d711cf3cd9fadb6f775e13db
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-p@main/cambrianp/scripts/Cambrian-P-7B.sh
+    shows: The Cambrian-P-7B training script
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eaffd9d327b0a9753ca2c204b65169fa7834f97033ab6c93b974850df701df0e
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-s@main/cambrian/scripts/cambrians_7b_s4.sh
+    shows: The Cambrian-S-7B stage-4 training script, fine-tuning from Qwen2.5-7B-Instruct
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d5dff19bd65d424192e8b288ed69ad6dfded55d6a8fbebdc07c8072d5e7fc3eb
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across the Cambrian-1, Cambrian-S and Cambrian-P checkpoints.
+    The lab's datasets are downloaded far more often than its models.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=nyu-visionx&limit=1000&expand[]=downloads&expand[]=createdAt&expand[]=cardData&expand[]=gated&expand[]=lastModified
+    shows: Cambrian-1, Cambrian-S and Cambrian-P checkpoints with 1,769 downloads in the trailing 30 days; Cambrian-S-7B 709,
+      Cambrian-P-7B 229
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1135d3f09d634e7800f6507abd73694fbf45e718cd53fba25698539f53869c64
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: video, spatial and document understanding from the Cambrian-S card and paper
+  value: 'Images and video in, text out; spatial reasoning over video, with Cambrian-P also estimating camera pose. Cambrian-S-7B:
+    VSI-Bench 67.5, VideoMME 63.4, EgoSchema 76.8, DocVQA 84.8, ChartQA 74.7; Cambrian-P-7B VSI-Bench 73.7.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: at
+  note: Cambrian-S understands video and reasons about space in it, and keeps document and chart reading close to general
+    models of its size. It has no audio input and is not shown acting in a live interface, so it sits level with MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/nyu-visionx/Cambrian-S-7B/raw/main/README.md
+    shows: '"excels at spatial reasoning in video understanding"; VSI-Bench 67.5, VideoMME 63.4, EgoSchema 76.8'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 401ff4b5976192f2e893c62d29dbf578ead8e09ad5fbec15c047671b41ef63c9
+  - url: https://arxiv.org/html/2511.04670v1
+    shows: 'Table 13, Cambrian-S-7B stage 4: MMMU 48.0, ChartQA 74.7, OCRBench 64.8, TextVQA 76.6, DocVQA 84.8'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 38a8d2f7a99e55fe8e673e2869ffc9bb41bbf0203eb27380f17bb5a3faf1fd78
+  - url: https://cdn.jsdelivr.net/gh/cambrian-mllm/cambrian-p@main/README.md
+    shows: '"Cambrian-P-7B ... achieves 73.7 average accuracy" on VSI-Bench, "+4.5%" over Cambrian-S-7B'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6784b3121c38f1ff57ded6317af52215a33f90cf1c3b0b653d261c4f18375332
