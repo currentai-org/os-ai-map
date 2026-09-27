@@ -1,0 +1,128 @@
+product: newton
+openness:
+  score: 5
+  class: open_source
+  governing_release: Newton 1.6.0
+  components:
+    license:
+    - name: Apache-2.0
+      detail: LICENSE.md; documentation CC-BY-4.0
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: the optional rtx extra pulls NVIDIA's proprietary OVRTX renderer, which Newton does not ship
+  confidence: high
+  note: Apache-2.0 code on Apache-2.0 foundations (Warp and MuJoCo Warp), governed as a Linux Foundation project, with no
+    paid edition. One optional install extra adds NVIDIA's proprietary Omniverse RTX renderer; the engine and its own ray-traced
+    camera sensor work without it.
+  raw: license:Apache-2.0(LICENSE.md; documentation CC-BY-4.0);source:public;core-gated:ungated(the optional rtx extra pulls
+    NVIDIA's proprietary OVRTX renderer, which Newton does not ship)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/newton-physics/newton/files/main/LICENSE.md
+    shows: 'LICENSE.md: the Apache License, Version 2.0 text.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/newton-physics/newton/files/main/README.md
+    shows: 'README: "Code is licensed under Apache-2.0. Documentation is licensed under CC-BY-4.0"; "Newton is a Linux Foundation
+      project that is community-built and maintained"; "Newton was initiated by Disney Research, Google DeepMind, and NVIDIA";
+      no pricing or paid tier.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f3038d8b68448111695ef3c3eec25cd8566da61c27b512267d7b85254134ce8a
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/newton-physics/newton/files/main/pyproject.toml
+    shows: 'pyproject.toml: name = "newton", license = "Apache-2.0", dependency "warp-lang>=1.17.0", "mujoco-warp~=3.12.0"
+      in the sim extra, and rtx = ["ovrtx>=0.3"] (NVIDIA OVRTX renderer) as an optional extra.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2210619f227d0419c0a860123da480fd346f9e4e5ab7fb93b45ce960fdc5fc6b
+    establishes:
+    - license
+    - core-gated
+  - url: https://pypi.org/pypi/ovrtx/json
+    shows: 'PyPI metadata for ovrtx: summary "Omniverse RTX", author NVIDIA Corporation, license_expression LicenseRef-NvidiaProprietary.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c1b0e7da587e2204682ce7cdd6be9d276ccbb0878eb6839d16321320ed1f4e2c
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/NVIDIA/warp/files/main/LICENSE.md
+    shows: 'NVIDIA Warp LICENSE.md: Copyright (c) 2022 NVIDIA CORPORATION & AFFILIATES, under the Apache License, Version
+      2.0.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 47107323a174bfffeaffdc5b778152c3f9bdf66b2ecec4229542480d5937bcf9
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/newton-physics/newton/releases/latest
+    shows: Latest release v1.6.0, published 2026-09-10.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ec138f32a2d862dff887f869f9baf78b1f94524b479c3d92d4d57f238917d91a
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the newton package, which is the engine itself.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/newton/recent
+    shows: 'pypistats: last_month 249,011 downloads for newton.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 081d73c2cbf888740d5a08507a88c5bba6dc6bfea65bcb37901fd201b334af49
+  - url: https://pypi.org/pypi/newton/json
+    shows: 'PyPI metadata for newton 1.6.0: author_email Newton Developers <developers@newton-physics.org>, license_expression
+      Apache-2.0, project_urls null; the long description is the repository README and links github.com/newton-physics/newton.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9f23ce3a1e78a4a60583d3334705778c3117a9e1f8a21a3ec4e74f58e7205926
+  - url: https://newton-physics.github.io/newton/latest/guide/installation.html
+    shows: 'Installation guide: "the recommended way to install Newton from PyPI ... pip install newton".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ea28da7824064c7f0d34ae3cae4a3b27b39c65eed7f223aeaf7970a7af2514a0
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: GPU-parallel simulation across many worlds on Warp, eight solvers (XPBD, VBD, MuJoCo, Featherstone, SemiImplicit,
+    Kamino, ImplicitMPM, Style3D), a Warp tiled camera sensor ray-tracing across multiple worlds, contact and IMU sensors,
+    robot examples for Allegro hand, ANYmal, G1, H1 and UR10. No ready-to-train task library.
+  confidence: medium
+  note: Newton has GPU-parallel worlds, ray-traced cameras across them and more physics backends than any engine here, from
+    MuJoCo to cloth and granular solvers. What it ships for robots are examples, not a library of ready-to-train tasks, which
+    is what separates Isaac Lab.
+  relative_to: isaac-lab
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://newton-physics.github.io/newton/latest/guide/overview.html
+    shows: 'Overview: "GPU-accelerated, extensible, and differentiable physics simulation engine"; "Multiple solver implementations
+      : XPBD, VBD, MuJoCo, Featherstone, SemiImplicit, Kamino, ImplicitMPM, and Style3D"; "Load models from URDF, MJCF, USD".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cedca5c916f6290a6787d8272d4e7e3a4bb6fc692c846c6725208ec32db1310b
+  - url: https://newton-physics.github.io/newton/latest/api/newton_sensors.html
+    shows: 'Sensors API: "SensorTiledCamera Warp-based tiled camera sensor for raytraced rendering across multiple worlds";
+      SensorContact, SensorIMU, SensorFrameTransform.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b28209fef87c8c40b3b01e47d5755caf97b2e562f79121507d9097d55a673158
+  - url: https://ungh.cc/repos/newton-physics/newton/files/main/README.md
+    shows: 'README: "integrates MuJoCo Warp as its primary backend"; "NVIDIA GPU (Maxwell or newer)"; robot examples example_robot_allegro_hand,
+      example_robot_anymal_c_walk, example_robot_g1, example_robot_h1, example_robot_ur10, example_robot_policy.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f3038d8b68448111695ef3c3eec25cd8566da61c27b512267d7b85254134ce8a

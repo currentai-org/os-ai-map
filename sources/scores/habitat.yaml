@@ -1,0 +1,117 @@
+product: habitat
+openness:
+  score: 5
+  class: open_source
+  governing_release: Habitat-Sim 0.3.3 and Habitat-Lab 0.3.4
+  components:
+    license:
+    - name: MIT
+      detail: Habitat-Sim and Habitat-Lab LICENSE bodies
+    source:
+      value: public
+    core-gated:
+      value: ungated
+      detail: no paid edition; scene datasets are separate downloads under their own terms
+  confidence: medium
+  note: 'The simulator and the task library are both MIT, with no paid edition. The scanned scenes most benchmarks use are
+    not part of it: HM3D is free only for academic, non-commercial research and the Matterport3D and Gibson task data carry
+    CC BY-NC-SA terms, so commercial work has to bring its own scenes.'
+  raw: license:MIT(Habitat-Sim and Habitat-Lab LICENSE bodies);source:public;core-gated:ungated(no paid edition; scene datasets
+    are separate downloads under their own terms)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/facebookresearch/habitat-sim/files/main/LICENSE
+    shows: 'LICENSE: MIT License, "Copyright (c) Meta Platforms, Inc. and its affiliates", with no added clauses; habitat-lab''s
+      LICENSE is byte-identical.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2d4c3d00d67067461412a2d9a2f3f8b7b9cda62b3db501e4b6844ccf35c949aa
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/facebookresearch/habitat-sim/files/main/README.md
+    shows: 'README: "Habitat-Sim is MIT licensed"; "Beyond v0.3.4 this project is no longer receiving official active development
+      or maintenance by Meta internal teams"; conda install from the aihabitat channel; no pricing or paid tier.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2422fd0b1c58dc9939fc3e74d6b39415e202df651dd93b87204d3871bfc803b8
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/facebookresearch/habitat-lab/files/main/README.md
+    shows: 'Habitat-Lab README: "Habitat-Lab is MIT licensed"; "Matterport3D based task datasets and trained models are distributed
+      with Matterport3D Terms of Use and under CC BY-NC-SA 3.0 US license"; the same for Gibson-based task datasets.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 49ffbba6a3e459e382aebcc1724a9682ebb3c4eec85df7f6e2aa92ee0eefa8a7
+    establishes:
+    - license
+    - core-gated
+  - url: https://aihabitat.org/datasets/hm3d/
+    shows: 'HM3D page: "HM3D is free and available here for academic, non-commercial research."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 98be463f4b95d8e1f92bc638fc1d20a611a85dd5828add106857f4d0c219c4d0
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/facebookresearch/habitat-sim/releases/latest
+    shows: Latest Habitat-Sim release v0.3.3.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 39af9f25c9f3fc9227557327e8747a988754c0fff0df1db6436a745a8583e539
+    establishes:
+    - source
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: low
+  note: PyPI installs of habitat-lab, the task and training library, which links this project. The simulator installs from
+    Meta's conda channel, whose 246,482 downloads are an all-time total since 2020 rather than a monthly figure.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/habitat-lab/recent
+    shows: 'pypistats: last_month 3,273 downloads for habitat-lab.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: becd43eef7ef3521c17d6f6463a24a1c40f78640aa034280cd61028e7af0d23d
+  - url: https://pypi.org/pypi/habitat-lab/json
+    shows: 'PyPI metadata for habitat-lab: author Meta AI Research, project_urls "GitHub repo": https://github.com/facebookresearch/habitat-lab/,
+      license MIT License.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cacd54221e4db2be5ff4e424d5c785912faffc473cb693b4295433e17ade21e4
+  - url: https://api.anaconda.org/package/aihabitat/habitat-sim
+    shows: 'Anaconda package aihabitat/habitat-sim: license MIT, latest_version 0.3.3, ndownloads 246482 (all-time), created
+      2020-01-23.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dddb495f352e1e8fab51543335b2f1bb03bee8f1051fafba8523b83fb8ec2803
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: Rendered RGB-D and semantic camera sensors over scanned indoor scenes, several thousand FPS single-threaded and over
+    10,000 FPS multi-process on one GPU, Bullet rigid and articulated dynamics, URDF robots (Fetch, Franka, AlienGo), navigation
+    and rearrangement tasks in Habitat-Lab. Physics runs on the CPU; no GPU-batched parallel simulation is documented.
+  confidence: medium
+  note: Habitat renders camera views of real scanned homes fast enough to train navigation agents on billions of frames, which
+    is its strength. Its physics is Bullet on the CPU, one environment per process, so it has neither the GPU-parallel simulation
+    nor the task library for common robot arms that put Isaac Lab two rungs up.
+  relative_to: isaac-lab
+  relation: two_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/facebookresearch/habitat-sim/files/main/README.md
+    shows: 'README: "Configurable sensors (RGB-D cameras, egomotion sensing)"; "Rigid-body mechanics (via Bullet)"; "achieves
+      several thousand frames per second (FPS) running single-threaded and reaches over 10,000 FPS multi-process on a single
+      GPU"; "simulates a Fetch robot interacting in ReplicaCAD scenes at over 8,000 steps per second (SPS)".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2422fd0b1c58dc9939fc3e74d6b39415e202df651dd93b87204d3871bfc803b8
+  - url: https://ungh.cc/repos/facebookresearch/habitat-lab/files/main/README.md
+    shows: 'Habitat-Lab README: tasks for navigation, rearrangement, instruction following, question answering and human following;
+      training via imitation or reinforcement learning.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 49ffbba6a3e459e382aebcc1724a9682ebb3c4eec85df7f6e2aa92ee0eefa8a7

@@ -1,0 +1,125 @@
+product: lekiwi
+openness:
+  score: 5
+  class: open_hardware
+  components:
+    form_factor:
+      value: board
+      detail: a complete mobile robot, printed and assembled from the design or bought as a kit
+    schematics:
+      value: open
+      detail: STL for every printed part, URDF and a Fusion 360 CAD link under Apache-2.0
+    toolchain:
+      value: open
+      detail: driven by the Apache-2.0 LeRobot library
+    retail:
+      value: distributor
+      detail: a Seeed Studio kit; the rest of the bill of materials is off the shelf
+  confidence: medium
+  note: Every printed part is published as STL with a URDF under Apache-2.0, the full CAD is a linked Fusion 360 project,
+    and the robot is set up and driven through the open LeRobot library. The servos inside have closed firmware, as on SO-101.
+  raw: form_factor:board(a complete mobile robot, printed and assembled from the design or bought as a kit);schematics:open(STL
+    for every printed part, URDF and a Fusion 360 CAD link under Apache-2.0);toolchain:open(driven by the Apache-2.0 LeRobot
+    library);retail:distributor(a Seeed Studio kit; the rest of the bill of materials is off the shelf)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/SIGRobotics-UIUC/LeKiwi/main/LICENSE.txt
+    shows: 'LICENSE.txt: the Apache License, Version 2.0 text, covering the repository.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - schematics
+  - url: https://ungh.cc/repos/SIGRobotics-UIUC/LeKiwi/files/main
+    shows: 'Repository tree: 3DPrintMeshes/*.stl for the base and mounts, URDF/LeKiwi.urdf with its meshes, webcam mount STEP
+      files.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9153c2ddf541a0c9e3e12833f4ecff4f86da272a9598e910dc4d8199fc593b25
+    establishes:
+    - schematics
+    - form_factor
+  - url: https://raw.githubusercontent.com/SIGRobotics-UIUC/LeKiwi/main/README.md
+    shows: 'README: "LeKiwi - Low-Cost Mobile Manipulator"; "3-wheel Kiwi (holonomic) drive with omni wheels"; "Robot Arm
+      - SO-ARM101"; "Raspberry Pi 5"; "Fusion 360 CAD"; "We also provide the URDF".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5736581057935f9626b99571cfb55acd3b9bcce0c964b52d5b73948fcf958181
+    establishes:
+    - schematics
+    - form_factor
+  - url: https://huggingface.co/docs/lerobot/lekiwi
+    shows: 'LeRobot LeKiwi guide: install LeRobot with the lekiwi extra on the Raspberry Pi, set up arm motors 6..1 and wheel
+      motors 9, 8, 7, run lerobot.robots.lekiwi.lekiwi_host, and teleoperate, record and evaluate from examples/lekiwi.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0716734c274614edb5ea03262d12d09f7cec26ba1286a3dcf4697b6a9a611da8
+    establishes:
+    - toolchain
+  - url: https://raw.githubusercontent.com/huggingface/lerobot/main/LICENSE
+    shows: 'LeRobot LICENSE: "Copyright 2024 The Hugging Face team", Apache License, Version 2.0.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9e108af26a7ae92a6d2cb0273856a4a0a84da8819c2cffee8b2657cc4f905718
+    establishes:
+    - toolchain
+  - url: https://raw.githubusercontent.com/SIGRobotics-UIUC/LeKiwi/main/BOM.md
+    shows: 'Bill of materials: 12V build $482, 5V build $499, base only from $184, excluding 3D printing; parts "from Seeed
+      studio".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6bb91c9cba7b9fe0748be70473d98c7cf85e316239e0570f7614f1a5965082c1
+    establishes:
+    - retail
+  - url: https://www.seeedstudio.com/LeKiwi-Full-Kit-12V-Verision.html
+    shows: 'Seeed Studio product page: "LeKiwi Full Kit (12V Version) ... a low-cost, open-source, self-assembly mobile manipulator".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a34d50954d95f60789b2bebe3fbd70fff9509287f299037c04064846b45dd18a
+    establishes:
+    - retail
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the design repository. Seeed Studio publishes no kit sales.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://ungh.cc/repos/SIGRobotics-UIUC/LeKiwi
+    shows: 'Repository record for SIGRobotics-UIUC/LeKiwi: 1,441 stars, description "LeKiwi - Low-Cost Mobile Manipulator".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cf21d8fafbf2db77f2e0615a0861fc7801b5c2201c1a08b238e31ba7c1804ca9
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: morphology
+  value: 'Mobile manipulator: a six-joint SO-101 arm (five joints and a gripper) on a three-wheel holonomic omni-wheel base,
+    with onboard Raspberry Pi 5 and cameras.'
+  confidence: high
+  note: LeKiwi puts a single small arm on a base that drives in any direction, so it can move to a task instead of waiting
+    for the task to be brought to the table. It has one arm and no legs, well short of a full humanoid.
+  relative_to: berkeley-humanoid-lite
+  relation: one_below
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://lite.berkeley-humanoid.org/
+      shows: 'Berkeley Humanoid Lite project page: "an open-source humanoid robot designed to be accessible, customizable";
+        "modular 3D-printed gearbox for the actuators and robot body"; total hardware cost under $5,000.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 9b97089d3b29302a4dbcdca66bea52138460ecc0fc00d94bfa62dbe51cab712e
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/SIGRobotics-UIUC/LeKiwi/main/README.md
+    shows: 'README: "3-wheel Kiwi (holonomic) drive with omni wheels"; "Robot Arm - SO-ARM101".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5736581057935f9626b99571cfb55acd3b9bcce0c964b52d5b73948fcf958181
+  - url: https://huggingface.co/docs/lerobot/lekiwi
+    shows: 'LeRobot LeKiwi guide: arm motors ids 6..1 and wheel motors 9, 8, 7.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0716734c274614edb5ea03262d12d09f7cec26ba1286a3dcf4697b6a9a611da8

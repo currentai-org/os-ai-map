@@ -39,15 +39,17 @@ scoring_recipe:
     Software, simulation throughput and fidelity: 1 CPU rigid-body simulation with basic rendering (pybullet);
     2 CPU contact physics with a robot-learning surface of tasks, controllers and teleoperation (none promoted);
     3 one of GPU-batched parallel simulation or rendered camera and sensor simulation (carla on Unreal Engine;
-    robosuite, whose MuJoCo tasks carry photorealistic rendering); 4 both, GPU-parallel simulation with rendered
-    camera sensors (genesis, maniskill, and mujoco, whose MuJoCo Warp build ray-traces cameras across parallel
-    worlds); 5 that plus a second physics backend and a library of ready-to-train tasks for common robots (isaac-lab,
+    robosuite, whose MuJoCo tasks carry photorealistic rendering; habitat, which renders RGB-D and semantic views
+    of scanned homes over CPU Bullet physics); 4 both, GPU-parallel simulation with rendered camera sensors (genesis,
+    maniskill, mujoco, whose MuJoCo Warp build ray-traces cameras across parallel worlds, and newton, whose tiled
+    camera sensor does the same on Warp); 5 that plus a second physics backend and a library of ready-to-train tasks for common robots (isaac-lab,
     the top). lerobot abstains: it simulates nothing, it is the real-robot collect-train-deploy loop, and placing
     it on a simulator''s quantity would be a comparison nobody can check.
 
     Datasets, episodes times embodiments: 3 tens of thousands of real trajectories on one platform (droid);
     4 around a million trajectories from one maker''s robots, or hundreds of thousands across several simulated
-    embodiments (agibot-world, nvidia-physical-ai-dataset); 5 a million-plus trajectories pooled across twenty-plus
+    embodiments (agibot-world, nvidia-physical-ai-dataset, interndata-a1), or a few hundred thousand real
+    trajectories across several makers'' robots (robomind, on its 2.0 release); 5 a million-plus trajectories pooled across twenty-plus
     embodiments and institutions (open-x-embodiment, the top).
 
     Hardware, morphology: 1 a desktop or expressive robot with no manipulator (none promoted; Reachy Mini stays
@@ -56,15 +58,19 @@ scoring_recipe:
     humanoid (berkeley-humanoid-lite, the top).
 
 
-    DISTRIBUTION, counted 2026-09-27 over the 21 banded products (lerobot abstains): 5 has 4, 4 has 8, 3 has
-    6, 2 has 2, 1 has 1. The widest rung, 4, holds 8 of 21 (38%), above a third, so it was reviewed. It is
+    DISTRIBUTION, counted 2026-09-27 over the 26 banded products (lerobot abstains): 5 has 4, 4 has 12, 3 has
+    7, 2 has 2, 1 has 1. The widest rung, 4, holds 12 of 26 (46%), above a third, so it was reviewed. It is
     the clustering case, not a loose definition, and the count mostly adds four unrelated per-type rungs together:
-    within types 4 holds 3 of 7 software, 3 of 7 models and 2 of 4 datasets. Each per-type 4 is a have-or-have-not
-    test on the release. For software it is GPU-parallel simulation AND rendered cameras, which genesis, maniskill
-    and mujoco (through MuJoCo Warp''s batch ray tracer) each document and carla and robosuite, one environment
-    per process, do not. For models it is a released bimanual or humanoid policy: gr00t, pi0 and rdt ship one,
+    within types 4 holds 4 of 9 software, 3 of 7 models, 4 of 6 datasets and 1 of 4 hardware. Each per-type 4 is
+    a have-or-have-not test on the release. For software it is GPU-parallel simulation AND rendered cameras, which
+    genesis, maniskill, mujoco (through MuJoCo Warp''s batch ray tracer) and newton (through its Warp tiled camera)
+    each document and carla, robosuite and habitat, one environment per process, do not. For models it is a released bimanual or humanoid policy: gr00t, pi0 and rdt ship one,
     while OpenVLA''s card rules out unseen embodiments and ships single-arm control and Octo ships single-arm
-    policies. Inside each rung the differences are scale and data mix, which vendor cards do not order. The
+    policies. For datasets 4 is the whole span between one platform (droid) and the twenty-plus-embodiment pool
+    (open-x-embodiment): hundreds of thousands to a million trajectories on a handful of robot bodies, which
+    four of the six datasets are, and the second tranche added two of them. Splitting it by real versus simulated
+    data was considered and not done, because the quantity is episodes times embodiments and the note would
+    then be ranking provenance. Inside each rung the differences are scale and data mix, which vendor cards do not order. The
     independent verification pass moved mujoco 3 to 4, robosuite 2 to 3 and smolvla 3 to 2 on evidence the
     first draft had missed, and the distribution above is after those moves.
 
@@ -105,8 +111,10 @@ products:
 - genesis
 - maniskill
 - mujoco
+- newton
 - carla
 - robosuite
+- habitat
 - pybullet
 - lerobot
 - gemini-robotics
@@ -119,8 +127,11 @@ products:
 - open-x-embodiment
 - agibot-world
 - nvidia-physical-ai-dataset
+- robomind
+- interndata-a1
 - droid
 - berkeley-humanoid-lite
+- lekiwi
 - openarm
 - so-101
 comments: 'Proposed in issue #12 and seeded on 2026-09-26 alongside world_models, in the new Embodied & world
@@ -176,4 +187,14 @@ comments: 'Proposed in issue #12 and seeded on 2026-09-26 alongside world_models
   development; and ALOHA, because the tonyzhaozh/aloha repository holds MIT code but no CAD, so its hardware
   design terms could not be read. nvidia-physical-ai-dataset is scoped to the GR00T X-Embodiment Sim release
   it declares; NVIDIA''s other Physical AI robotics datasets are separate releases, some under CC BY-NC 4.0,
-  and are not part of the row. CARLA''s pip package is its Python client and is declared not_primary_channel.'
+  and are not part of the row. CARLA''s pip package is its Python client and is declared not_primary_channel.
+
+
+  Second promotion tranche, 2026-09-27 (5 products, every fact fetched live that day): Newton and Habitat for
+  software, RoboMIND and InternData-A1 for datasets, and LeKiwi for the mobile-manipulator rung of the hardware
+  ladder, which had no product. Newton''s PyPI package links no repository, so its identity was confirmed from
+  the package metadata, the repository pyproject.toml and the documentation''s install page, which agree. Habitat
+  is Meta''s navigation and home-environment simulator; Meta has stopped active development after v0.3.4, and
+  its last releases are read as current. RoboMIND''s current release, 2.0, is published on ModelScope rather
+  than the Hub and governs its openness. Reachy Mini was triaged for this tranche and stays in the registry
+  for the reason given above.'
