@@ -14,7 +14,7 @@ openness:
       detail: through OEM servers such as the Dell PowerEdge XE9785 and NVIDIA partners
     toolchain:
       value: closed
-      detail: CUDA toolkit and user-mode driver under the NVIDIA EULA; only the kernel modules are open under MIT/GPL-2.0
+      detail: CUDA toolkit and user-mode driver under the NVIDIA EULA; only the kernel modules are open, under MIT
     blobs:
       value: required
       detail: GSP firmware and user-space driver components
@@ -25,8 +25,8 @@ openness:
   raw: form_factor:chipset(GPU generation sold as SXM modules on HGX boards and in NVL72 racks; scored as the silicon);datasheets:public(Blackwell
     and Blackwell Ultra datasheets plus the architecture technical brief, no registration);retail:distributor(through
     OEM servers such as the Dell PowerEdge XE9785 and NVIDIA partners);toolchain:closed(CUDA toolkit and user-mode
-    driver under the NVIDIA EULA; only the kernel modules are open under MIT/GPL-2.0);blobs:required(GSP firmware
-    and user-space driver components)
+    driver under the NVIDIA EULA; only the kernel modules are open, under MIT);blobs:required(GSP firmware and user-space
+    driver components)
   last_verified: '2026-09-26'
   sources:
   - url: https://dam-cdn.nvd.orangelogic.com/AssetLink/y441155802qub41q118b2852i557jem5.pdf
@@ -67,6 +67,14 @@ openness:
     - toolchain
     http_status: 200
     content_sha256: dae4884999a096f1e61e976336344e95a3705eca1a87caf519c3f70b6d859a06
+  - url: https://raw.githubusercontent.com/NVIDIA/open-gpu-kernel-modules/HEAD/COPYING
+    shows: 'open-gpu-kernel-modules COPYING: "Except where noted otherwise, the individual files within this package
+      are licensed as MIT"'
+    accessed: '2026-09-26'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: d8e96d29bc323000e7ba56102d77c88226a7a3d0d94e2081cb4b071ae9de4a06
   - url: https://raw.githubusercontent.com/NVIDIA/open-gpu-kernel-modules/HEAD/README.md
     shows: 'open-gpu-kernel-modules README: the kernel modules "must be used with GSP firmware and user-space NVIDIA
       GPU driver components"'

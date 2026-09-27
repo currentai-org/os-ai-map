@@ -40,10 +40,10 @@ scoring_recipe:
     hardware reference, or developer documentation of the hardware. `brief` means product
     pages, brochures, a product brief or announcements only. The test is what the documents
     contain, not what they are titled: SambaNova's brochure gives no chip power or interfaces,
-    IBM publishes no throughput or memory figure for Spyre, and Qualcomm's only fetchable
+    IBM publishes no throughput figure for Spyre, and Qualcomm's only fetchable
     document is a two-page product brief. `restricted` is recorded where the vendor itself says
-    the part goes only to a select group of customers (d-Matrix Corsair; Ironwood outside Google
-    Cloud); a rent-only part records no `retail` at all, because renting has no value in the
+    the part goes only to a select group of customers (d-Matrix Corsair); a rent-only part
+    (Ironwood, Trainium3) records no `retail` at all, because renting has no value in the
     vocabulary.
 
     Capability, per unit sold - one package, or one card where the card is the smallest thing
@@ -56,8 +56,8 @@ scoring_recipe:
     anchor; `d-matrix-corsair` at `intel-gaudi-3`). 3 = 0.4 to 1.5 PFLOPS (`tenstorrent-blackhole`,
     `furiosa-rngd`, `sambanova-sn40l`, `qualcomm-cloud-ai-100`, each one below `intel-gaudi-3`, the
     nearer evidenced peer). 2 = below 0.4 PFLOPS; empty in this tranche (Inferentia2's 190 TFLOPS
-    cFP8 would land here). 1 is unused. `ibm-spyre` abstains: IBM publishes no throughput or
-    memory figure. Memory decides nothing on its own; notes name it where it cuts against the
+    cFP8 would land here). 1 is unused. `ibm-spyre` abstains: IBM publishes its
+    128 GB of LPDDR5 but no throughput figure. Memory decides nothing on its own; notes name it where it cuts against the
     throughput, as for Cerebras' 44 GB of on-wafer SRAM and Corsair's 2 GB of performance memory.
 
     Distribution review (docs/reference/capability.md, "Writing the rungs"): of 11 banded
@@ -70,9 +70,11 @@ scoring_recipe:
   extends: hardware
   deferred:
     google-tpu-ironwood:
-      because: 'Google rents Ironwood as Cloud TPU capacity and says only that it "will begin to
-        deliver TPUs to a select group of customers in their own data centers", so `retail` reads
-        `restricted`, `availability` reads `gated`, and the chipset rung does not match. The
+      because: 'Google offers Ironwood only as rented Cloud TPU capacity, and renting has no
+        value in the `retail` vocabulary, so no `retail` is recorded and the chipset rung cannot
+        match. Google has said it will begin to deliver TPUs to a select group of customers in
+        their own data centers, without naming the generation; if that reaches Ironwood, `retail`
+        becomes `restricted` and the outcome is the same. The
         recorded 3/documented is the lowest pair this ladder can emit; whether rentable silicon
         counts as `buyable` is a shared-rubric ruling for sources/rubrics/hardware.yaml.
         `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
@@ -97,12 +99,12 @@ scoring_recipe:
         recorded 3/documented is the lowest pair this ladder can emit.'
     qualcomm-cloud-ai-100:
       because: 'The only Qualcomm document that could be fetched is a two-page product brief
-        (`datasheets: brief`), and the HPE store listing for the card returned HTTP 403 on every
-        attempt, so `retail` is unrecorded rather than guessed. The chipset rung needs both. The
+        (`datasheets: brief`), and the HPE store listing for the card returned HTTP 403 on all six
+        attempts by build.fetch_source on 2026-09-27, so `retail` is unrecorded rather than guessed. The chipset rung needs both. The
         recorded 3/documented is the lowest pair this ladder can emit.'
     ibm-spyre:
-      because: 'IBM publishes announcements and a research blog but no throughput or memory
-        specification for Spyre, so `datasheets` reads `brief` even though the card is orderable
+      because: 'IBM publishes announcements, a research blog and a product page giving the
+        card''s 128 GB of LPDDR5 and 75 W power, but no throughput figure for Spyre, so `datasheets` reads `brief` even though the card is orderable
         as an option for IBM z17, LinuxONE 5 and Power11 systems. The chipset rung needs
         `public`. The recorded 3/documented is the lowest pair this ladder can emit.
         `schematics`, `toolchain` and `blobs` are unrecorded too, but no chipset rung reads
