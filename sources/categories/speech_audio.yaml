@@ -29,10 +29,13 @@ scoring_recipe:
     is already named by a shared tier, CC-BY-4.0 and the NVIDIA Open Model License as
     permissive_non_osi and CC-BY-NC-4.0 as commercial_forbidden on the model ladder, GPL-3.0 as osi on
     the software ladder. The custom texts the sweep met are deferred at each product's own promotion
-    rather than scored by extending a shared tier here. The second tranche (17 products, 2026-09-27)
-    defers two: xtts (Coqui Public Model License 1.0.0) and higgs-audio (Boson Higgs TTS 3 Research and
+    rather than scored by extending a shared tier here. The second tranche (18 products, 2026-09-27)
+    defers three: xtts (Coqui Public Model License 1.0.0) and higgs-audio (Boson Higgs TTS 3
+    Research and
     Non-Commercial License), both in `deferred:` below with the hand score the tier's definition would
-    give. Two licenses the sweep expected to defer did not need it once read: moonshine's current
+    give, and voxtral, whose licenses are all named but whose Apache-2.0 ASR line and CC-BY-NC TTS
+    member await the ruling on whether a TTS member belongs to the governing release. Two licenses
+    the sweep expected to defer did not need it once read: moonshine's current
     streaming release is MIT and only its superseded legacy models carry the Moonshine AI Community
     License, and omnivoice's card body names CC-BY-NC, which commercial_forbidden lists. The Fish Audio
     Research, bilibili Model Use and BreezeBlue licenses belong to rows still in the registry.
@@ -46,20 +49,27 @@ scoring_recipe:
     moshi is scored on its v0.1 release (CC-BY-4.0), and the gated CC-BY-NC-4.0 checkpoint
     kyutai/moshika-rl-seamless, which Kyutai published with a separate interactivity-alignment paper, is
     recorded as a research artifact. Both sit at 3. The second tranche reads six more products this way.
-    moonshine is scored on Moonshine Streaming (MIT); the 2025 non-English non-streaming models under the
+    moonshine is scored on Moonshine Streaming (MIT); the 2025 non-English non-streaming models
+    under the
     Moonshine AI Community License are a superseded release (Korean and Ukrainian have no streaming
     replacement yet; that license caps free use at USD 1M revenue, use_bounded in reading, which would
     give the same 3). zonos is scored on ZONOS2 (2026-06,
-    downloadable, Apache-2.0) with Zonos v0.1 as history. wav2vec is scored on the wav2vec 2.0 and HuBERT
-    releases, and the 2021 CC-BY-NC VoxPopuli checkpoints, published with a separate dataset paper, are a
+    downloadable, Apache-2.0) with Zonos v0.1 as history. wav2vec is scored on the wav2vec 2.0 and
+    HuBERT
+    releases, and the 2021 CC-BY-NC VoxPopuli checkpoints, published with a separate dataset
+    paper, are a
     research release. higgs-audio is scored on Higgs Audio v3, with the v2 community-licensed model as
     superseded. granite-speech is scored on Granite Speech 5.0: its CC-BY-NC-SA-4.0 turboctc-nc model is
-    the same 470M architecture trained on more data, and its card sends commercial users to the Apache-2.0
-    turboctc model, so it is a substitutable alternative (the Hermes precedent in identity.md), not a SKU
+    the same 470M architecture trained on more data, and its card sends commercial users to the
+    Apache-2.0
+    turboctc model, so it is a substitutable alternative (the Hermes precedent in identity.md),
+    not a SKU
     a user cannot avoid; the Apache-2.0 model governs. seamless-m4t records SeamlessExpressive, released
     beside v2 under the more restrictive Seamless Licensing Agreement, as a separate model; v2's own
-    CC-BY-NC-4.0 already sets 2. API-only tiers are excluded within a release: MOSS-Transcribe-Diarize Pro,
-    served only in MOSI's playground, does not lower moss-transcribe-diarize. None of the promoted products
+    CC-BY-NC-4.0 already sets 2. API-only tiers are excluded within a release:
+    MOSS-Transcribe-Diarize Pro,
+    served only in MOSI's playground, does not lower moss-transcribe-diarize. None of the promoted
+    products
     is a closed frontier on an open line.
 
     CAPABILITY. No single quantity orders recognition, synthesis, conversation and engines, so the
@@ -72,21 +82,25 @@ scoring_recipe:
     from that board; the Artificial Analysis TTS leaderboard (Elo, 91 rows) for synthesizers. A family
     is read by its best-placed declared checkpoint. 5: in the top ten of its board, or holds a real-time
     full-duplex spoken conversation. 4: ranks 11-30. 3: ranks 31-60; or a synthesizer absent from the
-    arena whose card reports zero-shot cloning results on a shared public test set (Seed-TTS-eval), since
+    arena whose card reports zero-shot cloning results on a shared public test set
+    (Seed-TTS-eval), since
     absence from a board is not evidence about quality. 2: ranks 61 or lower; or a recognizer or speech
     translator absent from both ASR boards (added 2026-09-27 for the second tranche). The Open ASR
     Leaderboard runs submitted open checkpoints on public test sets, so a recognizer's absence from it
     says more than a synthesizer's absence from a listening arena whose entries the arena picks, and
     card-reported results on other sets earn no more than this rung; moonshine's own average on the
     board's sets would place it 62nd, which agrees. 1: no board presence and a single narrow task, for a
-    model no clause above places. Positions on boards of different lengths are not the same fraction, which is why
-    the band edges are ranks rather than percentiles and why each product's basis_detail names its board.
+    model no clause above places. Positions on boards of different lengths are not the same
+    fraction, which is why
+    the band edges are ranks rather than percentiles and why each product's basis_detail names its
+    board.
 
     Engines are read on what they run and train. 5: trains as well as serves speech models across
     recognition and synthesis, including checkpoints at rung 4 or above. 4: serves more than one speech
     task (among ASR, TTS, diarization, VAD) with streaming, on servers, phones, embedded boards and the
     web; or trains as well as serves across recognition and synthesis with none of its own checkpoints
-    at rung 4 or above (added 2026-09-27 for speechbrain, which rung 5 would otherwise take). 3: runs one speech task end to end (a recognizer, a synthesizer or diarization). 2: a single
+    at rung 4 or above (added 2026-09-27 for speechbrain, which rung 5 would otherwise take). 3:
+    runs one speech task end to end (a recognizer, a synthesizer or diarization). 2: a single
     pipeline component that produces no transcript or speech of its own (voice activity detection).
     1: unused.
 
@@ -106,35 +120,54 @@ scoring_recipe:
     listening tests. The asymmetry is recorded rather than hidden, and a board placement for any of the
     three replaces the clause for that product.
 
-    Distribution after the second tranche (39 banded): 4 at 5, 10 at 4, 15 at 3, 8 at 2, 2 at 1. The
-    17 new bands: personaplex 5 (full duplex, at moshi); granite-speech (20th), moss-transcribe-diarize
+    Distribution after the second tranche (40 banded): 4 at 5, 10 at 4, 16 at 3, 8 at 2, 2 at 1. The
+    18 new bands: personaplex 5 (full duplex, at moshi); granite-speech (20th), moss-transcribe-diarize
     (21st) and higgs-audio (its v3 STT model 14th) at 4 under qwen-asr, and speechbrain at 4 under nemo;
-    vibevoice at 3 (its ASR model 49th, at whisper), omnivoice and zonos at 3 (unrated clause for the
+    vibevoice at 3 (its ASR model 49th, at whisper), voxtral at 3 (Mini 3B 46th, at whisper; its TTS
+    42nd in the arena), omnivoice and zonos at 3 (unrated clause for the
     current release, at kokoro; ZONOS2 reports seed-tts eval in charts, and v0.1 is 74th), vosk and
     whisperx at 3 (one-task engines, two under nemo); wav2vec, mms, seamless-m4t and moonshine at 2 (the
-    new absent-recognizer clause, one under whisper), xtts (82nd) at 2 under kokoro; melotts and sesame-csm at 1 (unrated synthesizers with no shared-test-set results,
-    two under kokoro). Rung 3 again holds more than a third, 15 of 39, and the reading above holds: of
-    its five additions, four are the one-task-engine and unrated-synthesizer shapes already there and
-    the fifth, vibevoice, is a mid-table recognizer like whisper. The rung
+    new absent-recognizer clause, one under whisper), xtts (82nd) at 2 under kokoro; melotts and
+    sesame-csm at 1 (unrated synthesizers with no shared-test-set results,
+    two under kokoro). Rung 3 again holds more than a third, 16 of 40, and the reading above holds: of
+    its six additions, four are the one-task-engine and unrated-synthesizer shapes already there and
+    the other two, vibevoice and voxtral, are mid-table recognizers like whisper. The rung
     that moved most is 2, from 3 to 8, and all four absent recognizers land there on the clause added
     this tranche; a board entry for any of them replaces it.
   deferred:
     xtts:
       because: 'The weights license abstains: XTTS-v2 and XTTS-v1 carry the Coqui Public Model License
         1.0.0, which "allows only non-commercial use of a machine learning model and its outputs". That
-        is the commercial_forbidden tier''s definition, but the tier names licenses literally and does not
-        list this one. Hand-scored 2/restricted, the rung the tier would produce. Coqui has shut down, so
+        is the commercial_forbidden tier''s definition, but the tier names licenses literally
+        and does not
+        list this one. Hand-scored 2/restricted, the rung the tier would produce. Coqui has
+        shut down, so
         no relicense is coming; the string goes to the maintainer license-rulings issue.'
     higgs-audio:
       because: 'The weights license abstains on two counts. Higgs TTS 3, the current text-to-speech
-        release, carries the Boson Higgs TTS 3 Research and Non-Commercial License (commercial use needs a
+        release, carries the Boson Higgs TTS 3 Research and Non-Commercial License (commercial
+        use needs a
         separate written license, with a free grant for monetized creator content), which no tier names;
         the v3 speech-to-text checkpoints are Apache-2.0. Hand-scored 2/restricted on the TTS license,
         the more restrictive reading. Whether a family''s TTS member and its ASR member are SKUs of one
-        release, so that the most restrictive governs, is the same maintainer ruling voxtral waits on; if
-        they are not, this entry may need splitting rather than rescoring. The superseded v2 model''s Boson
+        release, so that the most restrictive governs, is the same maintainer ruling voxtral
+        waits on; if
+        they are not, this entry may need splitting rather than rescoring. The superseded v2
+        model''s Boson
         Higgs Audio 2 Community License (a 100,000 annual-active-user bound) goes to the license-rulings
         issue with it.'
+    voxtral:
+      because: 'Held on an open ruling rather than a missing license name. The current
+      speech-recognition
+        release, Voxtral Mini 4B Realtime 2602 (with Voxtral Mini 3B 2507), is Apache-2.0; the current
+        Voxtral 4B TTS 2603 is CC-BY-NC-4.0, a string commercial_forbidden already lists.
+        Whether the TTS
+        member belongs to the governing release, so that the most restrictive license sets the family''s
+        score, is a maintainer ruling (the same one higgs-audio waits on). Recorded so the ladder reads
+        the ASR line, whose Apache-2.0 license gives 3/open_weights, with the TTS member and its license
+        under components.context as the unresolved member; hand-scored 2/restricted on the more
+        restrictive reading, which is what the ladder gives if the ruling puts the TTS member in the
+        release.'
 products:
 - whisper
 - qwen-asr
@@ -144,6 +177,7 @@ products:
 - granite-speech
 - moss-transcribe-diarize
 - vibevoice
+- voxtral
 - moonshine
 - wav2vec
 - mms
@@ -205,7 +239,8 @@ comments: >-
   no weights license on the card).
 
   Openness is read from the current release. Higgs Audio's current TTS release (v3) is
-  non-commercial even though the declared artifact is the more-downloaded v2 checkpoint; Fish-Speech's code as well as its
+  non-commercial even though the declared artifact is the more-downloaded v2 checkpoint;
+  Fish-Speech's code as well as its
   weights moved to the Fish Audio Research License; Piper's maintained engine is GPL-3.0 under the
   Open Home Foundation; Orpheus's card says Apache-2.0 on a Llama 3.2 base, which the scorer must
   read. Closed comparators (ADR-005) are surfaces, not vendors: ElevenLabs TTS, Deepgram Nova,
@@ -223,18 +258,21 @@ comments: >-
   sherpa-onnx, pyannote-audio, silero-vad, piper) and three closed comparators (elevenlabs-tts,
   deepgram-nova, openai-speech). No row was rejected on the boundary.
 
-  Second tranche promoted 2026-09-27: 17 products. Recognition and translation (granite-speech,
+  Second tranche promoted 2026-09-27: 18 products. Recognition and translation (granite-speech,
   moss-transcribe-diarize, vibevoice, moonshine, wav2vec, mms, seamless-m4t), synthesis (xtts,
   omnivoice, zonos, higgs-audio, melotts, sesame-csm), full-duplex conversation (personaplex) and
-  engines (speechbrain, whisperx, vosk). No row failed triage or the boundary. Meta's Omnilingual ASR
-  (2025) is a separately named system and is not folded into mms. The other 13 rows stay in the
+  engines (speechbrain, whisperx, vosk), and voxtral, added on review. No row failed triage or the
+  boundary. Meta's Omnilingual ASR
+  (2025) is a separately named system and is not folded into mms. The other 12 rows stay in the
   registry for add-product.
 
-  Voxtral is held in the registry, and this is the one statement of why: the family's ASR line
-  (Voxtral Mini and Mini Realtime) is Apache-2.0 and its Voxtral TTS member is CC-BY-NC, and whether
-  that TTS member belongs to the governing release, so that the most restrictive license sets the
-  family's score, is a maintainer ruling. higgs-audio (Apache-2.0 speech-to-text, non-commercial TTS)
-  has the same shape and is deferred on it.
+  Voxtral is promoted and deferred like higgs-audio, and this is the one statement of why (review of
+  the round-2 integration, #749): the family's identity is clear, but its speech-recognition line
+  (Voxtral Mini 4B Realtime and Mini 3B) is Apache-2.0 while its Voxtral 4B TTS member is CC-BY-NC-4.0,
+  and whether that TTS member belongs to the governing release, so that the most restrictive license
+  sets the family's score, is a maintainer ruling. Both products keep the current-release licenses of
+  both members, are hand-scored 2 on the more restrictive reading, and sit in `deferred:` until the
+  ruling lands.
 
   Strapline check, 2026-09-27: on the Artificial Analysis TTS leaderboard fetched that day (content
   sha256 c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205, 91 rows), Breeze TTS 2 at
