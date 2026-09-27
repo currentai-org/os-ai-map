@@ -12,18 +12,26 @@ openness:
     core-gated:
       value: ungated
       detail: maintained by its author; nothing sold
+    context:
+      model-zoo-terms:
+        value: public-domain
+        detail: dlib-models released into the public domain, except shape_predictor_68_face_landmarks, whose
+          ibug 300-W training data excludes commercial use
   confidence: high
-  note: dlib is under the Boost Software License 1.0, a short permissive license the OSI approves, and
+  note: 'dlib is under the Boost Software License 1.0, a short permissive license the OSI approves, and
     builds from the public repository its author maintains; nothing is sold. Its trained models are published
-    separately and mostly placed in the public domain, though the 68-point landmark model inherits a no-commercial-use
-    condition from its training data.
+    separately and downloaded by hand, mostly in the public domain. The 68-point landmark model is the exception:
+    its training data excludes commercial use. The face-recognition pipeline dlib is credited for uses the
+    public-domain 5-point landmark model and recognition network instead, so the restricted model does not
+    govern.'
   raw: license:BSL-1.0(Boost Software License 1.0, OSI-approved; not the Business Source License);source:public(github.com/davisking/dlib);core-gated:ungated(maintained
-    by its author; nothing sold)
+    by its author; nothing sold);model-zoo-terms:public-domain(dlib-models released into the public domain,
+    except shape_predictor_68_face_landmarks, whose ibug 300-W training data excludes commercial use)
   last_verified: '2026-09-27'
   sources:
   - url: https://raw.githubusercontent.com/davisking/dlib/HEAD/LICENSE.txt
-    shows: LICENSE.txt is the "Boost Software License - Version 1.0 - August 17th, 2003", "Permission
-      is hereby granted, free of charge, to any person or organization".
+    shows: LICENSE.txt is the "Boost Software License - Version 1.0 - August 17th, 2003", "Permission is
+      hereby granted, free of charge, to any person or organization".
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 8d8291caf1cee26d23acf3eb67c9f9a2d58f1c681b16a4fbe8cbfb9e3c0b5a9b
@@ -39,9 +47,8 @@ openness:
     - license
     - source
   - url: https://raw.githubusercontent.com/davisking/dlib/HEAD/README.md
-    shows: 'README: "Dlib is a modern C++ toolkit containing machine learning algorithms and tools for
-      creating complex software in C++ to solve real world problems."; no paid tier or commercial edition
-      mentioned.'
+    shows: 'README: "Dlib is a modern C++ toolkit containing machine learning algorithms and tools for creating
+      complex software in C++ to solve real world problems."; no paid tier or commercial edition mentioned.'
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: edbf6b484f06454ac5f2ce139174e4ae6abc65ba433bee77152bb50c875a2c86
@@ -62,6 +69,14 @@ openness:
     accessed: '2026-09-27'
     http_status: 200
     content_sha256: 9c6d18a2a83ceebc136997941ec913ccc0548889e24440381bd06d7453b05e3c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/davisking/dlib/HEAD/python_examples/face_recognition.py
+    shows: 'Face-recognition example: "./face_recognition.py shape_predictor_5_face_landmarks.dat dlib_face_recognition_resnet_model_v1.dat
+      ../examples/faces", with both models fetched by hand from dlib.net/files.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6c3184f08a4ac2a1564209f208cf3340e77e55f5c710a5dc7425edceab3d8688
     establishes:
     - license
 adoption:
