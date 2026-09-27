@@ -32,6 +32,14 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   datacenter_accelerators; responsible_ai_measurement was parked
   ([#720](https://github.com/currentai-org/os-ai-map/pull/720)).
 
+### Changed
+
+- The software ladder gained `noncommercial` and `unstated` tiers and the model ladders `unstated`,
+  all capped at 2; territorial and revenue-bound community licenses now sit at 3 and vendor
+  non-commercial model licenses at 2. Twenty-eight deferrals close, and five scores move: deepprove
+  up to 5, and nanonets-ocr, liveportrait, latentsync and open-sora down to 2
+  ([#750](https://github.com/currentai-org/os-ai-map/pull/750)).
+
 ## [0.4.0] - 2026-09-26
 
 ### Added
