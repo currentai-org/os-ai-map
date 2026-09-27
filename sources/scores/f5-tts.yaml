@@ -1,0 +1,84 @@
+product: f5-tts
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: checkpoints on the Hub, ungated
+    data:
+      value: open
+      detail: trained on the public Emilia dataset
+    code:
+      value: open
+      detail: training and fine-tuning code in the repository
+    license:
+    - name: CC-BY-NC-4.0
+      detail: weights; the code is MIT
+  confidence: high
+  note: F5-TTS publishes its code under MIT and trains on the public Emilia corpus, but the weights carry a non-commercial
+    license inherited from that data. Downloadable is not usable commercially, and that is what sets the score.
+  raw: weights:open(checkpoints on the Hub, ungated);data:open(trained on the public Emilia dataset);code:open(training
+    and fine-tuning code in the repository);license:CC-BY-NC-4.0(weights; the code is MIT)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/SWivid/F5-TTS
+    shows: '"license:cc-by-nc-4.0" tag and "gated":false.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 283fe54797f3444c363141d782626e2cd99635c050efacfeffb42033c4fb0f43
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/SWivid/F5-TTS/raw/main/README.md
+    shows: 'Card front matter "license: cc-by-nc-4.0" and "datasets:" naming "amphion/Emilia-Dataset".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cf3354feaf4020527b3642b12a5a382de13d0af6bc99e8d37bee84425c1ca224
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/SWivid/F5-TTS/HEAD/README.md
+    shows: '"Our code is released under MIT License. The pre-trained models are licensed under the CC-BY-NC license
+      due to the training data Emilia"; "Refer to [training & finetuning guidance](src/f5_tts/train) for best practice."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3c74da9760857de03a0fe22d6124fd50000b986c6aeba6c23bb14635e20e4ae1
+    establishes:
+    - data
+    - code
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the weights repository, about 905,000 in the trailing 30 days. The f5-tts package
+    is marked as not a separate channel because it loads this repository.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/SWivid/F5-TTS
+    shows: '"downloads":905144 for SWivid/F5-TTS.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 283fe54797f3444c363141d782626e2cd99635c050efacfeffb42033c4fb0f43
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: self-reported Seed-TTS-eval zero-shot results
+  value: Zero-shot voice cloning in English and Chinese; the README evaluates on LibriSpeech-PC and Seed-TTS test
+    sets and credits the Emilia and WenetSpeech4TTS corpora used in its experiments.
+  confidence: low
+  note: An influential open voice-cloning architecture, limited to two languages. Not on the Artificial Analysis
+    TTS leaderboard, which ranks 91 models, so the band is the category's rung for an unrated open TTS model that
+    reports zero-shot results on a shared public test set.
+  relative_to: kokoro
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/SWivid/F5-TTS/HEAD/README.md
+    shows: README acknowledgements name "[Emilia](https://arxiv.org/abs/2407.05361), [WenetSpeech4TTS](https://arxiv.org/abs/2406.05763)";
+      the project offers "F5-TTS & E2 TTS base models".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3c74da9760857de03a0fe22d6124fd50000b986c6aeba6c23bb14635e20e4ae1

@@ -1,0 +1,92 @@
+product: qwen-asr
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: large-scale speech training data, not released
+    code:
+      value: partial
+      detail: inference package and fine-tuning scripts, not the training recipe
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: Qwen3-ASR's weights and code are Apache-2.0, an OSI-approved license. The card mentions large-scale speech
+    training data without releasing it, and the repository offers fine-tuning scripts rather than the recipe that
+    produced the checkpoints, which keeps this at open weights.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(large-scale speech training data, not released);code:partial(inference
+    package and fine-tuning scripts, not the training recipe);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-ASR-1.7B
+    shows: '"license:apache-2.0" tag, "gated":false, with two safetensors shards.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc885c8af2442a749584b20fb02c4866de911af2064a93dcc861e54780e20b06
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/HEAD/README.md
+    shows: '"Both leverage large-scale speech training data"; "Please refer to [Qwen3-ASR-Finetuning](finetuning/)
+      for detailed instructions on fine-tuning Qwen3-ASR."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 27b5d6e31c3dc10c9b4b86e226f215baacca57bede504994779ad334a67275a0
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the two declared checkpoints, about 2.5 million in the trailing 30 days. The qwen-asr
+    package is marked as not a separate channel because it loads these same repositories.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-ASR-1.7B
+    shows: '"downloads":1924880 for Qwen/Qwen3-ASR-1.7B.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc885c8af2442a749584b20fb02c4866de911af2064a93dcc861e54780e20b06
+  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen3-ASR
+    shows: Qwen/Qwen3-ASR-0.6B 553,397 downloads in the trailing 30 days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a60736c07b603761c522b952201d748cd7364b4b3975eb9cf53b180ccc16d593
+capability:
+  score: 5
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: Qwen/Qwen3-ASR-1.7B ranks 10th of 71 at 4.31% average WER, the best open-weights model on the board; the
+    nine above it are proprietary services. It covers 52 languages and dialects.
+  confidence: medium
+  note: Qwen3-ASR is the most accurate open recognizer on the English board and one of the broadest in language
+    coverage, which is the combination the top rung asks for.
+  relative_to: moshi
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV row "Qwen/Qwen3-ASR-1.7B-hf,4.31125,819.96,apache-2.0" (size 2.04B, 52 languages); every
+      row with a lower average carries "Proprietary".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-ASR/HEAD/README.md
+    shows: '"support language identification and ASR for 52 languages and dialects".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 27b5d6e31c3dc10c9b4b86e226f215baacca57bede504994779ad334a67275a0

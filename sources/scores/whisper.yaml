@@ -1,0 +1,101 @@
+product: whisper
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors checkpoints on the Hub, ungated
+    data:
+      value: described
+      detail: 1M hours weakly labeled plus 4M hours pseudo-labeled audio, not released
+    code:
+      value: partial
+      detail: inference and decoding code only
+    license:
+    - name: MIT
+      detail: large-v3-turbo weights and the code
+    - name: Apache-2.0
+      detail: large-v3 and earlier weights
+  confidence: high
+  note: Whisper's weights download without a gate under MIT and Apache-2.0, both OSI-approved. OpenAI describes
+    the five million hours of audio it trained on but has not released them, and the repository holds inference
+    code rather than a training pipeline, so this is open weights rather than a reproducible model.
+  raw: weights:open(safetensors checkpoints on the Hub, ungated);data:described(1M hours weakly labeled plus 4M
+    hours pseudo-labeled audio, not released);code:partial(inference and decoding code only);license:MIT(large-v3-turbo
+    weights and the code)+Apache-2.0(large-v3 and earlier weights)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/openai/whisper-large-v3-turbo
+    shows: '"license:mit" tag, "gated":false, and model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b84dde2fa54c5b91e9d167c863d0394b08041b42c85b76875fb445f50ce77918
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/openai/whisper-large-v3/raw/main/README.md
+    shows: 'Card front matter "license: apache-2.0"; "The large-v3 checkpoint is trained on 1 million hours of weakly
+      labeled audio and 4 million hours of pseudo-labeled audio collected using Whisper large-v2." No dataset is
+      linked.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b05416eb578e9fc65ce137f3401bafdf3bc2feac7448e7dd180dcd367b8cfb52
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/openai/whisper/HEAD/LICENSE
+    shows: 'Repository LICENSE body: "MIT License" / "Copyright (c) 2022 OpenAI".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b5d65a59060e68c4ff940e1eddfa6f94b2d68fdf58ed7f4dd57721c997e35e9d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/whisper/HEAD/README.md
+    shows: The README covers installation, command-line and Python transcription with the released checkpoints;
+      it documents no training procedure.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 38c180c2a8d8ba628a3e131ad42bf06c8a51bb681efb30fbe28d5a0f4b65f288
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 'Read from PyPI, the route that leads for a product declaring a package: openai-whisper, the reference implementation,
+    is installed about five million times a month. The Hugging Face checkpoints are a second channel; the twelve
+    openai/whisper repositories drew about 18 million downloads in the same window, most of them through transformers.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/openai-whisper/recent
+    shows: '"last_month":5190666 for openai-whisper.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 155cc2b3c589e52b568b9ec8dff4185b1705015914295c9f06da253ae5995c73
+  - url: https://huggingface.co/api/models?author=openai&search=whisper
+    shows: Twelve openai/whisper-* repositories; downloads include openai/whisper-large-v3-turbo 6,477,272 and openai/whisper-large-v3
+      4,600,554 in the trailing 30 days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: effe45e94c857f78fd4d0176ff8d14b815033ff7923d1b9f5eb372285f4f8daf
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: openai/whisper-large-v3 ranks 53rd of 71 on the Open ASR Leaderboard at 5.78% average WER, and large-v3-turbo
+    58th at 6.36%; the models cover 99 languages.
+  confidence: medium
+  note: Whisper still covers more languages than almost any open recognizer, but on the English board the current
+    open leaders, Qwen3-ASR among them, transcribe with markedly fewer errors.
+  relative_to: qwen-asr
+  relation: two_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "openai/whisper-large-v3,5.78" and "openai/whisper-large-v3-turbo,6.3575"; both list
+      99 languages.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1

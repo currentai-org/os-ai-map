@@ -1,0 +1,68 @@
+product: silero-vad
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Silero VAD is MIT-licensed and, in the vendor's words, comes with no keys, registration or vendor lock;
+    the published repository is the whole product.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/snakers4/silero-vad/HEAD/LICENSE
+    shows: 'LICENSE body: "MIT License" / "Copyright (c) 2020-present Silero Team".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/snakers4/silero-vad/HEAD/README.md
+    shows: '"Published under permissive license (MIT) Silero VAD has zero strings attached - no telemetry, no keys,
+      no registration, no built-in expiration, no keys or vendor lock."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cd0ee56c91b8042e62a714c0c94bc8b74dbea127a483e390f8033bb8ec8cec78
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of silero-vad, about 1.8 million in the trailing 30 days. Many engines embed the model without
+    installing the package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/silero-vad/recent
+    shows: '"last_month":1831401 for silero-vad.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ddc791664837961c1963033d4dcaadefb6fd5b797401d48c93d5b17ea206b017
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: 'Voice activity detection only: under 1 ms per 30 ms chunk on a single CPU thread, trained on corpora spanning
+    over 6,000 languages.'
+  confidence: medium
+  note: 'Probably the most widely embedded VAD, but voice activity detection is a pipeline component: it produces
+    no transcript or speech of its own.'
+  relative_to: pyannote-audio
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/snakers4/silero-vad/HEAD/README.md
+    shows: '"takes](https://github.com/snakers4/silero-vad/wiki/Performance-Metrics#silero-vad-performance-metrics)
+      less than **1ms** to be processed on a single CPU thread."; "Silero VAD was trained on huge corpora that include
+      over **6000** languages".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cd0ee56c91b8042e62a714c0c94bc8b74dbea127a483e390f8033bb8ec8cec78

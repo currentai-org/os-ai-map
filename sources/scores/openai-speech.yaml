@@ -1,0 +1,75 @@
+product: openai-speech
+openness:
+  score: 1
+  class: closed
+  components:
+    weights:
+      value: closed
+    data:
+      value: closed
+    code:
+      value: closed
+    license:
+    - name: Proprietary
+      detail: API only
+  confidence: high
+  note: OpenAI's speech models are API-only; no weights, training data or code are published for them.
+  raw: weights:closed;data:closed;code:closed;license:Proprietary(API only)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://developers.openai.com/api/docs/guides/speech-to-text.md
+    shows: Guide documents the hosted "/v1/audio/transcriptions" endpoint with "gpt-transcribe"; models are called
+      over the API with a key and none is downloadable.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dff8463bd6a64efa4a6aca5e8e6880b719125c0156b264de4365398893acc4ec
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://developers.openai.com/api/docs/guides/text-to-speech.md
+    shows: Text-to-speech is the hosted "gpt-4o-mini-tts" model called through the API.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 20b8f65212d607c9d3ebe9aca444acc51b77d3094324258086dafd924aaf90f7
+    establishes:
+    - weights
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  confidence: low
+  note: OpenAI publishes no usage figure for its audio endpoints. The level reads their position as the default
+    speech models on OpenAI's developer platform, which is a credible claim but not a measured one.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://developers.openai.com/api/docs/guides/speech-to-text.md
+    shows: Guide documents transcription with "gpt-transcribe", diarization with "gpt-4o-transcribe-diarize" and
+      translation with "whisper-1"; no usage figure appears.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dff8463bd6a64efa4a6aca5e8e6880b719125c0156b264de4365398893acc4ec
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Artificial Analysis speech-to-text WER
+  value: GPT Transcribe records 3.3% WER on the Artificial Analysis speech-to-text benchmark, 15th of 58 entries;
+    gpt-4o-transcribe records 4.0%. On the TTS leaderboard OpenAI's best entry, TTS-1 HD, ranks 32nd of 91.
+  confidence: medium
+  note: Accurate and broad recognition with streaming and diarization, a step behind the most accurate commercial
+    recognizers.
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/speech-to-text
+    shows: Table rows "GPT Transcribe, OpenAI" with "3.3%" and "GPT-4o Transcribe" with "4.0%".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1438e1e7d318d1e7a909d3c37be1c2ace1b7839224a10af5e5c7c00dadfb03ff
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Entry "name":"TTS-1 HD" with "elo":1103.76, creator OpenAI.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 524dd3f2d13e2629cf820715a3c37c79af623b2af67cfa437cf7e7da38c61cb1

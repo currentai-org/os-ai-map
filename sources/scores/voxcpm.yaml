@@ -1,0 +1,81 @@
+product: voxcpm
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: over 2 million hours of multilingual speech, not released
+    code:
+      value: partial
+      detail: inference and fine-tuning code
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: VoxCPM's code and weights are Apache-2.0, OSI-approved and free for commercial use. OpenBMB sizes its training
+    data at over two million hours without releasing it, and ships fine-tuning rather than pretraining code.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(over 2 million hours of multilingual speech,
+    not released);code:partial(inference and fine-tuning code);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/openbmb/VoxCPM2
+    shows: '"license:apache-2.0" tag, "gated":false, with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d7c7e2465871d95a8c8d07abc77027bffe32e003f6331123266f264367162354
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/openbmb/VoxCPM2/raw/main/README.md
+    shows: '"trained on over **2 million hours** of multilingual speech data"; "VoxCPM2 supports both full SFT and
+      LoRA fine-tuning".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c18d2ffbfb2f0aec770481c967842aee6c200cde65f6b033efd892a849986fda
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/OpenBMB/VoxCPM/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4f10acc209addacfad28293315c74c4cd648f771ee1263a748f1781d1e0265e4
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the VoxCPM2 repository, about 350,000 in the trailing 30 days. The voxcpm package
+    is marked as not a separate channel because it loads this repository.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/openbmb/VoxCPM2
+    shows: '"downloads":349760 for openbmb/VoxCPM2.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d7c7e2465871d95a8c8d07abc77027bffe32e003f6331123266f264367162354
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: language coverage and cloning features, self-reported
+  value: 2B parameters, 30 languages, 48 kHz output, voice design and controllable voice cloning.
+  confidence: low
+  note: The widest language coverage of the open TTS models here. Not on the Artificial Analysis TTS leaderboard,
+    which ranks 91 models, so the band is the category's rung for an unrated open TTS model that reports zero-shot
+    results on a shared public test set.
+  relative_to: kokoro
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/openbmb/VoxCPM2/raw/main/README.md
+    shows: '"**VoxCPM2** is a tokenizer-free, diffusion autoregressive Text-to-Speech model — **2B parameters**,
+      **30 languages**, **48kHz** audio output".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c18d2ffbfb2f0aec770481c967842aee6c200cde65f6b033efd892a849986fda

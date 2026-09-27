@@ -1,0 +1,68 @@
+product: nemo
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: NeMo Speech is Apache-2.0 and the published repository is the whole toolkit. NVIDIA sells hosted inference
+    as its own NIM product, which does not withhold anything from the open source.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/HEAD/README.md
+    shows: README badge "License-Apache%202.0"; install with "pip install 'nemo-toolkit[asr,tts]'"; NVIDIA's hosted
+      inference is named as a separate offering, "[the NIM](https://build.nvidia.com/nvidia/nemotron-asr-streaming)".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f7f63002e9f9fc053094e26f6828687dccdfda41a2e13c13cf2587fcacf556f8
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of nemo-toolkit, about 460,000 in the trailing 30 days.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/nemo-toolkit/recent
+    shows: '"last_month":459743 for nemo-toolkit.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ed7ff2fc768014a299bb6b335e9948b52099ba4becad222587950db6f299c0eb
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: Trains and serves ASR, TTS and speech-LLM models, and is the training framework for Parakeet and Canary,
+    whose checkpoints sit at rung 4 on the Open ASR Leaderboard; recent releases add 40-language streaming recognition
+    and multilingual Magpie TTS.
+  confidence: medium
+  note: The only engine here that trains frontier-class recognizers as well as running them, across both recognition
+    and synthesis.
+  relative_to: moshi
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/HEAD/README.md
+    shows: '"Recognition (ASR), Text to Speech (TTS), and Speech LLMs. It is designed to help you efficiently create,
+      customize, and"; "[Nemotron-3.5-ASR-Streaming-0.6B](https://huggingface.co/nvidia/nemotron-3.5-asr-streaming-0.6b)
+      has been released with 40 languages supported".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f7f63002e9f9fc053094e26f6828687dccdfda41a2e13c13cf2587fcacf556f8

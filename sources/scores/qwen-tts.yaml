@@ -1,0 +1,82 @@
+product: qwen-tts
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: closed
+      detail: no training corpus named
+    code:
+      value: partial
+      detail: inference package and fine-tuning scripts
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: medium
+  note: Qwen3-TTS's weights and code are Apache-2.0, OSI-approved. Alibaba publishes fine-tuning scripts but neither
+    its training data nor the recipe behind the released checkpoints.
+  raw: weights:open(safetensors on the Hub, ungated);data:closed(no training corpus named);code:partial(inference
+    package and fine-tuning scripts);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-TTS-12Hz-1.7B-Base
+    shows: '"license:apache-2.0" tag, "gated":false, with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6111d45c692d53a6eee88dcc7e32c6188d245872f9c4500baa26adedd1dba7cf
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/README.md
+    shows: '"Please refer to [Qwen3-TTS-Finetuning](finetuning/) for detailed instructions on fine-tuning Qwen3-TTS.";
+      no training dataset is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f4497e70e9ae024b10ee4bbcb470366f10592edeab56c58d2194ba2dadb745
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the two most-used checkpoints, about 6.4 million in the trailing 30 days. The
+    qwen-tts package is marked as not a separate channel because it loads these repositories.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen3-TTS
+    shows: 'Trailing-30-day downloads: Qwen3-TTS-12Hz-1.7B-Base 3,923,955 and Qwen3-TTS-12Hz-1.7B-CustomVoice 2,435,822.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3b6a4897c4d95ae5cababb2f1f9ec92de42aafecf731c76293e391983c9b8d83
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: self-reported Seed-TTS-eval zero-shot WER and multilingual test set
+  value: The card reports zero-shot results on the Seed-TTS test set, a multilingual test set, cross-lingual generation
+    and long-form speech; the models cover 10 languages with 3-second cloning and voice design.
+  confidence: low
+  note: Among the broadest open TTS feature sets, voice design included. Not on the Artificial Analysis TTS leaderboard,
+    which ranks 91 models, so the band is the category's rung for an unrated open TTS model that reports zero-shot
+    results on a shared public test set.
+  relative_to: kokoro
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/raw/main/README.md
+    shows: '"Zero-shot speech generation on the Seed-TTS test set. Performance is measured by Word Error Rate (WER,
+      ↓), where lower is better."; "Base model capable of 3-second rapid voice clone from user audio input".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 621b7e88f1867bc03d817176fc1f7f55f4b5a70654b2a07fdcda1e169efb024b

@@ -1,0 +1,86 @@
+product: chatterbox
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: checkpoints on the Hub, ungated
+    data:
+      value: described
+      detail: 0.5M hours of cleaned data, not released
+    code:
+      value: partial
+      detail: inference code only
+    license:
+    - name: MIT
+      detail: OSI
+  confidence: high
+  note: Chatterbox is MIT-licensed, code and weights alike, which is OSI-approved. Resemble sizes its training data
+    at half a million hours but publishes neither the data nor a training pipeline.
+  raw: weights:open(checkpoints on the Hub, ungated);data:described(0.5M hours of cleaned data, not released);code:partial(inference
+    code only);license:MIT(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/ResembleAI/chatterbox
+    shows: '"license:mit" tag and "gated":false.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c7004e16d9e3ba848916555c3b1d43ffad76539fb355fcdfb407b121902979c1
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/ResembleAI/chatterbox/raw/main/README.md
+    shows: 'Card front matter "license: mit"; "Trained on 0.5M hours of cleaned data".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6ac86d5ec7e85a9cf6566a34c6aae60ac1d50a6fceccade4c2aa57cfa6f590b4
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/resemble-ai/chatterbox/HEAD/README.md
+    shows: README covers "pip install chatterbox-tts" and inference with "from_pretrained"; no training instructions.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fd9315cc529c65d46ddd21ded05ba3372b6f6f39242bd015f770145bf5e0448f
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/resemble-ai/chatterbox/HEAD/LICENSE
+    shows: 'LICENSE body: "MIT License" / "Copyright (c) 2025 Resemble AI".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4248e910a928849fe5815a0f9236e17fa07768d95b9193212752c464b93d6caa
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the main repository, about 1.7 million in the trailing 30 days. The chatterbox-tts
+    package is marked as not a separate channel because it loads the Hub checkpoints.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/ResembleAI/chatterbox
+    shows: '"downloads":1721415 for ResembleAI/chatterbox.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c7004e16d9e3ba848916555c3b1d43ffad76539fb355fcdfb407b121902979c1
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: The open Chatterbox model ranks 71st of 91 on the Artificial Analysis TTS leaderboard at an Elo of about
+    1023. The newer Turbo and Multilingual V3 models are not on the board.
+  confidence: low
+  note: Listeners prefer most commercial voices, and Kokoro, over the original Chatterbox. Its draw is voice cloning
+    and emotion control, which the arena does not score, and its newer models are unrated.
+  relative_to: kokoro
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"Chatterbox" (creator Resemble AI) with "elo":1023.02 and "openWeights":true.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 524dd3f2d13e2629cf820715a3c37c79af623b2af67cfa437cf7e7da38c61cb1
