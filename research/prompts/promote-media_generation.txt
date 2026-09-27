@@ -16,3 +16,10 @@ PROCEDURE: invoke the `promote-category` skill and follow docs/workflows/promote
 7. VALIDATE: `git fetch --unshallow` if shallow; `uv run python -m build.preflight --skip-tests` until clean, then full `uv run python -m build.preflight`. Regenerate identity fixtures if needed (`uv run python -m build.identity_eval --write-fixture tests/fixtures/identity_edges_pass.json`, `--write-coverage-baseline`). Never delete a test; never commit build/notebook_data.json, notebooks/, tests/goldens/corpus.json. If a live-GitHub leg fails only because of the access limit, say so in the PR.
 
 FINISH: commit (conventional messages, e.g. `feat(products): promote media_generation first tranche`; trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`), `git push -u origin HEAD` to `claude/promote-media_generation`, then open a DRAFT PR with the GitHub MCP tool create_pull_request: head `claude/promote-media_generation`, base `main`, title `Promote media_generation: first tranche`, body following .github/pull_request_template.md (What + Checklist) plus: products promoted and why each, rows left in the registry, rejections/replacements with reasons, capability rungs and anchors, deferrals, license strings for the maintainer, the verifier's summary, preflight summary lines, open questions; end the body with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)`. Add label `promotion`. Other promotion PRs touch shared files (org rosters, org_handles.yaml, identity fixtures); the coordinator resolves cross-PR conflicts, so don't chase them. Final message: PR URL, products promoted, published or not (and why), deferrals, open questions.
+
+AFTER #720 MERGED (2026-09-27, squash): before your final push run
+  git fetch origin main pull/720/head:refs/remotes/origin/pr720
+  git merge --no-edit origin/pr720
+  git merge --no-edit -X ours origin/main
+  git diff --stat origin/main HEAD    # must list only your promotion's files
+and open the draft PR against `main`.
