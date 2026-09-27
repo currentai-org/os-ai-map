@@ -285,12 +285,13 @@ def test_local_scores_matches_check_rubrics_split():
     # Te Hiku Media's explicit, case-by-case grant, which is commercial use reserved to the
     # licensor. It joined `noncommercial`, and `te-hiku-media-reo-maori-corpus` reproduces its 2.
     #
-    # 5 -> 9 on 2026-09-27 with the robotics_embodied first tranche. All four are license names
+    # 5 -> 8 on 2026-09-27 with the robotics_embodied first tranche. All three are license names
     # the shared tiers do not carry, recorded rather than hand-closed, each closing on a ruling:
-    # `gr00t` (NVIDIA OneWay Noncommercial on one declared SKU), `maniskill` (CC-BY-NC-4.0 assets
-    # beside Apache-2.0 code), `carla` (an unversioned CC-BY on its assets) and `pybullet` (zlib,
-    # OSI-approved but not listed in the osi tier).
-    assert len(deferred) == 9
+    # `maniskill` (CC-BY-NC-4.0 assets beside Apache-2.0 code), `carla` (an unversioned CC-BY on
+    # its assets) and `pybullet` (zlib, OSI-approved but not listed in the osi tier). `gr00t` was
+    # briefly a fourth, deferred on a non-commercial license that covers only superseded N1.6 and
+    # N1.5 checkpoints; read on its current N1.7 release it computes, and it is not counted here.
+    assert len(deferred) == 8
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

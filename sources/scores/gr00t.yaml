@@ -1,40 +1,53 @@
 product: gr00t
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
+  governing_release: gr00t-n1.7
   components:
     weights:
       value: open
-      detail: safetensors on the Hub, ungated
+      detail: every N1.7 checkpoint is ungated safetensors on the Hub; the Cosmos-Reason2-2B backbone they
+        load sits behind an automatic click-through gate
     data:
       value: partial
-      detail: simulated post-training sets published; the rest of the mixture is not
+      detail: the N1.7 task fine-tunes train on public benchmark sets (Bridge, Fractal, DROID, LIBERO);
+        the 13-dataset pretraining mixture is not released
     code:
       value: open
-      detail: training and fine-tuning code in the repository
+      detail: Apache-2.0 training and fine-tuning code in the repository
     license:
     - name: NVIDIA-Open-Model-License
-      detail: the N1.x base checkpoints and GR00T-H-N1.7
-    - name: NVIDIA-OneWay-Noncommercial
-      detail: GR00T-H, the N1.6 release, and the Assemble_Trocar fine-tune
+      detail: 'every N1.7 checkpoint: the base, GR00T-H-N1.7 and the task fine-tunes'
+    context:
+      superseded:
+        value: noncommercial
+        detail: GR00T-H (the N1.6 surgical release) and the N1.5 Assemble_Trocar fine-tune are under the
+          NVIDIA OneWay Noncommercial License; earlier releases, not scored
   confidence: medium
-  note: The base checkpoints and the newer GR00T-H-N1.7 can be used commercially under NVIDIA's Open Model License,
-    and the training code is open. The earlier GR00T-H, still published beside them, is for non-commercial use only,
-    and the line is read by its most restrictive release.
-  raw: weights:open(safetensors on the Hub, ungated);data:partial(simulated post-training sets published; the rest
-    of the mixture is not);code:open(training and fine-tuning code in the repository);license:NVIDIA-Open-Model-License(the
-    N1.x base checkpoints and GR00T-H-N1.7)+NVIDIA-OneWay-Noncommercial(GR00T-H, the N1.6 release, and the Assemble_Trocar
-    fine-tune)
-  last_verified: '2026-09-26'
+  note: Every checkpoint in the current N1.7 release, the humanoid GR00T-H-N1.7 included, can be used commercially
+    under NVIDIA's Open Model License, and the training code is Apache-2.0. The pretraining mixture is not
+    released. The older N1.6 GR00T-H and an N1.5 surgical fine-tune are still on the Hub under a non-commercial
+    license; they belong to earlier releases and do not set the score.
+  raw: 'weights:open(every N1.7 checkpoint is ungated safetensors on the Hub; the Cosmos-Reason2-2B backbone
+    they load sits behind an automatic click-through gate);data:partial(the N1.7 task fine-tunes train on
+    public benchmark sets (Bridge, Fractal, DROID, LIBERO); the 13-dataset pretraining mixture is not released);code:open(Apache-2.0
+    training and fine-tuning code in the repository);license:NVIDIA-Open-Model-License(every N1.7 checkpoint:
+    the base, GR00T-H-N1.7 and the task fine-tunes);superseded:noncommercial(GR00T-H (the N1.6 surgical
+    release) and the N1.5 Assemble_Trocar fine-tune are under the NVIDIA OneWay Noncommercial License; earlier
+    releases, not scored)'
+  last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/nvidia/GR00T-N1.7-3B/raw/main/README.md
-    shows: 'GR00T-N1.7-3B card: "This model is released under the NVIDIA Open Model License Agreement" and "is ready
-      for commercial/non-commercial use".'
-    accessed: '2026-09-26'
+    shows: 'GR00T-N1.7-3B card: "This model is released under the NVIDIA Open Model License Agreement" and
+      "is ready for commercial/non-commercial use"; the family lists SimplerEnv Bridge, SimplerEnv Fractal,
+      DROID and LIBERO post-trained models on public datasets; "Total number of datasets: 13" in the training
+      mixture.'
+    accessed: '2026-09-27'
     http_status: 200
     content_sha256: 7d0a4423a5a5bc7ac35f9ab4c1f64eb3f74f7592418a8dc5c80702b48455c788
     establishes:
     - license
+    - data
   - url: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/
     shows: 'NVIDIA Open Model License: "Models are commercially usable. You are free to create and distribute Derivative
       Models."'
@@ -44,9 +57,9 @@ openness:
     establishes:
     - license
   - url: https://huggingface.co/nvidia/GR00T-H/raw/main/README.md
-    shows: 'GR00T-H card: "This is the N1.6 non-commercially usable version of GR00T-H. Please see GR00T-H-N1.7
-      for the newer and commercially usable version"; license_link NVIDIA-OneWay-Noncommercial-License-22Mar2022.pdf.'
-    accessed: '2026-09-26'
+    shows: 'GR00T-H card, history: "This is the N1.6 non-commercially usable version of GR00T-H. Please
+      see GR00T-H-N1.7 for the newer and commercially usable version"; license_link NVIDIA-OneWay-Noncommercial-License-22Mar2022.pdf.'
+    accessed: '2026-09-27'
     http_status: 200
     content_sha256: 55602778248865bf2715c82a8423daa911c10ad9d5692c4ff3830a14c732b790
     establishes:
@@ -61,9 +74,9 @@ openness:
     - license
   - url: https://huggingface.co/api/models/nvidia/GR00T-N1.7-3B
     shows: 'Hub API for nvidia/GR00T-N1.7-3B: gated false; safetensors weight files in siblings.'
-    accessed: '2026-09-26'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: ea61f737e719fe54cfa1c25e2b333c598ed2306f59d0edc9c08a5dfbd18a8005
+    content_sha256: fabbbc2e50f312339f2235735d05afc4b2dc9d7a53444a004298c380f941f072
     establishes:
     - weights
   - url: https://ungh.cc/repos/NVIDIA/Isaac-GR00T/files/main
@@ -81,6 +94,48 @@ openness:
     content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862
     establishes:
     - data
+  - url: https://raw.githubusercontent.com/NVIDIA/Isaac-GR00T/main/README.md
+    shows: 'Isaac-GR00T README: "We just released GR00T N1.7 General Availability, the latest version of
+      GR00T N1"; N1.6 and N1.5 listed as "Previous releases"; the checkpoint table lists GR00T-N1.7-3B and
+      the LIBERO, DROID, SimplerEnv-Bridge and SimplerEnv-Fractal fine-tunes; the License section gives
+      the code as Apache 2.0 and the model weights as the NVIDIA Open Model License; it says every GR00T
+      checkpoint loads the gated Cosmos-Reason2-2B backbone on first use; launch_finetune.py for fine-tuning
+      on a new embodiment.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 62f6c55a356be039287416f97e03a3b5541052d038a3daec208ea9ff8045a067
+    establishes:
+    - license
+    - code
+    - weights
+  - url: https://huggingface.co/nvidia/GR00T-H-N1.7/raw/main/README.md
+    shows: 'GR00T-H-N1.7 card: license_name nvidia-open-model-license, base_model nvidia/GR00T-N1.7-3B;
+      "It builds on the GR00T N1.7 VLA foundation"; "This model is ready for commercial use."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 63f6ddc25a6012dd74038af98fbe9dcb4db88221ca9c8468dfe32d1c954b9d90
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/nvidia/Cosmos-Reason2-2B
+    shows: 'Hub API for nvidia/Cosmos-Reason2-2B, the GR00T N1.7 backbone: gated "auto"; license_name nvidia-open-model-license.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eb4db1b1c3d30b9bbd517f638aa55637e75928801ff5860cdbff9f59f859dc77
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models?author=nvidia&search=GR00T-N1&sort=createdAt&direction=-1&limit=50
+    shows: 'Hub listing newest first: GR00T-N1.7-3B created 2026-02-25, the N1.7 LIBERO, DROID and SimplerEnv
+      fine-tunes 2026-03-17, GR00T-N1.7-ApplePnP-V1 2026-05-20, GR00T-H-N1.7 2026-05-30; GR00T-N1.5-3B_Assemble_Trocar
+      2026-05-27 carries an N1.5 name; nothing newer than N1.7.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: df95c4c0f50b41eb461a803d97aa64dfd4ea9c0169c161c047b91780cdb53dd6
+  - url: https://huggingface.co/nvidia/GR00T-N1.5-3B_Assemble_Trocar/raw/main/README.md
+    shows: 'GR00T-N1.5-3B_Assemble_Trocar card, history: developed based on GR00T N1.5; "This model is ready
+      for non-commercial use"; governed by the NVIDIA-OneWay-Noncommercial-License-22Mar2022.pdf.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4eab8a6c974e3c0e566b14dc8038627f448e5bac0499938fb0d1ffbcdd7d1f5d
 adoption:
   level: 3
   reach: 100K-1M
