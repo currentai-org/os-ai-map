@@ -376,7 +376,13 @@ def test_local_scores_matches_check_rubrics_split():
     # Apache-2.0 speech-to-text checkpoints, which also waits on the same TTS-versus-ASR-member
     # ruling as voxtral). Each is hand-placed at 2/restricted and closes on a maintainer's ruling,
     # not on more work.
-    assert len(deferred) == 46
+    #
+    # 46 -> 47 the same day, when review of the round-2 integration (#749) asked for `voxtral` to be
+    # promoted as a deferred head product like higgs-audio rather than held in the registry. Its
+    # licenses are all named (Apache-2.0 on the ASR line, CC-BY-NC-4.0 on the Voxtral TTS member), so
+    # this is not a tier gap: it is hand-placed at 2/restricted and closes on the maintainer's ruling
+    # on whether a TTS member belongs to the governing release, not on more work.
+    assert len(deferred) == 47
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
