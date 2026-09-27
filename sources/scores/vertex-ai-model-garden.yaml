@@ -1,0 +1,81 @@
+product: vertex-ai-model-garden
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: managed Google Cloud service
+  confidence: high
+  note: Model Garden is part of Google Cloud's managed AI platform and has no self-hostable form. Many of the
+    models it lists are open, but the catalog and the deployment service around them are Google's.
+  raw: license:proprietary(hosted service; server source not published);source:closed(managed Google Cloud
+    service)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/model-garden/explore-models
+    shows: '"Serving generative AI models can be difficult—Gemini Enterprise Agent Platform handles model deployment
+      and serving for you"; open models are billed for "the compute resources used to deploy the model to an
+      endpoint."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f647978e7a2c36e66a153d4cc4729cb6adee7c1ce96d0812b611d493f4d34a0c
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Google publishes the size of the catalog, not how many customers use it or how often its models are
+    deployed. A catalog count measures what is offered, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://cloud.google.com/model-garden
+    shows: '"Our curated set of 200+ available models are best in class for their category"; no usage figure
+      on the page.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6d77fe042fe6c9e3a7c8112ca5ebc11696fb649d12b8551416e4cb9050d1fa08
+capability:
+  score: 3
+  basis: feature_matrix
+  value: curated catalog of Google, partner and open models (including auto-added popular Hugging Face models);
+    filter by provider and collection; one-click deploy to managed endpoints; SDK, CLI and REST access; customers
+    deploy their own weights into their own project but do not publish to the shared catalog
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: two_below
+  note: Model Garden gathers models from Google, partners and the open ecosystem into one catalog and deploys
+    any of them to a managed endpoint. Google decides what is listed, and a customer's own weights stay in
+    that customer's project rather than being published for others, so it is a curated catalog rather than
+    an open registry like Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/model-garden/explore-models
+    shows: '"Model Garden is an AI/ML model library that helps you discover, test, customize, and deploy models
+      and assets from Google and Google partners." "Deploy and serve open source model using Python SDK, CLI,
+      REST API, or console"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f647978e7a2c36e66a153d4cc4729cb6adee7c1ce96d0812b611d493f4d34a0c
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/open-models/use-hugging-face-models
+    shows: '"We automatically add the latest, most popular Hugging Face models to Model Garden."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f0b0b9360bc4da0671ce6bdc01fbe7a99ca9954baf454cc09b0888b97585209b
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/open-models/deploy-model-garden
+    shows: '"you can deploy the model to a Gemini Enterprise Agent Platform Endpoint by using one-click deployment."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ad79334cbb0edf89667ea47a41dea3bfff5c845655ee2ebb7428e60bc93a2860
+  - url: https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/model-garden/deploy-models-with-custom-weights
+    shows: '"You can deploy your custom models using the custom weights import by uploading your model artifacts
+      to a Cloud Storage bucket in your project"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 719224441b79c26ff94bdc8d3a20ba93e7cf1f4d6f400479d91aa42e0851f5a3

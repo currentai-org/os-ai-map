@@ -1,0 +1,80 @@
+product: agibot-world
+openness:
+  score: 2
+  class: restricted
+  components:
+    license:
+    - name: cc-by-nc-sa-4.0
+      detail: all releases
+    access:
+      value: auto
+      detail: Alpha and Beta behind an automatic Hub gate; 2026 ungated
+    dataset_card:
+      value: present
+  confidence: high
+  note: 'Anyone can download it, but only for non-commercial use: every release is CC BY-NC-SA 4.0, and the two
+    main releases also ask for contact details first.'
+  raw: license:cc-by-nc-sa-4.0(all releases);access:auto(Alpha and Beta behind an automatic Hub gate; 2026 ungated);dataset_card:present
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenDriveLab/AgiBot-World/HEAD/README.md
+    shows: 'README License and Citation: "All the data and code within this repo are under CC BY-NC-SA 4.0."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ee72fc2161e3c66d93638f99ece0479c90bda996abe54f7070e4e08208b1acc
+    establishes:
+    - license
+    - documentation
+  - url: https://huggingface.co/api/datasets/agibot-world/AgiBotWorld-Beta?expand[]=downloads&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub API for AgiBotWorld-Beta: gated auto; the gate prompt restates the CC BY-NC-SA 4.0 terms and asks
+      for contact details.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 707d5eff62ffc83184ac3650543a4697021a75bb3b7ffdd79a92871c7feb21d2
+    establishes:
+    - license
+    - availability
+  - url: https://huggingface.co/api/datasets/agibot-world/AgiBotWorld2026?expand[]=downloads&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub API for AgiBotWorld2026: gated false; license cc-by-nc-sa-4.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bc5c2ba3bfedfec9e1d4945b8689fc7920998ef3531a676dfb042a383ad20284
+    establishes:
+    - license
+    - availability
+adoption:
+  level: 4
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the Beta, Alpha and 2026 releases. Most of the volume is the ungated
+    2026 release; downloads of a dataset this size count file fetches, not training runs.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/datasets?author=agibot-world&sort=downloads&limit=50&expand[]=downloads&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub listing for agibot-world: AgiBotWorld2026 266,412, AgiBotWorld-Beta 92,675, AgiBotWorld-Alpha 35,703
+      downloads in 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 249337ae3edd7d4b98ffa8b50f2fcfdbb8de6a2eb2c17c60d2518c99668bf1c8
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: episodes and embodiments
+  value: 'AgiBot World Beta: 1,003,672 trajectories (about 43.8 TB) from 100 robots across 100+ replicated scenarios
+    in 5 domains, with visual-tactile sensing, 6-DoF dexterous hands and mobile dual-arm robots; one manufacturer''s
+    robot family.'
+  confidence: medium
+  note: AgiBot World matches Open X-Embodiment's million-trajectory scale, with richer sensing, but all of it comes
+    from AgiBot's own dual-arm robots rather than a pool of many robot bodies.
+  relative_to: open-x-embodiment
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/OpenDriveLab/AgiBot-World/HEAD/README.md
+    shows: 'README: "AgiBot World Beta: Our complete dataset featuring 1,003,672 trajectories (~43.8T)"; "1 million+
+      trajectories from 100 robots"; "100+ 1:1 replicated real-life scenarios across 5 target domains"; "visual
+      tactile sensors / 6-DoF Dexterous hand / mobile dual-arm robots".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ee72fc2161e3c66d93638f99ece0479c90bda996abe54f7070e4e08208b1acc

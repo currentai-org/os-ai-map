@@ -1,0 +1,101 @@
+product: huggingface-hub-platform
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: hosted service; hub-docs publishes documentation only
+  confidence: high
+  note: The Hub is a service Hugging Face operates, and its server code is not published; the repository named
+    after it holds documentation. The open libraries that talk to it are separate products and do not make
+    the platform itself self-hostable.
+  raw: license:proprietary(hosted service; server source not published);source:closed(hosted service; hub-docs
+    publishes documentation only)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/terms-of-service
+    shows: The terms list the "Open-Source Libraries" (Transformers, Datasets, Tokenizers) separately from
+      the "Hugging Face public Hub" and "Hugging Face private Hub", both services operated by Hugging Face,
+      Inc.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b7d0516a2afd1afaec00ffb7e8c1bc774f24a881dba6510e00f59032467bfe70
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/hub-docs/HEAD/README.md
+    shows: '"This repository regroups documentation and information that is hosted on the Hugging Face website."
+      The public repository is the Hub''s documentation, not its server.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9df305c16d03bd1eb2a87591ebe66d42f913835dbfae72245c320e08c4726bb8
+    establishes:
+    - source
+adoption:
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  confidence: medium
+  banded_quantity: Hub-served downloads of individual model repositories over 30 days and the number of public
+    model repositories, not a count of users
+  note: Hugging Face counts every file download the Hub serves, and the busiest single model repositories draw
+    well over ten million downloads a month on their own. That is platform traffic rather than a count of people,
+    and no total across all repositories is published.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?sort=downloads&limit=5
+    shows: Top five models by downloads; sentence-transformers/all-MiniLM-L6-v2 shows downloads 245656284 and
+      cross-encoder/ms-marco-MiniLM-L6-v2 87160224, fetched 2026-09-27.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 434a985fec7faf26516581bb82193af63898ca63e7b0a5b31af3221ddbd072ff
+  - url: https://huggingface.co/docs/huggingface_hub/package_reference/hf_api
+    shows: '"downloads (int) — Number of downloads of the model over the last 30 days."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1d85547a398c46f3572f9c534119133624c1892421577f9bd6efdbe8e934c99f
+  - url: https://huggingface.co/models
+    shows: '"Models 3,098,427" on the public model listing, 2026-09-27.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ff2a15ee8cf0ca320f1fb0b29762337844725f315f523a77022aa986b9da36f8
+capability:
+  score: 5
+  basis: feature_matrix
+  value: open upload by any account to user or organization namespaces; models, datasets and Spaces all stored
+    as Git repositories with commits, branches and tags; full-text search over cards; HTTP API with an OpenAPI
+    spec for listing, creating and downloading repos, plus git clone
+  confidence: high
+  note: Anyone with an account can publish, every model, dataset and app is a Git repository with its own history,
+    branches and tags, and the same repositories are reachable by git and by a documented HTTP API. That covers
+    publishing, versioning, discovery and retrieval for three kinds of artifact, which is the most complete
+    registry in the category.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/docs/hub/repositories
+    shows: '"Models, Spaces, and Datasets are hosted on the Hugging Face Hub as Git repositories, which means
+      that version control and collaboration are core elements of the Hub."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4ea2619341ec9c25361e99ccaf5a41430d9d9ef6a9d4e3a8fb76ee087c370f13
+  - url: https://huggingface.co/docs/hub/models-uploading
+    shows: '"To upload models to the Hub, you''ll need to create an account at Hugging Face." Models are "Git-based
+      repositories, which give you versioning, branches, discoverability and sharing features".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 799d1ce33b99203303af66de34d1084f72afc3e8dbf1548f22637ba9f3e90050
+  - url: https://huggingface.co/docs/hub/api
+    shows: '"We have open endpoints that you can use to retrieve information from the Hub as well as perform
+      certain actions such as creating model, dataset or Space repos." The OpenAPI spec is at /.well-known/openapi.json.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 56ff72d07401c61639beafda6ea3ab5eb9822a347b1e2f0049103102a6b7c8ed
+  - url: https://huggingface.co/docs/hub/search
+    shows: '"We index model cards, dataset cards, and Spaces app.py files." for full-text search.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 29327b4314a4ade71eb2eb2f84217005c566c3f8532b86497030e76fee416c4a

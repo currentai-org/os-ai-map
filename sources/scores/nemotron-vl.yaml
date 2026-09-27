@@ -1,0 +1,102 @@
+product: nemotron-vl
+openness:
+  score: 3
+  class: open_weights
+  governing_release: nemotron-nano-12b-v2-vl
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: Nemotron-VLM-Dataset-v2 is released under CC-BY-4.0; the card says post-training mixed internal and
+        public datasets
+    code:
+      value: partial
+      detail: inference snippets only; no training code
+    license:
+    - name: NVIDIA-Open-Model-License
+      detail: '"Models are commercially usable"'
+  confidence: high
+  note: The weights are released under the NVIDIA Open Model License, which permits commercial use. NVIDIA publishes
+    a large vision-language training set alongside the model, but the card says the mix also used internal data,
+    and no training code is released.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(Nemotron-VLM-Dataset-v2 is released under CC-BY-4.0;
+    the card says post-training mixed internal and public datasets);code:partial(inference snippets only; no training
+    code);license:NVIDIA-Open-Model-License("Models are commercially usable")
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata: gated false, seven safetensors shards, license_name nvidia-open-model-license'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7cacbe8f18bea39d2fd0e54060bd51655a5b85bd5cdd9d38374daee21854ebfb
+    establishes:
+    - weights
+    - license
+  - url: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/
+    shows: '"NVIDIA Open Model License Agreement": "Models are commercially usable. You are free to create and distribute
+      Derivative Models."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 66aaef0385d8198925d3e1f1fb5169ca0c9360308b14245a8235ad0245f40fbe
+    establishes:
+    - license
+  - url: https://huggingface.co/api/datasets/nvidia/Nemotron-VLM-Dataset-v2
+    shows: 'Nemotron-VLM-Dataset-v2: public, ungated, cc-by-4.0, visual question answering, image-text and video-text
+      tasks'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1d3867fce32494a44ee7e02fe1fb9701241aad3dcc546fbd7905ef0c2ddf24f0
+    establishes:
+    - data
+  - url: https://huggingface.co/nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16/raw/main/README.md
+    shows: '"The post-training datasets consist of a mix of internal and public datasets"; quick-start inference
+      code only'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bd9351581e5568158a29eb8e158115a8b139a263927f9aeb3e6ed889b286bd74
+    establishes:
+    - data
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across NVIDIA's own checkpoints of the 8B and 12B
+    v2 models, including its FP8 and NVFP4 builds.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=Nano-VL&limit=100
+    shows: Llama-3.1-Nemotron-Nano-VL-8B-V1 76,940, its FP4-QAD build 455 and mcore build 0 downloads in the trailing
+      30 days
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 44396d8f2f9e31aacb7095fd31e3cf330d8d4cb4ee4b1fb1fff7a375b36c9ff1
+  - url: https://huggingface.co/api/models?author=nvidia&search=v2-VL&limit=100
+    shows: NVIDIA-Nemotron-Nano-12B-v2-VL BF16 20,600, FP8 62,179 and NVFP4-QAD 11,691 downloads in the trailing
+      30 days
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5f57966d5338df72ef487013229770514d16530430dbabf3ada34cc9b7423b8d
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: image, multi-image, document and video inputs from the model card; card benchmark list as tie-break
+  value: 'Image, video and text in, text out; up to four images, video at 2 FPS between 8 and 128 frames, 128K tokens.
+    Card: MMMU 68, OCRBench 85.6, DocVQA 94.39, Video-MME w/o sub 65.9.'
+  confidence: high
+  relative_to: minicpm-v
+  relation: at
+  note: Nemotron Nano VL handles several document images at once and understands video, with strong document and
+    chart scores. It documents no GUI operation or audio input, which places it level with MiniCPM-V rather than
+    with the computer-use models.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16/raw/main/README.md
+    shows: '"enables multi-image reasoning and video understanding"; "Input Images Supported: 4"; "Frames: 2 FPS
+      with min of 8 frame and max of 128 frames"; MMMU 68, DocVQA 94.39, Video-MME w/o sub 65.9'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bd9351581e5568158a29eb8e158115a8b139a263927f9aeb3e6ed889b286bd74

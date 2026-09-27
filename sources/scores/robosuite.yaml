@@ -1,0 +1,90 @@
+product: robosuite
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: LICENSE body; GitHub label reads other
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT throughout, and nothing is held back for a paid edition. GitHub reports the license as 'other' because
+    the file adds an attribution note for the MuJoCo code it uses.
+  raw: license:MIT(LICENSE body; GitHub label reads other);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/ARISE-Initiative/robosuite/HEAD/LICENSE
+    shows: 'LICENSE: the MIT license text, with an attribution note for the Apache-2.0 MuJoCo code it uses; GitHub
+      labels the file ''other'' only because of that note.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 177978cbece0a4c454c2aaec5b3f145b39270814874c43109da9e829c39d9cba
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/ARISE-Initiative%2Frobosuite
+    shows: 'Repository record for ARISE-Initiative/robosuite: archived false, fork false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: affa4245cfccc70b1a326b974481cbaa153d1092804f31a614585d0ad88c74fb
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/ARISE-Initiative/robosuite/files/master
+    shows: Full listing of the master branch; no enterprise, ee or commercial path.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8a01ce27758ab61d6139d4bc0ba51fbddd2305d290ec76937ca49773a71ba5d0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/ARISE-Initiative/robosuite/HEAD/README.md
+    shows: 'README: no hosted service or paid tier is mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 598d8346889d54454a89c164bdb2551aef416f806af3327e0e81e1168d00b767
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI installs of the robosuite package, whose metadata links to this repository. Some of the volume arrives
+    as a dependency of benchmarks built on robosuite.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/robosuite/recent
+    shows: 'pypistats: last_month 320,845 downloads for robosuite.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3a09acebfdb9df78cf5b408e84f2237e53f991bd7e9dee8f65f8659974547db7
+  - url: https://pypi.org/pypi/robosuite/json
+    shows: 'PyPI metadata for robosuite: Homepage https://github.com/ARISE-Initiative/robosuite.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 185fea216c76ec0c8835b8b3154b6a0ad1d25bc65a9c440bafb1ceea6fe7c119
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: simulation throughput and fidelity
+  value: 'MuJoCo CPU physics with a robot-learning surface: manipulation tasks, diverse embodiments including humanoids,
+    OSC/IK/whole-body controllers, teleoperation devices for demonstrations, and photorealistic rendering; one environment
+    per process, no GPU-parallel simulation.'
+  confidence: medium
+  note: robosuite turns MuJoCo into a place to learn manipulation, adding tasks, controllers, teleoperation for
+    recording demonstrations and photorealistic camera rendering. It simulates one environment at a time on the
+    CPU, so it cannot generate data at the scale the GPU simulators here reach.
+  relative_to: mujoco
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/ARISE-Initiative/robosuite/HEAD/README.md
+    shows: 'README: "a simulation framework powered by the MuJoCo physics engine for robot learning"; v1.5 "features
+      support for diverse robot embodiments (including humanoids), custom robot composition, composite controllers
+      (including whole body controllers), more teleoperation devices, photo-realistic rendering"; no GPU-parallel
+      claim.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 598d8346889d54454a89c164bdb2551aef416f806af3327e0e81e1168d00b767

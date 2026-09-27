@@ -1,0 +1,98 @@
+product: bagel
+openness:
+  score: 3
+  class: open_weights
+  governing_release: bagel-7b-mot
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the trillions of pretraining tokens are described; TRAIN.md ships only small example sets drawn from
+        third-party data
+    code:
+      value: open
+      detail: the unified pretraining and fine-tuning pipeline (train/pretrain_unified_navit.py, scripts/train.sh)
+    license:
+    - name: Apache-2.0
+      detail: OSI; the checkpoint and the repository
+  confidence: high
+  note: BAGEL's weights and training code are Apache 2.0, so the pipeline can be rerun on new data. The pretraining
+    corpus is described but not released, so the model itself cannot be rebuilt.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the trillions of pretraining tokens are described;
+    TRAIN.md ships only small example sets drawn from third-party data);code:open(the unified pretraining and fine-tuning
+    pipeline (train/pretrain_unified_navit.py, scripts/train.sh));license:Apache-2.0(OSI; the checkpoint and the
+    repository)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/ByteDance-Seed/BAGEL-7B-MoT?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for BAGEL-7B-MoT: gated false, ema.safetensors and ae.safetensors, card license apache-2.0'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 75606daae8aca8496b01753eaf8c0d32549ec85e88ea9a1e57621f72d5472f3f
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/ByteDance-Seed/Bagel@main/TRAIN.md
+    shows: '"We provide data examples for T2I, Editing, and VLM tasks" built from FLUX.1-dev outputs, SEED-Data-Edit
+      and LLaVA-OneVision-Data'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6ed31fccf87d7d21aada227460407cdf6b84e72784e1ffa43d248295c3e21aa1
+    establishes:
+    - data
+  - url: https://cdn.jsdelivr.net/gh/ByteDance-Seed/Bagel@main/scripts/train.sh
+    shows: The launch script for train/pretrain_unified_navit.py
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8da4a28455e41adf42e706bea637401d4c6ae27c8d8cc91b782800a7c6f993fd
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/ByteDance-Seed/Bagel@main/LICENSE
+    shows: The repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for ByteDance's single BAGEL checkpoint. Copies fetched
+    through the repository's own download instructions are counted only if they come from the Hub.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=ByteDance-Seed&search=BAGEL&limit=100
+    shows: One checkpoint, BAGEL-7B-MoT, with 872 downloads in the trailing 30 days
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fbcb6e80dc20f0ba72192c023d1f1446d2e6f6327be9cf4e469ce91a85861959
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: single-image understanding plus generation and editing, from the repository's benchmark tables
+  value: 'Images and text in; text, generated images and edited images out. Understanding: MME 2388, MMBench 85.0,
+    MMMU 55.3, MathVista 73.1, against Qwen2.5-VL-7B at 2347, 83.5, 58.6 and 68.2; GenEval 0.82.'
+  confidence: medium
+  relative_to: florence-2
+  relation: at
+  note: BAGEL understands single images about as well as Qwen2.5-VL-7B and also generates and edits them. Its understanding
+    is reported on single-image benchmarks with no document or video evaluation, so it sits level with Florence-2;
+    the generation is recorded but does not raise it.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/ByteDance-Seed/Bagel@main/README.md
+    shows: 'Visual Understanding table: BAGEL MME 2388, MMBench 85.0, MMMU 55.3, MathVista 73.1; Qwen2.5-VL-7B 2347,
+      83.5, 58.6, 68.2; GenEval 0.82'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fd26fc83c2cc92243a441a8ccdd5418e63faea33950e35715a66b891746ab5fe
+  - url: https://arxiv.org/abs/2505.14683
+    shows: '"a unified, decoder-only model pretrained on trillions of tokens curated from large-scale interleaved
+      text, image, video, and web data"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5a588fbca47d6f3d8b1eef7a89b10914590ea68585f8fbb93bdaf057b8ca211f

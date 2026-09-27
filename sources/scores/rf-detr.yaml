@@ -1,0 +1,140 @@
+product: rf-detr
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: Nano to Large and all segmentation sizes on the Hub
+    data:
+      value: documented-not-released
+      detail: Objects365 pseudo-labeled with SAM2, then COCO; labels not released
+    code:
+      value: partial
+      detail: fine-tuning code; the architecture search runs on the Roboflow platform
+    license:
+    - name: Apache-2.0
+      detail: code and Nano-Large weights
+    - name: PML-1.0
+      detail: Roboflow Platform Model License on the XL and 2XL detection weights
+  confidence: medium
+  note: 'Most of the line is Apache-2.0, code and weights alike. The two largest detection models are the exception:
+    they ship in a separate rfdetr_plus package under Roboflow''s Platform Model License, which allows use only
+    under a Roboflow platform plan or other agreement and an account in good standing. The map treats the most restrictive
+    license on any distributed checkpoint as the line''s, so that platform license governs here.'
+  raw: weights:open(Nano to Large and all segmentation sizes on the Hub);data:documented-not-released(Objects365
+    pseudo-labeled with SAM2, then COCO; labels not released);code:partial(fine-tuning code; the architecture search
+    runs on the Roboflow platform);license:Apache-2.0(code and Nano-Large weights)+PML-1.0(Roboflow Platform Model
+    License on the XL and 2XL detection weights)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/roboflow/rf-detr/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright 2025 Roboflow, Inc."
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8cabf52c61130fc97a7e5da5e3685ccf44841c0c53d6f881189369b136603cca
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/roboflow/rf-detr/HEAD/README.md
+    shows: 'README License section: "The open-source rfdetr package and Apache-designated model weights are licensed
+      under Apache License 2.0." / "Plus components, including the rfdetr_plus extension and RF-DETR-XL / RF-DETR-2XL
+      detection models, are licensed under PML 1.0."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2626e785682875b615fbf95f36a29f74495cc543a18ae62c266312e3de50d0e8
+    establishes:
+    - license
+    - weights
+  - url: https://roboflow.com/platform-model-license-1-0
+    shows: 'Platform Model License 1.0: "You may only use, reproduce, modify, or distribute the Software if you
+      ... have accepted and are complying with the terms (including pricing, usage limits, and other usage metrics)
+      of a separate platform plan".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c27e0870f73808905dfc6f2e3839a7bb8e6249bf136d330545dd35a5e991afe3
+    establishes:
+    - license
+  - url: https://roboflow.com/licensing
+    shows: 'Roboflow licensing table: "RF-DETR (XL and 2XL) | Object Detection | PML 1.0"; "RF-DETR (Nano to Large)
+      | Object Detection | Apache-2.0".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 19ebad65bcbc6ca574b4237fb07b1fff0a2f2048a5126103cf7a977629c344c4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=Roboflow&sort=downloads&limit=50&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: 'Roboflow''s Hub listing: every RF-DETR checkpoint (base, nano, small, medium, large and the seg sizes)
+      tagged apache-2.0 and not gated.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f2dd817a08ab4f533b1e90a5ad95c4430e264632aa97ae05f89b2954bbff86ef
+    establishes:
+    - weights
+    - license
+  - url: https://arxiv.org/html/2511.09554v2
+    shows: 'Paper: "First, we pseudo-label Objects-365 ... with SAM2 ... to allow us to pre-train the segmentation
+      and detection heads on the same data." No release of the pseudo-labeled set is stated.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 711c36f71b15d725fff017ee9ad251814b6af3e9569d600d5530eabb048f39fa
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/roboflow/rf-detr/files/develop
+    shows: Repository tree at develop includes src/rfdetr/training/ (trainer.py, cli.py) and a train-coco2017 cookbook.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9c5eaa9bc53e69083caa949980d40e20591611b50a0a8d0f9a85b91af8ec7a35
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/roboflow/rf-detr/HEAD/docs/learn/train/index.md
+    shows: 'Training docs: "Fine-tune from COCO-pretrained checkpoints (Nano to 2XLarge) for fastest convergence".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d1cbf007d45f768cf4580ef39765627281f3346b9b647480246f6768adb6ea11
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of rfdetr, the documented way to install and run the models; Hugging
+    Face counts on the checkpoints are far lower because the package fetches weights itself.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/rfdetr/recent
+    shows: last_month 206,471 downloads of rfdetr
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9459117fe865964dd82e242d320839396270b91278c6e345bd407bb5a8cb0502
+capability:
+  score: 3
+  basis: feature_matrix
+  value: COCO-pretrained detection (AP50:95 48.4 Nano to 60.1 2XL), instance segmentation and keypoint checkpoints
+    with a fine-tuning pipeline for custom datasets
+  relative_to: ultralytics
+  relation: one_below
+  confidence: medium
+  note: RF-DETR's 2XL size is described by its authors as the first real-time detector above 60 AP on COCO, and
+    the line ships detection, segmentation and keypoint heads. Detecting anything beyond COCO's 80 classes still
+    takes a fine-tuning run. It has no open-vocabulary model of the kind Ultralytics bundles, so it sits with the
+    toolkits rather than with the models that work on a new task untrained.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://arxiv.org/abs/2511.09554
+    shows: 'Abstract: "RF-DETR (2x-large) is the first real-time detector to surpass 60 AP on COCO."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6e274cf87781e992d2e6ca38195eae56a45674b062aee6e7b5cd6510a6eb1a0a
+  - url: https://raw.githubusercontent.com/roboflow/rf-detr/HEAD/README.md
+    shows: 'README detection table (COCO AP50:95 / RF100VL AP50:95): N 48.4/57.7, S 53.0/60.2, M 54.7/61.2, L 56.5/62.2,
+      XL 58.6/62.9, 2XL 60.1/63.2; segmentation and keypoint (preview) tables alongside.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 2626e785682875b615fbf95f36a29f74495cc543a18ae62c266312e3de50d0e8
+  - url: https://huggingface.co/Roboflow/rf-detr-base/raw/main/README.md
+    shows: 'Card: "These checkpoints are trained on the standard COCO 2017 object detection dataset label space
+      (80 categories)".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 78f0f8112dce042802c57ee130623f9ad98f3b9eebc35225053f6cec4632eb8e

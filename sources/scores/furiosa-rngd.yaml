@@ -1,0 +1,77 @@
+product: furiosa-rngd
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: accelerator sold as a PCIe card and in eight-card servers; scored as the silicon
+    datasheets:
+      value: public
+      detail: RNGD datasheet, the published specification page and the ISCA 2024 architecture paper
+    retail:
+      value: open_market
+      detail: NXT RNGD servers orderable from FuriosaAI; single cards through its access program
+  confidence: high
+  note: FuriosaAI publishes a datasheet, a full specification page and a peer-reviewed paper on the chip's architecture,
+    and takes orders for its eight-card servers directly. The chip's design files are not published.
+  raw: form_factor:chipset(accelerator sold as a PCIe card and in eight-card servers; scored as the silicon);datasheets:public(RNGD
+    datasheet, the published specification page and the ISCA 2024 architecture paper);retail:open_market(NXT RNGD
+    servers orderable from FuriosaAI; single cards through its access program)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.prod.website-files.com/69289524195a1f9e06ade49b/6979171827e7b80294ca6913_4b1b72a5b8212206153cb0e1a2ea346b_fai-datasheetRNGD-19-v1.1-A4-CMYK.pdf
+    shows: 'RNGD datasheet: "180 W TDP", "48 GB HBM3 Capacity", "256 MB On-chip SRAM", "512 TFLOPS (FP8)"'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: 254ec797bd09cb8c6978ed11c86a44b00679f3799d481a77587966e117cd5fd4
+  - url: https://furiosa.ai/download/FuriosaAI-tensor-contraction-processor-isca24
+    shows: 'ISCA 2024 paper "TCP: A Tensor Contraction Processor for AI Workloads", FuriosaAI'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: a8c4ca98d8f5d192dd579438d26ff413a11769061992126391ad196e71dceef0
+  - url: https://cdn.prod.website-files.com/69289524195a1f9e06ade49b/6a20c7b1786d953b2ababff5_DatasheetsRNGD-Server-ENG-210x297mm-master-20260603-02.pdf
+    shows: 'NXT RNGD Server datasheet: "Available to order today."'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: bca97c36650428dd20a7fa4b80352756df9afbad497a04327fb94979e5ecc34d
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and FuriosaAI publishes no unit shipments or installed base for
+    this generation. Cloud listings and benchmark submissions cover only part of this category and do not measure
+    use, so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://furiosa.ai/rngd
+    shows: The RNGD product page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6cfa67d6b1e1c0bc09c8ef1c5d5d1229c52a126cc94941ea6fca7e5ac54dc753
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 512 TFLOPS FP8, 256 TFLOPS BF16, 512 TOPS INT8, 48 GB HBM3 at 1.5 TB/s, 180 W
+  confidence: high
+  relative_to: intel-gaudi-3
+  relation: one_below
+  note: RNGD delivers 512 TFLOPS of FP8 with 48 GB of HBM3 inside a 180 W card. That is under a third of Gaudi 3's
+    FP8 throughput and well under half its memory, at a fifth of its power.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://furiosa.ai/renegade-spec
+    shows: 'RNGD specification page: "BF16 256TFLOPS FP8 512TFLOPS INT8 512TOPS INT4 1024TOPS Memory Bandwidth HBM3
+      1.5TB/s", "HBM3 48GB", "Thermal Design Power (TDP) 180W"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cc65b382385729a31d4191c5d54b42dd56e813ce3b3cd4339dab212e9f9aedec

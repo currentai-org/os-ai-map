@@ -1,0 +1,60 @@
+product: google-cloud-vision
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    source:
+      value: closed
+      detail: hosted API only; no implementation or weights published
+  confidence: high
+  note: 'A hosted Google Cloud service: the product page offers the API and nothing to download or run yourself.'
+  raw: license:Proprietary;source:closed(hosted API only; no implementation or weights published)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/vision
+    shows: 'Product page: "Powered by Google''s pretrained computer vision ML models, Cloud Vision API is a readily
+      available API (REST and RPC)"; the page describes only the hosted API.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b982cc9110822465eabebc0bef8c969c45afa5ce83be8dc259fcb7a08b8cd62a
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Google publishes no usage figure for the Vision API, and it has no package or download count of its own,
+    so no level is assigned.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/vision
+    shows: The product page, read for a usage disclosure; it gives pricing and a free tier but no customer or request
+      count.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b982cc9110822465eabebc0bef8c969c45afa5ce83be8dc259fcb7a08b8cd62a
+capability:
+  score: 4
+  basis: feature_matrix
+  value: pretrained labels, object localization, text and document text detection, face and landmark detection,
+    logos, image properties, crop hints, web entities and SafeSearch, usable on any image with no training
+  relative_to: amazon-rekognition
+  relation: one_below
+  confidence: medium
+  note: The Vision API returns labels, objects, text, faces and moderation ratings for any image with no training
+    step, which is the out-of-the-box end of computer vision. Training a detector for your own objects means moving
+    to AutoML Vision, a separate product, whereas Amazon Rekognition builds custom-label models inside the same
+    service.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cloud.google.com/vision/docs/features-list
+    shows: 'Features list: text detection, document text detection, landmark, logo and label detection, image properties,
+      object localization, crop hint detection, web entities and pages, face detection and SafeSearch; object localization
+      points to AutoML Vision Object Detection for customized detection.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9cc74c4c7c6c6ac568a9417a54911d47db14b45c563f619f1b6723d2dfe3ddf7

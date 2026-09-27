@@ -1,0 +1,92 @@
+product: trustmark
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI; the root LICENSE prefixes the MIT text with an Adobe copyright notice
+    source:
+      value: public
+      detail: Python encoder, decoder and remover; a JavaScript decoder; a Rust implementation
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Every implementation is MIT-licensed; the root LICENSE opens with an Adobe notice that points back
+    to that same license. The repository is Adobe's official open-source implementation of the published method.
+  raw: license:MIT(OSI; the root LICENSE prefixes the MIT text with an Adobe copyright notice);source:public(Python
+    encoder, decoder and remover; a JavaScript decoder; a Rust implementation);core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/adobe/trustmark/main/LICENSE
+    shows: '"Copyright 2023 Adobe All Rights Reserved. NOTICE: Adobe permits you to use, modify, and distribute
+      this file in accordance with the terms of the license agreement accompanying it. MIT License"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 58d47a5cdfaaceda98925d845e8207d90336c62347a2383f95962b667b1cdaf5
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/adobe/trustmark/main/rust/LICENSE
+    shows: '"MIT License Copyright (c) 2024 Adobe"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5101fce3a8f8faf8f30f10729c3d086e051a06ea23b41b49e0c58e79e0525b49
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/adobe/trustmark/files/main
+    shows: Full file listing, 91 paths; no ee/, enterprise/, commercial/ or proprietary/ directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ee3311faa77b43542fb55d3228aa965941012390670b7ac07cb01c2e77e6e031
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/adobe/trustmark/main/README.md
+    shows: '"the official, open source implementation of TrustMark watermarking for the Content Authenticity
+      Initiative"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: fb80c4d69c800289c234a65a754c416f3c448134e5e4620f7b107f5828c47b6f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of trustmark, the Python implementation, measure its use. The JavaScript and Rust implementations
+    are not counted.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/trustmark/recent
+    shows: last_month downloads = 26,880 for trustmark
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b2a59adcfafae7752b96ec341af40a60f466f026ea3474a47c813808e641e499
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Encodes, decodes and removes image watermarks at arbitrary resolution; robust to 18 noise sources
+    and JPEG compression per the paper; on the C2PA approved-watermark list.
+  relative_to: nvtrust
+  relation: two_below
+  confidence: medium
+  note: Anyone can read a TrustMark watermark with the open decoder, and it follows a method the C2PA standard
+    approves, so checking for it needs nothing from the embedder. The mark carries an identifier rather than
+    a signed claim, two steps below NVIDIA's hardware attestation.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/adobe/trustmark/main/FAQ.md
+    shows: '"The software enables writing (encoding), reading (decoding), and removing of TrustMark watermarks";
+      "TrustMark appears within the approved list of C2PA watermarking algorithms"; robust "to 18 different
+      noise sources"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9dbeeba26187a53f1784dde01f5196f48ce7a0b54af230906c74ebb43c8093c0
+  - url: https://arxiv.org/abs/2311.18297
+    shows: 'TrustMark: Universal Watermarking for Arbitrary Resolution Images (arXiv 2311.18297)'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1a1937c73ce054f3403a2623496a82b8858d71f5c0e615f6e2c84dc9966a23bf

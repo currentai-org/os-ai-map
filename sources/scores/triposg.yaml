@@ -1,0 +1,105 @@
+product: triposg
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: TripoSG and TripoSG-scribble download from Hugging Face without a gate
+    data:
+      value: described
+      detail: the paper and README describe two million curated image-SDF pairs; none are released
+    code:
+      value: partial
+      detail: inference scripts only; no training code
+    license:
+    - name: MIT
+      detail: the weights and the root of the repository; the triposg/ code directory also carries the Tencent Hunyuan
+        FlashVDM Community License for code derived from FlashVDM
+  confidence: high
+  note: The TripoSG weights are MIT-licensed and download freely, though part of the inference code is derived from
+    Tencent's FlashVDM and carries Tencent's regional license. Only inference code is published and the training
+    data is described but not released.
+  raw: weights:open(TripoSG and TripoSG-scribble download from Hugging Face without a gate);data:described(the paper
+    and README describe two million curated image-SDF pairs; none are released);code:partial(inference scripts only;
+    no training code);license:MIT(the weights and the root of the repository; the triposg/ code directory also carries
+    the Tencent Hunyuan FlashVDM Community License for code derived from FlashVDM)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSG/files/main/LICENSE
+    shows: 'Root LICENSE body: "MIT License / Copyright (c) 2025 VAST-AI-Research and contributors."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0fc2acd0176b345d3da59f466861ad09b78698de4200739aeaa2ffc9ae7a6842
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSG/files/main/triposg/LICENSE
+    shows: 'triposg/LICENSE body: "TENCENT HUNYUAN FLASHVDM COMMUNITY LICENSE AGREEMENT".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 45b0bfa2fc9a8a8182c953d67728b4bec2f348fb3629de7e75ceeebbfaa493f0
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/VAST-AI/TripoSG?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record: cardData license mit, gated false.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b78799d76669d41791761d06d1508cf27bf95e5ee0fd5afc983319ba7c462ff6
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSG/files/main
+    shows: 'Repository file list: inference_triposg.py, inference_triposg_scribble.py and inference_vae.py; no training
+      script.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b37ba1213cb3eef6341b00502c3c3412ee5ec6421b8f0324e3b744eb6d9b5359
+    establishes:
+    - code
+  - url: https://ungh.cc/repos/VAST-AI-Research/TripoSG/files/main/README.md
+    shows: 'README: "Trained on 2 million meticulously curated Image-SDF pairs"; no dataset release.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 87024a832f6dc1e81ba3078485b282095fb31941898f81b1c6bfe02d5454288d
+    establishes:
+    - data
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads of the TripoSG and TripoSG-scribble checkpoints.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/VAST-AI/TripoSG?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for VAST-AI/TripoSG: downloads 4986.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b78799d76669d41791761d06d1508cf27bf95e5ee0fd5afc983319ba7c462ff6
+  - url: https://huggingface.co/api/models/VAST-AI/TripoSG-scribble?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for VAST-AI/TripoSG-scribble: downloads 85.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4b8c241b9804fd4206504794b076d735b211f719ce76b398d3fb1323afa92c61
+capability:
+  score: 1
+  basis: benchmark
+  basis_detail: 3D Arena (Hugging Face), image-to-3D render board
+  value: '3D Arena, read 2026-09-26: TripoSG has no entry on the render board, the arena''s default ranking; it
+    places 9th of 21 (score 1224) on the separate topology board'
+  confidence: medium
+  relative_to: hunyuan-3d
+  relation: two_below
+  note: TripoSG is not ranked on the image-to-3D arena's main board for rendered quality, where Hunyuan3D sits in
+    the upper half. It appears only on the arena's mesh-topology board, mid-table.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=render
+    shows: The render board lists 24 models and no "TripoSG" entry.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 851c701579171a41e52e65f1ac76d3920a9de594250befcbad250b0e2151465c
+  - url: https://3d-arena-3d-arena.hf.space/api/leaderboard?vote_type=topology
+    shows: Topology-board entry "TripoSG" (score 1224, 807 votes).
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 740825f79e09b85c6805bb32f884aac9bd9cdc49dce994530c55abb8d3762ba5

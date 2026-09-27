@@ -1,0 +1,80 @@
+product: nvidia-ngc-catalog
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: hosted NVIDIA service
+  confidence: high
+  note: The NGC catalog and its private registry are services NVIDIA hosts, with no self-hostable version.
+    Entries carry their own licenses, and some are available only to NVIDIA AI Enterprise subscribers.
+  raw: license:proprietary(hosted service; server source not published);source:closed(hosted NVIDIA service)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.nvidia.com/ngc/gpu-cloud/ngc-catalog-user-guide/index.html
+    shows: '"The NGC Catalog is a curated set of GPU-optimized software for AI, HPC, and Visualization." "Enterprise-only
+      software ... only available for users with an NVIDIA AI Enterprise subscription."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b0b5e94b5d8174fe78c91a8810a393c19b27b30e11edd56fc1f1dccac0dbe72c
+    establishes:
+    - license
+    - source
+  - url: https://docs.nvidia.com/ngc/gpu-cloud/ngc-private-registry-user-guide/index.html
+    shows: '"The NGC Private Registry is available to DGX and NVIDIA AI Enterprise customers."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b37569812514a6262f87dd5204d1a4a21bf5a51e59b0093be4e2d38dab0ebe95
+    establishes:
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: NVIDIA shows how many entries of each kind the catalog holds but no download or user totals. A catalog
+    count measures what is offered, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://catalog.ngc.nvidia.com/models
+    shows: '"Container ( 1233 ) Collection ( 178 ) Model ( 903 ) Resource ( 597 ) Helm Chart ( 301 )" on the
+      search page; no usage figure.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 07121c08bf897c2f3db25d227249285aad38af4863e306fb9f8a5d58c5d1e6c9
+capability:
+  score: 2
+  basis: feature_matrix
+  value: publishing restricted to NVIDIA and admitted ISVs; hosts containers, models, Helm charts and resources
+    as numbered versions; guest download via web, NGC CLI (download-version, upload-version) and API; private
+    registry for DGX and AI Enterprise customers; no deployment from the catalog
+  confidence: medium
+  relative_to: sagemaker-jumpstart
+  relation: one_below
+  note: NGC hosts the files, versions them and serves them to anyone through the CLI or API, but only NVIDIA
+    and vendors it admits publish to the public catalog. Unlike SageMaker JumpStart, it does not deploy a listed
+    model onto managed serving; users pull the artifact and run it themselves.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.nvidia.com/ngc/gpu-cloud/ngc-catalog-user-guide/index.html
+    shows: '"The content provided by NVIDIA and third-party ISVs"; "The NGC Catalog consists of containers,
+      pre-trained models, Helm charts"; "pulling public software from the NGC Catalog does not require sign-in".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b0b5e94b5d8174fe78c91a8810a393c19b27b30e11edd56fc1f1dccac0dbe72c
+  - url: https://docs.ngc.nvidia.com/cli/cmd_registry.html
+    shows: '"Download a model version." "Upload a model version." "Publish a collection from the NGC private
+      registry to catalog."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: de06cd705add9107a7562024b86562aa98912dd397dd426cbee0067d57b6b38a
+  - url: https://catalog.ngc.nvidia.com/models
+    shows: 'Publisher facet over the models: "Nvidia 621", "Meta 23", "Google 10", "Mistral ai 9", "Microsoft
+      6".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 07121c08bf897c2f3db25d227249285aad38af4863e306fb9f8a5d58c5d1e6c9

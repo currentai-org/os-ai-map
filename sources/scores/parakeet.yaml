@@ -1,0 +1,93 @@
+product: parakeet
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: .nemo and safetensors checkpoints, ungated
+    data:
+      value: partial
+      detail: Granary is released; the NeMo ASR Set 3.0 portion is in-house
+    code:
+      value: open
+      detail: NeMo training script and TDT configuration linked from the card
+    license:
+    - name: CC-BY-4.0
+      detail: weights
+    - name: NVIDIA-Open-Model-License
+      detail: newer checkpoints
+  confidence: medium
+  note: Parakeet's weights are free to download under CC-BY-4.0, which asks only for attribution, and NVIDIA links
+    the exact NeMo training script and configuration. Its pseudo-labeled Granary data is public, but the human-transcribed
+    part of the mixture is NVIDIA's in-house NeMo ASR Set 3.0, so the model cannot be fully reproduced from what
+    is released.
+  raw: weights:open(.nemo and safetensors checkpoints, ungated);data:partial(Granary is released; the NeMo ASR Set
+    3.0 portion is in-house);code:open(NeMo training script and TDT configuration linked from the card);license:CC-BY-4.0(weights)+NVIDIA-Open-Model-License(newer
+    checkpoints)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/parakeet-tdt-0.6b-v3
+    shows: '"license:cc-by-4.0" tag, "gated":false, with parakeet-tdt-0.6b-v3.nemo in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 157ac55a156be019f57e902f1632b20782a150861af2eee30d1b2d0eed0a34f7
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3/raw/main/README.md
+    shows: '"The model was trained on the combination of [Granary dataset''s ASR subset](https://huggingface.co/datasets/nvidia/Granary)
+      and in-house dataset NeMo ASR Set 3.0"; "Training was conducted using this [example script]"; "GOVERNING TERMS:
+      Use of this model is governed by the [CC-BY-4.0]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7a4306a43f395e3a716e77f1d81c03db18a0a355d7b566bb1d6307213ba0302b
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=nvidia&search=parakeet
+    shows: 'Family listing: most repositories tagged "license:cc-by-4.0"; parakeet-unified-en-0.6b and multitalker-parakeet-streaming-0.6b-v1
+      are tagged "license:other" (the NVIDIA Open Model License).'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c06927756979512e4e0b9c2d373611194f9b8c6fde5d30b2feb31f0da54ec5e
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 'Hugging Face downloads summed over the three declared checkpoints, which carry most of the family''s use:
+    led by the v3 model. Downloads count file fetches, not transcriptions.'
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/nvidia/parakeet-tdt-0.6b-v3
+    shows: '"downloads":563206 for nvidia/parakeet-tdt-0.6b-v3.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 157ac55a156be019f57e902f1632b20782a150861af2eee30d1b2d0eed0a34f7
+  - url: https://huggingface.co/api/models?author=nvidia&search=parakeet
+    shows: 'Trailing-30-day downloads: parakeet-tdt-0.6b-v2 193,528 and parakeet-ctc-1.1b 372,919.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c06927756979512e4e0b9c2d373611194f9b8c6fde5d30b2feb31f0da54ec5e
+capability:
+  score: 4
+  basis: benchmark
+  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
+  value: parakeet-tdt-0.6b-v2 ranks 25th of 71 at 4.70% average WER and v3 29th at 4.86%, both at over 6,000 times
+    real time (RTFx); v3 transcribes 25 European languages.
+  confidence: medium
+  note: Parakeet is the throughput leader among accurate open recognizers, a fraction of a point behind the top
+    of the board while running many times faster than larger models.
+  relative_to: qwen-asr
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
+    shows: Results CSV rows "nvidia/parakeet-tdt-0.6b-v2,4.7025,6024.67" and "nvidia/parakeet-tdt-0.6b-v3,4.85875,6076.07".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1

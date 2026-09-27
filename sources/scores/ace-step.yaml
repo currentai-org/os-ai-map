@@ -1,0 +1,118 @@
+product: ace-step
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: the ACE-Step 1.5 base, SFT, turbo and XL checkpoints, the planning language models and ACE-Step v1
+        download from Hugging Face without a gate
+    data:
+      value: described
+      detail: the 1.5 card describes licensed, royalty-free and synthetic training music; none is released
+    code:
+      value: partial
+      detail: ACE-Step 1.5 publishes LoRA training only; ACE-Step v1 released its full training code
+    license:
+    - name: MIT
+      detail: ACE-Step 1.5 code and weights
+    - name: Apache-2.0
+      detail: ACE-Step v1 code and weights
+  governing_release: ACE-Step 1.5
+  confidence: high
+  note: ACE-Step's weights and code are released under MIT and Apache 2.0, and the generated music may be used commercially.
+    The training data is described but not released, and the current release publishes only LoRA training rather
+    than its full pipeline.
+  raw: weights:open(the ACE-Step 1.5 base, SFT, turbo and XL checkpoints, the planning language models and ACE-Step
+    v1 download from Hugging Face without a gate);data:described(the 1.5 card describes licensed, royalty-free and
+    synthetic training music; none is released);code:partial(ACE-Step 1.5 publishes LoRA training only; ACE-Step
+    v1 released its full training code);license:MIT(ACE-Step 1.5 code and weights)+Apache-2.0(ACE-Step v1 code and
+    weights)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/ace-step/ACE-Step-1.5/files/main/LICENSE
+    shows: 'LICENSE body: "MIT License / Copyright (c) 2026 ACEStep".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 05a6bce42a62636d2cfb24139cc008b6b899754e244175814bb5dd2f4a485357
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/ace-step/ACE-Step/files/main/LICENSE
+    shows: 'v1 LICENSE body: "Apache License / Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1402dd74e3b2fecdfc7cd4427a924b93cbd134eb96f09d0df80dcd01fc29102a
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models?author=ACE-Step&sort=downloads&direction=-1&limit=100
+    shows: 'Hugging Face listing of the ACE-Step organization: every checkpoint public and ungated, licenses mit
+      and apache-2.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6611ef46b818dd27ccad4785d412610e8a52599fb72d543c33d76b60d1c45c1c
+    establishes:
+    - weights
+  - url: https://huggingface.co/api/models/ACE-Step/Ace-Step1.5?expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=gated&expand[]=lastModified&expand[]=createdAt
+    shows: 'Hugging Face API record for Ace-Step1.5: gated false, license mit.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7698a36e46075164e367b5f530976de233c539650ae7015a39e2b3f207c7ec25
+    establishes:
+    - weights
+  - url: https://huggingface.co/ACE-Step/Ace-Step1.5/raw/main/README.md
+    shows: 'Card: trained on "Licensed Data", "Royalty-Free / No-Copyright Data" and "Synthetic Data"; "You can
+      strictly use the generated music for commercial purposes."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 69d69b89e313706b93b420b13aa6232259b207a1cd19b0b70358d166e8e451a0
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/ace-step/ACE-Step-1.5/files/main/README.md
+    shows: 'README Train section: a "LoRA Training Tutorial" and "Advanced Training with Side-Step".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 650c6ef98b70289886669895c4fd68aab3cc45bba74b3525d728a45a85cbcd66
+    establishes:
+    - code
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as Hugging Face downloads across the ACE-Step 1.5 and v1 checkpoints, led by the main
+    1.5 repository. The LoRA adapters are left out.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=ACE-Step&sort=downloads&direction=-1&limit=100
+    shows: 'Listing sorted by downloads: Ace-Step1.5 59314, acestep-5Hz-lm-0.6B 9839, acestep-5Hz-lm-4B 9738 in
+      the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6611ef46b818dd27ccad4785d412610e8a52599fb72d543c33d76b60d1c45c1c
+capability:
+  score: 1
+  basis: feature_matrix
+  value: released song-generation weights with vocals and lyrics conditioning; no entry on the Artificial Analysis
+    music arena boards (instrumental or vocals) read 2026-09-26
+  confidence: medium
+  relative_to: musicgen
+  relation: one_below
+  note: ACE-Step generates complete songs with vocals, but it has no placement on the public music arenas, where
+    MusicGen at least appears. That leaves its quality against the closed services unmeasured.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://artificialanalysis.ai/music/leaderboard/instrumental
+    shows: The "AA-Music-Instrumental v1.1" leaderboard lists 19 models and no ACE-Step entry.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: bf0b4602c881de5a29bdff7d49a1ba6a0ac879ecf6e5c6b6b1cc235164110688
+  - url: https://artificialanalysis.ai/music/leaderboard/vocals
+    shows: The "AA-Music-Vocal v1.1" leaderboard lists 13 models and no ACE-Step entry.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5be3ef3116e9ea38c0a8367c36619d8dced2aaa50e1b502faf610a2bab147bab
+  - url: https://huggingface.co/ACE-Step/Ace-Step1.5/raw/main/README.md
+    shows: Card describing song generation from lyrics and tags, with editing and LoRA training.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 69d69b89e313706b93b420b13aa6232259b207a1cd19b0b70358d166e8e451a0

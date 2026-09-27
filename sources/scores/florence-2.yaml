@@ -1,0 +1,93 @@
+product: florence-2
+openness:
+  score: 3
+  class: open_weights
+  governing_release: florence-2
+  components:
+    weights:
+      value: open
+      detail: safetensors and PyTorch weights on the Hub, ungated
+    data:
+      value: described
+      detail: FLD-5B and the fine-tuning task collection are named; neither is published on the Hub
+    code:
+      value: partial
+      detail: modeling, processing and an inference notebook in the Hub repository; no training code
+    license:
+    - name: MIT
+      detail: OSI; the LICENSE file in the Hub repository and all four checkpoints
+  confidence: high
+  note: Florence-2 ships under the MIT license with the code needed to run it. The FLD-5B training set is described
+    but not released, and no training code is published.
+  raw: weights:open(safetensors and PyTorch weights on the Hub, ungated);data:described(FLD-5B and the fine-tuning
+    task collection are named; neither is published on the Hub);code:partial(modeling, processing and an inference
+    notebook in the Hub repository; no training code);license:MIT(OSI; the LICENSE file in the Hub repository and
+    all four checkpoints)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/microsoft/Florence-2-large?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Florence-2-large: gated false, model.safetensors and pytorch_model.bin, modeling and
+      processing code, card license mit'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1171dba5c08b2378531d6f293b5bcbe011afcab4dea2d1e836ce10d6ecf9b544
+    establishes:
+    - weights
+    - license
+    - code
+  - url: https://huggingface.co/microsoft/Florence-2-large/raw/main/LICENSE
+    shows: '"MIT License / Copyright (c) Microsoft Corporation"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+  - url: https://huggingface.co/microsoft/Florence-2-large/raw/main/README.md
+    shows: '"It leverages our FLD-5B dataset, containing 5.4 billion annotations across 126 million images"; the
+      -ft models are "Finetuned model on a colletion of downstream tasks"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 16212f1929e4992649d18b812e0ebf7ebbbaffd90a5ba23dfdc5c78df2f92ac2
+    establishes:
+    - data
+  - url: https://huggingface.co/api/datasets?search=FLD-5B&limit=100
+    shows: 'An empty list: no FLD-5B dataset on the Hub'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+    establishes:
+    - data
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Microsoft's four Florence-2 checkpoints.
+    Most of it is the base model, which is widely used as a captioning and detection step in image pipelines.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=microsoft&search=Florence&sort=downloads&direction=-1&limit=100
+    shows: Four Florence-2 checkpoints with 3,790,676 downloads in the trailing 30 days; Florence-2-base 3,046,535
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b90d08b20161a96a2dd088caee676aefba56f4c06307cb46db97b48e777a7264
+capability:
+  score: 1
+  basis: feature_matrix
+  basis_detail: prompted single-image tasks from the model card; its zero-shot and fine-tuned tables as tie-break
+  value: Single image in; task tokens for captions, detection, phrase grounding, region proposals and OCR. Zero-shot
+    COCO caption CIDEr 135.6 and RefCOCO val 56.3 for Florence-2-large; fine-tuned VQAv2 81.7 against 86.0 for PaLI-X.
+  confidence: high
+  relative_to: minicpm-v
+  relation: two_below
+  note: Florence-2 performs a fixed set of prompted tasks on a single image, including captions, detection, grounding
+    and OCR, with strong results for its size. It does not hold a conversation, read documents as a whole or take
+    several images, two steps below MiniCPM-V.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/microsoft/Florence-2-large/raw/main/README.md
+    shows: '"Florence-2 can interpret simple text prompts to perform tasks like captioning, object detection, and
+      segmentation"; zero-shot COCO Cap. 135.6, RefCOCO 56.3; fine-tuned VQAv2 81.7 against PaLI-X 86.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 16212f1929e4992649d18b812e0ebf7ebbbaffd90a5ba23dfdc5c78df2f92ac2

@@ -1,0 +1,124 @@
+product: moshi
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: PyTorch, MLX and Candle checkpoints, ungated
+    data:
+      value: described
+      detail: 7M hours of audio, Fisher and a Kyutai-collected set; not released
+    code:
+      value: partial
+      detail: inference, server and a separate fine-tuning repository
+    license:
+    - name: CC-BY-4.0
+      detail: Moshi v0.1 release weights
+    context:
+      research-checkpoint:
+        value: moshika-rl-seamless
+        detail: 2026, gated CC-BY-NC-4.0 fine-tune published with the Interactivity Alignment paper; outside
+          the v0.1 release and not scored
+  governing_release: moshi-v0.1 (Moshiko and Moshika)
+  confidence: high
+  note: Moshi's current release, the v0.1 Moshiko and Moshika checkpoints for PyTorch, MLX and Candle, is
+    CC-BY-4.0, an attribution-only license, with code under MIT and Apache-2.0. Kyutai describes its 7 million
+    hours of training audio without releasing them and publishes inference code and a separate fine-tuning
+    repository rather than the training pipeline. The gated, non-commercial moshika-rl-seamless checkpoint
+    belongs to Kyutai's separate Interactivity Alignment research release and does not set the score.
+  raw: weights:open(PyTorch, MLX and Candle checkpoints, ungated);data:described(7M hours of audio, Fisher
+    and a Kyutai-collected set; not released);code:partial(inference, server and a separate fine-tuning
+    repository);license:CC-BY-4.0(Moshi v0.1 release weights);research-checkpoint:moshika-rl-seamless(2026,
+    gated CC-BY-NC-4.0 fine-tune published with the Interactivity Alignment paper; outside the v0.1 release
+    and not scored)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/kyutai/moshiko-pytorch-bf16
+    shows: '"license:cc-by-4.0" tag, "gated":false, with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8605e45ba7d18f87efdba41c20841556feaf8314f40a2df16a503924c20c3247
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/kyutai/moshiko-pytorch-bf16/raw/main/README.md
+    shows: 'Training Data section: "Unsupervised audio dataset:** used for pre-training, this is a collection of
+      7 million hours of readily available audio content"; "A dataset of 170 hours of natural and scripted conversation
+      between multiple pairs of participants, collected by Kyutai."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 037c5775c15b67a991bae87aba75f287d331d017d7b502f744cdf3cdb4495f06
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/kyutai-labs/moshi/HEAD/README.md
+    shows: '"The weights for the models are released under the CC-BY 4.0 license."; "If you want to fine tune Moshi,
+      head out to [kyutai-labs/moshi-finetune]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e429032aab30c9db9fd0c59426727df5e0bd1be2e5bc8c93e6911e30a06415f9
+    establishes:
+    - code
+    - license
+  - url: https://huggingface.co/api/models/kyutai/moshika-rl-seamless
+    shows: 'kyutai/moshika-rl-seamless: "license:cc-by-nc-4.0", "gated":"auto", "base_model:finetune:kyutai/moshika-pytorch-bf16", "arxiv:2606.11167", "createdAt":"2026-06-02T08:37:38.000Z".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7b4a47b81b81dc145ad681eff9a4b212a1dc70696aaa7df9ee1686c2dac7c449
+    establishes:
+    - license
+  - url: https://huggingface.co/api/collections/kyutai/moshi-v01-release-66eaeaf3302bef6bd9ad7acd
+    shows: 'Collection "Moshi v0.1 Release", "MLX, Candle & PyTorch model checkpoints released as part of
+      the Moshi release from Kyutai": paper 2410.00037, kyutai/mimi and the moshiko and moshika pytorch,
+      mlx and candle checkpoints; moshika-rl-seamless is not among them.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: be9dfc6b882998fd541191a64b6a91cec6f5aa2052d12c1ee381bed393773df3
+    establishes:
+    - license
+  - url: https://huggingface.co/api/collections/kyutai/interactivity-alignment-6a1fe5f14879ce66956362e2
+    shows: 'Collection "Interactivity Alignment", "Full-duplex speech models post-trained with reinforcement
+      learning for improved conversational interactivity.": paper 2606.11167, kyutai/moshika-rl-seamless,
+      kyutai/personaplex-rl-seamless and a samples dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 652c084207153deb85f89f7a31036a679faf1f490104c18001e922337b1dfd57
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of the three most-used checkpoints. The moshi package is marked as not a separate
+    channel because it loads these repositories.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=kyutai&search=moshi
+    shows: 'Trailing-30-day downloads: moshiko-pytorch-bf16 179,111, moshiko-candle-q8 22,422, moshika-pytorch-bf16
+      4,342.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a8da6971511b9f38c8f0ffa5010fde58c8ddfdb692ccacba2937edea7e2d754e
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: real-time full-duplex speech-to-speech
+  value: Listens and speaks simultaneously in one model; theoretical latency 160 ms and about 200 ms in practice
+    on an L4 GPU, with streaming recognition and synthesis from the same Inner Monologue design.
+  confidence: medium
+  note: Moshi holds a live two-way spoken conversation, which no recognizer or synthesizer here does, and it was
+    the first open model to do so in real time.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/kyutai-labs/moshi/HEAD/README.md
+    shows: '"is a speech-text foundation model and **full-duplex** spoken dialogue framework"; "with a practical
+      overall latency as low as 200ms on an L4 GPU."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e429032aab30c9db9fd0c59426727df5e0bd1be2e5bc8c93e6911e30a06415f9
+  - url: https://huggingface.co/kyutai/moshiko-pytorch-bf16/raw/main/README.md
+    shows: '"Moshi is the first real-time full-duplex spoken large language model".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 037c5775c15b67a991bae87aba75f287d331d017d7b502f744cdf3cdb4495f06

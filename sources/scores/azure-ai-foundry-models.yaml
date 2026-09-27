@@ -1,0 +1,76 @@
+product: azure-ai-foundry-models
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: proprietary
+      detail: hosted service; server source not published
+    source:
+      value: closed
+      detail: managed Azure service
+  confidence: high
+  note: Foundry Models is part of Microsoft's managed Azure platform and cannot be run outside it. Many listed
+    models are open, but the catalog and the deployment service are Microsoft's.
+  raw: license:proprietary(hosted service; server source not published);source:closed(managed Azure service)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/foundry-models-overview
+    shows: '"Access models through a deployment that provisions an API. The API provides access to the model
+      that Microsoft hosts and manages for inference." "Microsoft hosts and sells these models under Microsoft
+      Product Terms."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 493f4f4626502fd74085be35aaa37e2d4afbfb3b87fd202e1511701ceb9ea723
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Microsoft states how many models the catalog lists, not how many customers deploy them. A catalog count
+    measures what is offered, so no reading was recorded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/foundry-models-overview
+    shows: '"The catalog includes over 10,000 models, with approximately 50 new models published each month."
+      A catalog size; no usage figure on the page.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 493f4f4626502fd74085be35aaa37e2d4afbfb3b87fd202e1511701ceb9ea723
+capability:
+  score: 3
+  basis: feature_matrix
+  value: curated multi-provider catalog (sold by Azure; partners and community); keyword search and filters;
+    version and lifecycle on each model; serverless or managed-compute deployment from the catalog; users request
+    additions; organizations share models in their own Azure ML registries
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: two_below
+  note: The catalog lists models from many providers, tracks their versions and lifecycle, and deploys any
+    of them from the same page. Microsoft and its partners choose what appears, and a customer's own models
+    are shared only inside that organization's registry, so it is a curated catalog rather than an open registry
+    like Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/foundry-models-overview
+    shows: '"The model catalog is organized into two main categories: Foundry Models sold by Azure Foundry
+      Models from partners and community"; "Request that Microsoft add a model to the model catalog"; "The
+      model catalog offers two distinct options to deploy models".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 493f4f4626502fd74085be35aaa37e2d4afbfb3b87fd202e1511701ceb9ea723
+  - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure
+    shows: '"Models sold by Azure are also hosted by Azure and operated by Azure as part of the Foundry Models
+      service."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 197b3ffb1b1c9e74a1cff5b665163ac2867627afe662f2cac594658449b0d0de
+  - url: https://learn.microsoft.com/en-us/azure/machine-learning/how-to-share-models-pipelines-across-workspaces-with-registries
+    shows: '"Using registries, you can share models, components, and environments" across workspaces "within
+      your organization."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8ac9cbf5a8ab5661b85913dee205f5998e85a561ef4312ab36e7d55767fea1bd

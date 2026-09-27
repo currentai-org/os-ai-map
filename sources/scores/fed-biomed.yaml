@@ -1,0 +1,103 @@
+product: fed-biomed
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; LICENSE.md is an Apache-2.0 grant with SPDX-License-Identifier Apache-2.0, though GitHub labels
+        it other
+    source:
+      value: public
+      detail: node, researcher and GUI components
+    core-gated:
+      value: ungated
+      detail: an Inria and UCA academic project with no paid edition
+  confidence: high
+  note: 'Fed-BioMed is Apache-2.0, even though GitHub labels it "other": the license file is a short notice that
+    grants Apache-2.0 by SPDX identifier. As an academic project from Inria and Université Côte d''Azur, it has
+    no paid edition to hold anything back for.'
+  raw: license:Apache-2.0(OSI; LICENSE.md is an Apache-2.0 grant with SPDX-License-Identifier Apache-2.0, though
+    GitHub labels it other);source:public(node, researcher and GUI components);core-gated:ungated(an Inria and UCA
+    academic project with no paid edition)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/fedbiomed/fedbiomed/HEAD/LICENSE.md
+    shows: 'LICENSE.md: "originally developed by Inria ... and of Université Côte d''Azur (UCA)", "Licensed under
+      the Apache License, Version 2.0", "SPDX-License-Identifier: Apache-2.0".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e04598df65058352f594a6dab10a8b5ecc2cc87732007912587977bc10fac144
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/fedbiomed%2Ffedbiomed
+    shows: 'Repository record for fedbiomed/fedbiomed: license "other" (the classifier''s reading of the short notice),
+      not archived, not a fork, pushed 2026-09-22, 93 stars.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5c867059aac4aff13e6f880d97306c73fb62d6cc1edad050e80e1b2afc8cb3f4
+    establishes:
+    - source
+  - url: https://ungh.cc/repos/fedbiomed/fedbiomed/files/develop
+    shows: 'The 912-file tree of fedbiomed/fedbiomed at `develop`: one root LICENSE, and no ee/, enterprise/, commercial/,
+      proprietary/ or premium/ path anywhere in it. The license file is LICENSE.md. Path absence only, paired with
+      the statement cited beside it.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b9fa0ed218244f31f63743902fb55d6752ff021db1762cd48e0147c9b83db1e4
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/fedbiomed/fedbiomed/HEAD/README.md
+    shows: 'README: "Fed-BioMed is an open source project focused on empowering healthcare using non-centralized
+      approaches"; installs as fedbiomed[node, gui, researcher]. No paid tier is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 585893e84951bd91aa0fff4fb54550bf779ae35937734808c2983a333e38bdb2
+    establishes:
+    - core-gated
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of `fedbiomed`, the package that installs the node, researcher and GUI components. Hospital
+    deployments also run from the project's Docker images, which this does not count.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/fedbiomed/recent
+    shows: last_month = 83 downloads for the package `fedbiomed`.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ff860b2509307746f094740e160300e2eed7f47e81fd4fefac440098900b847d
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: Separately run node and researcher components, a node GUI for managing datasets, Docker images for node
+    and researcher, party certificate registration, and Joye-Libert (additive homomorphic) or low-overhead-masking
+    secure aggregation.
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: Each hospital runs its own node and manages its datasets through a GUI, and model parameters are
+    encrypted before aggregation. That matches Flower's production reach.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.fedbiomed.org/latest/user-guide/secagg/introduction/
+    shows: 'Secure aggregation: local parameters "are encrypted before sending them to the researcher"; two schemes,
+      Joye-Libert ("an additive homomorphic encryption scheme") and Low-Overhead Masking; in Joye-Libert "each party
+      manually registers the certificates of other parties".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 758910618b883861ef65f3c43febce84dc45dc7fcc07a95f59a3f5f3534ddd1e
+  - url: https://raw.githubusercontent.com/fedbiomed/fedbiomed/HEAD/README.md
+    shows: 'README: `fedbiomed node start`, `fedbiomed node dataset add`, and a Node GUI "to manage datasets and
+      deploy new ones".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 585893e84951bd91aa0fff4fb54550bf779ae35937734808c2983a333e38bdb2
+  - url: https://ungh.cc/repos/fedbiomed/fedbiomed/files/develop
+    shows: The tree ships docker/node/Dockerfile and docker/researcher/Dockerfile, and a certificate_manager module.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b9fa0ed218244f31f63743902fb55d6752ff021db1762cd48e0147c9b83db1e4

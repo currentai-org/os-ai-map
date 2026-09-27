@@ -1,0 +1,94 @@
+product: fara
+openness:
+  score: 3
+  class: open_weights
+  governing_release: fara1.5
+  components:
+    weights:
+      value: open
+      detail: on the Hub, ungated
+    data:
+      value: described
+      detail: the roughly 2M-sample FaraGen1.5 training mix is broken down by task type; only the WebTailBench and
+        CUAVerifierBench evaluation sets are published
+    code:
+      value: partial
+      detail: agent runner, hosting instructions and the webeval benchmark harness; no training code
+    license:
+    - name: MIT
+      detail: OSI; every Fara checkpoint and the repository
+  confidence: high
+  note: Fara's weights and code are MIT, and Microsoft publishes the tools to run and evaluate the agent. The FaraGen1.5
+    training data is described in detail but not released, and no training code is published.
+  raw: weights:open(on the Hub, ungated);data:described(the roughly 2M-sample FaraGen1.5 training mix is broken
+    down by task type; only the WebTailBench and CUAVerifierBench evaluation sets are published);code:partial(agent
+    runner, hosting instructions and the webeval benchmark harness; no training code);license:MIT(OSI; every Fara
+    checkpoint and the repository)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/microsoft/Fara1.5-27B?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for Fara1.5-27B: gated false, card license mit, base model Qwen/Qwen3.5-27B'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 02551d0c4bf4f85a1dc2d1d31cd84affeed120d97d8b22ff84deaf5640bd9b39
+    establishes:
+    - weights
+    - license
+  - url: https://cdn.jsdelivr.net/gh/microsoft/fara@main/README.md
+    shows: '"The resulting training mix contains roughly 2M samples: ~60% web trajectories, 12.8% synthetic environments
+      ..."; sections cover installation, hosting and reproducing benchmarks'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ce11bdfe8354eb9c3b8a985dd5ddd21f88f94fb5fb9d00c9b01a76226f0b0a36
+    establishes:
+    - data
+    - code
+  - url: https://data.jsdelivr.com/v1/packages/gh/microsoft/fara@main?structure=flat
+    shows: 'Repository file list: docs, endpoint_configs, scripts, src, tests and webeval; no training or fine-tuning
+      path'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2845c025f7408903e9284071fe5dcfbdcab9c0a346b3fe7599b900730485a834
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/microsoft/fara@main/LICENSE
+    shows: The repository LICENSE is the MIT License, Copyright 2025 Microsoft
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 98a96c38494df4963951e32b81ec4effebe4c8a812ab8d9e7d185d59e86fe2fc
+    establishes:
+    - license
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Microsoft's five Fara checkpoints. Use through
+    Microsoft Foundry hosting is not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=microsoft&search=Fara&limit=100
+    shows: Five Fara checkpoints with 16,142 downloads in the trailing 30 days; Fara-7B 9,808 and Fara1.5-27B 1,867
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 29f83529e9f20001442eadbf0966d0c9691022ce9b98a1a17175b6cf7401d051
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: web computer-use actions with WebVoyager and Online-Mind2Web results from Microsoft
+  value: 'Screenshots in; scroll, type and click-at-coordinate actions out, with user check-ins. Fara1.5-27B: WebVoyager
+    89.3, Online-Mind2Web 72.3, WebTailBench v1.5 outcome 40.2, against GPT-5 SoM at 90.6, 57.7 and 45.1.'
+  confidence: high
+  relative_to: ui-tars
+  relation: at
+  note: Fara completes multi-step web tasks by clicking, typing and scrolling on screenshots, and on Online-Mind2Web
+    it scores above GPT-5 in Microsoft's own table. It is level with UI-TARS and, like it, takes no audio or video
+    input.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/microsoft/fara@main/README.md
+    shows: '"Fara1.5 leverages computer interfaces—mouse and keyboard—to perform multi-step tasks"; Fara1.5-27B
+      WebVoyager 89.3, Online-Mind2Web 72.3, WebTailBench v1.5 outcome 40.2; GPT-5 SoM 90.6, 57.7, 45.1'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ce11bdfe8354eb9c3b8a985dd5ddd21f88f94fb5fb9d00c9b01a76226f0b0a36

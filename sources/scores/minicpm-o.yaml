@@ -1,0 +1,95 @@
+product: minicpm-o
+openness:
+  score: 3
+  class: open_weights
+  governing_release: minicpm-o-4.5
+  components:
+    weights:
+      value: open
+      detail: safetensors and the speech decoder on the Hub, ungated
+    data:
+      value: described
+      detail: the 4.5 card mentions curated post-training data and professional voice-actor recordings; none is
+        published for 4.5
+    code:
+      value: partial
+      detail: the shared finetune/ scripts name MiniCPM-o 2.6; 4.5 is fine-tuned through LLaMA-Factory and SWIFT
+        guides
+    license:
+    - name: Apache-2.0
+      detail: OSI; every MiniCPM-o checkpoint
+  confidence: high
+  note: MiniCPM-o 4.5 is Apache 2.0 and ships its speech decoder with the weights. OpenBMB describes its post-training
+    data and voice recordings but publishes neither, and offers fine-tuning guides rather than its own training
+    recipe.
+  raw: weights:open(safetensors and the speech decoder on the Hub, ungated);data:described(the 4.5 card mentions
+    curated post-training data and professional voice-actor recordings; none is published for 4.5);code:partial(the
+    shared finetune/ scripts name MiniCPM-o 2.6; 4.5 is fine-tuned through LLaMA-Factory and SWIFT guides);license:Apache-2.0(OSI;
+    every MiniCPM-o checkpoint)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/openbmb/MiniCPM-o-4_5?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for MiniCPM-o-4_5: gated false, four safetensors shards plus a token2wav speech decoder,
+      card license apache-2.0'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d425f6ec30617d514224d394a066cec5901c7d5a115d5877934ab77547c140e8
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/openbmb/MiniCPM-o-4_5/raw/main/README.md
+    shows: '"Built on carefully designed post-training data and professional voice-actor recordings"; "We support
+      fine-tuning with LLaMA-Factory, SWIFT"; "The MiniCPM-o/V model weights and code are open-sourced under the
+      Apache-2.0 license"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4afc013f5f1e4471bdbee28515eb5be802ea2c80c8d89d4107c4d4aec439577a
+    establishes:
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models?author=openbmb&search=MiniCPM-o&limit=100
+    shows: Every MiniCPM-o checkpoint tagged license:apache-2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 46d212672fac7260c0a5f483ea692148ad675cac8f08958b13a5c5beaa2432fb
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across OpenBMB's MiniCPM-o 2.6 and 4.5 checkpoints,
+    including its GGUF, AWQ and int4 builds. The search also returns OpenBMB's text-only MiniCPM models, which are
+    excluded.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=openbmb&search=MiniCPM-o&limit=100
+    shows: Six MiniCPM-o checkpoints with 1,151,233 downloads in the trailing 30 days; MiniCPM-o-4_5 721,159 and
+      MiniCPM-o-2_6 344,395
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 46d212672fac7260c0a5f483ea692148ad675cac8f08958b13a5c5beaa2432fb
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: full-duplex audio and video input with speech output, from the model card; OpenCompass and Video-MME
+    as tie-breaks
+  value: 'Continuous video and audio in, concurrent text and speech out; bilingual speech conversation and voice
+    cloning; images up to 1.8 million pixels and video up to 10 fps. Card: OpenCompass 77.6, Video-MME 70.4 against
+    70.5 for Qwen3-Omni-30B-A3B-Instruct.'
+  confidence: high
+  relative_to: qwen-omni
+  relation: at
+  note: MiniCPM-o sees, listens and speaks at the same time, taking continuous video and audio and answering in
+    text and speech, and its Video-MME score matches Qwen3-Omni's. It sits level with Qwen-Omni, with speech in
+    two languages rather than ten.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/openbmb/MiniCPM-o-4_5/raw/main/README.md
+    shows: '"can process real-time, continuous video and audio input streams simultaneously while generating concurrent
+      text and speech output streams"; OpenCompass 77.6; Video-MME 70.4, Qwen3-Omni-30B-A3B-Instruct 70.5'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 4afc013f5f1e4471bdbee28515eb5be802ea2c80c8d89d4107c4d4aec439577a

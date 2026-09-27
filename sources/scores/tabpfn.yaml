@@ -1,0 +1,131 @@
+product: tabpfn
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: TabPFN-2 to 3.5 checkpoints on the Hub, ungated; the package asks for license acceptance on first
+        use
+    data:
+      value: closed
+      detail: synthetic prior; the generator is not released
+    code:
+      value: partial
+      detail: inference and fine-tuning code; no pretraining code
+    license:
+    - name: Apache-2.0
+      detail: code
+    - name: TABPFN-3-License-v1.0
+      detail: non-commercial weights license; 2.5, 2.6 and 3.5 carry their own non-commercial licenses
+  confidence: medium
+  note: The package code is Apache-2.0, but every current checkpoint - TabPFN-2.5, 2.6, 3 and the default 3.5 -
+    is under a Prior Labs license that allows testing, evaluation and research only, and extends that limit to the
+    model's outputs. Production use needs a commercial license. Only the older TabPFN-2 weights are Apache-2.0 with
+    an attribution clause.
+  raw: weights:open(TabPFN-2 to 3.5 checkpoints on the Hub, ungated; the package asks for license acceptance on
+    first use);data:closed(synthetic prior; the generator is not released);code:partial(inference and fine-tuning
+    code; no pretraining code);license:Apache-2.0(code)+TABPFN-3-License-v1.0(non-commercial weights license; 2.5,
+    2.6 and 3.5 carry their own non-commercial licenses)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/PriorLabs/TabPFN@main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, with the appendix template and no filled-in copyright line;
+      NOTICE names Prior Labs GmbH.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://huggingface.co/Prior-Labs/tabpfn_3/raw/main/LICENSE
+    shows: TABPFN-3 License v1.0 grants a license to use the model "solely for your Non-Commercial Purposes", defined
+      as "use for testing, evaluation, or research not tied to commercial gain, production deployment, or revenue
+      generation".
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: dca491280b68f471312a15d54add7b8e724adf19fb0e113544b1ef91e060f5d5
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/Prior-Labs/tabpfn_3_5/raw/main/LICENSE
+    shows: TABPFN-3.5 License v1.0 (revised September 9, 2026) uses the same "solely for your Non-Commercial Purposes"
+      grant.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9570fdd687bb76ed45499412ad57d6ba949848e6d731f1242572bb57f2f73ae1
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/PriorLabs/TabPFN@main/README.md
+    shows: 'README: "The TabPFN-2.5, TabPFN-2.6, TabPFN-3 and TabPFN-3.5 model weights are released under non-commercial
+      licenses" and "TabPFN-3.5 is used by default"; the repository is the "Core implementation for fast and local
+      inference".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 18b4469ec443eeb5d2bea20655395aac16ab092225ab94fb6e05ef4d4d369d8c
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/Prior-Labs/tabpfn_3/raw/main/README.md
+    shows: 'TabPFN-3 card: "TabPFN-3 is trained purely on synthetic tabular tasks." and "Inference code can be found
+      at https://github.com/PriorLabs/TabPFN".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 53d61ea9bbf605c42892d13c53afb78e5ba8a6d1513d89db86736a620d3c9e81
+    establishes:
+    - data
+    - code
+  - url: https://docs.priorlabs.ai/cookbook/pretrain_nanotabpfn.md
+    shows: 'The only pretraining walkthrough Prior Labs documents is a teaching model: "This is a teaching model,
+      not the production TabPFN."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 87dda45a82d147da0539291c27b43859a732e77d83c3ecb286fb1fb9a37496cb
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=Prior-Labs&sort=downloads&limit=50
+    shows: 'Prior-Labs Hub listing: TabPFN-v2-clf, TabPFN-v2-reg, tabpfn_2_5, tabpfn_2_6, tabpfn_3 and tabpfn_3_5,
+      each tagged license:other.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0611a226917f32714572f4e7e6660f03906a4c1efbf9535fd06d00d125f45595
+    establishes:
+    - weights
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of tabpfn, which is how the weights are fetched and run; the Hub counts
+    on the checkpoint repositories are much smaller.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/tabpfn/recent
+    shows: last_month 150,735 downloads of tabpfn
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 8805af4f57e68f5b519990b1daf175ca3f9fddc4b13247a197ae7ad13771eb88
+capability:
+  score: 4
+  basis: feature_matrix
+  value: classification and regression on a new table in one forward pass with no training or tuning; reported state
+    of the art on TabArena for TabPFN-3 and 3.5
+  relative_to: autogluon
+  relation: one_below
+  confidence: medium
+  note: 'TabPFN does the work of model selection and tuning for you on each new table, and on the TabArena benchmark
+    it outperforms tuned and ensembled gradient-boosting baselines. It stops at one model: it does not search over
+    or ensemble other learners, prepare features, or cover time series and multimodal data the way AutoGluon does.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://arxiv.org/abs/2605.13986
+    shows: 'TabPFN-3 abstract: "On the standard tabular benchmark TabArena, a forward pass of TabPFN-3 outperforms
+      all other models, including tuned and ensembled baselines, by a significant margin".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9c51e19e7c596807779393daa4f6c0cd60d54870a42a8eeeedee48b27dcc71e4
+  - url: https://arxiv.org/abs/2609.17895
+    shows: 'TabPFN-3.5 abstract: "TabPFN-3.5 sets a new state of the art on standard tabular prediction in TabArena".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 31251e2af3b365cb585550722b4e304a169774b161449060eed5da7154d2f89c

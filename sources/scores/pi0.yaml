@@ -1,0 +1,94 @@
+product: pi0
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: public GCS bucket
+    data:
+      value: closed
+      detail: 10k+ hours of robot data, not released
+    code:
+      value: open
+      detail: training, fine-tuning and inference
+    license:
+    - name: Apache-2.0
+      detail: repository license; no separate checkpoint terms
+  confidence: medium
+  note: The weights and the full training code are public under Apache-2.0, but the more than ten thousand hours
+    of robot data the base models learned from are not. LeRobot's Hub copies of the same checkpoints are marked
+    with Google's Gemma terms, which Physical Intelligence's own repository does not mention.
+  raw: weights:open(public GCS bucket);data:closed(10k+ hours of robot data, not released);code:open(training, fine-tuning
+    and inference);license:Apache-2.0(repository license; no separate checkpoint terms)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/Physical-Intelligence/openpi/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/Physical-Intelligence/openpi/README.md
+    shows: 'README: base checkpoints pi0_base, pi0_fast_base and pi05_base and expert checkpoints download from
+      gs://openpi-assets; "pre-trained on 10k+ hours of robot data" with no dataset named; fine-tuning guide and
+      configs; no separate license for the checkpoints.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 567fc57766bd736664f50126cab8145af4071ca16cc5e238f2b11e369169c3b5
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://ungh.cc/repos/Physical-Intelligence/openpi/files/main
+    shows: 'Repository tree: training and fine-tuning scripts and configs in the repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1f15381ec4762c5c6fbe6df11e2790a792feeb8d8593ea4ce6bfe187d1cfe6be
+    establishes:
+    - code
+  - url: https://huggingface.co/api/models/lerobot/pi0_base
+    shows: 'Hub API for LeRobot''s port lerobot/pi0_base: license gemma.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a1f8678c8e1e0e33bc5be3366f3f23136fd28f3a1512ad9656137ac38d0ba580
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on openpi. Physical Intelligence publishes its checkpoints from a cloud bucket that reports
+    no download count, and the Hub copies belong to LeRobot.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/Physical-Intelligence%2Fopenpi
+    shows: 'Repository record for Physical-Intelligence/openpi: 13,932 stargazers.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 28e14eb2d961693e6f11298968b8bac0b129085e8789e10b3800d3a1f11163ba
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Base VLAs pretrained on 10k+ hours of robot data, developed on Physical Intelligence's own robots, with
+    released fine-tunes for bimanual ALOHA tasks (towel folding, tupperware, pen uncapping), DROID and LIBERO; π0.5
+    adds open-world generalization.
+  confidence: medium
+  note: π0 is pretrained across many robots and has released fine-tunes that fold towels and uncap pens on a bimanual
+    ALOHA rig, and π0.5 is built to generalize to environments outside its training. Physical Intelligence itself
+    warns that adapting it to a new platform may not work.
+  relative_to: gr00t
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/Physical-Intelligence/openpi/README.md
+    shows: 'README: base models "pre-trained on 10k+ hours of robot data"; expert checkpoints π0-ALOHA-towel, π0-ALOHA-tupperware,
+      π0-ALOHA-pen-uncap, π0-DROID, π0.5-LIBERO, π0.5-DROID; π0.5 "with better open-world generalization"; "we do
+      not expect every such attempt to be successful".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 567fc57766bd736664f50126cab8145af4071ca16cc5e238f2b11e369169c3b5

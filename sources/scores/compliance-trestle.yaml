@@ -1,0 +1,86 @@
+product: compliance-trestle
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Trestle is published under Apache-2.0 by the OSCAL Compass community project, with no company selling
+    a fuller edition of it.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/oscal-compass/compliance-trestle@develop/LICENSE
+    shows: Apache License, Version 2.0, full text
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c98ecc8ef79e7a1a14a0767e3321b681dd25f9307625724f2b299f5e75e99520
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/oscal-compass/compliance-trestle/files/develop
+    shows: Full file listing of oscal-compass/compliance-trestle develop, 1,546 paths; no ee/, enterprise/,
+      commercial/ or proprietary/ directory
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7ae8713e0ace133fd48b4d51f1cef3594fd6d258fb0dff5440dc5e0d44ad8520
+    establishes:
+    - source
+    - core-gated
+  - url: https://cdn.jsdelivr.net/gh/oscal-compass/compliance-trestle@develop/README.md
+    shows: README points to the OSCAL Compass community meetings and a CNCF OSCAL Compass end-to-end demo;
+      external contributions welcome
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 45dc0adecbbecbd7ee87450ba1867245ab34bae93736814cd35415b5e34aeb90
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: PyPI downloads of compliance-trestle, the product's own package, measure its use.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/compliance-trestle/recent
+    shows: last_month downloads = 63,201 for compliance-trestle
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ced9d1319e5cbad68529956601cd3b24e09d2ca8e448d81a41f9042f603f2260
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category matrix: how independently a third party can check the evidence'
+  value: Creates and validates OSCAL catalogs, profiles, component definitions, SSPs and assessment artifacts;
+    git-native authoring; detached DSSE signing as a beta command.
+  relative_to: nvtrust
+  relation: two_below
+  confidence: high
+  note: Its output is OSCAL, a published standard that auditors and their tools can validate independently,
+    which puts it above tools that emit their own report formats. The content is still the operator's assertion,
+    and signing is a beta feature, so it sits two steps below NVIDIA's hardware attestation.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/oscal-compass/compliance-trestle@develop/README.md
+    shows: '"Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation
+      artifacts for compliance needs. It leverages NIST''s OSCAL as a standard data format"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 45dc0adecbbecbd7ee87450ba1867245ab34bae93736814cd35415b5e34aeb90
+  - url: https://cdn.jsdelivr.net/gh/oscal-compass/compliance-trestle@develop/trestle/core/commands/sign.py
+    shows: '"Sign a JSON file as a detached DSSE provenance envelope"; the command is gated as a beta feature'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ba90d1d75933b0881c520f358e9bfc1207b26babf3e5e964752c516d6697b2b0
+  - url: https://cdn.jsdelivr.net/gh/oscal-compass/compliance-trestle@develop/docs/predicates/oscal-signing/v1.md
+    shows: '"Trestle uses this predicate type in the in-toto Statement created by trestle sign"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ce5af374558db3aebcf0e200750b1367d53e3284d4eccddd8005cdf12897b531

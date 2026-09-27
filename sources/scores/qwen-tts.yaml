@@ -1,0 +1,86 @@
+product: qwen-tts
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: closed
+      detail: no training corpus named
+    code:
+      value: partial
+      detail: inference package and fine-tuning scripts
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: medium
+  note: Qwen3-TTS's weights and code are Apache-2.0, OSI-approved. Alibaba publishes fine-tuning scripts but neither
+    its training data nor the recipe behind the released checkpoints.
+  raw: weights:open(safetensors on the Hub, ungated);data:closed(no training corpus named);code:partial(inference
+    package and fine-tuning scripts);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-TTS-12Hz-1.7B-Base
+    shows: '"license:apache-2.0" tag, "gated":false, with model.safetensors in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6111d45c692d53a6eee88dcc7e32c6188d245872f9c4500baa26adedd1dba7cf
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/README.md
+    shows: '"Please refer to [Qwen3-TTS-Finetuning](finetuning/) for detailed instructions on fine-tuning Qwen3-TTS.";
+      no training dataset is named.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f4497e70e9ae024b10ee4bbcb470366f10592edeab56c58d2194ba2dadb745
+    establishes:
+    - data
+    - code
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a44a6081c73ad75f0255bb2bb5cab74ef1829565a895a24e53a4f11290ab7655
+    establishes:
+    - license
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the two most-used checkpoints. The qwen-tts package is marked as not a separate
+    channel because it loads these repositories.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=Qwen&search=Qwen3-TTS
+    shows: 'Trailing-30-day downloads: Qwen3-TTS-12Hz-1.7B-Base 3,923,955 and Qwen3-TTS-12Hz-1.7B-CustomVoice 2,435,822.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3b6a4897c4d95ae5cababb2f1f9ec92de42aafecf731c76293e391983c9b8d83
+capability:
+  score: 2
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: The Artificial Analysis TTS leaderboard ranks an Alibaba "Qwen3 TTS" entry 81st of 91 at an Elo of about
+    930, released 2026-01-22, the date the open Qwen3-TTS series was published; the leaderboard marks that entry
+    as not open-weights, so whether it is these checkpoints or a hosted variant is not certain.
+  confidence: low
+  note: Broad features, voice design and 3-second cloning in 10 languages among them, but the arena entry that most
+    likely corresponds to it sits near the bottom of blind listening tests.
+  relative_to: chatterbox
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Entry "name":"Qwen3 TTS" (creator Alibaba) with "elo":929.65, "releaseDate":"2026-01-22" and "openWeights":false.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 524dd3f2d13e2629cf820715a3c37c79af623b2af67cfa437cf7e7da38c61cb1
+  - url: https://raw.githubusercontent.com/QwenLM/Qwen3-TTS/HEAD/README.md
+    shows: 'The README''s news list dates the open release: "2026.1.22".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 51f4497e70e9ae024b10ee4bbcb470366f10592edeab56c58d2194ba2dadb745

@@ -1,0 +1,86 @@
+product: kokoro
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: .pth checkpoint and voice packs, ungated
+    data:
+      value: described
+      detail: a few hundred hours of permissively licensed audio, listed in part
+    code:
+      value: partial
+      detail: inference library only
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: high
+  note: Kokoro's weights and inference library are Apache-2.0, an OSI-approved license. The card lists some of the
+    openly licensed audio it trained on and sizes the rest at a few hundred hours, but the training set and training
+    code are not published.
+  raw: weights:open(.pth checkpoint and voice packs, ungated);data:described(a few hundred hours of permissively
+    licensed audio, listed in part);code:partial(inference library only);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/hexgrad/Kokoro-82M
+    shows: '"license:apache-2.0" tag, "gated":false, with kokoro-v1_0.pth in the file list.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ee48acff081999dd96dea37c09e3d161acb17dec49efa9b2fcbde9b6c4fd551b
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/hexgrad/Kokoro-82M/raw/main/README.md
+    shows: '"Audio licensed under Apache, MIT, etc"; "**Total Dataset Size:** A few hundred hours of audio".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 91dcabced89db6f109b8786642f50402d3ee87450e8189589b6f85520e7f4d78
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/hexgrad/kokoro/HEAD/README.md
+    shows: '"An inference library for [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M)."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b50b84220668f8247a2405b249c34c7083acc24114279ff1429fd79f46a2c04b
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/hexgrad/kokoro/HEAD/LICENSE
+    shows: 'LICENSE body is the Apache License, Version 2.0 text: "Apache License".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the single weights repository. The kokoro package is marked as not a separate
+    channel because it loads this repository.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/hexgrad/Kokoro-82M
+    shows: '"downloads":11674701 for hexgrad/Kokoro-82M.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ee48acff081999dd96dea37c09e3d161acb17dec49efa9b2fcbde9b6c4fd551b
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: Kokoro 82M v1.0 ranks 48th of 91 models on the Artificial Analysis TTS leaderboard at an Elo of about 1065,
+    among the open-weights models on the board.
+  confidence: medium
+  note: Kokoro is mid-table in blind listening tests, well behind the commercial leaders, but it is by far the smallest
+    model near that position.
+  relative_to: elevenlabs-tts
+  relation: one_below
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://artificialanalysis.ai/text-to-speech/leaderboard
+    shows: Leaderboard entry "name":"Kokoro 82M v1.0" with "elo":1065.14 and "openWeights":true; 91 models are ranked.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 524dd3f2d13e2629cf820715a3c37c79af623b2af67cfa437cf7e7da38c61cb1

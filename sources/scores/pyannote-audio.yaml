@@ -1,0 +1,67 @@
+product: pyannote-audio
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: gated
+  confidence: medium
+  note: pyannote.audio is MIT-licensed, but its most accurate pipeline, precision-2, is a paid pyannoteAI service
+    reached through the same library with an API key. The open community-1 pipeline is complete on its own; the
+    premium tier is withheld from the published source, which makes this open core.
+  raw: license:MIT(OSI);source:public;core-gated:gated
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/pyannote/pyannote-audio/HEAD/LICENSE
+    shows: 'LICENSE body: "MIT License" / "Copyright (c) 2020 CNRS".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a3b53644a76e70e289b25271b119c0a1aadaaf0db7a16225fb494fdc0e36c32a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/pyannote/pyannote-audio/HEAD/README.md
+    shows: 'README: "built-in support for [pyannoteAI](https://pyannote.ai) premium speaker diarization"; the paid
+      precision-2 pipeline also exists as a self-hosted product the open repository cannot build: "premium pipeline
+      further improves accuracy as well as processing speed (in its self-hosted version)."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fb790724a0d1768fd0f0654d0f687a778812b6c6a9642a1ff2956debaf492f89
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: PyPI downloads of pyannote.audio, only just above one million a month.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/pyannote.audio/recent
+    shows: '"last_month":1000046 for pyannote.audio.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6457d8a54da7c2e6ff6d4a38ec4ffc57a919acb38522c3c58a7838d396c5fd79
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'engine rung: what the engine runs and trains'
+  value: End-to-end speaker diarization (segmentation, embedding, clustering) with pretrained pipelines and a published
+    diarization-error-rate benchmark across public datasets; one task.
+  confidence: medium
+  note: The reference open diarization toolkit, but diarization is its single task.
+  relative_to: faster-whisper
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/pyannote/pyannote-audio/HEAD/README.md
+    shows: '"is an open-source toolkit written in Python for speaker diarization"; the Benchmark section reports
+      "[Diarization error rate]".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fb790724a0d1768fd0f0654d0f687a778812b6c6a9642a1ff2956debaf492f89

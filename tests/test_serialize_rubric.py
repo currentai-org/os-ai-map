@@ -1230,6 +1230,7 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on(real_rubric):
     shared = sources.get("rubrics") or {}
     deferred = set()
     tier_free = set()
+    tier_free_products = set()
     for slug, category in sources["categories"].items():
         variants, _ = resolve_recipe_variants(category, shared)
         if not variants:
@@ -1241,13 +1242,24 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on(real_rubric):
             for v in variants.values()
         ):
             tier_free.add(slug)
+        # A mixed category can carry a tier-free ladder for ONE of its types: the robotics
+        # robot bodies in `robotics_embodied` climb the hardware ladder, which asks about design
+        # files rather than a license, while its models and software climb tiered ladders. The
+        # same exclusion, taken per type rather than per category.
+        for product in category.get("products") or []:
+            ptype = ((sources.get("products") or {}).get(product) or {}).get("type")
+            variant = variants.get(ptype) or variants.get("*")
+            if variant is not None and not (
+                ((variant.get("openness") or {}).get("license_tier") or {}).get("values")
+            ):
+                tier_free_products.add((product, slug))
 
     rows = tables["product_openness_evidence"]
     scored = {
         (r["product_slug"], r["category_slug"])
         for r in rows
         if r["category_slug"] not in tier_free
-    } - deferred
+    } - deferred - tier_free_products
     licensed = {(r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"}
 
     # The third exclusion, and the newest. A product can now score in a tier-carrying

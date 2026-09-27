@@ -1,0 +1,82 @@
+product: d-matrix-corsair
+openness:
+  class: documented
+  score: 3
+  components:
+    form_factor:
+      value: chipset
+      detail: accelerator sold as PCIe cards, two packages per card; scored as the silicon
+    datasheets:
+      value: public
+      detail: Corsair product brief with the card specification table, and a technical white paper
+    retail:
+      value: restricted
+      detail: made available to select, qualified customers
+  confidence: medium
+  note: d-Matrix publishes a specification table and a technical white paper for Corsair, but supplies it only to
+    select, qualified customers, so it cannot simply be bought. This score is provisional until the map rules on
+    silicon sold only to approved buyers.
+  raw: form_factor:chipset(accelerator sold as PCIe cards, two packages per card; scored as the silicon);datasheets:public(Corsair
+    product brief with the card specification table, and a technical white paper);retail:restricted(made available
+    to select, qualified customers)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://d-matrix.ai/pdf/d-Matrix-Corsair-Product-Brief-FINAL.pdf
+    shows: 'Corsair product brief, Table 1 card specifications: "Compute TFLOPS (8 bit dense) 2400", "Performance
+      Memory 2 GB", "Capacity Memory Up to 256 GB", 600 W auxiliary input'
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    - form_factor
+    http_status: 200
+    content_sha256: 3bd86746cd450745542f4dc9b039f294c3d8d22b7282baf6330d0ea2cd1406bc
+  - url: https://d-matrix.ai/pdf/d-Matrix-WhitePaper-Technical-FINAL.pdf
+    shows: d-Matrix technical white paper on the Corsair architecture
+    accessed: '2026-09-26'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 3f872c3923ac9d99fbd3f391bd838d3c0042482217ca6493b81767d09bbbc7fa
+  - url: https://www.d-matrix.ai/announcements/d-matrix-corsair-ai-inference-platform-enters-full-production-to-meet-customer-demand/
+    shows: '"d-Matrix''s Corsair inference platform is being made available to select, qualified customers"'
+    accessed: '2026-09-26'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: e8736cc285b860832c0d8a8b69c6eab20ab4721a46377df7895a41c580e095ec
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Silicon has no download channel to count, and d-Matrix publishes no unit shipments or installed base for
+    this generation. Cloud listings and benchmark submissions cover only part of this category and do not measure
+    use, so the map leaves adoption unscored.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://www.d-matrix.ai/product/
+    shows: The Corsair product page, read for a usage disclosure; it states none.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ace2b1ecd300da8ecc6530e13baa79d2e6f3dd0456b59e0ef3d09a3a53975531
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: peak throughput and memory per unit from the vendor's own specification
+  value: 'Per PCIe card (two packages): 2,400 TFLOPS 8-bit dense, 9,600 TFLOPS 4-bit dense, 2 GB performance memory
+    at 150 TB/s, up to 256 GB capacity memory at 400 GB/s'
+  confidence: medium
+  relative_to: intel-gaudi-3
+  relation: at
+  note: A Corsair card delivers 2,400 TFLOPS of dense 8-bit block floating point, above Gaudi 3's FP8 figure, with
+    in-memory bandwidth far beyond HBM. Only 2 GB of that fast memory sits on each card, so large models must be
+    spread across many cards or served from slower LPDDR5.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://d-matrix.ai/pdf/d-Matrix-Corsair-Product-Brief-FINAL.pdf
+    shows: 'Product brief Table 1: "Compute TFLOPS (8 bit dense) 2400", "Compute TFLOPS (4 bit dense) 9600", "Performance
+      Memory 2 GB", "Performance Memory bandwidth 150 TB/s", "Capacity Memory Up to 256 GB", "Capacity Memory bandwidth
+      400 GB/s"'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3bd86746cd450745542f4dc9b039f294c3d8d22b7282baf6330d0ea2cd1406bc

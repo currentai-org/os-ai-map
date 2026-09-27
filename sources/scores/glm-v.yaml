@@ -1,0 +1,99 @@
+product: glm-v
+openness:
+  score: 3
+  class: open_weights
+  governing_release: glm-4.6v
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: described
+      detail: the RLCS reinforcement-learning method is described; no SFT or RL dataset is published
+    code:
+      value: partial
+      detail: inference, GUI-agent and desktop-assistant examples; fine-tuning goes through the third-party LLaMA-Factory
+    license:
+    - name: MIT
+      detail: OSI; the Hub card license of every GLM-4.1V to 4.6V checkpoint, with no license file in the model
+        repositories; the code repository is Apache 2.0
+  confidence: high
+  note: The GLM-4.6V weights are published under the MIT license and the code repository under Apache 2.0. Z.ai
+    describes its reinforcement-learning method but publishes no training data and no training code of its own.
+  raw: weights:open(safetensors on the Hub, ungated);data:described(the RLCS reinforcement-learning method is described;
+    no SFT or RL dataset is published);code:partial(inference, GUI-agent and desktop-assistant examples; fine-tuning
+    goes through the third-party LLaMA-Factory);license:MIT(OSI; the Hub card license of every GLM-4.1V to 4.6V
+    checkpoint, with no license file in the model repositories; the code repository is Apache 2.0)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/zai-org/GLM-4.6V?expand[]=downloads&expand[]=cardData&expand[]=gated&expand[]=createdAt&expand[]=lastModified&expand[]=siblings
+    shows: 'Hub metadata for GLM-4.6V: gated false, 41 safetensors shards, card license mit'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: af0fc62c8ccd325ffeee244f76ebd69f1a45e38250699ebe57d987aa6efd0413
+    establishes:
+    - weights
+    - license
+  - url: https://huggingface.co/api/models?author=zai-org&search=GLM&limit=100
+    shows: The seven GLM-4.1V, 4.5V and 4.6V checkpoints are all tagged license:mit; glm-4v-9b is tagged other
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8fb2e74090fe6ca37cbdf214aa56debe3e81caa0061333c65749263e3e45a4c1
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/zai-org/GLM-V@main/README.md
+    shows: '"LLaMA-Factory already supports fine-tuning for GLM-4.5V & GLM-4.1V-9B-Thinking models"; examples/gui-agent
+      and examples/vlm-helper; RLCS named, no dataset linked'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f518aecf28e2a4166b537a8db59797a67fd5e0d8b3d698751898d40b8aa3ad7d
+    establishes:
+    - code
+    - data
+  - url: https://cdn.jsdelivr.net/gh/zai-org/GLM-V@main/LICENSE
+    shows: The code repository LICENSE is the Apache License, Version 2.0
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 086c6e7f5082b4640dfb03a892f32504f24afd247c702c38a3aae8c3474c54f0
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days, summed across Z.ai's GLM-4.1V, 4.5V and 4.6V checkpoints,
+    including the FP8 builds. The general GLM text models the search also returns are excluded, as is the older
+    glm-4v-9b.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=zai-org&search=GLM&limit=100
+    shows: Seven GLM-V checkpoints with 311,852 downloads in the trailing 30 days; GLM-4.1V-9B-Thinking 179,488
+      and GLM-4.6V-Flash 72,707
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8fb2e74090fe6ca37cbdf214aa56debe3e81caa0061333c65749263e3e45a4c1
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: GUI-agent results (OSWorld, AndroidWorld, WebVoyager) in the GLM-V technical report
+  value: 'Images, long documents and video in; text, boxes and native function calls out, 128K context. Report table,
+    GLM-4.6V: OSWorld 37.2, AndroidWorld 57.0, WebVoyager 81.0, MMMU val 76.0, MMLongBench-Doc 54.9, against Qwen2.5-VL-72B
+    at 8.8, 35.0, 40.4, 70.2 and 35.2.'
+  confidence: high
+  relative_to: ui-tars
+  relation: at
+  note: GLM-4.6V completes tasks on phones, desktops and the web, reads long documents and video, and calls tools
+    with images as inputs. It is level with UI-TARS on what it can act on and, like it, takes no audio input.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://arxiv.org/html/2507.01006
+    shows: 'GUI Agents rows: OSWorld 37.2, AndroidWorld 57.0, WebVoyager 81.0 for GLM-4.6V; Qwen2.5-VL-72B 8.8,
+      35.0, 40.4; MMLongBench-Doc 54.9'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 39f24d23c3b16f26a736cc50ab075196136c9afc3c1655e4516b9e27662ab143
+  - url: https://huggingface.co/zai-org/GLM-4.6V/raw/main/README.md
+    shows: '"we integrate native Function Calling capabilities for the first time"; "up to 128K tokens of multi-document
+      or long-document input"'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2fd45a740ae60a4a1495ffdb643fe24de88b2e0ecdbb7aa9eb9b1c241016afea

@@ -74,14 +74,38 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Remote/privacy-preserving data science: submit computations to private datasets via Datasite
-    servers, NumPy-like remote analysis, sandboxed job execution, cross-platform.'
-  confidence: high
-  note: Mature, feature-rich platform for remote data science on private data.
-  last_verified: '2026-08-13'
+  basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
+  value: 'Peer-to-peer computation on private data across organizations: data owners approve each collaborator
+    and each job, jobs run in sandboxed environments on the owner''s side over a file-based transport (Google
+    Drive today), background services handle notifications and auto-approval, and syft-enclave runs jobs
+    in Trusted Execution Environments deployed with Docker and Terraform.'
+  confidence: medium
+  relative_to: flower
+  relation: at
+  note: 'PySyft runs computations across organizations without moving the data: each owner approves the
+    collaborator and the job, the job runs on the owner''s side, and an enclave package adds trusted-hardware
+    execution. That matches Flower''s reach, though the work travels over shared cloud storage rather than
+    through a federation server.'
+  last_verified: '2026-09-27'
   sources:
-  - url: https://pypi.org/project/syft/
-    shows: PyPI page describes remote data science, Datasite servers and NumPy-like remote analysis
-    accessed: '2026-08-13'
+  - url: https://pypi.org/pypi/syft/json
+    shows: 'PyPI `syft` 0.10.0 (uploaded 2026-08-26): "PySyft : privacy-preserving data science over file-based
+      transports"; "PySyft lets data scientists submit computations which are run by data owners on private
+      data"; "Peer-to-peer with explicit auth — Data owners must approve each collaborator before any data
+      flows"; "Isolated job execution".'
+    accessed: '2026-09-27'
     http_status: 200
-    content_sha256: 20f28d2fced8a3931e2a5594fd0aa88910f7974d104155520cc4937a971d69b4
+    content_sha256: aca0dacbd95f0454638f98fd223a38bf717cfd56eae59b48a36ab3ae45d61e01
+  - url: https://cdn.jsdelivr.net/gh/OpenMined/PySyft@dev/packages/syft-enclave/README.md
+    shows: 'syft-enclave: "Enclave support for syft, enabling secure computation in Trusted Execution Environments
+      (TEEs)", deployed with Docker and Terraform; the listed data owners'' approval "gates every job on
+      this enclave".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: fc2d14e9221f06cefa7221d960968ca4189816f5db027589ac5cfaf9a6e00208
+  - url: https://ungh.cc/repos/OpenMined/PySyft/files/dev
+    shows: 'The 726-file tree at `dev`: packages/syft-enclave, packages/syft-bg, packages/syft-permissions
+      and docs/auth.md beside the syft sync engine.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eb65c1faf5ecbfe22965b303e5e88518a84bae246b43d6226798628b11230644

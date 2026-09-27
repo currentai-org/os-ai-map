@@ -1,0 +1,94 @@
+product: cosyvoice
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: checkpoints on the Hub, ungated
+    data:
+      value: closed
+      detail: no training corpus named in the card or README
+    code:
+      value: open
+      detail: inference, training and deployment code in the repository
+    license:
+    - name: Apache-2.0
+      detail: OSI
+  confidence: medium
+  note: CosyVoice's code and weights are Apache-2.0, OSI-approved, and the repository includes training code. Alibaba
+    does not publish or name the data the checkpoints were trained on, which keeps it at open weights.
+  raw: weights:open(checkpoints on the Hub, ungated);data:closed(no training corpus named in the card or README);code:open(inference,
+    training and deployment code in the repository);license:Apache-2.0(OSI)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models/FunAudioLLM/Fun-CosyVoice3-0.5B-2512
+    shows: '"license:apache-2.0" tag and "gated":false.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 44bef39be3772efbbe2e3da284bef20238be4139ec62344498d7098951040fb1
+    establishes:
+    - weights
+    - license
+  - url: https://ungh.cc/repos/QwenAudio/CosyVoice
+    shows: 'Repository description: "Multi-lingual large voice generation model, providing inference, training and
+      deployment full-stack ability."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cce24807dadbadd9400ed3388e61a178055ed41e3e370ac737c650365d0a6d2a
+    establishes:
+    - code
+  - url: https://huggingface.co/FunAudioLLM/Fun-CosyVoice3-0.5B-2512/raw/main/README.md
+    shows: 'Card front matter "license: apache-2.0"; the card reports benchmark results and usage but names no training
+      dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d4ec0fe1342b60a424ce1cd8971c670d26be38068a96148bcb6a1b8a334c3088
+    establishes:
+    - data
+    - license
+  - url: https://raw.githubusercontent.com/QwenAudio/CosyVoice/HEAD/LICENSE
+    shows: 'LICENSE body: "Apache License" "Version 2.0, January 2004".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads of the two current checkpoints; the older CosyVoice 1 repositories add little.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=FunAudioLLM&search=CosyVoice
+    shows: Fun-CosyVoice3-0.5B-2512 193,282 and CosyVoice2-0.5B 4,510 downloads in the trailing 30 days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 9d4fd1f889fc515baacede44c0a86fe52465dd2e6c39c000953dc6c67c38258f
+capability:
+  score: 3
+  basis: benchmark
+  basis_detail: self-reported Seed-TTS-eval zero-shot WER/CER and speaker similarity
+  value: The card reports zero-shot results on the Seed-TTS test-zh, test-en and test-hard sets against other systems;
+    the README lists 9 languages and 18+ Chinese dialects with instruction control.
+  confidence: low
+  note: A leading open Chinese voice-cloning line with dialect coverage few peers match. It is not on the Artificial
+    Analysis TTS leaderboard, so it is placed on its own reported results on a shared public test set, level with
+    Kokoro, rather than on a blind listening test.
+  relative_to: kokoro
+  relation: at
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/FunAudioLLM/Fun-CosyVoice3-0.5B-2512/raw/main/README.md
+    shows: Results table columns "test-zh<br>CER (%) ↓" and "test-en<br>WER (%) ↓" on the Seed-TTS evaluation.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d4ec0fe1342b60a424ce1cd8971c670d26be38068a96148bcb6a1b8a334c3088
+  - url: https://raw.githubusercontent.com/QwenAudio/CosyVoice/HEAD/README.md
+    shows: '"Covers 9 common languages (Chinese, English, Japanese, Korean, German, Spanish, French, Italian, Russian),
+      18+ Chinese dialects/accents".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 66436370172c2830ed98aa643b31898c65e16eee14ade68f00828d21fae602e0

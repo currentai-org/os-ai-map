@@ -1,0 +1,97 @@
+product: civitai
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/civitai/civitai
+    core-gated:
+      value: gated
+      detail: Buzz, signals and generation/training orchestration ship as private images
+  confidence: medium
+  note: The site's code is public under Apache-2.0, but the README says the Buzz and signals services come
+    from private images that only work for internal members, and generation, training, chat and notifications
+    do not run outside Civitai. Paid memberships are built on those services, so part of the product people
+    use is not in the published code.
+  raw: license:Apache-2.0(OSI);source:public(github.com/civitai/civitai);core-gated:gated(Buzz, signals and
+    generation/training orchestration ship as private images)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/civitai/civitai/HEAD/LICENSE
+    shows: Apache License Version 2.0, January 2004, full text.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 73a4bdee5ef076649d84f16b102a5ff1e3d7a04b011242b0256cd0c805121ce4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/civitai/civitai/HEAD/README.md
+    shows: '"The extra services in docker-compose.yml (signals, buzz) come from private ghcr.io images, so
+      they only work for internal members". Orchestration (Generation, Training), Signals and Buzz "will currently
+      not work locally".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7e2cc1e517912fc68ae4a9d4aaaea333d64c7ce73a472de2aa02b2afc4b38165
+    establishes:
+    - source
+    - core-gated
+  - url: https://civitai.com/pricing
+    shows: Memberships at $10, $25 and $50 a month granting Buzz, "3 Private Models" and model monetization.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c27d3bb93c8cca0c3e3a07594bfd8478cb7fe4529ef7c7548e2384e5586422de
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: niche
+  signal_type: reported_traction
+  confidence: low
+  banded_quantity: all-time download counters of the most-downloaded models in the public API, not a monthly
+    or user count
+  note: Civitai's API exposes an all-time download counter on each model, and the most-downloaded checkpoints
+    are in the low millions. The counters are cumulative, cover only downloads through the site, and no platform
+    total is published, so the reading reflects a large community inside image generation rather than a measured
+    monthly figure.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://civitai.com/api/v1/models?limit=3&sort=Most%20Downloaded
+    shows: 'Most downloaded: Realistic Vision V6.0 B1 "downloadCount":2330206, DreamShaper 1684175, Juggernaut
+      XL 1650374; no total count in the metadata.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ef912a4ac50ffe329ddd4287fa58e7ed3fb5f0086c47e184e93799fec1a871d7
+capability:
+  score: 4
+  basis: feature_matrix
+  value: account holders upload models with multiple versions; checkpoint, LoRA, textual inversion, VAE, ControlNet
+    and upscaler files; full-text search; public REST API for models, versions and hash lookup with no token
+  confidence: high
+  relative_to: huggingface-hub-platform
+  relation: one_below
+  note: Users create accounts and upload models, each with numbered versions holding the files, and the public
+    API lists, searches and resolves them without a key. Everything it hosts is one class of artifact, image-generation
+    weights and adapters, with no datasets, apps or Git history, so it sits a step below Hugging Face Hub.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://developer.civitai.com/site/reference/models
+    shows: '"A model represents a trained AI resource published on Civitai — a checkpoint, LoRA, textual inversion,
+      VAE, ControlNet, upscaler, etc. Each model has one or more model versions containing the actual files."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: df7d2816cf9598bb0113d8d1b373ac9a7f77d572f623af58c1ec8bec60ddf774
+  - url: https://developer.civitai.com/site/reference/
+    shows: '"All endpoints below live under https://civitai.com/api/v1/"; models and model versions, including
+      "GET /model-versions/by-hash/{hash}", are "Public — no token required."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: ac848cf2467185f90fbe5492c36564f03d0bf243daf5affdb97f6704c66778da
+  - url: https://raw.githubusercontent.com/civitai/civitai/HEAD/README.md
+    shows: '"The platform allows users to create an account, upload their models, and browse models that have
+      been shared by others."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7e2cc1e517912fc68ae4a9d4aaaea333d64c7ce73a472de2aa02b2afc4b38165

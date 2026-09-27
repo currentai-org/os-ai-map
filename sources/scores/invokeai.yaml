@@ -1,0 +1,88 @@
+product: invokeai
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: invoke-ai/InvokeAI
+    core-gated:
+      value: ungated
+      detail: no ee, enterprise, commercial or proprietary directory; the project site says the official hosted
+        platform has shut down and the project is community-maintained
+  confidence: high
+  note: InvokeAI is released under Apache 2.0 with its full source public. Its official hosted platform has closed,
+    and no paid edition of the software exists beside the open one.
+  raw: license:Apache-2.0(OSI);source:public(invoke-ai/InvokeAI);core-gated:ungated(no ee, enterprise, commercial
+    or proprietary directory; the project site says the official hosted platform has shut down and the project is
+    community-maintained)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/invoke-ai/InvokeAI/main/LICENSE
+    shows: 'LICENSE body: "Apache License / Version 2.0, January 2004".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 39301589f2cba7f40297c7da05c7e5d164f704caa979665b117c353203c9cf03
+    establishes:
+    - license
+  - url: https://ungh.cc/repos/invoke-ai/InvokeAI/files/main
+    shows: 'Full file list: no ee/, enterprise/, commercial/ or proprietary/ directory; license files cover bundled
+      model and third-party code.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3ebf29db79e3d7993f3385f15de8939f6bc696b564259360c467a7778edbbbb8
+    establishes:
+    - source
+    - core-gated
+  - url: https://invoke.ai/
+    shows: '"The Invoke.ai hosted platform has been shut down as the founding team joined Adobe. However, Invoke
+      lives on as a thriving open-source project maintained by the community."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 01ced77bee20390aa155bedfc842b8a4efbff4285f3224525680f90dee89e3e6
+    establishes:
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Adoption is measured as PyPI downloads of the invokeai package, which is the application itself and links
+    back to the repository.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://pypistats.org/api/packages/invokeai/recent
+    shows: 'pypistats for invokeai: last_month 23263.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 58f56208c989b9579a00b9d4fce90545c325ab1c5cdc309ba01b5967d1fd5670
+  - url: https://pypi.org/pypi/invokeai/json
+    shows: 'PyPI invokeai: project_urls Source = https://github.com/invoke-ai/InvokeAI/, summary "A full-featured
+      AI-assisted image generation environment designed for creatives and enthusiasts."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 266a6324ee0c337fa1eec71eef7de8943ae1fc038fc825aad3f018e9c141e2bc
+capability:
+  score: 2
+  basis: feature_matrix
+  value: image generation and editing across many local families (SD 1.5 to 3.5, FLUX.1, FLUX.2, Qwen-Image, Z-Image,
+    ERNIE-Image, CogView 4 and others) with a canvas and node workflows; Wan, Nano Banana and GPT Image only as
+    hosted API calls
+  confidence: high
+  relative_to: stable-diffusion-cpp
+  relation: one_below
+  note: InvokeAI runs a wide range of image model families locally, with a canvas and a node workflow editor. It
+    is a step below stable-diffusion.cpp because everything it runs on local hardware is an image model; its Wan
+    support is a call to a hosted API.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/invoke-ai/InvokeAI/main/README.md
+    shows: 'README Model Support: "SD 1.5, SD 2.0, SDXL, SD 3.5 Medium, SD 3.5 Large, CogView 4, Flux.1 Dev ...
+      Qwen Image, Qwen Image Edit, Ideogram 4, ERNIE-Image, ERNIE-Image-Turbo, Nano Banana (API Only), GPT Image
+      (API Only), Wan (API Only)".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 48293a6dbe76e2980f0532b64ee8bd2e236d48ff00c8601bc35c9e0bdf80646a
