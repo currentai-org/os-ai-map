@@ -3,6 +3,7 @@ display_name: Robotics & embodied AI
 description: Robot policy models, simulators and robot-learning frameworks, robot-interaction
   datasets and open robot hardware designs, whose purpose is an agent acting in, or being
   simulated in, the physical world.
+strapline: The leading simulators and the largest pooled robot dataset are open, but the most general robot model is closed, and half the open policies withhold the robot data they learned from.
 weights:
   adopt: 0.4
   cap: 0.6
@@ -13,21 +14,78 @@ scoring_recipe:
     software: software
     dataset: dataset
     hardware: hardware
-  note: >-
-    Per-type map over the four shared ladders, because the roster holds all four product
-    types and none of them climbs another's ladder. The policy models are `model` rather than
-    `pretrained`: every VLA in the seed starts from a pretrained vision-language backbone and
-    is trained on robot data on top of it, so none is trained from raw data. The hardware
-    ladder was written for edge boards and modules, and a robot arm or humanoid published as
-    CAD, a bill of materials and firmware answers its design and toolchain questions but not
-    its form-factor one; the promotion PR decides whether the ladder needs a robot-body rung
-    or the rows sit under `board`. Weighted 0.4 adoption to 0.6 capability because the
-    instruments differ by type (PyPI installs for the simulators, 30-day Hub downloads for
-    the policies and datasets, stars alone for most hardware), so adoption compares poorly
-    across the roster. License strings the shared tiers do not yet name (NVIDIA Open Model
-    License, NVIDIA OneWay Noncommercial, OpenMDW-1.1, the Galaxea G0 community licenses, the
-    Isaac Sim additional-materials license) go to the maintainer's license-rulings issue, and
-    the products carrying them are deferred at promotion rather than scored by analogy.
+  note: 'Per-type map over the four shared ladders, because the roster holds all four product types and none
+    of them climbs another''s ladder. The policy models are `model` rather than `pretrained`: every VLA starts
+    from a pretrained vision-language backbone or is trained on pooled robot data on top of one, so none is
+    a base model trained from raw data. The hardware rows sit under `form_factor: board`, recorded with a detail
+    saying each is a complete robot built from a published design: the ladder''s design and toolchain questions
+    (are the design files reusable, does the stack build from source) are the right questions of a robot arm
+    or humanoid, while `board` was written for a PCB, and a robot-body value is a shared-rubric change left
+    to the maintainer. Weighted 0.4 adoption to 0.6 capability because the adoption channels differ by type
+    (PyPI installs for simulators, 30-day Hub downloads for policies and datasets, stars for hardware and for
+    products whose channel reports no count).
+
+
+    CAPABILITY is read per product type, because a VLA, a simulator, a dataset and a robot body share no quantity.
+    Each type has its own top and every comparison stays inside the type.
+
+    Models, embodiment generality: 1 a single-task or single-robot policy; 2 a multi-task policy on one embodiment
+    family; 3 pretraining on pooled data from several robots, single-arm control (openvla, octo, smolvla);
+    4 cross-embodiment pretraining AND released bimanual or humanoid control (gr00t, pi0, rdt); 5 all of that
+    plus a separate embodied-reasoning model and whole-body humanoid control (gemini-robotics, the top, with
+    gr00t the top open model one below it).
+
+    Software, simulation throughput and fidelity: 1 CPU rigid-body simulation with basic rendering (pybullet);
+    2 CPU contact physics with a robot-learning surface of tasks, controllers and teleoperation (robosuite);
+    3 one of GPU-batched parallel simulation or rendered multi-sensor simulation (mujoco via MJX and Warp;
+    carla on Unreal Engine); 4 both, GPU-parallel simulation with rendered camera sensors (genesis, maniskill);
+    5 that plus a second physics backend and a library of ready-to-train tasks for common robots (isaac-lab,
+    the top). lerobot abstains: it simulates nothing, it is the real-robot collect-train-deploy loop, and placing
+    it on a simulator''s quantity would be a comparison nobody can check.
+
+    Datasets, episodes times embodiments: 3 tens of thousands of real trajectories on one platform (droid);
+    4 around a million trajectories from one maker''s robots, or hundreds of thousands across several simulated
+    embodiments (agibot-world, nvidia-physical-ai-dataset); 5 a million-plus trajectories pooled across twenty-plus
+    embodiments and institutions (open-x-embodiment, the top).
+
+    Hardware, morphology: 1 a desktop or expressive robot with no manipulator; 2 a single arm (so-101); 3 a
+    bimanual rig (openarm); 4 a mobile manipulator (none promoted yet; LeKiwi is in the registry); 5 a full
+    humanoid (berkeley-humanoid-lite, the top).
+
+
+    DISTRIBUTION, counted 2026-09-27 over the 21 banded products (lerobot abstains): 5 has 4, 4 has 7, 3 has
+    7, 2 has 2, 1 has 1. The widest rungs hold 7 of 21, exactly a third, so the category-wide trigger does
+    not fire. Within the models the review does fire: 3 of 7 at 4 and 3 of 7 at 3. This is the clustering case,
+    not a loose definition. The 3/4 split is a have-or-have-not test on the release (is there a released bimanual
+    or humanoid policy?), and it divides the models the way their own cards do: OpenVLA''s card rules out unseen
+    embodiments and ships single-arm control, Octo and SmolVLA ship single-arm policies, while GR00T, pi0 and
+    RDT each ship bimanual or humanoid checkpoints. Inside each rung the differences are scale and data mix,
+    which vendor cards do not order.'
+  deferred:
+    gr00t:
+      because: The N1.x base checkpoints are under the NVIDIA Open Model License, which the model tier names,
+        but GR00T-H and NVIDIA's own task fine-tune GR00T-N1.5-3B_Assemble_Trocar are
+        under the NVIDIA OneWay Noncommercial License, whose text limits use to 'research or evaluation purposes
+        only'. No tier names that string, the family's most restrictive distributed SKU governs, so the lookup
+        abstains. Recorded 2/restricted on the tier the license text describes (commercial_forbidden); the
+        ruling, or a decision to split GR00T-H into its own row, is the maintainer's.
+    maniskill:
+      because: The code and environments are Apache-2.0, but the README puts the bundled assets under CC BY-NC
+        4.0, and the software tiers name no non-commercial license. A software product whose shipped tasks
+        cannot be used commercially is closest to competition_restricted by that tier's own definition (a license
+        that forbids a class of use), so it is recorded 2/source_available; the ruling on NC-licensed assets
+        inside an OSI-licensed simulator is the maintainer's.
+    carla:
+      because: CARLA's code is MIT and its README puts the assets under 'the CC-BY License' with no version.
+        The software tiers name CC-BY-4.0 but not an unversioned CC-BY, so the lookup abstains rather than
+        guess a version. Recorded 3/source_available, where CC-BY-4.0 would land (permissive_non_osi); the
+        Unreal Engine dependency under Epic's own terms is recorded on the source detail and is a second question
+        for the same ruling.
+    pybullet:
+      because: 'Bullet is under the zlib license (PyPI classifier ''License :: OSI Approved :: zlib/libpng
+        License''), which is OSI-approved, but the software osi tier lists names literally and has never been
+        asked to name zlib. Recorded 5/open_source, where an osi license with public, ungated source lands;
+        adding Zlib to the osi examples is a shared-rubric change and the maintainer''s.'
 products:
 - isaac-lab
 - genesis
@@ -51,47 +109,54 @@ products:
 - berkeley-humanoid-lite
 - openarm
 - so-101
-comments: >-
-  Proposed in issue #12 and seeded on 2026-09-26 alongside world_models, in the new
-  Embodied & world models group. Membership test: does the product's value depend on
-  producing, or simulating, physical actions by a robot or a vehicle? Four product types pass
-  it and each reads capability on its own quantity, since a VLA, a physics engine, a dataset
-  and a robot arm share no axis. Models read embodiment generality (a single-robot fine-tune,
-  then a multi-task policy on one embodiment family, then cross-embodiment pretraining, then
-  cross-embodiment with reasoning and humanoid or bimanual control; GR00T is the top open
-  anchor and Gemini Robotics the closed frontier). Software reads simulation throughput and
-  fidelity (CPU rigid-body scripting, contact-rich CPU physics, GPU-parallel environments,
-  GPU-parallel multi-physics with photoreal rendering and sim-to-real; Isaac Lab is the
-  anchor). Datasets read episodes times embodiments (single-lab sets, then DROID-scale
-  collections, then pooled cross-embodiment collections such as Open X-Embodiment and AgiBot
-  World). Hardware reads morphology (a single arm, a bimanual teleoperation rig, a mobile
-  manipulator, a full humanoid); Reachy Mini, an expressive desktop robot, sits outside that
-  ladder and the promotion PR places it.
-  Neighbors. A model that predicts the next state of an environment from an action, rather
-  than choosing the action, belongs in world_models, robot world models included (Genie
-  Envisioner, UnifoLM-WMA, Boundless World Model, Ctrl-World, GigaWorld, RynnWorld, Cosmos);
-  a policy that outputs actions stays here even when a world model sits inside it (VLA-JEPA,
-  RynnVLA-002, the former WorldVLA, and GigaBrain). Embodied-reasoning vision-language models
-  with no action head (RynnBrain, the Hy-Embodied VLM, UnifoLM-ER, RoboBrain, Magma) go to
-  multimodal_models in a follow-up sweep and are not seeded here; Gemini Robotics-ER stays
-  inside the gemini-robotics row because it ships as part of that line. A benchmark suite
-  with no simulator of its own (LIBERO) belongs to benchmark_eval_data, a policy-evaluation
-  harness (Isaac Lab-Arena) to evaluation_code, and a generic RL environment API (Gymnasium)
-  to ml_frameworks. RoboTwin and RoboCasa are here because each ships a simulator and a data
-  generator and the benchmark is a by-product. Edge inference boards stay in edge_hardware; a
-  robot body is not an inference board, so the two do not overlap.
-  Rulings of 2026-09-26 (research/decisions.md, a proposal for maintainer review). Autonomous
-  driving is in: a driving policy (Alpamayo) and a driving simulator (CARLA) act in the
-  physical world, so CARLA came in from the parked list. Robot-interaction datasets live here
-  rather than in training_synthetic_datasets, because their consumers are the policies in this
-  category and their trajectories are actions, not pretraining corpora. There is no SO-100
-  row: it is the previous hardware generation in the SO-101 repository, and it gets its own
-  row only if something distinguishes its adoption. GR00T is here, not in world_models (ruled
-  2026-09-25). General robotics tooling with no learning surface (ROS 2, dora-rs, Gazebo,
-  Webots, Drake) is out, because the map is an AI stack. AgiBot World Alpha, Beta and the
-  2026 release are one row while they share CC BY-NC-SA 4.0 terms. Isaac Sim is tiered on its
-  Apache-2.0 code, with its dependency on proprietary NVIDIA runtime components recorded on
-  the score. MuJoCo Warp and MJX are backends of the mujoco row, not separate products.
-  Academic projects keep the owner's handle as the org slug (tonyzhaozh, jess-moss, ginwind)
-  until a primary source names an institution, and Robbyant stays `robbyant` until one
-  confirms the Ant Group affiliation.
+comments: 'Proposed in issue #12 and seeded on 2026-09-26 alongside world_models, in the new Embodied & world
+  models group. Membership test: does the product''s value depend on producing, or simulating, physical actions
+  by a robot or a vehicle? Four product types pass it and each reads capability on its own quantity, since
+  a VLA, a physics engine, a dataset and a robot arm share no axis. Models read embodiment generality (a single-robot
+  fine-tune, then a multi-task policy on one embodiment family, then cross-embodiment pretraining, then cross-embodiment
+  with reasoning and humanoid or bimanual control; GR00T is the top open anchor and Gemini Robotics the closed
+  frontier). Software reads simulation throughput and fidelity (CPU rigid-body scripting, contact-rich CPU
+  physics, GPU-parallel environments, GPU-parallel multi-physics with photoreal rendering and sim-to-real;
+  Isaac Lab is the anchor). Datasets read episodes times embodiments (single-lab sets, then DROID-scale collections,
+  then pooled cross-embodiment collections such as Open X-Embodiment and AgiBot World). Hardware reads morphology
+  (a single arm, a bimanual teleoperation rig, a mobile manipulator, a full humanoid); Reachy Mini, an expressive
+  desktop robot, sits outside that ladder and the promotion PR places it. Neighbors. A model that predicts
+  the next state of an environment from an action, rather than choosing the action, belongs in world_models,
+  robot world models included (Genie Envisioner, UnifoLM-WMA, Boundless World Model, Ctrl-World, GigaWorld,
+  RynnWorld, Cosmos); a policy that outputs actions stays here even when a world model sits inside it (VLA-JEPA,
+  RynnVLA-002, the former WorldVLA, and GigaBrain). Embodied-reasoning vision-language models with no action
+  head (RynnBrain, the Hy-Embodied VLM, UnifoLM-ER, RoboBrain, Magma) go to multimodal_models in a follow-up
+  sweep and are not seeded here; Gemini Robotics-ER stays inside the gemini-robotics row because it ships as
+  part of that line. A benchmark suite with no simulator of its own (LIBERO) belongs to benchmark_eval_data,
+  a policy-evaluation harness (Isaac Lab-Arena) to evaluation_code, and a generic RL environment API (Gymnasium)
+  to ml_frameworks. RoboTwin and RoboCasa are here because each ships a simulator and a data generator and
+  the benchmark is a by-product. Edge inference boards stay in edge_hardware; a robot body is not an inference
+  board, so the two do not overlap. Rulings of 2026-09-26 (research/decisions.md, a proposal for maintainer
+  review). Autonomous driving is in: a driving policy (Alpamayo) and a driving simulator (CARLA) act in the
+  physical world, so CARLA came in from the parked list. Robot-interaction datasets live here rather than in
+  training_synthetic_datasets, because their consumers are the policies in this category and their trajectories
+  are actions, not pretraining corpora. There is no SO-100 row: it is the previous hardware generation in the
+  SO-101 repository, and it gets its own row only if something distinguishes its adoption. GR00T is here, not
+  in world_models (ruled 2026-09-25). General robotics tooling with no learning surface (ROS 2, dora-rs, Gazebo,
+  Webots, Drake) is out, because the map is an AI stack. AgiBot World Alpha, Beta and the 2026 release are
+  one row while they share CC BY-NC-SA 4.0 terms. Isaac Sim is tiered on its Apache-2.0 code, with its dependency
+  on proprietary NVIDIA runtime components recorded on the score. MuJoCo Warp and MJX are backends of the mujoco
+  row, not separate products. Academic projects keep the owner''s handle as the org slug (tonyzhaozh, jess-moss,
+  ginwind) until a primary source names an institution, and Robbyant stays `robbyant` until one confirms the
+  Ant Group affiliation.
+
+
+  First promotion tranche, 2026-09-27 (22 products, every fact fetched live that day or the day before; evidence
+  trail on the research branch). Chosen for coverage of the four types and the adoption leaders: eight simulators
+  and frameworks (Isaac Lab, Genesis, ManiSkill, MuJoCo, CARLA, robosuite, PyBullet, LeRobot), seven policy
+  models (Gemini Robotics as the closed comparator, GR00T, pi0, RDT, OpenVLA, Octo, SmolVLA), four datasets
+  (Open X-Embodiment, AgiBot World, the NVIDIA GR00T X-Embodiment Sim release, DROID) and three robot bodies
+  (Berkeley Humanoid Lite, OpenArm, SO-101). The other rows stay in the registry for add-product. Three seeded
+  rows were researched and deliberately left there rather than promoted: MolmoAct, because MolmoAct 1 is Apache-2.0
+  but the MolmoAct2 cards state no license at all, so the line''s current terms are unknown; Alpamayo, because
+  its weights carry OpenMDW-1.1 while the Alpamayo 1.5 card says ''ready for non-commercial use'', a conflict
+  a primary source has to settle, and the NVlabs/alpamayo repository now says it is no longer under active
+  development; and ALOHA, because the tonyzhaozh/aloha repository holds MIT code but no CAD, so its hardware
+  design terms could not be read. nvidia-physical-ai-dataset is scoped to the GR00T X-Embodiment Sim release
+  it declares; NVIDIA''s other Physical AI robotics datasets are separate releases, some under CC BY-NC 4.0,
+  and are not part of the row. CARLA''s pip package is its Python client and is declared not_primary_channel.'
