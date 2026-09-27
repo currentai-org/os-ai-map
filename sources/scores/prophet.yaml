@@ -1,0 +1,84 @@
+product: prophet
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/facebook/prophet
+    core-gated:
+      value: ungated
+      detail: a Meta research release with nothing sold alongside it
+  confidence: medium
+  note: MIT, and the R and Python packages build from the public repository. Meta released it from its Core Data
+    Science team and sells nothing around it, so there is no paid edition for any of it to be held back for.
+  raw: license:MIT(OSI);source:public(github.com/facebook/prophet);core-gated:ungated(a Meta research release with
+    nothing sold alongside it)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/facebook/prophet@main/LICENSE
+    shows: 'LICENSE: "MIT License", "Copyright (c) Facebook, Inc. and its affiliates."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/facebook/prophet@main/README.md
+    shows: 'README: "Prophet is open source software released by Facebook''s Core Data Science team. It is available
+      for download on CRAN and PyPI."; no paid tier, hosted service or commercial license mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0b6304985392adb2b2b74d82b07b2df31df68e0085dc3478c8e98b126d51e443
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://data.jsdelivr.com/v1/packages/gh/facebook/prophet@main?structure=flat
+    shows: Flat file listing of main, 381 files under R, python, docs, examples and notebooks, with no ee, enterprise,
+      commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 90b0acab1cb704a26c625d5008d1f24acbd40e0b4493f05ede3c88ef160a182d
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the prophet package; CRAN installs of the R package are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/prophet/recent
+    shows: last_month 4,043,989 downloads of prophet
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 19d1ab0570228efa9622ee7aed13b4b7a827eab6472a60c87ef4f8f1a09bbc64
+capability:
+  score: 2
+  basis: feature_matrix
+  value: one model family - an additive trend, seasonality and holiday regression fit in Stan - with saturating
+    growth, changepoints, extra regressors, multiplicative seasonality and uncertainty intervals
+  relative_to: sktime
+  relation: one_below
+  confidence: high
+  note: Prophet is one well-engineered forecasting model, automated enough that an analyst can get a usable forecast
+    in a few lines. It offers no other model to compare it with, which is what a time-series toolkit such as sktime
+    adds, and it is now in maintenance mode.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://facebook.github.io/prophet/
+    shows: 'Homepage: "Prophet is a forecasting procedure implemented in R and Python. It is fast and provides completely
+      automated forecasts that can be tuned by hand by data scientists and analysts."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1840106705523c12c2fa9c7fa4ea7f6d1665917a9a43d81fbf2864ae196a4448
+  - url: https://cdn.jsdelivr.net/gh/facebook/prophet@main/README.md
+    shows: 'README: "Prophet is a procedure for forecasting time series data based on an additive model where non-linear
+      trends are fit with yearly, weekly, and daily seasonality, plus holiday effects." and "Prophet is in maintenance
+      mode as of v1.4.0".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 0b6304985392adb2b2b74d82b07b2df31df68e0085dc3478c8e98b126d51e443

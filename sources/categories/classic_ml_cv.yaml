@@ -14,8 +14,9 @@ scoring_recipe:
     software: software
   derived_from:
     method: >-
-      Shared ladders inherited per product type, not yet verified against scored products; the
-      category is preliminary and has none.
+      Shared ladders inherited per product type. Promotion of the first tranche (2026-09-26/27)
+      reproduced 14 of 16 hand-authored openness scores; the two that do not reproduce are the
+      deferrals below, both on license strings the shared tiers do not name.
     checker: build/check_rubric.py
   note: >-
     TWO LADDERS for openness. Libraries, toolkits and hosted APIs are typed `software` and climb
@@ -27,48 +28,105 @@ scoring_recipe:
     is software; a checkpoint line whose code exists to run the weights (DINO, Depth Anything,
     TabPFN) is a model.
 
-    CAPABILITY IS NOT ONE CLEAN QUANTITY here, and that is recorded rather than engineered away.
-    The best candidate is how much of the prediction task the product does for you, which
-    roughly nests: 1 primitives a model is built from, with no learner (OpenCV, scikit-image,
-    Kornia, Albumentations, supervision); 2 one learner family, well engineered (XGBoost,
-    LightGBM, CatBoost, Prophet, UMAP); 3 a toolkit of many learners with pipelines, evaluation
-    and a model zoo (scikit-learn, statsmodels, sktime, spaCy, Ultralytics, timm), containing 2;
-    4 pretrained and usable on a new task without training (TabPFN, SAM, Depth Anything, DINO
-    features); 5 automated end to end, searching, fitting and ensembling, and now embedding
-    rung-4 models (anchor AutoGluon). The weak joins are between 3 and 5 across sub-areas: a CV
-    toolkit and a tabular AutoML system are not more or less of the same thing, and no vision
-    AutoML product surfaced to anchor rung 5 for vision. Per type: software rows read the
-    ladder above directly; model rows sit at rung 4 by construction, so within the model rows
-    the discriminating reading is per task (classify, detect, segment, track or estimate depth)
-    against that task's own benchmark, never one benchmark across the set. If promotion shows
-    the ladder cannot discriminate, the split into a tabular half and a vision half (each with a
-    cleaner quantity: the rung ladder for tabular, task coverage for vision) is the repair,
-    which is why the category was created whole but with that split left open.
+    CAPABILITY is read as one quantity: how much of the prediction task the product does for
+    you. Each rung is a capability the product either has or lacks, checkable against its docs
+    and repository tree, and each contains the one below.
+      1  PRIMITIVES. Supplies the operations a model is built from or run on, and fits no
+         predictor of its own (opencv: its classical learners moved to opencv_contrib at HEAD, and
+         its dnn module runs networks trained elsewhere).
+      2  ONE LEARNER FAMILY, well engineered (xgboost, prophet).
+      3  A TOOLKIT of many learners or a model zoo, with the pipelines, evaluation or training
+         recipes to compare and fit them; choosing among them is left to the user (scikit-learn,
+         statsmodels, sktime, spacy, nltk, timm, ultralytics, rf-detr).
+      4  PRETRAINED, AND DOES THE USER'S OWN TASK WITH NO TRAINING STEP: a new table, or any
+         image, gets a prediction from the shipped model directly (tabpfn, tabicl,
+         google-cloud-vision). A checkpoint that handles only its training label space - COCO's
+         80 classes for rf-detr and the Ultralytics zoo - does not qualify: a new label set means
+         a training run, which is rung 3.
+      5  AUTOMATED END TO END: searches, fits and ensembles or trains models for the user's own
+         task without machine-learning work on their side, and embeds rung-4 models (autogluon,
+         the TOP ANCHOR; amazon-rekognition, whose Custom Labels trains detectors by AutoML inside
+         the same service). This replaces the seed note's claim that no vision product anchors
+         rung 5.
+    The seed note's statement that model rows sit at rung 4 by construction is withdrawn: rf-detr
+    is a model row at rung 3, on the definition above.
+
+    Every non-root band records `relative_to`/`relation` against a same-category peer:
+    scikit-learn two_below autogluon; statsmodels, sktime, spacy, nltk, timm and ultralytics at
+    scikit-learn; rf-detr at ultralytics; xgboost one_below scikit-learn; prophet one_below
+    sktime; opencv one_below xgboost; tabpfn one_below autogluon; tabicl at tabpfn;
+    amazon-rekognition at autogluon; google-cloud-vision one_below amazon-rekognition.
+
+    DISTRIBUTION REVIEW (capability.md, "Writing the rungs"), counted 2026-09-27 over the 16
+    banded products: rung 1 = 1, rung 2 = 2, rung 3 = 8, rung 4 = 3, rung 5 = 2. Rung 3 holds
+    8/16 = 50%, above the one-third trigger. Wording as it stands: "a toolkit of many learners or
+    a model zoo, with the pipelines, evaluation or training recipes to compare and fit them;
+    choosing among them is left to the user". Reading: the products genuinely CLUSTER rather than
+    the wording generalizing. Evidence: each of the eight documents a catalog of learners or
+    checkpoints (scikit-learn's user guide, statsmodels' model list, sktime's 500+ models, spaCy's
+    trained components, NLTK's module index, timm's >700 weights, Ultralytics' task list, RF-DETR's
+    size and head tables) and none documents predicting on a new task untrained or automated
+    model search, which is what separates 4 and 5. The tranche is also skewed toward adoption
+    leaders, which are mostly toolkits; single-learner and primitive libraries (LightGBM,
+    CatBoost, UMAP, scikit-image, Kornia, supervision) remain in the registry, and promoting them
+    should widen rungs 1 and 2. The tabular/vision split stays open: the ladder above
+    discriminated both halves in this tranche, so nothing here requires it yet.
 
     Weighted 0.6 adoption to 0.4 capability, as ml_frameworks and document_conversion are,
     because the adoption instrument is unusually strong here (monthly PyPI and Hugging Face
     downloads on nearly every row) and the capability axis is weak.
 
-    LICENSE STRINGS NEEDING A RULING before any product carrying one is promoted, sent to the
-    single maintainer license-rulings issue rather than decided here: FSL-1.1-MIT (pycaret; the
-    software ladder names only the ALv2 variant), BSL-1.0 Boost (dlib; OSI-approved and must
-    not be matched to BSL-1.1 Business Source), the DINOv3 License, the SAM License (SAM 3), the
-    Sapiens2 License, the Prior Labs TabPFN weights licenses, the TabFM Non-Commercial License,
-    the Stable AI LimiX code and weights licenses, the EXAONE AI Model License NC, Apple's
-    apple-amlr sample-code license, and the NVIDIA Source Code License. Products carrying one
-    are deferred at promotion.
+    LICENSE STRINGS NEEDING A RULING before a product carrying one can reproduce, sent to the
+    single maintainer license-rulings issue rather than decided here. Met in this tranche and
+    deferred below: the Prior Labs TabPFN weights licenses (TABPFN-3 License v1.0, TABPFN-3.5
+    License v1.0, TABPFN-2.6 License v1.0, TABPFN-2.5 License v1.1, and the Prior Labs License 1.1
+    on TabPFN-2) and Roboflow's Platform Model License 1.0 (PML-1.0) on the RF-DETR XL and 2XL
+    detection weights. Still in the registry and expected to defer when promoted: FSL-1.1-MIT
+    (pycaret; the software ladder names only the ALv2 variant), BSL-1.0 Boost (dlib;
+    OSI-approved and must not be matched to BSL-1.1 Business Source), LGPL-2.1 (gensim; the osi
+    examples name LGPL-3.0 only), the DINOv3 License, the SAM License (SAM 3), the Sapiens2
+    License, the TabFM Non-Commercial License, the Stable AI LimiX code and weights licenses, the
+    EXAONE AI Model License NC, Apple's apple-amlr sample-code license, and the NVIDIA Source Code
+    License.
+  deferred:
+    tabpfn:
+      because: >-
+        Every currently distributed TabPFN checkpoint (2.5, 2.6, 3, and the default 3.5) is under
+        its own Prior Labs license granting use "solely for your Non-Commercial Purposes", and
+        TabPFN-2 is under the Prior Labs License 1.1 (Apache-2.0 plus an attribution and
+        model-naming clause). None of those strings is named in the pretrained ladder's tiers, so
+        the tier lookup abstains. The recorded 2/restricted is the commercial_forbidden reading of
+        the non-commercial grant, hand-assigned pending the maintainer's ruling; the grant text
+        was read on each checkpoint's LICENSE on 2026-09-26.
+    rf-detr:
+      because: >-
+        The code and the Nano to Large detection and all segmentation weights are Apache-2.0, but
+        the XL and 2XL detection weights ship in the rfdetr_plus package under Roboflow's
+        Platform Model License 1.0, which allows use only while the user holds a Roboflow platform
+        plan or other agreement and is in good standing. The multi-SKU rule makes the most
+        restrictive distributed license govern, and PML-1.0 maps to no tier, so the lookup
+        abstains. The recorded 2/restricted is a hand reading (weights published, use reserved to
+        the vendor's platform customers) pending the maintainer's ruling; whether PML-1.0 is
+        commercial_forbidden, use_bounded or proprietary is that ruling.
 products:
+- autogluon
 - scikit-learn
 - xgboost
 - statsmodels
+- sktime
+- prophet
 - spacy
 - nltk
 - tabpfn
 - tabicl
+- opencv
+- timm
 - ultralytics
 - rf-detr
 - amazon-rekognition
 - google-cloud-vision
+strapline: >-
+  Outside the LLM stack, the libraries are open all the way down: every classical-ML, forecasting, NLP and vision library promoted here publishes its whole source under an OSI license, and only Ultralytics keeps models back for paying customers. The restrictions sit on pretrained weights instead - TabPFN's non-commercial checkpoints and RF-DETR's platform-only large models - and on the hosted vision APIs from Google and AWS.
 comments: >-
   Proposed in issue #600; created as one category (not split) on the 2026-09-26 new-category
   decisions. Litmus: does the product fit, run or ship a prediction model - or the vision
@@ -120,3 +178,15 @@ comments: >-
   products. Org slugs for rows published from a personal account (lyuwenyu, Peterande, yzhao062,
   lmcinnes) or a moved org (lightgbm-org) keep the account slug until promotion writes the org
   files.
+  PROMOTION, first tranche (2026-09-26/27): sixteen products chosen for adoption and for one or
+  more rows per sub-area - tabular (scikit-learn, xgboost, statsmodels), AutoML (autogluon),
+  tabular foundation models (tabpfn, tabicl), NLP (spacy, nltk), time series (sktime, prophet),
+  vision libraries (opencv, timm, ultralytics), a vision model line (rf-detr) and the two closed
+  comparators (google-cloud-vision, amazon-rekognition). The other 65 rows stay in the registry
+  for add-product. Identity calls made at promotion: autogluon declares the autogluon.core package
+  rather than the autogluon meta-package, because every AutoGluon module depends on core and the
+  meta-package alone undercounts installs; opencv keeps opencv-python although that wheel is built
+  from the opencv/opencv-python packaging repository; timm's adoption is PyPI only; tabicl
+  declares the tabicl package though its PyPI record carries no project URL back to the repository
+  (the authors named on it are the repository's authors); lightgbm stays under the lightgbm-org
+  account slug until it is promoted. No row was rejected at promotion.

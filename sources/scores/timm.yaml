@@ -1,0 +1,85 @@
+product: timm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; hosted pretrained weights carry their own licenses
+    source:
+      value: public
+      detail: github.com/huggingface/pytorch-image-models
+    core-gated:
+      value: ungated
+      detail: no paid edition of the library
+  confidence: medium
+  note: 'The library is Apache-2.0 and builds whole from the public repository, with nothing sold around it. The
+    pretrained weights it loads are a different matter: each carries its source''s terms, and some, such as Facebook''s,
+    are non-commercial.'
+  raw: license:Apache-2.0(OSI; hosted pretrained weights carry their own licenses);source:public(github.com/huggingface/pytorch-image-models);core-gated:ungated(no
+    paid edition of the library)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/huggingface/pytorch-image-models/HEAD/LICENSE
+    shows: 'LICENSE: Apache License, Version 2.0, "Copyright 2019 Ross Wightman".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 71b111620fa32c17a80ccd6db2da759d31a591e497d8b5f382174f59d1b59d49
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/huggingface/pytorch-image-models/HEAD/README.md
+    shows: 'README: "The code here is licensed Apache 2.0." and "The Facebook models have an explicit non-commercial
+      license (CC-BY-NC 4.0, ...)"; no paid tier or commercial license for timm mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 552aa8c9d484455e099157cb7ac838ab2edd7daa795c59a50c023bf050cdba01
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://ungh.cc/repos/huggingface/pytorch-image-models/files/HEAD
+    shows: Repository tree of 504 files (timm, tests, hfdocs, train.py, validate.py, inference.py) with no ee, enterprise,
+      commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 71abe8c7b554809f77af4b2bc3de8562f0cb09ac94df346ec690183cd3187261
+    establishes:
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of timm only; Hugging Face downloads of the timm checkpoints are left
+    out because that namespace also mirrors other vendors' weights.
+  sources:
+  - url: https://pypistats.org/api/packages/timm/recent
+    shows: last_month 10,328,111 downloads of timm
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7fe31375734475093841d5bf43feeb01aceefcfd379788c0896932cb94b24936
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 106 architecture families with >700 pretrained weights, plus layers, optimizers, schedulers, augmentations
+    and reference train/validate/export scripts
+  relative_to: scikit-learn
+  relation: at
+  confidence: medium
+  note: timm is the widest zoo of image backbones, with the training recipes to reproduce and fine-tune them. A
+    new task still means training or fine-tuning on labeled images; it leaves the choice of architecture to the
+    user.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/docs/timm/index
+    shows: 'Docs: "timm is a library containing SOTA computer vision models, layers, utilities, optimizers, schedulers,
+      data-loaders, augmentations, and training/evaluation scripts. It comes packaged with >700 pretrained models".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5bfb9414f104d4e9158acf907c85ac92ffee7045168f0beae3e8dd5b4691e431
+  - url: https://raw.githubusercontent.com/huggingface/pytorch-image-models/HEAD/README.md
+    shows: README Models list of 106 architecture families (BEiT, ConvNeXt, CoAtNet and others), with sections on
+      optimizers, augmentations and regularization.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 552aa8c9d484455e099157cb7ac838ab2edd7daa795c59a50c023bf050cdba01

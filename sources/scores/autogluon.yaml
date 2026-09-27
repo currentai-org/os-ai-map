@@ -1,0 +1,99 @@
+product: autogluon
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/autogluon/autogluon
+    core-gated:
+      value: ungated
+      detail: AutoGluon Cloud and SageMaker Autopilot are separate hosted offerings
+  confidence: high
+  note: Apache-2.0, and every module - tabular, time series and multimodal - builds from the public repository.
+    Amazon's hosted ways to run it, AutoGluon Cloud and SageMaker Autopilot, are offered as separate services around
+    the same open library. Some of the third-party foundation models it can call carry their own non-commercial
+    terms.
+  raw: license:Apache-2.0(OSI);source:public(github.com/autogluon/autogluon);core-gated:ungated(AutoGluon Cloud
+    and SageMaker Autopilot are separate hosted offerings)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/autogluon/autogluon@master/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0; NOTICE reads "Copyright 2019 Amazon.com, Inc. or its affiliates."
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/autogluon/autogluon@master/README.md
+    shows: 'README "Train/Deploy AutoGluon in the Cloud": "AutoGluon Cloud (Recommended)", AutoGluon Deep Learning
+      Containers, and "Amazon SageMaker Autopilot ... (Managed AutoGluon experience)"; no enterprise edition or
+      license key for the library.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 93ecf7edc13ca41f27ba529da07e39290e3124f53d55db2867ce70532154aa91
+    establishes:
+    - source
+    - core-gated
+  - url: https://data.jsdelivr.com/v1/packages/gh/autogluon/autogluon@master?structure=flat
+    shows: Flat file listing of master, 1,151 files under core, tabular, timeseries, multimodal, features and common,
+      with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3f3f7f8c6d905a533ca96c35a22103c6ada2b680ba2f3928db4865516700cedb
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Measured on monthly PyPI downloads of autogluon.core, the package every AutoGluon module depends on, so
+    that installs of the tabular, time-series and multimodal parts are each counted once; the autogluon meta-package
+    alone would undercount.
+  sources:
+  - url: https://pypistats.org/api/packages/autogluon.core/recent
+    shows: last_month 185,210 downloads of autogluon-core
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 75ef60290d0cf78e83823acc88d41f1ce7e13a8077992f283ff3de6446c733b6
+  - url: https://pypistats.org/api/packages/autogluon/recent
+    shows: last_month 67,860 downloads of the autogluon meta-package
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a66dfd714ae3a50aa00fe332d966303836c0b66876a24a5bb8095adea1385673
+capability:
+  score: 5
+  basis: feature_matrix
+  value: automated training, tuning and multi-layer stack/bag ensembling for tabular, time-series and multimodal
+    tasks; its tabular model zoo includes the Mitra, TabICL, TabPFN and TabDPT foundation models alongside boosted
+    trees and neural networks
+  confidence: high
+  note: 'AutoGluon does the whole prediction task for you: it chooses and trains candidate models, including pretrained
+    tabular foundation models, and stacks them into an ensemble, across tables, time series and mixed image and
+    text data. It is the most complete automation in this category and the point the other products here are compared
+    against.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/autogluon/autogluon@master/README.md
+    shows: 'README: "AutoGluon takes care of that: it finds the combination of models that works best for your use
+      case."; predictors TabularPredictor, TimeSeriesPredictor, MultiModalPredictor.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 93ecf7edc13ca41f27ba529da07e39290e3124f53d55db2867ce70532154aa91
+  - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+    shows: 'Tabular essentials: "presets=''best'', which allows AutoGluon to automatically construct powerful model
+      ensembles based on stacking/bagging".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-foundational-models.html
+    shows: 'Foundation-models tutorial: "Mitra - AutoGluon''s own tabular foundation model, with fully open weights",
+      "TabICLv2", "TabPFNv2", with a table of the tabular foundation models AutoGluon can fit (TabDPT, TabPFNv2,
+      TabICL, Mitra, RealTabPFN-2.5 and others).'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c97a5edec036a138ed9cf8cc830947a83a8ab4cb1d7544d0aadaf90ca1f6e4b9

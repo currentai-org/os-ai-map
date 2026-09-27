@@ -1,0 +1,104 @@
+product: opencv
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI; the opencv-python build scripts are MIT
+    source:
+      value: public
+      detail: github.com/opencv/opencv
+    core-gated:
+      value: ungated
+      detail: maintained by a non-profit foundation
+  confidence: medium
+  note: OpenCV is Apache-2.0 and the library builds from its public repository, with extra modules in the equally
+    public opencv_contrib. It is maintained by a non-profit foundation. The only algorithms missing from the PyPI
+    wheels are patented ones such as SURF, left out because they cannot be redistributed, not held back for a paid
+    tier.
+  raw: license:Apache-2.0(OSI; the opencv-python build scripts are MIT);source:public(github.com/opencv/opencv);core-gated:ungated(maintained
+    by a non-profit foundation)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/opencv/opencv/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0; the separate COPYRIGHT file lists Intel, the OpenCV Foundation,
+      OpenCV AI and other holders.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/opencv/opencv-python/HEAD/LICENSE.txt
+    shows: 'opencv-python packaging repository LICENSE.txt: "MIT License", "Copyright (c) Olli-Pekka Heinisuo".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 09d719058e782ac7bc71ba21c944e1136cde2bb957c0e888121f0218d6b5f02c
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/opencv/opencv-python@4.x/README.md
+    shows: 'opencv-python README: "The repository contains only OpenCV-Python package build scripts, but not OpenCV
+      itself." and "Non-free algorithms such as SURF are not included in these packages because they are patented
+      / non-free".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 96d6b5b49d1b94240d6e68caac705af90f9874bd36658227ddc7e2eca5a34c26
+    establishes:
+    - source
+    - core-gated
+  - url: https://causes.benevity.org/causes/840-455202940
+    shows: 'Charity listing: "The Open Source Vision Foundation, which maintains the OpenCV library, is a non-profit
+      organization dedicated to advancing the beneficial uses of computer vision in society."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 56f77fb287eb6a84feb79775b19c23bb9ef47dfbbe2a11b2f3313d6b49a68cd5
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/opencv/opencv/files/HEAD
+    shows: Repository tree of 7,370 files with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1cd92b787079057d87e3c47cfa1e4b4e40b0952f8086836c6fae7118c61a41b6
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of opencv-python; the contrib and headless wheels are separate packages
+    and not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/opencv-python/recent
+    shows: last_month 29,918,110 downloads of opencv-python
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f886a774108ad2ecac42cd1ef9ba68bbd57cbc3a284a3549026d5f840db01dd8
+capability:
+  score: 1
+  basis: feature_matrix
+  value: image processing, features, calibration, stereo, stitching, video and object-detection primitives, and
+    a dnn module that runs ONNX/TensorFlow/TFLite models trained elsewhere; the classical learners (SVM, k-NN, random
+    trees, boosting) have moved to opencv_contrib at HEAD
+  relative_to: xgboost
+  relation: one_below
+  confidence: medium
+  note: OpenCV supplies the building blocks of computer vision - filtering, geometry, features, video and a fast
+    engine for running networks trained in other frameworks - rather than training a predictor itself. Its classical
+    learners now sit in the separate contrib repository, so the main library fits no model of its own.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://ungh.cc/repos/opencv/opencv/files/HEAD
+    shows: 'Tree at HEAD: modules calib, core, dnn, features, flann, geometry, highgui, imgcodecs, imgproc, objdetect,
+      photo, stereo, stitching, video, videoio and others; modules/ml holds only four perf files, and modules/dnn
+      has ONNX, TensorFlow and TFLite importers.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 1cd92b787079057d87e3c47cfa1e4b4e40b0952f8086836c6fae7118c61a41b6
+  - url: https://cdn.jsdelivr.net/gh/opencv/opencv_contrib@5.x/modules/ml/include/opencv2/ml.hpp
+    shows: opencv_contrib 5.x ml.hpp declares the learners NormalBayesClassifier, KNearest, SVM, EM, DTrees, RTrees,
+      Boost, ANN_MLP, LogisticRegression and SVMSGD.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c41f7f03931dbbd80ee8668ea782fa4d401effd3bc582d582b648221f85069dd
