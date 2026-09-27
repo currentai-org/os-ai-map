@@ -331,7 +331,16 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 37 with the classic_ml_cv second tranche, thirty-four products in. All five additions
+    # are license names the shared tiers do not carry, recorded rather than hand-closed per
+    # promote-category step 7, each closing on a maintainer's tier ruling: `gensim` (LGPL-2.1,
+    # OSI-approved, not listed in the software osi tier), `dlib` (BSL-1.0 Boost, OSI-approved and
+    # distinct from the BSL-1.1 the tier names), `insightface` (MIT code, non-commercial model
+    # packs), `dino` (the DINOv3 License) and `segment-anything` (the SAM License on SAM 3 and 3.1).
+    # `pycaret` was expected to be a sixth on FSL-1.1-MIT, but that license covers only its 4.0
+    # pre-releases; read on the current stable release, MIT 3.3.2, it computes and is not counted.
+    assert len(deferred) == 37
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
