@@ -331,7 +331,12 @@ def test_local_scores_matches_check_rubrics_split():
     # release, Qwen3.5-Omni, is API-only, so it is the closed frontier on an open line: both
     # releases recorded, openness.score left null, closing on the maintainer's ruling on
     # availability versus openness rather than on more work.
-    assert len(deferred) == 32
+    #
+    # 32 -> 33 with the multimodal_models second tranche. `lfm-vl` ships every LFM2.5-VL size under
+    # the LFM Open License v1.0, an Apache-based license with a USD 10M annual-revenue threshold that
+    # no shared tier names. It is hand-placed at the use_bounded reading, 3/open_weights, and closes
+    # on a shared-tier ruling, not on more work.
+    assert len(deferred) == 33
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
