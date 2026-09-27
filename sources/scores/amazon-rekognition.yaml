@@ -1,0 +1,66 @@
+product: amazon-rekognition
+openness:
+  score: 1
+  class: closed
+  components:
+    license:
+    - name: Proprietary
+    source:
+      value: closed
+      detail: hosted AWS service; no implementation or weights published
+  confidence: high
+  note: A managed AWS service with no published code or models and no self-hosted edition.
+  raw: license:Proprietary;source:closed(hosted AWS service; no implementation or weights published)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://docs.aws.amazon.com/rekognition/latest/dg/what-is.html
+    shows: 'Developer guide: "Amazon Rekognition is a cloud-based image and video analysis service" with "a simple,
+      easy-to-use API that can quickly analyze any image or video file that''s stored in Amazon S3".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 994176f3841d743e80ed18de647f5643f52c0f5a6337ba735557ce5fdb8cef73
+    establishes:
+    - license
+    - source
+adoption:
+  level: null
+  signal_type: unknown
+  confidence: low
+  note: AWS publishes no customer or request count for Rekognition, and it has no package or download count of its
+    own, so no level is assigned.
+  sources:
+  - url: https://aws.amazon.com/rekognition/
+    shows: The product page, read for a usage disclosure; it lists features and pricing but no customer or request
+      count.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d67fa6cea188d779a1b255deb5d66e1822e68a8dd2910fd464bd4a083f0b714
+capability:
+  score: 5
+  basis: feature_matrix
+  value: pretrained image and video APIs (labels, text, faces, celebrities, moderation, PPE) plus Custom Labels,
+    which trains custom classifiers and detectors by AutoML from as few as 10 images
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: 'Rekognition covers both ends of computer vision in one service: pretrained analysis that needs no training,
+    and Custom Labels, which searches for and trains a model for a customer''s own objects from a handful of labeled
+    images without any machine-learning work on their side. That automated path from labeled images to a deployed
+    model is what AutoGluon does for tables.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://aws.amazon.com/rekognition/
+    shows: 'Product page: "Custom labels: Detect custom objects, such as brand logos, using automated machine learning
+      (AutoML) to train your models with as few as 10 images." Features also listed: face liveness, face detection
+      and analysis, text detection, face compare and search, content moderation, labels, celebrity recognition,
+      video segment detection.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d67fa6cea188d779a1b255deb5d66e1822e68a8dd2910fd464bd4a083f0b714
+  - url: https://docs.aws.amazon.com/rekognition/latest/dg/what-is.html
+    shows: 'Developer guide capability list: object, scene and concept detection; text detection; unsafe content;
+      celebrity recognition; facial analysis; Custom Labels ("Build custom classifiers to detect objects specific
+      to your use case"); image properties; video analysis.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 994176f3841d743e80ed18de647f5643f52c0f5a6337ba735557ce5fdb8cef73

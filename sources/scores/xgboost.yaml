@@ -1,0 +1,85 @@
+product: xgboost
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/dmlc/xgboost
+    core-gated:
+      value: ungated
+      detail: committee-governed; funded by sponsorship, nothing sold
+  confidence: high
+  note: Apache-2.0, built from the public repository, and run by a project management committee that takes sponsorship
+    for its CI costs. No company sells an edition of it.
+  raw: license:Apache-2.0(OSI);source:public(github.com/dmlc/xgboost);core-gated:ungated(committee-governed; funded
+    by sponsorship, nothing sold)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/dmlc/xgboost/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright (c) 2019 by Contributors".
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b96f9cead5f4ea4c0a217bd9d879427443a353598fb72694f2d8c4428b53a6af
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/dmlc/xgboost/HEAD/README.md
+    shows: 'README: "XGBoost is an optimized distributed gradient boosting library"; License section "Licensed under
+      an Apache-2 license"; sponsors listed via Open Source Collective; no paid tier mentioned.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e59e190ef0d17e289c86a2b8b76c623f86128d724300fecaec2a4c46075e2367
+    establishes:
+    - license
+    - source
+  - url: https://xgboost.readthedocs.io/en/stable/contrib/community.html
+    shows: 'Community guide: "XGBoost adopts the Apache style model and governs by merit." and "The PMC may accept
+      3rd-party donations and sponsorships that would defray the cost of the CI infrastructure."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f0a702d174cedb57970fb096b48949eb0d86737de9b05ad5ddcdbd205123510c
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/dmlc/xgboost/files/HEAD
+    shows: Repository tree of 1,453 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: aa2ae29dd725b6e5fb79c49340ec56c9b4fd0323da276b6aae83ed88030bd76b
+    establishes:
+    - core-gated
+adoption:
+  level: 5
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the xgboost package; the R, JVM and other bindings are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/xgboost/recent
+    shows: last_month 29,819,156 downloads of xgboost
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 95308dde9c5a9322f1d94e355a2e3b18df5bf05b643b61215590f71bea2ad5d9
+capability:
+  score: 2
+  basis: feature_matrix
+  value: one learner family - gradient-boosted trees (GBDT, DART, random forests) - for classification, regression,
+    learning to rank and survival, with categorical data, monotonic and interaction constraints, GPU and distributed
+    training
+  relative_to: scikit-learn
+  relation: one_below
+  confidence: high
+  note: XGBoost does one kind of model, boosted trees, and does it very well, at scale and on GPUs. Anything else
+    - another learner, the comparison between them, the pipeline around them - comes from a toolkit like scikit-learn,
+    whose estimator interface it implements.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://xgboost.readthedocs.io/en/stable/
+    shows: 'Docs landing tutorials: Introduction to Boosted Trees, Learning to Rank, DART, Monotonic Constraints,
+      Feature Interaction Constraints, Survival Analysis with Accelerated Failure Time, Categorical Data, Multiple
+      Outputs, Random Forests in XGBoost; distributed on Kubernetes, Spark, Dask, PySpark and Ray; GPU support;
+      scikit-learn estimator interface.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c1308fbe0445610770b654de0c59cc56f57a82130f420c23251e274b92e0eea4

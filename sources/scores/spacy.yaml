@@ -1,0 +1,86 @@
+product: spacy
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/explosion/spaCy
+    core-gated:
+      value: ungated
+      detail: Prodigy and consulting are sold as separate products
+  confidence: high
+  note: MIT, and the whole library builds from the public repository. Explosion describes spaCy as commercial open-source
+    software and earns from Prodigy, a separately licensed annotation tool, and from consulting; neither is a withheld
+    part of spaCy.
+  raw: license:MIT(OSI);source:public(github.com/explosion/spaCy);core-gated:ungated(Prodigy and consulting are
+    sold as separate products)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/explosion/spaCy@master/LICENSE
+    shows: 'LICENSE: "The MIT License (MIT)", "Copyright (C) 2016-2024 ExplosionAI GmbH, 2016 spaCy GmbH, 2015 Matthew
+      Honnibal".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 3f4378e67708fecacd3e27651c8bc0f977cf20789e19da0d81a2840e7cf573a2
+    establishes:
+    - license
+  - url: https://cdn.jsdelivr.net/gh/explosion/spaCy@master/README.md
+    shows: 'README: "spaCy is commercial open-source software, released under the MIT license."; links to Tailored
+      Solutions consulting.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f7a66a3473456b6d28520c9aa8baafa57ac4404994808118f1a6ae8e9440c9ce
+    establishes:
+    - license
+    - source
+  - url: https://prodi.gy/buy
+    shows: 'Prodigy pricing: "$ 390 USD per lifetime license" for personal use and "$ 490 USD per seat, in packs
+      of 5 seats" for companies - an annotation tool sold on its own license.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f015dce26250350254c9dcd913921ca978258664a587154672d448245760a0bc
+    establishes:
+    - core-gated
+  - url: https://data.jsdelivr.com/v1/packages/gh/explosion/spaCy@master?structure=flat
+    shows: Flat file listing of master, 1,776 paths, with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7fe513b022f2fa8b1cb27c1f0d1cff53d844aa0b0a2dff76566f2dcf0eb2a899
+    establishes:
+    - core-gated
+adoption:
+  level: 5
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the spacy package; the trained pipeline packages are not counted.
+  sources:
+  - url: https://pypistats.org/api/packages/spacy/recent
+    shows: last_month 21,026,566 downloads of spacy
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9188f24d164c297b68c4e766e8b58b4ead0660b3fbfaa3a2a36b597b77b0692e
+capability:
+  score: 3
+  basis: feature_matrix
+  value: NER, POS tagging, dependency parsing, sentence segmentation, text classification, lemmatization, morphology
+    and entity linking components; trained pipelines for 70+ languages; a training system and transformer integration
+  relative_to: scikit-learn
+  relation: at
+  confidence: medium
+  note: 'spaCy is to classical NLP what scikit-learn is to tabular learning: a toolkit of trained components and
+    the system to train more. Its pretrained pipelines handle a fixed set of linguistic tasks; a new label set still
+    means training a component.'
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://cdn.jsdelivr.net/gh/explosion/spaCy@master/README.md
+    shows: 'README features: "Support for 70+ languages"; "Trained pipelines for different languages and tasks";
+      "Components for named entity recognition, part-of-speech-tagging, dependency parsing, sentence segmentation,
+      text classification, lemmatization, morphological analysis, entity linking and more"; "Production-ready training
+      system".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f7a66a3473456b6d28520c9aa8baafa57ac4404994808118f1a6ae8e9440c9ce
