@@ -1,0 +1,101 @@
+product: openvla
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+    data:
+      value: open
+      detail: the Open X-Embodiment mixture
+    code:
+      value: open
+      detail: pretraining, training and fine-tuning scripts
+    license:
+    - name: MIT
+      detail: checkpoints and code, per the card
+    - name: Llama-2-Community-License
+      detail: the Llama 2 language model inside the weights
+  confidence: medium
+  note: The data, the training code and the checkpoints are all public, and the project releases them under MIT.
+    The language model inside the weights is Meta's Llama 2, though, and Llama 2 comes under Meta's community license,
+    which caps use by very large services.
+  raw: weights:open;data:open(the Open X-Embodiment mixture);code:open(pretraining, training and fine-tuning scripts);license:MIT(checkpoints
+    and code, per the card)+Llama-2-Community-License(the Llama 2 language model inside the weights)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/openvla/openvla-7b/raw/main/README.md
+    shows: 'Card: "All OpenVLA checkpoints, as well as our training codebase are released under an MIT License";
+      fine-tuned from prism-dinosiglip-224px, whose "Language Model: Llama-2"; pretraining dataset Open X-Embodiment,
+      970K episodes.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 16449c659127df8f4d0f43958be0d114be41e94317f5fc72740d84eab99c5624
+    establishes:
+    - license
+    - data
+  - url: https://raw.githubusercontent.com/meta-llama/llama/main/LICENSE
+    shows: 'Llama 2 Community License Agreement: the terms under which Meta distributes the Llama 2 weights, covering
+      their use, reproduction, distribution and modification.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: f28d05612fee8ef09283d4e755c468080b13d1cd92c9ae1aa52c84b075799e23
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/openvla/openvla-7b
+    shows: 'Hub API for openvla/openvla-7b: license:mit tag, gated false, safetensors weights.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9f6838a2915763214e0685b57fdd01a283f591d5bbb45b538f519b0836fc28a6
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/openvla/openvla/files/main
+    shows: 'Repository tree: scripts/pretrain.py, vla-scripts/train.py, vla-scripts/finetune.py.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 07c2600d428f3a0c7c8d519dfd5249113fe5df73644dc626ea233d3baf64eb9f
+    establishes:
+    - code
+  - url: https://cdn.jsdelivr.net/gh/openvla/openvla/LICENSE
+    shows: 'LICENSE: MIT License, "Copyright (c) 2024 Moo Jin Kim, Karl Pertsch, Siddharth Karamcheti".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c4ee2ba5958af03d74b1d3dfa174e3749171d689fb4c23cc170749c05ae3eeb5
+    establishes:
+    - license
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of openvla-7b. Its LIBERO fine-tunes are downloaded separately and are not declared
+    here.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/openvla/openvla-7b
+    shows: 'Hub API for openvla/openvla-7b: 445,187 downloads in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9f6838a2915763214e0685b57fdd01a283f591d5bbb45b538f519b0836fc28a6
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Cross-embodiment pretraining on 970K Open X-Embodiment episodes; zero-shot control only for embodiment
+    and domain combinations in that mixture (e.g. WidowX on BridgeV2); single-arm manipulation; the card rules out
+    zero-shot transfer to unseen embodiments.
+  confidence: medium
+  note: OpenVLA learned from many robots in Open X-Embodiment and controls the single arms it saw there, but its
+    own card says it does not carry over to a new robot without fine-tuning, and it offers nothing for bimanual
+    or humanoid control.
+  relative_to: gr00t
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/openvla/openvla-7b/raw/main/README.md
+    shows: 'Card: "can be used zero-shot to control robots for specific combinations of embodiments and domains
+      seen in the Open-X pretraining mixture (e.g., for BridgeV2 environments with a Widow-X robot)"; "do not zero-shot
+      generalize to new (unseen) robot embodiments".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 16449c659127df8f4d0f43958be0d114be41e94317f5fc72740d84eab99c5624

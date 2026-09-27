@@ -1,0 +1,114 @@
+product: rdt
+openness:
+  score: 3
+  class: open_weights
+  components:
+    weights:
+      value: open
+      detail: RDT2 and RDT-1B checkpoints on the Hub
+    data:
+      value: described
+      detail: RDT2's 10,000+ hours of UMI data described, not released
+    code:
+      value: open
+      detail: training and fine-tuning scripts
+    license:
+    - name: Apache-2.0
+      detail: RDT2
+    - name: MIT
+      detail: RDT-1B
+  confidence: high
+  note: Weights and training code are released under Apache-2.0 and MIT. The first release also published its fine-tuning
+    data, but the ten thousand hours of gripper recordings that RDT2 learned from are described and not published.
+  raw: weights:open(RDT2 and RDT-1B checkpoints on the Hub);data:described(RDT2's 10,000+ hours of UMI data described,
+    not released);code:open(training and fine-tuning scripts);license:Apache-2.0(RDT2)+MIT(RDT-1B)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/thu-ml/RDT2/main/LICENSE
+    shows: 'RDT2 LICENSE: Apache License 2.0, "Copyright [2025] [TSAIL Group, Tsinghua University]".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 317647eae7b35507707cb40d4b8446ee5462ca40bf86f1ee666f642ece53d4fd
+    establishes:
+    - license
+  - url: https://huggingface.co/robotics-diffusion-transformer/RDT2-VQ/raw/main/README.md
+    shows: 'RDT2-VQ card: license apache-2.0, base_model Qwen/Qwen2.5-VL-7B-Instruct.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f8d0d375dbd7b293baf436ef5ed974c90af50fdbbeed5be2a62fd62787470ee6
+    establishes:
+    - license
+    - weights
+  - url: https://huggingface.co/robotics-diffusion-transformer/rdt-1b/raw/main/README.md
+    shows: 'rdt-1b card: "All the code, pre-trained model weights, and data are licensed under the MIT license";
+      pretrained on 46 datasets including RT-1, RH20T, DROID and BridgeData V2.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: aac6b8468d9706a864a0e72c10124fba02ddbc53a1b6fa514f100f1d2aa5ea48
+    establishes:
+    - license
+    - data
+  - url: https://huggingface.co/api/models/robotics-diffusion-transformer/RDT2-VQ?expand[]=siblings
+    shows: 'Hub API for RDT2-VQ: four safetensors shards, ungated.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: f5511e5a48cb9f5933cfc2e3464564b47a45ce0963327b20a0d66ead690916b8
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/thu-ml/RDT2/main/README.md
+    shows: 'RDT2 README: trained on "10,000+ hours" of UMI gripper data across "100+ different indoor scenes"; no
+      dataset release for it.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ebbc3f8a26e1fc882ddc38637444a43404b8f2ad30b6fb52fbb45c2325484557
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/thu-ml/RDT2/files/main
+    shows: 'RDT2 tree: rdt/train.py, vla_trainer.py, scripts/finetune_full_param.sh, finetune_lora.sh.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c5cedc3d408765f30c07f642623c61ab92d22ecb094b64cb71a41bb66df1b8eb
+    establishes:
+    - code
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the RDT2 and RDT-1B checkpoints.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=robotics-diffusion-transformer&sort=downloads&limit=40&expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub listing for robotics-diffusion-transformer: rdt-1b 546, RDT2-VQ 218, RDT2-FM 129, rdt-170m 115 downloads
+      in 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d53200372935bb268d054ba84294500c67b95e1f1d9e0e412039e13a2adca62
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: RDT-1B pretrained on 1M+ multi-robot episodes; RDT2 claims zero-shot deployment on unseen embodiments for
+    open-vocabulary picking, placing, shaking and wiping, verified on bimanual UR5e and bimanual Franka Research
+    3.
+  confidence: low
+  note: RDT learns from many robots and is built around two-armed manipulation, and RDT2 claims to run on bimanual
+    arms it never saw in training, which few open policies attempt. Its tasks are simple ones such as picking, placing
+    and wiping.
+  relative_to: gr00t
+  relation: at
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/thu-ml/RDT2/main/README.md
+    shows: 'RDT2 README: "the first foundation model that can achieve zero-shot deployment on unseen embodiments
+      for simple open-vocabulary tasks like picking, placing, shaking, wiping"; platforms "Bimanual UR5e" and "Bimanual
+      Franka Research 3".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ebbc3f8a26e1fc882ddc38637444a43404b8f2ad30b6fb52fbb45c2325484557
+  - url: https://raw.githubusercontent.com/thu-ml/RoboticsDiffusionTransformer/main/README.md
+    shows: 'RDT-1B README: "1B-parameter imitation learning Diffusion Transformer pre-trained on 1M+ multi-robot
+      episodes".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: aeebc41f97b5f6602ba106e35e3793c3b763e314b8e81ebf362f87463e7118b8

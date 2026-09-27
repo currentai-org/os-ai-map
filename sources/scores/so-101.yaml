@@ -1,0 +1,98 @@
+product: so-101
+openness:
+  score: 5
+  class: open_hardware
+  components:
+    form_factor:
+      value: board
+      detail: a complete robot arm, sold as a kit or printed from the design
+    schematics:
+      value: open
+      detail: STEP and STL for every part under Apache-2.0
+    toolchain:
+      value: open
+      detail: driven by the Apache-2.0 LeRobot library
+    retail:
+      value: open_market
+      detail: kits from several vendors
+  confidence: high
+  note: Every printed part is published as STEP and STL under Apache-2.0, the arm is set up and driven through the
+    open LeRobot library, and kits are on open sale. The Feetech servos inside are off-the-shelf parts with their
+    own closed firmware.
+  raw: form_factor:board(a complete robot arm, sold as a kit or printed from the design);schematics:open(STEP and
+    STL for every part under Apache-2.0);toolchain:open(driven by the Apache-2.0 LeRobot library);retail:open_market(kits
+    from several vendors)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/main/LICENSE
+    shows: 'LICENSE: the Apache License, Version 2.0 text, covering the repository.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - schematics
+  - url: https://ungh.cc/repos/TheRobotStudio/SO-ARM100/files/main
+    shows: 'Repository tree: STEP/SO101/SO101 Assembly.step, STEP/SO101/Base_SO101.step, STL/SO101/Individual/*.stl,
+      Simulation/SO101 assets.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 318aaeedd8e554fd94c4427fb8095d6aa819e83c08a4459496e9e09e581481f6
+    establishes:
+    - schematics
+    - form_factor
+  - url: https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/main/README.md
+    shows: 'README: "designed to work seamlessly with the open-source LeRobot library"; kits from Seeed Studio,
+      Taobao, Akizuki Denshi and AliExpress; Feetech''s own software is for debugging and "not necessary as motors
+      can be configured using the LeRobot Library".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e635f305cf6d2ddcf19096239761a87b33821e1ff124ec11fde5225e191540f4
+    establishes:
+    - toolchain
+    - retail
+  - url: https://huggingface.co/docs/lerobot/main/en/assemble_so101
+    shows: 'LeRobot assembly guide: "our flagship robot, the SO-101"; "The follower arm uses 6x STS3215 motors with
+      1/345 gearing"; joints Base / Shoulder Yaw, Shoulder Pitch, Elbow, Wrist Roll, Wrist Pitch, Gripper.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cf0aa5c17305f4675e887d6a1b4919dc3edd6b9c104d6398da699e637a6b8fd4
+    establishes:
+    - toolchain
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: GitHub stars on the design repository. Kits are sold by several independent vendors, none of which publishes
+    volumes.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/TheRobotStudio%2FSO-ARM100
+    shows: 'Repository record for TheRobotStudio/SO-ARM100: 7,401 stargazers.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 6bf64713e4dc637388e4a1d028ef0623a4603faf92e13113d21a10d5c70874a0
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: morphology
+  value: Single 6-DoF arm (base yaw, shoulder pitch, elbow, wrist roll, wrist pitch, gripper) driven by STS3215
+    serial servos, sold as a leader-follower pair for teleoperation.
+  confidence: high
+  note: SO-101 is a single small arm with six joints, and its leader arm is only a teleoperation controller, so
+    on its own it does single-arm tabletop tasks. Pairing two, or mounting one on a mobile base, is a separate build.
+  relative_to: openarm
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/docs/lerobot/main/en/assemble_so101
+    shows: 'LeRobot assembly guide: "our flagship robot, the SO-101"; "The follower arm uses 6x STS3215 motors with
+      1/345 gearing"; joints Base / Shoulder Yaw, Shoulder Pitch, Elbow, Wrist Roll, Wrist Pitch, Gripper.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: cf0aa5c17305f4675e887d6a1b4919dc3edd6b9c104d6398da699e637a6b8fd4
+  - url: https://raw.githubusercontent.com/TheRobotStudio/SO-ARM100/main/README.md
+    shows: 'README: two-arm (leader and follower) kit bill of materials.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: e635f305cf6d2ddcf19096239761a87b33821e1ff124ec11fde5225e191540f4

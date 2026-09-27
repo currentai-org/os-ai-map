@@ -1,0 +1,128 @@
+product: gr00t
+openness:
+  score: 2
+  class: restricted
+  components:
+    weights:
+      value: open
+      detail: safetensors on the Hub, ungated
+    data:
+      value: partial
+      detail: simulated post-training sets published; the rest of the mixture is not
+    code:
+      value: open
+      detail: training and fine-tuning code in the repository
+    license:
+    - name: NVIDIA-Open-Model-License
+      detail: the N1.x base checkpoints and GR00T-H-N1.7
+    - name: NVIDIA-OneWay-Noncommercial
+      detail: GR00T-H, the N1.6 release, and the Assemble_Trocar fine-tune
+  confidence: medium
+  note: The base checkpoints and the newer GR00T-H-N1.7 can be used commercially under NVIDIA's Open Model License,
+    and the training code is open. The earlier GR00T-H, still published beside them, is for non-commercial use only,
+    and the line is read by its most restrictive release.
+  raw: weights:open(safetensors on the Hub, ungated);data:partial(simulated post-training sets published; the rest
+    of the mixture is not);code:open(training and fine-tuning code in the repository);license:NVIDIA-Open-Model-License(the
+    N1.x base checkpoints and GR00T-H-N1.7)+NVIDIA-OneWay-Noncommercial(GR00T-H, the N1.6 release, and the Assemble_Trocar
+    fine-tune)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/nvidia/GR00T-N1.7-3B/raw/main/README.md
+    shows: 'GR00T-N1.7-3B card: "This model is released under the NVIDIA Open Model License Agreement" and "is ready
+      for commercial/non-commercial use".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 7d0a4423a5a5bc7ac35f9ab4c1f64eb3f74f7592418a8dc5c80702b48455c788
+    establishes:
+    - license
+  - url: https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-open-model-license/
+    shows: 'NVIDIA Open Model License: "Models are commercially usable. You are free to create and distribute Derivative
+      Models."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 5e919bff659cf802b510b0157a254c2abd21b730f44c639515cb7599c20a67d1
+    establishes:
+    - license
+  - url: https://huggingface.co/nvidia/GR00T-H/raw/main/README.md
+    shows: 'GR00T-H card: "This is the N1.6 non-commercially usable version of GR00T-H. Please see GR00T-H-N1.7
+      for the newer and commercially usable version"; license_link NVIDIA-OneWay-Noncommercial-License-22Mar2022.pdf.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 55602778248865bf2715c82a8423daa911c10ad9d5692c4ff3830a14c732b790
+    establishes:
+    - license
+  - url: https://developer.download.nvidia.com/licenses/NVIDIA-OneWay-Noncommercial-License-22Mar2022.pdf
+    shows: 'NVIDIA OneWay Noncommercial License, 3.3 Use Limitation: "The Work and any derivative works thereof
+      only may be used or intended for use non-commercially", meaning for research or evaluation.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 4ff203c3f7997c7fed287a463d733f794934a79cfabb2936008fca0bcc8ad3d6
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/nvidia/GR00T-N1.7-3B
+    shows: 'Hub API for nvidia/GR00T-N1.7-3B: gated false; safetensors weight files in siblings.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: ea61f737e719fe54cfa1c25e2b333c598ed2306f59d0edc9c08a5dfbd18a8005
+    establishes:
+    - weights
+  - url: https://ungh.cc/repos/NVIDIA/Isaac-GR00T/files/main
+    shows: 'Repository tree: gr00t/experiment/launch_train.py, launch_finetune.py, trainer.py and getting_started/finetune_new_embodiment.md.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d01a2465e458b4b28b46040c2037eafa6023bf1337044574067fa95d0245069
+    establishes:
+    - code
+  - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+    shows: 'PhysicalAI-Robotics-GR00T-X-Embodiment-Sim card: "We provide a set of datasets used for post-training
+      of GR00T N1", CC-BY-4.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862
+    establishes:
+    - data
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads summed over the declared GR00T checkpoints, most of them for the current N1.7 base
+    model.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models?author=nvidia&search=GR00T&sort=downloads&limit=50&expand[]=downloads&expand[]=likes&expand[]=cardData&expand[]=lastModified&expand[]=gated
+    shows: 'Hub listing author=nvidia search=GR00T: GR00T-N1.7-3B 125,319; GR00T-N1.6-3B 29,727; GR00T-H-N1.7 1,639;
+      GR00T-N1.5-3B 1,358; GR00T-H 741; GR00T-N1-2B 463 downloads in 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 63a9f285c352256a071c79e4043021c768a64ae170e237eb9c2d5613c5dbf659
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: Cross-embodiment VLA pretrained for humanoid and bimanual manipulation, with post-training sets for bimanual
+    Panda, the GR1 humanoid, single-arm Panda and Unitree G1; a documented path for fine-tuning to a new embodiment.
+  confidence: medium
+  note: GR00T is pretrained across robot bodies and aimed squarely at humanoids, with released data for bimanual
+    arms, the GR1 humanoid and the Unitree G1, and a documented recipe for adapting it to a new robot. It has no
+    separate reasoning and planning model of the kind Gemini Robotics pairs with its action model.
+  relative_to: gemini-robotics
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/NVIDIA%2FIsaac-GR00T
+    shows: 'Repository record: "NVIDIA Isaac GR00T N1.7 - A Foundation Model for Generalist Robots."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: abccf5053354185fa77c2e0a61a560b02814d4be892f1b4a2bcf2053664b82e5
+  - url: https://ungh.cc/repos/NVIDIA/Isaac-GR00T/files/main
+    shows: Repository tree includes getting_started/finetune_new_embodiment.md.
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: 9d01a2465e458b4b28b46040c2037eafa6023bf1337044574067fa95d0245069
+  - url: https://huggingface.co/datasets/nvidia/PhysicalAI-Robotics-GR00T-X-Embodiment-Sim/raw/main/README.md
+    shows: 'Post-training data card: cross-embodied bimanual manipulation, humanoid (GR1) tabletop manipulation,
+      robot-arm kitchen manipulation and Unitree G1 loco-manipulation subsets.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cfcbb2c6b229f39a8e293fb43ed0ab33f1ad7cadba3bcc363fbb60a5c62bc862

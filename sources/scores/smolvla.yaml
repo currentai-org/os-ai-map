@@ -1,0 +1,105 @@
+product: smolvla
+openness:
+  score: 5
+  class: open_source
+  components:
+    weights:
+      value: open
+    data:
+      value: open
+      detail: the paper releases the community training data
+    code:
+      value: open
+      detail: training code in LeRobot
+    license:
+    - name: Apache-2.0
+      detail: weights and code
+  confidence: high
+  note: Weights, training code and training data are all released, under Apache-2.0, so the model can be retrained
+    from what is published.
+  raw: weights:open;data:open(the paper releases the community training data);code:open(training code in LeRobot);license:Apache-2.0(weights
+    and code)
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/lerobot/smolvla_base
+    shows: 'Hub API for lerobot/smolvla_base: license:apache-2.0, gated false, model.safetensors (450,046,176 parameters).'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cc2cd2ec746114d22f12b366c03a38a9b2c4c1dbe44dc4a8ce7a756a697fefe4
+    establishes:
+    - license
+    - weights
+  - url: https://arxiv.org/abs/2506.01844
+    shows: 'Paper abstract: "a small, efficient, and community-driven VLA ... We ... release all code, pretrained
+      models, and training data."'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b79ac5f8ad8446d216a09f658834f24c595f625371141689ea6d1f674fc6141e
+    establishes:
+    - data
+    - code
+  - url: https://huggingface.co/lerobot/smolvla_base/raw/main/README.md
+    shows: 'Card: "Reference implementation: https://github.com/huggingface/lerobot".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: a484071b8d7d0591452f795813fb54af9199fc1c48ef1ee995358d5ba07ee070
+    establishes:
+    - code
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/huggingface%2Flerobot
+    shows: 'Repository record for huggingface/lerobot, the code: license apache-2.0.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: d4ae0ead4c44cef885d64fbdb73cd8148fe83fc7b1a7398d0ba75b3de98a28e7
+    establishes:
+    - code
+    - license
+  - url: https://arxiv.org/html/2506.01844
+    shows: 'Paper: pretrained on 481 public community datasets from Hugging Face; "SmolVLA is pretrained on public
+      community datasets".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c29c280d3f3284040af6489e832d21907c3abe813acd25668ffa0cd254f6c10
+    establishes:
+    - data
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Hugging Face downloads of the base checkpoint. The benchmark fine-tunes published beside it are not declared
+    here.
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://huggingface.co/api/models/lerobot/smolvla_base
+    shows: 'Hub API for lerobot/smolvla_base: 71,362 downloads in the trailing 30 days.'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: cc2cd2ec746114d22f12b366c03a38a9b2c4c1dbe44dc4a8ce7a756a697fefe4
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: embodiment generality
+  value: 450M-parameter VLA pretrained on 481 public community datasets (22.9K episodes, 10.6M frames) filtered
+    by embodiment type, evaluated in simulation (LIBERO, MetaWorld) and on SO-100 and SO-101 arms; performance comparable
+    to VLAs 10x larger per the paper.
+  confidence: low
+  note: SmolVLA is built for the low-cost arms its community data comes from, and its real-world results are on
+    SO-100 and SO-101 arms. It learns from far less data than OpenVLA and does not claim control of robots outside
+    that family, though its paper reports results close to models ten times its size.
+  relative_to: openvla
+  relation: one_below
+  last_verified: '2026-09-26'
+  sources:
+  - url: https://arxiv.org/html/2506.01844
+    shows: 'Paper: "we selected a subset of 481 community datasets obtained from Hugging Face, filtered according
+      to embodiment type, episode count, overall data quality, and frame coverage" (22.9K episodes, 10.6M frames);
+      real-world datasets collected "using the SO-100 robot arm ... and 1 with SO-101 arm".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7c29c280d3f3284040af6489e832d21907c3abe813acd25668ffa0cd254f6c10
+  - url: https://arxiv.org/abs/2506.01844
+    shows: 'Abstract: "Despite its compact size, SmolVLA achieves performance comparable to VLAs that are 10x larger";
+      evaluated "on a range of both simulated as well as real-world robotic benchmarks".'
+    accessed: '2026-09-26'
+    http_status: 200
+    content_sha256: b79ac5f8ad8446d216a09f658834f24c595f625371141689ea6d1f674fc6141e

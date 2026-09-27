@@ -485,9 +485,12 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # langtrace (#695) declares its Python SDK: applications install it to send traces, so it
     # counts instrumented applications, not deployments of the platform.
     assert inputs.non_primary_artifacts["langtrace"] == {("pypi", "langtrace-python-sdk")}
+    # carla (robotics_embodied) declares its Python client: it talks to a separately run CARLA
+    # server, so its installs count scripts rather than running simulators.
+    assert inputs.non_primary_artifacts["carla"] == {("pypi", "carla")}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
-        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace",
+        "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla",
     }
 
 
