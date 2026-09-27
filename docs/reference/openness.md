@@ -140,8 +140,8 @@ where MOF draws its own line: Class III, its entry point, requires components us
 
 **Published but unlicensed is a 2, not a 1.** There is no grant to rely on, so it is not open,
 but the files are out, and 1 is kept for what is genuinely closed or private. The dataset
-ladder's `unstated` rung applies it, and since #739 the software, model and pretrained ladders
-each have an `unstated` tier too. The corpus records the case as `none-declared`: a repository
+ladder's `unstated` rung applies it, and the software, model and pretrained ladders each have
+an `unstated` tier too. The corpus records the case as `none-declared`: a repository
 with no LICENSE file and no manifest license field (ezkl, pytorch-hub), or a model card with no
 license in its metadata (nanonets-ocr).
 
@@ -244,19 +244,19 @@ cap who may use the artifact, or at what scale — not on the license family's r
 - **CC-BY-NC-4.0 and CC-BY-NC-SA-4.0** land in `commercial_forbidden`, alongside the unversioned
   `CC-BY-NC`: the NC clause answers this tier's one question — does the license permit
   commercial use at all — with no.
-- **CreativeML-OpenRAIL++-M and Open-RAIL-M** (#739) land in `permissive_non_osi` with the rest
-  of the OpenRAIL family under #117: use-based restrictions only, no cap on commerce or scale.
+- **CreativeML-OpenRAIL++-M and Open-RAIL-M** land in `permissive_non_osi` with the rest of the
+  OpenRAIL family: use-based restrictions only, no cap on commerce or scale.
   **OpenMDW-1.1** joins the model ladder's list, matching the pretrained ladder.
-- **NVIDIA-Open-Model-Agreement** (#739) lands in `permissive_non_osi` beside the NVIDIA Open
+- **NVIDIA-Open-Model-Agreement** lands in `permissive_non_osi` beside the NVIDIA Open
   Model License. Its text, dated April 2, 2026, was read against the License: it states that
   works are commercially usable and derivatives may be distributed, and it restricts neither who
   may use the works nor at what scale. It is, if anything, looser, since it carries no guardrail
   termination clause.
-- **Vendor non-commercial model licenses** (#739) land in `commercial_forbidden`: NVIDIA OneWay
+- **Vendor non-commercial model licenses** land in `commercial_forbidden`: NVIDIA OneWay
   Noncommercial, the Prior Labs TabPFN licenses (Prior Labs License 1.1 included, by the ruling),
   the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0 and InsightFace's
   research-only model license.
-- **Bounded community licenses** (#739) land in `use_bounded`: the Stability AI Community
+- **Bounded community licenses** land in `use_bounded`: the Stability AI Community
   License, the LTX-2 and LTXV licenses, LFM Open, the Moondream Model License 1.0, and the
   territorially bounded Tencent Hunyuan, Tencent Hunyuan 3D and MiniMax H3 community licenses.
 
@@ -307,8 +307,8 @@ not because the compound-resolution rule above picked the less restrictive one.
 
 Because the list is shared across every software category, adding a name for one product
 tiers every other product that happens to record it, so each addition is checked against the
-corpus before it lands. `zlib` (pybullet), `LGPL-2.1` (gensim) and `BSL-1.0` (dlib) were added
-on #739. BSL-1.0 is the Boost Software License, OSI-approved, and has nothing to do with the
+corpus before it lands. `zlib` (pybullet), `LGPL-2.1` (gensim) and `BSL-1.0` (dlib) are on the
+list. BSL-1.0 is the Boost Software License, OSI-approved, and has nothing to do with the
 Business Source License 1.1 that `competition_restricted` lists as `BSL-1.1`; examples match
 whole names, and a test pins that neither resolves to the other. Two older names on the list
 carry a ruling worth reading:
@@ -513,8 +513,8 @@ component is not a bundle but a dependency, and `core_gated` is the dimension th
 
 ### A bundled part governs only when the product needs it
 
-The section above scores a harness on the harness. This rule, ruled on #739 and written into
-the software and model ladders as `bundled_part_rule`, says when a separately distributed part
+The section above scores a harness on the harness. This rule, written into the software and
+model ladders as `bundled_part_rule`, says when a separately distributed part
 does count. **A part governs a product's tier only if it is required for the product's ordinary
 advertised capability, or the software downloads it automatically or by default.** Then it is
 recorded under `license` beside the product's own license, and the most restrictive part wins.
