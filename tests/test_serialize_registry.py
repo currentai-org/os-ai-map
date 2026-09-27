@@ -346,7 +346,11 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     The speech_audio promotion adds seven, all one decision: an open speech model's inference
     package (kokoro, chatterbox-tts, qwen-asr, qwen-tts, f5-tts, voxcpm, moshi) loads its weights
     from the Hub repositories the product declares, so its installs are already inside those
-    repositories' downloads and the model bands on the Hub, the unit its ladder declares."""
+    repositories' downloads and the model bands on the Hub, the unit its ladder declares.
+
+    zkml (the assurance_evidence second tranche) is the next: its only crates.io release is a
+    one-file binary placeholder that does not contain the prover, which is installed by building
+    the repository, so crate downloads count nobody who runs it and it bands on stars."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -363,6 +367,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("milvus", "pypi", "pymilvus"),
         ("langtrace", "pypi", "langtrace-python-sdk"),
         ("carla", "pypi", "carla"),
+        ("zkml", "crates", "zkml"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS} | {
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
     }
