@@ -504,10 +504,15 @@ def test_load_inputs_reads_the_declaration_off_the_registry():
     # zkml (assurance_evidence second tranche) declares its crate: a one-file placeholder that does
     # not contain the prover, which is installed by building the repository.
     assert inputs.non_primary_artifacts["zkml"] == {("crates", "zkml")}
+    # The classic_ml_cv second tranche: Depth Anything and Segment Anything declare the inference
+    # packages that fetch their Hub checkpoints, the same decision as the speech models above.
+    vision_packages = {"depth-anything": "depth-anything-3", "segment-anything": "sam3"}
+    for slug, package in vision_packages.items():
+        assert inputs.non_primary_artifacts[slug] == {("pypi", package)}
     # Nothing else declares one, so nothing else can have moved.
     assert set(inputs.non_primary_artifacts) == {
         "hexabot", "yomo", "afrobench", "qdrant", "milvus", "langtrace", "carla", *speech_packages,
-        "zkml",
+        "zkml", *vision_packages,
     }
 
 

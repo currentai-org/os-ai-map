@@ -1,0 +1,103 @@
+product: statsforecast
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/Nixtla/statsforecast
+    core-gated:
+      value: ungated
+      detail: Nixtla's paid offering is the separate TimeGPT service
+  confidence: high
+  note: Apache-2.0 and built from the public repository. Nixtla sells TimeGPT, a closed forecasting model
+    reached through an API, and an enterprise plan built on it; the open libraries, StatsForecast included,
+    are listed as free with nothing withheld.
+  raw: license:Apache-2.0(OSI);source:public(github.com/Nixtla/statsforecast);core-gated:ungated(Nixtla's
+    paid offering is the separate TimeGPT service)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Nixtla/statsforecast/HEAD/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright 2022 Nixtla".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 801dc3c84e5d4bee31962f29132c112d127de8ed7536f4194a4397516a8e05b9
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/statsforecast/json
+    shows: PyPI record for statsforecast 2.1.1, uploaded 2026-07-16, license "Apache Software License
+      2.0", Repository github.com/Nixtla/statsforecast.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: b389f19d21a209dfd07748f6dc0e67bed9e626c70104c2894034a4a5f74d5142
+    establishes:
+    - source
+  - url: https://www.nixtla.io/
+    shows: 'Nixtla pricing section: "Free Forever ... Open Source libraries: StatsForecast MLForecast
+      NeuralForecast HierarchicalForecast UtilsForecast CoreForecast" and "Enterprise ... Everything in
+      Open Source, plus: Premium Models and Updates Fine-tuned on your data".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: df99e110f61b3c815e2a3be991afc92dc2989bc8f7aae6331930002c12013a7c
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/Nixtla/nixtla/HEAD/README.md
+    shows: 'Nixtla SDK README: "TimeGPT itself is closed source. The SDK is a client".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6357cb08697b4eaaa07da830d36c4a1c22c6ae8929cb50caee42cd529dd901db
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/Nixtla/statsforecast/files/main
+    shows: Repository tree of 310 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: acaaf26805d7349f17127f6e1804d0908a50786a37f111a01241b5e42243c481
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the statsforecast package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/statsforecast/recent
+    shows: last_month 1,339,344 downloads of statsforecast
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 444628e4ce3f63061c8f7dc172f6febf3fc9cd741b3fa62182ea557fd4eff8a8
+capability:
+  score: 3
+  basis: feature_matrix
+  value: about 35 statistical forecasting models - AutoARIMA, AutoETS, AutoCES, AutoTheta, ARIMA, Theta
+    variants, MSTL, MFLES, TBATS, GARCH and ARCH, exponential smoothing, intermittent-demand models (ADIDA,
+    Croston, IMAPA, TSB) and baselines - fitted at scale on Spark, Dask or Ray, with cross-validation
+  relative_to: sktime
+  relation: at
+  confidence: high
+  note: StatsForecast is a catalog of statistical forecasters with the tools to fit and compare them across
+    many series, and each Auto model selects its own settings. Choosing which model family to use is left
+    to the user, as in sktime, whose toolkit is broader.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://www.sktime.net/en/stable/
+      shows: 'sktime site: "500+ models, one API Classical statistics, machine learning, deep learning,
+        and modern AI, all behind the same interface." - the toolkit scope StatsForecast is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: c95eb8729e194b5736d3b3ed721a6fa554c6a9ed377cc290cfbfe3605fc854da
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/Nixtla/statsforecast/HEAD/README.md
+    shows: 'README: "Fastest and most accurate implementations of AutoARIMA, AutoETS, AutoCES, MSTL and
+      Theta in Python"; models table covering Automatic Forecasting, ARIMA Family, Theta Family, Multiple
+      Seasonalities, GARCH and ARCH, Baseline, Exponential Smoothing and Sparse or Intermittent models.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e8d6bebd0cb3ced2e9e89419f239bb26049f1e829a2f1e82fa37f59e6fde4306

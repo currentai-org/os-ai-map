@@ -1,0 +1,94 @@
+product: supervision
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/roboflow/supervision
+    core-gated:
+      value: ungated
+      detail: Roboflow's paid platform is a separate product
+  confidence: high
+  note: MIT-licensed and built from the public repository. Roboflow sells a hosted vision platform, which
+    lists supervision as a free open-source part of its ecosystem rather than as something priced.
+  raw: license:MIT(OSI);source:public(github.com/roboflow/supervision);core-gated:ungated(Roboflow's paid
+    platform is a separate product)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/roboflow/supervision/develop/LICENSE.md
+    shows: LICENSE.md is the "MIT License", "Copyright (c) 2022 Roboflow".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 72bb009f9633af978da6c49f3a927a83d04ddf8ed992492f6f2a62122de95227
+    establishes:
+    - license
+  - url: https://pypi.org/pypi/supervision/json
+    shows: PyPI record for supervision 0.30.5, uploaded 2026-09-22, license_expression MIT, Repository
+      github.com/roboflow/supervision.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 93bee06d375d8f14b23298b97270d7fcf53c4a8678c31a3ccac29ea4b633c440
+    establishes:
+    - source
+  - url: https://roboflow.com/pricing
+    shows: Roboflow pricing lists paid platform plans; supervision appears only in the footer under the
+      open-source ecosystem, not as a priced item.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: dfffd04ff22521162ed9861ff0c6c1a41990e6850b96681b591232c6e620e500
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/roboflow/supervision/files/develop
+    shows: Repository tree with no ee, enterprise, commercial or pro directory, and no model or training
+      directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5aa2d07e062f5b532215046d429e235780d76cdbb858258950370f77b3e66705
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the supervision package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/supervision/recent
+    shows: last_month 819,606 downloads of supervision
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 8339baeab6b9fa0a026ff3d16241888803c232a4ac96a5a227cf600f493fd010
+capability:
+  score: 1
+  basis: feature_matrix
+  value: model-agnostic detection and segmentation utilities - connectors from popular model libraries,
+    annotators, filtering, zone counting, tracking hooks, sliced inference, dataset loading and conversion,
+    and metrics
+  relative_to: opencv
+  relation: at
+  confidence: high
+  note: supervision works on the output of models from other libraries and fits or runs no model itself,
+    so it sits with the primitives. Its own README calls it model agnostic, and its quickstart imports
+    the detector from a separate package.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/opencv/opencv/files/HEAD
+      shows: OpenCV tree at HEAD still carries modules/dnn, which runs networks trained elsewhere, and
+        no ml module - the primitives scope this product is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 1cd92b787079057d87e3c47cfa1e4b4e40b0952f8086836c6fae7118c61a41b6
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/roboflow/supervision/develop/README.md
+    shows: 'README: "Supervision was designed to be model agnostic. Just plug in any classification, detection,
+      or segmentation model. For your convenience, we have created connectors for the most popular libraries".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 763f75cba29aa85b429a5d3ed20c145d18242a5978470a8b8fb49ddee51995db

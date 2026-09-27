@@ -1,0 +1,131 @@
+product: dino
+openness:
+  score: 4
+  class: open_weights
+  governing_release: dinov3
+  components:
+    weights:
+      value: open
+      detail: every DINOv3 checkpoint on the Hub behind a manual access request
+    data:
+      value: documented-not-released
+      detail: LVD-1689M, curated from public Instagram posts, and SAT-493M satellite imagery; neither
+        released
+    code:
+      value: open
+      detail: full pretraining pipeline, configs and distillation recipes
+    license:
+    - name: DINOv3-License
+      detail: code and weights; commercial use allowed, with trade-control and military-use exclusions
+  confidence: medium
+  note: DINOv3's code and weights come under Meta's own DINOv3 License, which permits commercial use but
+    bars military, weapons and trade-controlled uses and lets Meta change the terms; downloads need an
+    approved access request. The full pretraining code is published, but the 1.7-billion-image training
+    set drawn from Instagram is not. The earlier DINOv2 was Apache-2.0, but the current release governs.
+  raw: weights:open(every DINOv3 checkpoint on the Hub behind a manual access request);data:documented-not-released(LVD-1689M,
+    curated from public Instagram posts, and SAT-493M satellite imagery; neither released);code:open(full
+    pretraining pipeline, configs and distillation recipes);license:DINOv3-License(code and weights; commercial
+    use allowed, with trade-control and military-use exclusions)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/LICENSE.md
+    shows: 'LICENSE.md is the "DINOv3 License", "Last Updated: August 19, 2025"; 1.a grants "a non-exclusive,
+      worldwide, non-transferable and royalty-free limited license ... to use, reproduce, distribute,
+      copy, create derivative works of, and make modifications to the DINO Materials"; 1.b.v bars use
+      "related to military or warfare purposes, nuclear industries or applications, espionage, or the
+      development or use of guns or illegal weapons". No non-commercial clause.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 25d122eb8f5b880fd23c736fb6ea8018ee45c12237e00b8a86d14c653904999e
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/README.md
+    shows: 'README License section: "DINOv3 code and model weights are released under the DINOv3 License.";
+      Training section documents pretraining, gram anchoring and high-resolution adaptation for ViT-7B/16.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: da4e6e2fa1f2580be9a782338dc108ae68f98b6c9d10636583f97d8a340e664d
+    establishes:
+    - license
+    - code
+  - url: https://huggingface.co/api/models?author=facebook&search=dinov3&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: All thirteen facebook/dinov3-* checkpoints are gated "manual" and carry the dinov3-license
+      (the chmv2 head without a license tag); none carries another license.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 71cf825f77f56cdea2f4f51718e8ab502c1577d80d3ca91f9a35286bc8d02616
+    establishes:
+    - weights
+    - license
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/MODEL_CARD.md
+    shows: 'Model card: "Web dataset (LVD-1689M): a curated dataset of 1,689 millions of images extracted
+      from a large data pool of 17 billions web images collected from public posts on Instagram"; no release
+      of the dataset.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5df24b62906d899688882146c5ff4ca066391205c5350a9b85dbcb485b2d07c8
+    establishes:
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/dinov3/files/main
+    shows: Repository tree includes dinov3/train/train.py, ssl_meta_arch.py, multidist_meta_arch.py and
+      dinov3/configs/train/dinov3_vit7b16_pretrain.yaml, gram_anchor and high_res_adapt configs.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0b0fa7c7cc6a5b7131eceed74e981eab96299ee06f62746db55e70e4f6ae77fe
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the three most-used DINOv3 checkpoints, which
+    are the ones declared. The other DINOv3 checkpoints and the older, more downloaded DINOv2 checkpoints
+    would raise the total without changing its order of magnitude.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=facebook&search=dinov3&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: dinov3-vitl16-pretrain-lvd1689m 619,462, dinov3-vitb16-pretrain-lvd1689m 584,214 and dinov3-vits16-pretrain-lvd1689m
+      427,912 downloads in the trailing 30 days (1,631,588 together).
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 71cf825f77f56cdea2f4f51718e8ab502c1577d80d3ca91f9a35286bc8d02616
+  - url: https://huggingface.co/api/models?author=facebook&search=dinov2&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: The facebook/dinov2-* checkpoints, ungated and tagged apache-2.0, sum to about 7.16 million
+      downloads in the trailing 30 days.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: d249c87dd860371dc7299eac47e09de4d1bb1217124c0ee2dda0fe2ebafbebb5
+capability:
+  score: 4
+  basis: feature_matrix
+  value: self-supervised ViT (21M to 7B) and ConvNeXt backbones for web and satellite images, with released
+    heads for classification, depth estimation, COCO detection and ADE20K segmentation, and dino.txt for
+    zero-shot open-vocabulary classification and segmentation, plus the full pretraining recipe
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: DINOv3 is best known as a backbone that other models are built on, but Meta also ships ready heads,
+    and its dino.txt variant classifies and segments whatever labels the user types with no training,
+    the same kind of open-vocabulary capability that places Ultralytics here. Its detector and segmentor
+    heads cover fixed benchmark label sets.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/
+        and the sam modules with sam3 builders - the open-vocabulary models it runs on user-named labels
+        without training.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/facebookresearch/dinov3/main/README.md
+    shows: 'README sections: "Pretrained heads - Image classification", "Pretrained heads - Depther trained
+      on SYNTHMIX dataset", "Pretrained heads - Detector trained on COCO2017 dataset", "Pretrained heads
+      - Segmentor trained on ADE20K dataset", "Pretrained heads - Zero-shot tasks with dino.txt"; notebook
+      "Zero-shot segmentation with DINOv3-based dino.txt: compute the open-vocabulary segmentation results".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: da4e6e2fa1f2580be9a782338dc108ae68f98b6c9d10636583f97d8a340e664d

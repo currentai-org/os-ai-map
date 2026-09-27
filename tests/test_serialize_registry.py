@@ -324,6 +324,11 @@ SPEECH_MODEL_PACKAGES = {
     "moshi": "moshi",
 }
 
+VISION_MODEL_PACKAGES = {
+    "depth-anything": "depth-anything-3",
+    "segment-anything": "sam3",
+}
+
 
 def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
     """`hexabot`'s npm widget, `yomo`'s crate, and AfroBench's member datasets, and nothing else.
@@ -350,7 +355,11 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
 
     zkml (the assurance_evidence second tranche) is the next: its only crates.io release is a
     one-file binary placeholder that does not contain the prover, which is installed by building
-    the repository, so crate downloads count nobody who runs it and it bands on stars."""
+    the repository, so crate downloads count nobody who runs it and it bands on stars.
+
+    The classic_ml_cv second tranche adds two more of the speech models' decision: `depth-anything-3`
+    and `sam3` install the inference code for Depth Anything 3 and SAM 3, which fetch the checkpoints
+    the products declare on the Hub, so both model lines band on the Hub."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parents[1]
@@ -370,7 +379,7 @@ def test_the_declared_non_primary_artifacts_are_the_ones_that_were_ruled_on():
         ("zkml", "crates", "zkml"),
     } | {("afrobench", "huggingface_dataset", repo) for repo in AFROBENCH_MEMBERS} | {
         (slug, "pypi", package) for slug, package in SPEECH_MODEL_PACKAGES.items()
-    }
+    } | {(slug, "pypi", package) for slug, package in VISION_MODEL_PACKAGES.items()}
 
 
 def test_real_sources_serialize_without_structural_errors():

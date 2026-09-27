@@ -359,7 +359,16 @@ def test_local_scores_matches_check_rubrics_split():
     # the card's own figures only in its annual report, so it reads `brief`, as SambaNova's SN40L
     # does. It closes on a published datasheet or on a ruling on how thin vendor documentation is
     # read, not on a tier. `huawei-ascend-950`, promoted beside it, computes on that rung.
-    assert len(deferred) == 39
+    #
+    # 39 -> 44 with the classic_ml_cv second tranche, thirty-four products in. All five additions
+    # are license names the shared tiers do not carry, recorded rather than hand-closed per
+    # promote-category step 7, each closing on a maintainer's tier ruling: `gensim` (LGPL-2.1,
+    # OSI-approved, not listed in the software osi tier), `dlib` (BSL-1.0 Boost, OSI-approved and
+    # distinct from the BSL-1.1 the tier names), `insightface` (MIT code, non-commercial model
+    # packs), `dino` (the DINOv3 License) and `segment-anything` (the SAM License on SAM 3 and 3.1).
+    # `pycaret` was expected to be a sixth on FSL-1.1-MIT, but that license covers only its 4.0
+    # pre-releases; read on the current stable release, MIT 3.3.2, it computes and is not counted.
+    assert len(deferred) == 44
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -

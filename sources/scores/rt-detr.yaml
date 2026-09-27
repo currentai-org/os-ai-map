@@ -1,0 +1,131 @@
+product: rt-detr
+openness:
+  score: 5
+  class: open_source
+  governing_release: RT-DETRv4
+  components:
+    weights:
+      value: open
+      detail: RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the Hub, ungated
+    data:
+      value: open
+      detail: COCO 2017, a public dataset; Objects365 pretraining for some v1 and v2 checkpoints
+    code:
+      value: open
+      detail: training code and configs for v1, v2 and v4
+    license:
+    - name: Apache-2.0
+      detail: repository LICENSE for v1, v2 and v4; the v4 README states no separate weights license
+  confidence: medium
+  note: Every version is Apache-2.0, code and weights, with the full training code and configs published
+    and the checkpoints trained on public COCO data. RT-DETRv4 uses a DINOv3 model as a teacher during
+    training, which a user must obtain separately under Meta's DINOv3 License; the detectors it produces
+    are released under Apache-2.0. The detector itself trains only on COCO, but its features are distilled
+    from that teacher, which Meta trained on images it has not released.
+  raw: weights:open(RT-DETRv4 S to X checkpoints linked from its README; v1 and v2 checkpoints on the
+    Hub, ungated);data:open(COCO 2017, a public dataset; Objects365 pretraining for some v1 and v2 checkpoints);code:open(training
+    code and configs for v1, v2 and v4);license:Apache-2.0(repository LICENSE for v1, v2 and v4; the v4
+    README states no separate weights license)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/LICENSE
+    shows: RT-DETRv4 LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/lyuwenyu/RT-DETR/main/LICENSE
+    shows: RT-DETR (v1 and v2) LICENSE is the Apache License, Version 2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/lyuwenyu/RT-DETR/main/README.md
+    shows: 'README: "Release the **newest** member of the RT-DETR family: RT-DETRv4: Painlessly Furthering
+      Real-Time Object Detection with Vision Foundation Models" at github.com/RT-DETRs/RT-DETRv4.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 599e90b38354c7c5cb7f7f1679454fd0537a608b5feab5703210ba79353f30c9
+    establishes:
+    - weights
+  - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/README.md
+    shows: 'RT-DETRv4 README: model table RT-DETRv4-S/M/L/X (COCO AP 49.8 to 57.0) each with a ckpt download
+      link; COCO2017 dataset preparation; training command "torchrun ... train.py -c configs/rtv4/rtv4_hgnetv2_${model}_coco.yml";
+      "We use the ViT-B/16-LVD-1689M model from DINOv3" as the teacher.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 45a9811942cd4021030a419a5a172557a59968e5802cd96961330e8d68127742
+    establishes:
+    - weights
+    - data
+    - code
+  - url: https://huggingface.co/api/models?author=PekingU&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: Eleven PekingU RT-DETR and RT-DETRv2 checkpoints, all gated false and tagged apache-2.0, including
+      the _coco_o365 variants.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7df1f7701be4697870307c560d546174966c1afaf1ebc1a275e5ee87423fc5f1
+    establishes:
+    - weights
+    - license
+    - data
+  - url: https://ungh.cc/repos/RT-DETRs/RT-DETRv4/files/main
+    shows: RT-DETRv4 repository tree includes train.py and the configs/rtv4 training configs.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: c6bccab3c7d1dca169792e06d3ac329ff0dba4b1e0597b2748b97e982a37f344
+    establishes:
+    - code
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Hugging Face downloads over the trailing 30 days for the two most-used checkpoints, which are
+    the ones declared; the other PekingU checkpoints add comparatively little. RT-DETRv4 checkpoints are
+    downloaded from a file-sharing link that publishes no counts.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://huggingface.co/api/models?author=PekingU&sort=downloads&limit=100&expand[]=downloads&expand[]=cardData&expand[]=gated
+    shows: rtdetr_r101vd_coco_o365 896,124 and rtdetr_v2_r18vd 526,281 downloads in the trailing 30 days
+      (1,422,405 together); the eleven checkpoints sum to 2,065,416.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7df1f7701be4697870307c560d546174966c1afaf1ebc1a275e5ee87423fc5f1
+capability:
+  score: 3
+  basis: feature_matrix
+  value: COCO-pretrained real-time detectors (RT-DETRv4 S to X, AP 49.8 to 57.0; RT-DETRv2 and v1 at several
+    ResNet sizes, some pretrained on Objects365) with full training code for custom datasets
+  relative_to: rf-detr
+  relation: at
+  confidence: high
+  note: RT-DETR and RF-DETR are the same kind of product, real-time transformer detectors pretrained on
+    COCO's 80 classes, so detecting anything else still takes a training run on the user's own labels.
+    RT-DETRv4 reaches 57.0 COCO AP at its largest size.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://huggingface.co/Roboflow/rf-detr-base/raw/main/README.md
+      shows: 'RF-DETR card: "These checkpoints are trained on the standard COCO 2017 object detection
+        dataset label space (80 categories)" - the fixed label space RT-DETR is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 78f0f8112dce042802c57ee130623f9ad98f3b9eebc35225053f6cec4632eb8e
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/RT-DETRs/RT-DETRv4/main/README.md
+    shows: 'RT-DETRv4 README: "RT-DETRv4 is the new version of the state-of-the-art real-time object detector
+      family, RT-DETR."; RT-DETRv4-S 49.8, M 53.7, L 55.4, X 57.0 COCO AP; "To train on your custom dataset,
+      you need to organize it in the COCO format."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 45a9811942cd4021030a419a5a172557a59968e5802cd96961330e8d68127742
+  - url: https://raw.githubusercontent.com/lyuwenyu/RT-DETR/main/rtdetrv2_pytorch/README.md
+    shows: RT-DETRv2 README lists COCO and Objects365-pretrained checkpoints and the torchrun tools/train.py
+      training command.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 43c4b95deb8976111cf75129cb8bea38a678b82038eb3c4f7a99be1ed130ec93

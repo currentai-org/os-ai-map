@@ -1,0 +1,119 @@
+product: insightface
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: library and training code, stated in the README; no root LICENSE file
+    - name: InsightFace-Model-License
+      detail: the pretrained model packs the library downloads, non-commercial research only
+    source:
+      value: public
+      detail: github.com/deepinsight/insightface
+    core-gated:
+      value: gated
+      detail: commercial licenses for the recognition model packs and the InspireFace SDK are sold on
+        request
+  confidence: medium
+  note: The library code is MIT-licensed, but the face models it downloads by default are licensed for
+    non-commercial research only, and a business that wants to deploy them has to buy a commercial model
+    license from InsightFace. The repository carries no root LICENSE file; the terms are stated in the
+    README and in signed license files beside each model pack.
+  raw: license:MIT(library and training code, stated in the README; no root LICENSE file)+InsightFace-Model-License(the
+    pretrained model packs the library downloads, non-commercial research only);source:public(github.com/deepinsight/insightface);core-gated:gated(commercial
+    licenses for the recognition model packs and the InspireFace SDK are sold on request)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/README.md
+    shows: 'README: "The code of InsightFace is released under the MIT License. There is no limitation
+      for both academic and commercial usage."; "The training data containing the annotation (and the
+      models trained with these data) are available for non-commercial research purposes only."; "For
+      open-sourced face recognition models (e.g., buffalo_l package), please contact recognition-oss-pack@insightface.ai
+      for licensing."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 28d2d95fb23e557ab3ee808d7a8e18f070475843e70391c73c746457afa87e36
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/python-package/README.md
+    shows: 'Python package README: "The library code is released under the **MIT License**, for academic
+      and commercial use. **The pretrained models provided with this library are for non-commercial research
+      only**, whether downloaded automatically or manually."; "FaceAnalysis() defaults to buffalo_l and
+      downloads the model package".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 16dd8e38ad332bb600ce82328513f0acd46191bf2a1932e294b91fba62993539
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/server/backend/insightface_server/licensing/defaults/buffalo_l/MODEL.LICENSE
+    shows: 'buffalo_l MODEL.LICENSE: "license_id": "buffalo_l-public-v1", "issuer": "InsightFace", "grant":
+      "non-commercial".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 3feb277c85165de2fcebdcaaec2310a82aa4248f5a4ff4fab91b4ca5e61fae3c
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/python-package/docs/commercial_evaluation.md
+    shows: '"Commercial Evaluation Mode" document, which walks through evaluating on the user''s own data
+      "before choosing a commercial model license" and closes with "Commercial Licensing Next Steps".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 7549f45735530db3104e700791fa433c9ef8cbf951f9f4cb2e0e65dca89a9465
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/deepinsight/insightface/files/master
+    shows: Repository tree of 2,029 paths with no LICENSE, LICENSE.txt or LICENSE.md at the root; per-model
+      MODEL.LICENSE files under server/backend/insightface_server/licensing/defaults/ and recognition/arcface_torch
+      training code.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 059aeec3c1167f731c42e71e77da3de97df4d61a9d704e33c8d4a28133477ef6
+    establishes:
+    - license
+    - source
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the insightface package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/insightface/recent
+    shows: last_month 932,087 downloads of insightface
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: accc1377cacd5735d48a09c1dac076112266f84b3f6f57961c2a602653d0152d
+capability:
+  score: 4
+  basis: feature_matrix
+  value: pretrained face detection (RetinaFace, SCRFD), alignment, recognition embeddings (ArcFace) and
+    attributes in ready model packs that analyze any face image with no training, plus training code for
+    detection and recognition
+  relative_to: ultralytics
+  relation: at
+  confidence: medium
+  note: InsightFace detects and aligns faces in any photo and recognizes people the user enrolls by comparing
+    embeddings, so a new set of identities needs no training run. It covers one object class, faces, where
+    Ultralytics spans many tasks.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://ungh.cc/repos/ultralytics/ultralytics/files/main
+      shows: Ultralytics tree at main still includes ultralytics/models/yolo/world/, ultralytics/models/yolo/yoloe/
+        and the sam modules with sam3 builders - the models it runs on the user's own images without training.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 515ea140939093404cf46845caefec209e7a5ff7ccfe4fe8a008a39c5b4c1d1a
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/deepinsight/insightface/HEAD/python-package/README.md
+    shows: 'Python package README: "InsightFace provides face detection, recognition, alignment, and attributes
+      through Python and ONNX Runtime."; example "app = FaceAnalysis()" with the buffalo_l pack downloaded
+      on first use.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 16dd8e38ad332bb600ce82328513f0acd46191bf2a1932e294b91fba62993539

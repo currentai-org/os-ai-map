@@ -1,0 +1,98 @@
+product: pyod
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-2-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/yzhao062/pyod
+    core-gated:
+      value: ungated
+      detail: academic-led project; no paid tier found
+  confidence: high
+  note: BSD-2-Clause and built from the public repository. The project is run by its academic author with
+    an advisory committee and sells nothing; the optional OpenAI encoder calls a paid third-party API
+    but the library itself is whole.
+  raw: license:BSD-2-Clause(OSI);source:public(github.com/yzhao062/pyod);core-gated:ungated(academic-led
+    project; no paid tier found)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/yzhao062/pyod/master/LICENSE
+    shows: LICENSE is the "BSD 2-Clause License", "Copyright (c) 2018, Yue Zhao".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2aad003d1faca304e013f82e5088e8cb1c364470d4755e1e2175922a9872bf56
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/yzhao062/pyod
+    shows: Repository record for yzhao062/pyod, not archived and not a fork, license bsd-2-clause, last
+      pushed 2026-09-17.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 68b16f8cc25db004299727bcd74b235dc0141ecb2c680dc0ba835c22524c5318
+    establishes:
+    - source
+  - url: https://pyod.dev/
+    shows: 'pyod.dev Governance: "Advisory committee: Chris Kuo (Columbia University), Guansong Pang (Singapore
+      Management University), Alicia Guo (IBM Consulting)" and "Every detector and fix lands through pull-request
+      review by the core maintainers"; no pricing or paid tier.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 1f41693e04da489b7e34284fb1393b371cb4d854cf6dcc813cd0e36f9cf7cb7d
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/yzhao062/pyod/files/master
+    shows: Repository tree of 440 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: eb7f3940fd8e10e7c585d438e69aefa7a11595872a7ab4ea349d2396bf8f1d9e
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the pyod package.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/pyod/recent
+    shows: last_month 2,751,853 downloads of pyod
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5a57b02091f65991f3d4562af7774337a374bee39e6c7a8d8fcac2805caa6bc9
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 61 outlier detectors across tabular, time-series, graph, text, image and audio data under one
+    API, plus ADEngine, which profiles the data, plans and builds a detector, runs it and assesses the
+    results automatically, and an agent skill and MCP tools that drive ADEngine
+  relative_to: autogluon
+  relation: at
+  confidence: medium
+  note: Beyond its catalog of detectors, PyOD 3 will choose, run and compare detectors on the user's own
+    data without the user picking one, which is the automation AutoGluon offers for prediction. That orchestration
+    layer is what places it here; its detectors alone would sit with the toolkits.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://auto.gluon.ai/stable/tutorials/tabular/tabular-essentials.html
+      shows: 'AutoGluon tabular tutorial: "Rather than just a single model, AutoGluon trains multiple
+        models and ensembles them together to obtain superior predictive performance." - the automated
+        search and fit PyOD is compared at.'
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: f3f05fee6a250bd3d94bd8d64c973e18cd7ff3d60ca003a5c924f949d861e403
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/yzhao062/pyod/master/README.rst
+    shows: 'README: "PyOD 3: Agentic Anomaly Detection At Scale"; "61 detectors across tabular, time series,
+      graph, text, image, and audio data, one API"; usage layer "ADEngine ... You want PyOD to choose,
+      compare, and assess automatically"; MCP tools "profile_data, plan_detection, build_detector ...
+      run_detection, analyze_results".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e3fc25cab8f0c49cd2c4d40fdd6090a1177d52c3ecc6ca66814708b2dba4a39a

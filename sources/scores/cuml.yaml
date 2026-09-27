@@ -1,0 +1,117 @@
+product: cuml
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/NVIDIA/cuml
+    core-gated:
+      value: ungated
+      detail: no paid edition of cuML found
+  confidence: medium
+  note: Apache-2.0 and built from the public repository, which moved from the rapidsai account to NVIDIA's.
+    NVIDIA describes it as an open-source library, and its enterprise software page does not list cuML
+    among paid components. It needs an NVIDIA GPU to run.
+  raw: license:Apache-2.0(OSI);source:public(github.com/NVIDIA/cuml);core-gated:ungated(no paid edition
+    of cuML found)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/NVIDIA/cuml/main/LICENSE
+    shows: LICENSE is the Apache License, Version 2.0, "Copyright 2018 NVIDIA CORPORATION".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 063672caf44c3db40901b3bae61f3e7174fe5777fbb550edc92ada2ad8d62877
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/NVIDIA%2Fcuml
+    shows: Repository record for NVIDIA/cuml, not archived and not a fork, license apache-2.0, last pushed
+      2026-09-24.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 801241da531415d29f3b6a1b40d27ff6e622c21a723f55237201719fe49f0650
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/NVIDIA/cuml/main/README.md
+    shows: 'README: "NVIDIA cuML is an open-source CUDA-X Data Science library for GPU-accelerated machine
+      learning."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 019471347e860cab1f21862708c41c773f3f1ee7968cfb38f5266568aa2b9e16
+    establishes:
+    - source
+    - core-gated
+  - url: https://www.nvidia.com/en-us/data-center/products/ai-enterprise/
+    shows: NVIDIA AI Enterprise product page; cuML and RAPIDS are not named among its paid components.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 5f6d630c9e22e36fbf17de108027033d0ee3c454ab2f2a9ecfb1df06ebf564b5
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/NVIDIA/cuml/files/main
+    shows: Repository tree of 1,206 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 172a32117e26c8d2fcb75132759cbc6111442c6715d45773058080c44124d04c
+    establishes:
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Monthly PyPI downloads of the cuml-cu12 and cuml-cu13 wheels, summed. RAPIDS is also installed
+    through conda and NVIDIA's own package index, which are not counted, so this is a floor.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/cuml-cu12/recent
+    shows: last_month 274,395 downloads of cuml-cu12
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 449acae254f219566c8d9f714f62e392b021fc4fdcb3c38c0262a3ffb388849f
+  - url: https://pypistats.org/api/packages/cuml-cu13/recent
+    shows: last_month 3,371 downloads of cuml-cu13
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 83b211e0221d4d35bb7215f93057d112a4ebaa60bd448f28f7496bc71085cf87
+  - url: https://docs.rapids.ai/install/
+    shows: RAPIDS install page offers conda, pip and Docker; "RAPIDS pip packages are hosted by NVIDIA,
+      some are also available on the Python Package Index (PyPI)."
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 6fcc1df3c3c18f818e67ddf654a04277b10e1f8033e0362d67cada9f50c36ca9
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 50+ GPU-accelerated algorithms across clustering (k-means, DBSCAN, HDBSCAN), regression and classification
+    (linear models, random forests, SVMs, k-NN), dimensionality reduction (PCA, t-SNE, UMAP) and time
+    series (ARIMA, Holt-Winters), with scikit-learn-compatible estimators, zero-code-change acceleration
+    and multi-GPU scaling
+  relative_to: scikit-learn
+  relation: at
+  confidence: high
+  note: cuML covers much of scikit-learn's catalog and runs it on GPUs, often many times faster, which
+    is a difference of speed and scale rather than of how much of the task it does. Choosing and tuning
+    the model stays with the user.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://scikit-learn.org/stable/user_guide.html
+      shows: scikit-learn's user guide still lists supervised learners (linear models, SVMs, nearest neighbors,
+        trees, ensembles, neural networks), unsupervised learning and model selection - the toolkit scope
+        cuML is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: 6c6c264ef869e05cbd5a682bdcdbdfa7302478eb897be90112fa3d2655766875
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://docs.rapids.ai/api/cuml/stable/
+    shows: 'Docs landing: cuML "supports 50+ algorithms across all major machine learning categories,
+      including clustering, regression, classification, dimensionality reduction, and time series analysis",
+      with multi-GPU and multi-node support and cuml.accel for running scikit-learn code on GPUs.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 30dbb9cd633d24baebaa9b6597b3d153f4e4bc92df76d3471c564e88e8b215ef

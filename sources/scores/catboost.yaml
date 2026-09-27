@@ -1,0 +1,99 @@
+product: catboost
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/catboost/catboost
+    core-gated:
+      value: ungated
+      detail: Yandex publishes it as open source; no paid tier found
+  confidence: high
+  note: Apache-2.0, built from the public repository, and published by Yandex as the owner. Yandex's pages
+    present it as open source for anyone and mention no paid edition or hosted tier.
+  raw: license:Apache-2.0(OSI);source:public(github.com/catboost/catboost);core-gated:ungated(Yandex publishes
+    it as open source; no paid tier found)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/catboost/catboost/master/LICENSE
+    shows: LICENSE opens "Copyright 2017-2026 YANDEX LLC" followed by the Apache License, Version 2.0.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: a2574dd20dd0af8e0bd25b34b38c1bb11912ff319ee4f41436395df0b1d19309
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/catboost/catboost/master/AUTHORS
+    shows: 'AUTHORS: "source code of «CatBoost» published and distributed by YANDEX LLC as the owner".'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 17b9c447b1c13ae9ec2e20ea2e1d7511063936d837168152ceb0b192a2de9163
+    establishes:
+    - source
+  - url: https://catboost.ai/
+    shows: 'catboost.ai: "developed by Yandex researchers and engineers ... It is in open-source and can
+      be used by anyone."; no pricing, cloud or enterprise tier.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: be48310924a2e0106e767ea585c17a53b9a9148fd227a6e46485826664b8778e
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/catboost/catboost/files/master
+    shows: Repository tree of 29,822 paths with no ee, enterprise, commercial or pro directory; the only
+      other LICENSE files are third-party ones under contrib/libs.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc8c5661e746c3cb8485448cec272621164e65082b502fabd8130a14d9ae5f2c
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of the catboost package; the R package and the JVM and C++
+    appliers are not counted.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/catboost/recent
+    shows: last_month 5,004,823 downloads of catboost
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 327af692d9aae939e607d9cd0bd84352aec94e9c74b2dd5695d24b8c97ccb8dd
+capability:
+  score: 2
+  basis: feature_matrix
+  value: one learner family - gradient-boosted oblivious decision trees with ordered boosting - for classification,
+    regression and ranking, with native categorical, text and embedding features, GPU training and export
+    to ONNX, CoreML, PMML and several runtimes
+  relative_to: xgboost
+  relation: at
+  confidence: high
+  note: CatBoost is one learner, boosted trees, like XGBoost and LightGBM. What sets it apart is how it
+    treats categorical and text columns without manual encoding and how many places a trained model can
+    be deployed. It does not compare or choose among other kinds of models.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://xgboost.readthedocs.io/en/stable/
+      shows: XGBoost docs landing still lists boosted-tree tutorials only, with categorical data, ranking
+        and survival, GPU and distributed training - the one-family scope CatBoost is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: c1308fbe0445610770b654de0c59cc56f57a82130f420c23251e274b92e0eea4
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://catboost.ai/en/docs/
+    shows: 'Docs landing: training on GPU, categorical, text and embedding features, applying models from
+      C/C++, Java, Node.js, Rust and ClickHouse, and export to CoreML, JSON, ONNX and PMML.'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 0b8d7e21728840f12e2dbd090f26eeec34071f344e717c8462a9b029f69f655e
+  - url: https://catboost.ai/docs/en/concepts/python-reference_catboost
+    shows: Python package reference lists CatBoost, CatBoostClassifier, CatBoostRegressor and CatBoostRanker.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: bc062be50b4273fe9cc1218fabfb5d284bd7b67b9ebaa07d5a5e47a584241bd9

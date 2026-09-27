@@ -1,0 +1,100 @@
+product: umap
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+      detail: github.com/lmcinnes/umap
+    core-gated:
+      value: ungated
+      detail: maintained by its author; nothing sold
+  confidence: high
+  note: BSD-3-Clause and built from the public repository, which its author maintains. There is no company,
+    paid tier or commercial edition behind it.
+  raw: license:BSD-3-Clause(OSI);source:public(github.com/lmcinnes/umap);core-gated:ungated(maintained
+    by its author; nothing sold)
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/lmcinnes/umap/master/LICENSE.txt
+    shows: LICENSE.txt is the "BSD 3-Clause License", "Copyright (c) 2017, Leland McInnes".
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 46fc974145ef85e0992ac3173d03ffe6cdf2611292950e323c5a69b9ca35ff1e
+    establishes:
+    - license
+  - url: https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/lmcinnes/umap
+    shows: Repository record for lmcinnes/umap, not archived and not a fork, license bsd-3-clause, last
+      pushed 2026-09-24.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: e7d629cc7be5be609fac444e68f5042e06ffcf72d044d057bdde742d3980ebe6
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/lmcinnes/umap/master/README.rst
+    shows: README closes "If you still have questions then please open an issue and I will try to provide
+      any help and guidance that I can."; no paid tier, hosted service or commercial license mentioned.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 94d22bb5ebadf8f642ac9c6215d10f84eb50adaf38dac88e8d0a8cb2d26573c3
+    establishes:
+    - core-gated
+  - url: https://ungh.cc/repos/lmcinnes/umap/files/master
+    shows: Repository tree of 319 paths with no ee, enterprise, commercial or pro directory.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: aa893817eb292bda60e889fe3e56488a29457bba1b4d931bc9f2827b2903d64d
+    establishes:
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: Measured on monthly PyPI downloads of umap-learn, the package name the project publishes under.
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://pypistats.org/api/packages/umap-learn/recent
+    shows: last_month 5,332,757 downloads of umap-learn
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 36e268b1514d067db36a8d364d96d751caf6b889c6a476d8f82dc8901c701303
+capability:
+  score: 2
+  basis: feature_matrix
+  value: one method family - UMAP manifold embedding - with supervised and semi-supervised variants, densMAP,
+    AlignedUMAP, inverse transforms and a parametric neural-network version
+  relative_to: xgboost
+  relation: at
+  confidence: high
+  note: UMAP does one thing, embedding data in fewer dimensions, and its variants all build on that method.
+    It is usually one step in a pipeline assembled with other tools, such as HDBSCAN for clustering the
+    embedding.
+  comparison:
+    last_attested: '2026-09-27'
+    sources:
+    - url: https://xgboost.readthedocs.io/en/stable/
+      shows: XGBoost docs landing still lists boosted-tree tutorials only - the one-family scope UMAP
+        is compared at.
+      accessed: '2026-09-27'
+      http_status: 200
+      content_sha256: c1308fbe0445610770b654de0c59cc56f57a82130f420c23251e274b92e0eea4
+  last_verified: '2026-09-27'
+  sources:
+  - url: https://raw.githubusercontent.com/lmcinnes/umap/master/README.rst
+    shows: 'README: "Uniform Manifold Approximation and Projection (UMAP) is a dimension reduction technique
+      that can be used for visualisation similarly to t-SNE, but also for general non-linear dimension
+      reduction."; "UMAP supports supervised and semi-supervised dimension reduction"; "Parametric UMAP
+      provides support for training a neural network to learn a UMAP based transformation of data."'
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 94d22bb5ebadf8f642ac9c6215d10f84eb50adaf38dac88e8d0a8cb2d26573c3
+  - url: https://umap-learn.readthedocs.io/en/latest/api.html
+    shows: API reference documents the umap.umap_.UMAP estimator with fit, fit_transform, transform and
+      inverse_transform.
+    accessed: '2026-09-27'
+    http_status: 200
+    content_sha256: 2093b1b11986d35db6b4f55eadf3a390d65194df6b397272d9feed6078d0235f
