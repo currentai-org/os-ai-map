@@ -336,7 +336,14 @@ def test_local_scores_matches_check_rubrics_split():
     # pytorch/hub repository carries no LICENSE file at all (`none-declared`), so it is hand-placed
     # at 2/source_available and closes on the #739 ruling on whether a public repository with no
     # grant maps to `proprietary`, not on more work.
-    assert len(deferred) == 33
+    #
+    # 33 -> 36 with the media_generation second tranche, six products in. Three are license-tier
+    # gaps recorded rather than hand-closed: `stable-video-diffusion` (the Stability AI Community
+    # License that stable-diffusion and stable-audio already wait on), `latentsync` (CreativeML
+    # OpenRAIL++-M, which the permissive tier does not name) and `open-sora` (Apache-2.0 weights
+    # whose checkpoint repository bundles FLUX.1 [dev] and a Tencent Hunyuan VAE, the liveportrait
+    # compound). triposr, mmaudio and diffsynth-studio compute. None of the three closes on more work.
+    assert len(deferred) == 36
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
