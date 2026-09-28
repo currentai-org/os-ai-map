@@ -24,10 +24,11 @@ scoring_recipe:
     so the score follows the LICENSE. Flower is open core, because its own documentation
     marks OIDC login, audit logging and the Helm charts as Flower Enterprise features, so it records core-gated:
     gated and lands on 4. p2pfl is the second open-core record: its plan table withholds "Advanced features"
-    from the free Community plan for an Enterprise plan still marked as launching soon, which the #753 ruling
-    read as gated on the Flower precedent. nebula-dfl names a proprietary Enterprise Edition whose features its
-    own commercial FAQ lists as to be determined, over an AGPL-3.0 tree with no enterprise path, which the same
-    ruling read as ungated under the acceptance standard, so it lands on 5. The Federated Compute Platform records source: partial, because Google has not
+    from the free Community plan for an Enterprise plan still marked as launching soon, which reads as gated
+    on the Flower precedent. nebula-dfl names a proprietary Enterprise Edition whose features its own
+    commercial FAQ lists as to be determined, over an AGPL-3.0 tree with no enterprise path, which reads as
+    ungated under the acceptance standard, so it lands on 5. Both readings are the ones the #753 brief
+    proposed, and the maintainer promoted both rows on them. The Federated Compute Platform records source: partial, because Google has not
     published the production server and has removed the reference one, and it lands on 2. No promoted product
     is deferred.
 
@@ -41,10 +42,11 @@ scoring_recipe:
     for those services and at least one privacy mechanism beyond plain aggregation (secure aggregation,
     homomorphic encryption, MPC, differential privacy or a TEE). 3 is a real federation across machines
     over a network that lacks rung 4''s party-identity layer, or covers only one side of the federation
-    or a single model family, or has the identity layer without the deployment tooling. nebula-dfl is the
-    first case: one operator''s controller deploys every participant and issues all of their certificates.
-    p2pfl is the last: its mutual TLS admits only certificate-holding peers, but it leaves certificate
-    distribution to the operator and ships no deployment tooling for the nodes. 2 is simulation first, where federations are emulated on a machine or cluster
+    or a single model family, or issues party certificates without rung 4''s per-organization services or
+    deployment tooling. nebula-dfl lacks the per-organization services: one operator''s controller deploys
+    every participant and issues all of their certificates. p2pfl lacks the deployment tooling: its mutual
+    TLS admits only certificate-holding peers, but it leaves certificate distribution to the operator and
+    ships no deployment tooling for the nodes. 2 is simulation first, where federations are emulated on a machine or cluster
     the researcher controls and the product itself calls real deployment out of scope or unfinished, or
     a client for one federated workload that leaves the federation runtime to another product. No product
     in the first tranche sits at 1. nvidia-flare is the top anchor: a Slurm launcher, an Android and iOS
@@ -158,8 +160,8 @@ comments: >-
   (iQua) remain candidates for later add-product promotions.
 
 
-  DECENTRALIZED SUB-TYPE, promoted 2026-09-28 on the #753 ruling, which settled both gating readings and
-  accepted thin adoption for both: nebula-dfl (ungated, 5/open_source) and p2pfl (gated, 4/open_core), each
+  DECENTRALIZED SUB-TYPE, promoted 2026-09-28 on the #753 ruling, which accepted thin adoption for both and
+  adopted the brief's gating readings: nebula-dfl (ungated, 5/open_source) and p2pfl (gated, 4/open_core), each
   re-verified live that day. Both run real federations between machines and both sit at 3, one below flower,
   for the reasons given in the rung definitions. NEBULA's physical deployment provisions Raspberry Pi nodes over
   a Tailscale network from a separate physical-deployment branch, beside the local-process and Docker-container
