@@ -371,6 +371,13 @@ def test_every_relation_the_payload_actually_carries_is_mapped():
             enum_value("freshness_basis", basis, column="products.freshness_basis")
 
 
+def test_every_freshness_basis_the_payload_can_emit_is_mapped():
+    """`partial` is emitted as soon as one axis is held, which the committed payload may not
+    show yet; the enum has to carry it before a hold reaches the load, not after."""
+    for basis in ("verified", "commit", "partial"):
+        assert enum_value("freshness_basis", basis, column="products.freshness_basis") == basis
+
+
 # --- keys -----------------------------------------------------------------------------
 
 def test_stable_id_is_deterministic():
