@@ -185,6 +185,7 @@ def test_routes_are_in_the_declared_precedence_order(tables):
         "semanticscholar.citation_count",
         "npm.downloads_30d",
         "crates.downloads_30d",
+        "homebrew.installs_30d",
         "active_users",
         "github.stargazers_count",
         "reported_traction",
@@ -242,6 +243,8 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
     assert tables["adoption_aggregation_rules"] == [
         {"aggregation_rule_id": "sum_usage_across_artifacts", "method": "sum",
          "scope": "artifacts", "applies_to_instrument": "usage_volume"},
+        {"aggregation_rule_id": "sum_installs_across_artifacts", "method": "sum",
+         "scope": "artifacts", "applies_to_instrument": "install_volume"},
         {"aggregation_rule_id": "sum_stars_across_artifacts", "method": "sum",
          "scope": "artifacts", "applies_to_instrument": "stars_fallback"},
     ]

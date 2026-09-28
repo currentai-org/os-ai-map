@@ -109,6 +109,13 @@
       },
       "description": "The crates.io page for a Rust crate. Same registry treatment and same routing status as `npm`: carried into registry/product_artifacts.csv, routed by nothing, because signal_routing.yaml declares no crates source. It also has no id pattern in build/serialize_registry.py, so the whole URL is stored as the artifact identifier rather than the crate name; that is fine for a link and would need fixing before anything joined on it. One product declares one on 2026-08-08."
     },
+    "homebrew": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      },
+      "description": "The Homebrew formula page (https://formulae.brew.sh/formula/<name>). Routed by the `homebrew` adoption route in sources/signal_routing.yaml, which reads 30-day installs from currentai.signal_packages.package_metadata onto the `install_volume` scale. An install is its own instrument, one per machine, and is never summed with downloads. Declare one only where Homebrew is how the product ships, typically a command-line tool or local runner; a library that ships mainly through PyPI does not declare its formula."
+    },
     "go": {
       "type": "array",
       "items": {

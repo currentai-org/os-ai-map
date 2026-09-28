@@ -587,8 +587,8 @@ product_slug
 product_type
 artifact_kind
 artifact_id
-channel                      github | huggingface | pypi | npm | crates | other
-metric_type                  stars | downloads | weekly_active_users | customers |
+channel                      github | huggingface | pypi | npm | crates | homebrew | other
+metric_type                  stars | downloads | installs | weekly_active_users | customers |
                              paid_seats | citations | other
 raw_value
 unit

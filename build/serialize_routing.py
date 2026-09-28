@@ -97,8 +97,14 @@ TABLES: dict[str, tuple[str, ...]] = {
 # than a silent blank. `artifact_kind` is NOT hardcoded: it is read from the source's declared
 # `artifact_key` in the `sources:` block, so `semanticscholar` compiles to its `arxiv` key and
 # matches `registry.product_artifacts.artifact_kind` rather than a guessed `paper`.
+# Instruments whose scale is declared once on their own route, not per product type: a star is
+# a star, an active user is a person, and a Homebrew install is one machine, whatever product
+# they belong to.
+ROUTE_SCALED_INSTRUMENTS = ("stars_fallback", "active_users", "install_volume")
+
 _METRIC_TYPE = {
     "downloads_30d": "downloads",
+    "installs_30d": "installs",
     "citation_count": "citations",
     "stargazers_count": "stars",
 }
@@ -402,8 +408,9 @@ def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], 
       - a `usage_volume` route resolves per product type, so it emits `type:<P>` for each type
         whose rubric declares usage_volume bands. Hardware is qualitative and declares none, so
         it gets no row — and its absence IS the abstention, correctly.
-      - `stars_fallback` and `active_users` carry a scale that is a property of the INSTRUMENT
-        and type-independent, so each emits `route:<signal_type>` for EVERY product type.
+      - `stars_fallback`, `active_users` and `install_volume` (ROUTE_SCALED_INSTRUMENTS) carry
+        a scale that is a property of the INSTRUMENT and type-independent, so each emits
+        `route:<signal_type>` for EVERY product type.
       - `reported_traction` has a vocabulary and no bands, so it resolves to nothing and emits
         no row.
 
@@ -431,7 +438,9 @@ def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], 
         route_id = _route_id(route)
         if signal_type == "usage_volume":
             pairs = [(p, band_set_id("type", p)) for p in banded_types]
-        elif signal_type in ("stars_fallback", "active_users"):
+        elif signal_type in ROUTE_SCALED_INSTRUMENTS:
+            # Named rather than inferred from `route.get("bands")`: a route-scaled instrument
+            # whose bands were deleted must still emit its join and fail below, not vanish.
             pairs = [(p, band_set_id("route", signal_type)) for p in all_types]
         else:
             pairs = []

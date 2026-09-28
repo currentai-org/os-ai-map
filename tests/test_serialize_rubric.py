@@ -1464,7 +1464,15 @@ def test_route_scales_are_declared_once_per_instrument_and_stars_stay_capped():
 
     assert warnings == []
     assert {r["product_type"] for r in rows} == {"*"}
-    assert {r["signal_type"] for r in rows} == {"stars_fallback", "active_users"}
+    assert {r["signal_type"] for r in rows} == {"stars_fallback", "active_users", "install_volume"}
+
+    # Homebrew installs sit exactly one order of magnitude below the software download scale
+    # (ruling, #718): an install is one machine, with no CI or mirror pulls in the count.
+    installs = sorted(
+        ((r["level"], r["above"]) for r in rows if r["signal_type"] == "install_volume"),
+        reverse=True,
+    )
+    assert installs == [(5, 1000000), (4, 100000), (3, 10000), (2, 1000), (1, -1)]
 
     # Capped at 3: stars measure attention rather than use, so a stars-derived band may
     # never claim the top two levels however large the count.
