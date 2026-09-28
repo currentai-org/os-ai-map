@@ -9,17 +9,21 @@ openness:
     datasheets:
       value: public
       detail: Neuron documentation architecture pages with per-device compute, memory and interconnect
+    retail:
+      value: rentable
+      detail: rented as EC2 Trn3 instances and UltraServers; never sold as a part
     toolchain:
       value: partial
-      detail: the neuronx-cc compiler is proprietary; torch-neuronx, the NKI library and vLLM integration are open
-        repositories
+      detail: the neuronx-cc compiler is proprietary; torch-neuronx, the NKI library and vLLM integration
+        are open repositories
   confidence: medium
-  note: AWS documents Trainium3's compute, memory and interconnect in its public Neuron documentation, and parts
-    of the Neuron stack are open source, though the compiler is not. The chip can only be rented as EC2 capacity,
-    never bought, and this score is provisional until the map rules on rented silicon.
+  note: AWS documents Trainium3's compute, memory and interconnect in its public Neuron documentation, and
+    parts of the Neuron stack are open source, though the compiler is not. AWS does not sell the chip; it
+    offers it only as EC2 Trn3 capacity that anyone can rent.
   raw: form_factor:chipset(AWS chip offered as EC2 Trn3 instances and UltraServers; scored as the silicon);datasheets:public(Neuron
-    documentation architecture pages with per-device compute, memory and interconnect);toolchain:partial(the neuronx-cc
-    compiler is proprietary; torch-neuronx, the NKI library and vLLM integration are open repositories)
+    documentation architecture pages with per-device compute, memory and interconnect);retail:rentable(rented
+    as EC2 Trn3 instances and UltraServers; never sold as a part);toolchain:partial(the neuronx-cc compiler
+    is proprietary; torch-neuronx, the NKI library and vLLM integration are open repositories)
   last_verified: '2026-09-26'
   sources:
   - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/arch/neuron-hardware/trainium3.html
@@ -33,10 +37,13 @@ openness:
     content_sha256: 347085a8a077cb7295e6c06683f8d866ab4919bfea590ac3f5c9878bc5f0d55b
   - url: https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-ec2-trn3-ultraservers/
     shows: '"AWS announces the general availability of Amazon Elastic Compute Cloud (Amazon EC2) Trn3 UltraServers
-      powered by our fourth-generation AI chip Trainium3"'
-    accessed: '2026-09-26'
+      powered by our fourth-generation AI chip Trainium3"; "Trn3 UltraServers can scale up to 144 Trainium3
+      chips (362 FP8 PFLOPs total) and are available in EC2 UltraClusters 3.0".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: ead9803d9ac475b0d86d6983002a6f20972aef9bb2c8687a5aff5300ddc09946
+    content_sha256: a9942c486de987f201a834879c0c886e2cd70d776e2d231f792e41fe0b733a0d
+    establishes:
+    - retail
   - url: https://pypi.org/pypi/neuronx-cc/json
     shows: 'PyPI metadata for neuronx-cc, the Neuron compiler: "license": "Proprietary"'
     accessed: '2026-09-26'

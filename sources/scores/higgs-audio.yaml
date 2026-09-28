@@ -5,37 +5,45 @@ openness:
   components:
     weights:
       value: open
-      detail: Higgs TTS 3 and the v3 STT checkpoints as safetensors on the Hub, ungated
+      detail: Higgs TTS 3 (higgs-tts-3-4b) as safetensors on the Hub, ungated
     data:
       value: closed
-      detail: no training-data statement for Higgs TTS 3; the v3 STT models name the public ASR train splits they were
-        fine-tuned on
+      detail: no training-data statement for Higgs TTS 3
     code:
       value: partial
-      detail: inference through third-party serving recipes; no v3 training code
+      detail: inference through third-party serving recipes; no Higgs TTS 3 training code
     license:
     - name: Boson-Higgs-TTS-3-Research-and-Non-Commercial-License
-      detail: higgs-tts-3-4b, the current TTS release; commercial use needs a separate written license, with a free grant
-        for monetized creator content
-    - name: Apache-2.0
-      detail: the Higgs Audio v3 speech-to-text checkpoints
+      detail: higgs-tts-3-4b, the current release of the generation line; commercial use needs a separate
+        written license, and the free Creator Use Grant covers publishing content made with the model, not
+        hosting it or building it into a product
     context:
+      separate-line:
+        value: Higgs Audio v3 STT, Apache-2.0
+        detail: four speech-to-text checkpoints (higgs-audio-v3-stt, -8b-stt and their v2 builds) released
+          about ten weeks before Higgs TTS 3 in a collection of their own; a separate recognition line,
+          recorded here and not scored
       superseded-release:
         value: higgs-tts-2-3b-base
-        detail: Higgs Audio v2 (2025) and its tokenizer, still published under the Boson Higgs Audio 2 Community License
-          (Llama 3 based, expanded license above 100,000 annual active users); superseded by v3 and not scored
-  governing_release: Higgs Audio v3 (Higgs TTS 3 and the v3 STT models, 2026)
+        detail: Higgs Audio v2 (2025) and its tokenizer, still published under the Boson Higgs Audio 2 Community
+          License (Llama 3 based, expanded license above 100,000 annual active users); superseded by v3
+          and not scored
+  governing_release: Higgs TTS 3 (higgs-tts-3-4b, 2026-06)
   confidence: medium
-  note: Boson's current text-to-speech model is free to download but may not be used commercially without a separate
-    license, while its v3 speech-to-text models are Apache-2.0. The more restrictive TTS terms are taken to govern the
-    family, and no training data or training code is published for v3.
-  raw: weights:open(Higgs TTS 3 and the v3 STT checkpoints as safetensors on the Hub, ungated);data:closed(no training-data
-    statement for Higgs TTS 3; the v3 STT models name the public ASR train splits they were fine-tuned on);code:partial(inference
-    through third-party serving recipes; no v3 training code);license:Boson-Higgs-TTS-3-Research-and-Non-Commercial-License(higgs-tts-3-4b,
-    the current TTS release; commercial use needs a separate written license, with a free grant for monetized creator
-    content)+Apache-2.0(the Higgs Audio v3 speech-to-text checkpoints);superseded-release:higgs-tts-2-3b-base(Higgs Audio
-    v2 (2025) and its tokenizer, still published under the Boson Higgs Audio 2 Community License (Llama 3 based, expanded
-    license above 100,000 annual active users); superseded by v3 and not scored)
+  note: Higgs TTS 3, Boson's current text-to-speech release and the line its own repository now points to,
+    is free to download but may not be used commercially without a separate license; a free grant lets creators
+    publish and monetize content made with it. Boson's Apache-2.0 speech-to-text models are a separate line
+    and do not change that. No training data or training code is published for Higgs TTS 3.
+  raw: weights:open(Higgs TTS 3 (higgs-tts-3-4b) as safetensors on the Hub, ungated);data:closed(no training-data
+    statement for Higgs TTS 3);code:partial(inference through third-party serving recipes; no Higgs TTS
+    3 training code);license:Boson-Higgs-TTS-3-Research-and-Non-Commercial-License(higgs-tts-3-4b, the current
+    release of the generation line; commercial use needs a separate written license, and the free Creator
+    Use Grant covers publishing content made with the model, not hosting it or building it into a product);separate-line:Higgs
+    Audio v3 STT, Apache-2.0(four speech-to-text checkpoints (higgs-audio-v3-stt, -8b-stt and their v2 builds)
+    released about ten weeks before Higgs TTS 3 in a collection of their own; a separate recognition line,
+    recorded here and not scored);superseded-release:higgs-tts-2-3b-base(Higgs Audio v2 (2025) and its tokenizer,
+    still published under the Boson Higgs Audio 2 Community License (Llama 3 based, expanded license above
+    100,000 annual active users); superseded by v3 and not scored)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/bosonai/higgs-tts-3-4b/raw/main/LICENSE
@@ -72,9 +80,10 @@ openness:
     establishes:
     - license
   - url: https://raw.githubusercontent.com/boson-ai/higgs-audio/HEAD/README.md
-    shows: 'README: "Higgs Audio v3 is here — you no longer need this repo!"; "**Higgs Audio v3** is a standalone release
-      and does **not** depend on the code here."'
-    accessed: '2026-09-27'
+    shows: 'README: "Higgs Audio v3 is here — you no longer need this repo!"; "**Higgs Audio v3** is a standalone
+      release and does **not** depend on the code here."; the weights it links are "bosonai/higgs-audio-v3-tts-4b",
+      which the Hub redirects to bosonai/higgs-tts-3-4b.'
+    accessed: '2026-09-28'
     http_status: 200
     content_sha256: c217f73aca7be6f88970b25953dd083b5d07a4486ddc6a05c16c4c83bcc289f0
     establishes:
@@ -89,6 +98,13 @@ openness:
     - license
     - code
     - data
+  - url: https://www.boson.ai/blog/higgs-audio-v3-tts
+    shows: '"Higgs TTS 3: beyond reading, toward real speech for voice AI", The Boson AI Team, June 4, 2026:
+      "Higgs TTS 3 is built for voice chat: it speaks, not just reads." The post does not mention the speech-to-text
+      models.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: b775eeee479690bb1d8c4e27eae658ef7c73edcf6f24775e280b00c88ec57ddc
 adoption:
   level: 3
   reach: 100K-1M
@@ -105,17 +121,18 @@ adoption:
     http_status: 200
     content_sha256: a899953d5cfa63e21fed080a8a0b958204f5317a51ea3967777e69d495455e4a
 capability:
-  score: 4
+  score: 2
   basis: benchmark
-  basis_detail: Hugging Face Open ASR Leaderboard, English short-form average WER
-  value: bosonai/higgs-audio-v3-stt ranks 14th of 71 at 4.39% average WER; Higgs Audio V3 TTS ranks 63rd of 91 on the
-    Artificial Analysis TTS leaderboard.
+  basis_detail: Artificial Analysis Speech Arena, text-to-speech Elo
+  value: Higgs Audio V3 TTS ranks 62nd of 91 on the Artificial Analysis TTS leaderboard at an Elo of about
+    1037. The separate v3 speech-to-text line ranks 14th of 71 on the Open ASR Leaderboard.
   confidence: medium
-  note: Its speech-to-text model is among the most accurate open recognizers on the English board, a step below Qwen3-ASR,
-    while listeners place its synthesizer in the lower half of the TTS arena.
-  relative_to: qwen-asr
+  note: Listeners in blind tests place Higgs TTS 3 in the lower third of the TTS arena, a step below Kokoro.
+    Boson's separate speech-to-text model does much better on the English recognition board, but it is a
+    different line.
+  relative_to: kokoro
   relation: one_below
-  last_verified: '2026-09-27'
+  last_verified: '2026-09-28'
   sources:
   - url: https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv
     shows: Results CSV row "bosonai/higgs-audio-v3-stt,4.3925".
@@ -123,7 +140,7 @@ capability:
     http_status: 200
     content_sha256: f8c74fddfb4f3d45c32303d57953937a25ff3ee5b25c9c4c49fedf88cba497c1
   - url: https://artificialanalysis.ai/text-to-speech/leaderboard
-    shows: Leaderboard entry "name":"Higgs Audio V3 TTS" (creator Boson AI) with "elo":1035.22.
-    accessed: '2026-09-27'
+    shows: Leaderboard row "Higgs Audio V3 TTS" (creator Boson AI, released Jun 2026, open weights at bosonai/higgs-audio-v3-tts-4b), rank 62 with "elo":1036.76, of 91 ranked models; Kokoro 82M v1.0 is 48th at 1065.
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205
+    content_sha256: 67e7fbb1fe4cfc336876346e651cd4589dd16509d6af736c6c69a23433c15438

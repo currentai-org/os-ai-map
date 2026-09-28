@@ -6,22 +6,33 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI; covers the code
-    - name: Datalab-Modified-OpenRAIL-M
-      detail: the model weights, per the README's Model License badge linking to Datalab's pricing page; the
-        badge states the family and not a threshold, and Datalab's published recognition weights have historically
-        carried CC-BY-NC-SA-4.0, so the exact terms need a maintainer's read
+    - name: AI-Pubs-Open-RAIL-M-Modified
+      detail: 'the model weights: datalab-to/surya-ocr-2 and surya_layout2, the default recognition and
+        layout checkpoints; free for personal use, research and entities below USD 5M in revenue or funding,
+        and barred to anyone offering a product or service that competes with Datalab''s'
     source:
       value: public
       detail: datalab-to/surya carries the engine and the weights are published
-  confidence: low
-  note: Apache-2.0 covers Surya's code, but the README links the weights only to an OpenRAIL-M badge on
-    Datalab's pricing page, with no threshold stated publicly. Datalab's other published weights carry the
-    noncommercial CC-BY-NC-SA-4.0, so, like Chandra and Marker, this public source paired with an unclear,
-    competition-restricting weights license reads as source-available rather than fully open.
-  raw: license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights, per the README's
-    Model License badge linking to Datalab's pricing page; the badge states the family and not a threshold,
-    and Datalab's published recognition weights have historically carried CC-BY-NC-SA-4.0, so the exact terms
-    need a maintainer's read);source:public(datalab-to/surya carries the engine and the weights are published)
+    context:
+      ocr-error-model:
+        value: cc-by-nc-sa-4.0
+        detail: the Hub copy of Datalab's OCR-error detector, which the settings load from an s3:// path
+          whose license is not stated; if it is downloaded by default the non-commercial terms govern, and
+          the score is 2 on either reading
+  confidence: medium
+  note: 'Apache-2.0 covers Surya''s code, while the recognition and layout weights it loads by default carry
+    a modified AI Pubs Open RAIL-M license: free for research, personal use and startups under $5M in funding
+    or revenue, and barred to anyone whose product competes with Datalab''s. A separate error-detection
+    model is tagged non-commercial on the Hub and would land on the same score. The license on the weights
+    allows commercial use only below the threshold, so its tier is competition_restricted and the product
+    reads as source-available.'
+  raw: 'license:Apache-2.0(OSI; covers the code)+AI-Pubs-Open-RAIL-M-Modified(the model weights: datalab-to/surya-ocr-2
+    and surya_layout2, the default recognition and layout checkpoints; free for personal use, research and
+    entities below USD 5M in revenue or funding, and barred to anyone offering a product or service that
+    competes with Datalab''s);source:public(datalab-to/surya carries the engine and the weights are published);ocr-error-model:cc-by-nc-sa-4.0(the
+    Hub copy of Datalab''s OCR-error detector, which the settings load from an s3:// path whose license
+    is not stated; if it is downloaded by default the non-commercial terms govern, and the score is 2 on
+    either reading)'
   last_verified: '2026-09-16'
   sources:
   - url: https://github.com/datalab-to/surya
@@ -50,6 +61,31 @@ openness:
     content_sha256: 8b8fd23055fa5425fa67d1d0bcef4677261893671b27d3f08b0b23839900cf57
     establishes:
     - source
+  - url: https://huggingface.co/datalab-to/surya-ocr-2/raw/main/LICENSE
+    shows: The weights LICENSE is headed "AI PUBS OPEN RAIL-M LICENSE (MODIFIED) / Version 0.1, March 2,
+      2023 (Modified)". Attachment A bars use "for any purpose if You ... generated more than five million
+      US Dollars ($5,000,000) in gross revenue in the prior year, except where Your Use is limited to personal
+      use or research purposes", the same for USD 5M raised, and use by anyone who "provides or otherwise
+      makes available any product or service that competes with any product or service offered by or made
+      available by Licensor".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: b6be9042dce439368b606444256cd97624a97c67dfae33957b87c3a0b461ae03
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/datalab-to/surya/master/surya/settings.py
+    shows: 'Surya''s settings default SURYA_MODEL_CHECKPOINT: str = "datalab-to/surya-ocr-2" and FAST_LAYOUT_MODEL_CHECKPOINT:
+      str = "hf://datalab-to/surya_layout2", with OCR_ERROR_MODEL_CHECKPOINT: str = "s3://ocr_error_detection/2025_02_18".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d4c2bcf140c7f424a290fcd68a2f3eae745ab2c476a6781a6c4449977c8d88e4
+    establishes:
+    - license
+  - url: https://huggingface.co/api/models/datalab-to/ocr_error_detection
+    shows: 'Hub metadata for datalab-to/ocr_error_detection: "license":"cc-by-nc-sa-4.0", "gated":false.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 0b04f42b5efc40204bbad36b347dfe4f654575f78d2cdd8d093fcafc8d7e2283
 adoption:
   level: 3
   reach: 100K-1M

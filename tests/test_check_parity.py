@@ -397,7 +397,21 @@ def test_local_scores_matches_check_rubrics_split():
     # data is optional. What stays: wan, qwen-image, hunyuan-3d and qwen-omni (availability versus
     # openness), voxtral and higgs-audio (the TTS-member question), xtts, chandra, surya, dino,
     # segment-anything and multipl-e (licenses no ruling has placed), and the seven hardware rows.
-    assert len(deferred) == 19
+    #
+    # 19 -> 5 on 2026-09-28, when the #753 rulings landed and 14 deferrals closed. The model ladder
+    # placed the Coqui Public Model License and the Boson Higgs TTS 3 license in
+    # `commercial_forbidden` (xtts, higgs-audio), and the model and pretrained ladders placed Meta's
+    # DINOv3 and SAM licenses in `permissive_non_osi` (dino, segment-anything). chandra and surya
+    # re-recorded their weights license under the name the Hub text carries,
+    # AI-Pubs-Open-RAIL-M-Modified, already in software `competition_restricted`. The dataset
+    # ladder's `use_bounded` widened to a purpose bound (multipl-e, 4 -> 3). The TTS-member question
+    # was ruled per product: voxtral's TTS is a separate line (2 -> 3) and Higgs TTS 3 governs
+    # higgs-audio. wan, qwen-image, hunyuan-3d and qwen-omni are scored 1/closed on their current
+    # release, with availability left to #727. hardware.yaml's `retail` gained `rentable`, read as
+    # buyable (google-tpu-ironwood, aws-trainium3). What stays is five datacenter_accelerators rows,
+    # each on a fact rather than a ruling: d-matrix-corsair goes only to select customers, and
+    # sambanova-sn40l, qualcomm-cloud-ai-100, ibm-spyre and moore-threads-mtt-s5000 publish briefs.
+    assert len(deferred) == 5
     # 517/5 -> 522/5 on 2026-08-30, when the first five products were promoted out of the
     # agent_tools_protocols tail registry: 5 products in, and no net change to the deferral
     # count. Two licenses the tiers plainly covered and could not name were ruled on that day -
@@ -581,16 +595,16 @@ def test_category_changed_days_ago_reads_git():
 # `form_factor` and closed its only deferral, taking that category to zero the same way.
 # Re-pointed rather than loosened, as the note here already said to do.
 #
-# `benchmark_eval_data` is the choice now, and it is the least likely of the four remaining
-# to close soon: both livecodebench and multipl-e are blocked on a LADDER gap rather than on
-# an unread fact - an unstated license with no tier, and a BSD-3-with-ML-restriction this
-# ladder has no tier for - and closing either is a rubric change across the categories that
-# share the tier. Two deferrals also means `sorted(deferred)[0]` still picks a victim
+# `benchmark_eval_data` was the choice until 2026-09-28, when the #753 rulings closed
+# multipl-e, its last deferral. `datacenter_accelerators` is the choice now, and the only
+# category left that defers anything: five rows, each blocked on a fact the vendor has not
+# published (a datasheet, or open availability) rather than on a ruling, so none closes by a
+# rubric edit. Five deferrals also means `sorted(deferred)[0]` still picks a victim
 # deterministically without the list being a single item. Re-point them rather than loosening
 # them if that stops being true.
 def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
     """The safeguards bug: a ladder ending in `otherwise` scoring what the repo declined."""
-    computed, deferred = local_scores("benchmark_eval_data")
+    computed, deferred = local_scores("datacenter_accelerators")
     assert deferred, "pick a category that still defers something"
     published = {
         key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
@@ -598,16 +612,16 @@ def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
     published.update({key: row(key[0], key[1], deferred=True) for key in deferred})
     victim = sorted(deferred)[0]
     published[victim] = row(victim[0], victim[1], 3, "open_weights", deferred=False, rule=6)
-    assert run(monkeypatch, published, "benchmark_eval_data") == 1
+    assert run(monkeypatch, published, "datacenter_accelerators") == 1
     assert "repo defers it, the warehouse does not know" in capsys.readouterr().out
 
 
 def test_a_shared_abstention_is_not_a_divergence(monkeypatch, capsys):
     """Both sides declining is a curation work list, not a parity failure."""
-    _, deferred = local_scores("benchmark_eval_data")
+    _, deferred = local_scores("datacenter_accelerators")
     assert deferred, "pick a category that still defers something"
     published = {key: row(key[0], key[1], deferred=True) for key in deferred}
-    assert run(monkeypatch, published, "benchmark_eval_data") == 1  # the scored products are missing
+    assert run(monkeypatch, published, "datacenter_accelerators") == 1  # the scored products are missing
     out = capsys.readouterr().out
     assert f"{len(deferred)} abstain on both sides" in out
 
