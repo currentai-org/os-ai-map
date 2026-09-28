@@ -180,10 +180,22 @@ jobs:
           NAME: ${{ github.event.workflow_run.name }}
           URL: ${{ github.event.workflow_run.html_url }}
           WHEN: ${{ github.event.workflow_run.run_started_at }}
+          EVENT: ${{ github.event.workflow_run.event }}
         run: |
           TITLE="sentinel: $NAME failed"
           EXISTING=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --label sentinel --search "in:title \"$TITLE\"" --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n1)
           [ -n "$EXISTING" ] || exit 0
+          # A push run is not always the check a scheduled run is. identity-eval grades a
+          # fixture on push and the live warehouse on schedule, so a green push run closed a
+          # live precision failure it never looked at (#763). A push run closes only a sentinel
+          # a push run filed; a scheduled run closes either. An unreadable body stays open.
+          if [ "$EVENT" != schedule ]; then
+            FILED=$(gh issue view "$EXISTING" -R "$GITHUB_REPOSITORY" --json body --jq .body | grep -oE '\(`[a-z_]+`\) failed at' | head -n1 | sed -E 's/^\(`([a-z_]+)`\).*/\1/') || FILED=""
+            if [ "$FILED" != "$EVENT" ]; then
+              echo "Filed by a ${FILED:-unknown} run; a $EVENT run does not supersede it. Leaving it open."
+              exit 0
+            fi
+          fi
           # Only a run that started after the issue was last updated supersedes it. Overlapping
           # runs can finish out of order, and an older green run must not close a newer failure.
           # A person's comment also counts as an update, which errs toward leaving it open.
