@@ -17,30 +17,40 @@ openness:
         value: Crawlee
         detail: Apache-2.0,OSI, JS+Python
   confidence: high
-  note: Apify's platform and Actor store are proprietary SaaS; Crawlee, its Apache-2.0 scraping library,
-    is an adjacent SDK rather than the platform core, so most of the product's value stays behind the managed
-    cloud. Crawlee's repository is public, but the Actor runtime that runs on the platform is not, which
-    is partial, source-available disclosure rather than open core, which would mean an OSI-licensed core
-    with only paid-tier functionality withheld.
+  note: Apify's platform and Actor store are proprietary hosted services, and the runtime that executes
+    Actors is not published. Crawlee, its Apache-2.0 scraping library, has a public repository, but it is
+    an adjacent library rather than the platform core, so the disclosure is partial rather than an open
+    core with a few paid features withheld.
   raw: platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform
     that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK
     open)
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://apify.com
-    shows: Proprietary full-stack platform - Apify Store, Actors ("Build and run serverless programs"), Integrations,
-      an MCP server, Anti-blocking and Proxy - with a single "Open source" navigation heading holding Crawlee
-      alone. The store now advertises 59,817 Actors, up from the 35,000+ this record carried. No self-hosted
-      Actor runtime is offered.
-    accessed: '2026-08-13'
+    shows: Build and run serverless programs
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
+    content_sha256: 661059a88387c5142aaf082797eaf511126319a2ac2c583a63ab10fd31eb9979
     establishes:
     - source
     - license
+  - url: https://raw.githubusercontent.com/apify/crawlee/master/LICENSE.md
+    shows: "Apache License\n                           Version 2.0, January 2004"
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 37c9b417332af22e146d381766f284649483fb6ece17ca566584bf6adcf89135
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/apify/crawlee/master/README.md
+    shows: This project is licensed under the Apache License 2.0
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 449883255ef29d4e4bfcf2149dc6bdfb5ebf2940e8e99bdfff9650c8936f07a0
+    establishes:
+    - source
   - url: https://github.com/apify/crawlee
-    shows: Crawlee repo - Apache-2.0 license badge and repo metadata spdxId Apache-2.0, "Apache License 2.0";
-      LICENSE.md at the root. The library only; it is not the Actor platform.
+    shows: Crawlee repo - Apache-2.0 license badge and repo metadata spdxId Apache-2.0, "Apache License
+      2.0"; LICENSE.md at the root. The library only; it is not the Actor platform.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ec88f295f5cacae7903e4e3d7884b7d33f1e709f2441d3a0dcfd44e2bf48e9e8
@@ -56,7 +66,6 @@ adoption:
     the open-source Crawlee library draws heavy attention on GitHub. Apify publishes no account, run or
     API-call count for the platform itself, so adoption here is a judgment made across the platform and
     Crawlee together rather than one measured figure.
-  last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
     shows: '"Browse 59,817 Actors" in the store; T-Mobile and Accenture among named enterprise users; a Discord
