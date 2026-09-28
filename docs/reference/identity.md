@@ -196,6 +196,21 @@ case: Nous ships one recipe on four bases, two Apache-licensed and two Llama-lic
 wanting Apache takes the Seed-OSS or Qwen build and gets it. Treating those as SKUs would have
 published the family as restricted while open weights were freely available.
 
+Nor does it apply across **separately released lines** that share a brand (ruled on #753). A
+speech family's text-to-speech model is neither a size nor a quantization of its recognition
+model. `voxtral` is scored on its Apache-2.0 recognition line; Voxtral 4B TTS, announced on its
+own with its own card, version and CC-BY-NC-4.0 license, is recorded under `components.context`
+as a separate line. `higgs-audio` is the mirror case: Boson's own repository points to Higgs TTS 3
+as the current release, so the TTS model governs and the Apache-2.0 speech-to-text checkpoints,
+released weeks earlier in a collection of their own, are the separate line. Which line governs is
+a reading of what the row tracks, and the note says which.
+
+**A closed current release still governs.** When a vendor ships its newest release hosted-only
+while an older one stays downloadable (`wan`, `qwen-image`, `hunyuan-3d`, `qwen-omni`), the row is
+scored on the current release, 1/closed, and the older open release is recorded under
+`components.context` and named in the note (#720, #753). How far the open line trails is an
+availability question, not an openness one, and is designed as a separate attribute under #727.
+
 Genuinely different named licenses across the SKUs of one product are rare — `gemma` (Gemma and
 Apache-2.0), `hermes` (Apache-2.0 and Llama-3) and `zephyr` (Apache-2.0 and MIT) are the shape.
 More common is a set that differs only because one SKU records the Hub's `other`, which
