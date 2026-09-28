@@ -16,6 +16,7 @@ The `--plan`/`--dry-run` no-write promise and the immutable rollback archive (in
 subdirectory, never the evaluation publisher's) are pinned too.
 """
 
+import copy
 import csv
 import shutil
 import sys
@@ -153,6 +154,33 @@ def test_a_fact_with_no_result_row_is_rejected(tmp_path):
 
 
 # --- canonical equivalence: the authority (built from the REAL builder) ----------
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _one_canonical_build():
+    """Run the canonical builder once per module, not once per validation.
+
+    `canonical_equivalence_problems` reruns `axis_scoring_trace.resolve` on every call, which is
+    the point in production (the candidate must match the tree it is published from) and costs
+    about twelve seconds. Every test here validates a copy of the candidate against the same
+    unchanged tree, so one build per (root, allow_dirty) is the same answer. A test that replaces
+    `resolve` itself with monkeypatch still sees its own stub, since a function-scoped patch sits
+    on top of this one and is undone first. Each caller gets a deep copy.
+    """
+    import build.axis_scoring_trace as trace
+
+    real = trace.resolve
+    built: dict = {}
+
+    def cached(root=None, allow_dirty=False):
+        key = (str(root or trace.ROOT), allow_dirty)
+        if key not in built:
+            built[key] = real(root, allow_dirty=allow_dirty)
+        return copy.deepcopy(built[key])
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(trace, "resolve", cached)
+        yield
 
 
 @pytest.fixture(scope="module")

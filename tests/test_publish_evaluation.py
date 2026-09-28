@@ -5,8 +5,12 @@ maintainer step, but the guards that keep a bad or arbitrary CSV off the platfor
 `--plan`/`--dry-run` write nothing, and the immutable rollback archive are pure and pinned here.
 """
 
+import copy
+import functools
 import hashlib
 import sys
+
+import pytest
 
 import build.publish_evaluation as P
 import build.publish_registry as PR
@@ -20,11 +24,45 @@ def _write_csv(path, header, rows):
     return path
 
 
+@functools.lru_cache(maxsize=1)
+def _baseline_tables():
+    """The two evaluation tables over the frozen baseline, built once per test process.
+
+    `build_tables` walks the whole corpus (about 18 seconds), and eighteen tests here need the same
+    valid pair only to write it into their own directory and then read or corrupt that copy. None
+    of them changes the inputs, so rebuilding per test bought nothing. Callers get a deep copy so a
+    test can never alter what the next one reads.
+    """
+    return SE.build_tables(rows_from_parquet(), allow_dirty=True, evaluated_at=None)
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _one_source_load():
+    """Load the repository's sources once per module, not once per validation.
+
+    `validate_candidates` calls `build.validate.load_sources(root)` to check slugs against the
+    corpus, about five seconds a call. Every test here validates against the same unchanged tree,
+    so one load per root is the same answer; a deep copy per caller keeps them independent.
+    """
+    import build.validate as V
+
+    real = V.load_sources
+    loaded: dict = {}
+
+    def cached(root):
+        key = str(root)
+        if key not in loaded:
+            loaded[key] = real(root)
+        return copy.deepcopy(loaded[key])
+
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(V, "load_sources", cached)
+        yield
+
+
 def _valid_candidates(out_dir):
     """Write real, valid evaluation CSVs (over the frozen baseline) into out_dir."""
-    measurements, reconciliation = SE.build_tables(
-        rows_from_parquet(), allow_dirty=True, evaluated_at=None
-    )
+    measurements, reconciliation = copy.deepcopy(_baseline_tables())
     SE.write_csv(measurements, P.EXPECTED_HEADERS["product_adoption_measurements"],
                  out_dir / "product_adoption_measurements.csv")
     SE.write_csv(reconciliation, P.EXPECTED_HEADERS["adoption_reconciliation"],
