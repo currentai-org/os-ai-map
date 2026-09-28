@@ -1,0 +1,76 @@
+name: asset-counters
+
+# Records this week's lifetime adoption counters: GitHub release asset downloads and Docker Hub
+# pulls. Both are lifetime totals, so a monthly figure has to be an increment between readings,
+# and the platform keeps no history until it supports incremental models (#664). This is the
+# interim: build/snapshot_counters.py appends one row per counter per platform refresh to
+# sources/snapshots/asset_counters.csv.
+#
+# Its own workflow, and daily, on purpose. The platform overwrites both tables on the Sunday
+# sweep, so a reading not captured before the next sweep is gone for good. Coupled to another
+# job, any unrelated failure there would cost a week. Run daily, the capture is idempotent (a
+# reading already recorded adds nothing), so one success between sweeps is enough and a failed
+# day retries itself the next morning. It opens a PR only when a new platform refresh appears,
+# and never a second one for the same refresh.
+
+on:
+  schedule:
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Capture any new readings
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          set -o pipefail
+          uv run python -m build.snapshot_counters --live | tee counters.txt
+          uv run python -m build.snapshot_counters --check
+      - name: Keep a copy whatever happens next
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-counters
+          path: sources/snapshots/asset_counters.csv
+          retention-days: 90
+      - name: Open the counters PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain sources/snapshots/asset_counters.csv)" ]; then
+            echo "No new reading since the last capture."
+            exit 0
+          fi
+          NEWEST=$(tail -n +2 sources/snapshots/asset_counters.csv | cut -d, -f4 | sort | tail -1 | cut -c1-10)
+          BRANCH="asset-counters/${NEWEST}"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then
+            echo "A PR for the ${NEWEST} refresh is already open on ${BRANCH}; nothing to add."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add sources/snapshots/asset_counters.csv
+          git commit -m "chore(counters): record the ${NEWEST} lifetime counters"
+          git push -u origin "$BRANCH"
+          {
+            echo "This platform refresh's lifetime counters, appended to"
+            echo "sources/snapshots/asset_counters.csv. Raw readings only; nothing is banded."
+            echo
+            echo '```'
+            cat counters.txt
+            echo '```'
+          } > pr-body.md
+          gh pr create --title "chore(counters): lifetime counters for the ${NEWEST} refresh" --body-file pr-body.md

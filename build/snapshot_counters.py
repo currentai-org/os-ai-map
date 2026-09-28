@@ -20,7 +20,14 @@ What is captured:
 
 A row is keyed on (source, product_slug, artifact_id, observed_at), where `observed_at` is the
 platform's fetch time, so rerunning inside a week adds nothing and a missed week shows as a gap
-rather than a repeated value. Nothing here computes a band or an increment; the counters are raw.
+rather than a repeated value. A reading already recorded with DIFFERENT values is an error, never
+silently kept or replaced. The grain is the product: a repository several products declare appears
+once per product, so whatever computes an increment must not sum those rows as separate use.
+Nothing here computes a band or an increment; the counters are raw.
+
+`.github/workflows/asset-counters.yml` runs this daily, on its own, so a failure elsewhere can
+never cost a week: the capture is idempotent, one success per platform refresh is enough, and a
+reading the platform has already overwritten cannot be recovered afterwards.
 
 Usage:
     uv run python -m build.snapshot_counters --live     # read the warehouse and append new rows
@@ -57,6 +64,10 @@ DOCKER_SQL = (
 )
 
 
+class ConflictingReading(ValueError):
+    """The same platform reading, recorded twice with different values."""
+
+
 def read_history(path: Path = HISTORY) -> list[dict]:
     if not path.exists():
         return []
@@ -65,6 +76,8 @@ def read_history(path: Path = HISTORY) -> list[dict]:
 
 
 def _normalize(source: str, row: dict, captured_on: str) -> dict:
+    # Both collectors write fetched_at as naive UTC at whole seconds, so the first 19 characters
+    # are the whole value; Trino renders it with a ".000" suffix that carries nothing.
     observed = str(row["observed_at"]).replace("T", " ")[:19]
     asset_count = row.get("asset_count")
     return {
@@ -83,16 +96,23 @@ def merge(history: list[dict], fresh: dict[str, list[dict]], captured_on: str) -
 
     Pure, so the tests can drive it. Sorted by key so the file diffs cleanly week to week.
     """
-    seen = {tuple(r[k] for k in KEY) for r in history}
+    known = {tuple(r[k] for k in KEY): r for r in history}
     rows = list(history)
     added = 0
     for source, source_rows in fresh.items():
         for raw in source_rows:
             row = _normalize(source, raw, captured_on)
             key = tuple(row[k] for k in KEY)
-            if key in seen:
+            existing = known.get(key)
+            if existing is not None:
+                if (existing["counter"], existing["asset_count"]) != (row["counter"], row["asset_count"]):
+                    raise ConflictingReading(
+                        f"{key} is already recorded as counter={existing['counter']} "
+                        f"asset_count={existing['asset_count']!r}, and now reads "
+                        f"counter={row['counter']} asset_count={row['asset_count']!r}"
+                    )
                 continue
-            seen.add(key)
+            known[key] = row
             rows.append(row)
             added += 1
     rows.sort(key=lambda r: tuple(r[k] for k in KEY))
@@ -153,7 +173,11 @@ def main() -> int:
 
     fresh = {"github_release": query(GITHUB_SQL), "docker": query(DOCKER_SQL)}
     captured_on = datetime.now(timezone.utc).date().isoformat()
-    rows, added = merge(history, fresh, captured_on)
+    try:
+        rows, added = merge(history, fresh, captured_on)
+    except ConflictingReading as exc:
+        print(f"  x {exc}", file=sys.stderr)
+        return 1
     found = problems(rows)
     if found:
         for line in found:

@@ -55,3 +55,13 @@ def test_problems_catches_duplicates_unknown_sources_and_bad_dates():
 
 def test_the_committed_history_is_well_formed():
     assert SC.problems(SC.read_history()) == []
+
+
+def test_the_same_reading_with_different_values_is_an_error():
+    import pytest
+
+    first = {"github_release": [_gh("x", "o/x", "2026-09-28 00:00:00", 500, 4)], "docker": []}
+    rows, _ = SC.merge([], first, "2026-09-28")
+    changed = {"github_release": [_gh("x", "o/x", "2026-09-28 00:00:00", 501, 4)], "docker": []}
+    with pytest.raises(SC.ConflictingReading):
+        SC.merge(rows, changed, "2026-09-29")

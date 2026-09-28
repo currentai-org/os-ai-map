@@ -87,6 +87,7 @@ holds it against the `cron:` lines it quotes.
 | `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
 | `adoption-reconciliation` (re-measures every recorded adoption band against the week's observations: dates the agreements, queues the disagreements) | Monday 05:00 | `.github/workflows/adoption-reconciliation.yml` |
 | `parity` gate | Monday 06:00 | `.github/workflows/parity.yml` |
+| `asset-counters` (records lifetime release-asset and Docker Hub counters, one row per platform refresh; an interim until incremental models) | daily 06:30 | `.github/workflows/asset-counters.yml` |
 | `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
 | `identity-eval` (replay eval against prior human decisions; fails on a floored relation) | Monday 07:30 | `.github/workflows/identity-eval.yml` |
 | `freshness` report | Monday 08:00 | `.github/workflows/freshness.yml` |

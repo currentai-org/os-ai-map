@@ -101,6 +101,9 @@ PATTERNS = [
     ("crates", re.compile(r"crates\.io/crates/([\w\-.]+)", re.I)),
     # Formula names carry dots (llama.cpp) and an optional @version (python@3.12).
     ("docker", re.compile(r"hub\.docker\.com/r/([\w\-.]+/[\w\-.]+)", re.I)),
+    # Official images: /_/<name> is library/<name>. Captured bare, and the proposer
+    # canonicalizes through build.identity, which adds the namespace.
+    ("docker", re.compile(r"hub\.docker\.com/_/([\w\-.]+)", re.I)),
     ("homebrew", re.compile(r"formulae\.brew\.sh/(?:api/)?formula/([\w\-.@+]+?)(?:\.json)?(?=[/#?\s\"')]|$)", re.I)),
 ]
 

@@ -163,7 +163,9 @@ def canonical(kind: str, ident_or_url: str) -> str:
     if kind == "homebrew":
         return ident.lower()
     if kind == "docker":
-        return ident.strip("/").lower()
+        # A bare name is an official image, which the Hub addresses as library/<name>.
+        ident = ident.strip("/").lower()
+        return ident if "/" in ident else f"library/{ident}"
     if kind == "arxiv":
         ident = ident.removeprefix("arxiv:").removeprefix("ARXIV:")
         match = ARXIV_ID.match(ident)
