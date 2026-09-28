@@ -137,29 +137,21 @@ capability:
     broad environment coverage (dataset eval GSM8K/MMLU, games, code execution, multimodal); OpenAI-compatible
     endpoints; debugging tooling (view-run/process). Trainer-agnostic via Axolotl/Tinker.'
   confidence: medium
-  note: Capable, well-architected RL-environments layer; mid-tier as a fine-tuning enabler (it orchestrates
-    RL rather than implementing large-scale training itself). Vendor-reported gains (4.6x parallel-task,
-    2.5x finance) not independently benchmarked.
-  last_verified: '2026-08-08'
+  note: 'Atropos ships ready-made environments for dataset evaluation, games, judge-based RLHF and RLAIF,
+    multi-turn RL, code execution and multimodal tasks, and it works with any OpenAI-compatible endpoint.
+    It stops short of training itself: the trainer and inference engine come from elsewhere, such as Axolotl
+    or Tinker, so it enables fine-tuning rather than performing it.'
+  last_verified: '2026-09-28'
   sources:
-  - url: https://github.com/NousResearch/atropos
-    shows: The rendered README's environment table lists "Dataset environments" ("GSM8K, MMLU, Custom HF
-      Datasets"), "Online environments" ("Blackjack, Taxi, Text-based games"), "RLAIF and RLHF" ("LLM Judge/Reward
-      Models"), "Multi-Turn RL", "Code Execution" and "Multimodal". A "Trainer Integrations" section covers
-      Axolotl and Tinker, and the diagram caption notes the trainer and inference engine are not included
-      with the atropos package, with the in-repo example trainer described as a reference example. Tooling
-      includes "view-run", process, and "Offline Data Generation" via atropos-sft-gen and atropos-dpo-gen,
-      over OpenAI-compatible endpoints. The vendor's own results table reports a "Berkeley Function Calling
-      Benchmark" parallel-task improvement of "4.6x" and a simple-task move from 21 percent to 51.75 percent,
-      both self-reported and not independently benchmarked. "GRPO" does not occur anywhere in the README.
-    accessed: '2026-08-08'
+  - url: https://raw.githubusercontent.com/NousResearch/atropos/main/README.md
+    shows: 'The README environment table lists "Dataset environments" with "GSM8K, MMLU, Custom HF Datasets",
+      "Online environments" with "Blackjack, Taxi, Text-based games", "RLAIF and RLHF" with "LLM Judge/Reward
+      Models", "Multi-Turn RL", "Code Execution" and "Multimodal". A Trainer Integrations section covers
+      Axolotl and Tinker, and the diagram caption says "trainer & inference engine not included with the
+      atropos package". Tooling includes "View Run (`view-run`)" and "Offline Data Generation" via atropos-sft-gen
+      and atropos-dpo-gen, and "Atropos natively supports any model provider that adheres to the OpenAI
+      API standard". Its results table reports "4.6x" on parallel tasks and 21% to 51.75% on simple tasks,
+      self-reported. Searched the body for GRPO: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0
-  - url: https://api.github.com/repos/NousResearch/atropos/releases
-    shows: 'Four published releases, newest "tag_name": "v0.4.0" with "published_at": "2026-03-10T04:20:36Z"
-      and "prerelease": false; the others are v0.3.0 (2025-07-16), v0.2.1 and v0.2.0. Together with the
-      repo being archived on 2026-07-04 this establishes that the feature set is frozen at 0.4.0, which
-      is why the capability reading describes a fixed feature set rather than a moving target.'
-    accessed: '2026-08-08'
-    http_status: 200
-    content_sha256: c0511134ed5fde41a61e468d93deb8f1c70021d4b4793d9e53490dd60eea488d
+    content_sha256: 354055bcc2f72ba94fb5c2b69741c159b89a55bd30f6e20b9b652781cafb9ff6

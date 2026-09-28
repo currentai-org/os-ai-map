@@ -142,30 +142,44 @@ capability:
     precision BF16/FP8 via Accelerate; broad method coverage but relies on Accelerate for scale rather
     than native frontier-scale parallelism like Megatron-LM (the C5 anchor).'
   confidence: high
-  note: 'TRL covers more post-training methods than the other open libraries in this category: SFT, the
-    DPO/IPO/KTO/ORPO preference family, PPO, GRPO and reward modeling. It relies on Hugging Face Accelerate
-    -- DeepSpeed, FSDP, BF16 and FP8 -- for distributed training rather than implementing large-scale parallelism
-    itself, which leaves it a tier behind Megatron-LM.'
-  last_verified: '2026-08-08'
+  note: 'TRL covers a broad set of post-training methods: supervised fine-tuning, DPO, KTO and ORPO preference
+    training, GRPO and other online methods, PPO, and reward modeling. It hands large-scale distributed
+    training to Hugging Face Accelerate and DeepSpeed rather than implementing its own parallelism, which
+    leaves it a tier behind Megatron-LM.'
+  last_verified: '2026-09-28'
   sources:
   - url: https://huggingface.co/docs/trl/index
-    shows: 'The "Taxonomy" section reads: "Online methods GRPOTrainer / RLOOTrainer / OnlineDPOTrainer /
-      NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer / PRMTrainer; Offline methods
-      SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer; Knowledge distillation
-      GKDTrainer / MiniLLMTrainer". The Integrations nav lists DeepSpeed, Harbor, Kernels Hub, Liger Kernel,
-      OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM: scale is delegated to integrations
-      rather than a native parallelism engine like Megatron-LM''s. IPO appears nowhere on the page.'
-    accessed: '2026-08-08'
+    shows: 'The stable docs index opens its trainer overview with "Below is an overview of TRL trainers,
+      organized by maturity and method type" and lists GRPOTrainer, RLOOTrainer, RewardTrainer, SFTTrainer,
+      DPOTrainer, KTOTrainer and DistillationTrainer as stable, with OnlineDPOTrainer, CPOTrainer, ORPOTrainer
+      and GKDTrainer under Experimental. Searched the body for PPOTrainer, FP8 and BF16: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04
+    content_sha256: af0e4b732308d05936499ef6fb3e41aaf58d0a7df171f70b84d66fd986fd1489
   - url: https://raw.githubusercontent.com/huggingface/trl/main/README.md
-    shows: Quick Start states "Each trainer in TRL is a light wrapper around the Transformers trainer and
-      natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP", and Highlights
-      state it "Leverages Accelerate to scale from single GPU to multi-node clusters" and that "Full integration
-      with PEFT enables training on large models with modest hardware via quantization and LoRA/QLoRA",
-      plus an Unsloth integration "for accelerating training using optimized kernels". Working SFTTrainer,
-      GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples follow. No FP8 claim appears in the
-      file.
-    accessed: '2026-08-08'
+    shows: 'The README states each trainer "natively supports distributed training methods like DDP, DeepSpeed
+      ZeRO, and FSDP" and that TRL "Leverages [🤗 Accelerate](https://github.com/huggingface/accelerate)
+      to scale from single GPU to multi-node clusters", with PEFT LoRA/QLoRA and SFTTrainer, GRPOTrainer,
+      DPOTrainer, KTOTrainer and RewardTrainer examples. Searched the body for FP8 and BF16: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c
+    content_sha256: dcca5a59d5978ef5185fd08e7ca513a7218cbc76db9b8db4f20bd5a9d674a20d
+  - url: https://huggingface.co/docs/trl/dpo_trainer
+    shows: The DPO trainer page documents preference-loss variants and says "TRL exposes this as <code>loss_type="ipo"</code>"
+      for the IPO variant.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a14c13f9f5a87cea9ffa73c2b7254b35e817fc242d12c6a546f42305d9291064
+  - url: https://huggingface.co/docs/trl/distributing_training
+    shows: The distributed-training guide has a "Multi-Node Training" section with an "Accelerate Configuration"
+      subsection and says to launch distributed training "by running" after "accelerate config", so scale-out
+      goes through Accelerate.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a6343b6d713739d1e14b567ac97aaadd42a85ce3745a0cf12c304cbddbb64bc2
+  - url: https://huggingface.co/docs/trl/main/en/ppo_trainer
+    shows: The main-branch PPO page describes "Trainer for Proximal Policy Optimization (PPO)" and documents
+      the class at "trl.experimental.ppo.PPOTrainer", so PPO is available as an experimental trainer.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d0bb2920b732d70897a3d457efd8fa8e92f188a0b2ce7e84906a7ecab014a69b
