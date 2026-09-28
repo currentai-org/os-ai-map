@@ -65,3 +65,13 @@ def test_the_same_reading_with_different_values_is_an_error():
     changed = {"github_release": [_gh("x", "o/x", "2026-09-28 00:00:00", 501, 4)], "docker": []}
     with pytest.raises(SC.ConflictingReading):
         SC.merge(rows, changed, "2026-09-29")
+
+
+def test_union_keeps_rows_from_both_sides_and_their_capture_dates():
+    main_rows, _ = SC.merge([], {"github_release": [_gh("a", "o/a", "2026-09-28 00:00:00", 1, 1)], "docker": []}, "2026-09-28")
+    pending, _ = SC.merge([], {"github_release": [_gh("b", "o/b", "2026-10-04 00:00:00", 2, 1)], "docker": []}, "2026-10-05")
+    rows, added = SC.union(main_rows, pending)
+    assert added == 1 and {r["product_slug"] for r in rows} == {"a", "b"}
+    assert {r["captured_on"] for r in rows} == {"2026-09-28", "2026-10-05"}
+    again, added_again = SC.union(rows, pending)
+    assert added_again == 0 and again == rows

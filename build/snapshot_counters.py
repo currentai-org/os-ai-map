@@ -32,6 +32,7 @@ reading the platform has already overwritten cannot be recovered afterwards.
 Usage:
     uv run python -m build.snapshot_counters --live     # read the warehouse and append new rows
     uv run python -m build.snapshot_counters --check    # validate the committed history
+    uv run python -m build.snapshot_counters --union other.csv   # fold another history in by key
 """
 
 from __future__ import annotations
@@ -79,6 +80,7 @@ def read_history(path: Path = HISTORY) -> list[dict]:
 
 
 def _normalize(source: str, row: dict, captured_on: str) -> dict:
+    captured_on = captured_on or str(row.get("captured_on") or "")
     # Both collectors write fetched_at as naive UTC at whole seconds, so the first 19 characters
     # are the whole value; Trino renders it with a ".000" suffix that carries nothing.
     observed = str(row["observed_at"]).replace("T", " ")[:19]
@@ -122,6 +124,21 @@ def merge(history: list[dict], fresh: dict[str, list[dict]], captured_on: str) -
     return rows, added
 
 
+def union(history: list[dict], other: list[dict]) -> tuple[list[dict], int]:
+    """Two histories folded together by reading key. A reading both hold with different values
+    raises ConflictingReading, as in `merge`. Used to combine main's history with a pending PR's
+    before capturing, so neither can drop the other's rows."""
+    by_source: dict[str, list[dict]] = {}
+    for row in other:
+        by_source.setdefault(row["source"], []).append(row)
+    rows = list(history)
+    added = 0
+    for source, source_rows in by_source.items():
+        rows, n = merge(rows, {source: source_rows}, captured_on="")
+        added += n
+    return rows, added
+
+
 def problems(rows: list[dict]) -> list[str]:
     """Structural checks on the committed history. A counter going DOWN is not a problem here:
     it is a real observation (an asset deleted or replaced), and whoever computes an increment
@@ -160,11 +177,21 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--live", action="store_true", help="read the warehouse and append new rows")
     parser.add_argument("--check", action="store_true", help="validate the committed history")
+    parser.add_argument("--union", type=Path, help="fold another history file in by reading key")
     args = parser.parse_args()
-    if args.live == args.check:
-        parser.error("pass exactly one of --live and --check")
+    if sum(bool(x) for x in (args.live, args.check, args.union)) != 1:
+        parser.error("pass exactly one of --live, --check and --union")
 
     history = read_history()
+    if args.union:
+        try:
+            rows, added = union(history, read_history(args.union))
+        except ConflictingReading as exc:
+            print(f"  x {exc}", file=sys.stderr)
+            return 1
+        write_history(rows)
+        print(f"folded in {added} row(s) from {args.union}; history now {len(rows)} rows")
+        return 0
     if args.check:
         found = problems(history)
         for line in found:
