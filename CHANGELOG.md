@@ -34,6 +34,9 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Merged the `ai2` organization into `allen-institute-for-ai`, which now lists all 23 of the
+  institute's products and redirects the old slug
+  ([#769](https://github.com/currentai-org/os-ai-map/pull/769)).
 - The #753 rulings placed the Coqui, Boson Higgs TTS 3, DINOv3 and SAM licenses, widened the dataset
   ladder's `use_bounded` to purpose bounds and counted rentable silicon as buyable. Fourteen
   deferrals close; voxtral moves 2 -> 3 and multipl-e 4 -> 3, and wan, qwen-image, hunyuan-3d and
