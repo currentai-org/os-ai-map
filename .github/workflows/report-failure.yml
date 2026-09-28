@@ -23,6 +23,7 @@ on:
     workflows:
       - adoption-reconciliation
       - artifacts
+      - asset-counters
       - channel-authority
       - contradiction-sweep
       - freshness
@@ -45,9 +46,9 @@ permissions:
 env:
   # Workflows safe to re-run blind: they read, or they publish idempotently (registry's static
   # models and Neon swap are both re-loadable). Left off on purpose, because a re-run of a job
-  # that failed after its write could write twice: adoption-reconciliation, identity-digest,
-  # long-tail-sync and reverify open PRs or issues, and regenerate pushes (it has its own push
-  # retry). tests/test_sentinel_coverage.py fails if a workflow that writes is added here.
+  # that failed after its write could write twice: adoption-reconciliation, asset-counters,
+  # identity-digest, long-tail-sync and reverify open PRs or issues, and regenerate pushes (it has
+  # its own push retry). asset-counters also retries itself by running daily. tests/test_sentinel_coverage.py fails if a workflow that writes is added here.
   RETRYABLE: >-
     artifacts channel-authority contradiction-sweep freshness identity-eval mirror-drift parity
     refetch registry scoring-trace validate

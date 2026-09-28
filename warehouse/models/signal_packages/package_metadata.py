@@ -15,6 +15,11 @@ Two registries, for two readers:
   `https://formulae.brew.sh/api/formula/<name>.json`, plus `latest_version` from
   `versions.stable`. Homebrew publishes the windows itself, so there is no history to keep.
   Formulae only; casks are a separate API and nothing on the map declares one yet.
+- **Docker Hub** (#718, #664 interim): `pull_count` from
+  `https://hub.docker.com/v2/repositories/<namespace>/<repo>/`, a LIFETIME total with no window.
+  It is captured weekly into the repository's counter history and the monthly figure is the
+  increment, an interim until the platform supports incremental models. Official images use
+  the `library` namespace (`library/postgres`).
 
 Roster comes from `currentai.registry.product_artifacts`, filtered to the two kinds, so
 coverage follows the map. Grain: one row per (product_slug, artifact_kind, package).
@@ -47,11 +52,12 @@ import pandas as pd
 
 PYPI_API = "https://pypi.org/pypi"
 BREW_API = "https://formulae.brew.sh/api/formula"
+DOCKER_API = "https://hub.docker.com/v2/repositories"
 USER_AGENT = "os-ai-map-signal-packages/1.0 (https://github.com/currentai-org/os-ai-map)"
 ROSTER_SQL = (
     "SELECT DISTINCT product_slug, product_type, artifact_kind, artifact_id "
     'FROM "currentai"."registry"."product_artifacts" '
-    "WHERE artifact_kind IN ('pypi', 'homebrew')"
+    "WHERE artifact_kind IN ('pypi', 'homebrew', 'docker')"
 )
 
 
@@ -144,11 +150,23 @@ def brew_fields(payload: object) -> tuple[str | None, int | None, int | None, in
     )
 
 
+def docker_pulls(payload: object) -> int | None:
+    """The image's lifetime pull count, or None when Docker Hub reports none."""
+    if not isinstance(payload, dict):
+        return None
+    value = payload.get("pull_count")
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return int(value)
+
+
 def request_url(artifact_kind: str, package: str) -> str | None:
     if artifact_kind == "pypi":
         return f"{PYPI_API}/{package}/json"
     if artifact_kind == "homebrew":
         return f"{BREW_API}/{package}.json"
+    if artifact_kind == "docker":
+        return f"{DOCKER_API}/{package}/"
     return None
 
 
@@ -156,7 +174,7 @@ def request_url(artifact_kind: str, package: str) -> str | None:
     capabilities=oso.Capabilities(fetch=True),
     environment_name="Default",
     depends_on=["currentai.registry.product_artifacts"],
-    external_origins=["https://pypi.org", "https://formulae.brew.sh"],
+    external_origins=["https://pypi.org", "https://formulae.brew.sh", "https://hub.docker.com"],
     columns=[
         oso.Column(name="product_slug", type="varchar"),
         oso.Column(name="product_type", type="varchar"),
@@ -167,6 +185,7 @@ def request_url(artifact_kind: str, package: str) -> str | None:
         oso.Column(name="installs_30d", type="bigint"),
         oso.Column(name="installs_90d", type="bigint"),
         oso.Column(name="installs_365d", type="bigint"),
+        oso.Column(name="pull_count_lifetime", type="bigint"),
         oso.Column(name="http_status", type="bigint"),
         oso.Column(name="fetched_at", type="timestamp"),
     ],
@@ -181,7 +200,7 @@ async def package_metadata(context: oso.AsyncContext) -> oso.DataFrame:
         if isinstance(kind, str) and isinstance(package, str) and request_url(kind, package):
             entries.append(row)
     if not entries:
-        raise RuntimeError("roster query returned no pypi or homebrew artifacts")
+        raise RuntimeError("roster query returned no pypi, homebrew or docker artifacts")
 
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     # One request per distinct (kind, package): a package two products declare is fetched once.
@@ -202,7 +221,8 @@ async def package_metadata(context: oso.AsyncContext) -> oso.DataFrame:
     for (kind, package), response in zip(keys, answers):
         status = None if isinstance(response, BaseException) else response.status
         fields: dict[str, object] = {"latest_version": None, "latest_upload_at": None, "installs_30d": None,
-                  "installs_90d": None, "installs_365d": None, "http_status": status}
+                  "installs_90d": None, "installs_365d": None, "pull_count_lifetime": None,
+                  "http_status": status}
         if status == 200 and not isinstance(response, BaseException):
             try:
                 payload = response.json()
@@ -210,10 +230,12 @@ async def package_metadata(context: oso.AsyncContext) -> oso.DataFrame:
                 payload = None
             if kind == "pypi":
                 fields["latest_version"], fields["latest_upload_at"] = pypi_fields(payload)
+            elif kind == "docker":
+                fields["pull_count_lifetime"] = docker_pulls(payload)
             else:
                 (fields["latest_version"], fields["installs_30d"],
                  fields["installs_90d"], fields["installs_365d"]) = brew_fields(payload)
-            if fields["latest_version"] is not None:
+            if fields["latest_version"] is not None or fields["pull_count_lifetime"] is not None:
                 ok += 1
         by_key[(kind, package)] = fields
 
@@ -244,6 +266,7 @@ async def package_metadata(context: oso.AsyncContext) -> oso.DataFrame:
             ("installs_30d", "bigint"),
             ("installs_90d", "bigint"),
             ("installs_365d", "bigint"),
+            ("pull_count_lifetime", "bigint"),
             ("http_status", "bigint"),
             ("fetched_at", "timestamp"),
         ],

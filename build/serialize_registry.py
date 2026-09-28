@@ -80,6 +80,7 @@ ARTIFACT_KINDS = (
     "crates",
     "arxiv",
     "homebrew",
+    "docker",
 )
 LINEAGE_RELATIONS = ("derived_from", "curated_with", "trains")
 

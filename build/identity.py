@@ -51,6 +51,7 @@ KINDS = (
     "arxiv",
     "homepage",
     "homebrew",
+    "docker",
 )
 
 #: An arXiv id, old-style (category/number) or new-style (YYMM.NNNNN[N]), with an
@@ -93,6 +94,11 @@ _URL = {
     "homebrew": re.compile(
         r"^(?:https?://)?formulae\.brew\.sh/formula/([^/\s#?]+)/?(?:[#?].*)?$", re.I
     ),
+    # A Docker Hub repository: /r/<namespace>/<repo>, or /_/<name> for an official image, whose
+    # namespace is `library`. The id is always namespace/repo, the form the Hub API takes.
+    "docker": re.compile(
+        r"^(?:https?://)?hub\.docker\.com/(?:r/([^/\s#?]+)|(_))/([^/\s#?]+)(?:/[^\s#?]*)?(?:[#?].*)?$", re.I
+    ),
     "arxiv": re.compile(
         r"^(?:arxiv:|(?:https?://)?arxiv\.org/(?:abs|pdf)/)"
         r"([a-z\-]+/\d{7}|\d{4}\.\d{4,5})(?:v\d+)?(?:[#?].*)?$",
@@ -111,6 +117,12 @@ def id_from_url(kind: str, url: str) -> str | None:
     raw = (url or "").strip()
     if kind == "homepage":
         return _homepage_canonical(raw) if "." in raw else None
+    if kind == "docker":
+        match = _URL["docker"].match(raw)
+        if not match:
+            return None
+        namespace = "library" if match.group(2) else match.group(1)
+        return f"{namespace}/{match.group(3)}"
     pattern = _URL.get(kind)
     if pattern is None:
         raise ValueError(kind)
@@ -150,6 +162,10 @@ def canonical(kind: str, ident_or_url: str) -> str:
         return ident.lower()
     if kind == "homebrew":
         return ident.lower()
+    if kind == "docker":
+        # A bare name is an official image, which the Hub addresses as library/<name>.
+        ident = ident.strip("/").lower()
+        return ident if "/" in ident else f"library/{ident}"
     if kind == "arxiv":
         ident = ident.removeprefix("arxiv:").removeprefix("ARXIV:")
         match = ARXIV_ID.match(ident)

@@ -112,6 +112,8 @@ graph LR
   currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/check_parity__py[build/check_parity.py]:::audit
   currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep --> currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> build/check_channel_authority__py[build/check_channel_authority.py]:::audit
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> build/snapshot_counters__py[build/snapshot_counters.py]:::audit
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__identity__artifact_identity_edges[currentai.identity.artifact_identity_edges]:::dep
   currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
@@ -121,8 +123,10 @@ graph LR
   currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_openrouter__models[currentai.signal_openrouter.models]:::dep --> currentai__identity__candidates[currentai.identity.candidates]:::dep
   currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
+  currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> build/check_channel_authority__py[build/check_channel_authority.py]:::audit
   currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_packages__downloads_daily[currentai.signal_packages.downloads_daily]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
+  currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> build/snapshot_counters__py[build/snapshot_counters.py]:::audit
   currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
   currentai__signal_packages__package_metadata[currentai.signal_packages.package_metadata]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]:::dep
   currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]

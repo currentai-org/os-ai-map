@@ -22,12 +22,21 @@ See revision 3 for the full design notes. Revision 5 adds the release leg (#708)
   a row with nulls in these columns and never fails the model, so a GitHub hiccup on the
   releases endpoint cannot take stars, license and liveness down with it.
 
+Revision 8 adds eligible_asset_downloads and eligible_asset_count (#664): the same walk, counting
+only assets that deliver the product itself. Checksums, signatures, SBOMs and provenance files,
+and .json/.yaml/.txt/.md files (manifests, metadata and notes) are excluded; installers,
+archives, packages, scripts and bare binaries count. kueue is the case the rule exists for: its
+lifetime total is mostly Kubernetes manifests pulled by CI. Both are LIFETIME counters. They are
+captured weekly into the repository's counter history, and the monthly figure is the increment,
+an interim measure until the platform supports incremental models.
+
 No is_prerelease column, deliberately: check_channel_authority compares version strings and
 ignores GitHub's prerelease flag, and a column would invite someone to read it.
 """
 
 import asyncio
 import base64
+import re
 from datetime import datetime, timezone
 
 import oso
@@ -40,6 +49,11 @@ ROSTER_SQL = (
     "WHERE artifact_kind = 'github'"
 )
 NOASSERTION = "NOASSERTION"
+# Asset names that are not the product: checksums, signatures, SBOMs and attestations, and
+# manifest, metadata or note files. Matched on the lowercased name's ending.
+NOT_PRODUCT_SUFFIXES = (".sha256", ".sha256sum", ".sha512", ".sha512sum", ".sha1", ".md5", ".sum", ".asc", ".sig", ".minisig", ".sigstore", ".pem", ".crt", ".cert", ".sbom", ".spdx", ".intoto.jsonl", ".att", ".bundle", ".json", ".yaml", ".yml", ".txt", ".md", ".html", ".pdf")
+# Name fragments that mark the same kinds of file whatever their extension.
+NOT_PRODUCT_FRAGMENTS = ("checksum", "sha256sums", "sha512sums", "provenance", "attestation", "sbom", ".sigstore.")
 RELEASES_PER_PAGE = 100
 # 100 pages is 10,000 releases. The largest roster repo seen, ggml-org/llama.cpp, had 7,386
 # on 2026-09-28, so the cap binds on nothing today; release_pages_truncated says when it does.
@@ -158,6 +172,27 @@ def _needs_license_probe(has_payload: bool, spdx: str | None) -> bool:
     return has_payload and (spdx is None or spdx == NOASSERTION)
 
 
+def _is_product_asset(asset: object) -> bool:
+    name = _text(asset, "name")
+    if name is None:
+        return False
+    lowered = name.lower()
+    if lowered.endswith(NOT_PRODUCT_SUFFIXES):
+        return False
+    return not any(fragment in lowered for fragment in NOT_PRODUCT_FRAGMENTS)
+
+
+def _eligible(release: object) -> tuple[int, int]:
+    """(downloads, count) over the release's assets that deliver the product itself."""
+    if not isinstance(release, dict):
+        return 0, 0
+    assets = release.get("assets")
+    if not isinstance(assets, list):
+        return 0, 0
+    kept = [asset for asset in assets if _is_product_asset(asset)]
+    return sum(_number(asset, "download_count") or 0 for asset in kept), len(kept)
+
+
 def _asset_downloads(release: object) -> int:
     if not isinstance(release, dict):
         return 0
@@ -165,6 +200,14 @@ def _asset_downloads(release: object) -> int:
     if not isinstance(assets, list):
         return 0
     return sum(_number(asset, "download_count") or 0 for asset in assets)
+
+
+LAST_PAGE_PATTERN = r'<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"'
+
+
+def _last_page(link: str) -> int | None:
+    match = re.search(LAST_PAGE_PATTERN, link or "")
+    return int(match.group(1)) if match else None
 
 
 def _is_api_repo_url(url: str | None) -> bool:
@@ -216,6 +259,8 @@ def _is_api_repo_url(url: str | None) -> bool:
         oso.Column(name="release_asset_downloads", type="bigint"),
         oso.Column(name="release_pages_truncated", type="boolean"),
         oso.Column(name="releases_http_status", type="bigint"),
+        oso.Column(name="eligible_asset_downloads", type="bigint"),
+        oso.Column(name="eligible_asset_count", type="bigint"),
     ],
 )
 async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
@@ -320,76 +365,110 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
     release_counts: list[int | None] = [None] * len(repos)
     asset_totals: list[int | None] = [None] * len(repos)
     truncated: list[bool | None] = [None] * len(repos)
+    eligible_downloads: list[int | None] = [None] * len(repos)
+    eligible_counts: list[int | None] = [None] * len(repos)
     release_status: list[int | None] = [None] * len(repos)
 
-    paging = [index for index in range(len(repos)) if payloads[index] is not None]
-    page = 1
-    while paging:
-        answers = await asyncio.gather(
-            *(
-                context.fetch(
-                    f"{GITHUB_API}/repos/{_release_repo(index)}/releases"
-                    f"?per_page={RELEASES_PER_PAGE}&page={page}",
-                    headers=headers,
-                )
-                for index in paging
-            ),
-            return_exceptions=True,
-        )
-        still: list[int] = []
-        for index, response in zip(paging, answers):
-            if isinstance(response, BaseException):
-                release_counts[index] = None
-                asset_totals[index] = None
-                truncated[index] = None
-                continue
-            status = response.status
-            # Read quota on every answer, failures included: a 403 for an exhausted limit is the
-            # response whose header matters most.
-            seen = _header(response.headers, "x-ratelimit-remaining")
-            if seen is not None and seen.isdigit():
-                remaining = int(seen) if remaining is None else min(remaining, int(seen))
-            if page == 1:
-                release_status[index] = status
-            if status != 200:
-                # A failure part-way through leaves a partial sum, which is not a total.
-                release_counts[index] = None
-                asset_totals[index] = None
-                truncated[index] = None
-                continue
-            try:
-                body = response.json()
-            except Exception:
-                body = None
-            if not isinstance(body, list):
-                release_counts[index] = None
-                asset_totals[index] = None
-                truncated[index] = None
-                continue
-            if page == 1:
-                release_counts[index] = 0
-                asset_totals[index] = 0
-                truncated[index] = False
-                if body:
-                    latest_tag[index] = _text(body[0], "tag_name")
-                    latest_published[index] = _stamp(body[0], "published_at")
-            count_so_far = release_counts[index]
-            assets_so_far = asset_totals[index]
-            if count_so_far is None or assets_so_far is None:
-                continue
-            release_counts[index] = count_so_far + len(body)
-            asset_totals[index] = assets_so_far + sum(_asset_downloads(item) for item in body)
-            # Continue on the Link header, not on a full page. A short page mid-walk was
-            # observed on 2026-09-28 (llama.cpp stopped at 1,100 of 7,386 releases), and a
-            # page-length test reads that as the end and undercounts without a trace.
-            link = _header(response.headers, "link") or ""
-            if 'rel="next"' in link:
-                if page < MAX_RELEASE_PAGES:
-                    still.append(index)
-                else:
-                    truncated[index] = True
-        paging = still
-        page += 1
+    def _fail(index: int) -> None:
+        # A failure anywhere in the walk leaves a partial sum, which is not a total.
+        release_counts[index] = None
+        asset_totals[index] = None
+        truncated[index] = None
+        eligible_downloads[index] = None
+        eligible_counts[index] = None
+
+    def _absorb(index: int, response: oso.FetchResponse | BaseException, first: bool,
+                must_be_full: bool) -> str:
+        """Fold one releases page into the repo's totals. Returns the page's Link header, or
+        "" after a failure (which has already nulled the repo)."""
+        nonlocal remaining
+        if isinstance(response, BaseException):
+            _fail(index)
+            return ""
+        status = response.status
+        # Read quota on every answer, failures included: a 403 for an exhausted limit is the
+        # response whose header matters most.
+        seen = _header(response.headers, "x-ratelimit-remaining")
+        if seen is not None and seen.isdigit():
+            remaining = int(seen) if remaining is None else min(remaining, int(seen))
+        if first:
+            release_status[index] = status
+        if status != 200:
+            _fail(index)
+            return ""
+        try:
+            body = response.json()
+        except Exception:
+            body = None
+        # A page before the last must be full. A short one mid-walk was observed on 2026-09-28
+        # (llama.cpp read 1,100 of 7,386 releases), so it voids the repo rather than undercounting.
+        if not isinstance(body, list) or (must_be_full and len(body) != RELEASES_PER_PAGE):
+            _fail(index)
+            return ""
+        if first:
+            release_counts[index] = 0
+            asset_totals[index] = 0
+            truncated[index] = False
+            eligible_downloads[index] = 0
+            eligible_counts[index] = 0
+            if body:
+                latest_tag[index] = _text(body[0], "tag_name")
+                latest_published[index] = _stamp(body[0], "published_at")
+        count_so_far = release_counts[index]
+        assets_so_far = asset_totals[index]
+        eligible_so_far = eligible_downloads[index]
+        eligible_count_so_far = eligible_counts[index]
+        if (count_so_far is None or assets_so_far is None
+                or eligible_so_far is None or eligible_count_so_far is None):
+            return ""
+        release_counts[index] = count_so_far + len(body)
+        asset_totals[index] = assets_so_far + sum(_asset_downloads(item) for item in body)
+        pairs = [_eligible(item) for item in body]
+        eligible_downloads[index] = eligible_so_far + sum(d for d, _ in pairs)
+        eligible_counts[index] = eligible_count_so_far + sum(c for _, c in pairs)
+        return _header(response.headers, "link") or ""
+
+    def _releases_url(index: int, page: int) -> str:
+        return (f"{GITHUB_API}/repos/{_release_repo(index)}/releases"
+                f"?per_page={RELEASES_PER_PAGE}&page={page}")
+
+    # Two rounds rather than one round per page. Page 1 for every repo gives each repo's last
+    # page from its Link header; every remaining page of every repo then goes in one batch. A
+    # walk of one page per round made the run as long as the deepest repo (llama.cpp, 74 pages),
+    # and runs near seven minutes failed at the platform's result write twice on 2026-09-28.
+    first = [index for index in range(len(repos)) if payloads[index] is not None]
+    first_answers = await asyncio.gather(
+        *(context.fetch(_releases_url(index, 1), headers=headers) for index in first),
+        return_exceptions=True,
+    )
+    rest: list[tuple[int, int]] = []
+    for index, response in zip(first, first_answers):
+        link = _absorb(index, response, first=True, must_be_full=False)
+        if release_counts[index] is None or 'rel="next"' not in link:
+            continue
+        last = _last_page(link)
+        if last is None:
+            # More pages exist but the header does not say how many; do not guess.
+            _fail(index)
+            continue
+        # Page 1 is not the last, so it must itself be full.
+        if release_counts[index] != RELEASES_PER_PAGE:
+            _fail(index)
+            continue
+        if last > MAX_RELEASE_PAGES:
+            truncated[index] = True
+        rest.extend((index, page) for page in range(2, min(last, MAX_RELEASE_PAGES) + 1))
+    rest_answers = await asyncio.gather(
+        *(context.fetch(_releases_url(index, page), headers=headers) for index, page in rest),
+        return_exceptions=True,
+    )
+    last_of = {}
+    for index, page in rest:
+        last_of[index] = max(page, last_of.get(index, 0))
+    for (index, page), response in zip(rest, rest_answers):
+        if release_counts[index] is None:
+            continue
+        _absorb(index, response, first=False, must_be_full=page < last_of[index])
 
     # Tags fallback, only for repos whose releases call succeeded and came back empty.
     tagless = [
@@ -469,6 +548,8 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
                 "release_asset_downloads": asset_totals[index],
                 "release_pages_truncated": truncated[index],
                 "releases_http_status": release_status[index],
+                "eligible_asset_downloads": eligible_downloads[index],
+                "eligible_asset_count": eligible_counts[index],
             }
         )
 
@@ -513,5 +594,7 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
             ("release_asset_downloads", "bigint"),
             ("release_pages_truncated", "boolean"),
             ("releases_http_status", "bigint"),
+            ("eligible_asset_downloads", "bigint"),
+            ("eligible_asset_count", "bigint"),
         ],
     )

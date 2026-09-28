@@ -1,0 +1,109 @@
+name: asset-counters
+
+# Records this week's lifetime adoption counters: GitHub release asset downloads and Docker Hub
+# pulls. Both are lifetime totals, so a monthly figure has to be an increment between readings,
+# and the platform keeps no history until it supports incremental models (#664). This is the
+# interim: build/snapshot_counters.py appends one row per counter per platform refresh to
+# sources/snapshots/asset_counters.csv.
+#
+# Its own workflow, and daily, on purpose. The platform overwrites both tables on the Sunday
+# sweep, so a reading not captured before the next sweep is gone for good. Coupled to another
+# job, any unrelated failure there would cost a week. Run daily, the capture is idempotent (a
+# reading already recorded adds nothing), so one success between sweeps is enough and a failed
+# day retries itself the next morning. New readings go to one rolling PR, which updates itself
+# until it merges.
+
+on:
+  schedule:
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# One run at a time, and never cancel a capture in progress.
+concurrency:
+  group: asset-counters
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Fold in the readings a pending PR already holds
+        # The platform table only holds its latest reading, so rows captured into a PR that has
+        # not merged yet exist nowhere else. Fold them in by key before capturing. A branch that
+        # is absent is fine; a fetch that FAILS stops the run, because proceeding from main alone
+        # and force-pushing would wipe the pending history.
+        run: |
+          set +e
+          git ls-remote --exit-code --heads origin asset-counters/pending > pending.ref
+          status=$?
+          set -e
+          if [ "$status" -eq 2 ]; then
+            echo "No pending branch."
+            echo "LEASE=" >> "$GITHUB_ENV"
+          elif [ "$status" -eq 0 ]; then
+            SHA=$(cut -f1 pending.ref)
+            git fetch --quiet origin "$SHA"
+            git show "$SHA:sources/snapshots/asset_counters.csv" > pending.csv
+            uv run python -m build.snapshot_counters --union pending.csv
+            echo "LEASE=$SHA" >> "$GITHUB_ENV"
+          else
+            echo "Could not read the pending branch (exit $status); stopping rather than risk it."
+            exit 1
+          fi
+      - name: Capture any new readings
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          set -o pipefail
+          uv run python -m build.snapshot_counters --live | tee counters.txt
+          uv run python -m build.snapshot_counters --check
+      - name: Keep a copy whatever happens next
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-counters
+          path: sources/snapshots/asset_counters.csv
+          retention-days: 90
+      - name: Update the one pending counters PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+        # One rolling branch, force-pushed from main plus the full history each run, so a later
+        # reading always reaches the open PR and a run that pushed but failed to open the PR is
+        # repaired by the next one.
+        run: |
+          if git diff --quiet HEAD -- sources/snapshots/asset_counters.csv; then
+            echo "Nothing to record beyond main."
+            exit 0
+          fi
+          BRANCH="asset-counters/pending"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add sources/snapshots/asset_counters.csv
+          git commit -m "chore(counters): record new lifetime counter readings"
+          # Only replace the branch we read. If it moved since, this push fails and the next run
+          # starts again from the newer state.
+          git push --force-with-lease="$BRANCH:$LEASE" origin "$BRANCH"
+          if [ -n "$(gh pr list --head "$BRANCH" --state open --json number --jq '.[].number')" ]; then
+            echo "Updated the open counters PR."
+            exit 0
+          fi
+          {
+            echo "New lifetime counter readings (release assets and Docker pulls), appended to"
+            echo "sources/snapshots/asset_counters.csv. Raw readings only; nothing is banded."
+            echo "This PR updates itself until it merges."
+            echo
+            echo '```'
+            cat counters.txt
+            echo '```'
+          } > pr-body.md
+          gh pr create --head "$BRANCH" --title "chore(counters): lifetime counter readings" --body-file pr-body.md
