@@ -2192,3 +2192,188 @@ resolutions:
   note: Alibaba's Qwen2.5 14B Instruct, mirrored by Unsloth. The upload declares
     Qwen/Qwen2.5-14B-Instruct as its base model and carries the full-precision sharded safetensors
     with no quantised files, so it is the same weights under a different host.
+- artifact:
+    kind: huggingface_model
+    id: troydoesai/llama-3.1-8b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Meta's Llama 3.1 8B Instruct re-uploaded by TroyDoesAI with only its config file changed, to
+    work around a rope_scaling error in older transformers releases. Same weights under a different
+    host.
+- artifact:
+    kind: huggingface_model
+    id: litert-community/phi-4-mini-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: phi-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Microsoft's Phi-4-mini-instruct converted to LiteRT (TFLite) variants for on-device inference.
+    Repackaging does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: furiosa-ai/llama-3.1-8b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A pre-compiled build of meta-llama/Llama-3.1-8B-Instruct for FuriosaAI's RNGD accelerator. The
+    same model compiled for one target.
+- artifact:
+    kind: huggingface_model
+    id: maziyarpanahi/mistral-7b-instruct-v0.2
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: mistral-7b-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A mirror of Mistral-7B-Instruct-v0.2 carrying Mistral's own model card and safetensors. Same
+    weights under a different host.
+- artifact:
+    kind: huggingface_model
+    id: zai-org/glm-4-9b
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: glm
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Z.ai's own GLM-4-9B release under the zai-org namespace, the renamed THUDM organization; glm
+    already declares THUDM/glm-4-9b.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/phi-4-mini-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: phi-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Microsoft's Phi-4-mini-instruct republished by Unsloth with tokenizer and chat-template fixes.
+    The weights are Microsoft's.
+- artifact:
+    kind: huggingface_model
+    id: cortexso/qwen3
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: qwen
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: GGUF quantizations of Alibaba's Qwen3 models packaged for the Cortex runtime. Repackaging does
+    not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/phi-4
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: phi
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Microsoft's Phi-4 with its weights rearranged into the Llama architecture layout plus Unsloth's
+    bug fixes. The same trained model in a different layout.
+- artifact:
+    kind: huggingface_model
+    id: redhatai/llama-3.1-8b-instruct
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: llama-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: Red Hat's validated-model copy of meta-llama/Llama-3.1-8B-Instruct, declared as its base model.
+    Same weights under a different host.
+- artifact:
+    kind: huggingface_model
+    id: unsloth/mistral-7b-instruct-v0.2
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: mistral-7b-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A mirror of Mistral-7B-Instruct-v0.2 published by Unsloth for its fine-tuning notebooks. Same
+    weights under a different host.
+- artifact:
+    kind: huggingface_model
+    id: featherless-chat-models/mistral-7b-instruct-v0.2
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: mistral-7b-instruct
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A mirror of Mistral-7B-Instruct-v0.2 carrying Mistral's own model card. Same weights under a
+    different host.
+- artifact:
+    kind: huggingface_model
+    id: litert-community/tinyllama-1.1b-chat-v1.0
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: tinyllama-chat
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: TinyLlama-1.1B-Chat-v1.0 converted to LiteRT (TFLite) variants for on-device inference.
+    Repackaging does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: mlx-community/deepseek-v4-pro
+  verdict: existing_product
+  relation: product_equivalence
+  resolves_to: deepseek
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: An 8-bit MLX conversion of deepseek-ai/DeepSeek-V4-Pro. Repackaging does not transfer ownership.
+- artifact:
+    kind: huggingface_model
+    id: tiny-random/gemma-3
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: random-weight-test-fixtures
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A debugging fixture with randomly initialized weights in a config adapted from
+    google/gemma-3-27b-it, per its model card. It shares the product's architecture name but none of
+    its trained weights, so it is neither that product nor a new one.
+- artifact:
+    kind: huggingface_model
+    id: tiny-random/qwen3
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: random-weight-test-fixtures
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A debugging fixture with randomly initialized weights in a config adapted from Qwen/Qwen3-32B, per
+    its model card. It shares the product's architecture name but none of its trained weights, so it
+    is neither that product nor a new one.
+- artifact:
+    kind: huggingface_model
+    id: tiny-random/phi-4
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: random-weight-test-fixtures
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A debugging fixture with randomly initialized weights in a config adapted from microsoft/phi-4, per
+    its model card. It shares the product's architecture name but none of its trained weights, so it
+    is neither that product nor a new one.
+- artifact:
+    kind: huggingface_model
+    id: tiny-random/glm-5.2
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: random-weight-test-fixtures
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A debugging fixture with randomly initialized weights in a config adapted from zai-org/GLM-5.2, per
+    its model card. It shares the product's architecture name but none of its trained weights, so it
+    is neither that product nor a new one.
+- artifact:
+    kind: huggingface_model
+    id: tiny-random/glm-4
+  verdict: excluded_boundary
+  relation: product_equivalence
+  boundary: random-weight-test-fixtures
+  decided_in: '#767'
+  decided_on: '2026-09-28'
+  note: A debugging fixture with randomly initialized weights in a config adapted from THUDM/GLM-4-32B-0414,
+    per its model card. It shares the product's architecture name but none of its trained weights,
+    so it is neither that product nor a new one.
