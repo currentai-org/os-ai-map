@@ -140,7 +140,7 @@ discarded, and the live schema stays exactly where it was — failing there is t
 |---|---|---|
 | `publish_runs` | `built_at` | When was this data built? The payload's `generated`. |
 | `publish_runs` | `released_at` | When was the release cut? The payload's `released`, which `build/serialize.py::release_date` reads from `CHANGELOG.md`. |
-| `products` | `freshness_date`, `freshness_basis` | When was this product's score last confirmed, and how — `verified` by a human, or `commit` as the fallback to the score file's last commit. |
+| `products` | `freshness_date`, `freshness_basis` | When was this product's score last confirmed, and how — `verified` by a human, `partial` when at least one axis is held in the verification queue, or `commit` as the fallback to the score file's last commit. |
 | `openness`, `adoption`, `capability` | `last_verified` | The same question asked of one axis. |
 
 `docs/reference/evidence-and-freshness.md` is normative for what a freshness date means and how it is
