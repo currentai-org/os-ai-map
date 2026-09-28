@@ -8,7 +8,22 @@
 Roster comes from `currentai.registry.product_artifacts`, filtered to the github
 kind. Grain is one row per (product, repo) pair.
 
-See revision 3 for the full design notes; this revision changes only the decorator.
+See revision 3 for the full design notes. Revision 5 adds the release leg (#708):
+
+- latest_release_tag / latest_release_published_at: the first entry of /releases, which
+  GitHub orders by creation, not by version. A repo with no releases falls back to the
+  first /tags entry, with published_at left null because a tag carries no date here.
+- release_asset_downloads: assets[].download_count summed over EVERY release, paginated.
+  Page one alone undercounts (llamafile: 191K on page one against 284K across 43 releases).
+- release_count, release_pages_truncated: how many releases were read, and whether the
+  page cap stopped the walk. A truncated sum is a floor and says so rather than passing
+  for a total.
+- releases_http_status: the status of the first releases call. A failed release fetch is
+  a row with nulls in these columns and never fails the model, so a GitHub hiccup on the
+  releases endpoint cannot take stars, license and liveness down with it.
+
+No is_prerelease column, deliberately: check_channel_authority compares version strings and
+ignores GitHub's prerelease flag, and a column would invite someone to read it.
 """
 
 import asyncio
@@ -16,7 +31,7 @@ import base64
 from datetime import datetime, timezone
 
 import oso
-import polars as pl
+import pandas as pd
 
 GITHUB_API = "https://api.github.com"
 ROSTER_SQL = (
@@ -25,6 +40,10 @@ ROSTER_SQL = (
     "WHERE artifact_kind = 'github'"
 )
 NOASSERTION = "NOASSERTION"
+RELEASES_PER_PAGE = 100
+# 100 pages is 10,000 releases. The largest roster repo seen, ggml-org/llama.cpp, had 7,386
+# on 2026-09-28, so the cap binds on nothing today; release_pages_truncated says when it does.
+MAX_RELEASE_PAGES = 100
 
 
 def _header(headers: object, name: str) -> str | None:
@@ -36,6 +55,28 @@ def _header(headers: object, name: str) -> str | None:
             return value
     return None
 
+
+
+
+def _frame(rows: list[dict], columns: list[tuple[str, str]]) -> pd.DataFrame:
+    """Build the output frame with every column in declared order and a nullable dtype.
+
+    Explicit dtypes matter because the platform checks declared types against the frame: a
+    plain pandas integer column holding a null becomes float64 and would read as `double`.
+    """
+    # Built as object first: letting pandas infer an int column that holds a None gives float64,
+    # which loses precision above 2**53 before the Int64 cast could preserve it.
+    frame = pd.DataFrame(rows, columns=[name for name, _ in columns], dtype=object)
+    for name, kind in columns:
+        if kind == "timestamp":
+            frame[name] = pd.to_datetime(frame[name]).astype("datetime64[us]")
+        elif kind == "bigint":
+            frame[name] = frame[name].astype(pd.Int64Dtype())
+        elif kind == "boolean":
+            frame[name] = frame[name].astype(pd.BooleanDtype())
+        else:
+            frame[name] = frame[name].astype(object)
+    return frame
 
 def _text(payload: object, key: str) -> str | None:
     if isinstance(payload, dict):
@@ -117,6 +158,15 @@ def _needs_license_probe(has_payload: bool, spdx: str | None) -> bool:
     return has_payload and (spdx is None or spdx == NOASSERTION)
 
 
+def _asset_downloads(release: object) -> int:
+    if not isinstance(release, dict):
+        return 0
+    assets = release.get("assets")
+    if not isinstance(assets, list):
+        return 0
+    return sum(_number(asset, "download_count") or 0 for asset in assets)
+
+
 def _is_api_repo_url(url: str | None) -> bool:
     return url is not None and url.startswith(f"{GITHUB_API}/repositories/")
 
@@ -160,6 +210,12 @@ def _is_api_repo_url(url: str | None) -> bool:
         oso.Column(name="resolved_via_redirect", type="boolean"),
         oso.Column(name="rate_limit_remaining", type="bigint"),
         oso.Column(name="fetched_at", type="timestamp"),
+        oso.Column(name="latest_release_tag", type="varchar"),
+        oso.Column(name="latest_release_published_at", type="timestamp"),
+        oso.Column(name="release_count", type="bigint"),
+        oso.Column(name="release_asset_downloads", type="bigint"),
+        oso.Column(name="release_pages_truncated", type="boolean"),
+        oso.Column(name="releases_http_status", type="bigint"),
     ],
 )
 async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
@@ -171,10 +227,10 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
     }
 
     result = await context.query(ROSTER_SQL)
-    roster = await result.as_pl()
+    roster = await result.as_pd()
     slugs: list[str] = []
     repos: list[str] = []
-    for row in roster.iter_rows(named=True):
+    for row in roster.to_dict("records"):
         slug = row.get("product_slug")
         repo = row.get("artifact_id")
         if isinstance(slug, str) and isinstance(repo, str) and "/" in repo:
@@ -198,7 +254,7 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
         locations.append(_header(response.headers, "location"))
         seen = _header(response.headers, "x-ratelimit-remaining")
         if seen is not None and seen.isdigit():
-            remaining = int(seen)
+            remaining = int(seen) if remaining is None else min(remaining, int(seen))
         if response.status == 200:
             ok_count += 1
             payloads.append(response.json())
@@ -224,6 +280,9 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
             )
         )
         for index, response in zip(redirected, followed):
+            seen = _header(response.headers, "x-ratelimit-remaining")
+            if seen is not None and seen.isdigit():
+                remaining = int(seen) if remaining is None else min(remaining, int(seen))
             if response.status == 200:
                 payloads[index] = response.json()
                 resolved_flags[index] = True
@@ -244,8 +303,125 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
             )
         )
         for index, response in zip(probe_index, probe_responses):
+            seen = _header(response.headers, "x-ratelimit-remaining")
+            if seen is not None and seen.isdigit():
+                remaining = int(seen) if remaining is None else min(remaining, int(seen))
             if response.status == 200:
                 first_lines[index] = _license_first_line(response.json())
+
+    # Release leg. Walk /releases one page per round across every repo still paging, so the
+    # calls stay parallel across repos and each repo stops as soon as a short page arrives.
+    # Every failure here lands as nulls on the row; nothing in this block raises.
+    def _release_repo(index: int) -> str:
+        return _text(payloads[index], "full_name") or repos[index]
+
+    latest_tag: list[str | None] = [None] * len(repos)
+    latest_published: list[datetime | None] = [None] * len(repos)
+    release_counts: list[int | None] = [None] * len(repos)
+    asset_totals: list[int | None] = [None] * len(repos)
+    truncated: list[bool | None] = [None] * len(repos)
+    release_status: list[int | None] = [None] * len(repos)
+
+    paging = [index for index in range(len(repos)) if payloads[index] is not None]
+    page = 1
+    while paging:
+        answers = await asyncio.gather(
+            *(
+                context.fetch(
+                    f"{GITHUB_API}/repos/{_release_repo(index)}/releases"
+                    f"?per_page={RELEASES_PER_PAGE}&page={page}",
+                    headers=headers,
+                )
+                for index in paging
+            ),
+            return_exceptions=True,
+        )
+        still: list[int] = []
+        for index, response in zip(paging, answers):
+            if isinstance(response, BaseException):
+                release_counts[index] = None
+                asset_totals[index] = None
+                truncated[index] = None
+                continue
+            status = response.status
+            # Read quota on every answer, failures included: a 403 for an exhausted limit is the
+            # response whose header matters most.
+            seen = _header(response.headers, "x-ratelimit-remaining")
+            if seen is not None and seen.isdigit():
+                remaining = int(seen) if remaining is None else min(remaining, int(seen))
+            if page == 1:
+                release_status[index] = status
+            if status != 200:
+                # A failure part-way through leaves a partial sum, which is not a total.
+                release_counts[index] = None
+                asset_totals[index] = None
+                truncated[index] = None
+                continue
+            try:
+                body = response.json()
+            except Exception:
+                body = None
+            if not isinstance(body, list):
+                release_counts[index] = None
+                asset_totals[index] = None
+                truncated[index] = None
+                continue
+            if page == 1:
+                release_counts[index] = 0
+                asset_totals[index] = 0
+                truncated[index] = False
+                if body:
+                    latest_tag[index] = _text(body[0], "tag_name")
+                    latest_published[index] = _stamp(body[0], "published_at")
+            count_so_far = release_counts[index]
+            assets_so_far = asset_totals[index]
+            if count_so_far is None or assets_so_far is None:
+                continue
+            release_counts[index] = count_so_far + len(body)
+            asset_totals[index] = assets_so_far + sum(_asset_downloads(item) for item in body)
+            # Continue on the Link header, not on a full page. A short page mid-walk was
+            # observed on 2026-09-28 (llama.cpp stopped at 1,100 of 7,386 releases), and a
+            # page-length test reads that as the end and undercounts without a trace.
+            link = _header(response.headers, "link") or ""
+            if 'rel="next"' in link:
+                if page < MAX_RELEASE_PAGES:
+                    still.append(index)
+                else:
+                    truncated[index] = True
+        paging = still
+        page += 1
+
+    # Tags fallback, only for repos whose releases call succeeded and came back empty.
+    tagless = [
+        index
+        for index in range(len(repos))
+        if release_counts[index] == 0 and latest_tag[index] is None
+    ]
+    if tagless:
+        tag_answers = await asyncio.gather(
+            *(
+                context.fetch(
+                    f"{GITHUB_API}/repos/{_release_repo(index)}/tags?per_page=1",
+                    headers=headers,
+                )
+                for index in tagless
+            ),
+            return_exceptions=True,
+        )
+        for index, response in zip(tagless, tag_answers):
+            if isinstance(response, BaseException):
+                continue
+            seen = _header(response.headers, "x-ratelimit-remaining")
+            if seen is not None and seen.isdigit():
+                remaining = int(seen) if remaining is None else min(remaining, int(seen))
+            if response.status != 200:
+                continue
+            try:
+                body = response.json()
+            except Exception:
+                continue
+            if isinstance(body, list) and body:
+                latest_tag[index] = _text(body[0], "name")
 
     fetched = datetime.now(timezone.utc).replace(tzinfo=None, microsecond=0)
 
@@ -287,43 +463,55 @@ async def artifact_state(context: oso.AsyncContext) -> oso.DataFrame:
                 "resolved_via_redirect": resolved_flags[index],
                 "rate_limit_remaining": remaining,
                 "fetched_at": fetched,
+                "latest_release_tag": latest_tag[index],
+                "latest_release_published_at": latest_published[index],
+                "release_count": release_counts[index],
+                "release_asset_downloads": asset_totals[index],
+                "release_pages_truncated": truncated[index],
+                "releases_http_status": release_status[index],
             }
         )
 
-    return pl.DataFrame(
+    return _frame(
         rows,
-        schema={
-            "product_slug": pl.Utf8,
-            "repo": pl.Utf8,
-            "resolved_repo": pl.Utf8,
-            "github_id": pl.Int64,
-            "node_id": pl.Utf8,
-            "html_url": pl.Utf8,
-            "homepage": pl.Utf8,
-            "description": pl.Utf8,
-            "stargazers_count": pl.Int64,
-            "forks_count": pl.Int64,
-            "subscribers_count": pl.Int64,
-            "open_issues_count": pl.Int64,
-            "created_at": pl.Datetime("us"),
-            "updated_at": pl.Datetime("us"),
-            "pushed_at": pl.Datetime("us"),
-            "is_archived": pl.Boolean,
-            "is_disabled": pl.Boolean,
-            "is_fork": pl.Boolean,
-            "primary_language": pl.Utf8,
-            "topics": pl.Utf8,
-            "size_kb": pl.Int64,
-            "default_branch": pl.Utf8,
-            "license_spdx_id": pl.Utf8,
-            "license_key": pl.Utf8,
-            "license_name": pl.Utf8,
-            "license_is_noassertion": pl.Boolean,
-            "license_first_line": pl.Utf8,
-            "http_status": pl.Int64,
-            "redirect_location": pl.Utf8,
-            "resolved_via_redirect": pl.Boolean,
-            "rate_limit_remaining": pl.Int64,
-            "fetched_at": pl.Datetime("us"),
-        },
+        [
+            ("product_slug", "varchar"),
+            ("repo", "varchar"),
+            ("resolved_repo", "varchar"),
+            ("github_id", "bigint"),
+            ("node_id", "varchar"),
+            ("html_url", "varchar"),
+            ("homepage", "varchar"),
+            ("description", "varchar"),
+            ("stargazers_count", "bigint"),
+            ("forks_count", "bigint"),
+            ("subscribers_count", "bigint"),
+            ("open_issues_count", "bigint"),
+            ("created_at", "timestamp"),
+            ("updated_at", "timestamp"),
+            ("pushed_at", "timestamp"),
+            ("is_archived", "boolean"),
+            ("is_disabled", "boolean"),
+            ("is_fork", "boolean"),
+            ("primary_language", "varchar"),
+            ("topics", "varchar"),
+            ("size_kb", "bigint"),
+            ("default_branch", "varchar"),
+            ("license_spdx_id", "varchar"),
+            ("license_key", "varchar"),
+            ("license_name", "varchar"),
+            ("license_is_noassertion", "boolean"),
+            ("license_first_line", "varchar"),
+            ("http_status", "bigint"),
+            ("redirect_location", "varchar"),
+            ("resolved_via_redirect", "boolean"),
+            ("rate_limit_remaining", "bigint"),
+            ("fetched_at", "timestamp"),
+            ("latest_release_tag", "varchar"),
+            ("latest_release_published_at", "timestamp"),
+            ("release_count", "bigint"),
+            ("release_asset_downloads", "bigint"),
+            ("release_pages_truncated", "boolean"),
+            ("releases_http_status", "bigint"),
+        ],
     )

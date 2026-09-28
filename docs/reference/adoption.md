@@ -651,7 +651,9 @@ one level up. `qwenpaw` is the case that settles it: its PyPI release was upload
 as its repo tag, and only the ratio ever looked wrong.
 
 Report-only, weekly on the Monday chain (`.github/workflows/channel-authority.yml`), because it
-reads a live release line and a gate's cadence has to match the thing it polices.
+reads a release line that moves and a gate's cadence has to match the thing it polices. It reads
+that line from the warehouse (`--warehouse`), from columns the Sunday sweep refreshes, rather
+than calling PyPI and GitHub itself.
 
 ## The third trap: the package that is not the product
 
@@ -768,7 +770,7 @@ written from the series above, or it is not written.
       that series covers.
 - [ ] No band was copied from a computed signal — those are observations, not scores.
 - [ ] The registry release the band was read off is on the line the repository is publishing.
-      `check_channel_authority --live` asks this; a band a whole major line behind needs the
+      `check_channel_authority --warehouse` asks this; a band a whole major line behind needs the
       under-coverage ladder applied to it.
 
 ## Related

@@ -43,6 +43,12 @@
 --
 -- Counts are raw installer requests everywhere: CI jobs, mirrors and container builds
 -- included. Volume, not unique users.
+--
+-- latest_version / latest_upload_at (#709) come from currentai.signal_packages.package_metadata
+-- and are filled for pypi rows only; npm and crates stay null until that model fetches them.
+-- They are what build/check_channel_authority.py --warehouse reads for its version-lag leg.
+-- Homebrew rows are deliberately NOT here even though package_metadata carries them: an install
+-- is its own metric with its own bands, and this table is download volume.
 
 WITH roster AS (
   SELECT DISTINCT
@@ -112,6 +118,19 @@ windowed AS (
   GROUP BY h.artifact_kind, h.package
 ),
 
+-- One row per (kind, package): package_metadata is at product grain, so a package two
+-- products declare would otherwise double every row it joins.
+metadata AS (
+  SELECT
+    artifact_kind,
+    LOWER(package) AS package_key,
+    MAX(latest_version) AS latest_version,
+    MAX(latest_upload_at) AS latest_upload_at
+  FROM currentai.signal_packages.package_metadata
+  WHERE artifact_kind IN ('pypi', 'npm', 'crates')
+  GROUP BY artifact_kind, LOWER(package)
+),
+
 -- What the fetch itself reported, per artifact. A 404 is a row in the daily table carrying a
 -- null day, so it survives to here and becomes missing_from_registry below.
 fetch_status AS (
@@ -141,7 +160,9 @@ SELECT
   -- and no window either, so it reads as unmeasured rather than as gone.
   w.package IS NULL AND (r.artifact_kind = 'pypi' OR s.http_status IS NOT NULL) AS missing_from_registry,
   s.http_status,
-  r.not_primary_channel
+  r.not_primary_channel,
+  m.latest_version,
+  m.latest_upload_at
 FROM roster r
 LEFT JOIN anchors a ON a.artifact_kind = r.artifact_kind
 LEFT JOIN windowed w
@@ -150,3 +171,6 @@ LEFT JOIN windowed w
 LEFT JOIN fetch_status s
   ON s.artifact_kind = r.artifact_kind
   AND s.package = r.package
+LEFT JOIN metadata m
+  ON m.artifact_kind = r.artifact_kind
+  AND m.package_key = LOWER(r.package)

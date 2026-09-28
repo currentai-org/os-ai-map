@@ -1366,7 +1366,7 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-<!-- count:tracked_warehouse_files -->30 files are tracked under `warehouse/`, and the mirror
+<!-- count:tracked_warehouse_files -->31 files are tracked under `warehouse/`, and the mirror
 layout of 11.1 is in place. Alongside the models sit the audit receipts —
 `warehouse/audits/platform_models.json` (the deployed-model audit) and
 `warehouse/audits/source_runs.json` (the `source_runs` attestation, §4.3) — the frozen adoption

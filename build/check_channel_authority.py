@@ -79,14 +79,15 @@ gate that punishes candor gets its notes rewritten rather than its bands fixed.
 Ships non-strict, per this repo's convention (`check_adoption`, `check_instrument`,
 `check_artifacts`). `--strict` is what CI passes once the backlog is clear.
 
-## Leg 1 from the warehouse, once the columns exist
+## Leg 1 from the warehouse
 
 The live leg makes a few hundred PyPI and GitHub calls a week. `--warehouse` runs the same
-comparison on columns the collectors would carry instead: `latest_version` and
-`latest_upload_at` on `currentai.signal_packages.downloads` (#709), and `latest_release_tag`
-on `currentai.signal_github.artifact_state` (#708). Until those land the leg reports itself
-skipped and names the missing column, which is the honest state: no platform change is needed
-to write it, only to run it. When both are live, the weekly workflow can switch flags.
+comparison on columns the collectors carry instead: `latest_version` and `latest_upload_at` on
+`currentai.signal_packages.downloads` (#709, filled from `signal_packages.package_metadata`),
+and `latest_release_tag` on `currentai.signal_github.artifact_state` (#708). Both landed on
+2026-09-28 and the weekly workflow switched flags that day, after both modes produced the same
+findings. If a column goes missing again the leg reports itself skipped and names it, rather
+than reading an absent column as no lag. `--live` stays for a manual cross-check.
 
 Usage:
     uv run python -m build.check_channel_authority           # the prose leg, no network

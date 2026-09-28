@@ -11,24 +11,30 @@ name: channel-authority
 # build/check_channel_authority.py.
 #
 # Two legs. The prose leg reads the corpus and is pinned by a test, so it runs on every PR
-# through the pytest suite and needs nothing here. The release-line leg reads the live PyPI
-# JSON API and the GitHub releases/tags API, which is what --live turns on and why this is a
-# schedule rather than a PR check: it fails on the passage of a release, not on the diff in
-# front of you, and an outside contributor could not clear it from inside their own PR.
+# through the pytest suite and needs nothing here. The release-line leg compares each package's
+# latest version against its repository's newest release, which is why this is a schedule
+# rather than a PR check: it fails on the passage of a release, not on the diff in front of
+# you, and an outside contributor could not clear it from inside their own PR.
+#
+# Since 2026-09-28 that leg reads the warehouse (--warehouse): latest_version and
+# latest_upload_at on signal_packages.downloads (#709) and latest_release_tag on
+# signal_github.artifact_state (#708), both refreshed by the Sunday platform sweep. It used to
+# fetch PyPI and GitHub itself (--live, still available for a manual run). On the day of the
+# switch both modes produced the same seven findings and the same five pre-release exclusions;
+# the warehouse run read one more product, because two live PyPI calls failed, and took 28
+# seconds against three and a half minutes.
 #
 # Weekly, on Monday, for the reason parity.yml records: a gate's cadence has to match the
 # chain it polices, and this one reads a line that moves when a project cuts a release. Placed
-# at 09:00, after the signal refreshes at 07:00 and the age gate at 08:00, so the week's
-# adoption worklist arrives in one place.
+# at 09:00, a day after the Sunday sweep that refreshes both columns, and after the age gate at
+# 08:00, so the week's adoption worklist arrives in one place.
 #
 # Report-only. `--strict` exists and CI does not pass it yet: seven products currently fire the
 # release-line leg and fifteen the prose leg, and a gate that fails on the day it lands gets
 # switched off rather than fixed. Turn it on once the findings hold at zero.
 #
-# GITHUB_TOKEN is the built-in Actions token here, used only to raise the GitHub API rate limit
-# above the 60/hour an unauthenticated caller gets. 146 pypi-routed products need more than
-# that, and an exhausted limit reads as "no repository tag" — which the module treats as no
-# evidence rather than as a finding, so the failure would be a silently shrinking report.
+# OSO_API_KEY reads the two warehouse tables. Without it the leg reports itself skipped
+# rather than failing, so read the first lines of the run summary, not only its colour.
 
 on:
   schedule:
@@ -52,13 +58,13 @@ jobs:
         run: uv sync --locked
       - name: Check every banded channel against the release line it was read off
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
           # Through the environment rather than interpolated into the script body: an input
           # expanded inline is substituted before the shell parses the line.
           STRICT: ${{ inputs.strict }}
         run: |
           if [ "$STRICT" = "true" ]; then
-            uv run python -m build.check_channel_authority --live --strict
+            uv run python -m build.check_channel_authority --warehouse --strict
           else
-            uv run python -m build.check_channel_authority --live
+            uv run python -m build.check_channel_authority --warehouse
           fi
