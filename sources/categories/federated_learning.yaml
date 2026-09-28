@@ -42,11 +42,11 @@ scoring_recipe:
     for those services and at least one privacy mechanism beyond plain aggregation (secure aggregation,
     homomorphic encryption, MPC, differential privacy or a TEE). 3 is a real federation across machines
     over a network that lacks rung 4''s party-identity layer, or covers only one side of the federation
-    or a single model family, or issues party certificates without rung 4''s per-organization services or
-    deployment tooling. nebula-dfl lacks the per-organization services: one operator''s controller deploys
-    every participant and issues all of their certificates. p2pfl lacks the deployment tooling: its mutual
-    TLS admits only certificate-holding peers, but it leaves certificate distribution to the operator and
-    ships no deployment tooling for the nodes. 2 is simulation first, where federations are emulated on a machine or cluster
+    or a single model family, or has the identity layer without the deployment tooling. nebula-dfl is the
+    first case: its controller generates every participant''s certificate itself, and its user guide sets up
+    a federation with no step that authenticates or admits participants. p2pfl is the last: its mutual TLS
+    admits only certificate-holding peers, but operators distribute the certificates and start each node
+    themselves, since its CLI marks node launching as coming soon. 2 is simulation first, where federations are emulated on a machine or cluster
     the researcher controls and the product itself calls real deployment out of scope or unfinished, or
     a client for one federated workload that leaves the federation runtime to another product. No product
     in the first tranche sits at 1. nvidia-flare is the top anchor: a Slurm launcher, an Android and iOS

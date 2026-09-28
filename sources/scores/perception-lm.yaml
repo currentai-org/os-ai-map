@@ -10,11 +10,11 @@ openness:
     data:
       value: partial
       detail: Meta releases its human-labeled PLM-Video-Human set (CC-BY-4.0) and the synthetic PLM-Image-Auto
-        and PLM-Video-Auto sets (Llama 3.2 license); the training guide runs on dummy datasets and no
-        script assembles the full mixture
+        and PLM-Video-Auto sets (Llama 3.2 license); the released stage-3 config leaves the data mix as
+        a pointer to Table A2 of the paper, and the dataset registry lists only dummy sets
     code:
       value: open
-      detail: the training script with warm-up, SFT and per-stage configs for each size
+      detail: the training script, with stage 1, 2 and 3 configs for each of the 1B, 3B and 8B models
     license:
     - name: FAIR-Noncommercial-Research
       detail: the FAIR Noncommercial Research License on every checkpoint, which bars any commercial use
@@ -25,8 +25,9 @@ openness:
     needs Meta's approval. The open recipe does not lift that restriction.
   raw: weights:open(safetensors for all three sizes on the Hub, behind a manual access request);data:partial(Meta
     releases its human-labeled PLM-Video-Human set (CC-BY-4.0) and the synthetic PLM-Image-Auto and PLM-Video-Auto
-    sets (Llama 3.2 license); the training guide runs on dummy datasets and no script assembles the full
-    mixture);code:open(the training script with warm-up, SFT and per-stage configs for each size);license:FAIR-Noncommercial-Research(the
+    sets (Llama 3.2 license); the released stage-3 config leaves the data mix as a pointer to Table A2
+    of the paper, and the dataset registry lists only dummy sets);code:open(the training script, with
+    stage 1, 2 and 3 configs for each of the 1B, 3B and 8B models);license:FAIR-Noncommercial-Research(the
     FAIR Noncommercial Research License on every checkpoint, which bars any commercial use of the models
     or their outputs)
   last_verified: '2026-09-28'
@@ -96,6 +97,30 @@ openness:
     content_sha256: 843bd3a67aa46bfb2af106581af8ea52aa2cf6be89c8f9b4a89fa28e259df42c
     establishes:
     - code
+    - data
+  - url: https://ungh.cc/repos/facebookresearch/perception_models/files/main
+    shows: 'Repository tree: apps/plm/configs/stage_1, stage_2 and stage_3, each with plm_1b.yaml, plm_3b.yaml
+      and plm_8b.yaml, beside apps/plm/configs/datasets.yaml.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7544769a244061d60bd6fd694270dadd4228801a17f3a4adbfdc7e1a1c6c1c7b
+    establishes:
+    - code
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/stage_3/plm_8b.yaml
+    shows: 'Stage-3 config for the 8B model: "datamix: <Please consider using data split listed in Table
+      A2 of our paper https://arxiv.org/pdf/2504.13180. ...>".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: bccd6d66dd3ae3ad3b4be7cc0a008f2ee2a7757e3e18b22244de00d2c1522e95
+    establishes:
+    - data
+  - url: https://raw.githubusercontent.com/facebookresearch/perception_models/main/apps/plm/configs/datasets.yaml
+    shows: 'Dataset registry: entries only for dummy_image, dummy_multi_image, dummy_video, dummy_text
+      and the other apps/plm/dummy_datasets sets.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 7823642110e262bf13300aa0b60dde23fafb86f35f47a6d6c29f6fa09c1a2742
+    establishes:
     - data
 adoption:
   level: 1

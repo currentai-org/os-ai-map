@@ -1,15 +1,15 @@
 product: reachy-mini
 openness:
-  score: 4
-  class: open_toolchain
+  score: 3
+  class: documented
   components:
     form_factor:
       value: board
       detail: a complete desktop robot, sold as a kit
     schematics:
-      value: published
-      detail: STL meshes of the printed parts are in the repository under a non-commercial CC BY-SA-NC
-        license, and the full STEP files are not released
+      value: partial
+      detail: STL meshes of the printed parts, kept as assets of the robot's simulation models; the README
+        puts the hardware design files under CC BY-SA-NC, and the full STEP files are not released
     toolchain:
       value: open
       detail: driven by the Apache-2.0 SDK and daemon in the same repository
@@ -17,14 +17,14 @@ openness:
       value: open_market
       detail: Wireless and Lite kits from Pollen Robotics' store and through Seeed Studio
   confidence: high
-  note: The robot's printed parts are published as STL meshes under a non-commercial license, and the
-    full STEP design files are not released, so the design can be read and rebuilt for non-commercial
-    use but not sold or fully edited. The software that drives it is Apache-2.0 and builds from source,
-    and the kits are on open sale.
-  raw: form_factor:board(a complete desktop robot, sold as a kit);schematics:published(STL meshes of the
-    printed parts are in the repository under a non-commercial CC BY-SA-NC license, and the full STEP
-    files are not released);toolchain:open(driven by the Apache-2.0 SDK and daemon in the same repository);retail:open_market(Wireless
-    and Lite kits from Pollen Robotics' store and through Seeed Studio)
+  note: Pollen publishes STL meshes of the robot's printed parts for its simulation models, but not the
+    full STEP design files, and it licenses the design files for non-commercial use only. The software
+    that drives the robot is Apache-2.0 and builds from source, and the kits are on open sale.
+  raw: form_factor:board(a complete desktop robot, sold as a kit);schematics:partial(STL meshes of the
+    printed parts, kept as assets of the robot's simulation models; the README puts the hardware design
+    files under CC BY-SA-NC, and the full STEP files are not released);toolchain:open(driven by the Apache-2.0
+    SDK and daemon in the same repository);retail:open_market(Wireless and Lite kits from Pollen Robotics'
+    store and through Seeed Studio)
   last_verified: '2026-09-28'
   sources:
   - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md
@@ -46,7 +46,8 @@ openness:
     - schematics
   - url: https://ungh.cc/repos/pollen-robotics/reachy_mini/files/main
     shows: 'Repository tree: STL meshes of the printed parts (body_top_3dprint.stl, head_front_3dprint.stl,
-      stewart_main_plate_3dprint.stl and others) in the asset folders of the robot''s MJCF and URDF models.'
+      stewart_main_plate_3dprint.stl and others) in the asset folders of the robot''s MJCF and URDF simulation
+      models.'
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: 8b568bfce9b81459933694991a11c0f6fd603f67406752eed8a05957b96970f2
@@ -110,14 +111,15 @@ capability:
   sources:
   - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/docs/source/platforms/reachy_mini/hardware.md
     shows: 'Hardware datasheet: "Head : 6 dofs (3 rotations & 3 translations)", "Body : 1 rotation", "Antennas
-      : 1 rotation (x2)"; Stewart platform of 6 Dynamixel XL330-M288-T motors; wide-angle camera, mic
-      array and speaker.'
+      : 1 rotation (x2)"; "Wide angle camera: 120°"; base "1x Custom Dynamixel XC330-M288-PG", antennas
+      2x XL330-M077-T, Stewart platform 6x XL330-M288-T; mic array of "4 PDM MEMS digital mics"; 5W speaker.'
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: 929e508da102d99ceb6e0cad6b6544ec6a033d1a4198aca68b194559e4b58473
   - url: https://raw.githubusercontent.com/pollen-robotics/reachy_mini/main/README.md
     shows: 'README: "Reachy Mini is an open-source, expressive robot made for hackers and AI builders";
-      Wireless (Raspberry Pi CM4, battery, Wi-Fi) and Lite (USB to a computer) versions.'
+      Wireless (Raspberry Pi CM4, battery, Wi-Fi) and Lite (USB to a computer) versions; user guides for
+      the "Python SDK" and "JavaScript SDK & Web Apps".'
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: 9d11ffc341acce448974c215d1a69a2b5000de98a92373a129d37ec19b0becd0

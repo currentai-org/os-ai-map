@@ -71,13 +71,14 @@ capability:
   basis_detail: 'federated_learning feature matrix: federation reach (rungs in the category''s scoring_recipe.note)'
   value: Peer-to-peer training over gRPC with gossip-based model exchange; optional mutual TLS with node
     certificates signed by a shared root CA; local differential privacy applied to outgoing updates; in-memory
-    and Ray simulation. Certificate distribution is left to the operator, and the only container is a
-    development Dockerfile.
+    and Ray simulation; PyTorch, TensorFlow/Keras and JAX models. Certificate distribution is left to
+    the operator, the CLI marks launching a node and driving a remote node as coming soon, and the repository's
+    only container file is a Dockerfile that opens a shell.
   confidence: medium
   note: P2PFL runs a real federation between machines, with mutual TLS so that only nodes holding certificates
-    from the network's authority can join, and local differential privacy on each update. It leaves distributing
-    those certificates to the operator and ships no deployment tooling for the nodes, which keeps it a
-    step below Flower.
+    from the network's authority can join, and local differential privacy on each update. Operators distribute
+    the certificates and start each node themselves, since the command-line node launcher is still marked
+    as coming soon, which keeps it a step below Flower.
   relative_to: flower
   relation: one_below
   comparison:
@@ -117,7 +118,27 @@ capability:
     content_sha256: cee869c32784b11e7068d29bf3883d92b70193c6e7aab92eac8f352ee8e40278
   - url: https://raw.githubusercontent.com/p2pfl/p2pfl/HEAD/README.md
     shows: 'README: "execution (simulated and in real environments) of Decentralized Federated Learning
-      systems"; Docker instructions are "docker build -t p2pfl ." and "docker run -it --rm p2pfl bash".'
+      systems, specifically making use of P2P networks and the gossip protocols"; "Seamlessly integrate
+      PyTorch, TensorFlow/Keras, and JAX models"; Docker instructions are "docker build -t p2pfl ." and
+      "docker run -it --rm p2pfl bash".'
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: db2d5504515d41fe8f1745114bc486efb62745d2bef91ffcb8d51ad5cf84ab9c
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/main/docs/source/tutorials/cli.md
+    shows: 'CLI commands: `run` is available; `launch` ("Launch a new node in the p2pfl network") and
+      `remote` ("Interact with a remote node in the p2pfl network") are both marked "Coming Soon".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a36836d6dc84f42da46c4f9a4208c522be13323852a8a5b5273b7dbbb9918790
+  - url: https://ungh.cc/repos/p2pfl/p2pfl/files/main
+    shows: 'The 372-file tree of p2pfl/p2pfl at `main`: the only container or deployment files are the
+      root Dockerfile and .dockerignore, with no compose, Helm, Kubernetes or service files.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 3a4cb5889752832b045b4b6e9c16f10eba6e30f1026725dbc140e28cf2669f70
+  - url: https://raw.githubusercontent.com/p2pfl/p2pfl/main/Dockerfile
+    shows: 'Dockerfile: installs the repository with "uv sync --all-extras --locked" and defaults to an
+      interactive bash shell.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: d970fe7f23fcd8b0cc4a05009a2775dd9ee40ed43dde75082254a086ec007aa8
