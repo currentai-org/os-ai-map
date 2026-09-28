@@ -1,7 +1,7 @@
 product: jina-reader
 openness:
-  score: 5
-  class: open_source
+  score: 4
+  class: open_core
   components:
     license:
     - name: Apache-2.0
@@ -10,21 +10,23 @@ openness:
       value: public
       detail: TypeScript, stateless mode self-hostable via Docker
     core-gated:
-      value: ungated
-      detail: no enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint
+      value: gated
+      detail: ReaderLM-v2 and jina-vlm, the models behind image captioning and the readerlm-v2 output, are
+        CC-BY-NC 4.0; commercial use needs the Jina On-Prem license
     context:
       managed-tier:
         value: r.jina.ai/s.jina.ai hosted SaaS
-        detail: free tier + paid API key) on top of the same OSS core
-        raw: r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core
+        detail: free tier + paid API key
+        raw: r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key)
   confidence: high
-  note: Jina Reader's code is Apache-2.0, and the repository runs the reader in a stateless Docker mode,
-    leaving out only the MongoDB-backed storage the hosted service uses for accounting. The paid hosted
-    tiers raise request throughput rather than unlock features, though Elastic separately sells a commercial
-    license for running the Jina reader models offline.
-  raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no
-    enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai
-    hosted SaaS (free tier + paid API key) on top of the same OSS core
+  note: Jina Reader's service code is Apache-2.0 and self-hostable in a stateless Docker mode, but the models
+    it uses for image captioning and its ReaderLM output, ReaderLM-v2 and jina-vlm, are licensed for non-commercial
+    use only. Commercial use of those features needs the Jina On-Prem license Elastic sells, so part of
+    the product sits outside the open build.
+  raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:gated(ReaderLM-v2
+    and jina-vlm, the models behind image captioning and the readerlm-v2 output, are CC-BY-NC 4.0; commercial
+    use needs the Jina On-Prem license);managed-tier:r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API
+    key)
   last_verified: '2026-09-28'
   sources:
   - url: https://github.com/jina-ai/reader
@@ -48,8 +50,10 @@ openness:
     - source
     - core-gated
   - url: https://jina.ai/reader
-    shows: Jina On-Prem is a commercial license, sold by Elastic as its own SKU since August 10, 2026, for
-      running the models in your own self-managed, on-premises, or air-gapped infrastructure.
+    shows: The FAQ answers "Is the Reader API open source?" with "The Reader service code is available on
+      the Jina AI GitHub organization." and says "The models used by Reader, including" ReaderLM-v2 and
+      jina-vlm, "are licensed CC-BY-NC 4.0, which is not an open-source license", so "commercial production
+      use requires a commercial license", the Jina On-Prem license Elastic sells.
     accessed: '2026-09-28'
     http_status: 200
     content_sha256: 3a2fe369075bdf0aa29d8e25cf87d0d5bbc0d729ef6d40d98410da2749f73338
