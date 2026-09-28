@@ -48,44 +48,44 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No usage figure is disclosed for Gemini tuning. The pricing page publishes only per-token tuning
-    rates, and the Gemini app's monthly active users belong to a different product and cannot be attributed
-    to this service, so no level is assigned rather than one borrowed from that surface.
-  last_verified: '2026-08-09'
+  note: Google publishes no usage figures for Gemini tuning, and its pricing page lists only per-token tuning
+    rates. The Gemini app's monthly active users belong to a different product and cannot be attributed
+    to this service, so the map leaves it unscored.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: The tuning documentation is entirely a how-to and reference guide; it contains no count of customers,
-      developers, tuning jobs, or tokens tuned anywhere on the page.
-    accessed: '2026-08-09'
+    shows: 'The tuning guide is a how-to and reference page for Gemini tuning: it says "Agent Platform supports
+      supervised fine-tuning to customize foundational models." Searched the body for customers, monthly
+      active, downloads, MAU and tuning jobs: none, so no count of customers, developers, jobs or tokens
+      tuned is published.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad
+    content_sha256: 1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932
   - url: https://cloud.google.com/vertex-ai/generative-ai/pricing
-    shows: The pricing page (redirected today to cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing)
-      lists only per-token rates, e.g. a 'Tuning for 1M training tokens' row at $3.00 for Gemini 2.0 Flash
-      and $1.00 for Gemini 2.0 Flash-Lite. A case-insensitive search of the extracted page text for 'customers',
-      'users', 'downloads', 'MAU' and 'monthly active' turns up pricing-terms usage and case-study links
-      only, no adoption or usage-count figure for the tuning feature.
-    accessed: '2026-08-09'
+    shows: 'The pricing page prices tuning per model: Gemini 3.5 Flash "Reinforcement Learning fine-tuning"
+      is listed at "$0.01 / 1,000 count", and the per-1M-token table for "Gemini 2.0 Flash Lite" has a "Tuning
+      for training tokens" row at "$0.001". A search of the body for monthly active, MAU, downloads and
+      tuning jobs found none, so it publishes no adoption or usage figure for tuning.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 627809c818d73d58c6f34a5b6d51e098a809335068e5beb25769a27e6c03dd0f
+    content_sha256: fc3c0eea68a9190bcc6866386882e5138778f95ab61011aad18747915e42884e
 capability:
   score: 4
   basis: feature_matrix
   value: 'Methods: supervised fine-tuning and preference tuning (DPO-style) for Gemini; multimodal tuning
     across text/document/image/audio/video plus function-calling tuning; checkpoint management.'
   confidence: medium
-  note: Vertex's Gemini tuning is a black box, with no scale or precision controls and no benchmark result
-    behind any of its methods. That leaves it below the open-source libraries that define scale in this
-    category, even though it covers more tuning methods and modalities than most managed services.
-  last_verified: '2026-08-09'
+  note: Vertex AI Tuning offers supervised, preference and preview reinforcement fine-tuning on Gemini models,
+    with continuous tuning, checkpoints and function-calling tuning. Google exposes no controls over parallelism,
+    precision or training scale and publishes no training benchmark, so it offers managed breadth rather
+    than the deeper control of a training framework such as Megatron-LM.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: 'Confirms three tuning methods for Gemini models: "Supervised fine-tuning"; "Preference tuning",
-      described as "Gemini Enterprise Agent Platform preference tuning builds on supervised fine-tuning
-      by letting you tune your Gemini models with human feedback data"; and a nav-listed "Reinforcement
-      learning fine-tuning" section carrying a "Preview" badge (data-title="Preview"). Also lists "Tuning
-      checkpoints" and "Continuous tuning". The ''Supported modalities'' nav enumerates Text, Document,
-      Image, Audio and Video tuning plus "Tune function calling".'
-    accessed: '2026-08-09'
+    shows: 'Confirms Gemini tuning methods: "Gemini Enterprise Agent Platform preference tuning builds on
+      supervised fine-tuning by letting you tune your Gemini models with human feedback data"; also a nav-listed
+      "Reinforcement learning fine-tuning" section with a "Preview" badge, plus "Tuning checkpoints", "Continuous
+      tuning" and "Tune function calling".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad
+    content_sha256: 1d5e5d6c11603e7b6798ebb1dad59fda9e3e29af57e8f58538638c1a42302932

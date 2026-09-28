@@ -63,39 +63,25 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No standalone usage figure is disclosed for the fine-tuning API -- no developer count, no jobs run,
-    no tokens trained. The OpenAI platform broadly serves ~1B+ weekly ChatGPT users, but that surface is
-    not the fine-tuning API and cannot honestly be attributed to it, so no level is assigned rather than
-    one borrowed from the umbrella product.
-  last_verified: '2026-08-08'
+  note: 'OpenAI publishes no usage figure for the OpenAI Fine-Tuning API: no developer count, no jobs run
+    and no tokens trained. ChatGPT''s audience belongs to a different product and cannot be attributed to
+    this one, so the map leaves adoption unscored rather than borrow a figure from the wider OpenAI platform.'
+  last_verified: '2026-09-28'
   sources:
   - url: https://developers.openai.com/api/docs/pricing
-    shows: 'A "Finetuning" section, "Prices per 1M tokens.", carrying the wind-down banner and a Standard/Batch
-      rate table. The visible rows are o4-mini-2025-04-16 at "$100.00 / hour" training; the collapsed rows
-      in the body carry training rates for gpt-4.1-2025-04-14 (25), gpt-4.1-mini-2025-04-14 (5), gpt-4.1-nano-2025-04-14
-      (1.5), gpt-4o-2024-08-06 (25), gpt-4o-mini-2024-07-18 (3), and legacy gpt-3.5-turbo (8) and davinci-002
-      (6), under the column order Model / Training / Input / Cached input / Output. Rates only: the page
-      publishes no count of users, organizations, jobs, or tokens.'
-    accessed: '2026-08-08'
+    shows: 'The pricing page has a "Finetuning" section carrying the banner "OpenAI is winding down the
+      fine-tuning platform" and a rate table with o4-mini-2025-04-16 at "$100.00 / hour" training. Searched
+      the body for user, customer, organization and job counts: none, only rates.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 719a2ccda3e73b521bb1246c45710c33836b1a63b3b1f8ab44e918d912bb8ceb
+    content_sha256: e4a9e273042d144501558701273c32bb7c241d05c45e105fff16785dcf52e229
   - url: https://developers.openai.com/api/docs/guides/model-optimization
-    shows: 'OpenAI''s own product documentation for the fine-tuning platform: the optimization workflow,
-      the four supported methods and their base snapshots, and a pointer to the pricing page for billing.
-      It describes who may use the service ("no longer\naccessible to new users") but publishes no figure
-      for how many do.'
-    accessed: '2026-08-08'
+    shows: 'The guide states "OpenAI is winding down the fine-tuning platform. The platform is no longer
+      accessible to new users" and gives no figure for how many people use the service; searched the body
+      for user counts, customer counts and jobs run: none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c
-  - url: https://openai.com/api/pricing/
-    shows: Redirects (final_url https://openai.com/business/pricing/) to "Business Pricing | OpenAI", a
-      ChatGPT Business ($20 / user / month) and Enterprise ("Custom pricing") plan-comparison page. It carries
-      no API token rates and no fine-tuning content at all — a search of the extracted text for "fine-tun"
-      returns zero hits. Recorded to document where the canonical API pricing URL now lands; the rate card
-      lives at developers.openai.com/api/docs/pricing.
-    accessed: '2026-08-08'
-    http_status: 200
-    content_sha256: 558ae206f42dba87f8891f585fd7b02c0fbec332e5f7f481702ce1be02baa1ec
+    content_sha256: 4881e932fa9793f639679fec51d067814679e32072a9f11c1111ccb6d1eca85b
 capability:
   score: 4
   basis: feature_matrix
@@ -107,23 +93,22 @@ capability:
     its own gpt-4.1, gpt-4o and o4-mini models, handled end to end. It exposes no controls over parallelism,
     precision or training scale, so it offers managed breadth over strong base models rather than the deeper
     control a training framework gives.
-  last_verified: '2026-08-13'
+  last_verified: '2026-09-28'
   sources:
   - url: https://developers.openai.com/api/docs/guides/model-optimization
-    shows: '"These are the fine-tuning methods supported in the OpenAI platform today." — a four-row table:
-      "Supervised fine-tuning (SFT)" with gpt-4.1-2025-04-14, gpt-4.1-mini-2025-04-14, gpt-4.1-nano-2025-04-14;
-      "Vision fine-tuning" with gpt-4o-2024-08-06; "Direct preference optimization" (DPO) with the same
-      gpt-4.1 trio; and "Reinforcement fine-tuning (RFT)", marked "Reasoning models only", with o4-mini-2025-04-16.
-      The surrounding text describes the managed loop end to end (upload JSONL, create the job, define a
-      grader for RFT, evaluate) and exposes no parallelism, precision, or training-scale controls.'
-    accessed: '2026-08-13'
+    shows: '"These are the fine-tuning methods supported in the OpenAI platform today." Table lists "Supervised
+      fine-tuning (SFT)" and "Direct preference optimization (DPO)" alongside gpt-4.1 snapshots, "Vision
+      fine-tuning" with gpt-4o-2024-08-06, and reinforcement fine-tuning marked "Reasoning models only"
+      with o4-mini-2025-04-16. Searched the body for parallelism, precision and training-scale controls:
+      none.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 484fd60f955c3b8e2eaf2b9c086982516aa3936f6f738dd3dfe8a75514c8c78d
+    content_sha256: 4881e932fa9793f639679fec51d067814679e32072a9f11c1111ccb6d1eca85b
   - url: https://developers.openai.com/api/docs/deprecations
-    shows: 'The "2026-04-22: Legacy GPT model snapshots" table lists "October 23, 2026" shutdowns for "o4-mini-2025-04-16"
-      (replacement gpt-5.6-terra) and gpt-4.1-nano-2025-04-14 (replacement gpt-5.6-luna), and a following
-      table "We are also removing fine-tuned versions as below" lists ft-o4-mini-2025-04-16 and ft-gpt-4.1-nano-2025-04-14
-      on the same date. o4-mini-2025-04-16 is the sole base the guide offers for reinforcement fine-tuning.'
-    accessed: '2026-08-08'
+    shows: The legacy-snapshot table lists o4-mini-2025-04-16 and its fine-tuned version ft-o4-mini-2025-04-16
+      with shutdown date "October 23, 2026", and the self-serve fine-tuning timeline states "Active existing
+      customers will no longer be able to create new fine-tuning jobs on this date" for Jan 6, 2027, adding
+      that "Inference on fine-tuned models will be disabled only when the underlying base model is deprecated".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: f2272ef1a9a1b69c8a2651d2a72771cbbabd13cda9718579678393ae3b2ad86f
+    content_sha256: 977978ad22d313edce3f70b71baf7fbc19824eb2e01d1949acf172199ef61d46

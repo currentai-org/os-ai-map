@@ -56,34 +56,43 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No usage figure is published for Anyscale's fine-tuning feature specifically. LLMForge, Anyscale's
-    own library, was retired, but fine-tuning continues on open frameworks with no separate usage signal
-    published, so the map leaves it unscored.
-  last_verified: '2026-08-09'
+  note: Anyscale publishes no usage figure for its fine-tuning feature, and the open frameworks it runs
+    publish none that is specific to the platform, so the map leaves this product unscored.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.anyscale.com/llm/fine-tuning
-    shows: Full page covers post-training methods, framework choice, dataset prep, checkpointing, and observability
-      integrations, with no downloads, user, or usage figures anywhere for the fine-tuning capability (checked
-      by reading the full page text).
-    accessed: '2026-08-09'
+    shows: 'Searched the body for downloads, users and customers: none found, and the only "usage" is VRAM
+      usage; the page describes methods, frameworks and integrations but publishes no usage figure for the
+      fine-tuning capability, and states "Anyscale supports multiple frameworks for LLM post-training".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 022cbf937adc0b534b52a0ce242b59ed6ffb7245df7b29ef464ad2ef27a8a7ac
+    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7
 capability:
-  score: 2
+  score: 3
   basis: feature_matrix
-  value: 'Methods: LoRA + full-parameter FT; YAML config; scaling via Ray Train/Ray Data + DeepSpeed/Accelerate.
-    No advanced quantization/algorithm coverage; Anyscale itself cites Axolotl/LLaMA-Factory as providing
-    enhanced functionality, the reason for deprecation.'
+  value: 'Methods: continued pretraining, SFT, full fine-tuning, LoRA and QLoRA, DPO, KTO, ORPO and PPO
+    preference training, and GRPO or DAPO reinforcement learning, run through LLaMA-Factory, SkyRL and Ray
+    Train on Ray clusters with FSDP, DeepSpeed or Megatron backends; multi-LoRA serving.'
   confidence: medium
-  note: Anyscale runs LoRA and full-parameter fine-tuning through Ray Train and Ray Data with DeepSpeed
-    or Accelerate, but offers no advanced quantization or algorithm coverage. Anyscale itself cited Axolotl
-    and LLaMA-Factory's broader feature sets as the reason for retiring its own library, LLMForge.
+  note: Anyscale runs full fine-tuning, LoRA and QLoRA, preference methods such as DPO, KTO and ORPO, and
+    GRPO reinforcement learning by running open frameworks, LLaMA-Factory, SkyRL and Ray Train, on Ray clusters.
+    That matches most of Axolotl's method coverage but not its quantization-aware training or sequence parallelism,
+    which places it one step below Axolotl.
   relative_to: axolotl
-  relation: two_below
-  last_verified: '2026-08-13'
+  relation: one_below
+  last_verified: '2026-09-28'
   sources:
-  - url: https://www.anyscale.com/library/llmforge
-    shows: LoRA + full FT; OSS alternatives offer quantization/advanced algorithms
-    accessed: '2026-08-13'
+  - url: https://docs.anyscale.com/llm/fine-tuning
+    shows: 'The page lists post-training capabilities: "algorithms such as PPO, DPO, KTO, and ORPO, or RLVR
+      with GRPO and DAPO" and "full fine-tuning and parameter-efficient methods (LoRA, QLoRA, freeze-tuning)",
+      with scaling "compatible with FSDP, DeepSpeed, and Megatron".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: aae241053005347202073ef3f0dde4abf3f6fd24fe922e79980489fee7422105
+    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7
+  - url: https://docs.anyscale.com/llm/fine-tuning
+    shows: The page states "Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory,
+      SkyRL, and Ray Train" and cautions "Feature availability and exact configurations can vary by model
+      family and framework."
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: fb31ea58338f41e4350321333ced06f995fdf003fa85d88731de08002cc952f7

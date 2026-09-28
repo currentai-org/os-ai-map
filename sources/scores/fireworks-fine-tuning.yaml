@@ -40,39 +40,57 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: Fireworks discloses no jobs run, customers tuning, models fine-tuned or developer count for its
-    fine-tuning service. It serves substantial inference volume overall, but that figure is not specific
-    to fine-tuning, so no level is assigned rather than borrowed from the wider platform.
-  last_verified: '2026-08-13'
+  note: Fireworks publishes no usage figures for its fine-tuning service, such as jobs run, customers tuning
+    or models fine-tuned. The platform serves substantial inference volume overall, but none of it is specific
+    to fine-tuning, so the map leaves this product unscored rather than borrowing a figure from the wider
+    platform.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
-    shows: managed FT feature; no usage figures disclosed
-    accessed: '2026-08-13'
+    shows: 'Searched the body for customers, developers, trillion, jobs run, monthly active and users: no
+      usage figure for fine-tuning is published; the only "million" is a dataset limit of "3 million dataset
+      examples".'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: e8cf985a9c90e195cf32a6724517100978bd2b5eb766afda2ba5e0849b1b09c6
+    content_sha256: 8088b094cd7309ecad53d9bb94a6d0bdec7fed3391a144ffcac7010ec13b5036
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Methods: SFT, DPO (preference), RFT (reinforcement fine-tuning). LoRA-adapter outputs with warm-start
-    continued training; serves resulting adapters on dedicated deployments. Open base-model catalog.'
+  value: 'Methods: SFT, DPO and ORPO preference, and reinforcement fine-tuning producing LoRA adapters with
+    warm-start continued training; a Training API for custom training loops on Fireworks-managed GPUs, with
+    full-parameter training on dedicated capacity by request; adapters served from dedicated deployments.
+    Open base-model catalog.'
   confidence: medium
-  note: Fireworks produces LoRA adapters rather than full fine-tunes, and exposes no controls over training
-    scale or precision. That leaves it short of open-source training frameworks and of Together's larger
-    declared training scale, though it matches other managed services on reinforcement fine-tuning.
-  last_verified: '2026-08-09'
+  note: Fireworks offers managed supervised, preference and reinforcement fine-tuning that produces LoRA
+    adapters, plus a Training API for custom training loops, with full-parameter training on dedicated GPUs
+    by request. It runs only on Fireworks' cloud and serves trained adapters only from dedicated deployments,
+    which puts it level with managed services such as Tinker and Together rather than with Megatron-LM and
+    the large-scale training frameworks.
+  last_verified: '2026-09-28'
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
-    shows: Lists SFT, DPO/ORPO, and reinforcement fine-tuning as the managed fine-tuning methods, producing
-      a LoRA model; documents --warm-start-from to continue training from a previous LoRA checkpoint instead
-      of a base model.
-    accessed: '2026-08-09'
+    shows: The page documents supervised, DPO/ORPO and reinforcement fine-tuning jobs, continued training
+      with "--warm-start-from" instead of a base model, and says training a model and deploying it to an
+      on-demand (dedicated) deployment "is the only supported method for serving trained models".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: c4483c16da58f2730d440ad77a90766717888b7cf86a71fa584dbd437086d189
+    content_sha256: 8088b094cd7309ecad53d9bb94a6d0bdec7fed3391a144ffcac7010ec13b5036
   - url: https://docs.fireworks.ai/fine-tuning/deploying-loras.md
-    shows: States that fine-tuned LoRA models, whether created on Fireworks or imported, can only be deployed
-      to on-demand (dedicated) deployments, and that serverless deployment is not supported for LoRA models;
-      describes live-merge (matches base-model latency) and multi-LoRA (shares one deployment across several
-      fine-tunes, at some per-adapter throughput overhead) as the two deployment options.
-    accessed: '2026-08-09'
+    shows: The page states "Serverless deployment is not supported for LoRA models" and compares live merge,
+      which "Matches the base model (no overhead)", with multi-LoRA, which has "Some overhead per request
+      due to dynamic adapter application".
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 43f62dbc737cf7a37304d9d5ce6d8afacd9ce561b8aaefa074a0e77470763eb6
+    content_sha256: 93f5e5ac13585af6eeda0832be99c4dbfaa4aa0149dcbdd9d9cb4288d19c1936
+  - url: https://docs.fireworks.ai/fine-tuning/training-api/introduction.md
+    shows: The Training API overview describes "custom training loops with full Python control over objectives"
+      on Fireworks-managed GPUs, and says Dedicated Training is for when "You need full-parameter training".
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 9faf9598d6ca2ba4bd15a71fe0f02226b93995126cf1460aa477209160afd119
+  - url: https://docs.fireworks.ai/fine-tuning/training-api/dedicated.md
+    shows: The dedicated training page says to "Use cookbook recipes with LoRA or full-parameter configurations
+      supported by the selected training shape" and lists SFT, DPO, ORPO, RL, distillation and custom loops.
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: 178f031ad5552d8c8691e31fffa5ff1c583cee13f2b9dda657329068da9bd676

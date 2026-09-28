@@ -60,19 +60,19 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No standalone usage figure is disclosed for Azure OpenAI fine-tuning -- no jobs run, no count of
-    customers tuning. Azure OpenAI is widely deployed across enterprises, but nothing published is specific
-    to the fine-tuning offering, so no level is assigned rather than one borrowed from the umbrella product.
-  last_verified: '2026-08-09'
+  note: Microsoft publishes no usage figures for this service, such as jobs run or customers tuning models.
+    Azure OpenAI is widely deployed, but nothing published is specific to fine-tuning, so the map leaves
+    this product unscored rather than borrowing a figure from the umbrella service.
+  last_verified: '2026-09-28'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
-    shows: The full article (supported models, methods, regions, RBAC prerequisites, file formats) carries
-      no jobs-run, customer-count, or usage-volume figure anywhere; grepped the cleaned page text for customer/million/thousand/user/download/job-count/adoption
-      terms — the only numeric hits are a joke example ("About 93 million miles") inside a sample training
-      file and a recommendation to start with "50 well-crafted examples," neither a usage metric.
-    accessed: '2026-08-09'
+    shows: 'The article carries no usage figure; searched the body for customers, users, downloads, jobs
+      run and adoption: the only hits are the sample training line "About 93 million miles. Just a quick
+      drive, really." and the advice "hundreds, if not thousands, of training examples", neither a usage
+      metric.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 299941b4f8958f2df22b9939dffabd5315ba61982f4189e335cd55037150aed0
+    content_sha256: c693a48e273962d379f39a2e524773e8ff3500646b91a6c04bac315c9c20f000
 capability:
   score: 4
   basis: feature_matrix
@@ -80,16 +80,17 @@ capability:
     frontier line, plus preview SFT on Ministral/Qwen/Llama/gpt-oss. Managed end-to-end (data validation,
     per-epoch checkpoints, auto-deploy); Standard/Global/Developer training tiers.'
   confidence: medium
-  note: Azure OpenAI Fine-Tuning offers the same tuning methods as the OpenAI API it wraps, plus a preview
-    lane for open-weight models, with no controls over parallelism, precision or training scale. That keeps
-    it at managed breadth rather than the deeper control a training framework gives.
-  last_verified: '2026-08-09'
+  note: Azure OpenAI Fine-Tuning offers supervised and preference tuning on OpenAI models such as gpt-4o,
+    reinforcement fine-tuning on o4-mini, and supervised tuning of open-weight models such as Llama and
+    Qwen, but exposes only batch size, learning rate and epoch count as settings. That gives it managed
+    breadth rather than the deeper control over parallelism and precision that a training framework offers.
+  last_verified: '2026-09-28'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
-    shows: 'Supported-models table: SFT only for gpt-4o-mini; SFT+DPO for gpt-4o and the gpt-4.1/mini/nano
-      trio; RFT (GA) for o4-mini; RFT (GA, invite-gated) for gpt-5; public-preview SFT for Ministral-3B,
-      Qwen-32B, Llama-3.3-70B-Instruct, and gpt-oss-20b. No parallelism, precision, or training-scale controls
-      are exposed anywhere on the page.'
-    accessed: '2026-08-09'
+    shows: 'Supported-models table lists gpt-4o with methods "SFT, DPO" and o4-mini with "RFT" (gpt-5 RFT
+      "gated and available by invitation only"), plus SFT on four open-weight models. The only tunable hyperparameters
+      are batch_size, learning_rate_multiplier and n_epochs; searched the body for parallelism, precision,
+      GPU, fp16 and bf16: none found.'
+    accessed: '2026-09-28'
     http_status: 200
-    content_sha256: 299941b4f8958f2df22b9939dffabd5315ba61982f4189e335cd55037150aed0
+    content_sha256: c693a48e273962d379f39a2e524773e8ff3500646b91a6c04bac315c9c20f000
