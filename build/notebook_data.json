@@ -15465,12 +15465,12 @@
           "type": "model",
           "description": "Qwen-Omni is Alibaba's omni-modal model line, which takes text, images, audio and video as input and answers in text or in streaming natural speech. Its current release, Qwen3.5-Omni, is served only through Alibaba Cloud's API. The earlier Qwen3-Omni, a mixture-of-experts Thinker-Talker model with Instruct, Thinking and audio Captioner checkpoints, and Qwen2.5-Omni before it remain downloadable.",
           "openness": {
-            "score": null,
+            "score": 1,
             "class": "closed",
             "governing_release": "qwen3.5-omni",
             "components": "weights:closed(Qwen3.5-Omni is served only through Alibaba Cloud Model Studio; no Qwen3.5-Omni weights are published on the Hub or in the QwenLM GitHub organization);data:closed(nothing is published for Qwen3.5-Omni);code:closed(no code is published for Qwen3.5-Omni);license:Proprietary(Qwen3.5-Omni is available only under Model Studio API terms);prior-release:distributed(Qwen3-Omni (and Qwen2.5-Omni): safetensors on the Hub, ungated, under Apache-2.0, with inference cookbooks and serving code only and no post-training data)",
             "confidence": "high",
-            "note": "Qwen3.5-Omni, the current release, can only be used through Alibaba Cloud's API, and no weights have been published for it. The same Model Studio documentation serves Qwen3.8-Omni-Flash, a text-output omni model, also hosted only. The previous generation, Qwen3-Omni, remains downloadable under Apache 2.0, so the open line now trails Alibaba's own closed omni models.",
+            "note": "Qwen3.5-Omni, the current release, can only be used through Alibaba Cloud's API, and no weights have been published for it; Qwen3.8-Omni-Flash is hosted only too. The previous generation, Qwen3-Omni, remains downloadable under Apache 2.0. The open line trails the vendor's closed release. A separate availability attribute that would record that gap is tracked in #727.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -15591,7 +15591,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-09-27"
           },
-          "version_note": "The current release, Qwen3.5-Omni, is hosted-only, while Qwen3-Omni and Qwen2.5-Omni remain downloadable under Apache 2.0. The openness reading follows the current release and is held for a ruling on how the map shows an open line one generation behind its vendor's closed flagship."
+          "version_note": "The current release, Qwen3.5-Omni, is hosted-only, while Qwen3-Omni and Qwen2.5-Omni remain downloadable under Apache 2.0. It scores 1/closed on the current release, and the older open line trails it. A separate availability attribute that would record that gap is tracked in #727."
         },
         {
           "slug": "videollama",
@@ -19636,12 +19636,12 @@
           "type": "model",
           "description": "Mistral AI's speech models: Voxtral Mini 4B Realtime is a natively streaming recognizer for 13 languages with a configurable transcription delay of up to 2.4 s, Voxtral Mini 3B transcribes and answers questions about audio, and Voxtral TTS speaks nine languages with voice adaptation for voice agents.",
           "openness": {
-            "score": 2,
-            "class": "restricted",
-            "components": "weights:open(Voxtral Mini 4B Realtime, Voxtral Mini 3B and Voxtral 4B TTS as safetensors on the Hub, ungated);data:closed(the cards describe no training data);code:partial(inference through vLLM, Transformers and mistral-common; no training code);license:Apache-2.0(the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507);unresolved-member:Voxtral 4B TTS 2603, CC-BY-NC-4.0(the current text-to-speech model, licensed CC-BY-NC-4.0 because it inherits the license of its bundled reference voices; whether it belongs to the governing release is the open ruling, and the hand score takes it as governing);api-only-tier:Voxtral Mini Transcribe 2.0(the offline transcription model the Realtime card compares against; no Hub checkpoint, so excluded)",
-            "governing_release": "Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line; whether Voxtral 4B TTS 2603 belongs to the release is pending)",
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Voxtral Mini 4B Realtime and Voxtral Mini 3B as safetensors on the Hub, ungated);data:closed(the cards describe no training data);code:partial(inference through vLLM, Transformers and mistral-common; no training code);license:Apache-2.0(the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507);separate-line:Voxtral 4B TTS 2603, CC-BY-NC-4.0(the text-to-speech model, announced separately with its own name, card and version, and licensed CC-BY-NC-4.0 because it inherits the license of its bundled reference voices; a separate non-commercial line, not a SKU of the recognition release, so it does not govern);api-only-tier:Voxtral Mini Transcribe 2.0(the offline transcription model the Realtime card compares against; no Hub checkpoint, so excluded)",
+            "governing_release": "Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line)",
             "confidence": "medium",
-            "note": "Mistral's current speech-recognition models are Apache-2.0, but its current text-to-speech model is licensed CC-BY-NC-4.0 because of the reference voices it ships with, and may not be used commercially. The more restrictive terms are taken to govern the family for now. The cards describe no training data and only inference code is published.",
+            "note": "Mistral's current speech-recognition models, Voxtral Mini 4B Realtime and Mini 3B, download freely under Apache 2.0. Voxtral 4B TTS is a separate line, announced on its own with its own card, and licensed CC-BY-NC-4.0 because of the reference voices it ships with, so it may not be used commercially; its terms do not carry over to the recognition models. The cards describe no training data and only inference code is published.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -19706,9 +19706,29 @@
                 "establishes": [
                   "weights"
                 ]
+              },
+              {
+                "url": "https://mistral.ai/news/voxtral-tts",
+                "shows": "\"Speaking of Voxtral\", Mistral's own announcement of the TTS model: \"A model with several reference voices is available as open weights on Hugging Face under CC BY NC 4.0 license\", and \"It works alongside Voxtral Transcribe for full speech-to-speech, or integrates into any existing speech-to-text and LLM stack\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a88ffce1e6b278c3fd2b025ad35eea874d556ca6e1d68e608f0ba945c6fea517",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://mistral.ai/news/voxtral-transcribe-2",
+                "shows": "\"Voxtral transcribes at the speed of sound\", the recognition line's announcement: \"The family includes Voxtral Mini Transcribe V2 for batch transcription and Voxtral Realtime for live applications\". It does not mention the TTS model.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "a2d6d7dd10623c8e62db7664cfd92786a4fdf33554f28604f3d0b0de59b97a86",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
-            "bucket": "closed"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 4,
@@ -20981,7 +21001,7 @@
             "components": "weights:open(XTTS-v2 .pth checkpoints on the Hub, ungated);data:closed(no training-data statement on either card);code:partial(inference plus a GPT-encoder fine-tuning recipe in the maintained Idiap fork; no full training pipeline);license:Coqui-Public-Model-License-1.0.0(XTTS-v2 and XTTS-v1 weights; non-commercial use only. The code is MPL-2.0)",
             "governing_release": "XTTS-v2 (2023-10)",
             "confidence": "high",
-            "note": "XTTS-v2 downloads freely, but the Coqui Public Model License allows only non-commercial use of the model and its outputs. Nothing is published about the training data, and only a fine-tuning recipe for one component is available.",
+            "note": "XTTS-v2 downloads freely, but the Coqui Public Model License allows only non-commercial use of the model and its outputs. Nothing is published about the training data, and only a fine-tuning recipe for one component is available. That license permits no commercial use, so its tier is commercial_forbidden.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -21365,10 +21385,10 @@
           "openness": {
             "score": 2,
             "class": "restricted",
-            "components": "weights:open(Higgs TTS 3 and the v3 STT checkpoints as safetensors on the Hub, ungated);data:closed(no training-data statement for Higgs TTS 3; the v3 STT models name the public ASR train splits they were fine-tuned on);code:partial(inference through third-party serving recipes; no v3 training code);license:Boson-Higgs-TTS-3-Research-and-Non-Commercial-License(higgs-tts-3-4b, the current TTS release; commercial use needs a separate written license, with a free grant for monetized creator content)+Apache-2.0(the Higgs Audio v3 speech-to-text checkpoints);superseded-release:higgs-tts-2-3b-base(Higgs Audio v2 (2025) and its tokenizer, still published under the Boson Higgs Audio 2 Community License (Llama 3 based, expanded license above 100,000 annual active users); superseded by v3 and not scored)",
-            "governing_release": "Higgs Audio v3 (Higgs TTS 3 and the v3 STT models, 2026)",
+            "components": "weights:open(Higgs TTS 3 (higgs-tts-3-4b) as safetensors on the Hub, ungated);data:closed(no training-data statement for Higgs TTS 3);code:partial(inference through third-party serving recipes; no Higgs TTS 3 training code);license:Boson-Higgs-TTS-3-Research-and-Non-Commercial-License(higgs-tts-3-4b, the current release of the generation line; commercial use needs a separate written license, and the free Creator Use Grant covers publishing content made with the model, not hosting it or building it into a product);separate-line:Higgs Audio v3 STT, Apache-2.0(four speech-to-text checkpoints (higgs-audio-v3-stt, -8b-stt and their v2 builds) released about ten weeks before Higgs TTS 3 in a collection of their own; a separate recognition line, recorded here and not scored);superseded-release:higgs-tts-2-3b-base(Higgs Audio v2 (2025) and its tokenizer, still published under the Boson Higgs Audio 2 Community License (Llama 3 based, expanded license above 100,000 annual active users); superseded by v3 and not scored)",
+            "governing_release": "Higgs TTS 3 (higgs-tts-3-4b, 2026-06)",
             "confidence": "medium",
-            "note": "Boson's current text-to-speech model is free to download but may not be used commercially without a separate license, while its v3 speech-to-text models are Apache-2.0. The more restrictive TTS terms are taken to govern the family, and no training data or training code is published for v3.",
+            "note": "Higgs TTS 3, Boson's current text-to-speech release and the line its own repository now points to, is free to download but may not be used commercially without a separate license; a free grant lets creators publish and monetize content made with it. Boson's Apache-2.0 speech-to-text models are a separate line and do not change that. No training data or training code is published for Higgs TTS 3.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -21415,8 +21435,8 @@
               },
               {
                 "url": "https://raw.githubusercontent.com/boson-ai/higgs-audio/HEAD/README.md",
-                "shows": "README: \"Higgs Audio v3 is here — you no longer need this repo!\"; \"**Higgs Audio v3** is a standalone release and does **not** depend on the code here.\"",
-                "accessed": "2026-09-27",
+                "shows": "README: \"Higgs Audio v3 is here — you no longer need this repo!\"; \"**Higgs Audio v3** is a standalone release and does **not** depend on the code here.\"; the weights it links are \"bosonai/higgs-audio-v3-tts-4b\", which the Hub redirects to bosonai/higgs-tts-3-4b.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
                 "content_sha256": "c217f73aca7be6f88970b25953dd083b5d07a4486ddc6a05c16c4c83bcc289f0",
                 "establishes": [
@@ -21434,6 +21454,13 @@
                   "code",
                   "data"
                 ]
+              },
+              {
+                "url": "https://www.boson.ai/blog/higgs-audio-v3-tts",
+                "shows": "\"Higgs TTS 3: beyond reading, toward real speech for voice AI\", The Boson AI Team, June 4, 2026: \"Higgs TTS 3 is built for voice chat: it speaks, not just reads.\" The post does not mention the speech-to-text models.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "b775eeee479690bb1d8c4e27eae658ef7c73edcf6f24775e280b00c88ec57ddc"
               }
             ],
             "bucket": "closed"
@@ -21456,15 +21483,27 @@
             ]
           },
           "capability": {
-            "score": 4,
+            "score": 2,
             "basis": "benchmark",
-            "basis_detail": "Hugging Face Open ASR Leaderboard, English short-form average WER",
-            "value": "bosonai/higgs-audio-v3-stt ranks 14th of 71 at 4.39% average WER; Higgs Audio V3 TTS ranks 63rd of 91 on the Artificial Analysis TTS leaderboard.",
+            "basis_detail": "Artificial Analysis Speech Arena, text-to-speech Elo",
+            "value": "Higgs Audio V3 TTS ranks 62nd of 91 on the Artificial Analysis TTS leaderboard at an Elo of about 1037. The separate v3 speech-to-text line ranks 14th of 71 on the Open ASR Leaderboard.",
             "confidence": "medium",
-            "note": "Its speech-to-text model is among the most accurate open recognizers on the English board, a step below Qwen3-ASR, while listeners place its synthesizer in the lower half of the TTS arena.",
-            "relative_to": "qwen-asr",
+            "comparison": {
+              "last_attested": "2026-09-28",
+              "sources": [
+                {
+                  "url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+                  "shows": "Re-read of the peer this comparison is placed against: \"Kokoro 82M v1.0\" still ranks 48th of 91 on the Artificial Analysis TTS leaderboard at an Elo of about 1065, while Higgs Audio V3 TTS ranks 62nd.",
+                  "accessed": "2026-09-28",
+                  "http_status": 200,
+                  "content_sha256": "67e7fbb1fe4cfc336876346e651cd4589dd16509d6af736c6c69a23433c15438"
+                }
+              ]
+            },
+            "note": "Listeners in blind tests place Higgs TTS 3 in the lower third of the TTS arena, a step below Kokoro. Boson's separate speech-to-text model does much better on the English recognition board, but it is a different line.",
+            "relative_to": "kokoro",
             "relation": "one_below",
-            "last_verified": "2026-09-27",
+            "last_verified": "2026-09-28",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/hf-audio/open-asr-leaderboard-results/resolve/d2c5b384deccdb82834f41aeaffcc618c00efa2f/english_short_latest.csv",
@@ -21475,20 +21514,21 @@
               },
               {
                 "url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
-                "shows": "Leaderboard entry \"name\":\"Higgs Audio V3 TTS\" (creator Boson AI) with \"elo\":1035.22.",
-                "accessed": "2026-09-27",
+                "shows": "Leaderboard row \"Higgs Audio V3 TTS\" (creator Boson AI, released Jun 2026, open weights at bosonai/higgs-audio-v3-tts-4b), rank 62 with \"elo\":1036.76, of 91 ranked models; Kokoro 82M v1.0 is 48th at 1065.",
+                "accessed": "2026-09-28",
                 "http_status": 200,
-                "content_sha256": "c47830eae772fcda4c6de3faa98098076879d26d710125ad4d0223c748619205"
+                "content_sha256": "67e7fbb1fe4cfc336876346e651cd4589dd16509d6af736c6c69a23433c15438"
               }
             ]
           },
-          "overall_score": 3.6,
+          "overall_score": 2.4,
           "tier": null,
-          "maturity": 3.6,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
             "date": "2026-09-27",
-            "basis": "verified"
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-09-28"
           },
           "version_note": "The GitHub repository serves the v2 line; Boson says Higgs Audio v3 is a standalone release that does not need it."
         },
@@ -23360,12 +23400,12 @@
           "type": "model",
           "description": "Qwen-Image is Alibaba's Qwen family of image generation and editing models, designed for complex text rendering and precise editing. Its current release, Qwen-Image 3.0, is served only through Alibaba Cloud Model Studio. The downloadable line runs from the original 20B Qwen-Image and its Edit, Layered and 2512 updates to Qwen-Image-2.1, a unified generation-and-editing model that takes up to ten reference images.",
           "openness": {
-            "score": null,
+            "score": 1,
             "class": "closed",
             "components": "weights:closed(Qwen-Image 3.0 and 3.0-Pro are listed only as Model Studio API models; no Hugging Face repository exists for them);data:closed(nothing is published for Qwen-Image 3.0);code:closed(no code is published for Qwen-Image 3.0);license:Proprietary(Qwen-Image 3.0 is available only under Model Studio API terms);prior-release:distributed(Qwen-Image-2.1 (and earlier): downloadable; 2.1 under the Qwen Research License Agreement, non-commercial only, and Qwen-Image to Qwen-Image-2512 under Apache-2.0)",
             "governing_release": "Qwen-Image 3.0",
             "confidence": "medium",
-            "note": "Qwen-Image 3.0, the current release, can only be used through Alibaba Cloud's API, with no weights published. The newest downloadable release, Qwen-Image-2.1, is licensed for non-commercial use only, and the older Apache 2.0 releases trail the hosted flagship by two generations.",
+            "note": "Qwen-Image 3.0, the current release, can only be used through Alibaba Cloud's API, with no weights published. The newest downloadable release, Qwen-Image-2.1, is licensed for non-commercial use only, and the older Apache 2.0 releases are two generations behind. The open line trails the vendor's closed release. A separate availability attribute that would record that gap is tracked in #727.",
             "last_verified": "2026-09-26",
             "sources": [
               {
@@ -23459,7 +23499,7 @@
             "date": "2026-09-26",
             "basis": "verified"
           },
-          "version_note": "The current release, Qwen-Image 3.0, is hosted-only; Qwen-Image-2.1 remains downloadable under a non-commercial research license and the earlier releases under Apache 2.0. The openness reading follows the current release and is held for a ruling on how the map shows an open line one generation behind its vendor's closed flagship."
+          "version_note": "The current release, Qwen-Image 3.0, is hosted-only; Qwen-Image-2.1 remains downloadable under a non-commercial research license and the earlier releases under Apache 2.0. It scores 1/closed on the current release, and the older open line trails it. A separate availability attribute that would record that gap is tracked in #727."
         },
         {
           "slug": "flux",
@@ -24380,12 +24420,12 @@
           "type": "model",
           "description": "Wan is Alibaba's family of video generation models. Its current release, Wan 3.0, generates clips of up to 30 seconds with sound from text and up to 20 reference assets and supports instruction-based editing, and is served only through Alibaba Cloud Model Studio. The earlier Wan 2.1 and 2.2 releases, from a 1.3B model to a 27B mixture-of-experts at up to 720p, remain downloadable.",
           "openness": {
-            "score": null,
+            "score": 1,
             "class": "closed",
             "components": "weights:closed(Wan 3.0 is served only through Alibaba Cloud Model Studio; the AlibabaCloud-Official/Wan3.0 repository calls it open-source but holds only a LICENSE and a README, with no weights);data:closed(nothing is published for Wan 3.0);code:closed(no code is published for Wan 3.0);license:Proprietary(Wan 3.0 is available only under Model Studio API terms);prior-release:distributed(Wan 2.2 (and 2.1): all checkpoints downloadable under Apache-2.0, with inference code only and training data described but not released)",
             "governing_release": "Wan 3.0",
             "confidence": "medium",
-            "note": "Wan 3.0, the current release, can only be used through Alibaba Cloud's API, and no weights have been published for it. The previous generation, Wan 2.2, remains downloadable under Apache 2.0, so the open line now trails Alibaba's own closed flagship by one generation.",
+            "note": "Wan 3.0, the current release, can only be used through Alibaba Cloud's API, and no weights have been published for it. The previous generation, Wan 2.2, remains downloadable under Apache 2.0. The open line trails the vendor's closed release. A separate availability attribute that would record that gap is tracked in #727.",
             "last_verified": "2026-09-26",
             "sources": [
               {
@@ -24500,7 +24540,7 @@
             "date": "2026-09-26",
             "basis": "verified"
           },
-          "version_note": "The current release, Wan 3.0, is hosted-only, while Wan 2.2 and 2.1 remain downloadable under Apache 2.0. The openness reading follows the current release and is held for a ruling on how the map shows an open line one generation behind its vendor's closed flagship."
+          "version_note": "The current release, Wan 3.0, is hosted-only, while Wan 2.2 and 2.1 remain downloadable under Apache 2.0. It scores 1/closed on the current release, and the older open line trails it. A separate availability attribute that would record that gap is tracked in #727."
         },
         {
           "slug": "hunyuan-video",
@@ -25609,12 +25649,12 @@
           "type": "model",
           "description": "Hunyuan3D is Tencent's family of image-to-3D models that generate a shape with one diffusion model and paint its texture with a second. Its current release, Hunyuan3D 3.0, is served only through Tencent Cloud and the Hunyuan3D site. The downloadable releases run from Hunyuan3D 2.0 and its mini and multi-view variants to Hunyuan3D 2.1, which adds a physically based material model and releases its training code.",
           "openness": {
-            "score": null,
+            "score": 1,
             "class": "closed",
             "components": "weights:closed(Hunyuan3D 3.0 is offered only through the Tencent Cloud Hunyuan 3D API and the Hunyuan3D site; no 2.5 or 3.x repository exists on Hugging Face);data:closed(nothing is published for Hunyuan3D 3.0);code:closed(no code is published for Hunyuan3D 3.0);license:Proprietary(Hunyuan3D 3.0 is available only under Tencent Cloud service terms);prior-release:distributed(Hunyuan3D 2.1 (and 2.0): downloadable under the Tencent Hunyuan 3D Community License, which excludes the European Union, the United Kingdom and South Korea, with training code published for 2.1)",
             "governing_release": "Hunyuan3D 3.0",
             "confidence": "medium",
-            "note": "Hunyuan3D 3.0, the current release, can only be used through Tencent Cloud, with no weights published. The previous downloadable release, Hunyuan3D 2.1, carries a regional community license that excludes the European Union, the United Kingdom and South Korea.",
+            "note": "Hunyuan3D 3.0, the current release, can only be used through Tencent Cloud, with no weights published. The previous downloadable release, Hunyuan3D 2.1, carries a regional community license that excludes the European Union, the United Kingdom and South Korea. The open line trails the vendor's closed release. A separate availability attribute that would record that gap is tracked in #727.",
             "last_verified": "2026-09-26",
             "sources": [
               {
@@ -25705,7 +25745,7 @@
             "date": "2026-09-26",
             "basis": "verified"
           },
-          "version_note": "The current release, Hunyuan3D 3.0, is hosted-only, and Hunyuan3D 2.5 was released as a technical report without weights; Hunyuan3D 2.1 remains downloadable under Tencent's regional community license. The openness reading follows the current release and is held for a ruling on how the map shows an open line one generation behind its vendor's closed flagship."
+          "version_note": "The current release, Hunyuan3D 3.0, is hosted-only, and Hunyuan3D 2.5 was released as a technical report without weights; Hunyuan3D 2.1 remains downloadable under Tencent's regional community license. It scores 1/closed on the current release, and the older open line trails it. A separate availability attribute that would record that gap is tracked in #727."
         },
         {
           "slug": "triposg",
@@ -35034,11 +35074,11 @@
           "type": "dataset",
           "description": "Translation of HumanEval's 161 problems and MBPP's 397 into 22 to 23 programming languages including Ada, C++, C#, Go, Haskell, Java, JavaScript, Lua, OCaml, PHP, R, Ruby, Rust, Scala, Shell, Swift and TypeScript. It lets code-generation performance be compared across languages rather than in Python alone, and is integrated into the BigCode evaluation harness.",
           "openness": {
-            "score": 4,
-            "class": "open",
+            "score": 3,
+            "class": "restricted",
             "components": "data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)",
             "confidence": "medium",
-            "note": "MultiPL-E's GitHub repository ships under a modified BSD 3-Clause license whose fourth clause forbids using the contents as training data for any machine-learning model; where the Hugging Face copy's plain MIT tag disagrees, the repository's own license governs. That leaves the dataset freely downloadable and redistributable, but not fully open, because of the training-data restriction.",
+            "note": "MultiPL-E's GitHub repository ships under a modified BSD 3-Clause license whose fourth clause forbids using the contents as training data for any machine-learning model; where the Hugging Face copy's plain MIT tag disagrees, the repository's own license governs. The dataset downloads freely and may be used commercially, but not to train a model. A license that allows commercial use while barring one class of use is bounded, so its tier is use_bounded.",
             "last_verified": "2026-08-13",
             "sources": [
               {
@@ -35056,7 +35096,7 @@
               {
                 "url": "https://github.com/nuprl/MultiPL-E/blob/main/LICENSE",
                 "shows": "LICENSE headed \"BSD 3-Clause License with Machine Learning Restriction\"; clause 4 reads \"The contents of this repository may not be used as training data for any machine learning model, including but not limited to neural networks.\"",
-                "accessed": "2026-08-13",
+                "accessed": "2026-09-28",
                 "establishes": [
                   "license"
                 ],
@@ -35064,7 +35104,7 @@
                 "content_sha256": "6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 3,
@@ -39147,9 +39187,9 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights: free for research, personal use and startups below USD 2M funding or revenue, and not usable competitively with Datalab's API; the Hugging Face card declares the family as openrail);source:public(datalab-to/chandra carries the inference code and the weights are published)",
+            "components": "license:Apache-2.0(OSI; covers the code)+AI-Pubs-Open-RAIL-M-Modified(the model weights, datalab-to/chandra-ocr-2, the default checkpoint; free for personal use, research and entities below USD 2M in revenue or funding, and barred to anyone offering a product or service that competes with Datalab's);source:public(datalab-to/chandra carries the inference code and the weights are published)",
             "confidence": "high",
-            "note": "Chandra's code is Apache-2.0 and fully public, but the model weights carry a modified OpenRAIL-M license: free for research, personal use, and startups under $2M in funding or revenue, and barred from competing with Datalab's own API. That revenue threshold and anti-compete clause, on the weights rather than the code, keep this at source-available rather than fully open.",
+            "note": "Chandra's code is Apache-2.0 and fully public, but its model weights carry a modified AI Pubs Open RAIL-M license: free for research, personal use, and startups under $2M in funding or revenue, and barred to anyone whose product competes with Datalab's. That revenue threshold and anti-compete clause, on the weights rather than the code, keep this at source-available rather than fully open. The license on the weights allows commercial use only below the threshold, so its tier is competition_restricted.",
             "last_verified": "2026-09-16",
             "sources": [
               {
@@ -39180,6 +39220,26 @@
                 "content_sha256": "434ef004e178d08e1edb1845c57ae8df0bdfb83858ee4a60a8574efc65276e1b",
                 "establishes": [
                   "source"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/datalab-to/chandra-ocr-2/raw/main/LICENSE",
+                "shows": "The weights LICENSE is headed \"AI PUBS OPEN RAIL-M LICENSE (MODIFIED) / Version 0.1, March 2, 2023 (Modified)\". Attachment A bars use \"for any purpose if You ... generated more than two million US Dollars ($2,000,000) in gross revenue in the prior year, except where Your Use is limited to personal use or research purposes\", the same for USD 2M raised, and use by anyone who \"provides or otherwise makes available any product or service that competes with any product or service offered by or made available by Licensor\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "126948ded70d791f4223175a8867cb64bd09bf8aeb7084b812393c876fdc6e1c",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/chandra/master/chandra/settings.py",
+                "shows": "Chandra's settings default the weights to MODEL_CHECKPOINT: str = \"datalab-to/chandra-ocr-2\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "e786a39b74ee45d0434fe2e6beff8a780f3bbaebdb3cc647e598d04a7c514659",
+                "establishes": [
+                  "license"
                 ]
               }
             ],
@@ -39788,9 +39848,9 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:Apache-2.0(OSI; covers the code)+Datalab-Modified-OpenRAIL-M(the model weights, per the README's Model License badge linking to Datalab's pricing page; the badge states the family and not a threshold, and Datalab's published recognition weights have historically carried CC-BY-NC-SA-4.0, so the exact terms need a maintainer's read);source:public(datalab-to/surya carries the engine and the weights are published)",
-            "confidence": "low",
-            "note": "Apache-2.0 covers Surya's code, but the README links the weights only to an OpenRAIL-M badge on Datalab's pricing page, with no threshold stated publicly. Datalab's other published weights carry the noncommercial CC-BY-NC-SA-4.0, so, like Chandra and Marker, this public source paired with an unclear, competition-restricting weights license reads as source-available rather than fully open.",
+            "components": "license:Apache-2.0(OSI; covers the code)+AI-Pubs-Open-RAIL-M-Modified(the model weights: datalab-to/surya-ocr-2 and surya_layout2, the default recognition and layout checkpoints; free for personal use, research and entities below USD 5M in revenue or funding, and barred to anyone offering a product or service that competes with Datalab's);source:public(datalab-to/surya carries the engine and the weights are published);ocr-error-model:cc-by-nc-sa-4.0(the Hub copy of Datalab's OCR-error detector, which the settings load from an s3:// path whose license is not stated; if it is downloaded by default the non-commercial terms govern, and the score is 2 on either reading)",
+            "confidence": "medium",
+            "note": "Apache-2.0 covers Surya's code, while the recognition and layout weights it loads by default carry a modified AI Pubs Open RAIL-M license: free for research, personal use and startups under $5M in funding or revenue, and barred to anyone whose product competes with Datalab's. A separate error-detection model is tagged non-commercial on the Hub and would land on the same score. The license on the weights allows commercial use only below the threshold, so its tier is competition_restricted and the product reads as source-available.",
             "last_verified": "2026-09-16",
             "sources": [
               {
@@ -39822,6 +39882,33 @@
                 "establishes": [
                   "source"
                 ]
+              },
+              {
+                "url": "https://huggingface.co/datalab-to/surya-ocr-2/raw/main/LICENSE",
+                "shows": "The weights LICENSE is headed \"AI PUBS OPEN RAIL-M LICENSE (MODIFIED) / Version 0.1, March 2, 2023 (Modified)\". Attachment A bars use \"for any purpose if You ... generated more than five million US Dollars ($5,000,000) in gross revenue in the prior year, except where Your Use is limited to personal use or research purposes\", the same for USD 5M raised, and use by anyone who \"provides or otherwise makes available any product or service that competes with any product or service offered by or made available by Licensor\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "b6be9042dce439368b606444256cd97624a97c67dfae33957b87c3a0b461ae03",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/datalab-to/surya/master/surya/settings.py",
+                "shows": "Surya's settings default SURYA_MODEL_CHECKPOINT: str = \"datalab-to/surya-ocr-2\" and FAST_LAYOUT_MODEL_CHECKPOINT: str = \"hf://datalab-to/surya_layout2\", with OCR_ERROR_MODEL_CHECKPOINT: str = \"s3://ocr_error_detection/2025_02_18\".",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "d4c2bcf140c7f424a290fcd68a2f3eae745ab2c476a6781a6c4449977c8d88e4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/datalab-to/ocr_error_detection",
+                "shows": "Hub metadata for datalab-to/ocr_error_detection: \"license\":\"cc-by-nc-sa-4.0\", \"gated\":false.",
+                "accessed": "2026-09-28",
+                "http_status": 200,
+                "content_sha256": "0b04f42b5efc40204bbad36b347dfe4f654575f78d2cdd8d093fcafc8d7e2283"
               }
             ],
             "bucket": "open-ish"
@@ -94649,7 +94736,7 @@
             "governing_release": "dinov3",
             "components": "weights:open(every DINOv3 checkpoint on the Hub behind a manual access request);data:documented-not-released(LVD-1689M, curated from public Instagram posts, and SAT-493M satellite imagery; neither released);code:open(full pretraining pipeline, configs and distillation recipes);license:DINOv3-License(code and weights; commercial use allowed, with trade-control and military-use exclusions)",
             "confidence": "medium",
-            "note": "DINOv3's code and weights come under Meta's own DINOv3 License, which permits commercial use but bars military, weapons and trade-controlled uses and lets Meta change the terms; downloads need an approved access request. The full pretraining code is published, but the 1.7-billion-image training set drawn from Instagram is not. The earlier DINOv2 was Apache-2.0, but the current release governs.",
+            "note": "DINOv3's code and weights come under Meta's own DINOv3 License, which permits commercial use but bars military, weapons and trade-controlled uses and lets Meta change the terms; downloads need an approved access request. The full pretraining code is published, but the 1.7-billion-image training set drawn from Instagram is not. The earlier DINOv2 was Apache-2.0, but the current release governs. The DINOv3 License caps neither who may use the model nor at what scale, so its tier is permissive_non_osi.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -94784,7 +94871,7 @@
             "governing_release": "SAM 3.1",
             "components": "weights:open(SAM 3 and SAM 3.1 checkpoints on the Hub behind a manual access request);data:documented-not-released(the SA-Co training data from Meta's data engine is described; only its evaluation benchmarks are released);code:partial(inference and fine-tuning code; no pretraining pipeline);license:SAM-License(code and weights; commercial use allowed, with trade-control and military-use exclusions)",
             "confidence": "medium",
-            "note": "SAM 3 and SAM 3.1 come under Meta's SAM License, which permits commercial use but bars military, weapons and trade-controlled uses and lets Meta change the terms, and the checkpoints need an approved access request. Meta publishes fine-tuning code and evaluation benchmarks but not the training data or pretraining code. SAM and SAM 2 were Apache-2.0, but the current release governs.",
+            "note": "SAM 3 and SAM 3.1 come under Meta's SAM License, which permits commercial use but bars military, weapons and trade-controlled uses and lets Meta change the terms, and the checkpoints need an approved access request. Meta publishes fine-tuning code and evaluation benchmarks but not the training data or pretraining code. SAM and SAM 2 were Apache-2.0, but the current release governs. The SAM License caps neither who may use the model nor at what scale, so its tier is permissive_non_osi.",
             "last_verified": "2026-09-27",
             "sources": [
               {
@@ -122282,7 +122369,7 @@
     }
   },
   "n_total": 1094,
-  "generated": "2026-09-27",
+  "generated": "2026-09-28",
   "version": "0.4.0",
   "released": "2026-09-26",
   "contract": 1,
