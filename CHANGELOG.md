@@ -34,6 +34,11 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- The #753 rulings placed the Coqui, Boson Higgs TTS 3, DINOv3 and SAM licenses, widened the dataset
+  ladder's `use_bounded` to purpose bounds and counted rentable silicon as buyable. Fourteen
+  deferrals close; voxtral moves 2 -> 3 and multipl-e 4 -> 3, and wan, qwen-image, hunyuan-3d and
+  qwen-omni now score 1/closed on their current release
+  ([#755](https://github.com/currentai-org/os-ai-map/pull/755)).
 - The software ladder gained `noncommercial` and `unstated` tiers and the model ladders `unstated`,
   all capped at 2; territorial and revenue-bound community licenses now sit at 3 and vendor
   non-commercial model licenses at 2. Twenty-eight deferrals close, and five scores move: deepprove

@@ -1,11 +1,11 @@
 product: voxtral
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components:
     weights:
       value: open
-      detail: Voxtral Mini 4B Realtime, Voxtral Mini 3B and Voxtral 4B TTS as safetensors on the Hub, ungated
+      detail: Voxtral Mini 4B Realtime and Voxtral Mini 3B as safetensors on the Hub, ungated
     data:
       value: closed
       detail: the cards describe no training data
@@ -16,27 +16,30 @@ openness:
     - name: Apache-2.0
       detail: the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507
     context:
-      unresolved-member:
+      separate-line:
         value: Voxtral 4B TTS 2603, CC-BY-NC-4.0
-        detail: the current text-to-speech model, licensed CC-BY-NC-4.0 because it inherits the license of its bundled
-          reference voices; whether it belongs to the governing release is the open ruling, and the hand score takes
-          it as governing
+        detail: the text-to-speech model, announced separately with its own name, card and version, and
+          licensed CC-BY-NC-4.0 because it inherits the license of its bundled reference voices; a separate
+          non-commercial line, not a SKU of the recognition release, so it does not govern
       api-only-tier:
         value: Voxtral Mini Transcribe 2.0
-        detail: the offline transcription model the Realtime card compares against; no Hub checkpoint, so excluded
-  governing_release: Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line; whether Voxtral 4B TTS 2603
-    belongs to the release is pending)
+        detail: the offline transcription model the Realtime card compares against; no Hub checkpoint, so
+          excluded
+  governing_release: Voxtral Mini 4B Realtime 2602 with Voxtral Mini 3B 2507 (the ASR line)
   confidence: medium
-  note: Mistral's current speech-recognition models are Apache-2.0, but its current text-to-speech model is licensed
-    CC-BY-NC-4.0 because of the reference voices it ships with, and may not be used commercially. The more restrictive
-    terms are taken to govern the family for now. The cards describe no training data and only inference code is published.
-  raw: weights:open(Voxtral Mini 4B Realtime, Voxtral Mini 3B and Voxtral 4B TTS as safetensors on the Hub, ungated);data:closed(the
-    cards describe no training data);code:partial(inference through vLLM, Transformers and mistral-common; no training
-    code);license:Apache-2.0(the speech-recognition line, Voxtral Mini 4B Realtime 2602 and Voxtral Mini 3B 2507);unresolved-member:Voxtral
-    4B TTS 2603, CC-BY-NC-4.0(the current text-to-speech model, licensed CC-BY-NC-4.0 because it inherits the license
-    of its bundled reference voices; whether it belongs to the governing release is the open ruling, and the hand score
-    takes it as governing);api-only-tier:Voxtral Mini Transcribe 2.0(the offline transcription model the Realtime card
-    compares against; no Hub checkpoint, so excluded)
+  note: Mistral's current speech-recognition models, Voxtral Mini 4B Realtime and Mini 3B, download freely
+    under Apache 2.0. Voxtral 4B TTS is a separate line, announced on its own with its own card, and licensed
+    CC-BY-NC-4.0 because of the reference voices it ships with, so it may not be used commercially; its
+    terms do not carry over to the recognition models. The cards describe no training data and only inference
+    code is published.
+  raw: weights:open(Voxtral Mini 4B Realtime and Voxtral Mini 3B as safetensors on the Hub, ungated);data:closed(the
+    cards describe no training data);code:partial(inference through vLLM, Transformers and mistral-common;
+    no training code);license:Apache-2.0(the speech-recognition line, Voxtral Mini 4B Realtime 2602 and
+    Voxtral Mini 3B 2507);separate-line:Voxtral 4B TTS 2603, CC-BY-NC-4.0(the text-to-speech model, announced
+    separately with its own name, card and version, and licensed CC-BY-NC-4.0 because it inherits the license
+    of its bundled reference voices; a separate non-commercial line, not a SKU of the recognition release,
+    so it does not govern);api-only-tier:Voxtral Mini Transcribe 2.0(the offline transcription model the
+    Realtime card compares against; no Hub checkpoint, so excluded)
   last_verified: '2026-09-27'
   sources:
   - url: https://huggingface.co/api/models?author=mistralai&search=Voxtral&limit=100&expand[]=downloads&expand[]=createdAt&expand[]=tags&expand[]=gated
@@ -87,6 +90,25 @@ openness:
     content_sha256: d95ca92d7e89fcf0969a04c763f067f44ea6ed4236fe02c97ae961491bd9574e
     establishes:
     - weights
+  - url: https://mistral.ai/news/voxtral-tts
+    shows: '"Speaking of Voxtral", Mistral''s own announcement of the TTS model: "A model with several reference
+      voices is available as open weights on Hugging Face under CC BY NC 4.0 license", and "It works alongside
+      Voxtral Transcribe for full speech-to-speech, or integrates into any existing speech-to-text and LLM
+      stack".'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a88ffce1e6b278c3fd2b025ad35eea874d556ca6e1d68e608f0ba945c6fea517
+    establishes:
+    - license
+  - url: https://mistral.ai/news/voxtral-transcribe-2
+    shows: '"Voxtral transcribes at the speed of sound", the recognition line''s announcement: "The family
+      includes Voxtral Mini Transcribe V2 for batch transcription and Voxtral Realtime for live applications".
+      It does not mention the TTS model.'
+    accessed: '2026-09-28'
+    http_status: 200
+    content_sha256: a2d6d7dd10623c8e62db7664cfd92786a4fdf33554f28604f3d0b0de59b97a86
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M

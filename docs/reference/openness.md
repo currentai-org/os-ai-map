@@ -128,7 +128,7 @@ on something nobody can run is still a 1.
 |---|---|---|
 | **5** | OSI-approved, or open by the Open Definition for data | `osi`, `open_data` |
 | **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, or an acceptable-use policy on conduct | `permissive_non_osi` |
-| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling, a territorial exclusion | `use_bounded` |
+| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling, a territorial exclusion; for data, also a purpose bound that bars one class of use | `use_bounded` |
 | **2** | commercial use prohibited or reserved to the vendor, though source or weights are published; or published with no license stated at all | `commercial_forbidden`, `competition_restricted`, `noncommercial`, `no_derivatives`, `unstated` |
 | **1** | closed or private: nothing published to license, or the license reserves it outright | `proprietary` |
 
@@ -174,6 +174,17 @@ no-derivatives blocks the main reason anyone wants it. The exception is the data
 **Restricting by who the user is does not by itself forbid commerce.** A license that is free for
 some users and charges others (Esethu) permits commercial use, bounded, so it sits at 3 in
 `use_bounded`.
+
+**On data, a purpose bound is a 3 too.** The dataset ladder's `use_bounded` covers a bound on what
+the data may be used for as well as a bound on who may use it. The case is
+`multipl-e`: its repository license, `BSD-3-Clause-with-ML-Restriction`, is BSD-3 plus a clause
+barring use of the contents "as training data for any machine learning model". Commercial use
+stands, so the license does not reach 2, and a field-of-use ban fails the Open Definition, so it
+cannot stay in the open bucket either. The repository license governs over the Hub copy's MIT
+tag, the repository-governs ruling applied to a distribution point that states a conflicting
+license rather than none. It is not `no_derivatives`, whose reasoning is about training corpora:
+a no-training clause on a benchmark protects the benchmark's own purpose rather than blocking the
+reason anyone uses it.
 
 The tier names still differ per ladder, because a corpus and a codebase carry different
 license families. The **caps** are what is universal.
@@ -252,10 +263,20 @@ cap who may use the artifact, or at what scale — not on the license family's r
   works are commercially usable and derivatives may be distributed, and it restricts neither who
   may use the works nor at what scale. It is, if anything, looser, since it carries no guardrail
   termination clause.
+- **Meta's DINOv3-License and SAM-License** land in `permissive_non_osi` on the model and
+  pretrained ladders. They are one text under two names: a royalty-free grant to
+  use, redistribute and modify, with no user or revenue cap. The limits are trade-control
+  compliance, including military, nuclear, espionage and weapons end uses, and a bar on reverse
+  engineering, which are conduct restrictions of the acceptable-use kind this tier admits. Meta may amend the
+  terms unilaterally; no tier tests amendability, so that stays in the product notes.
 - **Vendor non-commercial model licenses** land in `commercial_forbidden`: NVIDIA OneWay
   Noncommercial, the Prior Labs TabPFN licenses (Prior Labs License 1.1 included, by the ruling),
-  the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0 and InsightFace's
-  research-only model license.
+  the FLUX non-commercial licenses, the Qwen Research License, Roboflow's PML-1.0, InsightFace's
+  research-only model license, the Coqui Public Model License 1.0.0 (xtts), a plain
+  non-commercial grant, and the Boson Higgs TTS 3 Research and Non-Commercial License
+  (higgs-audio). The Higgs license's Creator Use Grant does not lift it: the grant lets creators
+  publish and monetize content made with the model, and excludes hosting the model, redistributing
+  it and embedding it in a product.
 - **Bounded community licenses** land in `use_bounded`: the Stability AI Community
   License, the LTX-2 and LTXV licenses, LFM Open, the Moondream Model License 1.0, and the
   territorially bounded Tencent Hunyuan, Tencent Hunyuan 3D and MiniMax H3 community licenses.
@@ -602,7 +623,10 @@ because the source itself is published.
   separate commercial license is required: MinerU is Apache-2.0 "subject to the additional
   terms below", needing a commercial license above 100M MAU or USD 20M monthly revenue;
   marker's weights are free below USD 5M funding or revenue and licensed commercially above
-  it. The two other OpenRAIL records on the map, `zentropi-cope` (zentropi-openrail-m) and
+  it. Datalab's `chandra` (USD 2M) and `surya` (USD 5M) weights carry the same text, headed "AI
+  PUBS OPEN RAIL-M LICENSE (MODIFIED)" on the Hub, and record it under this name rather
+  than as a vendor-named OpenRAIL variant; the anti-compete clause in the same attachment binds
+  at any size. The two other OpenRAIL records on the map, `zentropi-cope` (zentropi-openrail-m) and
   `starcoder2` (BigCode-OpenRAIL-M), are `type: model`, scored by `model.yaml` against its own
   tier list, and spell their licenses differently besides.
 - **`NXAI-Community-License`**, for `mlstm-kernels`. The NXAI Community License Agreement is a
@@ -747,9 +771,19 @@ channel was read. Requiring a bare-part purchase would mark almost every SoC in 
 ungated-and-unbuyable, which is the less true answer; the module/board channel *is* the retail
 channel for application-processor silicon, not a stand-in for one.
 
+**Rentable silicon counts as buyable.** A datacenter part sold only as rented
+capacity is obtained commercially in the form it is sold in, which is the test above, so `retail`
+has a `rentable` value that `availability` reads as `buyable`. It means anyone can provision an
+instance or slice of the silicon itself at a published price: `google-tpu-ironwood` as Cloud TPU
+capacity priced per chip-hour, `aws-trainium3` as EC2 Trn3 instances and UltraServers. A hosted
+API in front of the silicon is not rentable silicon; that product belongs to inference_code. The
+category's own litmus already said as much ("a chip, board or system you rack or rent as
+silicon"). `restricted` stays `gated`, so a part offered only to approved customers
+(`d-matrix-corsair`) still matches no rung.
+
 **`gated` collapses two different reasons nobody can buy a part**, and does so deliberately: an
-NDA or design-win part (`restricted` in `retail`'s own vocabulary, which nothing on the roster
-records yet) and a withdrawn one (`discontinued`). `google-coral-dev-board` is the `discontinued`
+NDA or design-win part (`restricted` in `retail`'s own vocabulary, which `d-matrix-corsair`
+records) and a withdrawn one (`discontinued`). `google-coral-dev-board` is the `discontinued`
 case: Seeed marks both variants out of stock, and `coral.ai/products/dev-board` redirects to a
 page naming no hardware and linking no purchase route. It fit none of
 `open_market`/`distributor`/`restricted` — `restricted` means gated by NDA or design win, which is

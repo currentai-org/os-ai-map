@@ -152,20 +152,23 @@ openness:
         is deferred rather than being scored by analogy'
       machine_signal: none - needs a human to identify the host and read its score
     retail:
-      question: Can anyone buy one?
+      question: Can anyone buy one, or rent it as silicon?
       # Read by the chipset rung only, through `availability` below. `discontinued`
-      # (google-coral-dev-board, added 2026-08-14) and `restricted` (NDA/design-win, not yet
-      # recorded) are both "nobody can buy one" but for different reasons, and stay apart
-      # here even though `availability` treats them alike.
+      # (google-coral-dev-board, added 2026-08-14) and `restricted` (NDA/design-win,
+      # d-matrix-corsair) are both "nobody can buy one" but for different reasons, and stay
+      # apart here even though `availability` treats them alike. `rentable` (ruled on #753) is
+      # a part sold only as rented capacity of the silicon itself, an instance or slice anyone
+      # can provision at a published price (google-tpu-ironwood, aws-trainium3); a hosted API
+      # in front of the silicon is not it.
       # Ruling: docs/reference/openness.md, "Reaching buyers through module partners is a
       # retail channel, not a proxy for one".
-      values: [open_market, distributor, restricted, discontinued]
+      values: [open_market, distributor, rentable, restricted, discontinued]
       machine_signal: none - a listing on a distributor site is checkable in principle,
         but absence of a listing does not establish restriction
     availability:
       question: Can this part be obtained commercially today, in the form it is sold in?
-      # `retail` collapsed onto the two values the chipset rung needs: `open_market` and
-      # `distributor` both mean buyable, `restricted` and `discontinued` both mean gated. No
+      # `retail` collapsed onto the two values the chipset rung needs: `open_market`,
+      # `distributor` and `rentable` mean buyable, `restricted` and `discontinued` mean gated. No
       # board rung reads it - a module nobody could buy would still score on its design
       # files alone, a deliberate asymmetry with the chipset rung.
       # Ruling: docs/reference/openness.md, "Reaching buyers through module partners is a
@@ -175,6 +178,7 @@ openness:
       value_aliases:
         open_market: buyable
         distributor: buyable
+        rentable: buyable
         restricted: gated
         discontinued: gated
       evidence:
@@ -188,9 +192,11 @@ openness:
         FOR this claim rather than an inference about a different artifact, and the note on each
         record says which channel was read. `ti-am67a` is ACTIVE with an order path on TI''s own
         product page; `nxp-imx-8m-plus` and `rockchip-rk3588` reach buyers through the module
-        partners who build on them. Ruled 2026-09-12'
+        partners who build on them. Ruled 2026-09-12. Rentable silicon counts too: for a part sold
+        only as rented capacity, renting is the form it is sold in, so `google-tpu-ironwood` (Cloud
+        TPU, priced per chip-hour) and `aws-trainium3` (EC2 Trn3) are buyable. Ruled on #753'
       - '`gated`: nobody can buy one, either because the part is behind an NDA or a design win
-        (`restricted`, which nothing on the roster records) or because it has been withdrawn
+        (`restricted`, which is `d-matrix-corsair`) or because it has been withdrawn
         (`discontinued`, which is `google-coral-dev-board`)'
       machine_signal: none, and the asymmetry `retail` records carries over - a distributor
         listing is checkable in principle, but absence of a listing does not establish that
